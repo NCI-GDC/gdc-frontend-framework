@@ -105,17 +105,56 @@ describe("continuous range slice tests", () => {
           count: 11139,
         },
         status: "fulfilled",
+        requestId: "test",
       },
     };
     const initialState = {
-      "diagnoses.age_at_diagnosis": { status: "uninitialized" },
+      "diagnoses.age_at_diagnosis": {
+        status: "uninitialized",
+        requestId: "test",
+      }, // NOTE - this is an adjustment to get the test to pass
     };
 
     const results = processRangeResults(
+      "test",
       queryResults.aggregations,
       initialState,
     );
     expect(results).toEqual(expected);
+  });
+
+  test("process buckets with unexpected requestId", () => {
+    const initialState = {
+      "diagnoses.age_at_diagnosis": {
+        buckets: {
+          "0.0-3652.5": 4007,
+          "10957.5-14610.0": 2234,
+          "14610.0-18262.5": 1914,
+          "18262.5-21915.0": 0,
+          "21915.0-25567.5": 0,
+          "25567.5-29220.0": 0,
+          "29220.0-32872.5": 0,
+          "3652.5-7305.0": 2029,
+          "7305.0-10957.5": 955,
+        },
+        stats: {
+          Max: 16434,
+          Mean: 7550.933476972798,
+          Min: 0,
+          SD: 5727.081131932855,
+          count: 11139,
+        },
+        status: "fulfilled",
+        requestId: "older",
+      },
+    };
+
+    const results = processRangeResults(
+      "test",
+      queryResults.aggregations,
+      initialState,
+    );
+    expect(results).toEqual(initialState);
   });
 
   test("fetch without overriding filters", async () => {

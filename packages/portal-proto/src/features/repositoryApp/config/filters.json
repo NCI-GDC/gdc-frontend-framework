@@ -1,11 +1,12 @@
 {
   "label": "Repository Default",
   "facets": [
+    "files.experimental_strategy",
+    "files.wgs_coverage",
     "files.data_category",
     "files.data_type",
-    "files.experimental_strategy",
-    "files.analysis.workflow_type",
     "files.data_format",
+    "files.analysis.workflow_type",
     "files.platform",
     "files.access"
   ],

@@ -1,8 +1,13 @@
-const AnnotationsIcon = (): JSX.Element => {
+const AnnotationsIcon = ({ label }: { label: string }): JSX.Element => {
   return (
-    <svg height={20} width={20} viewBox="0 0 950 742" version="1.1" role="img">
-      <title>Annotations Icon</title>
-      <desc>an icon for Annotations</desc>
+    <svg
+      height={20}
+      width={20}
+      viewBox="0 0 950 742"
+      version="1.1"
+      role="img"
+      aria-label={label}
+    >
       <g>
         <path
           fill="activeColor"

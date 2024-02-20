@@ -5,6 +5,7 @@ import {
   MdExpandMore as ExpandMoreIcon,
 } from "react-icons/md";
 import { FloatingPosition } from "@mantine/core/lib/Floating";
+import { focusStyles } from "../utils";
 
 export interface CollapsibleContainerProps {
   readonly isCollapsed: boolean;
@@ -42,25 +43,24 @@ export const CollapsibleContainer = (
         isContextBar && "overflow-y-auto max-h-screen-90vh"
       }`}
     >
-      <div className="flex flex-row">
+      <div className="flex flex-wrap">
         <div className="flex-grow">{Top}</div>
-        <div className="flex items-center bg-primary pr-4 gap-4">
+        <div className="flex items-center bg-primary pr-4 gap-4 md:flex-wrap md:w-full md:py-5 md:pl-5 lg:flex-no-wrap lg:w-auto lg:py-0 lg:pl-0">
           <Tooltip label={tooltipText} position={tooltipPosition} withArrow>
             <span>
               <button
                 data-testid="expandcollapseButton"
-                className="bg-base-max text-primary p-2 hover:bg-primary-darkest hover:text-primary-contrast h-12 rounded-md"
+                className={`bg-base-max text-primary p-2 hover:bg-primary-darkest hover:text-primary-contrast h-12 rounded-md ${focusStyles}`}
                 onClick={toggle}
                 aria-expanded={!isCollapsed}
-                aria-label="expand or collapse container"
               >
                 {!onlyIcon ? (
                   <div className="flex gap-1 items-center">
                     <>
                       {isCollapsed ? (
-                        <ExpandMoreIcon size="1.75em" />
+                        <ExpandMoreIcon size="1.75em" aria-hidden="true" />
                       ) : (
-                        <ExpandLessIcon size="1.75em" />
+                        <ExpandLessIcon size="1.75em" aria-hidden="true" />
                       )}
                     </>
 
@@ -73,9 +73,9 @@ export const CollapsibleContainer = (
                     </>
                   </div>
                 ) : isCollapsed ? (
-                  <ExpandMoreIcon size="1.75em" />
+                  <ExpandMoreIcon size="1.75em" aria-hidden="true" />
                 ) : (
-                  <ExpandLessIcon size="1.75em" />
+                  <ExpandLessIcon size="1.75em" aria-hidden="true" />
                 )}
               </button>
             </span>

@@ -25,6 +25,7 @@ import CartDownloadModal from "@/components/Modals/CartDownloadModal";
 import { DownloadButton } from "@/components/DownloadButtons";
 import download from "src/utils/download";
 import { removeFromCart } from "./updateCart";
+import { focusStyles } from "@/utils/index";
 
 const buttonStyle =
   "bg-base-max text-primary border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary text-sm font-normal";
@@ -137,13 +138,17 @@ const CartHeader: React.FC<CartHeaderProps> = ({
           <Menu.Target>
             <Button
               classNames={{
-                root: `${buttonStyle} ml-4`,
+                root: `${buttonStyle} ml-4 ${focusStyles}`,
                 rightIcon: "border-l pl-1 -mr-2",
               }}
               leftIcon={
-                downloadActive ? <Loader size={15} /> : <DownloadIcon />
+                downloadActive ? (
+                  <Loader size={15} />
+                ) : (
+                  <DownloadIcon aria-hidden="true" />
+                )
               }
-              rightIcon={<DropdownIcon size={20} />}
+              rightIcon={<DropdownIcon size={20} aria-hidden="true" />}
             >
               Download Cart
             </Button>
@@ -178,13 +183,17 @@ const CartHeader: React.FC<CartHeaderProps> = ({
           <Menu.Target>
             <Button
               classNames={{
-                root: buttonStyle,
+                root: `${buttonStyle} ${focusStyles}`,
                 rightIcon: "border-l pl-1 -mr-2",
               }}
               leftIcon={
-                downloadActive ? <Loader size={15} /> : <DownloadIcon />
+                downloadActive ? (
+                  <Loader size={15} />
+                ) : (
+                  <DownloadIcon aria-hidden="true" />
+                )
               }
-              rightIcon={<DropdownIcon size={20} />}
+              rightIcon={<DropdownIcon size={20} aria-hidden="true" />}
             >
               Download Associated Data
             </Button>
@@ -206,6 +215,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 .slice(0, 10)}.tar.gz`}
               format="tsv"
               method="POST"
+              downloadSize={summaryData.total_case_count}
               filters={{
                 content: [
                   {
@@ -236,6 +246,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 .slice(0, 10)}.json`}
               format="json"
               method="POST"
+              downloadSize={summaryData.total_case_count}
               filters={{
                 content: [
                   {
@@ -266,6 +277,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 .slice(0, 10)}.tar.gz`}
               format="tsv"
               method="POST"
+              downloadSize={summaryData.total_case_count}
               filters={{
                 content: [
                   {
@@ -295,6 +307,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 .slice(0, 10)}.json`}
               format="json"
               method="POST"
+              downloadSize={summaryData.total_case_count}
               filters={{
                 content: [
                   {
@@ -443,10 +456,10 @@ const CartHeader: React.FC<CartHeaderProps> = ({
         <Menu>
           <Menu.Target>
             <Button
-              leftIcon={<TrashIcon />}
-              rightIcon={<DropdownIcon size={20} />}
+              leftIcon={<TrashIcon aria-hidden="true" />}
+              rightIcon={<DropdownIcon size={20} aria-hidden="true" />}
               classNames={{
-                root: "bg-nci-red-darker font-medium text-base-max", //TODO: find good color theme for this
+                root: `bg-nci-red-darker font-medium text-base-max ${focusStyles}`, //TODO: find good color theme for this
                 rightIcon: "border-l pl-1 -mr-2",
               }}
             >
@@ -468,15 +481,16 @@ const CartHeader: React.FC<CartHeaderProps> = ({
         </Menu>
 
         <h1 className="uppercase ml-auto mr-4 flex items-center truncate text-2xl">
-          Total of <FileIcon size={25} className="ml-2 mr-1" />{" "}
+          Total of{" "}
+          <FileIcon size={25} className="ml-2 mr-1" aria-hidden="true" />{" "}
           <b className="mr-1">{summaryData.total_doc_count.toLocaleString()}</b>{" "}
           {summaryData.total_doc_count === 1 ? "File" : "Files"}
-          <PersonIcon size={25} className="ml-2 mr-1" />{" "}
+          <PersonIcon size={25} className="ml-2 mr-1" aria-hidden="true" />{" "}
           <b className="mr-1">
             {summaryData.total_case_count.toLocaleString()}
           </b>{" "}
           {summaryData.total_case_count === 1 ? "Case" : "Cases"}{" "}
-          <SaveIcon size={25} className="ml-2 mr-1" />{" "}
+          <SaveIcon size={25} className="ml-2 mr-1" aria-hidden="true" />{" "}
           {fileSize(summaryData.total_file_size)}
         </h1>
       </div>

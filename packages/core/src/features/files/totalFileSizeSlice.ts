@@ -59,6 +59,7 @@ export interface CartSummary {
   data: FilesSizeData;
   status: DataStatus;
   error?: string;
+  readonly requestId?: string;
 }
 
 const initialState: CartSummary = {
@@ -76,9 +77,11 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchTotalFileSize.fulfilled, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         const response = action.payload;
         if (response.errors) {
           state.status = "rejected";
+          return state;
         } else {
           state.data = {
             total_file_size:
@@ -87,13 +90,17 @@ const slice = createSlice({
               response?.data?.viewer?.repository?.cases?.hits?.total,
           };
           state.status = "fulfilled";
+          return state;
         }
       })
-      .addCase(fetchTotalFileSize.pending, (state) => {
+      .addCase(fetchTotalFileSize.pending, (state, action) => {
         state.status = "pending";
+        state.requestId = action.meta.requestId;
       })
-      .addCase(fetchTotalFileSize.rejected, (state) => {
+      .addCase(fetchTotalFileSize.rejected, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
         state.status = "rejected";
+        return state;
       });
   },
 });

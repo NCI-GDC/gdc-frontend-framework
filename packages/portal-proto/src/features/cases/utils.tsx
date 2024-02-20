@@ -132,9 +132,9 @@ export const getAnnotationsLinkParams = (
   if (annotations.count === 0) return null;
 
   if (annotations.count === 1) {
-    return `https://portal.gdc.cancer.gov/annotations/${annotations.list[0].annotation_id}`;
+    return `https://portal.gdc.cancer.gov/v1/annotations/${annotations.list[0].annotation_id}`;
   }
-  return `https://portal.gdc.cancer.gov/annotations?filters={"content":[{"content":{"field":"annotations.case_id","value":["${case_id}"]},"op":"in"}],"op":"and"}`;
+  return `https://portal.gdc.cancer.gov/v1/annotations?filters={"content":[{"content":{"field":"annotations.case_id","value":["${case_id}"]},"op":"in"}],"op":"and"}`;
 };
 
 export const formatDataForDataCateogryTable = (

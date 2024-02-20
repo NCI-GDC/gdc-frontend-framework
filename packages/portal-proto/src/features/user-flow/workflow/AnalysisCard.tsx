@@ -10,17 +10,16 @@ import { Button, Card, Loader, Tooltip } from "@mantine/core";
 import { useElementSize } from "@mantine/hooks";
 import { useCoreSelector, selectCohortCounts } from "@gff/core";
 import { AppRegistrationEntry } from "./utils";
+import Link from "next/link";
 
 export interface AnalysisCardProps {
   entry: AppRegistrationEntry;
-  readonly onClick?: (x: AppRegistrationEntry, demoMode?: boolean) => void;
   readonly descriptionVisible: boolean;
   readonly setDescriptionVisible: () => void;
 }
 
 const AnalysisCard: React.FC<AnalysisCardProps> = ({
   entry,
-  onClick,
   descriptionVisible,
   setDescriptionVisible,
 }: AnalysisCardProps) => {
@@ -50,47 +49,71 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
       <div className="flex justify-between mb-1">
         {entry.icon}
         <div className="flex flex-col">
-          <Button
+          <Link
+            href={{
+              pathname: "/analysis_page",
+              query: { app: entry.id },
+            }}
             data-testid={`button-${entry.name}`}
-            className={`bg-secondary hover:bg-secondary-dark hover:border-secondary-dark mb-1 w-[50px] ${
-              inactive ? "opacity-50" : ""
-            }`}
-            variant="filled"
-            onClick={() => onClick(entry)}
-            compact
-            size="xs"
-            radius="sm"
-            disabled={inactive}
-            aria-label={`Navigate to ${entry.name} tool`}
+            className={`
+              flex
+              justify-center
+              items-center
+              bg-secondary
+              hover:bg-secondary-dark
+              hover:border-secondary-dark
+              focus:bg-secondary-dark
+              focus:border-secondary-dark
+              mb-1
+              w-[50px]
+              ${inactive ? "opacity-50 pointer-events-none" : ""}
+              rounded
+              h-5
+            `}
+            aria-disabled={inactive}
+            aria-label={entry.name}
           >
             <MdPlayArrow size={16} color="white" />
-          </Button>
+          </Link>
+
           {entry.hasDemo ? (
-            <Button
+            <Link
+              href={{
+                pathname: "/analysis_page",
+                query: {
+                  app: entry.id,
+                  demoMode: true,
+                },
+              }}
               data-testid={`button-${entry.name} Demo`}
-              onClick={() =>
-                onClick(
-                  {
-                    ...entry,
-                    name: `${entry.name}`,
-                    id: `${entry.id}`,
-                  },
-                  true,
-                )
-              }
-              compact
-              size="xs"
-              radius="sm"
-              aria-label={`Navigate to ${entry.name} Demo`}
-              variant="outline"
-              className="text-xs text-secondary p-0 border-secondary hover:bg-secondary-dark hover:text-primary-content-max hover:border-secondary-dark w-[50px]"
+              className={`
+                flex
+                justify-center
+                items-center
+                hover:bg-secondary-dark
+                hover:border-secondary-dark
+                hover:text-primary-content-max
+                focus:bg-secondary-dark
+                focus:border-secondary-dark
+                focus:text-primary-content-max
+                mb-1
+                w-[50px]
+                rounded
+                h-5
+                text-xs
+                text-secondary
+                p-0
+                border
+                border-secondary
+                font-semibold
+              `}
             >
               Demo
-            </Button>
+            </Link>
           ) : null}
         </div>
       </div>
-      <Divider variant="dotted" />
+      <Divider variant="dotted" aria-hidden="true" />
       <div className="flex flex-col items-center text-xs">
         <Button
           data-testid="select-description-tool"
@@ -99,15 +122,16 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
           size="xs"
           rightIcon={
             descriptionVisible ? (
-              <MdArrowDropUp size={16} />
+              <MdArrowDropUp size={16} aria-hidden="true" />
             ) : (
-              <MdArrowDropDown size={16} />
+              <MdArrowDropDown size={16} aria-hidden="true" />
             )
           }
           classNames={{
             root: "text-secondary-darkest font-bold bg-transparent",
             rightIcon: "ml-0",
           }}
+          aria-expanded={descriptionVisible}
         >
           {entry.name}
         </Button>
@@ -115,6 +139,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
           data-testid="text-description-tool"
           style={{ height: descriptionVisible ? descHeight : 0 }}
           className="transition-[height] duration-300 bg-primary-lightest overflow-hidden -mx-1.5 mb-1"
+          aria-hidden={!descriptionVisible}
         >
           <div
             className={`${

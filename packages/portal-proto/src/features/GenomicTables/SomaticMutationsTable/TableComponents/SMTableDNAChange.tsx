@@ -36,8 +36,11 @@ const SMTableDNAChange = ({
                 label={truncatedLabel}
               />
             ) : (
-              <Link href={`/ssms/${mutationID}`}>
-                <a className="underline text-utility-link">{truncatedLabel}</a>
+              <Link
+                href={`/ssms/${mutationID}`}
+                className="underline text-utility-link"
+              >
+                {truncatedLabel}
               </Link>
             )}
           </span>

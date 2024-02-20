@@ -12,7 +12,7 @@ import {
   selectCurrentModal,
 } from "@gff/core";
 import { Button, LoadingOverlay, Menu, Badge } from "@mantine/core";
-import { ReactNode, useContext, useEffect } from "react";
+import { ReactNode, useContext, useEffect, useState } from "react";
 import tw from "tailwind-styled-components";
 import { Image } from "@/components/Image";
 import { useCookies } from "react-cookie";
@@ -23,6 +23,8 @@ import {
   MdArrowDropDown as ArrowDropDownIcon,
 } from "react-icons/md";
 import { FaDownload, FaUserCheck } from "react-icons/fa";
+import { FiPlayCircle as PlayIcon } from "react-icons/fi";
+import { VscFeedback as FeebackIcon } from "react-icons/vsc";
 import { HiOutlinePencilSquare as PencilIcon } from "react-icons/hi2";
 import { IoOptions as OptionsIcon } from "react-icons/io5";
 import saveAs from "file-saver";
@@ -45,6 +47,7 @@ import { GeneralErrorModal } from "@/components/Modals/GeneraErrorModal";
 import { SummaryModal } from "@/components/Modals/SummaryModal/SummaryModal";
 import { SummaryModalContext } from "src/utils/contexts";
 import NIHLogo from "public/NIH_GDC_DataPortal-logo.svg";
+import SendFeedbackModal from "@/components/Modals/SendFeedbackModal";
 
 const AppMenuItem = tw(Menu.Item)`
 cursor-pointer
@@ -73,7 +76,7 @@ export const Header: React.FC<HeaderProps> = ({
 }: HeaderProps) => {
   const dispatch = useCoreDispatch();
   const router = useRouter();
-
+  const [openFeedbackModal, setOpenFeedbackModal] = useState(false);
   const userInfo = useCoreSelector((state) => selectUserDetailsInfo(state));
   const currentCart = useCoreSelector((state) => selectCart(state));
   const modal = useCoreSelector((state) => selectCurrentModal(state));
@@ -105,75 +108,95 @@ export const Header: React.FC<HeaderProps> = ({
           visible={!(totalSuccess || dictSuccess)}
         />
         <div className="flex-none w-64 h-nci-logo mr-2 relative">
-          <Link href={indexPath} data-testid="NIHLogoButton" passHref>
-            <a className="block w-full h-full mt-2">
-              <NIHLogo
-                layout="fill"
-                style={{ objectFit: "contain" }}
-                data-testid="button-header-home"
-                aria-label="NIH GDC Data Portal logo"
-                role="img"
-              />
-            </a>
+          <Link
+            href={indexPath}
+            data-testid="NIHLogoButton"
+            className="block w-full h-full mt-2"
+          >
+            <NIHLogo
+              layout="fill"
+              style={{ objectFit: "contain" }}
+              data-testid="button-header-home"
+              aria-label="NIH GDC Data Portal Home"
+              role="img"
+            />
           </Link>
         </div>
 
-        <div className="flex justify-end gap-3 items-center text-primary-darkest font-heading text-sm font-medium">
+        <div className="flex justify-end md:flex-wrap lg:flex-nowrap md:mb-3 lg:mb-0 md:gap-0 lg:gap-3 items-center text-primary-darkest font-heading text-sm font-medium">
           <a
-            href="https://portal.gdc.cancer.gov/annotations"
+            href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Video_Tutorials/"
             className="flex items-center gap-1 p-1 hover:rounded-md hover:bg-primary-lightest"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <PlayIcon size="24px" />
+            Video Guides
+          </a>
+          <Button
+            variant="subtle"
+            data-testid="button-header-send-feeback"
+            className="rounded-md hover:bg-primary-lightest font-medium text-primary-darkest font-heading p-1"
+            leftIcon={<FeebackIcon size="24px" aria-hidden="true" />}
+            onClick={() => setOpenFeedbackModal(true)}
+          >
+            Send Feedback
+          </Button>
+          <a
+            href="https://portal.gdc.cancer.gov/v1/annotations"
+            className="flex items-center gap-1 rounded-md p-1 hover:bg-primary-lightest"
             target="_blank"
             rel="noreferrer"
           >
             <PencilIcon size="24px" />
             Browse Annotations
           </a>
-          <Link href="/manage_sets" passHref>
-            <Button
-              unstyled
-              data-testid="button-header-manage-sets"
-              className={`p-1 rounded-md hover:bg-primary-lightest ${
-                router.pathname === "/manage_sets"
-                  ? "bg-secondary text-white"
-                  : ""
-              }`}
-            >
-              <div className="flex items-center gap-1 font-heading">
-                <OptionsIcon size="22px" className="rotate-90" />
-                Manage Sets
-              </div>
-            </Button>
+          <Link
+            href="/manage_sets"
+            data-testid="button-header-manage-sets"
+            className={`p-1 rounded-md ${
+              router.pathname === "/manage_sets"
+                ? "bg-secondary text-white"
+                : "hover:bg-primary-lightest"
+            }`}
+          >
+            <div className="flex items-center gap-1 font-heading">
+              <OptionsIcon size="22px" className="rotate-90" />
+              Manage Sets
+            </div>
           </Link>
-          <Link href="/cart" passHref>
-            <Button
-              unstyled
-              data-testid="cartLink"
-              className={`p-1 rounded-md hover:bg-primary-lightest ${
-                router.pathname === "/cart" ? "bg-secondary text-white" : ""
-              }`}
-            >
-              <div className="flex items-center gap-1 font-heading">
-                <CartIcon size="22px" />
-                Cart
-                <Badge
-                  variant="filled"
-                  className={`px-1 ml-1 ${
-                    router.pathname === "/cart"
-                      ? "bg-white text-secondary"
-                      : "bg-accent-vivid"
-                  }`}
-                  radius="xs"
-                >
-                  {currentCart?.length || 0}
-                </Badge>
-              </div>
-            </Button>
+          <Link
+            href="/cart"
+            data-testid="cartLink"
+            className={`p-1 rounded-md ${
+              router.pathname === "/cart"
+                ? "bg-secondary text-white"
+                : "hover:bg-primary-lightest"
+            }`}
+          >
+            <div className="flex items-center gap-1 font-heading">
+              <CartIcon size="22px" />
+              Cart
+              <Badge
+                variant="filled"
+                className={`px-1 ml-1 ${
+                  router.pathname === "/cart"
+                    ? "bg-white text-secondary"
+                    : "bg-accent-vivid"
+                }`}
+                radius="xs"
+              >
+                {currentCart?.length || 0}
+              </Badge>
+            </div>
           </Link>
           {userInfo?.data?.username ? (
             <Menu width={200} data-testid="userdropdown" zIndex={9} offset={-5}>
               <Menu.Target>
                 <Button
-                  rightIcon={<ArrowDropDownIcon size="2em" />}
+                  rightIcon={
+                    <ArrowDropDownIcon size="2em" aria-hidden="true" />
+                  }
                   variant="subtle"
                   className="text-primary-darkest font-header text-sm font-medium font-heading"
                   classNames={{ rightIcon: "ml-0" }}
@@ -252,6 +275,9 @@ export const Header: React.FC<HeaderProps> = ({
                             },
                           },
                         }),
+                        closeButtonProps: {
+                          "aria-label": "Close notification",
+                        },
                       });
                     }
                   }}
@@ -283,26 +309,29 @@ export const Header: React.FC<HeaderProps> = ({
             <Menu.Target>
               <button
                 data-testid="extraButton"
-                aria-label="GDC apps button"
-                className="flex items-center gap-1 p-1 hover:rounded-md hover:bg-primary-lightest"
+                className="flex items-center gap-1 p-1 pr-2 rounded-md hover:bg-primary-lightest"
               >
-                <AppsIcon size="24px" className="text-primary-darkest" />
+                <AppsIcon
+                  size="24px"
+                  className="text-primary-darkest"
+                  aria-hidden="true"
+                />
                 <p className="font-heading">GDC Apps</p>
               </button>
             </Menu.Target>
             <Menu.Dropdown>
               <div className="grid grid-cols-2 py-4 gap-2">
                 <AppMenuItem>
-                  <Link href={indexPath} passHref>
-                    <AppLink>
+                  <Link href={indexPath} className="flex flex-col items-center">
+                    <>
                       <Image
                         src="/user-flow/icons/gdc-app-data-portal-blue.svg"
                         width={30}
                         height={30}
-                        alt="portal"
+                        alt=""
                       />
                       Data Portal
-                    </AppLink>
+                    </>
                   </Link>
                 </AppMenuItem>
                 <AppMenuItem>
@@ -311,7 +340,7 @@ export const Header: React.FC<HeaderProps> = ({
                       src="/user-flow/icons/gdc-app-website-blue.svg"
                       width={30}
                       height={30}
-                      alt="website"
+                      alt=""
                     />
                     Website
                   </AppLink>
@@ -326,7 +355,7 @@ export const Header: React.FC<HeaderProps> = ({
                       src="/user-flow/icons/gdc-app-portal-api.svg"
                       width={30}
                       height={30}
-                      alt="API"
+                      alt=""
                     />
                     API
                   </AppLink>
@@ -340,7 +369,7 @@ export const Header: React.FC<HeaderProps> = ({
                       src="/user-flow/icons/gdc-app-data-transfer-tool.svg"
                       width={30}
                       height={30}
-                      alt="data transfer tool"
+                      alt=""
                     />
                     Data Transfer Tool
                   </AppLink>
@@ -351,7 +380,7 @@ export const Header: React.FC<HeaderProps> = ({
                       src="/user-flow/icons/gdc-app-docs.svg"
                       width={30}
                       height={30}
-                      alt="docs"
+                      alt=""
                     />
                     Documentation
                   </AppLink>
@@ -365,7 +394,7 @@ export const Header: React.FC<HeaderProps> = ({
                       src="/user-flow/icons/gdc-app-submission-portal.svg"
                       width={30}
                       height={30}
-                      alt="submission portal"
+                      alt=""
                     />
                     Data Submission Portal
                   </AppLink>
@@ -379,7 +408,7 @@ export const Header: React.FC<HeaderProps> = ({
                       src="/user-flow/icons/gdc-app-publications.svg"
                       width={30}
                       height={30}
-                      alt="publications"
+                      alt=""
                     />
                     Publications
                   </AppLink>
@@ -408,6 +437,10 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="flex flex-grow">
         <Options />
       </div>
+      <SendFeedbackModal
+        opened={openFeedbackModal}
+        onClose={() => setOpenFeedbackModal(false)}
+      />
       {modal === Modals.GeneralErrorModal && <GeneralErrorModal openModal />}
       {modal === Modals.UserProfileModal && <UserProfileModal openModal />}
       {modal === Modals.SessionExpireModal && <SessionExpireModal openModal />}

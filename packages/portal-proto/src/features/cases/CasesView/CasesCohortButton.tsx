@@ -40,60 +40,66 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
       setShowSaveCohort(true);
     }
   }, [response.isSuccess]);
-
+  const dropDownIcon = (
+    <DropdownWithIcon
+      dropdownElements={
+        fetchingCases
+          ? [{ title: "Loading..." }]
+          : [
+              {
+                title: "Only Selected Cases",
+                onClick: () => {
+                  if (numCases > 1) {
+                    onCreateSet();
+                  } else {
+                    setShowSaveCohort(true);
+                  }
+                },
+              },
+              {
+                title: " Existing Cohort With Selected Cases",
+                onClick: () => {
+                  setWithOrWithoutCohort("with");
+                  setOpenSelectCohorts(true);
+                },
+              },
+              {
+                title: " Existing Cohort Without Selected Cases",
+                onClick: () => {
+                  setWithOrWithoutCohort("without");
+                  setOpenSelectCohorts(true);
+                },
+              },
+            ]
+      }
+      TargetButtonChildren="Save New Cohort"
+      disableTargetWidth={true}
+      targetButtonDisabled={numCases === 0}
+      LeftIcon={
+        numCases ? (
+          <CountsIcon $count={numCases}>{numCases.toLocaleString()}</CountsIcon>
+        ) : null
+      }
+      menuLabelText={`${numCases.toLocaleString()}
+        ${numCases > 1 ? " Cases" : " Case"}`}
+      menuLabelCustomClass="bg-primary text-primary-contrast font-heading font-bold mb-2"
+      customPosition="bottom-start"
+      zIndex={100}
+      tooltip={"Save a new cohort based on selection"}
+    />
+  );
   return (
     <>
-      <Tooltip label="Save a new cohort based on selection">
-        <span>
-          <DropdownWithIcon
-            dropdownElements={
-              fetchingCases
-                ? [{ title: "Loading..." }]
-                : [
-                    {
-                      title: "Only Selected Cases",
-                      onClick: () => {
-                        if (numCases > 1) {
-                          onCreateSet();
-                        } else {
-                          setShowSaveCohort(true);
-                        }
-                      },
-                    },
-                    {
-                      title: " Existing Cohort With Selected Cases",
-                      onClick: () => {
-                        setWithOrWithoutCohort("with");
-                        setOpenSelectCohorts(true);
-                      },
-                    },
-                    {
-                      title: " Existing Cohort Without Selected Cases",
-                      onClick: () => {
-                        setWithOrWithoutCohort("without");
-                        setOpenSelectCohorts(true);
-                      },
-                    },
-                  ]
-            }
-            TargetButtonChildren="Save New Cohort"
-            disableTargetWidth={true}
-            targetButtonDisabled={numCases === 0}
-            LeftIcon={
-              numCases ? (
-                <CountsIcon $count={numCases}>
-                  {numCases.toLocaleString()}
-                </CountsIcon>
-              ) : null
-            }
-            menuLabelText={`${numCases.toLocaleString()}
-        ${numCases > 1 ? " Cases" : " Case"}`}
-            menuLabelCustomClass="bg-primary text-primary-contrast font-heading font-bold mb-2"
-            customPosition="bottom-start"
-            zIndex={100}
-          />
-        </span>
-      </Tooltip>
+      <span>
+        {numCases === 0 ? (
+          <Tooltip label={"Save a new cohort based on selection"}>
+            <span>{dropDownIcon}</span>
+          </Tooltip>
+        ) : (
+          <span>{dropDownIcon}</span>
+        )}
+      </span>
+
       {openSelectCohorts && (
         <SelectCohortsModal
           opened

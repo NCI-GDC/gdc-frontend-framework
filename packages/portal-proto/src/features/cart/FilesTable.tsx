@@ -32,6 +32,7 @@ import {
 import VerticalTable from "@/components/Table/VerticalTable";
 import { HandleChangeInput } from "@/components/Table/types";
 import { downloadTSV } from "@/components/Table/utils";
+import { Tooltip } from "@mantine/core";
 
 interface FilesTableProps {
   readonly filesByCanAccess: Record<string, CartFile[]>;
@@ -256,14 +257,10 @@ const FilesTable: React.FC<FilesTableProps> = () => {
             {getAnnotationsLinkParamsFromFiles(row.original.file) ? (
               <Link
                 href={getAnnotationsLinkParamsFromFiles(row.original.file)}
-                passHref
+                className="text-utility-link underline font-content"
+                target="_blank"
               >
-                <a
-                  className="text-utility-link underline font-content"
-                  target="_blank"
-                >
-                  {row.original.annotations.length}
-                </a>
+                {row.original.annotations.length}
               </Link>
             ) : (
               row.original?.annotations?.length ?? 0
@@ -374,8 +371,22 @@ const FilesTable: React.FC<FilesTableProps> = () => {
       columns={cartFilesTableDefaultColumns}
       additionalControls={
         <div className="flex gap-2 mb-2">
-          <FunctionButton onClick={handleDownloadJSON}>JSON</FunctionButton>
-          <FunctionButton onClick={handleDownloadTSV}>TSV</FunctionButton>
+          <Tooltip label="Download JSON">
+            <FunctionButton
+              onClick={handleDownloadJSON}
+              aria-label="Download JSON"
+            >
+              JSON
+            </FunctionButton>
+          </Tooltip>
+          <Tooltip label="Download TSV">
+            <FunctionButton
+              onClick={handleDownloadTSV}
+              aria-label="Download TSV"
+            >
+              TSV
+            </FunctionButton>
+          </Tooltip>
         </div>
       }
       pagination={{

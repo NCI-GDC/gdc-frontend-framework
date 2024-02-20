@@ -5,28 +5,20 @@ import {
   FilterSet,
   selectCurrentCohortGeneAndSSMCaseSet,
   useCoreSelector,
-  useTopGene,
   useCoreDispatch,
   removeCohortFilter,
   updateActiveCohortFilter,
-  usePrevious,
 } from "@gff/core";
-import { useAppDispatch, useAppSelector } from "@/features/genomic/appApi";
+import { useAppDispatch } from "@/features/genomic/appApi";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
-import {
-  selectGeneAndSSMFilters,
-  clearGeneAndSSMFilters,
-} from "@/features/genomic/geneAndSSMFiltersSlice";
+import { clearGeneAndSSMFilters } from "@/features/genomic/geneAndSSMFiltersSlice";
 import GeneAndSSMFilterPanel from "@/features/genomic/FilterPanel";
-import isEqual from "lodash/isEqual";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { DemoText } from "@/components/tailwindComponents";
-import { humanify } from "src/utils";
 import { GenesPanel } from "@/features/genomic/GenesPanel";
 import { SSMSPanel } from "@/features/genomic/SSMSPanel";
-
-// Persist which tab is active
-type AppModeState = "genes" | "ssms";
+import { ComparativeSurvival, AppModeState } from "./types";
+import { useTopGeneSsms } from "./hooks";
 
 export const overwritingDemoFilterMutationFrequency: FilterSet = {
   mode: "and",
@@ -44,7 +36,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const coreDispatch = useCoreDispatch();
   const appDispatch = useAppDispatch();
   const [comparativeSurvival, setComparativeSurvival] =
-    useState<Record<string, string>>(undefined);
+    useState<ComparativeSurvival>(undefined);
   const [appMode, setAppMode] = useState<AppModeState>("genes");
   const [searchTermsForGeneId, setSearchTermsForGeneId] = useState({
     geneId: undefined,
@@ -54,48 +46,18 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     selectCurrentCohortGeneAndSSMCaseSet(state),
   );
 
-  const genomicFilters: FilterSet = useAppSelector((state) =>
-    selectGeneAndSSMFilters(state),
-  );
-
   const overwritingDemoFilter = useMemo(
     () => overwritingDemoFilterMutationFrequency,
     [],
   );
 
-  const { data: topGeneSSMS, isSuccess: topGeneSSMSSuccess } = useTopGene({
-    cohortFilters: isDemoMode ? overwritingDemoFilter : cohortFilters,
-    genomicFilters: genomicFilters,
-  }); // get the default top gene/ssms to show by default
-  const prevTopGeneSSMS = usePrevious(topGeneSSMS);
-  const prevAppMode = usePrevious(appMode);
+  const topGeneSSMSSuccess = useTopGeneSsms({
+    appMode,
+    comparativeSurvival,
+    setComparativeSurvival,
+    searchTermsForGene: searchTermsForGeneId,
+  });
 
-  useEffect(() => {
-    if (
-      topGeneSSMS.length &&
-      (!isEqual(topGeneSSMS, prevTopGeneSSMS) || !isEqual(appMode, prevAppMode))
-    ) {
-      const { genes, ssms } = topGeneSSMS[0];
-      const { name, symbol } = appMode === "genes" ? genes : ssms;
-      const { consequence_type, aa_change } = ssms;
-      handleSurvivalPlotToggled(
-        symbol,
-        appMode === "genes"
-          ? name
-          : `${name} ${aa_change ?? ""} ${
-              consequence_type
-                ? humanify({
-                    term: consequence_type
-                      .replace("_variant", "")
-                      .replace("_", " "),
-                  })
-                : ""
-            }`,
-        appMode === "genes" ? "gene.symbol" : "gene.ssm.ssm_id",
-      );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [topGeneSSMS, appMode]);
   /**
    * Update survival plot in response to user actions. There are two "states"
    * for the survival plot: If comparativeSurvival is undefined it will show the
@@ -108,32 +70,13 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
    */
   const handleSurvivalPlotToggled = useDeepCompareCallback(
     (symbol: string, name: string, field: string) => {
-      if (comparativeSurvival && comparativeSurvival.symbol === symbol) {
-        // remove toggle and plot topmost
-        const { genes, ssms } = topGeneSSMS[0];
-        const { name, symbol } = appMode === "genes" ? genes : ssms;
-        const { consequence_type, aa_change } = ssms;
-        setComparativeSurvival({
-          symbol: symbol,
-          name:
-            appMode === "genes"
-              ? name
-              : `${name} ${aa_change ?? ""} ${
-                  consequence_type
-                    ? humanify({
-                        term: consequence_type
-                          .replace("_variant", "")
-                          .replace("_", " "),
-                      })
-                    : ""
-                }`,
-          field: appMode === "genes" ? "gene.symbol" : "gene.ssm.ssm_id",
-        });
+      if (comparativeSurvival && comparativeSurvival?.symbol === symbol) {
+        setComparativeSurvival(undefined);
       } else {
         setComparativeSurvival({ symbol: symbol, name: name, field: field });
       }
     },
-    [comparativeSurvival, appMode, topGeneSSMS],
+    [comparativeSurvival],
   );
 
   const handleGeneAndSSmToggled = useCallback(
@@ -200,6 +143,10 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     appDispatch(clearGeneAndSSMFilters());
   }, [overwritingDemoFilter, cohortFilters, appDispatch]);
 
+  const clearSearchTermsForGene = useCallback(() => {
+    setSearchTermsForGeneId({ geneId: undefined, geneSymbol: undefined });
+  }, [setSearchTermsForGeneId]);
+
   return (
     <>
       <>
@@ -246,6 +193,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
               handleSurvivalPlotToggled={handleSurvivalPlotToggled}
               handleGeneAndSSmToggled={handleGeneAndSSmToggled}
               searchTermsForGene={searchTermsForGeneId}
+              clearSearchTermsForGene={clearSearchTermsForGene}
             />
           </Tabs.Panel>
         </Tabs>

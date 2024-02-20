@@ -41,13 +41,20 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
   useEffect(() => {
     if (response.isSuccess && setName) {
       dispatch(addSet({ setType, setName, setId: response.data }));
-      showNotification({ message: "Set has been saved." });
+      showNotification({
+        message: "Set has been saved.",
+        closeButtonProps: { "aria-label": "Close notification" },
+      });
       if (dismissModal) {
         dispatch(hideModal());
       }
       setSetName(null);
     } else if (response.isError) {
-      showNotification({ message: "Problem saving set.", color: "red" });
+      showNotification({
+        message: "Problem saving set.",
+        color: "red",
+        closeButtonProps: { "aria-label": "Close notification" },
+      });
     }
   }, [
     response.isSuccess,
@@ -71,7 +78,7 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
           createSet({ values: ids });
         }}
         onNameChange={(name) => !Object.values(sets).includes(name)}
-        additionalDuplicateMessage={"This will overwrite it."}
+        additionalDuplicateMessage="This will overwrite it."
       />
       <DarkFunctionButton
         disabled={disabled}

@@ -48,10 +48,14 @@ export const useGenerateCasesTableColumns = ({
   casesDataColumnHelper,
   currentCart,
   setEntityMetadata,
+  currentPage,
+  totalPages,
 }: {
   casesDataColumnHelper: ColumnHelper<casesTableDataType>;
   currentCart: CartFile[];
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
+  currentPage: number;
+  totalPages: number;
 }): ColumnDef<casesTableDataType>[] => {
   const dispatch = useCoreDispatch();
   const CasesTableDefaultColumns = useMemo<ColumnDef<casesTableDataType>[]>(
@@ -64,11 +68,11 @@ export const useGenerateCasesTableColumns = ({
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
+            aria-label={`Select all the case rows of page ${currentPage} of ${totalPages}`}
             {...{
               checked: table.getIsAllRowsSelected(),
               onChange: table.getToggleAllRowsSelectedHandler(),
             }}
-            aria-label="Select all the rows of the table"
           />
         ),
         cell: ({ row }) => (
@@ -77,7 +81,7 @@ export const useGenerateCasesTableColumns = ({
             classNames={{
               input: "checked:bg-accent checked:border-accent",
             }}
-            aria-label="checkbox for selecting table row"
+            aria-label={row?.original?.project}
             {...{
               checked: row.getIsSelected(),
               onChange: row.getToggleSelectedHandler(),
@@ -104,11 +108,15 @@ export const useGenerateCasesTableColumns = ({
             <Menu position="bottom-start">
               <Menu.Target>
                 <Button
+                  aria-label={`${
+                    isAllFilesInCart ? "remove" : "add"
+                  } all files ${isAllFilesInCart ? "from" : "to"} the cart`}
                   leftIcon={
                     <CartIcon
                       className={
                         isAllFilesInCart && "text-primary-contrast-darkest"
                       }
+                      aria-hidden="true"
                     />
                   }
                   rightIcon={
@@ -117,6 +125,7 @@ export const useGenerateCasesTableColumns = ({
                         isAllFilesInCart && "text-primary-contrast-darkest"
                       }
                       size={18}
+                      aria-hidden="true"
                     />
                   }
                   variant="outline"
@@ -128,7 +137,6 @@ export const useGenerateCasesTableColumns = ({
                   }}
                   size="xs"
                   className={`${isAllFilesInCart && "bg-primary-darkest"}`}
-                  aria-label="Update cart"
                 />
               </Menu.Target>
               <Menu.Dropdown>
@@ -167,6 +175,7 @@ export const useGenerateCasesTableColumns = ({
         id: "slides",
         header: "Slides",
         cell: ({ row }) => (
+          // This needs both passHref and legacyBehavior: https://nextjs.org/docs/pages/api-reference/components/link#if-the-child-is-a-functional-component
           <Link
             href={{
               pathname: "/image-viewer/MultipleImageViewerPage",
@@ -285,18 +294,24 @@ export const useGenerateCasesTableColumns = ({
                 row.original.annotations,
                 row.original.case_uuid,
               )}
-              passHref
+              className="text-utility-link underline"
+              target={"_blank"}
             >
-              <a className="text-utility-link underline" target={"_blank"}>
-                {row.original.annotations.length}
-              </a>
+              {row.original.annotations.length}
             </Link>
           ) : (
             0
           ),
       }),
     ],
-    [casesDataColumnHelper, currentCart, dispatch, setEntityMetadata],
+    [
+      casesDataColumnHelper,
+      currentCart,
+      dispatch,
+      setEntityMetadata,
+      currentPage,
+      totalPages,
+    ],
   );
 
   return CasesTableDefaultColumns;
@@ -309,9 +324,9 @@ export const getCasesTableAnnotationsLinkParams = (
   if (annotations.length === 0) return null;
 
   if (annotations.length === 1) {
-    return `https://portal.gdc.cancer.gov/annotations/${annotations[0].annotation_id}`;
+    return `https://portal.gdc.cancer.gov/v1/annotations/${annotations[0].annotation_id}`;
   }
-  return `https://portal.gdc.cancer.gov/annotations?filters={"content":[{"content":{"field":"annotations.case_id","value":["${case_id}"]},"op":"in"}],"op":"and"}`;
+  return `https://portal.gdc.cancer.gov/v1/annotations?filters={"content":[{"content":{"field":"annotations.case_id","value":["${case_id}"]},"op":"in"}],"op":"and"}`;
 };
 
 export const MAX_CASE_IDS = 100000;

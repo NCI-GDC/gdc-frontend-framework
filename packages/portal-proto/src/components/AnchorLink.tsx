@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { FiExternalLink } from "react-icons/fi";
 import { TypeIcon } from "./TypeIcon";
-import { Anchor } from "@mantine/core";
 
 export const AnchorLink = ({
   href,
@@ -18,16 +17,16 @@ export const AnchorLink = ({
 }): JSX.Element => {
   return (
     <span className="flex gap-2 items-center">
-      <Link href={href} passHref>
-        <Anchor
-          data-testid={customDataTestID}
-          className="flex gap-1 underline font-content"
-          size="sm"
-          target="_blank"
-        >
+      <Link
+        href={href}
+        target="_blank"
+        className="flex gap-1 underline font-content"
+        data-testid={customDataTestID}
+      >
+        <>
           <FiExternalLink className="mt-1" />
           {title}
-        </Anchor>
+        </>
       </Link>
       {iconText && <TypeIcon iconText={iconText} toolTipLabel={toolTipLabel} />}
     </span>

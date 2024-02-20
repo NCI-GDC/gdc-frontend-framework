@@ -26,7 +26,7 @@ const instanceOfIncludesExcludes = (op: Operation): op is Includes | Excludes =>
   ["includes", "excludes"].includes(op.operator);
 
 /**
- * Extracts the operands if the operation is Includes or Excludes. Returns an empty Array
+ * Extracts the operands if the operation isIncludes or Excludes. Returns an empty Array
  * if filter is not the correct type.
  * @param operation - filters to extract values from
  */
@@ -39,6 +39,16 @@ const extractValues = (
   return [] as ReadonlyArray<string>;
 };
 
+/**
+ * Exact value facet component
+ * @param field - field to facet on
+ * @param description - description of the facet
+ * @param facetName - name of the facet
+ * @param dismissCallback - callback function to dismiss the facet
+ * @param width - width of the facet
+ * @param hooks - hooks to use for the facet
+ * @category Facets
+ */
 const ExactValueFacet: React.FC<ExactValueProps> = ({
   field,
   description,
@@ -94,10 +104,9 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
         color="white"
         radius="xl"
         variant="transparent"
-        arial-label="remove value from filter"
         onClick={() => setValues(textValues.filter((i) => i !== x))}
       >
-        <CloseIcon size={10} />
+        <CloseIcon size={10} aria-label="remove value from filter" />
       </ActionIcon>
     );
   };
@@ -145,6 +154,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
       </FacetHeader>
       <div className="flex flex-nowrap items-center p-2">
         <TextInput
+          data-testid="textbox-add-filter-value"
           size="xs"
           placeholder={`Enter ${facetTitle}`}
           classNames={{ root: "grow", input: "border-r-0 rounded-r-none py-1" }}

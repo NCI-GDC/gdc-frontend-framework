@@ -2,7 +2,7 @@ import { ActionIcon, Button } from "@mantine/core";
 import { showNotification, cleanNotifications } from "@mantine/notifications";
 import { VscTrash as TrashIcon } from "react-icons/vsc";
 import { FaUndo as UndoIcon, FaShoppingCart as CartIcon } from "react-icons/fa";
-import { fileInCart } from "src/utils";
+import { fileInCart, focusStyles } from "src/utils";
 import {
   CART_LIMIT,
   removeFilesFromCart,
@@ -39,7 +39,11 @@ interface UndoButtonProps {
 }
 const UndoButton: React.FC<UndoButtonProps> = ({ action }: UndoButtonProps) => {
   return (
-    <Button variant={"white"} onClick={action} leftIcon={<UndoIcon />}>
+    <Button
+      variant={"white"}
+      onClick={action}
+      leftIcon={<UndoIcon aria-hidden="true" />}
+    >
       <span className="underline">Undo</span>
     </Button>
   );
@@ -179,6 +183,7 @@ export const removeFromCart = (
     classNames: {
       description: "flex flex-col content-center text-center",
     },
+    closeButtonProps: { "aria-label": "Close notification" },
   });
   const filesToRemove = files.map((f) => f.file_id);
   dispatch(removeFilesFromCart(filesToRemove));
@@ -190,6 +195,7 @@ export const showCartOverLimitNotification = (numFilesInCart: number): void => {
     classNames: {
       description: "flex flex-col content-center text-center",
     },
+    closeButtonProps: { "aria-label": "Close notification" },
   });
 };
 
@@ -215,6 +221,7 @@ export const addToCart = (
       classNames: {
         description: "flex flex-col content-center text-center",
       },
+      closeButtonProps: { "aria-label": "Close notification" },
     });
   }
 };
@@ -242,7 +249,7 @@ export const AddToCartButton: React.FC<CartButtonProps> = ({
     </ActionIcon>
   ) : (
     <Button
-      className="font-medium text-sm text-primary bg-base-max hover:bg-primary-darkest hover:text-primary-contrast-darker"
+      className={`font-medium text-sm text-primary bg-base-max hover:bg-primary-darkest hover:text-primary-contrast-darker ${focusStyles}`}
       onClick={() => addToCart(files, currentCart, dispatch)}
       variant="outline"
     >
@@ -272,7 +279,7 @@ export const RemoveFromCartButton: React.FC<CartButtonProps> = ({
   ) : (
     <Button
       onClick={() => removeFromCart(files, currentCart, dispatch)}
-      className="font-medium text-sm text-primary bg-base-max hover:bg-primary-darkest hover:text-primary-contrast-darker"
+      className={`font-medium text-sm text-primary bg-base-max hover:bg-primary-darkest hover:text-primary-contrast-darker ${focusStyles}`}
       variant="outline"
     >
       <CartIcon className="mr-2" />

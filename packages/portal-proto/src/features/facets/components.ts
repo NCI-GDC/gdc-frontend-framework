@@ -18,6 +18,10 @@ export const FacetText = tw.div`
 text-primary-contrast-darker font-heading font-semibold text-[1.25em] break-words py-2
 `;
 
+export const FacetLabelText = tw.label`
+text-primary-contrast-darker font-heading font-semibold text-[1.25em] break-words py-2
+`;
+
 export const FacetHeader = tw.div`
 flex items-start justify-between flex-nowrap bg-primary-darker px-2
 `;

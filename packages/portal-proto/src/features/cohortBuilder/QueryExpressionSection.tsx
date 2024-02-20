@@ -10,6 +10,11 @@ import { omit } from "lodash";
 import { useCoreDispatch, clearCohortFilters, FilterSet } from "@gff/core";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { convertFilterToComponent } from "./QueryRepresentation";
+import { Tooltip } from "@mantine/core";
+import {
+  getCombinedClassesExpandCollapseQuery,
+  getCombinedClassesForRowCollapse,
+} from "./style";
 
 const QueryExpressionContainer = tw.div`
   flex
@@ -179,69 +184,85 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                 Clear All
               </button>
               <div className="display flex gap-2 ml-auto mr-3">
-                <button
-                  data-testid="button-expand-collapse-cohort-queries"
-                  color="white"
-                  onClick={() =>
-                    allQueryExpressionsCollapsed
-                      ? setExpandedState({
-                          type: "expandAll",
-                          cohortId: currentCohortId,
-                        })
-                      : setExpandedState({
-                          type: "collapseAll",
-                          cohortId: currentCohortId,
-                        })
+                <Tooltip
+                  label={
+                    noFilters
+                      ? "No values to expand/collapse"
+                      : allQueryExpressionsCollapsed
+                      ? "Expand all values"
+                      : "Collapse all values"
                   }
-                  aria-label="Expand/collapse all queries"
-                  aria-expanded={!allQueryExpressionsCollapsed}
-                  className={`${
-                    allQueryExpressionsCollapsed
-                      ? "text-primary"
-                      : "text-base-max"
-                  } disabled:pointer-events-none hover:bg-primary-darkest hover:text-primary-content-lightest hover:border-primary-darkest flex gap-0 items-center border-1 border-white rounded-md w-7 h-7 ${
-                    allQueryExpressionsCollapsed ? "bg-white" : "bg-transparent"
-                  }`}
-                  disabled={noFilters}
                 >
-                  {allQueryExpressionsCollapsed ? (
-                    <>
-                      <LeftArrowIcon size={16} />
-                      <RightArrowIcon size={16} />
-                    </>
-                  ) : (
-                    <>
-                      <RightArrowIcon size={16} />
-                      <LeftArrowIcon size={16} />
-                    </>
-                  )}
-                </button>
-                <button
-                  data-testid="button-expand-collapse-cohort-filters-section"
-                  color="white"
-                  onClick={() =>
-                    setFiltersSectionCollapsed(!filtersSectionCollapsed)
+                  <button
+                    data-testid="button-expand-collapse-cohort-queries"
+                    color="white"
+                    onClick={() =>
+                      allQueryExpressionsCollapsed
+                        ? setExpandedState({
+                            type: "expandAll",
+                            cohortId: currentCohortId,
+                          })
+                        : setExpandedState({
+                            type: "collapseAll",
+                            cohortId: currentCohortId,
+                          })
+                    }
+                    aria-label="Expand/collapse all queries"
+                    aria-expanded={!allQueryExpressionsCollapsed}
+                    className={getCombinedClassesExpandCollapseQuery(
+                      allQueryExpressionsCollapsed,
+                    )}
+                    disabled={noFilters}
+                  >
+                    {allQueryExpressionsCollapsed ? (
+                      <>
+                        <LeftArrowIcon size={16} aria-hidden="true" />
+                        <RightArrowIcon size={16} aria-hidden="true" />
+                      </>
+                    ) : (
+                      <>
+                        <RightArrowIcon size={16} aria-hidden="true" />
+                        <LeftArrowIcon size={16} aria-hidden="true" />
+                      </>
+                    )}
+                  </button>
+                </Tooltip>
+
+                <Tooltip
+                  label={
+                    filtersSectionCollapsed
+                      ? numOfRows <= MAX_COLLAPSED_ROWS
+                        ? "All rows are already displayed"
+                        : "Display all rows"
+                      : numOfRows <= MAX_COLLAPSED_ROWS
+                      ? `A maximum of ${MAX_COLLAPSED_ROWS} rows is already displayed`
+                      : `Display a maximum of ${MAX_COLLAPSED_ROWS} rows`
                   }
-                  aria-label="Expand/collapse filters section"
-                  aria-expanded={!filtersSectionCollapsed}
-                  disabled={noFilters || numOfRows <= MAX_COLLAPSED_ROWS}
-                  className={`text-base-max disabled:pointer-events-none disabled:opacity-50 disabled:bg-base-max disabled:text-primary disabled:hover:bg-base-max hover:bg-primary-darkest hover:border-primary-darkest border-1 border-white rounded-md w-7 h-7 flex items-center ${
-                    filtersSectionCollapsed ? "" : "bg-white"
-                  }`}
                 >
-                  {filtersSectionCollapsed ? (
-                    <>
-                      <DownArrowIcon size={30} className="" />
-                    </>
-                  ) : (
-                    <>
-                      <UpArrowIcon
-                        size={30}
-                        className="text-primary hover:text-white "
-                      />
-                    </>
-                  )}
-                </button>
+                  <button
+                    data-testid="button-expand-collapse-cohort-filters-section"
+                    color="white"
+                    onClick={() =>
+                      setFiltersSectionCollapsed(!filtersSectionCollapsed)
+                    }
+                    aria-label="Expand/collapse filters section"
+                    aria-expanded={!filtersSectionCollapsed}
+                    disabled={noFilters || numOfRows <= MAX_COLLAPSED_ROWS}
+                    className={getCombinedClassesForRowCollapse(
+                      filtersSectionCollapsed,
+                    )}
+                  >
+                    {filtersSectionCollapsed ? (
+                      <>
+                        <DownArrowIcon size={30} aria-hidden="true" />
+                      </>
+                    ) : (
+                      <>
+                        <UpArrowIcon size={30} aria-hidden="true" />
+                      </>
+                    )}
+                  </button>
+                </Tooltip>
               </div>
             </>
           </div>

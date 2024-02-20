@@ -10,6 +10,7 @@ const SMTableProteinChange = ({
   shouldLink,
   shouldOpenModal,
   setEntityMetadata,
+  ariaId,
 }: {
   proteinChange: {
     symbol: string;
@@ -19,6 +20,7 @@ const SMTableProteinChange = ({
   shouldOpenModal: boolean;
   shouldLink: boolean;
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
+  ariaId?: string;
 }): JSX.Element => {
   const { symbol = "", aaChange = "" } = proteinChange;
   return (
@@ -37,13 +39,20 @@ const SMTableProteinChange = ({
                 })
               }
               label={symbol}
+              ariaId={ariaId}
             />
           ) : shouldLink ? (
-            <Link href={`/genes/${proteinChange.geneId}`}>
-              <a className="text-utility-link underline">{symbol}</a>
+            <Link
+              href={`/genes/${proteinChange.geneId}`}
+              className="text-utility-link underline"
+              id={ariaId}
+            >
+              {symbol}
             </Link>
           ) : (
-            <span className="mx-0.5">{symbol}</span>
+            <span className="mx-0.5" id={ariaId}>
+              {symbol}
+            </span>
           )}
           <Tooltip label={aaChange}>
             <span className={`${aaChange !== "" && "mx-0.5"}`}>

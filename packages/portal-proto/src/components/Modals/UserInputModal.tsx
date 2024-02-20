@@ -16,6 +16,10 @@ interface UserInputModalProps {
  * Modal that handles displaying the discard changes modal when certain actions are taken
  * (user changes tabs, tries to closes the modal, etc) and the user has entered some input.
  * Children should use `UserInputContext` to set when the user has entered input.
+ * @param modalTitle - title of the modal
+ * @param children - children to render in the modal
+ * @param tabs - tabs to render in the modal
+ * @category Modals
  */
 const UserInputModal: React.FC<UserInputModalProps> = ({
   modalTitle,

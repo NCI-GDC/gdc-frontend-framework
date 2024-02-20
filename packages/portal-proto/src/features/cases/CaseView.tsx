@@ -23,7 +23,7 @@ import {
   formatDataForHorizontalTable,
   mapGdcFileToCartFile,
 } from "../files/utils";
-import { allFilesInCart, fileInCart, humanify } from "src/utils";
+import { allFilesInCart, fileInCart, focusStyles, humanify } from "src/utils";
 import CategoryTableSummary from "@/components/Summary/CategoryTableSummary";
 import { ClinicalSummary } from "./ClinicalSummary/ClinicalSummary";
 import fileSize from "filesize";
@@ -122,8 +122,11 @@ export const CaseView: React.FC<CaseViewProps> = ({
       case_uuid: case_id,
       case_id: submitter_id,
       project: (
-        <Link href={`/projects/${project_id}`}>
-          <a className="underline text-utility-link"> {project_id}</a>
+        <Link
+          href={`/projects/${project_id}`}
+          className="underline text-utility-link"
+        >
+          {project_id}
         </Link>
       ),
       project_name,
@@ -147,6 +150,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
             offset={-2}
           >
             <div className="pt-0.5">
+              {/* This needs both passHref and legacyBehavior: https://nextjs.org/docs/pages/api-reference/components/link#if-the-child-is-a-functional-component */}
               <Link
                 href={`/image-viewer/MultipleImageViewerPage?caseId=${case_id}`}
                 passHref
@@ -170,7 +174,6 @@ export const CaseView: React.FC<CaseViewProps> = ({
                   ? "bg-primary text-base-max"
                   : "text-primary bg-base-max"
               }`}
-              aria-label="cart icon button"
               onClick={() => {
                 isAllImagesFilesInCart
                   ? removeFromCart(
@@ -185,7 +188,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
                     );
               }}
             >
-              <FaShoppingCart size={12} aria-label="cart icon" />
+              <FaShoppingCart size={12} aria-label="Cart" />
             </ActionIcon>
           </Tooltip>
         </div>
@@ -238,10 +241,11 @@ export const CaseView: React.FC<CaseViewProps> = ({
         id: "file_name",
         header: "File Name",
         cell: ({ row }) => (
-          <Link href={`/files/${row.original.file_id}`}>
-            <a className="text-utility-link underline">
-              {row.original.file_name}
-            </a>
+          <Link
+            href={`/files/${row.original.file_id}`}
+            className="text-utility-link underline"
+          >
+            {row.original.file_name}
           </Link>
         ),
       }),
@@ -303,11 +307,13 @@ export const CaseView: React.FC<CaseViewProps> = ({
       {getAnnotationsLinkParams(annotationCountData, case_id) ? (
         <Link
           href={getAnnotationsLinkParams(annotationCountData, case_id)}
-          passHref
+          className="underline"
+          target="_blank"
+          aria-label={`${annotationsCountTotal.toLocaleString()} Annotation${
+            annotationsCountTotal > 1 ? "s" : ""
+          }`}
         >
-          <a className="underline" target="_blank">
-            {annotationsCountTotal.toLocaleString()}
-          </a>
+          {annotationsCountTotal.toLocaleString()}
         </Link>
       ) : (
         annotationsCountTotal.toLocaleString()
@@ -362,7 +368,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
         leftElement={
           <Button
             leftIcon={<FaShoppingCart />}
-            className="text-primary bg-base-max hover:bg-primary-darkest hover:text-base-max"
+            className={`text-primary bg-base-max hover:bg-primary-darkest hover:text-base-max ${focusStyles}`}
             onClick={() =>
               isAllFilesInCart
                 ? removeFromCart(

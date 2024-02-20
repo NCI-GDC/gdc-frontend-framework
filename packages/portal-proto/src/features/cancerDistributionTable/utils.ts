@@ -86,7 +86,7 @@ export const handleTSVDownload = (
           },
         }),
         ...(isGene && {
-          "#_cnv_loss": {
+          "#_cnv_losses": {
             composer: (cancerDistributionData: CancerDistributionDataType) =>
               `${cancerDistributionData.cnv_losses.numerator || 0} / ${
                 cancerDistributionData.cnv_losses.denominator || 0

@@ -1,6 +1,6 @@
 import Link, { LinkProps } from "next/link";
-import { HomepageButton } from "./index";
 import { Image } from "@/components/Image";
+import { homepageButtonClass } from ".";
 
 interface HPCardImgProps {
   head: string;
@@ -30,11 +30,11 @@ const HPCardImg = ({
           {head}
         </h2>
         <div className="py-1 space-y-6 max-w-4xl pb-4">{body}</div>
-        <Link href={href} passHref>
-          <HomepageButton>{linkText}</HomepageButton>
+        <Link href={href} className={homepageButtonClass}>
+          {linkText}
         </Link>
       </div>
-      <div className="w-1/2 relative h-[334px]">
+      <div className="w-1/2 m-auto">
         <Image
           alt={imgProps.alt}
           src={imgProps.src}

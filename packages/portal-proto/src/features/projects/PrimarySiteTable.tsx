@@ -225,6 +225,7 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
       }}
       showControls={true}
       handleChange={handleChange}
+      baseZIndex={300}
       getRowId={getRowId}
     />
   );

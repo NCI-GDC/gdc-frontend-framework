@@ -14,7 +14,7 @@ import {
 } from "@mantine/core";
 import {
   selectCurrentCohortFilters,
-  setShouldResetEdgesState,
+  resetEdgesState,
   useCoreDispatch,
   useCoreSelector,
   useImageViewer,
@@ -79,7 +79,7 @@ export const MultipleImageViewer = ({
 
   useEffect(() => {
     return () => {
-      dispatch(setShouldResetEdgesState());
+      dispatch(resetEdgesState());
     };
   }, [dispatch]);
 
@@ -105,7 +105,7 @@ export const MultipleImageViewer = ({
 
   const removeFilters = (filter: string) => {
     setSearchValues(searchValues.filter((value) => value !== filter));
-    dispatch(setShouldResetEdgesState());
+    dispatch(resetEdgesState());
     resetStates();
   };
 
@@ -119,7 +119,7 @@ export const MultipleImageViewer = ({
   };
 
   const performSearch = () => {
-    dispatch(setShouldResetEdgesState());
+    dispatch(resetEdgesState());
     setShowMorePressed(false);
     setSearchValues([searchText.toUpperCase().trim(), ...searchValues]);
     setSearchText("");

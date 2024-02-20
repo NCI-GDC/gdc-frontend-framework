@@ -37,10 +37,10 @@ const SMTableSurvival = ({
 
   return (
     <ToggledCheck
-      ariaText={`Toggle survival plot for ${proteinChange} mutation`}
+      ariaText={`Toggle survival plot for ${proteinChange.symbol} ${proteinChange.aaChange} mutation`}
       margin="ml-0.5"
       isActive={survival?.checked}
-      icon={<SurvivalIcon size={24} />}
+      icon={<SurvivalIcon size={24} aria-hidden="true" />}
       survivalProps={{ plot: "gene.ssm.ssm_id" }}
       selected={survival as unknown as Record<string, string>} // need to fix this
       disabled={disabled}

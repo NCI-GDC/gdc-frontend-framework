@@ -17,7 +17,7 @@ class GenericLocators:
     LOADING_SPINNER_TABLE = '[data-testid="loading-spinner-table"] >> nth=0'
 
     # This locator allows you to send in a specific case count and check if it is there
-    COHORT_BAR_CASE_COUNT = lambda case_count: f'[aria-label="expand or collapse container"] >> text="{case_count}"'
+    COHORT_BAR_CASE_COUNT = lambda case_count: f'[data-testid="expandcollapseButton"] >> text="{case_count}"'
     # This locator allows you to grab the case count text for further testing
     TEXT_COHORT_BAR_CASE_COUNT = f'[data-testid="expandcollapseButton"] >> span[class="pr-1 font-bold"]'
     CART_IDENT = '[data-testid="cartLink"]'
@@ -31,9 +31,9 @@ class GenericLocators:
     SEARCH_BAR_ARIA_IDENT = lambda aria_label: f'[aria-label="{aria_label}"]'
     SEARCH_BAR_TABLE_IDENT = '[data-testid="textbox-table-search-bar"] >> nth=0'
     QUICK_SEARCH_BAR_IDENT = '[data-testid="textbox-quick-search-bar"]'
-    QUICK_SEARCH_BAR_FIRST_RESULT = '[data-testid="list"] >> [data-testid="list-item"] >> nth=0'
-    QUICK_SEARCH_BAR_NUMBERED_RESULT = lambda result_in_list: f'[data-testid="list"] >> [data-testid="list-item"] >> nth={result_in_list}'
-    QUICK_SEARCH_BAR_RESULT_ABBREVIATION = lambda result_in_list, abbreviation: f'[data-testid="list"] >> [data-testid="list-item"] >> nth={result_in_list} >> text="{abbreviation}"'
+    QUICK_SEARCH_BAR_FIRST_RESULT = '[data-testid="text-search-result"] >> nth=0'
+    QUICK_SEARCH_BAR_NUMBERED_RESULT = lambda result_in_list: f'[data-testid="text-search-result"] >> nth={result_in_list}'
+    QUICK_SEARCH_BAR_RESULT_ABBREVIATION = lambda result_in_list, abbreviation: f'[data-testid="text-search-result"] >> nth={result_in_list} >> text="{abbreviation}"'
 
     RADIO_BUTTON_IDENT = lambda radio_name: f'//input[@id="{radio_name}"]'
     CHECKBOX_IDENT = lambda checkbox_id: f'//input[@data-testid="checkbox-{checkbox_id}"]'
@@ -46,11 +46,14 @@ class GenericLocators:
     BUTTON_BY_DISPLAYED_TEXT = lambda button_text_name: f'button:has-text("{button_text_name}") >> nth=0'
     BUTTON_IN_MODAL_BY_DISPLAYED_TEXT = lambda button_text_name: f'section[role="dialog"] >> button:has-text("{button_text_name}") >> nth=0'
     BUTTON_A_BY_TEXT_IDENT = lambda button_text_name: f'a:has-text("{button_text_name}") >> nth=0'
+    BUTTON_IN_FOOTER_BY_TEXT_IDENT = lambda button_text_name: f'footer >> a:has-text("{button_text_name}") >> nth=0'
 
     TABLE_TEXT_IDENT = lambda table_name, table_text: f'[data-testid="table-{table_name}"] >> text="{table_text}"'
     TABLE_AREA_TO_SELECT = lambda row, column: f'tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0'
     TABLE_TEXT_TO_WAIT_FOR = lambda text, row, column: f'tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0 >> text="{text}"'
     TEXT_TABLE_HEADER = lambda column: f'tr > th:nth-child({column}) >> nth=0'
+    TEXT_DROPDOWN_MENU_OPTION = lambda dropdown_option: f'[data-testid="dropdown-menu-options"] >> text="{dropdown_option}"'
+    BUTTON_TEXT_DROPDOWN_MENU_OPTION = lambda dropdown_option: f'[data-testid="dropdown-menu-options"] >> text="{dropdown_option}" >> ..'
 
     BUTTON_COLUMN_SELECTOR = '[data-testid="button-column-selector-box"]'
     SWITCH_COLUMN_SELECTOR = lambda switch_name: f'[data-testid="column-selector-popover-modal"] >> [data-testid="column-selector-row-{switch_name}"] label div >> nth=0'
@@ -88,6 +91,9 @@ class BasePage:
 
     def get_attribute(self, locator, name: str):
         return self.driver.locator(locator).get_attribute(name)
+
+    def get_count(self, locator):
+        return self.driver.locator(locator).count()
 
     def is_checked(self, locator):
         return self.driver.locator(locator).is_checked()
@@ -304,6 +310,11 @@ class BasePage:
         is_button_disabled = self.is_disabled(locator)
         return is_button_disabled
 
+    def is_dropdown_option_text_button_disabled(self, dropdown_text_option):
+        locator = GenericLocators.BUTTON_TEXT_DROPDOWN_MENU_OPTION(dropdown_text_option)
+        is_button_disabled = self.is_disabled(locator)
+        return is_button_disabled
+
     def is_facet_card_enum_checkbox_checked(self, checkbox_id):
         """Returns if a filter card enum checkbox is checked"""
         locator = GenericLocators.CHECKBOX_IDENT(checkbox_id)
@@ -366,6 +377,11 @@ class BasePage:
         locator = GenericLocators.BUTTON_A_BY_TEXT_IDENT(button_text_name)
         self.click(locator)
 
+    def click_footer_button_ident_with_displayed_text_name(self, button_text_name):
+        """Clicks a button in the footer based on its displayed text"""
+        locator = GenericLocators.BUTTON_IN_FOOTER_BY_TEXT_IDENT(button_text_name)
+        self.click(locator)
+
     def click_link_data_testid(self, link_data_testid):
         """Clicks a link with a data-testid"""
         link_data_testid = self.normalize_button_identifier(link_data_testid)
@@ -395,6 +411,11 @@ class BasePage:
     def click_create_or_save_button_in_cohort_modal(self):
         """Clicks 'Create' or 'Save' in cohort modal"""
         locator = GenericLocators.CREATE_OR_SAVE_COHORT_MODAL_BUTTON
+        self.click(locator)
+
+    def click_text_option_from_dropdown_menu(self, dropdown_option):
+        """Clicks a text option from a dropdown menu"""
+        locator = GenericLocators.TEXT_DROPDOWN_MENU_OPTION(dropdown_option)
         self.click(locator)
 
     def clear_active_cohort_filters(self):
@@ -498,7 +519,7 @@ class BasePage:
         """
         sources = {
             "Home Page": self.click_button_ident_a_with_displayed_text_name,
-            "Footer": self.click_button_ident_a_with_displayed_text_name
+            "Footer": self.click_footer_button_ident_with_displayed_text_name
         }
         driver = WebDriver.page
         with driver.context.expect_page() as tab:

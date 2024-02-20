@@ -86,6 +86,7 @@ const CartDownloadModal = ({
             setActive(false);
           }}
           color="primary"
+          className="hover:bg-primary-darker"
         >
           Cancel
         </Button>

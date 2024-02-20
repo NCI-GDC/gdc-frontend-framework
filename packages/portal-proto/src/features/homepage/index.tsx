@@ -1,4 +1,3 @@
-import tw from "tailwind-styled-components";
 import HorizontalSummaryTotalsPanel from "@/features/homepage/HorizontalSummaryTotalsPanel";
 import { Bodyplot } from "@/features/homepage/Bodyplot";
 import HPCard from "./HPCard";
@@ -8,7 +7,7 @@ import { useTotalCounts } from "@gff/core";
 import { Image } from "@/components/Image";
 import Link from "next/link";
 
-export const HomepageButton = tw.a`
+export const homepageButtonClass = `
 bg-primary text-sm text-base-max border-base-light border-0
 hover:bg-primary-darker hover:text-primary-darker-contrast
 font-medium font-heading rounded mt-4 px-4 py-3 w-fit inline-block cursor-pointer
@@ -41,9 +40,9 @@ const Homepage = (): JSX.Element => {
               query: { app: undefined },
             }}
             data-testid="button-homepage-explore-datasets"
-            passHref
+            className={homepageButtonClass}
           >
-            <HomepageButton>Explore Our Cancer Datasets</HomepageButton>
+            Explore Our Cancer Datasets
           </Link>
           <HorizontalSummaryTotalsPanel />
           <div className="py-10" />
@@ -120,9 +119,8 @@ const Homepage = (): JSX.Element => {
           imgProps={{
             src: "/homepage/data-explorer.png",
             alt: "Skewed representation of data explorer",
-            width: 696,
-            height: 469,
-            objectPosition: "top -54px right 94px",
+            width: 556,
+            height: 264,
           }}
         />
         <div className="mb-10 flex justify-center">
@@ -172,8 +170,9 @@ const Homepage = (): JSX.Element => {
                   pathname: "/analysis_page",
                   query: { app: undefined },
                 }}
+                className={homepageButtonClass}
               >
-                <HomepageButton>Explore More Tools</HomepageButton>
+                Explore More Tools
               </Link>
             </div>
           </div>

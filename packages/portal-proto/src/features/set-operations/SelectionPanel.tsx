@@ -1,4 +1,5 @@
-import React, { useMemo, useEffect, useState } from "react";
+// This table can be found at /analysis_page?app=SetOperations
+import React, { useMemo, useEffect, useState, useId } from "react";
 import { shallowEqual } from "react-redux";
 import Link from "next/link";
 import { Checkbox, Tooltip } from "@mantine/core";
@@ -61,6 +62,7 @@ interface SelectCellProps {
   readonly selectedEntityType: SetOperationEntityType;
   readonly setSelectedEntities: (entities: SelectedEntities) => void;
   readonly setSelectedEntityType: (type: SetOperationEntityType) => void;
+  readonly componentId: string;
 }
 
 const SelectCell: React.FC<SelectCellProps> = ({
@@ -73,6 +75,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
   selectedEntityType,
   setSelectedEntities,
   setSelectedEntityType,
+  componentId,
 }: SelectCellProps) => {
   return (
     <Tooltip
@@ -103,7 +106,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
             );
             setSelectedEntityType(entityType);
           }}
-          aria-labelledby={`${entityType}-selection-${setId}`}
+          aria-labelledby={`${componentId}-${entityType}-selection-${setId}`}
         />
       </span>
     </Tooltip>
@@ -158,7 +161,6 @@ interface SelectionPanelProps {
 }
 
 const SelectionPanel: React.FC<SelectionPanelProps> = ({
-  app,
   setActiveApp,
   setOpen,
   selectedEntities,
@@ -166,6 +168,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
   selectedEntityType,
   setSelectedEntityType,
 }: SelectionPanelProps) => {
+  const componentId = useId();
   const [sortBy, setSortBy] = useState<SortingState>([]);
   const geneSets = useCoreSelector((state) => selectSetsByType(state, "genes"));
   const mutationSets = useCoreSelector((state) =>
@@ -275,6 +278,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
               setSelectedEntities={setSelectedEntities}
               setSelectedEntityType={setSelectedEntityType}
               key={`${entityTypes}-select-${row.original.setId}`}
+              componentId={componentId}
             />
           );
         },
@@ -304,8 +308,8 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
         id: "name",
         header: "Name",
         cell: ({ getValue, row }) => (
-          <label
-            id={`${row.original.entity_type}-selection-${
+          <span
+            id={`${componentId}-${row.original.entity_type}-selection-${
               (row.original as Record<string, any>).setId
             }`}
             className={
@@ -321,7 +325,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
             }
           >
             {getValue()}
-          </label>
+          </span>
         ),
       }),
       setSelectionPanelColumnHelper.accessor("count", {
@@ -352,6 +356,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
       setSelectedEntities,
       setSelectedEntityType,
       setSelectionPanelColumnHelper,
+      componentId,
     ],
   );
 
@@ -393,16 +398,18 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
         </p>
         <p className="pb-2 font-content">
           Create cohorts in the Analysis Center. Create gene/mutation sets in{" "}
-          <Link href="/manage_sets">
-            <a className="text-utility-link font-content underline">
-              Manage Sets
-            </a>
+          <Link
+            href="/manage_sets"
+            className="text-utility-link font-content underline"
+          >
+            Manage Sets
           </Link>{" "}
           or in analysis tools (e.g.{" "}
-          <Link href="/analysis_page?app=MutationFrequencyApp">
-            <a className="text-utility-link font-content underline">
-              Mutation Frequency
-            </a>
+          <Link
+            href="/analysis_page?app=MutationFrequencyApp"
+            className="text-utility-link font-content underline"
+          >
+            Mutation Frequency
           </Link>
           ).
         </p>
@@ -429,17 +436,6 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
         </div>
       </div>
       <div className="flex flex-row justify-end w-full sticky bottom-0 bg-base-lightest py-2 px-4">
-        <FunctionButton
-          className="mr-auto"
-          onClick={() => {
-            setSelectedEntityType(undefined);
-            setSelectedEntities([]);
-            setActiveApp(app, true);
-            setOpen(false);
-          }}
-        >
-          Demo
-        </FunctionButton>
         <FunctionButton
           className="mr-4"
           onClick={() => {

@@ -58,8 +58,8 @@ describe("<ProjectCohortButton />", () => {
       }),
     );
 
-    // this button is in SaveOrCreateCohortModal
-    await userEvent.type(getByTestId("input-field"), "New Cohort");
+    // this button is in SaveCohortModal
+    await userEvent.type(getByTestId("textbox-name-input-field"), "New Cohort");
     await userEvent.click(getByTestId("action-button"));
     expect(mockMutation).toBeCalledWith({
       cohort: {
@@ -75,7 +75,7 @@ describe("<ProjectCohortButton />", () => {
             },
           ],
         },
-        type: "static",
+        type: "dynamic",
         name: "New Cohort",
       },
       delete_existing: false,

@@ -37,6 +37,15 @@ export const IconWrapper = tw.span`
   p-1
 `;
 
+/**
+ * Props for the CohortCreationButton component
+ * @category Buttons
+ * @interface
+ * @property label - the text label
+ * @property numCases - the number of cases in the cohort
+ * @property filters - the filters to use for the cohort
+ * @property filtersCallback - a callback to create the filters
+ */
 interface CohortCreationButtonProps {
   readonly label: ReactNode;
   readonly numCases: number;
@@ -44,6 +53,14 @@ interface CohortCreationButtonProps {
   readonly filtersCallback?: () => Promise<FilterSet>;
 }
 
+/**
+ * Button to create a new cohort
+ * @param label - the text label
+ * @param numCases - the number of cases in the cohort
+ * @param filters - the filters to use for the cohort
+ * @param filtersCallback - a callback to create the filters
+ * @category Buttons
+ */
 const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
   label,
   numCases,
@@ -54,6 +71,11 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
   const [cohortFilters, setCohortFilters] = useState<FilterSet>(filters);
   const [loading, setLoading] = useState(false);
   const disabled = numCases === undefined || numCases === 0;
+  const tooltipText = disabled
+    ? "No cases available"
+    : `Save a new cohort of ${
+        numCases > 1 ? `these ${numCases.toLocaleString()} cases` : "this case"
+      }`;
 
   return (
     <div className="p-1">
@@ -77,6 +99,7 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
         withArrow
       >
         <CohortCreationStyledButton
+          data-testid="button-save-filtered-cohort"
           onClick={async () => {
             if (filtersCallback) {
               setLoading(true);
@@ -88,6 +111,7 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
           }}
           disabled={disabled || loading}
           $fullWidth={React.isValidElement(label)} // if label is JSX.Element take the full width
+          aria-label={tooltipText}
         >
           <IconWrapper $disabled={disabled} aria-hidden="true">
             {loading ? (

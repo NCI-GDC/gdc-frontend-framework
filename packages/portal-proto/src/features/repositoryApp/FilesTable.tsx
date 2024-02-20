@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, useMemo, useCallback } from "react";
+import { useState, useContext, useEffect, useMemo } from "react";
 import { capitalize, isEqual } from "lodash";
 import fileSize from "filesize";
 import { SingleItemAddToCartButton } from "../cart/updateCart";
@@ -69,6 +69,7 @@ const FilesTables: React.FC = () => {
   const [sortBy, setSortBy] = useState<SortBy[]>([]);
   const [pageSize, setPageSize] = useState(20);
   const [offset, setOffset] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const repositoryFilters = useAppSelector((state) => selectFilters(state));
   const cohortFilters = useCoreSelector((state) =>
@@ -76,6 +77,38 @@ const FilesTables: React.FC = () => {
   );
   const allFilters = joinFilters(cohortFilters, repositoryFilters);
   const prevAllFilters = usePrevious(allFilters);
+
+  // TODO fix filters
+  const buildSearchFilters = (term: string): Operation => {
+    return {
+      operator: "or",
+      operands: [
+        {
+          operator: "=",
+          field: "files.file_name",
+          operand: `*${term}*`,
+        },
+        {
+          operator: "=",
+          field: "files.file_id",
+          operand: `*${term}*`,
+        },
+      ],
+    };
+  };
+
+  const updateFilter = useUpdateRepositoryFacetFilter();
+  const removeFilter = useRemoveRepositoryFacetFilter();
+
+  useEffect(() => {
+    if (searchTerm.length > 0)
+      updateFilter("joinOrToAllfilesSearch", buildSearchFilters(searchTerm));
+    else {
+      removeFilter("joinOrToAllfilesSearch");
+    }
+
+    return () => removeFilter("joinOrToAllfilesSearch");
+  }, [searchTerm, updateFilter, removeFilter]);
 
   useEffect(() => {
     if (!isEqual(prevAllFilters, allFilters)) {
@@ -113,38 +146,6 @@ const FilesTables: React.FC = () => {
     });
     setSortBy(tempSortBy);
   };
-  // TODO fix filters
-  const buildSearchFilters = (term: string): Operation => {
-    return {
-      operator: "or",
-      operands: [
-        {
-          operator: "=",
-          field: "files.file_name",
-          operand: `*${term}*`,
-        },
-        {
-          operator: "=",
-          field: "files.file_id",
-          operand: `*${term}*`,
-        },
-      ],
-    };
-  };
-
-  const updateFilter = useUpdateRepositoryFacetFilter();
-  const removeFilter = useRemoveRepositoryFacetFilter();
-  const newSearchActions = useCallback(
-    (searchTerm: string) => {
-      //TODO if lots of calls fast last call might not be displayed
-      if (searchTerm.length > 0)
-        updateFilter("joinOrToAllfilesSearch", buildSearchFilters(searchTerm));
-      else {
-        removeFilter("joinOrToAllfilesSearch");
-      }
-    },
-    [removeFilter, updateFilter],
-  );
 
   const [formattedTableData, tempPagination] = useMemo(() => {
     if (!isFetching && isSuccess) {
@@ -313,14 +314,10 @@ const FilesTables: React.FC = () => {
             {getAnnotationsLinkParamsFromFiles(row.original.file) ? (
               <Link
                 href={getAnnotationsLinkParamsFromFiles(row.original.file)}
-                passHref
+                className="text-utility-link underline font-content"
+                target="_blank"
               >
-                <a
-                  className="text-utility-link underline font-content"
-                  target="_blank"
-                >
-                  {row.original.annotations.length}
-                </a>
+                {row.original.annotations.length}
               </Link>
             ) : (
               row.original?.annotations?.length ?? 0
@@ -349,7 +346,7 @@ const FilesTables: React.FC = () => {
         break;
       case "newSearch":
         setOffset(0);
-        newSearchActions(obj.newSearch);
+        setSearchTerm(obj.newSearch);
         break;
     }
   };
@@ -359,7 +356,8 @@ const FilesTables: React.FC = () => {
       endpoint: "files",
       method: "POST",
       params: {
-        filters: buildCohortGqlOperator(allFilters) ?? {},
+        case_filters: buildCohortGqlOperator(cohortFilters) ?? {},
+        filters: buildCohortGqlOperator(repositoryFilters) ?? {},
         size: 10000,
         attachment: true,
         format: "JSON",
@@ -450,7 +448,7 @@ const FilesTables: React.FC = () => {
           : "File"}
       </div>
       <div>
-        <MdPerson className="ml-2 mr-1 mb-1 inline-block" />
+        <MdPerson className="ml-2 mr-1 mb-1 inline-block" aria-hidden="true" />
         <strong className="mr-1">{totalCaseCount}</strong>
         {fileSizeSliceData?.data?.total_case_count > 1 ||
         fileSizeSliceData?.data?.total_case_count === 0
@@ -458,7 +456,7 @@ const FilesTables: React.FC = () => {
           : "Case"}
       </div>
       <div>
-        <MdSave className="ml-2 mr-1 mb-1 inline-block" />
+        <MdSave className="ml-2 mr-1 mb-1 inline-block" aria-hidden="true" />
         {totalFileSize}
       </div>
     </div>

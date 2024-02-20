@@ -22,6 +22,10 @@ jest.mock("@gff/core", () => ({
     nullFunction,
     resultsCreateCaseSet,
   ],
+  useGetCohortsByContextIdQuery: jest
+    .fn()
+    .mockReturnValue({ data: [], isSuccess: true, isLoading: false }),
+  useLazyGetCohortByIdQuery: jest.fn().mockReturnValue([jest.fn()]),
 }));
 
 jest.mock("@/hooks/useIsDemoApp", () => ({
@@ -59,6 +63,26 @@ test("OncoMatrix arguments", () => {
   expect(runpparg.filter0).toEqual(filter);
   isDemoMode = true;
   rerender(
+    <MantineProvider
+      theme={{
+        colors: {
+          primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+          base: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+        },
+      }}
+    >
+      <OncoMatrixWrapper />
+    </MantineProvider>,
+  );
+  // there should be only one runpp instance when switching to this tool,
+  // so the arg key-values should not change on rerender
+  expect(runpparg.filter0).toEqual(filter);
+  unmount();
+});
+
+test("OncoMatrix demo filter0", () => {
+  isDemoMode = true;
+  const { unmount } = render(
     <MantineProvider
       theme={{
         colors: {

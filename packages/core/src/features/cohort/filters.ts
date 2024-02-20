@@ -29,8 +29,9 @@ import { isEqual } from "lodash";
  * manages: as an Object where the key is the field name
  * and the value is the Filter Operation
  *
- * @param root - root Objects of all of the filters
- * @param mode - Root level set operation for the filters
+ * @property root - root Objects of all the filters
+ * @property mode - Root level set operation for the filters
+ * @category Filters
  */
 export interface FilterSet {
   readonly root: Record<string, Operation>;
@@ -40,6 +41,7 @@ export interface FilterSet {
 /**
  * Return true if a FilterSet's root value is an empty object
  * @param fs - FilterSet to test
+ * @category Filters
  */
 export const isFilterSetRootEmpty = (fs: FilterSet): boolean =>
   isEqual({}, fs.root);

@@ -125,6 +125,7 @@ const FacetSelectionPanel = ({
     <div className="flex flex-col" data-testid="section-file-filter-search">
       <TextInput
         label="Search for a property"
+        data-testid="textbox-search-for-a-property"
         placeholder="search"
         value={searchString}
         rightSection={
@@ -132,16 +133,17 @@ const FacetSelectionPanel = ({
             <UnstyledButton
               className="opacity-100"
               onClick={() => setSearchString("")}
+              aria-label="Clear Search"
             >
               x
             </UnstyledButton>
           ) : null
         }
         onChange={(evt) => setSearchString(evt.target.value)}
-        aria-label="Search for a property"
+        type="search"
       />
       <Group position="apart">
-        <p>
+        <p role="status">
           {filteredData ? Object.values(filteredData).length : ""} properties
         </p>
         <Checkbox

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useDeepCompareEffect } from "use-deep-compare";
 import { CollapsibleContainer } from "@/components/CollapsibleContainer";
 import { Loader, Tabs } from "@mantine/core";
 import { ContextualCasesView } from "../cases/CasesView/CasesView";
@@ -39,6 +40,7 @@ import {
   SAMPLE_SHEET_FIELDS,
 } from "./utils";
 import StickyControl from "./StickyControl";
+import { useViewportSize } from "@mantine/hooks";
 
 const ContextBar = ({
   handleIsSticky,
@@ -52,6 +54,7 @@ const ContextBar = ({
   const [summaryFields] = useState(INITIAL_SUMMARY_FIELDS);
   const [activeTab, setActiveTab] = useState<string | null>("summary");
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
+  const { width } = useViewportSize();
 
   /* download active */
   const [downloadManifestActive, setDownloadManifestActive] = useState(false);
@@ -67,7 +70,7 @@ const ContextBar = ({
     selectCurrentCohortId(state),
   );
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (currentCohortId === undefined && cohorts.length > 0) {
       coreDispatch(setActiveCohort(cohorts[0].id));
     }
@@ -248,7 +251,7 @@ const ContextBar = ({
     >
       <div className="flex flex-col bg-nci-violet-lightest">
         <div className="relative p-4">
-          <div className="flex flex-row absolute gap-2">
+          <div className="flex flex-row md:relative md:pb-4 lg:pb-0 lg:absolute gap-2">
             <DropdownWithIcon
               dropdownElements={[
                 {
@@ -287,9 +290,7 @@ const ContextBar = ({
               TargetButtonChildren={
                 <CohortCountButton countName="fileCount" label="Files" />
               }
-              LeftIcon={
-                <DownloadIcon size="1rem" aria-label="Files dropdown" />
-              }
+              LeftIcon={<DownloadIcon size="1rem" aria-hidden="true" />}
             />
 
             <DropdownWithIcon
@@ -317,12 +318,7 @@ const ContextBar = ({
                 },
               ]}
               TargetButtonChildren="Custom Filters"
-              LeftIcon={
-                <CohortFilterIcon
-                  size="1rem"
-                  aria-label="Custom cohort filters"
-                />
-              }
+              LeftIcon={<CohortFilterIcon size="1rem" aria-hidden="true" />}
               menuLabelText="Filter your cohort by:"
               menuLabelCustomClass="font-bold text-primary"
             />
@@ -349,10 +345,7 @@ const ContextBar = ({
                     biospecimenDownloadActive ? (
                       <Loader size={20} />
                     ) : (
-                      <DownloadIcon
-                        size="1rem"
-                        aria-label="Biospecimen dropdown"
-                      />
+                      <DownloadIcon size="1rem" aria-hidden="true" />
                     )
                   }
                 />
@@ -377,10 +370,7 @@ const ContextBar = ({
                     clinicalDownloadActive ? (
                       <Loader size={20} />
                     ) : (
-                      <DownloadIcon
-                        size="1rem"
-                        aria-label="Clinical dropdown"
-                      />
+                      <DownloadIcon size="1rem" aria-hidden="true" />
                     )
                   }
                 />
@@ -399,11 +389,11 @@ const ContextBar = ({
             value={activeTab}
             onTabChange={setActiveTab}
           >
-            <Tabs.List position="right">
+            <Tabs.List position={width < 1024 ? "left" : "right"}>
               <Tabs.Tab
                 data-tour="cohort_summary_charts"
                 value="summary"
-                icon={<SummaryChartIcon />}
+                icon={<SummaryChartIcon aria-hidden="true" />}
               >
                 Summary View
               </Tabs.Tab>
@@ -411,7 +401,7 @@ const ContextBar = ({
               <Tabs.Tab
                 data-tour="cohort_summary_table"
                 value="table"
-                icon={<TableIcon />}
+                icon={<TableIcon aria-hidden="true" />}
               >
                 Table View
               </Tabs.Tab>

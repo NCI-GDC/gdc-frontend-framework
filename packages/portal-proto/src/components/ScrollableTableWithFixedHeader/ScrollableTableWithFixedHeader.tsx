@@ -90,7 +90,6 @@ export const ScrollableTableWithFixedHeader = ({
       mah={tableMaxHeight}
       data-testid="scrolltable"
       type="auto"
-      tabIndex={0}
       onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
       className="border border-base-lighter"
       classNames={{
@@ -102,7 +101,6 @@ export const ScrollableTableWithFixedHeader = ({
         sx={{
           minWidth: tableMinWidth,
         }}
-        tabIndex={0}
       >
         <thead
           className={cx(classes.header, { [classes.scrolled]: scrolled })}
