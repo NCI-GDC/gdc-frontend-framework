@@ -191,7 +191,6 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
       <SaveCohortModal // Show the modal, create a saved cohort when save button is clicked
         onClose={() => setShowSaveCohort(false)}
         opened={showSaveCohort}
-        // opened={showSaveCohort && newCohortFilters} check if newCohortFilters is needed
         filters={newCohortFilters}
       />
 

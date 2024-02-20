@@ -133,10 +133,6 @@ describe("CDaveCard", () => {
   });
 
   it("continuous result with data", () => {
-    // jest.spyOn(core, "useCoreSelector").mockReturnValue({
-    // field: "exposures.cigarettes_per_day",
-    // type: "long",
-    // });
     jest.spyOn(core, "selectFacetDefinitionByName").mockImplementation(
       () =>
         ({
