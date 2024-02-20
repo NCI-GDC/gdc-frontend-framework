@@ -53,8 +53,9 @@ def is_expected_active_cohort_present(cohort_name: str):
 @step("Switch cohort to <cohort_name> from the Cohort Bar dropdown list")
 def select_cohort_from_dropdown(cohort_name: str):
     click_button_on_cohort_bar("Switch")
+    time.sleep(0.5)
     APP.cohort_bar.select_cohort_from_dropdown(cohort_name)
-    time.sleep(2)
+    time.sleep(3)
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
     APP.shared.wait_for_loading_spinner_to_detatch()
     APP.shared.wait_for_loading_spinner_table_to_detatch()
