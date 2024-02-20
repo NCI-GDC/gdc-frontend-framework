@@ -159,7 +159,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 setDownloadActive(true);
                 downloadManifest(cart, setDownloadActive, dispatch);
               }}
-              icon={<DownloadIcon />}
+              icon={<DownloadIcon aria-label="download" />}
             >
               Manifest
             </Menu.Item>
@@ -173,7 +173,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                   dispatch,
                 );
               }}
-              icon={<DownloadIcon />}
+              icon={<DownloadIcon aria-label="download" />}
             >
               Cart
             </Menu.Item>

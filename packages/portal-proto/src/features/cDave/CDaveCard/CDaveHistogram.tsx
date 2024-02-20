@@ -123,7 +123,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                     {downloadInProgress ? (
                       <Loader size={16} />
                     ) : (
-                      <DownloadIcon className="text-primary" />
+                      <DownloadIcon className="text-primary" aria-hidden />
                     )}
                   </ActionIcon>
                 </Tooltip>
