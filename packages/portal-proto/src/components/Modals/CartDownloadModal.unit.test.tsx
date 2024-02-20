@@ -28,7 +28,7 @@ describe("<CartDownloadModal />", () => {
       "2 files that you are not authorized to download.",
     );
     expect(
-      getByRole("button", { name: "Download 1 Authorized File" }),
+      getByRole("button", { name: "download Download 1 Authorized File" }),
     ).toBeInTheDocument();
   });
 
@@ -106,7 +106,7 @@ describe("<CartDownloadModal />", () => {
     );
 
     expect(
-      getByRole("button", { name: "Download 0 Authorized Files" }),
+      getByRole("button", { name: "download Download 0 Authorized Files" }),
     ).toBeDisabled();
   });
 
@@ -125,7 +125,7 @@ describe("<CartDownloadModal />", () => {
     );
 
     const downloadButton = getByRole("button", {
-      name: "Download 1 Authorized File",
+      name: "download Download 1 Authorized File",
     });
     expect(downloadButton).toBeDisabled();
     await UserEvent.click(getByRole("checkbox"));
