@@ -5,12 +5,19 @@ from playwright.sync_api import Page
 from ....base.base_page import BasePage
 from step_impl.apps.gdc_data_portal_v2.pages.header_section import HeaderSectionLocators
 
+
 class AnalysisCenterLocators:
     BUTTON_APP_PLAY_OR_DEMO = lambda app_name: f'[data-testid="button-{app_name}"]'
 
-    SELECT_DESCRIPTION_TOOL = lambda tool_name: f'[data-testid="{tool_name}-tool"] >> [data-testid="select-description-tool"]'
-    TEXT_DESCRIPTION_TOOL = lambda tool_name: f'[data-testid="{tool_name}-tool"] >> [data-testid="text-description-tool"]'
-    TOOLTIP_ZERO_CASES_ON_TOOL_CARD = lambda tool_name: f'[data-testid="{tool_name}-tool"] [data-testid="text-case-count-tool"] svg'
+    SELECT_DESCRIPTION_TOOL = (
+        lambda tool_name: f'[data-testid="{tool_name}-tool"] >> [data-testid="select-description-tool"]'
+    )
+    TEXT_DESCRIPTION_TOOL = (
+        lambda tool_name: f'[data-testid="{tool_name}-tool"] >> [data-testid="text-description-tool"]'
+    )
+    TOOLTIP_ZERO_CASES_ON_TOOL_CARD = (
+        lambda tool_name: f'[data-testid="{tool_name}-tool"] [data-testid="text-case-count-tool"] svg'
+    )
 
     CORE_TOOL_PROJECTS = '[data-testid="button-core-tools-Projects"]'
     CORE_TOOL_COHORT_BUILDER = '[data-testid="button-core-tools-Cohort Builder"]'
@@ -18,8 +25,9 @@ class AnalysisCenterLocators:
 
     ANALYSIS_CENTER_HEADER = '[data-testid="button-header-analysis"]'
 
+
 class AnalysisCenterPage(BasePage):
-    def __init__(self, driver: Page, url:str) -> None:
+    def __init__(self, driver: Page, url: str) -> None:
         self.URL = "{}/analysis_page".format(url)
         self.driver = driver  # driver is PW page
 
@@ -82,7 +90,9 @@ class AnalysisCenterPage(BasePage):
                 self.wait_until_locator_is_visible(location)
                 # Navigate back to the analysis center for the next test
                 self.click(AnalysisCenterLocators.ANALYSIS_CENTER_HEADER, True)
-                self.wait_until_locator_is_visible(HeaderSectionLocators.ANALYSIS_CENTER_WAIT_FOR_ELEMENT)
+                self.wait_until_locator_is_visible(
+                    HeaderSectionLocators.ANALYSIS_CENTER_WAIT_FOR_ELEMENT
+                )
             except:
                 return False
         return True

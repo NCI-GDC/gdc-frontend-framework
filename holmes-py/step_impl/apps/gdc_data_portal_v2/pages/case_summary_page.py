@@ -2,6 +2,8 @@ from playwright.sync_api import Page
 
 from ....base.base_page import BasePage
 from ....base.base_page import GenericLocators
+
+
 class CaseSummaryLocators:
     # Ideally, after PEAR-1085 is developed, these can be replaced with unique IDs
     ADD_TO_CART_BUTTON_IDENT = 'text="Add all files to the cart"'
@@ -12,6 +14,7 @@ class CaseSummaryLocators:
 
     # The first download button in the table of the section "BIOSPECIMEN SUPPLEMENT FILE"
     BIOSPECIMEN_SUPPLEMENT_FILE_DOWNLOAD_FIRST_IDENT = 'h2:has-text("BIOSPECIMEN SUPPLEMENT FILE") >> ..  >> .. >> button:has-text("download") >> nth=0'
+
 
 class CaseSummaryPage(BasePage):
 

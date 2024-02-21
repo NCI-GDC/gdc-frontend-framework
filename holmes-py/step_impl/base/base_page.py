@@ -2,27 +2,41 @@ import time
 
 from typing import List
 from step_impl.base.webdriver import WebDriver
+
+
 class GenericLocators:
     TEXT_IDENT = lambda text: f'text="{text}" >> nth=0'
     TEXT_IN_PARAGRAPH = lambda text: f'p:has-text("{text}") >> nth=0'
 
-    X_BUTTON_IN_TEMP_MESSAGE = '>> .. >> .. >> .. >> svg[xmlns="http://www.w3.org/2000/svg"]'
+    X_BUTTON_IN_TEMP_MESSAGE = (
+        '>> .. >> .. >> .. >> svg[xmlns="http://www.w3.org/2000/svg"]'
+    )
     UNDO_BUTTON_IN_TEMP_MESSAGE = 'span:text("Undo")'
-    SET_AS_CURRENT_COHORT_IN_TEMP_MESSAGE = 'span:text("Set this as your current cohort.")'
+    SET_AS_CURRENT_COHORT_IN_TEMP_MESSAGE = (
+        'span:text("Set this as your current cohort.")'
+    )
 
     BUTTON_CLOSE_MODAL = 'button[aria-label="button-close-modal"]'
 
     LOADING_SPINNER_GENERIC = '[data-testid="loading-spinner"] >> nth=0'
-    LOADING_SPINNER_COHORT_BAR_CASE_COUNT = '[data-testid="loading-spinner-cohort-case-count"] >> nth=0'
+    LOADING_SPINNER_COHORT_BAR_CASE_COUNT = (
+        '[data-testid="loading-spinner-cohort-case-count"] >> nth=0'
+    )
     LOADING_SPINNER_TABLE = '[data-testid="loading-spinner-table"] >> nth=0'
 
     # This locator allows you to send in a specific case count and check if it is there
-    COHORT_BAR_CASE_COUNT = lambda case_count: f'[data-testid="expandcollapseButton"] >> text="{case_count}"'
+    COHORT_BAR_CASE_COUNT = (
+        lambda case_count: f'[data-testid="expandcollapseButton"] >> text="{case_count}"'
+    )
     # This locator allows you to grab the case count text for further testing
-    TEXT_COHORT_BAR_CASE_COUNT = f'[data-testid="expandcollapseButton"] >> span[class="pr-1 font-bold"]'
+    TEXT_COHORT_BAR_CASE_COUNT = (
+        f'[data-testid="expandcollapseButton"] >> span[class="pr-1 font-bold"]'
+    )
     CART_IDENT = '[data-testid="cartLink"]'
 
-    BUTTON_CLEAR_ACTIVE_COHORT_FILTERS = '[data-testid="button-clear-all-cohort-filters"]'
+    BUTTON_CLEAR_ACTIVE_COHORT_FILTERS = (
+        '[data-testid="button-clear-all-cohort-filters"]'
+    )
     TEXT_NO_ACTIVE_COHORT_FILTERS = '[data-testid="text-no-active-cohort-filter"]'
 
     CREATE_OR_SAVE_COHORT_MODAL_BUTTON = '[data-testid="action-button"]'
@@ -32,40 +46,78 @@ class GenericLocators:
     SEARCH_BAR_TABLE_IDENT = '[data-testid="textbox-table-search-bar"] >> nth=0'
     QUICK_SEARCH_BAR_IDENT = '[data-testid="textbox-quick-search-bar"]'
     QUICK_SEARCH_BAR_FIRST_RESULT = '[data-testid="text-search-result"] >> nth=0'
-    QUICK_SEARCH_BAR_NUMBERED_RESULT = lambda result_in_list: f'[data-testid="text-search-result"] >> nth={result_in_list}'
-    QUICK_SEARCH_BAR_RESULT_ABBREVIATION = lambda result_in_list, abbreviation: f'[data-testid="text-search-result"] >> nth={result_in_list} >> text="{abbreviation}"'
+    QUICK_SEARCH_BAR_NUMBERED_RESULT = (
+        lambda result_in_list: f'[data-testid="text-search-result"] >> nth={result_in_list}'
+    )
+    QUICK_SEARCH_BAR_RESULT_ABBREVIATION = (
+        lambda result_in_list, abbreviation: f'[data-testid="text-search-result"] >> nth={result_in_list} >> text="{abbreviation}"'
+    )
 
     RADIO_BUTTON_IDENT = lambda radio_name: f'//input[@id="{radio_name}"]'
-    CHECKBOX_IDENT = lambda checkbox_id: f'//input[@data-testid="checkbox-{checkbox_id}"]'
+    CHECKBOX_IDENT = (
+        lambda checkbox_id: f'//input[@data-testid="checkbox-{checkbox_id}"]'
+    )
 
     DATA_TEST_ID_IDENT = lambda id: f'[data-testid="{id}"]'
-    DATA_TESTID_BUTTON_IDENT = lambda data_testid: f'[data-testid="button-{data_testid}"]'
+    DATA_TESTID_BUTTON_IDENT = (
+        lambda data_testid: f'[data-testid="button-{data_testid}"]'
+    )
     DATA_TESTID_TEXT_IDENT = lambda data_testid: f'[data-testid="text-{data_testid}"]'
     DATA_TESTID_LINK_IDENT = lambda data_testid: f'[data-testid="link-{data_testid}"]'
 
-    BUTTON_BY_DISPLAYED_TEXT = lambda button_text_name: f'button:has-text("{button_text_name}") >> nth=0'
-    BUTTON_IN_MODAL_BY_DISPLAYED_TEXT = lambda button_text_name: f'section[role="dialog"] >> button:has-text("{button_text_name}") >> nth=0'
-    BUTTON_A_BY_TEXT_IDENT = lambda button_text_name: f'a:has-text("{button_text_name}") >> nth=0'
-    BUTTON_IN_FOOTER_BY_TEXT_IDENT = lambda button_text_name: f'footer >> a:has-text("{button_text_name}") >> nth=0'
+    BUTTON_BY_DISPLAYED_TEXT = (
+        lambda button_text_name: f'button:has-text("{button_text_name}") >> nth=0'
+    )
+    BUTTON_IN_MODAL_BY_DISPLAYED_TEXT = (
+        lambda button_text_name: f'section[role="dialog"] >> button:has-text("{button_text_name}") >> nth=0'
+    )
+    BUTTON_A_BY_TEXT_IDENT = (
+        lambda button_text_name: f'a:has-text("{button_text_name}") >> nth=0'
+    )
+    BUTTON_IN_FOOTER_BY_TEXT_IDENT = (
+        lambda button_text_name: f'footer >> a:has-text("{button_text_name}") >> nth=0'
+    )
 
-    TABLE_TEXT_IDENT = lambda table_name, table_text: f'[data-testid="table-{table_name}"] >> text="{table_text}"'
-    TABLE_AREA_TO_SELECT = lambda row, column: f'tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0'
-    TABLE_TEXT_TO_WAIT_FOR = lambda text, row, column: f'tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0 >> text="{text}"'
-    TEXT_TABLE_HEADER = lambda column: f'tr > th:nth-child({column}) >> nth=0'
-    TEXT_DROPDOWN_MENU_OPTION = lambda dropdown_option: f'[data-testid="dropdown-menu-options"] >> text="{dropdown_option}"'
-    BUTTON_TEXT_DROPDOWN_MENU_OPTION = lambda dropdown_option: f'[data-testid="dropdown-menu-options"] >> text="{dropdown_option}" >> ..'
+    TABLE_TEXT_IDENT = (
+        lambda table_name, table_text: f'[data-testid="table-{table_name}"] >> text="{table_text}"'
+    )
+    TABLE_AREA_TO_SELECT = (
+        lambda row, column: f"tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0"
+    )
+    TABLE_TEXT_TO_WAIT_FOR = (
+        lambda text, row, column: f'tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0 >> text="{text}"'
+    )
+    TEXT_TABLE_HEADER = lambda column: f"tr > th:nth-child({column}) >> nth=0"
+    TEXT_DROPDOWN_MENU_OPTION = (
+        lambda dropdown_option: f'[data-testid="dropdown-menu-options"] >> text="{dropdown_option}"'
+    )
+    BUTTON_TEXT_DROPDOWN_MENU_OPTION = (
+        lambda dropdown_option: f'[data-testid="dropdown-menu-options"] >> text="{dropdown_option}" >> ..'
+    )
 
     BUTTON_COLUMN_SELECTOR = '[data-testid="button-column-selector-box"]'
-    SWITCH_COLUMN_SELECTOR = lambda switch_name: f'[data-testid="column-selector-popover-modal"] >> [data-testid="column-selector-row-{switch_name}"] label div >> nth=0'
+    SWITCH_COLUMN_SELECTOR = (
+        lambda switch_name: f'[data-testid="column-selector-popover-modal"] >> [data-testid="column-selector-row-{switch_name}"] label div >> nth=0'
+    )
 
-
-    FILTER_GROUP_IDENT = lambda group_name: f'[data-testid="filters-facets"] >> div:text-is("{group_name}")'
-    FILTER_GROUP_SELECTION_IDENT = lambda group_name, selection: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> [data-testid="checkbox-{selection}"]'
-    FILTER_GROUP_SELECTION_COUNT_IDENT = lambda group_name, selection: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> [data-testid="text-{selection}"]'
-    FILTER_GROUP_ACTION_IDENT = lambda group_name, action: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> button[aria-label="{action}"]'
-    FILTER_GROUP_SHOW_MORE_LESS_IDENT = lambda group_name, more_or_less: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> button[data-testid="{more_or_less}"]'
+    FILTER_GROUP_IDENT = (
+        lambda group_name: f'[data-testid="filters-facets"] >> div:text-is("{group_name}")'
+    )
+    FILTER_GROUP_SELECTION_IDENT = (
+        lambda group_name, selection: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> [data-testid="checkbox-{selection}"]'
+    )
+    FILTER_GROUP_SELECTION_COUNT_IDENT = (
+        lambda group_name, selection: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> [data-testid="text-{selection}"]'
+    )
+    FILTER_GROUP_ACTION_IDENT = (
+        lambda group_name, action: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> button[aria-label="{action}"]'
+    )
+    FILTER_GROUP_SHOW_MORE_LESS_IDENT = (
+        lambda group_name, more_or_less: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> button[data-testid="{more_or_less}"]'
+    )
 
     SHOWING_NUMBER_OF_ITEMS = "[data-testid='text-showing-count']"
+
 
 class BasePage:
     def __init__(self, driver) -> None:
@@ -77,7 +129,7 @@ class BasePage:
     # Force: Whether to bypass the actionability checks
     def click(self, locator, force=False, timeout=45000):
         self.wait_until_locator_is_visible(locator)
-        self.driver.locator(locator).click(force=force,timeout=timeout)
+        self.driver.locator(locator).click(force=force, timeout=timeout)
 
     def hover(self, locator, force=False):
         """Hover over given locator"""
@@ -140,13 +192,15 @@ class BasePage:
         # Some create filtered cohort buttons have a denominator,
         # and we are only interested in the numerator for comparison.
         string_to_strip = string_to_strip.split("/")[0]
-        string_to_strip = string_to_strip.replace(',', '')
+        string_to_strip = string_to_strip.replace(",", "")
         return string_to_strip
 
     def get_cohort_bar_case_count(self):
         """Returns the count of cases in the current cohort"""
         self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
-        cohort_bar_case_count = self.get_text(GenericLocators.TEXT_COHORT_BAR_CASE_COUNT)
+        cohort_bar_case_count = self.get_text(
+            GenericLocators.TEXT_COHORT_BAR_CASE_COUNT
+        )
         return cohort_bar_case_count
 
     def get_showing_count_text(self):
@@ -154,12 +208,14 @@ class BasePage:
         locator = GenericLocators.SHOWING_NUMBER_OF_ITEMS
         return self.get_text(locator)
 
-    def get_filter_selection_count(self,filter_group_name,selection):
+    def get_filter_selection_count(self, filter_group_name, selection):
         """Returns the count of how many items are associated with that filter in the current cohort"""
-        locator = GenericLocators.FILTER_GROUP_SELECTION_COUNT_IDENT(filter_group_name, selection)
+        locator = GenericLocators.FILTER_GROUP_SELECTION_COUNT_IDENT(
+            filter_group_name, selection
+        )
         return self.get_text(locator)
 
-    def get_table_header_text_by_column(self,column):
+    def get_table_header_text_by_column(self, column):
         """
         Gets text of table header by column.
         Column indexing begins at '1'
@@ -167,20 +223,20 @@ class BasePage:
         table_header_text_locator = GenericLocators.TEXT_TABLE_HEADER(column)
         return self.get_text(table_header_text_locator)
 
-    def get_table_body_text_by_row_column(self,row,column):
+    def get_table_body_text_by_row_column(self, row, column):
         """
         Gets text from table body by giving a row and column.
         Row and Column indexing begins at '1'
         """
-        table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT(row,column)
+        table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT(row, column)
         return self.get_text(table_locator_to_select)
 
-    def hover_table_body_by_row_column(self,row,column):
+    def hover_table_body_by_row_column(self, row, column):
         """
         Hovers over specified cell in table by giving a row and column.
         Row and Column indexing begins at '1'
         """
-        table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT(row,column)
+        table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT(row, column)
         # The hover function is finicky. Calling it twice, and then bypassing
         # actionability checks seem to make the hover more consistent.
 
@@ -189,15 +245,15 @@ class BasePage:
 
     def wait_until_locator_is_visible(self, locator):
         """wait for element to have non-empty bounding box and no visibility:hidden"""
-        self.driver.locator(locator).wait_for(state='visible', timeout= 60000)
+        self.driver.locator(locator).wait_for(state="visible", timeout=60000)
 
     def wait_until_locator_is_detached(self, locator):
         """wait for element to not be present in DOM"""
-        self.driver.locator(locator).wait_for(state='detached', timeout= 60000)
+        self.driver.locator(locator).wait_for(state="detached", timeout=60000)
 
     def wait_until_locator_is_hidden(self, locator):
         """wait for element to be either detached from DOM, or have an empty bounding box or visibility:hidden"""
-        self.driver.locator(locator).wait_for(state='hidden', timeout= 15000)
+        self.driver.locator(locator).wait_for(state="hidden", timeout=15000)
 
     def wait_for_text_in_temporary_message(self, text, action="remove modal"):
         """
@@ -213,7 +269,9 @@ class BasePage:
                 # it changes what the active cohort is. I cannot reproduce it manually, and it stops
                 # when I put this sleep here.
                 time.sleep(1)
-                x_button_locator = text_locator + GenericLocators.X_BUTTON_IN_TEMP_MESSAGE
+                x_button_locator = (
+                    text_locator + GenericLocators.X_BUTTON_IN_TEMP_MESSAGE
+                )
                 # Remove the message after locating it.
                 # The messages can pile up, so removing them is sometimes necessary for subsequent scenarios
                 self.click(x_button_locator)
@@ -243,7 +301,7 @@ class BasePage:
         locator = GenericLocators.LOADING_SPINNER_TABLE
         self.wait_until_locator_is_detached(locator)
 
-    def wait_for_data_testid_to_be_visible(self,locator):
+    def wait_for_data_testid_to_be_visible(self, locator):
         """Normalizes a data-testid and waits for it to be visible"""
         normalized_locator = self.normalize_button_identifier(locator)
         locator = GenericLocators.DATA_TEST_ID_IDENT(normalized_locator)
@@ -253,12 +311,14 @@ class BasePage:
             return False
         return True
 
-    def wait_for_table_body_text_by_row_column(self,text,row,column):
+    def wait_for_table_body_text_by_row_column(self, text, row, column):
         """
         Waits for text from table body by giving a row and column.
         Row and Column indexing begins at '1'
         """
-        table_locator_to_select = GenericLocators.TABLE_TEXT_TO_WAIT_FOR(text,row,column)
+        table_locator_to_select = GenericLocators.TABLE_TEXT_TO_WAIT_FOR(
+            text, row, column
+        )
         self.wait_until_locator_is_visible(table_locator_to_select)
 
     def is_text_present(self, text):
@@ -322,7 +382,7 @@ class BasePage:
         """Returns if cart count is correct"""
         locator = GenericLocators.CART_IDENT
         cart_text = self.get_text(locator)
-        cart_count = cart_text.replace('Cart','')
+        cart_count = cart_text.replace("Cart", "")
         return cart_count == correct_file_count
 
     # Checks to see if specified filter card is present
@@ -420,9 +480,13 @@ class BasePage:
         Clears the active cohort filters by clicking the "Clear All" button
         """
         if not self.is_no_active_cohort_filter_text_present():
-            button_clear_all_active_cohort_filters_locator = GenericLocators.BUTTON_CLEAR_ACTIVE_COHORT_FILTERS
+            button_clear_all_active_cohort_filters_locator = (
+                GenericLocators.BUTTON_CLEAR_ACTIVE_COHORT_FILTERS
+            )
             self.click(button_clear_all_active_cohort_filters_locator)
-            text_no_active_filter_locator = GenericLocators.TEXT_NO_ACTIVE_COHORT_FILTERS
+            text_no_active_filter_locator = (
+                GenericLocators.TEXT_NO_ACTIVE_COHORT_FILTERS
+            )
             self.wait_for_data_testid_to_be_visible(text_no_active_filter_locator)
             self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
 
@@ -439,7 +503,9 @@ class BasePage:
 
     def make_selection_within_filter_group(self, filter_group_name, selection):
         """Clicks a checkbox within a filter group"""
-        locator = GenericLocators.FILTER_GROUP_SELECTION_IDENT(filter_group_name, selection)
+        locator = GenericLocators.FILTER_GROUP_SELECTION_IDENT(
+            filter_group_name, selection
+        )
         self.click(locator)
 
     def perform_action_within_filter_card(self, filter_group_name, action):
@@ -449,15 +515,17 @@ class BasePage:
 
     def click_show_more_less_within_filter_card(self, filter_group_name, label):
         """Clicks the show more or show less object"""
-        locator = GenericLocators.FILTER_GROUP_SHOW_MORE_LESS_IDENT(filter_group_name, label)
+        locator = GenericLocators.FILTER_GROUP_SHOW_MORE_LESS_IDENT(
+            filter_group_name, label
+        )
         self.click(locator)
 
-    def select_table_by_row_column(self,row,column):
+    def select_table_by_row_column(self, row, column):
         """
         Selects values from tables by giving a row and column
         Row and Column indexing begins at '1'
         """
-        table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT(row,column)
+        table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT(row, column)
         self.click(table_locator_to_select)
 
     def send_text_into_search_bar(self, text_to_send, aria_label):
@@ -492,20 +560,28 @@ class BasePage:
         """Sends text into the quick search bar in the upper-right corner of the data portal."""
         self.send_keys(GenericLocators.QUICK_SEARCH_BAR_IDENT, text)
 
-    def validate_global_quick_search_result_abbreviation(self, result_in_list, abbreviation):
+    def validate_global_quick_search_result_abbreviation(
+        self, result_in_list, abbreviation
+    ):
         """Specifies a result from the quick search bar result list. Validates the result abbreviation is the one we expect."""
         result_in_list = self.make_input_0_index(result_in_list)
-        locator_result_abbreviation = GenericLocators.QUICK_SEARCH_BAR_RESULT_ABBREVIATION(result_in_list, abbreviation)
+        locator_result_abbreviation = (
+            GenericLocators.QUICK_SEARCH_BAR_RESULT_ABBREVIATION(
+                result_in_list, abbreviation
+            )
+        )
         self.wait_until_locator_is_visible(locator_result_abbreviation)
 
     def click_global_quick_search_result(self, result_in_list):
         """Specifies a result from the quick search bar result list. Clicks that result."""
         result_in_list = self.make_input_0_index(result_in_list)
-        locator_result_in_list = GenericLocators.QUICK_SEARCH_BAR_NUMBERED_RESULT(result_in_list)
+        locator_result_in_list = GenericLocators.QUICK_SEARCH_BAR_NUMBERED_RESULT(
+            result_in_list
+        )
         self.click(locator_result_in_list)
 
     # This section of functions is for handling new tabs
-    def perform_action_handle_new_tab(self, source:str, button:str):
+    def perform_action_handle_new_tab(self, source: str, button: str):
         """
         perform_action_handle_new_tab performs an action to open a new tab,
         and then returns a page object for that new tab.
@@ -516,11 +592,11 @@ class BasePage:
         """
         sources = {
             "Home Page": self.click_button_ident_a_with_displayed_text_name,
-            "Footer": self.click_footer_button_ident_with_displayed_text_name
+            "Footer": self.click_footer_button_ident_with_displayed_text_name,
         }
         driver = WebDriver.page
         with driver.context.expect_page() as tab:
-           sources.get(source)(button)
+            sources.get(source)(button)
         new_tab = tab.value
         return new_tab
 
@@ -533,7 +609,7 @@ class BasePage:
         """
         expected_text_locator = GenericLocators.TEXT_IN_PARAGRAPH(text_to_check)
         try:
-            new_tab.locator(expected_text_locator).wait_for(state='visible')
+            new_tab.locator(expected_text_locator).wait_for(state="visible")
         except:
             return False
         return True
