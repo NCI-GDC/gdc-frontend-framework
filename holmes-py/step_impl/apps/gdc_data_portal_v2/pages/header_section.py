@@ -17,7 +17,6 @@ class HeaderSectionLocators:
 
 
 class HeaderSection(BasePage):
-
     def __init__(self, driver: Page, url):
         self.driver = driver  # driver is PW page
 

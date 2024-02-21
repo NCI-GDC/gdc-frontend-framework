@@ -41,7 +41,6 @@ class CohortBarLocators:
 
 
 class CohortBar(BasePage):
-
     def __init__(self, driver: Page, url) -> None:
         super().__init__(driver)
         self.driver = driver
