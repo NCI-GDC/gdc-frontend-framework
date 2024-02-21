@@ -70,7 +70,7 @@ const SaveCohortModal = ({
   } = useGetCohortsByContextIdQuery(null, { skip: !cohortReplaced });
 
   useDeepCompareEffect(() => {
-    if (cohortListSuccess && cohortReplaced) {
+    if (opened && cohortListSuccess && cohortReplaced) {
       // Remove replaced cohort
       const updatedCohortIds = (cohortsListData || []).map(
         (cohort) => cohort.id,
@@ -91,6 +91,7 @@ const SaveCohortModal = ({
     cohortsListData,
     cohorts,
     coreDispatch,
+    opened,
     onClose,
     cohortSavedMessage,
   ]);
@@ -200,6 +201,7 @@ const SaveCohortModal = ({
 
         // Need to wait for request removing outdated cohorts to finish when replacing cohort
         if (replace) {
+          console.log("reached hereeeeee!");
           setCohortSavedMessage(tempCohortMsg);
           setCohortReplaced(true);
         } else {
