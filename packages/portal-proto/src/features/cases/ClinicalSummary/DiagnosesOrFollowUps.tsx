@@ -306,9 +306,14 @@ export const DiagnosesOrFollowUps = ({
                       : "bg-base-lightest text-base-contrast-lightest"
                   }`}
                   data-testid="tab"
+                  {...(!data?.submitter_id && { "aria-label": "No Follow Up" })}
                 >
-                  <Tooltip label={data.submitter_id} withinPortal={true}>
-                    <div>{`${data.submitter_id.substring(0, 13)}...`}</div>
+                  <Tooltip label={data?.submitter_id} withinPortal={true}>
+                    <div>
+                      {data?.submitter_id
+                        ? `${data?.submitter_id?.substring(0, 13)}...`
+                        : "--"}
+                    </div>
                   </Tooltip>
                 </Tabs.Tab>
               ))}
