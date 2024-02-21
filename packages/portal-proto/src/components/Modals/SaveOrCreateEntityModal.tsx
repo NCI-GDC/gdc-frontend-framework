@@ -151,7 +151,7 @@ export const SaveOrCreateEntityBody = ({
           inputWrapperOrder={["label", "input", "error", "description"]}
           {...inputProps}
           aria-required
-          data-testid="input-field"
+          data-testid="textbox-name-input-field"
         />
       </Box>
       <Box

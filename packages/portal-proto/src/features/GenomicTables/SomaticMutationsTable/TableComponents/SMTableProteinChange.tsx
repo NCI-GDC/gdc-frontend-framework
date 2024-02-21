@@ -42,10 +42,12 @@ const SMTableProteinChange = ({
               ariaId={ariaId}
             />
           ) : shouldLink ? (
-            <Link href={`/genes/${proteinChange.geneId}`}>
-              <a className="text-utility-link underline" id={ariaId}>
-                {symbol}
-              </a>
+            <Link
+              href={`/genes/${proteinChange.geneId}`}
+              className="text-utility-link underline"
+              id={ariaId}
+            >
+              {symbol}
             </Link>
           ) : (
             <span className="mx-0.5" id={ariaId}>

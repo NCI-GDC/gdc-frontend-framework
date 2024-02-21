@@ -142,6 +142,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
       <fieldset className="flex flex-nowrap items-center p-2">
         <legend className="sr-only">Date range filters</legend>
         <DateInput
+          data-testid="textbox-input-since-value"
           clearable
           size="xs"
           placeholder="Since"
@@ -158,6 +159,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
         />
         <MinusIcon />
         <DateInput
+          data-testid="textbox-input-through-value"
           clearable
           size="xs"
           placeholder="Through"

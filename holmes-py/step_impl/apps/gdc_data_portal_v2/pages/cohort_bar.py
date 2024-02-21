@@ -96,7 +96,8 @@ class CohortBar(BasePage):
         full_query_filter_locator = CohortBarLocators.TEXT_COHORT_QUERY_FILTER(
             full_query_filter, position
         )
-        is_full_query_filter_locator_visible = self.is_visible(
+        
+        = self.is_visible(
             full_query_filter_locator
         )
         # Some query filter text can appear differently. As such, if we don't find it at first
@@ -148,14 +149,14 @@ class CohortBar(BasePage):
         else:
             return is_full_query_filter_locator_visible
 
-        return is_full_query_filter_locator_visible
 
-    def is_cohort_bar_button_disabled(self, button_name: str):
+    def is_cohort_bar_button_disabled(self, button_name:str):
         """Returns if the cohort bar button has the attribute 'disabled'"""
         locator = CohortBarLocators.COHORT_BAR_BUTTON(
             self.normalize_button_identifier(button_name)
         )
         return self.is_disabled(locator)
+
 
     # After import cohort button has been clicked, we make sure the correct modal has loaded.
     # Then, we click the 'browse' button to open the file explorer.
