@@ -83,18 +83,19 @@ const QQPlot: React.FC<QQPlotProps> = ({
       animation: false,
       grid: {
         show: false,
-        left: 60,
-        right: 50,
+        left: 80,
         top: 40,
       },
       title: {
         text: label,
-        left: "center",
+        textAlign: "center",
+        left: (width + 50) / 2,
         textStyle: {
           fontWeight: "normal",
           fontSize: 16,
           fontFamily: "Noto Sans",
           color: "black",
+          width,
         },
       },
       xAxis: {
@@ -106,7 +107,7 @@ const QQPlot: React.FC<QQPlotProps> = ({
         nameLocation: "middle",
         nameTextStyle: {
           padding: 8,
-          fontSize: 14,
+          fontSize: 12,
           color: "black",
           fontFamily: "Noto Sans",
         },
@@ -134,8 +135,8 @@ const QQPlot: React.FC<QQPlotProps> = ({
         },
         nameLocation: "middle",
         nameTextStyle: {
-          padding: 26,
-          fontSize: 14,
+          padding: 36,
+          fontSize: 12,
           color: "black",
           fontFamily: "Noto Sans",
         },
@@ -157,15 +158,20 @@ const QQPlot: React.FC<QQPlotProps> = ({
           type: "scatter" as const,
           data: chartData,
           large: true,
+          symbolSize: 6,
           itemStyle: {
-            opacity: 0.7,
             borderColor: color,
+            borderWidth: 2,
+            color: "transparent",
           },
         },
         {
           type: "line" as const,
           data: lineData,
           showSymbol: false,
+          itemStyle: {
+            color: "black",
+          },
         },
       ],
     }),
