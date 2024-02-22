@@ -25,8 +25,12 @@ class HeaderSection(BasePage):
         self.wait_for_loading_spinner_to_detatch()
         self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
         self.wait_until_locator_is_visible(locator)
-        self.click(locator, True)
-        self.wait_for_page_to_load(button_name)
+        self.click(locator, True, 15000)
+        try:
+            self.wait_for_page_to_load(button_name)
+        except:
+            self.click(locator, True, 15000)
+            self.wait_for_page_to_load(button_name)
 
     # Pages in the data portal do not load instantaneously.
     # We want to wait for the main content of the page to load before continuing the test.
@@ -46,6 +50,9 @@ class HeaderSection(BasePage):
             self.wait_for_selector(HeaderSectionLocators.HOME_WAIT_FOR_ELEMENT)
         elif page_to_load == "manage-sets":
             self.wait_for_selector(HeaderSectionLocators.MANAGE_SETS_WAIT_FOR_ELEMENT)
+        self.wait_for_loading_spinner_table_to_detatch()
+        self.wait_for_loading_spinner_to_detatch()
         self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
         self.wait_for_loading_spinner_table_to_detatch()
         self.wait_for_loading_spinner_to_detatch()
+        self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
