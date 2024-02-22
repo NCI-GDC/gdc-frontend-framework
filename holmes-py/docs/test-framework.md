@@ -19,7 +19,7 @@ The following environment are supported:
 
 | environment       | environment variable  | value    | target url                         |
 |-------------------|-----------------------|----------|------------------------------------|
-| Shared QA / Prod  | APP_ENVIRONMENT       | (default)| https://portal.gdc.cancer.gov/v2   |
+| Shared QA / Prod  | APP_ENVIRONMENT       | (default)| https://portal.gdc.cancer.gov/     |
 | Local / Localhost | APP_ENVIRONMENT       | _LOCAL   | http://localhost:3000              |
 | QA Yellow         | APP_ENVIRONMENT       | QA_YELLOW| https://172.23.10.130/v2           |
 | QA Pink           | APP_ENVIRONMENT       | QA_PINK  | https://172.23.4.239/v2            |
