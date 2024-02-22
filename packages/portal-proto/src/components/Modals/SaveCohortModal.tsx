@@ -201,7 +201,6 @@ const SaveCohortModal = ({
 
         // Need to wait for request removing outdated cohorts to finish when replacing cohort
         if (replace) {
-          console.log("reached hereeeeee!");
           setCohortSavedMessage(tempCohortMsg);
           setCohortReplaced(true);
         } else {
