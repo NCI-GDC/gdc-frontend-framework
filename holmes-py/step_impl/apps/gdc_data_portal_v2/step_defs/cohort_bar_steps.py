@@ -60,7 +60,7 @@ def create_save_cohort_with_specified_filters(cohort_name, table):
     # After filters have been added, save the cohort
     APP.cohort_bar.click_cohort_bar_button("Save")
     APP.shared.click_text_option_from_dropdown_menu("Save")
-    APP.shared.send_text_into_search_bar(cohort_name, "Input field for new cohort name")
+    APP.shared.send_text_into_text_box(cohort_name, "Name Input Field")
     APP.shared.click_button_in_modal_with_displayed_text_name("Save")
     APP.cohort_bar.wait_for_text_in_temporary_message("Cohort has been saved", "Remove Modal")
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
@@ -131,7 +131,7 @@ def create_save_cohort_with_random_filters(table):
         # After filters have been added, save the cohort
         APP.cohort_bar.click_cohort_bar_button("Save")
         APP.shared.click_text_option_from_dropdown_menu("Save")
-        APP.shared.send_text_into_search_bar(v[0], "Input field for new cohort name")
+        APP.shared.send_text_into_text_box(v[0], "Name Input Field")
         APP.shared.click_button_in_modal_with_displayed_text_name("Save")
         APP.cohort_bar.wait_for_text_in_temporary_message("Cohort has been saved", "Remove Modal")
         APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
