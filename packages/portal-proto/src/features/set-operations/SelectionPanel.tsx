@@ -161,7 +161,6 @@ interface SelectionPanelProps {
 }
 
 const SelectionPanel: React.FC<SelectionPanelProps> = ({
-  app,
   setActiveApp,
   setOpen,
   selectedEntities,
@@ -399,16 +398,18 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
         </p>
         <p className="pb-2 font-content">
           Create cohorts in the Analysis Center. Create gene/mutation sets in{" "}
-          <Link href="/manage_sets">
-            <a className="text-utility-link font-content underline">
-              Manage Sets
-            </a>
+          <Link
+            href="/manage_sets"
+            className="text-utility-link font-content underline"
+          >
+            Manage Sets
           </Link>{" "}
           or in analysis tools (e.g.{" "}
-          <Link href="/analysis_page?app=MutationFrequencyApp">
-            <a className="text-utility-link font-content underline">
-              Mutation Frequency
-            </a>
+          <Link
+            href="/analysis_page?app=MutationFrequencyApp"
+            className="text-utility-link font-content underline"
+          >
+            Mutation Frequency
           </Link>
           ).
         </p>
@@ -435,17 +436,6 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
         </div>
       </div>
       <div className="flex flex-row justify-end w-full sticky bottom-0 bg-base-lightest py-2 px-4">
-        <FunctionButton
-          className="mr-auto"
-          onClick={() => {
-            setSelectedEntityType(undefined);
-            setSelectedEntities([]);
-            setActiveApp(app, true);
-            setOpen(false);
-          }}
-        >
-          Demo
-        </FunctionButton>
         <FunctionButton
           className="mr-4"
           onClick={() => {

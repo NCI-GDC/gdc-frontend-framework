@@ -16,8 +16,8 @@ const GenericLink = ({
     hrefObj.query = query;
   }
   return (
-    <Link href={hrefObj}>
-      <a className="text-utility-link underline text-sm">{text}</a>
+    <Link href={hrefObj} className="text-utility-link underline text-sm">
+      {text}
     </Link>
   );
 };
