@@ -287,7 +287,6 @@ export const fetchGenesTable = createAsyncThunk<
               op: "in",
             },
           ],
-          ...cohortFiltersContent,
           ...(onlyGenesFilters?.content
             ? Object(onlyGenesFilters?.content)
             : []),
@@ -312,7 +311,6 @@ export const fetchGenesTable = createAsyncThunk<
               op: "in",
             },
           ],
-          ...cohortFiltersContent,
           ...(onlyGenesFilters?.content
             ? Object(onlyGenesFilters?.content)
             : []),

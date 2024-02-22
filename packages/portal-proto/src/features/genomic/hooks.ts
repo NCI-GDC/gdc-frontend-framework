@@ -278,7 +278,7 @@ export const useGeneAndSSMPanelData = (
     isFetching: survivalPlotFetching,
     isSuccess: survivalPlotReady,
   } = useGetSurvivalPlotQuery({
-    case_filter: memoizedFilters,
+    case_filters: memoizedFilters,
     filters: [buildCohortGqlOperator(genomicFilters)],
     ///   comparativeSurvival !== undefined
     //     ? memoizedFilters
@@ -321,7 +321,7 @@ export const useTopGeneSsms = ({
   const isDemoMode = useIsDemoApp();
 
   const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortGeneAndSSMCaseSet(state),
+    selectCurrentCohortFilters(state),
   );
 
   const _cohortFiltersNoSet = useCoreSelector((state) =>
