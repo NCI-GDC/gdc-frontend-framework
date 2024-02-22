@@ -1,13 +1,13 @@
-ARG BASE_VERSION=3.0.1-rc2
-ARG REGISTRY=docker.osdc.io/ncigdc
+ARG BASE_CONTAINER_VERSION=3.0.1
+ARG BASE_CONTAINER_REGISTRY=docker.osdc.io/ncigdc
 
-FROM ${REGISTRY}/nodejs20:${BASE_VERSION} as dep
+FROM ${BASE_CONTAINER_REGISTRY}/nodejs20:${BASE_CONTAINER_VERSION} as dep
 WORKDIR /app
 
 #==================================================================
 
 # ==================================================================
-FROM ${REGISTRY}/nodejs20:${BASE_VERSION} AS builder
+FROM ${BASE_CONTAINER_REGISTRY}/nodejs20:${BASE_CONTAINER_VERSION} AS builder
 ARG NPM_REGISTRY="https://registry.npmjs.org/"
 
 ARG BUILD_SHORT_SHA
@@ -30,7 +30,7 @@ RUN lerna run --scope @nci-gdc/sapien build
 RUN lerna run --scope portal-proto build
 # ==================================================================
 
-FROM ${REGISTRY}/nodejs20:${BASE_VERSION} AS runner
+FROM ${BASE_CONTAINER_REGISTRY}/nodejs20:${BASE_CONTAINER_VERSION} AS runner
 ARG NAME=gdc-frontend-framework
 
 LABEL org.opencontainers.image.title=${NAME} \
