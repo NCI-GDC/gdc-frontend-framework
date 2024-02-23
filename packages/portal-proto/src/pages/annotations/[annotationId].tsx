@@ -1,4 +1,5 @@
 import { NextPage } from "next";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
 import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
@@ -10,6 +11,9 @@ const AnnotationsPage: NextPage = () => {
 
   return (
     <UserFlowVariedPages headerElements={headerElements}>
+      <Head>
+        <title>Annotation summary</title>
+      </Head>
       {annotationId && (
         <AnnotationSummary annotationId={annotationId as string} />
       )}
