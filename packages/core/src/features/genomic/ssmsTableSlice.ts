@@ -246,7 +246,6 @@ const generateFilter = ({
   cohortFilters, // the cohort filters which used to filter the cases
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  _cohortFiltersNoSet, // the cohort filters without the internal case set, only passed in for request caching
   caseFilter = undefined,
 }: SsmsTableRequestParameters) => {
   const cohortFiltersGQL = buildCohortGqlOperator(cohortFilters);
