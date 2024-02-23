@@ -237,7 +237,7 @@ export const SearchInput: React.FC = () => {
         }
         icon={<SearchIcon size={24} aria-hidden="true" />}
         placeholder="Search"
-        data-testid="textbox-search-bar"
+        data-testid="textbox-cohort-builder-search-bar"
         aria-label="App Search Input"
         value={searchTerm}
         onChange={onSearchChanged}
@@ -265,6 +265,7 @@ export const SearchInput: React.FC = () => {
       />
       {dropdownOpen && (
         <div
+          data-testid="search-result-list"
           className="absolute z-10 bg-base-max w-[400px] p-4 drop-shadow-md"
           id={comboboxId}
           onKeyDown={menuKeybordNav}
