@@ -13,7 +13,7 @@ const buildHash = () => {
       .toString()
       .trim();
   } catch (error) {
-    console.error(error);
+    console.debug(error);
     return "";
   }
 };
@@ -69,7 +69,9 @@ module.exports = {
     NEXT_PUBLIC_APP_VERSION: process.env.npm_package_version,
     // NEXT_PUBLIC_BUILD_SHORT_SHA is passed from gitlab to docker when docker is not run it tries to get it directly from git
     NEXT_PUBLIC_APP_HASH:
-      process.env.NEXT_PUBLIC_BUILD_SHORT_SHA || buildHash(),
+      process.env.npm_lifecycle_event === "dev"
+        ? buildHash()
+        : process.env.NEXT_PUBLIC_BUILD_SHORT_SHA,
   },
   async headers() {
     return [

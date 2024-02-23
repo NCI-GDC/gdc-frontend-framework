@@ -282,8 +282,8 @@ class BasePage:
             return False
         return True
 
-    def wait_for_selector(self, locator):
-        self.driver.wait_for_selector(locator)
+    def wait_for_selector(self, locator, timeout=30000):
+        self.driver.wait_for_selector(locator, timeout=timeout)
 
     def wait_for_loading_spinner_to_be_visible(self):
         locator = GenericLocators.LOADING_SPINNER_GENERIC
