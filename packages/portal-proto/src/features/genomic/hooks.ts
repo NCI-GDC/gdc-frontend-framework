@@ -11,7 +11,6 @@ import {
   GQLDocType,
   GQLIndexType,
   isIncludes,
-  //joinFilters,
   OperandValue,
   Operation,
   selectCurrentCohortFiltersByName,
@@ -26,6 +25,7 @@ import {
   useGetSurvivalPlotQuery,
   useTopGeneQuery,
   useGetSsmTableDataMutation,
+  GqlOperation,
 } from "@gff/core";
 import { useEffect, useMemo } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
@@ -44,6 +44,7 @@ import { overwritingDemoFilterMutationFrequency } from "@/features/genomic/Genes
 import { buildGeneHaveAndHaveNotFilters } from "@/features/genomic/utils";
 import { AppModeState, ComparativeSurvival } from "./types";
 import { humanify } from "@/utils/index";
+import { useDeepCompareMemo } from "use-deep-compare";
 
 /**
  * Update Genomic Enum Facets filters. These are app local updates and are not added
@@ -230,7 +231,7 @@ export const useGeneAndSSMPanelData = (
   isGene: boolean,
 ): GeneAndSSMPanelData => {
   const isDemoMode = useIsDemoApp();
-  const cohortFilters = useCoreSelector((state) =>
+  const currentCohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
   );
 
@@ -242,10 +243,23 @@ export const useGeneAndSSMPanelData = (
     [],
   );
 
+  const cohortFilters: GqlOperation = useDeepCompareMemo(
+    () =>
+      buildCohortGqlOperator(
+        isDemoMode ? overwritingDemoFilter : currentCohortFilters,
+      ),
+    [currentCohortFilters, isDemoMode, overwritingDemoFilter],
+  );
+
+  const localFilters = useDeepCompareMemo(
+    () => buildCohortGqlOperator(genomicFilters),
+    [genomicFilters],
+  );
+
   const memoizedFilters = useMemo(
     () =>
       buildGeneHaveAndHaveNotFilters(
-        buildCohortGqlOperator(cohortFilters),
+        buildCohortGqlOperator(genomicFilters),
         comparativeSurvival?.symbol,
         comparativeSurvival?.field,
         isGene,
@@ -263,18 +277,18 @@ export const useGeneAndSSMPanelData = (
     isFetching: survivalPlotFetching,
     isSuccess: survivalPlotReady,
   } = useGetSurvivalPlotQuery({
-    case_filters: memoizedFilters,
-    filters: [buildCohortGqlOperator(genomicFilters)],
-    ///   comparativeSurvival !== undefined
-    //     ? memoizedFilters
-    //    : genomicFilters
-    //    ? [genomicFilters]
-    //    : []
+    case_filters: cohortFilters,
+    filters:
+      comparativeSurvival !== undefined
+        ? memoizedFilters
+        : localFilters
+        ? [localFilters]
+        : [],
   });
 
   return {
     isDemoMode,
-    cohortFilters,
+    cohortFilters: currentCohortFilters,
     genomicFilters,
     overwritingDemoFilter,
     survivalPlotData,
