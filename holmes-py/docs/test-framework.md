@@ -17,15 +17,14 @@ Reference:
 ### Target Test Environment setup
 The following environment are supported:
 
-| environment       | environment variable  | value    | target url                         |
-|-------------------|-----------------------|----------|------------------------------------|
-| Shared QA / Prod  | APP_ENVIRONMENT       | (default)| https://portal.gdc.cancer.gov/v2   |
-| Local / Localhost | APP_ENVIRONMENT       | _LOCAL   | http://localhost:3000/v2           |
-| QA Yellow         | APP_ENVIRONMENT       | QA_YELLOW| https://172.23.10.130/v2           |
-| QA Pink           | APP_ENVIRONMENT       | QA_PINK  | https://172.23.4.239/v2            |
-| QA UAT            | APP_ENVIRONMENT       | QA_UAT   | https://172.23.7.48/v2             |
-| PROD UAT          | APP_ENVIRONMENT       | PROD_UAT | https://uat-portal.gdc.cancer.gov/v2|
-| PROD SOFT LAUNCH  | APP_ENVIRONMENT       | PROD_SOFT_LAUNCH  | https://portal.gdc.cancer.gov     |
+| environment       | environment variable  | value    | target url                          |
+|-------------------|-----------------------|----------|-------------------------------------|
+| Shared QA / Prod  | APP_ENVIRONMENT       | (default)| https://portal.gdc.cancer.gov       |
+| Local / Localhost | APP_ENVIRONMENT       | _LOCAL   | http://localhost:3000               |
+| QA Yellow         | APP_ENVIRONMENT       | QA_YELLOW| https://172.23.10.130               |
+| QA Pink           | APP_ENVIRONMENT       | QA_PINK  | https://172.23.4.239                |
+| QA UAT            | APP_ENVIRONMENT       | QA_UAT   | https://172.23.7.48                 |
+| PROD UAT          | APP_ENVIRONMENT       | PROD_UAT | https://uat-portal.gdc.cancer.gov   |
 
 These are set in [Default Properties](../env/default/default.properties).
 
