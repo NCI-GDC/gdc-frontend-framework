@@ -13,7 +13,7 @@ import {
   UnionOrIntersection,
   Union,
 } from "../gdcapi/filters";
-import { appendFilterToOperation, getSSMGeneTestedCases } from "./utils";
+import { appendFilterToOperation, getSSMTestedCases } from "./utils";
 import { joinFilters } from "../cohort";
 import { Reducer } from "@reduxjs/toolkit";
 import { DataStatus } from "src/dataAccess";
@@ -82,7 +82,7 @@ $sort: [Sort]
                 }
               }
               occurrence {
-                hits(first: 0,filters: $ssmTested) {
+                hits(first: 0, filters: $ssmTested) {
                   total
                 }
               }
@@ -277,7 +277,7 @@ const generateFilter = ({
   );
 
   const graphQlFilters = {
-    ssmCaseFilter: getSSMGeneTestedCases(geneSymbol),
+    ssmCaseFilter: getSSMTestedCases(cohortFilters, geneSymbol),
     // for table filters use both cohort and genomic filter along with search filter
     // for case summary we need to not use case filter
     caseFilters: caseFilter
