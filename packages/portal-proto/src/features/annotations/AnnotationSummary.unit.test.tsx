@@ -7,11 +7,9 @@ describe("<AnnotationSummary />", () => {
     jest.spyOn(core, "useAnnotations").mockReturnValue({
       data: { list: [{ entity_type: "case", entity_id: "45" }], count: 2 },
     } as any);
-    jest
-      .spyOn(core, "useQuickSearch")
-      .mockReturnValue({
-        data: { searchList: [{ id: btoa("Case:111") }] },
-      } as any);
+    jest.spyOn(core, "useQuickSearch").mockReturnValue({
+      data: { searchList: [{ id: btoa("Case:111") }] },
+    } as any);
     const { getByRole } = render(<AnnotationSummary annotationId="2" />);
 
     expect(
@@ -21,18 +19,19 @@ describe("<AnnotationSummary />", () => {
 
   test("Entity link should go to files", () => {
     jest.spyOn(core, "useAnnotations").mockReturnValue({
-      data: { list: [{ entity_type: "case", entity_id: "45" }], count: 2 },
+      data: {
+        list: [{ entity_type: "aggregated_somatic_mutation", entity_id: "45" }],
+        count: 2,
+      },
     } as any);
-    jest
-      .spyOn(core, "useQuickSearch")
-      .mockReturnValue({
-        data: { searchList: [{ id: btoa("File:111") }] },
-      } as any);
+    jest.spyOn(core, "useQuickSearch").mockReturnValue({
+      data: { searchList: [{ id: btoa("File:111") }] },
+    } as any);
     const { getByRole } = render(<AnnotationSummary annotationId="2" />);
 
     expect(
       within(getByRole("row", { name: "Entity UUID 45" })).getByRole("link"),
-    ).toHaveAttribute("href", "/cases/45");
+    ).toHaveAttribute("href", "/files/45");
   });
 
   test("Entity link should go to biospecimen browser", () => {
@@ -42,11 +41,9 @@ describe("<AnnotationSummary />", () => {
         count: 2,
       },
     } as any);
-    jest
-      .spyOn(core, "useQuickSearch")
-      .mockReturnValue({
-        data: { searchList: [{ id: btoa("Case:111") }] },
-      } as any);
+    jest.spyOn(core, "useQuickSearch").mockReturnValue({
+      data: { searchList: [{ id: btoa("Case:111") }] },
+    } as any);
     const { getByRole } = render(<AnnotationSummary annotationId="2" />);
 
     expect(
