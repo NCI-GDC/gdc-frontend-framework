@@ -22,6 +22,7 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
         value: annotationId,
       },
     },
+    expand: ["project"],
   });
 
   const annotation = annotationData?.list?.[0];
@@ -33,7 +34,7 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
       entityData.searchList === undefined ||
       entityData.searchList.length == 0
     ) {
-      return annotation?.entity_id;
+      return annotation?.entity_id ?? "--";
     } else {
       if (annotation.entity_type === "case") {
         return (
@@ -73,32 +74,63 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
     () => [
       { headerName: "Annotation UUID", values: [annotationId] },
       { headerName: "Entity UUID", values: [entityLink] },
-      { headerName: "Entity ID", values: [annotation?.entity_submitter_id] },
-      { headerName: "Entity Type", values: [annotation?.entity_type] },
+      {
+        headerName: "Entity ID",
+        values: [annotation?.entity_submitter_id ?? "--"],
+      },
+      { headerName: "Entity Type", values: [annotation?.entity_type ?? "--"] },
       {
         headerName: "Case UUID",
         values: [
-          <Link
-            href={`/cases/${annotation?.case_id}`}
-            className="underline text-utility-link"
-            key={`case_link_${annotation?.case_id}`}
-          >
-            {annotation?.case_id}
-          </Link>,
+          annotation?.case_id ? (
+            <Link
+              href={`/cases/${annotation?.case_id}`}
+              className="underline text-utility-link"
+              key={`case_link_${annotation?.case_id}`}
+            >
+              {annotation?.case_id}
+            </Link>
+          ) : (
+            "--"
+          ),
         ],
       },
-      { headerName: "Case ID", values: [annotation?.case_submitter_id] },
+      {
+        headerName: "Case ID",
+        values: [annotation?.case_submitter_id ?? "--"],
+      },
     ],
     [annotationId, annotation, entityLink],
   );
 
   const tableData = useDeepCompareMemo(
     () => [
-      { headerName: "Project", values: [] },
-      { headerName: "Classification", values: [annotation?.classification] },
-      { headerName: "Category", values: [annotation?.category] },
-      { headerName: "Created On", values: [annotation?.created_datetime] },
-      { headerName: "Status", values: [annotation?.status] },
+      {
+        headerName: "Project",
+        values: [
+          annotation?.project?.project_id ? (
+            <Link
+              href={`/projects/${annotation?.project?.project_id}`}
+              className="underline text-utility-link"
+              key={`project_link_${annotation?.project?.project_id}`}
+            >
+              {annotation?.project?.project_id}
+            </Link>
+          ) : (
+            "--"
+          ),
+        ],
+      },
+      {
+        headerName: "Classification",
+        values: [annotation?.classification ?? "--"],
+      },
+      { headerName: "Category", values: [annotation?.category ?? "--"] },
+      {
+        headerName: "Created On",
+        values: [annotation?.created_datetime ?? "--"],
+      },
+      { headerName: "Status", values: [annotation?.status ?? "--"] },
     ],
     [annotation],
   );
@@ -109,7 +141,7 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
         iconText={entityShortNameMapping["Annotation"]}
         headerTitle={annotationId}
       />
-      <div className="mx-4 mt-20 mb-4">
+      <div className="mx-4 mt-24 mb-4">
         <HeaderTitle>Summary</HeaderTitle>
         <div className="flex mb-8">
           <div className="basis-1/2">
