@@ -321,7 +321,7 @@ const FromTo: React.FC<FromToProps> = ({
 
   return (
     <div className="relative w-full">
-      <div className="flex flex-col text-base-contrast-max bg-base-max text-md">
+      <div className="flex flex-col p-1 text-base-contrast-max bg-base-max text-md">
         <fieldset>
           <legend className="sr-only">Numeric from/to filters</legend>
           <div className="flex flex-row justify-end items-center flex-nowrap border font-content">
@@ -839,7 +839,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
       <div
         className={`flex flex-col ${
           width ? width : "mx-0"
-        } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition `}
+        } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition`}
       >
         <FacetHeader>
           <Tooltip

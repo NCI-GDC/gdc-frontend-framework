@@ -203,7 +203,7 @@ const CustomFacetGroup = (): JSX.Element => {
         </div>
       </Modal>
       {customFacetDefinitions.length == 0 ? (
-        <Flex>
+        <Flex justify="center">
           <CustomFacetWhenEmptyGroup align="center" justify="center">
             <AddFacetIcon
               className="text-primary-content"
