@@ -3,7 +3,7 @@ import { LoadingOverlay } from "@mantine/core";
 import {
   useCoreSelector,
   buildCohortGqlOperator,
-  useClinicalFields,
+  useClinicalFieldsQuery,
   useGetClinicalAnalysisQuery,
   selectCurrentCohortFilters,
 } from "@gff/core";
@@ -13,44 +13,63 @@ import Dashboard from "./Dashboard";
 import { DEFAULT_FIELDS, DEMO_COHORT_FILTERS, FACET_SORT } from "./constants";
 import { filterUsefulFacets, parseFieldName } from "./utils";
 import { DemoText } from "@/components/tailwindComponents";
+import { useDeepCompareCallback, useDeepCompareMemo } from "use-deep-compare";
 
 const ClinicalDataAnalysis: React.FC = () => {
   const isDemoMode = useIsDemoApp();
   const [controlsExpanded, setControlsExpanded] = useState(true);
   const [activeFields, setActiveFields] = useState(DEFAULT_FIELDS); // the fields that have been selected by the user
 
-  const { data: fields } = useClinicalFields();
+  const { data: fields } = useClinicalFieldsQuery();
 
-  const cDaveFields = Object.values(fields)
-    .map((d) => ({ ...d, ...parseFieldName(d.name) }))
-    .filter(
-      (d) =>
-        FACET_SORT?.[d.field_type] &&
-        FACET_SORT[d.field_type].includes(d.field_name),
-    );
-
-  const cohortFilters = useCoreSelector((state) =>
-    buildCohortGqlOperator(
-      isDemoMode ? DEMO_COHORT_FILTERS : selectCurrentCohortFilters(state),
-    ),
+  const cDaveFields = useDeepCompareMemo(
+    () =>
+      Object.values(fields || {})
+        .map((d) => ({ ...d, ...parseFieldName(d.name) }))
+        .filter(
+          (d) =>
+            FACET_SORT?.[d.field_type] &&
+            FACET_SORT[d.field_type].includes(d.field_name),
+        ),
+    [fields],
   );
+
+  const currentCohortFilters = useCoreSelector((state) =>
+    selectCurrentCohortFilters(state),
+  );
+
+  const cohortFilters = useDeepCompareMemo(
+    () =>
+      buildCohortGqlOperator(
+        isDemoMode ? DEMO_COHORT_FILTERS : currentCohortFilters,
+      ),
+    [isDemoMode, currentCohortFilters],
+  );
+  const facets = useDeepCompareMemo(
+    () => cDaveFields.map((f) => f.full),
+    [cDaveFields],
+  );
+
   const {
     data: cDaveResult,
     isFetching,
     isSuccess,
   } = useGetClinicalAnalysisQuery({
     case_filters: cohortFilters,
-    facets: cDaveFields.map((f) => f.full),
+    facets,
     size: 0,
   });
 
-  const updateFields = (field: string) => {
-    if (activeFields.includes(field)) {
-      setActiveFields(activeFields.filter((f) => f !== field));
-    } else {
-      setActiveFields([...activeFields, field]);
-    }
-  };
+  const updateFields = useDeepCompareCallback(
+    (field: string) => {
+      if (activeFields.includes(field)) {
+        setActiveFields(activeFields.filter((f) => f !== field));
+      } else {
+        setActiveFields([...activeFields, field]);
+      }
+    },
+    [activeFields],
+  );
 
   return isFetching ? (
     <div className="flex relative justify-center items-center h-screen/2">

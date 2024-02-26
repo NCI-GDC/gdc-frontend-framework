@@ -13,6 +13,7 @@ import VictoryBarChart from "../../charts/VictoryBarChart";
 import { COLOR_MAP } from "../constants";
 import { toDisplayName } from "../utils";
 import { DisplayData } from "../types";
+import { useDeepCompareMemo } from "use-deep-compare";
 
 const formatBarChartData = (
   data: DisplayData,
@@ -54,7 +55,10 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
     DownloadProgressContext,
   );
 
-  const barChartData = formatBarChartData(data, yTotal, displayPercent);
+  const barChartData = useDeepCompareMemo(
+    () => formatBarChartData(data, yTotal, displayPercent),
+    [data, yTotal, displayPercent],
+  );
 
   const color =
     tailwindConfig.theme.extend.colors[COLOR_MAP[field.split(".").at(-2)]]
