@@ -157,7 +157,7 @@ def download_file_at_file_table(file:str, source:str):
         else:
             sources.get(source)(file)
     download = download_info.value
-    file_path = f"{Utility.parent_dir()}/holmes-py/downloads/{dt.timestamp(dt.now())}_{download.suggested_filename}"
+    file_path = f"{Utility.parent_dir()}/downloads/{dt.timestamp(dt.now())}_{download.suggested_filename}"
     download.save_as(file_path)
     data_store.spec[f"{file} from {source}"] = file_path
 
@@ -186,7 +186,7 @@ def upload_file(file_name:str, extension:str, folder_name:str, source:str, butto
     file_chooser = file_chooser_info.value
     file_name = file_name.lower().replace(" ", "_")
     folder_name = folder_name.lower().replace(" ", "_")
-    file_path = f"{Utility.parent_dir()}/holmes-py/resources/{folder_name}/{file_name}.{extension}"
+    file_path = f"{Utility.parent_dir()}/resources/{folder_name}/{file_name}.{extension}"
     file_chooser.set_files(file_path)
 
 @step("Read from <file_type>")
