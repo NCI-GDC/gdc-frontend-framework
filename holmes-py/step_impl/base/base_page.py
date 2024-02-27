@@ -84,6 +84,9 @@ class GenericLocators:
     TABLE_AREA_TO_SELECT = (
         lambda row, column: f"tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0"
     )
+    TABLE_AREA_TO_CLICK = (
+        lambda row, column: f"tr:nth-child({row}) > td:nth-child({column}) > * > * >> nth=0"
+    )
     TABLE_TEXT_TO_WAIT_FOR = (
         lambda text, row, column: f'tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0 >> text="{text}"'
     )
@@ -528,7 +531,7 @@ class BasePage:
         Selects values from tables by giving a row and column
         Row and Column indexing begins at '1'
         """
-        table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT(row, column)
+        table_locator_to_select = GenericLocators.TABLE_AREA_TO_CLICK(row, column)
         self.click(table_locator_to_select)
 
     def send_text_into_search_bar(self, text_to_send, aria_label):
