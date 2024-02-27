@@ -269,6 +269,7 @@ export const useGeneAndSSMPanelData = (
       comparativeSurvival?.symbol,
       cohortFilters,
       isGene,
+      genomicFilters,
     ],
   );
 

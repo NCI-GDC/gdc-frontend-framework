@@ -244,8 +244,6 @@ const generateFilter = ({
   geneSymbol,
   genomicFilters, // local genomic filters
   cohortFilters, // the cohort filters which used to filter the cases
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   caseFilter = undefined,
 }: SsmsTableRequestParameters) => {
   const cohortFiltersGQL = buildCohortGqlOperator(cohortFilters);
@@ -276,7 +274,7 @@ const generateFilter = ({
   );
 
   const graphQlFilters = {
-    ssmCaseFilter: getSSMTestedCases(cohortFilters, geneSymbol),
+    ssmCaseFilter: getSSMTestedCases(geneSymbol),
     // for table filters use both cohort and genomic filter along with search filter
     // for case summary we need to not use case filter
     caseFilters: caseFilter

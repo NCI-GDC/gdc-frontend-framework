@@ -13,39 +13,42 @@ const ExpandRowComponent = ({
   value: string[];
   isColumnExpanded?: boolean;
   title: string;
-}): JSX.Element => (
-  <>
-    {value.length === 0 ? (
-      "--"
-    ) : value?.length === 1 ? (
-      value
-    ) : (
-      <div className="flex items-center text-primary cursor-pointer gap-2">
-        {isRowExpanded && isColumnExpanded ? (
-          <UpIcon
-            size="1.25em"
-            className="text-accent"
-            data-testid="up-icon"
-            aria-hidden="true"
-          />
-        ) : (
-          <DownIcon
-            size="1.25em"
-            className="text-accent"
-            data-testid="down-icon"
-            aria-hidden="true"
-          />
-        )}
-        <span
-          className={`whitespace-nowrap ${
-            isRowExpanded && isColumnExpanded && "font-bold"
-          }`}
-        >
-          {value.length.toLocaleString().padStart(6)} {title}
-        </span>
-      </div>
-    )}
-  </>
-);
+}): JSX.Element => {
+  console.log("value", value);
+  return (
+    <>
+      {value.length === 0 ? (
+        "--"
+      ) : value?.length === 1 ? (
+        value + " " + "fdfdfd"
+      ) : (
+        <div className="flex items-center text-primary cursor-pointer gap-2">
+          {isRowExpanded && isColumnExpanded ? (
+            <UpIcon
+              size="1.25em"
+              className="text-accent"
+              data-testid="up-icon"
+              aria-hidden="true"
+            />
+          ) : (
+            <DownIcon
+              size="1.25em"
+              className="text-accent"
+              data-testid="down-icon"
+              aria-hidden="true"
+            />
+          )}
+          <span
+            className={`whitespace-nowrap ${
+              isRowExpanded && isColumnExpanded && "font-bold"
+            }`}
+          >
+            {value.length.toLocaleString().padStart(6)} {title + " sds "}
+          </span>
+        </div>
+      )}
+    </>
+  );
+};
 
 export default ExpandRowComponent;

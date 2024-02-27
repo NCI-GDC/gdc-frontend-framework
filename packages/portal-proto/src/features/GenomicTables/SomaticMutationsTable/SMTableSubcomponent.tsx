@@ -14,10 +14,11 @@ function SMTableSubcomponent({
     isSuccess,
     isError,
   } = useGetSomaticMutationTableSubrowQuery({ id: row.original.mutation_id });
+  console.log("subData", subData, isFetching, isSuccess, isError);
   return (
     <CommonSubcomponent
       subData={subData}
-      subrowTitle="# Affected Cases Across The GDC"
+      subrowTitle="# Affected Cases Across The GDC.....22"
       isFetching={isFetching}
       isError={isError}
       isSuccess={isSuccess}

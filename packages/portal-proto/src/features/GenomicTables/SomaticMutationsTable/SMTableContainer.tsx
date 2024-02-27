@@ -14,7 +14,6 @@ import {
   useCoreDispatch,
   useCreateCaseSetFromFiltersMutation,
   GDCSsmsTable,
-  getSSMTestedCases,
 } from "@gff/core";
 import { useEffect, useState, useContext, useMemo } from "react";
 import { useDeepCompareCallback } from "use-deep-compare";
@@ -294,7 +293,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       method: "POST",
       params: {
         filters: buildCohortGqlOperator(genomicFilters) ?? {},
-        case_filters: getSSMTestedCases(cohortFilters),
+        case_filters: buildCohortGqlOperator(cohortFilters),
         gene_id,
         attachment: true,
         filename: `frequent-mutations.${convertDateToString(new Date())}.tsv`,
@@ -327,7 +326,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       method: "POST",
       params: {
         filters: buildCohortGqlOperator(genomicFilters) ?? {},
-        case_filters: getSSMTestedCases(cohortFilters),
+        case_filters: buildCohortGqlOperator(cohortFilters),
         attachment: true,
         filename: `frequent-mutations.${convertDateToString(new Date())}.tsv`,
       },
@@ -357,6 +356,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [rowId, setRowId] = useState(null);
   const handleExpand = (row: Row<SomaticMutation>) => {
+    console.log("handleExpand", row.original);
     if (
       Object.keys(expanded).length > 0 &&
       row.original.mutation_id === rowId
