@@ -152,7 +152,7 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
           </div>
         </div>
         <HeaderTitle>Notes</HeaderTitle>
-        <p className="border-1 border-base-lighter bg-primary-content-lightest p-2">
+        <p className="border-1 border-base-lighter bg-primary-content-lightest p-2 font-content">
           {annotation?.notes}
         </p>
       </div>
