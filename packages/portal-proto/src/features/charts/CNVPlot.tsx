@@ -4,7 +4,6 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { FilterSet, useCnvPlot } from "@gff/core";
 import ChartTitleBar from "./ChartTitleBar";
-import { processFilters } from "src/utils";
 import { CountSpan } from "@/components/tailwindComponents";
 
 const BarChart = dynamic(() => import("./BarChart"), {
@@ -45,15 +44,14 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
   genomicFilters = undefined,
   cohortFilters = undefined,
 }: CNVPlotProps) => {
-  const contextFilters = processFilters(genomicFilters, cohortFilters);
-
   const router = useRouter();
   const [gainChecked, setGainChecked] = useState(true);
   const [lossChecked, setLossChecked] = useState(true);
 
   const { data, error, isUninitialized, isFetching, isError } = useCnvPlot({
     gene,
-    contextFilters,
+    cohortFilters,
+    genomicFilters,
   });
 
   if (isUninitialized) {
