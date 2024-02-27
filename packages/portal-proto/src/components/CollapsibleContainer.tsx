@@ -1,5 +1,6 @@
 import { PropsWithChildren, ReactNode } from "react";
-import { Collapse, Tooltip } from "@mantine/core";
+import { Tooltip } from "@mantine/core";
+import { useElementSize } from "@mantine/hooks";
 import {
   MdExpandLess as ExpandLessIcon,
   MdExpandMore as ExpandMoreIcon,
@@ -37,6 +38,9 @@ export const CollapsibleContainer = (
     TargetElement,
     ExtraControl,
   } = props;
+
+  const { ref: descRef, height: descHeight } = useElementSize();
+
   return (
     <div
       className={`flex flex-col ${
@@ -83,13 +87,20 @@ export const CollapsibleContainer = (
           {ExtraControl && <>{ExtraControl}</>}
         </div>
       </div>
-      <Collapse
-        in={!isCollapsed}
-        transitionDuration={200}
-        transitionTimingFunction="linear"
+      <div
+        aria-hidden={isCollapsed}
+        style={{ height: !isCollapsed ? descHeight : 0 }}
+        className="transition-[height] duration-300 overflow-hidden"
       >
-        {children}
-      </Collapse>
+        <div
+          className={`${
+            !isCollapsed ? "opacity-100" : "opacity-0"
+          } transition-opacity`}
+          ref={descRef}
+        >
+          {children}
+        </div>
+      </div>
     </div>
   );
 };
