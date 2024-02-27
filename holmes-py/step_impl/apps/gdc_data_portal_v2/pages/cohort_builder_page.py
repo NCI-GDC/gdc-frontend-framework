@@ -3,10 +3,15 @@ from playwright.sync_api import Page
 from ....base.base_page import BasePage
 from ....base.base_page import GenericLocators
 
-class CohortBuilderPageLocators:
-    BUTTON_IDENT = lambda button_name: f'[data-testid="button-cohort-builder-{button_name}"]'
 
-    CUSTOM_FILTER_ADD_BUTTON = f'[data-testid="button-cohort-builder-add-a-custom-filter"]'
+class CohortBuilderPageLocators:
+    BUTTON_IDENT = (
+        lambda button_name: f'[data-testid="button-cohort-builder-{button_name}"]'
+    )
+
+    CUSTOM_FILTER_ADD_BUTTON = (
+        f'[data-testid="button-cohort-builder-add-a-custom-filter"]'
+    )
     CUSTOM_FILTER_TABLE_PAGE = f'[data-testid="section-file-filter-search"]'
 
     FACET_GROUP_IDENT = lambda group_name: f'[data-testid="title-cohort-builder-facet-groups"] >> div:text-is("{group_name}")'
@@ -24,8 +29,6 @@ class CohortBuilderPageLocators:
     FILTER_LIST_CHECKBOX = lambda facet_card_position: f'[data-testid="title-cohort-builder-facet-groups"] > div:nth-child({facet_card_position}) >> div[aria-label="Filter values"] > div >> nth=0'
     FILTER_LIST_NO_DATA_AVAILABLE = lambda facet_card_position: f'[data-testid="title-cohort-builder-facet-groups"] > div:nth-child({facet_card_position}) >> div[aria-label="Filter values"] > div >> text="No data for this field"'
     FILTER_LIST_CHECKBOX_BY_POSITION = lambda facet_card_position, filter_checkbox_position: f'[data-testid="title-cohort-builder-facet-groups"] > div:nth-child({facet_card_position}) >> div[aria-label="Filter values"] > div:nth-child({filter_checkbox_position}) >> input'
-
-    CUSTOM_FILTER_ADD_BUTTON = f'[data-testid="button-cohort-builder-add-a-custom-filter"]'
     CUSTOM_FILTER_TABLE_PAGE = f'[data-testid="section-file-filter-search"]'
 
     SEARCH_BAR_ARIA_IDENT = lambda aria_label: f'[data-testid="textbox-cohort-builder-search-bar"]'
@@ -33,10 +36,12 @@ class CohortBuilderPageLocators:
     SEARCH_BAR_RESULT_AREA_SPAN = lambda text: f'[data-testid="search-result-list"] >> span:text("{text}")'
     QUERY_EXPRESSION_TEXT = lambda text: f'[data-testid="search-result-list"] >> div:text("{text}")'
 
-    ONLY_SHOW_PROPERTIES_WITH_VALUES_CHECKBOX_IDENT = '//input[@aria-label="show only properties with values"]'
+    ONLY_SHOW_PROPERTIES_WITH_VALUES_CHECKBOX_IDENT = (
+        '//input[@aria-label="show only properties with values"]'
+    )
+
 
 class CohortBuilderPage(BasePage):
-
     def __init__(self, driver: Page, url) -> None:
         super().__init__(driver)
         self.driver = driver
@@ -45,8 +50,10 @@ class CohortBuilderPage(BasePage):
     def navigate(self):
         self.goto(self.URL)
 
-    def click_button(self, button_name:str) -> None:
-        locator = CohortBuilderPageLocators.BUTTON_IDENT(self.normalize_button_identifier(button_name))
+    def click_button(self, button_name: str) -> None:
+        locator = CohortBuilderPageLocators.BUTTON_IDENT(
+            self.normalize_button_identifier(button_name)
+        )
         self.click(locator)
 
     # Checks to see if specified facet card is present
@@ -68,7 +75,9 @@ class CohortBuilderPage(BasePage):
 
     # Clicks a checkbox within a facet group
     def make_selection_within_facet_group(self, facet_group_name, selection):
-        locator = CohortBuilderPageLocators.FACET_GROUP_SELECTION_IDENT(facet_group_name, selection)
+        locator = CohortBuilderPageLocators.FACET_GROUP_SELECTION_IDENT(
+            facet_group_name, selection
+        )
         self.click(locator)
 
     # Send keys in the search bar
@@ -77,18 +86,32 @@ class CohortBuilderPage(BasePage):
         self.send_keys(locator, text)
 
     # Checks the text in the search bar result area
-    def validate_search_bar_result(self,search_bar_text_to_check):
-        mark_locator = CohortBuilderPageLocators.SEARCH_BAR_RESULT_AREA_MARK(search_bar_text_to_check)
-        span_locator = CohortBuilderPageLocators.SEARCH_BAR_RESULT_AREA_SPAN(search_bar_text_to_check)
-        data_testid_locator = GenericLocators.DATA_TEST_ID_IDENT(search_bar_text_to_check)
+    def validate_search_bar_result(self, search_bar_text_to_check):
+        mark_locator = CohortBuilderPageLocators.SEARCH_BAR_RESULT_AREA_MARK(
+            search_bar_text_to_check
+        )
+        span_locator = CohortBuilderPageLocators.SEARCH_BAR_RESULT_AREA_SPAN(
+            search_bar_text_to_check
+        )
+        data_testid_locator = GenericLocators.DATA_TEST_ID_IDENT(
+            search_bar_text_to_check
+        )
         # The text result can be in multiple forms. If any of the forms are visible, then we return true
-        result = (self.is_visible(mark_locator) or self.is_visible(span_locator) or self.is_visible(data_testid_locator))
+        result = (
+            self.is_visible(mark_locator)
+            or self.is_visible(span_locator)
+            or self.is_visible(data_testid_locator)
+        )
         return result
 
     # Click on the search bar result text to travel to the facet
-    def click_on_search_bar_result(self,search_bar_text_to_click):
-        mark_locator = CohortBuilderPageLocators.SEARCH_BAR_RESULT_AREA_MARK(search_bar_text_to_click)
-        span_locator = CohortBuilderPageLocators.SEARCH_BAR_RESULT_AREA_SPAN(search_bar_text_to_click)
+    def click_on_search_bar_result(self, search_bar_text_to_click):
+        mark_locator = CohortBuilderPageLocators.SEARCH_BAR_RESULT_AREA_MARK(
+            search_bar_text_to_click
+        )
+        span_locator = CohortBuilderPageLocators.SEARCH_BAR_RESULT_AREA_SPAN(
+            search_bar_text_to_click
+        )
         # The text result can be in multiple forms. We want to click on whatever one appears
         if self.is_visible(mark_locator):
             self.click(mark_locator)
@@ -97,12 +120,16 @@ class CohortBuilderPage(BasePage):
 
     # Performs an action in a facet group e.g sorting, resetting, flipping the chart, etc.
     def perform_action_within_filter_card(self, facet_group_name, action):
-        locator = CohortBuilderPageLocators.FACET_GROUP_ACTION_IDENT(facet_group_name, action)
+        locator = CohortBuilderPageLocators.FACET_GROUP_ACTION_IDENT(
+            facet_group_name, action
+        )
         self.click(locator)
 
     # Clicks a checkbox with an aria label and waits for the spinner to 'detach'
     def click_only_show_properties_with_values_checkbox(self):
-        locator = CohortBuilderPageLocators.ONLY_SHOW_PROPERTIES_WITH_VALUES_CHECKBOX_IDENT
+        locator = (
+            CohortBuilderPageLocators.ONLY_SHOW_PROPERTIES_WITH_VALUES_CHECKBOX_IDENT
+        )
         self.click(locator)
         self.wait_for_loading_spinner_to_be_visible()
         self.wait_for_loading_spinner_to_detatch()
@@ -114,7 +141,9 @@ class CohortBuilderPage(BasePage):
 
     # Clicks the show more or show less object
     def click_show_more_less_within_filter_card(self, facet_group_name, label):
-        locator = CohortBuilderPageLocators.FACET_GROUP_SHOW_MORE_LESS_IDENT(facet_group_name, label)
+        locator = CohortBuilderPageLocators.FACET_GROUP_SHOW_MORE_LESS_IDENT(
+            facet_group_name, label
+        )
         self.click(locator)
 
     # Send keys in the search textbox area
@@ -131,7 +160,9 @@ class CohortBuilderPage(BasePage):
 
     # Clicks a filter card object using its visible, displayed name
     def click_named_item_in_facet_group(self, facet_group_name, object_name):
-        locator = CohortBuilderPageLocators.FACET_GROUP_NAMED_OBJECT_IDENT(facet_group_name, object_name)
+        locator = CohortBuilderPageLocators.FACET_GROUP_NAMED_OBJECT_IDENT(
+            facet_group_name, object_name
+        )
         self.click(locator)
 
     def get_number_of_tabs_in_cohort_builder(self):

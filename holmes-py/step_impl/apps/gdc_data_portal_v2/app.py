@@ -3,8 +3,12 @@ import os
 from step_impl.base.base_page import BasePage as Shared
 from ..gdc_data_portal_v2.pages.header_section import HeaderSection
 from step_impl.apps.gdc_data_portal_v2.pages.home_page import HomePage
-from step_impl.apps.gdc_data_portal_v2.pages.analysis_center_page import AnalysisCenterPage
-from step_impl.apps.gdc_data_portal_v2.pages.clinical_data_analysis import ClinicalDataAnalysisPage
+from step_impl.apps.gdc_data_portal_v2.pages.analysis_center_page import (
+    AnalysisCenterPage,
+)
+from step_impl.apps.gdc_data_portal_v2.pages.clinical_data_analysis import (
+    ClinicalDataAnalysisPage,
+)
 from step_impl.apps.gdc_data_portal_v2.pages.warning_modal import WarningModal
 from ..gdc_data_portal_v2.pages.repository_page import RepositoryPage
 from ..gdc_data_portal_v2.pages.cohort_builder_page import CohortBuilderPage
@@ -18,8 +22,11 @@ from ..gdc_data_portal_v2.pages.manage_sets_page import ManageSetsPage
 
 class GDCDataPortalV2App:
     def __init__(self, webdriver):  # webdriver is page now.
-        app_endpoint_var = "APP_ENDPOINT_PROD" if not os.getenv(
-            'APP_ENVIRONMENT') else f"APP_ENDPOINT_{os.environ['APP_ENVIRONMENT']}"
+        app_endpoint_var = (
+            "APP_ENDPOINT_PROD"
+            if not os.getenv("APP_ENVIRONMENT")
+            else f"APP_ENDPOINT_{os.environ['APP_ENVIRONMENT']}"
+        )
         self.URL = f"{os.getenv(app_endpoint_var)}"
         self.driver = webdriver
         self.init_pages()

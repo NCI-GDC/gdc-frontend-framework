@@ -112,19 +112,21 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
   chartLabel,
   width = 400,
   height = 400,
-  chartPadding = { left: 80, right: 80, bottom: 80, top: 10 },
+  chartPadding,
   hideYTicks = false,
   hideXTicks = false,
   chartRef = undefined,
   truncateLabels = false,
 }: VictoryBarChartProps) => {
+  const padding = chartPadding ?? { left: 80, right: 80, bottom: 80, top: 10 };
+
   return (
     <VictoryChart
       title={title}
       width={width}
       height={height}
       domainPadding={60}
-      padding={chartPadding}
+      padding={padding}
       containerComponent={
         <VictoryContainer
           containerRef={
@@ -137,7 +139,7 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
       {chartLabel && (
         <VictoryLabel
           dy={20}
-          dx={(width + chartPadding.left - chartPadding.right) / 2}
+          dx={(width + padding.left - padding.right) / 2}
           text={chartLabel}
           textAnchor="middle"
           style={{ fontSize: 28, fontFamily: "Noto Sans" }}
