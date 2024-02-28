@@ -10,7 +10,6 @@ import {
 import { showNotification } from "@mantine/notifications";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import { useEffect } from "react";
-import AccessibleNotificationWrapper from "@/components/AccessibleNotificationWrapper";
 
 interface UpdateCohortButtonProps {
   readonly ids: string[];
@@ -50,11 +49,7 @@ const UpdateCohortButton: React.FC<UpdateCohortButtonProps> = ({
       dispatch(hideModal());
     } else if (response.isError) {
       showNotification({
-        message: (
-          <AccessibleNotificationWrapper>
-            Problem applying set.
-          </AccessibleNotificationWrapper>
-        ),
+        message: "Problem applying set.",
         color: "red",
         closeButtonProps: { "aria-label": "Close notification" },
       });

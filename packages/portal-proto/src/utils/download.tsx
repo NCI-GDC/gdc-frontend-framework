@@ -6,7 +6,6 @@ import { includes, isPlainObject, reduce, uniqueId } from "lodash";
 import { RiCloseCircleLine as CloseIcon } from "react-icons/ri";
 import { theme } from "tailwind.config";
 import urlJoin from "url-join";
-import AccessibleNotificationWrapper from "@/components/AccessibleNotificationWrapper";
 
 const hashString = (s: string) =>
   s.split("").reduce((acc, c) => (acc << 5) - acc + c.charCodeAt(0), 0);
@@ -135,17 +134,15 @@ const download = async ({
     () =>
       showNotification({
         message: (
-          <AccessibleNotificationWrapper>
-            <DownloadNotification
-              onClick={() => {
-                iFrame.remove();
-                cleanNotifications();
-                if (done) {
-                  done();
-                }
-              }}
-            />
-          </AccessibleNotificationWrapper>
+          <DownloadNotification
+            onClick={() => {
+              iFrame.remove();
+              cleanNotifications();
+              if (done) {
+                done();
+              }
+            }}
+          />
         ),
         styles: () => ({
           root: {

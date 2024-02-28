@@ -20,7 +20,6 @@ import SetDetailPanel from "./SetDetailPanel";
 import CreateSetButton from "./CreateSetButton";
 import ManageSetsTable from "./ManageSetsTable";
 import DeleteSetsNotification from "./DeleteSetsNotification";
-import AccessibleNotificationWrapper from "@/components/AccessibleNotificationWrapper";
 
 const CreateSetInstructions = () => (
   <p data-testid="text-manage-sets-description" className="py-2 text-sm">
@@ -170,11 +169,7 @@ const ManageSets: React.FC = () => {
               onClick={() => {
                 dispatch(removeSets(selectedSets));
                 showNotification({
-                  message: (
-                    <AccessibleNotificationWrapper>
-                      <DeleteSetsNotification sets={selectedSets} />
-                    </AccessibleNotificationWrapper>
-                  ),
+                  message: <DeleteSetsNotification sets={selectedSets} />,
                 });
                 setSelectedSets([]);
               }}

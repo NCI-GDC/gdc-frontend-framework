@@ -23,7 +23,6 @@ import WarningMessage from "@/components/WarningMessage";
 import ErrorMessage from "@/components/ErrorMessage";
 import SetTable from "./SetTable";
 import { SET_COUNT_LIMIT } from "./constants";
-import AccessibleNotificationWrapper from "@/components/AccessibleNotificationWrapper";
 
 interface AddToSetModalProps {
   readonly filters: FilterSet;
@@ -80,11 +79,7 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
       const newSetId = response.data;
       if (newSetId === undefined) {
         showNotification({
-          message: (
-            <AccessibleNotificationWrapper>
-              Problem modifiying set.
-            </AccessibleNotificationWrapper>
-          ),
+          message: "Problem modifiying set.",
           color: "red",
         });
       } else {
@@ -92,11 +87,7 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
           addSet({ setType, setName: selectedSets[0][1], setId: newSetId }),
         );
         showNotification({
-          message: (
-            <AccessibleNotificationWrapper>
-              Set has been modified.
-            </AccessibleNotificationWrapper>
-          ),
+          message: "Set has been modified.",
           closeButtonProps: { "aria-label": "Close notification" },
         });
 
@@ -104,11 +95,7 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
       }
     } else if (response.isError) {
       showNotification({
-        message: (
-          <AccessibleNotificationWrapper>
-            Problem modifiying set.
-          </AccessibleNotificationWrapper>
-        ),
+        message: "Problem modifiying set.",
         color: "red",
         closeButtonProps: { "aria-label": "Close notification" },
       });

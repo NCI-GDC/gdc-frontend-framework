@@ -14,7 +14,6 @@ import {
   CartFile,
 } from "@gff/core";
 import { useEffect } from "react";
-import AccessibleNotificationWrapper from "@/components/AccessibleNotificationWrapper";
 
 interface OverLimitNotificationProps {
   readonly numFilesInCart: number;
@@ -175,13 +174,11 @@ export const removeFromCart = (
   cleanNotifications();
   showNotification({
     message: (
-      <AccessibleNotificationWrapper>
-        <RemoveNotification
-          files={files}
-          currentCart={currentCart}
-          dispatch={dispatch}
-        />
-      </AccessibleNotificationWrapper>
+      <RemoveNotification
+        files={files}
+        currentCart={currentCart}
+        dispatch={dispatch}
+      />
     ),
     classNames: {
       description: "flex flex-col content-center text-center",
@@ -194,11 +191,7 @@ export const removeFromCart = (
 
 export const showCartOverLimitNotification = (numFilesInCart: number): void => {
   showNotification({
-    message: (
-      <AccessibleNotificationWrapper>
-        <OverLimitNotification numFilesInCart={numFilesInCart} />
-      </AccessibleNotificationWrapper>
-    ),
+    message: <OverLimitNotification numFilesInCart={numFilesInCart} />,
     classNames: {
       description: "flex flex-col content-center text-center",
     },
@@ -219,13 +212,11 @@ export const addToCart = (
   } else {
     showNotification({
       message: (
-        <AccessibleNotificationWrapper>
-          <AddNotification
-            files={files}
-            currentCart={currentCart}
-            dispatch={dispatch}
-          />
-        </AccessibleNotificationWrapper>
+        <AddNotification
+          files={files}
+          currentCart={currentCart}
+          dispatch={dispatch}
+        />
       ),
       classNames: {
         description: "flex flex-col content-center text-center",
