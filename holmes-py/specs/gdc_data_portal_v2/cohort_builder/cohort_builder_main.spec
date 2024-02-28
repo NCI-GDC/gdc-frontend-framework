@@ -117,13 +117,12 @@ tags: cohort-selections
 * Search in a filter card from "Custom Filters" tab on the Cohort Builder page
   |facet_name       |label                  |text      |
   |-----------------|-----------------------|----------|
-  |Created Datetime |Set the since value    |1959-09-22|
-  |Created Datetime |Set the through value  |11/30/95  |
-* This text is expected in the cohort query expression area
-  |text      |
-  |----------|
-  |1959-09-22|
-  |1995-11-30|
+  |Created Datetime |input since value      |1959-09-22|
+  |Created Datetime |input through value    |11/30/95  |
+* Validate the cohort query filter area has these filters
+  |facet_name         |selections                 |position in filter area  |
+  |-------------------|---------------------------|-------------------------|
+  |Created Datetime   |>=1959-09-22and<=1995-11-30|1                        |
 * Perform the following actions from "Custom Filters" tab on the Cohort Builder page
   |facet_name       |action               |
   |-----------------|---------------------|
@@ -140,7 +139,7 @@ tags: cohort-selections
 * Search in a filter card from "Custom Filters" tab on the Cohort Builder page
   |facet_name       |label                         |text                                   |
   |-----------------|------------------------------|---------------------------------------|
-  |Case Id          |enter value to add filter     |9e15d908-12c2-5a1b-b1c4-c328242d474a   |
+  |Case Id          |add filter value              |9e15d908-12c2-5a1b-b1c4-c328242d474a   |
 * Perform the following actions from "Custom Filters" tab on the Cohort Builder page
   |facet_name       |label                         |
   |-----------------|------------------------------|

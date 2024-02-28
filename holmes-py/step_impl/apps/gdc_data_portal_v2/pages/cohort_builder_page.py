@@ -14,27 +14,13 @@ class CohortBuilderPageLocators:
     )
     CUSTOM_FILTER_TABLE_PAGE = f'[data-testid="section-file-filter-search"]'
 
-    FACET_GROUP_IDENT = (
-        lambda group_name: f'[data-testid="title-cohort-builder-facet-groups"] >> div:text-is("{group_name}")'
-    )
-    FACET_GROUP_SELECTION_IDENT = (
-        lambda group_name, selection: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> [data-testid="checkbox-{selection}"]'
-    )
-    FACET_GROUP_ACTION_IDENT = (
-        lambda group_name, action: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> button[aria-label="{action}"]'
-    )
-    FACET_GROUP_TEXT_AREA_IDENT = (
-        lambda group_name, area: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> input[aria-label="{area}"]'
-    )
-    FACET_GROUP_SHOW_MORE_LESS_IDENT = (
-        lambda group_name, more_or_less: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> button[data-testid="{more_or_less}"]'
-    )
-    FACET_GROUP_NAMED_OBJECT_IDENT = (
-        lambda group_name, object_name: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> div >> text="{object_name}"'
-    )
-    CUSTOM_FILTER_ADD_BUTTON = (
-        f'[data-testid="button-cohort-builder-add-a-custom-filter"]'
-    )
+    FACET_GROUP_IDENT = lambda group_name: f'[data-testid="title-cohort-builder-facet-groups"] >> div:text-is("{group_name}")'
+    FACET_GROUP_SELECTION_IDENT = lambda group_name, selection: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> [data-testid="checkbox-{selection}"]'
+    FACET_GROUP_ACTION_IDENT = lambda group_name, action: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> button[aria-label="{action}"]'
+    FACET_GROUP_TEXT_AREA_IDENT = lambda group_name, textbox_id: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> [data-testid="textbox-{textbox_id}"]'
+    FACET_GROUP_SHOW_MORE_LESS_IDENT = lambda group_name, more_or_less: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> button[data-testid="{more_or_less}"]'
+    FACET_GROUP_NAMED_OBJECT_IDENT = lambda group_name, object_name: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> div >> text="{object_name}"'
+
     FILTER_TAB_LIST = 'main[data-tour="full_page_content"] >> div[role="tablist"] > button'
     FILTER_TAB_LIST_BUTTON_BY_POSITION = lambda tab_position: f'main[data-tour="full_page_content"] >> div[role="tablist"] > button:nth-child({tab_position})'
     FACET_CARD_LIST = '[data-testid="title-cohort-builder-facet-groups"] > div'
@@ -45,12 +31,10 @@ class CohortBuilderPageLocators:
     FILTER_LIST_CHECKBOX_BY_POSITION = lambda facet_card_position, filter_checkbox_position: f'[data-testid="title-cohort-builder-facet-groups"] > div:nth-child({facet_card_position}) >> div[aria-label="Filter values"] > div:nth-child({filter_checkbox_position}) >> input'
     CUSTOM_FILTER_TABLE_PAGE = f'[data-testid="section-file-filter-search"]'
 
-    # PEAR-1085 has been made to give this a unique data-testid.
-    # TO-DO: When unique IDs have been added, update these locators.
-    SEARCH_BAR = f'input[placeholder="Search"]'
-    SEARCH_BAR_RESULT_AREA_MARK = lambda text: f'mark:text("{text}")'
-    SEARCH_BAR_RESULT_AREA_SPAN = lambda text: f'span:text("{text}")'
-    QUERY_EXPRESSION_TEXT = lambda text: f'div:text("{text}")'
+    SEARCH_BAR_ARIA_IDENT = lambda aria_label: f'[data-testid="textbox-cohort-builder-search-bar"]'
+    SEARCH_BAR_RESULT_AREA_MARK = lambda text: f'[data-testid="search-result-list"] >> mark:text("{text}")'
+    SEARCH_BAR_RESULT_AREA_SPAN = lambda text: f'[data-testid="search-result-list"] >> span:text("{text}")'
+    QUERY_EXPRESSION_TEXT = lambda text: f'[data-testid="search-result-list"] >> div:text("{text}")'
 
     ONLY_SHOW_PROPERTIES_WITH_VALUES_CHECKBOX_IDENT = (
         '//input[@aria-label="show only properties with values"]'
@@ -163,10 +147,9 @@ class CohortBuilderPage(BasePage):
         self.click(locator)
 
     # Send keys in the search textbox area
-    def type_in_facet_search_text_area(self, facet_group_name, label, text):
-        locator = CohortBuilderPageLocators.FACET_GROUP_TEXT_AREA_IDENT(
-            facet_group_name, label
-        )
+    def type_in_facet_search_text_area(self, facet_group_name, textbox_id, text):
+        textbox_id = self.normalize_button_identifier(textbox_id)
+        locator = CohortBuilderPageLocators.FACET_GROUP_TEXT_AREA_IDENT(facet_group_name, textbox_id)
         self.send_keys(locator, text)
 
     # Used to check the text displayed in the query expression area

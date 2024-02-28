@@ -10,7 +10,7 @@ class ProjectsPageLocators:
     PROJECT_PAGE_SHORTED_NAME_BUTTON_IDENT = (
         lambda button_name: f"[data-testid='button-{button_name}-projects-table']"
     )
-
+    BUTTON_SELECT_PROJECT_ROW = lambda button_name: f'[aria-label="Select the {button_name} project row"]'
 
 class ProjectsPage(BasePage):
     def __init__(self, driver: Page, url) -> None:
@@ -36,3 +36,8 @@ class ProjectsPage(BasePage):
                 self.normalize_button_identifier(button_name)
             )
         )
+
+    def click_button_select_project_row(self, button_name: str):
+        """Clicks button to select project row"""
+        locator = ProjectsPageLocators.BUTTON_SELECT_PROJECT_ROW(button_name)
+        self.click(locator)

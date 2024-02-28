@@ -45,9 +45,7 @@ def setup_test_run():
     time.sleep(2)
     APP.cohort_bar.click_cohort_bar_button("Save")
     APP.shared.click_text_option_from_dropdown_menu("Save")
-    APP.shared.send_text_into_search_bar(
-        "never_use_this_cohort_name", "Input field for new cohort name"
-    )
+    APP.shared.send_text_into_text_box("never_use_this_cohort_name", "Name Input Field")
     APP.shared.click_button_in_modal_with_displayed_text_name("Save")
     APP.cohort_bar.wait_for_text_in_temporary_message(
         "Cohort has been saved", "Remove Modal"
@@ -418,8 +416,14 @@ def wait_for_table_body_text_to_appear(table):
         v[1] - Row
         v[2] - Column
         """
-        APP.shared.wait_for_table_body_text_by_row_column(v[0], v[1], v[2])
-        time.sleep(1)
+        APP.shared.wait_for_table_body_text_by_row_column(v[0],v[1],v[2])
+        time.sleep(2)
+        # Occasionally, the screen flickers where it shows the text we
+        # are waiting for then it disappears for a moment. Checking for the
+        # text twice should account for that.
+        APP.shared.wait_for_table_body_text_by_row_column(v[0],v[1],v[2])
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_to_detatch()
 
 
 @step("Is text <expected_text> present on the page")
@@ -758,7 +762,7 @@ def quick_search(result_in_list: str):
 
 @step("Name the cohort <cohort_name>")
 def name_cohort(cohort_name: str):
-    APP.shared.send_text_into_search_bar(cohort_name, "Input field for new cohort name")
+    APP.shared.send_text_into_text_box(cohort_name, "Name Input Field")
 
 
 @step(

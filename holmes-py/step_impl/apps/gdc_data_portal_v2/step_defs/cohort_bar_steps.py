@@ -28,7 +28,7 @@ def click_button_on_cohort_bar(button_name: str):
 
 @step("Name the cohort <cohort_name> in the Cohort Bar section")
 def name_cohort(cohort_name: str):
-    APP.shared.send_text_into_search_bar(cohort_name, "Input field for new cohort name")
+    APP.shared.send_text_into_text_box(cohort_name, "Name Input Field")
 
 
 @step("Create and save a cohort named <cohort_name> with these filters <table>")
@@ -63,7 +63,7 @@ def create_save_cohort_with_specified_filters(cohort_name, table):
     # After filters have been added, save the cohort
     APP.cohort_bar.click_cohort_bar_button("Save")
     APP.shared.click_text_option_from_dropdown_menu("Save")
-    APP.shared.send_text_into_search_bar(cohort_name, "Input field for new cohort name")
+    APP.shared.send_text_into_text_box(cohort_name, "Name Input Field")
     APP.shared.click_button_in_modal_with_displayed_text_name("Save")
     APP.cohort_bar.wait_for_text_in_temporary_message("Cohort has been saved", "Remove Modal")
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
@@ -134,7 +134,7 @@ def create_save_cohort_with_random_filters(table):
         # After filters have been added, save the cohort
         APP.cohort_bar.click_cohort_bar_button("Save")
         APP.shared.click_text_option_from_dropdown_menu("Save")
-        APP.shared.send_text_into_search_bar(v[0], "Input field for new cohort name")
+        APP.shared.send_text_into_text_box(v[0], "Name Input Field")
         APP.shared.click_button_in_modal_with_displayed_text_name("Save")
         APP.cohort_bar.wait_for_text_in_temporary_message("Cohort has been saved", "Remove Modal")
         APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
@@ -181,8 +181,9 @@ def is_expected_active_cohort_present(cohort_name: str):
 @step("Switch cohort to <cohort_name> from the Cohort Bar dropdown list")
 def select_cohort_from_dropdown(cohort_name: str):
     click_button_on_cohort_bar("Switch")
+    time.sleep(0.5)
     APP.cohort_bar.select_cohort_from_dropdown(cohort_name)
-    time.sleep(2)
+    time.sleep(3)
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
     APP.shared.wait_for_loading_spinner_to_detatch()
     APP.shared.wait_for_loading_spinner_table_to_detatch()
