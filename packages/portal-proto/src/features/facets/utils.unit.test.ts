@@ -3,6 +3,7 @@ import {
   extractRangeValues,
   buildRangeBuckets,
   adjustYearsToDays,
+  adjustDaysToYears,
 } from "./utils";
 
 describe("Build Range Tests for Numeric Ranges", () => {
@@ -499,5 +500,19 @@ describe("test years to days conversion", () => {
     expect(adjustYearsToDays(-90, "years")).toEqual(-32873);
     expect(adjustYearsToDays(-70, "years")).toEqual(-25568);
     expect(adjustYearsToDays(90, "years")).toEqual(32873);
+  });
+});
+
+describe("test days to years conversion", () => {
+  test("days to years", () => {
+    expect(adjustDaysToYears(365, "years")).toEqual(1);
+    expect(adjustDaysToYears(182, "years")).toEqual(0);
+    expect(adjustDaysToYears(183, "years")).toEqual(1);
+    expect(adjustDaysToYears(364, "days")).toEqual(364);
+    expect(adjustDaysToYears(730, "years")).toEqual(2);
+    expect(adjustDaysToYears(36500, "years")).toEqual(100);
+    expect(adjustDaysToYears(32873, "years")).toEqual(90);
+    expect(adjustDaysToYears(-25568, "years")).toEqual(-70);
+    expect(adjustYearsToDays(-32873, "days")).toEqual(-32873);
   });
 });
