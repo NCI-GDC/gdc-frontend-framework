@@ -513,6 +513,6 @@ describe("test days to years conversion", () => {
     expect(adjustDaysToYears(36500, "years")).toEqual(100);
     expect(adjustDaysToYears(32873, "years")).toEqual(90);
     expect(adjustDaysToYears(-25568, "years")).toEqual(-70);
-    expect(adjustYearsToDays(-32873, "days")).toEqual(-32873);
+    expect(adjustDaysToYears(-32873, "days")).toEqual(-32873);
   });
 });
