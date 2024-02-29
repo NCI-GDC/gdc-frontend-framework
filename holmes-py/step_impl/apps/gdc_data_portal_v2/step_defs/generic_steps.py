@@ -465,7 +465,7 @@ def validate_message_id_text_is_present_on_the_page(
 def store_home_page_data_portal_statistics(table):
     """
     Stores data portal summary statistics for use in future tests.
-    Pairs with the test 'verify_counts_match_home_page_count'
+    Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'
 
     v[0] - The name of the home page statistic to collect
     v[1] - The name the statistic will be stored under
@@ -479,7 +479,7 @@ def store_home_page_data_portal_statistics(table):
 def store_button_labels_in_tables_for_comparison(table):
     """
     Stores button label text for comparison in future tests.
-    Pairs with the test 'verify_counts_match_button_label'
+    Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'
 
     v[0] - The name of how the label will be stored
     v[1] - The row of the table
@@ -496,10 +496,18 @@ def store_button_labels_in_tables_for_comparison(table):
 def store_cohort_bar_case_count_for_comparison():
     """
     Stores current cohort bar case count for comparison in future tests.
-    Pairs with the test 'verify_counts_match_button_label'
+    Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'
     """
     data_store.spec["Cohort Bar Case Count"] = APP.shared.get_cohort_bar_case_count()
 
+@step("Collect <cohort_name> Case Count for comparison")
+def store_cohort_bar_case_count_for_comparison(cohort_name:str):
+    """
+    Stores current cohort bar case count for comparison in future tests.
+    Store the information using a key based on the cohort name.
+    Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'
+    """
+    data_store.spec[f"{cohort_name} Case Count"] = APP.shared.get_cohort_bar_case_count()
 
 @step("The cohort bar case count should be <case_count>")
 def is_cohort_bar_case_count_present_on_the_page(case_count: str):
@@ -599,6 +607,14 @@ def click_create_or_save_in_cohort_modal(table):
     for k, v in enumerate(table):
         APP.shared.click_switch_for_column_selector(v[0])
     APP.shared.click_column_selector_button()
+
+@step("Change number of entries shown in the table to <number_of_entries>")
+def change_number_of_entries_shown(change_number_of_entries_shown:str):
+    """
+    Changes number of entries shown in the table using the show entries button,
+    and selecting an option from the dropdown list.
+    """
+    APP.shared.change_number_of_entries_shown(change_number_of_entries_shown)
 
 
 @step("Perform action and validate modal text <table>")

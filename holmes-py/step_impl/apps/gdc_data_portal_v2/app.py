@@ -18,6 +18,7 @@ from ..gdc_data_portal_v2.pages.cohort_bar import CohortBar
 from ..gdc_data_portal_v2.pages.projects_page import ProjectsPage
 from ..gdc_data_portal_v2.pages.mutation_frequency_page import MutationFrequencyPage
 from ..gdc_data_portal_v2.pages.manage_sets_page import ManageSetsPage
+from ..gdc_data_portal_v2.pages.cohort_comparison_page import CohortComparisonPage
 
 
 class GDCDataPortalV2App:
@@ -51,3 +52,4 @@ class GDCDataPortalV2App:
         self.projects_page = ProjectsPage(self.driver, self.URL)
         self.mutation_frequency_page = MutationFrequencyPage(self.driver, self.URL)
         self.manage_sets_page = ManageSetsPage(self.driver, self.URL)
+        self.cohort_comparison_page = CohortComparisonPage(self.driver, self.URL)

@@ -121,6 +121,8 @@ class GenericLocators:
 
     SHOWING_NUMBER_OF_ITEMS = "[data-testid='text-showing-count']"
 
+    BUTTON_ENTRIES_SHOWN = '[data-testid="button-show-entries"]'
+    DROPDOWN_LIST_CHANGE_NUMBER_OF_ENTRIES_SHOWN = lambda number_of_entries: f'[data-testid="area-show-number-of-entries"] >> text="{number_of_entries}"'
 
 class BasePage:
     def __init__(self, driver) -> None:
@@ -506,6 +508,17 @@ class BasePage:
         switch_name = self.normalize_identifier_underscore(switch_name)
         locator = GenericLocators.SWITCH_COLUMN_SELECTOR(switch_name)
         self.click(locator)
+
+    def change_number_of_entries_shown(self, entries_to_show):
+        """
+        Changes number of entries shown in the table using the show entries button,
+        and selecting an option from the dropdown list.
+        """
+        entries_button_locator = GenericLocators.BUTTON_ENTRIES_SHOWN
+        self.click(entries_button_locator)
+
+        dropdown_entries_to_show_locator = GenericLocators.DROPDOWN_LIST_CHANGE_NUMBER_OF_ENTRIES_SHOWN(entries_to_show)
+        self.click(dropdown_entries_to_show_locator)
 
     def make_selection_within_filter_group(self, filter_group_name, selection):
         """Clicks a checkbox within a filter group"""
