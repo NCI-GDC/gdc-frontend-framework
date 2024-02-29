@@ -2,6 +2,8 @@ from playwright.sync_api import Page
 
 from ....base.base_page import BasePage
 from ....base.base_page import GenericLocators
+
+
 class FileSummaryLocators:
     # Ideally, after PEAR-1085 is developed, these can be replaced with unique IDs
     ADD_TO_CART_BUTTON_IDENT = 'text="Add to Cart" >> nth=0'
@@ -12,8 +14,8 @@ class FileSummaryLocators:
 
     DOWNLOAD_BUTTON_IDENT = 'text="Download" >> nth=0'
 
-class FileSummaryPage(BasePage):
 
+class FileSummaryPage(BasePage):
     def __init__(self, driver: Page, url):
         self.driver = driver  # driver is PW page
 

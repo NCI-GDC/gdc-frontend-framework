@@ -256,6 +256,16 @@ export interface AnnotationDefaults {
   readonly category: string;
   readonly case_submitter_id: string;
   readonly status: string;
+  readonly project?: {
+    readonly primary_site: Array<string>;
+    readonly dbgap_accession_number: string;
+    readonly project_id: string;
+    readonly disease_type: Array<string>;
+    readonly name: string;
+    readonly releasable: boolean;
+    readonly state: string;
+    readonly released: boolean;
+  };
 }
 
 interface transcript {

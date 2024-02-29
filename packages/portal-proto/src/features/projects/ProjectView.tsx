@@ -334,7 +334,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
                   manifestDownloadActive ? (
                     <Loader size={20} />
                   ) : (
-                    <DownloadIcon size="1.25em" />
+                    <DownloadIcon size="1.25em" aria-label="download" />
                   )
                 }
                 className={`text-primary bg-base-max border-primary hover:bg-primary-darkest hover:text-base-max ${focusStyles}`}

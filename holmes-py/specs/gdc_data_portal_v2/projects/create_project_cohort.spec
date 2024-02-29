@@ -20,10 +20,7 @@ tags: gdc-data-portal-v2, regression, projects, cohort
   |filter_name      |selection            |
   |-----------------|---------------------|
   |Program          |REBC                 |
-* Select value from table by row and column
-  |row|column|
-  |------|---|
-  |1     |1  |
+* Select "REBC-THYR" projects row on the Projects page
 * Select "Create New Cohort" on the Projects page
 * Name the cohort "REBC Project Page Cohort"
 * Perform action and validate modal text

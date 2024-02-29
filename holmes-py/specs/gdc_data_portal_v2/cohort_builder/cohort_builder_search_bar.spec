@@ -14,7 +14,7 @@ tags: gdc-data-portal-v2, cohort-builder, search-bar
 
 ## Cohort Builder - Search Bar
 
-* Enter text "Best Overall Response" in the search bar on the Cohort Builder page
+* Enter "Best Overall Response" in the text box "Cohort Builder Search Bar"
 
 * Expected result "Best Overall Response" in the search bar on the Cohort Builder page
 
@@ -23,7 +23,7 @@ tags: gdc-data-portal-v2, cohort-builder, search-bar
   |-----------------------|-----------------------|
   |Best Overall Response  |Best Overall Response  |
 
-* Enter text "expressed in number" in the search bar on the Cohort Builder page
+* Enter "expressed in number" in the text box "Cohort Builder Search Bar"
 
 * Expected result "Age at Diagnosis" in the search bar on the Cohort Builder page
 
@@ -32,7 +32,7 @@ tags: gdc-data-portal-v2, cohort-builder, search-bar
   |-----------------------|-----------------------|
   |Age at Diagnosis       |Age at Diagnosis       |
 
-* Enter text "MMRF-COMMPASS" in the search bar on the Cohort Builder page
+* Enter "MMRF-COMMPASS" in the text box "Cohort Builder Search Bar"
 
 * Expected result "Project" in the search bar on the Cohort Builder page
 
@@ -41,7 +41,7 @@ tags: gdc-data-portal-v2, cohort-builder, search-bar
   |-----------------------|-----------------------|
   |Project                |Project                |
 
-* Enter text "age at index" in the search bar on the Cohort Builder page
+* Enter "age at index" in the text box "Cohort Builder Search Bar"
 
 * Expected result "cohort-builder-search-no-results" in the search bar on the Cohort Builder page
 
@@ -56,7 +56,7 @@ with automation, performing it manually works as expected.
 * Navigate to "Analysis" from "Header" "section"
 * Navigate to "Cohort" from "Header" "section"
 
-* Enter text "age at index" in the search bar on the Cohort Builder page
+* Enter "age at index" in the text box "Cohort Builder Search Bar"
 
 * Expected result "age at index" in the search bar on the Cohort Builder page
 
