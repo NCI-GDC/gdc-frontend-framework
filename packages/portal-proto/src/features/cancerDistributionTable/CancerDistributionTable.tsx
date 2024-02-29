@@ -10,7 +10,6 @@ import FunctionButton from "@/components/FunctionButton";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import {
   calculatePercentageAsNumber,
-  processFilters,
   statusBooleansToDataStatus,
 } from "src/utils";
 import CohortCreationButton from "@/components/CohortCreationButton";
@@ -46,11 +45,6 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   genomicFilters,
 }: CancerDistributionTableProps) => {
   const [createSet] = useCreateCaseSetFromFiltersMutation();
-
-  const contextFilters = useDeepCompareMemo(
-    () => processFilters(genomicFilters, cohortFilters),
-    [cohortFilters, genomicFilters],
-  );
 
   const { data: projects, isFetching: projectsFetching } = useGetProjectsQuery({
     filters: {
@@ -151,11 +145,12 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     async (
       project: string,
       id: string,
-      contextFilters: FilterSet,
+      cohortFilters: FilterSet = undefined,
       genomicFilters: FilterSet = undefined,
     ): Promise<FilterSet> => {
       return await createSet({
-        filters: buildCohortGqlOperator(contextFilters),
+        case_filters: buildCohortGqlOperator(cohortFilters),
+        filters: buildCohortGqlOperator(genomicFilters),
       })
         .unwrap()
         .then((setId) => {
@@ -216,11 +211,12 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     async (
       project: string,
       filter: "Loss" | "Gain",
-      contextFilters: FilterSet,
+      cohortFilters: FilterSet = undefined,
       genomicFilters: FilterSet = undefined,
     ): Promise<FilterSet> => {
       return await createSet({
-        filters: buildCohortGqlOperator(contextFilters),
+        case_filters: buildCohortGqlOperator(cohortFilters),
+        filters: buildCohortGqlOperator(genomicFilters),
       })
         .unwrap()
         .then((setId) => {
@@ -310,7 +306,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
               createSSMAffectedFilters(
                 row.original.project,
                 id,
-                contextFilters,
+                cohortFilters,
                 genomicFilters,
               )
             }
@@ -355,7 +351,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                     createCNVGainLossFilters(
                       row.original.project,
                       "Gain",
-                      contextFilters,
+                      cohortFilters,
                       genomicFilters,
                     )
                   }
@@ -398,7 +394,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                     createCNVGainLossFilters(
                       row.original.project,
                       "Loss",
-                      contextFilters,
+                      cohortFilters,
                       genomicFilters,
                     )
                   }
@@ -456,7 +452,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       symbol,
       createSSMAffectedFilters,
       id,
-      contextFilters,
+      cohortFilters,
       genomicFilters,
       createCNVGainLossFilters,
     ],

@@ -106,11 +106,11 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const generateFilters = useDeepCompareCallback(
     async (type: columnFilterType, geneId: string) => {
       if (type === null) return;
-      const caseSetCreationFilters = buildCohortGqlOperator(
-        joinFilters(cohortFilters, genesOnlyFilters),
-      );
 
-      return await createSet({ filters: caseSetCreationFilters })
+      return await createSet({
+        filters: buildCohortGqlOperator(genomicFilters),
+        case_filters: buildCohortGqlOperator(cohortFilters),
+      })
         .unwrap()
         .then((setId) => {
           const commonFilters: FilterSet = {

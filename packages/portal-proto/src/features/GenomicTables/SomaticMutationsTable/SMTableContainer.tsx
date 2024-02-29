@@ -163,7 +163,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const generateFilters = useDeepCompareCallback(
     async (ssmId: string) => {
       return await createSet({
-        filters: buildCohortGqlOperator(combinedFilters),
+        case_filters: buildCohortGqlOperator(cohortFilters),
+        filters: buildCohortGqlOperator(genomicFilters),
       })
         .unwrap()
         .then((setId) => {
@@ -184,7 +185,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           } as FilterSet;
         });
     },
-    [combinedFilters, createSet],
+    [createSet, cohortFilters, genomicFilters],
   );
   /* Create Cohort end  */
 
@@ -356,7 +357,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [rowId, setRowId] = useState(null);
   const handleExpand = (row: Row<SomaticMutation>) => {
-    console.log("handleExpand", row.original);
     if (
       Object.keys(expanded).length > 0 &&
       row.original.mutation_id === rowId

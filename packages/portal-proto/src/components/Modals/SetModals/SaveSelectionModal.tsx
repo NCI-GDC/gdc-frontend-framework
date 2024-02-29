@@ -18,6 +18,7 @@ import ErrorMessage from "@/components/ErrorMessage";
 import { SET_COUNT_LIMIT } from "./constants";
 
 interface SaveSelectionAsSetModalProps {
+  readonly cohortFilters?: Record<string, any>;
   readonly filters: Record<string, any>;
   readonly initialSetName: string;
   readonly saveCount: number;
@@ -29,6 +30,7 @@ interface SaveSelectionAsSetModalProps {
 }
 
 const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
+  cohortFilters,
   filters,
   initialSetName,
   saveCount,
@@ -134,6 +136,7 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
         <DarkFunctionButton
           onClick={() =>
             createSet({
+              case_filters: cohortFilters ?? {},
               filters: filters ?? {},
               size: form.values.top,
               score: sort,
