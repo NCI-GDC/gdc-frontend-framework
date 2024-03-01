@@ -9,6 +9,9 @@ describe("<TableActionButtons />", () => {
   beforeEach(() => {
     jest.spyOn(core, "useCoreSelector").mockReturnValue([] as CartFile[]);
     jest.spyOn(core, "useCoreDispatch").mockReturnValue(jest.fn());
+    jest
+      .spyOn(core, "useLazyFetchUserDetailsQuery")
+      .mockImplementation(jest.fn().mockReturnValue([jest.fn()]));
   });
 
   it("should remove already present file from the cart", async () => {

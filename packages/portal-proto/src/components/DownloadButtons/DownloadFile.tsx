@@ -1,14 +1,14 @@
 import { userCanDownloadFile } from "src/utils/userProjectUtils";
 import {
   GdcFile,
-  useCoreSelector,
-  selectUserDetailsInfo,
   useCoreDispatch,
   showModal,
   Modals,
+  useLazyFetchUserDetailsQuery,
 } from "@gff/core";
 import { DownloadButton } from "./DownloadButton";
 import { useState } from "react";
+import { useDeepCompareCallback } from "use-deep-compare";
 
 interface DownloadFileProps {
   file: GdcFile;
@@ -28,7 +28,7 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
   showLoading = true,
 }: DownloadFileProps) => {
   const dispatch = useCoreDispatch();
-  const userInfo = useCoreSelector((state) => selectUserDetailsInfo(state));
+  const [fetchUserDetails] = useLazyFetchUserDetailsQuery();
 
   const [active, setActive] = useState(false);
 
@@ -38,7 +38,29 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
         !inactiveText && !activeText ? "w-8 p-0 h-6" : "p-2"
       }`;
 
-  const { username } = userInfo?.data || {};
+  const onClick = useDeepCompareCallback(async () => {
+    fetchUserDetails()
+      .unwrap()
+      .then((userInfo) => {
+        setfileToDownload && setfileToDownload(file);
+        if (
+          userInfo?.data?.username &&
+          userCanDownloadFile({ user: userInfo?.data, file })
+        ) {
+          dispatch(showModal({ modal: Modals.AgreementModal }));
+        } else if (
+          userInfo?.data?.username &&
+          !userCanDownloadFile({ user: userInfo?.data, file })
+        ) {
+          dispatch(showModal({ modal: Modals.NoAccessToProjectModal }));
+        } else {
+          dispatch(showModal({ modal: Modals.NoAccessModal }));
+        }
+      });
+  }, [fetchUserDetails, file, dispatch, setfileToDownload]);
+
+  // TODO: need to send set active to agreement modal in a better way
+  // TODO: rethink of a better architecture for it
   if (file.access === "open") {
     return (
       <DownloadButton
@@ -60,22 +82,6 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
     );
   }
 
-  const onClick = () => {
-    setfileToDownload && setfileToDownload(file);
-    if (username && userCanDownloadFile({ user: userInfo.data, file })) {
-      dispatch(showModal({ modal: Modals.AgreementModal }));
-    } else if (
-      username &&
-      !userCanDownloadFile({ user: userInfo.data, file })
-    ) {
-      dispatch(showModal({ modal: Modals.NoAccessToProjectModal }));
-    } else {
-      dispatch(showModal({ modal: Modals.NoAccessModal }));
-    }
-  };
-
-  // TODO: need to send set active to agreement modal in a better way
-  // TODO: rethink of a better architecture for it
   return (
     <DownloadButton
       customStyle={customStyle || customStyleFile}

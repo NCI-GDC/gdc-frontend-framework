@@ -7,9 +7,9 @@ import {
   GDC_AUTH,
   showModal,
   Modals,
-  selectUserDetailsInfo,
-  fetchToken,
   selectCurrentModal,
+  useFetchUserDetailsQuery,
+  useLazyFetchTokenQuery,
 } from "@gff/core";
 import { Button, LoadingOverlay, Menu, Badge } from "@mantine/core";
 import { ReactNode, useContext, useEffect, useState } from "react";
@@ -72,12 +72,13 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({
   headerElements,
   indexPath,
-  Options = () => <div />,
+  Options,
 }: HeaderProps) => {
   const dispatch = useCoreDispatch();
   const router = useRouter();
   const [openFeedbackModal, setOpenFeedbackModal] = useState(false);
-  const userInfo = useCoreSelector((state) => selectUserDetailsInfo(state));
+  const { data: userInfo } = useFetchUserDetailsQuery();
+
   const currentCart = useCoreSelector((state) => selectCart(state));
   const modal = useCoreSelector((state) => selectCurrentModal(state));
   const { isSuccess: totalSuccess } = useTotalCounts(); // request total counts and facet dictionary
@@ -93,6 +94,8 @@ export const Header: React.FC<HeaderProps> = ({
   }, []);
 
   const { entityMetadata, setEntityMetadata } = useContext(SummaryModalContext);
+
+  const [fetchToken] = useLazyFetchTokenQuery();
 
   return (
     <div className="px-4 py-3 border-b border-gdc-grey-lightest flex flex-col">
@@ -209,12 +212,6 @@ export const Header: React.FC<HeaderProps> = ({
                 <DropdownMenuItem
                   icon={<FaUserCheck size="1.25em" />}
                   onClick={async () => {
-                    // This is just done for the purpose of checking if the session is still active
-                    const token = await fetchToken();
-                    if (token.status === 401) {
-                      dispatch(showModal({ modal: Modals.SessionExpireModal }));
-                      return;
-                    }
                     dispatch(showModal({ modal: Modals.UserProfileModal }));
                   }}
                   data-testid="userprofilemenu"
@@ -226,28 +223,31 @@ export const Header: React.FC<HeaderProps> = ({
                   data-testid="downloadTokenMenuItem"
                   onClick={async () => {
                     if (
-                      Object.keys(userInfo.data?.projects.gdc_ids).length > 0
+                      Object.keys(userInfo?.data?.projects.gdc_ids).length > 0
                     ) {
-                      const token = await fetchToken();
-                      if (token.status === 401) {
-                        dispatch(
-                          showModal({ modal: Modals.SessionExpireModal }),
-                        );
-                        return;
-                      }
-                      saveAs(
-                        new Blob([token.text], {
-                          type: "text/plain;charset=us-ascii",
-                        }),
-                        `gdc-user-token.${new Date().toISOString()}.txt`,
-                      );
+                      await fetchToken()
+                        .unwrap()
+                        .then((token) => {
+                          if (token.status === 401) {
+                            dispatch(
+                              showModal({ modal: Modals.SessionExpireModal }),
+                            );
+                            return;
+                          }
+                          saveAs(
+                            new Blob([token.data], {
+                              type: "text/plain;charset=us-ascii",
+                            }),
+                            `gdc-user-token.${new Date().toISOString()}.txt`,
+                          );
+                        });
                     } else {
                       cleanNotifications();
                       showNotification({
                         message: (
                           <p>
-                            {userInfo.data.username} does not have access to any
-                            protected data within the GDC. Click{" "}
+                            {userInfo?.data.username} does not have access to
+                            any protected data within the GDC. Click{" "}
                             <a
                               href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
                               target="_blank"
@@ -434,9 +434,7 @@ export const Header: React.FC<HeaderProps> = ({
           <QuickSearch />
         </div>
       </div>
-      <div className="flex flex-grow">
-        <Options />
-      </div>
+      <div className="flex flex-grow">{Options && <Options />}</div>
       <SendFeedbackModal
         opened={openFeedbackModal}
         onClose={() => setOpenFeedbackModal(false)}

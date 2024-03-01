@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   GdcFile,
   HistoryDefaults,
@@ -34,6 +34,41 @@ import AnalysisInputFiles from "./AnalysisInput";
 import ReadGroups from "./ReadGroups";
 import FileVersions from "./FileVersions";
 
+interface LeftSideElementForHeaderProps {
+  readonly isFileInCart: boolean;
+  readonly file: GdcFile;
+  readonly bamActive: boolean;
+  readonly setFileToDownload: React.Dispatch<React.SetStateAction<GdcFile>>;
+}
+
+const LeftSideElementForHeader: React.FC<LeftSideElementForHeaderProps> = ({
+  isFileInCart,
+  file,
+  bamActive,
+  setFileToDownload,
+}: LeftSideElementForHeaderProps) => (
+  <div className="flex gap-4">
+    {!isFileInCart ? (
+      <AddToCartButton files={mapGdcFileToCartFile([file])} />
+    ) : (
+      <RemoveFromCartButton files={mapGdcFileToCartFile([file])} />
+    )}
+    {file.data_format === "BAM" &&
+      file.data_type === "Aligned Reads" &&
+      file?.index_files?.length > 0 && (
+        <BAMSlicingButton isActive={bamActive} file={file} />
+      )}
+
+    <DownloadFile
+      inactiveText="Download"
+      activeText="Processing"
+      file={file}
+      customStyle={`text-primary bg-base-max hover:bg-primary-darkest hover:text-base-max font-medium text-sm ${focusStyles}`}
+      setfileToDownload={setFileToDownload}
+    />
+  </div>
+);
+
 const ImageViewer = dynamic(
   () => import("../../components/ImageViewer/ImageViewer"),
   {
@@ -60,95 +95,81 @@ export const FileView: React.FC<FileViewProps> = ({
   const [fileToDownload, setFileToDownload] = useState(file);
   const isFileInCart = fileInCart(currentCart, file.file_id);
 
-  const formatDataForFileProperties = () =>
-    formatDataForHorizontalTable(file, [
-      {
-        field: "file_name",
-        name: "Name",
-        modifier: (v) => <span className="break-all">{v}</span>,
-      },
-      {
-        field: "access",
-        name: "Access",
-      },
-      {
-        field: "id",
-        name: "UUID",
-      },
-      {
-        field: "data_format",
-        name: "Data Format",
-      },
-      {
-        field: "file_size",
-        name: "Size",
-        modifier: fileSize,
-      },
-      {
-        field: "md5sum",
-        name: "MD5 Checksum",
-      },
-      {
-        field: "project_id",
-        name: "Project",
-        modifier: (v) => <GenericLink path={`/projects/${v}`} text={v} />,
-      },
-    ]);
+  const formatDataForFileProperties = useCallback(
+    () =>
+      formatDataForHorizontalTable(file, [
+        {
+          field: "file_name",
+          name: "Name",
+          modifier: (v) => <span className="break-all">{v}</span>,
+        },
+        {
+          field: "access",
+          name: "Access",
+        },
+        {
+          field: "id",
+          name: "UUID",
+        },
+        {
+          field: "data_format",
+          name: "Data Format",
+        },
+        {
+          field: "file_size",
+          name: "Size",
+          modifier: fileSize,
+        },
+        {
+          field: "md5sum",
+          name: "MD5 Checksum",
+        },
+        {
+          field: "project_id",
+          name: "Project",
+          modifier: (v) => <GenericLink path={`/projects/${v}`} text={v} />,
+        },
+      ]),
+    [file],
+  );
 
-  const formatDataForDataInformation = () =>
-    formatDataForHorizontalTable(file, [
-      {
-        field: "data_category",
-        name: "Data Category",
-      },
-      {
-        field: "data_type",
-        name: "Data Type",
-      },
-      {
-        field: "experimental_strategy",
-        name: "Experimental Strategy",
-      },
-      {
-        field: "platform",
-        name: "Platform",
-      },
-    ]);
+  const formatDataForDataInformation = useCallback(
+    () =>
+      formatDataForHorizontalTable(file, [
+        {
+          field: "data_category",
+          name: "Data Category",
+        },
+        {
+          field: "data_type",
+          name: "Data Type",
+        },
+        {
+          field: "experimental_strategy",
+          name: "Experimental Strategy",
+        },
+        {
+          field: "platform",
+          name: "Platform",
+        },
+      ]),
+    [file],
+  );
 
-  const formatDataForAnalysis = () =>
-    formatDataForHorizontalTable(file, [
-      {
-        field: "analysis.workflow_type",
-        name: "Workflow Type",
-      },
-      {
-        field: "analysis.updated_datetime",
-        name: "Workflow Completion Date",
-        modifier: (v) => v.split("T")[0],
-      },
-    ]);
-
-  const LeftSideElementForHeader = () => (
-    <div className="flex gap-4">
-      {!isFileInCart ? (
-        <AddToCartButton files={mapGdcFileToCartFile([file])} />
-      ) : (
-        <RemoveFromCartButton files={mapGdcFileToCartFile([file])} />
-      )}
-      {file.data_format === "BAM" &&
-        file.data_type === "Aligned Reads" &&
-        file?.index_files?.length > 0 && (
-          <BAMSlicingButton isActive={bamActive} file={file} />
-        )}
-
-      <DownloadFile
-        inactiveText="Download"
-        activeText="Processing"
-        file={file}
-        customStyle={`text-primary bg-base-max hover:bg-primary-darkest hover:text-base-max font-medium text-sm ${focusStyles}`}
-        setfileToDownload={setFileToDownload}
-      />
-    </div>
+  const formatDataForAnalysis = useCallback(
+    () =>
+      formatDataForHorizontalTable(file, [
+        {
+          field: "analysis.workflow_type",
+          name: "Workflow Type",
+        },
+        {
+          field: "analysis.updated_datetime",
+          name: "Workflow Completion Date",
+          modifier: (v) => v.split("T")[0],
+        },
+      ]),
+    [file],
   );
 
   return (
@@ -157,7 +178,14 @@ export const FileView: React.FC<FileViewProps> = ({
         iconText="fl"
         headerTitle={file.file_name}
         isModal={isModal}
-        leftElement={<LeftSideElementForHeader />}
+        leftElement={
+          <LeftSideElementForHeader
+            file={file}
+            isFileInCart={isFileInCart}
+            bamActive={bamActive}
+            setFileToDownload={setFileToDownload}
+          />
+        }
         isFile={true}
       />
       <div className={`${!isModal ? "mt-40" : "mt-4"} mx-4`}>
