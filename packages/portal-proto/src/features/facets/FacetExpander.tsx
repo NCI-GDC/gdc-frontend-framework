@@ -34,7 +34,7 @@ const FacetExpander: React.FC<FacetExpanderProps> = ({
   return (
     <div
       className={`mt-3 flex flex-row justify-end ${
-        remainingValues && "border-t-2"
+        remainingValues > 0 && "border-t-2"
       } p-1.5`}
     >
       {remainingValues > 0 && !isGroupExpanded ? (
