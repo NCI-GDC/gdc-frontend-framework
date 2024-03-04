@@ -281,11 +281,15 @@ export const buildRangeBuckets = (
   return [bucketEntries, r];
 };
 
-export const adjustYearsToDays = (value: number, units: string): number =>
-  units == "years" ? getLowerAgeFromYears(value) : value;
+export const adjustYearsToDaysIfUnitsAreYears = (
+  value: number,
+  units: string,
+): number => (units == "years" ? getLowerAgeFromYears(value) : value);
 
-export const adjustDaysToYears = (value: number, units: string): number =>
-  units === "years" ? getLowerAgeYears(value) : value;
+export const adjustDaysToYearsIfUnitsAreYears = (
+  value: number,
+  units: string,
+): number => (units === "years" ? getLowerAgeYears(value) : value);
 
 export const leapThenPair = (years: number, days: number): number[] =>
   days === 365 ? [years + 1, 0] : [years, days];
