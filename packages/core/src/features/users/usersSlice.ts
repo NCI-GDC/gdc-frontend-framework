@@ -55,7 +55,7 @@ const userAuthApi = coreCreateApi({
     } catch (e) {
       /*
         Because an "error" response is valid for the auth requests we don't want to
-        put the request in an error state or it will attempt the request over and over again 
+        put the request in an error state or it will attempt the request over and over again
       */
     }
 
