@@ -37,5 +37,55 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
 
 ## Select cohort to compare with and run
 * Select cohort "CC_Compare_2" for comparison on the cohort comparison selection screen
-* Select "Run"
-* Wait for loading spinner
+* Run analysis on Cohort Comparison
+
+## Verify Analysis Cards Visibility
+* Verify analysis cards are visible or not visible as expected on cohort comparison
+  |analysis_card          |should_be_visible_or_not_visible |
+  |-----------------------|---------------------------------|
+  |analysis-survival      |Visible                          |
+  |Ethnicity              |Not Visible                      |
+  |Gender                 |Visible                          |
+  |Race                   |Not Visible                      |
+  |Vital Status           |Visible                          |
+  |Age At Diagnosis       |Visible                          |
+* Select analysis cards to enable or disable on cohort comparison
+  |analysis_card          |
+  |-----------------------|
+  |survival               |
+  |Gender                 |
+  |Vital Status           |
+  |Age At Diagnosis       |
+* Verify analysis cards are visible or not visible as expected on cohort comparison
+  |analysis_card          |should_be_visible_or_not_visible |
+  |-----------------------|---------------------------------|
+  |analysis-survival      |Not Visible                      |
+  |Ethnicity              |Not Visible                      |
+  |Gender                 |Not Visible                      |
+  |Race                   |Not Visible                      |
+  |Vital Status           |Not Visible                      |
+  |Age At Diagnosis       |Not Visible                      |
+* Select analysis cards to enable or disable on cohort comparison
+  |analysis_card          |
+  |-----------------------|
+  |survival               |
+  |Ethnicity              |
+  |Gender                 |
+  |Race                   |
+  |Vital Status           |
+  |Age At Diagnosis       |
+* Verify analysis cards are visible or not visible as expected on cohort comparison
+  |analysis_card          |should_be_visible_or_not_visible |
+  |-----------------------|---------------------------------|
+  |analysis-survival      |Visible                          |
+  |Ethnicity              |Visible                          |
+  |Gender                 |Visible                          |
+  |Race                   |Visible                          |
+  |Vital Status           |Visible                          |
+  |Age At Diagnosis       |Visible                          |
+
+Checklist:
+- Compare cohort counts to what is on page
+done Add all filters, verify they are present and not present
+- Verify cohort creation. Both filters and case counts
+- Venn Diagram
