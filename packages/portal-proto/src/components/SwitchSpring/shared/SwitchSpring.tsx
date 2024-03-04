@@ -44,11 +44,11 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
         <Switch
           data-testid="button-switchspring"
           classNames={{
-            thumb: `border-2 rounded-sm w-5 h-5 ${
+            thumb: `border-2 rounded w-5 h-5 ${
               disabled ? "border-gray-300" : "border-activeColor"
-            } ${margin}`,
+            } ${margin} ${isActive ? "left-auto right-0" : "left-0"}`,
             input: "",
-            track: `overflow-visible border border-base-lightest ${
+            track: `rounded box-content overflow-visible border border-base-lightest ${
               disabled ? "cursor-not-allowed" : "cursor-pointer"
             } ${isActive ? "bg-activeColor" : "bg-gray-300"}`,
             root: disabled ? "cursor-not-allowed" : "cursor-pointer",
