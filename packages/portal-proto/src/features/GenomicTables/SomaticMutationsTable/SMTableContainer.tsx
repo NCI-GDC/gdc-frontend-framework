@@ -14,7 +14,6 @@ import {
   useCoreDispatch,
   useCreateCaseSetFromFiltersMutation,
   GDCSsmsTable,
-  getSSMTestedCases,
   selectCurrentCohortFilters,
 } from "@gff/core";
 import { useEffect, useState, useContext, useMemo } from "react";
@@ -300,7 +299,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       method: "POST",
       params: {
         filters: buildCohortGqlOperator(genomicFilters) ?? {},
-        case_filters: getSSMTestedCases(cohortFilters),
+        case_filters: buildCohortGqlOperator(cohortFilters) ?? {},
         gene_id,
         attachment: true,
         filename: `frequent-mutations.${convertDateToString(new Date())}.tsv`,
@@ -333,7 +332,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       method: "POST",
       params: {
         filters: buildCohortGqlOperator(genomicFilters) ?? {},
-        case_filters: getSSMTestedCases(cohortFilters),
+        case_filters: buildCohortGqlOperator(cohortFilters) ?? {},
         attachment: true,
         filename: `frequent-mutations.${convertDateToString(new Date())}.tsv`,
       },
