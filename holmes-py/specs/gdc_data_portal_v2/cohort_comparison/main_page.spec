@@ -19,12 +19,27 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
   |Biospecimen            |Composition          |peripheral whole blood         |
   |Biospecimen            |Composition          |whole bone marrow              |
   |Biospecimen            |Composition          |peripheral blood components nos|
+* Collect case counts for the following filters on the Cohort Builder page for cohort "CC_Compare_1"
+  |tab_name               |facet_name           |selection                      |
+  |-----------------------|---------------------|-------------------------------|
+  |Biospecimen            |Composition          |solid tissue                   |
+  |Biospecimen            |Composition          |peripheral whole blood         |
+  |Biospecimen            |Composition          |whole bone marrow              |
+  |Biospecimen            |Composition          |peripheral blood components nos|
+
 * Create and save a cohort named "CC_Compare_2" with these filters
   |tab_name               |facet_name           |selection            |
   |-----------------------|---------------------|---------------------|
   |Available Data         |Platform             |illumina             |
   |Available Data         |Access               |open                 |
   |Available Data         |Access               |controlled           |
+* Collect case counts for the following filters on the Cohort Builder page for cohort "CC_Compare_2"
+  |tab_name               |facet_name           |selection            |
+  |-----------------------|---------------------|---------------------|
+  |Available Data         |Platform             |illumina             |
+  |Available Data         |Access               |open                 |
+  |Available Data         |Access               |controlled           |
+
 * Collect "CC_Compare_2" Case Count for comparison
 * Switch cohort to "CC_Compare_1" from the Cohort Bar dropdown list
 * Collect "CC_Compare_1" Case Count for comparison
@@ -110,10 +125,21 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
 * Switch cohort to "CC_Ethnicity_not_hispanic_1" from the Cohort Bar dropdown list
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "CC_Ethnicity_not_hispanic_1 Count" are "Equal"
+* Validate the cohort query filter area has these filters
+  |facet_name               |selection              |position in filter area  |
+  |-------------------------|-----------------------|-------------------------|
+  |Composition              |solid tissue           |1                        |
+  |Ethnicity                |not hispanic or latino |2                        |
 
 * Switch cohort to "CC_Vital_Status_Dead_2" from the Cohort Bar dropdown list
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "CC_Vital_Status_Dead_2 Count" are "Equal"
+* Validate the cohort query filter area has these filters
+  |facet_name               |selection              |position in filter area  |
+  |-------------------------|-----------------------|-------------------------|
+  |Platform                 |illumina               |1                        |
+  |Access                   |opencontrolled         |2                        |
+  |Vital Status             |dead                   |3                        |
 
 ## Verify Venn Diagram
 * Select the link "Open Venn Diagram"
@@ -123,6 +149,6 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
 Checklist:
 done Compare cohort counts to what is on page
 done Add all filters, verify they are present and not present
-done Verify cohort creation. Both filters and case counts
-- Compare Cohort builder case counts and what is on cohort comparison
 done Venn Diagram
+done Verify cohort creation filters
+- Compare Cohort builder case counts and what is on cohort comparison

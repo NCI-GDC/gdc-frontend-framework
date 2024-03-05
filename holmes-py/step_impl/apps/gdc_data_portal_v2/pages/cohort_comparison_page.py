@@ -47,14 +47,14 @@ class CohortComparisonPage(BasePage):
         cohort_case_count_main_screen_locator = CohortComparisonLocators.TEXT_COHORT_CASE_COUNT_MAIN_SCREEN(cohort_number)
         return self.get_text(cohort_case_count_main_screen_locator)
 
+    def click_run_comparison_cohort_comparison_selection_screen(self):
+        button_run_comparison_locator = CohortComparisonLocators.BUTTON_RUN_COHORT_COMPARISON_SELECTION_SCREEN
+        self.click(button_run_comparison_locator)
+
     def wait_for_survival_plot_loading_spinner_to_detatch_cohort_comparison(self):
         """Waits for the survival plot loading spinner to disappear on the page"""
         locator = CohortComparisonLocators.LOADING_SPINNER_SURVIVAL_PLOT
         self.wait_until_locator_is_detached(locator)
-
-    def click_run_comparison_cohort_comparison_selection_screen(self):
-        button_run_comparison_locator = CohortComparisonLocators.BUTTON_RUN_COHORT_COMPARISON_SELECTION_SCREEN
-        self.click(button_run_comparison_locator)
 
     def click_analysis_card_button_enable_disable(self, analysis_card_name:str):
         """

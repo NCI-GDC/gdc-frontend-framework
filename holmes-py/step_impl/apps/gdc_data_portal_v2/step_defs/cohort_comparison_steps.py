@@ -1,5 +1,5 @@
 import time
-from getgauge.python import step, before_spec,data_store
+from getgauge.python import step, before_spec, data_store
 
 from ..app import GDCDataPortalV2App
 from ....base.webdriver import WebDriver
