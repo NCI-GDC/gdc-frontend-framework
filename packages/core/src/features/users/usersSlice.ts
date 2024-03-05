@@ -72,7 +72,6 @@ const userAuthApi = coreCreateApi({
 });
 
 export const {
-  useFetchTokenQuery,
   useFetchUserDetailsQuery,
   useLazyFetchTokenQuery,
   useLazyFetchUserDetailsQuery,
