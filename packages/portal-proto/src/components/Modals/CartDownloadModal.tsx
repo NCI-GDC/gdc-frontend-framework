@@ -5,6 +5,8 @@ import { LoginButton } from "@/components/LoginButton";
 import { DownloadButton } from "@/components/DownloadButtons";
 import { BaseModal } from "./BaseModal";
 import DownloadAccessAgreement from "./DownloadAccessAgreement";
+import { cartAboveLimit } from "@/features/cart/utils";
+import CartSizeLimitModal from "./CartSizeLimitModal";
 
 const CartDownloadModal = ({
   openModal,
@@ -23,8 +25,11 @@ const CartDownloadModal = ({
   const [checked, setChecked] = useState(false);
   const numFilesCanAccess = filesByCanAccess.true?.length || 0;
   const numFilesCannotAccess = filesByCanAccess.false?.length || 0;
+  const sizeLimit = cartAboveLimit(filesByCanAccess);
 
-  return (
+  return sizeLimit ? (
+    <CartSizeLimitModal openModal={openModal} />
+  ) : (
     <BaseModal
       title={<Text size="xl">Access Alert</Text>}
       openModal={openModal}
