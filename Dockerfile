@@ -1,10 +1,13 @@
-FROM node:16.20.2-alpine3.17 as dep
+ARG BASE_CONTAINER_VERSION=3.0.1
+ARG BASE_CONTAINER_REGISTRY=docker.osdc.io/ncigdc
+
+FROM ${BASE_CONTAINER_REGISTRY}/nodejs20:${BASE_CONTAINER_VERSION} as dep
 WORKDIR /app
 
 #==================================================================
 
 # ==================================================================
-FROM node:16.20.2-alpine3.17 AS builder
+FROM ${BASE_CONTAINER_REGISTRY}/nodejs20:${BASE_CONTAINER_VERSION} AS builder
 ARG NPM_REGISTRY="https://registry.npmjs.org/"
 
 ARG BUILD_SHORT_SHA
@@ -17,7 +20,7 @@ COPY ./package.json ./package-lock.json lerna.json ./
 COPY ./packages/core/package.json ./packages/core/
 COPY ./packages/sapien/package.json ./packages/sapien/
 COPY ./packages/portal-proto/package.json ./packages/portal-proto/
-RUN npm ci
+RUN npm ci --include=dev
 COPY ./packages ./packages
 
 RUN lerna run --scope @gff/core compile
@@ -27,29 +30,32 @@ RUN lerna run --scope @nci-gdc/sapien build
 RUN lerna run --scope portal-proto build
 # ==================================================================
 
-FROM node:16.20.2-alpine3.17 AS runner
+FROM ${BASE_CONTAINER_REGISTRY}/nodejs20:${BASE_CONTAINER_VERSION} AS runner
+ARG NAME=gdc-frontend-framework
+
+LABEL org.opencontainers.image.title=${NAME} \
+      org.opencontainers.image.description="${NAME} container image" \
+      org.opencontainers.image.source="https://github.com/NCI-GDC/${NAME}" \
+      org.opencontainers.image.vendor="NCI GDC"
+
 WORKDIR /app
 ENV NODE_ENV=production \
     PORT=3000
 
-RUN  addgroup --system --gid 1001 nextjs && adduser --system --uid 1001 nextjs
-
-COPY --from=builder --chown=nextjs:nextjs /app/lerna.json ./lerna.json
-COPY --from=builder --chown=nextjs:nextjs /app/package.json ./package.json
-COPY --from=builder --chown=nextjs:nextjs /app/node_modules ./node_modules
-COPY --from=builder --chown=nextjs:nextjs /app/packages/portal-proto/public ./packages/portal-proto/public
-COPY --from=builder --chown=nextjs:nextjs /app/packages/portal-proto/package.json ./packages/portal-proto/package.json
-COPY --from=builder --chown=nextjs:nextjs /app/packages/portal-proto/.next ./packages/portal-proto/.next
-COPY --from=builder --chown=nextjs:nextjs /app/packages/portal-proto/node_modules ./packages/portal-proto/node_modules
-COPY --from=builder --chown=nextjs:nextjs /app/packages/portal-proto/next.config.js ./packages/portal-proto/next.config.js
+COPY --from=builder --chown=app:app /app/lerna.json ./lerna.json
+COPY --from=builder --chown=app:app /app/package.json ./package.json
+COPY --from=builder --chown=app:app /app/node_modules ./node_modules
+COPY --from=builder --chown=app:app /app/packages/portal-proto/public ./packages/portal-proto/public
+COPY --from=builder --chown=app:app /app/packages/portal-proto/package.json ./packages/portal-proto/package.json
+COPY --from=builder --chown=app:app /app/packages/portal-proto/.next ./packages/portal-proto/.next
+COPY --from=builder --chown=app:app /app/packages/portal-proto/node_modules ./packages/portal-proto/node_modules
+COPY --from=builder --chown=app:app /app/packages/portal-proto/next.config.js ./packages/portal-proto/next.config.js
 
 RUN mkdir -p ./packages/portal-proto/.next \
-  && chown nextjs:nextjs ./packages/portal-proto/.next
+  && chown app:app ./packages/portal-proto/.next
 VOLUME  ./packages/portal-proto/.next
-USER nextjs
+USER app:app
 
 EXPOSE 3000
-
-User root
 
 CMD ["npm", "run", "start"]
