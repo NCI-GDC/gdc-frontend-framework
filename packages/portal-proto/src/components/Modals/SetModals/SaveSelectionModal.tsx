@@ -16,6 +16,7 @@ import ModalButtonContainer from "@/components/StyledComponents/ModalButtonConta
 import WarningMessage from "@/components/WarningMessage";
 import ErrorMessage from "@/components/ErrorMessage";
 import { SET_COUNT_LIMIT } from "./constants";
+import { useDeepCompareCallback } from "use-deep-compare";
 
 interface SaveSelectionAsSetModalProps {
   readonly filters: Record<string, any>;
@@ -63,21 +64,17 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
     validateInputOnChange: true,
   });
 
+  const setValues = useDeepCompareCallback(
+    () =>
+      form.setValues((prev) => ({ ...prev, name: initialSetName, top: max })),
+    [form.setValues, initialSetName, max],
+  );
+
   useEffect(() => {
     if (opened) {
-      form.setValues((prev) => ({ ...prev, name: initialSetName, top: max }));
+      setValues();
     }
-    // form keeps on changing
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [opened, initialSetName, max]);
-
-  console.log({
-    response,
-    values: form.values,
-    max,
-    saveCount,
-    initialSetName,
-  });
+  }, [opened, setValues]);
 
   return (
     <Modal
