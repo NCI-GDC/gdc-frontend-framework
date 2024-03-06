@@ -10,7 +10,6 @@ import {
   statusBooleansToDataStatus,
 } from "@/utils/index";
 import {
-  AccessType,
   GdcFile,
   SortBy,
   selectCart,
@@ -39,18 +38,18 @@ interface FilesTableProps {
   caseId: string;
 }
 
-type CaseFilesTableDataType = {
-  file: GdcFile;
-  file_uuid: string;
-  access: AccessType;
-  file_name: string;
-  data_category: string;
-  data_type: string;
-  data_format: string;
-  experimental_strategy?: string;
-  platform: string;
-  file_size: string;
-};
+export type CaseFilesTableDataType = Pick<
+  GdcFile,
+  | "file_id"
+  | "access"
+  | "file_name"
+  | "data_category"
+  | "data_type"
+  | "data_format"
+  | "experimental_strategy"
+  | "platform"
+  | "file_size"
+> & { file: GdcFile };
 
 const caseFilesTableColumnHelper = createColumnHelper<CaseFilesTableDataType>();
 
@@ -67,13 +66,8 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
 
   const sortByActions = (sortByObj: SortingState) => {
     const tempSortBy: SortBy[] = sortByObj.map((sortObj) => {
-      let tempSortId = sortObj.id;
-      // map sort ids to api ids
-      if (sortObj.id === "file_uuid") {
-        tempSortId = "file_id";
-      }
       return {
-        field: tempSortId,
+        field: sortObj.id,
         direction: sortObj.desc ? "desc" : "asc",
       };
     });
@@ -122,7 +116,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
       isSuccess
         ? (data?.files.map((file: GdcFile) => ({
             file: file,
-            file_uuid: file.file_id,
+            file_id: file.file_id,
             access: file.access,
             file_name: file.file_name,
             data_category: file.data_category,
@@ -130,7 +124,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
             data_format: file.data_format,
             experimental_strategy: file.experimental_strategy || "--",
             platform: file.platform || "--",
-            file_size: fileSize(file.file_size),
+            file_size: file.file_size,
             annotations: file.annotations,
           })) as CaseFilesTableDataType[])
         : [],
@@ -174,7 +168,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
         header: "File Name",
         cell: ({ row }) => (
           <Link
-            href={`/files/${row.original.file_uuid}`}
+            href={`/files/${row.original.file_id}`}
             className="underline text-primary"
           >
             {row.original.file_name}
@@ -182,15 +176,15 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
         ),
         enableSorting: true,
       }),
-      caseFilesTableColumnHelper.accessor("file_uuid", {
-        id: "file_uuid",
+      caseFilesTableColumnHelper.accessor("file_id", {
+        id: "file_id",
         header: "File UUID",
         cell: ({ row }) => (
           <Link
-            href={`/files/${row.original.file_uuid}`}
+            href={`/files/${row.original.file_id}`}
             className="underline text-primary"
           >
-            {row.original.file_uuid}
+            {row.original.file_id}
           </Link>
         ),
         enableSorting: true,
@@ -223,6 +217,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
       caseFilesTableColumnHelper.accessor("file_size", {
         id: "file_size",
         header: "File Size",
+        cell: ({ row }) => <>{fileSize(row.original.file_size)}</>,
         enableSorting: true,
       }),
       caseFilesTableColumnHelper.display({
@@ -231,7 +226,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
         cell: ({ row }) => {
           const isOutputFileInCart = fileInCart(
             currentCart,
-            row.original.file_uuid,
+            row.original.file_id,
           );
           return (
             <TableActionButtons
@@ -316,7 +311,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
     downloadTSV({
       tableData,
       columnOrder,
-      fileName: `files.${convertDateToString(new Date())}.tsv`,
+      fileName: `files-table.${convertDateToString(new Date())}.tsv`,
       columnVisibility,
       columns: caseFilesTableDefaultColumns,
       option: {
@@ -369,6 +364,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
           tooltip:
             "e.g. HCM-CSHL-0062-C18.json, 4b5f5ba0-3010-4449-99d4-7bd7a6d73422",
         }}
+        baseZIndex={400}
         sorting={sorting}
         setSorting={setSorting}
         setColumnOrder={setColumnOrder}
