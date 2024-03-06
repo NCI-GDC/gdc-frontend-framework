@@ -1,10 +1,12 @@
 import React from "react";
 import { useDeepCompareMemo } from "use-deep-compare";
 import Link from "next/link";
+import { Loader } from "@mantine/core";
 import { useAnnotations, useQuickSearch } from "@gff/core";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import { HorizontalTable } from "@/components/HorizontalTable";
+import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import { entityShortNameMapping } from "@/components/QuickSearch/entityShortNameMapping";
 
 interface AnnotationSummaryProps {
@@ -14,7 +16,11 @@ interface AnnotationSummaryProps {
 const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
   annotationId,
 }) => {
-  const { data: annotationData } = useAnnotations({
+  const {
+    data: annotationData,
+    isSuccess,
+    isFetching,
+  } = useAnnotations({
     filters: {
       op: "=",
       content: {
@@ -135,7 +141,11 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
     [annotation],
   );
 
-  return (
+  return isFetching ? (
+    <Loader />
+  ) : isSuccess && annotationData?.list.length === 0 ? (
+    <SummaryErrorHeader label="Annotation Not Found" />
+  ) : (
     <>
       <SummaryHeader
         iconText={entityShortNameMapping["Annotation"]}
