@@ -114,29 +114,27 @@ const ClinicalSurvivalPlot: React.FC<ClinicalSurvivalPlotProps> = ({
 
   const { data, isLoading, isError } = useGetSurvivalPlotQuery({ filters });
 
-  return (
-    <>
-      <div className="h-64">
-        {isLoading ? (
-          <Loader />
-        ) : isError ? (
-          <Alert color={"red"}>{"Something's gone wrong"}</Alert>
-        ) : (
-          <ExternalDownloadStateSurvivalPlot
-            data={data}
-            height={150}
-            title={""}
-            field={field}
-            names={selectedSurvivalPlots}
-            plotType={plotType}
-            downloadFileName={`${field
-              .split(".")
-              .at(-1)}-survival-plot.${convertDateToString(new Date())}`}
-            tableTooltip
-          />
-        )}
-      </div>
-    </>
+  return isLoading ? (
+    <div className="h-64">
+      <Loader />
+    </div>
+  ) : isError ? (
+    <div className="h-64">
+      <Alert color={"red"}>{"Something's gone wrong"}</Alert>
+    </div>
+  ) : (
+    <ExternalDownloadStateSurvivalPlot
+      data={data}
+      height={150}
+      title={""}
+      field={field}
+      names={selectedSurvivalPlots}
+      plotType={plotType}
+      downloadFileName={`${field
+        .split(".")
+        .at(-1)}-survival-plot.${convertDateToString(new Date())}`}
+      tableTooltip
+    />
   );
 };
 
