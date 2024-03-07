@@ -433,8 +433,9 @@ function VerticalTable<TData>({
                         {row.getCanExpand() &&
                         expandableColumnIds.includes(columnId) &&
                         // check to make sure item is expandable
-                        Array.isArray(cellValue) &&
-                        cellValue.length > 1 ? (
+                        (cellValue !== undefined
+                          ? Array.isArray(cellValue) && cellValue.length > 1
+                          : true) ? (
                           <button
                             onClick={() => {
                               setClickedColumnId(columnId);
