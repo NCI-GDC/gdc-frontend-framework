@@ -173,8 +173,9 @@ const ProjectsTable: React.FC = () => {
             size="xs"
             classNames={{
               input: "checked:bg-accent checked:border-accent",
+              label: "sr-only",
             }}
-            aria-label={`Select all project rows of page ${activePage} of ${data?.pagination?.total}`}
+            label={`Select all project rows on page ${activePage} of ${data?.pagination?.pages}`}
             {...{
               checked: table.getIsAllRowsSelected(),
               onChange: table.getToggleAllRowsSelectedHandler(),
@@ -275,7 +276,7 @@ const ProjectsTable: React.FC = () => {
       setEntityMetadata,
       expandedColumnId,
       activePage,
-      data?.pagination?.total,
+      data?.pagination?.pages,
     ],
   );
 

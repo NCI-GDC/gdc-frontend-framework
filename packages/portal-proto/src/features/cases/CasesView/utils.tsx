@@ -67,8 +67,9 @@ export const useGenerateCasesTableColumns = ({
             size="xs"
             classNames={{
               input: "checked:bg-accent checked:border-accent",
+              label: "sr-only",
             }}
-            aria-label={`Select all the case rows of page ${currentPage} of ${totalPages}`}
+            label={`Select all the case rows on page ${currentPage} of ${totalPages}`}
             {...{
               checked: table.getIsAllRowsSelected(),
               onChange: table.getToggleAllRowsSelectedHandler(),
