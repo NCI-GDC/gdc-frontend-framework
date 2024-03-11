@@ -100,29 +100,27 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
         )}
       </span>
 
-      {openSelectCohorts && (
-        <SelectCohortsModal
-          opened
-          onClose={() => setOpenSelectCohorts(false)}
-          withOrWithoutCohort={withOrWithoutCohort}
-          pickedCases={cases}
-        />
-      )}
-      {showSaveCohort && (
-        <SaveCohortModal
-          onClose={() => setShowSaveCohort(false)}
-          filters={{
-            mode: "and",
-            root: {
-              "cases.case_id": {
-                operator: "includes",
-                field: "cases.case_id",
-                operands: [numCases > 1 ? `set_id:${response.data}` : cases[0]],
-              },
+      <SelectCohortsModal
+        opened={openSelectCohorts}
+        onClose={() => setOpenSelectCohorts(false)}
+        withOrWithoutCohort={withOrWithoutCohort}
+        pickedCases={cases}
+      />
+
+      <SaveCohortModal
+        opened={showSaveCohort}
+        onClose={() => setShowSaveCohort(false)}
+        filters={{
+          mode: "and",
+          root: {
+            "cases.case_id": {
+              operator: "includes",
+              field: "cases.case_id",
+              operands: [numCases > 1 ? `set_id:${response.data}` : cases[0]],
             },
-          }}
-        />
-      )}
+          },
+        }}
+      />
     </>
   );
 };

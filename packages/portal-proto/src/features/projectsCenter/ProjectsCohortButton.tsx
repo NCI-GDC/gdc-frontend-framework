@@ -36,21 +36,21 @@ const ProjectsCohortButton = ({
           </Button>
         </span>
       </Tooltip>
-      {showSaveCohort && (
-        <SaveCohortModal
-          onClose={() => setShowSaveCohort(false)}
-          filters={{
-            mode: "and",
-            root: {
-              "cases.project.project_id": {
-                operator: "includes",
-                field: "cases.project.project_id",
-                operands: pickedProjects,
-              },
+
+      <SaveCohortModal
+        opened={showSaveCohort}
+        onClose={() => setShowSaveCohort(false)}
+        filters={{
+          mode: "and",
+          root: {
+            "cases.project.project_id": {
+              operator: "includes",
+              field: "cases.project.project_id",
+              operands: pickedProjects,
             },
-          }}
-        />
-      )}
+          },
+        }}
+      />
     </>
   );
 };

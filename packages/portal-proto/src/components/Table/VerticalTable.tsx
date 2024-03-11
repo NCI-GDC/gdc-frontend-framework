@@ -4,7 +4,6 @@ import {
   getExpandedRowModel,
   getSortedRowModel,
   Header,
-  Row,
   SortDirection,
   useReactTable,
 } from "@tanstack/react-table";
@@ -16,7 +15,9 @@ import {
   useEffect,
   useRef,
   useState,
+  useMemo,
 } from "react";
+import { useDeepCompareMemo } from "use-deep-compare";
 import { BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
 import {
   LoadingOverlay,
@@ -29,8 +30,8 @@ import {
 import { MdClose, MdSearch } from "react-icons/md";
 import ColumnOrdering from "./ColumnOrdering";
 import { DataStatus } from "@gff/core";
-import { v4 as uuidv4 } from "uuid";
 import { useDeepCompareEffect } from "use-deep-compare";
+import { getDefaultRowId } from "./utils";
 
 /**
  * VerticalTable is a table component that displays data in a vertical format.
@@ -95,8 +96,7 @@ function VerticalTable<TData>({
   setSorting,
   expanded,
   setExpanded,
-  getRowId = (_originalRow: TData, _index: number, _parent?: Row<TData>) =>
-    uuidv4(),
+  getRowId = getDefaultRowId,
   baseZIndex = 0,
 }: TableProps<TData>): JSX.Element {
   const [tableData, setTableData] = useState(data);
@@ -130,22 +130,36 @@ function VerticalTable<TData>({
     }
   }, [search?.defaultSearchTerm]);
 
-  const [clickedColumnId, setClickedColumnId] = useState<string>(null);
-  const table = useReactTable({
-    columns,
-    data: tableData,
-    getRowCanExpand,
-    initialState: {
+  const initialState = useDeepCompareMemo(
+    () => ({
       columnVisibility,
       columnOrder,
-    },
-    state: {
+    }),
+    [columnVisibility, columnOrder],
+  );
+
+  const state = useDeepCompareMemo(
+    () => ({
       sorting,
       rowSelection,
       columnVisibility,
       columnOrder,
       expanded,
-    },
+    }),
+    [sorting, rowSelection, columnVisibility, columnOrder, expanded],
+  );
+
+  const expandedRowModel = useMemo(() => getExpandedRowModel<TData>(), []);
+  const coreRowModel = useMemo(() => getCoreRowModel<TData>(), []);
+  const sortedRowModel = useMemo(() => getSortedRowModel<TData>(), []);
+
+  const [clickedColumnId, setClickedColumnId] = useState<string>(null);
+  const table = useReactTable({
+    columns,
+    data: tableData,
+    getRowCanExpand,
+    initialState,
+    state,
     manualSorting: columnSorting === "manual",
     sortDescFirst: false,
     autoResetExpanded: false,
@@ -154,9 +168,9 @@ function VerticalTable<TData>({
     enableRowSelection: enableRowSelection,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
-    getExpandedRowModel: getExpandedRowModel<TData>(),
-    getCoreRowModel: getCoreRowModel<TData>(),
-    getSortedRowModel: getSortedRowModel<TData>(),
+    getExpandedRowModel: expandedRowModel,
+    getCoreRowModel: coreRowModel,
+    getSortedRowModel: sortedRowModel,
     getRowId: getRowId,
     enableSorting: columnSorting === "manual" || columnSorting === "enable",
   });
@@ -433,8 +447,9 @@ function VerticalTable<TData>({
                         {row.getCanExpand() &&
                         expandableColumnIds.includes(columnId) &&
                         // check to make sure item is expandable
-                        Array.isArray(cellValue) &&
-                        cellValue.length > 1 ? (
+                        (cellValue !== undefined
+                          ? Array.isArray(cellValue) && cellValue.length > 1
+                          : true) ? (
                           <button
                             onClick={() => {
                               setClickedColumnId(columnId);

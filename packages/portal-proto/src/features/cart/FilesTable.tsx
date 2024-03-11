@@ -38,6 +38,8 @@ interface FilesTableProps {
   readonly filesByCanAccess: Record<string, CartFile[]>;
 }
 
+const cartFilesTableColumnHelper = createColumnHelper<FilesTableDataType>();
+
 const FilesTable: React.FC<FilesTableProps> = () => {
   const { setEntityMetadata } = useContext(SummaryModalContext);
   const cart = useCoreSelector((state) => selectCart(state));
@@ -125,7 +127,6 @@ const FilesTable: React.FC<FilesTableProps> = () => {
     );
   }, [isSuccess, data?.files, setEntityMetadata]);
 
-  const cartFilesTableColumnHelper = createColumnHelper<FilesTableDataType>();
   const cartFilesTableDefaultColumns = useMemo<ColumnDef<FilesTableDataType>[]>(
     () => [
       cartFilesTableColumnHelper.display({
@@ -269,7 +270,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
         ),
       }),
     ],
-    [cartFilesTableColumnHelper, setEntityMetadata],
+    [setEntityMetadata],
   );
 
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
