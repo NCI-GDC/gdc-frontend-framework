@@ -451,7 +451,6 @@ export const Header: React.FC<HeaderProps> = ({
       <SessionExpireModal openModal={modal === Modals.SessionExpireModal} />
       <NoAccessModal openModal={modal === Modals.NoAccessModal} />
       <FirstTimeModal openModal={modal === Modals.FirstTimeModal} />
-
       <SummaryModal
         opened={entityMetadata.entity_type !== null}
         onClose={() =>
