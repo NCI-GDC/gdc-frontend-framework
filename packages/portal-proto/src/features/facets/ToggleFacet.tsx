@@ -1,11 +1,11 @@
-import React, { useMemo, useId } from "react";
+import React, { useMemo } from "react";
 import { EnumFacetHooks, FacetCardProps } from "./types";
 import { updateFacetEnum } from "./utils";
 
 import {
   controlsIconStyle,
   FacetIconButton,
-  FacetLabelText,
+  FacetText,
   FacetHeader,
 } from "@/features/facets/components";
 
@@ -57,8 +57,6 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     else clearFilters(field);
   };
 
-  const labelId = useId();
-
   return (
     <div
       className={`flex flex-col ${
@@ -74,7 +72,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           withArrow
           transitionProps={{ duration: 200, transition: "fade" }}
         >
-          <FacetLabelText htmlFor={labelId}>{facetTitle}</FacetLabelText>
+          <FacetText>{facetTitle}</FacetText>
         </Tooltip>
         <div className="flex flex-row">
           {dismissCallback && (
@@ -99,17 +97,22 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
         <div className="flex flex-nowrap justify-between items-center p-2 ">
           <LoadingOverlay data-testid="loading-spinner" visible={!isSuccess} />
           <Switch
+            label={
+              data === undefined || Object.keys(data).length == 0
+                ? "No data for this field"
+                : data["1"].toLocaleString("en-US")
+            }
             color="accent"
             checked={toggleValue}
             onChange={(event) => setValue(event.currentTarget.checked)}
-            id={labelId}
+            aria-label={facetTitle}
             data-testid="toggle-facet-value"
+            classNames={{
+              root: "w-full",
+              body: "flex justify-between items-center",
+              label: "text-xs font-content",
+            }}
           />
-          <p className="font-content">
-            {data === undefined || Object.keys(data).length == 0
-              ? "No data for this field"
-              : data["1"].toLocaleString("en-US")}
-          </p>
         </div>
       </div>
     </div>
