@@ -125,12 +125,12 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
         className="sjpp-wrapper-root-div"
         //userDetails={userDetails}
       />
-      {showSaveCohort && newCohortFilters && (
-        <SaveCohortModal // Show the modal, create a saved cohort when save button is clicked
-          onClose={() => setShowSaveCohort(false)}
-          filters={newCohortFilters}
-        />
-      )}
+
+      <SaveCohortModal // Show the modal, create a saved cohort when save button is clicked
+        opened={showSaveCohort}
+        onClose={() => setShowSaveCohort(false)}
+        filters={newCohortFilters}
+      />
     </div>
   );
 };

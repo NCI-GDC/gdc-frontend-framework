@@ -31,25 +31,25 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
 
   return (
     <>
-      {showSaveCohort && (
-        <SaveCohortModal
-          onClose={() => {
-            setShowSaveCohort(false);
-            coreDispatch(hideModal());
-          }}
-          setAsCurrent
-          filters={{
-            mode: "and",
-            root: {
-              "cases.case_id": {
-                operator: "includes",
-                field: "cases.case_id",
-                operands: [`set_id:${response.data}`],
-              },
+      <SaveCohortModal
+        opened={showSaveCohort}
+        onClose={() => {
+          setShowSaveCohort(false);
+          coreDispatch(hideModal());
+        }}
+        setAsCurrent
+        filters={{
+          mode: "and",
+          root: {
+            "cases.case_id": {
+              operator: "includes",
+              field: "cases.case_id",
+              operands: [`set_id:${response.data}`],
             },
-          }}
-        />
-      )}
+          },
+        }}
+      />
+
       <DarkFunctionButton
         disabled={disabled}
         onClick={() => createSet({ values: ids })}
@@ -61,9 +61,13 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
   );
 };
 
-const ImportCohortModal: React.FC = () => {
+const ImportCohortModal: React.FC<{ opened: boolean }> = ({
+  opened,
+}: {
+  opened: boolean;
+}) => {
   return (
-    <UserInputModal modalTitle="Import a New Cohort">
+    <UserInputModal modalTitle="Import a New Cohort" opened={opened}>
       <InputEntityList
         inputInstructions="Enter one or more case identifiers in the field below or upload a file to import a new cohort."
         identifierToolTip={
