@@ -228,6 +228,16 @@ export const REGISTERED_APPS = [
     noDataTooltip:
       "Current cohort does not have gene expression data available for visualization.",
   },
+  {
+    name: "Annotations",
+    icon: <RepositoryIcon aria-hidden="true" />,
+    tags: [],
+    hasDemo: false,
+    id: "AnnotationsBrowser",
+    countsField: "repositoryCaseCount",
+    description:
+      "Browse and download the files associated with your cohort for more sophisticated analysis.",
+  },
   /*
   {
     name: "scRNA-Seq",

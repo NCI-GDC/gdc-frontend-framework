@@ -87,6 +87,7 @@ export interface FacetStateGQL extends FacetsState {
   readonly genes: Record<string, FacetBuckets>;
   readonly ssms: Record<string, FacetBuckets>;
   readonly projects: Record<string, FacetBuckets>;
+  readonly annotations: Record<string, FacetBuckets>;
 }
 
 const initialState: FacetStateGQL = {
@@ -95,6 +96,7 @@ const initialState: FacetStateGQL = {
   genes: {},
   ssms: {},
   projects: {},
+  annotations: {},
 };
 
 export const facetsGQLSlice = createSlice({
@@ -121,7 +123,7 @@ export const facetsGQLSlice = createSlice({
           );
         } else {
           const aggregations =
-            docType === "projects"
+            docType === "projects" || docType === "annotations"
               ? Object(response).data.viewer[docType].aggregations
               : Object(response).data.viewer[index][docType].aggregations;
           aggregations &&
@@ -216,6 +218,11 @@ export const selectProjectsFacetByField = (
   state: CoreState,
   field: string,
 ): FacetBuckets => state.facetsGQL.facetsGQL.projects[field];
+
+export const selectAnnotationFacetByField = (
+  state: CoreState,
+  field: string,
+): FacetBuckets => state.facetsGQL.facetsGQL.annotations[field];
 
 export const fileCaseGenesMutationsFacetReducers = combineReducers({
   facetsGQL: facetsGQLReducer,

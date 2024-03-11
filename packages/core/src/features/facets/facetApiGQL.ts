@@ -94,7 +94,7 @@ export const buildGraphGLBucketsQuery = (
       : convertFacetNameToGQL(facet.facetName);
   });
 
-  if (docType == "projects")
+  if (docType == "projects" || docType === "annotations")
     return `
     query QueryBucketCounts($caseFilters: FiltersArgument, $filters: FiltersArgument) {
      viewer {

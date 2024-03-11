@@ -49,6 +49,7 @@ export const useLocalFilters = (
   const allFilters = selectLocalFilters();
   const prevAllFilters = usePrevious(allFilters);
   const prevEnumValues = usePrevious(enumValues);
+  console.log({ enumValues, allFilters }, "project");
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -89,6 +90,7 @@ export const useLocalFilters = (
     enumValues,
   ]);
 
+  console.log({ facet });
   return {
     data: facet?.buckets,
     enumFilters: (enumValues as EnumOperandValue)?.map((x) => x.toString()),
