@@ -59,7 +59,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   const noData = continuous
     ? (data as Stats)?.stats?.count === 0
     : data !== undefined &&
-      (data as Buckets).buckets.every((bucket) => bucket.key === MISSING_KEY);
+      (data as Buckets)?.buckets?.every((bucket) => bucket.key === MISSING_KEY);
 
   const fieldName = toDisplayName(field);
 

@@ -154,6 +154,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
       </FacetHeader>
       <div className="flex flex-nowrap items-center p-2">
         <TextInput
+          data-testid="textbox-add-filter-value"
           size="xs"
           placeholder={`Enter ${facetTitle}`}
           classNames={{ root: "grow", input: "border-r-0 rounded-r-none py-1" }}

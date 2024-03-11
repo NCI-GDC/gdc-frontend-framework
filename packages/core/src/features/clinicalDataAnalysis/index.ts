@@ -3,25 +3,19 @@ import {
   useGetClinicalAnalysisQuery,
   clinicalAnalysisApiReducer,
 } from "./clinicalDataAnalysisSlice";
-import {
-  fetchClinicalFieldsResult,
-  useClinicalFields,
-  clinicalFieldsReducer,
-} from "./clinicalFieldsSlice";
+import { useClinicalFieldsQuery } from "./clinicalFieldsSlice";
 import {
   useGetContinuousDataStatsQuery,
   ClinicalContinuousStatsData,
 } from "./clinicalContinuousStatsSlice";
 
 export {
-  fetchClinicalFieldsResult,
-  useClinicalFields,
+  useClinicalFieldsQuery,
   useGetClinicalAnalysisQuery,
   useGetContinuousDataStatsQuery,
   ClinicalContinuousStatsData,
 };
 
 export const clinicalDataAnalysisReducer = combineReducers({
-  fields: clinicalFieldsReducer,
   resultCase: clinicalAnalysisApiReducer,
 });

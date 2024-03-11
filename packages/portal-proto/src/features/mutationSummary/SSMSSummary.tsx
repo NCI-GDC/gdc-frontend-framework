@@ -2,6 +2,7 @@ import React from "react";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { useSSMS } from "@gff/core";
+import { Loader } from "@mantine/core";
 import { pick } from "lodash";
 import { HorizontalTableProps } from "@/components/HorizontalTable";
 import { formatDataForHorizontalTable } from "../files/utils";
@@ -12,6 +13,7 @@ import SSMPlot from "../charts/SSMPlot";
 import { ConsequenceTable } from "@/features/mutationSummary/ConsequenceTable";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import SSMSCancerDistributionTable from "../cancerDistributionTable/SSMSCancerDistributionTable";
+import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 
 export const SSMSSummary = ({
   ssm_id,
@@ -164,7 +166,9 @@ export const SSMSSummary = ({
 
   return (
     <div>
-      {!isFetching && summaryData ? (
+      {isFetching ? (
+        <Loader />
+      ) : summaryData ? (
         <>
           <SummaryHeader
             iconText="mu"
@@ -204,7 +208,9 @@ export const SSMSSummary = ({
             </div>
           </div>
         </>
-      ) : null}
+      ) : (
+        <SummaryErrorHeader label="Mutation Not Found" />
+      )}
     </div>
   );
 };
