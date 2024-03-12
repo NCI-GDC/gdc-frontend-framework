@@ -23,6 +23,12 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card
   |-----------------------|---------------------|-------------------------------|
   |General                |Primary Site         |brain                          |
 * Verify "Primary Site_brain_Race_Condition Count" and "Cohort Bar Case Count" are "Equal"
+* Validate the cohort query filter area has these filters
+  |facet_name           |selections           |position in filter area  |
+  |---------------------|---------------------|-------------------------|
+  |Experimental Strategy|Methylation Array    |1                        |
+  |Primary Site         |brain                |2                        |
+
 * Clear active cohort filters
 * Make the following selections on the Cohort Builder page without pauses
   |tab_name               |facet_name           |selection            |
@@ -46,6 +52,11 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card
   |-----------------------|---------------------|-------------------------------|
   |General                |Program              |MATCH                          |
 * Verify "Program_MATCH_Race_Condition Count" and "Cohort Bar Case Count" are "Equal"
+* Validate the cohort query filter area has these filters
+  |facet_name           |selections                                                   |position in filter area  |
+  |---------------------|-------------------------------------------------------------|-------------------------|
+  |Experimental Strategy|miRNA-SeqWGSWXSRNA-SeqTargeted SequencingDiagnostic Slide    |1                        |
+  |Program              |MATCH                                                        |2                        |
 
 ## Available Data - Multiple Facets
 * Clear active cohort filters
@@ -65,6 +76,13 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card
   |-----------------------|---------------------|-------------------------|
   |Available Data         |Data Format          |tsv                      |
 * Verify "Data Format_tsv_Race_Condition Count" and "Cohort Bar Case Count" are "Equal"
+* Validate the cohort query filter area has these filters
+  |facet_name           |selections                                                                   |position in filter area  |
+  |---------------------|-----------------------------------------------------------------------------|-------------------------|
+  |Data Category        |sequencing readstranscriptome profiling                                      |1                        |
+  |Data Type            |Splice Junction QuantificationIsoform Expression QuantificationAligned Reads |2                        |
+  |Workflow Type        |STAR - Counts                                                                |3                        |
+  |Data Format          |tsv                                                                          |4                        |
 
 ## Filters from Different Tabs
 * Clear active cohort filters
@@ -86,6 +104,18 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card
   |-----------------------|---------------------|---------------------|
   |Available Data         |Data Format          |txt                  |
 * Verify "Data Format_txt_Race_Condition Count" and "Cohort Bar Case Count" are "Equal"
+* Validate the cohort query filter area has these filters
+  |facet_name           |selections           |position in filter area  |
+  |---------------------|---------------------|-------------------------|
+  |Program              |TCGA                 |1                        |
+  |Gender               |male                 |2                        |
+  |Morphology           |8140/3               |3                        |
+  |Prior Treatment      |no                   |4                        |
+  |Ajcc Pathologic Stage|stage iia            |5                        |
+  |Tumor Grade          |not reported         |6                        |
+  |Alcohol History      |not reported         |7                        |
+  |Sample Type          |primary tumor        |8                        |
+  |Data Format          |txt                  |9                        |
 
 ## Treatment - Multiple Facets
 * Clear active cohort filters
@@ -105,6 +135,15 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card
   |-----------------------|---------------------|---------------------|
   |Demographic            |Vital Status         |alive                |
 * Verify "Vital Status_alive_Race_Condition Count" and "Cohort Bar Case Count" are "Equal"
+* Validate the cohort query filter area has these filters
+  |facet_name           |selections           |position in filter area  |
+  |---------------------|---------------------|-------------------------|
+  |Treatment Type       |radiation therapy, nospharmaceutical therapy, noschemotherapystem cell transplantation, autologous|1|
+  |Therapeutic Agents   |cyclophosphamide     |2                        |
+  |Treatment Outcome    |complete response    |3                        |
+  |Vital Status         |alive                |4                        |
+
+
 
 ## Other Classification - Cog Neuroblastoma Risk Group
 * Clear active cohort filters
@@ -119,6 +158,12 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card
   |-----------------------|-----------------------------|---------------------|
   |Available Data         |Platform                     |illumina             |
 * Verify "Platform_illumina_Race_Condition Count" and "Cohort Bar Case Count" are "Equal"
+* Validate the cohort query filter area has these filters
+  |facet_name                   |selections           |position in filter area  |
+  |-----------------------------|---------------------|-------------------------|
+  |Cog Neuroblastoma Risk Group |high risk            |1                        |
+  |Platform                     |illumina             |2                        |
+
 
 ## Other Classification - Eln Risk Classification
 * Clear active cohort filters
@@ -135,6 +180,10 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card
   |-----------------------|-----------------------------|---------------------|
   |Disease Status and History|Progression or Recurrence |no                   |
 * Verify "Progression or Recurrence_no_Race_Condition Count" and "Cohort Bar Case Count" are "Equal"
+* Validate the cohort query filter area has these filters
+  |facet_name             |selections                   |position in filter area  |
+  |-----------------------|-----------------------------|-------------------------|
+  |Eln Risk Classification|adverseintermediatefavorable |1                        |
 
 ## Other Classification - Wilms Tumor Histologic Subtype
 * Clear active cohort filters
@@ -150,3 +199,11 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card
   |-----------------------|-----------------------------|---------------------|
   |Biospecimen            |Tumor Descriptor             |primary              |
 * Verify "Tumor Descriptor_primary_Race_Condition Count" and "Cohort Bar Case Count" are "Equal"
+* Validate the cohort query filter area has these filters
+  |facet_name                     |selections           |position in filter area  |
+  |-------------------------------|---------------------|-------------------------|
+  |Wilms Tumor Histologic Subtype |favorableunfavorable |1                        |
+  |Tumor Descriptor               |primary              |2                        |
+
+
+- To do: add query area filter checking
