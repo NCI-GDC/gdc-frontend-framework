@@ -386,8 +386,13 @@ def wait_for_data_testid_to_be_visible_on_the_page(data_testid: str):
 @step("Wait for loading spinner")
 def wait_for_loading_spinner_generic_to_appear_then_disappear():
     """Waits for loading spinner to appear and disappear on the page"""
-    APP.shared.wait_for_loading_spinner_to_be_visible()
-    APP.shared.wait_for_loading_spinner_to_detatch()
+    # Wait for the spinner to appear.
+    # If it does not, we move on; No need to fail the test.
+    try:
+        APP.shared.wait_for_loading_spinner_to_be_visible(15000)
+        APP.shared.wait_for_loading_spinner_to_detatch()
+    except:
+        APP.shared.wait_for_loading_spinner_to_detatch()
 
 
 @step("Wait for cohort bar case count loading spinner")
