@@ -265,6 +265,11 @@ export interface AnnotationDefaults {
     readonly releasable: boolean;
     readonly state: string;
     readonly released: boolean;
+    readonly program?: {
+      readonly name: string;
+      readonly program_id: string;
+      readonly dbgap_accession_number: string;
+    };
   };
 }
 

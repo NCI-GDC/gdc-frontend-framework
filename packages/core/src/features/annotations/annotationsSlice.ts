@@ -7,6 +7,7 @@ import {
   GdcApiRequest,
   GdcApiResponse,
   AnnotationDefaults,
+  Pagination,
 } from "../gdcapi/gdcapi";
 
 export const fetchAnnotations = createAsyncThunk<
@@ -21,8 +22,8 @@ export interface AnnotationsState {
   annotations: {
     list: Array<AnnotationDefaults>;
     count: number;
+    pagination?: Pagination;
   };
-
   status: DataStatus;
   error?: string;
   readonly requestId?: string;
@@ -48,6 +49,8 @@ const slice = createSlice({
         const response = action.payload;
         state.annotations.list = response.data.hits.map((hit) => hit);
         state.annotations.count = response.data.pagination.total ?? 0;
+        state.annotations.pagination = response.data.pagination;
+
         state.status = "fulfilled";
 
         return state;
@@ -79,6 +82,7 @@ export const selectAnnotationsData = (
 ): CoreDataSelectorResponse<{
   list: Array<AnnotationDefaults>;
   count: number;
+  pagination?: Pagination;
 }> => {
   return {
     data: state.annotations.annotations,
