@@ -28,7 +28,6 @@ import {
   ColumnOrderState,
   SortingState,
   VisibilityState,
-  createColumnHelper,
 } from "@tanstack/react-table";
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
@@ -142,10 +141,7 @@ export const ContextualCasesView: React.FC = () => {
       annotations: datum.annotations,
     })) ?? [];
 
-  const casesDataColumnHelper = createColumnHelper<casesTableDataType>();
-
   const casesTableDefaultColumns = useGenerateCasesTableColumns({
-    casesDataColumnHelper,
     currentCart,
     setEntityMetadata,
     currentPage: pagination?.page,

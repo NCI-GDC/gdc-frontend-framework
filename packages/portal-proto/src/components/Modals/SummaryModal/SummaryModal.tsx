@@ -32,6 +32,10 @@ export const SummaryModal = ({
     }
   }, [prevPath, currentPath, onClose]);
 
+  useEffect(() => {
+    setOpened(opened);
+  }, [opened]);
+
   const { SummaryPage, title } =
     entity_type === "project"
       ? {

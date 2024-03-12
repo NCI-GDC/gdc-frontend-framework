@@ -63,6 +63,8 @@ export type FilesTableDataType = {
   annotations: FileAnnontationsType;
 };
 
+const filesTableColumnHelper = createColumnHelper<FilesTableDataType>();
+
 const FilesTables: React.FC = () => {
   const coreDispatch = useCoreDispatch();
   const { setEntityMetadata } = useContext(SummaryModalContext);
@@ -182,14 +184,13 @@ const FilesTables: React.FC = () => {
       ];
   }, [isFetching, isSuccess, data?.files, data?.pagination]);
 
-  const filesTableColumnHelper = createColumnHelper<FilesTableDataType>();
   const filesTableDefaultColumns = useMemo<ColumnDef<FilesTableDataType>[]>(
     () => [
       filesTableColumnHelper.display({
         id: "cart",
         header: "Cart",
         cell: ({ row }) => (
-          <SingleItemAddToCartButton file={row.original.file} iconOnly />
+          <SingleItemAddToCartButton file={row.original.file} />
         ),
       }),
       filesTableColumnHelper.accessor("file_uuid", {
@@ -326,7 +327,7 @@ const FilesTables: React.FC = () => {
         ),
       }),
     ],
-    [filesTableColumnHelper, setEntityMetadata],
+    [setEntityMetadata],
   );
 
   const [sorting, setSorting] = useState<SortingState>([]);

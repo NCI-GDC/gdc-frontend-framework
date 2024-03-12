@@ -46,6 +46,8 @@ type ProjectDataType = {
   files: string;
 };
 
+const projectsTableColumnHelper = createColumnHelper<ProjectDataType>();
+
 const ProjectsTable: React.FC = () => {
   const coreDispatch = useCoreDispatch();
   const [pageSize, setPageSize] = useState(20);
@@ -162,7 +164,6 @@ const ProjectsTable: React.FC = () => {
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [expandedColumnId, setExpandedColumnId] = useState(null);
   const [expandedRowId, setExpandedRowId] = useState(null);
-  const projectsTableColumnHelper = createColumnHelper<ProjectDataType>();
 
   const projectsTableDefaultColumns = useMemo<ColumnDef<ProjectDataType>[]>(
     () => [
@@ -270,13 +271,7 @@ const ProjectsTable: React.FC = () => {
         enableSorting: true,
       }),
     ],
-    [
-      projectsTableColumnHelper,
-      setEntityMetadata,
-      expandedColumnId,
-      activePage,
-      data?.pagination?.total,
-    ],
+    [setEntityMetadata, expandedColumnId, activePage, data?.pagination?.total],
   );
 
   const getRowId = (originalRow: ProjectDataType) => {

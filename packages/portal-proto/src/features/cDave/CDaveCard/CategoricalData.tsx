@@ -123,15 +123,15 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
         selectedFacets={selectedFacets}
         setSelectedFacets={setSelectedFacets}
       />
-      {binningModalOpen && (
-        <CategoricalBinningModal
-          setModalOpen={setBinningModalOpen}
-          field={fieldName}
-          results={resultData}
-          updateBins={setCustomBinnedData}
-          customBins={customBinnedData}
-        />
-      )}
+
+      <CategoricalBinningModal
+        opened={binningModalOpen}
+        setModalOpen={setBinningModalOpen}
+        field={fieldName}
+        results={resultData}
+        updateBins={setCustomBinnedData}
+        customBins={customBinnedData}
+      />
     </>
   );
 };

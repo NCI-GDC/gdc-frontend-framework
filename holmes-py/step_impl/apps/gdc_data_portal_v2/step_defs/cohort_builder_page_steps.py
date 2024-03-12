@@ -118,7 +118,6 @@ def collect_case_counts_on_filters(cohort_name: str, table):
         # Saves the case count under the facet, filter and cohort name
         data_store.spec[f"{v[1]}_{v[2]}_{cohort_name} Count"] = case_count
 
-
 @step("Add a custom filter from <tab_name> tab on the Cohort Builder page <table>")
 def add_custom_filter_card(tab_name: str, table):
     APP.cohort_builder_page.click_button(tab_name)

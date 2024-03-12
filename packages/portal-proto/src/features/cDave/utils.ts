@@ -138,7 +138,7 @@ export const useDataDimension = (field: string): boolean => {
 };
 
 export const formatValue = (value: number): number => {
-  return Number(value.toFixed(2));
+  return Number(value?.toFixed(2));
 };
 
 export const convertDataDimension = (
