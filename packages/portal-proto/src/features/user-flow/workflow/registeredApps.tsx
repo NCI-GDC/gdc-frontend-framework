@@ -230,13 +230,10 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Annotations",
-    icon: <RepositoryIcon aria-hidden="true" />,
     tags: [],
     hasDemo: false,
     id: "AnnotationsBrowser",
-    countsField: "repositoryCaseCount",
-    description:
-      "Browse and download the files associated with your cohort for more sophisticated analysis.",
+    hideCard: true,
   },
   /*
   {

@@ -27,15 +27,6 @@
     "facet_type": "enum"
   },
   {
-    "title": "Created Datetime",
-    "field": "created_datetime",
-    "full": "created_datetime",
-    "description": "No Description",
-    "type": "keyword",
-    "doc_type": "annotation",
-    "facet_type": "datetime"
-  },
-  {
     "title": "Classification",
     "field": "classification",
     "full": "classification",
@@ -43,5 +34,14 @@
     "type": "keyword",
     "doc_type": "annotation",
     "facet_type": "enum"
+  },
+  {
+    "title": "Created Datetime",
+    "field": "created_datetime",
+    "full": "created_datetime",
+    "description": "No Description",
+    "type": "keyword",
+    "doc_type": "annotation",
+    "facet_type": "datetime"
   }
 ]

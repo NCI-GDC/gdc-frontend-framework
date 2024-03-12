@@ -79,15 +79,14 @@ export const useLocalFilters = (
   ); // Facet data is always cached in the coreState
 
   const enumValues = selectFieldEnumValues(field);
-  const allFilters = selectLocalFilters();
-  const prevAllFilters = usePrevious(allFilters);
+  const localFilters = selectLocalFilters();
+  const prevLocalFilters = usePrevious(localFilters);
   const prevEnumValues = usePrevious(enumValues);
-  console.log({ enumValues, allFilters });
 
   useEffect(() => {
     if (
       !facet ||
-      !isEqual(prevAllFilters, allFilters) ||
+      !isEqual(prevLocalFilters, localFilters) ||
       !isEqual(prevEnumValues, enumValues)
     ) {
       coreDispatch(
@@ -95,7 +94,14 @@ export const useLocalFilters = (
           field: field,
           docType: docType,
           index: indexType,
-          localFilters: allFilters,
+          localFilters,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          caseFilterSelector: (_ignored) => {
+            return {
+              mode: "and",
+              root: {},
+            };
+          },
         }),
       );
     }
@@ -103,10 +109,10 @@ export const useLocalFilters = (
     coreDispatch,
     facet,
     field,
-    allFilters,
+    localFilters,
     docType,
     indexType,
-    prevAllFilters,
+    prevLocalFilters,
     prevEnumValues,
     enumValues,
   ]);
