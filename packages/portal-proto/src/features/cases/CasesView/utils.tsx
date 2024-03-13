@@ -1,5 +1,5 @@
 import { AnnotationDefaults, CartFile, useCoreDispatch } from "@gff/core";
-import { ColumnDef, ColumnHelper } from "@tanstack/react-table";
+import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Dispatch, SetStateAction, useMemo } from "react";
 import { Button, Checkbox, Menu } from "@mantine/core";
 import { FaShoppingCart as CartIcon } from "react-icons/fa";
@@ -44,14 +44,14 @@ export type casesTableDataType = {
   annotations: AnnotationDefaults[];
 };
 
+const casesDataColumnHelper = createColumnHelper<casesTableDataType>();
+
 export const useGenerateCasesTableColumns = ({
-  casesDataColumnHelper,
   currentCart,
   setEntityMetadata,
   currentPage,
   totalPages,
 }: {
-  casesDataColumnHelper: ColumnHelper<casesTableDataType>;
   currentCart: CartFile[];
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
   currentPage: number;
@@ -305,14 +305,7 @@ export const useGenerateCasesTableColumns = ({
           ),
       }),
     ],
-    [
-      casesDataColumnHelper,
-      currentCart,
-      dispatch,
-      setEntityMetadata,
-      currentPage,
-      totalPages,
-    ],
+    [currentCart, dispatch, setEntityMetadata, currentPage, totalPages],
   );
 
   return CasesTableDefaultColumns;

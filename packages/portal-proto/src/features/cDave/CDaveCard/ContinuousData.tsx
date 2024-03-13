@@ -223,16 +223,16 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
           />
         </>
       )}
-      {binningModalOpen && (
-        <ContinuousBinningModal
-          setModalOpen={setBinningModalOpen}
-          field={field}
-          stats={initialData}
-          updateBins={setCustomBinnedData}
-          customBins={customBinnedData}
-          dataDimension={dataDimension}
-        />
-      )}
+
+      <ContinuousBinningModal
+        opened={binningModalOpen}
+        setModalOpen={setBinningModalOpen}
+        field={field}
+        stats={initialData}
+        updateBins={setCustomBinnedData}
+        customBins={customBinnedData}
+        dataDimension={dataDimension}
+      />
     </>
   );
 };

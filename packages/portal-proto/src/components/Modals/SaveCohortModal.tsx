@@ -39,6 +39,7 @@ import { INVALID_COHORT_NAMES } from "@/features/cohortBuilder/utils";
  * @category Modals
  */
 const SaveCohortModal = ({
+  opened,
   initialName = "",
   onClose,
   cohortId,
@@ -46,6 +47,7 @@ const SaveCohortModal = ({
   setAsCurrent = false,
   saveAs = false,
 }: {
+  opened: boolean;
   initialName?: string;
   onClose: () => void;
   cohortId?: string;
@@ -68,7 +70,7 @@ const SaveCohortModal = ({
   } = useGetCohortsByContextIdQuery(null, { skip: !cohortReplaced });
 
   useDeepCompareEffect(() => {
-    if (cohortListSuccess && cohortReplaced) {
+    if (opened && cohortListSuccess && cohortReplaced) {
       // Remove replaced cohort
       const updatedCohortIds = (cohortsListData || []).map(
         (cohort) => cohort.id,
@@ -89,6 +91,7 @@ const SaveCohortModal = ({
     cohortsListData,
     cohorts,
     coreDispatch,
+    opened,
     onClose,
     cohortSavedMessage,
   ]);
@@ -254,7 +257,7 @@ const SaveCohortModal = ({
 
   return (
     <Modal
-      opened
+      opened={opened}
       onClose={showReplaceCohort ? () => setShowReplaceCohort(false) : onClose}
       title={
         showReplaceCohort
@@ -263,7 +266,7 @@ const SaveCohortModal = ({
           ? "Save Cohort As"
           : "Save Cohort"
       }
-      size={"md"}
+      size="md"
       classNames={{
         content: "p-0",
         title: "text-xl",

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   UseMutation,
   UseQuery,
@@ -33,6 +33,7 @@ interface RemoveFromSetModalProps {
   readonly removeFromSetHook: UseMutation<
     MutationDefinition<any, any, any, string, string>
   >;
+  readonly opened: boolean;
 }
 
 const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
@@ -43,53 +44,18 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
   closeModal,
   countHook,
   removeFromSetHook,
+  opened,
 }: RemoveFromSetModalProps) => {
   const [selectedSets, setSelectedSets] = useState<string[][]>([]);
   const dispatch = useCoreDispatch();
-  const [removeFromSet, response] = removeFromSetHook();
-
-  useEffect(() => {
-    if (response.isSuccess) {
-      const newSetId = response?.data;
-      if (newSetId === undefined) {
-        showNotification({
-          message: "Problem modifiying set.",
-          color: "red",
-          closeButtonProps: { "aria-label": "Close notification" },
-        });
-      } else {
-        dispatch(
-          addSet({ setType, setName: selectedSets[0][1], setId: newSetId }),
-        );
-        showNotification({
-          message: "Set has been modified.",
-          closeButtonProps: { "aria-label": "Close notification" },
-        });
-        closeModal();
-      }
-    } else if (response.isError) {
-      showNotification({
-        message: "Problem modifiying set.",
-        color: "red",
-        closeButtonProps: { "aria-label": "Close notification" },
-      });
-    }
-  }, [
-    response.isSuccess,
-    response.isError,
-    response.data,
-    setType,
-    dispatch,
-    closeModal,
-    selectedSets,
-  ]);
+  const [removeFromSet] = removeFromSetHook();
 
   return (
     <Modal
-      title={`Remove ${removeFromCount.toLocaleString()} ${setTypeLabel}${
+      title={`Remove ${removeFromCount?.toLocaleString()} ${setTypeLabel}${
         removeFromCount > 1 ? "s" : ""
       } from an existing set`}
-      opened
+      opened={opened}
       onClose={closeModal}
       size="lg"
       classNames={{
@@ -123,6 +89,37 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
                 : {},
               setId: selectedSets[0][0],
             })
+              .unwrap()
+              .then((response) => {
+                const newSetId = response;
+                if (newSetId === undefined) {
+                  showNotification({
+                    message: "Problem modifiying set.",
+                    color: "red",
+                    closeButtonProps: { "aria-label": "Close notification" },
+                  });
+                } else {
+                  dispatch(
+                    addSet({
+                      setType,
+                      setName: selectedSets[0][1],
+                      setId: newSetId,
+                    }),
+                  );
+                  showNotification({
+                    message: "Set has been modified.",
+                    closeButtonProps: { "aria-label": "Close notification" },
+                  });
+                  closeModal();
+                }
+              })
+              .catch(() => {
+                showNotification({
+                  message: "Problem modifiying set.",
+                  color: "red",
+                  closeButtonProps: { "aria-label": "Close notification" },
+                });
+              })
           }
           disabled={selectedSets.length === 0}
         >

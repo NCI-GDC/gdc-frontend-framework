@@ -251,9 +251,9 @@ class BasePage:
         self.hover(table_locator_to_select)
         self.hover(table_locator_to_select, force=True)
 
-    def wait_until_locator_is_visible(self, locator):
+    def wait_until_locator_is_visible(self, locator, timeout=30000):
         """wait for element to have non-empty bounding box and no visibility:hidden"""
-        self.driver.locator(locator).wait_for(state="visible", timeout=60000)
+        self.driver.locator(locator).wait_for(state="visible", timeout=timeout)
 
     def wait_until_locator_is_detached(self, locator):
         """wait for element to not be present in DOM"""
@@ -290,9 +290,9 @@ class BasePage:
     def wait_for_selector(self, locator, timeout=30000):
         self.driver.wait_for_selector(locator, timeout=timeout)
 
-    def wait_for_loading_spinner_to_be_visible(self):
+    def wait_for_loading_spinner_to_be_visible(self, timeout=30000):
         locator = GenericLocators.LOADING_SPINNER_GENERIC
-        self.wait_until_locator_is_visible(locator)
+        self.wait_until_locator_is_visible(locator, timeout)
 
     def wait_for_loading_spinner_to_detatch(self):
         """Waits for the generic loading spinner to disappear on the page"""
