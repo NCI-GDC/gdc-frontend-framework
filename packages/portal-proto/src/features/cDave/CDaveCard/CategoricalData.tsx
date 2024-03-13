@@ -84,22 +84,24 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
 
   return (
     <>
-      {chartType === "histogram" ? (
-        <CDaveHistogram
-          field={field}
-          data={displayedData}
-          yTotal={yTotal}
-          isFetching={false}
-          noData={noData}
-        />
-      ) : (
-        <ClinicalSurvivalPlot
-          field={field}
-          selectedSurvivalPlots={selectedSurvivalPlots}
-          continuous={false}
-          customBinnedData={customBinnedData}
-        />
-      )}
+      <div className="flex-grow">
+        {chartType === "histogram" ? (
+          <CDaveHistogram
+            field={field}
+            data={displayedData}
+            yTotal={yTotal}
+            isFetching={false}
+            noData={noData}
+          />
+        ) : (
+          <ClinicalSurvivalPlot
+            field={field}
+            selectedSurvivalPlots={selectedSurvivalPlots}
+            continuous={false}
+            customBinnedData={customBinnedData}
+          />
+        )}
+      </div>
       <CardControls
         continuous={false}
         field={field}
