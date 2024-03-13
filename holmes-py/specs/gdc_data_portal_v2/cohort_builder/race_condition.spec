@@ -204,6 +204,3 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card
   |-------------------------------|---------------------|-------------------------|
   |Wilms Tumor Histologic Subtype |favorableunfavorable |1                        |
   |Tumor Descriptor               |primary              |2                        |
-
-
-- To do: add query area filter checking
