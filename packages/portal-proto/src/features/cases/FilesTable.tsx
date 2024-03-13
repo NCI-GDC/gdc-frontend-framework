@@ -40,7 +40,6 @@ interface FilesTableProps {
 
 export type CaseFilesTableDataType = Pick<
   GdcFile,
-  | "file_id"
   | "access"
   | "file_name"
   | "data_category"
@@ -49,7 +48,7 @@ export type CaseFilesTableDataType = Pick<
   | "experimental_strategy"
   | "platform"
   | "file_size"
-> & { file: GdcFile };
+> & { file: GdcFile; file_uuid: string };
 
 const caseFilesTableColumnHelper = createColumnHelper<CaseFilesTableDataType>();
 
@@ -65,12 +64,10 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const sortByActions = (sortByObj: SortingState) => {
-    const tempSortBy: SortBy[] = sortByObj.map((sortObj) => {
-      return {
-        field: sortObj.id,
-        direction: sortObj.desc ? "desc" : "asc",
-      };
-    });
+    const tempSortBy: SortBy[] = sortByObj.map((sortObj) => ({
+      field: sortObj.id === "file_uuid" ? "file_id" : sortObj.id,
+      direction: sortObj.desc ? "desc" : "asc",
+    }));
     setSortBy(tempSortBy);
   };
 
@@ -116,7 +113,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
       isSuccess
         ? (data?.files.map((file: GdcFile) => ({
             file: file,
-            file_id: file.file_id,
+            file_uuid: file.file_id,
             access: file.access,
             file_name: file.file_name,
             data_category: file.data_category,
@@ -168,7 +165,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
         header: "File Name",
         cell: ({ row }) => (
           <Link
-            href={`/files/${row.original.file_id}`}
+            href={`/files/${row.original.file_uuid}`}
             className="underline text-primary"
           >
             {row.original.file_name}
@@ -176,15 +173,15 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
         ),
         enableSorting: true,
       }),
-      caseFilesTableColumnHelper.accessor("file_id", {
-        id: "file_id",
+      caseFilesTableColumnHelper.accessor("file_uuid", {
+        id: "file_uuid",
         header: "File UUID",
         cell: ({ row }) => (
           <Link
-            href={`/files/${row.original.file_id}`}
+            href={`/files/${row.original.file_uuid}`}
             className="underline text-primary"
           >
-            {row.original.file_id}
+            {row.original.file_uuid}
           </Link>
         ),
         enableSorting: true,
@@ -226,7 +223,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
         cell: ({ row }) => {
           const isOutputFileInCart = fileInCart(
             currentCart,
-            row.original.file_id,
+            row.original.file_uuid,
           );
           return (
             <TableActionButtons
