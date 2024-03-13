@@ -59,7 +59,7 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
   };
 
   return (
-    <div className="h-44 block overflow-auto w-full relative border-base-light border-1">
+    <div className="max-h-44 block overflow-auto w-full relative border-base-light border-1">
       <table
         data-testid="table-card"
         className="border-separate border-spacing-0 w-full text-left text-base-contrast-min mb-2 table-auto"
