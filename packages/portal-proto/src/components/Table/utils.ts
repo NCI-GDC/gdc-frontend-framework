@@ -51,7 +51,11 @@ export function downloadTSV<TData>({
     .filter((column) => column !== null);
 
   const header = sortedColumns
-    .map((column) => humanify({ term: column.id }))
+    .map((column) =>
+      typeof column?.header === "string"
+        ? column.header
+        : humanify({ term: column.id }),
+    )
     .join("\t");
 
   const body = (tableData || [])

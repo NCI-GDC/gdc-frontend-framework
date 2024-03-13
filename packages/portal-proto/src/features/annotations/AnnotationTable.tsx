@@ -13,12 +13,16 @@ import {
   GqlUnion,
   SortBy,
   Pagination,
+  useCoreDispatch,
 } from "@gff/core";
 import { createColumnHelper, SortingState } from "@tanstack/react-table";
 import { statusBooleansToDataStatus } from "src/utils";
-import VerticalTable from "@/components/Table/VerticalTable";
+import { convertDateToString } from "src/utils/date";
 import FunctionButton from "@/components/FunctionButton";
+import VerticalTable from "@/components/Table/VerticalTable";
 import { HandleChangeInput } from "@/components/Table/types";
+import { downloadTSV } from "@/components/Table/utils";
+import download from "src/utils/download";
 import { useAppSelector } from "./appApi";
 import { selectFilters } from "./annotationBrowserFilterSlice";
 
@@ -273,15 +277,62 @@ const AnnnotationTable: React.FC = () => {
     }
   };
 
+  const coreDispatch = useCoreDispatch();
+
+  const handleDownloadJSON = async () => {
+    await download({
+      endpoint: "annotations",
+      method: "POST",
+      params: {
+        filters: buildCohortGqlOperator(filters) ?? {},
+        attachment: true,
+        format: "JSON",
+        pretty: true,
+        fields: [
+          "annotation_id",
+          "case_id",
+          "case_submitter_id",
+          "project.program.name",
+          "project.project_id",
+          "entity_type",
+          "entity_id",
+          "entity_submitter_id",
+          "category",
+          "classification",
+          "created_datetime",
+          "status",
+          "notes",
+        ].join(","),
+      },
+      dispatch: coreDispatch,
+    });
+  };
+
+  const handleDownloadTSV = () => {
+    downloadTSV<AnnotationTableData>({
+      tableData: formattedTableData,
+      columnOrder,
+      columnVisibility,
+      columns,
+      fileName: `annotations-table.${convertDateToString(new Date())}.tsv`,
+    });
+  };
+
   return (
     <VerticalTable
       tableTitle={`Total of ${data.count.toLocaleString()} Annotations`}
       additionalControls={
         <div className="flex gap-2">
-          <FunctionButton data-testid="button-json-projects-table">
+          <FunctionButton
+            data-testid="button-json-projects-table"
+            onClick={handleDownloadJSON}
+          >
             JSON
           </FunctionButton>
-          <FunctionButton data-testid="button-tsv-projects-table">
+          <FunctionButton
+            data-testid="button-tsv-projects-table"
+            onClick={handleDownloadTSV}
+          >
             TSV
           </FunctionButton>
         </div>
