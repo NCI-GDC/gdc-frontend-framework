@@ -503,6 +503,7 @@ def store_cohort_bar_case_count_for_comparison():
     Stores current cohort bar case count for comparison in future tests.
     Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'
     """
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
     data_store.spec["Cohort Bar Case Count"] = APP.shared.get_cohort_bar_case_count()
 
 @step("Collect <cohort_name> Case Count for comparison")

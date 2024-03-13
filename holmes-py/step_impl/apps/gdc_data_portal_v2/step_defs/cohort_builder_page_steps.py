@@ -22,6 +22,18 @@ def make_cohort_builder_selections(tab_name: str, table):
         APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
         time.sleep(0.1)
 
+@step("Make the following selections on the Cohort Builder page without pauses <table>")
+def select_cohort_builder_filters_without_pauses(table):
+    for k, v in enumerate(table):
+        APP.cohort_builder_page.click_button(v[0])
+        # This is for the filter card loading spinner, not the cohort bar. This needs to go away
+        # before a filter could be selected anyway. We do this so we can check for a plus-icon before
+        # attempting to add a filter.
+        APP.shared.wait_for_loading_spinner_to_detatch()
+        if APP.cohort_builder_page.is_show_more_or_show_less_button_visible_within_filter_card(v[1], "plus-icon"):
+            APP.cohort_builder_page.click_show_more_less_within_filter_card(v[1], "plus-icon")
+        APP.cohort_builder_page.make_selection_within_facet_group(v[1], v[2])
+        time.sleep(0.1)
 
 @step(
     "Perform the following actions from <tab_name> tab on the Cohort Builder page <table>"
@@ -87,7 +99,6 @@ def click_named_object(tab_name: str, table):
 def collect_case_counts_on_filters(cohort_name: str, table):
     """
     collect_case_counts_on_filters Collect case count on filters on the cohort builder page
-
     :param cohort_name: Cohort Name we are collecting the information under
     :param v[0]: Tab to select on cohort builder
     :param v[1]: Facet Card Name
