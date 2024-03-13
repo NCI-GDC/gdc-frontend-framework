@@ -236,7 +236,7 @@ function DraggableColumnItem<TData>({
         <Switch
           labelPosition="left"
           label={
-            typeof column.columnDef.header === "string"
+            typeof column?.columnDef?.header === "string"
               ? column.columnDef.header
               : humanify({ term: column.id })
           }

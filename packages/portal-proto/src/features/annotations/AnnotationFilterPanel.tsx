@@ -4,11 +4,11 @@ import {
   FacetDefinition,
   fieldNameToTitle,
   GQLDocType,
-  GQLIndexType,
+  selectAnnotationFacetByField,
 } from "@gff/core";
 import { Group, Text } from "@mantine/core";
 import { createFacetCard } from "@/features/facets/CreateFacetCard";
-import { useTotalCounts } from "@/features/facets/hooks";
+import { useTotalCounts, useLocalFilters } from "@/features/facets/hooks";
 import { FacetRequiredHooks } from "@/features/facets/types";
 import FilterFacets from "./filters.json";
 import {
@@ -17,33 +17,24 @@ import {
   useClearAnnotationFilters,
   useSelectFieldFilter,
   useUpdateAnnotationFacetFilter,
-  useLocalFilters,
 } from "./hooks";
 
-const useAnnotationEnumData = (
-  docType: GQLDocType,
-  indexType: GQLIndexType,
-  field: string,
-) =>
+const useAnnotationEnumData = (docType: GQLDocType, field: string) =>
   useLocalFilters(
     field,
     docType,
-    indexType,
     useAnnotationEnumValues,
     useAnnotationsFilters,
+    selectAnnotationFacetByField,
   );
 
 export const AnnotationFacetPanel = (): JSX.Element => {
   const facetHooks: FacetRequiredHooks = {
-    useGetEnumFacetData: partial(
-      useAnnotationEnumData,
-      "annotations",
-      undefined,
-    ),
+    useGetEnumFacetData: partial(useAnnotationEnumData, "annotations"),
     useUpdateFacetFilters: useUpdateAnnotationFacetFilter,
     useGetFacetFilters: useSelectFieldFilter,
     useClearFilter: useClearAnnotationFilters,
-    useTotalCounts: partial(useTotalCounts, "projectsCounts"),
+    useTotalCounts: partial(useTotalCounts, "annotationCounts"),
   };
 
   return (
