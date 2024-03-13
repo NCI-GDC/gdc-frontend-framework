@@ -131,4 +131,26 @@ describe("<CartDownloadModal />", () => {
     await UserEvent.click(getByRole("checkbox"));
     expect(downloadButton).not.toBeDisabled();
   });
+
+  it("show cart limit warning", () => {
+    const { getByText } = render(
+      <CartDownloadModal
+        openModal
+        user={{ username: "USERGUY", projects: {} as any }}
+        filesByCanAccess={{
+          true: [
+            { file_id: "1", file_size: 4 * 10e8 },
+            { file_id: "4", file_size: 2 * 10e8 },
+          ] as CartFile[],
+          false: [{ file_id: "2" }, { file_id: "3" }] as CartFile[],
+        }}
+        dbGapList={["TCGA"]}
+        setActive={jest.fn()}
+      />,
+    );
+
+    expect(
+      getByText("Your cart contains more than 5 GBs of data."),
+    ).toBeInTheDocument();
+  });
 });
