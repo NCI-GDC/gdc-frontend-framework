@@ -10,7 +10,7 @@ import {
   GqlOperation,
   useCurrentCohortCounts,
 } from "@gff/core";
-import { Button, Divider, Loader } from "@mantine/core";
+import { Button, Divider, Loader, LoadingOverlay } from "@mantine/core";
 import { SummaryModalContext } from "src/utils/contexts";
 import {
   ageDisplay,
@@ -378,8 +378,9 @@ export const ContextualCasesView: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col" data-testid="cases-table">
+    <div className="flex flex-col relative" data-testid="cases-table">
       <Divider color="#C5C5C5" className="mb-3" />
+      <LoadingOverlay visible={isFetching} />
 
       <VerticalTable
         data={casesData}
