@@ -1,4 +1,5 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
+import { useDeepCompareCallback } from "use-deep-compare";
 import {
   GdcFile,
   HistoryDefaults,
@@ -95,7 +96,7 @@ export const FileView: React.FC<FileViewProps> = ({
   const [fileToDownload, setFileToDownload] = useState(file);
   const isFileInCart = fileInCart(currentCart, file.file_id);
 
-  const formatDataForFileProperties = useCallback(
+  const formatDataForFileProperties = useDeepCompareCallback(
     () =>
       formatDataForHorizontalTable(file, [
         {
@@ -133,7 +134,7 @@ export const FileView: React.FC<FileViewProps> = ({
     [file],
   );
 
-  const formatDataForDataInformation = useCallback(
+  const formatDataForDataInformation = useDeepCompareCallback(
     () =>
       formatDataForHorizontalTable(file, [
         {
@@ -156,7 +157,7 @@ export const FileView: React.FC<FileViewProps> = ({
     [file],
   );
 
-  const formatDataForAnalysis = useCallback(
+  const formatDataForAnalysis = useDeepCompareCallback(
     () =>
       formatDataForHorizontalTable(file, [
         {
