@@ -142,12 +142,7 @@ export const Header: React.FC<HeaderProps> = ({
           >
             Send Feedback
           </Button>
-          <Link
-            href={{
-              pathname: "/analysis_page",
-              query: { app: "AnnotationsBrowser" },
-            }}
-          >
+          <Link href="/annotations">
             <div className="flex items-center gap-1 rounded-md p-1 hover:bg-primary-lightest">
               <PencilIcon size="24px" />
               Browse Annotations
