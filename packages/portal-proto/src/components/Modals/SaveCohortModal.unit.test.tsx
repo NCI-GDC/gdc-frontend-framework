@@ -295,4 +295,73 @@ describe("SaveCohortModal", () => {
 
     expect(setCurrentCohortMock).toBeCalledWith("2");
   });
+
+  test("clears state when modal is closed", async () => {
+    const mockMutation = jest.fn().mockReturnValue({
+      unwrap: jest
+        .fn()
+        .mockRejectedValueOnce({
+          data: {
+            message: "Bad Request: Name must be unique (case-insensitive)",
+          },
+        })
+        .mockResolvedValueOnce({
+          id: 1,
+          name: "my saved cohort",
+        }),
+    });
+    jest
+      .spyOn(core, "useAddCohortMutation")
+      .mockReturnValue([mockMutation, { isLoading: false } as any]);
+    jest
+      .spyOn(core, "useLazyGetCohortByIdQuery")
+      .mockReturnValue([jest.fn()] as any);
+    jest
+      .spyOn(core, "useGetCohortsByContextIdQuery")
+      .mockReturnValue({ data: [], isSuccess: true, isLoading: false } as any);
+
+    const { getByText, queryByText, rerender } = render(
+      <SaveCohortModal
+        opened
+        onClose={jest.fn()}
+        filters={{
+          root: {
+            "projects.program.name": {
+              field: "projects.program.name",
+              operands: ["TCGA"],
+              operator: "includes",
+            },
+          },
+          mode: "and",
+        }}
+        cohortId="1"
+      />,
+    );
+
+    await userEvent.type(getByText("Name"), "my new cohort");
+    await userEvent.click(getByText("Save"));
+    await userEvent.click(getByText("Replace"));
+
+    // Modal is closed
+
+    rerender(
+      <SaveCohortModal
+        opened
+        onClose={jest.fn()}
+        filters={{
+          root: {
+            "projects.program.name": {
+              field: "projects.program.name",
+              operands: ["TCGA"],
+              operator: "includes",
+            },
+          },
+          mode: "and",
+        }}
+        cohortId="1"
+      />,
+    );
+
+    expect(queryByText("Replace Existing Cohort")).not.toBeInTheDocument();
+  });
 });
