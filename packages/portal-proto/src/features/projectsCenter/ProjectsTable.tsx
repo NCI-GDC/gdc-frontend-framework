@@ -377,12 +377,14 @@ const ProjectsTable: React.FC = () => {
           <FunctionButton
             data-testid="button-json-projects-table"
             onClick={handleDownloadJSON}
+            disabled={isFetching}
           >
             JSON
           </FunctionButton>
           <FunctionButton
             data-testid="button-tsv-projects-table"
             onClick={handleDownloadTSV}
+            disabled={isFetching}
           >
             TSV
           </FunctionButton>

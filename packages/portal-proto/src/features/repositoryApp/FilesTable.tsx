@@ -475,12 +475,14 @@ const FilesTables: React.FC = () => {
               <FunctionButton
                 onClick={handleDownloadJSON}
                 data-testid="button-json-files-table"
+                disabled={isFetching}
               >
                 JSON
               </FunctionButton>
               <FunctionButton
                 onClick={handleDownloadTSV}
                 data-testid="button-tsv-files-table"
+                disabled={isFetching}
               >
                 TSV
               </FunctionButton>
