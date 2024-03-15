@@ -22,6 +22,7 @@ import { endpointSliceMiddleware } from "./features/gdcapi/gdcapi";
 import { projectApiSliceMiddleware } from "./features/projects/projectsSlice";
 import { filesApiSliceMiddleware } from "./features/files/filesSlice";
 import storage from "./storage-persist";
+import { userAuthApiMiddleware } from "./features/users/usersSlice";
 
 const persistConfig = {
   key: "root",
@@ -67,6 +68,7 @@ export const coreStore = configureStore({
         graphqlAPISliceMiddleware,
         endpointSliceMiddleware,
         projectApiSliceMiddleware,
+        userAuthApiMiddleware,
       )
       .prepend(coreStoreListenerMiddleware.middleware), // needs to be prepended
 });

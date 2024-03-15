@@ -5,6 +5,9 @@ import * as core from "@gff/core";
 import CartDownloadModal from "./CartDownloadModal";
 
 jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
+jest
+  .spyOn(core, "useLazyFetchUserDetailsQuery")
+  .mockImplementation(jest.fn().mockReturnValue([jest.fn()]));
 
 describe("<CartDownloadModal />", () => {
   it("shows number of auth and unauth files", () => {

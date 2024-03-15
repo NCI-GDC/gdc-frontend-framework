@@ -8,7 +8,7 @@ import {
   useCoreSelector,
   selectCurrentModal,
   Modals,
-  useUserDetails,
+  useFetchUserDetailsQuery,
 } from "@gff/core";
 import fileSize from "filesize";
 import { Button, Loader, Menu } from "@mantine/core";
@@ -96,7 +96,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
   dbGapList,
 }: CartHeaderProps) => {
   const dispatch = useCoreDispatch();
-  const { data: userDetails } = useUserDetails();
+  const { data: userDetails } = useFetchUserDetailsQuery();
   const [downloadActive, setDownloadActive] = useState(false);
   const [clinicalTSVDownloadActive, setClinicalTSVDownloadActive] =
     useState(false);
@@ -117,7 +117,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
       {modal === Modals.CartDownloadModal && (
         <CartDownloadModal
           openModal
-          user={userDetails}
+          user={userDetails?.data}
           filesByCanAccess={filesByCanAccess}
           dbGapList={dbGapList}
           setActive={setDownloadActive}

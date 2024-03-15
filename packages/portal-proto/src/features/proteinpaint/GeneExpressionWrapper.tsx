@@ -7,7 +7,7 @@ import {
   buildCohortGqlOperator,
   FilterSet,
   PROTEINPAINT_API,
-  useUserDetails,
+  useFetchUserDetailsQuery,
   useCoreDispatch,
   useCreateCaseSetFromValuesMutation,
 } from "@gff/core";
@@ -38,7 +38,7 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
   const filter0 = isDemoMode
     ? defaultFilter
     : buildCohortGqlOperator(currentCohort);
-  const userDetails = useUserDetails();
+  const userDetails = useFetchUserDetailsQuery();
   const ppRef = useRef<PpApi>();
   const ppPromise = useRef<Promise<PpApi>>();
   const initialFilter0Ref = useRef<any>();
