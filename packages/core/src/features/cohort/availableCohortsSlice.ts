@@ -17,10 +17,10 @@ import {
   GqlOperation,
   Operation,
   isIncludes,
-  Includes,
+  // Includes
 } from "../gdcapi/filters";
 import { CoreDataSelectorResponse, DataStatus } from "../../dataAccess";
-import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
+import { graphqlAPI } from "../gdcapi/gdcgraphql";
 import { CoreDispatch } from "../../store";
 import { useCoreSelector } from "../../hooks";
 import { SetTypes } from "../sets";
@@ -162,7 +162,8 @@ export interface CreateCaseSetProps {
   readonly modified?: boolean; // to control cohort modification flag
   readonly cohortId?: string; // if set update this cohort instead of the current cohort
 }
-
+// start Deprecated Code
+/* ----
 export const createCaseSet = createAsyncThunk<
   GraphQLApiResponse<Record<string, any>>,
   CreateCaseSetProps,
@@ -196,6 +197,8 @@ export const createCaseSet = createAsyncThunk<
     });
   },
 );
+---- */
+// end Deprecated Code
 
 interface SetIdResponse {
   viewer: {
@@ -313,8 +316,11 @@ const handleFiltersForSet = createAsyncThunk<
   { dispatch: CoreDispatch; state: CoreState }
 >(
   "cohort/fetchFiltersForSet",
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async ({ field, setIds, otherOperands, operation }, thunkAPI) => {
     const [docType] = field.split(".");
+
+    console.log("otherOperands", otherOperands, operation);
 
     const currentCohort = cohortSelectors.selectById(
       thunkAPI.getState(),
@@ -378,6 +384,9 @@ const handleFiltersForSet = createAsyncThunk<
       }
     }
 
+    // start Deprecated Code
+
+    /* ---
     const updatedFilters = {
       mode: "and",
       root: {
@@ -389,7 +398,8 @@ const handleFiltersForSet = createAsyncThunk<
         } as Includes,
       },
     };
-
+--- */
+    /** ----
     // case is needed if field is gene/ssm
     const requiresCaseSet = willRequireCaseSet(updatedFilters);
 
@@ -403,10 +413,14 @@ const handleFiltersForSet = createAsyncThunk<
         }),
       );
     }
+      ---- */
+    // end Deprecated Code
   },
 );
 
-export const REQUIRES_CASE_SET_FILTERS = [];
+// start Deprecated Code
+// export const REQUIRES_CASE_SET_FILTERS = [];
+// end Deprecated Code
 
 const cohortsAdapter = createEntityAdapter<Cohort>({
   sortComparer: (a, b) => {
@@ -436,16 +450,19 @@ export const createCohortName = (postfix: string): string => {
 
 export const createCohortId = (): string => nanoid();
 
-const willRequireCaseSet = (
-  filters: FilterSet,
-  prefixes: string[] = REQUIRES_CASE_SET_FILTERS,
-): boolean => {
-  return (
-    Object.keys(divideFilterSetByPrefix(filters, prefixes).withPrefix.root)
-      .length > 0
-  );
-};
+// start Deprecated Code
+// const willRequireCaseSet = (
+//   filters: FilterSet,
+//   prefixes: string[] = REQUIRES_CASE_SET_FILTERS,
+// ): boolean => {
+//   return (
+//     Object.keys(divideFilterSetByPrefix(filters, prefixes).withPrefix.root)
+//       .length > 0
+//   );
+// };
+// end Deprecated Code
 
+/* ---
 const buildCaseSetFilters = (
   data: Record<string, string>,
 ): Record<string, Operation> => {
@@ -473,6 +490,7 @@ const buildCaseSetFilters = (
   }
   return {};
 };
+--- */
 
 export const processCaseSetResponse = (
   data: Record<string, any>,
@@ -714,8 +732,11 @@ const slice = createSlice({
         },
       };
 
+      // start Deprecated Code
+      /*------
       const caseSetIds =
         state.entities[getCurrentCohort(state)]?.caseSet?.caseSetIds;
+
       if (caseSetIds) {
         // using a caseSet
         const dividedFilters = divideFilterSetByPrefix(
@@ -732,6 +753,7 @@ const slice = createSlice({
           },
         };
 
+
         cohortsAdapter.updateOne(state, {
           id: getCurrentCohort(state),
           changes: {
@@ -746,14 +768,17 @@ const slice = createSlice({
           },
         });
       } else
-        cohortsAdapter.updateOne(state, {
-          id: getCurrentCohort(state),
-          changes: {
-            filters: filters,
-            modified: true,
-            modified_datetime: new Date().toISOString(),
-          },
-        });
+      ---- */
+
+      // end Deprecated Code
+      cohortsAdapter.updateOne(state, {
+        id: getCurrentCohort(state),
+        changes: {
+          filters: filters,
+          modified: true,
+          modified_datetime: new Date().toISOString(),
+        },
+      });
     },
     removeCohortFilter: (state, action: PayloadAction<string>) => {
       const root = state.entities[getCurrentCohort(state)]?.filters.root;
@@ -762,18 +787,20 @@ const slice = createSlice({
       }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [action.payload]: _a, ...updated } = root;
-
-      const filterPrefix = action.payload.split(".");
-      const cohortCaseSetIds =
-        state.entities[getCurrentCohort(state)]?.caseSet?.caseSetIds;
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { [filterPrefix[0]]: _b, ...updatedCaseIds } =
-        cohortCaseSetIds ?? {};
+      //
+      // const filterPrefix = action.payload.split(".");
+      // const cohortCaseSetIds =
+      //   state.entities[getCurrentCohort(state)]?.caseSet?.caseSetIds;
+      // // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // const { [filterPrefix[0]]: _b, ...updatedCaseIds } =
+      //   cohortCaseSetIds ?? {};
 
       const sets = (state.entities[getCurrentCohort(state)]?.sets || []).filter(
         (set) => set.field !== action.payload,
       );
 
+      // start Deprecated Code
+      /* ---
       if (willRequireCaseSet({ mode: "and", root: updated })) {
         // still require a case set
         // update caseSet
@@ -808,20 +835,23 @@ const slice = createSlice({
           },
         });
       } else
-        cohortsAdapter.updateOne(state, {
-          id: getCurrentCohort(state),
-          changes: {
-            filters: { mode: "and", root: updated },
-            modified: true,
-            modified_datetime: new Date().toISOString(),
-            caseSet: {
-              filters: undefined,
-              caseSetIds: undefined,
-              status: "uninitialized",
-            },
-            sets,
+      --- */
+      // end Deprecated Code
+      cohortsAdapter.updateOne(state, {
+        id: getCurrentCohort(state),
+        changes: {
+          filters: { mode: "and", root: updated },
+          modified: true,
+          modified_datetime: new Date().toISOString(),
+          caseSet: {
+            // TODO: remove this
+            filters: undefined,
+            caseSetIds: undefined,
+            status: "uninitialized",
           },
-        });
+          sets,
+        },
+      });
     },
     clearCohortFilters: (state) => {
       cohortsAdapter.updateOne(state, {
@@ -912,6 +942,8 @@ const slice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // start Deprecated Code
+      /* ----
       .addCase(createCaseSet.fulfilled, (state, action) => {
         const currentCohort = getCurrentCohort(state);
         const response = action.payload;
@@ -997,6 +1029,8 @@ const slice = createSlice({
           },
         });
       })
+      --- */
+      // end Deprecated Code
       .addCase(fetchCohortCaseCounts.fulfilled, (state, action) => {
         if (
           action.meta.requestId !==
@@ -1521,20 +1555,23 @@ export const updateActiveCohortFilter =
     field,
     operation,
   }: UpdateFilterParams): ThunkAction<void, CoreState, undefined, AnyAction> =>
-  async (dispatch: CoreDispatch, getState) => {
+  async (dispatch: CoreDispatch /* getState */) => {
     const includesSet =
       isIncludes(operation) &&
       operation.operands.some(
         (operand) => typeof operand === "string" && operand.includes("set_id:"),
       );
 
+    // start Deprecated Code
     // check if we need a case set
     // case is needed if field is gene/ssm
+    /*
     const requiresCaseSet = willRequireCaseSet({
       mode: "and",
       root: { [field]: operation },
     });
-
+    */
+    // end Deprecated Code
     if (includesSet) {
       const setIds = operation.operands
         .filter(
@@ -1556,6 +1593,8 @@ export const updateActiveCohortFilter =
       );
     }
 
+    /// start Deprecated Code
+    /* ---
     if (requiresCaseSet) {
       // need a caseset or the caseset needs updating
       const cohortId = selectCurrentCohortId(getState());
@@ -1577,8 +1616,11 @@ export const updateActiveCohortFilter =
         );
       }
     } else {
-      dispatch(updateCohortFilter({ field, operation }));
-    }
+    --- */
+    // end Deprecated Code
+
+    dispatch(updateCohortFilter({ field, operation }));
+    // }
   };
 
 /**
@@ -1587,8 +1629,10 @@ export const updateActiveCohortFilter =
  */
 export const setActiveCohort =
   (cohortId: string): ThunkAction<void, CoreState, undefined, AnyAction> =>
-  async (dispatch: CoreDispatch, getState) => {
-    const cohort = getState().cohort.availableCohorts.entities[cohortId];
+  async (dispatch: CoreDispatch /* getState */) => {
+    // start Deprecated Code
+    /* --
+     const cohort = getState().cohort.availableCohorts.entities[cohortId];
     if (cohort) {
       if (
         willRequireCaseSet(cohort.filters) &&
@@ -1604,12 +1648,16 @@ export const setActiveCohort =
         );
       }
     }
+    ---- */
+    // end Deprecated Code
     dispatch(setCurrentCohortId(cohortId));
   };
 
 export const discardActiveCohortChanges =
   (filters: FilterSet): ThunkAction<void, CoreState, undefined, AnyAction> =>
-  async (dispatch: CoreDispatch, getState) => {
+  async (dispatch: CoreDispatch /* getState */) => {
+    // start Deprecated Code
+    /* ---
     const cohortId = selectCurrentCohortId(getState());
     if (cohortId && willRequireCaseSet(filters)) {
       createCaseSet({
@@ -1617,7 +1665,10 @@ export const discardActiveCohortChanges =
         modified: false,
         cohortId: cohortId,
       });
-    } else dispatch(discardCohortChanges({ filters, showMessage: true }));
+    } else
+      --- */
+    // end Deprecated Code
+    dispatch(discardCohortChanges({ filters, showMessage: true }));
   };
 
 export const setActiveCohortList =
@@ -1631,7 +1682,6 @@ export const setActiveCohortList =
       dispatch(addNewDefaultUnsavedCohort());
     }
 
-    const cohortId = selectCurrentCohortId(getState());
     const cohort = selectCurrentCohort(getState());
     // have to request counts for all cohorts loaded from the backend
     cohorts.forEach((cohort) => {
@@ -1639,6 +1689,9 @@ export const setActiveCohortList =
     });
 
     if (!cohort) return;
+    // start Deprecated Code
+    /* ---
+        const cohortId = selectCurrentCohortId(getState());
     if (
       cohortId &&
       willRequireCaseSet(cohort.filters) &&
@@ -1652,22 +1705,26 @@ export const setActiveCohortList =
         }),
       );
     }
+    ---*/
+    // end Deprecated Code
   };
 
-export const createCaseSetsIfNeeded =
-  (cohort: Cohort): ThunkAction<void, CoreState, undefined, AnyAction> =>
-  async (dispatch: CoreDispatch) => {
-    if (!cohort) return;
-    if (willRequireCaseSet(cohort.filters)) {
-      dispatch(
-        createCaseSet({
-          pendingFilters: cohort.filters,
-          modified: true,
-          cohortId: cohort.id,
-        }),
-      );
-    }
-  };
+// start Deprecated Code
+// export const createCaseSetsIfNeeded =
+//   (cohort: Cohort): ThunkAction<void, CoreState, undefined, AnyAction> =>
+//   async (dispatch: CoreDispatch) => {
+//     if (!cohort) return;
+//     if (willRequireCaseSet(cohort.filters)) {
+//       dispatch(
+//         createCaseSet({
+//           pendingFilters: cohort.filters,
+//           modified: true,
+//           cohortId: cohort.id,
+//         }),
+//       );
+//     }
+//   };
+// end Deprecated Code
 
 export const getCohortFilterForAPI = (cohort: Cohort): FilterSet => {
   return cohort?.caseSet.filters ?? cohort.filters;
