@@ -231,6 +231,10 @@ const AnnnotationTable: React.FC = () => {
         id: "entity_submitter_id",
         header: "Entity ID",
       }),
+      annotationsTableColumnHelper.accessor("category", {
+        id: "category",
+        header: "Category",
+      }),
       annotationsTableColumnHelper.accessor("classification", {
         id: "classification",
         header: "Classification",
@@ -275,15 +279,17 @@ const AnnnotationTable: React.FC = () => {
 
   return (
     <VerticalTable
-      tableTitle={`Total of ${data.count.toLocaleString()} Annotations`}
       additionalControls={
-        <div className="flex gap-2">
+        <div className="flex flex-row gap-2 items-center">
           <FunctionButton data-testid="button-json-projects-table">
             JSON
           </FunctionButton>
           <FunctionButton data-testid="button-tsv-projects-table">
             TSV
           </FunctionButton>
+          <span className="font-normal text-xl ml-auto mr-2">
+            Total of <strong>{data.count.toLocaleString()}</strong> Annotations
+          </span>
         </div>
       }
       data={formattedTableData}
