@@ -11,5 +11,5 @@ class WarningModal:
         self.driver = driver  # driver is PW page
 
     def accept_warning(self):
-        while self.driver.is_visible(WarningModalLocators.ACCEPT_BUTTON):
+        if self.driver.is_visible(WarningModalLocators.ACCEPT_BUTTON):
             self.driver.locator(WarningModalLocators.ACCEPT_BUTTON).click()

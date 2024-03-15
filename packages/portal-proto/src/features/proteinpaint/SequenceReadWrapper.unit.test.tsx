@@ -7,7 +7,7 @@ jest.mock("@gff/core", () => ({
   useCoreSelector: jest.fn().mockReturnValue({}),
   selectCurrentCohortFilterSet: jest.fn().mockReturnValue({}),
   buildCohortGqlOperator: jest.fn(() => filter),
-  useUserDetails: jest.fn(() => userDetails),
+  useFetchUserDetailsQuery: jest.fn(() => userDetails),
   PROTEINPAINT_API: "host:port/basepath",
 }));
 
@@ -20,7 +20,7 @@ jest.mock("@sjcrh/proteinpaint-client", () => ({
 }));
 
 test("Sequence Read arguments - logged in", () => {
-  userDetails = { data: { username: "test" } };
+  userDetails = { data: { data: { username: "test" } } };
   filter = { test: 1 };
   const { unmount, container } = render(<SequenceReadWrapper />);
   expect(typeof runpparg).toBe("object");
@@ -45,7 +45,7 @@ test("Sequence Read arguments - logged in", () => {
 
 // make this the last test so that userDetails
 test("Sequence Read arguments - not logged in", () => {
-  userDetails = { data: { username: null } };
+  userDetails = { data: { data: { username: null } } };
   filter = { test: 1 };
   const { unmount, container } = render(<SequenceReadWrapper />);
   expect(container.querySelector(".sjpp-wrapper-alert-div")).toHaveStyle(

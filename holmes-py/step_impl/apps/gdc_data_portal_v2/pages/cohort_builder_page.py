@@ -16,6 +16,7 @@ class CohortBuilderPageLocators:
 
     FACET_GROUP_IDENT = lambda group_name: f'[data-testid="title-cohort-builder-facet-groups"] >> div:text-is("{group_name}")'
     FACET_GROUP_SELECTION_IDENT = lambda group_name, selection: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> [data-testid="checkbox-{selection}"]'
+    FACET_GROUP_FILTER_TEXT_CASE_COUNT = lambda group_name, selection: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> [data-testid="text-{selection}"]'
     FACET_GROUP_ACTION_IDENT = lambda group_name, action: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> button[aria-label="{action}"]'
     FACET_GROUP_TEXT_AREA_IDENT = lambda group_name, textbox_id: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> [data-testid="textbox-{textbox_id}"]'
     FACET_GROUP_SHOW_MORE_LESS_IDENT = lambda group_name, more_or_less: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> button[data-testid="{more_or_less}"]'
@@ -80,10 +81,12 @@ class CohortBuilderPage(BasePage):
         )
         self.click(locator)
 
-    # Send keys in the search bar
-    def send_text_into_search_bar(self, text):
-        locator = CohortBuilderPageLocators.SEARCH_BAR
-        self.send_keys(locator, text)
+    def get_case_count_from_filter_within_facet_group(self, facet_group_name, filter_name):
+        """Returns the case count of a filter on a given facet card"""
+        locator = CohortBuilderPageLocators.FACET_GROUP_FILTER_TEXT_CASE_COUNT(
+            facet_group_name, filter_name
+        )
+        return self.get_text(locator)
 
     # Checks the text in the search bar result area
     def validate_search_bar_result(self, search_bar_text_to_check):

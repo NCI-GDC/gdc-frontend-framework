@@ -131,7 +131,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
       radius="md"
       p="xs"
       ref={(ref) => (targetRef.current = ref)}
-      className="border-1 border-base-lightest"
+      className="border-1 border-base-lightest h-full flex flex-col"
     >
       <div className="flex justify-between mb-1">
         <h2 className="font-heading font-medium">{fieldName}</h2>

@@ -242,13 +242,14 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
             size="xs"
             classNames={{
               input: "checked:bg-accent checked:border-accent",
+              label: "sr-only",
             }}
             {...{
               checked: table.getIsAllRowsSelected(),
               onChange: table.getToggleAllRowsSelectedHandler(),
             }}
             data-testid="checkbox-select-all-sets"
-            aria-label={`Select all sets of page ${page} of ${total}`}
+            label={`Select all sets on page ${page} of ${pages}`}
           />
         ),
         cell: ({ row }) => (
@@ -311,7 +312,7 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
         ),
       }),
     ],
-    [detailSet?.setId, setDetailSet, manageSetsTableColumnHelper, page, total],
+    [detailSet?.setId, setDetailSet, manageSetsTableColumnHelper, page, pages],
   );
 
   return (

@@ -15,7 +15,7 @@ jest.mock("@gff/core", () => ({
   selectCurrentCohortFilterSet: jest.fn().mockReturnValue({}),
   buildCohortGqlOperator: jest.fn(() => filter),
   useAddCohortMutation: jest.fn(() => [() => null, { isSuccess: true }]),
-  useUserDetails: jest.fn(() => userDetails),
+  useFetchUserDetailsQuery: jest.fn(() => userDetails),
   useCoreDispatch: jest.fn(() => nullFunction()),
   PROTEINPAINT_API: "host:port/basepath",
   useCreateCaseSetFromValuesMutation: () => [
