@@ -142,8 +142,15 @@ export const Header: React.FC<HeaderProps> = ({
           >
             Send Feedback
           </Button>
-          <Link href="/annotations">
-            <div className="flex items-center gap-1 rounded-md p-1 hover:bg-primary-lightest">
+          <Link
+            href="/annotations"
+            className={`p-1 rounded-md ${
+              router.pathname === "/annotations"
+                ? "bg-secondary text-white"
+                : "hover:bg-primary-lightest"
+            }`}
+          >
+            <div className="flex items-center gap-1 font-heading">
               <PencilIcon size="24px" />
               Browse Annotations
             </div>
