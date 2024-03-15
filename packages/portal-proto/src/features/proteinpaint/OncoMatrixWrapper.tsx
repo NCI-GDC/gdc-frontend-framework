@@ -58,6 +58,18 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
       const cases = arg.samples.map((d) => d["cases.case_id"]);
       if (cases.length > 1) {
         createSet({ values: cases });
+      } else {
+        setNewCohortFilters({
+          mode: "and",
+          root: {
+            "cases.case_id": {
+              operator: "includes",
+              field: "cases.case_id",
+              operands: [cases[0]],
+            },
+          },
+        });
+        setShowSaveCohort(true);
       }
     },
     [createSet],
