@@ -32,7 +32,6 @@ tags: regression, smoke
    |Tumor Descriptor     |
    |Specimen Type        |
    |Preservation Method  |
-'Tissue Type', 'Tumor Descriptor', 'Specimen Type', 'Preservation Method'
 
 ## Add a Custom Filter modal
 * Navigate to "Add a File Filter" from "Repository" "app"
