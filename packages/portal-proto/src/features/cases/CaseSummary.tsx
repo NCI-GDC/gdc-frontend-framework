@@ -16,7 +16,7 @@ export const CaseSummary = ({
   isModal?: boolean;
 }): JSX.Element => {
   const [shouldScrollToBio, setShouldScrollToBio] = useState(
-    bio_id !== undefined,
+    bio_id !== undefined && !isModal,
   );
   const { data, isFetching } = useCaseSummary({
     filters: {
