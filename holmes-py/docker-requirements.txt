@@ -4,13 +4,13 @@ appdirs==1.4.4
     # via rply
 baron==0.10.1
     # via redbaron
-cfgv==3.3.1
+cfgv==3.4.0
     # via pre-commit
-debugpy==1.6.2
+debugpy==1.8.1
     # via getgauge
-distlib==0.3.5
+distlib==0.3.8
     # via virtualenv
-filelock==3.7.1
+filelock==3.13.1
     # via virtualenv
 getgauge==0.3.17
     # via -r requirements.in
@@ -20,25 +20,27 @@ grpcio==1.53.2
     # via
     #   -r requirements.in
     #   getgauge
-identify==2.5.2
+identify==2.5.35
     # via pre-commit
 mouseinfo==0.1.3
     # via pyautogui
-nodeenv==1.7.0
+nodeenv==1.8.0
     # via pre-commit
 pillow==10.0.1
-    # via pyscreeze
-platformdirs==2.5.2
+    # via
+    #   -r requirements.in
+    #   pyscreeze
+platformdirs==4.2.0
     # via virtualenv
 playwright==1.23.1
     # via -r requirements.in
-pre-commit==2.20.0
+pre-commit==3.6.2
     # via -r requirements.in
 protobuf==3.20.2
     # via
     #   -r requirements.in
     #   getgauge
-pyautogui==0.9.53
+pyautogui==0.9.54
     # via -r requirements.in
 pyee==8.1.0
     # via playwright
@@ -50,23 +52,19 @@ pyperclip==1.8.2
     # via mouseinfo
 pyrect==0.2.0
     # via pygetwindow
-pyscreeze==0.1.28
+pyscreeze==0.1.30
     # via pyautogui
-pytweening==1.0.4
+pytweening==1.2.0
     # via pyautogui
-pyyaml==6.0
+pyyaml==6.0.1
     # via pre-commit
 redbaron==0.9.2
     # via getgauge
 rply==0.7.8
     # via baron
-rubicon-objc==0.4.3
+rubicon-objc==0.4.7
     # via mouseinfo
-toml==0.10.2
-    # via pre-commit
-typing-extensions==4.3.0
-    # via playwright
-virtualenv==20.16.2
+virtualenv==20.25.1
     # via pre-commit
 websockets==10.1
     # via playwright
