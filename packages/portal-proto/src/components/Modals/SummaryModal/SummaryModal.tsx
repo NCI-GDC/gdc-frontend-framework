@@ -44,9 +44,7 @@ export const SummaryModal = ({
         }
       : entity_type === "case"
       ? {
-          SummaryPage: (
-            <CaseSummary case_id={entity_id} bio_id="" isModal={true} />
-          ),
+          SummaryPage: <CaseSummary case_id={entity_id} isModal={true} />,
           title: "Case",
         }
       : entity_type === "file"
