@@ -13,20 +13,21 @@ const openAuthWindow = (): Promise<unknown> => {
           clearInterval(interval);
           reject("window closed manually");
         }
-        if (
-          win.document.URL.includes(location.origin) &&
-          !win.document.URL.includes("auth")
-        ) {
-          // Window is not closed yet so close
-          win.close();
-          // Clear the interval calling this function
-          clearInterval(interval);
-          if (win.document.URL.includes("error=401")) {
-            reject("login_error");
-            return;
+        try {
+          if (
+            win.document.URL.includes(location.origin) &&
+            !win.document.URL.includes("auth")
+          ) {
+            win.close();
+            clearInterval(interval);
+            if (win.document.URL.includes("error=401")) {
+              reject("login_error");
+              return;
+            }
+            resolve("success");
           }
-          // Resolve that we have something good
-          resolve("success");
+        } catch (err) {
+          // just want to catch it and not reject it
         }
       };
       const interval = setInterval(loginAttempt, pollInterval);
