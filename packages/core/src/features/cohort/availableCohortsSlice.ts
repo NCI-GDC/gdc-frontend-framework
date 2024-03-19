@@ -162,7 +162,7 @@ export interface CreateCaseSetProps {
   readonly modified?: boolean; // to control cohort modification flag
   readonly cohortId?: string; // if set update this cohort instead of the current cohort
 }
-// start Deprecated Code
+// start depreciated code
 /* ----
 export const createCaseSet = createAsyncThunk<
   GraphQLApiResponse<Record<string, any>>,
@@ -198,7 +198,7 @@ export const createCaseSet = createAsyncThunk<
   },
 );
 ---- */
-// end Deprecated Code
+// end depreciated code
 
 interface SetIdResponse {
   viewer: {
@@ -384,7 +384,7 @@ const handleFiltersForSet = createAsyncThunk<
       }
     }
 
-    // start Deprecated Code
+    // start depreciated code
     /* ---
     const updatedFilters = {
       mode: "and",
@@ -412,13 +412,13 @@ const handleFiltersForSet = createAsyncThunk<
       );
     }
       ---- */
-    // end Deprecated Code
+    // end depreciated code
   },
 );
 
-// start Deprecated Code
+// start depreciated code
 // export const REQUIRES_CASE_SET_FILTERS = [];
-// end Deprecated Code
+// end depreciated code
 
 const cohortsAdapter = createEntityAdapter<Cohort>({
   sortComparer: (a, b) => {
@@ -448,7 +448,7 @@ export const createCohortName = (postfix: string): string => {
 
 export const createCohortId = (): string => nanoid();
 
-// start Deprecated Code
+// start depreciated code
 // const willRequireCaseSet = (
 //   filters: FilterSet,
 //   prefixes: string[] = REQUIRES_CASE_SET_FILTERS,
@@ -458,7 +458,7 @@ export const createCohortId = (): string => nanoid();
 //       .length > 0
 //   );
 // };
-// end Deprecated Code
+// end depreciated code
 
 /* ---
 const buildCaseSetFilters = (
@@ -730,7 +730,7 @@ const slice = createSlice({
         },
       };
 
-      // start Deprecated Code
+      // start depreciated code
       /*------
       const caseSetIds =
         state.entities[getCurrentCohort(state)]?.caseSet?.caseSetIds;
@@ -768,7 +768,7 @@ const slice = createSlice({
       } else
       ---- */
 
-      // end Deprecated Code
+      // end depreciated code
       cohortsAdapter.updateOne(state, {
         id: getCurrentCohort(state),
         changes: {
@@ -797,7 +797,7 @@ const slice = createSlice({
         (set) => set.field !== action.payload,
       );
 
-      // start Deprecated Code
+      // start depreciated code
       /* ---
       if (willRequireCaseSet({ mode: "and", root: updated })) {
         // still require a case set
@@ -834,7 +834,7 @@ const slice = createSlice({
         });
       } else
       --- */
-      // end Deprecated Code
+      // end depreciated code
       cohortsAdapter.updateOne(state, {
         id: getCurrentCohort(state),
         changes: {
@@ -940,7 +940,7 @@ const slice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // start Deprecated Code
+      // start depreciated code
       /* ----
       .addCase(createCaseSet.fulfilled, (state, action) => {
         const currentCohort = getCurrentCohort(state);
@@ -1028,7 +1028,7 @@ const slice = createSlice({
         });
       })
       --- */
-      // end Deprecated Code
+      // end depreciated code
       .addCase(fetchCohortCaseCounts.fulfilled, (state, action) => {
         if (
           action.meta.requestId !==
@@ -1505,11 +1505,11 @@ export const useCurrentCohortFilters = (): FilterSet | undefined => {
 
 /**
  * A hook to get gene/ssm case set for the current cohort
- * This function is being deprecated and will be removed in the future
+ * This function is being depreciated and will be removed in the future
  * @category Cohort
  * @category Hooks
  * @hidden
- * @deprecated - after refactoring to support dynamic cohorts, this function will be removed
+ * @depreciated - after refactoring to support dynamic cohorts, this function will be removed
  */
 export const useCurrentCohortWithGeneAndSsmCaseSet = ():
   | FilterSet
@@ -1560,7 +1560,7 @@ export const updateActiveCohortFilter =
         (operand) => typeof operand === "string" && operand.includes("set_id:"),
       );
 
-    // start Deprecated Code
+    // start depreciated code
     // check if we need a case set
     // case is needed if field is gene/ssm
     /*
@@ -1569,7 +1569,7 @@ export const updateActiveCohortFilter =
       root: { [field]: operation },
     });
     */
-    // end Deprecated Code
+    // end depreciated code
     if (includesSet) {
       const setIds = operation.operands
         .filter(
@@ -1591,7 +1591,7 @@ export const updateActiveCohortFilter =
       );
     }
 
-    /// start Deprecated Code
+    /// start depreciated code
     /* ---
     if (requiresCaseSet) {
       // need a caseset or the caseset needs updating
@@ -1615,7 +1615,7 @@ export const updateActiveCohortFilter =
       }
     } else {
     --- */
-    // end Deprecated Code
+    // end depreciated code
 
     dispatch(updateCohortFilter({ field, operation }));
     // }
@@ -1628,7 +1628,7 @@ export const updateActiveCohortFilter =
 export const setActiveCohort =
   (cohortId: string): ThunkAction<void, CoreState, undefined, AnyAction> =>
   async (dispatch: CoreDispatch /* getState */) => {
-    // start Deprecated Code
+    // start depreciated code
     /* --
      const cohort = getState().cohort.availableCohorts.entities[cohortId];
     if (cohort) {
@@ -1647,14 +1647,14 @@ export const setActiveCohort =
       }
     }
     ---- */
-    // end Deprecated Code
+    // end depreciated code
     dispatch(setCurrentCohortId(cohortId));
   };
 
 export const discardActiveCohortChanges =
   (filters: FilterSet): ThunkAction<void, CoreState, undefined, AnyAction> =>
   async (dispatch: CoreDispatch /* getState */) => {
-    // start Deprecated Code
+    // start depreciated code
     /* ---
     const cohortId = selectCurrentCohortId(getState());
     if (cohortId && willRequireCaseSet(filters)) {
@@ -1665,7 +1665,7 @@ export const discardActiveCohortChanges =
       });
     } else
       --- */
-    // end Deprecated Code
+    // end depreciated code
     dispatch(discardCohortChanges({ filters, showMessage: true }));
   };
 
@@ -1687,7 +1687,7 @@ export const setActiveCohortList =
     });
 
     if (!cohort) return;
-    // start Deprecated Code
+    // start depreciated code
     /* ---
         const cohortId = selectCurrentCohortId(getState());
     if (
@@ -1704,10 +1704,10 @@ export const setActiveCohortList =
       );
     }
     ---*/
-    // end Deprecated Code
+    // end depreciated code
   };
 
-// start Deprecated Code
+// start depreciated code
 // export const createCaseSetsIfNeeded =
 //   (cohort: Cohort): ThunkAction<void, CoreState, undefined, AnyAction> =>
 //   async (dispatch: CoreDispatch) => {
@@ -1722,7 +1722,7 @@ export const setActiveCohortList =
 //       );
 //     }
 //   };
-// end Deprecated Code
+// end depreciated code
 
 export const getCohortFilterForAPI = (cohort: Cohort): FilterSet => {
   return cohort?.caseSet.filters ?? cohort.filters;
