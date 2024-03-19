@@ -24,8 +24,8 @@ import {
   selectCurrentCohortFiltersByNames,
   GqlOperation,
   buildCohortGqlOperator,
-  selectCurrentCohortGeneAndSSMCaseSet,
-  useCurrentCohortWithGeneAndSsmCaseSet,
+  selectCurrentCohortFilters,
+  useCurrentCohortFilters,
 } from "@gff/core";
 import { useEffect, useMemo } from "react";
 import isEqual from "lodash/isEqual";
@@ -41,9 +41,7 @@ import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
  * Filter selector for all the facet filters
  */
 const useCohortFacetFilter = (): FilterSet => {
-  return useCoreSelector((state) =>
-    selectCurrentCohortGeneAndSSMCaseSet(state),
-  );
+  return useCoreSelector((state) => selectCurrentCohortFilters(state));
 };
 
 export const extractValue = (op: Operation): EnumOperandValue => {
@@ -90,8 +88,7 @@ export const useEnumFacet = (
   );
 
   const enumValues = useCohortFacetFilterByName(field);
-  const currentCohortFilters = useCurrentCohortWithGeneAndSsmCaseSet();
-  const cohortFilters = useCohortFacetFilter();
+  const currentCohortFilters = useCurrentCohortFilters();
   const prevCohortFilters = usePrevious(currentCohortFilters);
   const prevEnumValues = usePrevious(enumValues);
 
@@ -113,7 +110,6 @@ export const useEnumFacet = (
     coreDispatch,
     facet,
     field,
-    cohortFilters,
     docType,
     indexType,
     prevCohortFilters,
@@ -151,8 +147,7 @@ export const useEnumFacets = (
   const coreDispatch = useCoreDispatch();
 
   const enumValues = useEnumFiltersByNames(fields);
-  const currentCohortFilters = useCurrentCohortWithGeneAndSsmCaseSet();
-  const cohortFilters = useCohortFacetFilter();
+  const currentCohortFilters = useCohortFacetFilter();
   const prevCohortFilters = usePrevious(currentCohortFilters);
   const prevEnumValues = usePrevious(enumValues);
   const prevFilterLength = usePrevious(facet.length);
@@ -177,7 +172,6 @@ export const useEnumFacets = (
     coreDispatch,
     facet,
     fields,
-    cohortFilters,
     docType,
     indexType,
     prevCohortFilters,

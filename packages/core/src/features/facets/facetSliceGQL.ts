@@ -7,7 +7,7 @@ import { CoreState } from "../../reducers";
 import {
   buildCohortGqlOperator,
   joinFilters,
-  selectCurrentCohortGeneAndSSMCaseSet,
+  selectCurrentCohortFilters,
   FilterSet,
 } from "../cohort";
 import {
@@ -40,7 +40,7 @@ export const fetchFacetByNameGQL = createAsyncThunk<
       field,
       docType = "cases",
       index = "explore" as GQLIndexType,
-      caseFilterSelector = selectCurrentCohortGeneAndSSMCaseSet,
+      caseFilterSelector = selectCurrentCohortFilters,
       localFilters = undefined,
       splitIntoCasePlusLocalFilters = false,
     },

@@ -1272,11 +1272,8 @@ export const selectAvailableCohortByName = (
 export const selectCurrentCohortFilterSet = (
   state: CoreState,
 ): FilterSet | undefined => {
-  const cohort = cohortSelectors.selectById(
-    state,
-    getCurrentCohortFromCoreState(state),
-  );
-  return cohort?.filters;
+  return cohortSelectors.selectById(state, getCurrentCohortFromCoreState(state))
+    ?.filters;
 };
 
 /**
@@ -1326,27 +1323,28 @@ export const selectCurrentCohortGqlFilters = (
   return buildCohortGqlOperator(cohort?.filters);
 };
 
-/**
- * Returns either a filterSet or a filter containing a caseSetId that was created
- * for the current cohort. If the cohort is undefined an empty FilterSet is returned.
- * Used to create a cohort that works with both explore and repository indexes
- * @param state - the CoreState
- * @category Cohort
- * @category Selectors
- * @hidden
- */
-export const selectCurrentCohortGeneAndSSMCaseSet = (
-  state: CoreState,
-): FilterSet => {
-  const cohort = cohortSelectors.selectById(
-    state,
-    getCurrentCohortFromCoreState(state),
-  );
-  if (cohort === undefined) return { mode: "and", root: {} };
-
-  return cohort?.caseSet.filters ?? cohort.filters;
-};
-
+// start depreciated code
+// /**
+//  * Returns either a filterSet or a filter containing a caseSetId that was created
+//  * for the current cohort. If the cohort is undefined an empty FilterSet is returned.
+//  * Used to create a cohort that works with both explore and repository indexes
+//  * @param state - the CoreState
+//  * @category Cohort
+//  * @category Selectors
+//  * @hidden
+//  */
+// export const selectCurrentCohortGeneAndSSMCaseSet = (
+//   state: CoreState,
+// ): FilterSet => {
+//   const cohort = cohortSelectors.selectById(
+//     state,
+//     getCurrentCohortFromCoreState(state),
+//   );
+//   if (cohort === undefined) return { mode: "and", root: {} };
+//
+//   return cohort?.caseSet.filters ?? cohort.filters;
+// };
+// end depreciated code
 /**
  * Public selector of the current Cohort Filters.
  * Returns the current cohort filters as a FilterSet
@@ -1503,22 +1501,23 @@ export const useCurrentCohortFilters = (): FilterSet | undefined => {
   );
 };
 
-/**
- * A hook to get gene/ssm case set for the current cohort
- * This function is being depreciated and will be removed in the future
- * @category Cohort
- * @category Hooks
- * @hidden
- * @depreciated - after refactoring to support dynamic cohorts, this function will be removed
- */
-export const useCurrentCohortWithGeneAndSsmCaseSet = ():
-  | FilterSet
-  | undefined => {
-  return useCoreSelector((state: CoreState) =>
-    selectCurrentCohortGeneAndSSMCaseSet(state),
-  );
-};
-
+// start depreciated code
+// /**
+//  * A hook to get gene/ssm case set for the current cohort
+//  * This function is being depreciated and will be removed in the future
+//  * @category Cohort
+//  * @category Hooks
+//  * @hidden
+//  * @depreciated - after refactoring to support dynamic cohorts, this function will be removed
+//  */
+// export const useCurrentCohortWithGeneAndSsmCaseSet = ():
+//   | FilterSet
+//   | undefined => {
+//   return useCoreSelector((state: CoreState) =>
+//     selectCurrentCohortGeneAndSSMCaseSet(state),
+//   );
+// };
+// end depreciated code
 /**
  * A hook to get the counts of cases and files for the current cohort
  * @category Cohort

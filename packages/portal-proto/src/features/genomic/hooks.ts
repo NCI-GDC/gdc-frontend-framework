@@ -204,15 +204,6 @@ export const useSelectFilterContent = (field: string): Array<string> => {
   return [];
 };
 
-export const useUpdateGeneAndSSMFilters = (): UpdateFacetFilterFunction => {
-  const dispatch = useAppDispatch();
-  // update the filter for this facet
-
-  return (field: string, operation: Operation) => {
-    dispatch(updateGeneAndSSMFilter({ field: field, operation: operation }));
-  };
-};
-
 export interface GeneAndSSMPanelData {
   isDemoMode: boolean;
   genomicFilters: FilterSet;
@@ -267,7 +258,6 @@ export const useGeneAndSSMPanelData = (
     [
       comparativeSurvival?.field,
       comparativeSurvival?.symbol,
-      cohortFilters,
       isGene,
       genomicFilters,
     ],
