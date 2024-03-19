@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { Modal, Button } from "@mantine/core";
@@ -69,6 +69,15 @@ const SaveCohortModal = ({
     isLoading: cohortListLoading,
   } = useGetCohortsByContextIdQuery(null, { skip: !cohortReplaced });
 
+  const closeModal = useCallback(() => {
+    onClose();
+    // Reset modal state on close
+    setShowReplaceCohort(false);
+    setCohortReplaced(false);
+    setEnteredName(undefined);
+    setCohortSavedMessage(undefined);
+  }, [onClose]);
+
   useDeepCompareEffect(() => {
     if (opened && cohortListSuccess && cohortReplaced) {
       // Remove replaced cohort
@@ -83,7 +92,7 @@ const SaveCohortModal = ({
       }
 
       coreDispatch(setCohortMessage(cohortSavedMessage));
-      onClose();
+      closeModal();
     }
   }, [
     cohortListSuccess,
@@ -205,7 +214,7 @@ const SaveCohortModal = ({
           setCohortReplaced(true);
         } else {
           coreDispatch(setCohortMessage(tempCohortMsg));
-          onClose();
+          closeModal();
         }
       })
       .catch((e: FetchBaseQueryError) => {
