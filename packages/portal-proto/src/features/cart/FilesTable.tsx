@@ -400,6 +400,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
             <FunctionButton
               onClick={handleDownloadJSON}
               aria-label="Download JSON"
+              disabled={isFetching}
             >
               JSON
             </FunctionButton>
@@ -408,6 +409,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
             <FunctionButton
               onClick={handleDownloadTSV}
               aria-label="Download TSV"
+              disabled={isFetching}
             >
               TSV
             </FunctionButton>
