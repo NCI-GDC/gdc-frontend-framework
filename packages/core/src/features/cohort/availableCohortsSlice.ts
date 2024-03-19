@@ -40,7 +40,7 @@ export interface CaseSetDataAndStatus {
   readonly status: DataStatus; // status of create caseSet
   readonly error?: string; // any error message
   readonly caseSetIds?: Record<string, string>; // prefix mapped caseSetIds
-  readonly filters?: FilterSet; // FilterSet that contains combination of CaseSets + filters
+  ///  readonly filters?: FilterSet; // FilterSet that contains combination of CaseSets + filters
 }
 
 export interface CohortStoredSets {
@@ -77,12 +77,13 @@ export interface Cohort {
   readonly saved?: boolean; // flag indicating if cohort has been saved.
   readonly counts: CountsDataAndStatus; //case, file, etc. counts of a cohort
 }
-
+// start depreciated code
 /**
  * Parses the set of Filter and returns an object containing query, parameters, and variables
  * used to create a caseSet from the input filters. The prefix (e.g. genes.") of the filters is used to group them.
  * The assumption is that all filters will have a prefix separated by "."
  */
+/* ----
 export const buildCaseSetGQLQueryAndVariablesFromFilters = (
   filters: FilterSet,
   id: string,
@@ -135,6 +136,8 @@ export const buildCaseSetGQLQueryAndVariablesFromFilters = (
     }, {}),
   };
 };
+----*/
+// end depreciated code
 
 /*
  A start at handling how to seamlessly create cohorts that can bridge explore
@@ -459,7 +462,7 @@ export const createCohortId = (): string => nanoid();
 //   );
 // };
 // end depreciated code
-
+// start depreciated code
 /* ---
 const buildCaseSetFilters = (
   data: Record<string, string>,
@@ -489,7 +492,10 @@ const buildCaseSetFilters = (
   return {};
 };
 --- */
+//end depreciated code
 
+// start depreciated code
+/* ---
 export const processCaseSetResponse = (
   data: Record<string, any>,
 ): Record<string, string> => {
@@ -501,16 +507,18 @@ export const processCaseSetResponse = (
     };
   }, {});
 };
+--*/
+// end depreciated code
 
 const newCohort = ({
   filters = { mode: "and", root: {} },
   modified = true,
-  pendingFilters,
+  /// pendingFilters,
   customName,
 }: {
   filters?: FilterSet;
   modified?: boolean;
-  pendingFilters?: FilterSet;
+  ///  pendingFilters?: FilterSet;
   customName?: string;
 }): Cohort => {
   const ts = new Date();
@@ -523,7 +531,7 @@ const newCohort = ({
     caseSet: {
       caseSetIds: undefined,
       status: "uninitialized" as DataStatus,
-      filters: pendingFilters,
+      ///  filters: pendingFilters,
     },
     filters: filters,
     modified: modified,
@@ -843,7 +851,7 @@ const slice = createSlice({
           modified_datetime: new Date().toISOString(),
           caseSet: {
             // TODO: remove this
-            filters: undefined,
+            //   filters: undefined,
             caseSetIds: undefined,
             status: "uninitialized",
           },
@@ -859,7 +867,7 @@ const slice = createSlice({
           modified: true,
           modified_datetime: new Date().toISOString(),
           caseSet: {
-            filters: undefined,
+            //   filters: undefined,
             caseSetIds: undefined,
             status: "uninitialized",
           },
@@ -907,7 +915,7 @@ const slice = createSlice({
           caseSet: {
             status: "uninitialized",
             caseSetIds: undefined,
-            filters: undefined,
+            //  filters: undefined,
           },
         },
       });
@@ -1723,9 +1731,8 @@ export const setActiveCohortList =
 //   };
 // end depreciated code
 
-export const getCohortFilterForAPI = (cohort: Cohort): FilterSet => {
-  return cohort?.caseSet.filters ?? cohort.filters;
-};
+export const getCohortFilterForAPI = (cohort: Cohort): FilterSet =>
+  cohort.filters;
 
 export const divideFilterSetByPrefix = (
   filters: FilterSet,
