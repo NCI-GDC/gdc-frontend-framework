@@ -12,7 +12,6 @@ import {
   availableCohortsReducer,
   addNewUnsavedCohort,
   divideCurrentCohortFilterSetFilterByPrefix,
-  processCaseSetResponse,
 } from "../availableCohortsSlice";
 import { NullCountsData } from "../cohortCountsQuery";
 import * as cohortSlice from "../availableCohortsSlice";
@@ -435,7 +434,6 @@ describe("add, update, and remove cohort", () => {
             caseSet: {
               status: "uninitialized",
               caseSetIds: undefined,
-              filters: undefined,
             },
             counts: {
               ...NullCountsData,
@@ -474,7 +472,6 @@ describe("add, update, and remove cohort", () => {
           caseSet: {
             status: "uninitialized",
             caseSetIds: undefined,
-            filters: undefined,
           },
           counts: {
             ...NullCountsData,
@@ -498,7 +495,6 @@ describe("add, update, and remove cohort", () => {
           caseSet: {
             status: "uninitialized",
             caseSetIds: undefined,
-            filters: undefined,
           },
           counts: {
             ...NullCountsData,
@@ -526,7 +522,6 @@ describe("add, update, and remove cohort", () => {
             caseSet: {
               status: "uninitialized",
               caseSetIds: undefined,
-              filters: undefined,
             },
             counts: {
               ...NullCountsData,
@@ -551,7 +546,6 @@ describe("add, update, and remove cohort", () => {
           caseSet: {
             status: "uninitialized",
             caseSetIds: undefined,
-            filters: undefined,
           },
           counts: {
             ...NullCountsData,
@@ -566,7 +560,6 @@ describe("add, update, and remove cohort", () => {
           caseSet: {
             status: "uninitialized",
             caseSetIds: undefined,
-            filters: undefined,
           },
           counts: {
             ...NullCountsData,
@@ -595,7 +588,6 @@ describe("add, update, and remove cohort", () => {
               caseSet: {
                 status: "uninitialized",
                 caseSetIds: undefined,
-                filters: undefined,
               },
               counts: {
                 ...NullCountsData,
@@ -628,7 +620,6 @@ describe("add, update, and remove cohort", () => {
               caseSet: {
                 status: "uninitialized",
                 caseSetIds: undefined,
-                filters: undefined,
               },
               counts: {
                 ...NullCountsData,
@@ -813,7 +804,6 @@ describe("add, update, and remove cohort", () => {
             caseSet: {
               status: "uninitialized",
               caseSetIds: undefined,
-              filters: undefined,
             },
             counts: {
               ...NullCountsData,
@@ -859,7 +849,6 @@ describe("add, update, and remove cohort", () => {
           caseSet: {
             status: "uninitialized",
             caseSetIds: undefined,
-            filters: undefined,
           },
           counts: {
             ...NullCountsData,
@@ -870,25 +859,6 @@ describe("add, update, and remove cohort", () => {
           saved: false,
         },
       },
-    });
-  });
-});
-
-describe("caseSet creation", () => {
-  afterAll(() => {
-    jest.clearAllMocks();
-  });
-
-  test("extract caseset response", () => {
-    const data = {
-      genesCases: { set_id: "genes-4kaetNCo-HlpwBloLEcRy}", size: 4941 },
-      ssmsCases: { set_id: "ssms-4kaetNCo-HlpwBloLEcRy}", size: 389 },
-    };
-
-    const results = processCaseSetResponse(data);
-    expect(results).toEqual({
-      genes: "genes-4kaetNCo-HlpwBloLEcRy}",
-      ssms: "ssms-4kaetNCo-HlpwBloLEcRy}",
     });
   });
 });
