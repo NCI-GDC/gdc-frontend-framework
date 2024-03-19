@@ -327,7 +327,7 @@ const handleFiltersForSet = createAsyncThunk<
       getCurrentCohortFromCoreState(thunkAPI.getState()),
     ) as Cohort;
 
-    const updatedSetIds = [];
+    // const updatedSetIds = [];
 
     for (const setId of setIds) {
       const filters = {
@@ -351,7 +351,7 @@ const handleFiltersForSet = createAsyncThunk<
             field,
           };
           thunkAPI.dispatch(addNewCohortSet(newSet));
-          updatedSetIds.push(`set_id:${setId}`);
+          // updatedSetIds.push(`set_id:${setId}`);
         }
       } else {
         const setCount = await setCountQueryFactory(field, filters);
@@ -374,18 +374,17 @@ const handleFiltersForSet = createAsyncThunk<
               ids: storedSet.ids,
               field,
             };
-            updatedSetIds.push(`set_id:${newSetId}`);
+            //   updatedSetIds.push(`set_id:${newSetId}`);
             thunkAPI.dispatch(removeCohortSet(setId));
             thunkAPI.dispatch(addNewCohortSet(newSet));
           }
         } else {
-          updatedSetIds.push(`set_id:${setId}`);
+          //  updatedSetIds.push(`set_id:${setId}`);
         }
       }
     }
 
     // start Deprecated Code
-
     /* ---
     const updatedFilters = {
       mode: "and",
@@ -398,8 +397,7 @@ const handleFiltersForSet = createAsyncThunk<
         } as Includes,
       },
     };
---- */
-    /** ----
+
     // case is needed if field is gene/ssm
     const requiresCaseSet = willRequireCaseSet(updatedFilters);
 
