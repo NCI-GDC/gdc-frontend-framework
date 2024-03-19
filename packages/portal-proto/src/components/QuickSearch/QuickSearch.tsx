@@ -114,11 +114,6 @@ export const QuickSearch = (): JSX.Element => {
     }
     const selectedObj = matchedSearchList.find((obj) => obj.value == id).obj;
     const entityPath = extractEntityPath(selectedObj);
-    // Note: for annotations we need to open v1 portal in a new tab
-    if (entityPath.includes("annotations")) {
-      window.open(entityPath, "_ blank");
-      return;
-    }
     router.push(entityPath);
     setSearchText("");
   };
