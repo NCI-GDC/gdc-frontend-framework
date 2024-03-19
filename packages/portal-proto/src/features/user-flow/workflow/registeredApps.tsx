@@ -228,6 +228,18 @@ export const REGISTERED_APPS = [
     noDataTooltip:
       "Current cohort does not have gene expression data available for visualization.",
   },
+  {
+    name: "Cohort Level MAF",
+    // TODO: replace with a MAF icon
+    icon: <BAMSlicingDownloadIcon aria-hidden="true" />,
+    tags: ["ssm"],
+    hasDemo: false,
+    countsField: "sequenceReadCaseCount",
+    description: "Combine and download cohort level MAF data",
+    id: "CohortLevelMAF",
+    noDataTooltip:
+      "Current cohort does not have MAF data available for download.",
+  },
   /*
   {
     name: "scRNA-Seq",
