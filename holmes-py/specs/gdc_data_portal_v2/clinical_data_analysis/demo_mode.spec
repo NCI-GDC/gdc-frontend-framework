@@ -26,14 +26,14 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
   |Age At Diagnosis     |
   |Primary Diagnosis    |
 * Select the following fields on the Clinical Data Analysis page
-  |field_switch_selector                            |
-  |-------------------------------------------------|
-  |demographic.ethnicity                            |
-  |demographic.year_of_birth                        |
-  |diagnoses.age_at_diagnosis                       |
-  |diagnoses.ajcc_clinical_stage                    |
-  |diagnoses.treatments.days_to_treatment_start     |
-  |exposures.alcohol_history                        |
+  |field_switch_selector    |
+  |-------------------------|
+  |Ethnicity                |
+  |Year Of Birth            |
+  |Age At Diagnosis         |
+  |AJCC Clinical Stage      |
+  |Days To Treatment Start  |
+  |Alcohol History          |
 * Validate all expected analysis cards are present on the Clinical Data Analysis page
   |analysis_card            |
   |-------------------------|

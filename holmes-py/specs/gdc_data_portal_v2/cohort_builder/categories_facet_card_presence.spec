@@ -103,7 +103,6 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards
 * Validate presence of facet cards on the "Biospecimen" tab on the Cohort Builder page
   |facet_name                 |
   |---------------------------|
-  |Sample Type                |
   |Tissue Type                |
   |Biospecimen Anatomic Site  |
   |Composition                |
