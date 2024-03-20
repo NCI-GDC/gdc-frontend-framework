@@ -100,31 +100,6 @@ startCoreListening({
     listenerApi.dispatch(fetchCohortCaseCounts(cohortId));
   },
 });
-// Start Deprecated Code
-// /**
-//  * If we have a new cohort that requires a case set, we need to create it, even if it's
-//  * not the current cohort.
-//  */
-// startCoreListening({
-//   matcher: isAnyOf(addNewUnsavedCohort, addNewDefaultUnsavedCohort),
-//   effect: async (_action, listenerApi) => {
-//     const cohorts = selectAvailableCohorts(listenerApi.getState()).sort(
-//       (a, b) => (a.modified_datetime <= b.modified_datetime ? 1 : -1),
-//     );
-//     // This optionally creates a case set if needed for the new cohort
-//     listenerApi.dispatch(createCaseSetsIfNeeded(cohorts[0]));
-//   },
-// });
-
-// startCoreListening({
-//   matcher: isFulfilled(createCaseSet),
-//   effect: async (action, listenerApi) => {
-//     // update the cohort case counts when the new case set is ready
-//     listenerApi.dispatch(fetchCohortCaseCounts(action.meta.arg?.cohortId));
-//   },
-// });
-// End Deprecated Code
-
 startCoreListening({
   matcher: isAnyOf(
     cohortApiSlice.endpoints.getCohortsByContextId.matchFulfilled,
