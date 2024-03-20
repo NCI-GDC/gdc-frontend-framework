@@ -1,4 +1,4 @@
-pre-commit
+pre-commit==3.6.2
 getgauge==0.3.17
 playwright==1.23.1
 protobuf==3.20.2
