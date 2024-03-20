@@ -101,7 +101,7 @@ const SaveCohortModal = ({
     cohorts,
     coreDispatch,
     opened,
-    onClose,
+    closeModal,
     cohortSavedMessage,
   ]);
   const [fetchSavedFilters] = useLazyGetCohortByIdQuery();
