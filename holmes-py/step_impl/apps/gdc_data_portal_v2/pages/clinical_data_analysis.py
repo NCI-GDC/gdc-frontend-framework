@@ -1,3 +1,4 @@
+import time
 from playwright.sync_api import Page
 
 from ....base.base_page import BasePage
@@ -11,9 +12,7 @@ class ClinicalDataAnalysisLocators:
         lambda group: f"div[id='cdave-control-group-{group}'] >> button[data-testid='plus-icon']"
     )
     PROPERTY_ROW = lambda property: f"label:text('{property}')"
-    FIELD_SELECT_SWITCH_IDENT = (
-        lambda field_switch: f'label[for="switch-{field_switch}"] >> nth=1'
-    )
+    FIELD_SELECT_SWITCH_IDENT = lambda field_name: f'[data-testid="row-field-{field_name}-cdave"] >> text={field_name}'
 
     ANALYSIS_CARD = lambda card_name: f"[data-testid='{card_name}-card']"
     BUTTON_ON_ANALYSIS_CARD = (
@@ -106,6 +105,9 @@ class ClinicalDataAnalysisPage(BasePage):
             field_switch
         )
         self.click(field_switch_locator)
+        # There is a buffer between selecting and the action occurring,
+        # so we will wait for a moment for it to load.
+        time.sleep(1)
 
     def expand_clinical_property_sections(self):
         self.click(ClinicalDataAnalysisLocators.GROUP_TABLE_PLUS_BUTTON("Demographic"))

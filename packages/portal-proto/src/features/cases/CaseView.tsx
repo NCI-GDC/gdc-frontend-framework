@@ -40,6 +40,7 @@ import { SingularOrPluralSpan } from "@/components/SingularOrPluralSpan/Singular
 import SMTableContainer from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
 import { createColumnHelper } from "@tanstack/react-table";
 import VerticalTable from "@/components/Table/VerticalTable";
+import FilesTable from "./FilesTable";
 
 export interface CaseViewProps {
   readonly data: caseSummaryDefaults;
@@ -490,6 +491,9 @@ export const CaseView: React.FC<CaseViewProps> = ({
             <VerticalTable {...formatDataForBioSpecimenFiles()} />
           </div>
         )}
+        <div className="mb-8">
+          <FilesTable caseId={case_id} />
+        </div>
 
         <div className="mb-16">
           <SMTableContainer

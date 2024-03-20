@@ -8,6 +8,7 @@ import {
   useCoreDispatch,
   CartFile,
   SortBy,
+  GdcFile,
 } from "@gff/core";
 import { RemoveFromCartButton } from "./updateCart";
 import FunctionButton from "@/components/FunctionButton";
@@ -33,6 +34,7 @@ import VerticalTable from "@/components/Table/VerticalTable";
 import { HandleChangeInput } from "@/components/Table/types";
 import { downloadTSV } from "@/components/Table/utils";
 import { Tooltip } from "@mantine/core";
+import { useDeepCompareMemo } from "use-deep-compare";
 
 interface FilesTableProps {
   readonly filesByCanAccess: Record<string, CartFile[]>;
@@ -108,7 +110,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
   useEffect(() => {
     setTableData(
       isSuccess
-        ? (data?.files.map((file) => ({
+        ? (data?.files.map((file: GdcFile) => ({
             file: file,
             file_uuid: file.file_id,
             access: file.access,
@@ -125,7 +127,29 @@ const FilesTable: React.FC<FilesTableProps> = () => {
           })) as FilesTableDataType[])
         : [],
     );
-  }, [isSuccess, data?.files, setEntityMetadata]);
+  }, [isSuccess, data?.files]);
+
+  const pagination = useDeepCompareMemo(() => {
+    return isSuccess
+      ? {
+          count: pageSize,
+          from: (activePage - 1) * pageSize,
+          page: activePage,
+          pages: Math.ceil(data?.pagination?.total / pageSize),
+          size: pageSize,
+          total: data?.pagination?.total,
+          sort: "None",
+          label: "files",
+        }
+      : {
+          count: undefined,
+          from: undefined,
+          page: undefined,
+          pages: undefined,
+          size: undefined,
+          total: undefined,
+        };
+  }, [pageSize, activePage, data?.pagination?.total, isSuccess]);
 
   const cartFilesTableDefaultColumns = useMemo<ColumnDef<FilesTableDataType>[]>(
     () => [
@@ -299,6 +323,12 @@ const FilesTable: React.FC<FilesTableProps> = () => {
     }
   };
 
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  useEffect(() => {
+    sortByActions(sorting);
+  }, [sorting]);
+
   const handleDownloadJSON = async () => {
     await download({
       endpoint: "files",
@@ -336,12 +366,6 @@ const FilesTable: React.FC<FilesTableProps> = () => {
     });
   };
 
-  const [sorting, setSorting] = useState<SortingState>([]);
-
-  useEffect(() => {
-    sortByActions(sorting);
-  }, [sorting]);
-
   const handleDownloadTSV = () => {
     downloadTSV({
       tableData,
@@ -376,6 +400,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
             <FunctionButton
               onClick={handleDownloadJSON}
               aria-label="Download JSON"
+              disabled={isFetching}
             >
               JSON
             </FunctionButton>
@@ -384,16 +409,14 @@ const FilesTable: React.FC<FilesTableProps> = () => {
             <FunctionButton
               onClick={handleDownloadTSV}
               aria-label="Download TSV"
+              disabled={isFetching}
             >
               TSV
             </FunctionButton>
           </Tooltip>
         </div>
       }
-      pagination={{
-        ...data?.pagination,
-        label: "files",
-      }}
+      pagination={pagination}
       status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
       handleChange={handleChange}
       search={{

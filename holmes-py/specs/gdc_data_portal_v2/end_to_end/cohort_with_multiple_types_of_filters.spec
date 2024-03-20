@@ -108,15 +108,15 @@ When the filters are fixed add tests for them - PEAR-1350
   |Age At Diagnosis     |
   |Primary Diagnosis    |
 * Select the following fields on the Clinical Data Analysis page
-  |field_switch_selector                            |
-  |-------------------------------------------------|
-  |demographic.gender                               |
-  |demographic.year_of_death                        |
-  |demographic.race                                 |
-  |diagnoses.cog_renal_stage                        |
-  |diagnoses.site_of_resection_or_biopsy            |
-  |diagnoses.treatments.therapeutic_agents          |
-  |exposures.tobacco_smoking_quit_year              |
+  |field_switch_selector      |
+  |---------------------------|
+  |Gender                     |
+  |Year Of Death              |
+  |Race                       |
+  |COG Renal Stage            |
+  |Site Of Resection Or Biopsy|
+  |Therapeutic Agents         |
+  |Tobacco Smoking Quit Year  |
 * Validate all expected analysis cards are present on the Clinical Data Analysis page
   |analysis_card            |
   |-------------------------|

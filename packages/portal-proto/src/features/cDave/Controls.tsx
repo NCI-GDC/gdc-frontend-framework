@@ -142,7 +142,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
 
   return (
     <li
-      data-testid={`cdave-row-field-${displayName}`}
+      data-testid={`row-field-${displayName}-cdave`}
       key={field.full}
       className="px-2 pt-2"
     >
@@ -200,7 +200,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
           multiline
         >
           <Switch
-            data-testid={`cdave-button-field-${displayName}`}
+            data-testid={`button-field-${displayName}-cdave`}
             label={displayName}
             labelPosition="left"
             styles={(theme) => ({

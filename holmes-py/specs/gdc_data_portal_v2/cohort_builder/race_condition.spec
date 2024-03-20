@@ -96,7 +96,6 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card
   |Stage Classification   |Ajcc Pathologic Stage|stage iia            |
   |Grade Classification   |Tumor Grade          |not reported         |
   |Exposure               |Alcohol History      |not reported         |
-  |Biospecimen            |Sample Type          |primary tumor        |
   |Available Data         |Data Format          |txt                  |
 * Collect Cohort Bar Case Count for comparison
 * Collect case counts for the following filters on the Cohort Builder page for cohort "Race_Condition"
@@ -114,8 +113,7 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card
   |Ajcc Pathologic Stage|stage iia            |5                        |
   |Tumor Grade          |not reported         |6                        |
   |Alcohol History      |not reported         |7                        |
-  |Sample Type          |primary tumor        |8                        |
-  |Data Format          |txt                  |9                        |
+  |Data Format          |txt                  |8                        |
 
 ## Treatment - Multiple Facets
 * Clear active cohort filters

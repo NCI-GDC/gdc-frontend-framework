@@ -511,6 +511,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
           <div className="flex gap-2 mb-2">
             <FunctionButton
               onClick={() => handleJSONDownload(formattedData, isGene)}
+              disabled={isFetching}
             >
               JSON
             </FunctionButton>
@@ -522,6 +523,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                   isGene,
                 )
               }
+              disabled={isFetching}
             >
               TSV
             </FunctionButton>

@@ -13,7 +13,7 @@ export const UserProfileModal = ({
   const { data: userInfo } = useFetchUserDetailsQuery();
 
   if (userInfo?.status === 401) {
-    return <SessionExpireModal openModal />;
+    return <SessionExpireModal openModal={openModal} />;
   }
 
   const {
