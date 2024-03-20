@@ -27,7 +27,12 @@ const openAuthWindow = (): Promise<unknown> => {
             resolve("success");
           }
         } catch (err) {
-          // just want to catch it and not reject it
+          // We just want to catch it and not reject it. Rejecting the promise leads to unexpected behavior
+          // where the logged-in status isn't reflected immediately as the program moves ahead w/o users
+          // having a chance to log in, requiring a manual screen refresh to update. By catching errors
+          // instead of rejecting, we avoid the issue where browser complains about cross origin
+          // and ensure a smoother user experience where the promise chain continues until we login and we
+          // avoid pre-maturely triggering calls which fetches user info.
         }
       };
       const interval = setInterval(loginAttempt, pollInterval);
