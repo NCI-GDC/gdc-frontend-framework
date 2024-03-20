@@ -51,7 +51,7 @@ This project uses
 Ensure that you either create a virtual environment or are working in a Docker container.
 Make sure to create the environment in the holmes-py folder.
 
-_Creating a virtual environment:_
+_Creating a virtual environment:_ (Minimum python version 3.8.x)
 
 ```bash
 python3 -m venv venv
@@ -84,10 +84,14 @@ getgauge: 0.3.17
 playwright: 1.23.1
 protobuf: 3.20.1
 ```
+Upgrade pip before attempting to install dependencies
+````bash
+pip install --upgrade pip
+````
 
 This project requires pip to install dependencies. To install dependencies run:
 ````bash
-pip3 install -r requirements.txt
+pip install -r requirements.txt
 ````
 
 Playwright
