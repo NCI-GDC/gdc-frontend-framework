@@ -3,9 +3,6 @@ import { isObject } from "lodash";
 export const extractEntityPath = (item: Record<string, any>): string => {
   if (item.id) {
     const entity = `${atob(item.id).split(":")[0].toLocaleLowerCase()}s`;
-    if (entity === "annotations") {
-      return `https://portal.gdc.cancer.gov/v1/annotations/${item.annotation_id}`;
-    }
     return `/${entity}/${atob(item.id).split(":")[1]}`;
   } else {
     return `/files/${item.uuid}`;

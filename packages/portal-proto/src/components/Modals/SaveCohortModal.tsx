@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { Modal, Button } from "@mantine/core";
@@ -39,6 +39,7 @@ import { INVALID_COHORT_NAMES } from "@/features/cohortBuilder/utils";
  * @category Modals
  */
 const SaveCohortModal = ({
+  opened,
   initialName = "",
   onClose,
   cohortId,
@@ -46,6 +47,7 @@ const SaveCohortModal = ({
   setAsCurrent = false,
   saveAs = false,
 }: {
+  opened: boolean;
   initialName?: string;
   onClose: () => void;
   cohortId?: string;
@@ -67,8 +69,17 @@ const SaveCohortModal = ({
     isLoading: cohortListLoading,
   } = useGetCohortsByContextIdQuery(null, { skip: !cohortReplaced });
 
+  const closeModal = useCallback(() => {
+    onClose();
+    // Reset modal state on close
+    setShowReplaceCohort(false);
+    setCohortReplaced(false);
+    setEnteredName(undefined);
+    setCohortSavedMessage(undefined);
+  }, [onClose]);
+
   useDeepCompareEffect(() => {
-    if (cohortListSuccess && cohortReplaced) {
+    if (opened && cohortListSuccess && cohortReplaced) {
       // Remove replaced cohort
       const updatedCohortIds = (cohortsListData || []).map(
         (cohort) => cohort.id,
@@ -81,7 +92,7 @@ const SaveCohortModal = ({
       }
 
       coreDispatch(setCohortMessage(cohortSavedMessage));
-      onClose();
+      closeModal();
     }
   }, [
     cohortListSuccess,
@@ -89,6 +100,7 @@ const SaveCohortModal = ({
     cohortsListData,
     cohorts,
     coreDispatch,
+    opened,
     onClose,
     cohortSavedMessage,
   ]);
@@ -202,7 +214,7 @@ const SaveCohortModal = ({
           setCohortReplaced(true);
         } else {
           coreDispatch(setCohortMessage(tempCohortMsg));
-          onClose();
+          closeModal();
         }
       })
       .catch((e: FetchBaseQueryError) => {
@@ -212,6 +224,7 @@ const SaveCohortModal = ({
         ) {
           setShowReplaceCohort(true);
         } else {
+          onClose();
           coreDispatch(showModal({ modal: Modals.SaveCohortErrorModal }));
         }
       });
@@ -254,7 +267,7 @@ const SaveCohortModal = ({
 
   return (
     <Modal
-      opened
+      opened={opened}
       onClose={showReplaceCohort ? () => setShowReplaceCohort(false) : onClose}
       title={
         showReplaceCohort
@@ -263,7 +276,7 @@ const SaveCohortModal = ({
           ? "Save Cohort As"
           : "Save Cohort"
       }
-      size={"md"}
+      size="md"
       classNames={{
         content: "p-0",
         title: "text-xl",

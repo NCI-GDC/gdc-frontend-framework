@@ -1,13 +1,7 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { coreCreateApi } from "src/coreCreateApi";
 import { GDC_AUTH } from "../../constants";
-import {
-  CoreDataSelectorResponse,
-  createUseCoreDataHook,
-  DataStatus,
-} from "../../dataAccess";
-import { CoreState } from "../../reducers";
 
-export interface UserResponse {
+export interface UserInfo {
   projects: {
     phs_ids: Record<string, Array<string>>;
     gdc_ids: Record<string, Array<string>>;
@@ -15,12 +9,19 @@ export interface UserResponse {
   username: string;
 }
 
+export interface UserAuthResponse<D> {
+  readonly data: D;
+  readonly status: number;
+}
+
 export async function fetchAuth({
   endpoint,
+  isJSON = false,
 }: {
   endpoint: string;
-}): Promise<Response> {
-  return await fetch(`${GDC_AUTH}/${endpoint}`, {
+  isJSON: boolean;
+}) {
+  const response = await fetch(`${GDC_AUTH}/${endpoint}`, {
     credentials: "same-origin",
     method: "GET",
     headers: {
@@ -28,111 +29,53 @@ export async function fetchAuth({
       "Content-Type": "application/json",
     },
   });
-}
-
-export const fetchUserDetails = createAsyncThunk<UserResponse>(
-  "userInfo/fetchUserDetails",
-  async () => {
-    const response = await fetchAuth({ endpoint: "user" });
-
-    if (response.ok) {
-      return response.json();
-    }
-
-    throw Error(await response.text());
-  },
-);
-
-export const fetchToken = async (): Promise<{
-  text: string | null;
-  status: number;
-}> => {
-  const response = await fetchAuth({ endpoint: "token/refresh" });
 
   if (response.ok) {
     return {
-      text: await response.text(),
+      data: isJSON ? await response.json() : await response.text(),
       status: response.status,
     };
   }
 
-  if (response.status === 401) {
-    return {
-      status: response.status,
-      text: null,
-    };
-  }
-
-  throw Error(await response.text());
-};
-
-export interface userSliceInitialStateInterface {
-  projects: {
-    phs_ids: Record<string, Array<string>>;
-    gdc_ids: Record<string, Array<string>>;
+  return {
+    status: response.status,
+    data: null,
   };
-  username: string | null;
-  status: DataStatus;
 }
-const userSliceInitialState: userSliceInitialStateInterface = {
-  projects: {
-    phs_ids: {},
-    gdc_ids: {},
+
+const userAuthApi = coreCreateApi({
+  reducerPath: "userAuthApi",
+  refetchOnFocus: true,
+  refetchOnMountOrArgChange: 1800,
+  baseQuery: async ({ endpoint, isJSON }) => {
+    let results;
+
+    try {
+      results = await fetchAuth({ endpoint, isJSON });
+    } catch (e) {
+      /*
+        Because an "error" response is valid for the auth requests we don't want to
+        put the request in an error state or it will attempt the request over and over again
+      */
+    }
+
+    return { data: results };
   },
-  username: null,
-  status: "uninitialized",
-};
-
-export type UserInfo = Omit<userSliceInitialStateInterface, "status">;
-
-const slice = createSlice({
-  name: "userInfo",
-  initialState: userSliceInitialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchUserDetails.fulfilled, (state, action) => {
-        const response = action.payload;
-
-        state.projects = { ...response.projects };
-        state.username = response.username;
-        state.status = "fulfilled";
-        return state;
-      })
-      .addCase(fetchUserDetails.pending, (state) => {
-        state.projects = {
-          phs_ids: {},
-          gdc_ids: {},
-        };
-        state.username = null;
-        state.status = "pending";
-        return state;
-      })
-      .addCase(fetchUserDetails.rejected, (state) => {
-        state.projects = {
-          phs_ids: {},
-          gdc_ids: {},
-        };
-        state.username = null;
-        state.status = "rejected";
-        return state;
-      });
-  },
+  endpoints: (builder) => ({
+    fetchToken: builder.query<UserAuthResponse<string>, void>({
+      query: () => ({ endpoint: "token/refresh" }),
+    }),
+    fetchUserDetails: builder.query<UserAuthResponse<UserInfo>, void>({
+      query: () => ({ endpoint: "user", isJSON: true }),
+    }),
+  }),
 });
 
-export const userDetailsReducer = slice.reducer;
-
-export const selectUserDetailsInfo = (
-  state: CoreState,
-): CoreDataSelectorResponse<UserInfo> => ({
-  data: {
-    projects: state.userInfo.projects,
-    username: state.userInfo.username,
-  },
-  status: state.userInfo.status,
-});
-
-export const useUserDetails = createUseCoreDataHook(
-  fetchUserDetails,
-  selectUserDetailsInfo,
-);
+export const {
+  useFetchUserDetailsQuery,
+  useLazyFetchTokenQuery,
+  useLazyFetchUserDetailsQuery,
+} = userAuthApi;
+export const userAuthApiMiddleware = userAuthApi.middleware;
+export const userAuthApiReducerPath = userAuthApi.reducerPath;
+export const userAuthApiReducer = userAuthApi.reducer;

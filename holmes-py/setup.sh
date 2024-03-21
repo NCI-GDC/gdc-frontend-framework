@@ -29,8 +29,14 @@ cd $OUTPUT_DIR
 # Install gauge python
 gauge install python
 
+# Update pip
+pip install --upgrade pip
+
 # Install requirements
 pip install -r requirements.txt
+
+# Install latest version of gauge
+pip install gauge
 
 # Install playwright
 playwright install

@@ -251,21 +251,22 @@ export const ProjectView: React.FC<ProjectViewProps> = (
                 Save New Cohort
               </Button>
             </Tooltip>
-            {showSaveCohort && (
-              <SaveCohortModal
-                filters={{
-                  mode: "and",
-                  root: {
-                    "cases.project.project_id": {
-                      operator: "includes",
-                      field: "cases.project.project_id",
-                      operands: [projectData.project_id],
-                    },
+
+            <SaveCohortModal
+              opened={showSaveCohort}
+              filters={{
+                mode: "and",
+                root: {
+                  "cases.project.project_id": {
+                    operator: "includes",
+                    field: "cases.project.project_id",
+                    operands: [projectData.project_id],
                   },
-                }}
-                onClose={() => setShowSaveCohort(false)}
-              />
-            )}
+                },
+              }}
+              onClose={() => setShowSaveCohort(false)}
+            />
+
             <DropdownWithIcon
               dropdownElements={[
                 {
@@ -334,7 +335,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
                   manifestDownloadActive ? (
                     <Loader size={20} />
                   ) : (
-                    <DownloadIcon size="1.25em" />
+                    <DownloadIcon size="1.25em" aria-label="download" />
                   )
                 }
                 className={`text-primary bg-base-max border-primary hover:bg-primary-darkest hover:text-base-max ${focusStyles}`}

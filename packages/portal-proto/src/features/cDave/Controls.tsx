@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  Box,
   Switch,
   Divider,
   Tooltip,
@@ -142,74 +141,16 @@ const FieldControl: React.FC<FieldControlProps> = ({
   const displayName = toDisplayName(field.field_name);
 
   return (
-    <li key={field.full} className="px-2 pt-2">
+    <li
+      data-testid={`row-field-${displayName}-cdave`}
+      key={field.full}
+      className="px-2 pt-2"
+    >
       {searchTerm ? (
         <>
-          <div className="flex justify-between items-center pb-1">
-            <label
-              className="font-content font-medium text-md"
-              htmlFor={`switch-${field.full}`}
-            >
-              <Highlight highlight={searchTerm}>{displayName}</Highlight>
-            </label>
-            <Switch
-              styles={(theme) => ({
-                track: {
-                  "&:hover": {
-                    backgroundColor: theme.fn.darken(
-                      tailwindConfig.theme.extend.colors[
-                        COLOR_MAP[field.field_type]
-                      ]?.DEFAULT,
-                      0.05,
-                    ),
-                  },
-                },
-                input: {
-                  "&:checked + .mantine-Switch-track": {
-                    backgroundColor:
-                      tailwindConfig.theme.extend.colors[
-                        COLOR_MAP[field.field_type]
-                      ]?.DEFAULT,
-                    borderColor:
-                      tailwindConfig.theme.extend.colors[
-                        COLOR_MAP[field.field_type]
-                      ]?.DEFAULT,
-                  },
-                },
-              })}
-              classNames={{
-                input: "bg-none rounded-lg",
-              }}
-              checked={checked}
-              onChange={(e) => {
-                setChecked(e.currentTarget.checked);
-                updateFields(field.full);
-              }}
-              id={`switch-${field.full}`}
-            />
-          </div>
-          <Highlight highlight={searchTerm}>
-            {field?.description || ""}
-          </Highlight>
-        </>
-      ) : (
-        <div className="flex justify-between cursor-pointer items-center bg-none py-2">
-          <Tooltip
-            label={field?.description || "No description available"}
-            withArrow
-            width={200}
-            multiline
-          >
-            <Box>
-              <label
-                className="pointer-events-none font-content font-medium"
-                htmlFor={`switch-${field.full}`}
-              >
-                {displayName}
-              </label>
-            </Box>
-          </Tooltip>
           <Switch
+            label={<Highlight highlight={searchTerm}>{displayName}</Highlight>}
+            labelPosition="left"
             styles={(theme) => ({
               track: {
                 "&:hover": {
@@ -235,16 +176,71 @@ const FieldControl: React.FC<FieldControlProps> = ({
               },
             })}
             classNames={{
-              input: "bg-none rounded-lg",
+              root: "py-2",
+              body: "flex justify-between items-center",
+              label:
+                "cursor-pointer text-base text-black font-content font-medium",
+              track: "cursor-pointer",
             }}
             checked={checked}
             onChange={(e) => {
               setChecked(e.currentTarget.checked);
               updateFields(field.full);
             }}
-            id={`switch-${field.full}`}
           />
-        </div>
+          <Highlight highlight={searchTerm}>
+            {field?.description || ""}
+          </Highlight>
+        </>
+      ) : (
+        <Tooltip
+          label={field?.description || "No description available"}
+          withArrow
+          width={200}
+          multiline
+        >
+          <Switch
+            data-testid={`button-field-${displayName}-cdave`}
+            label={displayName}
+            labelPosition="left"
+            styles={(theme) => ({
+              track: {
+                "&:hover": {
+                  backgroundColor: theme.fn.darken(
+                    tailwindConfig.theme.extend.colors[
+                      COLOR_MAP[field.field_type]
+                    ]?.DEFAULT,
+                    0.05,
+                  ),
+                },
+              },
+              input: {
+                "&:checked + .mantine-Switch-track": {
+                  backgroundColor:
+                    tailwindConfig.theme.extend.colors[
+                      COLOR_MAP[field.field_type]
+                    ]?.DEFAULT,
+                  borderColor:
+                    tailwindConfig.theme.extend.colors[
+                      COLOR_MAP[field.field_type]
+                    ]?.DEFAULT,
+                },
+              },
+            })}
+            classNames={{
+              root: "py-2",
+              body: "flex justify-between items-center",
+              label:
+                "cursor-pointer text-base text-black font-content font-medium",
+              track: "cursor-pointer",
+            }}
+            checked={checked}
+            onChange={(e) => {
+              setChecked(e.currentTarget.checked);
+              updateFields(field.full);
+            }}
+          />
+        </Tooltip>
       )}
       <Divider />
     </li>

@@ -24,6 +24,7 @@ import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import download from "@/utils/download";
 import { HeaderTitle } from "@/components/tailwindComponents";
+import { useDeepCompareEffect } from "use-deep-compare";
 
 interface BiospecimenProps {
   readonly caseId: string;
@@ -66,7 +67,7 @@ export const Biospecimen = ({
   const getType = (node) =>
     (entityTypes.find((type) => node[`${type.s}_id`]) || { s: null }).s;
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (
       !isBiospecimentDataFetching &&
       bioSpecimenData?.samples?.hits?.edges?.length
@@ -76,7 +77,10 @@ export const Biospecimen = ({
         return searchForStringInNode(escapedSearchText, e);
       });
       const flattened = flatten(founds);
-      const foundNode = flattened[0]?.node;
+      const foundNode =
+        flattened.length > 0
+          ? flattened[0]?.node
+          : bioSpecimenData?.samples?.hits?.edges?.[0]?.node;
 
       if (!entityClicked && foundNode) {
         setSelectedEntity(foundNode);
@@ -87,12 +91,11 @@ export const Biospecimen = ({
     bioSpecimenData?.samples?.hits?.edges,
     isBiospecimentDataFetching,
     searchText,
-    selectedEntity,
-    selectedType,
     entityClicked,
   ]);
 
   const onSelectEntity = (entity, type) => {
+    setSearchText("");
     setSelectedEntity(entity);
     setSelectedType(type.s);
     setEntityClicked(true);

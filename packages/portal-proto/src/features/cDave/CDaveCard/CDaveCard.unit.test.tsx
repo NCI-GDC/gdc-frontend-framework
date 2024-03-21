@@ -15,10 +15,13 @@ jest.spyOn(router, "useRouter").mockImplementation(
 
 describe("CDaveCard", () => {
   it("enum result with data", () => {
-    jest
-      .spyOn(core, "useCoreSelector")
-      .mockReturnValue({ field: "demographic.gender", type: "keyword" });
-
+    jest.spyOn(core, "selectFacetDefinitionByName").mockImplementation(
+      () =>
+        ({
+          field: "demographic.gender",
+          type: "keyword",
+        } as any),
+    );
     const data = {
       buckets: [
         { doc_count: 1000, key: "male" },
@@ -44,10 +47,13 @@ describe("CDaveCard", () => {
   });
 
   it("enum result with only missing values", () => {
-    jest
-      .spyOn(core, "useCoreSelector")
-      .mockReturnValue({ field: "demographic.gender", type: "keyword" });
-
+    jest.spyOn(core, "selectFacetDefinitionByName").mockImplementation(
+      () =>
+        ({
+          field: "demographic.gender",
+          type: "keyword",
+        } as any),
+    );
     const data = {
       buckets: [{ doc_count: 1000, key: "_missing" }],
     };
@@ -66,10 +72,13 @@ describe("CDaveCard", () => {
   });
 
   it("enum results with a missing value", () => {
-    jest
-      .spyOn(core, "useCoreSelector")
-      .mockReturnValue({ field: "demographic.gender", type: "keyword" });
-
+    jest.spyOn(core, "selectFacetDefinitionByName").mockImplementation(
+      () =>
+        ({
+          field: "demographic.gender",
+          type: "keyword",
+        } as any),
+    );
     const data = {
       buckets: [
         { doc_count: 1000, key: "_missing" },
@@ -95,10 +104,13 @@ describe("CDaveCard", () => {
   });
 
   it("categorical results sorted by count", () => {
-    jest
-      .spyOn(core, "useCoreSelector")
-      .mockReturnValue({ field: "demographic.gender", type: "keyword" });
-
+    jest.spyOn(core, "selectFacetDefinitionByName").mockImplementation(
+      () =>
+        ({
+          field: "demographic.gender",
+          type: "keyword",
+        } as any),
+    );
     const data = {
       buckets: [
         { doc_count: 500, key: "female" },
@@ -121,10 +133,13 @@ describe("CDaveCard", () => {
   });
 
   it("continuous result with data", () => {
-    jest.spyOn(core, "useCoreSelector").mockReturnValue({
-      field: "exposures.cigarettes_per_day",
-      type: "long",
-    });
+    jest.spyOn(core, "selectFacetDefinitionByName").mockImplementation(
+      () =>
+        ({
+          field: "exposures.cigarettes_per_day",
+          type: "long",
+        } as any),
+    );
     jest.spyOn(facetHooks, "useRangeFacet").mockReturnValue({
       data: { "0.0-12.0": 10, "12.0-24.0": 90 },
       isFetching: false,
@@ -158,10 +173,13 @@ describe("CDaveCard", () => {
   });
 
   it("continuous result with negative bucket", () => {
-    jest.spyOn(core, "useCoreSelector").mockReturnValue({
-      field: "exposures.cigarettes_per_day",
-      type: "long",
-    });
+    jest.spyOn(core, "selectFacetDefinitionByName").mockImplementation(
+      () =>
+        ({
+          field: "exposures.cigarettes_per_day",
+          type: "long",
+        } as any),
+    );
     jest.spyOn(facetHooks, "useRangeFacet").mockReturnValue({
       data: { "-28.0-166.8000001": 38 },
       isFetching: false,
@@ -186,10 +204,13 @@ describe("CDaveCard", () => {
   });
 
   it("continuous result with toggled value bucket", async () => {
-    jest.spyOn(core, "useCoreSelector").mockReturnValue({
-      field: "diagnoses.treatments.days_to_treatment_start",
-      type: "long",
-    });
+    jest.spyOn(core, "selectFacetDefinitionByName").mockImplementation(
+      () =>
+        ({
+          field: "diagnoses.treatments.days_to_treatment_start",
+          type: "long",
+        } as any),
+    );
     jest.spyOn(facetHooks, "useRangeFacet").mockReturnValue({
       data: { "7201.0-12255.8": 10, "12255.8-17310.6": 90 },
       isFetching: false,
@@ -229,10 +250,13 @@ describe("CDaveCard", () => {
   });
 
   it("continuous result with no data", () => {
-    jest.spyOn(core, "useCoreSelector").mockReturnValue({
-      field: "diagnosis.days_to_treatment_start",
-      type: "long",
-    });
+    jest.spyOn(core, "selectFacetDefinitionByName").mockImplementation(
+      () =>
+        ({
+          field: "diagnoses.treatments.days_to_treatment_start",
+          type: "long",
+        } as any),
+    );
     jest
       .spyOn(facetHooks, "useRangeFacet")
       .mockReturnValue({ data: {}, isFetching: false } as any);

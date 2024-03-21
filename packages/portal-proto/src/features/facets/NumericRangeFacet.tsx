@@ -208,9 +208,13 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
                   checked={rangeKey === selected}
                   className={RadioStyle}
                   onChange={() => handleSelection(rangeKey)}
+                  data-testid={`checkbox-${rangeLabelsAndValues[rangeKey].label}`}
                 />
                 <span>{rangeLabelsAndValues[rangeKey].label}</span>
-                <span className="ml-auto">
+                <span
+                  data-testid={`text-${rangeLabelsAndValues[rangeKey].label}`}
+                  className="ml-auto"
+                >
                   {rangeLabelsAndValues[rangeKey].valueLabel}
                 </span>
               </div>

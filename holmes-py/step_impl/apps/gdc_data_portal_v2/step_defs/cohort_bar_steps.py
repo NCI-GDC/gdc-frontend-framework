@@ -12,6 +12,7 @@ def start_app():
     global APP
     APP = GDCDataPortalV2App(WebDriver.page)
 
+
 @step("Select <button> from the Cohort Bar")
 def click_button_on_cohort_bar(button_name: str):
     time.sleep(0.5)
@@ -24,9 +25,11 @@ def click_button_on_cohort_bar(button_name: str):
         APP.cohort_bar.click_cohort_bar_button(button_name)
     time.sleep(0.5)
 
+
 @step("Name the cohort <cohort_name> in the Cohort Bar section")
 def name_cohort(cohort_name: str):
-    APP.shared.send_text_into_search_bar(cohort_name, "Input field for new cohort name")
+    APP.shared.send_text_into_text_box(cohort_name, "Name Input Field")
+
 
 @step("Create and save a cohort named <cohort_name> with these filters <table>")
 def create_save_cohort_with_specified_filters(cohort_name, table):
@@ -60,7 +63,7 @@ def create_save_cohort_with_specified_filters(cohort_name, table):
     # After filters have been added, save the cohort
     APP.cohort_bar.click_cohort_bar_button("Save")
     APP.shared.click_text_option_from_dropdown_menu("Save")
-    APP.shared.send_text_into_search_bar(cohort_name, "Input field for new cohort name")
+    APP.shared.send_text_into_text_box(cohort_name, "Name Input Field")
     APP.shared.click_button_in_modal_with_displayed_text_name("Save")
     APP.cohort_bar.wait_for_text_in_temporary_message("Cohort has been saved", "Remove Modal")
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
@@ -131,62 +134,86 @@ def create_save_cohort_with_random_filters(table):
         # After filters have been added, save the cohort
         APP.cohort_bar.click_cohort_bar_button("Save")
         APP.shared.click_text_option_from_dropdown_menu("Save")
-        APP.shared.send_text_into_search_bar(v[0], "Input field for new cohort name")
+        APP.shared.send_text_into_text_box(v[0], "Name Input Field")
         APP.shared.click_button_in_modal_with_displayed_text_name("Save")
         APP.cohort_bar.wait_for_text_in_temporary_message("Cohort has been saved", "Remove Modal")
         APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
         time.sleep(2)
 
+
 @step("<button_name> should be <enabled_or_disabled> in the Cohort Bar")
-def button_should_be_disabled_or_enabled_on_cohort_bar(button_name: str, enabled_or_disabled:str):
+def button_should_be_disabled_or_enabled_on_cohort_bar(
+    button_name: str, enabled_or_disabled: str
+):
     enabled_or_disabled = enabled_or_disabled.lower()
     is_button_disabled = None
     # For the save button, the text in the dropdown will be what is disabled
     if button_name.lower() in ["save", "save as"]:
         APP.cohort_bar.click_cohort_bar_button("save")
-        is_button_disabled = APP.cohort_bar.is_dropdown_option_text_button_disabled(button_name)
+        is_button_disabled = APP.cohort_bar.is_dropdown_option_text_button_disabled(
+            button_name
+        )
         APP.cohort_bar.click_cohort_bar_button("save")
     # Otherwise, for all other cohort bar buttons, the buttons themselves will what is disabled
     else:
         is_button_disabled = APP.cohort_bar.is_cohort_bar_button_disabled(button_name)
     # Assert if the button should be enabled or disabled based on test input
     if enabled_or_disabled == "enabled":
-        assert is_button_disabled==False, f"The cohort bar button '{button_name}' is disabled when it should NOT be"
+        assert (
+            is_button_disabled == False
+        ), f"The cohort bar button '{button_name}' is disabled when it should NOT be"
     elif enabled_or_disabled == "disabled":
-        assert is_button_disabled, f"The cohort bar button {button_name} is enabled when it should NOT be"
+        assert (
+            is_button_disabled
+        ), f"The cohort bar button {button_name} is enabled when it should NOT be"
+
 
 @step("<cohort_name> should be the active cohort")
 def is_expected_active_cohort_present(cohort_name: str):
-    is_expected_active_cohort_present = APP.cohort_bar.is_expected_active_cohort_present(cohort_name)
-    assert is_expected_active_cohort_present, f"The expected active cohort '{cohort_name}' is NOT active"
+    is_expected_active_cohort_present = (
+        APP.cohort_bar.is_expected_active_cohort_present(cohort_name)
+    )
+    assert (
+        is_expected_active_cohort_present
+    ), f"The expected active cohort '{cohort_name}' is NOT active"
+
 
 @step("Switch cohort to <cohort_name> from the Cohort Bar dropdown list")
 def select_cohort_from_dropdown(cohort_name: str):
     click_button_on_cohort_bar("Switch")
+    time.sleep(0.5)
     APP.cohort_bar.select_cohort_from_dropdown(cohort_name)
-    time.sleep(2)
+    time.sleep(3)
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
     APP.shared.wait_for_loading_spinner_to_detatch()
     APP.shared.wait_for_loading_spinner_table_to_detatch()
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
 
+
 @step("Set as current cohort")
 def set_as_current_cohort_from_temp_message():
     APP.cohort_bar.click_set_as_current_cohort_from_temp_message()
+
 
 @step("The cohort <cohort_name> should not appear in the cohort dropdown list")
 def validate_cohort_is_not_present_in_dropdown(cohort_name: str):
     click_button_on_cohort_bar("Switch")
     is_cohort_visible = APP.cohort_bar.is_cohort_visible_in_dropdown_list(cohort_name)
     click_button_on_cohort_bar("Switch")
-    assert not is_cohort_visible, f"The cohort '{cohort_name}' is visible in the dropdown when it should not be"
+    assert (
+        not is_cohort_visible
+    ), f"The cohort '{cohort_name}' is visible in the dropdown when it should not be"
+
 
 @step("The cohort <cohort_name> should appear in the cohort dropdown list")
 def validate_cohort_is_present_in_dropdown(cohort_name: str):
     click_button_on_cohort_bar("Switch")
     is_cohort_visible = APP.cohort_bar.is_cohort_visible_in_dropdown_list(cohort_name)
     click_button_on_cohort_bar("Switch")
-    assert is_cohort_visible, f"The cohort '{cohort_name}' is NOT visible in the dropdown when it should be"
+    assert (
+        is_cohort_visible
+    ), f"The cohort '{cohort_name}' is NOT visible in the dropdown when it should be"
+
 
 @step("Remove these filters from the cohort query area <table>")
 def remove_filters_from_cohort_query_filters(table):
@@ -202,6 +229,7 @@ def remove_filters_from_cohort_query_filters(table):
         APP.shared.wait_for_loading_spinner_table_to_detatch()
         APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
 
+
 @step("Validate the cohort query filter area has these filters <table>")
 def validate_cohort_query_filters(table):
     APP.shared.wait_for_loading_spinner_table_to_detatch()
@@ -209,8 +237,13 @@ def validate_cohort_query_filters(table):
     APP.shared.wait_for_loading_spinner_to_detatch()
     APP.shared.wait_for_loading_spinner_table_to_detatch()
     for k, v in enumerate(table):
-        is_cohort_filter_query_visible = APP.cohort_bar.is_cohort_query_filter_present(v[0],v[1],v[2])
-        assert is_cohort_filter_query_visible, f"The filter '{v[0]}', with values '{v[1]}' is NOT present in the cohort query filter area"
+        is_cohort_filter_query_visible = APP.cohort_bar.is_cohort_query_filter_present(
+            v[0], v[1], v[2]
+        )
+        assert (
+            is_cohort_filter_query_visible
+        ), f"The filter '{v[0]}', with values '{v[1]}' is NOT present in the cohort query filter area"
+
 
 @step("Validate the cohort query filter does not have these filters <table>")
 def validate_cohort_query_filters(table):
@@ -219,5 +252,9 @@ def validate_cohort_query_filters(table):
     APP.shared.wait_for_loading_spinner_to_detatch()
     APP.shared.wait_for_loading_spinner_table_to_detatch()
     for k, v in enumerate(table):
-        is_cohort_filter_query_visible = APP.cohort_bar.is_cohort_query_filter_not_present(v[0],v[1])
-        assert is_cohort_filter_query_visible==False, f"The filter '{v[0]}', with values '{v[1]}' IS present in the cohort query filter area when it should not be"
+        is_cohort_filter_query_visible = (
+            APP.cohort_bar.is_cohort_query_filter_not_present(v[0], v[1])
+        )
+        assert (
+            is_cohort_filter_query_visible == False
+        ), f"The filter '{v[0]}', with values '{v[1]}' IS present in the cohort query filter area when it should not be"

@@ -1,6 +1,6 @@
 import { Button, Menu } from "@mantine/core";
 import { FloatingPosition } from "@mantine/core/lib/Floating/types";
-import { ReactNode } from "react";
+import { ReactNode, useRef } from "react";
 import { Tooltip } from "@mantine/core";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
 import { focusStyles } from "src/utils";
@@ -89,6 +89,7 @@ export const DropdownWithIcon = ({
   tooltip = undefined,
   buttonAriaLabel = undefined,
 }: DropdownWithIconProps): JSX.Element => {
+  const targetRef = useRef<HTMLButtonElement>();
   return (
     <Menu
       width={!disableTargetWidth && "target"}
@@ -106,8 +107,9 @@ export const DropdownWithIcon = ({
           disabled={targetButtonDisabled}
           classNames={{
             rightIcon: "border-l pl-1 -mr-2",
-            root: fullHeight ? "h-full" : undefined,
+            root: `${fullHeight ? "h-full" : undefined}`,
           }}
+          ref={targetRef}
           aria-label={buttonAriaLabel}
         >
           <div>
@@ -142,6 +144,11 @@ export const DropdownWithIcon = ({
           <Menu.Item
             onClick={() => {
               onClick && onClick();
+              // This is done inorder to set the last focused element as the menu target element
+              // This is done to return focus to the target element if the modal is closed with ESC
+              if (targetRef?.current) {
+                targetRef?.current?.focus();
+              }
             }}
             key={`${title}-${idx}`}
             data-testid={`${title}-${idx}`}
