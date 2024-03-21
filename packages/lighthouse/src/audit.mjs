@@ -5,16 +5,23 @@ import yargs from "yargs/yargs";
 import { hideBin } from "yargs/helpers";
 
 /*
-  These configs are based on these desktop configs
+  These configs are based on these desktop configs:
   https://github.com/GoogleChrome/lighthouse/blob/c9584689210c4fff8398e7a124f0819a5d91a4e8/core/config/lr-desktop-config.js
+
+  Settings and definitions can be found here:
+  https://github.com/GoogleChrome/lighthouse/blob/main/types/lhr/settings.d.ts 
 */
 const outputTypes = ["html", "csv"];
 const lighthouseConfig = {
   extends: "lighthouse:default",
   settings: {
     output: outputTypes,
-    maxWaitForFcp: 15 * 1000,
-    maxWaitForLoad: 35 * 1000,
+    maxWaitForFcp: 30 * 1000,
+    maxWaitForLoad: 45 * 1000,
+    pauseAfterFcpMs: 1000,
+    pauseAfterLoadMs: 1000,
+    networkQuietThresholdMs: 1000,
+    cpuQuietThresholdMs: 1000,
     formFactor: "desktop",
     throttling: {
       rttMs: 40,
@@ -87,19 +94,24 @@ const PATHS = {
   projects: "/analysis_page?app=Projects",
   cohortBuilder: "/analysis_page?app=CohortBuilder",
   downloads: "/analysis_page?app=Downloads",
+  bamSlicingDownload: "/analysis_page?app=BamDownloadApp",
   clinicalAnalysis: "/analysis_page?app=CDave",
-  cohortComparison: "/analysis_page?app=CohortComparisonApp",
+  cohortComparison: "/analysis_page?app=CohortComparisonApp&demoMode=true",
+  geneExpressionClustering: "analysis_page?app=GeneExpression",
   mutationFrequency: "/analysis_page?app=MutationFrequencyApp",
   oncoMatrix: "/analysis_page?app=OncoMatrix",
-  proteinPaint: "/analysis_page?app=ProteinPaintApp",
+  proteinPaint: "/analysis_page?app=ProteinPaintApp&demoMode=true",
   sequenceRead: "/analysis_page?app=SequenceReadApp",
-  setOperations: "/analysis_page?app=SetOperations",
+  setOperations: "/analysis_page?app=SetOperations&demoMode=true",
+  manageSets: "/manage_sets",
   cart: "/cart",
   geneSummary: "/genes/ENSG00000141510",
+  mutationSummary: "/ssms/84aef48f-31e6-52e4-8e05-7d5b9ab15087",
   projectSummary: "/projects/TCGA-BRCA",
   caseSummary: "/cases/93ed6066-b567-4e1c-ab81-23370f9d3452",
   fileSummary: "/files/e18b4c33-e3c7-48df-a42c-3fb60e1a96fe",
   slideFileSummary: "/files/5bd2d920-fb46-45b2-9995-bd383330c8f6",
+  slideImageViewer: "/image-viewer/MultipleImageViewerPage",
 };
 
 const argv = yargs(hideBin(process.argv))
@@ -113,7 +125,7 @@ const argv = yargs(hideBin(process.argv))
     alias: "b",
     type: "string",
     description: "host to audit",
-    default: "https://portal.gdc.cancer.gov/v2",
+    default: "https://portal.gdc.cancer.gov",
   })
   .parse();
 
