@@ -236,7 +236,7 @@ export const REGISTERED_APPS = [
     tags: ["ssm"],
     hasDemo: false,
     countsField: "mafFileCount",
-    description: "Combine and download cohort level MAF data",
+    description: "Combine and download cohort level MAF data.",
     id: "CohortLevelMAF",
     noDataTooltip:
       "Current cohort does not have MAF data available for download.",
