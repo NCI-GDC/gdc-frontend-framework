@@ -9,7 +9,7 @@ import { hideBin } from "yargs/helpers";
   https://github.com/GoogleChrome/lighthouse/blob/c9584689210c4fff8398e7a124f0819a5d91a4e8/core/config/lr-desktop-config.js
 
   Settings and definitions can be found here:
-  https://github.com/GoogleChrome/lighthouse/blob/main/types/lhr/settings.d.ts 
+  https://github.com/GoogleChrome/lighthouse/blob/main/types/lhr/settings.d.ts
 */
 const outputTypes = ["html", "csv"];
 const lighthouseConfig = {
