@@ -235,7 +235,7 @@ export const REGISTERED_APPS = [
     icon: <CohortLevelMAFIcon aria-hidden="true" />,
     tags: ["ssm"],
     hasDemo: false,
-    countsField: "sequenceReadCaseCount",
+    countsField: "mafFileCount",
     description: "Combine and download cohort level MAF data",
     id: "CohortLevelMAF",
     noDataTooltip:

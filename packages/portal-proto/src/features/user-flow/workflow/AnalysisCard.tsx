@@ -26,6 +26,10 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
   const cohortCounts = useCoreSelector((state) => selectCohortCounts(state));
   let caseCounts = cohortCounts?.[entry.countsField] || 0;
 
+  console.log("caseCounts: ", caseCounts);
+  console.log("entry.name: ", entry.countsField);
+  console.log("cohortCounts: ", cohortCounts);
+
   // TODO - remove, just for demo purposes
   if (entry.name === "scRNA-Seq" || entry.name === "Gene Expression") {
     caseCounts = 0;
