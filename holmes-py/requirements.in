@@ -1,7 +1,10 @@
-pre-commit==3.6.2
+pre-commit
 getgauge==0.3.17
 playwright==1.23.1
 protobuf==3.20.2
 grpcio==1.53.2
 pillow==10.0.1
 pyautogui==0.9.54
+# May have to add setuptools manually to requirements.txt after running
+# 'pip-compile requirements.in'
+setuptools==65.5.1

@@ -65,10 +65,9 @@ rply==0.7.8
     # via baron
 rubicon-objc==0.4.7
     # via mouseinfo
+setuptools==65.5.1
+    # Added this to fix a SNYK security flag
 virtualenv==20.25.1
     # via pre-commit
 websockets==10.1
     # via playwright
-
-# The following packages are considered to be unsafe in a requirements file:
-# setuptools
