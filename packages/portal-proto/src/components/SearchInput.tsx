@@ -395,7 +395,7 @@ export const SearchInput: React.FC = () => {
                           color="white"
                           classNames={{
                             tooltip:
-                              "text-black shadow-2xl rounded-none border-2 border-primary",
+                              "text-black shadow-lg rounded-none border-1 border-primary",
                           }}
                           offset={17}
                           opened={
