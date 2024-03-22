@@ -11,13 +11,10 @@ const BtnWithHoverCalloutTopArrow = tw.button`
   hover:after:transform
   hover:after:translate-x-[-50%]
   hover:after:border-l-[8px]
-  hover:after:border-l-solid
   hover:after:border-l-transparent
   hover:after:border-r-[8px]
-  hover:after:border-r-solid
   hover:after:border-r-transparent
   hover:after:border-b-[8px]
-  hover:after:border-b-solid
   hover:after:border-b-primary-lightest
   ${(p) =>
     p.$focus &&
@@ -30,13 +27,10 @@ const BtnWithHoverCalloutTopArrow = tw.button`
     after:transform
     after:translate-x-[-50%]
     after:border-l-[8px]
-    after:border-l-solid
     after:border-l-transparent
     after:border-r-[8px]
-    after:border-r-solid
     after:border-r-transparent
     after:border-b-[8px]
-    after:border-b-solid
     after:border-b-primary-lightest
   `}
 `;
@@ -52,13 +46,10 @@ const BtnWithHoverCalloutLeftArrow = tw.button`
   hover:before:absolute
   hover:before:left-2
   hover:before:border-t-[10px]
-  hover:before:border-t-solid
   hover:before:border-t-transparent
   hover:before:border-b-[10px]
-  hover:before:border-b-solid
   hover:before:border-b-transparent
   hover:before:border-r-[10px]
-  hover:before:border-r-solid
   hover:before:border-r-primary-lightest
   ${(p) =>
     p.$focus &&
@@ -69,13 +60,10 @@ const BtnWithHoverCalloutLeftArrow = tw.button`
     before:absolute
     before:left-2
     before:border-t-[10px]
-    before:border-t-solid
     before:border-t-transparent
     before:border-b-[10px]
-    before:border-b-solid
     before:border-b-transparent
     before:border-r-[10px]
-    before:border-r-solid
     before:border-r-primary-lightest
   `}
 `;
