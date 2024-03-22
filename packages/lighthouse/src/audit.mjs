@@ -97,7 +97,7 @@ const PATHS = {
   bamSlicingDownload: "/analysis_page?app=BamDownloadApp",
   clinicalAnalysis: "/analysis_page?app=CDave",
   cohortComparison: "/analysis_page?app=CohortComparisonApp&demoMode=true",
-  geneExpressionClustering: "analysis_page?app=GeneExpression",
+  geneExpressionClustering: "/analysis_page?app=GeneExpression",
   mutationFrequency: "/analysis_page?app=MutationFrequencyApp",
   oncoMatrix: "/analysis_page?app=OncoMatrix",
   proteinPaint: "/analysis_page?app=ProteinPaintApp&demoMode=true",
