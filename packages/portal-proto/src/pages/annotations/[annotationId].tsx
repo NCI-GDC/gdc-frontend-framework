@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -8,15 +9,20 @@ import AnnotationSummary from "@/features/annotations/AnnotationSummary";
 const AnnotationsPage: NextPage = () => {
   const router = useRouter();
   const { annotationId } = router.query;
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    if (router.isReady) {
+      setReady(true);
+    }
+  }, [router]);
 
   return (
     <UserFlowVariedPages headerElements={headerElements}>
       <Head>
         <title>Annotation summary</title>
       </Head>
-      {annotationId && (
-        <AnnotationSummary annotationId={annotationId as string} />
-      )}
+      {ready && <AnnotationSummary annotationId={annotationId as string} />}
     </UserFlowVariedPages>
   );
 };
