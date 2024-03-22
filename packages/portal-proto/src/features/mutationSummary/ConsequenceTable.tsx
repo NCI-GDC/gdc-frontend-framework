@@ -364,10 +364,12 @@ export const ConsequenceTable = ({
       }}
       additionalControls={
         <div className="flex gap-2 mb-2">
-          <FunctionButton onClick={handleJSONDownload}>
+          <FunctionButton onClick={handleJSONDownload} disabled={isFetching}>
             {consequenceTableJSONDownloadActive ? <Loader /> : "JSON"}
           </FunctionButton>
-          <FunctionButton onClick={handleTSVDownload}>TSV</FunctionButton>
+          <FunctionButton onClick={handleTSVDownload} disabled={isFetching}>
+            TSV
+          </FunctionButton>
         </div>
       }
       status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}

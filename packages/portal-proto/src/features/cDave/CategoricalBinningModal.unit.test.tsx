@@ -13,6 +13,7 @@ describe("<CategoricalBinningModal />", () => {
   it("display field name", () => {
     const { getByText } = render(
       <CategoricalBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"Gender"}
         results={{}}
@@ -26,6 +27,7 @@ describe("<CategoricalBinningModal />", () => {
   it("shows results if no existing custom bins", () => {
     const { getByText } = render(
       <CategoricalBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"Gender"}
         results={{ female: 10, male: 90 }}
@@ -41,6 +43,7 @@ describe("<CategoricalBinningModal />", () => {
   it("shows existing custom bins", () => {
     const { queryByText, queryByTestId } = render(
       <CategoricalBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"Gender"}
         results={{ female: 10, male: 90, missing: 200 }}
@@ -65,6 +68,7 @@ describe("<CategoricalBinningModal />", () => {
   it("hide and show value", async () => {
     const { queryByText, queryByTestId } = render(
       <CategoricalBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"Gender"}
         results={{ female: 10, male: 90 }}
@@ -109,6 +113,7 @@ describe("<CategoricalBinningModal />", () => {
   it("group two values", async () => {
     const { queryByText, queryByDisplayValue } = render(
       <CategoricalBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"Gender"}
         results={{ female: 10, male: 90 }}
@@ -136,6 +141,7 @@ describe("<CategoricalBinningModal />", () => {
   it("add to existing group", async () => {
     const { queryByText } = render(
       <CategoricalBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"Gender"}
         results={{ female: 10, male: 90, missing: 20 }}
@@ -159,6 +165,7 @@ describe("<CategoricalBinningModal />", () => {
   it("ungroup one value", async () => {
     const { queryByText } = render(
       <CategoricalBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"Gender"}
         results={{ female: 10, male: 90, missing: 20 }}
@@ -184,6 +191,7 @@ describe("<CategoricalBinningModal />", () => {
   it("ungroup whole group", async () => {
     const { queryByText } = render(
       <CategoricalBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"Gender"}
         results={{ female: 10, male: 90, missing: 20 }}
@@ -204,6 +212,7 @@ describe("<CategoricalBinningModal />", () => {
   it("hide group", async () => {
     const { queryByText, queryByTestId } = render(
       <CategoricalBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"Gender"}
         results={{ female: 10, male: 90, missing: 20 }}
@@ -229,6 +238,7 @@ describe("<CategoricalBinningModal />", () => {
   it("edit group name", async () => {
     const { queryByText, queryByLabelText, queryByDisplayValue } = render(
       <CategoricalBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"Gender"}
         results={{ female: 10, male: 90, missing: 20 }}
@@ -251,6 +261,7 @@ describe("<CategoricalBinningModal />", () => {
   it("empty group name is validation failure", async () => {
     const { queryByText, queryByLabelText, queryByDisplayValue } = render(
       <CategoricalBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"Gender"}
         results={{ female: 10, male: 90, missing: 20 }}
@@ -270,6 +281,7 @@ describe("<CategoricalBinningModal />", () => {
   it("identical group name is validation failure", async () => {
     const { queryByText, queryByLabelText, queryByDisplayValue } = render(
       <CategoricalBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"Gender"}
         results={{ female: 10, male: 90, missing: 20 }}
@@ -292,6 +304,7 @@ describe("<CategoricalBinningModal />", () => {
   it("group name same as values is validation failure", async () => {
     const { queryByText, queryByLabelText, queryByDisplayValue } = render(
       <CategoricalBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"Gender"}
         results={{ female: 10, male: 90, missing: 20 }}
@@ -316,6 +329,7 @@ describe("<CategoricalBinningModal />", () => {
   it("reset to starting values", async () => {
     const { queryByText, queryByLabelText } = render(
       <CategoricalBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"Gender"}
         results={{ female: 10, male: 90, missing: 20 }}
@@ -336,6 +350,7 @@ describe("<CategoricalBinningModal />", () => {
   it("reset button available when starting with custom groups", async () => {
     const { queryByLabelText } = render(
       <CategoricalBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"Gender"}
         results={{ female: 10, male: 90, missing: 20 }}
@@ -354,6 +369,7 @@ describe("<CategoricalBinningModal />", () => {
   it("default names given to groups", async () => {
     const { queryByText, queryByDisplayValue } = render(
       <CategoricalBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"Gender"}
         results={{ female: 10, male: 90, missing: 20, other: 10 }}
@@ -375,6 +391,7 @@ describe("<CategoricalBinningModal />", () => {
     const mockSave = jest.fn();
     const { queryByText, queryByRole } = render(
       <CategoricalBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"Gender"}
         results={{ female: 10, male: 90, missing: 20 }}

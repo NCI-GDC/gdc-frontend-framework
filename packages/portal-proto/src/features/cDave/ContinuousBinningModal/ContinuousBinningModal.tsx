@@ -23,6 +23,7 @@ interface ContinuousBinningModalProps {
   readonly updateBins: (bins: NamedFromTo[] | CustomInterval) => void;
   readonly customBins: NamedFromTo[] | CustomInterval;
   readonly dataDimension?: DataDimension;
+  readonly opened: boolean;
 }
 
 const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
@@ -32,6 +33,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
   updateBins,
   customBins,
   dataDimension,
+  opened,
 }: ContinuousBinningModalProps) => {
   const customIntervalSet = isInterval(customBins);
 
@@ -241,7 +243,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
 
   return (
     <Modal
-      opened
+      opened={opened}
       onClose={() => setModalOpen(false)}
       size={1000}
       zIndex={400}

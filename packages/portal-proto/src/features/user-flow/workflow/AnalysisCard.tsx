@@ -31,7 +31,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
     caseCounts = 0;
   }
 
-  const inactive = caseCounts === 0;
+  const inactive = caseCounts === 0 || cohortCounts?.status === "pending";
   const { ref: descRef, height: descHeight } = useElementSize();
 
   return (

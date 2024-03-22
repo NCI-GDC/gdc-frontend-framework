@@ -64,4 +64,19 @@ describe("<AnnotationSummary />", () => {
       within(getByRole("row", { name: "Entity UUID 45" })).queryByRole("link"),
     ).toBeNull();
   });
+
+  test("Annotation doesn't exist", () => {
+    jest.spyOn(core, "useAnnotations").mockReturnValue({
+      data: { list: [], count: 0 },
+      isSuccess: true,
+      isFetching: false,
+    } as any);
+    jest
+      .spyOn(core, "useQuickSearch")
+      .mockReturnValue({ data: { searchList: [] } } as any);
+
+    const { getByText } = render(<AnnotationSummary annotationId="2" />);
+
+    expect(getByText("Annotation Not Found")).toBeInTheDocument();
+  });
 });

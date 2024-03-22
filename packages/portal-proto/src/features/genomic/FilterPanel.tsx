@@ -49,24 +49,24 @@ const GeneAndSSMFilterPanel = ({
       data-testid="filters-facets"
       className="flex flex-col gap-y-4 mr-3 mt-12 w-min-64 w-max-64"
     >
-      {modal === Modals.LocalGeneSetModal && (
-        <GeneSetModal
-          modalTitle="Filter Mutation Frequency by Genes"
-          inputInstructions="Enter one or more gene identifiers in the field below or upload a file to filter Mutation Frequency."
-          selectSetInstructions="Select one or more sets below to filter Mutation Frequency."
-          updateFilters={updateFilters}
-          existingFiltersHook={useGenomicFacetFilter}
-        />
-      )}
-      {modal === Modals.LocalMutationSetModal && (
-        <MutationSetModal
-          modalTitle="Filter Mutation Frequency by Mutations"
-          inputInstructions="Enter one or more mutation identifiers in the field below or upload a file to filter Mutation Frequency."
-          selectSetInstructions="Select one or more sets below to filter Mutation Frequency."
-          updateFilters={updateFilters}
-          existingFiltersHook={useGenomicFacetFilter}
-        />
-      )}
+      <GeneSetModal
+        opened={modal === Modals.LocalGeneSetModal}
+        modalTitle="Filter Mutation Frequency by Genes"
+        inputInstructions="Enter one or more gene identifiers in the field below or upload a file to filter Mutation Frequency."
+        selectSetInstructions="Select one or more sets below to filter Mutation Frequency."
+        updateFilters={updateFilters}
+        existingFiltersHook={useGenomicFacetFilter}
+      />
+
+      <MutationSetModal
+        opened={modal === Modals.LocalMutationSetModal}
+        modalTitle="Filter Mutation Frequency by Mutations"
+        inputInstructions="Enter one or more mutation identifiers in the field below or upload a file to filter Mutation Frequency."
+        selectSetInstructions="Select one or more sets below to filter Mutation Frequency."
+        updateFilters={updateFilters}
+        existingFiltersHook={useGenomicFacetFilter}
+      />
+
       {FilterFacets.map((x, index) => {
         if (x.type == "toggle") {
           return (

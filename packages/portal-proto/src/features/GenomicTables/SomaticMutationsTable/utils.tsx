@@ -81,8 +81,9 @@ export const useGenerateSMTableColumns = ({
             size="xs"
             classNames={{
               input: "checked:bg-accent checked:border-accent",
+              label: "sr-only",
             }}
-            aria-label={`Select all mutation rows on page ${currentPage} of ${totalPages}`}
+            label={`Select all mutation rows on page ${currentPage} of ${totalPages}`}
             {...{
               checked: table.getIsAllRowsSelected(),
               onChange: table.getToggleAllRowsSelectedHandler(),

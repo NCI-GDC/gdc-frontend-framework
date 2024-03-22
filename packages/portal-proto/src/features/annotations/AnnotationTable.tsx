@@ -235,6 +235,10 @@ const AnnnotationTable: React.FC = () => {
         id: "entity_submitter_id",
         header: "Entity ID",
       }),
+      annotationsTableColumnHelper.accessor("category", {
+        id: "category",
+        header: "Category",
+      }),
       annotationsTableColumnHelper.accessor("classification", {
         id: "classification",
         header: "Classification",

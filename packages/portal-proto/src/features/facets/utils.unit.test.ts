@@ -2,7 +2,8 @@ import {
   buildRangeOperator,
   extractRangeValues,
   buildRangeBuckets,
-  adjustYearsToDays,
+  adjustDaysToYearsIfUnitsAreYears,
+  adjustYearsToDaysIfUnitsAreYears,
 } from "./utils";
 
 describe("Build Range Tests for Numeric Ranges", () => {
@@ -492,12 +493,46 @@ describe("Build Bucket Range Test", () => {
 
 describe("test years to days conversion", () => {
   test("years to days", () => {
-    expect(adjustYearsToDays(2, "years")).toEqual(731);
-    expect(adjustYearsToDays(0, "years")).toEqual(0);
-    expect(adjustYearsToDays(7305, "days")).toEqual(7305);
-    expect(adjustYearsToDays(80, "years")).toEqual(29220);
-    expect(adjustYearsToDays(-90, "years")).toEqual(-32873);
-    expect(adjustYearsToDays(-70, "years")).toEqual(-25568);
-    expect(adjustYearsToDays(90, "years")).toEqual(32873);
+    expect(adjustYearsToDaysIfUnitsAreYears(2, "years")).toEqual(731);
+    expect(adjustYearsToDaysIfUnitsAreYears(0, "years")).toEqual(0);
+    expect(adjustYearsToDaysIfUnitsAreYears(7305, "days")).toEqual(7305);
+    expect(adjustYearsToDaysIfUnitsAreYears(80, "years")).toEqual(29220);
+    expect(adjustYearsToDaysIfUnitsAreYears(-90, "years")).toEqual(-32873);
+    expect(adjustYearsToDaysIfUnitsAreYears(-70, "years")).toEqual(-25568);
+    expect(adjustYearsToDaysIfUnitsAreYears(90, "years")).toEqual(32873);
+  });
+});
+
+describe("test days to years conversion", () => {
+  test("days to years", () => {
+    expect(adjustDaysToYearsIfUnitsAreYears(365, "years")).toEqual(1);
+    expect(adjustDaysToYearsIfUnitsAreYears(182, "years")).toEqual(0);
+    expect(adjustDaysToYearsIfUnitsAreYears(183, "years")).toEqual(1);
+    expect(adjustDaysToYearsIfUnitsAreYears(364, "days")).toEqual(364);
+    expect(adjustDaysToYearsIfUnitsAreYears(730, "years")).toEqual(2);
+    expect(adjustDaysToYearsIfUnitsAreYears(36500, "years")).toEqual(100);
+    expect(adjustDaysToYearsIfUnitsAreYears(32873, "years")).toEqual(90);
+    expect(adjustDaysToYearsIfUnitsAreYears(-25568, "years")).toEqual(-70);
+    expect(adjustDaysToYearsIfUnitsAreYears(-32873, "days")).toEqual(-32873);
+
+    expect(adjustDaysToYearsIfUnitsAreYears(0, "range")).toEqual(0);
+    expect(adjustDaysToYearsIfUnitsAreYears(1, "range")).toEqual(1);
+    expect(adjustDaysToYearsIfUnitsAreYears(-10, "range")).toEqual(-10);
+    expect(adjustDaysToYearsIfUnitsAreYears(300, "range")).toEqual(300);
+
+    expect(adjustDaysToYearsIfUnitsAreYears(20, "age")).toEqual(20);
+    expect(adjustDaysToYearsIfUnitsAreYears(100, "age")).toEqual(100);
+    expect(adjustDaysToYearsIfUnitsAreYears(0, "age")).toEqual(0);
+    expect(adjustDaysToYearsIfUnitsAreYears(-999, "age")).toEqual(-999);
+
+    expect(adjustDaysToYearsIfUnitsAreYears(1980, "year")).toEqual(1980);
+    expect(adjustDaysToYearsIfUnitsAreYears(2000, "year")).toEqual(2000);
+    expect(adjustDaysToYearsIfUnitsAreYears(0, "year")).toEqual(0);
+    expect(adjustDaysToYearsIfUnitsAreYears(-50, "year")).toEqual(-50);
+
+    expect(adjustDaysToYearsIfUnitsAreYears(50, "percent")).toEqual(50);
+    expect(adjustDaysToYearsIfUnitsAreYears(-50, "percent")).toEqual(-50);
+    expect(adjustDaysToYearsIfUnitsAreYears(0, "percent")).toEqual(0);
+    expect(adjustDaysToYearsIfUnitsAreYears(100, "percent")).toEqual(100);
   });
 });

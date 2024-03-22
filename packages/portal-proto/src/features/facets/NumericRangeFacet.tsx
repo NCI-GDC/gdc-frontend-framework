@@ -21,8 +21,8 @@ import {
   buildRangeOperator,
   extractRangeValues,
   buildRangeBuckets,
-  adjustYearsToDays,
-  adjustDaysToYears,
+  adjustYearsToDaysIfUnitsAreYears,
+  adjustDaysToYearsIfUnitsAreYears,
 } from "./utils";
 import {
   FacetCardProps,
@@ -208,9 +208,13 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
                   checked={rangeKey === selected}
                   className={RadioStyle}
                   onChange={() => handleSelection(rangeKey)}
+                  data-testid={`checkbox-${rangeLabelsAndValues[rangeKey].label}`}
                 />
                 <span>{rangeLabelsAndValues[rangeKey].label}</span>
-                <span className="ml-auto">
+                <span
+                  data-testid={`text-${rangeLabelsAndValues[rangeKey].label}`}
+                  className="ml-auto"
+                >
                   {rangeLabelsAndValues[rangeKey].valueLabel}
                 </span>
               </div>
@@ -347,11 +351,11 @@ const FromTo: React.FC<FromToProps> = ({
               min={lowerUnitRange}
               max={upperUnitRange}
               // units are always days
-              value={adjustDaysToYears(fromValue, units)}
+              value={adjustDaysToYearsIfUnitsAreYears(fromValue, units)}
               onChange={(value) => {
                 if (value === "") return;
                 setFromValue(
-                  adjustYearsToDays(
+                  adjustYearsToDaysIfUnitsAreYears(
                     clamp(value, lowerUnitRange, upperUnitRange),
                     units,
                   ),
@@ -387,14 +391,14 @@ const FromTo: React.FC<FromToProps> = ({
               onChange={(value) => {
                 if (value === "") return;
                 setToValue(
-                  adjustYearsToDays(
+                  adjustYearsToDaysIfUnitsAreYears(
                     clamp(value, lowerUnitRange, upperUnitRange),
                     units,
                   ),
                 );
                 changedCallback();
               }}
-              value={adjustDaysToYears(toValue, units)}
+              value={adjustDaysToYearsIfUnitsAreYears(toValue, units)}
               hideControls
               aria-label="input to value"
             />

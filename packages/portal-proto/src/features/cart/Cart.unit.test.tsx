@@ -4,7 +4,7 @@ import Cart from "./Cart";
 
 describe("<Cart />", () => {
   beforeEach(() => {
-    jest.spyOn(core, "useUserDetails").mockReturnValue({} as any);
+    jest.spyOn(core, "useFetchUserDetailsQuery").mockReturnValue({} as any);
   });
 
   it("Displays empty state", () => {

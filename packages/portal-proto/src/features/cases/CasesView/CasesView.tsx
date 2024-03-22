@@ -10,7 +10,8 @@ import {
   GqlOperation,
   useCurrentCohortCounts,
 } from "@gff/core";
-import { Button, Divider, Loader } from "@mantine/core";
+import { Divider, Loader } from "@mantine/core";
+import FunctionButton from "@/components/FunctionButton";
 import { SummaryModalContext } from "src/utils/contexts";
 import {
   ageDisplay,
@@ -28,7 +29,6 @@ import {
   ColumnOrderState,
   SortingState,
   VisibilityState,
-  createColumnHelper,
 } from "@tanstack/react-table";
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
@@ -142,10 +142,7 @@ export const ContextualCasesView: React.FC = () => {
       annotations: datum.annotations,
     })) ?? [];
 
-  const casesDataColumnHelper = createColumnHelper<casesTableDataType>();
-
   const casesTableDefaultColumns = useGenerateCasesTableColumns({
-    casesDataColumnHelper,
     currentCart,
     setEntityMetadata,
     currentPage: pagination?.page,
@@ -395,6 +392,7 @@ export const ContextualCasesView: React.FC = () => {
             <CasesCohortButtonFromValues pickedCases={pickedCases} />
 
             <DropdownWithIcon
+              targetButtonDisabled={isFetching}
               dropdownElements={[
                 {
                   title: "JSON",
@@ -424,6 +422,7 @@ export const ContextualCasesView: React.FC = () => {
             />
 
             <DropdownWithIcon
+              targetButtonDisabled={isFetching}
               dropdownElements={[
                 {
                   title: "JSON",
@@ -452,23 +451,13 @@ export const ContextualCasesView: React.FC = () => {
               }
             />
 
-            <Button
-              onClick={handleJSONDownload}
-              variant="outline"
-              color="primary"
-              className="bg-base-max"
-            >
+            <FunctionButton onClick={handleJSONDownload} disabled={isFetching}>
               {cohortTableJSONDownloadActive ? <Loader /> : "JSON"}
-            </Button>
+            </FunctionButton>
 
-            <Button
-              variant="outline"
-              color="primary"
-              className="bg-base-max"
-              onClick={handleTSVDownload}
-            >
+            <FunctionButton onClick={handleTSVDownload} disabled={isFetching}>
               {cohortTableTSVDownloadActive ? <Loader /> : "TSV"}
-            </Button>
+            </FunctionButton>
           </div>
         }
         tableTitle={`Total of ${pagination?.total?.toLocaleString() ?? "..."} ${

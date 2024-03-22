@@ -6,7 +6,7 @@ import {
   selectCurrentCohortFilters,
   FilterSet,
   PROTEINPAINT_API,
-  useUserDetails,
+  useFetchUserDetailsQuery,
   useCoreDispatch,
   buildCohortGqlOperator,
   useCreateCaseSetFromValuesMutation,
@@ -35,7 +35,8 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   const isDemoMode = useIsDemoApp();
   const currentCohort = useCoreSelector(selectCurrentCohortFilters);
   const filter0 = isDemoMode ? null : buildCohortGqlOperator(currentCohort);
-  const { data: userDetails } = useUserDetails();
+  const userDetails = useFetchUserDetailsQuery();
+
   // to track reusable instance for mds3 skewer track
   const ppRef = useRef<PpApi>();
   const prevArg = useRef<any>({});
@@ -125,12 +126,12 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
         className="sjpp-wrapper-root-div"
         //userDetails={userDetails}
       />
-      {showSaveCohort && newCohortFilters && (
-        <SaveCohortModal // Show the modal, create a saved cohort when save button is clicked
-          onClose={() => setShowSaveCohort(false)}
-          filters={newCohortFilters}
-        />
-      )}
+
+      <SaveCohortModal // Show the modal, create a saved cohort when save button is clicked
+        opened={showSaveCohort}
+        onClose={() => setShowSaveCohort(false)}
+        filters={newCohortFilters}
+      />
     </div>
   );
 };

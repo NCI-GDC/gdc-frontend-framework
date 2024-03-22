@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   UseMutation,
   UseQuery,
@@ -41,6 +41,7 @@ interface AddToSetModalProps {
   readonly appendSetHook: UseMutation<
     MutationDefinition<any, any, any, string, string>
   >;
+  readonly opened: boolean;
 }
 
 const AddToSetModal: React.FC<AddToSetModalProps> = ({
@@ -54,6 +55,7 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
   singleCountHook,
   countHook,
   appendSetHook,
+  opened,
 }: AddToSetModalProps) => {
   const [selectedSets, setSelectedSets] = useState<string[][]>([]);
   const dispatch = useCoreDispatch();
@@ -70,52 +72,16 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
     },
     { skip: selectedSets.length === 0 },
   );
-  const [appendToSet, response] = appendSetHook();
+  const [appendToSet] = appendSetHook();
 
   const nothingToAdd = isCountBothSuccess && addToCount === countInBoth;
 
-  useEffect(() => {
-    if (response.isSuccess) {
-      const newSetId = response.data;
-      if (newSetId === undefined) {
-        showNotification({
-          message: "Problem modifiying set.",
-          color: "red",
-        });
-      } else {
-        dispatch(
-          addSet({ setType, setName: selectedSets[0][1], setId: newSetId }),
-        );
-        showNotification({
-          message: "Set has been modified.",
-          closeButtonProps: { "aria-label": "Close notification" },
-        });
-
-        closeModal();
-      }
-    } else if (response.isError) {
-      showNotification({
-        message: "Problem modifiying set.",
-        color: "red",
-        closeButtonProps: { "aria-label": "Close notification" },
-      });
-    }
-  }, [
-    response.isSuccess,
-    response.isError,
-    response.data,
-    setType,
-    dispatch,
-    closeModal,
-    selectedSets,
-  ]);
-
   return (
     <Modal
-      title={`Add ${addToCount.toLocaleString()} ${setTypeLabel}${
+      title={`Add ${addToCount?.toLocaleString()} ${setTypeLabel}${
         addToCount > 1 ? "s" : ""
       } to an existing set`}
-      opened
+      opened={opened}
       onClose={closeModal}
       size="lg"
       classNames={{
@@ -186,7 +152,38 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
               },
               size: SET_COUNT_LIMIT - setCount,
               score: sort,
-            });
+            })
+              .unwrap()
+              .then((response) => {
+                const newSetId = response;
+                if (newSetId === undefined) {
+                  showNotification({
+                    message: "Problem modifiying set.",
+                    color: "red",
+                  });
+                } else {
+                  dispatch(
+                    addSet({
+                      setType,
+                      setName: selectedSets[0][1],
+                      setId: newSetId,
+                    }),
+                  );
+                  showNotification({
+                    message: "Set has been modified.",
+                    closeButtonProps: { "aria-label": "Close notification" },
+                  });
+
+                  closeModal();
+                }
+              })
+              .catch(() => {
+                showNotification({
+                  message: "Problem modifiying set.",
+                  color: "red",
+                  closeButtonProps: { "aria-label": "Close notification" },
+                });
+              });
           }}
         >
           Save
