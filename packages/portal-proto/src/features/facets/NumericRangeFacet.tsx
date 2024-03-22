@@ -21,8 +21,8 @@ import {
   buildRangeOperator,
   extractRangeValues,
   buildRangeBuckets,
-  adjustYearsToDays,
-  adjustDaysToYears,
+  adjustYearsToDaysIfUnitsAreYears,
+  adjustDaysToYearsIfUnitsAreYears,
 } from "./utils";
 import {
   FacetCardProps,
@@ -351,11 +351,11 @@ const FromTo: React.FC<FromToProps> = ({
               min={lowerUnitRange}
               max={upperUnitRange}
               // units are always days
-              value={adjustDaysToYears(fromValue, units)}
+              value={adjustDaysToYearsIfUnitsAreYears(fromValue, units)}
               onChange={(value) => {
                 if (value === "") return;
                 setFromValue(
-                  adjustYearsToDays(
+                  adjustYearsToDaysIfUnitsAreYears(
                     clamp(value, lowerUnitRange, upperUnitRange),
                     units,
                   ),
@@ -391,14 +391,14 @@ const FromTo: React.FC<FromToProps> = ({
               onChange={(value) => {
                 if (value === "") return;
                 setToValue(
-                  adjustYearsToDays(
+                  adjustYearsToDaysIfUnitsAreYears(
                     clamp(value, lowerUnitRange, upperUnitRange),
                     units,
                   ),
                 );
                 changedCallback();
               }}
-              value={adjustDaysToYears(toValue, units)}
+              value={adjustDaysToYearsIfUnitsAreYears(toValue, units)}
               hideControls
               aria-label="input to value"
             />
