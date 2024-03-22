@@ -73,7 +73,6 @@ const AnalysisGrid: React.FC = () => {
           {activeApps
             .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
             .map((k) => initialApps[k])
-            .filter((app) => !app?.hideCard)
             .map((x: AppRegistrationEntry, idx: number) => {
               return (
                 <div key={x.name} className="min-w-0 basis-tools">
