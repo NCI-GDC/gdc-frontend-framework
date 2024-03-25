@@ -885,7 +885,6 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
               <Tooltip label="Remove the facet">
                 <FacetIconButton
                   onClick={() => {
-                    clearFilters(field);
                     dismissCallback(field);
                   }}
                   aria-label="Remove the facet"
