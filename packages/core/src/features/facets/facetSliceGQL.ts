@@ -4,12 +4,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
-import {
-  buildCohortGqlOperator,
-  joinFilters,
-  selectCurrentCohortFilters,
-  FilterSet,
-} from "../cohort";
+import { buildCohortGqlOperator, joinFilters, FilterSet } from "../cohort";
 import {
   buildGraphGLBucketsQuery,
   processBuckets,
@@ -22,7 +17,7 @@ import { usefulFacetsReducer } from "./usefulFacetsSlice";
 
 export interface FetchFacetByNameGQLProps {
   readonly field: string | ReadonlyArray<string>;
-  readonly docType?: GQLDocType;
+  readonly docType: GQLDocType;
   readonly index?: GQLIndexType;
   readonly caseFilterSelector?: (state: CoreState) => FilterSet;
   readonly localFilters?: FilterSet;
@@ -34,13 +29,18 @@ export const fetchFacetByNameGQL = createAsyncThunk<
   FetchFacetByNameGQLProps,
   { dispatch: CoreDispatch; state: CoreState }
 >(
-  "facet/fetchCasesFacetByNameGQL",
+  "facet/fetchFacetByNameGQL",
   async (
     {
       field,
-      docType = "cases",
-      index = "explore" as GQLIndexType,
-      caseFilterSelector = selectCurrentCohortFilters,
+      docType,
+      index,
+      caseFilterSelector = (_ignored) => {
+        return {
+          mode: "and",
+          root: {},
+        };
+      },
       localFilters = undefined,
       splitIntoCasePlusLocalFilters = false,
     },
@@ -87,6 +87,7 @@ export interface FacetStateGQL extends FacetsState {
   readonly genes: Record<string, FacetBuckets>;
   readonly ssms: Record<string, FacetBuckets>;
   readonly projects: Record<string, FacetBuckets>;
+  readonly annotations: Record<string, FacetBuckets>;
 }
 
 const initialState: FacetStateGQL = {
@@ -95,6 +96,7 @@ const initialState: FacetStateGQL = {
   genes: {},
   ssms: {},
   projects: {},
+  annotations: {},
 };
 
 export const facetsGQLSlice = createSlice({
@@ -105,8 +107,8 @@ export const facetsGQLSlice = createSlice({
     builder
       .addCase(fetchFacetByNameGQL.fulfilled, (state, action) => {
         const response = action.payload;
-        const index = action.meta.arg.index ?? "explore";
-        const docType = action.meta.arg.docType ?? "cases";
+        const index = action.meta.arg.index;
+        const docType = action.meta.arg.docType;
         const fields =
           typeof action.meta.arg.field === "string"
             ? [action.meta.arg.field]
@@ -121,7 +123,7 @@ export const facetsGQLSlice = createSlice({
           );
         } else {
           const aggregations =
-            docType === "projects"
+            index === undefined
               ? Object(response).data.viewer[docType].aggregations
               : Object(response).data.viewer[index][docType].aggregations;
           aggregations &&
@@ -133,7 +135,7 @@ export const facetsGQLSlice = createSlice({
           typeof action.meta.arg.field === "string"
             ? [action.meta.arg.field]
             : action.meta.arg.field;
-        const itemType = action.meta.arg.docType ?? "cases";
+        const itemType = action.meta.arg.docType;
         fields.forEach(
           (f) =>
             (state[itemType][f] = state[itemType][f] =
@@ -149,7 +151,7 @@ export const facetsGQLSlice = createSlice({
           typeof action.meta.arg.field === "string"
             ? [action.meta.arg.field]
             : action.meta.arg.field;
-        const itemType = action.meta.arg.docType ?? "cases";
+        const itemType = action.meta.arg.docType;
         fields.forEach(
           (f) =>
             (state[itemType][f] = {
@@ -216,6 +218,11 @@ export const selectProjectsFacetByField = (
   state: CoreState,
   field: string,
 ): FacetBuckets => state.facetsGQL.facetsGQL.projects[field];
+
+export const selectAnnotationFacetByField = (
+  state: CoreState,
+  field: string,
+): FacetBuckets => state.facetsGQL.facetsGQL.annotations[field];
 
 export const fileCaseGenesMutationsFacetReducers = combineReducers({
   facetsGQL: facetsGQLReducer,

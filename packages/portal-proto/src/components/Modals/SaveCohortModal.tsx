@@ -224,6 +224,7 @@ const SaveCohortModal = ({
         ) {
           setShowReplaceCohort(true);
         } else {
+          onClose();
           coreDispatch(showModal({ modal: Modals.SaveCohortErrorModal }));
         }
       });

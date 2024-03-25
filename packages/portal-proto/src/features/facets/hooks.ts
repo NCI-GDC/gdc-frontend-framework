@@ -103,6 +103,7 @@ export const useEnumFacet = (
           field: field,
           docType: docType,
           index: indexType,
+          caseFilterSelector: selectCurrentCohortFilters,
         }),
       );
     }
@@ -165,6 +166,7 @@ export const useEnumFacets = (
           field: fields,
           docType: docType,
           index: indexType,
+          caseFilterSelector: selectCurrentCohortFilters,
         }),
       );
     }
@@ -343,4 +345,58 @@ export const FacetDocTypeToLabelsMap = {
   genes: "Genes",
   ssms: "Mutations",
   projects: "Projects",
+};
+
+export const useLocalFilters = (
+  field: string,
+  docType: GQLDocType,
+  selectFieldEnumValues: (field: string) => OperandValue,
+  selectLocalFilters: () => FilterSet,
+  facetSelector: (state: CoreState, field: string) => FacetBuckets,
+): EnumFacetResponse => {
+  const coreDispatch = useCoreDispatch();
+
+  const facet: FacetBuckets = useCoreSelector((state) =>
+    facetSelector(state, field),
+  ); // Facet data is always cached in the coreState
+
+  const enumValues = selectFieldEnumValues(field);
+  const localFilters = selectLocalFilters();
+  const prevLocalFilters = usePrevious(localFilters);
+  const prevEnumValues = usePrevious(enumValues);
+
+  useEffect(() => {
+    if (
+      !facet ||
+      !isEqual(prevLocalFilters, localFilters) ||
+      !isEqual(prevEnumValues, enumValues)
+    ) {
+      coreDispatch(
+        fetchFacetByNameGQL({
+          field: field,
+          docType: docType,
+          localFilters,
+        }),
+      );
+    }
+  }, [
+    coreDispatch,
+    facet,
+    field,
+    localFilters,
+    docType,
+    prevLocalFilters,
+    prevEnumValues,
+    enumValues,
+  ]);
+
+  return {
+    data: facet?.buckets,
+    enumFilters: (enumValues as EnumOperandValue)?.map((x) => x.toString()),
+    error: facet?.error,
+    isUninitialized: facet === undefined,
+    isFetching: facet?.status === "pending",
+    isSuccess: facet?.status === "fulfilled",
+    isError: facet?.status === "rejected",
+  };
 };

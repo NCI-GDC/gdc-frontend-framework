@@ -145,15 +145,19 @@ export const Header: React.FC<HeaderProps> = ({
           >
             Send Feedback
           </Button>
-          <a
-            href="https://portal.gdc.cancer.gov/v1/annotations"
-            className="flex items-center gap-1 rounded-md p-1 hover:bg-primary-lightest"
-            target="_blank"
-            rel="noreferrer"
+          <Link
+            href="/annotations"
+            className={`p-1 rounded-md ${
+              router.pathname === "/annotations"
+                ? "bg-secondary text-white"
+                : "hover:bg-primary-lightest"
+            }`}
           >
-            <PencilIcon size="24px" />
-            Browse Annotations
-          </a>
+            <div className="flex items-center gap-1 font-heading">
+              <PencilIcon size="24px" />
+              Browse Annotations
+            </div>
+          </Link>
           <Link
             href="/manage_sets"
             data-testid="button-header-manage-sets"
