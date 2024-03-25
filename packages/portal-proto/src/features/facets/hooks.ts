@@ -26,6 +26,7 @@ import {
   buildCohortGqlOperator,
   selectCurrentCohortFilters,
   useCurrentCohortFilters,
+  CoreState,
 } from "@gff/core";
 import { useEffect, useMemo } from "react";
 import isEqual from "lodash/isEqual";
