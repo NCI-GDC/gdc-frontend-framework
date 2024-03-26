@@ -58,7 +58,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
             "cases.case_id": {
               operator: "includes",
               field: "cases.case_id",
-              operands: [cases[0]],
+              operands: cases,
             },
           },
         });
