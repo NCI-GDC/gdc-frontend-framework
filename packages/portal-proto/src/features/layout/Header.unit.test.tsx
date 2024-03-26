@@ -49,7 +49,7 @@ describe("<Header />", () => {
   test("should show login button when the username is null initially", () => {
     jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
     jest.spyOn(core, "useCoreSelector").mockImplementation(jest.fn());
-    jest.spyOn(core, "useFetchUserDetailsQuery").mockReturnValueOnce({
+    jest.spyOn(core, "useFetchUserDetailsQuery").mockReturnValue({
       data: {
         data: {
           username: null,
@@ -68,7 +68,7 @@ describe("<Header />", () => {
   test("should not show login button when the username is present", () => {
     jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
     jest.spyOn(core, "useCoreSelector").mockImplementation(jest.fn());
-    jest.spyOn(core, "useFetchUserDetailsQuery").mockReturnValueOnce({
+    jest.spyOn(core, "useFetchUserDetailsQuery").mockReturnValue({
       data: {
         data: {
           username: "testName",

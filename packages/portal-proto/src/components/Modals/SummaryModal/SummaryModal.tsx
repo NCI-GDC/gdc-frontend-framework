@@ -83,6 +83,7 @@ export const SummaryModal = ({
         header: "m-0 p-0 border-0",
         title: "sr-only",
         close: `absolute right-5 top-6 text-base-darkest [&_svg]:h-14 [&_svg]:w-14 float-right z-30 ${focusStyles}`,
+        content: "scroll-smooth",
       }}
       padding={0}
       overlayProps={{ opacity: 0.5 }}
