@@ -75,6 +75,7 @@ interface MafUiArg {
   nobox?: boolean;
   hide_dsHandles?: boolean;
   launchGdcMaf: true;
+  genome?: string;
   filter0: any;
 }
 
