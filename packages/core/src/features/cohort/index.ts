@@ -10,7 +10,6 @@ import {
   filterSetToOperation,
   ValueExtractorHandler,
   buildGqlOperationToFilterSet,
-  mergeFilterSets,
 } from "./filters";
 
 import {
@@ -156,6 +155,5 @@ export {
   extractFiltersWithPrefixFromFilterSet,
   selectHasUnsavedCohorts,
   selectUnsavedCohortName,
-  mergeFilterSets,
   UNSAVED_COHORT_NAME,
 };
