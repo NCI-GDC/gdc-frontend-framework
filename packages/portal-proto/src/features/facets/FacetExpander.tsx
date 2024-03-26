@@ -32,7 +32,11 @@ const FacetExpander: React.FC<FacetExpanderProps> = ({
   onShowChanged,
 }: FacetExpanderProps) => {
   return (
-    <div className="mt-3 flex flex-row justify-end border-t-2 p-1.5">
+    <div
+      className={`mt-3 flex flex-row justify-end ${
+        remainingValues > 0 && "border-t-2"
+      } p-1.5`}
+    >
       {remainingValues > 0 && !isGroupExpanded ? (
         <button
           onClick={() => onShowChanged(!isGroupExpanded)}
