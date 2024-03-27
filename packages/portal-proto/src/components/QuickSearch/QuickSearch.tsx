@@ -35,9 +35,11 @@ export const QuickSearch = (): JSX.Element => {
     data: { searchList, query },
   } = useQuickSearch(debounced);
 
-  const { data: fileHistory } = useGetHistoryQuery(searchText, {
+  const { data: fileHistory } = useGetHistoryQuery(searchText.trim(), {
     skip:
-      debounced === "" || searchList?.length > 0 || !uuidValidate(debounced),
+      debounced === "" ||
+      searchList?.length > 0 ||
+      !uuidValidate(debounced.trim()),
   });
 
   // Checks search results returned against current search to make sure it matches
