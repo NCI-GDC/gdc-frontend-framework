@@ -13,20 +13,26 @@ const openAuthWindow = (): Promise<unknown> => {
           clearInterval(interval);
           reject("window closed manually");
         }
-        if (
-          win.document.URL.includes(location.origin) &&
-          !win.document.URL.includes("auth")
-        ) {
-          // Window is not closed yet so close
-          win.close();
-          // Clear the interval calling this function
-          clearInterval(interval);
-          if (win.document.URL.includes("error=401")) {
-            reject("login_error");
-            return;
+        try {
+          if (
+            win.document.URL.includes(location.origin) &&
+            !win.document.URL.includes("auth")
+          ) {
+            win.close();
+            clearInterval(interval);
+            if (win.document.URL.includes("error=401")) {
+              reject("login_error");
+              return;
+            }
+            resolve("success");
           }
-          // Resolve that we have something good
-          resolve("success");
+        } catch (err) {
+          // We just want to catch it and not reject it. Rejecting the promise leads to unexpected behavior
+          // where the logged-in status isn't reflected immediately as the program moves ahead w/o users
+          // having a chance to log in, requiring a manual screen refresh to update. By catching errors
+          // instead of rejecting, we avoid the issue where browser complains about cross origin
+          // and ensure a smoother user experience where the promise chain continues until we login and we
+          // avoid pre-maturely triggering calls which fetches user info.
         }
       };
       const interval = setInterval(loginAttempt, pollInterval);
