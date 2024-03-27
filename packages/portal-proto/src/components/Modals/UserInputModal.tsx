@@ -57,33 +57,41 @@ const UserInputModal: React.FC<UserInputModalProps> = ({
       }
       size={900}
     >
-      <DiscardChangesModal
-        openModal={showDiscardModal !== null}
-        action={() => {
-          showDiscardModal === "close"
-            ? dispatch(hideModal())
-            : setActiveTab(activeTabInWaiting);
-        }}
-        onClose={() => setShowDiscardModal(null)}
-      />
-      <UserInputContext.Provider
-        value={[userEnteredInput, setUserEnteredInput]}
-      >
-        {tabs ? (
-          <Tabs value={activeTab} keepMounted={false} onTabChange={onTabChange}>
-            <StyledTabsList>
-              {tabs.map((tab) => (
-                <StyledTab value={tab.value} key={tab.value}>
-                  {tab.label}
-                </StyledTab>
-              ))}
-            </StyledTabsList>
-            {children}
-          </Tabs>
-        ) : (
-          children
-        )}
-      </UserInputContext.Provider>
+      {opened && (
+        <>
+          <DiscardChangesModal
+            openModal={showDiscardModal !== null}
+            action={() => {
+              showDiscardModal === "close"
+                ? dispatch(hideModal())
+                : setActiveTab(activeTabInWaiting);
+            }}
+            onClose={() => setShowDiscardModal(null)}
+          />
+          <UserInputContext.Provider
+            value={[userEnteredInput, setUserEnteredInput]}
+          >
+            {tabs ? (
+              <Tabs
+                value={activeTab}
+                keepMounted={false}
+                onTabChange={onTabChange}
+              >
+                <StyledTabsList>
+                  {tabs.map((tab) => (
+                    <StyledTab value={tab.value} key={tab.value}>
+                      {tab.label}
+                    </StyledTab>
+                  ))}
+                </StyledTabsList>
+                {children}
+              </Tabs>
+            ) : (
+              children
+            )}
+          </UserInputContext.Provider>
+        </>
+      )}
     </Modal>
   );
 };

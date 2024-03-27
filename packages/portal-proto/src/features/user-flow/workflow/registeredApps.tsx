@@ -11,6 +11,7 @@ import CohortComparisonIcon from "public/user-flow/icons/apps/CohortComparison.s
 import SetOperationsIcon from "public/user-flow/icons/apps/SetOperations.svg";
 import SequenceReadsIcon from "public/user-flow/icons/apps/SequenceReads.svg";
 import BAMSlicingDownloadIcon from "public/user-flow/icons/apps/BAMSlicingDownload.svg";
+import CohortLevelMAFIcon from "public/user-flow/icons/apps/CohortLevelMAF.svg";
 import ProteinPaintIcon from "public/user-flow/icons/apps/ProteinPaint.svg";
 import OncoMatrixIcon from "public/user-flow/icons/apps/OncoMatrix.svg";
 import GeneExpressionIcon from "public/user-flow/icons/apps/GeneExpression.svg";
@@ -227,6 +228,18 @@ export const REGISTERED_APPS = [
     optimizeRules: ["available data = ssm or cnv"],
     noDataTooltip:
       "Current cohort does not have gene expression data available for visualization.",
+  },
+  {
+    name: "Cohort Level MAF",
+    // TODO: replace with a MAF icon
+    icon: <CohortLevelMAFIcon aria-hidden="true" />,
+    tags: ["ssm"],
+    hasDemo: false,
+    countsField: "mafFileCount",
+    description: "Combine and download cohort level MAF data.",
+    id: "CohortLevelMAF",
+    noDataTooltip:
+      "Current cohort does not have MAF data available for download.",
   },
   /*
   {
