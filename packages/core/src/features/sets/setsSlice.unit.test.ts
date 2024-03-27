@@ -87,6 +87,31 @@ describe("setsSlice", () => {
     });
   });
 
+  it("rename set with existing name", () => {
+    const coreStore = configureStore({ reducer: reducers });
+    coreStore.dispatch(
+      addSet({ setType: "ssms", setName: "my ssm set", setId: "pLAr" }),
+    );
+
+    coreStore.dispatch(
+      addSet({ setType: "ssms", setName: "my next ssm set", setId: "aaZM" }),
+    );
+
+    coreStore.dispatch(
+      renameSet({
+        setType: "ssms",
+        setId: "aaZM",
+        newSetName: "my ssm set",
+      }),
+    );
+
+    expect(coreStore.getState().sets).toEqual({
+      cases: {},
+      genes: {},
+      ssms: { aaZM: "my ssm set" },
+    });
+  });
+
   it("select sets by type", () => {
     const state = getInitialCoreState();
     const result = selectSetsByType(

@@ -60,6 +60,13 @@ const slice = createSlice({
       }>,
     ) => {
       state = produce(state, (draft) => {
+        const existingSet = Object.entries(state[action.payload.setType]).find(
+          ([, name]) => name === action.payload.newSetName,
+        );
+        // Replace existing set with the same name
+        if (existingSet) {
+          delete draft[action.payload.setType][existingSet[0]];
+        }
         draft[action.payload.setType][action.payload.setId] =
           action.payload.newSetName;
       });

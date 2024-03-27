@@ -7,8 +7,8 @@ interface WarningMessageProps {
 const WarningMessage: React.FC<WarningMessageProps> = ({
   message,
 }: WarningMessageProps) => (
-  <span className="flex items-center mt-2 text-[#976F21] text-sm">
-    <WarningIcon className="mr-1 " />
+  <span className="flex items-center mt-2 text-warningColorText text-sm">
+    <WarningIcon className="mr-1 text-warningColor" />
     {message}
   </span>
 );
