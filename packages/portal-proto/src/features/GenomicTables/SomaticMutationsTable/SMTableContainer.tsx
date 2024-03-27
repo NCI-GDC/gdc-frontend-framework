@@ -14,7 +14,6 @@ import {
   useCoreDispatch,
   useCreateCaseSetFromFiltersMutation,
   GDCSsmsTable,
-  selectCurrentCohortFilters,
 } from "@gff/core";
 import { useEffect, useState, useContext, useMemo, useCallback } from "react";
 import { useDeepCompareCallback } from "use-deep-compare";
@@ -139,10 +138,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const [showRemoveModal, setShowRemoveModal] = useState(false);
   /* Modal end */
 
-  const cohortFiltersNoSet = useCoreSelector((state) =>
-    selectCurrentCohortFilters(state),
-  );
-
   /* SM Table Call */
   const { data, isSuccess, isFetching, isError, isUninitialized } =
     useGetSssmTableDataQuery({
@@ -152,7 +147,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       geneSymbol: geneSymbol,
       genomicFilters: genomicFilters,
       cohortFilters: cohortFilters,
-      _cohortFiltersNoSet: cohortFiltersNoSet,
       caseFilter: caseFilter,
     });
 
@@ -170,7 +164,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const generateFilters = useDeepCompareCallback(
     async (ssmId: string) => {
       return await createSet({
-        filters: buildCohortGqlOperator(combinedFilters),
+        case_filters: buildCohortGqlOperator(cohortFilters),
+        filters: buildCohortGqlOperator(genomicFilters),
       })
         .unwrap()
         .then((setId) => {
@@ -191,7 +186,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           } as FilterSet;
         });
     },
-    [combinedFilters, createSet],
+    [createSet, cohortFilters, genomicFilters],
   );
   /* Create Cohort end  */
 

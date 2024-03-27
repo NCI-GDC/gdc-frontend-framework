@@ -11,6 +11,7 @@ import { GqlIntersection, Includes } from "../gdcapi/filters";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 
 const graphQLQuery = `query CancerDistributionCNV(
+  $caseFilters: FiltersArgument,
   $cnvAll: FiltersArgument,
   $cnvGain: FiltersArgument,
   $cnvLoss: FiltersArgument,
@@ -20,10 +21,10 @@ const graphQLQuery = `query CancerDistributionCNV(
   viewer {
     explore {
       cases {
-        cnvAll: hits(filters: $cnvAll) {
+        cnvAll: hits(case_filters: $caseFilters,  filters: $cnvAll) {
           total
         }
-        gain: aggregations(filters: $cnvGain) {
+        gain: aggregations(case_filters: $caseFilters, filters: $cnvGain) {
           project__project_id {
             buckets {
               doc_count
@@ -31,7 +32,7 @@ const graphQLQuery = `query CancerDistributionCNV(
             }
           }
         }
-        loss: aggregations(filters: $cnvLoss) {
+        loss: aggregations(case_filters: $caseFilters, filters: $cnvLoss) {
           project__project_id {
             buckets {
               doc_count
@@ -47,7 +48,7 @@ const graphQLQuery = `query CancerDistributionCNV(
             }
           }
         }
-        cnvTestedByGene: hits(filters: $cnvTestedByGene) {
+        cnvTestedByGene: hits(case_filters: $caseFilters, filters: $cnvTestedByGene) {
           total
         }
       }
@@ -58,15 +59,16 @@ const graphQLQuery = `query CancerDistributionCNV(
 
 const fetchCnvAnalysisQuery = async (
   gene: string,
-  contextFilters: FilterSet | undefined,
+  cphortFilters: FilterSet | undefined,
+  genomicFilters: FilterSet | undefined,
 ): Promise<GraphQLApiResponse> => {
   const contextGene =
-    ((contextFilters?.root["genes.gene_id"] as Includes)
+    ((genomicFilters?.root["genes.gene_id"] as Includes)
       ?.operands as string[]) ?? [];
   const contextWithGene = {
     mode: "and",
     root: {
-      ...contextFilters?.root,
+      ...genomicFilters?.root,
       ["genes.gene_id"]: {
         operator: "includes",
         field: "genes.gene_id",
@@ -75,6 +77,7 @@ const fetchCnvAnalysisQuery = async (
     },
   };
 
+  const caseFilters = buildCohortGqlOperator(cphortFilters);
   const gqlContextFilter = buildCohortGqlOperator(contextWithGene);
   const gqlContextIntersection =
     gqlContextFilter && (gqlContextFilter as GqlIntersection).content
@@ -166,6 +169,7 @@ const fetchCnvAnalysisQuery = async (
         ...gqlContextIntersection,
       ],
     },
+    caseFilters: caseFilters,
   };
 
   const results: GraphQLApiResponse<any> = await graphqlAPI(
@@ -180,12 +184,14 @@ export const fetchCnvPlot = createAsyncThunk(
   "cancerDistribution/cnvPlot",
   async ({
     gene,
-    contextFilters,
+    cohortFilters,
+    genomicFilters,
   }: {
     gene: string;
-    contextFilters: FilterSet | undefined;
+    cohortFilters: FilterSet | undefined;
+    genomicFilters: FilterSet | undefined;
   }): Promise<GraphQLApiResponse> => {
-    return await fetchCnvAnalysisQuery(gene, contextFilters);
+    return await fetchCnvAnalysisQuery(gene, cohortFilters, genomicFilters);
   },
 );
 

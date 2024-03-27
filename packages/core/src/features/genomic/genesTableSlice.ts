@@ -81,17 +81,17 @@ const GenesTableGraphQLQuery = `
                           }
                         }
                         cnv_case: case {
-                          hits(first: 0, filters: $cnvTested) {
+                          hits(first: 0, case_filters: $caseFilters, filters: $cnvTested) {
                             total
                           }
                         }
                         case_cnv_gain: case {
-                          hits(first: 0, filters: $cnvGainFilters) {
+                          hits(first: 0, case_filters: $caseFilters, filters: $cnvGainFilters) {
                             total
                           }
                         }
                         case_cnv_loss: case {
-                          hits(first: 0, filters: $cnvLossFilters) {
+                          hits(first: 0, case_filters: $caseFilters, filters: $cnvLossFilters) {
                             total
                           }
                         }
@@ -287,7 +287,6 @@ export const fetchGenesTable = createAsyncThunk<
               op: "in",
             },
           ],
-          ...cohortFiltersContent,
           ...(onlyGenesFilters?.content
             ? Object(onlyGenesFilters?.content)
             : []),
@@ -312,7 +311,6 @@ export const fetchGenesTable = createAsyncThunk<
               op: "in",
             },
           ],
-          ...cohortFiltersContent,
           ...(onlyGenesFilters?.content
             ? Object(onlyGenesFilters?.content)
             : []),

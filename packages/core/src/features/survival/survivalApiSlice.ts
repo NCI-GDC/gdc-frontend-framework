@@ -36,7 +36,7 @@ export const survivalApiSlice = coreCreateApi({
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        cases_filters: request.cases_filters,
+        case_filters: request.case_filters,
         filters: request.filters,
       }),
     });
