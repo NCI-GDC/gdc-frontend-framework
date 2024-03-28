@@ -671,6 +671,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
 }: NumericFacetData) => {
   const [units, setUnits] = useState("years");
   // no data if true means the Day/Year SegmentedControl should not be rendered.
+  // TODO: this is not ideal and perhaps should be refactored
   const [noData, setNoData] = useState(false);
   // set up a fixed range -90 to 90 years over 19 buckets
   const rangeMinimum = -32873;
