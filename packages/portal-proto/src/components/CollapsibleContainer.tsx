@@ -44,7 +44,7 @@ export const CollapsibleContainer = (
   return (
     <div
       className={`flex flex-col ${
-        isContextBar && "overflow-y-auto max-h-screen-90vh"
+        isContextBar && "overflow-y-auto max-h-screen-100vh"
       }`}
     >
       <div className="flex flex-wrap">

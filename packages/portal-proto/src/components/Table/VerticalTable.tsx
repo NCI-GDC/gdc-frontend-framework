@@ -270,7 +270,7 @@ function VerticalTable<TData>({
   return (
     <div className="grow overflow-hidden pt-1">
       <div
-        className={`flex ${
+        className={`flex flex-wrap gap-y-4 ${
           !additionalControls ? "justify-end" : "justify-between"
         }`}
       >
@@ -496,7 +496,7 @@ function VerticalTable<TData>({
         </table>
       </div>
       {pagination && (
-        <div className="flex font-heading items-center text-content justify-between bg-base-max border-base-lighter border-1 border-t-0 py-3 px-4">
+        <div className="flex sm:flex-wrap lg:flex-nowrap font-heading items-center text-content justify-between bg-base-max border-base-lighter border-1 border-t-0 py-3 px-4">
           {!disablePageSize && (
             <div
               data-testid="area-show-number-of-entries"
@@ -536,7 +536,7 @@ function VerticalTable<TData>({
           <Pagination
             data-testid="pagination"
             color="accent.5"
-            className="ml-auto"
+            className="sm:mx-auto sm:mt-4 lg:ml-auto lg:mr-0 lg:mt-0"
             value={pageOn}
             onChange={handlePageChange}
             total={pageTotal}

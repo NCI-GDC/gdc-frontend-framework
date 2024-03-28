@@ -54,6 +54,7 @@ const ContextBar = ({
   const [summaryFields] = useState(INITIAL_SUMMARY_FIELDS);
   const [activeTab, setActiveTab] = useState<string | null>("summary");
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
+  const MIN_WIDTH_FOR_ICONS = 768;
   const { width } = useViewportSize();
 
   /* download active */
@@ -249,9 +250,9 @@ const ContextBar = ({
         <StickyControl isSticky={isSticky} handleIsSticky={handleIsSticky} />
       }
     >
-      <div className="flex flex-col bg-nci-violet-lightest">
+      <div className="bg-nci-violet-lightest">
         <div className="relative p-4">
-          <div className="flex flex-row md:relative md:pb-4 lg:pb-0 lg:absolute gap-2">
+          <div className="flex gap-1.5 pb-4 sm:relative lg:absolute lg:pb-0">
             <DropdownWithIcon
               dropdownElements={[
                 {
@@ -290,7 +291,11 @@ const ContextBar = ({
               TargetButtonChildren={
                 <CohortCountButton countName="fileCount" label="Files" />
               }
-              LeftIcon={<DownloadIcon size="1rem" aria-hidden="true" />}
+              LeftIcon={
+                width > MIN_WIDTH_FOR_ICONS ? (
+                  <DownloadIcon size="1rem" aria-hidden="true" />
+                ) : undefined
+              }
             />
 
             <DropdownWithIcon
@@ -318,7 +323,11 @@ const ContextBar = ({
                 },
               ]}
               TargetButtonChildren="Custom Filters"
-              LeftIcon={<CohortFilterIcon size="1rem" aria-hidden="true" />}
+              LeftIcon={
+                width > MIN_WIDTH_FOR_ICONS ? (
+                  <CohortFilterIcon size="1rem" aria-hidden="true" />
+                ) : undefined
+              }
               menuLabelText="Filter your cohort by:"
               menuLabelCustomClass="font-bold text-primary"
             />
@@ -342,11 +351,13 @@ const ContextBar = ({
                     biospecimenDownloadActive ? "Processing" : "Biospecimen"
                   }
                   LeftIcon={
-                    biospecimenDownloadActive ? (
-                      <Loader size={20} />
-                    ) : (
-                      <DownloadIcon size="1rem" aria-hidden="true" />
-                    )
+                    width > MIN_WIDTH_FOR_ICONS ? (
+                      biospecimenDownloadActive ? (
+                        <Loader size={20} />
+                      ) : (
+                        <DownloadIcon size="1rem" aria-hidden="true" />
+                      )
+                    ) : undefined
                   }
                 />
 
@@ -367,11 +378,13 @@ const ContextBar = ({
                     clinicalDownloadActive ? "Processing" : "Clinical"
                   }
                   LeftIcon={
-                    clinicalDownloadActive ? (
-                      <Loader size={20} />
-                    ) : (
-                      <DownloadIcon size="1rem" aria-hidden="true" />
-                    )
+                    width > MIN_WIDTH_FOR_ICONS ? (
+                      clinicalDownloadActive ? (
+                        <Loader size={20} />
+                      ) : (
+                        <DownloadIcon size="1rem" aria-hidden="true" />
+                      )
+                    ) : undefined
                   }
                 />
               </>
@@ -382,6 +395,7 @@ const ContextBar = ({
               tab: SecondaryTabStyle,
               tabsList: "mb-4 border-0",
               root: "border-0",
+              panel: "h-max",
             }}
             data-tour="cohort_summary"
             defaultValue="summary"

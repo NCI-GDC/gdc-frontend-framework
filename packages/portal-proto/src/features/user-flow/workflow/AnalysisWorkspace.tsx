@@ -54,7 +54,7 @@ const AnalysisGrid: React.FC = () => {
                 return (
                   <div
                     key={x.name}
-                    className="sm:basis-coretools-sm md:basis-coretools-md lg:basis-coretools"
+                    className="sm:basis-tools-sm md:basis-tools-md lg:basis-coretools"
                     data-testid={`button-core-tools-${x.name}`}
                   >
                     <CoreToolCard entry={{ ...{ applicable: true, ...x } }} />
@@ -77,7 +77,7 @@ const AnalysisGrid: React.FC = () => {
               return (
                 <div
                   key={x.name}
-                  className="min-w-0 sm:basis-coretools-sm md:basis-coretools-md lg:basis-tools"
+                  className="min-w-0 sm:basis-tools-sm md:basis-tools-md lg:basis-tools"
                 >
                   <AnalysisCard
                     entry={{ ...{ applicable: true, ...x } }}
