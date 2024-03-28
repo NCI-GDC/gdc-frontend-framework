@@ -350,8 +350,8 @@ const FromTo: React.FC<FromToProps> = ({
               placeholder={`eg. ${lowerUnitRange}${unitsLabel} `}
               min={lowerUnitRange}
               max={upperUnitRange}
-              // units are always days
-              value={adjustDaysToYearsIfUnitsAreYears(fromValue, units)}
+              // year units are always days
+              value={adjustDaysToYearsIfUnitsAreYears(fromValue, units) ?? ""}
               onChange={(value) => {
                 if (value === "") return;
                 setFromValue(
@@ -398,7 +398,7 @@ const FromTo: React.FC<FromToProps> = ({
                 );
                 changedCallback();
               }}
-              value={adjustDaysToYearsIfUnitsAreYears(toValue, units)}
+              value={adjustDaysToYearsIfUnitsAreYears(toValue, units) ?? ""}
               hideControls
               aria-label="input to value"
             />
@@ -465,6 +465,7 @@ interface RangeInputWithPrefixedRangesProps {
   readonly showZero?: boolean;
   readonly clearValues?: boolean;
   readonly isFacetView?: boolean;
+  readonly setNoData?: (boolean) => void;
 }
 
 const RangeInputWithPrefixedRanges: React.FC<
@@ -480,6 +481,7 @@ const RangeInputWithPrefixedRanges: React.FC<
   showZero = false,
   clearValues = undefined,
   isFacetView = true,
+  setNoData = () => null,
 }: RangeInputWithPrefixedRangesProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false); // handles the expanded group
 
@@ -545,6 +547,21 @@ const RangeInputWithPrefixedRanges: React.FC<
   const onShowModeChanged = () => {
     setIsGroupExpanded(!isGroupExpanded);
   };
+
+  // informs the parent component if there is data or no data
+  // only used by the DaysOrYears component
+  useEffect(() => {
+    if (isSuccess && filterValues === undefined && totalBuckets === 0)
+      setNoData(true);
+    else setNoData(false);
+  }, [filterValues, isSuccess, setNoData, totalBuckets]);
+
+  // If no data and no filter values, show the no data message
+  // otherwise this facet has some filters set and the custom range
+  // should be shown
+  if (isSuccess && filterValues === undefined && totalBuckets === 0) {
+    return <div className="mx-4 font-content">No data for this field</div>;
+  }
 
   return (
     <>
@@ -617,7 +634,7 @@ const RangeInputWithPrefixedRanges: React.FC<
               isFacetView ? "invisible" : ""
             }`}
           >
-            {!isFacetView && (
+            {!isFacetView && totalBuckets > 0 && (
               <EnumFacetChart
                 field={field}
                 data={chartData}
@@ -653,6 +670,8 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
   isFacetView,
 }: NumericFacetData) => {
   const [units, setUnits] = useState("years");
+  // no data if true means the Day/Year SegmentedControl should not be rendered.
+  const [noData, setNoData] = useState(false);
   // set up a fixed range -90 to 90 years over 19 buckets
   const rangeMinimum = -32873;
   const rangeMaximum = 32873;
@@ -660,15 +679,18 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
 
   return (
     <div className="flex flex-col w-100 space-y-2 px-2  mt-1 ">
-      <SegmentedControl
-        data={[
-          { label: "Days", value: "days" },
-          { label: "Years", value: "years" },
-        ]}
-        value={units}
-        color={"primary"}
-        onChange={setUnits}
-      />
+      {!noData && (
+        <SegmentedControl
+          data={[
+            { label: "Days", value: "days" },
+            { label: "Years", value: "years" },
+          ]}
+          value={units}
+          color={"primary"}
+          onChange={setUnits}
+        />
+      )}
+
       <RangeInputWithPrefixedRanges
         units={units}
         hooks={{ ...hooks }}
@@ -679,6 +701,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
         valueLabel={valueLabel}
         clearValues={clearValues}
         isFacetView={isFacetView}
+        setNoData={(value) => setNoData(value)}
       />
     </div>
   );
