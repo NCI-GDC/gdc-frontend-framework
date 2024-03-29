@@ -461,7 +461,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                         return (
                           <div
                             key={`${field}-${index}`}
-                            className="flex flex-row items-center px-2"
+                            className="flex items-center px-2 w-full"
                           >
                             <div className="flex-none">
                               <Checkbox

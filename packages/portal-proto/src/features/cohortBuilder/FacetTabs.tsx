@@ -87,6 +87,7 @@ const StyledFacetTabs = (props: TabsProps) => {
         },
         panel: {
           backgroundColor: theme.colors.base?.[0],
+          width: "100%",
         },
         tabIcon: {
           marginRight: theme.spacing.xs,
@@ -122,7 +123,7 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
 
   return (
     <div
-      className="bg-base-max pr-6 grid grid-cols-4 gap-4 my-4 ml-4"
+      className="bg-base-max pr-6 grid grid-cols-4 justify-stretch gap-4 my-4 ml-4"
       data-testid="title-cohort-builder-facet-groups"
     >
       {children}

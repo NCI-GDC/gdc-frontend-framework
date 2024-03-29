@@ -325,7 +325,7 @@ const FromTo: React.FC<FromToProps> = ({
 
   return (
     <div className="relative w-full">
-      <div className="flex flex-col p-4 text-base-contrast-max bg-base-max text-md">
+      <div className="flex flex-col p-2 text-base-contrast-max bg-base-max text-md">
         <fieldset>
           <legend className="sr-only">Numeric from/to filters</legend>
           <div className="flex flex-row justify-end items-center flex-nowrap border font-content">
