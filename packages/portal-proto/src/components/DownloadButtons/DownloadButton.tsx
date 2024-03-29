@@ -1,8 +1,11 @@
-import { Button, ButtonProps, Loader, Tooltip } from "@mantine/core";
+import { ButtonProps, Loader, Tooltip } from "@mantine/core";
 import { FiDownload } from "react-icons/fi";
 import download from "src/utils/download";
 import { hideModal, Modals, useCoreDispatch } from "@gff/core";
 import { Dispatch, SetStateAction, forwardRef } from "react";
+import FunctionButton, {
+  FunctionButtonVariants,
+} from "@/components/FunctionButton";
 
 /**
  * Properties for the DownloadButton component.
@@ -53,6 +56,7 @@ interface DownloadButtonProps {
   Modal403?: Modals;
   Modal400?: Modals;
   toolTip?: string;
+  variant?: FunctionButtonVariants;
 }
 
 /**
@@ -101,7 +105,6 @@ export const DownloadButton = forwardRef<
       activeText,
       extraParams,
       method = "POST",
-      customStyle,
       setActive,
       onClick,
       showLoading = true,
@@ -111,6 +114,7 @@ export const DownloadButton = forwardRef<
       Modal400,
       Modal403,
       toolTip,
+      variant,
       ...buttonProps
     }: DownloadButtonProps,
     ref,
@@ -125,18 +129,13 @@ export const DownloadButton = forwardRef<
 
     return (
       <Tooltip disabled={!toolTip} label={toolTip}>
-        <Button
+        <FunctionButton
+          $variant={variant}
           ref={ref}
           leftIcon={
             showIcon && inactiveText && <FiDownload aria-label="download" />
           }
           disabled={disabled}
-          className={
-            customStyle ||
-            `text-base-lightest ${
-              disabled ? "bg-base" : "bg-primary hover:bg-primary-darker"
-            } `
-          }
           loading={showLoading && active}
           onClick={() => {
             if (!preventClickEvent && onClick) {
@@ -169,7 +168,7 @@ export const DownloadButton = forwardRef<
           {...buttonProps}
         >
           {text || Icon}
-        </Button>
+        </FunctionButton>
       </Tooltip>
     );
   },
