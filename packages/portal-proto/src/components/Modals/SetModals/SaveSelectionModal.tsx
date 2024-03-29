@@ -16,6 +16,7 @@ import ModalButtonContainer from "@/components/StyledComponents/ModalButtonConta
 import WarningMessage from "@/components/WarningMessage";
 import ErrorMessage from "@/components/ErrorMessage";
 import { SET_COUNT_LIMIT } from "./constants";
+import { useDeepCompareCallback } from "use-deep-compare";
 
 interface SaveSelectionAsSetModalProps {
   readonly filters: Record<string, any>;
@@ -26,6 +27,7 @@ interface SaveSelectionAsSetModalProps {
   readonly createSetHook: UseMutation<any>;
   readonly closeModal: () => void;
   readonly sort?: string;
+  readonly opened: boolean;
 }
 
 const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
@@ -37,6 +39,7 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
   createSetHook,
   closeModal,
   sort,
+  opened,
 }: SaveSelectionAsSetModalProps) => {
   const dispatch = useCoreDispatch();
   const sets = useCoreSelector((state) => selectSetsByType(state, setType));
@@ -61,44 +64,28 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
     validateInputOnChange: true,
   });
 
+  const setValues = useDeepCompareCallback(
+    () =>
+      form.setValues((prev) => ({ ...prev, name: initialSetName, top: max })),
+    [form.setValues, initialSetName, max],
+  );
+
   useEffect(() => {
-    if (response.isSuccess) {
-      dispatch(
-        addSet({
-          setType,
-          setName: form.values.name.trim(),
-          setId: response.data as string,
-        }),
-      );
-      showNotification({
-        message: "Set has been saved.",
-        closeButtonProps: { "aria-label": "Close notification" },
-      });
-      closeModal();
-    } else if (response.isError) {
-      showNotification({
-        message: "Problem saving set.",
-        color: "red",
-        closeButtonProps: { "aria-label": "Close notification" },
-      });
+    if (opened) {
+      setValues();
     }
-  }, [
-    response.isSuccess,
-    response.isError,
-    response.data,
-    dispatch,
-    setType,
-    closeModal,
-    form.values.name,
-  ]);
+  }, [opened, setValues]);
 
   return (
     <Modal
-      title={`Save ${max.toLocaleString()} ${setTypeLabel}${
+      title={`Save ${max?.toLocaleString()} ${setTypeLabel}${
         max > 1 ? "s" : ""
       } as a new set`}
-      opened
-      onClose={closeModal}
+      opened={opened}
+      onClose={() => {
+        closeModal();
+        form.reset();
+      }}
       size="lg"
       classNames={{
         close: "p-0 drop-shadow-lg",
@@ -113,7 +100,7 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
           {...form.getInputProps("top")}
         />
         <p className="text-sm pb-2 pt-1">
-          Up to the top {max.toLocaleString()} {setTypeLabel}
+          Up to the top {max?.toLocaleString()} {setTypeLabel}
           {max > 1 ? "s" : ""} can be saved.
         </p>
         <TextInput
@@ -138,6 +125,29 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
               size: form.values.top,
               score: sort,
             })
+              .unwrap()
+              .then((response: string) => {
+                dispatch(
+                  addSet({
+                    setType,
+                    setName: form.values.name.trim(),
+                    setId: response,
+                  }),
+                );
+                showNotification({
+                  message: "Set has been saved.",
+                  closeButtonProps: { "aria-label": "Close notification" },
+                });
+                closeModal();
+                form.reset();
+              })
+              .catch(() => {
+                showNotification({
+                  message: "Problem saving set.",
+                  color: "red",
+                  closeButtonProps: { "aria-label": "Close notification" },
+                });
+              })
           }
           disabled={!form.isValid() || response.isLoading}
         >

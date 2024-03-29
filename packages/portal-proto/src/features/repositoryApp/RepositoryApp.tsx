@@ -50,7 +50,7 @@ const useCohortCentricFiles = () => {
   );
 
   const allFilters = joinFilters(cohortFilters, repositoryFilters);
-  const { data: fileData } = useGetFilesQuery({
+  const { data: fileData, isFetching: fileDataFetching } = useGetFilesQuery({
     case_filters: buildCohortGqlOperator(cohortFilters),
     filters: buildCohortGqlOperator(repositoryFilters),
     expand: [
@@ -67,6 +67,7 @@ const useCohortCentricFiles = () => {
     caseFilters: cohortFilters,
     localFilters: repositoryFilters,
     pagination: fileData?.pagination,
+    fileDataFetching,
     repositoryFilters,
     imagesCount,
   };
@@ -82,6 +83,7 @@ export const RepositoryApp = (): JSX.Element => {
     pagination,
     repositoryFilters,
     imagesCount,
+    fileDataFetching,
   } = useCohortCentricFiles();
   const [
     getFileSizeSliceData, // This is the mutation trigger
@@ -192,6 +194,7 @@ export const RepositoryApp = (): JSX.Element => {
                   data-testid="button-add-all-files-table"
                   leftIcon={<CartIcon aria-hidden="true" />}
                   loading={allFilesLoading}
+                  disabled={fileDataFetching}
                   onClick={() => {
                     // check number of files selected before making call
                     if (

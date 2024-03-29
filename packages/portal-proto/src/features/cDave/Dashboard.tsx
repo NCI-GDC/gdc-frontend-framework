@@ -11,6 +11,7 @@ import {
 import { convertDateToString } from "@/utils/date";
 import SurvivalPlot, { SurvivalPlotTypes } from "../charts/SurvivalPlot";
 import CDaveCard from "./CDaveCard/CDaveCard";
+import { useDeepCompareMemo } from "use-deep-compare";
 
 interface DashboardProps {
   readonly cohortFilters: GqlOperation;
@@ -29,13 +30,17 @@ const Dashboard: React.FC<DashboardProps> = ({
 }: DashboardProps) => {
   const initialDashboardRender = useRef(true);
   const lastDashboardRender = usePrevious(initialDashboardRender);
+  const filters = useDeepCompareMemo(
+    () => cohortFilters && [cohortFilters],
+    [cohortFilters],
+  );
   const {
     data: survivalData,
     isError,
     isFetching,
     isUninitialized,
   } = useGetSurvivalPlotQuery({
-    filters: cohortFilters && [cohortFilters],
+    filters,
   });
   useFacetDictionary();
 

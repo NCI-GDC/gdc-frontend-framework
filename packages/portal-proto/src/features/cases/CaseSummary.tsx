@@ -12,10 +12,12 @@ export const CaseSummary = ({
   isModal = false,
 }: {
   case_id: string;
-  bio_id: string;
+  bio_id?: string;
   isModal?: boolean;
 }): JSX.Element => {
-  const [shouldScrollToBio, setShouldScrollToBio] = useState(false);
+  const [shouldScrollToBio, setShouldScrollToBio] = useState(
+    bio_id !== undefined,
+  );
   const { data, isFetching } = useCaseSummary({
     filters: {
       content: {

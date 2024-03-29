@@ -81,14 +81,14 @@ export const formatEntityInfo = (
   )[];
 }[] => {
   const ids = {
-    [`${foundType}_ID`]: entity.submitter_id,
-    [`${foundType}_UUID`]: entity[idFields.find((id) => entity[id])],
+    [`${foundType}_ID`]: entity?.submitter_id,
+    [`${foundType}_UUID`]: entity?.[idFields.find((id) => entity?.[id])],
   };
 
   const ordered: Record<string, any> = Object.entries(
-    getOrder(foundType).reduce((next, k) => {
+    getOrder(foundType)?.reduce((next, k) => {
       return { ...next, [k]: entity[k] };
-    }, {}),
+    }, {}) ?? {},
   );
 
   const filtered = Object.entries(ids).concat(

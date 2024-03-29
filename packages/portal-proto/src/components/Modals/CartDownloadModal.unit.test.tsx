@@ -5,6 +5,9 @@ import * as core from "@gff/core";
 import CartDownloadModal from "./CartDownloadModal";
 
 jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
+jest
+  .spyOn(core, "useLazyFetchUserDetailsQuery")
+  .mockImplementation(jest.fn().mockReturnValue([jest.fn()]));
 
 describe("<CartDownloadModal />", () => {
   it("shows number of auth and unauth files", () => {
@@ -28,7 +31,7 @@ describe("<CartDownloadModal />", () => {
       "2 files that you are not authorized to download.",
     );
     expect(
-      getByRole("button", { name: "Download 1 Authorized File" }),
+      getByRole("button", { name: "download Download 1 Authorized File" }),
     ).toBeInTheDocument();
   });
 
@@ -106,7 +109,7 @@ describe("<CartDownloadModal />", () => {
     );
 
     expect(
-      getByRole("button", { name: "Download 0 Authorized Files" }),
+      getByRole("button", { name: "download Download 0 Authorized Files" }),
     ).toBeDisabled();
   });
 
@@ -125,10 +128,32 @@ describe("<CartDownloadModal />", () => {
     );
 
     const downloadButton = getByRole("button", {
-      name: "Download 1 Authorized File",
+      name: "download Download 1 Authorized File",
     });
     expect(downloadButton).toBeDisabled();
     await UserEvent.click(getByRole("checkbox"));
     expect(downloadButton).not.toBeDisabled();
+  });
+
+  it("show cart limit warning", () => {
+    const { getByText } = render(
+      <CartDownloadModal
+        openModal
+        user={{ username: "USERGUY", projects: {} as any }}
+        filesByCanAccess={{
+          true: [
+            { file_id: "1", file_size: 4 * 10e8 },
+            { file_id: "4", file_size: 2 * 10e8 },
+          ] as CartFile[],
+          false: [{ file_id: "2" }, { file_id: "3" }] as CartFile[],
+        }}
+        dbGapList={["TCGA"]}
+        setActive={jest.fn()}
+      />,
+    );
+
+    expect(
+      getByText("Your cart contains more than 5 GBs of data."),
+    ).toBeInTheDocument();
   });
 });

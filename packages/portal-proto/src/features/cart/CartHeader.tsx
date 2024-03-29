@@ -8,7 +8,7 @@ import {
   useCoreSelector,
   selectCurrentModal,
   Modals,
-  useUserDetails,
+  useFetchUserDetailsQuery,
 } from "@gff/core";
 import fileSize from "filesize";
 import { Button, Loader, Menu } from "@mantine/core";
@@ -26,12 +26,10 @@ import { DownloadButton } from "@/components/DownloadButtons";
 import download from "src/utils/download";
 import { removeFromCart } from "./updateCart";
 import { focusStyles } from "@/utils/index";
+import { cartAboveLimit } from "./utils";
 
 const buttonStyle =
   "bg-base-max text-primary border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary text-sm font-normal";
-
-// 5GB
-const MAX_CART_SIZE = 5 * 10e8;
 
 const downloadCart = (
   filesByCanAccess: Record<string, CartFile[]>,
@@ -40,12 +38,7 @@ const downloadCart = (
   dispatch: CoreDispatch,
 ) => {
   if (
-    filesByCanAccess.true
-      ?.map((file) => file.file_size)
-      .reduce((a, b) => a + b) > MAX_CART_SIZE
-  ) {
-    dispatch(showModal({ modal: Modals.CartSizeLimitModal }));
-  } else if (
+    cartAboveLimit(filesByCanAccess) ||
     (filesByCanAccess?.false || []).length > 0 ||
     dbGapList.length > 0
   ) {
@@ -103,7 +96,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
   dbGapList,
 }: CartHeaderProps) => {
   const dispatch = useCoreDispatch();
-  const { data: userDetails } = useUserDetails();
+  const { data: userDetails } = useFetchUserDetailsQuery();
   const [downloadActive, setDownloadActive] = useState(false);
   const [clinicalTSVDownloadActive, setClinicalTSVDownloadActive] =
     useState(false);
@@ -124,7 +117,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
       {modal === Modals.CartDownloadModal && (
         <CartDownloadModal
           openModal
-          user={userDetails}
+          user={userDetails?.data}
           filesByCanAccess={filesByCanAccess}
           dbGapList={dbGapList}
           setActive={setDownloadActive}
@@ -159,7 +152,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 setDownloadActive(true);
                 downloadManifest(cart, setDownloadActive, dispatch);
               }}
-              icon={<DownloadIcon />}
+              icon={<DownloadIcon aria-label="download" />}
             >
               Manifest
             </Menu.Item>
@@ -173,7 +166,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                   dispatch,
                 );
               }}
-              icon={<DownloadIcon />}
+              icon={<DownloadIcon aria-label="download" />}
             >
               Cart
             </Menu.Item>

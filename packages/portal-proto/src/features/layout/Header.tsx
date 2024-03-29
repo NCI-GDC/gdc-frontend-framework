@@ -7,12 +7,12 @@ import {
   GDC_AUTH,
   showModal,
   Modals,
-  selectUserDetailsInfo,
-  fetchToken,
   selectCurrentModal,
+  useFetchUserDetailsQuery,
+  useLazyFetchTokenQuery,
 } from "@gff/core";
 import { Button, LoadingOverlay, Menu, Badge } from "@mantine/core";
-import { ReactNode, useContext, useEffect, useState } from "react";
+import { ReactNode, useContext, useEffect, useRef, useState } from "react";
 import tw from "tailwind-styled-components";
 import { Image } from "@/components/Image";
 import { useCookies } from "react-cookie";
@@ -72,17 +72,18 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({
   headerElements,
   indexPath,
-  Options = () => <div />,
+  Options,
 }: HeaderProps) => {
   const dispatch = useCoreDispatch();
   const router = useRouter();
   const [openFeedbackModal, setOpenFeedbackModal] = useState(false);
-  const userInfo = useCoreSelector((state) => selectUserDetailsInfo(state));
+  const { data: userInfo } = useFetchUserDetailsQuery();
+
   const currentCart = useCoreSelector((state) => selectCart(state));
   const modal = useCoreSelector((state) => selectCurrentModal(state));
   const { isSuccess: totalSuccess } = useTotalCounts(); // request total counts and facet dictionary
   const { isSuccess: dictSuccess } = useFacetDictionary();
-
+  const userDropdownRef = useRef<HTMLButtonElement>();
   const [cookie] = useCookies(["NCI-Warning"]);
 
   useEffect(() => {
@@ -93,6 +94,8 @@ export const Header: React.FC<HeaderProps> = ({
   }, []);
 
   const { entityMetadata, setEntityMetadata } = useContext(SummaryModalContext);
+
+  const [fetchToken] = useLazyFetchTokenQuery({ refetchOnFocus: false });
 
   return (
     <div className="px-4 py-3 border-b border-gdc-grey-lightest flex flex-col">
@@ -142,15 +145,19 @@ export const Header: React.FC<HeaderProps> = ({
           >
             Send Feedback
           </Button>
-          <a
-            href="https://portal.gdc.cancer.gov/v1/annotations"
-            className="flex items-center gap-1 rounded-md p-1 hover:bg-primary-lightest"
-            target="_blank"
-            rel="noreferrer"
+          <Link
+            href="/annotations"
+            className={`p-1 rounded-md ${
+              router.pathname === "/annotations"
+                ? "bg-secondary text-white"
+                : "hover:bg-primary-lightest"
+            }`}
           >
-            <PencilIcon size="24px" />
-            Browse Annotations
-          </a>
+            <div className="flex items-center gap-1 font-heading">
+              <PencilIcon size="24px" />
+              Browse Annotations
+            </div>
+          </Link>
           <Link
             href="/manage_sets"
             data-testid="button-header-manage-sets"
@@ -201,6 +208,7 @@ export const Header: React.FC<HeaderProps> = ({
                   className="text-primary-darkest font-header text-sm font-medium font-heading"
                   classNames={{ rightIcon: "ml-0" }}
                   data-testid="usernameButton"
+                  ref={userDropdownRef}
                 >
                   {userInfo?.data?.username}
                 </Button>
@@ -209,13 +217,11 @@ export const Header: React.FC<HeaderProps> = ({
                 <DropdownMenuItem
                   icon={<FaUserCheck size="1.25em" />}
                   onClick={async () => {
-                    // This is just done for the purpose of checking if the session is still active
-                    const token = await fetchToken();
-                    if (token.status === 401) {
-                      dispatch(showModal({ modal: Modals.SessionExpireModal }));
-                      return;
-                    }
                     dispatch(showModal({ modal: Modals.UserProfileModal }));
+                    // This is done inorder to set the last focused element as the menu target element
+                    // This is done to return focus to the target element if the modal is closed with ESC
+                    userDropdownRef?.current &&
+                      userDropdownRef?.current?.focus();
                   }}
                   data-testid="userprofilemenu"
                 >
@@ -226,28 +232,31 @@ export const Header: React.FC<HeaderProps> = ({
                   data-testid="downloadTokenMenuItem"
                   onClick={async () => {
                     if (
-                      Object.keys(userInfo.data?.projects.gdc_ids).length > 0
+                      Object.keys(userInfo?.data?.projects.gdc_ids).length > 0
                     ) {
-                      const token = await fetchToken();
-                      if (token.status === 401) {
-                        dispatch(
-                          showModal({ modal: Modals.SessionExpireModal }),
-                        );
-                        return;
-                      }
-                      saveAs(
-                        new Blob([token.text], {
-                          type: "text/plain;charset=us-ascii",
-                        }),
-                        `gdc-user-token.${new Date().toISOString()}.txt`,
-                      );
+                      await fetchToken()
+                        .unwrap()
+                        .then((token) => {
+                          if (token.status === 401) {
+                            dispatch(
+                              showModal({ modal: Modals.SessionExpireModal }),
+                            );
+                            return;
+                          }
+                          saveAs(
+                            new Blob([token.data], {
+                              type: "text/plain;charset=us-ascii",
+                            }),
+                            `gdc-user-token.${new Date().toISOString()}.txt`,
+                          );
+                        });
                     } else {
                       cleanNotifications();
                       showNotification({
                         message: (
                           <p>
-                            {userInfo.data.username} does not have access to any
-                            protected data within the GDC. Click{" "}
+                            {userInfo?.data.username} does not have access to
+                            any protected data within the GDC. Click{" "}
                             <a
                               href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
                               target="_blank"
@@ -434,30 +443,26 @@ export const Header: React.FC<HeaderProps> = ({
           <QuickSearch />
         </div>
       </div>
-      <div className="flex flex-grow">
-        <Options />
-      </div>
+      <div className="flex flex-grow">{Options && <Options />}</div>
       <SendFeedbackModal
         opened={openFeedbackModal}
         onClose={() => setOpenFeedbackModal(false)}
       />
-      {modal === Modals.GeneralErrorModal && <GeneralErrorModal openModal />}
-      {modal === Modals.UserProfileModal && <UserProfileModal openModal />}
-      {modal === Modals.SessionExpireModal && <SessionExpireModal openModal />}
-      {modal === Modals.NoAccessModal && <NoAccessModal openModal />}
-      {modal === Modals.FirstTimeModal && <FirstTimeModal openModal />}
-      {entityMetadata.entity_type !== null && (
-        <SummaryModal
-          opened
-          onClose={() =>
-            setEntityMetadata({
-              entity_type: null,
-              entity_id: null,
-            })
-          }
-          entityMetadata={entityMetadata}
-        />
-      )}
+      <GeneralErrorModal openModal={modal === Modals.GeneralErrorModal} />
+      <UserProfileModal openModal={modal === Modals.UserProfileModal} />
+      <SessionExpireModal openModal={modal === Modals.SessionExpireModal} />
+      <NoAccessModal openModal={modal === Modals.NoAccessModal} />
+      <FirstTimeModal openModal={modal === Modals.FirstTimeModal} />
+      <SummaryModal
+        opened={entityMetadata.entity_type !== null}
+        onClose={() =>
+          setEntityMetadata({
+            entity_type: null,
+            entity_id: null,
+          })
+        }
+        entityMetadata={entityMetadata}
+      />
     </div>
   );
 };

@@ -8,9 +8,13 @@ import UpdateCohortButton from "./UpdateFiltersButton";
 const CaseSetModal: React.FC<InputModalProps> = ({
   updateFilters,
   existingFiltersHook,
+  opened,
 }: InputModalProps) => {
   return (
-    <UserInputModal modalTitle={"Filter Current Cohort by Cases"}>
+    <UserInputModal
+      modalTitle={"Filter Current Cohort by Cases"}
+      opened={opened}
+    >
       <InputEntityList
         inputInstructions="Enter one or more case identifiers in the field below or upload a file to filter your cohort."
         identifierToolTip={

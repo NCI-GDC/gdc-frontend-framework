@@ -1,11 +1,11 @@
-import React, { useMemo, useId } from "react";
+import React, { useMemo } from "react";
 import { EnumFacetHooks, FacetCardProps } from "./types";
 import { updateFacetEnum } from "./utils";
 
 import {
   controlsIconStyle,
   FacetIconButton,
-  FacetLabelText,
+  FacetText,
   FacetHeader,
 } from "@/features/facets/components";
 
@@ -57,13 +57,11 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     else clearFilters(field);
   };
 
-  const labelId = useId();
-
   return (
     <div
       className={`flex flex-col ${
         width ? width : "mx-0"
-      } bg-base-max relative shadow-lg border-primary-lightest border-1 rounded-b-md text-xs transition`}
+      } bg-base-max relative shadow-lg border-base-lighter border-1 rounded-b-md text-xs transition`}
     >
       <FacetHeader>
         <Tooltip
@@ -74,14 +72,13 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           withArrow
           transitionProps={{ duration: 200, transition: "fade" }}
         >
-          <FacetLabelText htmlFor={labelId}>{facetTitle}</FacetLabelText>
+          <FacetText>{facetTitle}</FacetText>
         </Tooltip>
         <div className="flex flex-row">
           {dismissCallback && (
             <Tooltip label="Remove the facet">
               <FacetIconButton
                 onClick={() => {
-                  clearFilters(field);
                   dismissCallback(field);
                 }}
                 aria-label="Remove the facet"
@@ -99,17 +96,22 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
         <div className="flex flex-nowrap justify-between items-center p-2 ">
           <LoadingOverlay data-testid="loading-spinner" visible={!isSuccess} />
           <Switch
+            label={
+              data === undefined || Object.keys(data).length == 0
+                ? "No data for this field"
+                : data["1"].toLocaleString("en-US")
+            }
             color="accent"
             checked={toggleValue}
             onChange={(event) => setValue(event.currentTarget.checked)}
-            id={labelId}
+            aria-label={facetTitle}
             data-testid="toggle-facet-value"
+            classNames={{
+              root: "w-full",
+              body: "flex justify-between items-center",
+              label: "text-xs font-content",
+            }}
           />
-          <p className="font-content">
-            {data === undefined || Object.keys(data).length == 0
-              ? "No data for this field"
-              : data["1"].toLocaleString("en-US")}
-          </p>
         </div>
       </div>
     </div>

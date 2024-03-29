@@ -32,6 +32,10 @@ export const SummaryModal = ({
     }
   }, [prevPath, currentPath, onClose]);
 
+  useEffect(() => {
+    setOpened(opened);
+  }, [opened]);
+
   const { SummaryPage, title } =
     entity_type === "project"
       ? {
@@ -40,9 +44,7 @@ export const SummaryModal = ({
         }
       : entity_type === "case"
       ? {
-          SummaryPage: (
-            <CaseSummary case_id={entity_id} bio_id="" isModal={true} />
-          ),
+          SummaryPage: <CaseSummary case_id={entity_id} isModal={true} />,
           title: "Case",
         }
       : entity_type === "file"
@@ -81,6 +83,7 @@ export const SummaryModal = ({
         header: "m-0 p-0 border-0",
         title: "sr-only",
         close: `absolute right-5 top-6 text-base-darkest [&_svg]:h-14 [&_svg]:w-14 float-right z-30 ${focusStyles}`,
+        content: "scroll-smooth",
       }}
       padding={0}
       overlayProps={{ opacity: 0.5 }}

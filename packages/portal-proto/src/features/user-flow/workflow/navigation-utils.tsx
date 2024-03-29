@@ -27,7 +27,12 @@ export const headerElements = [
         data-testid="button-header-analysis"
       >
         <>
-          <AnalysisCenterIcon width={24} height={24} viewBox="0 0 500 500" />
+          <AnalysisCenterIcon
+            width={24}
+            height={24}
+            viewBox="0 0 500 500"
+            aria-hidden
+          />
           Analysis Center
         </>
       </Link>
@@ -51,7 +56,12 @@ export const headerElements = [
         data-testid="button-header-projects"
       >
         <>
-          <ProjectsIcon width={24} height={24} viewBox="0 -15 100 100" />
+          <ProjectsIcon
+            width={24}
+            height={24}
+            viewBox="0 -15 100 100"
+            aria-hidden
+          />
           Projects
         </>
       </Link>
@@ -75,7 +85,12 @@ export const headerElements = [
         data-testid="button-header-cohort"
       >
         <>
-          <CohortBuilderIcon width={24} height={24} viewBox="0 0 50 50" />
+          <CohortBuilderIcon
+            width={24}
+            height={24}
+            viewBox="0 0 50 50"
+            aria-hidden
+          />
           Cohort Builder
         </>
       </Link>
@@ -99,7 +114,12 @@ export const headerElements = [
         data-testid="button-header-downloads"
       >
         <>
-          <DownloadIcon width={24} height={24} viewBox="0 0 50 50" />
+          <DownloadIcon
+            width={24}
+            height={24}
+            viewBox="0 0 50 50"
+            aria-hidden
+          />
           Repository
         </>
       </Link>

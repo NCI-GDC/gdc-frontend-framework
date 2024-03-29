@@ -6,7 +6,6 @@ import {
   useCoreDispatch,
   fetchNotifications,
   selectBanners,
-  fetchUserDetails,
   selectCurrentCohortName,
   selectCohortMessage,
   clearCohortMessage,
@@ -47,7 +46,6 @@ export const UserFlowVariedPages = ({
   const dispatch = useCoreDispatch();
 
   useEffect(() => {
-    dispatch(fetchUserDetails());
     dispatch(fetchNotifications());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

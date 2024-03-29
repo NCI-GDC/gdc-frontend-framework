@@ -7,8 +7,12 @@ class Utility:
     def parent_dir(path_from=__file__):
         for path in Path(path_from).parents:
             git_dir = path / ".git"
-            if git_dir.is_dir():
+            holmes_dir = path / "holmes-py"
+            if holmes_dir.is_dir():
+                return holmes_dir
+            elif git_dir.is_dir():
                 return path
+
 
     def is_file_found(file_path: str):
         CURRENT_TIME = 0
@@ -23,9 +27,10 @@ class Utility:
 
     def get_screen_size():
         # Try/except around pyautogui as a workaround to this not working within Docker runs
-        if not getenv('IS_DOCKER'):
+        if not getenv("IS_DOCKER"):
             import AppKit
             import pyautogui
+
             width, height = pyautogui.size()
             return {"width": width, "height": height}
 
@@ -39,10 +44,11 @@ class Utility:
 
     def flatten_json(y):
         out = {}
-        def flatten(x, name=''):
+
+        def flatten(x, name=""):
             if type(x) is dict:
                 for a in x:
-                    flatten(x[a], name + a + '.')
+                    flatten(x[a], name + a + ".")
             elif type(x) is list:
                 i = 0
                 for a in x:
@@ -50,5 +56,6 @@ class Utility:
                     i += 1
             else:
                 out[name[:-1]] = x
+
         flatten(y)
         return out
