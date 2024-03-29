@@ -687,7 +687,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
             { label: "Years", value: "years" },
           ]}
           value={units}
-          color={"primary"}
+          color="primary"
           onChange={setUnits}
         />
       )}
