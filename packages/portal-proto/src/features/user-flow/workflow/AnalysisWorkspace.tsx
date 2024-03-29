@@ -47,14 +47,14 @@ const AnalysisGrid: React.FC = () => {
           <h2 className="text-primary-content-darkest font-bold uppercase text-xl mb-2">
             Core Tools
           </h2>
-          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
+          <div className="flex sm:gap-4 lg:gap-6 flex-wrap">
             {recommendedApps
               .map((k) => initialApps[k])
               .map((x: AppRegistrationEntry) => {
                 return (
                   <div
                     key={x.name}
-                    className=""
+                    className="sm:basis-tools-sm md:basis-tools-md lg:basis-coretools"
                     data-testid={`button-core-tools-${x.name}`}
                   >
                     <CoreToolCard entry={{ ...{ applicable: true, ...x } }} />
@@ -69,13 +69,16 @@ const AnalysisGrid: React.FC = () => {
           Analysis Tools
         </h2>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+        <div className="flex sm:gap-4 lg:gap-6 flex-wrap">
           {activeApps
             .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
             .map((k) => initialApps[k])
             .map((x: AppRegistrationEntry, idx: number) => {
               return (
-                <div key={x.name}>
+                <div
+                  key={x.name}
+                  className="min-w-0 sm:basis-tools-sm md:basis-tools-md lg:basis-tools"
+                >
                   <AnalysisCard
                     entry={{ ...{ applicable: true, ...x } }}
                     descriptionVisible={activeAnalysisCard === idx}
