@@ -30,11 +30,7 @@ const CoreToolCard: React.FC<CoreToolCardProps> = ({
             {entry.description}
           </Text>
         </Grid.Col>
-        <Grid.Col
-          span={2}
-          // style={{ minHeight: "6rem" }}
-          className="flex justify-end p-0 m-0"
-        >
+        <Grid.Col span={2} className="flex justify-end p-0 m-0">
           <div className="bg-secondary w-12 h-full p-0 group-hover:bg-secondary-darker group-focus:bg-secondary-darker rounded-none rounded-r flex justify-center items-center">
             <MdPlayArrow size={30} color="white" />
           </div>
