@@ -465,7 +465,7 @@ interface RangeInputWithPrefixedRangesProps {
   readonly showZero?: boolean;
   readonly clearValues?: boolean;
   readonly isFacetView?: boolean;
-  readonly setNoData?: (boolean) => void;
+  readonly setHasData?: (boolean) => void;
 }
 
 const RangeInputWithPrefixedRanges: React.FC<
@@ -481,7 +481,7 @@ const RangeInputWithPrefixedRanges: React.FC<
   showZero = false,
   clearValues = undefined,
   isFacetView = true,
-  setNoData = () => null,
+  setHasData = () => null,
 }: RangeInputWithPrefixedRangesProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false); // handles the expanded group
 
@@ -552,9 +552,9 @@ const RangeInputWithPrefixedRanges: React.FC<
   // only used by the DaysOrYears component
   useEffect(() => {
     if (isSuccess && filterValues === undefined && totalBuckets === 0)
-      setNoData(true);
-    else setNoData(false);
-  }, [filterValues, isSuccess, setNoData, totalBuckets]);
+      setHasData(false);
+    else setHasData(true);
+  }, [filterValues, isSuccess, setHasData, totalBuckets]);
 
   // If no data and no filter values, show the no data message
   // otherwise this facet has some filters set and the custom range
@@ -672,7 +672,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
   const [units, setUnits] = useState("years");
   // no data if true means the Day/Year SegmentedControl should not be rendered.
   // TODO: this is not ideal and perhaps should be refactored
-  const [noData, setNoData] = useState(false);
+  const [hasData, setHasData] = useState(true);
   // set up a fixed range -90 to 90 years over 19 buckets
   const rangeMinimum = -32873;
   const rangeMaximum = 32873;
@@ -680,7 +680,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
 
   return (
     <div className="flex flex-col w-100 space-y-2 px-2  mt-1 ">
-      {!noData && (
+      {hasData && (
         <SegmentedControl
           data={[
             { label: "Days", value: "days" },
@@ -702,7 +702,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
         valueLabel={valueLabel}
         clearValues={clearValues}
         isFacetView={isFacetView}
-        setNoData={(value) => setNoData(value)}
+        setHasData={(value) => setHasData(value)}
       />
     </div>
   );
