@@ -12,6 +12,10 @@ import {
   useCoreDispatch,
   useCreateCaseSetFromValuesMutation,
 } from "@gff/core";
+import {
+  useUpdateGenomicEnumFacetFilter,
+  useGenomicFacetFilter,
+} from "@/features/genomic/hooks";
 import { isEqual } from "lodash";
 import { DemoText } from "@/components/tailwindComponents";
 import { LoadingOverlay } from "@mantine/core";
@@ -22,6 +26,7 @@ import {
   RxComponentCallbacks,
 } from "./sjpp-types";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
+import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
 
 const basepath = PROTEINPAINT_API;
 
@@ -48,7 +53,8 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
     useRef<ReturnType<typeof setTimeout>>();
   const prevData = useRef<any>();
   const coreDispatch = useCoreDispatch();
-  const [showSaveCohort, setShowSaveCohort] = useState(false);
+  const [showSaveCohortModal, setShowSaveCohortModal] = useState(false);
+  const [showGeneSetModal, setShowGeneSetModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [createSet, response] = useCreateCaseSetFromValuesMutation();
   const [newCohortFilters, setNewCohortFilters] =
@@ -70,7 +76,7 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
             },
           },
         });
-        setShowSaveCohort(true);
+        setShowSaveCohortModal(true);
       }
     },
     [createSet],
@@ -90,7 +96,7 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
         },
       };
       setNewCohortFilters(filters);
-      setShowSaveCohort(true);
+      setShowSaveCohortModal(true);
     }
   }, [response.isSuccess, coreDispatch, response.data]);
 
@@ -104,6 +110,10 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
     "preDispatch.gdcPlotApp": showLoadingOverlay,
     "error.gdcPlotApp": hideLoadingOverlay,
     "postRender.gdcPlotApp": hideLoadingOverlay,
+  };
+  const genesetCallback = (/*{callback}*/) => {
+    setShowGeneSetModal(true);
+    // TODO: pass the gene set to the callback
   };
 
   useDeepCompareEffect(
@@ -161,6 +171,7 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
           callback,
           matrixCallbacks,
           appCallbacks,
+          genesetCallback,
         );
         if (!data) return;
 
@@ -188,6 +199,7 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
   );
 
   const divRef = useRef();
+  const updateFilters = useUpdateGenomicEnumFacetFilter();
   return (
     <div className="relative">
       {isDemoMode && <DemoText>Demo showing cases with Gliomas.</DemoText>}
@@ -199,9 +211,18 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
       />
 
       <SaveCohortModal // Show the modal, create a saved cohort when save button is clicked
-        opened={showSaveCohort}
-        onClose={() => setShowSaveCohort(false)}
+        opened={showSaveCohortModal}
+        onClose={() => setShowSaveCohortModal(false)}
         filters={newCohortFilters}
+      />
+
+      <GeneSetModal
+        opened={showGeneSetModal}
+        modalTitle="Use a previously saved gene set"
+        inputInstructions="Enter one or more gene identifiers in the field below or upload a file to create a gene set."
+        selectSetInstructions="Select one or more sets below to use as an OncoMatrix gene set."
+        updateFilters={updateFilters}
+        existingFiltersHook={useGenomicFacetFilter}
       />
 
       <LoadingOverlay
@@ -248,6 +269,7 @@ function getMatrixTrack(
   callback?: SelectSamplesCallback,
   matrixCallbacks?: RxComponentCallbacks,
   appCallbacks?: RxComponentCallbacks,
+  genesetCallback?: (arg: string[]) => null,
 ) {
   const defaultFilter = null;
 
@@ -274,6 +296,14 @@ function getMatrixTrack(
           callback,
         },
         callbacks: matrixCallbacks,
+        customInputs: {
+          geneset: [
+            {
+              label: "Load Gene Sets",
+              showInput: genesetCallback,
+            },
+          ],
+        },
       },
     },
   };
