@@ -183,7 +183,7 @@ const CustomFacetGroup = (): JSX.Element => {
 
   // handle the case where there are no custom filters
   return (
-    <div className="flex flex-col w-screen/1.5 h-full bg-base-max pr-6">
+    <div className="flex flex-colw-full h-full bg-base-max pr-6">
       <LoadingOverlay
         data-testid="loading-spinner"
         visible={!isDictionaryReady}
@@ -203,9 +203,9 @@ const CustomFacetGroup = (): JSX.Element => {
           />
         </div>
       </Modal>
-      <div className="my-auto">
+      <div className="w-full">
         {customFacetDefinitions.length == 0 ? (
-          <Flex justify="center">
+          <Flex justify="center" align="center" className="h-full">
             <CustomFacetWhenEmptyGroup align="center" justify="center">
               <AddFacetIcon
                 className="text-primary-content"
@@ -223,7 +223,7 @@ const CustomFacetGroup = (): JSX.Element => {
                 variant="outline"
                 onClick={() => setOpened(true)}
                 aria-label="Add a Custom Filter"
-                className="bg-base-lightest text-primary border-primary"
+                className="bg-base-max text-primary border-primary"
               >
                 Add a Custom Filter
               </Button>
@@ -232,13 +232,13 @@ const CustomFacetGroup = (): JSX.Element => {
         ) : (
           <FacetGroup
             indexType={customConfig.index as GQLIndexType}
-            docType={"cases"}
+            docType="cases"
             facets={customFacetDefinitions}
           >
             <Button
               data-testid="button-cohort-builder-add-a-custom-filter"
               variant="outline"
-              className="h-48 bg-primary-lightest flex flex-row justify-center align-middle items-center border-base-darker b-2 border-dotted"
+              className="h-48 bg-base-max flex justify-center align-middle items-center border-base-darker b-2 border-dotted"
               onClick={() => setOpened(true)}
             >
               <AddAdditionalIcon
