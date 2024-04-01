@@ -105,7 +105,10 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
   };
 
   return (
-    <div className="border border-base-lighter p-4">
+    <div
+      data-testid="graph-cancer-distribution-mutations"
+      className="border border-base-lighter p-4"
+    >
       <div>
         <ChartTitleBar
           title={title}
