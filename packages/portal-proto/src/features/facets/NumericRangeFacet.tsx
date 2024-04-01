@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useDeepCompareEffect } from "react-use";
 import {
   MdClose as CloseIcon,
   MdFlip as FlipIcon,
@@ -324,7 +325,7 @@ const FromTo: React.FC<FromToProps> = ({
     units !== "years" ? maximum : getLowerAgeYears(maximum);
 
   return (
-    <div className="flex flex-col m-2 text-base-contrast-max bg-base-max">
+    <div className="flex flex-col grow m-2 text-base-contrast-max bg-base-max">
       <fieldset>
         <legend className="sr-only">Numeric from/to filters</legend>
         <div className="flex flex-row justify-end items-center flex-nowrap border font-content">
@@ -345,7 +346,7 @@ const FromTo: React.FC<FromToProps> = ({
           />
           <NumberInput
             data-testid="textbox-input-from-value"
-            className="basis-2/5 text-sm"
+            className="text-sm grow"
             placeholder={`eg. ${lowerUnitRange}${unitsLabel} `}
             min={lowerUnitRange}
             max={upperUnitRange}
@@ -383,7 +384,7 @@ const FromTo: React.FC<FromToProps> = ({
           />
           <NumberInput
             data-testid="textbox-input-to-value"
-            className="basis-2/5"
+            className="grow text-sm"
             placeholder={`eg. ${upperUnitRange}${unitsLabel} `}
             min={lowerUnitRange}
             max={upperUnitRange}
@@ -463,6 +464,7 @@ interface RangeInputWithPrefixedRangesProps {
   readonly showZero?: boolean;
   readonly clearValues?: boolean;
   readonly isFacetView?: boolean;
+  readonly setHasData?: (boolean) => void;
 }
 
 const RangeInputWithPrefixedRanges: React.FC<
@@ -478,6 +480,7 @@ const RangeInputWithPrefixedRanges: React.FC<
   showZero = false,
   clearValues = undefined,
   isFacetView = true,
+  setHasData = () => null,
 }: RangeInputWithPrefixedRangesProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false); // handles the expanded group
 
@@ -544,11 +547,26 @@ const RangeInputWithPrefixedRanges: React.FC<
     setIsGroupExpanded(!isGroupExpanded);
   };
 
+  // informs the parent component if there is data or no data
+  // only used by the DaysOrYears component
+  useDeepCompareEffect(() => {
+    if (isSuccess && filterValues === undefined && totalBuckets === 0)
+      setHasData(false);
+    else setHasData(true);
+  }, [filterValues, isSuccess, setHasData, totalBuckets]);
+
+  // If no data and no filter values, show the no data message
+  // otherwise this facet has some filters set and the custom range
+  // should be shown
+  if (isSuccess && filterValues === undefined && totalBuckets === 0) {
+    return <div className="mx-4 font-content pb-2">No data for this field</div>;
+  }
+
   return (
     <>
       <LoadingOverlay data-testid="loading-spinner" visible={!isSuccess} />
-      <div className="flex flex-col w-100 space-y-2 mt-1 ">
-        <div className="flex flex-row  justify-items-stretch items-center">
+      <div className="flex flex-col space-y-2 mt-1 ">
+        <div className="flex justify-items-stretch items-center">
           <input
             aria-label="custom range"
             type="radio"
@@ -615,7 +633,7 @@ const RangeInputWithPrefixedRanges: React.FC<
               isFacetView ? "invisible" : ""
             }`}
           >
-            {!isFacetView && (
+            {!isFacetView && totalBuckets > 0 && (
               <EnumFacetChart
                 field={field}
                 data={chartData}
@@ -651,6 +669,9 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
   isFacetView,
 }: NumericFacetData) => {
   const [units, setUnits] = useState("years");
+  // no data if true means the Day/Year SegmentedControl should not be rendered.
+  // TODO: this is not ideal and perhaps should be refactored
+  const [hasData, setHasData] = useState(true);
   // set up a fixed range -90 to 90 years over 19 buckets
   const rangeMinimum = -32873;
   const rangeMaximum = 32873;
@@ -658,15 +679,18 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
 
   return (
     <div className="flex flex-col w-100 space-y-2 px-2  mt-1 ">
-      <SegmentedControl
-        data={[
-          { label: "Days", value: "days" },
-          { label: "Years", value: "years" },
-        ]}
-        value={units}
-        color={"primary"}
-        onChange={setUnits}
-      />
+      {hasData && (
+        <SegmentedControl
+          data={[
+            { label: "Days", value: "days" },
+            { label: "Years", value: "years" },
+          ]}
+          value={units}
+          color="primary"
+          onChange={setUnits}
+        />
+      )}
+
       <RangeInputWithPrefixedRanges
         units={units}
         hooks={{ ...hooks }}
@@ -677,6 +701,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
         valueLabel={valueLabel}
         clearValues={clearValues}
         isFacetView={isFacetView}
+        setHasData={(value) => setHasData(value)}
       />
     </div>
   );
