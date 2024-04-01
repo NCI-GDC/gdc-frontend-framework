@@ -83,6 +83,7 @@ const AnalysisInputFiles = ({
 
   return (
     <VerticalTable
+      customDataTestID="table-source-files-file-summary"
       data={data}
       columns={columns}
       additionalControls={

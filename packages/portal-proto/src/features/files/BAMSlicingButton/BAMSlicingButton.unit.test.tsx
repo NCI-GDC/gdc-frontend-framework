@@ -24,7 +24,7 @@ describe("<BAMSlicingButton />", () => {
     const { getByTestId } = render(
       <BAMSlicingButton isActive={false} file={{} as core.GdcFile} />,
     );
-    const button = getByTestId("bamButton");
+    const button = getByTestId("button-bam-slicing");
     await userEvent.click(button);
     expect(mockDispatch).toBeCalledWith({
       payload: { modal: "NoAccessModal" },
@@ -47,7 +47,7 @@ describe("<BAMSlicingButton />", () => {
     const { getByTestId } = render(
       <BAMSlicingButton isActive={false} file={{} as core.GdcFile} />,
     );
-    const button = getByTestId("bamButton");
+    const button = getByTestId("button-bam-slicing");
     await userEvent.click(button);
     expect(mockDispatch).toBeCalledWith({
       payload: { modal: "BAMSlicingModal" },
@@ -70,7 +70,7 @@ describe("<BAMSlicingButton />", () => {
     const { getByTestId } = render(
       <BAMSlicingButton isActive={false} file={{} as core.GdcFile} />,
     );
-    const button = getByTestId("bamButton");
+    const button = getByTestId("button-bam-slicing");
     await userEvent.click(button);
     expect(mockDispatch).toBeCalledWith({
       payload: { modal: "NoAccessToProjectModal" },
