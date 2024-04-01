@@ -87,6 +87,7 @@ const StyledFacetTabs = (props: TabsProps) => {
         },
         panel: {
           backgroundColor: theme.colors.base?.[0],
+          width: "100%",
         },
         tabIcon: {
           marginRight: theme.spacing.xs,
@@ -122,7 +123,7 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
 
   return (
     <div
-      className="bg-base-max pr-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 my-4 ml-4"
+      className="bg-base-max pr-6 grid grid-cols-4 justify-stretch gap-4 my-4 ml-4"
       data-testid="title-cohort-builder-facet-groups"
     >
       {children}
@@ -182,7 +183,7 @@ const CustomFacetGroup = (): JSX.Element => {
 
   // handle the case where there are no custom filters
   return (
-    <div className="flex flex-col w-screen/1.5 h-full bg-base-max pr-6">
+    <div className="flex flex-colw-full h-full bg-base-max pr-6">
       <LoadingOverlay
         data-testid="loading-spinner"
         visible={!isDictionaryReady}
@@ -202,79 +203,81 @@ const CustomFacetGroup = (): JSX.Element => {
           />
         </div>
       </Modal>
-      {customFacetDefinitions.length == 0 ? (
-        <Flex>
-          <CustomFacetWhenEmptyGroup align="center" justify="center">
-            <AddFacetIcon
-              className="text-primary-content"
-              size="3em"
-            ></AddFacetIcon>
-            <Text
-              size="md"
-              weight={700}
-              className="text-primary-content-darker"
-            >
-              No custom filters added
-            </Text>
+      <div className="w-full">
+        {customFacetDefinitions.length == 0 ? (
+          <Flex justify="center" align="center" className="h-full">
+            <CustomFacetWhenEmptyGroup align="center" justify="center">
+              <AddFacetIcon
+                className="text-primary-content"
+                size="3em"
+              ></AddFacetIcon>
+              <Text
+                size="md"
+                weight={700}
+                className="text-primary-content-darker"
+              >
+                No custom filters added
+              </Text>
+              <Button
+                data-testid="button-cohort-builder-add-a-custom-filter"
+                variant="outline"
+                onClick={() => setOpened(true)}
+                aria-label="Add a Custom Filter"
+                className="bg-base-max text-primary border-primary"
+              >
+                Add a Custom Filter
+              </Button>
+            </CustomFacetWhenEmptyGroup>
+          </Flex>
+        ) : (
+          <FacetGroup
+            indexType={customConfig.index as GQLIndexType}
+            docType="cases"
+            facets={customFacetDefinitions}
+          >
             <Button
               data-testid="button-cohort-builder-add-a-custom-filter"
               variant="outline"
+              className="h-48 bg-base-max flex justify-center align-middle items-center border-base-darker b-2 border-dotted"
               onClick={() => setOpened(true)}
-              aria-label="Add a Custom Filter"
-              className="bg-base-lightest text-base-contrast-lightest"
             >
-              Add a Custom Filter
+              <AddAdditionalIcon
+                className="text-primary-contrast-lightest"
+                size="2em"
+              />
+              <Text
+                size="md"
+                weight={700}
+                className="text-primary-contrast-lightest"
+              >
+                Add a Custom Filter
+              </Text>
             </Button>
-          </CustomFacetWhenEmptyGroup>
-        </Flex>
-      ) : (
-        <FacetGroup
-          indexType={customConfig.index as GQLIndexType}
-          docType={"cases"}
-          facets={customFacetDefinitions}
-        >
-          <Button
-            data-testid="button-cohort-builder-add-a-custom-filter"
-            variant="outline"
-            className="h-48 bg-primary-lightest flex flex-row justify-center align-middle items-center border-base-darker b-2 border-dotted"
-            onClick={() => setOpened(true)}
-          >
-            <AddAdditionalIcon
-              className="text-primary-contrast-lightest"
-              size="2em"
-            />
-            <Text
-              size="md"
-              weight={700}
-              className="text-primary-contrast-lightest"
-            >
-              Add a Custom Filter
-            </Text>
-          </Button>
-          {createFacetCardsFromList(
-            customFacetDefinitions,
-            {
-              useGetEnumFacetData: partial(
-                useEnumFacetValues,
-                "cases",
-                customConfig.index as GQLIndexType,
-              ),
-              useGetRangeFacetData: partial(
-                useRangeFacet,
-                "cases",
-                customConfig.index,
-              ),
-              useGetFacetFilters: useSelectFieldFilter,
-              useUpdateFacetFilters: useUpdateFacetFilter,
-              useClearFilter: useClearFilters,
-              useTotalCounts: partial(useTotalCounts, "caseCounts"),
-            },
-            "cohort-builder",
-            FacetDocTypeToLabelsMap["cases"],
-            handleRemoveFilter,
-          )}
-        </FacetGroup>
-      )}
+            {createFacetCardsFromList(
+              customFacetDefinitions,
+              {
+                useGetEnumFacetData: partial(
+                  useEnumFacetValues,
+                  "cases",
+                  customConfig.index as GQLIndexType,
+                ),
+                useGetRangeFacetData: partial(
+                  useRangeFacet,
+                  "cases",
+                  customConfig.index,
+                ),
+                useGetFacetFilters: useSelectFieldFilter,
+                useUpdateFacetFilters: useUpdateFacetFilter,
+                useClearFilter: useClearFilters,
+                useTotalCounts: partial(useTotalCounts, "caseCounts"),
+              },
+              "cohort-builder",
+              FacetDocTypeToLabelsMap["cases"],
+              handleRemoveFilter,
+            )}
+          </FacetGroup>
+        )}
+      </div>
     </div>
   );
 };

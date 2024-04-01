@@ -9,15 +9,16 @@ import {
 import { DownloadButton } from "./DownloadButton";
 import { useState } from "react";
 import { useDeepCompareCallback } from "use-deep-compare";
+import { FunctionButtonVariants } from "../FunctionButton";
 
 interface DownloadFileProps {
   file: GdcFile;
   activeText?: string;
   inactiveText?: string;
   setfileToDownload?: React.Dispatch<React.SetStateAction<GdcFile>>;
-  customStyle?: string;
   showLoading?: boolean;
   customDataTestID?: string;
+  variant?: FunctionButtonVariants;
 }
 
 export const DownloadFile: React.FC<DownloadFileProps> = ({
@@ -25,20 +26,14 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
   activeText,
   inactiveText,
   setfileToDownload,
-  customStyle,
   showLoading = true,
   customDataTestID,
+  variant,
 }: DownloadFileProps) => {
   const dispatch = useCoreDispatch();
   const [fetchUserDetails] = useLazyFetchUserDetailsQuery();
 
   const [active, setActive] = useState(false);
-
-  const customStyleFile = inactiveText
-    ? "text-base-lightest bg-primary hover:bg-primary-darker"
-    : `bg-base-max text-primary border border-primary rounded hover:bg-primary hover:text-base-max ${
-        !inactiveText && !activeText ? "w-8 p-0 h-6" : "p-2"
-      }`;
 
   const onClick = useDeepCompareCallback(async () => {
     fetchUserDetails()
@@ -79,8 +74,8 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
         method="GET"
         setActive={setActive}
         active={active}
-        customStyle={customStyle || customStyleFile}
         showLoading={showLoading}
+        variant={variant}
       />
     );
   }
@@ -88,13 +83,13 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
   return (
     <DownloadButton
       data-testid={customDataTestID}
-      customStyle={customStyle || customStyleFile}
       inactiveText={inactiveText}
       activeText={activeText}
       onClick={onClick}
       setActive={setActive}
       active={active}
       showLoading={showLoading}
+      variant={variant}
     />
   );
 };

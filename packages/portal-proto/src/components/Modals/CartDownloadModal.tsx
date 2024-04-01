@@ -102,7 +102,7 @@ const CartDownloadModal = ({
           activeText=""
           disabled={
             numFilesCanAccess === 0 ||
-            (user.username && dbGapList.length > 0 && !checked)
+            (user?.username && dbGapList.length > 0 && !checked)
           }
           endpoint="data"
           extraParams={{
@@ -112,8 +112,9 @@ const CartDownloadModal = ({
           }}
           method="POST"
           setActive={setActive}
+          variant="filled"
         />
-        {!user.username && <LoginButton />}
+        {!user?.username && <LoginButton />}
       </div>
     </BaseModal>
   );

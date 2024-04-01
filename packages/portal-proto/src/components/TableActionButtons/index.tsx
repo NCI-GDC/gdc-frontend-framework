@@ -47,6 +47,7 @@ export const TableActionButtons = ({
         file={downloadFile}
         showLoading={false}
         setfileToDownload={setFileToDownload}
+        variant="icon"
       />
     </div>
   );
