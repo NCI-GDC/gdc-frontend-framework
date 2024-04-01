@@ -23,7 +23,7 @@ describe("<TableActionButtons />", () => {
       />,
     );
 
-    const cartButton = getByTestId("add-remove-cart-button");
+    const cartButton = getByTestId("button-add-remove-cart");
     const mockRemoveCartFunc = jest.spyOn(cartFunctions, "removeFromCart");
     await userEvent.click(cartButton);
 
@@ -39,7 +39,7 @@ describe("<TableActionButtons />", () => {
       />,
     );
 
-    const cartButton = getByTestId("add-remove-cart-button");
+    const cartButton = getByTestId("button-add-remove-cart");
     const mockAddCartFunc = jest.spyOn(cartFunctions, "addToCart");
     await userEvent.click(cartButton);
 

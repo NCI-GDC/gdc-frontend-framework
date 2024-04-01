@@ -118,6 +118,7 @@ export const formatEntityInfo = (
       <div className="flex gap-4" key={selectedSlide[0]?.file_id}>
         <Tooltip label="View Slide Image" withinPortal={true} withArrow>
           <ActionIcon
+            data-testid="button-view-slide-image-biospecimen"
             variant="outline"
             size="sm"
             className="w-8 p-0 h-6 text-primary bg-base-max border-primary hover:bg-primary hover:text-base-max"
@@ -137,6 +138,7 @@ export const formatEntityInfo = (
           withArrow
         >
           <ActionIcon
+            data-testid="button-add-remove-cart-biospecimen"
             variant="outline"
             size="sm"
             className={`w-8 h-6 p-0 border-primary hover:bg-primary hover:text-base-max ${
@@ -163,7 +165,7 @@ export const formatEntityInfo = (
         </Tooltip>
 
         <Tooltip label="Download" withinPortal={true} withArrow>
-          <div>
+          <div data-testid="button-download-slide-biospecimen">
             <DownloadFile
               file={mapFileData(selectedSlide)[0]}
               showLoading={false}

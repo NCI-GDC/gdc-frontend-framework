@@ -31,7 +31,11 @@ function CategoryTableSummary<TData>({
             withinPortal={false}
           >
             <ActionIcon>
-              <InfoIcon size={16} className="text-accent" />
+              <InfoIcon
+                data-testid="button-category-table-tooltip"
+                size={16}
+                className="text-accent"
+              />
             </ActionIcon>
           </Tooltip>
         )}

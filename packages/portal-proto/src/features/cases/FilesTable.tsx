@@ -326,6 +326,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
     <>
       <HeaderTitle>Files</HeaderTitle>
       <VerticalTable
+        customDataTestID="table-files-project-summary"
         data={tableData}
         columns={caseFilesTableDefaultColumns}
         status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
@@ -333,6 +334,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
           <div className="flex gap-2 mb-2">
             <Tooltip label="Download JSON">
               <FunctionButton
+                data-testid="button-json-files-case-summary"
                 onClick={handleDownloadJSON}
                 aria-label="Download JSON"
               >
@@ -341,6 +343,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
             </Tooltip>
             <Tooltip label="Download TSV">
               <FunctionButton
+                data-testid="button-tsv-files-case-summary"
                 onClick={handleDownloadTSV}
                 aria-label="Download TSV"
               >
