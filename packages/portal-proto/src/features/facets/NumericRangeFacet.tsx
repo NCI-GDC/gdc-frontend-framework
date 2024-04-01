@@ -325,7 +325,7 @@ const FromTo: React.FC<FromToProps> = ({
     units !== "years" ? maximum : getLowerAgeYears(maximum);
 
   return (
-    <div className="flex flex-col m-2 text-base-contrast-max bg-base-max">
+    <div className="flex flex-col grow m-2 text-base-contrast-max bg-base-max">
       <fieldset>
         <legend className="sr-only">Numeric from/to filters</legend>
         <div className="flex flex-row justify-end items-center flex-nowrap border font-content">
@@ -346,7 +346,7 @@ const FromTo: React.FC<FromToProps> = ({
           />
           <NumberInput
             data-testid="textbox-input-from-value"
-            className="basis-2/5 text-sm"
+            className="text-sm grow"
             placeholder={`eg. ${lowerUnitRange}${unitsLabel} `}
             min={lowerUnitRange}
             max={upperUnitRange}
@@ -384,7 +384,7 @@ const FromTo: React.FC<FromToProps> = ({
           />
           <NumberInput
             data-testid="textbox-input-to-value"
-            className="basis-2/5"
+            className="grow text-sm"
             placeholder={`eg. ${upperUnitRange}${unitsLabel} `}
             min={lowerUnitRange}
             max={upperUnitRange}
@@ -565,8 +565,8 @@ const RangeInputWithPrefixedRanges: React.FC<
   return (
     <>
       <LoadingOverlay data-testid="loading-spinner" visible={!isSuccess} />
-      <div className="flex flex-col w-100 space-y-2 mt-1 ">
-        <div className="flex flex-row  justify-items-stretch items-center">
+      <div className="flex flex-col space-y-2 mt-1 ">
+        <div className="flex justify-items-stretch items-center">
           <input
             aria-label="custom range"
             type="radio"
