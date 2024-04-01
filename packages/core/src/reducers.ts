@@ -10,7 +10,6 @@ import {
   filesApiSliceReducerPath,
 } from "./features/files/filesSlice";
 import { filesSizeReducer } from "./features/files/totalFileSizeSlice";
-import { historyReducer } from "./features/history/historySlice";
 import {
   projectsApiReducer,
   projectsApiSliceReducerPath,
@@ -65,6 +64,10 @@ import {
   userAuthApiReducer,
   userAuthApiReducerPath,
 } from "./features/users/usersSlice";
+import {
+  historyApiReducer,
+  historyApiSliceReducerPath,
+} from "./features/history/historySlice";
 
 // We want unsaved cohorts to be persisted through a refresh but not through a user ending their session
 const cohortPersistConfig = {
@@ -81,7 +84,6 @@ export const reducers = combineReducers({
   facetsByNameTypeFilter: facetsByNameTypeAndFilterReducer,
   gdcApps: gdcAppReducer,
   filesSize: filesSizeReducer,
-  history: historyReducer,
   annotations: annotationsReducer,
   cases: casesReducer,
   cancerDistribution: cancerDistributionReducer,
@@ -108,6 +110,7 @@ export const reducers = combineReducers({
   [graphqlAPISliceReducerPath]: graphqlAPIReducer,
   [endpointSliceReducerPath]: endpointReducer,
   [userAuthApiReducerPath]: userAuthApiReducer,
+  [historyApiSliceReducerPath]: historyApiReducer,
   versionInfo: versionInfoReducer,
   sets: setsReducer,
 });
