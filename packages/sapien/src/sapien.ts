@@ -148,7 +148,7 @@ export const createHumanBody: TCreateHumanBody = ({
     .style("text-anchor", "end")
     .style("font-family", "Noto Sans")
     .text((d: any) => d[primarySiteKey])
-    .on("mouseover", function (d: any) {
+    .on("mouseover", function (event: any, d: any) {
       // needs `this`
       const organSelector = toClassName(d[primarySiteKey]);
       const organ = document.getElementById(organSelector);
@@ -181,14 +181,14 @@ export const createHumanBody: TCreateHumanBody = ({
             </div>
           `,
           )
-          .style("left", `${d3.event.pageX - offsetLeft}px`)
-          .style("top", `${d3.event.pageY - offsetTop - 86}px`)
+          .style("left", `${event.pageX - offsetLeft}px`)
+          .style("top", `${event.pageY - offsetTop - 86}px`)
           .style("transform", "translateX(-50%)")
           .style("transform", "translateX(-50%)")
           .style("z-index", DEFAULT_ZINDEX);
       }
     })
-    .on("mouseout", (d: any) => {
+    .on("mouseout", (_, d: any) => {
       // needs `this`
       const organSelector = toClassName(d[primarySiteKey]);
       const organ = document.getElementById(organSelector);
@@ -242,7 +242,7 @@ export const createHumanBody: TCreateHumanBody = ({
       return d.color;
     })
     .attr("class", (d: any) => `bar-${toClassName(d[primarySiteKey])}`)
-    .on("mouseover", function (d: any) {
+    .on("mouseover", function (event: any, d: any) {
       const organSelector = toClassName(d[primarySiteKey] as string);
       const organ = document.getElementById(organSelector);
       if (organ) organ.style.opacity = "1";
@@ -275,14 +275,14 @@ export const createHumanBody: TCreateHumanBody = ({
             </div>
           `,
           )
-          .style("left", `${d3.event.pageX - offsetLeft}px`)
-          .style("top", `${d3.event.pageY - offsetTop - 86}px`)
+          .style("left", `${event.pageX - offsetLeft}px`)
+          .style("top", `${event.pageY - offsetTop - 86}px`)
           .style("transform", "translateX(-50%)")
           .style("transform", "translateX(-50%)")
           .style("z-index", DEFAULT_ZINDEX);
       }
     })
-    .on("mouseout", function (d: any) {
+    .on("mouseout", function (_, d: any) {
       // needs `this`
       const organSelector = toClassName(d[primarySiteKey]);
       const organ = document.getElementById(organSelector);
