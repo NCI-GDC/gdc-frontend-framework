@@ -49,7 +49,7 @@ export const CollapsibleContainer = (
     >
       <div className="flex flex-wrap">
         <div className="flex-grow">{Top}</div>
-        <div className="flex items-center bg-primary pr-4 gap-4 sm:flex-wrap sm:w-full sm:py-5 sm:pl-5 lg:flex-no-wrap lg:w-auto lg:py-0 lg:pl-0">
+        <div className="flex items-center bg-primary pr-4 gap-4 flex-wrap w-full py-5 pl-5 lg:flex-no-wrap lg:w-auto lg:py-0 lg:pl-0">
           <Tooltip label={tooltipText} position={tooltipPosition} withArrow>
             <span>
               <button

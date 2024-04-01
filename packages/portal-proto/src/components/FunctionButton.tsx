@@ -26,4 +26,6 @@ border-primary
 font-heading
 hover:bg-primary
 hover:text-base-max
+px-3
+md:px-4
 `;

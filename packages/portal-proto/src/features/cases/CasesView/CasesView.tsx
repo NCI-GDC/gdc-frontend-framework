@@ -32,7 +32,6 @@ import {
 } from "@tanstack/react-table";
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
-import { useViewportSize } from "@mantine/hooks";
 
 const getSlideCountFromCaseSummary = (
   experimental_strategies: Array<{
@@ -62,8 +61,6 @@ export const ContextualCasesView: React.FC = () => {
   );
   const currentCart = useCoreSelector((state) => selectCart(state));
   const cohortCounts = useCurrentCohortCounts();
-  const MIN_WIDTH_FOR_ICONS = 768;
-  const { width } = useViewportSize();
 
   /* download active */
   const [biospecimenDownloadActive, setBiospecimenDownloadActive] =
@@ -391,7 +388,7 @@ export const ContextualCasesView: React.FC = () => {
         pagination={{ ...pagination, label: "cases" }}
         handleChange={handleChange}
         additionalControls={
-          <div className="flex sm:gap-1 lg:gap-2">
+          <div className="flex flex-wrap gap-1 lg:gap-2">
             <CasesCohortButtonFromValues pickedCases={pickedCases} />
 
             <DropdownWithIcon
@@ -412,17 +409,19 @@ export const ContextualCasesView: React.FC = () => {
                 biospecimenDownloadActive ? "Processing" : "Biospecimen"
               }
               LeftIcon={
-                width > MIN_WIDTH_FOR_ICONS ? (
-                  biospecimenDownloadActive ? (
-                    <Loader size={20} />
-                  ) : pickedCases.length ? (
-                    <CountsIcon $count={pickedCases.length}>
-                      {pickedCases.length}
-                    </CountsIcon>
-                  ) : (
-                    <DownloadIcon size="1rem" aria-hidden="true" />
-                  )
-                ) : undefined
+                biospecimenDownloadActive ? (
+                  <Loader size={20} className="hidden md:block" />
+                ) : pickedCases.length ? (
+                  <CountsIcon $count={pickedCases.length}>
+                    {pickedCases.length}
+                  </CountsIcon>
+                ) : (
+                  <DownloadIcon
+                    size="1rem"
+                    aria-hidden="true"
+                    className="hidden md:block"
+                  />
+                )
               }
             />
 
@@ -444,17 +443,19 @@ export const ContextualCasesView: React.FC = () => {
                 clinicalDownloadActive ? "Processing" : "Clinical"
               }
               LeftIcon={
-                width > MIN_WIDTH_FOR_ICONS ? (
-                  clinicalDownloadActive ? (
-                    <Loader size={20} />
-                  ) : pickedCases.length ? (
-                    <CountsIcon $count={pickedCases.length}>
-                      {pickedCases.length}
-                    </CountsIcon>
-                  ) : (
-                    <DownloadIcon size="1rem" aria-hidden="true" />
-                  )
-                ) : undefined
+                clinicalDownloadActive ? (
+                  <Loader size={20} className="hidden md:block" />
+                ) : pickedCases.length ? (
+                  <CountsIcon $count={pickedCases.length}>
+                    {pickedCases.length}
+                  </CountsIcon>
+                ) : (
+                  <DownloadIcon
+                    size="1rem"
+                    aria-hidden="true"
+                    className="hidden md:block"
+                  />
+                )
               }
             />
 

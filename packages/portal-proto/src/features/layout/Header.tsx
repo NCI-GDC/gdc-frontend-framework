@@ -126,7 +126,7 @@ export const Header: React.FC<HeaderProps> = ({
           </Link>
         </div>
 
-        <div className="flex justify-end sm:flex-wrap lg:flex-nowrap md:mb-3 lg:mb-0 md:gap-0 lg:gap-3 items-center text-primary-darkest font-heading text-sm font-medium">
+        <div className="flex justify-end flex-wrap lg:flex-nowrap md:mb-3 lg:mb-0 md:gap-0 lg:gap-3 items-center text-primary-darkest font-heading text-sm font-medium">
           <a
             href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Video_Tutorials/"
             className="flex items-center gap-1 p-1 hover:rounded-md hover:bg-primary-lightest"

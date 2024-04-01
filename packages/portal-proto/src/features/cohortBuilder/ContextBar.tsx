@@ -54,7 +54,6 @@ const ContextBar = ({
   const [summaryFields] = useState(INITIAL_SUMMARY_FIELDS);
   const [activeTab, setActiveTab] = useState<string | null>("summary");
   const [isGroupCollapsed, setIsGroupCollapsed] = useState(true);
-  const MIN_WIDTH_FOR_ICONS = 768;
   const { width } = useViewportSize();
 
   /* download active */
@@ -252,7 +251,7 @@ const ContextBar = ({
     >
       <div className="bg-nci-violet-lightest">
         <div className="relative p-4">
-          <div className="flex gap-1.5 pb-4 sm:relative lg:absolute lg:pb-0">
+          <div className="flex gap-1 pb-4 relative lg:absolute lg:pb-0">
             <DropdownWithIcon
               dropdownElements={[
                 {
@@ -292,9 +291,11 @@ const ContextBar = ({
                 <CohortCountButton countName="fileCount" label="Files" />
               }
               LeftIcon={
-                width > MIN_WIDTH_FOR_ICONS ? (
-                  <DownloadIcon size="1rem" aria-hidden="true" />
-                ) : undefined
+                <DownloadIcon
+                  size="1rem"
+                  aria-hidden="true"
+                  className="hidden md:block"
+                />
               }
             />
 
@@ -324,9 +325,11 @@ const ContextBar = ({
               ]}
               TargetButtonChildren="Custom Filters"
               LeftIcon={
-                width > MIN_WIDTH_FOR_ICONS ? (
-                  <CohortFilterIcon size="1rem" aria-hidden="true" />
-                ) : undefined
+                <CohortFilterIcon
+                  size="1rem"
+                  aria-hidden="true"
+                  className="hidden md:block"
+                />
               }
               menuLabelText="Filter your cohort by:"
               menuLabelCustomClass="font-bold text-primary"
@@ -351,13 +354,13 @@ const ContextBar = ({
                     biospecimenDownloadActive ? "Processing" : "Biospecimen"
                   }
                   LeftIcon={
-                    width > MIN_WIDTH_FOR_ICONS ? (
-                      biospecimenDownloadActive ? (
+                    <span className="hidden md:block">
+                      {biospecimenDownloadActive ? (
                         <Loader size={20} />
                       ) : (
                         <DownloadIcon size="1rem" aria-hidden="true" />
-                      )
-                    ) : undefined
+                      )}
+                    </span>
                   }
                 />
 
@@ -378,13 +381,13 @@ const ContextBar = ({
                     clinicalDownloadActive ? "Processing" : "Clinical"
                   }
                   LeftIcon={
-                    width > MIN_WIDTH_FOR_ICONS ? (
-                      clinicalDownloadActive ? (
+                    <span className="hidden md:block">
+                      {biospecimenDownloadActive ? (
                         <Loader size={20} />
                       ) : (
                         <DownloadIcon size="1rem" aria-hidden="true" />
-                      )
-                    ) : undefined
+                      )}
+                    </span>
                   }
                 />
               </>
