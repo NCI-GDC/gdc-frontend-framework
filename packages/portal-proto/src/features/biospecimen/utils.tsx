@@ -167,7 +167,7 @@ export const formatEntityInfo = (
             <DownloadFile
               file={mapFileData(selectedSlide)[0]}
               showLoading={false}
-              variant="icon"
+              displayVariant="icon"
             />
           </div>
         </Tooltip>
