@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useDeepCompareEffect } from "react-use";
 import {
   MdClose as CloseIcon,
   MdFlip as FlipIcon,
@@ -550,7 +551,7 @@ const RangeInputWithPrefixedRanges: React.FC<
 
   // informs the parent component if there is data or no data
   // only used by the DaysOrYears component
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (isSuccess && filterValues === undefined && totalBuckets === 0)
       setHasData(false);
     else setHasData(true);
@@ -560,7 +561,7 @@ const RangeInputWithPrefixedRanges: React.FC<
   // otherwise this facet has some filters set and the custom range
   // should be shown
   if (isSuccess && filterValues === undefined && totalBuckets === 0) {
-    return <div className="mx-4 font-content">No data for this field</div>;
+    return <div className="mx-4 font-content pb-2">No data for this field</div>;
   }
 
   return (
