@@ -19,7 +19,7 @@ export const TableActionButtons = ({
   isOutputFileInCart: boolean;
   file: CartFile[];
   downloadFile: GdcFile;
-  setFileToDownload?: React.Dispatch<React.SetStateAction<GdcFile>>;
+  setFileToDownload: React.Dispatch<React.SetStateAction<GdcFile>>;
 }): JSX.Element => {
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();

@@ -47,13 +47,13 @@ export const AgreementModal = ({
 
         <DownloadButton
           disabled={!checked}
-          filename={file.file_name}
+          filename={file?.file_name}
           extraParams={{
-            ids: file.file_id,
+            ids: file?.file_id,
             annotations: true,
             related_files: true,
           }}
-          endpoint={`data/${file.file_id}`}
+          endpoint={`data/${file?.file_id}`}
           activeText="Processing"
           inactiveText="Download"
           method="GET"

@@ -20,6 +20,7 @@ describe("<TableActionButtons />", () => {
         isOutputFileInCart={true}
         file={[] as CartFile[]}
         downloadFile={{} as GdcFile}
+        setFileToDownload={jest.fn()}
       />,
     );
 
@@ -36,6 +37,7 @@ describe("<TableActionButtons />", () => {
         isOutputFileInCart={false}
         file={[] as CartFile[]}
         downloadFile={{} as GdcFile}
+        setFileToDownload={jest.fn()}
       />,
     );
 
