@@ -6,67 +6,6 @@ export const convertFacetNameToGQL: (x: string) => string = (x: string) =>
 export const normalizeGQLFacetName: (x: string) => string = (x: string) =>
   x.replaceAll("__", ".");
 
-/**
- * Builds a GraphQL request
- * @param facetName - name of the facet
- * @param docType - "cases" | "files" | "genes" | "projects" | "ssms"
- * @param index - which GraphQL index to query
- */
-export const buildGraphGLBucketQuery = (
-  facetName: string,
-  docType: GQLDocType,
-  index: GQLIndexType = "explore",
-  alias?: string,
-): string => {
-  const queriedFacet =
-    alias !== undefined
-      ? `${convertFacetNameToGQL(alias)} : ${convertFacetNameToGQL(facetName)}`
-      : convertFacetNameToGQL(facetName);
-
-  if (docType == "projects")
-    return `
-    query QueryBucketCounts($caseFilters: FiltersArgument, $filters: FiltersArgument) {
-     viewer {
-             ${docType} {
-              aggregations(
-                case_filters: $caseFilters
-                filters:$filters
-                aggregations_filter_themselves: false
-              ) {
-                  ${queriedFacet} {
-                    buckets {
-                      doc_count
-                      key
-                    }
-                  }
-                }
-            }
-       }
-     }`;
-  else
-    return `query QueryBucketCounts($caseFilters: FiltersArgument, $filters: FiltersArgument) {
-      viewer {
-          ${index} {
-            ${docType} {
-              aggregations(
-                case_filters: $caseFilters
-                filters:$filters
-                aggregations_filter_themselves: false
-              ) {
-                ${queriedFacet} {
-                  buckets {
-                    doc_count
-                    key
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-  `;
-};
-
 export interface AliasedFieldQuery {
   facetName: string;
   alias?: string;
@@ -76,14 +15,14 @@ export interface AliasedFieldQuery {
  * Builds a GraphQL request for a set of Fields. This is an improvement on the above
  * as it requested the number of GDC API requests.
  * @param facetNames - array of \{ facetNames, and optionally an alias\}
- * @param docType - "cases" | "files" | "genes" | "projects" | "ssms"
+ * @param docType - "cases" | "files" | "genes" | "projects" | "ssms" | "annotations"
  * @param index - which GraphQL index to query
  * @param useCaseFilters - whether to use case filters or not
  */
 export const buildGraphGLBucketsQuery = (
   facetNames: ReadonlyArray<AliasedFieldQuery>,
   docType: GQLDocType,
-  index: GQLIndexType = "explore",
+  index?: GQLIndexType,
   useCaseFilters = false,
 ): string => {
   const queriedFacets = facetNames.map((facet: AliasedFieldQuery) => {
@@ -94,7 +33,7 @@ export const buildGraphGLBucketsQuery = (
       : convertFacetNameToGQL(facet.facetName);
   });
 
-  if (docType == "projects")
+  if (index === undefined)
     return `
     query QueryBucketCounts($caseFilters: FiltersArgument, $filters: FiltersArgument) {
      viewer {

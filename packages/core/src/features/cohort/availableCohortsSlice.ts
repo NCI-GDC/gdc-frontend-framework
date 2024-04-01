@@ -1035,6 +1035,8 @@ const slice = createSlice({
                 response.data.viewer.repository.cases.hits.total,
               geneExpressionCaseCount:
                 response.data.viewer.repository.geneExpression.hits.total,
+              mafFileCount:
+                response.data.viewer.explore.mafFileCount.hits.total,
               status: "fulfilled",
             },
           },
@@ -1054,6 +1056,7 @@ const slice = createSlice({
               sequenceReadCaseCount: -1,
               repositoryCaseCount: -1,
               geneExpressionCaseCount: -1,
+              mafFileCount: -1,
               status: "pending",
               requestId: action.meta.requestId,
             },
@@ -1080,6 +1083,7 @@ const slice = createSlice({
               sequenceReadCaseCount: -1,
               repositoryCaseCount: -1,
               geneExpressionCaseCount: -1,
+              mafFileCount: -1,
               status: "rejected",
             },
           },

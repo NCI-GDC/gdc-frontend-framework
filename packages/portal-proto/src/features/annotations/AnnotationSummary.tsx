@@ -36,13 +36,17 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
   const { data: entityData } = useQuickSearch(annotation?.entity_id);
 
   const entityLink = useDeepCompareMemo(() => {
+    if (annotation === undefined) {
+      return undefined;
+    }
+
     if (
       entityData.searchList === undefined ||
       entityData.searchList.length == 0
     ) {
       return annotation?.entity_id ?? "--";
     } else {
-      if (annotation.entity_type === "case") {
+      if (annotation?.entity_type === "case") {
         return (
           <Link
             href={`/cases/${annotation?.entity_id}`}

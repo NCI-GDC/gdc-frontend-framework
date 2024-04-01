@@ -23,7 +23,7 @@ import { NoAccessToProjectModal } from "@/components/Modals/NoAccessToProjectMod
 import { BAMSlicingButton } from "@/features/files/BAMSlicingButton";
 import { DownloadFile } from "@/components/DownloadButtons";
 import { AgreementModal } from "@/components/Modals/AgreementModal";
-import { fileInCart, focusStyles } from "src/utils";
+import { fileInCart } from "src/utils";
 import { GeneralErrorModal } from "@/components/Modals/GeneraErrorModal";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
@@ -64,7 +64,7 @@ const LeftSideElementForHeader: React.FC<LeftSideElementForHeaderProps> = ({
       inactiveText="Download"
       activeText="Processing"
       file={file}
-      customStyle={`text-primary bg-base-max hover:bg-primary-darkest hover:text-base-max font-medium text-sm ${focusStyles}`}
+      variant="header"
       setfileToDownload={setFileToDownload}
     />
   </div>

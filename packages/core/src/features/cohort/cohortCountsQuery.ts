@@ -30,6 +30,7 @@ export interface CountsData {
   readonly sequenceReadCaseCount: number;
   readonly repositoryCaseCount: number;
   readonly geneExpressionCaseCount: number;
+  readonly mafFileCount: number;
 }
 
 export interface CountsDataAndStatus extends CountsData {
@@ -51,6 +52,7 @@ export const NullCountsData: CountsDataAndStatus = {
   sequenceReadCaseCount: -1,
   repositoryCaseCount: -1,
   geneExpressionCaseCount: -1,
+  mafFileCount: -1,
   status: "uninitialized",
   requestId: undefined,
 };
@@ -60,7 +62,8 @@ const CountsGraphQLQuery = `
   $ssmCaseFilter: FiltersArgument,
   $cnvOrSsmCaseFilter: FiltersArgument,
   $sequenceReadsCaseFilter: FiltersArgument,
-  $geneExpressionCaseFilter: FiltersArgument) {
+  $geneExpressionCaseFilter: FiltersArgument,
+  $mafFileFilter: FiltersArgument) {
   viewer {
     repository {
       cases {
@@ -77,7 +80,7 @@ const CountsGraphQLQuery = `
         hits(filters: $sequenceReadsCaseFilter, case_filters: $filters, first: 0) {
           total
         }
-      }
+      },
       geneExpression: cases {
         hits(case_filters: $filters, filters: $geneExpressionCaseFilter, first: 0) {
           total
@@ -99,17 +102,22 @@ const CountsGraphQLQuery = `
         hits(case_filters: $filters, first: 0) {
           total
         }
-      }
+      },
       ssmsCases : cases {
         hits(case_filters: $ssmCaseFilter, first: 0) {
           total
         }
-      }
+      },
       cnvsOrSsmsCases : cases {
         hits(case_filters: $cnvOrSsmCaseFilter, first: 0) {
           total
         }
-      }
+      },
+      mafFileCount : cases {
+        hits(case_filters: $mafFileFilter, first: 0) {
+          total
+        }
+      },
     }
   }
 }`;
@@ -203,6 +211,28 @@ export const fetchCohortCaseCounts = createAsyncThunk<
       },
     });
 
+    const mafFileFilter = {
+      op: "and",
+      content: [
+        { op: "in", content: { field: "files.data_format", value: "maf" } },
+        {
+          op: "in",
+          content: {
+            field: "files.experimental_strategy",
+            value: ["WXS", "Targeted Sequencing"],
+          },
+        },
+        {
+          op: "in",
+          content: {
+            field: "files.analysis.workflow_type",
+            value: "Aliquot Ensemble Somatic Variant Merging and Masking",
+          },
+        },
+        { op: "in", content: { field: "files.access", value: "open" } },
+      ],
+    };
+
     const cohortFiltersGQL = buildCohortGqlOperator(cohortFilters);
     const graphQlFilters = {
       filters: cohortFiltersGQL ?? {}, // the cohort filters
@@ -210,6 +240,7 @@ export const fetchCohortCaseCounts = createAsyncThunk<
       cnvOrSsmCaseFilter: caseCNVOrSSMFilter,
       sequenceReadsCaseFilter: sequenceReadsFilters,
       geneExpressionCaseFilter: geneExpressionFilters,
+      mafFileFilter: mafFileFilter,
     };
     // get the data from the graphql endpoint
     const data = await graphqlAPI<UnknownJson>(

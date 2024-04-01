@@ -9,6 +9,7 @@ const initialCounts = {
     repositoryCaseCounts: -1,
     projectsCounts: -1,
     primarySiteCounts: -1,
+    annotationCounts: -1,
   },
   status: "uninitialized",
 };
@@ -33,6 +34,7 @@ describe("totalCounts reducer", () => {
           repositoryCaseCounts: -1,
           projectsCounts: -1,
           primarySiteCounts: -1,
+          annotationCounts: -1,
         },
         status: "uninitialized",
         requestId: "test",
@@ -58,6 +60,11 @@ describe("totalCounts reducer", () => {
                 },
                 hits: {
                   total: 70,
+                },
+              },
+              annotations: {
+                hits: {
+                  total: 9000,
                 },
               },
               explore: {
@@ -103,6 +110,7 @@ describe("totalCounts reducer", () => {
         repositoryCaseCounts: 5000,
         projectsCounts: 70,
         primarySiteCounts: 2,
+        annotationCounts: 9000,
       },
       status: "fulfilled",
       requestId: "test",
