@@ -26,7 +26,6 @@ export * from "./features/projects/projectsPrimarySiteSlice";
 export * from "./features/annotations/annotationsSlice";
 export * from "./features/annotations/annotationsHooks";
 export * from "./features/history/historySlice";
-export * from "./features/history/historyHooks";
 export * from "./features/cases/casesSlice";
 export * from "./features/cases/types";
 export * from "./features/cohort";
