@@ -9,6 +9,7 @@ interface CategoryTableSummaryProps<TData> {
   data: TData[];
   columns: ColumnDef<TData, any>[];
   tooltip?: string;
+  customDataTestID?: string;
 }
 
 function CategoryTableSummary<TData>({
@@ -16,6 +17,7 @@ function CategoryTableSummary<TData>({
   data,
   columns,
   tooltip,
+  customDataTestID,
 }: CategoryTableSummaryProps<TData>): JSX.Element {
   return (
     <div className="basis-1/2">
@@ -34,7 +36,11 @@ function CategoryTableSummary<TData>({
           </Tooltip>
         )}
       </div>
-      <VerticalTable data={data} columns={columns} />
+      <VerticalTable
+        customDataTestID={customDataTestID}
+        data={data}
+        columns={columns}
+      />
     </div>
   );
 }
