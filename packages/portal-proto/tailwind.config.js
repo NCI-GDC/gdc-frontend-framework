@@ -783,7 +783,7 @@ module.exports = {
           borderAlt: "#F0E4CB",
         },
         warningColor: "#FFAD0D", //orangish
-        warningColorText: "#976F21", //lighter orangish
+        warningColorText: "#8A661E", //lighter orangish
         cartDarkerOrange: "#C7501A",
         cartLighterOrange: "#C7501A33",
         linkDarkerColor: "#1D6796",
