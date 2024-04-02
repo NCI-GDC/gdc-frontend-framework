@@ -49,10 +49,13 @@ export const QuickSearch = (): JSX.Element => {
       setMatchedSearchList([]);
     } else if (query === debounced) {
       if (fileHistory !== undefined) {
+        const latestVersion = fileHistory.find(
+          (f) => f.file_change === "released",
+        )?.uuid;
         setMatchedSearchList([
           {
-            value: fileHistory[0].uuid,
-            label: fileHistory[0].uuid,
+            value: latestVersion,
+            label: latestVersion,
             obj: fileHistory,
             superseded: true,
             entity: "File",
