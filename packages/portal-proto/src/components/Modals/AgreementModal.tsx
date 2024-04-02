@@ -28,6 +28,7 @@ export const AgreementModal = ({
         </Text>
       }
       openModal={openModal}
+      onClose={() => setChecked(false)}
       size="xl"
     >
       <div className="border-y border-y-base-darker py-4">
@@ -39,7 +40,10 @@ export const AgreementModal = ({
       </div>
       <div className="flex justify-end mt-2.5 gap-2">
         <Button
-          onClick={() => dispatch(hideModal())}
+          onClick={() => {
+            setChecked(false);
+            dispatch(hideModal());
+          }}
           className="!bg-primary hover:!bg-primary-darker"
         >
           Cancel
