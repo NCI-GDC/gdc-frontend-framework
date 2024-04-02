@@ -1,6 +1,6 @@
 import { GdcFile, hideModal, useCoreDispatch } from "@gff/core";
 import { Button, Text } from "@mantine/core";
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { DownloadButton } from "../DownloadButtons";
 import { BaseModal } from "./BaseModal";
 import DownloadAccessAgreement from "./DownloadAccessAgreement";
@@ -20,6 +20,13 @@ export const AgreementModal = ({
 }): JSX.Element => {
   const dispatch = useCoreDispatch();
   const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    if (!openModal) {
+      setChecked(false);
+    }
+  }, [openModal]);
+
   return (
     <BaseModal
       title={
@@ -40,10 +47,7 @@ export const AgreementModal = ({
       </div>
       <div className="flex justify-end mt-2.5 gap-2">
         <Button
-          onClick={() => {
-            setChecked(false);
-            dispatch(hideModal());
-          }}
+          onClick={() => dispatch(hideModal())}
           className="!bg-primary hover:!bg-primary-darker"
         >
           Cancel
