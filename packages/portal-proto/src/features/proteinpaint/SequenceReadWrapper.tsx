@@ -34,7 +34,7 @@ export const SequenceReadWrapper: FC<PpProps> = (props: PpProps) => {
   useEffect(
     () => {
       const rootElem = divRef.current as HTMLElement;
-      const isAuthorized = userDetails?.data.username && true;
+      const isAuthorized = userDetails?.data?.username && true;
       setAlertDisplay(isAuthorized ? "none" : "block");
       setRootDisplay(isAuthorized ? "block" : "none");
       if (!isAuthorized) return;
