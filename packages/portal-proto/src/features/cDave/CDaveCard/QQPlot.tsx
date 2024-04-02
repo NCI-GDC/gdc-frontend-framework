@@ -175,7 +175,7 @@ const QQPlot: React.FC<QQPlotProps> = ({
         },
       ],
     }),
-    [chartData, color, lineData, label],
+    [chartData, color, lineData, label, width],
   );
 
   return isLoading ? (

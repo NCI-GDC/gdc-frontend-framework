@@ -17,7 +17,13 @@ import {
   Menu,
   Badge,
   Burger,
-  Accordion,
+  Drawer,
+  Divider,
+  ActionIcon,
+  UnstyledButton,
+  Center,
+  Box,
+  Collapse,
 } from "@mantine/core";
 import { ReactNode, useContext, useEffect, useState } from "react";
 import tw from "tailwind-styled-components";
@@ -28,9 +34,13 @@ import {
   MdOutlineApps as AppsIcon,
   MdLogout as LogoutIcon,
   MdArrowDropDown as ArrowDropDownIcon,
+  MdKeyboardBackspace as LeftArrowIcon,
 } from "react-icons/md";
 import { FaDownload, FaUserCheck } from "react-icons/fa";
-import { FiPlayCircle as PlayIcon } from "react-icons/fi";
+import {
+  FiPlayCircle as PlayIcon,
+  FiChevronDown as DownArrowCollapseIcon,
+} from "react-icons/fi";
 import { VscFeedback as FeebackIcon } from "react-icons/vsc";
 import { HiOutlinePencilSquare as PencilIcon } from "react-icons/hi2";
 import { IoOptions as OptionsIcon } from "react-icons/io5";
@@ -55,8 +65,7 @@ import { SummaryModal } from "@/components/Modals/SummaryModal/SummaryModal";
 import { SummaryModalContext } from "src/utils/contexts";
 import NIHLogo from "public/NIH_GDC_DataPortal-logo.svg";
 import SendFeedbackModal from "@/components/Modals/SendFeedbackModal";
-import { useDisclosure } from "@mantine/hooks";
-
+import { useDisclosure, useViewportSize } from "@mantine/hooks";
 const AppMenuItem = tw(Menu.Item)`
 cursor-pointer
 hover:bg-base-lightest
@@ -71,20 +80,41 @@ flex-col
 items-center
 `;
 
-const AppLinkAccordion = tw.a`
-flex
-gap-4
-items-center
-hover:bg-primary-lightest
-p-2
-rounded-md
-`;
-
 interface HeaderProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
   readonly indexPath: string;
   readonly Options?: React.FC<unknown>;
 }
+
+interface GDCAppLinkProps {
+  href: string;
+  icon: string;
+  text: string;
+  isexternal?: boolean;
+}
+
+const GDCAppLink = ({
+  href,
+  icon,
+  text,
+  isexternal = true,
+}: GDCAppLinkProps) => {
+  const linkProps = isexternal
+    ? { href, target: "_blank", rel: "noopener noreferrer" }
+    : { href };
+
+  return (
+    <Link
+      {...linkProps}
+      className="flex py-2 px-4 hover:bg-primary-lighter hover:rounded-md"
+    >
+      <Center className="gap-2">
+        <Image src={`/user-flow/icons/${icon}`} width={30} height={30} alt="" />
+        {text}
+      </Center>
+    </Link>
+  );
+};
 
 export const Header: React.FC<HeaderProps> = ({
   headerElements,
@@ -110,8 +140,17 @@ export const Header: React.FC<HeaderProps> = ({
   }, []);
 
   const { entityMetadata, setEntityMetadata } = useContext(SummaryModalContext);
-  const [opened, { toggle }] = useDisclosure(false);
-  const label = opened ? "Close navigation" : "Open navigation";
+  const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
+    useDisclosure(false);
+  const [gdcAppsOpened, { toggle: toggleGdcApps }] = useDisclosure(false);
+  const label = drawerOpened ? "Close navigation" : "Open navigation";
+  const { width } = useViewportSize();
+
+  useEffect(() => {
+    if (width > 1279 && drawerOpened) {
+      closeDrawer();
+    }
+  }, [width, drawerOpened, closeDrawer]);
 
   const LoginButtonOrUserDropdown = () => {
     return (
@@ -254,220 +293,172 @@ export const Header: React.FC<HeaderProps> = ({
           </Link>
         </div>
 
-        <div className="sm:flex xl:hidden justify-center align-center gap-4 ">
+        <div className="flex xl:hidden justify-center align-center gap-4 ">
           <LoginButtonOrUserDropdown />
-
-          <Menu
-            width={200}
-            shadow="md"
-            onClose={toggle}
-            position="bottom-end"
-            classNames={{
-              item: "p-2 my-2",
-              dropdown: "border-2 border-primary",
-            }}
-          >
-            <Menu.Target>
-              <Burger
-                size="md"
-                opened={opened}
-                onClick={toggle}
-                aria-label={label}
-                variant="outline"
-                className="-mt-1"
-              />
-            </Menu.Target>
-
-            <Menu.Dropdown>
-              <Menu.Item
-                icon={<PlayIcon size="24px" />}
-                component="a"
-                href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Video_Tutorials/"
-                target="_blank"
-                className="data-hovered:bg-primary-lightest"
-              >
-                Video Guides
-              </Menu.Item>
-              <Menu.Item
-                icon={<FeebackIcon size="24px" aria-hidden="true" />}
-                onClick={() => setOpenFeedbackModal(true)}
-                data-testid="button-header-send-feeback"
-                className="data-hovered:bg-primary-lightest "
-              >
-                Send Feedback
-              </Menu.Item>
-
-              <Menu.Item
-                icon={<PencilIcon size="24px" />}
-                component="a"
-                href="https://portal.gdc.cancer.gov/v1/annotations"
-                target="_blank"
-                className="data-hovered:bg-primary-lightest "
-              >
-                Browse Annotations
-              </Menu.Item>
-
-              <Menu.Item
-                icon={<OptionsIcon size="22px" className="rotate-90" />}
-                component={Link}
-                href="/manage_sets"
-                data-testid="button-header-manage-sets"
-                className={`rounded-md ${
-                  router.pathname === "/manage_sets"
-                    ? "bg-secondary text-white"
-                    : "hover:bg-primary-lightest"
-                }`}
-              >
-                Manage Sets
-              </Menu.Item>
-
-              <Menu.Item
-                component={Link}
-                href="/cart"
-                data-testid="cartLink"
-                className={`rounded-md ${
-                  router.pathname === "/cart"
-                    ? "bg-secondary text-white"
-                    : "hover:bg-primary-lightest"
-                }`}
-                icon={<CartIcon size="22px" />}
-              >
-                Cart
-                <Badge
-                  variant="filled"
-                  className={`px-1 ml-1 ${
-                    router.pathname === "/cart"
-                      ? "bg-white text-secondary"
-                      : "bg-accent-vivid"
-                  }`}
-                  radius="xs"
-                >
-                  {currentCart?.length || 0}
-                </Badge>
-              </Menu.Item>
-
-              <Menu.Item
-                closeMenuOnClick={false}
-                className="hover:bg-primary-lightest"
-              >
-                <Accordion
-                  classNames={{
-                    control: "px-0 h-10 hover:bg-inherit",
-                    content: "p-0 flex flex-col gap-3",
-                    item: "border-0",
-                    panel: "mt-2 bg-primary-content-lightest -mx-2 -mb-2",
-                  }}
-                >
-                  <Accordion.Item value="gdc-apps">
-                    <Accordion.Control
-                      icon={
-                        <AppsIcon
-                          size="24px"
-                          className="text-primary-darkest"
-                          aria-hidden="true"
-                        />
-                      }
-                    >
-                      GDC Apps
-                    </Accordion.Control>
-                    <Accordion.Panel>
-                      <Link
-                        href={indexPath}
-                        className="flex items-center rounded-md gap-4 hover:bg-primary-lightest p-2"
-                      >
-                        <>
-                          <Image
-                            src="/user-flow/icons/gdc-app-data-portal-blue.svg"
-                            width={24}
-                            height={24}
-                            alt=""
-                          />
-                          Data Portal
-                        </>
-                      </Link>
-                      <AppLinkAccordion
-                        href="https://gdc.cancer.gov"
-                        target="_blank"
-                      >
-                        <Image
-                          src="/user-flow/icons/gdc-app-website-blue.svg"
-                          width={24}
-                          height={24}
-                          alt=""
-                        />
-                        Website
-                      </AppLinkAccordion>
-                      <AppLinkAccordion
-                        href="https://gdc.cancer.gov/developers/gdc-application-programming-interface-api"
-                        target="_blank"
-                      >
-                        <Image
-                          src="/user-flow/icons/gdc-app-portal-api.svg"
-                          width={24}
-                          height={24}
-                          alt=""
-                        />
-                        API
-                      </AppLinkAccordion>
-                      <AppLinkAccordion
-                        href="https://docs.gdc.cancer.gov/Data_Transfer_Tool/Users_Guide/Getting_Started/"
-                        target="_blank"
-                      >
-                        <Image
-                          src="/user-flow/icons/gdc-app-data-transfer-tool.svg"
-                          width={24}
-                          height={24}
-                          alt=""
-                        />
-                        Data Transfer Tool
-                      </AppLinkAccordion>
-                      <AppLinkAccordion
-                        href="https://docs.gdc.cancer.gov"
-                        target="_blank"
-                      >
-                        <Image
-                          src="/user-flow/icons/gdc-app-docs.svg"
-                          width={24}
-                          height={24}
-                          alt=""
-                        />
-                        Documentation
-                      </AppLinkAccordion>
-                      <AppLinkAccordion
-                        href="https://portal.gdc.cancer.gov/submission"
-                        target="_blank"
-                      >
-                        <Image
-                          src="/user-flow/icons/gdc-app-submission-portal.svg"
-                          width={24}
-                          height={24}
-                          alt=""
-                        />
-                        Data Submission Portal
-                      </AppLinkAccordion>
-                      <AppLinkAccordion
-                        href="https://gdc.cancer.gov/about-data/publications"
-                        target="_blank"
-                      >
-                        <Image
-                          src="/user-flow/icons/gdc-app-publications.svg"
-                          width={24}
-                          height={24}
-                          alt=""
-                        />
-                        Publications
-                      </AppLinkAccordion>
-                    </Accordion.Panel>
-                  </Accordion.Item>
-                </Accordion>
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
+          <Burger
+            opened={drawerOpened}
+            onClick={toggleDrawer}
+            aria-label={label}
+          />
         </div>
+
+        <Drawer
+          opened={drawerOpened}
+          onClose={closeDrawer}
+          classNames={{
+            title: "text-xl font-header",
+            close: "[&_svg]:h-24 [&_svg]:w-24",
+            header: "py-2 px-4",
+            body: "px-3",
+          }}
+          position="right"
+          title={
+            <div
+              data-testid="button-close-set-panel"
+              className="flex gap-4 items-center w-full text-primary-darker font-bold p-2 px-0"
+            >
+              <ActionIcon
+                onClick={closeDrawer}
+                aria-label="Close navigation panel"
+              >
+                <LeftArrowIcon size={30} className="text-primary-darker" />
+              </ActionIcon>
+              <>Navigation</>
+            </div>
+          }
+          padding="md"
+          withCloseButton={false}
+        >
+          <Divider my="xs" className="mt-0" />
+          <a
+            href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Video_Tutorials/"
+            className="flex items-center py-4 px-1 gap-2 hover:rounded-md hover:bg-primary-lightest"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <PlayIcon size="24px" />
+            Video Guides
+          </a>
+          <UnstyledButton
+            variant="subtle"
+            data-testid="button-header-send-feeback"
+            className="rounded-md hover:bg-primary-lightest font-medium font-heading w-full flex py-4 px-1"
+            onClick={() => setOpenFeedbackModal(true)}
+          >
+            <Center className="gap-2">
+              <FeebackIcon size="24px" aria-hidden="true" />
+              Send Feedback
+            </Center>
+          </UnstyledButton>
+
+          <a
+            href="https://portal.gdc.cancer.gov/v1/annotations"
+            className="flex items-center gap-2 rounded-md py-4 px-1 hover:bg-primary-lightest"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <PencilIcon size="24px" />
+            Browse Annotations
+          </a>
+
+          <Link
+            href="/manage_sets"
+            data-testid="button-header-manage-sets"
+            className={`flex items-center py-4 px-1 gap-2 font-heading rounded-md ${
+              router.pathname === "/manage_sets"
+                ? "bg-secondary text-white"
+                : "hover:bg-primary-lightest"
+            }`}
+          >
+            <OptionsIcon size="22px" className="rotate-90" />
+            Manage Sets
+          </Link>
+
+          <Link
+            href="/cart"
+            data-testid="cartLink"
+            className={`flex py-4 px-1 rounded-md ${
+              router.pathname === "/cart"
+                ? "bg-secondary text-white"
+                : "hover:bg-primary-lightest"
+            }`}
+          >
+            <Center className="gap-2">
+              <CartIcon size="22px" />
+              Cart
+              <Badge
+                variant="filled"
+                className={`px-1 ml-1 ${
+                  router.pathname === "/cart"
+                    ? "bg-white text-secondary"
+                    : "bg-accent-vivid"
+                }`}
+                radius="xs"
+              >
+                {currentCart?.length || 0}
+              </Badge>
+            </Center>
+          </Link>
+
+          <UnstyledButton
+            onClick={toggleGdcApps}
+            className="flex px-1 py-4 hover:bg-primary-lightest w-full hover:rounded-md"
+          >
+            <Center className="gap-2">
+              <AppsIcon
+                size="24px"
+                className="text-primary-darkest"
+                aria-hidden="true"
+              />
+              <Box component="span" mr={3}>
+                GDC Apps
+              </Box>
+              <DownArrowCollapseIcon size="24px" />
+            </Center>
+          </UnstyledButton>
+          <Collapse in={gdcAppsOpened} className="bg-base-lightest rounded-md">
+            <GDCAppLink
+              href={indexPath}
+              icon="gdc-app-data-portal-blue.svg"
+              text="Data Portal"
+              isexternal={false}
+            />
+            <GDCAppLink
+              href="https://gdc.cancer.gov"
+              icon="gdc-app-website-blue.svg"
+              text="Website"
+            />
+            <GDCAppLink
+              href="https://gdc.cancer.gov/developers/gdc-application-programming-interface-api"
+              icon="gdc-app-portal-api.svg"
+              text="API"
+            />
+            <GDCAppLink
+              href="https://docs.gdc.cancer.gov/Data_Transfer_Tool/Users_Guide/Getting_Started/"
+              icon="gdc-app-data-transfer-tool.svg"
+              text="Data Transfer Tool"
+            />
+            <GDCAppLink
+              href="https://docs.gdc.cancer.gov"
+              icon="gdc-app-docs.svg"
+              text="Documentation"
+            />
+            <GDCAppLink
+              href="https://portal.gdc.cancer.gov/submission"
+              icon="gdc-app-submission-portal.svg"
+              text="Data Submission Portal"
+            />
+            <GDCAppLink
+              href="https://gdc.cancer.gov/about-data/publications"
+              icon="gdc-app-publications.svg"
+              text="Publications"
+            />
+          </Collapse>
+        </Drawer>
 
         {/* Right Side Nav Bar */}
         <div
-          className="xl:flex sm:hidden justify-end md:flex-wrap lg:flex-nowrap md:mb-3 lg:mb-0 md:gap-0 lg:gap-3 items-center text-primary-darkest font-heading text-sm font-medium"
+          className="hidden xl:flex justify-end md:flex-wrap lg:flex-nowrap md:mb-3 lg:mb-0 md:gap-0 lg:gap-3 items-center text-primary-darkest font-heading text-sm font-medium"
           role="navigation"
           aria-label=""
         >
@@ -658,9 +649,9 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       {/* Apps + Search Bar */}
-      <div className="flex xl:flex-row xl:justify-between sm:flex-col sm:gap-2">
+      <div className="flex flex-col gap-2 xl:flex-row xl:justify-between">
         <div
-          className="flex flex-row flex-wrap items-center divide-x divide-gray-300 sm:mx-auto xl:m-0"
+          className="flex flex-row flex-wrap items-center divide-x divide-gray-300 mx-auto xl:m-0"
           role="navigation"
           aria-label=""
         >
