@@ -17,7 +17,7 @@ function SMTableSubcomponent({
   return (
     <CommonSubcomponent
       subData={subData}
-      subrowTitle="# Affected Cases Across The GDC.....22"
+      subrowTitle="# Affected Cases Across The GDC"
       isFetching={isFetching}
       isError={isError}
       isSuccess={isSuccess}
