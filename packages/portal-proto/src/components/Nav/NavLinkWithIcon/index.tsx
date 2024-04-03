@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
-import IconWrapper from "../../IconWrapper";
 import Link from "next/link";
+import IconWrapper from "@/components/IconWrapper";
 
 interface NavLinkWithIconProps {
   href: string;
@@ -19,6 +19,7 @@ const NavLinkWithIcon: React.FC<NavLinkWithIconProps> = ({
   isExternal = false,
   activeStyle,
   className = "",
+  children,
   ...props
 }) => {
   const router = useRouter();
@@ -31,19 +32,21 @@ const NavLinkWithIcon: React.FC<NavLinkWithIconProps> = ({
   const component = isExternal ? (
     <a
       {...linkProps}
-      className={`flex items-center py-4 px-1 gap-2 rounded-md hover:bg-primary-lightest ${className}`}
+      className={`flex items-center py-4 px-1 gap-1 rounded-md hover:bg-primary-lightest text-primary-darkest text-sm ${className}`}
     >
       <IconWrapper icon={icon} text={text} />
+      {children}
     </a>
   ) : (
     <Link
       {...linkProps}
-      className={`flex items-center py-4 px-1 gap-2 rounded-md ${
+      className={`flex items-center py-4 px-1 gap-1 rounded-md text-primary-darkest text-sm ${
         isActive ? activeStyle : "hover:bg-primary-lightest"
       } ${className}`}
       {...props}
     >
       <IconWrapper icon={icon} text={text} isActive={isActive} />
+      {children}
     </Link>
   );
 

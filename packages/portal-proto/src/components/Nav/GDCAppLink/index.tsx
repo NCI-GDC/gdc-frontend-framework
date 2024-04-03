@@ -22,7 +22,7 @@ const GDCAppLink = ({
   return (
     <Link
       {...linkProps}
-      className="flex py-2 px-4 hover:bg-primary-lightest hover:rounded-md"
+      className="flex py-2 px-4 hover:bg-primary-lightest hover:rounded-md text-primary-darkest text-sm"
     >
       <Center className="gap-2">
         <Image src={`/user-flow/icons/${icon}`} width={30} height={30} alt="" />

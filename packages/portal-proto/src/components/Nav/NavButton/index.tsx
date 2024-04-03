@@ -20,7 +20,7 @@ const NavButton = ({
 }: NavButtonProps) => (
   <UnstyledButton
     onClick={onClick}
-    className={`rounded-md hover:bg-primary-lightest font-medium font-heading ${
+    className={`rounded-md hover:bg-primary-lightest text-primary-darkest text-sm font-heading ${
       needFullWidth && "w-full"
     } flex py-4 px-1 ${className}`}
     {...props}

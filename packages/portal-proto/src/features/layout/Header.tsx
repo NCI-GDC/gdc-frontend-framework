@@ -70,8 +70,7 @@ import React from "react";
 import { GDCAppLink, NavButton, NavLinkWithIcon } from "@/components/Nav";
 
 const AppMenuItem = tw(Menu.Item)`
-cursor-pointer
-hover:bg-base-lightest
+data-hovered:bg-primary-lightest
 p-0
 m-0
 `;
@@ -311,20 +310,21 @@ export const Header: React.FC<HeaderProps> = ({
           <NavLinkWithIcon
             href="/annotations"
             icon={<PencilIcon />}
+            activeStyle="bg-secondary text-white"
             text="Browse Annotations"
           />
           <NavLinkWithIcon
             href="/manage_sets"
             icon={<OptionsIcon className="rotate-90" />}
             text="Manage Sets"
-            activeStyle="bg-primary text-white"
+            activeStyle="bg-secondary text-white"
             data-testid="button-header-manage-sets"
           />
           <NavLinkWithIcon
             href="/cart"
             icon={<CartIcon />}
             text="Cart"
-            activeStyle="bg-primary text-white"
+            activeStyle="bg-secondary text-white"
             data-testid="cartLink"
           >
             <Badge
@@ -341,7 +341,7 @@ export const Header: React.FC<HeaderProps> = ({
           </NavLinkWithIcon>
           <UnstyledButton
             onClick={toggleGdcApps}
-            className="flex px-1 py-4 hover:bg-primary-lightest w-full hover:rounded-md"
+            className="flex px-1 py-4 hover:bg-primary-lightest w-full hover:rounded-md text-primary-darkest"
           >
             <Center className="gap-2">
               <AppsIcon
@@ -349,7 +349,7 @@ export const Header: React.FC<HeaderProps> = ({
                 className="text-primary-darkest"
                 aria-hidden="true"
               />
-              <Box component="span" mr={3}>
+              <Box component="span" mr={3} className="text-sm">
                 GDC Apps
               </Box>
               <DownArrowCollapseIcon size="24px" />
@@ -425,6 +425,7 @@ export const Header: React.FC<HeaderProps> = ({
             href="/annotations"
             icon={<PencilIcon />}
             text="Browse Annotations"
+            activeStyle="bg-secondary text-white"
             className="!p-1"
           />
           <NavLinkWithIcon
@@ -459,7 +460,7 @@ export const Header: React.FC<HeaderProps> = ({
           <Menu
             withArrow
             arrowSize={16}
-            width="400"
+            width="450"
             position="bottom-end"
             arrowPosition="center"
             zIndex={400}
