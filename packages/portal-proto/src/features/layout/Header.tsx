@@ -326,7 +326,8 @@ export const Header: React.FC<HeaderProps> = ({
           />
           <NavLinkWithIcon
             href="/manage_sets"
-            icon={<OptionsIcon className="rotate-90" />}
+            icon={<OptionsIcon />}
+            iconStyle="rotate-90"
             text="Manage Sets"
             activeStyle="bg-secondary text-base-max"
             data-testid="button-header-manage-sets"
@@ -441,7 +442,8 @@ export const Header: React.FC<HeaderProps> = ({
           />
           <NavLinkWithIcon
             href="/manage_sets"
-            icon={<OptionsIcon className="rotate-90" />}
+            icon={<OptionsIcon />}
+            iconStyle="rotate-90"
             text="Manage Sets"
             data-testid="button-header-manage-sets"
             activeStyle="bg-secondary text-base-max"

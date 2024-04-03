@@ -18,15 +18,17 @@ interface IconWrapperProps {
   icon: React.ReactElement;
   text: string;
   iconSize?: number;
+  iconStyle?: string;
 }
 
 const IconWrapper: React.FC<IconWrapperProps> = ({
   icon,
   text,
   iconSize = 24,
+  iconStyle = "",
 }) => (
   <Center className="gap-1">
-    <Icon size={iconSize} className="text-inherit">
+    <Icon size={iconSize} className={`${iconStyle} text-inherit`}>
       {icon}
     </Icon>
     {text}

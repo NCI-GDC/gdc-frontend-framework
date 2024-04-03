@@ -9,6 +9,7 @@ interface NavLinkWithIconProps {
   isExternal?: boolean;
   activeStyle?: string;
   className?: string;
+  iconStyle?: string;
   [key: string]: any;
 }
 
@@ -19,6 +20,7 @@ const NavLinkWithIcon: React.FC<NavLinkWithIconProps> = ({
   isExternal = false,
   activeStyle,
   className = "",
+  iconStyle,
   children,
   ...props
 }) => {
@@ -34,7 +36,7 @@ const NavLinkWithIcon: React.FC<NavLinkWithIconProps> = ({
       {...linkProps}
       className={`flex items-center py-4 px-1 my-1 gap-1 rounded-md hover:bg-primary-lightest text-primary-darkest text-sm ${className}`}
     >
-      <IconWrapper icon={icon} text={text} />
+      <IconWrapper icon={icon} text={text} iconStyle={iconStyle} />
       {children}
     </a>
   ) : (
@@ -47,7 +49,7 @@ const NavLinkWithIcon: React.FC<NavLinkWithIconProps> = ({
       } ${className}`}
       {...props}
     >
-      <IconWrapper icon={icon} text={text} />
+      <IconWrapper icon={icon} text={text} iconStyle={iconStyle} />
       {children}
     </Link>
   );
