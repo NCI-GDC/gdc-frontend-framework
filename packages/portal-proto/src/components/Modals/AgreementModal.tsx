@@ -59,7 +59,7 @@ export const AgreementModal = ({
           method="GET"
           setActive={setActive}
           active={active}
-          variant="filled"
+          displayVariant="filled"
         />
       </div>
     </BaseModal>
