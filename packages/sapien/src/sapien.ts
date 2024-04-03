@@ -205,7 +205,7 @@ export const createHumanBody: TCreateHumanBody = ({
       if (mouseOutHandler) mouseOutHandler(d);
       else tooltip.style("opacity", 0);
     })
-    .on("click", clickHandler);
+    .on("click", (_, d: any) => clickHandler(d));
 
   // Bar Chart Tooltip
   const tooltip = d3
@@ -299,7 +299,7 @@ export const createHumanBody: TCreateHumanBody = ({
       if (mouseOutHandler) mouseOutHandler(d);
       else tooltip.style("opacity", 0);
     })
-    .on("click", clickHandler);
+    .on("click", (_, d: any) => clickHandler(d));
 
   const svgs = document.querySelectorAll("#human-body-highlights svg");
 
