@@ -249,9 +249,9 @@ const ContextBar = ({
         <StickyControl isSticky={isSticky} handleIsSticky={handleIsSticky} />
       }
     >
-      <div className="flex flex-col bg-nci-violet-lightest">
+      <div className="bg-nci-violet-lightest">
         <div className="relative p-4">
-          <div className="flex flex-row md:relative md:pb-4 lg:pb-0 lg:absolute gap-2">
+          <div className="flex gap-1 pb-4 relative lg:absolute lg:pb-0">
             <DropdownWithIcon
               dropdownElements={[
                 {
@@ -290,7 +290,13 @@ const ContextBar = ({
               TargetButtonChildren={
                 <CohortCountButton countName="fileCount" label="Files" />
               }
-              LeftIcon={<DownloadIcon size="1rem" aria-hidden="true" />}
+              LeftIcon={
+                <DownloadIcon
+                  size="1rem"
+                  aria-hidden="true"
+                  className="hidden md:block"
+                />
+              }
             />
 
             <DropdownWithIcon
@@ -318,7 +324,13 @@ const ContextBar = ({
                 },
               ]}
               TargetButtonChildren="Custom Filters"
-              LeftIcon={<CohortFilterIcon size="1rem" aria-hidden="true" />}
+              LeftIcon={
+                <CohortFilterIcon
+                  size="1rem"
+                  aria-hidden="true"
+                  className="hidden md:block"
+                />
+              }
               menuLabelText="Filter your cohort by:"
               menuLabelCustomClass="font-bold text-primary"
             />
@@ -342,11 +354,13 @@ const ContextBar = ({
                     biospecimenDownloadActive ? "Processing" : "Biospecimen"
                   }
                   LeftIcon={
-                    biospecimenDownloadActive ? (
-                      <Loader size={20} />
-                    ) : (
-                      <DownloadIcon size="1rem" aria-hidden="true" />
-                    )
+                    <span className="hidden md:block">
+                      {biospecimenDownloadActive ? (
+                        <Loader size={20} />
+                      ) : (
+                        <DownloadIcon size="1rem" aria-hidden="true" />
+                      )}
+                    </span>
                   }
                 />
 
@@ -367,11 +381,13 @@ const ContextBar = ({
                     clinicalDownloadActive ? "Processing" : "Clinical"
                   }
                   LeftIcon={
-                    clinicalDownloadActive ? (
-                      <Loader size={20} />
-                    ) : (
-                      <DownloadIcon size="1rem" aria-hidden="true" />
-                    )
+                    <span className="hidden md:block">
+                      {biospecimenDownloadActive ? (
+                        <Loader size={20} />
+                      ) : (
+                        <DownloadIcon size="1rem" aria-hidden="true" />
+                      )}
+                    </span>
                   }
                 />
               </>
@@ -382,6 +398,7 @@ const ContextBar = ({
               tab: SecondaryTabStyle,
               tabsList: "mb-4 border-0",
               root: "border-0",
+              panel: "h-max",
             }}
             data-tour="cohort_summary"
             defaultValue="summary"
