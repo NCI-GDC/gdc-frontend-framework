@@ -10,6 +10,7 @@ import {
   selectFilters,
   removeAnnotationFilter,
   updateAnnotationFilter,
+  clearAnnotationFilters,
 } from "./annotationBrowserFilterSlice";
 
 export const useAnnotationsFilters = (): FilterSet => {
@@ -20,6 +21,13 @@ export const useClearAnnotationFilters = (): ClearFacetFunction => {
   const dispatch = useAppDispatch();
   return (field: string) => {
     dispatch(removeAnnotationFilter(field));
+  };
+};
+
+export const useClearAllAnnotationFilters = () => {
+  const dispatch = useAppDispatch();
+  return () => {
+    dispatch(clearAnnotationFilters());
   };
 };
 
