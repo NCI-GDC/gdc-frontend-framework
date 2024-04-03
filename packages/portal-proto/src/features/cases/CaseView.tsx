@@ -4,7 +4,6 @@ import {
   useCoreDispatch,
   useCoreSelector,
   selectCart,
-  AnnotationDefaults,
   Demographic,
   caseSummaryDefaults,
   FilterSet,
@@ -13,7 +12,7 @@ import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { ActionIcon, Button, Tooltip } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
-import { FaFile, FaShoppingCart, FaEdit } from "react-icons/fa";
+import { FaFile, FaShoppingCart } from "react-icons/fa";
 import { Biospecimen } from "../biospecimen/Biospecimen";
 import { addToCart, removeFromCart } from "../cart/updateCart";
 import {
@@ -27,19 +26,15 @@ import { ImageSlideCount } from "@/components/ImageSlideCount";
 import {
   formatDataForDataCateogryTable,
   formatDataForExpCateogryTable,
-  getAnnotationsLinkParams,
   getSlideCountFromCaseSummary,
 } from "./utils";
 import SMTableContainer from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
 import FilesTable from "./FilesTable";
+import AnnotationsTable from "./AnnotationsTable";
 
 export interface CaseViewProps {
   readonly data: caseSummaryDefaults;
   readonly isModal: boolean;
-  readonly annotationCountData: {
-    list: AnnotationDefaults[];
-    count: number;
-  };
   readonly bio_id: string;
   readonly case_id: string;
   readonly shouldScrollToBio: boolean;
@@ -48,13 +43,11 @@ export interface CaseViewProps {
 export const CaseView: React.FC<CaseViewProps> = ({
   data,
   isModal,
-  annotationCountData,
   bio_id,
   case_id,
   shouldScrollToBio,
 }: CaseViewProps) => {
   const filesCountTotal = data?.files?.length ?? 0;
-  const annotationsCountTotal = annotationCountData?.count;
   const headerTitle = `${data?.project?.project_id} / ${data?.submitter_id}`;
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
@@ -190,25 +183,6 @@ export const CaseView: React.FC<CaseViewProps> = ({
     return formatDataForHorizontalTable(caseSummaryObject, headersConfig);
   };
 
-  const addLinkValue = () => (
-    <span className="text-base-lightest">
-      {getAnnotationsLinkParams(annotationCountData, case_id) ? (
-        <Link
-          href={getAnnotationsLinkParams(annotationCountData, case_id)}
-          className="underline"
-          target="_blank"
-          aria-label={`${annotationsCountTotal.toLocaleString()} Annotation${
-            annotationsCountTotal > 1 ? "s" : ""
-          }`}
-        >
-          {annotationsCountTotal.toLocaleString()}
-        </Link>
-      ) : (
-        annotationsCountTotal.toLocaleString()
-      )}
-    </span>
-  );
-
   const Files = (
     <span className="flex items-center gap-1">
       <FaFile size={24} />
@@ -220,16 +194,6 @@ export const CaseView: React.FC<CaseViewProps> = ({
         <span className="font-bold">{filesCountTotal.toLocaleString()}</span>
       )}
       {filesCountTotal > 1 ? "Files" : "File"}
-    </span>
-  );
-
-  const Annotations = (
-    <span className="flex items-center gap-1">
-      <FaEdit size={24} />
-      <span>
-        {addLinkValue()}{" "}
-        {annotationsCountTotal > 1 ? "Annotations" : "Annotation"}
-      </span>
     </span>
   );
 
@@ -287,7 +251,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
         }
         rightElement={
           <div className="flex items-center gap-2 text-2xl text-base-lightest leading-4 font-montserrat uppercase">
-            Total of {Files} {Annotations}
+            Total of {Files}
           </div>
         }
         isModal={isModal}
@@ -377,7 +341,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
           <FilesTable caseId={case_id} />
         </div>
 
-        <div className="mb-16">
+        <div className="mb-16 mx-4">
           <SMTableContainer
             projectId={data.project.project_id}
             case_id={case_id}
@@ -388,6 +352,8 @@ export const CaseView: React.FC<CaseViewProps> = ({
           />
         </div>
       </div>
+
+      <AnnotationsTable case_id={case_id} />
     </>
   );
 };

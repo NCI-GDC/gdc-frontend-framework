@@ -1,4 +1,4 @@
-import { useCaseSummary, useAnnotations } from "@gff/core";
+import { useCaseSummary } from "@gff/core";
 import { LoadingOverlay } from "@mantine/core";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import { caseSummaryFields } from "./utils";
@@ -29,17 +29,6 @@ export const CaseSummary = ({
     fields: caseSummaryFields,
   });
 
-  const { data: annotationCountData, isFetching: isAnnotationCallFetching } =
-    useAnnotations({
-      filters: {
-        op: "=",
-        content: {
-          field: "annotations.case_id",
-          value: case_id,
-        },
-      },
-    });
-
   const prevPathValue = useContext(URLContext);
   useEffect(() => {
     if (
@@ -54,16 +43,13 @@ export const CaseSummary = ({
 
   return (
     <>
-      {isFetching ||
-      isAnnotationCallFetching ||
-      (data && data.case_id !== case_id) ? (
+      {isFetching || (data && data.case_id !== case_id) ? (
         <LoadingOverlay visible data-testid="loading-spinner" />
-      ) : data && Object.keys(data).length > 0 && annotationCountData ? (
+      ) : data && Object.keys(data).length > 0 ? (
         <CaseView
           case_id={case_id}
           bio_id={bio_id}
           data={data}
-          annotationCountData={annotationCountData}
           isModal={isModal}
           shouldScrollToBio={shouldScrollToBio}
         />
