@@ -815,6 +815,8 @@ module.exports = {
         "screen/5": "calc(100vw / 5)",
       },
       flexBasis: {
+        "tools-sm": "296px",
+        "tools-md": "350px",
         coretools: "400px",
         tools: "188px",
       },
