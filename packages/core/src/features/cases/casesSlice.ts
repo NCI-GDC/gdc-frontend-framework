@@ -191,6 +191,7 @@ export const fetchAllCases = createAsyncThunk<
 export interface CasesState {
   readonly allCasesData: CoreDataSelectorResponse<CaseSliceResponseData[]>;
   readonly totalSelectedCases?: number;
+  readonly requestId?: string;
 }
 
 const initialState: CasesState = {
@@ -206,6 +207,8 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllCases.fulfilled, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
+
         const response = action.payload;
         const map = action.payload.data.map((datum) => ({
           case_id: datum.submitter_id,
@@ -241,14 +244,18 @@ const slice = createSlice({
         };
         state.allCasesData.data = map;
         state.allCasesData.pagination = response.pagination;
+        return state;
       })
-      .addCase(fetchAllCases.pending, (state) => {
+      .addCase(fetchAllCases.pending, (state, action) => {
         state.allCasesData = {
           status: "pending",
         };
+        state.requestId = action.meta.requestId;
         return state;
       })
       .addCase(fetchAllCases.rejected, (state, action) => {
+        if (state.requestId != action.meta.requestId) return state;
+
         state.allCasesData = {
           status: "rejected",
         };
