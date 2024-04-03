@@ -7,7 +7,7 @@ import {
   buildCohortGqlOperator,
   FilterSet,
   PROTEINPAINT_API,
-  useUserDetails,
+  useFetchUserDetailsQuery,
   useCoreDispatch,
   useCreateCaseSetFromValuesMutation,
 } from "@gff/core";
@@ -38,7 +38,8 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
   const filter0 = isDemoMode
     ? defaultFilter
     : buildCohortGqlOperator(currentCohort);
-  const userDetails = useUserDetails();
+  const userDetails = useFetchUserDetailsQuery();
+
   const ppRef = useRef<PpApi>();
   const ppPromise = useRef<Promise<PpApi>>();
   const initialFilter0Ref = useRef<any>();
@@ -57,6 +58,18 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
       const cases = arg.samples.map((d) => d["cases.case_id"]);
       if (cases.length > 1) {
         createSet({ values: cases });
+      } else {
+        setNewCohortFilters({
+          mode: "and",
+          root: {
+            "cases.case_id": {
+              operator: "includes",
+              field: "cases.case_id",
+              operands: cases,
+            },
+          },
+        });
+        setShowSaveCohort(true);
       }
     },
     [createSet],
@@ -183,12 +196,13 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
         className="sjpp-wrapper-root-div"
         //userDetails={userDetails}
       />
-      {showSaveCohort && newCohortFilters && (
-        <SaveCohortModal // Show the modal, create a saved cohort when save button is clicked
-          onClose={() => setShowSaveCohort(false)}
-          filters={newCohortFilters}
-        />
-      )}
+
+      <SaveCohortModal // Show the modal, create a saved cohort when save button is clicked
+        opened={showSaveCohort}
+        onClose={() => setShowSaveCohort(false)}
+        filters={newCohortFilters}
+      />
+
       <LoadingOverlay
         data-testid="loading-spinner"
         visible={isLoading}

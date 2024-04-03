@@ -45,7 +45,7 @@ const StickyControl = ({
         aria-label="Pin Cohort Bar"
         checked={isSticky}
         indeterminate={!isSticky}
-        onClick={() => handleIsSticky(!isSticky)}
+        onChange={() => handleIsSticky(!isSticky)}
       />
     </Tooltip>
   );

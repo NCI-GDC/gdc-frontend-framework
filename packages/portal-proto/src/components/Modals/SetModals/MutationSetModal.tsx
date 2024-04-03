@@ -20,11 +20,13 @@ const MutationSetModal: React.FC<SavedSetModalProps> = ({
   selectSetInstructions,
   updateFilters,
   existingFiltersHook,
+  opened,
 }: SavedSetModalProps) => {
   const dispatch = useCoreDispatch();
 
   return (
     <UserInputModal
+      opened={opened}
       modalTitle={modalTitle}
       tabs={[
         { label: "Enter Mutations", value: "input" },

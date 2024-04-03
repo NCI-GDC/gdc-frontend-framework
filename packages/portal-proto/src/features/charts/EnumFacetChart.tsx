@@ -95,14 +95,20 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
         />
       ) : null}
 
-      {isSuccess && chart_data && chart_data.length > 0 ? (
-        <EnumBarChart
-          data={chart_data}
-          height={height}
-          width={width * 2.2}
-          label={`# of ${valueLabel}`}
-          unitLabel={valueLabel}
-        />
+      {isSuccess && chart_data ? (
+        <>
+          {chart_data.length > 0 ? (
+            <EnumBarChart
+              data={chart_data}
+              height={height}
+              width={width * 2.2}
+              label={`# of ${valueLabel}`}
+              unitLabel={valueLabel}
+            />
+          ) : (
+            <div className="mx-4 font-content">No data for this field</div>
+          )}
+        </>
       ) : (
         <div className="flex flex-row items-center justify-center w-100">
           <Loader color="chart" size={60} />

@@ -235,7 +235,11 @@ function DraggableColumnItem<TData>({
         <DragIcon size="1rem" className="text-primary" />
         <Switch
           labelPosition="left"
-          label={humanify({ term: column.id })}
+          label={
+            typeof column?.columnDef?.header === "string"
+              ? column.columnDef.header
+              : humanify({ term: column.id })
+          }
           classNames={{
             root: "w-full",
             body: "grow flex justify-between",

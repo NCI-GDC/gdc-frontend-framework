@@ -2,40 +2,35 @@ import React from "react";
 import {
   FacetDefinition,
   GQLDocType,
-  GQLIndexType,
   fieldNameToTitle,
+  selectProjectsFacetByField,
 } from "@gff/core";
 import { Group, Text } from "@mantine/core";
 import {
   useClearProjectsFilters,
   useSelectFieldFilter,
   useUpdateProjectsFacetFilter,
-  useLocalFilters,
   useProjectEnumValues,
   useProjectsFilters,
 } from "@/features/projectsCenter/hooks";
-import { useTotalCounts } from "@/features/facets/hooks";
+import { useTotalCounts, useLocalFilters } from "@/features/facets/hooks";
 import { createFacetCard } from "@/features/facets/CreateFacetCard";
 import { FacetRequiredHooks } from "@/features/facets/types";
 import FilterFacets from "./filters.json";
 import partial from "lodash/partial";
 
-const useProjectEnumData = (
-  docType: GQLDocType,
-  indexType: GQLIndexType,
-  field: string,
-) =>
+const useProjectEnumData = (docType: GQLDocType, field: string) =>
   useLocalFilters(
     field,
     docType,
-    indexType,
     useProjectEnumValues,
     useProjectsFilters,
+    selectProjectsFacetByField,
   );
 
 export const ProjectFacetPanel = (): JSX.Element => {
   const ProjectFacetHooks: FacetRequiredHooks = {
-    useGetEnumFacetData: partial(useProjectEnumData, "projects", "explore"),
+    useGetEnumFacetData: partial(useProjectEnumData, "projects"),
     useUpdateFacetFilters: useUpdateProjectsFacetFilter,
     useGetFacetFilters: useSelectFieldFilter,
     useClearFilter: useClearProjectsFilters,

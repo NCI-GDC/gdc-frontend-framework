@@ -3,8 +3,10 @@ import {
   ColumnDef,
   ColumnOrderState,
   VisibilityState,
+  Row,
 } from "@tanstack/react-table";
 import saveAs from "file-saver";
+import { v4 as uuidv4 } from "uuid";
 
 export function downloadTSV<TData>({
   tableData,
@@ -51,7 +53,11 @@ export function downloadTSV<TData>({
     .filter((column) => column !== null);
 
   const header = sortedColumns
-    .map((column) => humanify({ term: column.id }))
+    .map((column) =>
+      typeof column?.header === "string"
+        ? column.header
+        : humanify({ term: column.id }),
+    )
     .join("\t");
 
   const body = (tableData || [])
@@ -73,3 +79,11 @@ export function downloadTSV<TData>({
 
 // these are a few standard column ids that will not be part of column ordering
 export const NO_COLUMN_ORDERING_IDS = ["select", "remove", "cart", "slides"];
+
+export function getDefaultRowId<TData>(
+  _originalRow: TData,
+  _index: number,
+  _parent?: Row<TData>,
+) {
+  return uuidv4();
+}

@@ -23,6 +23,11 @@ const CountsGraphQLQuery = `
         total
       }
     }
+    annotations {
+      hits(first: 0) {
+        total
+      }
+    }
     repository {
       cases {
         hits(case_filters: $filters, first: 0) {
@@ -71,6 +76,7 @@ const initialState: TotalCountsState = {
     repositoryCaseCounts: -1,
     projectsCounts: -1,
     primarySiteCounts: -1,
+    annotationCounts: -1,
   },
   status: "uninitialized",
 };
@@ -109,6 +115,7 @@ const slice = createSlice({
                 .length,
             repositoryCaseCounts:
               response.data.viewer.repository.cases.hits.total,
+            annotationCounts: response.data.viewer.annotations.hits.total,
           };
           state.status = "fulfilled";
           state.error = undefined;

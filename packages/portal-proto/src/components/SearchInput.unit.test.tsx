@@ -82,7 +82,7 @@ describe("<SearchInput />", () => {
     expect(getByText("blah blah")).toBeInTheDocument();
     expect(
       getByTestId("cohort-builder-search-matching-values").textContent,
-    ).toEqual("Values Matched: biobio");
+    ).toEqual("Top Values Matched (max of 30):biobio");
     await userEvent.unhover(
       queryByRole("button", { name: "BioThing Category: General" }),
     );

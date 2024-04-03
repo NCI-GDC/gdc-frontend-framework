@@ -13,7 +13,13 @@ describe("test enum facet bucket queries", () => {
           Promise.resolve({ json: () => Promise.resolve({ ok: true }) }),
         ) as jest.Mock,
       );
-    coreStore.dispatch(fetchFacetByNameGQL({ field: "cases.primary_site" }));
+    coreStore.dispatch(
+      fetchFacetByNameGQL({
+        field: "cases.primary_site",
+        docType: "cases",
+        index: "explore",
+      }),
+    );
     expect(spyFetch).toBeCalledWith(
       "https://portal.gdc.cancer.gov/auth/api/v0/graphql",
       {
@@ -37,6 +43,8 @@ describe("test enum facet bucket queries", () => {
     coreStore.dispatch(
       fetchFacetByNameGQL({
         field: ["cases.primary_site", "cases.disease_type"],
+        docType: "cases",
+        index: "explore",
       }),
     );
     expect(spyFetch).toBeCalledWith(

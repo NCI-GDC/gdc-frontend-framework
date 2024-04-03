@@ -8,7 +8,11 @@
     "files.data_format",
     "files.analysis.workflow_type",
     "files.platform",
-    "files.access"
+    "files.access",
+    "cases.samples.tissue_type",
+    "cases.samples.tumor_descriptor",
+    "cases.samples.specimen_type",
+    "cases.samples.preservation_method"
   ],
   "docType": "files",
   "index": "repository"

@@ -179,23 +179,25 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
         />
       ) : (
         <>
-          {chartType === "histogram" ? (
-            <CDaveHistogram
-              field={field}
-              data={displayedData}
-              yTotal={yTotal}
-              isFetching={isFetching}
-              hideYTicks={displayedData.every((val) => val.count === 0)}
-              noData={noData}
-            />
-          ) : (
-            <ClinicalSurvivalPlot
-              field={field}
-              selectedSurvivalPlots={selectedSurvivalPlots}
-              continuous={true}
-              customBinnedData={customBinnedData}
-            />
-          )}
+          <div className="flex-grow">
+            {chartType === "histogram" ? (
+              <CDaveHistogram
+                field={field}
+                data={displayedData}
+                yTotal={yTotal}
+                isFetching={isFetching}
+                hideYTicks={displayedData.every((val) => val.count === 0)}
+                noData={noData}
+              />
+            ) : (
+              <ClinicalSurvivalPlot
+                field={field}
+                selectedSurvivalPlots={selectedSurvivalPlots}
+                continuous={true}
+                customBinnedData={customBinnedData}
+              />
+            )}
+          </div>
           <CardControls
             continuous={true}
             field={field}
@@ -223,16 +225,16 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
           />
         </>
       )}
-      {binningModalOpen && (
-        <ContinuousBinningModal
-          setModalOpen={setBinningModalOpen}
-          field={field}
-          stats={initialData}
-          updateBins={setCustomBinnedData}
-          customBins={customBinnedData}
-          dataDimension={dataDimension}
-        />
-      )}
+
+      <ContinuousBinningModal
+        opened={binningModalOpen}
+        setModalOpen={setBinningModalOpen}
+        field={field}
+        stats={initialData}
+        updateBins={setCustomBinnedData}
+        customBins={customBinnedData}
+        dataDimension={dataDimension}
+      />
     </>
   );
 };

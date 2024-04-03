@@ -32,7 +32,7 @@ const NavLinkWithIcon: React.FC<NavLinkWithIconProps> = ({
   const component = isExternal ? (
     <a
       {...linkProps}
-      className={`flex items-center py-4 px-1 gap-1 rounded-md hover:bg-primary-lightest text-primary-darkest text-sm ${className}`}
+      className={`flex items-center py-4 px-1 my-1 gap-1 rounded-md hover:bg-primary-lightest text-primary-darkest text-sm ${className}`}
     >
       <IconWrapper icon={icon} text={text} />
       {children}
@@ -40,12 +40,14 @@ const NavLinkWithIcon: React.FC<NavLinkWithIconProps> = ({
   ) : (
     <Link
       {...linkProps}
-      className={`flex items-center py-4 px-1 gap-1 rounded-md text-primary-darkest text-sm ${
-        isActive ? activeStyle : "hover:bg-primary-lightest"
+      className={`flex items-center py-4 px-1 my-1 gap-1 rounded-md text-sm ${
+        isActive
+          ? activeStyle
+          : "text-primary-darkest hover:bg-primary-lightest"
       } ${className}`}
       {...props}
     >
-      <IconWrapper icon={icon} text={text} isActive={isActive} />
+      <IconWrapper icon={icon} text={text} />
       {children}
     </Link>
   );

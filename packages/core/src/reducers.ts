@@ -10,7 +10,6 @@ import {
   filesApiSliceReducerPath,
 } from "./features/files/filesSlice";
 import { filesSizeReducer } from "./features/files/totalFileSizeSlice";
-import { historyReducer } from "./features/history/historySlice";
 import {
   projectsApiReducer,
   projectsApiSliceReducerPath,
@@ -47,7 +46,6 @@ import { biospecimenReducer } from "./features/biospecimen/biospecimenSlice";
 import { clinicalDataAnalysisReducer } from "./features/clinicalDataAnalysis";
 import { caseSummarySliceReducer } from "./features/cases/caseSummarySlice";
 import { facetsByNameTypeAndFilterReducer } from "./features/facets/facetsByNameTypeAndFilter";
-import { userDetailsReducer } from "./features/users/usersSlice";
 import { modalReducer } from "./features/modals/modalsSlice";
 import { quickSearchReducer } from "./features/quickSearch/quickSearch";
 import { versionInfoReducer } from "./features/versionInfo/versionInfoSlice";
@@ -62,6 +60,14 @@ import {
 } from "./features/gdcapi/gdcapi";
 import { setsReducer } from "./features/sets";
 import { sessionStorage } from "./storage-persist";
+import {
+  userAuthApiReducer,
+  userAuthApiReducerPath,
+} from "./features/users/usersSlice";
+import {
+  historyApiReducer,
+  historyApiSliceReducerPath,
+} from "./features/history/historySlice";
 
 // We want unsaved cohorts to be persisted through a refresh but not through a user ending their session
 const cohortPersistConfig = {
@@ -78,7 +84,6 @@ export const reducers = combineReducers({
   facetsByNameTypeFilter: facetsByNameTypeAndFilterReducer,
   gdcApps: gdcAppReducer,
   filesSize: filesSizeReducer,
-  history: historyReducer,
   annotations: annotationsReducer,
   cases: casesReducer,
   cancerDistribution: cancerDistributionReducer,
@@ -94,7 +99,6 @@ export const reducers = combineReducers({
   caseSummary: caseSummarySliceReducer,
   ssms: ssmsReducer,
   genesSummary: genesSummaryReducer,
-  userInfo: userDetailsReducer,
   modals: modalReducer,
   quickSearch: quickSearchReducer,
   [filesApiSliceReducerPath]: filesApiReducer,
@@ -105,6 +109,8 @@ export const reducers = combineReducers({
   [survivalApiSliceReducerPath]: survivalApiReducer,
   [graphqlAPISliceReducerPath]: graphqlAPIReducer,
   [endpointSliceReducerPath]: endpointReducer,
+  [userAuthApiReducerPath]: userAuthApiReducer,
+  [historyApiSliceReducerPath]: historyApiReducer,
   versionInfo: versionInfoReducer,
   sets: setsReducer,
 });

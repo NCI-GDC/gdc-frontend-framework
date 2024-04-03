@@ -16,7 +16,7 @@ import {
 import { appendFilterToOperation, getSSMTestedCases } from "./utils";
 import { joinFilters } from "../cohort";
 import { Reducer } from "@reduxjs/toolkit";
-import { DataStatus } from "src/dataAccess";
+import { DataStatus } from "../../dataAccess";
 
 const SSMSTableGraphQLQuery = `query SsmsTable(
   $ssmTested: FiltersArgument

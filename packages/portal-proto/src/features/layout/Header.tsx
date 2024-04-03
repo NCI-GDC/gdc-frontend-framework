@@ -7,9 +7,9 @@ import {
   GDC_AUTH,
   showModal,
   Modals,
-  selectUserDetailsInfo,
-  fetchToken,
   selectCurrentModal,
+  useFetchUserDetailsQuery,
+  useLazyFetchTokenQuery,
 } from "@gff/core";
 import {
   Button,
@@ -25,7 +25,7 @@ import {
   Box,
   Collapse,
 } from "@mantine/core";
-import { ReactNode, useContext, useEffect, useState } from "react";
+import { ReactNode, useContext, useEffect, useRef, useState } from "react";
 import tw from "tailwind-styled-components";
 import { Image } from "@/components/Image";
 import { useCookies } from "react-cookie";
@@ -84,17 +84,18 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({
   headerElements,
   indexPath,
-  Options = () => <div />,
+  Options,
 }: HeaderProps) => {
   const dispatch = useCoreDispatch();
   const router = useRouter();
   const [openFeedbackModal, setOpenFeedbackModal] = useState(false);
-  const userInfo = useCoreSelector((state) => selectUserDetailsInfo(state));
+  const { data: userInfo } = useFetchUserDetailsQuery();
+
   const currentCart = useCoreSelector((state) => selectCart(state));
   const modal = useCoreSelector((state) => selectCurrentModal(state));
   const { isSuccess: totalSuccess } = useTotalCounts(); // request total counts and facet dictionary
   const { isSuccess: dictSuccess } = useFacetDictionary();
-
+  const userDropdownRef = useRef<HTMLButtonElement>();
   const [cookie] = useCookies(["NCI-Warning"]);
 
   useEffect(() => {
@@ -130,6 +131,7 @@ export const Header: React.FC<HeaderProps> = ({
                 className="text-primary-darkest font-header text-sm font-medium font-heading"
                 classNames={{ rightIcon: "ml-0" }}
                 data-testid="usernameButton"
+                ref={userDropdownRef}
               >
                 {userInfo?.data?.username}
               </Button>
@@ -138,13 +140,10 @@ export const Header: React.FC<HeaderProps> = ({
               <DropdownMenuItem
                 icon={<FaUserCheck size="1.25em" />}
                 onClick={async () => {
-                  // This is just done for the purpose of checking if the session is still active
-                  const token = await fetchToken();
-                  if (token.status === 401) {
-                    dispatch(showModal({ modal: Modals.SessionExpireModal }));
-                    return;
-                  }
                   dispatch(showModal({ modal: Modals.UserProfileModal }));
+                  // This is done inorder to set the last focused element as the menu target element
+                  // This is done to return focus to the target element if the modal is closed with ESC
+                  userDropdownRef?.current && userDropdownRef?.current?.focus();
                 }}
                 data-testid="userprofilemenu"
               >
@@ -154,24 +153,31 @@ export const Header: React.FC<HeaderProps> = ({
                 icon={<FaDownload size="1.25em" />}
                 data-testid="downloadTokenMenuItem"
                 onClick={async () => {
-                  if (Object.keys(userInfo.data?.projects.gdc_ids).length > 0) {
-                    const token = await fetchToken();
-                    if (token.status === 401) {
-                      dispatch(showModal({ modal: Modals.SessionExpireModal }));
-                      return;
-                    }
-                    saveAs(
-                      new Blob([token.text], {
-                        type: "text/plain;charset=us-ascii",
-                      }),
-                      `gdc-user-token.${new Date().toISOString()}.txt`,
-                    );
+                  if (
+                    Object.keys(userInfo?.data?.projects.gdc_ids).length > 0
+                  ) {
+                    await fetchToken()
+                      .unwrap()
+                      .then((token) => {
+                        if (token.status === 401) {
+                          dispatch(
+                            showModal({ modal: Modals.SessionExpireModal }),
+                          );
+                          return;
+                        }
+                        saveAs(
+                          new Blob([token.data], {
+                            type: "text/plain;charset=us-ascii",
+                          }),
+                          `gdc-user-token.${new Date().toISOString()}.txt`,
+                        );
+                      });
                   } else {
                     cleanNotifications();
                     showNotification({
                       message: (
                         <p>
-                          {userInfo.data.username} does not have access to any
+                          {userInfo?.data.username} does not have access to any
                           protected data within the GDC. Click{" "}
                           <a
                             href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
@@ -228,6 +234,8 @@ export const Header: React.FC<HeaderProps> = ({
       </>
     );
   };
+
+  const [fetchToken] = useLazyFetchTokenQuery({ refetchOnFocus: false });
 
   return (
     <div className="px-4 py-3 border-b border-gdc-grey-lightest flex flex-col">
@@ -305,26 +313,29 @@ export const Header: React.FC<HeaderProps> = ({
             icon={<FeebackIcon aria-hidden="true" />}
             text="Send Feedback"
             needFullWidth
-            onClick={() => setOpenFeedbackModal(true)}
+            onClick={() => {
+              setOpenFeedbackModal(true);
+              closeDrawer();
+            }}
           />
           <NavLinkWithIcon
             href="/annotations"
             icon={<PencilIcon />}
-            activeStyle="bg-secondary text-white"
+            activeStyle="bg-secondary text-base-max"
             text="Browse Annotations"
           />
           <NavLinkWithIcon
             href="/manage_sets"
             icon={<OptionsIcon className="rotate-90" />}
             text="Manage Sets"
-            activeStyle="bg-secondary text-white"
+            activeStyle="bg-secondary text-base-max"
             data-testid="button-header-manage-sets"
           />
           <NavLinkWithIcon
             href="/cart"
             icon={<CartIcon />}
             text="Cart"
-            activeStyle="bg-secondary text-white"
+            activeStyle="bg-secondary text-base-max"
             data-testid="cartLink"
           >
             <Badge
@@ -343,7 +354,7 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={toggleGdcApps}
             className="flex px-1 py-4 hover:bg-primary-lightest w-full hover:rounded-md text-primary-darkest"
           >
-            <Center className="gap-2">
+            <Center className="gap-1">
               <AppsIcon
                 size="24px"
                 className="text-primary-darkest"
@@ -425,7 +436,7 @@ export const Header: React.FC<HeaderProps> = ({
             href="/annotations"
             icon={<PencilIcon />}
             text="Browse Annotations"
-            activeStyle="bg-secondary text-white"
+            activeStyle="bg-secondary text-base-max"
             className="!p-1"
           />
           <NavLinkWithIcon
@@ -433,7 +444,7 @@ export const Header: React.FC<HeaderProps> = ({
             icon={<OptionsIcon className="rotate-90" />}
             text="Manage Sets"
             data-testid="button-header-manage-sets"
-            activeStyle="bg-secondary text-white"
+            activeStyle="bg-secondary text-base-max"
             className="!p-1"
           />
           <NavLinkWithIcon
@@ -441,7 +452,7 @@ export const Header: React.FC<HeaderProps> = ({
             icon={<CartIcon />}
             text="Cart"
             data-testid="cartLink"
-            activeStyle="bg-secondary text-white"
+            activeStyle="bg-secondary text-base-max"
             className="!p-1"
           >
             <Badge
@@ -612,9 +623,7 @@ export const Header: React.FC<HeaderProps> = ({
           <QuickSearch />
         </div>
       </div>
-      <div className="flex flex-grow">
-        <Options />
-      </div>
+      <div className="flex flex-grow">{Options && <Options />}</div>
 
       {/* Modals Start */}
       <SendFeedbackModal

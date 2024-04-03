@@ -99,7 +99,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
     <div
       className={`flex flex-col ${
         width ? width : "mx-0"
-      } bg-base-max relative border-primary-lightest border-1 rounded-b-md text-xs transition`}
+      } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition`}
     >
       <FacetHeader>
         <Tooltip
@@ -128,7 +128,6 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
             <Tooltip label="Remove the facet">
               <FacetIconButton
                 onClick={() => {
-                  clearFilters(field);
                   dismissCallback(field);
                 }}
                 aria-label="Remove the facet"

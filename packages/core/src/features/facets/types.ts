@@ -13,7 +13,13 @@ export interface FacetBuckets {
   readonly requestId?: string;
 }
 
-export type GQLDocType = "cases" | "files" | "genes" | "ssms" | "projects";
+export type GQLDocType =
+  | "cases"
+  | "files"
+  | "genes"
+  | "ssms"
+  | "projects"
+  | "annotations";
 export type GQLIndexType = "explore" | "repository";
 
 export interface AllowableRange {

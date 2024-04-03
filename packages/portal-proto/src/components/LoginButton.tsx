@@ -1,9 +1,9 @@
 import openAuthWindow from "@/features/layout/auth/openAuthWindow";
 import {
   fetchNotifications,
-  fetchUserDetails,
   hideModal,
   useCoreDispatch,
+  useLazyFetchUserDetailsQuery,
 } from "@gff/core";
 import { Button } from "@mantine/core";
 import { MdOutlineLogin as LoginIcon } from "react-icons/md";
@@ -16,6 +16,7 @@ export const LoginButton = ({
   fromHeader?: boolean;
 }): JSX.Element => {
   const dispatch = useCoreDispatch();
+  const [fetchUserDetails] = useLazyFetchUserDetailsQuery();
   return (
     <Button
       className={`${
@@ -26,7 +27,7 @@ export const LoginButton = ({
       onClick={async () => {
         fromSession && dispatch(hideModal());
         await openAuthWindow();
-        await dispatch(fetchUserDetails());
+        await fetchUserDetails();
         await dispatch(fetchNotifications());
       }}
       leftIcon={

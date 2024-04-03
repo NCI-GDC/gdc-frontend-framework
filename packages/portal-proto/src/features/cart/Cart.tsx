@@ -6,7 +6,7 @@ import {
   useCartSummary,
   useCoreSelector,
   selectCart,
-  useUserDetails,
+  useFetchUserDetailsQuery,
 } from "@gff/core";
 import FilesTable from "./FilesTable";
 import ProjectTable from "./ProjectTable";
@@ -34,8 +34,8 @@ const Cart: React.FC = () => {
   const cart = useCoreSelector((state) => selectCart(state));
   const { data: summaryData } = useCartSummary(cart.map((f) => f.file_id));
   const { data: userDetails, isFetching: userDetailsFetching } =
-    useUserDetails();
-  const filesByCanAccess = groupByAccess(cart, userDetails);
+    useFetchUserDetailsQuery();
+  const filesByCanAccess = groupByAccess(cart, userDetails?.data);
   const dbGapList = Array.from(
     new Set(
       (filesByCanAccess?.true || [])
