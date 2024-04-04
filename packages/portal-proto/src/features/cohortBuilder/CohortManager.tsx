@@ -247,7 +247,7 @@ const CohortManager: React.FC = () => {
   return (
     <div
       data-tour="cohort_management_bar"
-      className="flex flex-row items-center justify-start gap-6 pl-4 h-18 shadow-lg bg-primary"
+      className="flex flex-row items-center justify-start gap-6 px-4 h-18 shadow-lg bg-primary"
     >
       {(isCohortIdFetching ||
         isDeleteCohortLoading ||
@@ -421,7 +421,7 @@ const CohortManager: React.FC = () => {
       />
       {/*  Modals End   */}
       <div className="border-opacity-0">
-        <div className="flex gap-4">
+        <div className="flex flex-wrap gap-2 lg:gap-4">
           <div className="flex justify-center items-center">
             <Tooltip
               label="Discard Unsaved Changes"
@@ -458,7 +458,7 @@ const CohortManager: React.FC = () => {
                 }}
                 itemComponent={CustomCohortSelectItem}
                 classNames={{
-                  root: "border-secondary-darkest w-80",
+                  root: "border-secondary-darkest w-56 md:w-80",
                   input:
                     "text-heading font-medium text-primary-darkest rounded-l-none h-[50px] border-primary border-l-2",
                   item: "text-heading font-normal text-primary-darkest data-selected:bg-primary-lighter hover:bg-accent-lightest hover:text-accent-contrast-lightest my-0.5",
@@ -484,7 +484,7 @@ const CohortManager: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex justify-center items-center gap-4">
+          <div className="flex justify-center items-center gap-2 md:gap-4">
             <Tooltip label="Save Cohort" position="top" withArrow>
               <span className="h-12">
                 <DropdownWithIcon

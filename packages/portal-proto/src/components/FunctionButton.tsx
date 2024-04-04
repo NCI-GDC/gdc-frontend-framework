@@ -36,6 +36,8 @@ ${(p: FunctionButtonProps) =>
     ? "hover:bg-primary-darkest"
     : "hover:bg-primary"}
 hover:text-base-max
+px-3
+md:px-4
 ${(p: FunctionButtonProps) =>
   p.$variant === "icon" ? "w-8 p-0 h-6" : undefined}
 `;

@@ -195,7 +195,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             <Menu.Item
               component={DownloadButton}
               classNames={{ inner: "font-normal" }}
-              variant="subtle"
+              displayVariant="subtle"
               activeText="Processing"
               inactiveText="Clinical: TSV"
               preventClickEvent
@@ -226,7 +226,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             <Menu.Item
               component={DownloadButton}
               classNames={{ inner: "font-normal" }}
-              variant="subtle"
+              displayVariant="subtle"
               activeText="Processing"
               inactiveText="Clinical: JSON"
               preventClickEvent
@@ -257,7 +257,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             <Menu.Item
               component={DownloadButton}
               classNames={{ inner: "font-normal" }}
-              variant="subtle"
+              displayVariant="subtle"
               activeText="Processing"
               inactiveText="Biospecimen: TSV"
               preventClickEvent
@@ -287,7 +287,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             <Menu.Item
               component={DownloadButton}
               classNames={{ inner: "font-normal" }}
-              variant="subtle"
+              displayVariant="subtle"
               activeText="Processing"
               inactiveText="Biospecimen: JSON"
               preventClickEvent
@@ -317,7 +317,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             <Menu.Item
               component={DownloadButton}
               classNames={{ inner: "font-normal" }}
-              variant="subtle"
+              displayVariant="subtle"
               activeText="Processing"
               inactiveText="Sample Sheet"
               preventClickEvent
@@ -362,7 +362,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
               activeText="Processing"
               inactiveText="Metadata"
               showIcon={true}
-              variant="subtle"
+              displayVariant="subtle"
               preventClickEvent
               endpoint="files"
               setActive={setMetadataDownloadActive}

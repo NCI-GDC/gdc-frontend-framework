@@ -150,7 +150,7 @@ export const RepositoryApp = (): JSX.Element => {
                     <Menu.Item
                       component={DownloadButton}
                       classNames={{ inner: "font-normal" }}
-                      variant="subtle"
+                      displayVariant="subtle"
                       activeText="Processing"
                       inactiveText="Sample Sheet"
                       setActive={setSampleSheetDownloadActive}
@@ -187,7 +187,7 @@ export const RepositoryApp = (): JSX.Element => {
                       setActive={setMetadataDownloadActive}
                       active={metadataDownloadActive}
                       showIcon={true}
-                      variant="subtle"
+                      displayVariant="subtle"
                       preventClickEvent
                       endpoint="files"
                       filename={`metadata.repository.${new Date()

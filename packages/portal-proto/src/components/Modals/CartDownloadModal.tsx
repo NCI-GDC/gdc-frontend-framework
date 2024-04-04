@@ -112,7 +112,7 @@ const CartDownloadModal = ({
           }}
           method="POST"
           setActive={setActive}
-          variant="filled"
+          displayVariant="filled"
         />
         {!user?.username && <LoginButton />}
       </div>
