@@ -66,6 +66,7 @@ import { getDefaultRowId } from "./utils";
  * @param setExpanded - A function that sets the expanded.
  * @param getRowId  - A function that returns the row id.
  * @param baseZIndex  - The base z index.
+ * @param customDataTestID - optional locator for test automation
  * @category Table
  */
 
@@ -98,6 +99,7 @@ function VerticalTable<TData>({
   setExpanded,
   getRowId = getDefaultRowId,
   baseZIndex = 0,
+  customDataTestID,
 }: TableProps<TData>): JSX.Element {
   const [tableData, setTableData] = useState(data);
   const [searchTerm, setSearchTerm] = useState(search?.defaultSearchTerm ?? "");
@@ -268,7 +270,7 @@ function VerticalTable<TData>({
   };
 
   return (
-    <div className="grow overflow-hidden pt-1">
+    <div data-testid={customDataTestID} className="grow overflow-hidden pt-1">
       <div
         className={`flex flex-wrap gap-y-4 ${
           !additionalControls ? "justify-end" : "justify-between"

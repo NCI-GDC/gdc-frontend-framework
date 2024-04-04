@@ -165,7 +165,10 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
 
   const chartDivId = `${CHART_NAME}_${Math.floor(Math.random() * 100)}`;
   return (
-    <div className="border border-base-lighter p-4">
+    <div
+      data-testid="graph-cancer-distribution-cnv"
+      className="border border-base-lighter p-4"
+    >
       <div>
         <ChartTitleBar
           title={title}

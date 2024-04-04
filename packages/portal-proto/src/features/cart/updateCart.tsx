@@ -249,6 +249,7 @@ export const AddToCartButton: React.FC<CartButtonProps> = ({
     </ActionIcon>
   ) : (
     <Button
+      data-testid="button-add-to-cart"
       className={`font-medium text-sm text-primary bg-base-max hover:bg-primary-darkest hover:text-primary-contrast-darker ${focusStyles}`}
       onClick={() => addToCart(files, currentCart, dispatch)}
       variant="outline"
@@ -278,6 +279,7 @@ export const RemoveFromCartButton: React.FC<CartButtonProps> = ({
     </ActionIcon>
   ) : (
     <Button
+      data-testid="button-remove-from-cart"
       onClick={() => removeFromCart(files, currentCart, dispatch)}
       className={`font-medium text-sm text-primary bg-base-max hover:bg-primary-darkest hover:text-primary-contrast-darker ${focusStyles}`}
       variant="outline"

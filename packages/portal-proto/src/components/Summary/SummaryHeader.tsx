@@ -24,7 +24,10 @@ export const SummaryHeader = ({
         isModal ? "sticky top-0 rounded-t-sm z-20" : "fixed z-10"
       }`}
     >
-      <div className="flex flex-nowrap items-center gap-4">
+      <div
+        data-testid="text-summary-bar"
+        className="flex flex-nowrap items-center gap-4"
+      >
         <SummaryHeaderIcon iconText={iconText} />
         <SummaryHeaderTitle $isFileSummary={isFile}>
           {headerTitle}

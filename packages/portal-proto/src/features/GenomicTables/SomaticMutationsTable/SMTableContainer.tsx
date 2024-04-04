@@ -462,6 +462,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           {tableTitle && <HeaderTitle>{tableTitle}</HeaderTitle>}
 
           <VerticalTable
+            customDataTestID="table-most-frequent-somatic-mutations"
             data={formattedTableData ?? []}
             columns={SMTableDefaultColumns}
             additionalControls={
