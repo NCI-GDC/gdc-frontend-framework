@@ -291,6 +291,7 @@ const ContextBar = ({
                 <CohortCountButton countName="fileCount" label="Files" />
               }
               LeftIcon={<DownloadIcon size="1rem" aria-hidden="true" />}
+              targetButtonDisabled={cohortCounts.status !== "fulfilled"}
             />
 
             <DropdownWithIcon
@@ -321,6 +322,7 @@ const ContextBar = ({
               LeftIcon={<CohortFilterIcon size="1rem" aria-hidden="true" />}
               menuLabelText="Filter your cohort by:"
               menuLabelCustomClass="font-bold text-primary"
+              targetButtonDisabled={cohortCounts.status !== "fulfilled"}
             />
 
             {activeTab === "summary" && (
@@ -348,6 +350,7 @@ const ContextBar = ({
                       <DownloadIcon size="1rem" aria-hidden="true" />
                     )
                   }
+                  targetButtonDisabled={cohortCounts.status !== "fulfilled"}
                 />
 
                 <DropdownWithIcon
@@ -373,6 +376,7 @@ const ContextBar = ({
                       <DownloadIcon size="1rem" aria-hidden="true" />
                     )
                   }
+                  targetButtonDisabled={cohortCounts.status !== "fulfilled"}
                 />
               </>
             )}
