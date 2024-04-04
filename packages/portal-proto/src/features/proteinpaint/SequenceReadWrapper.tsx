@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState, FC } from "react";
+import { useRef, useState, FC } from "react";
+import { useDeepCompareEffect } from "use-deep-compare";
 import { runproteinpaint } from "@sjcrh/proteinpaint-client";
 import {
   useCoreSelector,
@@ -31,7 +32,7 @@ export const SequenceReadWrapper: FC<PpProps> = (props: PpProps) => {
   const ppRef = useRef<PpApi>();
   const prevArg = useRef<any>();
 
-  useEffect(
+  useDeepCompareEffect(
     () => {
       const rootElem = divRef.current as HTMLElement;
       const isAuthorized = userDetails?.data?.username && true;
