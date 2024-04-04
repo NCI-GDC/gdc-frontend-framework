@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect, useMemo } from "react";
-import { capitalize, isEqual } from "lodash";
+import { capitalize } from "lodash";
 import fileSize from "filesize";
 import { SingleItemAddToCartButton } from "../cart/updateCart";
 import Link from "next/link";
@@ -8,12 +8,10 @@ import {
   useCoreSelector,
   selectCurrentCohortFilters,
   buildCohortGqlOperator,
-  joinFilters,
   useFilesSize,
   GdcFile,
   Operation,
   useGetFilesQuery,
-  usePrevious,
   SortBy,
   AccessType,
   FileCaseType,
@@ -46,6 +44,7 @@ import {
   getAnnotationsLinkParamsFromFiles,
   statusBooleansToDataStatus,
 } from "src/utils";
+import { useDeepCompareEffect } from "use-deep-compare";
 
 export type FilesTableDataType = {
   file: GdcFile;
@@ -77,8 +76,6 @@ const FilesTables: React.FC = () => {
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
   );
-  const allFilters = joinFilters(cohortFilters, repositoryFilters);
-  const prevAllFilters = usePrevious(allFilters);
 
   // TODO fix filters
   const buildSearchFilters = (term: string): Operation => {
@@ -112,12 +109,10 @@ const FilesTables: React.FC = () => {
     return () => removeFilter("joinOrToAllfilesSearch");
   }, [searchTerm, updateFilter, removeFilter]);
 
-  useEffect(() => {
-    if (!isEqual(prevAllFilters, allFilters)) {
-      setPageSize(20);
-      setOffset(0);
-    }
-  }, [prevAllFilters, allFilters]);
+  useDeepCompareEffect(() => {
+    setPageSize(20);
+    setOffset(0);
+  }, [cohortFilters, repositoryFilters]);
 
   const { data, isFetching, isError, isSuccess } = useGetFilesQuery({
     case_filters: buildCohortGqlOperator(cohortFilters),
@@ -425,7 +420,6 @@ const FilesTables: React.FC = () => {
   const fileSizeSliceData = useFilesSize({
     cohortFilters: buildCohortGqlOperator(cohortFilters),
     localFilters: buildCohortGqlOperator(repositoryFilters),
-    allFilters: buildCohortGqlOperator(allFilters),
   });
   if (fileSizeSliceData.isSuccess && fileSizeSliceData?.data) {
     const fileSizeObj = fileSize(fileSizeSliceData.data?.total_file_size || 0, {

@@ -101,7 +101,7 @@ export const SelectCohortsModal = ({
 
     try {
       const res = await fetchGdcCases({
-        filters: buildCohortGqlOperator(cohortFilter),
+        case_filters: buildCohortGqlOperator(cohortFilter),
         fields: ["case_id"],
         size: MAX_CASE_IDS,
       });

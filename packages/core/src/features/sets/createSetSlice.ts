@@ -10,6 +10,7 @@ interface CreateSetValueArgs {
 }
 
 interface CreateSetFilterArgs {
+  case_filters?: GqlOperation | Record<string, never>;
   filters?: GqlOperation | Record<string, never>;
   size?: number;
   score?: string;
@@ -207,10 +208,11 @@ export const createSetSlice = graphqlAPISlice
         },
       }),
       createCaseSetFromFilters: builder.mutation<string, CreateSetFilterArgs>({
-        query: ({ filters, size, score, set_id }) => ({
+        query: ({ case_filters, filters, size, score, set_id }) => ({
           graphQLQuery: createCaseSetExploreMutation,
           graphQLFilters: {
             input: {
+              case_filters: case_filters ?? {},
               filters: filters ?? {},
               set_id,
               size,
