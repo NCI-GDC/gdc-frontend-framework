@@ -18,8 +18,6 @@ import {
   Badge,
   Burger,
   Drawer,
-  Divider,
-  ActionIcon,
   UnstyledButton,
   Center,
   Box,
@@ -34,7 +32,6 @@ import {
   MdOutlineApps as AppsIcon,
   MdLogout as LogoutIcon,
   MdArrowDropDown as ArrowDropDownIcon,
-  MdKeyboardBackspace as LeftArrowIcon,
 } from "react-icons/md";
 import { FaDownload, FaUserCheck } from "react-icons/fa";
 import {
@@ -273,6 +270,7 @@ export const Header: React.FC<HeaderProps> = ({
             opened={drawerOpened}
             onClick={toggleDrawer}
             aria-label={label}
+            className="text-primary-darkest pt-0"
           />
         </div>
 
@@ -280,137 +278,160 @@ export const Header: React.FC<HeaderProps> = ({
           opened={drawerOpened}
           onClose={closeDrawer}
           classNames={{
-            title: "text-xl font-header",
-            header: "py-2 px-4",
+            header: "py-2 px-4 border-b border-base-lighter",
             body: "px-3",
+            title: "text-xl font-header font-bold text-primary-darker",
+            close: "hover:bg-base-lightest",
           }}
           position="right"
-          title={
-            <div
-              data-testid="button-close-set-panel"
-              className="flex gap-4 items-center w-full text-primary-darker font-bold p-2 px-0"
-            >
-              <ActionIcon
-                onClick={closeDrawer}
-                aria-label="Close navigation panel"
-              >
-                <LeftArrowIcon size={30} className="text-primary-darker" />
-              </ActionIcon>
-              Navigation
-            </div>
-          }
+          title="Navigation"
           padding="md"
-          withCloseButton={false}
+          size="xs"
         >
-          <Divider my="xs" className="mt-0" />
-          <NavLinkWithIcon
-            href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Video_Tutorials/"
-            icon={<PlayIcon />}
-            text="Video Guides"
-            isExternal
-          />
-          <NavButton
-            icon={<FeebackIcon aria-hidden="true" />}
-            text="Send Feedback"
-            needFullWidth
-            onClick={() => {
-              setOpenFeedbackModal(true);
-              closeDrawer();
-            }}
-          />
-          <NavLinkWithIcon
-            href="/annotations"
-            icon={<PencilIcon />}
-            activeStyle="bg-secondary text-base-max"
-            text="Browse Annotations"
-          />
-          <NavLinkWithIcon
-            href="/manage_sets"
-            icon={<OptionsIcon />}
-            iconStyle="rotate-90"
-            text="Manage Sets"
-            activeStyle="bg-secondary text-base-max"
-            data-testid="button-header-manage-sets"
-          />
-          <NavLinkWithIcon
-            href="/cart"
-            icon={<CartIcon />}
-            text="Cart"
-            activeStyle="bg-secondary text-base-max"
-            data-testid="cartLink"
-          >
-            <Badge
-              variant="filled"
-              className={`px-1 ml-1 ${
-                router.pathname === "/cart"
-                  ? "bg-white text-secondary"
-                  : "bg-accent-vivid"
-              }`}
-              radius="xs"
-            >
-              {currentCart?.length || 0}
-            </Badge>
-          </NavLinkWithIcon>
-          <UnstyledButton
-            onClick={toggleGdcApps}
-            className="flex px-1 py-4 hover:bg-primary-lightest w-full hover:rounded-md text-primary-darkest"
-          >
-            <Center className="gap-1">
-              <AppsIcon
-                size="24px"
-                className="text-primary-darkest"
-                aria-hidden="true"
+          <ul>
+            <li>
+              <NavLinkWithIcon
+                href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Video_Tutorials/"
+                icon={<PlayIcon />}
+                text="Video Guides"
+                isExternal
               />
-              <Box component="span" mr={3} className="text-sm">
-                GDC Apps
-              </Box>
-              <DownArrowCollapseIcon size="24px" />
-            </Center>
-          </UnstyledButton>
+            </li>
+
+            <li>
+              <NavButton
+                icon={<FeebackIcon aria-hidden="true" />}
+                text="Send Feedback"
+                needFullWidth
+                onClick={() => {
+                  setOpenFeedbackModal(true);
+                  closeDrawer();
+                }}
+              />
+            </li>
+
+            <li>
+              <NavLinkWithIcon
+                href="/annotations"
+                icon={<PencilIcon />}
+                activeStyle="bg-secondary text-base-max"
+                text="Browse Annotations"
+              />
+            </li>
+
+            <li>
+              <NavLinkWithIcon
+                href="/manage_sets"
+                icon={<OptionsIcon />}
+                iconStyle="rotate-90"
+                text="Manage Sets"
+                activeStyle="bg-secondary text-base-max"
+                data-testid="button-header-manage-sets"
+              />
+            </li>
+
+            <li>
+              <NavLinkWithIcon
+                href="/cart"
+                icon={<CartIcon />}
+                text="Cart"
+                activeStyle="bg-secondary text-base-max"
+                data-testid="cartLink"
+              >
+                <Badge
+                  variant="filled"
+                  className={`px-1 ml-1 ${
+                    router.pathname === "/cart"
+                      ? "bg-white text-secondary"
+                      : "bg-accent-vivid"
+                  }`}
+                  radius="xs"
+                >
+                  {currentCart?.length || 0}
+                </Badge>
+              </NavLinkWithIcon>
+            </li>
+
+            <li>
+              <UnstyledButton
+                onClick={toggleGdcApps}
+                className="flex px-1 py-4 hover:bg-primary-lightest w-full hover:rounded-md text-primary-darkest"
+              >
+                <Center className="gap-1">
+                  <AppsIcon
+                    size="24px"
+                    className="text-primary-darkest"
+                    aria-hidden="true"
+                  />
+                  <Box component="span" mr={3} className="text-sm">
+                    GDC Apps
+                  </Box>
+                  <DownArrowCollapseIcon size="24px" />
+                </Center>
+              </UnstyledButton>
+            </li>
+          </ul>
           <Collapse in={gdcAppsOpened}>
-            <NavLinkWithIcon
-              href={indexPath}
-              icon={
-                <Image
-                  src="/user-flow/icons/gdc-app-data-portal-blue.svg"
-                  width={30}
-                  height={30}
-                  alt=""
+            <ul>
+              <li>
+                <NavLinkWithIcon
+                  href={indexPath}
+                  icon={
+                    <Image
+                      src="/user-flow/icons/gdc-app-data-portal-blue.svg"
+                      width={30}
+                      height={30}
+                      alt=""
+                    />
+                  }
+                  text="Data Portal"
+                  overwriteClassName="!px-4 !py-2 !my-0"
                 />
-              }
-              text="Data Portal"
-              className="!px-4 !py-2"
-            />
-            <GDCAppLink
-              href="https://gdc.cancer.gov"
-              icon="gdc-app-website-blue.svg"
-              text="Website"
-            />
-            <GDCAppLink
-              href="https://gdc.cancer.gov/developers/gdc-application-programming-interface-api"
-              icon="gdc-app-portal-api.svg"
-              text="API"
-            />
-            <GDCAppLink
-              href="https://docs.gdc.cancer.gov/Data_Transfer_Tool/Users_Guide/Getting_Started/"
-              icon="gdc-app-data-transfer-tool.svg"
-              text="Data Transfer Tool"
-            />
-            <GDCAppLink
-              href="https://docs.gdc.cancer.gov"
-              icon="gdc-app-docs.svg"
-              text="Documentation"
-            />
-            <GDCAppLink
-              href="https://portal.gdc.cancer.gov/submission"
-              icon="gdc-app-submission-portal.svg"
-              text="Data Submission Portal"
-            />
-            <GDCAppLink
-              href="https://gdc.cancer.gov/about-data/publications"
-              icon="gdc-app-publications.svg"
-              text="Publications"
-            />
+              </li>
+
+              <li>
+                <GDCAppLink
+                  href="https://gdc.cancer.gov"
+                  icon="gdc-app-website-blue.svg"
+                  text="Website"
+                />
+              </li>
+              <li>
+                <GDCAppLink
+                  href="https://gdc.cancer.gov/developers/gdc-application-programming-interface-api"
+                  icon="gdc-app-portal-api.svg"
+                  text="API"
+                />
+              </li>
+              <li>
+                <GDCAppLink
+                  href="https://docs.gdc.cancer.gov/Data_Transfer_Tool/Users_Guide/Getting_Started/"
+                  icon="gdc-app-data-transfer-tool.svg"
+                  text="Data Transfer Tool"
+                />
+              </li>
+              <li>
+                <GDCAppLink
+                  href="https://docs.gdc.cancer.gov"
+                  icon="gdc-app-docs.svg"
+                  text="Documentation"
+                />
+              </li>
+              <li>
+                <GDCAppLink
+                  href="https://portal.gdc.cancer.gov/submission"
+                  icon="gdc-app-submission-portal.svg"
+                  text="Data Submission Portal"
+                />
+              </li>
+              <li>
+                <GDCAppLink
+                  href="https://gdc.cancer.gov/about-data/publications"
+                  icon="gdc-app-publications.svg"
+                  text="Publications"
+                />
+              </li>
+            </ul>
           </Collapse>
         </Drawer>
 
@@ -425,7 +446,7 @@ export const Header: React.FC<HeaderProps> = ({
             icon={<PlayIcon />}
             text="Video Guides"
             isExternal
-            className="!p-1"
+            overwriteClassName="!p-1"
           />
           <NavButton
             icon={<FeebackIcon aria-hidden="true" />}
@@ -438,7 +459,7 @@ export const Header: React.FC<HeaderProps> = ({
             icon={<PencilIcon />}
             text="Browse Annotations"
             activeStyle="bg-secondary text-base-max"
-            className="!p-1"
+            overwriteClassName="!p-1"
           />
           <NavLinkWithIcon
             href="/manage_sets"
@@ -447,7 +468,7 @@ export const Header: React.FC<HeaderProps> = ({
             text="Manage Sets"
             data-testid="button-header-manage-sets"
             activeStyle="bg-secondary text-base-max"
-            className="!p-1"
+            overwriteClassName="!p-1"
           />
           <NavLinkWithIcon
             href="/cart"
@@ -455,7 +476,7 @@ export const Header: React.FC<HeaderProps> = ({
             text="Cart"
             data-testid="cartLink"
             activeStyle="bg-secondary text-base-max"
-            className="!p-1"
+            overwriteClassName="!p-1"
           >
             <Badge
               variant="filled"
@@ -471,17 +492,17 @@ export const Header: React.FC<HeaderProps> = ({
           </NavLinkWithIcon>
           <LoginButtonOrUserDropdown />
           <Menu
-            withArrow
-            arrowSize={16}
             width="450"
             position="bottom-end"
-            arrowPosition="center"
             zIndex={400}
+            classNames={{
+              dropdown: "border border-primary",
+            }}
           >
             <Menu.Target>
               <button
                 data-testid="extraButton"
-                className="flex items-center gap-1 p-1 pr-2 rounded-md hover:bg-primary-lightest"
+                className="flex items-center gap-1 p-1 rounded-md hover:bg-primary-lightest"
               >
                 <AppsIcon
                   size="24px"
@@ -489,10 +510,11 @@ export const Header: React.FC<HeaderProps> = ({
                   aria-hidden="true"
                 />
                 <p className="font-heading">GDC Apps</p>
+                <ArrowDropDownIcon size="24px" className="-ml-1" />
               </button>
             </Menu.Target>
             <Menu.Dropdown>
-              <div className="grid grid-cols-2 py-4 gap-2">
+              <div className="grid grid-cols-2 p-1 gap-2">
                 <AppMenuItem>
                   <NavLinkWithIcon
                     href={indexPath}
@@ -505,97 +527,50 @@ export const Header: React.FC<HeaderProps> = ({
                       />
                     }
                     text="Data Portal"
+                    overwriteClassName="!px-4 !py-2"
                   />
                 </AppMenuItem>
                 <AppMenuItem>
-                  <NavLinkWithIcon
+                  <GDCAppLink
                     href="https://gdc.cancer.gov"
-                    icon={
-                      <Image
-                        src="/user-flow/icons/gdc-app-website-blue.svg"
-                        width={30}
-                        height={30}
-                        alt=""
-                      />
-                    }
+                    icon="gdc-app-website-blue.svg"
                     text="Website"
-                    isExternal
                   />
                 </AppMenuItem>
 
                 <AppMenuItem>
-                  <NavLinkWithIcon
+                  <GDCAppLink
                     href="https://gdc.cancer.gov/developers/gdc-application-programming-interface-api"
-                    icon={
-                      <Image
-                        src="/user-flow/icons/gdc-app-portal-api.svg"
-                        width={30}
-                        height={30}
-                        alt=""
-                      />
-                    }
+                    icon="gdc-app-portal-api.svg"
                     text="API"
-                    isExternal
                   />
                 </AppMenuItem>
                 <AppMenuItem>
-                  <NavLinkWithIcon
+                  <GDCAppLink
                     href="https://docs.gdc.cancer.gov/Data_Transfer_Tool/Users_Guide/Getting_Started/"
-                    icon={
-                      <Image
-                        src="/user-flow/icons/gdc-app-data-transfer-tool.svg"
-                        width={30}
-                        height={30}
-                        alt=""
-                      />
-                    }
+                    icon="gdc-app-data-transfer-tool.svg"
                     text="Data Transfer Tool"
-                    isExternal
                   />
                 </AppMenuItem>
                 <AppMenuItem>
-                  <NavLinkWithIcon
+                  <GDCAppLink
                     href="https://docs.gdc.cancer.gov"
-                    icon={
-                      <Image
-                        src="/user-flow/icons/gdc-app-docs.svg"
-                        width={30}
-                        height={30}
-                        alt=""
-                      />
-                    }
+                    icon="gdc-app-docs.svg"
                     text="Documentation"
-                    isExternal
                   />
                 </AppMenuItem>
                 <AppMenuItem>
-                  <NavLinkWithIcon
+                  <GDCAppLink
                     href="https://portal.gdc.cancer.gov/submission"
-                    icon={
-                      <Image
-                        src="/user-flow/icons/gdc-app-submission-portal.svg"
-                        width={30}
-                        height={30}
-                        alt=""
-                      />
-                    }
+                    icon="gdc-app-submission-portal.svg"
                     text="Data Submission Portal"
-                    isExternal
                   />
                 </AppMenuItem>
                 <AppMenuItem>
-                  <NavLinkWithIcon
+                  <GDCAppLink
                     href="https://gdc.cancer.gov/about-data/publications"
-                    icon={
-                      <Image
-                        src="/user-flow/icons/gdc-app-publications.svg"
-                        width={30}
-                        height={30}
-                        alt=""
-                      />
-                    }
+                    icon="gdc-app-publications.svg"
                     text="Publications"
-                    isExternal
                   />
                 </AppMenuItem>
               </div>

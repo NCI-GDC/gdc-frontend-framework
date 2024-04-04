@@ -8,9 +8,9 @@ interface NavLinkWithIconProps {
   text: string;
   isExternal?: boolean;
   activeStyle?: string;
-  className?: string;
+  overwriteClassName?: string;
   iconStyle?: string;
-  [key: string]: any;
+  children?: React.ReactNode;
 }
 
 const NavLinkWithIcon: React.FC<NavLinkWithIconProps> = ({
@@ -19,7 +19,7 @@ const NavLinkWithIcon: React.FC<NavLinkWithIconProps> = ({
   text,
   isExternal = false,
   activeStyle,
-  className = "",
+  overwriteClassName = "",
   iconStyle,
   children,
   ...props
@@ -34,7 +34,7 @@ const NavLinkWithIcon: React.FC<NavLinkWithIconProps> = ({
   const component = isExternal ? (
     <a
       {...linkProps}
-      className={`flex items-center py-4 px-1 my-1 gap-1 rounded-md hover:bg-primary-lightest text-primary-darkest text-sm ${className}`}
+      className={`flex items-center py-4 px-1 my-1 gap-1 rounded-md hover:bg-primary-lightest text-primary-darkest text-sm ${overwriteClassName}`}
     >
       <IconWrapper icon={icon} text={text} iconStyle={iconStyle} />
       {children}
@@ -46,7 +46,7 @@ const NavLinkWithIcon: React.FC<NavLinkWithIconProps> = ({
         isActive
           ? activeStyle
           : "text-primary-darkest hover:bg-primary-lightest"
-      } ${className}`}
+      } ${overwriteClassName}`}
       {...props}
     >
       <IconWrapper icon={icon} text={text} iconStyle={iconStyle} />
