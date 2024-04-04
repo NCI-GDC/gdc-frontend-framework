@@ -114,7 +114,7 @@ const CountsGraphQLQuery = `
         }
       },
       mafFileCount : cases {
-        hits(case_filters: $mafFileFilter, first: 0) {
+        hits(case_filters: $filters, filters: $mafFileFilter, first: 0) {
           total
         }
       },
