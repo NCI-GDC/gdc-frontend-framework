@@ -1,3 +1,10 @@
+import ProjectsIcon from "public/user-flow/icons/summary/projects.svg";
+import UsersIcon from "public/user-flow/icons/summary/users.svg";
+import FilesIcon from "public/user-flow/icons/summary/files.svg";
+import GenesIcon from "public/user-flow/icons/summary/genes.svg";
+import MutationsIcon from "public/user-flow/icons/summary/gene-mutation.svg";
+import { HiOutlinePencilSquare } from "react-icons/hi2";
+
 export type QuickSearchEntities =
   | "case"
   | "file"
@@ -12,18 +19,18 @@ export type QuickSearchEntities =
   | "Gene"
   | "Ssm";
 
-export const entityShortNameMapping: Record<QuickSearchEntities, string> = {
-  case: "CA",
-  file: "FL",
-  project: "PR",
-  annotation: "AN",
-  gene_centric: "GN",
-  ssm_centric: "MU",
+export const entityIconMapping: Record<QuickSearchEntities, any> = {
+  case: UsersIcon,
+  file: FilesIcon,
+  project: ProjectsIcon,
+  annotation: HiOutlinePencilSquare,
+  gene_centric: GenesIcon,
+  ssm_centric: MutationsIcon,
 
-  Case: "CA",
-  File: "FL",
-  Project: "PR",
-  Annotation: "AN",
-  Gene: "GN",
-  Ssm: "MU",
+  Case: UsersIcon,
+  File: FilesIcon,
+  Project: ProjectsIcon,
+  Annotation: HiOutlinePencilSquare,
+  Gene: GenesIcon,
+  Ssm: MutationsIcon,
 };

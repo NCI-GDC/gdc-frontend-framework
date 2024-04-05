@@ -6,9 +6,8 @@ import { useDebouncedValue } from "@mantine/hooks";
 import { MdSearch as SearchIcon, MdClose as CloseIcon } from "react-icons/md";
 import { validate as uuidValidate } from "uuid";
 import { useGetHistoryQuery, useQuickSearch, HistoryDefaults } from "@gff/core";
-import { TypeIcon } from "../TypeIcon";
 import {
-  entityShortNameMapping,
+  entityIconMapping,
   QuickSearchEntities,
 } from "./entityShortNameMapping";
 import { extractEntityPath, findMatchingToken } from "./utils";
@@ -93,24 +92,44 @@ export const QuickSearch = (): JSX.Element => {
         ? `File ${matchingToken} has been updated`
         : matchingToken;
 
+      const IconFormatted = ({
+        Icon,
+        changeOnHover,
+      }: {
+        Icon: any;
+        changeOnHover: boolean;
+      }): JSX.Element => (
+        <div
+          className={`
+          ${
+            changeOnHover
+              ? "bg-primary-contrast-darker"
+              : "bg-accent-cool-content-lighter"
+          }
+          rounded-full
+        `}
+        >
+          <Icon className="p-1.5 w-10 h-10" aria-hidden />
+        </div>
+      );
+      const entityForMapping = entity || atob(label).split(":")[0];
+
       return (
         <div
           data-testid="text-search-result"
           ref={ref}
           {...others}
-          aria-label={`${badgeText}, ${matchingToken}`}
+          aria-label={`${entityForMapping}, ${badgeText}, ${matchingToken}`}
         >
           <div
-            className={`flex p-2 px-4 ${
+            className={`flex gap-2 p-2 px-4 ${
               others["data-hovered"] &&
               "bg-primary-darkest text-primary-contrast-darkest"
             }`}
           >
             <div className="self-center">
-              <TypeIcon
-                iconText={
-                  entityShortNameMapping[entity || atob(label).split(":")[0]]
-                }
+              <IconFormatted
+                Icon={entityIconMapping[entityForMapping]}
                 changeOnHover={others["data-hovered"]}
               />
             </div>

@@ -12,7 +12,17 @@ const HorizontalSummaryTotalsPanel = (): JSX.Element => {
   const { data: versionInfo, isSuccess: isVersionInfoSuccess } =
     useVersionInfoDetails();
   const { data: countsInfo } = useTotalCounts();
-  const ICON_SIZE = 40;
+  const IconFormatted = ({
+    Icon,
+    label,
+  }: {
+    Icon: any;
+    label: string;
+  }): JSX.Element => (
+    <div className="rounded-full bg-summarybar-icon-background">
+      <Icon className="p-1.5 w-[40px] h-[40px]" aria-label={label} role="img" />
+    </div>
+  );
   return (
     <div className="flex flex-col mt-11">
       <div className="flex flex-col">
@@ -33,25 +43,16 @@ const HorizontalSummaryTotalsPanel = (): JSX.Element => {
           title="Projects"
           customDataTestID="text-projects-gdc-count"
           count={countsInfo.projectsCounts}
-          icon={
-            <ProjectsIcon
-              width={ICON_SIZE}
-              height={ICON_SIZE}
-              aria-label="Projects counts"
-              role="img"
-            />
-          }
+          icon={<IconFormatted label="Projects counts" Icon={ProjectsIcon} />}
         />
         <SummaryStatsItem
           title="Primary Sites"
           customDataTestID="text-primary-sites-gdc-count"
           count={countsInfo.primarySiteCounts}
           icon={
-            <PrimarySitesIcon
-              width={ICON_SIZE}
-              height={ICON_SIZE}
-              aria-label="Primary Sites counts"
-              role="img"
+            <IconFormatted
+              label="Primary Sites counts"
+              Icon={PrimarySitesIcon}
             />
           }
         />
@@ -59,53 +60,25 @@ const HorizontalSummaryTotalsPanel = (): JSX.Element => {
           title="Cases"
           customDataTestID="text-cases-gdc-count"
           count={countsInfo.repositoryCaseCounts}
-          icon={
-            <UsersIcon
-              width={ICON_SIZE}
-              height={ICON_SIZE}
-              aria-label="Cases counts"
-              role="img"
-            />
-          }
+          icon={<IconFormatted label="Cases counts" Icon={UsersIcon} />}
         />
         <SummaryStatsItem
           title="Files"
           customDataTestID="text-files-gdc-count"
           count={countsInfo.fileCounts}
-          icon={
-            <FilesIcon
-              width={ICON_SIZE}
-              height={ICON_SIZE}
-              aria-label="Files counts"
-              role="img"
-            />
-          }
+          icon={<IconFormatted label="Files counts" Icon={FilesIcon} />}
         />
         <SummaryStatsItem
           title="Genes"
           customDataTestID="text-genes-gdc-count"
           count={countsInfo.genesCounts}
-          icon={
-            <GenesIcon
-              width={ICON_SIZE}
-              height={ICON_SIZE}
-              aria-label="Genes counts"
-              role="img"
-            />
-          }
+          icon={<IconFormatted label="Genes counts" Icon={GenesIcon} />}
         />
         <SummaryStatsItem
           title="Mutations"
           customDataTestID="text-mutations-gdc-count"
           count={countsInfo.mutationCounts}
-          icon={
-            <MutationsIcon
-              width={ICON_SIZE}
-              height={ICON_SIZE}
-              aria-label="Mutations counts"
-              role="img"
-            />
-          }
+          icon={<IconFormatted label="Mutations counts" Icon={MutationsIcon} />}
         />
       </div>
     </div>

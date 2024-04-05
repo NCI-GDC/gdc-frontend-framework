@@ -14,6 +14,7 @@ import { ConsequenceTable } from "@/features/mutationSummary/ConsequenceTable";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import SSMSCancerDistributionTable from "../cancerDistributionTable/SSMSCancerDistributionTable";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
+import MutationsIcon from "public/user-flow/icons/summary/gene-mutation.svg";
 
 export const SSMSSummary = ({
   ssm_id,
@@ -171,7 +172,8 @@ export const SSMSSummary = ({
       ) : summaryData ? (
         <>
           <SummaryHeader
-            iconText="mu"
+            Icon={MutationsIcon}
+            headerTitleLeft="Mutation"
             headerTitle={summaryData.dna_change}
             isModal={isModal}
           />

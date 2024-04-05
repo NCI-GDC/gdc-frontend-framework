@@ -37,8 +37,8 @@ describe("<QuickSearch />", () => {
       { timeout: 3000 },
     );
     const results = getAllByTestId("text-search-result");
-    expect(results[0].textContent).toEqual("GNTHTH");
-    expect(results[1].textContent).toEqual("PR222Thymoma");
+    expect(results[0].textContent).toEqual("THTH");
+    expect(results[1].textContent).toEqual("222Thymoma");
   });
 
   test("displays superseded file", async () => {
@@ -69,7 +69,7 @@ describe("<QuickSearch />", () => {
     );
     const results = getAllByTestId("text-search-result");
     expect(results[0].textContent).toEqual(
-      "FL444-555File 111-222 has been updated",
+      "444-555File 111-222 has been updated",
     );
   });
 });

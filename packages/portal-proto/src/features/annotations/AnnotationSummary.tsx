@@ -7,7 +7,7 @@ import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import { HorizontalTable } from "@/components/HorizontalTable";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
-import { entityShortNameMapping } from "@/components/QuickSearch/entityShortNameMapping";
+import { HiOutlinePencilSquare } from "react-icons/hi2";
 
 interface AnnotationSummaryProps {
   readonly annotationId: string;
@@ -152,7 +152,8 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
   ) : (
     <>
       <SummaryHeader
-        iconText={entityShortNameMapping["Annotation"]}
+        Icon={HiOutlinePencilSquare}
+        headerTitleLeft="Annotation"
         headerTitle={annotationId}
       />
       <div className="mx-4 mt-24 mb-4">
