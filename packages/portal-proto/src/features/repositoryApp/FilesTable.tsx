@@ -481,7 +481,10 @@ const FilesTables: React.FC = () => {
                 TSV
               </FunctionButton>
             </div>
-            <div className="hidden Custom-Repo-Width:block">
+            <div
+              data-testid="text-counts-files-table"
+              className="hidden Custom-Repo-Width:block"
+            >
               <Stats />
             </div>
           </div>

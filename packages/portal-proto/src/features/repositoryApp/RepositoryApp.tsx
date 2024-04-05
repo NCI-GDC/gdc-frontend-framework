@@ -144,9 +144,11 @@ export const RepositoryApp = (): JSX.Element => {
               <div className="flex justify-end gap-2 mt-9 mb-4">
                 <Menu width="target">
                   <Menu.Target>
-                    <FunctionButton>Download Associated Data</FunctionButton>
+                    <FunctionButton data-testid="button-download-associated-data-files-table">
+                      Download Associated Data
+                    </FunctionButton>
                   </Menu.Target>
-                  <Menu.Dropdown>
+                  <Menu.Dropdown data-testid="dropdown-menu-options">
                     <Menu.Item
                       component={DownloadButton}
                       classNames={{ inner: "font-normal" }}
