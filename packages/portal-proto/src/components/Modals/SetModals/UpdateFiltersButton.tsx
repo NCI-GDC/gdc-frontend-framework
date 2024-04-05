@@ -72,7 +72,7 @@ const UpdateCohortButton: React.FC<UpdateCohortButtonProps> = ({
       disabled={disabled}
       onClick={() => {
         if (ids.length > 1) {
-          createSet({ values: ids, intent: "user", set_type: "frozen" });
+          createSet({ values: ids, intent: "portal", set_type: "mutable" });
         } else {
           hooks.updateFilters(facetField, {
             field: facetField,

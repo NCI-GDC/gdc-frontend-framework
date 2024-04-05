@@ -53,7 +53,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
       <DarkFunctionButton
         disabled={disabled}
         onClick={() =>
-          createSet({ values: ids, intent: "user", set_type: "frozen" })
+          createSet({ values: ids, intent: "portal", set_type: "frozen" })
         }
         loading={response.isLoading}
       >

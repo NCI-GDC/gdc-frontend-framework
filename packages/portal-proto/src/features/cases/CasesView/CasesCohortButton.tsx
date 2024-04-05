@@ -135,7 +135,7 @@ export const CasesCohortButtonFromValues: React.FC<
   const [createSet, response] = useCreateCaseSetFromValuesMutation();
   const onCreateSet = useCallback(
     () =>
-      createSet({ values: pickedCases, intent: "user", set_type: "frozen" }),
+      createSet({ values: pickedCases, intent: "portal", set_type: "frozen" }),
     [createSet, pickedCases],
   );
 
@@ -161,7 +161,12 @@ export const CasesCohortButtonFromFilters: React.FC<
   const [createSet, response] = useCreateCaseSetFromFiltersMutation();
   const onCreateSet = useDeepCompareCallback(
     () =>
-      createSet({ case_filters, filters, intent: "user", set_type: "frozen" }),
+      createSet({
+        case_filters,
+        filters,
+        intent: "portal",
+        set_type: "frozen",
+      }),
     [case_filters, createSet, filters],
   );
   const { data, isSuccess, isLoading } = useGetCasesQuery(

@@ -111,7 +111,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
       return await createSet({
         filters: buildCohortGqlOperator(genomicFilters),
         case_filters: buildCohortGqlOperator(cohortFilters),
-        intent: "user",
+        intent: "portal",
         set_type: "frozen",
       })
         .unwrap()
