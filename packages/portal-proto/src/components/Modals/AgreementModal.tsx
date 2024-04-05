@@ -1,6 +1,6 @@
 import { GdcFile, hideModal, useCoreDispatch } from "@gff/core";
 import { Button, Text } from "@mantine/core";
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { DownloadButton } from "../DownloadButtons";
 import { BaseModal } from "./BaseModal";
 import DownloadAccessAgreement from "./DownloadAccessAgreement";
@@ -20,6 +20,13 @@ export const AgreementModal = ({
 }): JSX.Element => {
   const dispatch = useCoreDispatch();
   const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    if (!openModal) {
+      setChecked(false);
+    }
+  }, [openModal]);
+
   return (
     <BaseModal
       title={
@@ -28,6 +35,7 @@ export const AgreementModal = ({
         </Text>
       }
       openModal={openModal}
+      onClose={() => setChecked(false)}
       size="xl"
     >
       <div className="border-y border-y-base-darker py-4">
@@ -47,13 +55,13 @@ export const AgreementModal = ({
 
         <DownloadButton
           disabled={!checked}
-          filename={file.file_name}
+          filename={file?.file_name}
           extraParams={{
-            ids: file.file_id,
+            ids: file?.file_id,
             annotations: true,
             related_files: true,
           }}
-          endpoint={`data/${file.file_id}`}
+          endpoint={`data/${file?.file_id}`}
           activeText="Processing"
           inactiveText="Download"
           method="GET"

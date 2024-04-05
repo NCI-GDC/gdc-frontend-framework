@@ -9,7 +9,7 @@ import {
   GeneSummaryData,
   FilterSet,
   useCoreSelector,
-  selectCurrentCohortGeneAndSSMCaseSet,
+  selectCurrentCohortFilters,
 } from "@gff/core";
 import { HiPlus, HiMinus } from "react-icons/hi";
 import { externalLinkNames, externalLinks, humanify } from "src/utils";
@@ -79,7 +79,7 @@ const GeneView = ({
 }: GeneViewProps) => {
   const isDemo = useIsDemoApp();
   const currentCohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortGeneAndSSMCaseSet(state),
+    selectCurrentCohortFilters(state),
   );
 
   // Since genomic filter lies in different store, it cannot be accessed using selectors.
@@ -241,17 +241,24 @@ const GeneView = ({
             <div className="text-primary-content">
               <div className="flex gap-8">
                 <div className="flex-1">
-                  <SummaryCard tableData={formatDataForSummary()} />
+                  <SummaryCard
+                    customDataTestID="table-summary-gene-summary"
+                    tableData={formatDataForSummary()}
+                  />
                 </div>
                 <div className="flex-1">
                   <SummaryCard
+                    customDataTestID="table-external-references-gene-summary"
                     tableData={formatDataForExternalReferences()}
                     title="External References"
                   />
                 </div>
               </div>
             </div>
-            <div className="mt-8 mb-16">
+            <div
+              data-testid="table-cancer-distribution-gene-summary"
+              className="mt-8 mb-16"
+            >
               <HeaderTitle>Cancer Distribution</HeaderTitle>
 
               <div className="grid grid-cols-2 gap-8 mt-2 mb-8">

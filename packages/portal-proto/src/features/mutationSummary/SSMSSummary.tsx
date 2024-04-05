@@ -181,10 +181,14 @@ export const SSMSSummary = ({
           <div className={`mx-4 ${!isModal ? "mt-24" : "mt-6"}`}>
             <div className="flex gap-8">
               <div className="flex-1">
-                <SummaryCard tableData={formatDataForSummary()} />
+                <SummaryCard
+                  customDataTestID="table-summary-mutation-summary"
+                  tableData={formatDataForSummary()}
+                />
               </div>
               <div className="flex-1">
                 <SummaryCard
+                  customDataTestID="table-external-references-mutation-summary"
                   tableData={formatDataForExternalReferences()}
                   title="External References"
                 />
@@ -197,7 +201,10 @@ export const SSMSSummary = ({
               <ConsequenceTable ssmsId={ssm_id} />
             </div>
 
-            <div className="mt-8 mb-16">
+            <div
+              data-testid="table-cancer-distribution-mutation-summary"
+              className="mt-8 mb-16"
+            >
               <HeaderTitle>Cancer Distribution</HeaderTitle>
               <div className="grid grid-cols-2 mb-8">
                 <SSMPlot page="ssms" ssms={ssm_id} />

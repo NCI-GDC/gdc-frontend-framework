@@ -9,10 +9,10 @@ import { CoreState } from "../../reducers";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 import { GqlOperation } from "../gdcapi/filters";
 
-const graphQLQuery = `query Queries($caseFilters: FiltersArgument, $filters: FiltersArgument, $allFilters: FiltersArgument ) {
+const graphQLQuery = `query Queries($caseFilters: FiltersArgument, $filters: FiltersArgument) {
   viewer {
     cart_summary {
-      aggregations(filters: $allFilters) {
+      aggregations(case_filters: $caseFilters, filters: $filters) {
         fs {
           value
         }
@@ -31,24 +31,19 @@ const graphQLQuery = `query Queries($caseFilters: FiltersArgument, $filters: Fil
 interface fetchTotalFileSizeProps {
   cohortFilters?: GqlOperation; // filters for the cohort
   localFilters?: GqlOperation; // filters for the repository
-  allFilters?: GqlOperation; // combined filters for the cohort and repository
 }
 
 export const fetchTotalFileSize = createAsyncThunk<
   GraphQLApiResponse,
   fetchTotalFileSizeProps,
   { dispatch: CoreDispatch; state: CoreState }
->(
-  "files/fetchFilesSize",
-  async ({ cohortFilters, localFilters, allFilters }) => {
-    const graphQlFilters = {
-      filters: localFilters ?? {},
-      caseFilters: cohortFilters ?? {},
-      allFilters: allFilters,
-    };
-    return await graphqlAPI(graphQLQuery, graphQlFilters);
-  },
-);
+>("files/fetchFilesSize", async ({ cohortFilters, localFilters }) => {
+  const graphQlFilters = {
+    filters: localFilters ?? {},
+    caseFilters: cohortFilters ?? {},
+  };
+  return await graphqlAPI(graphQLQuery, graphQlFilters);
+});
 
 export interface FilesSizeData {
   total_file_size: number;

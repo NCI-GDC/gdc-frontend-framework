@@ -216,6 +216,7 @@ export const Biospecimen = ({
             <div className="basis-4/12">
               <div className="flex mb-4 gap-4">
                 <Input
+                  data-testid="textbox-biospecimen-search-bar"
                   icon={<MdOutlineSearch size={24} aria-hidden="true" />}
                   placeholder="Search"
                   className="basis-5/6"
@@ -291,6 +292,7 @@ export const Biospecimen = ({
             </div>
             <div className="basis-3/4">
               <HorizontalTable
+                customDataTestID="table-selection-information-biospecimen"
                 tableData={formatEntityInfo(
                   selectedEntity,
                   selectedType,

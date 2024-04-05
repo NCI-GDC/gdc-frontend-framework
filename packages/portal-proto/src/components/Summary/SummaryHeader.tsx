@@ -24,7 +24,10 @@ export const SummaryHeader = ({
         isModal ? "sticky top-0 rounded-t-sm z-20" : "fixed z-10"
       }`}
     >
-      <div className="flex flex-nowrap items-center gap-2">
+      <div
+        data-testid="text-summary-bar"
+        className="flex flex-nowrap items-center gap-2"
+       >
         <div className="rounded-full bg-accent-cool-content-lighter">
           <Icon
             className="w-10 h-10 text-primary p-1.5"

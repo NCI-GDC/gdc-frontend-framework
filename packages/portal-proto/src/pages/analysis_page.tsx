@@ -53,7 +53,10 @@ const SingleAppsPage: NextPage = () => {
           key="gdc-analysis-center"
         />
       </Head>
-      <LoadingOverlay visible={!initialCohortsFetched} />
+      <LoadingOverlay
+        data-testid="loading-spinner"
+        visible={!initialCohortsFetched}
+      />
       <QueryExpressionSection
         filters={filters}
         currentCohortName={currentCohortName}

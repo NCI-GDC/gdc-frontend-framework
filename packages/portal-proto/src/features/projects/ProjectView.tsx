@@ -68,6 +68,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
       </div>
 
       <SingularOrPluralSpan
+        customDataTestID="text-case-count-project-summary"
         count={projectData.summary?.case_count}
         title="Case"
       />
@@ -81,6 +82,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
       </div>
 
       <SingularOrPluralSpan
+        customDataTestID="text-file-count-project-summary"
         count={projectData.summary?.file_count}
         title="File"
       />
@@ -93,7 +95,12 @@ export const ProjectView: React.FC<ProjectViewProps> = (
         <FaEdit />
       </div>
       <span>
-        <span className="font-bold">{addLinkValue()} </span>
+        <span
+          data-testid="text-annotation-count-project-summary"
+          className="font-bold"
+        >
+          {addLinkValue()}{" "}
+        </span>
         {`Annotation${projectData.annotation.count === 1 ? `` : `s`}`}
       </span>
     </span>
@@ -104,6 +111,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
       The project has controlled access data which requires dbGaP Access. See
       instructions for{" "}
       <a
+        data-testid="link-obtaining-access-to-controlled-data"
         href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
         className="text-utility-link underline"
         target="_blank"
@@ -245,6 +253,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
               withArrow
             >
               <Button
+                data-testid="button-save-new-cohort-project-summary"
                 color="primary"
                 variant="outline"
                 className={`bg-base-max border-primary font-medium text-sm ${focusStyles}`}
@@ -270,6 +279,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
             />
 
             <DropdownWithIcon
+              customDataTestId="button-biospecimen-project-summary"
               dropdownElements={[
                 {
                   title: "TSV",
@@ -296,6 +306,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
               }
             />
             <DropdownWithIcon
+              customDataTestId="button-clinical-project-summary"
               dropdownElements={[
                 {
                   title: "TSV",
@@ -332,6 +343,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
               withArrow
             >
               <Button
+                data-testid="button-manifest-project-summary"
                 variant="outline"
                 leftIcon={
                   manifestDownloadActive ? (
@@ -362,7 +374,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
             <HeaderTitle>Summary</HeaderTitle>
             {message && <div className="text-sm text-right">{message}</div>}
           </div>
-          <div className="flex">
+          <div data-testid="table-summary-project-summary" className="flex">
             <div className="basis-1/2">
               <HorizontalTable
                 tableData={formatDataForSummary(projectData).slice(
@@ -386,12 +398,14 @@ export const ProjectView: React.FC<ProjectViewProps> = (
             <div className="flex gap-8 mt-8 mb-14">
               {projectData?.summary?.data_categories && (
                 <CategoryTableSummary
+                  customDataTestID="table-data-category-project-summary"
                   title="Cases and File Counts by Data Category"
                   {...formatDataForDataCategoryTable(projectData)}
                 />
               )}
               {projectData?.summary?.experimental_strategies && (
                 <CategoryTableSummary
+                  customDataTestID="table-experimental-strategy-project-summary"
                   title="Cases and File Counts by Experimental Strategy"
                   {...formatDataForExpCategoryTable(projectData)}
                 />

@@ -151,6 +151,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
             withArrow
           >
             <ActionIcon
+              data-testid="button-add-remove-files-case-summary"
               variant="outline"
               size="sm"
               className={`hover:bg-primary hover:text-base-max border-primary ${
@@ -192,7 +193,10 @@ export const CaseView: React.FC<CaseViewProps> = ({
   };
 
   const addLinkValue = () => (
-    <span className="text-base-lightest">
+    <span
+      data-testid="text-annotation-count-case-summary"
+      className="text-base-lightest"
+    >
       {getAnnotationsLinkParams(annotationCountData, case_id) ? (
         <Link
           href={getAnnotationsLinkParams(annotationCountData, case_id)}
@@ -214,7 +218,11 @@ export const CaseView: React.FC<CaseViewProps> = ({
     <span className="flex items-center gap-1">
       <FaFile size={24} />
       {filesCountTotal > 0 ? (
-        <a href="#files" className="underline font-bold">
+        <a
+          data-testid="text-file-count-case-summary"
+          href="#files"
+          className="underline font-bold"
+        >
           {filesCountTotal.toLocaleString()}
         </a>
       ) : (
@@ -264,6 +272,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
         headerTitle={headerTitle}
         leftElement={
           <Button
+            data-testid="button-add-all-remove-all-files-case-summary"
             leftIcon={<FaShoppingCart />}
             className={`text-primary bg-base-max hover:bg-primary-darkest hover:text-base-max ${focusStyles}`}
             onClick={() =>
@@ -297,7 +306,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
 
       <div className={`${!isModal && "mt-32"} mx-4`}>
         <div className="mt-8">
-          <div className="flex">
+          <div data-testid="table-summary-case-summary" className="flex">
             <div className="basis-1/2">
               <SummaryCard tableData={formatDataForCaseSummary().slice(0, 4)} />
             </div>
@@ -317,6 +326,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
             <div className="flex gap-4 mt-8 mb-14">
               {data.summary.data_categories && (
                 <CategoryTableSummary
+                  customDataTestID="table-data-category-case-summary"
                   title="File Counts by Data Category"
                   {...formatDataForDataCateogryTable(
                     data.summary.data_categories,
@@ -329,6 +339,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
               )}
               {data.summary.experimental_strategies && (
                 <CategoryTableSummary
+                  customDataTestID="table-experimental-strategy-case-summary"
                   title="File Counts by Experimental Strategy"
                   {...formatDataForExpCateogryTable(
                     data.summary.experimental_strategies,
@@ -344,6 +355,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
         </div>
 
         <div
+          data-testid="table-clinical-case-summary"
           className={`${
             !(
               data.summary.data_categories ||
@@ -363,7 +375,12 @@ export const CaseView: React.FC<CaseViewProps> = ({
           />
         </div>
 
-        <div ref={targetRef} id="biospecimen" className="mb-8">
+        <div
+          data-testid="table-biospecimen-case-summary"
+          ref={targetRef}
+          id="biospecimen"
+          className="mb-8"
+        >
           <Biospecimen
             caseId={case_id}
             bioId={bio_id}

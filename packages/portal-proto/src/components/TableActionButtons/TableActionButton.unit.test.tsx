@@ -20,10 +20,11 @@ describe("<TableActionButtons />", () => {
         isOutputFileInCart={true}
         file={[] as CartFile[]}
         downloadFile={{} as GdcFile}
+        setFileToDownload={jest.fn()}
       />,
     );
 
-    const cartButton = getByTestId("add-remove-cart-button");
+    const cartButton = getByTestId("button-add-remove-cart");
     const mockRemoveCartFunc = jest.spyOn(cartFunctions, "removeFromCart");
     await userEvent.click(cartButton);
 
@@ -36,10 +37,11 @@ describe("<TableActionButtons />", () => {
         isOutputFileInCart={false}
         file={[] as CartFile[]}
         downloadFile={{} as GdcFile}
+        setFileToDownload={jest.fn()}
       />,
     );
 
-    const cartButton = getByTestId("add-remove-cart-button");
+    const cartButton = getByTestId("button-add-remove-cart");
     const mockAddCartFunc = jest.spyOn(cartFunctions, "addToCart");
     await userEvent.click(cartButton);
 

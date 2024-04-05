@@ -28,6 +28,7 @@ export const ImageSlideCount = forwardRef<
   ({ slideCount, onClick }, ref): JSX.Element => (
     <Tooltip label="No slide images to view" disabled={slideCount !== 0}>
       <Button
+        data-testid="button-view-slide-images"
         compact
         leftIcon={
           slideCount === 0 ? <DisabledMicroscopeIcon /> : <MicroscopeIcon />

@@ -41,7 +41,7 @@ export const BAMSlicingButton = ({
       loading={isActive}
       variant="outline"
       onClick={onClick}
-      data-testid="bamButton"
+      data-testid="button-bam-slicing"
     >
       {isActive ? "Slicing" : "BAM Slicing"}
     </Button>
