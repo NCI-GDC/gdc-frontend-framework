@@ -79,9 +79,13 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
   useEffect(() => {
     createPrimaryCaseSet({
       filters: buildCohortGqlOperator(cohorts.primary_cohort.filter) ?? {},
+      intent: "portal",
+      set_type: "ephemeral",
     });
     createComparisonCaseSet({
       filters: buildCohortGqlOperator(cohorts.comparison_cohort.filter) ?? {},
+      intent: "portal",
+      set_type: "ephemeral",
     });
   }, [
     cohorts.primary_cohort.filter,

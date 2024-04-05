@@ -166,6 +166,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       return await createSet({
         case_filters: buildCohortGqlOperator(cohortFilters),
         filters: buildCohortGqlOperator(genomicFilters),
+        intent: "user",
+        set_type: "frozen",
       })
         .unwrap()
         .then((setId) => {

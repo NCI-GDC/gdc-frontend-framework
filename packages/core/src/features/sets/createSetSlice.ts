@@ -5,16 +5,23 @@ import {
   graphqlAPI,
 } from "../gdcapi/gdcgraphql";
 
-interface CreateSetValueArgs {
+type SetIntent = "user" | "portal";
+type SetCreationType = "instant" | "ephemeral" | "mutable" | "frozen";
+
+export interface CreateSetValueArgs {
   values: readonly string[];
+  set_type: SetCreationType;
+  intent: SetIntent;
 }
 
-interface CreateSetFilterArgs {
+export interface CreateSetFilterArgs {
   case_filters?: GqlOperation | Record<string, never>;
   filters?: GqlOperation | Record<string, never>;
   size?: number;
   score?: string;
   set_id?: string;
+  set_type: SetCreationType;
+  intent: SetIntent;
 }
 
 const createGeneSetMutation = `mutation createSet(
@@ -103,7 +110,7 @@ export const createSetSlice = graphqlAPISlice
   .injectEndpoints({
     endpoints: (builder) => ({
       createGeneSetFromValues: builder.mutation<string, CreateSetValueArgs>({
-        query: ({ values }) => ({
+        query: ({ values, intent, set_type }) => ({
           graphQLQuery: createGeneSetMutation,
           graphQLFilters: {
             input: {
@@ -119,13 +126,15 @@ export const createSetSlice = graphqlAPISlice
                   },
                 ],
               },
+              intent,
+              set_type,
             },
           },
         }),
         transformResponse: transformGeneSetResponse,
       }),
       createSsmsSetFromValues: builder.mutation<string, CreateSetValueArgs>({
-        query: ({ values }) => ({
+        query: ({ values, intent, set_type }) => ({
           graphQLQuery: createSsmsSetMutation,
           graphQLFilters: {
             input: {
@@ -141,13 +150,15 @@ export const createSetSlice = graphqlAPISlice
                   },
                 ],
               },
+              intent,
+              set_type,
             },
           },
         }),
         transformResponse: transformSsmsSetResponse,
       }),
       createCaseSetFromValues: builder.mutation<string, CreateSetValueArgs>({
-        query: ({ values }) => ({
+        query: ({ values, intent, set_type }) => ({
           graphQLQuery: createCaseSetMutation,
           graphQLFilters: {
             input: {
@@ -163,19 +174,23 @@ export const createSetSlice = graphqlAPISlice
                   },
                 ],
               },
+              intent,
+              set_type,
             },
           },
         }),
         transformResponse: transformCaseSetResponse,
       }),
       createGeneSetFromFilters: builder.mutation<string, CreateSetFilterArgs>({
-        query: ({ filters, size, score }) => ({
+        query: ({ filters, size, score, intent, set_type }) => ({
           graphQLQuery: createGeneSetMutation,
           graphQLFilters: {
             input: {
               filters,
               size,
               score,
+              intent,
+              set_type,
             },
           },
         }),
@@ -188,7 +203,7 @@ export const createSetSlice = graphqlAPISlice
         },
       }),
       createSsmsSetFromFilters: builder.mutation<string, CreateSetFilterArgs>({
-        query: ({ filters, size, score, set_id }) => ({
+        query: ({ filters, size, score, set_id, intent, set_type }) => ({
           graphQLQuery: createSsmsSetMutation,
           graphQLFilters: {
             input: {
@@ -196,6 +211,8 @@ export const createSetSlice = graphqlAPISlice
               set_id,
               size,
               score,
+              intent,
+              set_type,
             },
           },
         }),
@@ -208,7 +225,15 @@ export const createSetSlice = graphqlAPISlice
         },
       }),
       createCaseSetFromFilters: builder.mutation<string, CreateSetFilterArgs>({
-        query: ({ case_filters, filters, size, score, set_id }) => ({
+        query: ({
+          case_filters,
+          filters,
+          size,
+          score,
+          set_id,
+          intent,
+          set_type,
+        }) => ({
           graphQLQuery: createCaseSetExploreMutation,
           graphQLFilters: {
             input: {
@@ -217,6 +242,8 @@ export const createSetSlice = graphqlAPISlice
               set_id,
               size,
               score,
+              intent,
+              set_type,
             },
           },
         }),

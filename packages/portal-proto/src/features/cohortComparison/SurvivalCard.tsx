@@ -126,6 +126,8 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
   ) => {
     return await createSet({
       filters: makeSurvivalCaseFilters(primarySetId, comparisonSetId),
+      intent: "user",
+      set_type: "frozen",
     })
       .unwrap()
       .then((setId) => {

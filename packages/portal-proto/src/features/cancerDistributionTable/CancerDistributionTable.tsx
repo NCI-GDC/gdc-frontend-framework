@@ -151,6 +151,8 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       return await createSet({
         case_filters: buildCohortGqlOperator(cohortFilters),
         filters: buildCohortGqlOperator(genomicFilters),
+        intent: "user",
+        set_type: "frozen",
       })
         .unwrap()
         .then((setId) => {
@@ -217,6 +219,8 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       return await createSet({
         case_filters: buildCohortGqlOperator(cohortFilters),
         filters: buildCohortGqlOperator(genomicFilters),
+        intent: "user",
+        set_type: "frozen",
       })
         .unwrap()
         .then((setId) => {

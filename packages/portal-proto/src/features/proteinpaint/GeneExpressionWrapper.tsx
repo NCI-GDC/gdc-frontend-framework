@@ -57,7 +57,7 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
     (arg: SelectSamplesCallBackArg) => {
       const cases = arg.samples.map((d) => d["cases.case_id"]);
       if (cases.length > 1) {
-        createSet({ values: cases });
+        createSet({ values: cases, intent: "user", set_type: "frozen" });
       } else {
         setNewCohortFilters({
           mode: "and",

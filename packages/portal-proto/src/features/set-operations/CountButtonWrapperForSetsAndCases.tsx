@@ -137,6 +137,8 @@ const CountButtonWrapperForSetsAndCases: React.FC<
     return await createSet({
       // TODO: possibly add error handling
       filters: filters,
+      intent: "user",
+      set_type: "frozen",
     })
       .unwrap()
       .then((setId) => {
