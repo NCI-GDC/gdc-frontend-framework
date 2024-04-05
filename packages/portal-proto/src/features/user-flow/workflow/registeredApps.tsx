@@ -72,7 +72,7 @@ export const REGISTERED_APPS = [
     description:
       "Visualize most frequently mutated genes and somatic mutations.",
     noDataTooltip:
-      "Current cohort does not have SSM data available for visualization.",
+      "Current cohort does not have SSM or CNV data available for visualization.",
     optimizeRules: ["something == something"],
   },
   {
