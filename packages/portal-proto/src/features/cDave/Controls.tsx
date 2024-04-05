@@ -193,6 +193,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
           </Highlight>
         </>
       ) : (
+        // TODO don't show No desc available when tooltip is working correctly again
         <Tooltip
           label={field?.description || "No description available"}
           withArrow

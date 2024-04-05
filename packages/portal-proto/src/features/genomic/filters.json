@@ -14,14 +14,12 @@
   {
     "facet_filter": "genes.biotype",
     "name": "Biotype",
-    "description": "No description",
     "type": "enum",
     "docType": "genes"
   },
   {
     "facet_filter": "genes.is_cancer_gene_census",
     "name": "Is Cancer Gene Census",
-    "description": "No description",
     "type": "toggle",
     "docType": "genes"
   },
