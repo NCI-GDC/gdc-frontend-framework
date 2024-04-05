@@ -344,7 +344,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
     <>
       <HeaderTitle>Files</HeaderTitle>
       <VerticalTable
-        customDataTestID="table-files-project-summary"
+        customDataTestID="table-files-case-summary"
         data={tableData}
         columns={caseFilesTableDefaultColumns}
         status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
