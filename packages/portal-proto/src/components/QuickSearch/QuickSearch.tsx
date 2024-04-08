@@ -1,7 +1,7 @@
 import React, { useState, forwardRef } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
 import { useRouter } from "next/router";
-import { Badge, Loader, Highlight, Select } from "@mantine/core";
+import { Loader, Highlight, Select } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { MdSearch as SearchIcon, MdClose as CloseIcon } from "react-icons/md";
 import { validate as uuidValidate } from "uuid";
@@ -122,49 +122,43 @@ export const QuickSearch = (): JSX.Element => {
           data-testid="text-search-result"
           ref={ref}
           {...others}
-          aria-label={`${entityForMapping}, ${badgeText}, ${matchingToken}`}
+          aria-label={`${badgeText}, ${matchingToken}, Category: ${entityForMapping}`}
         >
           <div
-            className={`flex gap-2 p-2 px-4 ${
-              others["data-hovered"] &&
-              "bg-primary-darkest text-primary-contrast-darkest"
+            className={`px-4 ${
+              others["data-hovered"]
+                ? "bg-primary-darkest text-primary-contrast-darkest"
+                : ""
             }`}
           >
-            <div className="self-center">
-              <IconFormatted
-                Icon={entityIconMapping[entityForMapping]}
-                changeOnHover={others["data-hovered"]}
-              />
-            </div>
-            <div className="flex flex-col">
-              <div style={{ width: 200 }}>
-                <Badge
-                  classNames={{
-                    inner: "text-xs",
-                    root: `${
-                      others["data-hovered"]
-                        ? "bg-primary-contrast-darker text-primary-darker"
-                        : "bg-primary-darker text-primary-contrast-darker"
-                    }`,
-                  }}
-                  className="cursor-pointer"
-                >
-                  {badgeText}
-                </Badge>
+            <div className="py-2 flex gap-2 border-b border-gdc-grey-light">
+              <div className="self-center">
+                <IconFormatted
+                  Icon={entityIconMapping[entityForMapping]}
+                  changeOnHover={others["data-hovered"]}
+                />
               </div>
-              <span className="text-sm">
-                <Highlight
-                  highlight={searchText.trim()}
-                  highlightStyles={{
-                    fontStyle: "italic",
-                    fontWeight: "bold",
-                    fontSize: "14px",
-                    color: `${others["data-hovered"] && "#38393a"}`, //nciGrayDarkest : might need to change the color
-                  }}
-                >
-                  {mainText}
-                </Highlight>
-              </span>
+              <div className="flex flex-col text-xs leading-4">
+                <div style={{ width: 200 }} className="font-bold">
+                  {badgeText}
+                </div>
+                <span className="">
+                  <Highlight
+                    highlight={searchText.trim()}
+                    highlightStyles={{
+                      fontStyle: "italic",
+                      fontWeight: "bold",
+                      fontSize: "14px",
+                      color: `${others["data-hovered"] && "#38393a"}`, //nciGrayDarkest : might need to change the color
+                    }}
+                  >
+                    {mainText}
+                  </Highlight>
+                </span>
+                <span className={others["data-hovered"] ? "" : "text-gdc-grey"}>
+                  <b>Category:</b> {entityForMapping}
+                </span>
+              </div>
             </div>
           </div>
         </div>

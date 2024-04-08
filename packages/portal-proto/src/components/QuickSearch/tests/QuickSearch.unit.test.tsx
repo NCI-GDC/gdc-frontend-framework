@@ -37,8 +37,8 @@ describe("<QuickSearch />", () => {
       { timeout: 3000 },
     );
     const results = getAllByTestId("text-search-result");
-    expect(results[0].textContent).toEqual("THTH");
-    expect(results[1].textContent).toEqual("222Thymoma");
+    expect(results[0].textContent).toEqual("THTHCategory: Gene");
+    expect(results[1].textContent).toEqual("222ThymomaCategory: Project");
   });
 
   test("displays superseded file", async () => {
@@ -69,7 +69,7 @@ describe("<QuickSearch />", () => {
     );
     const results = getAllByTestId("text-search-result");
     expect(results[0].textContent).toEqual(
-      "444-555File 111-222 has been updated",
+      "444-555File 111-222 has been updatedCategory: File",
     );
   });
 });
