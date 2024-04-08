@@ -25,6 +25,9 @@ class AnalysisCenterLocators:
 
     ANALYSIS_CENTER_HEADER = '[data-testid="button-header-analysis"]'
 
+    MUTATION_FREQUENCY_WAIT_FOR_ELEMENT = "[data-testid='button-mutations-tab']"
+    CLINICAL_DATA_ANALYSIS_WAIT_FOR_ELEMENT = "[data-testid='Gender-card']"
+
 
 class AnalysisCenterPage(BasePage):
     def __init__(self, driver: Page, url: str) -> None:
@@ -41,6 +44,7 @@ class AnalysisCenterPage(BasePage):
     def navigate_to_app(self, app_name: str):
         locator = AnalysisCenterLocators.BUTTON_APP_PLAY_OR_DEMO(app_name)
         self.click(locator)
+        self.wait_for_app_page_to_load(app_name)
 
     def click_analysis_tool_description(self, tool_name):
         """Clicks the description for an analysis tool"""
@@ -96,3 +100,24 @@ class AnalysisCenterPage(BasePage):
             except:
                 return False
         return True
+
+    # Pages in the data portal do not load instantaneously.
+    # We want to wait for the main content of the page to load before continuing the test.
+    def wait_for_app_page_to_load(self, page_to_load):
+        page_to_load = page_to_load.lower()
+        if (page_to_load == "mutation frequency" or page_to_load == "mutation frequency demo"):
+            # Been running into loading failures on mutation frequency.
+            # Usually happens when running regression. The page will not load at all.
+            # Simple solution I can think of is refreshing the page if that happens.
+            try:
+                self.wait_for_selector(AnalysisCenterLocators.MUTATION_FREQUENCY_WAIT_FOR_ELEMENT, 20000)
+            except:
+                print("Had to reload in MF")
+                self.driver.reload()
+                time.sleep(10)
+                self.wait_for_selector(AnalysisCenterLocators.MUTATION_FREQUENCY_WAIT_FOR_ELEMENT, 30000)
+        self.wait_for_loading_spinner_to_detatch()
+        self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        self.wait_for_loading_spinner_table_to_detatch()
+        self.wait_for_loading_spinner_to_detatch()
+        self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()

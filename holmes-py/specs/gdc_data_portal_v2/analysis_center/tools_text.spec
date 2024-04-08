@@ -30,7 +30,7 @@ tags: gdc-data-portal-v2, navigation, analysis-center
   |-------------------------|---------------------------------------------------------------------------|
   |Clinical Data Analysis   |Current cohort does not have cases available for visualization.            |
   |Cohort Comparison        |Current cohort does not have cases available for visualization.            |
-  |Mutation Frequency       |Current cohort does not have SSM data available for visualization.         |
+  |Mutation Frequency       |Current cohort does not have SSM or CNV data available for visualization.  |
   |OncoMatrix               |Current cohort does not have SSM or CNV data available for visualization.  |
   |ProteinPaint             |Current cohort does not have SSM data available for visualization.         |
   |Sequence Reads           |Current cohort does not have available BAMs for visualization.             |
