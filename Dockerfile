@@ -1,10 +1,10 @@
-FROM node:20.11.0-alpine3.18 as dep
+FROM node:20.12-alpine3.18 as dep
 WORKDIR /app
 
 #==================================================================
 
 # ==================================================================
-FROM node:20.11.0-alpine3.18 AS builder
+FROM node:20.12-alpine3.18 AS builder
 ARG NPM_REGISTRY="https://registry.npmjs.org/"
 
 ARG BUILD_SHORT_SHA
@@ -27,7 +27,7 @@ RUN lerna run --scope @nci-gdc/sapien build
 RUN lerna run --scope portal-proto build
 # ==================================================================
 
-FROM node:20.11.0-alpine3.18 AS runner
+FROM node:20.12-alpine3.18 AS runner
 WORKDIR /app
 ENV NODE_ENV=production \
     PORT=3000
