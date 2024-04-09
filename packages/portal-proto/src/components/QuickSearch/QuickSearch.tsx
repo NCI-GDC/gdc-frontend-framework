@@ -182,7 +182,7 @@ export const QuickSearch = (): JSX.Element => {
       classNames={{
         input: "focus:border-2 focus:border-primary text-sm",
         dropdown:
-          "bg-base-max rounded-t-none rounded-b-lg border-0 drop-shadow-md mt-[-8px]",
+          "bg-base-max rounded-t-none rounded-b border-0 drop-shadow-md mt-[-8px]",
         item: "p-0 m-0",
       }}
       maxDropdownHeight={1000} //large number so no scroll bar

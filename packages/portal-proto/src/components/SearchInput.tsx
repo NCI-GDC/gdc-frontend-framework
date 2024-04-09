@@ -270,7 +270,7 @@ export const SearchInput: React.FC = () => {
       {dropdownOpen && (
         <div
           data-testid="search-result-list"
-          className="absolute z-10 bg-base-max w-[400px] p-4 drop-shadow-md rounded-b-lg"
+          className="absolute z-10 bg-base-max w-[400px] p-4 drop-shadow-md rounded-b"
           id={comboboxId}
           onKeyDown={menuKeybordNav}
           role="grid"
