@@ -110,9 +110,8 @@ class AnalysisCenterPage(BasePage):
             # Usually happens when running regression. The page will not load at all.
             # Simple solution I can think of is refreshing the page if that happens.
             try:
-                self.wait_for_selector(AnalysisCenterLocators.MUTATION_FREQUENCY_WAIT_FOR_ELEMENT, 20000)
+                self.wait_for_selector(AnalysisCenterLocators.MUTATION_FREQUENCY_WAIT_FOR_ELEMENT, 15000)
             except:
-                print("Had to reload in MF")
                 self.driver.reload()
                 time.sleep(10)
                 self.wait_for_selector(AnalysisCenterLocators.MUTATION_FREQUENCY_WAIT_FOR_ELEMENT, 30000)
