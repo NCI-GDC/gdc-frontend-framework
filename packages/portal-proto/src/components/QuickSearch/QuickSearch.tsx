@@ -20,6 +20,7 @@ interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
   obj: Record<string, any>;
   superseded?: boolean;
   entity?: QuickSearchEntities;
+  last?: boolean;
 }
 
 export const QuickSearch = (): JSX.Element => {
@@ -62,11 +63,12 @@ export const QuickSearch = (): JSX.Element => {
         ]);
       } else {
         setMatchedSearchList(
-          searchList.map((obj) => ({
+          searchList.map((obj, i) => ({
             value: obj.id, // required by plugin
             label: obj.id, // required by plugin
             symbol: obj.symbol,
             obj: obj,
+            last: searchList.length === i + 1, // for styling
           })),
         );
       }
@@ -76,7 +78,16 @@ export const QuickSearch = (): JSX.Element => {
 
   const renderItem = forwardRef<HTMLDivElement, ItemProps>(
     (
-      { value, label, symbol, obj, superseded, entity, ...others }: ItemProps,
+      {
+        value,
+        label,
+        symbol,
+        obj,
+        superseded,
+        entity,
+        last,
+        ...others
+      }: ItemProps,
       ref,
     ) => {
       let badgeText: string;
@@ -95,28 +106,12 @@ export const QuickSearch = (): JSX.Element => {
         ? `File ${matchingToken} has been updated`
         : matchingToken;
 
-      const IconFormatted = ({
-        Icon,
-        changeOnHover,
-      }: {
-        Icon: any;
-        changeOnHover: boolean;
-      }): JSX.Element => (
-        <div
-          className={`
-          ${
-            changeOnHover
-              ? "bg-primary-contrast-darker"
-              : "bg-accent-cool-content-lighter"
-          }
-          rounded-full
-        `}
-        >
+      const IconFormatted = ({ Icon }: { Icon: any }): JSX.Element => (
+        <div className="bg-accent-cool-content-lighter rounded-full">
           <Icon className="p-1.5 w-10 h-10" aria-hidden />
         </div>
       );
       const entityForMapping = entity || atob(label).split(":")[0];
-
       return (
         <div
           data-testid="text-search-result"
@@ -126,36 +121,30 @@ export const QuickSearch = (): JSX.Element => {
         >
           <div
             className={`px-4 ${
-              others["data-hovered"]
-                ? "bg-primary-darkest text-primary-contrast-darkest"
-                : ""
+              others["data-hovered"] ? "bg-primary-lightest" : ""
             }`}
           >
-            <div className="py-2 flex gap-2 border-b border-gdc-grey-light">
+            <div
+              className={`py-2 flex gap-2 ${
+                last ? "" : "border-b border-gdc-grey-light"
+              }`}
+            >
               <div className="self-center">
-                <IconFormatted
-                  Icon={entityIconMapping[entityForMapping]}
-                  changeOnHover={others["data-hovered"]}
-                />
+                <IconFormatted Icon={entityIconMapping[entityForMapping]} />
               </div>
-              <div className="flex flex-col text-xs leading-4">
+              <div className="flex flex-col leading-5">
                 <div style={{ width: 200 }} className="font-bold">
                   {badgeText}
                 </div>
                 <span className="">
                   <Highlight
                     highlight={searchText.trim()}
-                    highlightStyles={{
-                      fontStyle: "italic",
-                      fontWeight: "bold",
-                      fontSize: "14px",
-                      color: `${others["data-hovered"] && "#38393a"}`, //nciGrayDarkest : might need to change the color
-                    }}
+                    highlightStyles={{ fontStyle: "italic" }}
                   >
                     {mainText}
                   </Highlight>
                 </span>
-                <span className={others["data-hovered"] ? "" : "text-gdc-grey"}>
+                <span className="text-base-content-dark">
                   <b>Category:</b> {entityForMapping}
                 </span>
               </div>
