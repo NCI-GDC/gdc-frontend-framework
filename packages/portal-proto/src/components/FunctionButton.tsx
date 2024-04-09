@@ -20,7 +20,7 @@ export default tw(Button)<FunctionButtonProps>`
      ? "opacity-60 border-opacity-60 text-opacity-60 aria-disabled"
      : null}
 ${(p: FunctionButtonProps) =>
-  p.$variant !== "icon" ? "flex flex-row items-center" : undefined}
+  p.$variant !== "icon" ? "flex flex-row items-center px-3 md:px-4" : undefined}
 ${(p: FunctionButtonProps) =>
   p.$variant === "filled" ? "bg-primary text-white" : "bg-white text-primary"}
 ${(p: FunctionButtonProps) =>

@@ -129,14 +129,20 @@ const SetOperationsDemo = (): JSX.Element => {
       createDemoSet1({
         filters: DEMO_SETS[0].filters as GqlOperation,
         set_id: DEMO_SETS[0].id,
+        intent: "portal",
+        set_type: "ephemeral",
       });
       createDemoSet2({
         filters: DEMO_SETS[1].filters as GqlOperation,
         set_id: DEMO_SETS[1].id,
+        intent: "portal",
+        set_type: "ephemeral",
       });
       createDemoSet3({
         filters: DEMO_SETS[2].filters as GqlOperation,
         set_id: DEMO_SETS[2].id,
+        intent: "portal",
+        set_type: "ephemeral",
       });
     }
   }, [needsToCreateSets, createDemoSet1, createDemoSet2, createDemoSet3]);

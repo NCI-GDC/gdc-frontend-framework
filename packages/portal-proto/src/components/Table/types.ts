@@ -90,6 +90,7 @@ export interface PaginationOptions {
  * @property setExpanded - optional handle for onExpandedChange
  * @property getRowId - optional function is used to derive a unique ID for any given row
  * @property baseZIndex - optional used to properly set z-index of table elements (e.g. tooltips)
+ * @property customDataTestID - optional locator for test automation
  * @category Table
  */
 
@@ -248,6 +249,8 @@ export interface TableProps<TData> {
    * optional used to properly set z-index of table elements (e.g. tooltips)
    */
   baseZIndex?: number;
+
+  customDataTestID?: string;
 }
 
 export interface HandleChangeInput {

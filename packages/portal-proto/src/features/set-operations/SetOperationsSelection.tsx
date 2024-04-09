@@ -45,7 +45,7 @@ const SetOperationsSelection = (): JSX.Element => {
     cohort1Id === "demoCohort1Id" && cohort2Id === "demoCohort2Id";
 
   return !ready ? (
-    <LoadingOverlay visible />
+    <LoadingOverlay data-testid="loading-spinner" visible />
   ) : !cohort1Id && !cohort2Id && selectionScreenOpen ? (
     <SelectionPanel
       app={app}

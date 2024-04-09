@@ -11,13 +11,15 @@ import {
 } from "@/utils/index";
 import {
   GdcFile,
+  Modals,
   SortBy,
   selectCart,
+  selectCurrentModal,
   useCoreDispatch,
   useCoreSelector,
   useGetFilesQuery,
 } from "@gff/core";
-import { Tooltip } from "@mantine/core";
+import { Loader, Tooltip } from "@mantine/core";
 import {
   ColumnDef,
   ColumnOrderState,
@@ -33,6 +35,7 @@ import { mapGdcFileToCartFile } from "../files/utils";
 import download from "@/utils/download";
 import { downloadTSV } from "@/components/Table/utils";
 import { convertDateToString } from "@/utils/date";
+import { AgreementModal } from "@/components/Modals/AgreementModal";
 
 interface FilesTableProps {
   caseId: string;
@@ -55,10 +58,14 @@ const caseFilesTableColumnHelper = createColumnHelper<CaseFilesTableDataType>();
 const FilesTable = ({ caseId }: FilesTableProps) => {
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
+  const modal = useCoreSelector((state) => selectCurrentModal(state));
   const [tableData, setTableData] = useState<CaseFilesTableDataType[]>([]);
   const [sortBy, setSortBy] = useState<SortBy[]>([
     { field: "experimental_strategy", direction: "asc" },
   ]);
+  const [fileToDownload, setFileToDownload] = useState(null);
+  const [downloadJSONActive, setDownloadJSONActive] = useState(false);
+  const [downloadTSVActive, setDownloadTSVActive] = useState(false);
   const [pageSize, setPageSize] = useState(10);
   const [activePage, setActivePage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
@@ -230,6 +237,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
               isOutputFileInCart={isOutputFileInCart}
               file={mapGdcFileToCartFile([row.original.file])}
               downloadFile={row.original.file}
+              setFileToDownload={setFileToDownload}
             />
           );
         },
@@ -270,6 +278,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
   };
 
   const handleDownloadJSON = async () => {
+    setDownloadJSONActive(true);
     await download({
       endpoint: "files",
       method: "POST",
@@ -300,11 +309,13 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
           "file_size",
         ].join(","),
       },
+      done: () => setDownloadJSONActive(false),
       dispatch,
     });
   };
 
   const handleDownloadTSV = () => {
+    setDownloadTSVActive(true);
     downloadTSV({
       tableData,
       columnOrder,
@@ -319,13 +330,21 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
           },
         },
       },
-    });
+    })
+      .then(() => {
+        setDownloadTSVActive(false);
+      })
+      .catch((error) => {
+        console.error("Error during download:", error);
+        setDownloadTSVActive(false);
+      });
   };
 
   return (
     <>
       <HeaderTitle>Files</HeaderTitle>
       <VerticalTable
+        customDataTestID="table-files-case-summary"
         data={tableData}
         columns={caseFilesTableDefaultColumns}
         status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
@@ -333,18 +352,20 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
           <div className="flex gap-2 mb-2">
             <Tooltip label="Download JSON">
               <FunctionButton
+                data-testid="button-json-files-case-summary"
                 onClick={handleDownloadJSON}
                 aria-label="Download JSON"
               >
-                JSON
+                {downloadJSONActive ? <Loader size="sm" /> : "JSON"}
               </FunctionButton>
             </Tooltip>
             <Tooltip label="Download TSV">
               <FunctionButton
+                data-testid="button-tsv-files-case-summary"
                 onClick={handleDownloadTSV}
                 aria-label="Download TSV"
               >
-                TSV
+                {downloadTSVActive ? <Loader size="sm" /> : "TSV"}
               </FunctionButton>
             </Tooltip>
           </div>
@@ -365,6 +386,12 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
         sorting={sorting}
         setSorting={setSorting}
         setColumnOrder={setColumnOrder}
+      />
+
+      <AgreementModal
+        openModal={modal === Modals.AgreementModal && fileToDownload !== null}
+        file={fileToDownload}
+        dbGapList={fileToDownload?.acl}
       />
     </>
   );

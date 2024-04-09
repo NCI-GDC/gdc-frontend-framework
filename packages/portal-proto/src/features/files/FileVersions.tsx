@@ -112,6 +112,7 @@ const FileVersions = ({
         <div className="mt-14 mb-16">
           <HeaderTitle>File Versions</HeaderTitle>
           <VerticalTable
+            customDataTestID="button-file-versions-file-summary"
             additionalControls={
               <div className="mb-2">
                 <DropdownWithIcon

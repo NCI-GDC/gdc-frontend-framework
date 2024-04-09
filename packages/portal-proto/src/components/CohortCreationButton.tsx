@@ -101,6 +101,10 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
         <CohortCreationStyledButton
           data-testid="button-save-filtered-cohort"
           onClick={async () => {
+            if (loading) {
+              return;
+            }
+
             if (filtersCallback) {
               setLoading(true);
               const createdFilters = await filtersCallback();
@@ -109,7 +113,7 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
             }
             setShowSaveCohort(true);
           }}
-          disabled={disabled || loading}
+          disabled={disabled}
           $fullWidth={React.isValidElement(label)} // if label is JSX.Element take the full width
           aria-label={tooltipText}
         >

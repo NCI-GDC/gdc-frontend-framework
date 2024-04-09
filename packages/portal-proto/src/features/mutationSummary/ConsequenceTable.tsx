@@ -347,6 +347,7 @@ export const ConsequenceTable = ({
 
   return (
     <VerticalTable
+      customDataTestID="table-consequences-mutation-summary"
       data={displayedData}
       columns={consequenceTableDefaultColumns}
       setColumnVisibility={setColumnVisibility}

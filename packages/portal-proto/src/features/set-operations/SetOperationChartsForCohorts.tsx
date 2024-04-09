@@ -48,16 +48,22 @@ const SetOperationChartsForCohorts = ({
       filters: isCohortComparisonDemo
         ? buildCohortGqlOperator(cohortComparisonDemo1.filter)
         : buildCohortGqlOperator(getCohortFilterForAPI(cohorts[0])),
+      intent: "portal",
+      set_type: "ephemeral",
     });
     createSet1({
       filters: isCohortComparisonDemo
         ? buildCohortGqlOperator(cohortComparisonDemo2.filter)
         : buildCohortGqlOperator(getCohortFilterForAPI(cohorts[1])),
+      intent: "portal",
+      set_type: "ephemeral",
     });
     if (cohorts?.length == 3)
       // if there are 3 cohorts, create the third one
       createSet2({
         filters: buildCohortGqlOperator(getCohortFilterForAPI(cohorts[2])),
+        intent: "portal",
+        set_type: "ephemeral",
       });
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
