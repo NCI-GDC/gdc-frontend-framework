@@ -198,48 +198,52 @@ const FieldControl: React.FC<FieldControlProps> = ({
           withArrow
           width={200}
           multiline
+          zIndex={15}
         >
-          <Switch
-            data-testid={`button-field-${displayName}-cdave`}
-            label={displayName}
-            labelPosition="left"
-            styles={(theme) => ({
-              track: {
-                "&:hover": {
-                  backgroundColor: theme.fn.darken(
-                    tailwindConfig.theme.extend.colors[
-                      COLOR_MAP[field.field_type]
-                    ]?.DEFAULT,
-                    0.05,
-                  ),
+          {/* div added otherwise tooltip does not work in mantine 6 */}
+          <div>
+            <Switch
+              data-testid={`button-field-${displayName}-cdave`}
+              label={displayName}
+              labelPosition="left"
+              styles={(theme) => ({
+                track: {
+                  "&:hover": {
+                    backgroundColor: theme.fn.darken(
+                      tailwindConfig.theme.extend.colors[
+                        COLOR_MAP[field.field_type]
+                      ]?.DEFAULT,
+                      0.05,
+                    ),
+                  },
                 },
-              },
-              input: {
-                "&:checked + .mantine-Switch-track": {
-                  backgroundColor:
-                    tailwindConfig.theme.extend.colors[
-                      COLOR_MAP[field.field_type]
-                    ]?.DEFAULT,
-                  borderColor:
-                    tailwindConfig.theme.extend.colors[
-                      COLOR_MAP[field.field_type]
-                    ]?.DEFAULT,
+                input: {
+                  "&:checked + .mantine-Switch-track": {
+                    backgroundColor:
+                      tailwindConfig.theme.extend.colors[
+                        COLOR_MAP[field.field_type]
+                      ]?.DEFAULT,
+                    borderColor:
+                      tailwindConfig.theme.extend.colors[
+                        COLOR_MAP[field.field_type]
+                      ]?.DEFAULT,
+                  },
                 },
-              },
-            })}
-            classNames={{
-              root: "py-2",
-              body: "flex justify-between items-center",
-              label:
-                "cursor-pointer text-base text-black font-content font-medium",
-              track: "cursor-pointer",
-            }}
-            checked={checked}
-            onChange={(e) => {
-              setChecked(e.currentTarget.checked);
-              updateFields(field.full);
-            }}
-          />
+              })}
+              classNames={{
+                root: "py-2",
+                body: "flex justify-between items-center",
+                label:
+                  "cursor-pointer text-base text-black font-content font-medium",
+                track: "cursor-pointer",
+              }}
+              checked={checked}
+              onChange={(e) => {
+                setChecked(e.currentTarget.checked);
+                updateFields(field.full);
+              }}
+            />
+          </div>
         </Tooltip>
       )}
       <Divider />
