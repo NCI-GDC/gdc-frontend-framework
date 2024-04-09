@@ -298,7 +298,11 @@ export const Header: React.FC<HeaderProps> = ({
               aria-label="Close navigation panel"
               data-testid="button-close-navigation-panel"
             >
-              <LeftArrowIcon size={30} className="text-primary-darker" />
+              <LeftArrowIcon
+                size={30}
+                className="text-primary-darker"
+                aria-hidden="true"
+              />
             </ActionIcon>
             Navigation
           </div>
@@ -381,7 +385,7 @@ export const Header: React.FC<HeaderProps> = ({
                   <Box component="span" mr={3} className="text-sm">
                     GDC Apps
                   </Box>
-                  <DownArrowCollapseIcon size="24px" />
+                  <DownArrowCollapseIcon size="24px" aria-hidden="true" />
                 </Center>
               </UnstyledButton>
             </li>
