@@ -525,7 +525,11 @@ export const Header: React.FC<HeaderProps> = ({
                   aria-hidden="true"
                 />
                 <p className="font-heading">GDC Apps</p>
-                <ArrowDropDownIcon size="24px" className="-ml-1" />
+                <ArrowDropDownIcon
+                  size="24px"
+                  className="-ml-1"
+                  aria-hidden="true"
+                />
               </button>
             </Menu.Target>
             <Menu.Dropdown>

@@ -11,6 +11,7 @@ const Icon: React.FC<IconProps> = ({ children, size = 24, className = "" }) => {
   return React.cloneElement(children, {
     size,
     className: `${className} text-primary-darkest`,
+    "aria-hidden": "true",
   });
 };
 
@@ -28,11 +29,7 @@ const IconWrapper: React.FC<IconWrapperProps> = ({
   iconStyle = "",
 }) => (
   <Center className="gap-1">
-    <Icon
-      size={iconSize}
-      className={`${iconStyle} text-inherit`}
-      aria-hidden="true"
-    >
+    <Icon size={iconSize} className={`${iconStyle} text-inherit`}>
       {icon}
     </Icon>
     {text}
