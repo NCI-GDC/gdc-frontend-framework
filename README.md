@@ -182,6 +182,14 @@ mkcert localhost
 local-ssl-proxy --config path/to/ssl-proxy.json --cert localhost.pem --key localhost-key.pem
 ```
 
+## Version
+
+Update the versions of all workspaces at the same time. (Replace 2.13.0 with the new version to set)
+
+```bash
+npm run version -- 2.13.0
+```
+
 ## Documentation
 
 Run build-docs to generate documentation for "portal-proto" and "core" packages
