@@ -28,7 +28,11 @@ const IconWrapper: React.FC<IconWrapperProps> = ({
   iconStyle = "",
 }) => (
   <Center className="gap-1">
-    <Icon size={iconSize} className={`${iconStyle} text-inherit`}>
+    <Icon
+      size={iconSize}
+      className={`${iconStyle} text-inherit`}
+      aria-hidden="true"
+    >
       {icon}
     </Icon>
     {text}

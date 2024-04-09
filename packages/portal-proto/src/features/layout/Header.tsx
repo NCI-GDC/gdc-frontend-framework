@@ -22,6 +22,7 @@ import {
   Center,
   Box,
   Collapse,
+  ActionIcon,
 } from "@mantine/core";
 import { ReactNode, useContext, useEffect, useRef, useState } from "react";
 import tw from "tailwind-styled-components";
@@ -32,6 +33,7 @@ import {
   MdOutlineApps as AppsIcon,
   MdLogout as LogoutIcon,
   MdArrowDropDown as ArrowDropDownIcon,
+  MdKeyboardBackspace as LeftArrowIcon,
 } from "react-icons/md";
 import { FaDownload, FaUserCheck } from "react-icons/fa";
 import {
@@ -109,7 +111,8 @@ export const Header: React.FC<HeaderProps> = ({
   const label = drawerOpened ? "Close navigation" : "Open navigation";
   const { width } = useViewportSize();
 
-  // need to update this
+  // Need to close the drawer when the screen width is > 1280 px (XL)
+  // Just using hidden or block will show the panel without manually trigerring it.
   useEffect(() => {
     if (width > 1279 && drawerOpened) {
       closeDrawer();
@@ -270,7 +273,8 @@ export const Header: React.FC<HeaderProps> = ({
             opened={drawerOpened}
             onClick={toggleDrawer}
             aria-label={label}
-            className="text-primary-darkest pt-0"
+            color={theme.extend.colors["nci-blue"].darkest}
+            className="pt-0"
           />
         </div>
 
@@ -278,16 +282,26 @@ export const Header: React.FC<HeaderProps> = ({
           opened={drawerOpened}
           onClose={closeDrawer}
           classNames={{
-            header: "py-2 px-4 border-b border-base-lighter",
-            body: "px-3",
-            title: "text-xl font-header font-bold text-primary-darker",
+            header: "py-2 px-4",
+            body: "px-3 py-0",
             close: "hover:bg-base-lightest",
+            title: "w-full",
           }}
           position="right"
-          title="Navigation"
           padding="md"
           size="xs"
+          withCloseButton={false}
         >
+          <div className="flex items-center gap-2 bg-base-max sticky top-0 z-1000 text-primary-darker border-b border-base-lighter font-bold py-4">
+            <ActionIcon
+              onClick={closeDrawer}
+              aria-label="Close navigation panel"
+              data-testid="button-close-navigation-panel"
+            >
+              <LeftArrowIcon size={30} className="text-primary-darker" />
+            </ActionIcon>
+            Navigation
+          </div>
           <ul>
             <li>
               <NavLinkWithIcon
@@ -356,6 +370,7 @@ export const Header: React.FC<HeaderProps> = ({
               <UnstyledButton
                 onClick={toggleGdcApps}
                 className="flex px-1 py-4 hover:bg-primary-lightest w-full hover:rounded-md text-primary-darkest"
+                aria-expanded={gdcAppsOpened ? "true" : "false"}
               >
                 <Center className="gap-1">
                   <AppsIcon
