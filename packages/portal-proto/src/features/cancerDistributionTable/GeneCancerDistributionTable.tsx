@@ -1,4 +1,3 @@
-import { processFilters } from "@/utils/index";
 import { GeneCancerDistributionTableProps } from "./utils";
 import { useGetGeneCancerDistributionTableQuery } from "@gff/core";
 import CancerDistributionTable from "./CancerDistributionTable";
@@ -11,10 +10,12 @@ const GeneCancerDistributionTable: React.FC<
   genomicFilters = undefined,
   cohortFilters = undefined,
 }: GeneCancerDistributionTableProps) => {
-  const contextFilters = processFilters(genomicFilters, cohortFilters);
-
   const { data, isFetching, isError, isSuccess } =
-    useGetGeneCancerDistributionTableQuery({ gene, contextFilters });
+    useGetGeneCancerDistributionTableQuery({
+      gene,
+      genomicFilters,
+      cohortFilters,
+    });
   return (
     <CancerDistributionTable
       data={data}

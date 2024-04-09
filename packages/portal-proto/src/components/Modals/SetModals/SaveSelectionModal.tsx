@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { UseMutation } from "@reduxjs/toolkit/dist/query/react/buildHooks";
+import { MutationDefinition } from "@reduxjs/toolkit/dist/query";
 import { TextInput, NumberInput, Modal } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
@@ -9,6 +10,8 @@ import {
   SetTypes,
   useCoreSelector,
   selectSetsByType,
+  CreateSetFilterArgs,
+  GqlOperation,
 } from "@gff/core";
 import FunctionButton from "@/components/FunctionButton";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
@@ -19,18 +22,22 @@ import { SET_COUNT_LIMIT } from "./constants";
 import { useDeepCompareCallback } from "use-deep-compare";
 
 interface SaveSelectionAsSetModalProps {
-  readonly filters: Record<string, any>;
+  readonly cohortFilters?: GqlOperation;
+  readonly filters: GqlOperation;
   readonly initialSetName: string;
   readonly saveCount: number;
   readonly setType: SetTypes;
   readonly setTypeLabel: string;
-  readonly createSetHook: UseMutation<any>;
+  readonly createSetHook: UseMutation<
+    MutationDefinition<CreateSetFilterArgs, any, any, any>
+  >;
   readonly closeModal: () => void;
   readonly sort?: string;
   readonly opened: boolean;
 }
 
 const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
+  cohortFilters,
   filters,
   initialSetName,
   saveCount,
@@ -121,9 +128,12 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
         <DarkFunctionButton
           onClick={() =>
             createSet({
+              case_filters: cohortFilters ?? {},
               filters: filters ?? {},
               size: form.values.top,
               score: sort,
+              set_type: "mutable",
+              intent: "user",
             })
               .unwrap()
               .then((response: string) => {

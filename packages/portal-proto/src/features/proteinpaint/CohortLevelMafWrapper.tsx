@@ -1,4 +1,5 @@
-import { useEffect, useRef, FC } from "react";
+import { useRef, FC } from "react";
+import { useDeepCompareEffect } from "use-deep-compare";
 import { runproteinpaint } from "@sjcrh/proteinpaint-client";
 import {
   useCoreSelector,
@@ -23,7 +24,7 @@ export const CohortLevelMafWrapper: FC<PpProps> = (props: PpProps) => {
   const filter0 = buildCohortGqlOperator(currentCohort);
   const userDetails = useFetchUserDetailsQuery();
 
-  useEffect(
+  useDeepCompareEffect(
     () => {
       const rootElem = divRef.current as HTMLElement;
       const data = getMafUi(props, filter0);

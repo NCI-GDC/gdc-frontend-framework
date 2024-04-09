@@ -2,7 +2,6 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { FilterSet, useSsmPlot } from "@gff/core";
 import ChartTitleBar from "./ChartTitleBar";
-import { processFilters } from "src/utils";
 import { CountSpan } from "@/components/tailwindComponents";
 
 const BarChart = dynamic(() => import("./BarChart"), {
@@ -28,14 +27,13 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
   genomicFilters = undefined,
   cohortFilters = undefined,
 }: SSMPlotProps) => {
-  const contextFilters = processFilters(genomicFilters, cohortFilters);
-
   const router = useRouter();
 
   const { data, error, isUninitialized, isFetching, isError } = useSsmPlot({
     gene,
     ssms,
-    contextFilters,
+    cohortFilters,
+    genomicFilters,
   });
 
   if (isUninitialized) {
@@ -105,7 +103,10 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
   };
 
   return (
-    <div className="border border-base-lighter p-4">
+    <div
+      data-testid="graph-cancer-distribution-mutations"
+      className="border border-base-lighter p-4"
+    >
       <div>
         <ChartTitleBar
           title={title}

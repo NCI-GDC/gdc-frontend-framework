@@ -17,7 +17,8 @@ interface DownloadFileProps {
   inactiveText?: string;
   setfileToDownload?: React.Dispatch<React.SetStateAction<GdcFile>>;
   showLoading?: boolean;
-  variant?: FunctionButtonVariants;
+  customDataTestID?: string;
+  displayVariant?: FunctionButtonVariants;
 }
 
 export const DownloadFile: React.FC<DownloadFileProps> = ({
@@ -26,7 +27,8 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
   inactiveText,
   setfileToDownload,
   showLoading = true,
-  variant,
+  customDataTestID,
+  displayVariant,
 }: DownloadFileProps) => {
   const dispatch = useCoreDispatch();
   const [fetchUserDetails] = useLazyFetchUserDetailsQuery();
@@ -59,6 +61,7 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
   if (file.access === "open") {
     return (
       <DownloadButton
+        data-testid={customDataTestID}
         extraParams={{
           ids: file.file_id,
           annotations: true,
@@ -72,20 +75,21 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
         setActive={setActive}
         active={active}
         showLoading={showLoading}
-        variant={variant}
+        displayVariant={displayVariant}
       />
     );
   }
 
   return (
     <DownloadButton
+      data-testid={customDataTestID}
       inactiveText={inactiveText}
       activeText={activeText}
       onClick={onClick}
       setActive={setActive}
       active={active}
       showLoading={showLoading}
-      variant={variant}
+      displayVariant={displayVariant}
     />
   );
 };

@@ -32,49 +32,56 @@ export function downloadTSV<TData>({
       }
     >;
   };
-}): void {
-  // Filter columns based on blackList and columnVisibility
-  const filteredColumns = columns.filter((column) => {
-    const columnId = column.id;
-    return (
-      !option?.blacklist?.includes(columnId) &&
-      !(columnVisibility?.[columnId] === false)
-    );
-  });
+}): Promise<void> {
+  return new Promise<void>((resolve, reject) => {
+    try {
+      // Filter columns based on blackList and columnVisibility
+      const filteredColumns = columns.filter((column) => {
+        const columnId = column.id;
+        return (
+          !option?.blacklist?.includes(columnId) &&
+          !(columnVisibility?.[columnId] === false)
+        );
+      });
 
-  // Sort columns based on columnOrder
-  const sortedColumns = (columnOrder || columns.map((column) => column.id))
-    ?.map((columnId) => {
-      const foundColumn = filteredColumns.find(
-        (column) => column.id === columnId,
-      );
-      return foundColumn ? foundColumn : null;
-    })
-    .filter((column) => column !== null);
-
-  const header = sortedColumns
-    .map((column) =>
-      typeof column?.header === "string"
-        ? column.header
-        : humanify({ term: column.id }),
-    )
-    .join("\t");
-
-  const body = (tableData || [])
-    .map((datum) =>
-      sortedColumns
-        .map((column) => {
-          const composer = option?.overwrite?.[column.id]?.composer;
-          return composer ? composer(datum) : datum?.[column.id];
+      // Sort columns based on columnOrder
+      const sortedColumns = (columnOrder || columns.map((column) => column.id))
+        ?.map((columnId) => {
+          const foundColumn = filteredColumns.find(
+            (column) => column.id === columnId,
+          );
+          return foundColumn ? foundColumn : null;
         })
-        .join("\t"),
-    )
-    .join("\n");
+        .filter((column) => column !== null);
 
-  const tsv = [header, body].join("\n");
-  const blob = new Blob([tsv], { type: "text/tsv" });
+      const header = sortedColumns
+        .map((column) =>
+          typeof column?.header === "string"
+            ? column.header
+            : humanify({ term: column.id }),
+        )
+        .join("\t");
 
-  saveAs(blob, fileName);
+      const body = (tableData || [])
+        .map((datum) =>
+          sortedColumns
+            .map((column) => {
+              const composer = option?.overwrite?.[column.id]?.composer;
+              return composer ? composer(datum) : datum?.[column.id];
+            })
+            .join("\t"),
+        )
+        .join("\n");
+
+      const tsv = [header, body].join("\n");
+      const blob = new Blob([tsv], { type: "text/tsv" });
+
+      saveAs(blob, fileName);
+      resolve();
+    } catch (error) {
+      reject(error);
+    }
+  });
 }
 
 // these are a few standard column ids that will not be part of column ordering

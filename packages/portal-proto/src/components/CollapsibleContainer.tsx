@@ -44,12 +44,12 @@ export const CollapsibleContainer = (
   return (
     <div
       className={`flex flex-col ${
-        isContextBar && "overflow-y-auto max-h-screen-90vh"
+        isContextBar && "overflow-y-auto max-h-screen-100vh"
       }`}
     >
       <div className="flex flex-wrap">
         <div className="flex-grow">{Top}</div>
-        <div className="flex items-center bg-primary pr-4 gap-4 md:flex-wrap md:w-full md:py-5 md:pl-5 lg:flex-no-wrap lg:w-auto lg:py-0 lg:pl-0">
+        <div className="flex items-center bg-primary pr-4 gap-4 flex-wrap w-full py-5 pl-5 lg:flex-no-wrap lg:w-auto lg:py-0 lg:pl-0">
           <Tooltip label={tooltipText} position={tooltipPosition} withArrow>
             <span>
               <button

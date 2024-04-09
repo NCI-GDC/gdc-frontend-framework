@@ -56,7 +56,7 @@ interface DownloadButtonProps {
   Modal403?: Modals;
   Modal400?: Modals;
   toolTip?: string;
-  variant?: FunctionButtonVariants;
+  displayVariant?: FunctionButtonVariants;
 }
 
 /**
@@ -114,7 +114,7 @@ export const DownloadButton = forwardRef<
       Modal400,
       Modal403,
       toolTip,
-      variant,
+      displayVariant,
       ...buttonProps
     }: DownloadButtonProps,
     ref,
@@ -130,13 +130,14 @@ export const DownloadButton = forwardRef<
     return (
       <Tooltip disabled={!toolTip} label={toolTip}>
         <FunctionButton
-          $variant={variant}
+          $variant={displayVariant}
           ref={ref}
           leftIcon={
             showIcon && inactiveText && <FiDownload aria-label="download" />
           }
           disabled={disabled}
           loading={showLoading && active}
+          variant="outline"
           onClick={() => {
             if (!preventClickEvent && onClick) {
               onClick();
