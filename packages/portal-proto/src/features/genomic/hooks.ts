@@ -332,9 +332,16 @@ export const useTopGeneSsms = ({
 
   // Plot top if no current survival plot
   useDeepCompareEffect(() => {
-    if (comparativeSurvival === undefined && topGeneSSMSSuccess && !ssmSearch) {
+    if (topGeneSSMSSuccess && !ssmSearch) {
       const { genes, ssms } = topGeneSSMS;
       const { name, symbol } = appMode === "genes" ? genes : ssms;
+
+      if (
+        comparativeSurvival !== undefined &&
+        comparativeSurvival.symbol === symbol
+      ) {
+        return;
+      }
       const { consequence_type, aa_change } = ssms;
       setComparativeSurvival({
         symbol: symbol,
