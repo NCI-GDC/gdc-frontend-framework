@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Cohort Comparison - Download TSV
 Test-case       : PEAR-816
 
-tags: gdc-data-portal-v2, regression, cohort-comparison
+tags: gdc-data-portal-v2, regression, cohort-comparison, cohort-comparison-download-tsv
 
 ## Navigate to Cohort Builder
 * On GDC Data Portal V2 app
