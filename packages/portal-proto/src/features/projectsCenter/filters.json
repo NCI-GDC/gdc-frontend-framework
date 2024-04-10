@@ -5,7 +5,6 @@
       "field": "primary_site",
       "full": "projects.primary_site",
       "doc_type": "project",
-      "description": null,
       "type": "keyword",
       "facet_type": "enum"
     },
@@ -14,7 +13,6 @@
       "field": "program.name",
       "full": "projects.program.name",
       "doc_type": "project",
-      "description": null,
       "type": "keyword",
       "facet_type": "enum"
     },
@@ -23,7 +21,6 @@
       "field": "disease_type",
       "full": "projects.disease_type",
       "doc_type": "project",
-      "description": null,
       "type": "keyword",
       "facet_type": "enum"
     },
@@ -32,7 +29,6 @@
       "field": "summary.data_categories.data_category",
       "full": "projects.summary.data_categories.data_category",
       "doc_type": "project",
-      "description": null,
       "type": "keyword",
       "facet_type": "enum"
     },
@@ -41,7 +37,6 @@
       "field": "summary.experimental_strategies.experimental_strategy",
       "full": "projects.summary.experimental_strategies.experimental_strategy",
       "doc_type": "project",
-      "description": null,
       "type": "keyword",
       "facet_type": "enum"
     }
