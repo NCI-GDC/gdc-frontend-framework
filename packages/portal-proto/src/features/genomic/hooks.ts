@@ -330,7 +330,7 @@ export const useTopGeneSsms = ({
     genomicFilters: genomicFilters,
   }); // get the default top gene/ssms to show by default
 
-  // Plot top if no current survival plot
+  // Plot top if new top
   useDeepCompareEffect(() => {
     if (topGeneSSMSSuccess && !ssmSearch) {
       const { genes, ssms } = topGeneSSMS;
