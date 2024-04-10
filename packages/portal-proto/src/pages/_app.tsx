@@ -7,7 +7,7 @@ import "@/features/genomic/registerApp";
 import "@/features/projectsCenter/registerApp";
 import "@/features/repositoryApp/registerApp";
 import { datadogRum } from "@datadog/browser-rum";
-import { CoreProvider } from "@gff/core";
+import { CoreProvider, PUBLIC_APP_INFO } from "@gff/core";
 import {
   MantineProvider,
   createEmotionCache,
@@ -34,22 +34,23 @@ import { Notifications } from "@mantine/notifications";
 
 if (process.env.NODE_ENV !== "test") ReactModal.setAppElement("#__next");
 
-datadogRum.init({
-  applicationId: "3faf9c0a-311f-4935-a596-3347666ef35d",
-  clientToken: "pub9f7e31eaacd4afa71ac5161cbd5b0c11",
-  site: "datadoghq.com",
-  service: "portal-2.0",
-
-  // Specify a version number to identify the deployed version of your application in Datadog
-  // version: '1.0.0',
-  sessionSampleRate: 100,
-  sessionReplaySampleRate: 0,
-  trackUserInteractions: true,
-  trackFrustrations: true,
-  trackResources: true,
-  trackLongTasks: true,
-  defaultPrivacyLevel: "mask",
-});
+if (process.env.NODE_ENV === "production") {
+  datadogRum.init({
+    applicationId: "3faf9c0a-311f-4935-a596-3347666ef35d",
+    clientToken: "pub9f7e31eaacd4afa71ac5161cbd5b0c11",
+    site: "datadoghq.com",
+    service: "portal-2.0",
+    sessionSampleRate: 100,
+    sessionReplaySampleRate: 0,
+    trackUserInteractions: true,
+    trackFrustrations: true,
+    trackResources: true,
+    trackLongTasks: true,
+    trackViewsManually: true,
+    defaultPrivacyLevel: "mask",
+    version: `v${PUBLIC_APP_INFO?.version}-${PUBLIC_APP_INFO?.hash}`,
+  });
+}
 
 type TenStringArray = [
   string?,
