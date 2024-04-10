@@ -19,18 +19,21 @@ export type QuickSearchEntities =
   | "Gene"
   | "Ssm";
 
-export const entityIconMapping: Record<QuickSearchEntities, any> = {
-  case: UsersIcon,
-  file: FilesIcon,
-  project: ProjectsIcon,
-  annotation: HiOutlinePencilSquare,
-  gene_centric: GenesIcon,
-  ssm_centric: MutationsIcon,
+export const entityIconMapping: Record<
+  QuickSearchEntities,
+  { icon: any; category?: string }
+> = {
+  case: { icon: UsersIcon },
+  file: { icon: FilesIcon },
+  project: { icon: ProjectsIcon },
+  annotation: { icon: HiOutlinePencilSquare },
+  gene_centric: { icon: GenesIcon, category: "Gene" },
+  ssm_centric: { icon: MutationsIcon, category: "Mutation" },
 
-  Case: UsersIcon,
-  File: FilesIcon,
-  Project: ProjectsIcon,
-  Annotation: HiOutlinePencilSquare,
-  Gene: GenesIcon,
-  Ssm: MutationsIcon,
+  Case: { icon: UsersIcon },
+  File: { icon: FilesIcon },
+  Project: { icon: ProjectsIcon },
+  Annotation: { icon: HiOutlinePencilSquare },
+  Gene: { icon: GenesIcon },
+  Ssm: { icon: MutationsIcon, category: "Mutation" },
 };

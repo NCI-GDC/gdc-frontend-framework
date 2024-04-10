@@ -130,12 +130,12 @@ export const QuickSearch = (): JSX.Element => {
               }`}
             >
               <div className="self-center">
-                <IconFormatted Icon={entityIconMapping[entityForMapping]} />
+                <IconFormatted
+                  Icon={entityIconMapping[entityForMapping].icon}
+                />
               </div>
               <div className="flex flex-col leading-5">
-                <div style={{ width: 200 }} className="font-bold">
-                  {badgeText}
-                </div>
+                <div className="font-bold">{badgeText}</div>
                 <span className="">
                   <Highlight
                     highlight={searchText.trim()}
@@ -145,7 +145,10 @@ export const QuickSearch = (): JSX.Element => {
                   </Highlight>
                 </span>
                 <span className="text-base-content-dark">
-                  <b>Category:</b> {entityForMapping}
+                  <b>Category:</b>{" "}
+                  {entityIconMapping[entityForMapping].category
+                    ? entityIconMapping[entityForMapping].category
+                    : entityForMapping}
                 </span>
               </div>
             </div>
