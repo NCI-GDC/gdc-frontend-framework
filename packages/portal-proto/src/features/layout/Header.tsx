@@ -68,6 +68,8 @@ import { useDisclosure, useViewportSize } from "@mantine/hooks";
 import React from "react";
 import { GDCAppLink, NavButton, NavLinkWithIcon } from "@/components/Nav";
 
+const MAX_WIDTH_FOR_HAMBURGER = 1280;
+
 const AppMenuItem = tw(Menu.Item)`
 data-hovered:bg-primary-lightest
 p-0
@@ -114,7 +116,7 @@ export const Header: React.FC<HeaderProps> = ({
   // Need to close the drawer when the screen width is > 1280 px (XL)
   // Just using hidden or block will show the panel without manually trigerring it.
   useEffect(() => {
-    if (width > 1279 && drawerOpened) {
+    if (width >= MAX_WIDTH_FOR_HAMBURGER && drawerOpened) {
       closeDrawer();
     }
   }, [width, drawerOpened, closeDrawer]);
