@@ -369,9 +369,12 @@ const ProjectsTable: React.FC = () => {
 
   return (
     <VerticalTable
-      tableTitle={`Total of ${data?.pagination?.total?.toLocaleString()} ${
-        data?.pagination?.total > 1 ? "Projects" : "Project"
-      }`}
+      tableTitle={
+        <>
+          Total of <b>{data?.pagination?.total?.toLocaleString()}</b>{" "}
+          {data?.pagination?.total > 1 ? "Projects" : "Project"}
+        </>
+      }
       additionalControls={
         <div className="flex gap-2">
           <ProjectsCohortButton pickedProjects={pickedProjects} />
