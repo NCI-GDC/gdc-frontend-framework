@@ -332,7 +332,7 @@ export const useTopGeneSsms = ({
 
   // Plot top if new top
   useDeepCompareEffect(() => {
-    if (topGeneSSMSSuccess && !ssmSearch) {
+    if (!comparativeSurvival?.setManually && topGeneSSMSSuccess && !ssmSearch) {
       const { genes, ssms } = topGeneSSMS;
       const { name, symbol } = appMode === "genes" ? genes : ssms;
 
