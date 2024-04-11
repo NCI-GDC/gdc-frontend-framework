@@ -28,7 +28,7 @@ const QueryExpressionContainer = tw.div`
   mx-3
 `;
 
-// const MAX_COLLAPSED_ROWS = 3;
+const MAX_HEIGHT_QE_SECTION = 120;
 
 interface CollapsedStateReducerAction {
   type: "expand" | "collapse" | "clear" | "init" | "expandAll" | "collapseAll";
@@ -102,14 +102,15 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
   const [expandedState, setExpandedState] = useReducer(reducer, {});
   const [filtersSectionCollapsed, setFiltersSectionCollapsed] = useState(true);
   const filtersRef = useRef<HTMLDivElement>(null);
-  const [maxHeight, setMaxHeight] = useState(0);
+  const [QESectionHeight, setQESectionHeight] = useState(0);
   const dispatch = useCoreDispatch();
 
   useDeepCompareEffect(() => {
     if (filtersRef.current) {
       const height = filtersRef.current.scrollHeight;
-      console.log({ height });
-      setMaxHeight(height > 100 ? 100 : height);
+      setQESectionHeight(
+        height > MAX_HEIGHT_QE_SECTION ? MAX_HEIGHT_QE_SECTION : height,
+      );
     }
   }, [expandedState, filters, filtersRef]);
 
@@ -205,14 +206,11 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
 
                 <Tooltip
                   label={
-                    // filtersSectionCollapsed
-                    //   ? numOfRows <= MAX_COLLAPSED_ROWS
-                    //     ? "All rows are already displayed"
-                    //     : "Display all rows"
-                    //   : numOfRows <= MAX_COLLAPSED_ROWS
-                    //   ? `A maximum of ${MAX_COLLAPSED_ROWS} rows is already displayed`
-                    //   : `Display a maximum of ${MAX_COLLAPSED_ROWS} rows`
-                    ""
+                    noFilters
+                      ? "No filters to show/hide"
+                      : filtersSectionCollapsed
+                      ? "Show all filters"
+                      : "Hide some filters"
                   }
                 >
                   <button
@@ -223,7 +221,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                     }
                     aria-label="Expand/collapse filters section"
                     aria-expanded={!filtersSectionCollapsed}
-                    disabled={noFilters || maxHeight < 100}
+                    disabled={noFilters || QESectionHeight < 100}
                     className={getCombinedClassesForRowCollapse(
                       filtersSectionCollapsed,
                     )}
@@ -249,7 +247,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
             }`}
             style={
               filtersSectionCollapsed
-                ? { maxHeight: `${maxHeight}px`, overflowY: "auto" }
+                ? { maxHeight: `${QESectionHeight}px`, overflowY: "auto" }
                 : undefined
             }
             ref={filtersRef}
