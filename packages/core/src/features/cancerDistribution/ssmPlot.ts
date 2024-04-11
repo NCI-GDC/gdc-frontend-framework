@@ -10,16 +10,16 @@ import { buildCohortGqlOperator, FilterSet } from "../cohort";
 import { GqlIntersection } from "../gdcapi/filters";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 
-const graphqlQuery = `query CancerDistribution($caseAggsFilters: FiltersArgument, $ssmTested: FiltersArgument, $ssmFilters: FiltersArgument) {
+const graphqlQuery = `query CancerDistribution($caseFilters: FiltersArgument, $caseAggsFilters: FiltersArgument, $ssmTested: FiltersArgument, $ssmFilters: FiltersArgument) {
   viewer {
     explore {
       ssms {
-        hits(first: 0, filters: $ssmFilters) {
+        hits(first: 0, case_filters: $caseFilters, filters: $ssmFilters) {
           total
         }
       }
       cases {
-        ssmFiltered: aggregations(filters: $caseAggsFilters) {
+        ssmFiltered: aggregations(case_filters: $caseFilters, filters: $caseAggsFilters) {
           project__project_id {
             buckets {
               doc_count
@@ -44,15 +44,17 @@ const graphqlQuery = `query CancerDistribution($caseAggsFilters: FiltersArgument
 const fetchSsmAnalysisQuery = async (
   gene: string,
   ssms: string,
-  contextFilters: FilterSet | undefined,
+  cohortFilters: FilterSet | undefined,
+  genomicFilters: FilterSet | undefined,
 ) => {
-  const gqlContextFilter = buildCohortGqlOperator(contextFilters);
+  const gqlGenomicFilters = buildCohortGqlOperator(genomicFilters);
   const gqlContextIntersection =
-    gqlContextFilter && (gqlContextFilter as GqlIntersection).content
-      ? (gqlContextFilter as GqlIntersection).content
+    gqlGenomicFilters && (gqlGenomicFilters as GqlIntersection).content
+      ? (gqlGenomicFilters as GqlIntersection).content
       : [];
   const graphqlFilters = gene
     ? {
+        caseFilters: buildCohortGqlOperator(cohortFilters),
         caseAggsFilters: {
           op: "and",
           content: [
@@ -157,13 +159,20 @@ export const fetchSsmPlot = createAsyncThunk(
   async ({
     gene,
     ssms,
-    contextFilters,
+    cohortFilters,
+    genomicFilters,
   }: {
     gene: string;
     ssms: string;
-    contextFilters: FilterSet | undefined;
+    cohortFilters: FilterSet | undefined;
+    genomicFilters: FilterSet | undefined;
   }) => {
-    return await fetchSsmAnalysisQuery(gene, ssms, contextFilters);
+    return await fetchSsmAnalysisQuery(
+      gene,
+      ssms,
+      cohortFilters,
+      genomicFilters,
+    );
   },
 );
 

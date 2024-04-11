@@ -107,20 +107,13 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const generateFilters = useDeepCompareCallback(
     async (type: columnFilterType, geneId: string) => {
       if (type === null) return;
-      let caseSetCreationFilters = buildCohortGqlOperator(
-        joinFilters(cohortFilters, genomicFilters),
-      );
 
-      // for CNV gain/loss only "genes." filters should be applied
-      // as the counts in the table are based on genes only
-      // ssms filters will not affect the counts
-      if (type === "cnvgain" || type === "cnvloss") {
-        caseSetCreationFilters = buildCohortGqlOperator(
-          joinFilters(cohortFilters, genesOnlyFilters),
-        );
-      }
-
-      return await createSet({ filters: caseSetCreationFilters })
+      return await createSet({
+        filters: buildCohortGqlOperator(genomicFilters),
+        case_filters: buildCohortGqlOperator(cohortFilters),
+        intent: "portal",
+        set_type: "frozen",
+      })
         .unwrap()
         .then((setId) => {
           const commonFilters: FilterSet = {

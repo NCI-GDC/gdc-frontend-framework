@@ -1,7 +1,14 @@
+import React, { useEffect } from "react";
 import AnnotationFilterPanel from "./AnnotationFilterPanel";
 import AnnotationTable from "./AnnotationTable";
+import { useClearAllAnnotationFilters } from "./hooks";
 
 const AnnotationBrowser = () => {
+  const clearAllFilters = useClearAllAnnotationFilters();
+  useEffect(() => {
+    return () => clearAllFilters();
+  }, [clearAllFilters]);
+
   return (
     <>
       <h1 className="uppercase text-primary-darkest text-2xl font-montserrat p-4">

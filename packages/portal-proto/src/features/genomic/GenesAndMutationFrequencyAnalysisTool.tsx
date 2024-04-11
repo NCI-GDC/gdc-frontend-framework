@@ -3,7 +3,7 @@ import { useDeepCompareCallback } from "use-deep-compare";
 import { Tabs } from "@mantine/core";
 import {
   FilterSet,
-  selectCurrentCohortGeneAndSSMCaseSet,
+  selectCurrentCohortFilters,
   useCoreSelector,
   useCoreDispatch,
   removeCohortFilter,
@@ -43,7 +43,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     geneSymbol: undefined,
   });
   const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortGeneAndSSMCaseSet(state),
+    selectCurrentCohortFilters(state),
   );
 
   const overwritingDemoFilter = useMemo(

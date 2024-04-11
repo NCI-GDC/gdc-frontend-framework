@@ -16,11 +16,12 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Is text "Overall Survival Plot" present on the page
 * Select "Custom Gene Filters" in the Mutation Frequency app
 * Upload "Custom Gene Filters" "txt" from "Mutation Frequency" in "Mutation Frequency Custom Filter" through "Browse"
+* Pause "5" seconds
 * Is text "6 submitted gene identifiers mapped to 6 unique GDC genes" present on the page
 * Select "Submit"
 We are not guaranteed to get a loading spinner here to wait for,
 but it usually requires a wait. So I've put 3 seconds.
-* Pause "3" seconds
+* Pause "5" seconds
 * Is text "- MUC16 Not Mutated Cases" present on the page
 * Is text "- MUC16 Mutated (SSM/CNV) Cases" present on the page
 * Verify the table body text is correct
@@ -43,9 +44,10 @@ but it usually requires a wait. So I've put 3 seconds.
 * Wait for table loading spinner
 * Select "Custom Mutation Filters" in the Mutation Frequency app
 * Upload "Custom Mutation Filters" "txt" from "Mutation Frequency" in "Mutation Frequency Custom Filter" through "Browse"
+* Pause "5" seconds
 * Is text "4 submitted mutation identifiers mapped to 4 unique GDC mutations" present on the page
 * Select "Submit"
-* Pause "3" seconds
+* Pause "5" seconds
 We are not guaranteed to get a loading spinner here to wait for,
 but it usually requires a wait. So I've put 3 seconds.
 * Is text "- KRAS G12D Missense Not Mutated Cases" present on the page

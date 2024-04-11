@@ -1,4 +1,5 @@
-import { useEffect, useRef, useCallback, useState, FC } from "react";
+import { useRef, useCallback, useState, FC } from "react";
+import { useDeepCompareEffect } from "use-deep-compare";
 import { runproteinpaint } from "@sjcrh/proteinpaint-client";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import {
@@ -57,7 +58,7 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
     (arg: SelectSamplesCallBackArg) => {
       const cases = arg.samples.map((d) => d["cases.case_id"]);
       if (cases.length > 1) {
-        createSet({ values: cases });
+        createSet({ values: cases, intent: "portal", set_type: "frozen" });
       } else {
         setNewCohortFilters({
           mode: "and",
@@ -76,7 +77,7 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
   );
 
   // a set for the new cohort is created, now show the save cohort modal
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (response.isSuccess) {
       const filters: FilterSet = {
         mode: "and",
@@ -105,7 +106,7 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
     "postRender.gdcPlotApp": hideLoadingOverlay,
   };
 
-  useEffect(
+  useDeepCompareEffect(
     () => {
       const rootElem = divRef.current as HTMLElement;
       // debounce until one of these is true

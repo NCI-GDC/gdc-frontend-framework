@@ -61,10 +61,11 @@ const LeftSideElementForHeader: React.FC<LeftSideElementForHeaderProps> = ({
       )}
 
     <DownloadFile
+      customDataTestID="button-download-file-summary"
       inactiveText="Download"
       activeText="Processing"
       file={file}
-      variant="header"
+      displayVariant="header"
       setfileToDownload={setFileToDownload}
     />
   </div>
@@ -193,14 +194,14 @@ export const FileView: React.FC<FileViewProps> = ({
         <div className="flex gap-8">
           <div className="flex-1">
             <SummaryCard
-              customDataTestID="table-file-properties"
+              customDataTestID="table-file-properties-file-summary"
               title="File Properties"
               tableData={formatDataForFileProperties()}
             />
           </div>
           <div className="flex-1">
             <SummaryCard
-              customDataTestID="table-data-information"
+              customDataTestID="table-data-information-file-summary"
               tableData={formatDataForDataInformation()}
               title="Data Information"
             />
@@ -208,7 +209,7 @@ export const FileView: React.FC<FileViewProps> = ({
         </div>
 
         {get(file, "data_type") === "Slide Image" && (
-          <DivWithMargin>
+          <DivWithMargin data-testid="table-slide-image-file-summary">
             <HeaderTitle>Slide Image Viewer</HeaderTitle>
             <ImageViewer
               imageId={file?.file_id}
@@ -216,7 +217,7 @@ export const FileView: React.FC<FileViewProps> = ({
             />
           </DivWithMargin>
         )}
-        <DivWithMargin>
+        <DivWithMargin data-testid="table-associated-cases-biospecimens-file-summary">
           {file?.associated_entities?.length > 0 ? (
             <AssociatedCB
               cases={file?.cases}
@@ -239,12 +240,14 @@ export const FileView: React.FC<FileViewProps> = ({
             <div className="mt-14 flex gap-8">
               <div className="flex-1">
                 <SummaryCard
+                  customDataTestID="table-analysis-file-summary"
                   title="Analysis"
                   tableData={formatDataForAnalysis()}
                 />
               </div>
               <div className="flex-1">
                 <SummaryCard
+                  customDataTestID="table-reference-genome-file-summary"
                   title="Reference Genome"
                   tableData={[
                     { headerName: "Genome Build	", values: ["GRCh38.p0"] },
@@ -264,7 +267,7 @@ export const FileView: React.FC<FileViewProps> = ({
             )}
 
             {file?.analysis?.metadata && (
-              <DivWithMargin>
+              <DivWithMargin data-testid="table-read-groups-file-summary">
                 <HeaderTitle>Read Groups</HeaderTitle>
 
                 <ReadGroups readGroups={file?.analysis.metadata.read_groups} />
@@ -275,7 +278,7 @@ export const FileView: React.FC<FileViewProps> = ({
         {file?.downstream_analyses?.some(
           (byWorkflowType) => byWorkflowType?.output_files?.length > 0,
         ) && (
-          <DivWithMargin>
+          <DivWithMargin data-testid="table-downstream-analyses-files-file-summary">
             <HeaderTitle>Downstream Analyses Files</HeaderTitle>
             <DownstreamAnalyses
               downstream_analyses={file?.downstream_analyses}

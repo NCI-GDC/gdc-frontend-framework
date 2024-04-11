@@ -388,7 +388,7 @@ export const ContextualCasesView: React.FC = () => {
         pagination={{ ...pagination, label: "cases" }}
         handleChange={handleChange}
         additionalControls={
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-1 lg:gap-2">
             <CasesCohortButtonFromValues pickedCases={pickedCases} />
 
             <DropdownWithIcon
@@ -410,13 +410,17 @@ export const ContextualCasesView: React.FC = () => {
               }
               LeftIcon={
                 biospecimenDownloadActive ? (
-                  <Loader size={20} />
+                  <Loader size={20} className="hidden md:block" />
                 ) : pickedCases.length ? (
                   <CountsIcon $count={pickedCases.length}>
                     {pickedCases.length}
                   </CountsIcon>
                 ) : (
-                  <DownloadIcon size="1rem" aria-hidden="true" />
+                  <DownloadIcon
+                    size="1rem"
+                    aria-hidden="true"
+                    className="hidden md:block"
+                  />
                 )
               }
             />
@@ -440,22 +444,34 @@ export const ContextualCasesView: React.FC = () => {
               }
               LeftIcon={
                 clinicalDownloadActive ? (
-                  <Loader size={20} />
+                  <Loader size={20} className="hidden md:block" />
                 ) : pickedCases.length ? (
                   <CountsIcon $count={pickedCases.length}>
                     {pickedCases.length}
                   </CountsIcon>
                 ) : (
-                  <DownloadIcon size="1rem" aria-hidden="true" />
+                  <DownloadIcon
+                    size="1rem"
+                    aria-hidden="true"
+                    className="hidden md:block"
+                  />
                 )
               }
             />
 
-            <FunctionButton onClick={handleJSONDownload} disabled={isFetching}>
+            <FunctionButton
+              onClick={handleJSONDownload}
+              disabled={isFetching}
+              size="sm"
+            >
               {cohortTableJSONDownloadActive ? <Loader /> : "JSON"}
             </FunctionButton>
 
-            <FunctionButton onClick={handleTSVDownload} disabled={isFetching}>
+            <FunctionButton
+              onClick={handleTSVDownload}
+              disabled={isFetching}
+              size="sm"
+            >
               {cohortTableTSVDownloadActive ? <Loader /> : "TSV"}
             </FunctionButton>
           </div>

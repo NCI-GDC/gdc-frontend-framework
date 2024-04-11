@@ -134,7 +134,8 @@ export const CasesCohortButtonFromValues: React.FC<
 > = ({ pickedCases }: CasesCohortButtonFromValuesProps) => {
   const [createSet, response] = useCreateCaseSetFromValuesMutation();
   const onCreateSet = useCallback(
-    () => createSet({ values: pickedCases }),
+    () =>
+      createSet({ values: pickedCases, intent: "portal", set_type: "frozen" }),
     [createSet, pickedCases],
   );
 
@@ -150,16 +151,23 @@ export const CasesCohortButtonFromValues: React.FC<
 
 interface CasesCohortButtonFromFilters {
   readonly filters?: GqlOperation;
+  readonly case_filters?: GqlOperation;
   readonly numCases: number;
 }
 
 export const CasesCohortButtonFromFilters: React.FC<
   CasesCohortButtonFromFilters
-> = ({ filters, numCases }: CasesCohortButtonFromFilters) => {
+> = ({ filters, case_filters, numCases }: CasesCohortButtonFromFilters) => {
   const [createSet, response] = useCreateCaseSetFromFiltersMutation();
   const onCreateSet = useDeepCompareCallback(
-    () => createSet({ filters }),
-    [createSet, filters],
+    () =>
+      createSet({
+        case_filters,
+        filters,
+        intent: "portal",
+        set_type: "frozen",
+      }),
+    [case_filters, createSet, filters],
   );
   const { data, isSuccess, isLoading } = useGetCasesQuery(
     { filters, fields: ["case_id"], size: 50000 },

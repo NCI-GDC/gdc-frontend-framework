@@ -8,16 +8,18 @@ import {
   addSet,
   SetTypes,
   hideModal,
+  CreateSetValueArgs,
 } from "@gff/core";
 import { showNotification } from "@mantine/notifications";
 import { SaveOrCreateEntityModal } from "@/components/Modals/SaveOrCreateEntityModal";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
-
 interface SaveSetButttonProps {
   readonly disabled: boolean;
   readonly ids: string[];
   readonly hooks: {
-    createSet: UseMutation<MutationDefinition<any, any, any, any>>;
+    createSet: UseMutation<
+      MutationDefinition<CreateSetValueArgs, any, any, any>
+    >;
   };
   readonly setType: SetTypes;
   readonly buttonText?: string;
@@ -75,7 +77,7 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
         onClose={() => setShowSaveModal(false)}
         onActionClick={(name: string) => {
           setSetName(name);
-          createSet({ values: ids });
+          createSet({ values: ids, intent: "user", set_type: "mutable" });
         }}
         onNameChange={(name) => !Object.values(sets).includes(name)}
         additionalDuplicateMessage="This will overwrite it."

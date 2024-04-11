@@ -11,7 +11,6 @@ import {
   GQLDocType,
   GQLIndexType,
   isIncludes,
-  joinFilters,
   OperandValue,
   Operation,
   selectCurrentCohortFiltersByName,
@@ -24,9 +23,9 @@ import {
   selectCurrentCohortFilters,
   buildCohortGqlOperator,
   useGetSurvivalPlotQuery,
-  selectCurrentCohortGeneAndSSMCaseSet,
   useTopGeneQuery,
   useGetSsmTableDataMutation,
+  GqlOperation,
 } from "@gff/core";
 import { useEffect, useMemo } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
@@ -45,6 +44,7 @@ import { overwritingDemoFilterMutationFrequency } from "@/features/genomic/Genes
 import { buildGeneHaveAndHaveNotFilters } from "@/features/genomic/utils";
 import { AppModeState, ComparativeSurvival } from "./types";
 import { humanify } from "@/utils/index";
+import { useDeepCompareMemo } from "use-deep-compare";
 
 /**
  * Update Genomic Enum Facets filters. These are app local updates and are not added
@@ -204,15 +204,6 @@ export const useSelectFilterContent = (field: string): Array<string> => {
   return [];
 };
 
-export const useUpdateGeneAndSSMFilters = (): UpdateFacetFilterFunction => {
-  const dispatch = useAppDispatch();
-  // update the filter for this facet
-
-  return (field: string, operation: Operation) => {
-    dispatch(updateGeneAndSSMFilter({ field: field, operation: operation }));
-  };
-};
-
 export interface GeneAndSSMPanelData {
   isDemoMode: boolean;
   genomicFilters: FilterSet;
@@ -231,12 +222,10 @@ export const useGeneAndSSMPanelData = (
   isGene: boolean,
 ): GeneAndSSMPanelData => {
   const isDemoMode = useIsDemoApp();
-  const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortGeneAndSSMCaseSet(state),
-  );
-  const _cohortFiltersNoSet = useCoreSelector((state) =>
+  const currentCohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
   );
+
   const genomicFilters: FilterSet = useAppSelector((state) =>
     selectGeneAndSSMFilters(state),
   );
@@ -245,27 +234,33 @@ export const useGeneAndSSMPanelData = (
     [],
   );
 
-  const filters = useMemo(
+  const cohortFilters: GqlOperation = useDeepCompareMemo(
     () =>
       buildCohortGqlOperator(
-        joinFilters(
-          isDemoMode ? overwritingDemoFilter : cohortFilters,
-          genomicFilters,
-        ),
+        isDemoMode ? overwritingDemoFilter : currentCohortFilters,
       ),
+    [currentCohortFilters, isDemoMode, overwritingDemoFilter],
+  );
 
-    [isDemoMode, cohortFilters, overwritingDemoFilter, genomicFilters],
+  const localFilters = useDeepCompareMemo(
+    () => buildCohortGqlOperator(genomicFilters),
+    [genomicFilters],
   );
 
   const memoizedFilters = useMemo(
     () =>
       buildGeneHaveAndHaveNotFilters(
-        filters,
+        buildCohortGqlOperator(genomicFilters),
         comparativeSurvival?.symbol,
         comparativeSurvival?.field,
         isGene,
       ),
-    [comparativeSurvival?.field, comparativeSurvival?.symbol, filters, isGene],
+    [
+      comparativeSurvival?.field,
+      comparativeSurvival?.symbol,
+      isGene,
+      genomicFilters,
+    ],
   );
 
   const {
@@ -273,18 +268,18 @@ export const useGeneAndSSMPanelData = (
     isFetching: survivalPlotFetching,
     isSuccess: survivalPlotReady,
   } = useGetSurvivalPlotQuery({
+    case_filters: cohortFilters,
     filters:
       comparativeSurvival !== undefined
         ? memoizedFilters
-        : filters
-        ? [filters]
+        : localFilters
+        ? [localFilters]
         : [],
-    _cohortFiltersNoSet,
   });
 
   return {
     isDemoMode,
-    cohortFilters,
+    cohortFilters: currentCohortFilters,
     genomicFilters,
     overwritingDemoFilter,
     survivalPlotData,
@@ -316,10 +311,6 @@ export const useTopGeneSsms = ({
   const isDemoMode = useIsDemoApp();
 
   const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortGeneAndSSMCaseSet(state),
-  );
-
-  const _cohortFiltersNoSet = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
   );
 
@@ -337,7 +328,6 @@ export const useTopGeneSsms = ({
   const { data: topGeneSSMS, isSuccess: topGeneSSMSSuccess } = useTopGeneQuery({
     cohortFilters: isDemoMode ? overwritingDemoFilter : cohortFilters,
     genomicFilters: genomicFilters,
-    _cohortFiltersNoSet,
   }); // get the default top gene/ssms to show by default
 
   // Plot top if no current survival plot

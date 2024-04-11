@@ -19,7 +19,7 @@ export const TableActionButtons = ({
   isOutputFileInCart: boolean;
   file: CartFile[];
   downloadFile: GdcFile;
-  setFileToDownload?: React.Dispatch<React.SetStateAction<GdcFile>>;
+  setFileToDownload: React.Dispatch<React.SetStateAction<GdcFile>>;
 }): JSX.Element => {
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
@@ -38,15 +38,16 @@ export const TableActionButtons = ({
             ? removeFromCart(file, currentCart, dispatch)
             : addToCart(file, currentCart, dispatch);
         }}
-        data-testid="add-remove-cart-button"
+        data-testid="button-add-remove-cart"
       >
         <CartIcon title="Add to Cart" size={16} />
       </Button>
       <DownloadFile
+        customDataTestID="button-download-file"
         file={downloadFile}
         showLoading={false}
         setfileToDownload={setFileToDownload}
-        variant="icon"
+        displayVariant="icon"
       />
     </div>
   );
