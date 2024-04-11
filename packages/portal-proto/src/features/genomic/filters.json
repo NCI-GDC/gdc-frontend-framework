@@ -14,7 +14,6 @@
   {
     "facet_filter": "genes.biotype",
     "name": "Biotype",
-    "description": null,
     "type": "enum",
     "docType": "genes"
   },
