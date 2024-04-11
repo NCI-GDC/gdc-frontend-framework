@@ -221,7 +221,9 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                     }
                     aria-label="Expand/collapse filters section"
                     aria-expanded={!filtersSectionCollapsed}
-                    disabled={noFilters || QESectionHeight < 100}
+                    disabled={
+                      noFilters || QESectionHeight <= MAX_HEIGHT_QE_SECTION
+                    }
                     className={getCombinedClassesForRowCollapse(
                       filtersSectionCollapsed,
                     )}
