@@ -242,12 +242,10 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
           </div>
           <div
             data-testid="text-cohort-filters"
-            className={`flex flex-wrap bg-base-max w-full p-2 overflow-x-hidden ${
-              filtersSectionCollapsed ? "overflow-y-auto" : "h-full"
-            }`}
+            className="flex flex-wrap bg-base-max w-full p-2 overflow-x-hidden"
             style={
               filtersSectionCollapsed
-                ? { maxHeight: `${QESectionHeight}px`, overflowY: "auto" }
+                ? { maxHeight: `${QESectionHeight}px`, overflowY: "scroll" }
                 : undefined
             }
             ref={filtersRef}
