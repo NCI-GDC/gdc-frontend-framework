@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDeepCompareMemo } from "use-deep-compare";
 import {
   VisibilityState,
@@ -8,9 +8,9 @@ import {
 import Link from "next/link";
 import {
   AnnotationDefaults,
-  useAnnotations,
+  useGetAnnotationsQuery,
   GqlUnion,
-  //SortBy,
+  SortBy,
   Pagination,
   useCoreDispatch,
   GqlEquals,
@@ -79,13 +79,22 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
   const [pageSize, setPageSize] = useState(10);
   const [activePage, setActivePage] = useState(1);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  //const [sortBy, setSortBy] = useState<SortBy[]>([]);
+  const [sortBy, setSortBy] = useState<SortBy[]>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     entity_id: false,
     status: false,
     notes: false,
   });
+
+  useEffect(() => {
+    setSortBy(
+      sorting.map((sort) => ({
+        field: sort.id,
+        direction: sort.desc ? "desc" : "asc",
+      })),
+    );
+  }, [sorting]);
 
   const filters = {
     op: "=",
@@ -95,7 +104,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
     },
   } as GqlEquals;
 
-  const { data, isSuccess, isFetching, isError } = useAnnotations({
+  const { data, isSuccess, isFetching, isError } = useGetAnnotationsQuery({
     filters: searchTerm
       ? filters
         ? {
@@ -106,7 +115,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
       : filters,
     size: pageSize,
     from: (activePage - 1) * pageSize,
-    //sortBy,
+    sortBy,
   });
 
   const [formattedTableData, pagination] = useDeepCompareMemo<
@@ -114,7 +123,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
   >(() => {
     if (isSuccess && !isFetching) {
       return [
-        data?.list.map((d) => ({
+        data?.hits.map((d) => ({
           ...d,
           program_name: d?.project?.program?.name,
           project_id: d?.project?.project_id,
@@ -252,11 +261,10 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
   };
 
   return (
-    <div className="mb-16 mx-4">
+    <>
       <HeaderTitle>Annotations</HeaderTitle>
-
       <VerticalTable
-        tableTitle={`Total of ${data.count.toLocaleString()} Annotations`}
+        tableTitle={`Total of ${data?.pagination?.total?.toLocaleString()} Annotations`}
         additionalControls={
           <div className="flex gap-2">
             <FunctionButton
@@ -280,6 +288,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
           enabled: true,
           tooltip: "e.g. TCGA-ZX-AA5X, c8449103-afb0-4e43-ac04-c4ef54a8cdb0",
         }}
+        baseZIndex={400}
         status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
         pagination={{
           label: "annotations",
@@ -294,7 +303,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
         sorting={sorting}
         setSorting={setSorting}
       />
-    </div>
+    </>
   );
 };
 
