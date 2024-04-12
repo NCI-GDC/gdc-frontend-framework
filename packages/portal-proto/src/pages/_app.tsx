@@ -34,7 +34,7 @@ import { Notifications } from "@mantine/notifications";
 
 if (process.env.NODE_ENV !== "test") ReactModal.setAppElement("#__next");
 
-if (process.env.NODE_ENV === "production") {
+if (process.env.NEXT_PUBLIC_DD_ENABLED) {
   datadogRum.init({
     applicationId: "3faf9c0a-311f-4935-a596-3347666ef35d",
     clientToken: "pub9f7e31eaacd4afa71ac5161cbd5b0c11",

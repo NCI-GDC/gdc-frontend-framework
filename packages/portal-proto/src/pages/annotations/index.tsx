@@ -12,7 +12,7 @@ const AnnotationsPage: NextPage = () => {
   ) as React.ElementType;
 
   datadogRum.startView({
-    name: "Annotation",
+    name: "Annotation Browser",
   });
 
   return (
