@@ -5,6 +5,9 @@ include:
     ref: 0.7.1
     file:
       - templates/global/full.yaml
+  - project: nci-gdc/gitlab-templates
+    ref: feat/DEV-2630-fix-qa-int
+    file:
       - templates/deployments/salt-service.yaml
 
 pre-commit:
