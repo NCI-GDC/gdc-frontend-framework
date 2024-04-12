@@ -206,11 +206,12 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
 
                 <Tooltip
                   label={
-                    noFilters
-                      ? "No filters to show/hide"
+                    noFilters ||
+                    filtersRef?.current?.scrollHeight <= MAX_HEIGHT_QE_SECTION
+                      ? "All rows are already displayed"
                       : filtersSectionCollapsed
-                      ? "Show all filters"
-                      : "Hide some filters"
+                      ? "Display all rows"
+                      : "Display fewer rows"
                   }
                 >
                   <button
@@ -222,7 +223,8 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                     aria-label="Expand/collapse filters section"
                     aria-expanded={!filtersSectionCollapsed}
                     disabled={
-                      noFilters || QESectionHeight <= MAX_HEIGHT_QE_SECTION
+                      noFilters ||
+                      filtersRef?.current?.scrollHeight <= MAX_HEIGHT_QE_SECTION
                     }
                     className={getCombinedClassesForRowCollapse(
                       filtersSectionCollapsed,
