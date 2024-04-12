@@ -36,6 +36,8 @@ import download from "@/utils/download";
 import { downloadTSV } from "@/components/Table/utils";
 import { convertDateToString } from "@/utils/date";
 import { AgreementModal } from "@/components/Modals/AgreementModal";
+import { NoAccessToProjectModal } from "@/components/Modals/NoAccessToProjectModal";
+import { GeneralErrorModal } from "@/components/Modals/GeneraErrorModal";
 
 interface FilesTableProps {
   caseId: string;
@@ -393,6 +395,12 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
         file={fileToDownload}
         dbGapList={fileToDownload?.acl}
       />
+
+      <NoAccessToProjectModal
+        openModal={modal === Modals.NoAccessToProjectModal}
+      />
+
+      <GeneralErrorModal openModal={modal === Modals.GeneralErrorModal} />
     </>
   );
 };
