@@ -88,7 +88,7 @@ export const SSMSPanel = ({
 
   return (
     <div className="flex flex-col w-100 mx-6 mb-8">
-      <div className="bg-base-max relative">
+      <div className="bg-base-max relative mb-4">
         <LoadingOverlay
           data-testid="loading-spinner"
           visible={
