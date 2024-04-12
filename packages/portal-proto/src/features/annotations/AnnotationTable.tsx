@@ -324,7 +324,11 @@ const AnnnotationTable: React.FC = () => {
 
   return (
     <VerticalTable
-      tableTitle={`Total of ${data.count.toLocaleString()} Annotations`}
+      tableTitle={
+        <>
+          Total of <b>{data.count.toLocaleString()}</b> Annotations
+        </>
+      }
       additionalControls={
         <div className="flex gap-2">
           <FunctionButton

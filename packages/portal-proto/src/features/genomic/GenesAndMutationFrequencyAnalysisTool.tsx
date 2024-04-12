@@ -73,7 +73,12 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
       if (comparativeSurvival && comparativeSurvival?.symbol === symbol) {
         setComparativeSurvival(undefined);
       } else {
-        setComparativeSurvival({ symbol: symbol, name: name, field: field });
+        setComparativeSurvival({
+          symbol: symbol,
+          name: name,
+          field: field,
+          setManually: true,
+        });
       }
     },
     [comparativeSurvival],
