@@ -19,9 +19,9 @@ export const LoginButton = ({
   const [fetchUserDetails] = useLazyFetchUserDetailsQuery();
   return (
     <Button
-      className={`${
+      className={`p-1 ${
         fromHeader
-          ? "font-medium text-primary-darkest p-1 pr-2 hover:bg-primary-lightest"
+          ? "font-medium text-primary-darkest hover:bg-primary-lightest"
           : "hover:bg-primary-darker"
       }`}
       onClick={async () => {
