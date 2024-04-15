@@ -12,7 +12,7 @@ import { Loader, Tooltip } from "@mantine/core";
 import { FaPlus as PlusIcon } from "react-icons/fa";
 import CohortCreationButton, {
   CohortCreationStyledButton,
-  IconWrapper,
+  IconWrapperTW,
 } from "@/components/CohortCreationButton";
 
 export const CreateFromCountButton = ({
@@ -39,9 +39,9 @@ export const CreateFromCountButton = ({
             onClick={handleOnClick}
             aria-label={ariaLabel}
           >
-            <IconWrapper $disabled={disabled}>
+            <IconWrapperTW $disabled={disabled}>
               <PlusIcon color="white" size={12} aria-disabled />
-            </IconWrapper>
+            </IconWrapperTW>
             <span className="w-fit">
               {loading ? (
                 <Loader size="xs" />

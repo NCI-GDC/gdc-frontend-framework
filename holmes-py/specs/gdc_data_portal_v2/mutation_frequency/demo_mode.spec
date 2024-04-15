@@ -13,7 +13,6 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Navigate to "Mutation Frequency Demo" from "Analysis" "app"
 
 ## Validate Gene Tab Demo
-* Wait for loading spinner
 * Is text "Mutation Frequency Demo" present on the page
 * Is text "Demo showing cases with low grade gliomas (TCGA-LGG project)." present on the page
 * Is text "- IDH1 Not Mutated Cases" present on the page

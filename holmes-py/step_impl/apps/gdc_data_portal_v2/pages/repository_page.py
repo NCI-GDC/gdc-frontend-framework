@@ -19,6 +19,7 @@ class RepositoryPageLocators:
     IMAGE_VIEWER_IDENT = (
         lambda data_testid: f"[data-testid='{data_testid}-image-viewer']"
     )
+    IMAGE_VIEWER_CASES_SLIDES = lambda data_testid: f'[data-testid="cases-slides-image-viewer"] >> [data-testid="{data_testid}"]'
     IMAGE_VIEWER_SEARCH_BOX = '[data-testid="search-bar-image-viewer"]'
     IMAGE_VIEWER_MAIN_IMAGE = "div[class='openseadragon-canvas'] >> nth=0"
     IMAGE_VIEWER_VIEWPORT_NAVIGATOR = "div[class='openseadragon-canvas'] >> nth=1"
@@ -33,7 +34,7 @@ class RepositoryPageLocators:
     )
 
     TEXT_REPO_TABLE_CASE_COUNT = (
-        lambda case_count: f'div[class="flex justify-between"] >> text="{case_count}"'
+        lambda case_count: f'[data-testid="text-counts-files-table"] >> text="{case_count}"'
     )
 
 
@@ -91,6 +92,13 @@ class RepositoryPage(BasePage):
                 self.normalize_button_identifier(data_testid)
             )
         )
+
+    def click_image_viewer_page_case_or_slide(self, data_testid: str):
+        """Clicks given case or slide on the slide image viewer page"""
+        # IDs are all in upper case
+        data_testid = data_testid.upper()
+        locator = RepositoryPageLocators.IMAGE_VIEWER_CASES_SLIDES(data_testid)
+        self.click(locator)
 
     def compare_cohort_case_count_and_repo_table_case_count(self):
         self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
