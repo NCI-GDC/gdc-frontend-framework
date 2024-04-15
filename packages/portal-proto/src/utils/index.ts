@@ -178,7 +178,6 @@ export const ageDisplay = (
   yearsOnly = false,
   defaultValue = "--",
 ): string => {
-  //TODO handle leap year
   const leapThenPair = (years: number, days: number): number[] =>
     days === 365 ? [years + 1, 0] : [years, days];
 
