@@ -1,9 +1,10 @@
 import { SummaryHeaderTitle } from "@/components/tailwindComponents";
 import { Divider } from "@mantine/core";
 import { ReactNode } from "react";
+import { IconType } from "react-icons";
 
 export interface SummaryHeaderProps {
-  Icon?: any;
+  Icon?: IconType;
   headerTitleLeft?: string;
   headerTitle: string | number;
   leftElement?: ReactNode;
