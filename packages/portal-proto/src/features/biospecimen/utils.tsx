@@ -17,7 +17,7 @@ import {
 import { addToCart, removeFromCart } from "@/features/cart/updateCart";
 import { get } from "lodash";
 import { entityTypes } from "@/components/BioTree/types";
-import { humanify, fileInCart } from "src/utils";
+import { humanify, fileInCart, ageDisplay } from "src/utils";
 import { DownloadFile } from "@/components/DownloadButtons";
 import { GiMicroscope } from "react-icons/gi";
 
@@ -177,10 +177,17 @@ export const formatEntityInfo = (
     ]);
   }
 
-  const headersConfig = filtered.map(([key]) => ({
-    field: key,
-    name: humanify({ term: key }),
-  }));
+  const headersConfig = filtered.map(([key]) => {
+    const tempHeaderConfig: { field: string; name: string; modifier?: any } = {
+      field: key,
+      name: humanify({ term: key }),
+    };
+    //Format day fields
+    if (["days_to_sample_procurement", "days_to_collection"].includes(key)) {
+      tempHeaderConfig.modifier = (a) => ageDisplay(a);
+    }
+    return tempHeaderConfig;
+  });
 
   const obj = { ...ids, ...Object.fromEntries(filtered) };
 
