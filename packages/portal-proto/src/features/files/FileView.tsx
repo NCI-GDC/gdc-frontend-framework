@@ -34,6 +34,7 @@ import DownstreamAnalyses from "./DownstreamAnalyses";
 import AnalysisInputFiles from "./AnalysisInput";
 import ReadGroups from "./ReadGroups";
 import FileVersions from "./FileVersions";
+import AnnnotationsTable from "./AnnotationsTable";
 
 interface LeftSideElementForHeaderProps {
   readonly isFileInCart: boolean;
@@ -288,6 +289,14 @@ export const FileView: React.FC<FileViewProps> = ({
           </DivWithMargin>
         )}
         <FileVersions fileHistory={fileHistory} file_id={file.file_id} />
+        {file?.annotations?.length > 0 && (
+          <div
+            className={`mb-16 ${isModal ? "scroll-mt-36" : "scroll-mt-72"}`}
+            id="annotations"
+          >
+            <AnnnotationsTable annotations={file.annotations} />
+          </div>
+        )}
 
         {modal === Modals.NoAccessToProjectModal && (
           <NoAccessToProjectModal openModal />

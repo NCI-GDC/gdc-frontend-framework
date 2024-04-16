@@ -1,5 +1,4 @@
 import { calculatePercentageAsNumber, sortByPropertyAsc } from "@/utils/index";
-import { AnnotationDefaults } from "@gff/core";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { PercentageLabel } from "@/components/PercentageLabel";
 
@@ -120,21 +119,6 @@ export const getSlideCountFromCaseSummary = (
         : slideCount,
     0,
   );
-};
-
-export const getAnnotationsLinkParams = (
-  annotations: {
-    list: AnnotationDefaults[];
-    count: number;
-  },
-  case_id: string,
-): null | string => {
-  if (annotations.count === 0) return null;
-
-  if (annotations.count === 1) {
-    return `https://portal.gdc.cancer.gov/v1/annotations/${annotations.list[0].annotation_id}`;
-  }
-  return `https://portal.gdc.cancer.gov/v1/annotations?filters={"content":[{"content":{"field":"annotations.case_id","value":["${case_id}"]},"op":"in"}],"op":"and"}`;
 };
 
 export const formatDataForDataCateogryTable = (

@@ -2,7 +2,6 @@ import { useState, useContext, useEffect, useMemo } from "react";
 import { capitalize } from "lodash";
 import fileSize from "filesize";
 import { SingleItemAddToCartButton } from "../cart/updateCart";
-import Link from "next/link";
 import {
   useCoreDispatch,
   useCoreSelector,
@@ -40,10 +39,7 @@ import {
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { downloadTSV } from "@/components/Table/utils";
-import {
-  getAnnotationsLinkParamsFromFiles,
-  statusBooleansToDataStatus,
-} from "src/utils";
+import { statusBooleansToDataStatus } from "src/utils";
 import { useDeepCompareEffect } from "use-deep-compare";
 
 export type FilesTableDataType = {
@@ -59,7 +55,7 @@ export type FilesTableDataType = {
   experimental_strategy?: string;
   platform: string;
   file_size: string;
-  annotations: FileAnnontationsType;
+  annotations: FileAnnontationsType[];
 };
 
 const filesTableColumnHelper = createColumnHelper<FilesTableDataType>();
@@ -305,21 +301,7 @@ const FilesTables: React.FC = () => {
       filesTableColumnHelper.display({
         id: "annotations",
         header: "Annotations",
-        cell: ({ row }) => (
-          <span className="font-content">
-            {getAnnotationsLinkParamsFromFiles(row.original.file) ? (
-              <Link
-                href={getAnnotationsLinkParamsFromFiles(row.original.file)}
-                className="text-utility-link underline font-content"
-                target="_blank"
-              >
-                {row.original.annotations.length}
-              </Link>
-            ) : (
-              row.original?.annotations?.length ?? 0
-            )}
-          </span>
-        ),
+        cell: ({ row }) => row.original?.annotations?.length ?? 0,
       }),
     ],
     [setEntityMetadata],
