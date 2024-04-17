@@ -24,6 +24,7 @@ import {
 } from "./utils";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 import { focusStyles } from "@/utils/index";
+import ProjectsIcon from "public/user-flow/icons/summary/projects.svg";
 
 export interface ProjectViewProps extends ProjectDefaults {
   readonly annotation: {
@@ -241,7 +242,8 @@ export const ProjectView: React.FC<ProjectViewProps> = (
   return (
     <>
       <SummaryHeader
-        iconText="pr"
+        Icon={ProjectsIcon}
+        headerTitleLeft="Project"
         headerTitle={projectData.project_id}
         isModal={projectData.isModal}
         leftElement={

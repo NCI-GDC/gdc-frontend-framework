@@ -24,6 +24,7 @@ import { overwritingDemoFilterMutationFrequency } from "../genomic/GenesAndMutat
 import { CollapsibleList } from "@/components/CollapsibleList";
 import SMTableContainer from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
 import GeneCancerDistributionTable from "../cancerDistributionTable/GeneCancerDistributionTable";
+import GenesIcon from "public/user-flow/icons/summary/genes.svg";
 
 interface GeneViewProps {
   data: {
@@ -221,7 +222,8 @@ const GeneView = ({
       {data?.genes && (
         <>
           <SummaryHeader
-            iconText="gn"
+            Icon={GenesIcon}
+            headerTitleLeft="Gene"
             headerTitle={data.genes.symbol}
             isModal={isModal}
           />
