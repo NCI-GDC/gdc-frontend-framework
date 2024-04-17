@@ -30,6 +30,7 @@ import {
 } from "./utils";
 import SMTableContainer from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
 import FilesTable from "./FilesTable";
+import UsersIcon from "public/user-flow/icons/summary/users.svg";
 import AnnotationsTable from "./AnnotationsTable";
 
 export interface CaseViewProps {
@@ -245,7 +246,8 @@ export const CaseView: React.FC<CaseViewProps> = ({
   return (
     <>
       <SummaryHeader
-        iconText="ca"
+        Icon={UsersIcon}
+        headerTitleLeft="Case"
         headerTitle={headerTitle}
         leftElement={
           <Button

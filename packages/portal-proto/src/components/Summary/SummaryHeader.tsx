@@ -1,22 +1,23 @@
 import { SummaryHeaderTitle } from "@/components/tailwindComponents";
 import { Divider } from "@mantine/core";
 import { ReactNode } from "react";
+import { IconType } from "react-icons";
 
 export interface SummaryHeaderProps {
-  iconText: string;
+  Icon?: IconType;
+  headerTitleLeft?: string;
   headerTitle: string | number;
   leftElement?: ReactNode;
   rightElement?: ReactNode;
   isModal?: boolean;
-  isFile?: boolean;
 }
 export const SummaryHeader = ({
-  iconText,
+  Icon,
+  headerTitleLeft,
   headerTitle,
   leftElement,
   rightElement,
   isModal = false,
-  isFile = false,
 }: SummaryHeaderProps): JSX.Element => {
   return (
     <header
@@ -26,10 +27,21 @@ export const SummaryHeader = ({
     >
       <div
         data-testid="text-summary-bar"
-        className="flex flex-nowrap items-center gap-4"
+        className="flex flex-nowrap items-center gap-2"
       >
-        <SummaryHeaderIcon iconText={iconText} />
-        <SummaryHeaderTitle $isFileSummary={isFile}>
+        <div className="rounded-full bg-accent-cool-content-lighter">
+          <Icon
+            className="w-10 h-10 text-primary p-1.5"
+            aria-hidden
+            focusable="false"
+          />
+        </div>
+        <SummaryHeaderTitle>
+          {headerTitleLeft && (
+            <span className="font-bold uppercase">
+              {headerTitleLeft} &bull;{" "}
+            </span>
+          )}
           {headerTitle}
         </SummaryHeaderTitle>
       </div>
@@ -45,13 +57,3 @@ export const SummaryHeader = ({
     </header>
   );
 };
-
-export const SummaryHeaderIcon = ({
-  iconText,
-}: {
-  iconText: string;
-}): JSX.Element => (
-  <span className="w-9 h-9 uppercase rounded-full text-lg flex justify-center items-center leading-[22px] font-bold bg-base-lightest text-primary">
-    {iconText}
-  </span>
-);

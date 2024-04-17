@@ -1,14 +1,13 @@
 import React, { useState, forwardRef } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
 import { useRouter } from "next/router";
-import { Badge, Loader, Highlight, Select } from "@mantine/core";
+import { Loader, Highlight, Select } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { MdSearch as SearchIcon, MdClose as CloseIcon } from "react-icons/md";
 import { validate as uuidValidate } from "uuid";
 import { useGetHistoryQuery, useQuickSearch, HistoryDefaults } from "@gff/core";
-import { TypeIcon } from "../TypeIcon";
 import {
-  entityShortNameMapping,
+  entityIconMapping,
   QuickSearchEntities,
 } from "./entityShortNameMapping";
 import { extractEntityPath, findMatchingToken } from "./utils";
@@ -21,6 +20,7 @@ interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
   obj: Record<string, any>;
   superseded?: boolean;
   entity?: QuickSearchEntities;
+  last?: boolean;
 }
 
 export const QuickSearch = (): JSX.Element => {
@@ -63,11 +63,12 @@ export const QuickSearch = (): JSX.Element => {
         ]);
       } else {
         setMatchedSearchList(
-          searchList.map((obj) => ({
+          searchList.map((obj, i) => ({
             value: obj.id, // required by plugin
             label: obj.id, // required by plugin
             symbol: obj.symbol,
             obj: obj,
+            last: searchList.length === i + 1, // for styling
           })),
         );
       }
@@ -77,7 +78,16 @@ export const QuickSearch = (): JSX.Element => {
 
   const renderItem = forwardRef<HTMLDivElement, ItemProps>(
     (
-      { value, label, symbol, obj, superseded, entity, ...others }: ItemProps,
+      {
+        value,
+        label,
+        symbol,
+        obj,
+        superseded,
+        entity,
+        last,
+        ...others
+      }: ItemProps,
       ref,
     ) => {
       let badgeText: string;
@@ -96,56 +106,51 @@ export const QuickSearch = (): JSX.Element => {
         ? `File ${matchingToken} has been updated`
         : matchingToken;
 
+      const IconFormatted = ({ Icon }: { Icon: any }): JSX.Element => (
+        <div className="bg-accent-cool-content-lighter rounded-full">
+          <Icon className="p-1.5 w-10 h-10" aria-hidden />
+        </div>
+      );
+      const entityForMapping = entity || atob(label).split(":")[0];
       return (
         <div
           data-testid="text-search-result"
           ref={ref}
           {...others}
-          aria-label={`${badgeText}, ${matchingToken}`}
+          aria-label={`${badgeText}, ${matchingToken}, Category: ${entityForMapping}`}
         >
           <div
-            className={`flex p-2 px-4 ${
-              others["data-hovered"] &&
-              "bg-primary-darkest text-primary-contrast-darkest"
+            className={`px-4 ${
+              others["data-hovered"] ? "bg-primary-lightest" : ""
             }`}
           >
-            <div className="self-center">
-              <TypeIcon
-                iconText={
-                  entityShortNameMapping[entity || atob(label).split(":")[0]]
-                }
-                changeOnHover={others["data-hovered"]}
-              />
-            </div>
-            <div className="flex flex-col">
-              <div style={{ width: 200 }}>
-                <Badge
-                  classNames={{
-                    inner: "text-xs",
-                    root: `${
-                      others["data-hovered"]
-                        ? "bg-primary-contrast-darker text-primary-darker"
-                        : "bg-primary-darker text-primary-contrast-darker"
-                    }`,
-                  }}
-                  className="cursor-pointer"
-                >
-                  {badgeText}
-                </Badge>
+            <div
+              className={`py-2 flex gap-2 ${
+                last ? "" : "border-b border-gdc-grey-light"
+              }`}
+            >
+              <div className="self-center">
+                <IconFormatted
+                  Icon={entityIconMapping[entityForMapping].icon}
+                />
               </div>
-              <span className="text-sm">
-                <Highlight
-                  highlight={searchText.trim()}
-                  highlightStyles={{
-                    fontStyle: "italic",
-                    fontWeight: "bold",
-                    fontSize: "14px",
-                    color: `${others["data-hovered"] && "#38393a"}`, //nciGrayDarkest : might need to change the color
-                  }}
-                >
-                  {mainText}
-                </Highlight>
-              </span>
+              <div className="flex flex-col leading-5">
+                <div className="font-bold">{badgeText}</div>
+                <span className="">
+                  <Highlight
+                    highlight={searchText.trim()}
+                    highlightStyles={{ fontStyle: "italic" }}
+                  >
+                    {mainText}
+                  </Highlight>
+                </span>
+                <span className="text-base-content-dark">
+                  <b>Category:</b>{" "}
+                  {entityIconMapping[entityForMapping].category
+                    ? entityIconMapping[entityForMapping].category
+                    : entityForMapping}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -179,7 +184,8 @@ export const QuickSearch = (): JSX.Element => {
       aria-label="Quick Search Input"
       classNames={{
         input: "focus:border-2 focus:border-primary text-sm",
-        dropdown: "bg-base-lightest border-r-10 border-1 border-base",
+        dropdown:
+          "bg-base-max rounded-t-none rounded-b border-0 drop-shadow-md -mt-2",
         item: "p-0 m-0",
       }}
       maxDropdownHeight={1000} //large number so no scroll bar
