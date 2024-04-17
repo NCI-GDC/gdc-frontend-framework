@@ -29,6 +29,7 @@ import {
   parseContinuousBucket,
   convertDataDimension,
   formatValue,
+  roundSometimes,
 } from "../utils";
 import ContinuousBinningModal from "../ContinuousBinningModal/ContinuousBinningModal";
 import BoxQQSection from "./BoxQQSection";
@@ -62,13 +63,21 @@ const toBucketDisplayName = (
   const [fromValue, toValue] = parseContinuousBucket(bucket);
   const originalDataDimension = DATA_DIMENSIONS[field]?.unit;
   return `${formatValue(
-    convertDataDimension(
-      Number(fromValue),
-      originalDataDimension,
-      dataDimension,
+    roundSometimes(
+      convertDataDimension(
+        Number(fromValue),
+        originalDataDimension,
+        dataDimension,
+      ),
     ),
   )} to <${formatValue(
-    convertDataDimension(Number(toValue), originalDataDimension, dataDimension),
+    roundSometimes(
+      convertDataDimension(
+        Number(toValue),
+        originalDataDimension,
+        dataDimension,
+      ),
+    ),
   )}`;
 };
 

@@ -155,6 +155,17 @@ export const convertDataDimension = (
   return value;
 };
 
+export const roundSometimes = (number: number): number => {
+  // for quick comparison before and after
+  // return number;
+
+  if (number > -1 && number < 1) {
+    return Number(number.toPrecision(1));
+  } else {
+    return Math.round(number);
+  }
+};
+
 export const createFiltersFromSelectedValues = (
   continuous: boolean,
   field: string,
