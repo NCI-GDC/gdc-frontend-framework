@@ -781,6 +781,7 @@ module.exports = {
           "icon-background": "#FBD5C7",
           border: "#C5E3DF",
           borderAlt: "#F0E4CB",
+          "link-text": "#863787",
         },
         warningColor: "#FFAD0D", //orangish
         warningColorText: "#8A661E", //lighter orangish

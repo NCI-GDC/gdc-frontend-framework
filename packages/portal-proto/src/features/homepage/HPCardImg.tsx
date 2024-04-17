@@ -24,17 +24,28 @@ const HPCardImg = ({
   imgProps,
 }: HPCardImgProps): JSX.Element => {
   return (
-    <div className="max-w-screen-lg m-auto flex gap-5">
-      <div className="w-1/2 py-10">
-        <h2 className="font-heading font-bold text-2xl pb-5 text-summarybar-text tracking-tight">
+    <div className="max-w-screen-lg m-auto flex flex-col xl:flex-row gap-5 py-10 px-4">
+      <div className="block xl:hidden self-center">
+        <Image
+          alt={imgProps.alt}
+          src={imgProps.src}
+          height={imgProps.height}
+          width={imgProps.width}
+          objectPosition={imgProps.objectPosition}
+        />
+      </div>
+      <div className="xl:w-1/2 xl:py-10">
+        <h2 className="font-heading font-bold text-4xl xl:text-2xl pb-5 text-summarybar-text tracking-tight">
           {head}
         </h2>
-        <div className="py-1 space-y-6 max-w-4xl pb-4">{body}</div>
+        <div className="py-1 space-y-6 max-w-4xl pb-4 text-2xl text-secondary-contrast-lighter xl:text-[1rem]">
+          {body}
+        </div>
         <Link href={href} className={homepageButtonClass}>
           {linkText}
         </Link>
       </div>
-      <div className="w-1/2 m-auto">
+      <div className="hidden xl:block w-1/2 m-auto">
         <Image
           alt={imgProps.alt}
           src={imgProps.src}

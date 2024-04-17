@@ -1,7 +1,7 @@
 import { useCallback, useRef, useEffect, useState, useMemo } from "react";
 import Router from "next/router";
 import { createHumanBody, colorCodes } from "@nci-gdc/sapien";
-import { useMouse } from "@mantine/hooks";
+import { useMouse, useViewportSize } from "@mantine/hooks";
 import { Modal, Text } from "@mantine/core";
 import {
   useBodyplotCountsQuery,
@@ -177,12 +177,13 @@ export const Bodyplot = (): JSX.Element => {
     [],
   );
 
+  const { width } = useViewportSize();
   useMemo(() => {
     if (bodyplotRef?.current) {
       createHumanBody({
         title: "Cases by Major Primary Site",
         selector: bodyplotRef.current,
-        width: 500,
+        width: width < 769 ? 400 : 500,
         height: 500,
         data: processedData ?? [],
         labelSize: "12px",
@@ -200,10 +201,10 @@ export const Bodyplot = (): JSX.Element => {
         mouseOutHandler: mouseOutHandler,
       });
     }
-  }, [mouseOutHandler, processedData, root, bodyplotRef]);
+  }, [width, mouseOutHandler, processedData, root, bodyplotRef]);
 
   return (
-    <div ref={mouseRef} className="relative">
+    <div ref={mouseRef}>
       <div
         className={`${
           bodyplotTooltipContent ? "opacity-100" : "opacity-0"
