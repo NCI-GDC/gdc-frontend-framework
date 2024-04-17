@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer, useRef } from "react";
+import React, { useState, useReducer, useRef } from "react";
 import {
   MdOutlineArrowBackIos as LeftArrowIcon,
   MdOutlineArrowForwardIos as RightArrowIcon,
@@ -15,6 +15,7 @@ import {
   getCombinedClassesExpandCollapseQuery,
   getCombinedClassesForRowCollapse,
 } from "./style";
+import { useDeepCompareEffect } from "use-deep-compare";
 
 const QueryExpressionContainer = tw.div`
   flex
@@ -27,7 +28,7 @@ const QueryExpressionContainer = tw.div`
   mx-3
 `;
 
-const MAX_COLLAPSED_ROWS = 3;
+const MAX_HEIGHT_QE_SECTION = 120;
 
 interface CollapsedStateReducerAction {
   type: "expand" | "collapse" | "clear" | "init" | "expandAll" | "collapseAll";
@@ -100,11 +101,18 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
 }: QueryExpressionSectionProps) => {
   const [expandedState, setExpandedState] = useReducer(reducer, {});
   const [filtersSectionCollapsed, setFiltersSectionCollapsed] = useState(true);
-  const [numOfRows, setNumberOfRows] = useState(0);
-  const [collapsedHeight, setCollapsedHeight] = useState(0);
   const filtersRef = useRef<HTMLDivElement>(null);
-
+  const [QESectionHeight, setQESectionHeight] = useState(0);
   const dispatch = useCoreDispatch();
+
+  useDeepCompareEffect(() => {
+    if (filtersRef.current) {
+      const height = filtersRef.current.scrollHeight;
+      setQESectionHeight(
+        height > MAX_HEIGHT_QE_SECTION ? MAX_HEIGHT_QE_SECTION : height,
+      );
+    }
+  }, [expandedState, filters, filtersRef]);
 
   const clearAllFilters = () => {
     dispatch(clearCohortFilters());
@@ -116,43 +124,11 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
 
   const noFilters = Object.keys(filters?.root || {}).length === 0;
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (expandedState?.[currentCohortId] === undefined) {
       setExpandedState({ type: "init", cohortId: currentCohortId });
     }
   }, [currentCohortId, expandedState]);
-
-  useEffect(() => {
-    if (filtersRef.current) {
-      let tempNumRows = 0;
-      let tempCollapsedHeight = 0;
-      const filterElements = Array.from(
-        filtersRef.current.children,
-      ) as HTMLDivElement[];
-      filterElements.forEach((f, i) => {
-        if (i === 0) {
-          tempNumRows++;
-          const style = window.getComputedStyle(f);
-          tempCollapsedHeight += f.clientHeight + parseInt(style.marginBottom);
-        } else if (f.offsetLeft <= filterElements[i - 1].offsetLeft) {
-          // If the current element is further to the left than the previous, we are on a new row
-          tempNumRows++;
-          if (tempNumRows <= MAX_COLLAPSED_ROWS) {
-            const style = window.getComputedStyle(f);
-            tempCollapsedHeight +=
-              f.clientHeight + parseInt(style.marginBottom);
-          }
-        }
-      });
-
-      setNumberOfRows(tempNumRows);
-      const parentStyle = window.getComputedStyle(filtersRef.current);
-      // height of rows + top padding of parent + padding below rows
-      setCollapsedHeight(
-        tempCollapsedHeight + parseInt(parentStyle.paddingTop) + 4,
-      );
-    }
-  }, [filters, filtersRef?.current?.clientHeight, expandedState]);
 
   return (
     <QueryExpressionContainer>
@@ -230,13 +206,12 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
 
                 <Tooltip
                   label={
-                    filtersSectionCollapsed
-                      ? numOfRows <= MAX_COLLAPSED_ROWS
-                        ? "All rows are already displayed"
-                        : "Display all rows"
-                      : numOfRows <= MAX_COLLAPSED_ROWS
-                      ? `A maximum of ${MAX_COLLAPSED_ROWS} rows is already displayed`
-                      : `Display a maximum of ${MAX_COLLAPSED_ROWS} rows`
+                    noFilters ||
+                    filtersRef?.current?.scrollHeight <= MAX_HEIGHT_QE_SECTION
+                      ? "All rows are already displayed"
+                      : filtersSectionCollapsed
+                      ? "Display all rows"
+                      : "Display fewer rows"
                   }
                 >
                   <button
@@ -247,7 +222,10 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                     }
                     aria-label="Expand/collapse filters section"
                     aria-expanded={!filtersSectionCollapsed}
-                    disabled={noFilters || numOfRows <= MAX_COLLAPSED_ROWS}
+                    disabled={
+                      noFilters ||
+                      filtersRef?.current?.scrollHeight <= MAX_HEIGHT_QE_SECTION
+                    }
                     className={getCombinedClassesForRowCollapse(
                       filtersSectionCollapsed,
                     )}
@@ -268,12 +246,10 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
           </div>
           <div
             data-testid="text-cohort-filters"
-            className={`flex flex-wrap bg-base-max w-full p-2 overflow-x-hidden ${
-              filtersSectionCollapsed ? "overflow-y-auto" : "h-full"
-            }`}
+            className="flex flex-wrap bg-base-max w-full p-2 overflow-x-hidden"
             style={
-              filtersSectionCollapsed && numOfRows > MAX_COLLAPSED_ROWS
-                ? { maxHeight: collapsedHeight }
+              filtersSectionCollapsed
+                ? { maxHeight: `${QESectionHeight}px`, overflowY: "scroll" }
                 : undefined
             }
             ref={filtersRef}
