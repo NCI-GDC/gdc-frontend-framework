@@ -98,6 +98,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
   const [sortBy, setSortBy] = useState<SortBy[]>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    case_id: false,
     entity_id: false,
     status: false,
     notes: false,

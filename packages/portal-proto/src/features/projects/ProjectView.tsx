@@ -24,6 +24,7 @@ import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 import { focusStyles } from "@/utils/index";
 import AnnotationsTable from "./AnnotationsTable";
 import ProjectsIcon from "public/user-flow/icons/summary/projects.svg";
+import useScrollToHash from "@/hooks/useScrollToHash";
 
 export interface ProjectViewProps extends ProjectDefaults {
   readonly annotation: {
@@ -43,6 +44,8 @@ export const ProjectView: React.FC<ProjectViewProps> = (
   const [biospecimenDownloadActive, setBiospecimenDownloadActive] =
     useState(false);
   const [showSaveCohort, setShowSaveCohort] = useState(false);
+
+  useScrollToHash(["annotations"]);
 
   const Cases = (
     <span className="flex items-center gap-0.5">
