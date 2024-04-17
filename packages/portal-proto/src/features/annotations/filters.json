@@ -3,7 +3,6 @@
     "title": "Project",
     "field": "project",
     "full": "project.project_id",
-    "description": "No Description",
     "type": "keyword",
     "doc_type": "annotation",
     "facet_type": "enum"
@@ -12,7 +11,6 @@
     "title": "Entity Type",
     "field": "entity_type",
     "full": "entity_type",
-    "description": "No Description",
     "type": "keyword",
     "doc_type": "annotation",
     "facet_type": "enum"
@@ -21,7 +19,6 @@
     "title": "Category",
     "field": "category",
     "full": "category",
-    "description": "No Description",
     "type": "keyword",
     "doc_type": "annotation",
     "facet_type": "enum"
@@ -30,7 +27,6 @@
     "title": "Classification",
     "field": "classification",
     "full": "classification",
-    "description": "No Description",
     "type": "keyword",
     "doc_type": "annotation",
     "facet_type": "enum"
@@ -39,7 +35,6 @@
     "title": "Created Datetime",
     "field": "created_datetime",
     "full": "created_datetime",
-    "description": "No Description",
     "type": "keyword",
     "doc_type": "annotation",
     "facet_type": "datetime"

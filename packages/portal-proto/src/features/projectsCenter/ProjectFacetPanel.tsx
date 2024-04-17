@@ -51,7 +51,7 @@ export const ProjectFacetPanel = (): JSX.Element => {
         {FilterFacets.project.map((x) => {
           const facetName = x.title || fieldNameToTitle(x.full);
           return createFacetCard(
-            x as FacetDefinition,
+            x as Partial<FacetDefinition>,
             "Projects",
             ProjectFacetHooks,
             "projects-center",

@@ -119,7 +119,8 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
     >
       <FacetHeader>
         <Tooltip
-          label={description || "No description available"}
+          disabled={!description}
+          label={description}
           position="bottom-start"
           multiline
           width={220}
