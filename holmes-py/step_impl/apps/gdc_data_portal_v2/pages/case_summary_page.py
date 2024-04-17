@@ -1,3 +1,5 @@
+import time
+
 from playwright.sync_api import Page
 
 from ....base.base_page import BasePage
@@ -12,9 +14,8 @@ class CaseSummaryLocators:
     ADDED_TO_CART_MESSAGE_IDENT = 'p:has-text("Added")'
     REMOVED_FROM_CART_MESSAGE_IDENT = 'p:has-text("Removed")'
 
-    # The first download button in the table of the section "BIOSPECIMEN SUPPLEMENT FILE"
-    BIOSPECIMEN_SUPPLEMENT_FILE_DOWNLOAD_FIRST_IDENT = 'h2:has-text("BIOSPECIMEN SUPPLEMENT FILE") >> ..  >> .. >> button:has-text("download") >> nth=0'
-
+    SEARCH_BAR_FILES_TABLE = '[data-testid="table-files-case-summary"] >> [data-testid="textbox-table-search-bar"]'
+    BUTTON_DOWNLOAD_FILE_FILES_TABLE = '[data-testid="table-files-case-summary"] >> [data-testid="button-download-file"]'
 
 class CaseSummaryPage(BasePage):
     def __init__(self, driver: Page, url):
@@ -34,6 +35,15 @@ class CaseSummaryPage(BasePage):
         removed_file_message = CaseSummaryLocators.REMOVED_FROM_CART_MESSAGE_IDENT
         self.wait_until_locator_is_visible(removed_file_message)
 
-    # In 'Biospecimen Supplement File' area, clicks first 'Download' button in the table
-    def click_biospecimen_supplement_file_first_download_button(self):
-        self.click(CaseSummaryLocators.BIOSPECIMEN_SUPPLEMENT_FILE_DOWNLOAD_FIRST_IDENT)
+    def search_in_files_table(self, text_to_send):
+        """Sends text into files table search bar"""
+        locator = CaseSummaryLocators.SEARCH_BAR_FILES_TABLE
+        self.wait_until_locator_is_visible(locator)
+        self.send_keys(locator, text_to_send)
+        time.sleep(1)
+        self.wait_for_loading_spinner_table_to_detatch()
+
+    def click_files_table_download_file_button(self):
+        """Clicks download file in files table"""
+        locator = CaseSummaryLocators.BUTTON_DOWNLOAD_FILE_FILES_TABLE
+        self.click(locator)

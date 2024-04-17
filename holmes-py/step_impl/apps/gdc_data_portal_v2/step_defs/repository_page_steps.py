@@ -19,9 +19,13 @@ def select_repository_page_button(button_name: str):
 
 
 @step("Select <button_name> on the Image Viewer page")
-def select_repository_page_button(button_name: str):
+def select_image_viewer_page_button(button_name: str):
     APP.repository_page.click_image_viewer_page_data_testid(button_name)
 
+@step("Select case or slide <data_testid> on the Image Viewer page")
+def select_case_slide_on_image_viewer(data_testid: str):
+    APP.repository_page.click_image_viewer_page_case_or_slide(data_testid)
+    APP.repository_page.wait_for_loading_spinner_to_detatch()
 
 @step("Select file filter, <filter_name>, nth: <nth>")
 def select_file_filter_and_validate(filter_name: str, nth: int):

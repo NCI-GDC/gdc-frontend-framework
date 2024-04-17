@@ -21,7 +21,8 @@
     "build": "lerna run build",
     "build:clean": "lerna run build:clean",
     "start": "lerna run --parallel start",
-    "build-docs": "typedoc"
+    "build-docs": "typedoc",
+    "version": "npm version --workspaces --git-tag-version=false"
   },
   "lint-staged": {
     "!(**/*.png)": [

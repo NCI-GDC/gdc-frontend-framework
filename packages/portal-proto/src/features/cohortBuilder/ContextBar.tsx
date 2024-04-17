@@ -297,6 +297,7 @@ const ContextBar = ({
                   className="hidden md:block"
                 />
               }
+              targetButtonDisabled={cohortCounts.status !== "fulfilled"}
             />
 
             <DropdownWithIcon
@@ -333,6 +334,7 @@ const ContextBar = ({
               }
               menuLabelText="Filter your cohort by:"
               menuLabelCustomClass="font-bold text-primary"
+              targetButtonDisabled={cohortCounts.status !== "fulfilled"}
             />
 
             {activeTab === "summary" && (
@@ -362,6 +364,7 @@ const ContextBar = ({
                       )}
                     </span>
                   }
+                  targetButtonDisabled={cohortCounts.status !== "fulfilled"}
                 />
 
                 <DropdownWithIcon
@@ -389,6 +392,7 @@ const ContextBar = ({
                       )}
                     </span>
                   }
+                  targetButtonDisabled={cohortCounts.status !== "fulfilled"}
                 />
               </>
             )}

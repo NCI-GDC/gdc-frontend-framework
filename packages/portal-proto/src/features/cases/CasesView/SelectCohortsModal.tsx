@@ -148,6 +148,8 @@ export const SelectCohortsModal = ({
               },
             ],
           },
+          intent: "portal",
+          set_type: "frozen",
         },
       },
     );

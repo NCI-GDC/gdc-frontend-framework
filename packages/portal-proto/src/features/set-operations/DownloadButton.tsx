@@ -4,7 +4,7 @@ import { ActionIcon, Loader, Tooltip } from "@mantine/core";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { MutationDefinition } from "@reduxjs/toolkit/query";
 import { SetOperationEntityType } from "@/features/set-operations/types";
-import { GqlOperation, useCoreDispatch } from "@gff/core";
+import { CreateSetFilterArgs, GqlOperation, useCoreDispatch } from "@gff/core";
 import download from "@/utils/download";
 import { convertDateToString } from "@/utils/date";
 
@@ -15,7 +15,9 @@ const ENTITY_TYPE_TO_TAR = {
 };
 
 interface DownloadButtonProps {
-  readonly createSetHook: UseMutation<MutationDefinition<any, any, any, any>>;
+  readonly createSetHook: UseMutation<
+    MutationDefinition<CreateSetFilterArgs, any, any, any>
+  >;
   readonly entityType: SetOperationEntityType;
   readonly filters: GqlOperation;
   readonly setKey: string;
@@ -74,7 +76,9 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
     >
       <div className="w-fit">
         <ActionIcon
-          onClick={() => createSet({ filters })}
+          onClick={() =>
+            createSet({ filters, set_type: "instant", intent: "portal" })
+          }
           color="primary"
           variant="outline"
           className={`${

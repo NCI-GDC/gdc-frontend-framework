@@ -19,7 +19,7 @@ import {
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useDeepCompareCallback } from "use-deep-compare";
 import FunctionButton from "@/components/FunctionButton";
-import { Loader, Text } from "@mantine/core";
+import { Loader } from "@mantine/core";
 import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
@@ -111,6 +111,8 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
       return await createSet({
         filters: buildCohortGqlOperator(genomicFilters),
         case_filters: buildCohortGqlOperator(cohortFilters),
+        intent: "portal",
+        set_type: "frozen",
       })
         .unwrap()
         .then((setId) => {
@@ -457,14 +459,14 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             >
               {downloadMutatedGenesTSVActive ? <Loader size="sm" /> : "TSV"}
             </FunctionButton>
-
-            <Text className="font-heading font-bold text-md">
-              TOTAL OF {data?.genes?.genes_total?.toLocaleString("en-US")}{" "}
-              {data?.genes?.genes_total == 1
-                ? "Gene".toUpperCase()
-                : `${"Gene".toUpperCase()}S`}
-            </Text>
           </div>
+        }
+        tableTitle={
+          <>
+            Total of{" "}
+            <b>{data?.genes?.genes_total?.toLocaleString("en-US") ?? "..."}</b>{" "}
+            {data?.genes?.genes_total == 1 ? "gene" : "genes"}
+          </>
         }
         pagination={pagination}
         showControls={true}
