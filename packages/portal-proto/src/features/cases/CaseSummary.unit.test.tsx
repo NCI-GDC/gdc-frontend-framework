@@ -23,7 +23,9 @@ describe("<CaseSummary />", () => {
     };
 
     jest.spyOn(func, "useCaseSummary").mockReturnValue(loadingResponse);
-    jest.spyOn(func, "useAnnotations").mockReturnValue(loadingResponse);
+    jest
+      .spyOn(func, "useGetAnnotationsQuery")
+      .mockReturnValue(loadingResponse as any);
     const { getByTestId } = render(<CaseSummary case_id="testId" bio_id="" />);
 
     expect(getByTestId("loading-spinner")).toBeInTheDocument();
@@ -39,7 +41,9 @@ describe("<CaseSummary />", () => {
     };
 
     jest.spyOn(func, "useCaseSummary").mockReturnValue(loadingResponse);
-    jest.spyOn(func, "useAnnotations").mockReturnValue(loadingResponse);
+    jest
+      .spyOn(func, "useGetAnnotationsQuery")
+      .mockReturnValue(loadingResponse as any);
     const { getByText } = render(<CaseSummary case_id="testId" bio_id="" />);
 
     expect(getByText("Case Not Found")).toBeInTheDocument();

@@ -1,3 +1,5 @@
+import time
+
 from playwright.sync_api import Page
 
 from ....base.base_page import BasePage
@@ -24,6 +26,11 @@ class MutationFrequencyPage(BasePage):
         tab_name = tab_name.lower()
         tab = MutationFrequencyLocators.BUTTON_GENE_MUTATION_TAB(tab_name)
         self.click(tab)
+        time.sleep(1)
+        self.wait_for_loading_spinner_to_detatch()
+        self.wait_for_loading_spinner_table_to_detatch()
+        self.wait_for_loading_spinner_to_detatch()
+        self.wait_for_loading_spinner_table_to_detatch()
 
     def click_custom_filter_button(self, button_name):
         button_locator = MutationFrequencyLocators.BUTTON_CUSTOM_FILTER(button_name)

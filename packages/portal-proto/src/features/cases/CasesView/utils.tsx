@@ -285,42 +285,13 @@ export const useGenerateCasesTableColumns = ({
       casesDataColumnHelper.display({
         id: "annotations",
         header: "Annotations",
-        cell: ({ row }) =>
-          getCasesTableAnnotationsLinkParams(
-            row.original.annotations,
-            row.original.case_uuid,
-          ) ? (
-            <Link
-              href={getCasesTableAnnotationsLinkParams(
-                row.original.annotations,
-                row.original.case_uuid,
-              )}
-              className="text-utility-link underline"
-              target={"_blank"}
-            >
-              {row.original.annotations.length}
-            </Link>
-          ) : (
-            0
-          ),
+        cell: ({ row }) => row.original.annotations.length,
       }),
     ],
     [currentCart, dispatch, setEntityMetadata, currentPage, totalPages],
   );
 
   return CasesTableDefaultColumns;
-};
-
-export const getCasesTableAnnotationsLinkParams = (
-  annotations: AnnotationDefaults[],
-  case_id: string,
-): string => {
-  if (annotations.length === 0) return null;
-
-  if (annotations.length === 1) {
-    return `https://portal.gdc.cancer.gov/v1/annotations/${annotations[0].annotation_id}`;
-  }
-  return `https://portal.gdc.cancer.gov/v1/annotations?filters={"content":[{"content":{"field":"annotations.case_id","value":["${case_id}"]},"op":"in"}],"op":"and"}`;
 };
 
 export const MAX_CASE_IDS = 100000;
