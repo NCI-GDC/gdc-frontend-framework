@@ -201,7 +201,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
               hideYTicks={hideYTicks}
               xLabel={
                 hideXTicks
-                  ? "For the list of histogram values, download the seperate TSV file"
+                  ? "For histogram details, download the associated TSV or JSON file"
                   : undefined
               }
               chartRef={downloadChartRef}

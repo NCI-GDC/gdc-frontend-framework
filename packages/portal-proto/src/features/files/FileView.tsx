@@ -35,6 +35,7 @@ import AnalysisInputFiles from "./AnalysisInput";
 import ReadGroups from "./ReadGroups";
 import FileVersions from "./FileVersions";
 import AnnnotationsTable from "./AnnotationsTable";
+import FilesIcon from "public/user-flow/icons/summary/files.svg";
 
 interface LeftSideElementForHeaderProps {
   readonly isFileInCart: boolean;
@@ -178,7 +179,8 @@ export const FileView: React.FC<FileViewProps> = ({
   return (
     <>
       <SummaryHeader
-        iconText="fl"
+        Icon={FilesIcon}
+        headerTitleLeft="File"
         headerTitle={file.file_name}
         isModal={isModal}
         leftElement={
@@ -189,7 +191,6 @@ export const FileView: React.FC<FileViewProps> = ({
             setFileToDownload={setFileToDownload}
           />
         }
-        isFile={true}
       />
       <div className={`${!isModal ? "mt-40" : "mt-4"} mx-4`}>
         <div className="flex gap-8">

@@ -870,6 +870,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
       >
         <FacetHeader>
           <Tooltip
+            disabled={!description}
             label={description}
             position="bottom-start"
             multiline
