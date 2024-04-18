@@ -45,9 +45,6 @@
     "react-modal": "^3.14.3",
     "react-plotly.js": "^2.5.1",
     "react-redux": "^7.2.3",
-    "react-responsive-masonry": "^2.1.4",
-    "react-select": "^4.3.1",
-    "react-select-search": "^3.0.8",
     "react-tabs": "^4.2.1",
     "react-transition-group": "^4.4.2",
     "tailwind-styled-components": "2.1.8"
