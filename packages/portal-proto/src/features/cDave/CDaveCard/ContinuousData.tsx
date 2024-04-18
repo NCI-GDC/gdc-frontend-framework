@@ -28,7 +28,6 @@ import {
   createBuckets,
   parseContinuousBucket,
   convertDataDimension,
-  formatValue,
   roundSometimes,
 } from "../utils";
 import ContinuousBinningModal from "../ContinuousBinningModal/ContinuousBinningModal";
@@ -62,22 +61,14 @@ const toBucketDisplayName = (
 ): string => {
   const [fromValue, toValue] = parseContinuousBucket(bucket);
   const originalDataDimension = DATA_DIMENSIONS[field]?.unit;
-  return `${formatValue(
-    roundSometimes(
-      convertDataDimension(
-        Number(fromValue),
-        originalDataDimension,
-        dataDimension,
-      ),
+  return `${roundSometimes(
+    convertDataDimension(
+      Number(fromValue),
+      originalDataDimension,
+      dataDimension,
     ),
-  )} to <${formatValue(
-    roundSometimes(
-      convertDataDimension(
-        Number(toValue),
-        originalDataDimension,
-        dataDimension,
-      ),
-    ),
+  )} to <${roundSometimes(
+    convertDataDimension(Number(toValue), originalDataDimension, dataDimension),
   )}`;
 };
 
