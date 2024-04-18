@@ -78,7 +78,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-tsdoc": "^0.2.17",
     "husky": "^7.0.4",
-    "lerna": "^5.0.0",
+    "lerna": "^6.6.1",
     "lint-staged": "^12.3.7",
     "prettier": "^2.3.2",
     "typedoc": "^0.25.4",
