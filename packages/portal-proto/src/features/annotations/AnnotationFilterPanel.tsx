@@ -51,7 +51,7 @@ export const AnnotationFacetPanel = (): JSX.Element => {
         {FilterFacets.map((x) => {
           const facetName = x.title || fieldNameToTitle(x.full);
           return createFacetCard(
-            x as FacetDefinition,
+            x as Partial<FacetDefinition>,
             "Annotations",
             facetHooks,
             "annotation-browser",

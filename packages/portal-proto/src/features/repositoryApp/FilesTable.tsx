@@ -481,12 +481,14 @@ const FilesTables: React.FC = () => {
                 TSV
               </FunctionButton>
             </div>
-            <div
-              data-testid="text-counts-files-table"
-              className="hidden Custom-Repo-Width:block"
-            >
-              <Stats />
-            </div>
+          </div>
+        }
+        tableTitle={
+          <div
+            data-testid="text-counts-files-table"
+            className="hidden Custom-Repo-Width:block"
+          >
+            <Stats />
           </div>
         }
         data={formattedTableData}

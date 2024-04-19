@@ -4,9 +4,15 @@ import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
 import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import { datadogRum } from "@datadog/browser-rum";
 
 const MultipleImageViewerPage: NextPage = () => {
   const { query } = useRouter();
+
+  datadogRum.startView({
+    name: "Multiple Image Viewer",
+  });
+
   return (
     <UserFlowVariedPages
       {...{

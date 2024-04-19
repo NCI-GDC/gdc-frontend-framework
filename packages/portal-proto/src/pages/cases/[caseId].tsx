@@ -1,4 +1,5 @@
 import { NextPage } from "next";
+import { datadogRum } from "@datadog/browser-rum";
 import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
 import { useRouter } from "next/router";
 import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
@@ -11,6 +12,10 @@ const CaseSummaryPage: NextPage = () => {
     query: { caseId, bioId },
   } = router;
   const [ready, setReady] = useState(false);
+
+  datadogRum.startView({
+    name: "Case Summary",
+  });
 
   useEffect(() => {
     if (router.isReady) {

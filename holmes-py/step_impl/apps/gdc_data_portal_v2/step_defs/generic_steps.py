@@ -158,9 +158,10 @@ def download_file_at_file_table(file: str, source: str):
         "Projects": APP.projects_page.click_button,
         "Repository": APP.repository_page.click_button,
         "File Summary": APP.file_summary_page.click_download_button,
-        "Case Summary Biospecimen Supplement First File": APP.case_summary_page.click_biospecimen_supplement_file_first_download_button,
+        "Case Summary Files Table": APP.case_summary_page.click_files_table_download_file_button,
         "Cohort Bar": APP.cohort_bar.click_cohort_bar_button,
         "Manage Sets": APP.manage_sets_page.click_on_download_for_set,
+        "Cohort Comparison": APP.cohort_comparison_page.click_download_tsv_button_on_analysis_card_cohort_comparison,
     }
     driver = WebDriver.page
     with driver.expect_download(timeout=60000) as download_info:
@@ -243,6 +244,22 @@ def verify_file_content(file_type, table):
         assert (
             v[0] in data_store.spec[f"{file_type} contents"]
         ), f"'{v[0]}' is NOT found in the file"
+
+@step("Verify that <file_type> has expected information from collected data <table>")
+def verify_file_content(file_type, table):
+    """Checks if collected information is inside content from read-in files"""
+    for k, v in enumerate(table):
+            # Get first statistic to compare
+        collected_data_string = data_store.spec[f"{v[0]}"]
+        collected_data_string = APP.shared.strip_string_for_comparison(collected_data_string)
+        if collected_data_string == "--":
+            assert (
+                "0" in data_store.spec[f"{file_type} contents"]
+            ), f"Collected info '{v[0]}' with value '0' is NOT found in the file"
+        else:
+            assert (
+                collected_data_string in data_store.spec[f"{file_type} contents"]
+            ), f"Collected info '{v[0]}' with value '{collected_data_string}' is NOT found in the file"
 
 
 @step("Verify that <file_type> does not contain specified information <table>")

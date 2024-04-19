@@ -25,7 +25,7 @@ import { FacetRequiredHooks } from "@/features/facets/types";
  * @param width - override width of facet
  */
 export const createFacetCard = (
-  facet: FacetDefinition,
+  facet: Partial<FacetDefinition>,
   valueLabel: string,
   dataFunctions: FacetRequiredHooks,
   idPrefix: string,

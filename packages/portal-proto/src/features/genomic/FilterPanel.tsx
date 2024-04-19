@@ -90,7 +90,6 @@ const GeneAndSSMFilterPanel = ({
               valueLabel={FacetDocTypeToLabelsMap[x.docType]}
               showPercent={false}
               hideIfEmpty={false}
-              description={x.description}
               width="w-64"
             />
           );
@@ -131,7 +130,6 @@ const GeneAndSSMFilterPanel = ({
             valueLabel={FacetDocTypeToLabelsMap[x.docType]}
             showPercent={false}
             hideIfEmpty={false}
-            description={x.description}
             width="w-64"
           />
         );

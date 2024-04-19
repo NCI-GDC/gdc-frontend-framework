@@ -17,7 +17,7 @@ import {
 } from "@gff/core";
 import { useEffect, useState, useContext, useMemo, useCallback } from "react";
 import { useDeepCompareCallback } from "use-deep-compare";
-import { Loader, Text } from "@mantine/core";
+import { Loader } from "@mantine/core";
 import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
@@ -526,12 +526,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                     )}
                   </FunctionButton>
                 )}
-                <Text className="font-heading font-bold text-md">
-                  TOTAL OF {data?.ssmsTotal?.toLocaleString("en-US")}{" "}
-                  {data?.ssmsTotal == 1
-                    ? "Somatic Mutation".toUpperCase()
-                    : `${"Somatic Mutation".toUpperCase()}S`}
-                </Text>
               </div>
             }
             search={{
@@ -539,6 +533,14 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               defaultSearchTerm: searchTerm,
               tooltip: "e.g. TP53, ENSG00000141510, chr17:g.7675088C>T, R175H",
             }}
+            tableTitle={
+              <>
+                Total of <b>{data?.ssmsTotal?.toLocaleString("en-US")}</b>{" "}
+                {data?.ssmsTotal == 1
+                  ? "somatic mutation"
+                  : "somatic mutations"}
+              </>
+            }
             pagination={pagination}
             showControls={true}
             enableRowSelection={true}
