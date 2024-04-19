@@ -185,8 +185,9 @@ const Homepage = (): JSX.Element => {
       <HPCardImgAlt
         head={
           <>
-            Download Primary and Higher-Level
-            <br /> Data For Further Analysis
+            Download Primary and{" "}
+            <span className="whitespace-nowrap">Higher-Level</span>
+            <br className="hidden xl:block" /> Data For Further Analysis
           </>
         }
         body={
