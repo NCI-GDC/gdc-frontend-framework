@@ -36,6 +36,8 @@ interface ExploreCohortModalProps {
   readonly site: string;
 }
 
+const EXTRA_BODY_PLOT_SPACE = 20;
+
 const ExploreCohortModal: React.FC<ExploreCohortModalProps> = ({
   opened,
   setOpened,
@@ -204,7 +206,13 @@ export const Bodyplot = (): JSX.Element => {
   }, [width, mouseOutHandler, processedData, root, bodyplotRef]);
 
   return (
-    <div ref={mouseRef}>
+    <div
+      ref={mouseRef}
+      style={{
+        height: bodyplotRef?.current?.scrollHeight + EXTRA_BODY_PLOT_SPACE,
+        width: bodyplotRef?.current?.scrollWidth,
+      }}
+    >
       <div
         className={`${
           bodyplotTooltipContent ? "opacity-100" : "opacity-0"

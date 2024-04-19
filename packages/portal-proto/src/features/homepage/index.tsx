@@ -8,7 +8,7 @@ import { Image } from "@/components/Image";
 import Link from "next/link";
 
 export const homepageButtonClass = `
-bg-primary text-xl xl:text-sm text-base-max border-base-light border-0
+bg-primary text-xl md:text-lg lg:text-sm text-base-max border-base-light border-0
 hover:bg-primary-darker hover:text-primary-darker-contrast
 font-medium font-heading rounded mt-4 px-4 py-3 w-fit inline-block cursor-pointer
 `;
@@ -46,10 +46,12 @@ const Homepage = (): JSX.Element => {
           </Link>
           <HorizontalSummaryTotalsPanel />
         </div>
-        <div className="h-[555px] mt-10 xl:mt-0 px-4">
-          <div className="relative xl:mt-12" id="human-body-parent">
-            <Bodyplot />
-          </div>
+
+        <div
+          className="relative xl:mt-12 mt-10 px-4 mx-auto"
+          id="human-body-parent"
+        >
+          <Bodyplot />
         </div>
       </div>
       <HPCard
@@ -100,7 +102,7 @@ const Homepage = (): JSX.Element => {
         imgSrc="/homepage/genomic-clinical-data.jpg"
         imgAlt="Data Cloud"
       />
-      <div className="bg-mid-pattern bg-cover">
+      <div className="bg-mid-pattern bg-cover py-10">
         <HPCardImg
           head="Visualize Genomic Alterations and Clinical Features"
           body={
@@ -122,9 +124,9 @@ const Homepage = (): JSX.Element => {
             height: 264,
           }}
         />
-        <div className="flex justify-center">
-          <div className="flex flex-col gap-4 xl:flex-row xl:gap-14 xl:max-w-screen-lg items-center bg-base-max xl:rounded-2xl px-4 py-12">
-            <ul className="flex gap-4">
+        <div className="xl:flex xl:justify-center">
+          <div className="bg-base-max px-4 py-6 lg:flex lg:items-center lg:gap-9 xl:max-w-screen-lg xl:rounded-2xl">
+            <ul className="grid grid-cols-3 gap-5 lg:gap-4 lg:flex lg:w-2/3">
               {[
                 {
                   src: "/homepage/slide1-SurvivalP.jpg",
@@ -142,7 +144,10 @@ const Homepage = (): JSX.Element => {
                   alt: "feature of protein paint",
                 },
               ].map((obj, index) => (
-                <li className="flex flex-col xl:w-[220px]" key={index}>
+                <li
+                  className="flex flex-col lg:w-[191px] xl:w-[220px]"
+                  key={index}
+                >
                   <div className="border-solid rounded-t-lg border-t-1 border-x-1 border-nciGray-lighter">
                     <Image
                       alt={obj.alt}
@@ -158,8 +163,8 @@ const Homepage = (): JSX.Element => {
                 </li>
               ))}
             </ul>
-            <div className="">
-              <p className="font-content text-secondary-contrast-lighter text-2xl">
+            <div className="mt-8 lg:mt-0">
+              <p className="font-content text-secondary-contrast-lighter text-2xl md:text-xl lg:text-[1rem]">
                 Analyze your custom cohorts by applying the GDC&apos;s
                 collection of tools for visualizing clinical features, genomic
                 alterations, and other cancer drivers.

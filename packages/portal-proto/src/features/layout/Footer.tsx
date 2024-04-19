@@ -110,14 +110,16 @@ export const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="flex flex-col bg-secondary-darkest justify-center text-center px-4 py-10 xl:px-10 text-accent-contrast-darkest text-sm">
-      <div className="grid grid-cols-3 xl:grid-cols-4 text-left w-full max-w-screen-lg gap-y-7 pb-5 border-b border-[#5D7A8D]">
-        <div className="col-span-2">
-          <div className="font-bold text-2xl xl:text-lg">
+    <footer className="flex flex-col bg-secondary-darkest justify-center text-center px-4 py-10 text-accent-contrast-darkest text-sm">
+      <div className="grid grid-cols-footer-small lg:grid-cols-footer-large lg:gap-6 mx-auto text-left w-full max-w-screen-lg gap-y-7 pb-5 border-b border-[#5D7A8D]">
+        <div>
+          <div className="font-bold text-2xl lg:text-xl xl:text-lg">
             National Cancer Institute
           </div>
-          <div className="font-bold">at the National Institutes of Health</div>
-          <ul className="py-4 text-lg xl:text-sm space-y-1 font-content">
+          <div className="font-bold text-[1rem] lg:text-sm">
+            at the National Institutes of Health
+          </div>
+          <ul className="py-4 text-lg lg:text-[1rem] space-y-1 font-content">
             <li>
               UI v{PUBLIC_APP_INFO?.version} @ {PUBLIC_APP_INFO?.hash}
             </li>
@@ -140,14 +142,11 @@ export const Footer: React.FC = () => {
           </ul>
         </div>
         {footerLinkColData.map((colData, colI) => (
-          <div
-            className={`${colI % 2 === 0 ? "col-span-1" : "col-span-2"}`}
-            key={colI}
-          >
-            <h2 className="text-2xl font-medium xl:text-lg uppercase">
+          <div key={colI}>
+            <h2 className="text-2xl font-medium lg:text-lg uppercase">
               {colData.header}
             </h2>
-            <ul className="py-3 text-lg font-bold xl:font-semibold space-y-2">
+            <ul className="py-3 text-lg font-bold lg:text-xs space-y-2">
               {colData.links.map((linkData, linkI) => (
                 <li key={linkI} className="font-content">
                   {linkData.normalLink ? (
@@ -164,7 +163,7 @@ export const Footer: React.FC = () => {
         ))}
       </div>
 
-      <ul className="text-lg py-8 font-content divide-x divide-solid">
+      <ul className="text-lg lg:text-sm py-8 font-content divide-x divide-solid">
         {footerLinkCloud.map((linkData, index) => (
           <li className="inline-block px-1 leading-none font-bold" key={index}>
             <ExternalLink href={linkData.url}>{linkData.title}</ExternalLink>
@@ -172,7 +171,7 @@ export const Footer: React.FC = () => {
         ))}
       </ul>
 
-      <div className="text-lg font-medium xl:text-sm leading-none font-content">
+      <div className="text-lg font-medium lg:text-[1rem] xl:text-sm leading-none font-content">
         NIH... Turning Discovery Into Health{" "}
         <span className="text-lg xl:text-[1rem]">&reg;</span>
       </div>

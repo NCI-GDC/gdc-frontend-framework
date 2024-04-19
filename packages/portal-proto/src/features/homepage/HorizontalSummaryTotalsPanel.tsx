@@ -16,14 +16,14 @@ const HorizontalSummaryTotalsPanel = (): JSX.Element => {
   return (
     <div className="flex flex-col mt-11">
       <div className="flex flex-col">
-        <h2 className="font-heading text-2xl xl:text-md font-bold text-summarybar-text">
+        <h2 className="font-heading text-2xl md:text-xl xl:text-md font-bold text-summarybar-text">
           Data Portal Summary
         </h2>
         <AnchorLink
           customDataTestID="text-homepage-release-notes"
           title={isVersionInfoSuccess ? versionInfo.data_release : "..."}
           href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes/"
-          customStyle="sm:text-lg text-primary"
+          customStyle="text-lg md:text-[1rem] text-primary"
         />
       </div>
       <div

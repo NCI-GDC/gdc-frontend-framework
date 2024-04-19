@@ -823,6 +823,8 @@ module.exports = {
       },
       gridTemplateColumns: {
         "2flex1": "1fr auto",
+        "footer-large": "1.5fr 1fr 1fr 1fr",
+        "footer-small": "2fr 1fr",
       },
       fontFamily: {
         montserrat: ["Montserrat", "sans-serif"],
