@@ -27,7 +27,7 @@ const HorizontalSummaryTotalsPanel = (): JSX.Element => {
         />
       </div>
       <div
-        className="grid grid-cols-3 gap-y-6 w-full md:grid-cols-6 divide-x py-3 mt-2 bg-base-max rounded-md border-1 border-summarybar-border shadow-lg justify-between"
+        className="grid grid-cols-3 gap-y-6 w-full md:grid-cols-6 divide-x py-3 mt-2 bg-base-max rounded-md border-1 border-summarybar-border shadow-lg justify-between text-center"
         data-testid="homepage-live-statistics"
       >
         <SummaryStatsItem

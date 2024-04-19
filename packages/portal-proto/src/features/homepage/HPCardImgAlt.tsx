@@ -35,7 +35,7 @@ const HPCardImgAlt = ({
               layout="fill"
             />
           </div>
-          <h2 className="basis-2/3 font-heading font-bold text-4xl md:text-3xl self-center lg:hidden">
+          <h2 className="basis-2/3 font-heading font-bold text-4xl md:text-[2rem] self-center lg:hidden">
             {head}
           </h2>
         </div>

@@ -119,7 +119,7 @@ export const Footer: React.FC = () => {
           <div className="font-bold text-[1rem] lg:text-sm">
             at the National Institutes of Health
           </div>
-          <ul className="py-4 text-lg lg:text-[1rem] space-y-1 font-content">
+          <ul className="py-4 text-lg lg:text-sm space-y-1 font-content">
             <li>
               UI v{PUBLIC_APP_INFO?.version} @ {PUBLIC_APP_INFO?.hash}
             </li>

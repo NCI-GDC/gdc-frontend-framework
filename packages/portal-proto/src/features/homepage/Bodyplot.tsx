@@ -36,7 +36,8 @@ interface ExploreCohortModalProps {
   readonly site: string;
 }
 
-const EXTRA_BODY_PLOT_SPACE = 20;
+const EXTRA_BODY_PLOT_SPACE_HEIGHT = 20;
+const EXTRA_BODY_PLOT_SPACE_WIDTH = 50;
 
 const ExploreCohortModal: React.FC<ExploreCohortModalProps> = ({
   opened,
@@ -205,12 +206,18 @@ export const Bodyplot = (): JSX.Element => {
     }
   }, [width, mouseOutHandler, processedData, root, bodyplotRef]);
 
+  console.log(bodyplotRef?.current?.scrollWidth);
+
   return (
     <div
       ref={mouseRef}
       style={{
-        height: bodyplotRef?.current?.scrollHeight + EXTRA_BODY_PLOT_SPACE,
-        width: bodyplotRef?.current?.scrollWidth,
+        height:
+          (bodyplotRef?.current?.scrollHeight ?? 0) +
+          EXTRA_BODY_PLOT_SPACE_HEIGHT,
+        width:
+          (bodyplotRef?.current?.scrollWidth ?? 0) -
+          EXTRA_BODY_PLOT_SPACE_WIDTH, // this is needed not to cram hero area left hand side
       }}
     >
       <div

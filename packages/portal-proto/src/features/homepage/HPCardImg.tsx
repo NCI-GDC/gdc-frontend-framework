@@ -34,7 +34,7 @@ const HPCardImg = ({
           objectPosition={imgProps.objectPosition}
         />
       </div>
-      <div className="lg:w-1/2 py-10">
+      <div className="pb-10 lg:w-1/2 lg:py-10">
         <h2 className="font-heading font-bold text-4xl md:text-3xl xl:text-2xl pb-5 text-summarybar-text tracking-tight">
           {head}
         </h2>

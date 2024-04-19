@@ -18,7 +18,7 @@ const Homepage = (): JSX.Element => {
   return (
     <div className="flex flex-col bg-base-max">
       <div className="flex flex-col xl:flex-row xl:py-10 bg-hero-pattern bg-cover pt-8">
-        <div className="flex flex-col px-4 basis-1/2">
+        <div className="flex flex-col px-4 xl:pr-0 basis-1/2">
           <div className="flex flex-col">
             <h1 className="font-heading text-6xl md:text-5xl tracking-normal xl:text-[2.4rem] xl:tracking-[.03em] font-bold text-primary-darkest py-5">
               Genomic Data Commons
@@ -27,7 +27,7 @@ const Homepage = (): JSX.Element => {
             <h2 className="mt-6 items-center font-heading font-bold text-2xl md:text-xl xl:text-md text-summarybar-text">
               Harmonized Cancer Datasets
             </h2>
-            <p className="text-2xl md:text-xl w-full tracking-normal items-center xl:text-[1rem] xl:tracking-wide text-primary-content-darkest xl:w-[75%] font-content">
+            <p className="text-2xl md:text-xl w-full tracking-normal items-center xl:text-[1rem] xl:w-[80%] xl:tracking-wide text-primary-content-darkest font-content">
               A repository and computational platform for cancer researchers who
               need to understand cancer, its clinical progression, and response
               to therapy.
@@ -48,7 +48,7 @@ const Homepage = (): JSX.Element => {
         </div>
 
         <div
-          className="relative xl:mt-12 mt-10 px-4 mx-auto"
+          className="relative mt-10 pr-4 mx-auto xl:mt-0 xl:-mb-1 xl:self-end "
           id="human-body-parent"
         >
           <Bodyplot />
@@ -102,7 +102,7 @@ const Homepage = (): JSX.Element => {
         imgSrc="/homepage/genomic-clinical-data.jpg"
         imgAlt="Data Cloud"
       />
-      <div className="bg-mid-pattern bg-cover py-10">
+      <div className="bg-mid-pattern bg-cover xl:py-10">
         <HPCardImg
           head="Visualize Genomic Alterations and Clinical Features"
           body={
