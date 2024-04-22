@@ -1,9 +1,8 @@
 import babel from "@rollup/plugin-babel";
 import terser from "@rollup/plugin-terser";
 import typescript from "@rollup/plugin-typescript";
-import peerDepsExternal from "rollup-plugin-peer-deps-external";
 import copy from "rollup-plugin-copy";
-import dts from "rollup-plugin-dts";
+import { dts } from "rollup-plugin-dts";
 
 const globals = {
   d3: "d3",
@@ -15,7 +14,7 @@ const config = [
     output: [
       {
         file: "dist/index.js",
-        format: "cjs",
+        format: "es",
       },
       {
         file: "dist/index.min.js",
@@ -38,7 +37,6 @@ const config = [
     ],
     external: ["d3"],
     plugins: [
-      peerDepsExternal(),
       typescript(),
       babel({
         presets: ["@babel/preset-react"],
