@@ -4,6 +4,7 @@ from playwright.sync_api import Page
 
 from ....base.base_page import BasePage
 from step_impl.apps.gdc_data_portal_v2.pages.header_section import HeaderSectionLocators
+from step_impl.apps.gdc_data_portal_v2.pages.cohort_comparison_page import CohortComparisonLocators
 
 
 class AnalysisCenterLocators:
@@ -115,6 +116,17 @@ class AnalysisCenterPage(BasePage):
                 self.driver.reload()
                 time.sleep(10)
                 self.wait_for_selector(AnalysisCenterLocators.MUTATION_FREQUENCY_WAIT_FOR_ELEMENT, 30000)
+
+        if (page_to_load == "cohort comparison demo"):
+            # Need to wait for loading spinners to be present, for them to disappear,
+            # and wait for a special loading spinner attached to the survival plot to disappear
+            try:
+                self.wait_for_loading_spinner_to_be_visible(15000)
+                self.wait_for_loading_spinner_to_detatch()
+                survival_plot_spinner_locator = CohortComparisonLocators.LOADING_SPINNER_SURVIVAL_PLOT
+                self.wait_until_locator_is_detached(survival_plot_spinner_locator)
+            except:
+                self.wait_for_loading_spinner_to_detatch()
         self.wait_for_loading_spinner_to_detatch()
         self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
         self.wait_for_loading_spinner_table_to_detatch()
