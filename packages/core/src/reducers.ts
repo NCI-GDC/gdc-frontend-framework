@@ -23,7 +23,6 @@ import { casesReducer } from "./features/cases/casesSlice";
 import { genomicReducers } from "./features/genomic/genomicSlice";
 import { imageDetailsReducer } from "./features/imageDetails/imageDetailsSlice";
 import { imageViewerReducer } from "./features/imageDetails/imageViewer";
-import { cohortComparisonReducer } from "./features/cohortComparison";
 import { bannerReducer } from "./features/bannerNotification";
 import { cartReducer } from "./features/cart";
 import { totalCountsReducer } from "./features/summary/totalCountsSlice";
@@ -87,7 +86,6 @@ export const reducers = combineReducers({
   genomic: genomicReducers,
   imageDetails: imageDetailsReducer,
   imageViewer: imageViewerReducer,
-  cohortComparison: cohortComparisonReducer,
   cart: cartReducer,
   bannerNotification: bannerReducer,
   summary: totalCountsReducer,
