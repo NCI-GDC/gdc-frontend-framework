@@ -15,7 +15,7 @@ const useScrollToHash = (valid_hashes: string[]) => {
     }
     // Remove hash when component unmounts
     return () => history.replaceState(null, null, " ");
-    // Only run on mount
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 };
