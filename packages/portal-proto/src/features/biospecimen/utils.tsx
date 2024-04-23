@@ -10,7 +10,7 @@ import Link from "next/link";
 import {
   CartFile,
   CoreDispatch,
-  entityType,
+  BiospecimenEntityType,
   FileDefaults,
   mapFileData,
 } from "@gff/core";
@@ -64,7 +64,7 @@ export const idFields = [
 ];
 
 export const formatEntityInfo = (
-  entity: entityType,
+  entity: BiospecimenEntityType,
   foundType: string,
   caseId: string,
   dispatch: CoreDispatch,

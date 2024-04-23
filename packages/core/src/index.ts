@@ -42,7 +42,7 @@ export * from "./features/cancerDistribution";
 export * from "./features/subrows";
 export * from "./features/tables";
 export * from "./features/cohortComparison";
-export * from "./features/biospecimen/biospecimenSlice";
+export * from "./features/biospecimen";
 export * from "./features/cart";
 export * from "./features/api/cohortApiSlice";
 export * from "./features/bannerNotification";

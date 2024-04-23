@@ -42,7 +42,6 @@ import {
   survivalApiSliceReducerPath,
   survivalApiReducer,
 } from "./features/survival/survivalApiSlice";
-import { biospecimenReducer } from "./features/biospecimen/biospecimenSlice";
 import { clinicalDataAnalysisReducer } from "./features/clinicalDataAnalysis";
 import { caseSummarySliceReducer } from "./features/cases/caseSummarySlice";
 import { facetsByNameTypeAndFilterReducer } from "./features/facets/facetsByNameTypeAndFilter";
@@ -94,7 +93,6 @@ export const reducers = combineReducers({
   cart: cartReducer,
   bannerNotification: bannerReducer,
   summary: totalCountsReducer,
-  biospecimen: biospecimenReducer,
   clinicalDataAnalysis: clinicalDataAnalysisReducer,
   caseSummary: caseSummarySliceReducer,
   ssms: ssmsReducer,
