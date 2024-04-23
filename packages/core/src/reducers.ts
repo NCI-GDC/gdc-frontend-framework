@@ -48,7 +48,6 @@ import { facetsByNameTypeAndFilterReducer } from "./features/facets/facetsByName
 import { modalReducer } from "./features/modals/modalsSlice";
 import { quickSearchReducer } from "./features/quickSearch/quickSearch";
 import { versionInfoReducer } from "./features/versionInfo/versionInfoSlice";
-import { cancerDistributionReducer } from "./features/cancerDistribution";
 import {
   graphqlAPISliceReducerPath,
   graphqlAPIReducer,
@@ -85,7 +84,6 @@ export const reducers = combineReducers({
   filesSize: filesSizeReducer,
   annotations: annotationsReducer,
   cases: casesReducer,
-  cancerDistribution: cancerDistributionReducer,
   genomic: genomicReducers,
   imageDetails: imageDetailsReducer,
   imageViewer: imageViewerReducer,

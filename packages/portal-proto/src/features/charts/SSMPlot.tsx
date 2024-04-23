@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import { FilterSet, useSsmPlot } from "@gff/core";
+import { FilterSet, useSsmPlotQuery } from "@gff/core";
 import ChartTitleBar from "./ChartTitleBar";
 import { CountSpan } from "@/components/tailwindComponents";
 
@@ -29,12 +29,14 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
 }: SSMPlotProps) => {
   const router = useRouter();
 
-  const { data, error, isUninitialized, isFetching, isError } = useSsmPlot({
-    gene,
-    ssms,
-    cohortFilters,
-    genomicFilters,
-  });
+  const { data, error, isUninitialized, isFetching, isError } = useSsmPlotQuery(
+    {
+      gene,
+      ssms,
+      cohortFilters,
+      genomicFilters,
+    },
+  );
 
   if (isUninitialized) {
     return <div>Initializing chart...</div>;
@@ -44,8 +46,8 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
     return <div>Fetching chart...</div>;
   }
 
-  if (isError) {
-    return <div>Failed to fetch chart: {error}</div>;
+  if (isError && "text" in error) {
+    return <div>Failed to fetch chart: {error?.text}</div>;
   }
 
   if (data.cases.length < 5) {
