@@ -3,7 +3,7 @@ import tw from "tailwind-styled-components";
 import { MdShoppingCart as CartIcon } from "react-icons/md";
 import { MdExpandMore as ExpandMoreIcon } from "react-icons/md";
 import {
-  useCartSummary,
+  useCartSummaryQuery,
   useCoreSelector,
   selectCart,
   useFetchUserDetailsQuery,
@@ -32,7 +32,7 @@ const P = tw.p`
 
 const Cart: React.FC = () => {
   const cart = useCoreSelector((state) => selectCart(state));
-  const { data: summaryData } = useCartSummary(cart.map((f) => f.file_id));
+  const { data: summaryData } = useCartSummaryQuery(cart.map((f) => f.file_id));
   const { data: userDetails, isFetching: userDetailsFetching } =
     useFetchUserDetailsQuery();
   const filesByCanAccess = groupByAccess(cart, userDetails?.data);

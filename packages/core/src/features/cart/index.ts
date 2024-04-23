@@ -7,8 +7,7 @@ import {
   CartFile,
 } from "./updateCartSlice";
 import {
-  cartSummaryReducer,
-  useCartSummary,
+  useCartSummaryQuery,
   CartSummaryData,
   CartAggregation,
 } from "./cartSummarySlice";
@@ -16,7 +15,7 @@ export {
   selectCart,
   addFilesToCart,
   removeFilesFromCart,
-  useCartSummary,
+  useCartSummaryQuery,
   CartSummaryData,
   CartAggregation,
   CartFile,
@@ -24,5 +23,4 @@ export {
 
 export const cartReducer = combineReducers({
   files: updateCartReducer,
-  cartSummary: cartSummaryReducer,
 });
