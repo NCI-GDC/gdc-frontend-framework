@@ -8,7 +8,7 @@ import {
   useCoreSelector,
   selectCurrentCohortFilters,
   buildCohortGqlOperator,
-  useFilesSize,
+  useTotalFileSizeQuery,
   GdcFile,
   Operation,
   useGetFilesQuery,
@@ -417,7 +417,7 @@ const FilesTables: React.FC = () => {
   let totalFileSize = <strong>--</strong>;
   let totalCaseCount = "--";
 
-  const fileSizeSliceData = useFilesSize({
+  const fileSizeSliceData = useTotalFileSizeQuery({
     cohortFilters: buildCohortGqlOperator(cohortFilters),
     localFilters: buildCohortGqlOperator(repositoryFilters),
   });

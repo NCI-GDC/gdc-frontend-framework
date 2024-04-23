@@ -21,6 +21,7 @@ export * from "./features/gdcapps/gdcAppsSlice";
 export * from "./features/gdcapps/GdcApp";
 export * from "./features/files/filesSlice";
 export * from "./features/files/filesHooks";
+export * from "./features/files";
 export * from "./features/projects/projectsSlice";
 export * from "./features/projects/projectsPrimarySiteSlice";
 export * from "./features/annotations/annotationsSlice";

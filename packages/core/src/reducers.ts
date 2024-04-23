@@ -9,7 +9,6 @@ import {
   filesApiReducer,
   filesApiSliceReducerPath,
 } from "./features/files/filesSlice";
-import { filesSizeReducer } from "./features/files/totalFileSizeSlice";
 import {
   projectsApiReducer,
   projectsApiSliceReducerPath,
@@ -80,7 +79,6 @@ export const reducers = combineReducers({
   facetsGQL: fileCaseGenesMutationsFacetReducers,
   facetsByNameTypeFilter: facetsByNameTypeAndFilterReducer,
   gdcApps: gdcAppReducer,
-  filesSize: filesSizeReducer,
   annotations: annotationsReducer,
   cases: casesReducer,
   genomic: genomicReducers,
