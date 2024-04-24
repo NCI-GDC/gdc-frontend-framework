@@ -4,7 +4,7 @@ import { LoadingOverlay } from "@mantine/core";
 import dynamic from "next/dynamic";
 import {
   GenesFrequencyChart,
-  useGeneFrequencyChart,
+  useGeneFrequencyChartQuery,
   FilterSet,
 } from "@gff/core";
 
@@ -83,7 +83,7 @@ export const GeneFrequencyChart: React.FC<GeneFrequencyChartProps> = ({
   orientation = "v",
   cohortFilters = undefined,
 }: GeneFrequencyChartProps) => {
-  const { data, isSuccess } = useGeneFrequencyChart({
+  const { data, isSuccess } = useGeneFrequencyChartQuery({
     pageSize: maxBins,
     offset: 0,
     genomicFilters: genomicFilters,
