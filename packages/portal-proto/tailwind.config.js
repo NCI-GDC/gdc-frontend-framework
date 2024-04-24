@@ -717,6 +717,10 @@ module.exports = {
     extend: {
       screens: {
         "Custom-Repo-Width": "1370px",
+        sm: "640px",
+        md: "768px",
+        lg: "1024px",
+        xl: "1280px",
       },
       colors: {
         /* These colors come from the NCI color palette. The palette defines

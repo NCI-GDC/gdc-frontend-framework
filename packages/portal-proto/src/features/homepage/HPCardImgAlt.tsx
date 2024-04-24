@@ -1,19 +1,11 @@
-import Link, { LinkProps } from "next/link";
+import Link from "next/link";
 import { Image } from "@/components/Image";
-
-const homepageButtonAltStyles = `bg-primary-max text-xl md:text-lg lg:text-sm text-summarybar-link-text border-base-light border-1 hover:bg-primary-lightest hover:text-primary-min font-medium font-heading rounded mt-4 px-4 py-3 inline-block xl:text-sm`;
-
-const imageWrapperStyle = `relative w-[208px] h-[208px] md:w-[165px] md:h-[165px] lg:w-[324px] lg:h-[324px] xl:w-[340px] xl:h-[340px]
-before:w-[152px] before:h-[152px] md:before:w-[121px] md:before:h-[121px] lg:before:w-[237px] lg:before:h-[237px] xl:before:w-[248px] xl:before:h-[248px] before:block before:absolute before:-inset-1 before:rounded-lg before:bg-summarybar-border
-after:w-[152px] after:h-[152px] md:after:w-[121px] md:after:h-[121px] lg:after:w-[237px] lg:after:h-[237px] xl:after:w-[248px] xl:after:h-[248px] after:block after:absolute after:-bottom-1 after:-right-1 after:rounded-lg after:bg-summarybar-borderAlt`;
-interface HPCardImgAltProps {
-  head: string | JSX.Element;
-  imgSrc: string;
-  imgAlt: string;
-  body: JSX.Element;
-  linkText: string;
-  href: LinkProps["href"] | string;
-}
+import {
+  homepageButtonAltStyles,
+  HPCardImgAltProps,
+  imageSizes,
+  imageWrapperStyle,
+} from "./utils";
 
 const HPCardImgAlt = ({
   head,
@@ -31,7 +23,13 @@ const HPCardImgAlt = ({
             <Image
               alt={imgAlt}
               src={imgSrc}
-              className="rounded-lg z-10 w-[208px] h-[208px] md:w-[165px] md:h-[165px] lg:w-[324px] lg:h-[324px] xl:w-[340px] xl:h-[340px]"
+              className={`
+                rounded-lg z-10
+                w-[${imageSizes.small}px] h-[${imageSizes.small}px]
+                md:w-[${imageSizes.medium}px] md:h-[${imageSizes.medium}px]
+                lg:w-[${imageSizes.large}px] lg:h-[${imageSizes.large}px]
+                xl:w-[${imageSizes.extraLarge}px] xl:h-[${imageSizes.extraLarge}px]
+              `}
               layout="fill"
             />
           </div>
