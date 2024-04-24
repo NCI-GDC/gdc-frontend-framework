@@ -8,7 +8,6 @@ import { FaUser, FaFile, FaEdit } from "react-icons/fa";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { Button, Loader, Tooltip } from "@mantine/core";
-import Link from "next/link";
 import CategoryTableSummary from "@/components/Summary/CategoryTableSummary";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
@@ -20,11 +19,12 @@ import {
   formatDataForDataCategoryTable,
   formatDataForExpCategoryTable,
   formatDataForSummary,
-  getAnnotationsLinkParams,
 } from "./utils";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 import { focusStyles } from "@/utils/index";
+import AnnotationsTable from "./AnnotationsTable";
 import ProjectsIcon from "public/user-flow/icons/summary/projects.svg";
+import useScrollToHash from "@/hooks/useScrollToHash";
 
 export interface ProjectViewProps extends ProjectDefaults {
   readonly annotation: {
@@ -45,21 +45,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
     useState(false);
   const [showSaveCohort, setShowSaveCohort] = useState(false);
 
-  const addLinkValue = () => (
-    <span className="text-base-lightest">
-      {getAnnotationsLinkParams(projectData) ? (
-        <Link
-          href={getAnnotationsLinkParams(projectData)}
-          className="underline"
-          target="_blank"
-        >
-          {projectData.annotation.count.toLocaleString()}
-        </Link>
-      ) : (
-        projectData.annotation.count.toLocaleString()
-      )}
-    </span>
-  );
+  useScrollToHash(["annotations"]);
 
   const Cases = (
     <span className="flex items-center gap-0.5">
@@ -90,19 +76,18 @@ export const ProjectView: React.FC<ProjectViewProps> = (
   );
 
   const Annotations = (
-    <span className="flex items-center gap-0.5">
-      <div className="text-sm 2xl:text-xl">
-        <FaEdit />
-      </div>
-      <span>
-        <span
-          data-testid="text-annotation-count-project-summary"
-          className="font-bold"
-        >
-          {addLinkValue()}{" "}
+    <span className="flex items-center gap-1">
+      <FaEdit size={24} />
+      {projectData.annotation.count > 0 ? (
+        <a href="#annotations" className="underline font-bold">
+          {projectData.annotation.count.toLocaleString()}
+        </a>
+      ) : (
+        <span className="font-bold">
+          {projectData.annotation.count.toLocaleString()}
         </span>
-        {`Annotation${projectData.annotation.count === 1 ? `` : `s`}`}
-      </span>
+      )}
+      {projectData.annotation.count == 1 ? "Annotation" : "Annotations"}
     </span>
   );
 
@@ -418,6 +403,16 @@ export const ProjectView: React.FC<ProjectViewProps> = (
                 projectId={projectData?.project_id}
                 primarySites={projectData?.primary_site}
               />
+            </div>
+          )}
+          {projectData?.annotation?.count > 0 && (
+            <div
+              className={`mb-16 mx-4 ${
+                projectData.isModal ? "scroll-mt-36" : "scroll-mt-72"
+              }`}
+              id="annotations"
+            >
+              <AnnotationsTable project_id={projectData.project_id} />
             </div>
           )}
         </div>

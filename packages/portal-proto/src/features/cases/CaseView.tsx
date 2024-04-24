@@ -62,7 +62,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
     ? allFilesInCart(currentCart, mapGdcFileToCartFile(data?.files))
     : false;
 
-  useScrollToHash(["files"]);
+  useScrollToHash(["files", "annotations"]);
 
   const {
     diagnoses = [],
