@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Add and Remove from cart, download file
 Test-Case       : PEAR-540
 
-tags: gdc-data-portal-v2, file-summary, cart, file-download, smoke-test
+tags: gdc-data-portal-v2, file-summary, cart, file-download
 
 ## File Summary Page - Navigate to a file summary page
 * On GDC Data Portal V2 app

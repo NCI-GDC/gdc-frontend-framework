@@ -17,7 +17,6 @@ class CohortComparisonLocators:
     BUTTON_SAVE_COHORT_ANALYSIS_CARD = (
         lambda analysis_card, row_name, cohort_number: f'[data-testid="card-{analysis_card}-cohort-comparison"] >> [data-testid="text-analysis-{row_name}"] >> .. >> [data-testid="button-save-filtered-cohort"] >>nth={cohort_number}'
     )
-    BUTTON_TSV_ANALYSIS_CARD = lambda analysis_card: f'[data-testid="card-{analysis_card}-cohort-comparison"] >> [data-testid="button-tsv-cohort-comparison"]'
 
 class CohortComparisonPage(BasePage):
     def __init__(self, driver: Page, url: str) -> None:
@@ -85,10 +84,3 @@ class CohortComparisonPage(BasePage):
         cohort_number = self.make_input_0_index(cohort_number)
         save_cohort_locator = CohortComparisonLocators.BUTTON_SAVE_COHORT_ANALYSIS_CARD(analysis_card, row_name, cohort_number)
         self.click(save_cohort_locator)
-
-    def click_download_tsv_button_on_analysis_card_cohort_comparison(self, analysis_card:str):
-        """
-        Clicks TSV button from an analysis card on the cohort comparison main screen.
-        """
-        tsv_download_locator = CohortComparisonLocators.BUTTON_TSV_ANALYSIS_CARD(analysis_card)
-        self.click(tsv_download_locator)

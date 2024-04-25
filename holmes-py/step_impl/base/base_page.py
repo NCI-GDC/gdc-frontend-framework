@@ -314,7 +314,7 @@ class BasePage:
         normalized_locator = self.normalize_button_identifier(locator)
         locator = GenericLocators.DATA_TEST_ID_IDENT(normalized_locator)
         try:
-            self.wait_until_locator_is_visible(locator, 45000)
+            self.wait_until_locator_is_visible(locator)
         except:
             return False
         return True

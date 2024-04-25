@@ -20,6 +20,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Navigate to "Mutation Frequency" from "Analysis" "app"
 
 ## Create Blank Cohort for Testing Purposes
+* Wait for loading spinner
 * Select "Add" from the Cohort Bar
 * Is modal with text "Unsaved_Cohort has been created" present on the page and "Remove Modal"
 * "Unsaved_Cohort" should be the active cohort

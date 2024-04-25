@@ -58,10 +58,10 @@ describe("<Header />", () => {
       },
     } as any);
 
-    const { getAllByText, queryByTestId } = render(
+    const { getByTestId, queryByTestId } = render(
       <Header {...{ headerElements, indexPath: "/" }} />,
     );
-    expect(getAllByText("Login")[0]).toBeInTheDocument();
+    expect(getByTestId("loginButton")).toBeInTheDocument();
     expect(queryByTestId("userdropdown")).toBeNull();
   });
 
@@ -77,10 +77,10 @@ describe("<Header />", () => {
       },
     } as any);
 
-    const { getAllByText, queryByText } = render(
+    const { getByTestId, queryByTestId } = render(
       <Header {...{ headerElements, indexPath: "/" }} />,
     );
-    expect(queryByText("Login")).toBeNull();
-    expect(getAllByText("testName")[0]).toBeInTheDocument();
+    expect(queryByTestId("loginButton")).toBeNull();
+    expect(getByTestId("userdropdown")).toBeInTheDocument();
   });
 });

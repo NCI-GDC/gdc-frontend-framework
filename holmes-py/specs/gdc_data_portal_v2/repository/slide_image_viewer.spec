@@ -22,7 +22,6 @@ tags: gdc-data-portal-v2, repository, regression, slide-image-viewer
 * Select "Search Icon" on the Image Viewer page
 * Search for "TCGA-E2-A14N*" on the Image Viewer page
 * Select "Go" on the Image Viewer page
-* Select case or slide "TCGA-E2-A14N-01Z-00-DX1" on the Image Viewer page
 * Select "Details" on the Image Viewer page
 * Verify the slide image viewer is showing "1 of 1" cases
 * Verify details fields and values
@@ -45,7 +44,7 @@ tags: gdc-data-portal-v2, repository, regression, slide-image-viewer
   |Number_proliferating_cells	      |--                                     |
   |Percent_tumor_cells	            |--                                     |
 * Verify the slide image is visible
-* Select case or slide "TCGA-E2-A14N-01A-03-TSC" on the Image Viewer page
+* Select "TCGA-E2-A14N-01A-03-TSC" on page
 * Select "Details" on the Image Viewer page
 * Verify details fields and values
   |field_name                       |value                                  |
@@ -71,6 +70,8 @@ tags: gdc-data-portal-v2, repository, regression, slide-image-viewer
 ## Remove Search
 * Remove search filter "TCGA-E2-A14N*" on the Image Viewer page
 * Verify the slide image viewer is showing "10" cases
+* Select "Details" on the Image Viewer page
+* Verify the slide image is visible
 
 ## Go Back to the Repository Page
 * Select "Back" on the Image Viewer page

@@ -41,13 +41,6 @@ class HeaderSection(BasePage):
             self.wait_for_selector(
                 HeaderSectionLocators.ANALYSIS_CENTER_WAIT_FOR_ELEMENT
             )
-            # Wait for the central, initial loading spinner that appears.
-            # If it doesn't appear, we move on.
-            try:
-                self.wait_for_loading_spinner_to_be_visible(5000)
-                self.wait_for_loading_spinner_to_detatch()
-            except:
-                pass
         elif page_to_load == "projects":
             self.wait_for_selector(HeaderSectionLocators.PROJECTS_WAIT_FOR_ELEMENT)
         elif page_to_load == "cohort":
