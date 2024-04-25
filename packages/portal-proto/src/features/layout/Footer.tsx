@@ -110,13 +110,16 @@ export const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="flex flex-col bg-secondary-darkest justify-center text-center p-10 text-accent-contrast-darkest text-sm">
-      <div className="flex gap-8 m-auto text-left justify-between w-full max-w-screen-lg flex-wrap pb-5 border-b border-[#5D7A8D]">
-        {/**TODO place color value in global store */}
+    <footer className="flex flex-col bg-secondary-darkest justify-center text-center px-4 py-10 text-accent-contrast-darkest text-sm">
+      <div className="grid grid-cols-footer-small lg:grid-cols-footer-large lg:gap-6 mx-auto text-left w-full max-w-screen-lg gap-y-7 pb-5 border-b border-[#5D7A8D]">
         <div>
-          <div className="font-bold text-lg">National Cancer Institute</div>
-          <div className="font-bold">at the National Institutes of Health</div>
-          <ul className="py-4 text-sm space-y-1 font-content">
+          <div className="font-bold text-2xl lg:text-xl xl:text-lg">
+            National Cancer Institute
+          </div>
+          <div className="font-bold text-[1rem] lg:text-sm">
+            at the National Institutes of Health
+          </div>
+          <ul className="py-4 text-lg lg:text-sm space-y-1 font-content">
             <li>
               UI v{PUBLIC_APP_INFO?.version} @ {PUBLIC_APP_INFO?.hash}
             </li>
@@ -139,9 +142,11 @@ export const Footer: React.FC = () => {
           </ul>
         </div>
         {footerLinkColData.map((colData, colI) => (
-          <div className="w-[200px] md:w-auto" key={colI}>
-            <h2 className="text-lg uppercase">{colData.header}</h2>
-            <ul className="py-3 font-semibold space-y-2">
+          <div key={colI}>
+            <h2 className="text-2xl font-medium lg:text-lg uppercase">
+              {colData.header}
+            </h2>
+            <ul className="py-3 text-lg font-bold lg:text-xs space-y-2">
               {colData.links.map((linkData, linkI) => (
                 <li key={linkI} className="font-content">
                   {linkData.normalLink ? (
@@ -157,21 +162,18 @@ export const Footer: React.FC = () => {
           </div>
         ))}
       </div>
-      <div>
-        <ul className="divide-x divide-solid p-8 font-content">
-          {footerLinkCloud.map((linkData, index) => (
-            <li
-              className="inline-block px-1 leading-none font-bold"
-              key={index}
-            >
-              <ExternalLink href={linkData.url}>{linkData.title}</ExternalLink>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="text-sm leading-none font-content">
+
+      <ul className="text-lg lg:text-sm py-8 font-content divide-x divide-solid">
+        {footerLinkCloud.map((linkData, index) => (
+          <li className="inline-block px-1 leading-none font-bold" key={index}>
+            <ExternalLink href={linkData.url}>{linkData.title}</ExternalLink>
+          </li>
+        ))}
+      </ul>
+
+      <div className="text-lg font-medium lg:text-[1rem] xl:text-sm leading-none font-content">
         NIH... Turning Discovery Into Health{" "}
-        <span className="text-[1rem]">&reg;</span>
+        <span className="text-lg xl:text-[1rem]">&reg;</span>
       </div>
     </footer>
   );

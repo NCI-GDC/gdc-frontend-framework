@@ -8,7 +8,7 @@ import { Image } from "@/components/Image";
 import Link from "next/link";
 
 export const homepageButtonClass = `
-bg-primary text-sm text-base-max border-base-light border-0
+bg-primary text-xl md:text-lg lg:text-sm text-base-max border-base-light border-0
 hover:bg-primary-darker hover:text-primary-darker-contrast
 font-medium font-heading rounded mt-4 px-4 py-3 w-fit inline-block cursor-pointer
 `;
@@ -16,18 +16,18 @@ font-medium font-heading rounded mt-4 px-4 py-3 w-fit inline-block cursor-pointe
 const Homepage = (): JSX.Element => {
   const { data: countsInfo } = useTotalCounts();
   return (
-    <div className="flex flex-col w-100 h-100 bg-base-max">
-      <div className="flex flex-row bg-hero-pattern bg-cover">
-        <div className="flex flex-col pl-7 basis-1/2">
-          <div className="flex flex-col mt-12">
-            <h1 className="font-heading tracking-[.03em] font-bold text-primary-darkest text-[2.4rem] py-5">
+    <div className="flex flex-col bg-base-max">
+      <div className="flex flex-col xl:flex-row xl:py-10 bg-hero-pattern bg-cover pt-8">
+        <div className="flex flex-col px-4 xl:pr-0 basis-1/2">
+          <div className="flex flex-col">
+            <h1 className="font-heading text-6xl md:text-5xl tracking-normal xl:text-[2.4rem] xl:tracking-[.03em] font-bold text-primary-darkest py-5">
               Genomic Data Commons
-              <span className="block font-medium -mt-4">Data Portal</span>
+              <span className="block font-medium">Data Portal</span>
             </h1>
-            <h2 className="mt-2 items-center font-heading font-bold text-md text-summarybar-text">
+            <h2 className="mt-6 items-center font-heading font-bold text-2xl md:text-xl xl:text-md text-summarybar-text">
               Harmonized Cancer Datasets
             </h2>
-            <p className="items-center tracking-wide text-primary-content-darkest w-[75%] font-content">
+            <p className="text-2xl md:text-xl w-full tracking-normal items-center xl:text-[1rem] xl:w-[80%] xl:tracking-wide text-primary-content-darkest font-content">
               A repository and computational platform for cancer researchers who
               need to understand cancer, its clinical progression, and response
               to therapy.
@@ -45,12 +45,13 @@ const Homepage = (): JSX.Element => {
             Explore Our Cancer Datasets
           </Link>
           <HorizontalSummaryTotalsPanel />
-          <div className="py-10" />
         </div>
-        <div className="flex flex-row basis-1/2">
-          <div className="relative mt-12" id="human-body-parent">
-            <Bodyplot />
-          </div>
+
+        <div
+          className="relative mt-10 pr-4 mx-auto xl:mt-0 xl:-mb-1 xl:self-end "
+          id="human-body-parent"
+        >
+          <Bodyplot />
         </div>
       </div>
       <HPCard
@@ -61,7 +62,7 @@ const Homepage = (): JSX.Element => {
             High-quality datasets spanning{" "}
             {countsInfo?.repositoryCaseCounts?.toLocaleString()} cases from
             cancer genomic studies such as{" "}
-            <strong className="italic">
+            <strong className="italic font-bold">
               The Cancer Genomic Atlas (TCGA), Human Cancer Models Initiative
               (HCMI), Foundation Medicine Inc. (FMI), and Clinical Proteomic
               Tumor Analysis Consortium (CPTAC).
@@ -101,7 +102,7 @@ const Homepage = (): JSX.Element => {
         imgSrc="/homepage/genomic-clinical-data.jpg"
         imgAlt="Data Cloud"
       />
-      <div className="bg-mid-pattern bg-cover">
+      <div className="bg-mid-pattern bg-cover xl:py-10">
         <HPCardImg
           head="Visualize Genomic Alterations and Clinical Features"
           body={
@@ -123,9 +124,9 @@ const Homepage = (): JSX.Element => {
             height: 264,
           }}
         />
-        <div className="mb-10 flex justify-center">
-          <div className="flex max-w-screen-lg gap-14 items-center bg-base-max p-6 rounded-2xl">
-            <ul className="flex gap-4 w-2/3">
+        <div className="xl:flex xl:justify-center">
+          <div className="bg-base-max px-4 py-6 lg:flex lg:items-center lg:gap-9 xl:max-w-screen-lg xl:rounded-2xl">
+            <ul className="grid grid-cols-3 gap-5 lg:gap-4 lg:flex lg:w-2/3">
               {[
                 {
                   src: "/homepage/slide1-SurvivalP.jpg",
@@ -143,7 +144,10 @@ const Homepage = (): JSX.Element => {
                   alt: "feature of protein paint",
                 },
               ].map((obj, index) => (
-                <li className="flex flex-col w-[220px]" key={index}>
+                <li
+                  className="flex flex-col lg:w-[191px] xl:w-[220px]"
+                  key={index}
+                >
                   <div className="border-solid rounded-t-lg border-t-1 border-x-1 border-nciGray-lighter">
                     <Image
                       alt={obj.alt}
@@ -159,8 +163,8 @@ const Homepage = (): JSX.Element => {
                 </li>
               ))}
             </ul>
-            <div className="text-left">
-              <p className="font-content">
+            <div className="mt-8 lg:mt-0">
+              <p className="font-content text-secondary-contrast-lighter text-2xl md:text-xl lg:text-[1rem]">
                 Analyze your custom cohorts by applying the GDC&apos;s
                 collection of tools for visualizing clinical features, genomic
                 alterations, and other cancer drivers.
@@ -181,8 +185,9 @@ const Homepage = (): JSX.Element => {
       <HPCardImgAlt
         head={
           <>
-            Download Primary and Higher-Level
-            <br /> Data For Further Analysis
+            Download Primary and{" "}
+            <span className="whitespace-nowrap">Higher-Level</span>
+            <br className="hidden xl:block" /> Data For Further Analysis
           </>
         }
         body={
