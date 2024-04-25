@@ -44,7 +44,10 @@ import { biospecimenReducer } from "./features/biospecimen/biospecimenSlice";
 import { clinicalDataAnalysisReducer } from "./features/clinicalDataAnalysis";
 import { facetsByNameTypeAndFilterReducer } from "./features/facets/facetsByNameTypeAndFilter";
 import { modalReducer } from "./features/modals/modalsSlice";
-import { quickSearchReducer } from "./features/quickSearch/quickSearch";
+import {
+  quickSearchApiReducer,
+  quickSearchApiReducerPath,
+} from "./features/quickSearch/quickSearch";
 import { versionInfoReducer } from "./features/versionInfo/versionInfoSlice";
 import { cancerDistributionReducer } from "./features/cancerDistribution";
 import {
@@ -94,7 +97,7 @@ export const reducers = combineReducers({
   clinicalDataAnalysis: clinicalDataAnalysisReducer,
   genesSummary: genesSummaryReducer,
   modals: modalReducer,
-  quickSearch: quickSearchReducer,
+  [quickSearchApiReducerPath]: quickSearchApiReducer,
   [filesApiSliceReducerPath]: filesApiReducer,
   [allFilesApiSliceReducerPath]: allFilesApiReducer,
   [projectsApiSliceReducerPath]: projectsApiReducer,

@@ -5,7 +5,11 @@ import { Loader, Highlight, Select } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { MdSearch as SearchIcon, MdClose as CloseIcon } from "react-icons/md";
 import { validate as uuidValidate } from "uuid";
-import { useGetHistoryQuery, useQuickSearch, HistoryDefaults } from "@gff/core";
+import {
+  useGetHistoryQuery,
+  useQuickSearchQuery,
+  HistoryDefaults,
+} from "@gff/core";
 import {
   entityIconMapping,
   QuickSearchEntities,
@@ -31,9 +35,9 @@ export const QuickSearch = (): JSX.Element => {
 
   const router = useRouter();
 
-  const {
-    data: { searchList, query },
-  } = useQuickSearch(debounced);
+  const { data } = useQuickSearchQuery(debounced);
+
+  const { searchList, query } = data || {};
 
   const { data: fileHistory } = useGetHistoryQuery(searchText.trim(), {
     skip:

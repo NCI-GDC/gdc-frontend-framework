@@ -1,97 +1,37 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import type { Middleware, Reducer } from "@reduxjs/toolkit";
+import { coreCreateApi } from "src/coreCreateApi";
 import { GDC_APP_API_AUTH } from "../../constants";
-import {
-  CoreDataSelectorResponse,
-  createUseCoreDataHook,
-  DataStatus,
-} from "../../dataAccess";
-import { CoreState } from "../../reducers";
-import { CoreDispatch } from "../../store";
 
-export interface QuickSearchState {
+interface QuickSearchState {
   searchList: Array<Record<string, any>>;
   query: string;
-  status: DataStatus;
-  readonly requestId?: string;
 }
 
-const initialState: QuickSearchState = {
-  searchList: [],
-  query: "",
-  status: "uninitialized",
+export const fetchQuickSearch = async (searchString: string) => {
+  const response = await fetch(
+    `${GDC_APP_API_AUTH}/quick_search?query=${searchString}&size=5`,
+  );
+  if (response.ok) {
+    return { data: await response.json() };
+  }
+
+  return { error: Error(await response.text()) };
 };
 
-interface QuickSearchInterface {
-  data: {
-    query: {
-      hits: Array<Record<string, any>>;
-    };
-  };
-}
-
-export const fetchQuickSearch = createAsyncThunk<
-  QuickSearchInterface,
-  string,
-  { dispatch: CoreDispatch; state: CoreState }
->("quickSearch/fetchQuickSearch", async (searchString: string) => {
-  if (searchString.length > 0) {
-    const response = await fetch(
-      `${GDC_APP_API_AUTH}/quick_search?query=${searchString}&size=5`,
-    );
-    if (response.ok) {
-      return await response.json();
-    }
-
-    throw Error(await response.text());
-  }
+const quickSearchApi = coreCreateApi({
+  baseQuery: fetchQuickSearch,
+  endpoints: (builder) => ({
+    quickSearch: builder.query<QuickSearchState, string>({
+      query: (searchString) => searchString,
+      transformResponse: (response, _, arg) => ({
+        searchList: response?.data?.query?.hits,
+        query: arg,
+      }),
+    }),
+  }),
 });
 
-const slice = createSlice({
-  name: "quickSearch",
-  initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchQuickSearch.fulfilled, (state, action) => {
-        if (state.requestId != action.meta.requestId) return state;
-
-        const response = action.payload;
-        state.searchList = response?.data?.query?.hits;
-        state.query = action.meta.arg;
-        state.status = "fulfilled";
-        return state;
-      })
-      .addCase(fetchQuickSearch.pending, (state, action) => {
-        state.searchList = [];
-        state.status = "pending";
-        state.requestId = action.meta.requestId;
-        return state;
-      })
-      .addCase(fetchQuickSearch.rejected, (state, action) => {
-        if (state.requestId != action.meta.requestId) return state;
-        state.searchList = [];
-        state.status = "rejected";
-        return state;
-      });
-  },
-});
-
-export const quickSearchReducer = slice.reducer;
-
-export const selectSearchLists = (
-  state: CoreState,
-): CoreDataSelectorResponse<{
-  searchList: Array<Record<string, any>>;
-  query?: string;
-}> => ({
-  data: {
-    searchList: state.quickSearch.searchList,
-    query: state.quickSearch.query,
-  },
-  status: state.quickSearch.status,
-});
-
-export const useQuickSearch = createUseCoreDataHook(
-  fetchQuickSearch,
-  selectSearchLists,
-);
+export const { useQuickSearchQuery } = quickSearchApi;
+export const quickSearchApiMiddleware = quickSearchApi.middleware as Middleware;
+export const quickSearchApiReducerPath: string = quickSearchApi.reducerPath;
+export const quickSearchApiReducer: Reducer = quickSearchApi.reducer as Reducer;

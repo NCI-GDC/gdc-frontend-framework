@@ -22,7 +22,9 @@ describe("<CaseSummary />", () => {
       isUninitialized: false,
     };
 
-    jest.spyOn(func, "useCaseSummary").mockReturnValue(loadingResponse);
+    jest
+      .spyOn(func, "useGetCasesQuery")
+      .mockReturnValue(loadingResponse as any);
     jest
       .spyOn(func, "useGetAnnotationsQuery")
       .mockReturnValue(loadingResponse as any);
@@ -40,7 +42,9 @@ describe("<CaseSummary />", () => {
       isUninitialized: false,
     };
 
-    jest.spyOn(func, "useCaseSummary").mockReturnValue(loadingResponse);
+    jest
+      .spyOn(func, "useGetCasesQuery")
+      .mockReturnValue(loadingResponse as any);
     jest
       .spyOn(func, "useGetAnnotationsQuery")
       .mockReturnValue(loadingResponse as any);

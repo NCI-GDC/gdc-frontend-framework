@@ -2,7 +2,7 @@ import React from "react";
 import { useDeepCompareMemo } from "use-deep-compare";
 import Link from "next/link";
 import { Loader } from "@mantine/core";
-import { useGetAnnotationsQuery, useQuickSearch } from "@gff/core";
+import { useGetAnnotationsQuery, useQuickSearchQuery } from "@gff/core";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import { HorizontalTable } from "@/components/HorizontalTable";
@@ -35,7 +35,7 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
 
   const annotation = annotationData?.hits?.[0];
 
-  const { data: entityData } = useQuickSearch(annotation?.entity_id);
+  const { data: entityData } = useQuickSearchQuery(annotation?.entity_id);
 
   const entityLink = useDeepCompareMemo(() => {
     if (annotation === undefined) {
@@ -43,8 +43,8 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
     }
 
     if (
-      entityData.searchList === undefined ||
-      entityData.searchList.length == 0
+      entityData?.searchList === undefined ||
+      entityData?.searchList.length == 0
     ) {
       return annotation?.entity_id ?? "--";
     } else {
