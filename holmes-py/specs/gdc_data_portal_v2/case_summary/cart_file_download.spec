@@ -18,10 +18,9 @@ tags: gdc-data-portal-v2, case-summary, cart, file-download
 * Remove all files from cart on the case summary page
 
 ## Case Summary Page - download file
-* Search "a615d1d8-38ab-4d51-bf1d-f4c3c97a5de1" in the files table on the case summary page
-* Download "File" from "Case Summary Files Table"
-* Read metadata from compressed "File from Case Summary Files Table"
-* Verify that "File from Case Summary Files Table" has expected information
+* Download "File" from "Case Summary Biospecimen Supplement First File"
+* Read metadata from compressed "File from Case Summary Biospecimen Supplement First File"
+* Verify that "File from Case Summary Biospecimen Supplement First File" has expected information
   |required_info                          |
   |---------------------------------------|
   |a615d1d8-38ab-4d51-bf1d-f4c3c97a5de1   |

@@ -13,6 +13,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Navigate to "Mutation Frequency" from "Analysis" "app"
 
 ## Validate Gene Table Headers Text
+* Wait for loading spinner
 * Verify the table header text is correct
   |expected_text                        |column |
   |-------------------------------------|-------|

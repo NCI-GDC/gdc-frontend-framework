@@ -27,7 +27,7 @@ export const CohortCreationStyledButton = tw.button`
   disabled:text-base-light
 `;
 
-export const IconWrapperTW = tw.span`
+export const IconWrapper = tw.span`
   ${(p) => (p.$disabled ? "bg-base-light" : "bg-accent")}
   border-r-1
   border-solid
@@ -117,13 +117,13 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
           $fullWidth={React.isValidElement(label)} // if label is JSX.Element take the full width
           aria-label={tooltipText}
         >
-          <IconWrapperTW $disabled={disabled} aria-hidden="true">
+          <IconWrapper $disabled={disabled} aria-hidden="true">
             {loading ? (
               <Loader size={12} />
             ) : (
               <PlusIcon color="white" size={12} />
             )}
-          </IconWrapperTW>
+          </IconWrapper>
           <span className="pr-2 self-center">{label ?? "--"}</span>
         </CohortCreationStyledButton>
       </Tooltip>

@@ -733,18 +733,6 @@ export const endpointSlice = coreCreateApi({
       }),
       transformResponse: (response) => response.data.hits,
     }),
-    getAnnotations: builder.query<
-      GdcApiData<AnnotationDefaults>,
-      GdcApiRequest
-    >({
-      query: (request: GdcApiRequest) => ({
-        request,
-        endpoint: "annotations",
-        fetchAll: false,
-      }),
-      transformResponse: (response: GdcApiResponse<AnnotationDefaults>) =>
-        response.data,
-    }),
   }),
 });
 
@@ -753,7 +741,6 @@ export const {
   useGetCasesQuery,
   useGetSsmsQuery,
   useGetCaseSsmsQuery,
-  useGetAnnotationsQuery,
 } = endpointSlice;
 export const endpointSliceMiddleware = endpointSlice.middleware as Middleware;
 export const endpointSliceReducerPath: string = endpointSlice.reducerPath;
