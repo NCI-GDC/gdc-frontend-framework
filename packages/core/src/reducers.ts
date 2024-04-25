@@ -26,7 +26,6 @@ import { cohortComparisonReducer } from "./features/cohortComparison";
 import { bannerReducer } from "./features/bannerNotification";
 import { cartReducer } from "./features/cart";
 import { totalCountsReducer } from "./features/summary/totalCountsSlice";
-import { ssmsReducer } from "./features/genomic/ssmsSummary/ssmsSummarySlice";
 import { genesSummaryReducer } from "./features/genomic/geneSummary/geneSummarySlice";
 
 import {
@@ -43,7 +42,6 @@ import {
 } from "./features/survival/survivalApiSlice";
 import { biospecimenReducer } from "./features/biospecimen/biospecimenSlice";
 import { clinicalDataAnalysisReducer } from "./features/clinicalDataAnalysis";
-import { caseSummarySliceReducer } from "./features/cases/caseSummarySlice";
 import { facetsByNameTypeAndFilterReducer } from "./features/facets/facetsByNameTypeAndFilter";
 import { modalReducer } from "./features/modals/modalsSlice";
 import { quickSearchReducer } from "./features/quickSearch/quickSearch";
@@ -94,8 +92,6 @@ export const reducers = combineReducers({
   summary: totalCountsReducer,
   biospecimen: biospecimenReducer,
   clinicalDataAnalysis: clinicalDataAnalysisReducer,
-  caseSummary: caseSummarySliceReducer,
-  ssms: ssmsReducer,
   genesSummary: genesSummaryReducer,
   modals: modalReducer,
   quickSearch: quickSearchReducer,

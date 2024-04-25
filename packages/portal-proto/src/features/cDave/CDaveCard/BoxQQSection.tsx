@@ -114,13 +114,17 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
     isLoading,
     isSuccess,
   } = useGetCaseSsmsQuery({
-    fields: [field],
-    filters: buildCohortGqlOperator(joinFilters(missingFilter, cohortFilters)),
-    size: 10000,
+    request: {
+      fields: [field],
+      filters: buildCohortGqlOperator(
+        joinFilters(missingFilter, cohortFilters),
+      ),
+      size: 10000,
+    },
   });
 
   const parsedQQValues = useDeepCompareMemo(
-    () => (isSuccess ? parseNestedQQResponseData(qqData, field) : []),
+    () => (isSuccess ? parseNestedQQResponseData(qqData?.hits, field) : []),
     [qqData, isSuccess, field],
   );
   const formattedQQValues = useDeepCompareMemo(

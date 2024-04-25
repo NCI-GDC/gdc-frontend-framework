@@ -1,7 +1,8 @@
 import { Reducer, Middleware } from "@reduxjs/toolkit";
 
 import { GqlOperation } from "../gdcapi/filters";
-import { GdcApiResponse, FileDefaults } from "../gdcapi/gdcapi";
+import { GdcApiResponse } from "../gdcapi/gdcapi";
+import { FileDefaults } from "../gdcapi/types";
 import { fetchBaseQuery } from "@reduxjs/toolkit/query";
 import { coreCreateApi } from "../../coreCreateApi";
 import { GDC_API } from "../../constants";

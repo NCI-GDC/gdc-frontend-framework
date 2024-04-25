@@ -122,17 +122,19 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
   } as GqlEquals;
 
   const { data, isSuccess, isFetching, isError } = useGetAnnotationsQuery({
-    filters: searchTerm
-      ? filters
-        ? {
-            op: "and",
-            content: [buildSearchFilters(searchTerm), filters],
-          }
-        : buildSearchFilters(searchTerm)
-      : filters,
-    size: pageSize,
-    from: (activePage - 1) * pageSize,
-    sortBy,
+    request: {
+      filters: searchTerm
+        ? filters
+          ? {
+              op: "and",
+              content: [buildSearchFilters(searchTerm), filters],
+            }
+          : buildSearchFilters(searchTerm)
+        : filters,
+      size: pageSize,
+      from: (activePage - 1) * pageSize,
+      sortBy,
+    },
   });
 
   const [formattedTableData, pagination] = useDeepCompareMemo<

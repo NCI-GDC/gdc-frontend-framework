@@ -35,11 +35,13 @@ export const ProjectSummary: React.FC<ContextualProjectViewProps> = ({
     });
   const { data: annotationCountData, isFetching: isAnnotationFetching } =
     useGetAnnotationsQuery({
-      filters: {
-        op: "=",
-        content: {
-          field: "project.project_id",
-          value: projectId,
+      request: {
+        filters: {
+          op: "=",
+          content: {
+            field: "project.project_id",
+            value: projectId,
+          },
         },
       },
     });

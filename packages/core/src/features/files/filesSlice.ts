@@ -1,13 +1,7 @@
 import { Middleware, Reducer } from "@reduxjs/toolkit";
 import { castDraft } from "immer";
-import { DataStatus } from "../../dataAccess";
-import {
-  GdcApiRequest,
-  GdcApiResponse,
-  FileDefaults,
-  Pagination,
-  endpointSlice,
-} from "../gdcapi/gdcapi";
+import { GdcApiRequest, GdcApiResponse, endpointSlice } from "../gdcapi/gdcapi";
+import { FileDefaults } from "../gdcapi/types";
 
 const accessTypes = ["open", "controlled"] as const;
 
@@ -354,13 +348,6 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
     })),
   }));
 };
-
-export interface FilesState {
-  readonly files?: ReadonlyArray<GdcFile>;
-  readonly pagination?: Pagination;
-  readonly status: DataStatus;
-  readonly error?: string;
-}
 
 export const filesApiSlice = endpointSlice.injectEndpoints({
   endpoints: (builder) => ({

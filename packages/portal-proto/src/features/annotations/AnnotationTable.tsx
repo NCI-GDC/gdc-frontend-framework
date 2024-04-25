@@ -129,21 +129,23 @@ const AnnnotationTable: React.FC = () => {
   const filters = useAppSelector((state) => selectFilters(state));
 
   const { data, isSuccess, isFetching, isError } = useGetAnnotationsQuery({
-    filters: searchTerm
-      ? buildCohortGqlOperator(filters)
-        ? {
-            op: "and",
-            content: [
-              buildSearchFilters(searchTerm),
-              buildCohortGqlOperator(filters),
-            ],
-          }
-        : buildSearchFilters(searchTerm)
-      : buildCohortGqlOperator(filters),
-    expand: ["project", "project.program"],
-    size: pageSize,
-    from: (activePage - 1) * pageSize,
-    sortBy,
+    request: {
+      filters: searchTerm
+        ? buildCohortGqlOperator(filters)
+          ? {
+              op: "and",
+              content: [
+                buildSearchFilters(searchTerm),
+                buildCohortGqlOperator(filters),
+              ],
+            }
+          : buildSearchFilters(searchTerm)
+        : buildCohortGqlOperator(filters),
+      expand: ["project", "project.program"],
+      size: pageSize,
+      from: (activePage - 1) * pageSize,
+      sortBy,
+    },
   });
 
   const [formattedTableData, pagination] = useDeepCompareMemo<

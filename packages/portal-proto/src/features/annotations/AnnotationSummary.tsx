@@ -21,14 +21,16 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
     isSuccess,
     isFetching,
   } = useGetAnnotationsQuery({
-    filters: {
-      op: "=",
-      content: {
-        field: "annotation_id",
-        value: annotationId,
+    request: {
+      filters: {
+        op: "=",
+        content: {
+          field: "annotation_id",
+          value: annotationId,
+        },
       },
+      expand: ["project"],
     },
-    expand: ["project"],
   });
 
   const annotation = annotationData?.hits?.[0];

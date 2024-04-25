@@ -89,10 +89,12 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
   const responseData = useDeepCompareMemo(() => {
     if (set?.setType !== undefined) {
       if (set?.setType === "genes") {
-        return isGeneSuccess && !isGeneFetching ? [...geneDetailData] : [];
+        return isGeneSuccess && !isGeneFetching && geneDetailData?.hits
+          ? [...geneDetailData.hits]
+          : [];
       } else {
         return isMutationSuccess && !isMutationFetching
-          ? ssmsDetailData.map((ssm) => ({
+          ? ssmsDetailData?.hits?.map((ssm) => ({
               ssm_id: ssm.ssm_id,
               consequence: `${ssm?.consequence?.[0].transcript?.gene?.symbol} ${
                 ssm?.consequence?.[0].transcript?.aa_change

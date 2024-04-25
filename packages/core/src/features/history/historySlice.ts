@@ -1,5 +1,6 @@
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
-import { getGdcHistory, HistoryDefaults } from "../gdcapi/gdcapi";
+import { getGdcHistory } from "../gdcapi/gdcapi";
+import { HistoryDefaults } from "../gdcapi/types";
 import { coreCreateApi } from "src/coreCreateApi";
 
 export const fetchHistory = async ({ uuid }: { uuid: string }) => {
