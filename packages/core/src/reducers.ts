@@ -18,7 +18,6 @@ import {
   projectPrimarySiteApiSliceReducer,
   projectPrimarySiteApiSliceReducerPath,
 } from "./features/projects/projectsPrimarySiteSlice";
-import { annotationsReducer } from "./features/annotations/annotationsSlice";
 import { casesReducer } from "./features/cases/casesSlice";
 import { genomicReducers } from "./features/genomic/genomicSlice";
 import { imageDetailsReducer } from "./features/imageDetails/imageDetailsSlice";
@@ -84,7 +83,6 @@ export const reducers = combineReducers({
   facetsByNameTypeFilter: facetsByNameTypeAndFilterReducer,
   gdcApps: gdcAppReducer,
   filesSize: filesSizeReducer,
-  annotations: annotationsReducer,
   cases: casesReducer,
   cancerDistribution: cancerDistributionReducer,
   genomic: genomicReducers,

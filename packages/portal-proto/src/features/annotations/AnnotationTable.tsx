@@ -9,7 +9,7 @@ import Link from "next/link";
 import {
   AnnotationDefaults,
   buildCohortGqlOperator,
-  useAnnotations,
+  useGetAnnotationsQuery,
   GqlUnion,
   SortBy,
   Pagination,
@@ -128,7 +128,7 @@ const AnnnotationTable: React.FC = () => {
 
   const filters = useAppSelector((state) => selectFilters(state));
 
-  const { data, isSuccess, isFetching, isError } = useAnnotations({
+  const { data, isSuccess, isFetching, isError } = useGetAnnotationsQuery({
     filters: searchTerm
       ? buildCohortGqlOperator(filters)
         ? {
@@ -151,7 +151,7 @@ const AnnnotationTable: React.FC = () => {
   >(() => {
     if (isSuccess && !isFetching) {
       return [
-        data?.list.map((d) => ({
+        data?.hits.map((d) => ({
           ...d,
           program_name: d?.project?.program?.name,
           project_id: d?.project?.project_id,
@@ -326,7 +326,11 @@ const AnnnotationTable: React.FC = () => {
     <VerticalTable
       tableTitle={
         <>
-          Total of <b>{data.count.toLocaleString()}</b> Annotations
+          Total of{" "}
+          <b>
+            {data?.pagination ? data.pagination.total.toLocaleString() : "--"}
+          </b>{" "}
+          Annotations
         </>
       }
       additionalControls={

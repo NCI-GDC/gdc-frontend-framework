@@ -2,7 +2,7 @@ import React from "react";
 import { useDeepCompareMemo } from "use-deep-compare";
 import Link from "next/link";
 import { Loader } from "@mantine/core";
-import { useAnnotations, useQuickSearch } from "@gff/core";
+import { useGetAnnotationsQuery, useQuickSearch } from "@gff/core";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import { HorizontalTable } from "@/components/HorizontalTable";
@@ -20,7 +20,7 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
     data: annotationData,
     isSuccess,
     isFetching,
-  } = useAnnotations({
+  } = useGetAnnotationsQuery({
     filters: {
       op: "=",
       content: {
@@ -31,7 +31,7 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
     expand: ["project"],
   });
 
-  const annotation = annotationData?.list?.[0];
+  const annotation = annotationData?.hits?.[0];
 
   const { data: entityData } = useQuickSearch(annotation?.entity_id);
 
@@ -147,7 +147,7 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
 
   return isFetching ? (
     <Loader />
-  ) : isSuccess && annotationData?.list.length === 0 ? (
+  ) : isSuccess && annotationData?.hits.length === 0 ? (
     <SummaryErrorHeader label="Annotation Not Found" />
   ) : (
     <>
