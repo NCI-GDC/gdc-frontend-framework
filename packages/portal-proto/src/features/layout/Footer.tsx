@@ -1,9 +1,18 @@
 import { ExternalLink } from "@/components/ExternalLink";
 import Link from "next/link";
-import { useVersionInfoDetails, PUBLIC_APP_INFO } from "@gff/core";
+import {
+  useVersionInfoDetails,
+  PUBLIC_APP_INFO,
+  useCoreDispatch,
+} from "@gff/core";
+import { graphqlAPISlice } from "@gff/core";
 
 export const Footer: React.FC = () => {
+  const dispatch = useCoreDispatch();
   const { data, isSuccess } = useVersionInfoDetails();
+  dispatch((state) =>
+    graphqlAPISlice.util.selectCachedArgsForQuery(state, "imageViewer"),
+  );
 
   interface footerLink {
     readonly title: string;

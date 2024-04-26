@@ -1,9 +1,5 @@
 import { GqlOperation } from "../gdcapi/filters";
-import {
-  GraphQLApiResponse,
-  graphqlAPISlice,
-  graphqlAPI,
-} from "../gdcapi/gdcgraphql";
+import { GraphQLApiResponse, graphqlAPISlice } from "../gdcapi/gdcgraphql";
 
 type SetIntent = "user" | "portal";
 type SetCreationType = "instant" | "ephemeral" | "mutable" | "frozen";
@@ -258,30 +254,6 @@ export const createSetSlice = graphqlAPISlice
       }),
     }),
   });
-
-export const createSetMutationFactory = async (
-  field: string,
-  filters: Record<string, any>,
-): Promise<string | undefined> => {
-  let setId;
-  let response;
-  switch (field) {
-    case "genes.gene_id":
-      response = await graphqlAPI(createGeneSetMutation, filters);
-      setId = transformGeneSetResponse(response);
-      break;
-    case "ssms.ssm_id":
-      response = await graphqlAPI(createSsmsSetMutation, filters);
-      setId = transformSsmsSetResponse(response);
-      break;
-    case "cases.case_id":
-      response = await graphqlAPI(createCaseSetMutation, filters);
-      setId = transformCaseSetResponse(response);
-      break;
-  }
-
-  return Promise.resolve(setId);
-};
 
 export const {
   useCreateGeneSetFromValuesMutation,
