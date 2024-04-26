@@ -32,6 +32,7 @@ import {
 } from "./utils";
 import SMTableContainer from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
 import FilesTable from "./FilesTable";
+import useScrollToHash from "@/hooks/useScrollToHash";
 
 export interface CaseViewProps {
   readonly data: caseSummaryDefaults;
@@ -64,6 +65,8 @@ export const CaseView: React.FC<CaseViewProps> = ({
   const isAllFilesInCart = data?.files
     ? allFilesInCart(currentCart, mapGdcFileToCartFile(data?.files))
     : false;
+
+  useScrollToHash(["files"]);
 
   const {
     diagnoses = [],
