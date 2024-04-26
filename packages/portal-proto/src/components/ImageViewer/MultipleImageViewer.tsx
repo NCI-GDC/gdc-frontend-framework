@@ -14,10 +14,8 @@ import {
 } from "@mantine/core";
 import {
   selectCurrentCohortFilters,
-  resetEdgesState,
-  useCoreDispatch,
   useCoreSelector,
-  useImageViewer,
+  useImageViewerQuery,
   FilterSet,
   joinFilters,
   parseJSONParam,
@@ -56,7 +54,6 @@ export const MultipleImageViewer = ({
   const [imageDetails, setImageDetails] = useState([]);
   const [cases_offset, setCasesOffSet] = useState(0);
   const router = useRouter();
-  const dispatch = useCoreDispatch();
 
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
@@ -70,18 +67,12 @@ export const MultipleImageViewer = ({
     ) as FilterSet,
   );
 
-  const { data, isFetching } = useImageViewer({
+  const { data, isFetching } = useImageViewerQuery({
     cases_offset,
     searchValues,
     case_id,
     caseFilters: filters,
   });
-
-  useEffect(() => {
-    return () => {
-      dispatch(resetEdgesState());
-    };
-  }, [dispatch]);
 
   useEffect(() => {
     if (!isFetching) {
@@ -105,7 +96,6 @@ export const MultipleImageViewer = ({
 
   const removeFilters = (filter: string) => {
     setSearchValues(searchValues.filter((value) => value !== filter));
-    dispatch(resetEdgesState());
     resetStates();
   };
 
@@ -119,14 +109,14 @@ export const MultipleImageViewer = ({
   };
 
   const performSearch = () => {
-    dispatch(resetEdgesState());
     setShowMorePressed(false);
     setSearchValues([searchText.toUpperCase().trim(), ...searchValues]);
     setSearchText("");
     resetStates();
   };
 
-  const shouldShowMoreButton = Object.keys(data?.edges).length < data.total;
+  const shouldShowMoreButton =
+    Object.keys(data?.edges || {}).length < data?.total;
 
   return (
     <>

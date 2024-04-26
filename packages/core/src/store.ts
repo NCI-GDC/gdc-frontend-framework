@@ -24,6 +24,7 @@ import { filesApiSliceMiddleware } from "./features/files/filesSlice";
 import { historyApiSliceMiddleware } from "./features/history/historySlice";
 import { quickSearchApiMiddleware } from "./features/quickSearch/quickSearch";
 import { userAuthApiMiddleware } from "./features/users/usersSlice";
+import { imageDetailsApiMiddleware } from "./features/imageDetails/imageDetailsSlice";
 import storage from "./storage-persist";
 
 const persistConfig = {
@@ -73,6 +74,7 @@ export const coreStore = configureStore({
         userAuthApiMiddleware,
         historyApiSliceMiddleware,
         quickSearchApiMiddleware,
+        imageDetailsApiMiddleware,
       )
       .prepend(coreStoreListenerMiddleware.middleware), // needs to be prepended
 });

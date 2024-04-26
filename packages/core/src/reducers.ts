@@ -20,14 +20,11 @@ import {
 } from "./features/projects/projectsPrimarySiteSlice";
 import { casesReducer } from "./features/cases/casesSlice";
 import { genomicReducers } from "./features/genomic/genomicSlice";
-import { imageDetailsReducer } from "./features/imageDetails/imageDetailsSlice";
-import { imageViewerReducer } from "./features/imageDetails/imageViewer";
 import { cohortComparisonReducer } from "./features/cohortComparison";
 import { bannerReducer } from "./features/bannerNotification";
 import { cartReducer } from "./features/cart";
 import { totalCountsReducer } from "./features/summary/totalCountsSlice";
 import { genesSummaryReducer } from "./features/genomic/geneSummary/geneSummarySlice";
-
 import {
   cohortApiReducer,
   cohortApiSliceReducerPath,
@@ -68,6 +65,10 @@ import {
   historyApiReducer,
   historyApiSliceReducerPath,
 } from "./features/history/historySlice";
+import {
+  imageDetailsApiReducerPath,
+  imageDetailsApiReducer,
+} from "./features/imageDetails/imageDetailsSlice";
 
 // We want unsaved cohorts to be persisted through a refresh but not through a user ending their session
 const cohortPersistConfig = {
@@ -87,8 +88,6 @@ export const reducers = combineReducers({
   cases: casesReducer,
   cancerDistribution: cancerDistributionReducer,
   genomic: genomicReducers,
-  imageDetails: imageDetailsReducer,
-  imageViewer: imageViewerReducer,
   cohortComparison: cohortComparisonReducer,
   cart: cartReducer,
   bannerNotification: bannerReducer,
@@ -97,6 +96,7 @@ export const reducers = combineReducers({
   clinicalDataAnalysis: clinicalDataAnalysisReducer,
   genesSummary: genesSummaryReducer,
   modals: modalReducer,
+  [imageDetailsApiReducerPath]: imageDetailsApiReducer,
   [quickSearchApiReducerPath]: quickSearchApiReducer,
   [filesApiSliceReducerPath]: filesApiReducer,
   [allFilesApiSliceReducerPath]: allFilesApiReducer,

@@ -19,6 +19,7 @@ export const fetchQuickSearch = async (searchString: string) => {
 };
 
 const quickSearchApi = coreCreateApi({
+  reducerPath: "quickSearch",
   baseQuery: fetchQuickSearch,
   endpoints: (builder) => ({
     quickSearch: builder.query<QuickSearchState, string>({
