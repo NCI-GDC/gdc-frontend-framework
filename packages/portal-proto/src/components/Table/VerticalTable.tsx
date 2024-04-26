@@ -298,7 +298,7 @@ function VerticalTable<TData>({
                       input: `border-base-lighter focus:border-2 focus:border-primary${
                         TooltipContainer ? " focus:rounded-b-none" : ""
                       }`,
-                      wrapper: "w-72 h-8",
+                      wrapper: "xl:w-72 xl:h-8",
                     }}
                     size="sm"
                     rightSection={
@@ -502,52 +502,64 @@ function VerticalTable<TData>({
         </table>
       </div>
       {pagination && (
-        <div className="flex flex-wrap lg:flex-nowrap font-heading items-center text-content justify-between bg-base-max border-base-lighter border-1 border-t-0 py-3 px-4">
+        <div className="flex flex-col w-full md:px-4 lg:flex-nowrap font-heading items-center text-content bg-base-max border-base-lighter border-1 border-t-0 py-3 xl:flex-row xl:justify-between">
           {!disablePageSize && (
-            <div
-              data-testid="area-show-number-of-entries"
-              className="flex flex-row items-center m-auto ml-0 text-sm"
-            >
-              <span className="my-auto mx-1">Show</span>
-              <Select
-                size="xs"
-                radius="md"
-                onChange={handlePageSizeChange}
-                value={pageSize?.toString()}
-                data={[
-                  { value: "10", label: "10" },
-                  { value: "20", label: "20" },
-                  { value: "40", label: "40" },
-                  { value: "100", label: "100" },
-                ]}
-                classNames={{
-                  root: "w-16 font-heading",
-                }}
-                data-testid="button-show-entries"
-                aria-label="select page size"
-              />
-              <span className="my-auto mx-1">Entries</span>
+            <div className="flex justify-between items-center w-full xl:w-fit">
+              <div
+                data-testid="area-show-number-of-entries"
+                className="flex items-center m-auto ml-0 text-sm"
+              >
+                <span className="my-auto mx-1">Show</span>
+                <Select
+                  size="xs"
+                  radius="md"
+                  onChange={handlePageSizeChange}
+                  value={pageSize?.toString()}
+                  data={[
+                    { value: "10", label: "10" },
+                    { value: "20", label: "20" },
+                    { value: "40", label: "40" },
+                    { value: "100", label: "100" },
+                  ]}
+                  classNames={{
+                    root: "w-16 font-heading",
+                  }}
+                  data-testid="button-show-entries"
+                  aria-label="select page size"
+                />
+                <span className="my-auto mx-1">Entries</span>
+              </div>
+              <div className="flex xl:hidden">
+                <ShowingCount
+                  from={pagination?.from}
+                  label={pagination?.label}
+                  total={pagination?.total}
+                  dataLength={tableData?.length}
+                  status={status}
+                  pageSize={pageSize}
+                />
+              </div>
             </div>
           )}
-
-          <ShowingCount
-            from={pagination?.from}
-            label={pagination?.label}
-            total={pagination?.total}
-            dataLength={tableData?.length}
-            status={status}
-            pageSize={pageSize}
-          />
-
+          <div className="hidden xl:flex xl:items-center">
+            <ShowingCount
+              from={pagination?.from}
+              label={pagination?.label}
+              total={pagination?.total}
+              dataLength={tableData?.length}
+              status={status}
+              pageSize={pageSize}
+            />
+          </div>
           <Pagination
             data-testid="pagination"
             color="accent.5"
-            className="mx-auto mt-4 lg:ml-auto lg:mr-0 lg:mt-0"
+            className="mt-4 gap-1 mx-auto xl:mx-0 xl:gap-2 xl:mr-0 xl:mt-0"
             value={pageOn}
             onChange={handlePageChange}
             total={pageTotal}
-            size="sm"
             radius="xs"
+            size="sm"
             withEdges
             classNames={{ control: "border-0" }}
             getControlProps={(control) => {

@@ -38,6 +38,7 @@ import FilesTables from "../repositoryApp/FilesTable";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 import { useRouter } from "next/router";
+import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
 
 const persistor = persistStore(AppStore);
 
@@ -132,19 +133,28 @@ export const RepositoryApp = (): JSX.Element => {
   return (
     <>
       <PersistGate persistor={persistor}>
-        <div className="flex mt-4 mx-4">
-          <div className="w-1/4">
+        <div className="flex mt-4 mx-4 gap-0.5">
+          <div className="w-1/3 xl:w-1/4">
             <FileFacetPanel />
           </div>
           <div
-            className="w-full overflow-hidden h-full"
+            className="w-2/3 xl:w-3/4 overflow-hidden h-full"
             data-testid="repository-table"
           >
-            <div className="flex justify-end align-center">
-              <div className="flex justify-end gap-2 mt-9 mb-4">
+            <div className="flex xl:justify-end align-center">
+              <div className="flex flex-wrap xl:justify-end gap-2 mt-9 mb-4">
                 <Menu width="target">
                   <Menu.Target>
-                    <FunctionButton data-testid="button-download-associated-data-files-table">
+                    <FunctionButton
+                      data-testid="button-download-associated-data-files-table"
+                      rightIcon={
+                        <Dropdown
+                          size="1.25em"
+                          aria-hidden="true"
+                          data-testid="dropdown-icon"
+                        />
+                      }
+                    >
                       Download Associated Data
                     </FunctionButton>
                   </Menu.Target>
@@ -266,6 +276,7 @@ export const RepositoryApp = (): JSX.Element => {
                   activeText="Processing"
                   inactiveText="Manifest"
                   toolTip="Download a manifest for use with the GDC Data Transfer Tool. The GDC Data Transfer Tool is recommended for transferring large volumes of data."
+                  multilineToolTip
                   endpoint="files"
                   method="POST"
                   extraParams={{
@@ -299,7 +310,9 @@ export const RepositoryApp = (): JSX.Element => {
 
                 <FunctionButton
                   data-testid="button-add-all-files-table"
-                  leftIcon={<CartIcon aria-hidden="true" />}
+                  leftIcon={
+                    <CartIcon aria-hidden="true" className="hidden xl:block" />
+                  }
                   loading={allFilesLoading}
                   disabled={fileDataFetching}
                   onClick={() => {
@@ -317,12 +330,16 @@ export const RepositoryApp = (): JSX.Element => {
                       );
                     }
                   }}
+                  classNames={{ leftIcon: "mr-0 xl:mr-2" }}
                 >
                   Add All Files to Cart
                 </FunctionButton>
                 <FunctionButtonRemove
                   data-testid="button-remove-all-files-table"
-                  leftIcon={<VscTrash aria-hidden="true" />}
+                  leftIcon={
+                    <VscTrash aria-hidden="true" className="hidden xl:block" />
+                  }
+                  classNames={{ leftIcon: "mr-0 xl:mr-2" }}
                   loading={allFilesLoading}
                   onClick={() => {
                     getAllSelectedFiles(

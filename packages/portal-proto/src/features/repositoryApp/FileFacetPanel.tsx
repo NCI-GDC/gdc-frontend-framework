@@ -128,11 +128,14 @@ export const FileFacetPanel = (): JSX.Element => {
         variant="outline"
         aria-label="Add a custom filter"
         data-testid="button-add-a-file-filter"
-        className="bg-primary-lightest flex flex-row justify-center align-middle items-center border-primary-darker b-2 mb-2"
+        className="bg-primary-lightest flex justify-center items-center border-primary-darker mb-2"
         onClick={() => setOpened(true)}
       >
-        <AddAdditionalIcon className="text-primary-content" size="2em" />
-        <Text size="md" weight={700} className="text-primary-content-darker">
+        <AddAdditionalIcon className="text-primary-content text-2xl xl:text-3xl" />
+        <Text
+          weight={700}
+          className="text-sm xl:text-[1rem] text-primary-content-darker"
+        >
           Add a Custom Filter
         </Text>
       </Button>
@@ -156,20 +159,22 @@ export const FileFacetPanel = (): JSX.Element => {
           data-testid="loading-spinner"
           visible={!isDictionaryReady}
         />
-        {facetDefinitions.map((x) => {
-          const isDefault = getDefaultFacets().includes(x.full);
-          const facetName = fieldNameToTitle(x.full, isDefault ? 1 : 2);
-          return createFacetCard(
-            x,
-            "Files",
-            FileFacetHooks,
-            "repository-app",
-            !isDefault ? handleRemoveFilter : undefined,
-            false,
-            facetName,
-            "w-full",
-          );
-        })}
+        <div className="h-screen overflow-y-scroll">
+          {facetDefinitions.map((x) => {
+            const isDefault = getDefaultFacets().includes(x.full);
+            const facetName = fieldNameToTitle(x.full, isDefault ? 1 : 2);
+            return createFacetCard(
+              x,
+              "Files",
+              FileFacetHooks,
+              "repository-app",
+              !isDefault ? handleRemoveFilter : undefined,
+              false,
+              facetName,
+              "w-full",
+            );
+          })}
+        </div>
       </div>
     </div>
   );
