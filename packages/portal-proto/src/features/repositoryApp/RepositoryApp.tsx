@@ -157,7 +157,6 @@ export const RepositoryApp = (): JSX.Element => {
                       classNames={{
                         rightIcon: "border-l pl-1 -mr-2",
                       }}
-                      className="rounded-md"
                       variant="outline"
                     >
                       Download Associated Data
