@@ -1,6 +1,7 @@
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
 import { GDC_API } from "../../constants";
 import { coreCreateApi } from "src/coreCreateApi";
+import serializeQueryArgsWithDataRelease from "src/serializeQueryArgs";
 
 export interface ImageMetadataResponse {
   readonly Format: string;
@@ -23,6 +24,7 @@ export const fetchSlideImages = async (file_id: string) => {
 
 const imageDetailsApi = coreCreateApi({
   reducerPath: "imageDetails",
+  serializeQueryArgs: serializeQueryArgsWithDataRelease,
   baseQuery: fetchSlideImages,
   endpoints: (builder) => ({
     imageDetails: builder.query<ImageMetadataResponse, string>({

@@ -15,6 +15,7 @@ import {
   HistoryDefaults,
   GenesDefaults,
 } from "./types";
+import serializeQueryArgsWithDataRelease from "src/serializeQueryArgs";
 
 export type UnknownJson = Record<string, unknown>;
 export interface GdcApiResponse<H = UnknownJson> {
@@ -377,6 +378,7 @@ export interface EndpointRequestProps {
 
 export const endpointSlice = coreCreateApi({
   reducerPath: "entities",
+  serializeQueryArgs: serializeQueryArgsWithDataRelease,
   baseQuery: async ({
     request,
     endpoint,

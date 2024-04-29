@@ -7,6 +7,7 @@ import { fetchBaseQuery } from "@reduxjs/toolkit/query";
 import { coreCreateApi } from "../../coreCreateApi";
 import { GDC_API } from "../../constants";
 import { GdcFile, mapFileData } from "./filesSlice";
+import serializeQueryArgsWithDataRelease from "src/serializeQueryArgs";
 
 export interface GdcFileIds {
   readonly id?: string;
@@ -20,6 +21,7 @@ interface AllFilesQueryProps {
 
 export const allFilesApiSlice = coreCreateApi({
   reducerPath: "filesApi",
+  serializeQueryArgs: serializeQueryArgsWithDataRelease,
   baseQuery: fetchBaseQuery({
     baseUrl: `${GDC_API}`,
   }),

@@ -1,6 +1,7 @@
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
 import { coreCreateApi } from "src/coreCreateApi";
 import { GDC_APP_API_AUTH } from "../../constants";
+import serializeQueryArgsWithDataRelease from "src/serializeQueryArgs";
 
 interface QuickSearchState {
   searchList: Array<Record<string, any>>;
@@ -20,6 +21,7 @@ export const fetchQuickSearch = async (searchString: string) => {
 
 const quickSearchApi = coreCreateApi({
   reducerPath: "quickSearch",
+  serializeQueryArgs: serializeQueryArgsWithDataRelease,
   baseQuery: fetchQuickSearch,
   endpoints: (builder) => ({
     quickSearch: builder.query<QuickSearchState, string>({
