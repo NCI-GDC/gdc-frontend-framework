@@ -208,7 +208,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 .slice(0, 10)}.tar.gz`}
               format="tsv"
               method="POST"
-              downloadSize={summaryData.total_case_count}
+              downloadSize={summaryData?.total_case_count}
               filters={{
                 content: [
                   {
@@ -239,7 +239,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 .slice(0, 10)}.json`}
               format="json"
               method="POST"
-              downloadSize={summaryData.total_case_count}
+              downloadSize={summaryData?.total_case_count}
               filters={{
                 content: [
                   {
@@ -270,7 +270,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 .slice(0, 10)}.tar.gz`}
               format="tsv"
               method="POST"
-              downloadSize={summaryData.total_case_count}
+              downloadSize={summaryData?.total_case_count}
               filters={{
                 content: [
                   {
@@ -300,7 +300,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 .slice(0, 10)}.json`}
               format="json"
               method="POST"
-              downloadSize={summaryData.total_case_count}
+              downloadSize={summaryData?.total_case_count}
               filters={{
                 content: [
                   {
@@ -476,15 +476,17 @@ const CartHeader: React.FC<CartHeaderProps> = ({
         <h1 className="uppercase ml-auto mr-4 flex items-center truncate text-2xl">
           Total of{" "}
           <FileIcon size={25} className="ml-2 mr-1" aria-hidden="true" />{" "}
-          <b className="mr-1">{summaryData.total_doc_count.toLocaleString()}</b>{" "}
-          {summaryData.total_doc_count === 1 ? "File" : "Files"}
+          <b className="mr-1">
+            {summaryData?.total_doc_count?.toLocaleString() || "--"}
+          </b>{" "}
+          {summaryData?.total_doc_count === 1 ? "File" : "Files"}
           <PersonIcon size={25} className="ml-2 mr-1" aria-hidden="true" />{" "}
           <b className="mr-1">
-            {summaryData.total_case_count.toLocaleString()}
+            {summaryData?.total_case_count?.toLocaleString() || "--"}
           </b>{" "}
-          {summaryData.total_case_count === 1 ? "Case" : "Cases"}{" "}
+          {summaryData?.total_case_count === 1 ? "Case" : "Cases"}{" "}
           <SaveIcon size={25} className="ml-2 mr-1" aria-hidden="true" />{" "}
-          {fileSize(summaryData.total_file_size)}
+          {fileSize(summaryData?.total_file_size || 0)}
         </h1>
       </div>
     </>
