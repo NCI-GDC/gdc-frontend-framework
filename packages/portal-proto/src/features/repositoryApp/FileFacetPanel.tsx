@@ -128,14 +128,11 @@ export const FileFacetPanel = (): JSX.Element => {
         variant="outline"
         aria-label="Add a custom filter"
         data-testid="button-add-a-file-filter"
-        className="bg-primary-lightest flex justify-center items-center border-primary-darker mb-2"
+        className="flex justify-center items-center border-primary-darker mb-2 text-primary hover:text-base-max hover:bg-primary rounded-md"
         onClick={() => setOpened(true)}
       >
-        <AddAdditionalIcon className="text-primary-content text-2xl xl:text-3xl" />
-        <Text
-          weight={700}
-          className="text-sm xl:text-[1rem] text-primary-content-darker"
-        >
+        <AddAdditionalIcon className="text-2xl xl:text-xl" />
+        <Text weight={700} className="text-sm">
           Add a Custom Filter
         </Text>
       </Button>

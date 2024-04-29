@@ -416,7 +416,7 @@ const FilesTables: React.FC = () => {
   }
 
   const Stats = () => (
-    <div className="flex gap-1 text-xl items-center">
+    <div className="flex gap-1 text-xl items-center uppercase">
       <div>
         Total of{" "}
         <strong>{tempPagination?.total?.toLocaleString() || "--"}</strong>{" "}

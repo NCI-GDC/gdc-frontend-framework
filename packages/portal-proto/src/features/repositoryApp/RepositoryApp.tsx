@@ -33,7 +33,7 @@ import {
   useClearAllRepositoryFilters,
 } from "@/features/repositoryApp/hooks";
 import { useImageCounts } from "@/features/repositoryApp/slideCountSlice";
-import { Tooltip, Menu } from "@mantine/core";
+import { Tooltip, Menu, Button } from "@mantine/core";
 import FilesTables from "../repositoryApp/FilesTable";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
@@ -133,7 +133,7 @@ export const RepositoryApp = (): JSX.Element => {
   return (
     <>
       <PersistGate persistor={persistor}>
-        <div className="flex mt-4 mx-4 gap-0.5">
+        <div className="flex m-4 gap-0.5">
           <div className="w-1/3 xl:w-1/4">
             <FileFacetPanel />
           </div>
@@ -145,7 +145,7 @@ export const RepositoryApp = (): JSX.Element => {
               <div className="flex flex-wrap xl:justify-end gap-2 mt-9 mb-4">
                 <Menu width="target">
                   <Menu.Target>
-                    <FunctionButton
+                    <Button
                       data-testid="button-download-associated-data-files-table"
                       rightIcon={
                         <Dropdown
@@ -157,9 +157,11 @@ export const RepositoryApp = (): JSX.Element => {
                       classNames={{
                         rightIcon: "border-l pl-1 -mr-2",
                       }}
+                      className="rounded-md"
+                      variant="outline"
                     >
                       Download Associated Data
-                    </FunctionButton>
+                    </Button>
                   </Menu.Target>
                   <Menu.Dropdown data-testid="dropdown-menu-options">
                     <Menu.Item

@@ -280,7 +280,7 @@ function VerticalTable<TData>({
         {additionalControls && <>{additionalControls}</>}
         <div className="flex flex-wrap gap-y-2 gap-x-4 items-center">
           {tableTitle && (
-            <Text className="text-lg text-left ml-0 lg:ml-auto self-center uppercase">
+            <Text className="self-center uppercase text-lg text-left ml-0 lg:ml-auto">
               {tableTitle}
             </Text>
           )}
