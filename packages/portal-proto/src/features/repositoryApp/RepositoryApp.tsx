@@ -154,6 +154,9 @@ export const RepositoryApp = (): JSX.Element => {
                           data-testid="dropdown-icon"
                         />
                       }
+                      classNames={{
+                        rightIcon: "border-l pl-1 -mr-2",
+                      }}
                     >
                       Download Associated Data
                     </FunctionButton>

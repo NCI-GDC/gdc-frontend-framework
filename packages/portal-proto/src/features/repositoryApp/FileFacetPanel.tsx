@@ -159,7 +159,7 @@ export const FileFacetPanel = (): JSX.Element => {
           data-testid="loading-spinner"
           visible={!isDictionaryReady}
         />
-        <div className="h-screen overflow-y-scroll">
+        <div className="h-screen overflow-y-scroll flex flex-col gap-y-4 border-t-1 border-b-1 rounded-md">
           {facetDefinitions.map((x) => {
             const isDefault = getDefaultFacets().includes(x.full);
             const facetName = fieldNameToTitle(x.full, isDefault ? 1 : 2);

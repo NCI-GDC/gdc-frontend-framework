@@ -273,12 +273,12 @@ function VerticalTable<TData>({
   return (
     <div data-testid={customDataTestID} className="grow overflow-hidden pt-1">
       <div
-        className={`flex flex-wrap gap-y-4 ${
+        className={`flex flex-wrap gap-y-4 mb-2 ${
           !additionalControls ? "justify-end" : "justify-between"
         }`}
       >
         {additionalControls && <>{additionalControls}</>}
-        <div className="flex flex-wrap gap-y-2 gap-x-4">
+        <div className="flex flex-wrap gap-y-2 gap-x-4 items-center">
           {tableTitle && (
             <Text className="text-lg text-left ml-0 lg:ml-auto self-center uppercase">
               {tableTitle}
@@ -286,48 +286,49 @@ function VerticalTable<TData>({
           )}
 
           {(search?.enabled || showControls) && (
-            <div className="flex items-center" data-testid="table-options-menu">
-              <div className="flex mb-2 gap-2">
-                {search?.enabled && (
-                  <TextInput
-                    icon={<MdSearch size={24} aria-hidden="true" />}
-                    data-testid="textbox-table-search-bar"
-                    placeholder={search.placeholder ?? "Search"}
-                    aria-label="Table Search Input"
-                    classNames={{
-                      input: `border-base-lighter focus:border-2 focus:border-primary${
-                        TooltipContainer ? " focus:rounded-b-none" : ""
-                      }`,
-                      wrapper: "xl:w-72 xl:h-8",
-                    }}
-                    size="sm"
-                    rightSection={
-                      searchTerm.length > 0 && (
-                        <ActionIcon onClick={handleClearClick}>
-                          <MdClose aria-label="clear search" />
-                        </ActionIcon>
-                      )
-                    }
-                    value={searchTerm}
-                    onChange={handleInputChange}
-                    ref={inputRef}
-                    onFocus={() => setSearchFocused(true)}
-                    onBlur={() => setSearchFocused(false)}
-                    inputContainer={TooltipContainer}
-                  />
-                )}
-                {showControls && (
-                  <ColumnOrdering
-                    table={table}
-                    handleColumnOrderingReset={() => {
-                      table.resetColumnVisibility();
-                      table.resetColumnOrder();
-                    }}
-                    columnOrder={columnOrder}
-                    setColumnOrder={setColumnOrder}
-                  />
-                )}
-              </div>
+            <div
+              className="flex items-center gap-2"
+              data-testid="table-options-menu"
+            >
+              {search?.enabled && (
+                <TextInput
+                  icon={<MdSearch size={24} aria-hidden="true" />}
+                  data-testid="textbox-table-search-bar"
+                  placeholder={search.placeholder ?? "Search"}
+                  aria-label="Table Search Input"
+                  classNames={{
+                    input: `border-base-lighter focus:border-2 focus:border-primary${
+                      TooltipContainer ? " focus:rounded-b-none" : ""
+                    }`,
+                    wrapper: "xl:w-72 xl:h-8",
+                  }}
+                  size="sm"
+                  rightSection={
+                    searchTerm.length > 0 && (
+                      <ActionIcon onClick={handleClearClick}>
+                        <MdClose aria-label="clear search" />
+                      </ActionIcon>
+                    )
+                  }
+                  value={searchTerm}
+                  onChange={handleInputChange}
+                  ref={inputRef}
+                  onFocus={() => setSearchFocused(true)}
+                  onBlur={() => setSearchFocused(false)}
+                  inputContainer={TooltipContainer}
+                />
+              )}
+              {showControls && (
+                <ColumnOrdering
+                  table={table}
+                  handleColumnOrderingReset={() => {
+                    table.resetColumnVisibility();
+                    table.resetColumnOrder();
+                  }}
+                  columnOrder={columnOrder}
+                  setColumnOrder={setColumnOrder}
+                />
+              )}
             </div>
           )}
         </div>

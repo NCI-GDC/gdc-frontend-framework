@@ -447,23 +447,21 @@ const FilesTables: React.FC = () => {
       <div className="">
         <VerticalTable
           additionalControls={
-            <div className="flex gap-2 items-center justify-between mr-2">
-              <div className="flex gap-2">
-                <FunctionButton
-                  onClick={handleDownloadJSON}
-                  data-testid="button-json-files-table"
-                  disabled={isFetching}
-                >
-                  JSON
-                </FunctionButton>
-                <FunctionButton
-                  onClick={handleDownloadTSV}
-                  data-testid="button-tsv-files-table"
-                  disabled={isFetching}
-                >
-                  TSV
-                </FunctionButton>
-              </div>
+            <div className="flex gap-2 items-center justify-between">
+              <FunctionButton
+                onClick={handleDownloadJSON}
+                data-testid="button-json-files-table"
+                disabled={isFetching}
+              >
+                JSON
+              </FunctionButton>
+              <FunctionButton
+                onClick={handleDownloadTSV}
+                data-testid="button-tsv-files-table"
+                disabled={isFetching}
+              >
+                TSV
+              </FunctionButton>
             </div>
           }
           tableTitle={
