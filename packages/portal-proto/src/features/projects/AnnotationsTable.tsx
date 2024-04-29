@@ -189,7 +189,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
         cell: ({ getValue, row }) =>
           getValue() ? (
             <Link
-              href={`cases/${row.original.case_id}`}
+              href={`/cases/${row.original.case_id}`}
               className="text-utility-link underline font-content"
             >
               {getValue()}
