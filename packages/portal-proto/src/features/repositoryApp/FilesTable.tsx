@@ -416,7 +416,7 @@ const FilesTables: React.FC = () => {
   }
 
   const Stats = () => (
-    <div className="flex gap-1 text-xl items-center">
+    <div className="flex gap-1 text-xl items-center uppercase">
       <div>
         Total of{" "}
         <strong>{tempPagination?.total?.toLocaleString() || "--"}</strong>{" "}
@@ -441,13 +441,13 @@ const FilesTables: React.FC = () => {
 
   return (
     <>
-      <div className="flex justify-end Custom-Repo-Width:hidden">
+      <div className="flex xl:justify-end Custom-Repo-Width:hidden">
         <Stats />
       </div>
-      <VerticalTable
-        additionalControls={
-          <div className="flex gap-2 items-center justify-between mr-2">
-            <div className="flex gap-2">
+      <div className="">
+        <VerticalTable
+          additionalControls={
+            <div className="flex gap-2 items-center justify-between">
               <FunctionButton
                 onClick={handleDownloadJSON}
                 data-testid="button-json-files-table"
@@ -463,38 +463,38 @@ const FilesTables: React.FC = () => {
                 TSV
               </FunctionButton>
             </div>
-          </div>
-        }
-        tableTitle={
-          <div
-            data-testid="text-counts-files-table"
-            className="hidden Custom-Repo-Width:block"
-          >
-            <Stats />
-          </div>
-        }
-        data={formattedTableData}
-        columns={filesTableDefaultColumns}
-        pagination={{
-          ...tempPagination,
-          label: "files",
-        }}
-        status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
-        handleChange={handleChange}
-        search={{
-          enabled: true,
-          tooltip:
-            "e.g. HCM-CSHL-0062-C18.json, 4b5f5ba0-3010-4449-99d4-7bd7a6d73422",
-        }}
-        showControls={true}
-        setColumnVisibility={setColumnVisibility}
-        columnVisibility={columnVisibility}
-        columnOrder={columnOrder}
-        columnSorting="manual"
-        sorting={sorting}
-        setSorting={setSorting}
-        setColumnOrder={setColumnOrder}
-      />
+          }
+          tableTitle={
+            <div
+              data-testid="text-counts-files-table"
+              className="hidden Custom-Repo-Width:block"
+            >
+              <Stats />
+            </div>
+          }
+          data={formattedTableData}
+          columns={filesTableDefaultColumns}
+          pagination={{
+            ...tempPagination,
+            label: "files",
+          }}
+          status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
+          handleChange={handleChange}
+          search={{
+            enabled: true,
+            tooltip:
+              "e.g. HCM-CSHL-0062-C18.json, 4b5f5ba0-3010-4449-99d4-7bd7a6d73422",
+          }}
+          showControls={true}
+          setColumnVisibility={setColumnVisibility}
+          columnVisibility={columnVisibility}
+          columnOrder={columnOrder}
+          columnSorting="manual"
+          sorting={sorting}
+          setSorting={setSorting}
+          setColumnOrder={setColumnOrder}
+        />
+      </div>
     </>
   );
 };
