@@ -271,7 +271,7 @@ function VerticalTable<TData>({
   };
 
   return (
-    <div data-testid={customDataTestID} className="grow overflow-hidden pt-1">
+    <div data-testid={customDataTestID} className="grow overflow-hidden">
       <div
         className={`flex flex-wrap gap-y-4 mb-2 ${
           !additionalControls ? "justify-end" : "justify-between"
@@ -300,7 +300,7 @@ function VerticalTable<TData>({
                     input: `border-base-lighter focus:border-2 focus:border-primary${
                       TooltipContainer ? " focus:rounded-b-none" : ""
                     }`,
-                    wrapper: "xl:w-72 xl:h-8",
+                    wrapper: "xl:w-72",
                   }}
                   size="sm"
                   rightSection={
@@ -538,6 +538,7 @@ function VerticalTable<TData>({
                   dataLength={tableData?.length}
                   status={status}
                   pageSize={pageSize}
+                  customDataTestID="xl-hidden-text-showing-count"
                 />
               </div>
             </div>
@@ -591,6 +592,7 @@ function ShowingCount({
   dataLength,
   status,
   pageSize,
+  customDataTestID = "text-showing-count",
 }: {
   from: number;
   total: number;
@@ -598,6 +600,7 @@ function ShowingCount({
   dataLength: number;
   status: DataStatus;
   pageSize: number;
+  customDataTestID?: string;
 }) {
   let outputString: JSX.Element;
   if (!isNaN(from) && status === "fulfilled") {
@@ -619,7 +622,7 @@ function ShowingCount({
   }
 
   return (
-    <p data-testid="text-showing-count" className="text-heading text-sm">
+    <p data-testid={customDataTestID} className="text-heading text-sm">
       Showing {outputString ?? "--"}
     </p>
   );
