@@ -136,14 +136,18 @@ export const QuickSearch = (): JSX.Element => {
               </div>
               <div className="flex flex-col leading-5">
                 <div className="font-bold">{badgeText}</div>
-                <span className="">
-                  <Highlight
-                    highlight={searchText.trim()}
-                    highlightStyles={{ fontStyle: "italic" }}
-                  >
-                    {mainText}
-                  </Highlight>
-                </span>
+
+                <Highlight
+                  highlight={searchText.trim()}
+                  highlightStyles={{
+                    fontStyle: "italic",
+                  }}
+                  span
+                  className="break-normal"
+                >
+                  {mainText}
+                </Highlight>
+
                 <span className="text-base-content-dark">
                   <b>Category:</b>{" "}
                   {entityIconMapping[entityForMapping].category
@@ -185,7 +189,7 @@ export const QuickSearch = (): JSX.Element => {
       classNames={{
         input: "focus:border-2 focus:border-primary text-sm",
         dropdown:
-          "bg-base-max rounded-t-none rounded-b border-0 drop-shadow-md -mt-2",
+          "bg-base-max rounded-t-none rounded-b border-0 drop-shadow-md -mt-2 text-wrap",
         item: "p-0 m-0",
       }}
       maxDropdownHeight={1000} //large number so no scroll bar
