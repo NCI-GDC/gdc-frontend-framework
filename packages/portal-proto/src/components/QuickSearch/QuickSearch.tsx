@@ -196,7 +196,7 @@ export const QuickSearch = (): JSX.Element => {
       dropdownPosition="bottom"
       size="sm"
       rightSection={
-        searchText.length > 0 ? <CloseIcon className="cursor-pointer" /> : <></>
+        searchText.length > 0 ? <CloseIcon className="cursor-pointer" /> : null
       }
       clearable
       itemComponent={renderItem}
