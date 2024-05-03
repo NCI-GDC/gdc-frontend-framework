@@ -55,6 +55,8 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
       : DATA_DIMENSIONS?.[field]?.unit,
   );
 
+  console.log({ dataDimension });
+
   const continuous = CONTINUOUS_FACET_TYPES.includes(facet?.type);
   const noData = continuous
     ? (data as Stats)?.stats?.count === 0
@@ -152,7 +154,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
             disabled={noData || downloadInProgress}
           />
           <Tooltip
-            label={"Remove Card"}
+            label="Remove Card"
             position="bottom-end"
             withArrow
             arrowSize={7}
