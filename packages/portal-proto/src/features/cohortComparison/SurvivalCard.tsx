@@ -4,15 +4,15 @@ import {
   buildCohortGqlOperator,
   useGetSurvivalPlotQuery,
   FilterSet,
-  GqlOperation,
-  useCreateCaseSetFromFiltersMutation,
   GqlIntersection,
+  buildGqlOperationToFilterSet,
+  GqlOperation,
 } from "@gff/core";
 import SurvivalPlot, { SurvivalPlotTypes } from "../charts/SurvivalPlot";
 import makeIntersectionFilters from "./makeIntersectionFilters";
 import CohortCreationButton from "@/components/CohortCreationButton";
 
-const survivalDataCompletenessFilters: readonly GqlOperation[] = [
+const survivalDataCompletenessFilters: GqlOperation[] = [
   {
     op: "or",
     content: [
@@ -114,35 +114,10 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
     buildCohortGqlOperator(cohorts?.comparison_cohort.filter),
     caseSetIds,
   );
-  const [createSet] = useCreateCaseSetFromFiltersMutation();
   const { data, isUninitialized, isFetching, isError } =
     useGetSurvivalPlotQuery({
       filters: [filters.cohort1, filters.cohort2],
     });
-
-  const generateFilters = async (
-    primarySetId: string,
-    comparisonSetId: string,
-  ) => {
-    return await createSet({
-      filters: makeSurvivalCaseFilters(primarySetId, comparisonSetId),
-      intent: "portal",
-      set_type: "frozen",
-    })
-      .unwrap()
-      .then((setId) => {
-        return {
-          mode: "and",
-          root: {
-            "cases.case_id": {
-              field: "cases.case_id",
-              operands: [`set_id:${setId}`],
-              operator: "includes",
-            },
-          },
-        } as FilterSet;
-      });
-  };
 
   useEffect(() => {
     setSurvivalPlotSelectable(data?.survivalData.length !== 0);
@@ -154,6 +129,14 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
   const cohort2Count = data?.survivalData[1]
     ? data.survivalData[1].donors?.length
     : 0;
+
+  console.log(
+    makeSurvivalCaseFilters(caseSetIds[0], caseSetIds[1]),
+    buildGqlOperationToFilterSet(
+      makeSurvivalCaseFilters(caseSetIds[0], caseSetIds[1]),
+    ),
+    "survival",
+  );
 
   return (
     <Paper
@@ -214,9 +197,10 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
                     <CohortCreationButton
                       numCases={cohort1Count}
                       label={cohort1Count.toLocaleString()}
-                      filtersCallback={async () =>
-                        generateFilters(caseSetIds[0], caseSetIds[1])
-                      }
+                      filters={buildGqlOperationToFilterSet(
+                        makeSurvivalCaseFilters(caseSetIds[0], caseSetIds[1]),
+                      )}
+                      createStaticCohort
                     />
                   </td>
                   <td>{((cohort1Count / counts[0]) * 100).toFixed(0)}%</td>
@@ -224,9 +208,10 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
                     <CohortCreationButton
                       numCases={cohort2Count}
                       label={cohort2Count.toLocaleString()}
-                      filtersCallback={async () =>
-                        generateFilters(caseSetIds[1], caseSetIds[0])
-                      }
+                      filters={buildGqlOperationToFilterSet(
+                        makeSurvivalCaseFilters(caseSetIds[1], caseSetIds[0]),
+                      )}
+                      createStaticCohort
                     />
                   </td>
                   <td>{((cohort2Count / counts[1]) * 100).toFixed(0)}%</td>

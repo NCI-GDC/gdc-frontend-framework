@@ -12,7 +12,6 @@ import {
   joinFilters,
   buildCohortGqlOperator,
   useCoreDispatch,
-  useCreateCaseSetFromFiltersMutation,
   GDCSsmsTable,
 } from "@gff/core";
 import { useEffect, useState, useContext, useMemo, useCallback } from "react";
@@ -158,37 +157,20 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     }
   }, [searchTerm, clearSearchTermsForGene]);
 
-  /* Create Cohort*/
-  const [createSet] = useCreateCaseSetFromFiltersMutation();
-
   const generateFilters = useDeepCompareCallback(
-    async (ssmId: string) => {
-      return await createSet({
-        case_filters: buildCohortGqlOperator(cohortFilters),
-        filters: buildCohortGqlOperator(genomicFilters),
-        intent: "portal",
-        set_type: "frozen",
-      })
-        .unwrap()
-        .then((setId) => {
-          return {
-            mode: "and",
-            root: {
-              "cases.case_id": {
-                field: "cases.case_id",
-                operands: [`set_id:${setId}`],
-                operator: "includes",
-              },
-              "ssms.ssm_id": {
-                field: "ssms.ssm_id",
-                operator: "includes",
-                operands: [ssmId],
-              },
-            },
-          } as FilterSet;
-        });
+    (ssmId: string) => {
+      return joinFilters(genomicFilters, {
+        mode: "and",
+        root: {
+          "ssms.ssm_id": {
+            field: "ssms.ssm_id",
+            operator: "includes",
+            operands: [ssmId],
+          },
+        },
+      } as FilterSet);
     },
-    [createSet, cohortFilters, genomicFilters],
+    [genomicFilters],
   );
   /* Create Cohort end  */
 
@@ -254,6 +236,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     generateFilters,
     currentPage: page,
     totalPages: Math.ceil(data?.ssmsTotal / pageSize),
+    cohortFilters,
   });
 
   const getRowId = (originalRow: SomaticMutation) => {

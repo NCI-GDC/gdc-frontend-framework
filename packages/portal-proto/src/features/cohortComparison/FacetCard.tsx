@@ -13,6 +13,7 @@ import FunctionButton from "@/components/FunctionButton";
 import PValue from "./PValue";
 import CohortCreationButton from "@/components/CohortCreationButton";
 import { CohortComparisonType } from "./CohortComparison";
+
 interface FacetCardProps {
   readonly data: { buckets: CohortFacetDoc[] }[];
   readonly field: string;
@@ -260,6 +261,7 @@ export const FacetCard: React.FC<FacetCardProps> = ({
                             formattedData[0][idx].filter,
                           )
                     }
+                    createStaticCohort
                   />
                 </td>
                 <td>
@@ -278,6 +280,7 @@ export const FacetCard: React.FC<FacetCardProps> = ({
                             formattedData[1][idx].filter,
                           )
                     }
+                    createStaticCohort
                   />
                 </td>
                 <td>

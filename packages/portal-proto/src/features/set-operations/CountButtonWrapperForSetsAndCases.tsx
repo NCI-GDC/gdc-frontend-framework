@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import {
   useCreateSsmsSetFromFiltersMutation,
   useCreateGeneSetFromFiltersMutation,
-  useCreateCaseSetFromFiltersMutation,
   GqlOperation,
-  FilterSet,
 } from "@gff/core";
 import { SetOperationEntityType } from "@/features/set-operations/types";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
@@ -14,6 +12,7 @@ import CohortCreationButton, {
   CohortCreationStyledButton,
   IconWrapperTW,
 } from "@/components/CohortCreationButton";
+import { buildGqlOperationToFilterSet } from "@gff/core";
 
 export const CreateFromCountButton = ({
   tooltipLabel,
@@ -131,36 +130,13 @@ const CountButtonWrapperForSet: React.FC<CountButtonWrapperForSetProps> = ({
 const CountButtonWrapperForSetsAndCases: React.FC<
   CountButtonWrapperForSetProps
 > = ({ count, filters, entityType }: CountButtonWrapperForSetProps) => {
-  const [createSet] = useCreateCaseSetFromFiltersMutation();
-
-  const createCohort = async () => {
-    return await createSet({
-      // TODO: possibly add error handling
-      filters: filters,
-      intent: entityType == "cohort" ? "portal" : "user",
-      set_type: entityType == "cohort" ? "frozen" : "mutable",
-    })
-      .unwrap()
-      .then((setId) => {
-        return {
-          mode: "and",
-          root: {
-            "cases.case_id": {
-              field: "cases.case_id",
-              operands: [`set_id:${setId}`],
-              operator: "includes",
-            },
-          },
-        } as FilterSet;
-      });
-  };
-
   if (entityType === "cohort") {
     return (
       <CohortCreationButton
         numCases={count}
         label={count?.toLocaleString()}
-        filtersCallback={createCohort}
+        filters={buildGqlOperationToFilterSet(filters)}
+        createStaticCohort
       />
     );
   } else {

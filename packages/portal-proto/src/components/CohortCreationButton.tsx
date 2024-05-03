@@ -1,5 +1,5 @@
 import React, { ReactNode, useState } from "react";
-import { Loader, Tooltip } from "@mantine/core";
+import { Tooltip } from "@mantine/core";
 import { FaPlus as PlusIcon } from "react-icons/fa";
 import tw from "tailwind-styled-components";
 import { FilterSet } from "@gff/core";
@@ -44,13 +44,14 @@ export const IconWrapperTW = tw.span`
  * @property label - the text label
  * @property numCases - the number of cases in the cohort
  * @property filters - the filters to use for the cohort
- * @property filtersCallback - a callback to create the filters
+ * @property createStaticCohort - whether to create a case set from the filters so the cases in the cohort remain static
  */
 interface CohortCreationButtonProps {
   readonly label: ReactNode;
   readonly numCases: number;
-  readonly filters?: FilterSet;
-  readonly filtersCallback?: () => Promise<FilterSet>;
+  readonly filters: FilterSet;
+  readonly caseFilters?: FilterSet;
+  readonly createStaticCohort?: boolean;
 }
 
 /**
@@ -58,24 +59,25 @@ interface CohortCreationButtonProps {
  * @param label - the text label
  * @param numCases - the number of cases in the cohort
  * @param filters - the filters to use for the cohort
- * @param filtersCallback - a callback to create the filters
+ * @param createStaticCohort - whether to create a case set from the filters so the cases in the cohort remain static
  * @category Buttons
  */
 const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
   label,
   numCases,
   filters,
-  filtersCallback,
+  caseFilters,
+  createStaticCohort = false,
 }: CohortCreationButtonProps) => {
   const [showSaveCohort, setShowSaveCohort] = useState(false);
-  const [cohortFilters, setCohortFilters] = useState<FilterSet>(filters);
-  const [loading, setLoading] = useState(false);
   const disabled = numCases === undefined || numCases === 0;
   const tooltipText = disabled
     ? "No cases available"
     : `Save a new cohort of ${
         numCases > 1 ? `these ${numCases.toLocaleString()} cases` : "this case"
       }`;
+
+  console.log({ filters }, "button");
 
   return (
     <div className="p-1">
@@ -100,29 +102,13 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
       >
         <CohortCreationStyledButton
           data-testid="button-save-filtered-cohort"
-          onClick={async () => {
-            if (loading) {
-              return;
-            }
-
-            if (filtersCallback) {
-              setLoading(true);
-              const createdFilters = await filtersCallback();
-              setCohortFilters(createdFilters);
-              setLoading(false);
-            }
-            setShowSaveCohort(true);
-          }}
+          onClick={() => setShowSaveCohort(true)}
           disabled={disabled}
           $fullWidth={React.isValidElement(label)} // if label is JSX.Element take the full width
           aria-label={tooltipText}
         >
           <IconWrapperTW $disabled={disabled} aria-hidden="true">
-            {loading ? (
-              <Loader size={12} />
-            ) : (
-              <PlusIcon color="white" size={12} />
-            )}
+            <PlusIcon color="white" size={12} />
           </IconWrapperTW>
           <span className="pr-2 self-center">{label ?? "--"}</span>
         </CohortCreationStyledButton>
@@ -131,7 +117,9 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
       <SaveCohortModal
         onClose={() => setShowSaveCohort(false)}
         opened={showSaveCohort}
-        filters={cohortFilters}
+        filters={filters}
+        caseFilters={caseFilters}
+        createStaticCohort={createStaticCohort}
       />
     </div>
   );

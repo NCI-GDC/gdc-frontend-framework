@@ -25,6 +25,7 @@ export const useGenerateGenesTableColumns = ({
   toggledGenes,
   isDemoMode,
   setEntityMetadata,
+  cohortFilters,
   genomicFilters,
   generateFilters,
   handleMutationCountClick,
@@ -40,17 +41,16 @@ export const useGenerateGenesTableColumns = ({
   toggledGenes: ReadonlyArray<string>;
   isDemoMode: boolean;
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
+  cohortFilters: FilterSet;
   genomicFilters: FilterSet;
-  generateFilters: (
-    type: columnFilterType,
-    geneId: string,
-  ) => Promise<FilterSet>;
+  generateFilters: (type: columnFilterType, geneId: string) => FilterSet;
   handleMutationCountClick: (geneId: string, geneSymbol: string) => void;
   currentPage: number;
   totalPages: number;
 }): ColumnDef<Gene>[] => {
   const componentId = useId();
   const genesTableColumnHelper = useMemo(() => createColumnHelper<Gene>(), []);
+  console.log({ cohortFilters }, "table");
 
   const genesTableDefaultColumns = useMemo<ColumnDef<Gene>[]>(
     () => [
@@ -192,9 +192,9 @@ export const useGenerateGenesTableColumns = ({
               />
             }
             numCases={row.original["#_ssm_affected_cases_in_cohort"].numerator}
-            filtersCallback={async () =>
-              generateFilters("ssmaffected", row.original.gene_id)
-            }
+            filters={generateFilters("ssmaffected", row.original.gene_id)}
+            caseFilters={cohortFilters}
+            createStaticCohort
           />
         ),
       }),
@@ -259,9 +259,9 @@ export const useGenerateGenesTableColumns = ({
                 />
               }
               numCases={numerator}
-              filtersCallback={async () =>
-                generateFilters("cnvgain", row.original.gene_id)
-              }
+              filters={generateFilters("cnvgain", row.original.gene_id)}
+              caseFilters={cohortFilters}
+              createStaticCohort
             />
           );
         },
@@ -291,9 +291,9 @@ export const useGenerateGenesTableColumns = ({
                 />
               }
               numCases={numerator}
-              filtersCallback={async () =>
-                generateFilters("cnvloss", row.original.gene_id)
-              }
+              filters={generateFilters("cnvloss", row.original.gene_id)}
+              caseFilters={cohortFilters}
+              createStaticCohort
             />
           );
         },
@@ -355,6 +355,7 @@ export const useGenerateGenesTableColumns = ({
       componentId,
       currentPage,
       totalPages,
+      cohortFilters,
     ],
   );
 
