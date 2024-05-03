@@ -137,14 +137,16 @@ export const QuickSearch = (): JSX.Element => {
               </div>
               <div className="flex flex-col leading-5">
                 <div className="font-bold">{badgeText}</div>
-                <span className="">
-                  <Highlight
-                    highlight={searchText.trim()}
-                    highlightStyles={{ fontStyle: "italic" }}
-                  >
-                    {mainText}
-                  </Highlight>
-                </span>
+                <Highlight
+                  highlight={searchText.trim()}
+                  highlightStyles={{
+                    fontStyle: "italic",
+                  }}
+                  span
+                  className="break-normal"
+                >
+                  {mainText}
+                </Highlight>
                 <span className="text-base-content-dark">
                   <b>Category:</b>{" "}
                   {entityIconMapping[entityForMapping].category
