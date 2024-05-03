@@ -20,38 +20,8 @@ export const homepageButtonAltStyles = `
   xl:text-sm
 `;
 
-export const imageSizes = {
-  small: 208,
-  medium: 165,
-  large: 324,
-  extraLarge: 340,
-};
-
-export const innerSizes = {
-  small: 152,
-  medium: 121,
-  large: 237,
-  extraLarge: 248,
-};
-
-export const imageWrapperStyle = `
-  relative
-  w-[${imageSizes.small}px] h-[${imageSizes.small}px]
-  md:w-[${imageSizes.medium}px] md:h-[${imageSizes.medium}px]
-  lg:w-[${imageSizes.large}px] lg:h-[${imageSizes.large}px]
-  xl:w-[${imageSizes.extraLarge}px] xl:h-[${imageSizes.extraLarge}px]
-  before:w-[${innerSizes.small}px] before:h-[${innerSizes.small}px]
-  md:before:w-[${innerSizes.medium}px] md:before:h-[${innerSizes.medium}px]
-  lg:before:w-[${innerSizes.large}px] lg:before:h-[${innerSizes.large}px]
-  xl:before:w-[${innerSizes.extraLarge}px] xl:before:h-[${innerSizes.extraLarge}px]
-  before:block before:absolute before:-inset-1 before:rounded-lg before:bg-summarybar-border
-  after:w-[${innerSizes.small}px] after:h-[${innerSizes.small}px]
-  md:after:w-[${innerSizes.medium}px] md:after:h-[${innerSizes.medium}px]
-  lg:after:w-[${innerSizes.large}px] lg:after:h-[${innerSizes.large}px]
-  xl:after:w-[${innerSizes.extraLarge}px] xl:after:h-[${innerSizes.extraLarge}px]
-  after:block after:absolute after:-bottom-1 after:-right-1 after:rounded-lg after:bg-summarybar-borderAlt
-`;
-
+export const imageWrapperStyles =
+  "w-36 h-36 md:w-32 md:h-32 lg:w-56 lg:h-56 xl:w-64 xl:h-64 block absolute rounded-lg";
 export interface HPCardImgAltProps {
   head: string | JSX.Element;
   imgSrc: string;
