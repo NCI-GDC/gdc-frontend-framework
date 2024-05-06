@@ -49,8 +49,8 @@ class GenericLocators:
     QUICK_SEARCH_BAR_NUMBERED_RESULT = (
         lambda result_in_list: f'[data-testid="text-search-result"] >> nth={result_in_list}'
     )
-    QUICK_SEARCH_BAR_RESULT_ABBREVIATION = (
-        lambda result_in_list, abbreviation: f'[data-testid="text-search-result"] >> nth={result_in_list} >> text="{abbreviation}"'
+    QUICK_SEARCH_BAR_RESULT_CATEGORY = (
+        lambda result_in_list, category: f'[data-testid="text-search-result"] >> nth={result_in_list} >> text="{category}"'
     )
 
     RADIO_BUTTON_IDENT = lambda radio_name: f'//input[@id="{radio_name}"]'
@@ -579,17 +579,17 @@ class BasePage:
         """Sends text into the quick search bar in the upper-right corner of the data portal."""
         self.send_keys(GenericLocators.QUICK_SEARCH_BAR_IDENT, text)
 
-    def validate_global_quick_search_result_abbreviation(
-        self, result_in_list, abbreviation
+    def validate_global_quick_search_result_category(
+        self, result_in_list, category
     ):
-        """Specifies a result from the quick search bar result list. Validates the result abbreviation is the one we expect."""
+        """Specifies a result from the quick search bar result list. Validates the result category is the one we expect."""
         result_in_list = self.make_input_0_index(result_in_list)
-        locator_result_abbreviation = (
-            GenericLocators.QUICK_SEARCH_BAR_RESULT_ABBREVIATION(
-                result_in_list, abbreviation
+        locator_result_category = (
+            GenericLocators.QUICK_SEARCH_BAR_RESULT_CATEGORY(
+                result_in_list, category
             )
         )
-        self.wait_until_locator_is_visible(locator_result_abbreviation)
+        self.wait_until_locator_is_visible(locator_result_category)
 
     def click_global_quick_search_result(self, result_in_list):
         """Specifies a result from the quick search bar result list. Clicks that result."""
