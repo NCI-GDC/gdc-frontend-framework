@@ -191,26 +191,28 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       filter: "Loss" | "Gain",
       genomicFilters: FilterSet,
     ): FilterSet => {
-      return joinFilters(genomicFilters ?? {}, {
-        mode: "and",
-        root: {
-          "cases.project.project_id": {
-            field: "cases.project.project_id",
-            operator: "includes",
-            operands: [project],
-          },
-          "genes.gene_id": {
-            field: "genes.gene_id",
-            operator: "=",
-            operand: id,
-          },
-          "genes.cnv.cnv_change": {
-            field: "genes.cnv.cnv_change",
-            operator: "=",
-            operand: filter,
-          },
-        },
-      });
+      return genomicFilters
+        ? joinFilters(genomicFilters, {
+            mode: "and",
+            root: {
+              "cases.project.project_id": {
+                field: "cases.project.project_id",
+                operator: "includes",
+                operands: [project],
+              },
+              "genes.gene_id": {
+                field: "genes.gene_id",
+                operator: "=",
+                operand: id,
+              },
+              "genes.cnv.cnv_change": {
+                field: "genes.cnv.cnv_change",
+                operator: "=",
+                operand: filter,
+              },
+            },
+          })
+        : undefined;
     },
     [id],
   );

@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDeepCompareEffect } from "use-deep-compare";
 import {
   useCreateSsmsSetFromFiltersMutation,
   useCreateGeneSetFromFiltersMutation,
+  useCreateCaseSetFromFiltersMutation,
   GqlOperation,
+  FilterSet,
 } from "@gff/core";
 import { SetOperationEntityType } from "@/features/set-operations/types";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
@@ -12,7 +15,6 @@ import CohortCreationButton, {
   CohortCreationStyledButton,
   IconWrapperTW,
 } from "@/components/CohortCreationButton";
-import { buildGqlOperationToFilterSet } from "@gff/core";
 
 export const CreateFromCountButton = ({
   tooltipLabel,
@@ -130,13 +132,40 @@ const CountButtonWrapperForSet: React.FC<CountButtonWrapperForSetProps> = ({
 const CountButtonWrapperForSetsAndCases: React.FC<
   CountButtonWrapperForSetProps
 > = ({ count, filters, entityType }: CountButtonWrapperForSetProps) => {
+  const [createSet, createSetResponse] = useCreateCaseSetFromFiltersMutation();
+  const [caseSetFilters, setCaseSetFilters] = useState<FilterSet>();
+
+  useDeepCompareEffect(() => {
+    if (entityType === "cohort") {
+      createSet({
+        filters: filters,
+        intent: "portal",
+        set_type: "frozen",
+      });
+    }
+  }, [entityType, filters, createSet]);
+
+  useEffect(() => {
+    if (createSetResponse.isSuccess) {
+      setCaseSetFilters({
+        mode: "and",
+        root: {
+          "cases.case_id": {
+            field: "cases.case_id",
+            operands: [`set_id:${createSetResponse.data}`],
+            operator: "includes",
+          },
+        },
+      });
+    }
+  }, [entityType, createSetResponse.isSuccess, createSetResponse.data]);
+
   if (entityType === "cohort") {
     return (
       <CohortCreationButton
         numCases={count}
         label={count?.toLocaleString()}
-        filters={buildGqlOperationToFilterSet(filters)}
-        createStaticCohort
+        filters={caseSetFilters}
       />
     );
   } else {
