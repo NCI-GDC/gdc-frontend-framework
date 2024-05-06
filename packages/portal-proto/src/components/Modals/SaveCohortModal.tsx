@@ -70,8 +70,6 @@ const SaveCohortModal = ({
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
   const [createSet] = useCreateCaseSetFromFiltersMutation();
 
-  console.log({ filters }, "modal");
-
   const {
     data: cohortsListData,
     isSuccess: cohortListSuccess,

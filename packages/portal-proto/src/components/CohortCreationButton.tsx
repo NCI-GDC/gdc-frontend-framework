@@ -77,8 +77,6 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
         numCases > 1 ? `these ${numCases.toLocaleString()} cases` : "this case"
       }`;
 
-  console.log({ filters }, "button");
-
   return (
     <div className="p-1">
       <Tooltip

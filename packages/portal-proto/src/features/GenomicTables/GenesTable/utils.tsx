@@ -50,7 +50,6 @@ export const useGenerateGenesTableColumns = ({
 }): ColumnDef<Gene>[] => {
   const componentId = useId();
   const genesTableColumnHelper = useMemo(() => createColumnHelper<Gene>(), []);
-  console.log({ cohortFilters }, "table");
 
   const genesTableDefaultColumns = useMemo<ColumnDef<Gene>[]>(
     () => [
