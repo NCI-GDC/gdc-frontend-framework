@@ -189,9 +189,9 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
     (
       project: string,
       filter: "Loss" | "Gain",
-      genomicFilters: FilterSet = undefined,
+      genomicFilters: FilterSet,
     ): FilterSet => {
-      return joinFilters(genomicFilters, {
+      return joinFilters(genomicFilters ?? {}, {
         mode: "and",
         root: {
           "cases.project.project_id": {

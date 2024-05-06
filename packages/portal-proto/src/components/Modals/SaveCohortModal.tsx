@@ -35,6 +35,7 @@ import { INVALID_COHORT_NAMES } from "@/features/cohortBuilder/utils";
  * @param onClose - callback triggered when modal closes
  * @param cohortId - id of existing cohort we are saving, if undefined we are not saving a cohort that already exists
  * @param filters - the filters associated with the cohort
+ * @param caseFilters - the case filters to use for the cohort
  * @param createStaticCohort - whether to create a case set from the filters so the cases in the cohort remain static
  * @param setAsCurrent - whether to set the new cohort as the user's current cohort, should not also pass in cohortId
  * @param saveAs - whether to save existing cohort as new cohort, requires cohortId
