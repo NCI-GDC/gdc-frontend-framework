@@ -74,8 +74,6 @@ export const ConsequenceTable = ({
     }
   };
 
-  console.log({ initialData });
-
   useEffect(() => {
     if (isSuccess) {
       // need to sort the table data and then store all entries in tableData

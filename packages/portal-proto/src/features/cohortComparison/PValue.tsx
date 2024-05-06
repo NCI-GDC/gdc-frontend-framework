@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useDeepCompareMemo } from "use-deep-compare";
 import { Tooltip } from "@mantine/core";
 import { usePValueQuery } from "@gff/core";
 
@@ -31,7 +32,7 @@ const PValue: React.FC<PValueProps> = ({ data }: PValueProps) => {
     ),
   );
 
-  const values = useMemo(
+  const values = useDeepCompareMemo(
     () => pValueBuckets.map((bucket) => bucket.map((facet) => facet.count)),
     [pValueBuckets],
   );

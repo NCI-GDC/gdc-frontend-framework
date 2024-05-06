@@ -91,12 +91,11 @@ const geneFrequencyChartSlice = graphqlAPISlice.injectEndpoints({
           casesTotal: data.cases.hits.total,
           genesTotal: data.genes.hits.total,
           geneCounts: data.genes.hits.edges.map(
-            ({ node }: Record<string, never>) =>
-              (({ gene_id, numCases, symbol }) => ({
-                gene_id,
-                numCases,
-                symbol,
-              }))(node),
+            ({ node }: { node: GeneFrequencyEntry }) => ({
+              gene_id: node.gene_id,
+              numCases: node.numCases,
+              symbol: node.symbol,
+            }),
           ),
         };
       },
