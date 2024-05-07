@@ -683,12 +683,12 @@ def click_undo_in_message():
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
 
 
-# These 3 functions are for filter cards (like on projects or repository page).
+# These 3 functions are for filter cards (like on projects page).
 # The filter cards depend on a specific data-testid "filters-facets" that
 # is common across a couple of filter sets in the data portal.
 @step("Make the following selections on a filter card <table>")
 def filter_card_selections(table):
-    """Trio of actions for the filter cards and filters on the repository page"""
+    """Trio of actions for the filter cards and filters on the projects page"""
     for k, v in enumerate(table):
         APP.shared.make_selection_within_filter_group(v[0], v[1])
         APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
@@ -778,16 +778,16 @@ def global_quick_search(text: str):
 
 
 @step(
-    "Validate the quick search bar result in position <result_in_list> of the result list has the abbreviation <abbreviation>"
+    "Validate the quick search bar result in position <result_in_list> of the result list has the category <category>"
 )
-def validate_global_quick_search_result_abbreviation(
-    result_in_list: str, abbreviation: str
+def validate_global_quick_search_result_category(
+    result_in_list: str, category: str
 ):
     """
-    Specifies a result from the quick search bar result list. Validates the result abbreviation is the one we expect.
+    Specifies a result from the quick search bar result list. Validates the result category is the one we expect.
     """
-    APP.shared.validate_global_quick_search_result_abbreviation(
-        result_in_list, abbreviation
+    APP.shared.validate_global_quick_search_result_category(
+        result_in_list, category
     )
 
 
