@@ -5,6 +5,10 @@ const cache: WeakMap<any, string> | undefined = WeakMap
   ? new WeakMap()
   : undefined;
 
+/**
+ * Adds the data release to the cache key so that a data release will trigger data to be refetched
+ * See here: https://redux-toolkit.js.org/rtk-query/api/createApi#serializequeryargs
+ */
 const serializeQueryArgsWithDataRelease = ({
   endpointName,
   queryArgs,
