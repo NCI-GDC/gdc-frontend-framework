@@ -1,12 +1,7 @@
 import { useMemo } from "react";
 import { Paper } from "@mantine/core";
 import saveAs from "file-saver";
-import {
-  CohortFacetDoc,
-  DAYS_IN_YEAR,
-  FilterSet,
-  joinFilters,
-} from "@gff/core";
+import { Bucket, DAYS_IN_YEAR, FilterSet, joinFilters } from "@gff/core";
 import { calculatePercentageAsNumber, humanify } from "src/utils";
 import BarChart from "../charts/BarChart";
 import FunctionButton from "@/components/FunctionButton";
@@ -14,7 +9,7 @@ import PValue from "./PValue";
 import CohortCreationButton from "@/components/CohortCreationButton";
 import { CohortComparisonType } from "./CohortComparison";
 interface FacetCardProps {
-  readonly data: { buckets: CohortFacetDoc[] }[];
+  readonly data: { buckets: Bucket[] }[];
   readonly field: string;
   readonly counts: number[];
   readonly cohorts: CohortComparisonType;
@@ -289,7 +284,7 @@ export const FacetCard: React.FC<FacetCardProps> = ({
         </tbody>
       </table>
       <div className="float-right p-1 cursor-default">
-        <PValue data={formattedData} />
+        {formattedData.length > 0 && <PValue data={formattedData} />}
       </div>
     </Paper>
   );

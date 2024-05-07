@@ -8,7 +8,7 @@ describe("<Cart />", () => {
   });
 
   it("Displays empty state", () => {
-    jest.spyOn(core, "useCartSummary").mockReturnValue({} as any);
+    jest.spyOn(core, "useCartSummaryQuery").mockReturnValue({} as any);
     jest.spyOn(core, "useCoreSelector").mockReturnValue([]);
 
     const { getByText } = render(<Cart />);
@@ -16,7 +16,7 @@ describe("<Cart />", () => {
   });
 
   it("Displays cart summary", () => {
-    jest.spyOn(core, "useCartSummary").mockReturnValue({
+    jest.spyOn(core, "useCartSummaryQuery").mockReturnValue({
       data: {
         total_doc_count: 1,
         total_case_count: 30,

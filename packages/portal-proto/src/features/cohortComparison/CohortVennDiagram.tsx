@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 import {
   buildCohortGqlOperator,
-  useVennIntersectionData,
+  useVennDiagramQuery,
   FilterSet,
 } from "@gff/core";
 
@@ -34,7 +34,7 @@ const CohortVennDiagram: React.FC<CohortVennDiagramProps> = ({
     caseSetIds,
   );
 
-  const { data } = useVennIntersectionData({
+  const { data } = useVennDiagramQuery({
     set1Filters: filters.cohort1,
     set2Filters: filters.cohort2,
     intersectionFilters: filters.intersection,
@@ -45,17 +45,17 @@ const CohortVennDiagram: React.FC<CohortVennDiagramProps> = ({
       chartData={[
         {
           key: "S1_minus_S1",
-          value: data.set1?.hits?.total.toLocaleString() || 0,
+          value: data?.set1?.hits?.total.toLocaleString() || 0,
           highlighted: false,
         },
         {
           key: "S2_minus_S1",
-          value: data.set2?.hits?.total.toLocaleString() || 0,
+          value: data?.set2?.hits?.total.toLocaleString() || 0,
           highlighted: false,
         },
         {
           key: "S1_intersect_S2",
-          value: data.intersection?.hits?.total.toLocaleString() || 0,
+          value: data?.intersection?.hits?.total.toLocaleString() || 0,
           highlighted: false,
         },
       ]}

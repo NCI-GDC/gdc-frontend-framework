@@ -1,187 +1,212 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {
-  CoreDataSelectorResponse,
-  createUseCoreDataHook,
-  DataStatus,
-} from "../../dataAccess";
-import { CoreState } from "../../reducers";
-import { GraphQLApiResponse } from "../gdcapi/gdcgraphql";
-import { fetchBioSpecimenQuery } from "./bioSpecimenApi";
+import { graphqlAPISlice } from "../gdcapi/gdcgraphql";
+import { SampleNode } from "./types";
 
-export const fetchBiospecimenData = createAsyncThunk(
-  "biospecimen/fetchBiospecimenData",
-  async (params: string): Promise<GraphQLApiResponse> => {
-    return await fetchBioSpecimenQuery(params);
-  },
-);
+const bioSpecimenGraphQLQuery = `
+query Biospecimen(
+    $filters: FiltersArgument
+    $fileFilters: FiltersArgument
+  ) {
+    viewer {
+      repository {
+        cases {
+          hits(first: 1, case_filters: $filters) {
+            edges {
+              node {
+                case_id
+                submitter_id
+                project {
+                  project_id
+                }
+                files {
+                  hits(first: 99, filters: $fileFilters) {
+                    edges {
+                      node {
+                        file_name
+                        file_size
+                        data_format
+                        file_id
+                        md5sum
+                        acl
+                        state
+                        access
+                        submitter_id
+                        data_category
+                        data_type
+                        type
+                      }
+                    }
+                  }
+                }
+                samples {
+                  hits(first: 99) {
+                    total
+                    edges {
+                      node {
+                        submitter_id
+                        sample_id
+                        sample_type
+                        sample_type_id
+                        tissue_type
+                        tumor_code
+                        tumor_code_id
+                        oct_embedded
+                        shortest_dimension
+                        intermediate_dimension
+                        longest_dimension
+                        is_ffpe
+                        pathology_report_uuid
+                        tumor_descriptor
+                        current_weight
+                        initial_weight
+                        composition
+                        time_between_clamping_and_freezing
+                        time_between_excision_and_freezing
+                        days_to_sample_procurement
+                        freezing_method
+                        preservation_method
+                        days_to_collection
+                        portions {
+                          hits(first: 99) {
+                            total
+                            edges {
+                              node {
+                                submitter_id
+                                portion_id
+                                portion_number
+                                weight
+                                is_ffpe
+                                analytes {
+                                  hits(first: 99) {
+                                    total
+                                    edges {
+                                      node {
+                                        submitter_id
+                                        analyte_id
+                                        analyte_type
+                                        analyte_type_id
+                                        well_number
+                                        amount
+                                        a260_a280_ratio
+                                        concentration
+                                        spectrophotometer_method
+                                        aliquots {
+                                          hits(first: 99) {
+                                            total
+                                            edges {
+                                              node {
+                                                submitter_id
+                                                aliquot_id
+                                                source_center
+                                                amount
+                                                concentration
+                                                analyte_type
+                                                analyte_type_id
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                                slides {
+                                  hits(first: 99) {
+                                    total
+                                    edges {
+                                      node {
+                                        submitter_id
+                                        slide_id
+                                        percent_tumor_nuclei
+                                        percent_monocyte_infiltration
+                                        percent_normal_cells
+                                        percent_stromal_cells
+                                        percent_eosinophil_infiltration
+                                        percent_lymphocyte_infiltration
+                                        percent_neutrophil_infiltration
+                                        section_location
+                                        percent_granulocyte_infiltration
+                                        percent_necrosis
+                                        percent_inflam_infiltration
+                                        number_proliferating_cells
+                                        percent_tumor_cells
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }`;
 
-export interface sampleNode {
-  sample_id: string | null;
-  submitter_id: string | null;
-  sample_type: string | null;
-  sample_type_id: string | null;
-  tissue_type: string | null;
-  tumor_code: string | null;
-  tumor_code_id: string | null;
-  oct_embedded: string | null;
-  shortest_dimension: string | null;
-  intermediate_dimension: string | null;
-  longest_dimension: string | null;
-  is_ffpe: string | null;
-  pathology_report_uuid: string | null;
-  tumor_descriptor: string | null;
-  current_weight: string | null;
-  initial_weight: string | null;
-  composition: string | null;
-  time_between_clamping_and_freezing: string | null;
-  time_between_excision_and_freezing: string | null;
-  days_to_sample_procurement: number | null;
-  freezing_method: string | null;
-  preservation_method: string | null;
-  days_to_collection: string | null;
-  portions: {
-    hits: {
-      edges: Array<{ node: Partial<portionNode> }>;
-    };
-  };
+interface NodeType {
+  hits: { edges: Array<{ node: SampleNode }> };
 }
 
-export interface portionNode {
-  submitter_id: string | null;
-  portion_id: string | null;
-  portion_number: string | null;
-  weight: string | null;
-  is_ffpe: string | null;
-  analytes: {
-    hits: {
-      edges: Array<{ node: Partial<analytesNode> }>;
-    };
-  };
-  slides: {
-    hits: {
-      edges: Array<{ node: Partial<slidesNode> }>;
-    };
-  };
-}
-
-export interface analytesNode {
-  submitter_id: string | null;
-  analyte_id: string | null;
-  analyte_type: string | null;
-  analyte_type_id: string | null;
-  well_number: string | null;
-  amount: string | null;
-  a260_a280_ratio: string | null;
-  concentration: string | null;
-  spectrophotometer_method: string | null;
-  aliquots: {
-    hits: {
-      edges: Array<{ node: Partial<aliquotsNode> }>;
-    };
-  };
-}
-
-export interface slidesNode {
-  submitter_id: string | null;
-  slide_id: string | null;
-  percent_tumor_nuclei: string | null;
-  percent_monocyte_infiltration: string | null;
-  percent_normal_cells: string | null;
-  percent_stromal_cells: string | null;
-  percent_eosinophil_infiltration: string | null;
-  percent_lymphocyte_infiltration: string | null;
-  percent_neutrophil_infiltration: string | null;
-  section_location: string | null;
-  percent_granulocyte_infiltration: string | null;
-  percent_necrosis: string | null;
-  percent_inflam_infiltration: string | null;
-  number_proliferating_cells: string | null;
-  percent_tumor_cells: string | null;
-}
-
-export interface aliquotsNode {
-  submitter_id: string | null;
-  aliquot_id: string | null;
-  source_center: string | null;
-  amount: string | null;
-  concentration: string | null;
-  analyte_type: string | null;
-  analyte_type_id: string | null;
-}
-
-interface nodeType {
-  hits: { edges: Array<{ node: sampleNode }> };
-}
-
-export type entityType =
-  | sampleNode
-  | portionNode
-  | analytesNode
-  | slidesNode
-  | aliquotsNode
-  | null;
-
-export interface biospecimenSliceInitialState {
-  readonly status: DataStatus;
+export interface BiospecimenResponse {
   readonly files: { hits: { edges: Array<{ node: any }> } };
-  readonly samples: nodeType;
-  readonly requestId?: string;
+  readonly samples: NodeType;
 }
 
-export const initialState: biospecimenSliceInitialState = {
-  status: "uninitialized",
-  files: { hits: { edges: [] } },
-  samples: { hits: { edges: [] } },
-};
-
-const slice = createSlice({
-  name: "biospecimen",
-  initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchBiospecimenData.fulfilled, (state, action) => {
-        if (state.requestId != action.meta.requestId) return state;
-
-        const response = action.payload;
-        state.status = "fulfilled";
-        state.files =
-          response?.data?.viewer?.repository?.cases?.hits?.edges?.[0]?.node?.files;
-        state.samples =
-          response?.data?.viewer?.repository?.cases?.hits?.edges?.[0]?.node?.samples;
-        return state;
-      })
-      .addCase(fetchBiospecimenData.pending, (state, action) => {
-        state.status = "pending";
-        state.requestId = action.meta.requestId;
-        return state;
-      })
-      .addCase(fetchBiospecimenData.rejected, (state, action) => {
-        if (state.requestId != action.meta.requestId) return state;
-        state.status = "rejected";
-        return state;
-      });
-  },
+const biospecimenSlice = graphqlAPISlice.injectEndpoints({
+  endpoints: (builder) => ({
+    biospecimenData: builder.query<BiospecimenResponse, string>({
+      query: (caseId) => ({
+        graphQLQuery: bioSpecimenGraphQLQuery,
+        graphQLFilters: {
+          fileFilters: {
+            op: "and",
+            content: [
+              {
+                op: "in",
+                content: {
+                  field: "cases.case_id",
+                  value: [caseId],
+                },
+              },
+              {
+                op: "in",
+                content: {
+                  field: "files.data_type",
+                  value: ["Biospecimen Supplement", "Slide Image"],
+                },
+              },
+            ],
+          },
+          filters: {
+            op: "and",
+            content: [
+              {
+                op: "in",
+                content: {
+                  field: "cases.case_id",
+                  value: [caseId],
+                },
+              },
+            ],
+          },
+        },
+      }),
+      transformResponse: (response) => ({
+        files:
+          response?.data?.viewer?.repository?.cases?.hits?.edges?.[0]?.node
+            ?.files,
+        samples:
+          response?.data?.viewer?.repository?.cases?.hits?.edges?.[0]?.node
+            ?.samples,
+      }),
+    }),
+  }),
 });
 
-export const biospecimenReducer = slice.reducer;
-
-export interface biospecimenSelectorType {
-  files: { hits: { edges: Array<{ node: any }> } };
-  samples: nodeType;
-}
-
-export const selectBiospecimenInfo = (
-  state: CoreState,
-): CoreDataSelectorResponse<biospecimenSelectorType> => ({
-  data: {
-    files: state.biospecimen.files,
-    samples: state.biospecimen.samples,
-  },
-  status: state.biospecimen.status,
-});
-
-export const useBiospecimenData = createUseCoreDataHook(
-  fetchBiospecimenData,
-  selectBiospecimenInfo,
-);
+export const { useBiospecimenDataQuery } = biospecimenSlice;

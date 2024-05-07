@@ -11,7 +11,7 @@ interface ProjectTableProps {
 const ProjectTable: React.FC<ProjectTableProps> = ({
   projectData,
 }: ProjectTableProps) => {
-  const tableData = projectData.map((project) => ({
+  const tableData = (projectData || []).map((project) => ({
     key: project.key,
     case_count: project.case_count?.toLocaleString(),
     doc_count: project.doc_count?.toLocaleString(),
