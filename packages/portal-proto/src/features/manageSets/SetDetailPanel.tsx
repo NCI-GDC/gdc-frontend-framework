@@ -122,15 +122,16 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
   ]);
 
   // Append new data to existing table data
+  useDeepCompareEffect(() => {
+    setTableData([...tableData, ...responseData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [responseData]);
+
   useEffect(() => {
     if (set === undefined) {
       setTableData([]);
-    } else {
-      setTableData([...tableData, ...responseData]);
     }
-    /* eslint-disable react-hooks/exhaustive-deps */
-  }, [JSON.stringify(responseData)]);
-  /* eslint-enable */
+  }, [set]);
 
   const setDetailPanelColumnHelper = createColumnHelper<typeof tableData[0]>();
 
