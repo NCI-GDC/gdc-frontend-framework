@@ -161,7 +161,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
           </DemoText>
         )}
       </>
-      <div className="flex flex-row w-100">
+      <div className="flex flex-row gap-4 m-4">
         <GeneAndSSMFilterPanel isDemoMode={isDemoMode} />
         <Tabs
           value={appMode}
