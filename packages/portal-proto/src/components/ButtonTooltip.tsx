@@ -31,7 +31,7 @@ export const ButtonTooltip = ({
       position="top-start"
       arrowPosition="center"
       disabled={!label?.length}
-      width={width}
+      w={width}
       withArrow
       arrowSize={6}
       transitionProps={{ duration: 200, transition: "fade" }}

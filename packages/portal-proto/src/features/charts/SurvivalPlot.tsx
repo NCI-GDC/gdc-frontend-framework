@@ -611,7 +611,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
       <div ref={mouseRef} className="relative">
         <Box
           className="w-36"
-          sx={{
+          style={{
             top: y + 20,
             left: x < 150 ? x - 20 : x - 100,
             position: "absolute",

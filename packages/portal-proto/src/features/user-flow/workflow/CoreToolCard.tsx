@@ -18,7 +18,13 @@ const CoreToolCard: React.FC<CoreToolCardProps> = ({
       }}
       className="group"
     >
-      <Grid className="border-secondary-darkest border h-full m-0 rounded-md p-0">
+      <Grid
+        classNames={{
+          root: "h-full",
+          inner:
+            "border-secondary-darkest border h-full w-full m-0 rounded-md p-0",
+        }}
+      >
         <Grid.Col span={2} className="self-center">
           {entry.icon}
         </Grid.Col>

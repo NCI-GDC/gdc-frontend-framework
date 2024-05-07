@@ -297,7 +297,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
                   {biospecimenDownloadActive ? "Processing" : "Biospecimen"}
                 </span>
               }
-              LeftIcon={
+              LeftSection={
                 biospecimenDownloadActive ? (
                   <Loader size={20} />
                 ) : (
@@ -324,7 +324,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
                   {clinicalDownloadActive ? "Processing" : "Clinical"}
                 </span>
               }
-              LeftIcon={
+              LeftSection={
                 clinicalDownloadActive ? (
                   <Loader size={20} />
                 ) : (
@@ -334,7 +334,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
             />
             <Tooltip
               transitionProps={{ duration: 200, transition: "fade" }}
-              width={220}
+              w={220}
               label="Download a manifest for use with the GDC Data Transfer Tool. The GDC
               Data Transfer Tool is recommended for transferring large volumes of data."
               arrowSize={10}
@@ -345,7 +345,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
               <Button
                 data-testid="button-manifest-project-summary"
                 variant="outline"
-                leftIcon={
+                leftSection={
                   manifestDownloadActive ? (
                     <Loader size={20} />
                   ) : (

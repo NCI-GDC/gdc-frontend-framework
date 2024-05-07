@@ -5,9 +5,7 @@ import * as core from "@gff/core";
 import userEvent from "@testing-library/user-event";
 
 jest.mock("@mantine/notifications");
-const mockedShowNotification = showNotification as jest.Mock<
-  typeof showNotification
->;
+const mockedShowNotification = showNotification as jest.Mock;
 
 beforeEach(() => mockedShowNotification.mockClear());
 

@@ -55,7 +55,7 @@ const SelectedSetButton: React.FC<SelectedSetButtonProps> = ({
       data-testid={customDataTestID}
       onClick={onClick}
       disabled={selection.length == 0}
-      leftIcon={
+      leftSection={
         selection.length ? (
           <CountsIcon $count={selection.length}>{selection.length} </CountsIcon>
         ) : null

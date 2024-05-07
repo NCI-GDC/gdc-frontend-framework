@@ -120,7 +120,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
           onClick={() => setDescriptionVisible()}
           variant="white"
           size="xs"
-          rightIcon={
+          rightSection={
             descriptionVisible ? (
               <MdArrowDropUp size={16} aria-hidden="true" />
             ) : (
@@ -129,7 +129,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
           }
           classNames={{
             root: "text-secondary-darkest font-bold bg-transparent",
-            rightIcon: "ml-0",
+            section: "ml-0",
           }}
           aria-expanded={descriptionVisible}
         >
@@ -165,12 +165,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
               </span>
             )}
             {caseCounts === 0 && (
-              <Tooltip
-                label={entry?.noDataTooltip}
-                withArrow
-                width={200}
-                multiline
-              >
+              <Tooltip label={entry?.noDataTooltip} withArrow w={200} multiline>
                 <div>
                   <MdInfo className="inline-block ml-1" />
                 </div>

@@ -22,7 +22,7 @@ const ProjectsCohortButton = ({
             variant="outline"
             color="primary"
             disabled={pickedProjects.length == 0}
-            leftIcon={
+            leftSection={
               pickedProjects.length ? (
                 <CountsIcon $count={pickedProjects.length}>
                   {pickedProjects.length}{" "}

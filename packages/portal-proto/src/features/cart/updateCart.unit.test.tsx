@@ -1,12 +1,11 @@
 import { showNotification } from "@mantine/notifications";
-import { render, fireEvent } from "@testing-library/react";
+import { fireEvent } from "@testing-library/react";
+import { render } from "test-utils";
 import { CartFile } from "@gff/core";
 import { addToCart, removeFromCart } from "./updateCart";
 
 jest.mock("@mantine/notifications");
-const mockedShowNotification = showNotification as jest.Mock<
-  typeof showNotification
->;
+const mockedShowNotification = showNotification as jest.Mock;
 
 beforeEach(() => mockedShowNotification.mockClear());
 

@@ -239,7 +239,7 @@ export const SearchInput: React.FC = () => {
             ? null
             : `${comboboxItemId}${activedescendant}`
         }
-        icon={<SearchIcon size={24} aria-hidden="true" />}
+        leftSection={<SearchIcon size={24} aria-hidden="true" />}
         placeholder="Search"
         data-testid="textbox-cohort-builder-search-bar"
         aria-label="App Search Input"
@@ -391,7 +391,7 @@ export const SearchInput: React.FC = () => {
                           }
                           multiline
                           position={width > 860 ? "left" : "top"}
-                          width={400}
+                          w={400}
                           color="white"
                           classNames={{
                             tooltip:

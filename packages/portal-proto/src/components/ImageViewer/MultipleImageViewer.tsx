@@ -257,12 +257,11 @@ export const MultipleImageViewer = ({
                       orientation="vertical"
                       variant="pills"
                       value={activeTab.toString()}
-                      onTabChange={onTabChange}
+                      onChange={onTabChange}
                       keepMounted={false}
                       classNames={{
                         root: "max-h-screen-60vh gap-2 overflow-x-hidden min-w-[40%]",
-                        tabsList:
-                          "bg-base-light max-h-screen-60vh min-h-screen-60vh overflow-y-auto flex-nowrap py-1 w-1/2",
+                        list: "bg-base-light max-h-screen-60vh min-h-screen-60vh overflow-y-auto flex-nowrap py-1 w-1/2",
                         panel: "max-h-screen-60vh overflow-y-auto mt-1 w-1/2",
                       }}
                       styles={(theme) => ({
@@ -291,8 +290,17 @@ export const MultipleImageViewer = ({
                               className={`mx-2 mt-1 hover:bg-primary-dark [&>span]:hover:text-primary-contrast ${
                                 activeTab.toString() === index.toString()
                                   ? "bg-primary-dark [&>span]:text-primary-contrast [&>span]:font-bold"
-                                  : "[&>span]:text-black [&>span]:font-medium"
+                                  : "bg-white [&>span]:text-black [&>span]:font-medium"
                               } truncate ...`}
+                              styles={{
+                                tab: {
+                                  backgroundColor: "",
+                                  color: "",
+                                },
+                                tabLabel: {
+                                  color: "",
+                                },
+                              }}
                             >
                               {edge}
                             </Tabs.Tab>

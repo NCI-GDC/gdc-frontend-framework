@@ -37,7 +37,7 @@ export const BAMSlicingButton = ({
   return (
     <Button
       className="font-medium text-sm text-primary bg-base-max hover:bg-primary-darkest hover:text-primary-contrast-darker"
-      leftIcon={<FaCut aria-hidden="true" />}
+      leftSection={<FaCut aria-hidden="true" />}
       loading={isActive}
       variant="outline"
       onClick={onClick}

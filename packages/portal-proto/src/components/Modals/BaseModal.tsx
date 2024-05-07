@@ -64,14 +64,14 @@ export const BaseModal: React.FC<Props> = ({
           onClose();
         }
       }}
-      styles={() => ({
+      styles={{
         header: {
           marginBottom: "5px",
         },
         close: {
           color: theme.extend.colors["gdc-grey"].darkest,
         },
-      })}
+      }}
       withCloseButton={withCloseButton ?? true}
       closeOnClickOutside={closeOnClickOutside ?? true}
       closeOnEscape={closeOnEscape ?? true}

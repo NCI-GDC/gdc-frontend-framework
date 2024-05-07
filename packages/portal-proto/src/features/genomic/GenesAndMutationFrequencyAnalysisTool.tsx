@@ -164,14 +164,15 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
       <div className="flex flex-row w-100">
         <GeneAndSSMFilterPanel isDemoMode={isDemoMode} />
         <Tabs
+          variant="pills"
           value={appMode}
           defaultValue="genes"
           classNames={{
             tab: SecondaryTabStyle,
-            tabsList: "px-2 mt-2 border-0",
+            list: "px-2 mt-2 border-0 gap-0",
             root: "bg-base-max border-0 w-full overflow-x-clip",
           }}
-          onTabChange={handleTabChanged}
+          onChange={handleTabChanged}
           keepMounted={false}
         >
           <Tabs.List>

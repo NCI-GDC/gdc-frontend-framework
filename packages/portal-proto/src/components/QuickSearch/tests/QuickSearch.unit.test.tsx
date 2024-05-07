@@ -1,4 +1,5 @@
-import { render, waitFor } from "@testing-library/react";
+import { waitFor } from "@testing-library/react";
+import { render } from "test-utils";
 import userEvent from "@testing-library/user-event";
 import * as router from "next/router";
 import * as core from "@gff/core";

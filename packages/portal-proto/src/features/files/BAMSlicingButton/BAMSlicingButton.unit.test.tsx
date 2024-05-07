@@ -1,6 +1,6 @@
 import { BAMSlicingButton } from "@/features/files/BAMSlicingButton";
 import * as core from "@gff/core";
-import { render } from "@testing-library/react";
+import { render } from "test-utils";
 import userEvent from "@testing-library/user-event";
 import * as util from "src/utils/userProjectUtils";
 

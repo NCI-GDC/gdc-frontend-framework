@@ -1,5 +1,6 @@
 import React from "react";
-import { render, fireEvent, screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
+import { render } from "test-utils";
 import userEvent from "@testing-library/user-event";
 import ColumnOrdering from "../ColumnOrdering";
 

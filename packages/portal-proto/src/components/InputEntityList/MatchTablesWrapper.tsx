@@ -50,7 +50,7 @@ const MatchTablesWrapper: React.FC<MatchTablesProps> = ({
         Summary Table
       </span>
       <Collapse in={showTable}>
-        <Tabs value={activeTab} onTabChange={setActiveTab}>
+        <Tabs value={activeTab} onChange={setActiveTab}>
           <StyledTabsList>
             <StyledTab value="matched">
               Matched

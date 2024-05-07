@@ -132,7 +132,7 @@ export const DownloadButton = forwardRef<
         <FunctionButton
           $variant={displayVariant}
           ref={ref}
-          leftIcon={
+          leftSection={
             showIcon && inactiveText && <FiDownload aria-label="download" />
           }
           disabled={disabled}

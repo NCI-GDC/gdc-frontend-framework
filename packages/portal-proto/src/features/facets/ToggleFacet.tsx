@@ -69,7 +69,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           label={description}
           position="bottom-start"
           multiline
-          width={220}
+          w={220}
           withArrow
           transitionProps={{ duration: 200, transition: "fade" }}
         >

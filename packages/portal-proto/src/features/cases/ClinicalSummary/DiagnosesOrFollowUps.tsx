@@ -257,7 +257,7 @@ const TableElement = ({
   return (
     <>
       <HorizontalTable tableData={formatDataForDiagnosesorFollowUps(data)} />
-      <Text className="my-2" size="lg" weight={700}>
+      <Text className="my-2 font-bold" size="lg">
         {"diagnosis_id" in data
           ? `Total of ${(data.treatments || []).length} Treatments`
           : `Total of ${(data.molecular_tests || []).length} Molecular Tests`}
@@ -284,14 +284,10 @@ export const DiagnosesOrFollowUps = ({
     <>
       {dataInfo.length > 1 ? (
         <Tabs
-          variant="default"
+          variant="pills"
           orientation="vertical"
           value={activeTab.toString()}
-          onTabChange={onTabChange}
-          classNames={{
-            tabLabel: "text-sm pr-2 font-medium",
-            tabsList: "border-r-0 max-w-[160px]",
-          }}
+          onChange={onTabChange}
           data-testid="verticalTabs"
         >
           <div className="max-h-[500px] overflow-y-auto overflow-x-hidden min-w-[160px] mr-2">

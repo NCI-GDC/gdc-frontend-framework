@@ -46,34 +46,26 @@ const FacetList: React.FC<FacetListProps> = ({
               return (
                 <Stack
                   key={x.field}
-                  sx={(theme) => ({
-                    backgroundColor:
-                      index % 2 == 0
-                        ? theme.colors.gray[0]
-                        : theme.colors.gray[2],
-                    "&:hover": {
-                      backgroundColor: theme.colors.blue[1],
-                    },
-                  })}
+                  className={`${
+                    index % 2 == 0
+                      ? "bg-[var(--mantine-color-gray-0)]"
+                      : "bg-[var(--mantine-color-gray-2)]"
+                  } hover:bg-[var(--mantine-color-blue-1)]`}
                 >
                   <button
                     data-testid={"button-" + x.field}
                     onClick={() => handleFilterSelected(x.full)}
+                    className="text-left"
                   >
                     <Highlight
-                      align="left"
-                      weight={700}
                       size="sm"
                       highlight={searchString}
+                      className="font-bold"
                     >
                       {x.field}
                     </Highlight>
                     {x.description ? (
-                      <Highlight
-                        align="left"
-                        size="xs"
-                        highlight={searchString}
-                      >
+                      <Highlight size="xs" highlight={searchString}>
                         {x.description}
                       </Highlight>
                     ) : null}
@@ -142,7 +134,7 @@ const FacetSelectionPanel = ({
         onChange={(evt) => setSearchString(evt.target.value)}
         type="search"
       />
-      <Group position="apart">
+      <Group justify="space-between">
         <p role="status">
           {filteredData ? Object.values(filteredData).length : ""} properties
         </p>

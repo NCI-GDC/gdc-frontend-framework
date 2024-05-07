@@ -123,7 +123,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
           label={description}
           position="bottom-start"
           multiline
-          width={220}
+          w={220}
           withArrow
           transitionProps={{ duration: 200, transition: "fade" }}
         >
@@ -173,7 +173,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
           <PlusIcon />
         </ActionIcon>
       </div>
-      <Group spacing="xs" className="px-2 py-1" data-testid="values group">
+      <Group gap="xs" className="px-2 py-1" data-testid="values group">
         {textValues.map((x) => (
           <Badge
             size="sm"

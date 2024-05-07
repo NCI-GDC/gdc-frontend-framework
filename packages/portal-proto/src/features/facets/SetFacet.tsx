@@ -80,7 +80,7 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
           label={description}
           position="bottom-start"
           multiline
-          width={220}
+          w={220}
           withArrow
           transitionProps={{ duration: 200, transition: "fade" }}
         >
@@ -109,7 +109,7 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
         >
           + Add {facetTitle}
         </Button>
-        <Group spacing="xs" className="px-2 py-1" data-testid="values group">
+        <Group gap="xs" className="px-2 py-1" data-testid="values group">
           {facetValues.map((operand, i) => (
             <Badge
               size="sm"

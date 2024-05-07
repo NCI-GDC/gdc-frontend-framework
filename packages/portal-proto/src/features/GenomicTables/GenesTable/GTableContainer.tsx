@@ -440,7 +440,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               TargetButtonChildren="Save/Edit Gene Set"
               targetButtonDisabled={isFetching && !isSuccess}
               disableTargetWidth={true}
-              LeftIcon={
+              LeftSection={
                 selectedGenes.length ? (
                   <CountsIcon $count={selectedGenes.length}>
                     {selectedGenes.length}
@@ -449,7 +449,6 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               }
               menuLabelCustomClass="bg-primary text-primary-contrast font-heading font-bold mb-2"
               customPosition="bottom-start"
-              zIndex={10}
               customDataTestId="button-save-edit-gene-set"
             />
             <FunctionButton

@@ -26,49 +26,49 @@ export const GenericCohortModal = ({
       onClose={onClose}
     >
       <Box
-        sx={() => ({
+        style={{
           fontFamily: '"Montserrat", "sans-serif"',
           padding: "20px 25px 20px 10px",
-        })}
+        }}
       >
         <Text
-          sx={(theme) => ({
+          style={{
             fontFamily: '"Montserrat", "sans-serif"',
             fontSize: "0.95em",
             fontWeight: 500,
-            color: theme.colors.base[8], //ink
-          })}
+            color: "var(--mantine-color-base-8)", //ink
+          }}
         >
           {mainText}
         </Text>
         <Text
-          sx={(theme) => ({
+          style={{
             fontFamily: '"Montserrat", "sans-serif"',
             fontSize: "0.85em",
-            color: theme.colors.base[8],
+            color: "var(--mantine-color-base-8)",
             paddingTop: "1em",
-          })}
+          }}
         >
           {subText}
         </Text>
       </Box>
       <Box
-        sx={(theme) => ({
-          backgroundColor: theme.colors.base[1],
-          padding: theme.spacing.md,
-          borderRadius: theme.radius.md,
+        style={{
+          backgroundColor: "var(--mantine-color-base-1)",
+          padding: "var(--mantine-spacing-md)",
+          borderRadius: "var(--mantine-radius-md)",
           borderTopRightRadius: 0,
           borderTopLeftRadius: 0,
-        })}
+        }}
       >
-        <Group position="right">
+        <Group justify="flex-end">
           <Button
             variant="outline"
-            styles={() => ({
+            styles={{
               root: {
                 backgroundColor: "white",
               },
-            })}
+            }}
             color="secondary"
             onClick={onClose}
           >

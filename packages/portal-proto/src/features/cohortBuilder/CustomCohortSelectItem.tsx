@@ -1,6 +1,10 @@
 import { Image } from "@/components/Image";
-import { Tooltip } from "@mantine/core";
-import { forwardRef } from "react";
+import {
+  Tooltip,
+  SelectProps,
+  ComboboxItem,
+  ComboboxLikeRenderOptionInput,
+} from "@mantine/core";
 
 export const UnsavedIcon = (): JSX.Element => (
   <Tooltip label="Changes not saved" withArrow>
@@ -16,15 +20,23 @@ export const UnsavedIcon = (): JSX.Element => (
   </Tooltip>
 );
 
-export interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
-  value: string;
-  label: string;
-  modified: boolean;
+export interface ComboboxItemModified extends ComboboxItem {
+  readonly modified: boolean;
 }
 
-export const CustomCohortSelectItem = forwardRef<HTMLDivElement, ItemProps>(
-  ({ value, label, modified, ...others }: ItemProps, ref) => (
-    <div ref={ref} {...others}>
+export interface CustomCohortSelectItemType extends SelectProps {
+  renderOption?: (
+    item: ComboboxLikeRenderOptionInput<ComboboxItemModified>,
+  ) => React.ReactNode;
+}
+
+export const CustomCohortSelectItem: CustomCohortSelectItemType["renderOption"] =
+  ({
+    option: { value, label, modified, ...others },
+  }: {
+    option: ComboboxItemModified;
+  }) => (
+    <div {...others} className="w-full">
       <span className="flex justify-between gap-2 items-center">
         <span className="basis-11/12 break-all">{label}</span>
         <div className="basis-1/12 text-right leading-0">
@@ -32,5 +44,4 @@ export const CustomCohortSelectItem = forwardRef<HTMLDivElement, ItemProps>(
         </div>
       </span>
     </div>
-  ),
-);
+  );

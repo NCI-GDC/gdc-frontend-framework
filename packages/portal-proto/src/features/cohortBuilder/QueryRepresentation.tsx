@@ -189,7 +189,7 @@ const IncludeExcludeQueryElement: React.FC<
         </b>
       ) : (
         <QueryRepresentationText>
-          <Group spacing="xs">
+          <Group gap="xs">
             {operands.map((x, i) => {
               const value = x.toString();
               return (

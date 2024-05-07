@@ -24,14 +24,12 @@ export const Slides: React.FC<SlidesProps> = ({
       <Card
         shadow="sm"
         p="sm"
-        sx={(theme) => ({
+        style={{
           backgroundColor: isActive
-            ? theme.colors.accent[3]
-            : theme.colors.gray[3],
-          "&:hover": {
-            backgroundColor: !isActive && theme.colors.gray[7],
-          },
-        })}
+            ? "var(--mantine-color-accent-3)"
+            : "var(--mantine-color-gray-3)",
+        }}
+        className={isActive ? "" : "hover:bg-[var(--mantine-color-gray-7)]"}
       >
         <Badge
           data-testid={submitter_id}

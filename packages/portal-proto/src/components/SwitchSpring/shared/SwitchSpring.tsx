@@ -39,27 +39,24 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
       disabled={!tooltip}
       data-testid="tooltipSwitchSpring"
     >
-      {/* div added otherwise tooltip does not work in mantine 6 */}
-      <div>
-        <Switch
-          data-testid="button-switchspring"
-          classNames={{
-            thumb: `border-2 rounded w-5 h-5 ${
-              disabled ? "border-gray-300" : "border-activeColor"
-            } ${margin} ${isActive ? "left-auto right-0" : "left-0"}`,
-            input: "",
-            track: `rounded box-content overflow-visible border border-base-lightest ${
-              disabled ? "cursor-not-allowed" : "cursor-pointer"
-            } ${isActive ? "bg-activeColor" : "bg-gray-300"}`,
-            root: disabled ? "cursor-not-allowed" : "cursor-pointer",
-          }}
-          aria-label={tooltip}
-          checked={isActive}
-          onChange={toggleSwitch}
-          disabled={disabled}
-          thumbIcon={icon}
-        />
-      </div>
+      <Switch
+        data-testid="button-switchspring"
+        classNames={{
+          thumb: `border-2 rounded w-5 h-5 ${
+            disabled ? "border-gray-300" : "border-activeColor"
+          } ${margin} ${isActive ? "left-auto right-0" : "left-0"}`,
+          input: "",
+          track: `rounded box-content overflow-visible border border-base-lightest ${
+            disabled ? "cursor-not-allowed" : "cursor-pointer"
+          } ${isActive ? "bg-activeColor" : "bg-gray-300"}`,
+          root: disabled ? "cursor-not-allowed" : "cursor-pointer",
+        }}
+        aria-label={tooltip}
+        checked={isActive}
+        onChange={toggleSwitch}
+        disabled={disabled}
+        thumbIcon={icon}
+      />
     </Tooltip>
   );
 };

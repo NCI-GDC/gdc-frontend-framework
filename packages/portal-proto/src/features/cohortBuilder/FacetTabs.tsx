@@ -64,7 +64,6 @@ const StyledFacetTabs = (props: TabsProps) => {
       unstyled
       styles={(theme) => ({
         tab: {
-          ...theme.fn.focusStyles(),
           padding: `${theme.spacing.xs} ${theme.spacing.md}`,
           cursor: "pointer",
           fontSize: theme.fontSizes.md,
@@ -211,11 +210,7 @@ const CustomFacetGroup = (): JSX.Element => {
                 className="text-primary-content"
                 size="3em"
               ></AddFacetIcon>
-              <Text
-                size="md"
-                weight={700}
-                className="text-primary-content-darker"
-              >
+              <Text size="md" className="text-primary-content-darker font-bold">
                 No custom filters added
               </Text>
               <Button
@@ -247,8 +242,7 @@ const CustomFacetGroup = (): JSX.Element => {
               />
               <Text
                 size="md"
-                weight={700}
-                className="text-primary-contrast-lightest"
+                className="text-primary-contrast-lightest font-bold"
               >
                 Add a Custom Filter
               </Text>
@@ -317,12 +311,11 @@ export const FacetTabs = (): JSX.Element => {
       <StyledFacetTabs
         orientation="vertical"
         value={activeTab}
-        onTabChange={setActiveTab}
+        onChange={setActiveTab}
         keepMounted={false}
         classNames={{
           tab: "pl-0 data-active:pl-4 ml-4 data-active:text-primary-content-darkest data-active:border-primary-darkest data-active:border-accent-vivid data-active:border-l-4 data-active:bg-base-max data-active:font-bold sm:w-44 md:w-60 lg:w-80 text-primary-content-darkest font-medium hover:pl-4 hover:bg-accent-vivid hover:text-primary-contrast-min my-1",
-          tabsList:
-            "flex flex-col bg-primary-lightest text-primary-contrast-dark sm:w-50 md:w-60 lg:w-72 py-4",
+          list: "flex flex-col bg-primary-lightest text-primary-contrast-dark sm:w-50 md:w-60 lg:w-72 py-4",
           tabLabel: "text-left",
           root: "bg-base-max",
         }}

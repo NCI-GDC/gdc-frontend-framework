@@ -30,7 +30,7 @@ function CategoryTableSummary<TData>({
             withArrow
             withinPortal={false}
           >
-            <ActionIcon>
+            <ActionIcon variant="subtle">
               <InfoIcon
                 data-testid="button-category-table-tooltip"
                 size={16}

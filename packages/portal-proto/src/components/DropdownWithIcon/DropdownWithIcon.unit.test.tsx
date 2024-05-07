@@ -1,4 +1,5 @@
-import { render } from "@testing-library/react";
+import { render } from "test-utils";
+import { waitFor } from "@testing-library/react";
 import { DropdownWithIcon } from "./DropdownWithIcon";
 import userEvent from "@testing-library/user-event";
 
@@ -19,7 +20,9 @@ describe("<DropdownWithIcon />", () => {
       <DropdownWithIcon
         TargetButtonChildren="test"
         dropdownElements={[{ title: "test" }, { title: "test2" }]}
-        RightIcon={<div aria-label="test-icon" />}
+        RightSection={
+          <div aria-label="test-icon" className="border-l pl-1 -mr-2" />
+        }
       />,
     );
 
@@ -57,8 +60,9 @@ describe("<DropdownWithIcon />", () => {
     );
 
     await userEvent.click(getByTestId("menu-elem"));
-
-    expect(getByTestId("menu-label")).toBeDefined();
+    await waitFor(() => expect(getByTestId("menu-label")).toBeDefined(), {
+      timeout: 2000,
+    });
     expect(getByText("test menu label text")).toBeInTheDocument();
   });
 
@@ -86,6 +90,9 @@ describe("<DropdownWithIcon />", () => {
     );
 
     await userEvent.click(getByTestId("menu-elem"));
+    await waitFor(() => expect(getByTestId("test-0")).toBeInTheDocument(), {
+      timeout: 2000,
+    });
     const firstMenuItem = getByTestId("test-0");
     await userEvent.click(firstMenuItem);
 
@@ -104,7 +111,9 @@ describe("<DropdownWithIcon />", () => {
     );
 
     await userEvent.click(getByTestId("menu-elem"));
-    expect(getByTestId("itemD-0")).toBeDisabled();
+    await waitFor(() => expect(getByTestId("itemD-0")).toBeDisabled(), {
+      timeout: 2000,
+    });
     expect(getByTestId("itemE-1")).not.toBeDisabled();
   });
 });

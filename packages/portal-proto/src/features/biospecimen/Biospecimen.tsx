@@ -202,14 +202,13 @@ export const Biospecimen = ({
             TargetButtonChildren={
               biospecimenDownloadActive ? "Processing" : "Download"
             }
-            LeftIcon={
+            LeftSection={
               biospecimenDownloadActive ? (
                 <Loader size={20} />
               ) : (
                 <DownloadIcon size="1rem" aria-label="download" />
               )
             }
-            zIndex={5}
           />
 
           <div className="flex mt-2 gap-4">
@@ -217,7 +216,7 @@ export const Biospecimen = ({
               <div className="flex mb-4 gap-4">
                 <Input
                   data-testid="textbox-biospecimen-search-bar"
-                  icon={<MdOutlineSearch size={24} aria-hidden="true" />}
+                  leftSection={<MdOutlineSearch size={24} aria-hidden="true" />}
                   placeholder="Search"
                   className="basis-5/6"
                   classNames={{

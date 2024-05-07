@@ -151,7 +151,7 @@ export const RepositoryApp = (): JSX.Element => {
                   <Menu.Dropdown data-testid="dropdown-menu-options">
                     <Menu.Item
                       component={DownloadButton}
-                      classNames={{ inner: "font-normal" }}
+                      classNames={{ item: "font-normal" }}
                       displayVariant="subtle"
                       activeText="Processing"
                       inactiveText="Sample Sheet"
@@ -183,7 +183,7 @@ export const RepositoryApp = (): JSX.Element => {
                     />
                     <Menu.Item
                       component={DownloadButton}
-                      classNames={{ inner: "font-normal" }}
+                      classNames={{ item: "font-normal" }}
                       activeText="Processing"
                       inactiveText="Metadata"
                       setActive={setMetadataDownloadActive}
@@ -299,7 +299,7 @@ export const RepositoryApp = (): JSX.Element => {
 
                 <FunctionButton
                   data-testid="button-add-all-files-table"
-                  leftIcon={<CartIcon aria-hidden="true" />}
+                  leftSection={<CartIcon aria-hidden="true" />}
                   loading={allFilesLoading}
                   disabled={fileDataFetching}
                   onClick={() => {
@@ -322,7 +322,7 @@ export const RepositoryApp = (): JSX.Element => {
                 </FunctionButton>
                 <FunctionButtonRemove
                   data-testid="button-remove-all-files-table"
-                  leftIcon={<VscTrash aria-hidden="true" />}
+                  leftSection={<VscTrash aria-hidden="true" />}
                   loading={allFilesLoading}
                   onClick={() => {
                     getAllSelectedFiles(

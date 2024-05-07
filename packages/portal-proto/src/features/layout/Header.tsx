@@ -128,10 +128,12 @@ export const Header: React.FC<HeaderProps> = ({
           <Menu width={200} data-testid="userdropdown" zIndex={9} offset={-5}>
             <Menu.Target>
               <Button
-                rightIcon={<ArrowDropDownIcon size="2em" aria-hidden="true" />}
+                rightSection={
+                  <ArrowDropDownIcon size="2em" aria-hidden="true" />
+                }
                 variant="subtle"
                 className="text-primary-darkest font-header text-sm font-medium font-heading"
-                classNames={{ rightIcon: "ml-0" }}
+                classNames={{ section: "ml-0" }}
                 data-testid="usernameButton"
                 ref={userDropdownRef}
               >
@@ -539,7 +541,7 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             </Menu.Target>
             <Menu.Dropdown>
-              <div className="grid grid-cols-2 p-1 gap-2">
+              <div className="grid grid-cols-2 p-1 gap-2 font-medium">
                 <AppMenuItem>
                   <NavLinkWithIcon
                     href={indexPath}

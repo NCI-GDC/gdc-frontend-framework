@@ -75,7 +75,7 @@ const UserInputModal: React.FC<UserInputModalProps> = ({
               <Tabs
                 value={activeTab}
                 keepMounted={false}
-                onTabChange={onTabChange}
+                onChange={onTabChange}
               >
                 <StyledTabsList>
                   {tabs.map((tab) => (

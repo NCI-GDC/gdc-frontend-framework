@@ -290,7 +290,7 @@ function VerticalTable<TData>({
               <div className="flex mb-2 gap-2">
                 {search?.enabled && (
                   <TextInput
-                    icon={<MdSearch size={24} aria-hidden="true" />}
+                    leftSection={<MdSearch size={24} aria-hidden="true" />}
                     data-testid="textbox-table-search-bar"
                     placeholder={search.placeholder ?? "Search"}
                     aria-label="Table Search Input"
