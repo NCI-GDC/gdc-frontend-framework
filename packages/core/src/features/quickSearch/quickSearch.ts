@@ -8,9 +8,11 @@ interface QuickSearchState {
   query: string;
 }
 
+const MAX_SEARCH_ITEMS = 5;
+
 export const fetchQuickSearch = async (searchString: string) => {
   const response = await fetch(
-    `${GDC_APP_API_AUTH}/quick_search?query=${searchString}&size=5`,
+    `${GDC_APP_API_AUTH}/quick_search?query=${searchString}&size=${MAX_SEARCH_ITEMS}`,
   );
   if (response.ok) {
     return { data: await response.json() };
