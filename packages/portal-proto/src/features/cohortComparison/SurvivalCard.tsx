@@ -1,5 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
-import { useDeepCompareEffect } from "use-deep-compare";
+import { useEffect } from "react";
 import { Alert, Loader, Paper, Tooltip } from "@mantine/core";
 import {
   buildCohortGqlOperator,
@@ -115,73 +114,31 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
     buildCohortGqlOperator(cohorts?.comparison_cohort.filter),
     caseSetIds,
   );
+  const [createSet] = useCreateCaseSetFromFiltersMutation();
 
-  const [primaryCaseSetFilter, setPrimaryCaseSetFilter] = useState<FilterSet>();
-  const [secondaryCaseSetFilter, setSecondaryCaseSetFilter] =
-    useState<FilterSet>();
-  const primaryFilter = useMemo(
-    () => makeSurvivalCaseFilters(caseSetIds[0], caseSetIds[1]),
-    [caseSetIds],
-  );
-  const secondaryFilter = useMemo(
-    () => makeSurvivalCaseFilters(caseSetIds[1], caseSetIds[0]),
-    [caseSetIds],
-  );
-
-  // The complexity of these filters means we can't represent them with a FilterSet,
-  // so create the case sets here
-  const [createPrimarySet, primaryResponse] =
-    useCreateCaseSetFromFiltersMutation();
-  const [createSecondarySet, secondaryResponse] =
-    useCreateCaseSetFromFiltersMutation();
-
-  useEffect(() => {
-    createPrimarySet({
-      filters: primaryFilter,
+  const generateFilters = async (
+    primarySetId: string,
+    comparisonSetId: string,
+  ) => {
+    return await createSet({
+      filters: makeSurvivalCaseFilters(primarySetId, comparisonSetId),
       intent: "portal",
       set_type: "frozen",
-    });
-  }, [createPrimarySet, primaryFilter]);
-
-  useEffect(() => {
-    createSecondarySet({
-      filters: secondaryFilter,
-      intent: "portal",
-      set_type: "frozen",
-    });
-  }, [createSecondarySet, secondaryFilter]);
-
-  useDeepCompareEffect(() => {
-    if (primaryResponse.isSuccess) {
-      const filters: FilterSet = {
-        mode: "and",
-        root: {
-          "cases.case_id": {
-            operator: "includes",
-            field: "cases.case_id",
-            operands: [`set_id:${primaryResponse.data}`],
+    })
+      .unwrap()
+      .then((setId) => {
+        return {
+          mode: "and",
+          root: {
+            "cases.case_id": {
+              field: "cases.case_id",
+              operands: [`set_id:${setId}`],
+              operator: "includes",
+            },
           },
-        },
-      };
-      setPrimaryCaseSetFilter(filters);
-    }
-  }, [primaryResponse.isSuccess, primaryResponse.data]);
-
-  useDeepCompareEffect(() => {
-    if (secondaryResponse.isSuccess) {
-      const filters: FilterSet = {
-        mode: "and",
-        root: {
-          "cases.case_id": {
-            operator: "includes",
-            field: "cases.case_id",
-            operands: [`set_id:${secondaryResponse.data}`],
-          },
-        },
-      };
-      setSecondaryCaseSetFilter(filters);
-    }
-  }, [secondaryResponse.isSuccess, secondaryResponse.data]);
+        } as FilterSet;
+      });
+  };
 
   const { data, isUninitialized, isFetching, isError } =
     useGetSurvivalPlotQuery({
@@ -258,10 +215,8 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
                     <CohortCreationButton
                       numCases={cohort1Count}
                       label={cohort1Count.toLocaleString()}
-                      filters={
-                        primaryResponse.isSuccess
-                          ? primaryCaseSetFilter
-                          : undefined
+                      filtersCallback={async () =>
+                        generateFilters(caseSetIds[0], caseSetIds[1])
                       }
                     />
                   </td>
@@ -270,10 +225,8 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
                     <CohortCreationButton
                       numCases={cohort2Count}
                       label={cohort2Count.toLocaleString()}
-                      filters={
-                        secondaryResponse.isSuccess
-                          ? secondaryCaseSetFilter
-                          : undefined
+                      filtersCallback={async () =>
+                        generateFilters(caseSetIds[1], caseSetIds[0])
                       }
                     />
                   </td>

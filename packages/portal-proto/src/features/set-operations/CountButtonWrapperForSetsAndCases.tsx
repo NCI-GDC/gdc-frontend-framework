@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useDeepCompareEffect } from "use-deep-compare";
+import React, { useState } from "react";
 import {
   useCreateSsmsSetFromFiltersMutation,
   useCreateGeneSetFromFiltersMutation,
@@ -132,40 +131,35 @@ const CountButtonWrapperForSet: React.FC<CountButtonWrapperForSetProps> = ({
 const CountButtonWrapperForSetsAndCases: React.FC<
   CountButtonWrapperForSetProps
 > = ({ count, filters, entityType }: CountButtonWrapperForSetProps) => {
-  const [createSet, createSetResponse] = useCreateCaseSetFromFiltersMutation();
-  const [caseSetFilters, setCaseSetFilters] = useState<FilterSet>();
+  const [createSet] = useCreateCaseSetFromFiltersMutation();
 
-  useDeepCompareEffect(() => {
-    if (entityType === "cohort") {
-      createSet({
-        filters: filters,
-        intent: "portal",
-        set_type: "frozen",
-      });
-    }
-  }, [entityType, filters, createSet]);
-
-  useEffect(() => {
-    if (createSetResponse.isSuccess) {
-      setCaseSetFilters({
-        mode: "and",
-        root: {
-          "cases.case_id": {
-            field: "cases.case_id",
-            operands: [`set_id:${createSetResponse.data}`],
-            operator: "includes",
+  const createCohort = async () => {
+    return await createSet({
+      filters: filters,
+      intent: entityType == "cohort" ? "portal" : "user",
+      set_type: entityType == "cohort" ? "frozen" : "mutable",
+    })
+      .unwrap()
+      .then((setId) => {
+        return {
+          mode: "and",
+          root: {
+            "cases.case_id": {
+              field: "cases.case_id",
+              operands: [`set_id:${setId}`],
+              operator: "includes",
+            },
           },
-        },
+        } as FilterSet;
       });
-    }
-  }, [entityType, createSetResponse.isSuccess, createSetResponse.data]);
+  };
 
   if (entityType === "cohort") {
     return (
       <CohortCreationButton
         numCases={count}
         label={count?.toLocaleString()}
-        filters={caseSetFilters}
+        filtersCallback={createCohort}
       />
     );
   } else {
