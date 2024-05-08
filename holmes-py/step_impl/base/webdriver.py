@@ -79,5 +79,5 @@ def take_screenshot():
     screenshot_path = Path(getenv("gauge_screenshots_dir")).joinpath(
         f"screenshot_{uuid1().int}.png"
     )
-    WebDriver.page.screenshot(path=screenshot_path)
+    WebDriver.page.screenshot(full_page=True, path=screenshot_path)
     return screenshot_path.absolute()

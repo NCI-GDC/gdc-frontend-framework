@@ -308,7 +308,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
       </div>
       <Button
         data-testid="button-stats-tsv-cdave-card"
-        className="bg-base-max text-primary border-primary mb-2"
+        className="bg-base-max text-primary border-primary mb-2 w-fit"
         onClick={downloadTableTSVFile}
       >
         TSV

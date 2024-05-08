@@ -15,11 +15,11 @@ tags: gdc-data-portal-v2, repository, regression
 * Select "Add All" on the Repository page
 * Is modal with text "The cart is limited to 10,000" present on the page and "Remove Modal"
 * The cart should have "0" files
-* Expand or contract a filter
+* Expand or contract a filter on the Repository page
   |facet_name       |label                |
   |-----------------|---------------------|
   |Data Type        |plus-icon            |
-* Make the following selections on a filter card
+* Make the following selections on a filter card on the Repository page
   |facet_name       |selection                            |
   |-----------------|-------------------------------------|
   |Data Type        |Allele-specific Copy Number Segment  |
@@ -30,15 +30,15 @@ tags: gdc-data-portal-v2, repository, regression
 * Is modal with text "Removed 0 files from the cart." present on the page and "Remove Modal"
 
 ## Add All Files and Remove All Files buttons
-* Perform the following actions on a filter card
+* Perform the following actions on a filter card on the Repository page
   |filter_name      |action               |
   |-----------------|---------------------|
   |Data Type        |clear selection      |
-* Expand or contract a filter
+* Expand or contract a filter on the Repository page
   |facet_name             |label                |
   |-----------------------|---------------------|
   |Workflow Type          |plus-icon            |
-* Make the following selections on a filter card
+* Make the following selections on a filter card on the Repository page
   |facet_name             |label                |
   |-----------------------|---------------------|
   |Workflow Type          |VCF LiftOver         |
@@ -51,14 +51,14 @@ tags: gdc-data-portal-v2, repository, regression
 * The cart should have "0" files
 * Select "Remove All" on the Repository page
 * Is modal with text "Removed 0 files from the cart." present on the page and "Remove Modal"
-* Make the following selections on a filter card
+* Make the following selections on a filter card on the Repository page
   |facet_name             |label                |
   |-----------------------|---------------------|
   |Workflow Type          |VCF LiftOver         |
 
 A separate specification ensures the cart has 0 files
 ## Remove All Files from Cart
-* Perform the following actions on a filter card
+* Perform the following actions on a filter card on the Repository page
   |filter_name      |action               |
   |-----------------|---------------------|
   |Workflow Type    |clear selection      |

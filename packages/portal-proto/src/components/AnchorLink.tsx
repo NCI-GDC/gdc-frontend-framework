@@ -8,15 +8,17 @@ export const AnchorLink = ({
   iconText,
   toolTipLabel,
   customDataTestID,
+  customStyle = "",
 }: {
   href: string;
   title: string;
   iconText?: string;
   customDataTestID?: string;
   toolTipLabel?: string;
+  customStyle?: string;
 }): JSX.Element => {
   return (
-    <span className="flex gap-2 items-center">
+    <span className={`flex gap-2 items-center ${customStyle}`}>
       <Link
         href={href}
         target="_blank"

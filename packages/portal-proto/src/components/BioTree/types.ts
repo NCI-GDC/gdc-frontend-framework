@@ -1,4 +1,4 @@
-import { entityType } from "@gff/core";
+import { BiospecimenEntityType } from "@gff/core";
 import { JSXElementConstructor, ReactElement } from "react";
 
 export interface types {
@@ -14,12 +14,12 @@ export type searchType = (
 ) => any[];
 
 export interface NodeProps {
-  entity: entityType;
+  entity: BiospecimenEntityType;
   children: ReactElement<any, string | JSXElementConstructor<any>>;
   entityTypes: Array<types>;
   type: types;
-  selectedEntity: entityType;
-  selectEntity: (entity: entityType, type: types) => void;
+  selectedEntity: BiospecimenEntityType;
+  selectEntity: (entity: BiospecimenEntityType, type: types) => void;
   query: string;
 }
 
@@ -27,7 +27,7 @@ export interface BioTreeProps {
   entities?: {
     hits: {
       edges: {
-        node: entityType;
+        node: BiospecimenEntityType;
       }[];
     };
   };
@@ -36,8 +36,8 @@ export interface BioTreeProps {
   parentNode: string;
   treeStatusOverride: overrideMessage | null;
   setTreeStatusOverride: React.Dispatch<React.SetStateAction<overrideMessage>>;
-  selectedEntity: entityType;
-  selectEntity: (entity: entityType, type: types) => void;
+  selectedEntity: BiospecimenEntityType;
+  selectEntity: (entity: BiospecimenEntityType, type: types) => void;
   setExpandedCount: React.Dispatch<React.SetStateAction<number>>;
   setTotalNodeCount: React.Dispatch<React.SetStateAction<number>>;
   query: string;

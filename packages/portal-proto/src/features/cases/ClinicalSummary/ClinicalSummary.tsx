@@ -13,7 +13,7 @@ import {
 import { Divider, Loader, Tabs, Text } from "@mantine/core";
 import { useState } from "react";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
-import { humanify } from "src/utils";
+import { humanify, ageDisplay } from "src/utils";
 import { DiagnosesOrFollowUps } from "./DiagnosesOrFollowUps";
 import { FamilyHistoryOrExposure } from "./FamilyHistoryOrExposure";
 import download from "@/utils/download";
@@ -59,8 +59,8 @@ export const ClinicalSummary = ({
       ethnicity,
       gender,
       race,
-      days_to_birth: days_to_birth?.toLocaleString(),
-      days_to_death: days_to_death?.toLocaleString(),
+      days_to_birth: ageDisplay(days_to_birth),
+      days_to_death: ageDisplay(days_to_death),
       vital_status,
     };
 

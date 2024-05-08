@@ -1,7 +1,7 @@
-# Clinical Properties
+# Clinical Data Analysis - Clinical Properties
 Date Created   : 10/14/2022
 Version			: 1.1
-Owner		    : GDC QA
+Owner		      : GDC QA
 Description		: Test clinical data properties section
 
 tags: gdc-data-portal-v2, clinical-data-analysis, regression
@@ -14,7 +14,6 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
 ## Test clinical data properties section
 * Expand clinical property sections
 * Check clinical properties
-
    |property         |group      |
    |-----------------|-----------|
    |Gender           |Demographic|
@@ -30,7 +29,6 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
    |Age Is Obfuscated|           |
 
 * Check clinical properties
-
    |property                               |group    |
    |---------------------------------------|---------|
    |Age At Diagnosis                       |Diagnosis|
@@ -87,7 +85,6 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
    |Secondary Gleason Grade                |         |
 
 * Check clinical properties
-
    |property                     |group    |
    |-----------------------------|---------|
    |Days To Treatment Start      |Treatment|
@@ -106,7 +103,6 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
    |Treatment Frequency          |         |
 
 * Check clinical properties
-
    |property                  |group    |
    |--------------------------|---------|
    |Alcohol History           |Exposures|

@@ -1,6 +1,7 @@
-import { useState, useEffect, useMemo } from "react";
+import { useMemo } from "react";
+import { useDeepCompareMemo } from "use-deep-compare";
 import { Tooltip } from "@mantine/core";
-import { fetchPValue } from "@gff/core";
+import { usePValueQuery } from "@gff/core";
 
 const noDataKeys = [
   "missing",
@@ -20,7 +21,6 @@ interface PValueProps {
 }
 
 const PValue: React.FC<PValueProps> = ({ data }: PValueProps) => {
-  const [pValue, setPValue] = useState(null);
   const pValueBuckets = useMemo(
     () => data.map((val) => val.filter((v) => !noDataKeys.includes(v.key))),
     [data],
@@ -32,32 +32,23 @@ const PValue: React.FC<PValueProps> = ({ data }: PValueProps) => {
     ),
   );
 
-  useEffect(() => {
-    const determinePValue = async () => {
-      if (
-        pValueBuckets.length > 0 &&
-        pValueBuckets.every((bucket) => bucket.length === 2)
-      ) {
-        const values = pValueBuckets.map((bucket) =>
-          bucket.map((facet) => facet.count),
-        );
-        const pValue = await fetchPValue(values);
+  const values = useDeepCompareMemo(
+    () => pValueBuckets.map((bucket) => bucket.map((facet) => facet.count)),
+    [pValueBuckets],
+  );
 
-        setPValue(pValue);
-      } else {
-        setPValue(null);
-      }
-    };
-    determinePValue();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(pValueBuckets), JSON.stringify(data)]);
+  const { data: pValue, isSuccess } = usePValueQuery(values, {
+    skip:
+      pValueBuckets.length === 0 ||
+      !pValueBuckets.every((bucket) => bucket.length === 2),
+  });
 
   if (pValue) {
     return (
       <Tooltip label={`P-Value for ${labels.join(" and ")}`} withArrow>
-        <div className="font-content text-sm font-semibold">{`P-Value = ${pValue.toExponential(
-          2,
-        )}`}</div>
+        <div className="font-content text-sm font-semibold">
+          {isSuccess ? `P-Value = ${pValue.toExponential(2)}` : "--"}
+        </div>
       </Tooltip>
     );
   } else {

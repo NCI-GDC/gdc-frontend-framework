@@ -5,7 +5,7 @@ import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import {
-  useGenesSummaryData,
+  useGeneSummaryQuery,
   GeneSummaryData,
   FilterSet,
   useCoreSelector,
@@ -27,9 +27,7 @@ import GeneCancerDistributionTable from "../cancerDistributionTable/GeneCancerDi
 import GenesIcon from "public/user-flow/icons/summary/genes.svg";
 
 interface GeneViewProps {
-  data: {
-    genes: GeneSummaryData;
-  };
+  data: GeneSummaryData;
   gene_id: string;
   isModal: boolean;
   contextSensitive: boolean;
@@ -47,7 +45,7 @@ export const GeneSummary = ({
   contextSensitive?: boolean;
   contextFilters?: FilterSet;
 }): JSX.Element => {
-  const { data, isFetching } = useGenesSummaryData({
+  const { data, isFetching } = useGeneSummaryQuery({
     gene_id,
   });
 
@@ -55,7 +53,7 @@ export const GeneSummary = ({
     <>
       {isFetching ? (
         <LoadingOverlay data-testid="loading-spinner" visible />
-      ) : data && data.genes ? (
+      ) : data ? (
         <GeneView
           data={data}
           gene_id={gene_id}
@@ -101,18 +99,16 @@ const GeneView = ({
 
   const formatDataForSummary = () => {
     const {
-      genes: {
-        symbol,
-        name,
-        synonyms,
-        biotype: type,
-        gene_chromosome,
-        gene_start,
-        gene_end,
-        gene_strand,
-        description,
-        is_cancer_gene_census,
-      },
+      symbol,
+      name,
+      synonyms,
+      biotype: type,
+      gene_chromosome,
+      gene_start,
+      gene_end,
+      gene_strand,
+      description,
+      is_cancer_gene_census,
     } = data;
 
     const location = `chr${gene_chromosome}:${gene_start}-${gene_end} (GRCh38)`;
@@ -158,11 +154,9 @@ const GeneView = ({
 
   const formatDataForExternalReferences = () => {
     const {
-      genes: {
-        external_db_ids: { entrez_gene, uniprotkb_swissprot, hgnc, omim_gene },
-        gene_id,
-        civic,
-      },
+      external_db_ids: { entrez_gene, uniprotkb_swissprot, hgnc, omim_gene },
+      gene_id,
+      civic,
     } = data;
 
     const externalLinksObj = {
@@ -219,12 +213,12 @@ const GeneView = ({
 
   return (
     <div>
-      {data?.genes && (
+      {data && (
         <>
           <SummaryHeader
             Icon={GenesIcon}
             headerTitleLeft="Gene"
-            headerTitle={data.genes.symbol}
+            headerTitle={data.symbol}
             isModal={isModal}
           />
 
@@ -278,14 +272,14 @@ const GeneView = ({
               </div>
               <GeneCancerDistributionTable
                 gene={gene_id}
-                symbol={data.genes.symbol}
+                symbol={data.symbol}
                 genomicFilters={genomicFilters}
                 cohortFilters={cohortFilters}
               />
 
               <div className="mt-14">
                 <SMTableContainer
-                  geneSymbol={data.genes.symbol}
+                  geneSymbol={data.symbol}
                   gene_id={gene_id}
                   cohortFilters={cohortFilters}
                   genomicFilters={genomicFilters}

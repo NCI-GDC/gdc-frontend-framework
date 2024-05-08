@@ -38,7 +38,7 @@ export const ProjectFacetPanel = (): JSX.Element => {
   };
 
   return (
-    <div className="flex flex-col gap-y-2 mt-1 w-1/4">
+    <div className="flex flex-col gap-y-2 mt-1 w-1/3 xl:w-1/4">
       <Group>
         <Text size="lg" className="text-primary-content-darker font-bold">
           Filters

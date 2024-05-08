@@ -127,13 +127,11 @@ export const FileFacetPanel = (): JSX.Element => {
         variant="outline"
         aria-label="Add a custom filter"
         data-testid="button-add-a-file-filter"
-        className="bg-primary-lightest flex flex-row justify-center align-middle items-center border-primary-darker b-2 mb-2"
+        className="flex justify-center items-center border-primary-darker mb-2 text-primary hover:text-base-max hover:bg-primary rounded-md"
         onClick={() => setOpened(true)}
       >
-        <AddAdditionalIcon className="text-primary-content" size="2em" />
-        <Text size="md" className="text-primary-content-darker  font-bold">
-          Add a Custom Filter
-        </Text>
+        <AddAdditionalIcon className="text-2xl xl:text-xl" />
+        <Text className="text-sm font-bold">Add a Custom Filter</Text>
       </Button>
       <div className="flex flex-col gap-y-4" data-testid="filters-facets">
         <Modal
@@ -155,20 +153,22 @@ export const FileFacetPanel = (): JSX.Element => {
           data-testid="loading-spinner"
           visible={!isDictionaryReady}
         />
-        {facetDefinitions.map((x) => {
-          const isDefault = getDefaultFacets().includes(x.full);
-          const facetName = fieldNameToTitle(x.full, isDefault ? 1 : 2);
-          return createFacetCard(
-            x,
-            "Files",
-            FileFacetHooks,
-            "repository-app",
-            !isDefault ? handleRemoveFilter : undefined,
-            false,
-            facetName,
-            "w-full",
-          );
-        })}
+        <div className="h-screen overflow-y-scroll flex flex-col gap-y-4 border-t-1 border-b-1 rounded-md">
+          {facetDefinitions.map((x) => {
+            const isDefault = getDefaultFacets().includes(x.full);
+            const facetName = fieldNameToTitle(x.full, isDefault ? 1 : 2);
+            return createFacetCard(
+              x,
+              "Files",
+              FileFacetHooks,
+              "repository-app",
+              !isDefault ? handleRemoveFilter : undefined,
+              false,
+              facetName,
+              "w-full",
+            );
+          })}
+        </div>
       </div>
     </div>
   );

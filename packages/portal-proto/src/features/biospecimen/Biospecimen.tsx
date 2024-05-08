@@ -9,8 +9,8 @@ import {
   ActionIcon,
 } from "@mantine/core";
 import {
-  entityType,
-  useBiospecimenData,
+  BiospecimenEntityType,
+  useBiospecimenDataQuery,
   useCoreDispatch,
   useCoreSelector,
   selectCart,
@@ -46,7 +46,8 @@ export const Biospecimen = ({
     useState(false);
   const [treeStatusOverride, setTreeStatusOverride] =
     useState<overrideMessage | null>(null);
-  const [selectedEntity, setSelectedEntity] = useState<entityType>(null);
+  const [selectedEntity, setSelectedEntity] =
+    useState<BiospecimenEntityType>(null);
   const [isAllExpanded, setIsAllExpanded] = useState(false);
   const [selectedType, setSelectedType] = useState(undefined);
   const [expandedCount, setExpandedCount] = useState(1);
@@ -58,7 +59,7 @@ export const Biospecimen = ({
   const dispatch = useCoreDispatch();
 
   const { data: bioSpecimenData, isFetching: isBiospecimentDataFetching } =
-    useBiospecimenData(caseId);
+    useBiospecimenDataQuery(caseId);
 
   useEffect(() => {
     setIsAllExpanded(expandedCount === totalNodeCount);

@@ -47,7 +47,7 @@ const GeneAndSSMFilterPanel = ({
   return (
     <div
       data-testid="filters-facets"
-      className="flex flex-col gap-y-4 mr-3 mt-12 w-min-64 w-max-64"
+      className="flex flex-col gap-y-4 mt-12 max-h-screen overflow-y-auto border-t-1 border-b-1 rounded-md"
     >
       <GeneSetModal
         opened={modal === Modals.LocalGeneSetModal}
@@ -90,7 +90,6 @@ const GeneAndSSMFilterPanel = ({
               valueLabel={FacetDocTypeToLabelsMap[x.docType]}
               showPercent={false}
               hideIfEmpty={false}
-              width="w-64"
             />
           );
         } else if (x.type === "set") {
@@ -99,7 +98,6 @@ const GeneAndSSMFilterPanel = ({
               key={`genes-mutations-app-${x.facet_filter}-${index}`}
               facetName={x.name}
               field={x.facet_filter}
-              width="w-64"
               valueLabel={FacetDocTypeToLabelsMap[x.docType]}
               hooks={{
                 useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
@@ -130,7 +128,6 @@ const GeneAndSSMFilterPanel = ({
             valueLabel={FacetDocTypeToLabelsMap[x.docType]}
             showPercent={false}
             hideIfEmpty={false}
-            width="w-64"
           />
         );
       })}

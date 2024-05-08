@@ -16,12 +16,8 @@ import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
 import { convertDateToString } from "src/utils/date";
 import download from "src/utils/download";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
-import {
-  getAnnotationsLinkParamsFromFiles,
-  statusBooleansToDataStatus,
-} from "src/utils";
+import { statusBooleansToDataStatus } from "src/utils";
 import { SummaryModalContext } from "src/utils/contexts";
-import Link from "next/link";
 import { FilesTableDataType } from "../repositoryApp/FilesTable";
 import {
   ColumnDef,
@@ -277,21 +273,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
       cartFilesTableColumnHelper.display({
         id: "annotations",
         header: "Annotations",
-        cell: ({ row }) => (
-          <span className="font-content">
-            {getAnnotationsLinkParamsFromFiles(row.original.file) ? (
-              <Link
-                href={getAnnotationsLinkParamsFromFiles(row.original.file)}
-                className="text-utility-link underline font-content"
-                target="_blank"
-              >
-                {row.original.annotations.length}
-              </Link>
-            ) : (
-              row.original?.annotations?.length ?? 0
-            )}
-          </span>
-        ),
+        cell: ({ row }) => row.original?.annotations?.length ?? 0,
       }),
     ],
     [setEntityMetadata],

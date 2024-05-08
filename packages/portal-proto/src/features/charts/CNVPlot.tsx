@@ -2,7 +2,7 @@ import { useState } from "react";
 import { orderBy } from "lodash";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import { FilterSet, useCnvPlot } from "@gff/core";
+import { FilterSet, useCnvPlotQuery } from "@gff/core";
 import ChartTitleBar from "./ChartTitleBar";
 import { CountSpan } from "@/components/tailwindComponents";
 
@@ -48,11 +48,13 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
   const [gainChecked, setGainChecked] = useState(true);
   const [lossChecked, setLossChecked] = useState(true);
 
-  const { data, error, isUninitialized, isFetching, isError } = useCnvPlot({
-    gene,
-    cohortFilters,
-    genomicFilters,
-  });
+  const { data, error, isUninitialized, isFetching, isError } = useCnvPlotQuery(
+    {
+      gene,
+      cohortFilters,
+      genomicFilters,
+    },
+  );
 
   if (isUninitialized) {
     return <div>Initializing chart...</div>;
@@ -62,8 +64,8 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
     return <div>Fetching chart...</div>;
   }
 
-  if (isError) {
-    return <div>Failed to fetch chart: {error}</div>;
+  if (isError && "text" in error) {
+    return <div>Failed to fetch chart: {error?.text}</div>;
   }
 
   const caseData = data?.cases.filter(

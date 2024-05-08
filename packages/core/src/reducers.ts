@@ -9,7 +9,6 @@ import {
   filesApiReducer,
   filesApiSliceReducerPath,
 } from "./features/files/filesSlice";
-import { filesSizeReducer } from "./features/files/totalFileSizeSlice";
 import {
   projectsApiReducer,
   projectsApiSliceReducerPath,
@@ -23,12 +22,10 @@ import { casesReducer } from "./features/cases/casesSlice";
 import { genomicReducers } from "./features/genomic/genomicSlice";
 import { imageDetailsReducer } from "./features/imageDetails/imageDetailsSlice";
 import { imageViewerReducer } from "./features/imageDetails/imageViewer";
-import { cohortComparisonReducer } from "./features/cohortComparison";
 import { bannerReducer } from "./features/bannerNotification";
 import { cartReducer } from "./features/cart";
 import { totalCountsReducer } from "./features/summary/totalCountsSlice";
 import { ssmsReducer } from "./features/genomic/ssmsSummary/ssmsSummarySlice";
-import { genesSummaryReducer } from "./features/genomic/geneSummary/geneSummarySlice";
 
 import {
   cohortApiReducer,
@@ -42,14 +39,12 @@ import {
   survivalApiSliceReducerPath,
   survivalApiReducer,
 } from "./features/survival/survivalApiSlice";
-import { biospecimenReducer } from "./features/biospecimen/biospecimenSlice";
 import { clinicalDataAnalysisReducer } from "./features/clinicalDataAnalysis";
 import { caseSummarySliceReducer } from "./features/cases/caseSummarySlice";
 import { facetsByNameTypeAndFilterReducer } from "./features/facets/facetsByNameTypeAndFilter";
 import { modalReducer } from "./features/modals/modalsSlice";
 import { quickSearchReducer } from "./features/quickSearch/quickSearch";
 import { versionInfoReducer } from "./features/versionInfo/versionInfoSlice";
-import { cancerDistributionReducer } from "./features/cancerDistribution";
 import {
   graphqlAPISliceReducerPath,
   graphqlAPIReducer,
@@ -83,22 +78,17 @@ export const reducers = combineReducers({
   facetsGQL: fileCaseGenesMutationsFacetReducers,
   facetsByNameTypeFilter: facetsByNameTypeAndFilterReducer,
   gdcApps: gdcAppReducer,
-  filesSize: filesSizeReducer,
   annotations: annotationsReducer,
   cases: casesReducer,
-  cancerDistribution: cancerDistributionReducer,
   genomic: genomicReducers,
   imageDetails: imageDetailsReducer,
   imageViewer: imageViewerReducer,
-  cohortComparison: cohortComparisonReducer,
   cart: cartReducer,
   bannerNotification: bannerReducer,
   summary: totalCountsReducer,
-  biospecimen: biospecimenReducer,
   clinicalDataAnalysis: clinicalDataAnalysisReducer,
   caseSummary: caseSummarySliceReducer,
   ssms: ssmsReducer,
-  genesSummary: genesSummaryReducer,
   modals: modalReducer,
   quickSearch: quickSearchReducer,
   [filesApiSliceReducerPath]: filesApiReducer,

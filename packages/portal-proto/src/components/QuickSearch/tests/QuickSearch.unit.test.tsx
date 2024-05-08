@@ -28,9 +28,9 @@ describe("<QuickSearch />", () => {
       .spyOn(core, "useGetHistoryQuery")
       .mockReturnValue({ data: undefined } as any);
 
-    const { getAllByTestId, getByLabelText } = render(<QuickSearch />);
-    userEvent.click(getByLabelText("Quick Search Input"));
-    userEvent.type(getByLabelText("Quick Search Input"), "th");
+    const { getAllByTestId, getByTestId } = render(<QuickSearch />);
+    userEvent.click(getByTestId("textbox-quick-search-bar"));
+    userEvent.type(getByTestId("textbox-quick-search-bar"), "th");
 
     await waitFor(
       () =>
@@ -59,9 +59,9 @@ describe("<QuickSearch />", () => {
       ],
     } as any);
 
-    const { getAllByTestId, getByLabelText } = render(<QuickSearch />);
-    userEvent.click(getByLabelText("Quick Search Input"));
-    userEvent.type(getByLabelText("Quick Search Input"), "111-222");
+    const { getAllByTestId, getByTestId } = render(<QuickSearch />);
+    userEvent.click(getByTestId("textbox-quick-search-bar"));
+    userEvent.type(getByTestId("textbox-quick-search-bar"), "111-222");
 
     await waitFor(
       () =>

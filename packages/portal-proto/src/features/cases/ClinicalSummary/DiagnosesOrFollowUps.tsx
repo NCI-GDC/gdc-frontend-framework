@@ -40,10 +40,11 @@ const TableElement = ({
         diagnosis_uuid,
         classification_of_tumor,
         age_at_diagnosis: ageDisplay(age_at_diagnosis),
-        days_to_last_follow_up: days_to_last_follow_up?.toLocaleString(),
-        days_to_last_known_disease_status:
-          days_to_last_known_disease_status?.toLocaleString(),
-        days_to_recurrence: days_to_recurrence?.toLocaleString(),
+        days_to_last_follow_up: ageDisplay(days_to_last_follow_up),
+        days_to_last_known_disease_status: ageDisplay(
+          days_to_last_known_disease_status,
+        ),
+        days_to_recurrence: ageDisplay(days_to_recurrence),
         last_known_disease_status,
         morphology,
         primary_diagnosis,
@@ -76,7 +77,7 @@ const TableElement = ({
       tableData = {
         follow_up_id,
         follow_up_uuid,
-        days_to_follow_up: days_to_follow_up?.toLocaleString(),
+        days_to_follow_up: ageDisplay(days_to_follow_up),
         comorbidity,
         risk_factor,
         progression_or_recurrence_type,
@@ -108,8 +109,7 @@ const TableElement = ({
         therapeutic_agents: diagnosis.therapeutic_agents ?? "--",
         treatment_intent_type: diagnosis.treatment_intent_type ?? "--",
         treatment_or_therapy: diagnosis.treatment_or_therapy ?? "--",
-        days_to_treatment_start:
-          diagnosis.days_to_treatment_start?.toLocaleString() ?? "--",
+        days_to_treatment_start: ageDisplay(diagnosis.days_to_treatment_start),
       }));
 
     const treatmentTableColumnHelper =

@@ -1,23 +1,90 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {
-  CoreDataSelectorResponse,
-  createUseCoreDataHook,
-  DataStatus,
-} from "../../../dataAccess";
-import { CoreState } from "../../../reducers";
-import { GraphQLApiResponse } from "../../gdcapi/gdcgraphql";
-import { fetchGenesSummaryQuery, GeneSummaryResponse } from "./geneSummaryApi";
+import { GraphQLApiResponse, graphqlAPISlice } from "../../gdcapi/gdcgraphql";
 
-export const fetchGeneSummary = createAsyncThunk(
-  "geneSummary/fetchGeneSummary",
-  async ({
-    gene_id,
-  }: {
-    gene_id: string;
-  }): Promise<GraphQLApiResponse<GeneSummaryResponse>> => {
-    return await fetchGenesSummaryQuery({ gene_id });
-  },
-);
+const geneSummary_query = `
+query GeneSummary($filters: FiltersArgument) {
+  viewer {
+    explore {
+      genes {
+        hits(first: 1, filters: $filters) {
+          edges {
+            node {
+              description
+              gene_id
+              symbol
+              name
+              synonyms
+              biotype
+              gene_chromosome
+              gene_start
+              gene_end
+              gene_strand
+              is_cancer_gene_census
+              external_db_ids {
+                entrez_gene
+                uniprotkb_swissprot
+                hgnc
+                omim_gene
+              }
+            }
+          }
+        }
+      }
+      ssms{
+        aggregations(filters: $filters) {
+          clinical_annotations__civic__gene_id{
+            buckets {
+              doc_count
+              key
+            }
+          }
+        }
+      }
+    }
+  }
+}
+`;
+
+interface GeneSummaryResponse {
+  viewer: {
+    explore: {
+      genes: {
+        hits: {
+          edges: Array<{
+            node: {
+              description: string;
+              gene_id: string;
+              symbol: string;
+              name: string;
+              synonyms: Array<string>;
+              biotype: string;
+              gene_chromosome: string;
+              gene_start: number;
+              gene_end: number;
+              gene_strand: number;
+              is_cancer_gene_census: boolean;
+              external_db_ids: {
+                entrez_gene: Array<string>;
+                uniprotkb_swissprot: Array<string>;
+                hgnc: Array<string>;
+                omim_gene: Array<string>;
+              };
+            };
+          }>;
+        };
+      };
+      ssms: {
+        aggregations: {
+          clinical_annotations__civic__gene_id: {
+            buckets: Array<{
+              doc_count: number;
+              key: string;
+            }>;
+          };
+        };
+      };
+    };
+  };
+}
 
 export interface GeneSummaryData {
   symbol: string;
@@ -40,28 +107,34 @@ export interface GeneSummaryData {
   };
 }
 
-export interface geneSummaryInitialState {
-  status: DataStatus;
-  genes?: GeneSummaryData;
-  readonly requestId?: string;
-}
+const geneSummarySlice = graphqlAPISlice.injectEndpoints({
+  endpoints: (builder) => ({
+    geneSummary: builder.query<
+      GeneSummaryData | undefined,
+      { gene_id: string }
+    >({
+      query: ({ gene_id }) => {
+        const filters = {
+          op: "and",
+          content: [
+            {
+              op: "in",
+              content: {
+                field: "genes.gene_id",
+                value: [gene_id],
+              },
+            },
+          ],
+        };
 
-const initialState: geneSummaryInitialState = {
-  status: "uninitialized",
-};
-
-const slice = createSlice({
-  name: "geneSummary",
-  initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchGeneSummary.fulfilled, (state, action) => {
-        if (state.requestId != action.meta.requestId) return state;
-
-        const response = action.payload;
-        state.status = "fulfilled";
-
+        return {
+          graphQLQuery: geneSummary_query,
+          graphQLFilters: { filters },
+        };
+      },
+      transformResponse: (
+        response: GraphQLApiResponse<GeneSummaryResponse>,
+      ) => {
         const edges = response.data.viewer.explore.genes.hits.edges;
         if (edges.length === 0) return undefined;
 
@@ -91,34 +164,10 @@ const slice = createSlice({
               ?.clinical_annotations__civic__gene_id?.buckets[0]?.key
           : undefined;
 
-        state.genes = { ...summary, civic };
-        return state;
-      })
-      .addCase(fetchGeneSummary.pending, (state, action) => {
-        state.status = "pending";
-        state.requestId = action.meta.requestId;
-        return state;
-      })
-      .addCase(fetchGeneSummary.rejected, (state, action) => {
-        if (state.requestId != action.meta.requestId) return state;
-        state.status = "rejected";
-        return state;
-      });
-  },
+        return { ...summary, civic };
+      },
+    }),
+  }),
 });
 
-export const genesSummaryReducer = slice.reducer;
-
-export const selectGenesSummaryData = (
-  state: CoreState,
-): CoreDataSelectorResponse<{ genes: GeneSummaryData | undefined }> => ({
-  data: {
-    genes: state.genesSummary.genes,
-  },
-  status: state.genesSummary.status,
-});
-
-export const useGenesSummaryData = createUseCoreDataHook(
-  fetchGeneSummary,
-  selectGenesSummaryData,
-);
+export const { useGeneSummaryQuery } = geneSummarySlice;

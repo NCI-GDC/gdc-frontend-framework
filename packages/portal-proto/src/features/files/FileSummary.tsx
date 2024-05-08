@@ -21,6 +21,7 @@ export const ContextualFileView: React.FC<ContextualFileViewProps> = ({
       },
     },
     expand: [
+      "annotations",
       "cases",
       "cases.annotations",
       "cases.project",
