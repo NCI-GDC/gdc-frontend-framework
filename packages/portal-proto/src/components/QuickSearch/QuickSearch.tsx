@@ -37,6 +37,7 @@ export const QuickSearch = (): JSX.Element => {
 
   const { data: fileHistory } = useGetHistoryQuery(searchText.trim(), {
     skip:
+      searchText === "" ||
       debounced === "" ||
       searchList?.length > 0 ||
       !uuidValidate(debounced.trim()),
@@ -128,6 +129,8 @@ export const QuickSearch = (): JSX.Element => {
                 <Highlight
                   highlight={searchText.trim()}
                   highlightStyles={{ fontStyle: "italic" }}
+                  span
+                  className="break-normal"
                 >
                   {mainText}
                 </Highlight>

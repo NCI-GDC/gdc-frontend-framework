@@ -1,12 +1,13 @@
 import GenericLink from "@/components/GenericLink";
 import { fileInCart } from "@/utils/index";
-import { GdcFile, GdcCartFile, CartFile } from "@gff/core";
+import { GdcFile, GdcCartFile, CartFile, AccessType } from "@gff/core";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import fileSize from "filesize";
 import { Dispatch, SetStateAction, useMemo } from "react";
 import { mapGdcFileToCartFile } from "./utils";
 import { TableActionButtons } from "@/components/TableActionButtons";
 import VerticalTable from "@/components/Table/VerticalTable";
+import { FileAccessBadge } from "@/components/FileAccessBadge";
 
 const DownstreamAnalyses = ({
   downstream_analyses,
@@ -18,6 +19,7 @@ const DownstreamAnalyses = ({
   setFileToDownload: Dispatch<SetStateAction<GdcFile>>;
 }): JSX.Element => {
   type DownstreamAnalysesType = {
+    access: AccessType;
     file_name: string;
     file_id: string;
     data_category: string;
@@ -34,6 +36,7 @@ const DownstreamAnalyses = ({
     if (byWorkflowType?.output_files) {
       byWorkflowType?.output_files?.forEach((outputFile) => {
         const transformedFile = {
+          access: outputFile.access,
           file_name: outputFile.file_name,
           file_id: outputFile.file_id,
           data_category: outputFile.data_category,
@@ -55,6 +58,11 @@ const DownstreamAnalyses = ({
     ColumnDef<DownstreamAnalysesType>[]
   >(
     () => [
+      downstreamAnalysesColumnHelper.accessor("access", {
+        id: "access",
+        header: "Access",
+        cell: ({ getValue }) => <FileAccessBadge access={getValue()} />,
+      }),
       downstreamAnalysesColumnHelper.display({
         id: "file_name",
         header: "File Name",

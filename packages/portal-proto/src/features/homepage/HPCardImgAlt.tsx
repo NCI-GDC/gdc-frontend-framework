@@ -1,11 +1,15 @@
-import Link from "next/link";
+import Link, { LinkProps } from "next/link";
 import { Image } from "@/components/Image";
-import {
-  homepageButtonAltStyles,
-  HPCardImgAltProps,
-  imageSizes,
-  imageWrapperStyle,
-} from "./utils";
+import { homepageButtonAltStyles, imageWrapperStyles } from "./utils";
+
+interface HPCardImgAltProps {
+  head: string | JSX.Element;
+  imgSrc: string;
+  imgAlt: string;
+  body: JSX.Element;
+  linkText: string;
+  href: LinkProps["href"] | string;
+}
 
 const HPCardImgAlt = ({
   head,
@@ -19,17 +23,17 @@ const HPCardImgAlt = ({
     <div className="bg-gradient-to-r from-[#1673A3] to-[#833689] px-4 xl:px-0">
       <div className="py-10 xl:max-w-screen-lg mx-auto text-base-max lg:flex gap-16 items-center">
         <div className="flex gap-6 mb-9 xl:mb-0">
-          <div className={imageWrapperStyle}>
+          <div className="relative w-52 h-52 md:w-40 md:h-40 lg:w-72 lg:h-72 xl:w-80 xl:h-80">
+            <div
+              className={`-inset-1 bg-summarybar-border ${imageWrapperStyles}`}
+            />
+            <div
+              className={`-bottom-1 -right-1 bg-summarybar-borderAlt ${imageWrapperStyles}`}
+            />
             <Image
               alt={imgAlt}
               src={imgSrc}
-              className={`
-                rounded-lg z-10
-                w-[${imageSizes.small}px] h-[${imageSizes.small}px]
-                md:w-[${imageSizes.medium}px] md:h-[${imageSizes.medium}px]
-                lg:w-[${imageSizes.large}px] lg:h-[${imageSizes.large}px]
-                xl:w-[${imageSizes.extraLarge}px] xl:h-[${imageSizes.extraLarge}px]
-              `}
+              className="rounded-lg z-10"
               layout="fill"
             />
           </div>

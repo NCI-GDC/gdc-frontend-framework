@@ -210,7 +210,7 @@ export const Bodyplot = (): JSX.Element => {
         mouseOutHandler: mouseOutHandler,
       });
     }
-  }, [width, mouseOutHandler, processedData, root, bodyplotRef]);
+  }, [width, mediumWidth, mouseOutHandler, processedData, root, bodyplotRef]);
 
   return (
     <div
