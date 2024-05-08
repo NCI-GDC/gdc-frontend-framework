@@ -162,6 +162,7 @@ def download_file_at_file_table(file: str, source: str):
         "Cohort Bar": APP.cohort_bar.click_cohort_bar_button,
         "Manage Sets": APP.manage_sets_page.click_on_download_for_set,
         "Cohort Comparison": APP.cohort_comparison_page.click_download_tsv_button_on_analysis_card_cohort_comparison,
+        "Mutation Frequency": APP.mutation_frequency_page.click_table_download_button,
     }
     driver = WebDriver.page
     with driver.expect_download(timeout=60000) as download_info:
