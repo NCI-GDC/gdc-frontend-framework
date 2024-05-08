@@ -147,7 +147,7 @@ export const RepositoryApp = (): JSX.Element => {
                   <Menu.Target>
                     <Button
                       data-testid="button-download-associated-data-files-table"
-                      rightIcon={
+                      rightSection={
                         <Dropdown
                           size="1.25em"
                           aria-hidden="true"
@@ -155,7 +155,7 @@ export const RepositoryApp = (): JSX.Element => {
                         />
                       }
                       classNames={{
-                        rightIcon: "border-l pl-1 -mr-2",
+                        section: "border-l pl-1 -mr-2",
                       }}
                       variant="outline"
                     >
@@ -334,7 +334,7 @@ export const RepositoryApp = (): JSX.Element => {
                       );
                     }
                   }}
-                  classNames={{ leftIcon: "mr-0 xl:mr-2" }}
+                  classNames={{ section: "mr-0 xl:mr-2" }}
                 >
                   Add All Files to Cart
                 </FunctionButton>
@@ -343,7 +343,7 @@ export const RepositoryApp = (): JSX.Element => {
                   leftSection={
                     <VscTrash aria-hidden="true" className="hidden xl:block" />
                   }
-                  classNames={{ leftIcon: "mr-0 xl:mr-2" }}
+                  classNames={{ section: "mr-0 xl:mr-2" }}
                   loading={allFilesLoading}
                   onClick={() => {
                     getAllSelectedFiles(

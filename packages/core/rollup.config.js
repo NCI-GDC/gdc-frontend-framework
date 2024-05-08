@@ -76,7 +76,7 @@ const config = [
     ],
   },
   {
-    input: "./dist/dts/index.d.ts",
+    input: "./dist/index.d.ts",
     output: [{ file: "dist/index.d.ts", format: "es" }],
     plugins: [dts()],
   },

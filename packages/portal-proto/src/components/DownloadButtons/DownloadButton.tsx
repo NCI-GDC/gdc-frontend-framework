@@ -146,7 +146,7 @@ export const DownloadButton = forwardRef<
               <FiDownload aria-label="download" className="hidden xl:block" />
             )
           }
-          classNames={{ leftIcon: "mr-0 xl:mr-3" }}
+          classNames={{ section: "mr-0 xl:mr-3" }}
           disabled={disabled}
           loading={showLoading && active}
           variant="outline"
