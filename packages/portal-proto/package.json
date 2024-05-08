@@ -1,6 +1,6 @@
 {
   "name": "portal-proto",
-  "version": "2.13.0",
+  "version": "2.14.0",
   "scripts": {
     "clean": "rimraf .next",
     "dev": "next",
@@ -21,7 +21,7 @@
     "@dnd-kit/utilities": "^3.2.1",
     "@fontsource/montserrat": "^4.5.14",
     "@fontsource/noto-sans": "^4.5.11",
-    "@gff/core": "^2.13.0",
+    "@gff/core": "^2.14.0",
     "@mantine/core": "^6.0.21",
     "@mantine/dates": "^6.0.21",
     "@mantine/form": "^6.0.21",
