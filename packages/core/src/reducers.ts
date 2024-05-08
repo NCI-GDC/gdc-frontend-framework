@@ -9,7 +9,6 @@ import {
   filesApiReducer,
   filesApiSliceReducerPath,
 } from "./features/files/filesSlice";
-import { filesSizeReducer } from "./features/files/totalFileSizeSlice";
 import {
   projectsApiReducer,
   projectsApiSliceReducerPath,
@@ -20,11 +19,9 @@ import {
 } from "./features/projects/projectsPrimarySiteSlice";
 import { casesReducer } from "./features/cases/casesSlice";
 import { genomicReducers } from "./features/genomic/genomicSlice";
-import { cohortComparisonReducer } from "./features/cohortComparison";
 import { bannerReducer } from "./features/bannerNotification";
 import { cartReducer } from "./features/cart";
 import { totalCountsReducer } from "./features/summary/totalCountsSlice";
-import { genesSummaryReducer } from "./features/genomic/geneSummary/geneSummarySlice";
 import {
   cohortApiReducer,
   cohortApiSliceReducerPath,
@@ -37,7 +34,6 @@ import {
   survivalApiSliceReducerPath,
   survivalApiReducer,
 } from "./features/survival/survivalApiSlice";
-import { biospecimenReducer } from "./features/biospecimen/biospecimenSlice";
 import { clinicalDataAnalysisReducer } from "./features/clinicalDataAnalysis";
 import { facetsByNameTypeAndFilterReducer } from "./features/facets/facetsByNameTypeAndFilter";
 import { modalReducer } from "./features/modals/modalsSlice";
@@ -46,7 +42,6 @@ import {
   quickSearchApiReducerPath,
 } from "./features/quickSearch/quickSearch";
 import { versionInfoReducer } from "./features/versionInfo/versionInfoSlice";
-import { cancerDistributionReducer } from "./features/cancerDistribution";
 import {
   graphqlAPISliceReducerPath,
   graphqlAPIReducer,
@@ -84,17 +79,12 @@ export const reducers = combineReducers({
   facetsGQL: fileCaseGenesMutationsFacetReducers,
   facetsByNameTypeFilter: facetsByNameTypeAndFilterReducer,
   gdcApps: gdcAppReducer,
-  filesSize: filesSizeReducer,
   cases: casesReducer,
-  cancerDistribution: cancerDistributionReducer,
   genomic: genomicReducers,
-  cohortComparison: cohortComparisonReducer,
   cart: cartReducer,
   bannerNotification: bannerReducer,
   summary: totalCountsReducer,
-  biospecimen: biospecimenReducer,
   clinicalDataAnalysis: clinicalDataAnalysisReducer,
-  genesSummary: genesSummaryReducer,
   modals: modalReducer,
   [imageDetailsApiReducerPath]: imageDetailsApiReducer,
   [quickSearchApiReducerPath]: quickSearchApiReducer,

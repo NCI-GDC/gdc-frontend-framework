@@ -106,6 +106,7 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
           variant="outline"
           size="xs"
           data-testid={`button-${facetTitle}`}
+          classNames={{ label: "break-words whitespace-pre-wrap" }}
         >
           + Add {facetTitle}
         </Button>

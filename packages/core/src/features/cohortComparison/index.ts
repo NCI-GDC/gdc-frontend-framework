@@ -1,18 +1,5 @@
-import { useCohortFacetsQuery, CohortFacetDoc } from "./cohortFacetSlice";
-import {
-  cohortVennDiagramReducer,
-  useVennIntersectionData,
-} from "./vennDiagramSlice";
-import { fetchPValue } from "./pValueApi";
-import { combineReducers } from "@reduxjs/toolkit";
+import { useCohortFacetsQuery } from "./cohortFacetSlice";
+import { useVennDiagramQuery } from "./vennDiagramSlice";
+import { usePValueQuery } from "./pValueApi";
 
-export const cohortComparisonReducer = combineReducers({
-  venn: cohortVennDiagramReducer,
-});
-
-export {
-  useCohortFacetsQuery,
-  CohortFacetDoc,
-  fetchPValue,
-  useVennIntersectionData,
-};
+export { useCohortFacetsQuery, usePValueQuery, useVennDiagramQuery };
