@@ -1,6 +1,6 @@
 import GenericLink from "@/components/GenericLink";
 import { TableActionButtons } from "@/components/TableActionButtons";
-import { CartFile, GdcCartFile, GdcFile } from "@gff/core";
+import { AccessType, CartFile, GdcCartFile, GdcFile } from "@gff/core";
 import { createColumnHelper } from "@tanstack/react-table";
 import fileSize from "filesize";
 import { Dispatch, SetStateAction, useMemo } from "react";
@@ -8,9 +8,11 @@ import { mapGdcFileToCartFile } from "./utils";
 import { fileInCart } from "@/utils/index";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { HeaderTitle } from "@/components/tailwindComponents";
+import { FileAccessBadge } from "@/components/FileAccessBadge";
 
 type AnalysisInputDataItem = {
   file: GdcCartFile;
+  access: AccessType;
   file_name: string;
   file_id: string;
   data_category: string;
@@ -31,6 +33,7 @@ const AnalysisInputFiles = ({
   const data: AnalysisInputDataItem[] = useMemo(() => {
     return inputFiles.map((ipFile) => ({
       file: ipFile,
+      access: ipFile.access,
       file_name: ipFile.file_name,
       file_id: ipFile.file_id,
       data_category: ipFile.data_category,
@@ -44,6 +47,11 @@ const AnalysisInputFiles = ({
 
   const columns = useMemo(
     () => [
+      columnHelper.accessor("access", {
+        id: "access",
+        header: "Access",
+        cell: ({ getValue }) => <FileAccessBadge access={getValue()} />,
+      }),
       columnHelper.accessor("file_name", {
         header: "File Name",
         cell: ({ row }) => (
