@@ -212,7 +212,26 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
               },
             },
           })
-        : undefined;
+        : {
+            mode: "and",
+            root: {
+              "cases.project.project_id": {
+                field: "cases.project.project_id",
+                operator: "includes",
+                operands: [project],
+              },
+              "genes.gene_id": {
+                field: "genes.gene_id",
+                operator: "=",
+                operand: id,
+              },
+              "genes.cnv.cnv_change": {
+                field: "genes.cnv.cnv_change",
+                operator: "=",
+                operand: filter,
+              },
+            },
+          };
     },
     [id],
   );
@@ -356,7 +375,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                   numCases={row.original.cnv_losses.numerator || 0}
                   filters={createCNVGainLossFilters(
                     row.original.project,
-                    "Gain",
+                    "Loss",
                     genomicFilters,
                   )}
                   caseFilters={cohortFilters}
