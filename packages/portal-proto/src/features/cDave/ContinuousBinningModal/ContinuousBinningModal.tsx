@@ -162,6 +162,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
   useEffect(() => {
     if (binMethod === "interval") {
       rangeForm.clearErrors();
+      intervalForm.validate();
     } else {
       intervalForm.clearErrors();
     }
