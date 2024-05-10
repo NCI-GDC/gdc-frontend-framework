@@ -137,6 +137,7 @@ export const createHumanBody: TCreateHumanBody = ({
     .data(data)
     .enter()
     .append("text")
+    .attr("data-testid", (d: any) => `Label-${toClassName(d[primarySiteKey])}`)
     .attr(
       "class",
       (d: any) => `primary-site-label-${toClassName(d[primarySiteKey])}`,
@@ -241,6 +242,10 @@ export const createHumanBody: TCreateHumanBody = ({
       d.color = colorCodes[d[primarySiteKey]];
       return d.color;
     })
+    .attr(
+      "data-testid",
+      (d: any) => `Bar-Graph-${toClassName(d[primarySiteKey])}`,
+    )
     .attr("class", (d: any) => `bar-${toClassName(d[primarySiteKey])}`)
     .on("mouseover", function (event: any, d: any) {
       const organSelector = toClassName(d[primarySiteKey] as string);
