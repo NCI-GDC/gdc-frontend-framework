@@ -223,7 +223,9 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
               const tokens = parseTokens(event.currentTarget.value);
               queryForMatchesDebounced(tokens);
             }}
+            autosize
             minRows={5}
+            maxRows={5}
             id="identifier-input"
             placeholder={textInputPlaceholder}
             error={
