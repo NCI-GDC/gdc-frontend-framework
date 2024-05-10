@@ -267,6 +267,7 @@ const Controls: React.FC<ControlPanelProps> = ({
           aria-controls={"cdave-control-panel"}
           aria-expanded={controlsExpanded}
           className="text-base"
+          variant="subtle"
         >
           {controlsExpanded ? (
             <DoubleLeftIcon aria-hidden="true" />
