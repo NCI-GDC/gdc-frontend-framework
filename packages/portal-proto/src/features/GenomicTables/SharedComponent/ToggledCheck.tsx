@@ -46,6 +46,8 @@ const ToggledCheck: React.FC<ToggleProps> = ({
         icon={CheckboxIcon}
         aria-disabled={disabled}
         aria-label={ariaText}
+        variant="outline"
+        color={isActive ? "white" : "black"}
         onChange={() => {
           if (!disabled)
             // todo: if used for > 2 icons refactor to use switch(icon) statement
@@ -55,11 +57,12 @@ const ToggledCheck: React.FC<ToggleProps> = ({
         }}
         classNames={{
           root: margin,
-          input: `cursor-pointer ${
+          input: `peer cursor-pointer ${
             disabled
               ? "bg-base-lighter hover:bg-primary-lighter"
               : "hover:bg-primary checked:bg-primary-darkest"
           }`,
+          icon: "peer-hover:!text-white",
         }}
       />
     </Tooltip>
