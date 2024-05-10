@@ -24,6 +24,7 @@ import { filesApiSliceMiddleware } from "./features/files/filesSlice";
 import { historyApiSliceMiddleware } from "./features/history/historySlice";
 import storage from "./storage-persist";
 import { userAuthApiMiddleware } from "./features/users/usersSlice";
+import { bannerNotificationApiSliceMiddleware } from "./features/bannerNotification/bannerNotificationSlice";
 
 const persistConfig = {
   key: "root",
@@ -71,6 +72,7 @@ export const coreStore = configureStore({
         projectApiSliceMiddleware,
         userAuthApiMiddleware,
         historyApiSliceMiddleware,
+        bannerNotificationApiSliceMiddleware,
       )
       .prepend(coreStoreListenerMiddleware.middleware), // needs to be prepended
 });

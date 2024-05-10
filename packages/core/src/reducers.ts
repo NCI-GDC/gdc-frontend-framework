@@ -63,6 +63,10 @@ import {
   historyApiReducer,
   historyApiSliceReducerPath,
 } from "./features/history/historySlice";
+import {
+  bannerNotificationApiReducer,
+  bannerNotificationApiSliceReducerPath,
+} from "./features/bannerNotification/bannerNotificationSlice";
 
 // We want unsaved cohorts to be persisted through a refresh but not through a user ending their session
 const cohortPersistConfig = {
@@ -101,6 +105,7 @@ export const reducers = combineReducers({
   [endpointSliceReducerPath]: endpointReducer,
   [userAuthApiReducerPath]: userAuthApiReducer,
   [historyApiSliceReducerPath]: historyApiReducer,
+  [bannerNotificationApiSliceReducerPath]: bannerNotificationApiReducer,
   versionInfo: versionInfoReducer,
   sets: setsReducer,
 });

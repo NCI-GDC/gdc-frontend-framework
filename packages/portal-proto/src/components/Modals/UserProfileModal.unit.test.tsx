@@ -6,6 +6,9 @@ describe("<UserProfileModal />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
+    jest
+      .spyOn(core, "useLazyGetBannerNotificationsQuery")
+      .mockImplementation(jest.fn().mockReturnValue([jest.fn()]));
   });
 
   it("should show no access message when there are not projets assigned to the user. ", () => {

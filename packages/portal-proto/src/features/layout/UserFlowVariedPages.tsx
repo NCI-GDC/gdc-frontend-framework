@@ -4,11 +4,11 @@ import {
   isString,
   useCoreSelector,
   useCoreDispatch,
-  fetchNotifications,
   selectBanners,
   selectCurrentCohortName,
   selectCohortMessage,
   clearCohortMessage,
+  useGetBannerNotificationsQuery,
 } from "@gff/core";
 import Banner from "@/components/Banner";
 import { Button } from "@mantine/core";
@@ -45,11 +45,7 @@ export const UserFlowVariedPages = ({
 }: PropsWithChildren<UserFlowVariedPagesProps>) => {
   const dispatch = useCoreDispatch();
 
-  useEffect(() => {
-    dispatch(fetchNotifications());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+  useGetBannerNotificationsQuery();
   const banners = useCoreSelector((state) => selectBanners(state));
 
   const currentCohortName = useCoreSelector((state) =>
