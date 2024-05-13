@@ -210,7 +210,6 @@ export const ageDisplay = (
       ? `${remainingDays} ${remainingDays === 1 ? "day" : "days"}`
       : "";
 
-  console.log({ formattedYears, formattedDays });
   const ageString = [formattedYears, formattedDays].filter(Boolean).join(" ");
 
   return ageInDays >= 0 ? ageString : `-${ageString}`;
