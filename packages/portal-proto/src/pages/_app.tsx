@@ -8,7 +8,7 @@ import "@/features/projectsCenter/registerApp";
 import "@/features/repositoryApp/registerApp";
 import { datadogRum } from "@datadog/browser-rum";
 import { CoreProvider, PUBLIC_APP_INFO } from "@gff/core";
-import { createTheme, MantineProvider } from "@mantine/core";
+import { createTheme, MantineProvider, Modal } from "@mantine/core";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import { useLocalStorage } from "@mantine/hooks";
@@ -170,7 +170,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
           },
         },
       },
-      Modal: {
+      Modal: Modal.extend({
         defaultProps: {
           zIndex: 400,
           radius: "md",
@@ -182,6 +182,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
               borderWidth: "0px 0px 2px 0px",
               padding: "15px 15px 5px 15px",
               margin: "5px 5px 10px 5px",
+              minHeight: "0",
             },
             title: {
               color: defaultTailwindColorTheme["primary-content"].darkest,
@@ -194,19 +195,13 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
             body: {
               padding: 0,
             },
-            modal: {
-              backgroundColor: defaultTailwindColorTheme.base.max,
-            },
             close: {
               backgroundColor: defaultTailwindColorTheme.base.lightest,
               color: defaultTailwindColorTheme["primary-content"].darkest,
             },
           },
-          classNames: {
-            modal: "drop-shadow-lg",
-          },
         },
-      },
+      }),
       Drawer: {
         defaultProps: {
           target: "#__next",
