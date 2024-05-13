@@ -101,7 +101,6 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
   const [selectedFacets, setSelectedFacets] = useState<SelectedFacet[]>([]);
   const [yTotal, setYTotal] = useState(0);
 
-  console.log({ selectedSurvivalPlots });
   const ranges = useDeepCompareMemo(
     () =>
       isInterval(customBinnedData)
@@ -151,7 +150,6 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
   );
 
   useDeepCompareEffect(() => {
-    console.log({ displayedData });
     selectedSurvivalPlots.length === 0 &&
       setSelectedSurvivalPlots(
         displayedData

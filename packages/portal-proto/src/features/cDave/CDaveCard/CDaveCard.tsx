@@ -55,8 +55,6 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
       : DATA_DIMENSIONS?.[field]?.unit,
   );
 
-  console.log({ dataDimension });
-
   const continuous = CONTINUOUS_FACET_TYPES.includes(facet?.type);
   const noData = continuous
     ? (data as Stats)?.stats?.count === 0
