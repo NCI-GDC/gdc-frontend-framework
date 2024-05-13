@@ -29,12 +29,12 @@ export const Slides: React.FC<SlidesProps> = ({
             ? "var(--mantine-color-accent-3)"
             : "var(--mantine-color-gray-3)",
         }}
-        className={isActive ? "" : "hover:bg-[var(--mantine-color-gray-7)]"}
+        className={isActive ? "" : "hover:!bg-[var(--mantine-color-gray-7)]"}
       >
         <Badge
           data-testid={submitter_id}
           variant="filled"
-          className="mb-1 text-xs text-primary-contrast"
+          className="mb-1 text-xs text-primary-contrast truncate w-full"
         >
           {submitter_id}
         </Badge>

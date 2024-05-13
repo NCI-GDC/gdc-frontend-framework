@@ -287,11 +287,14 @@ export const MultipleImageViewer = ({
                               data-testid={edge}
                               key={edge}
                               value={index.toString()}
-                              className={`mx-2 mt-1 hover:bg-primary-dark [&>span]:hover:text-primary-contrast ${
-                                activeTab.toString() === index.toString()
-                                  ? "bg-primary-dark [&>span]:text-primary-contrast [&>span]:font-bold"
-                                  : "bg-white [&>span]:text-black [&>span]:font-medium"
-                              } truncate ...`}
+                              classNames={{
+                                tab: `mx-2 mt-1 hover:bg-primary-dark [&>span]:hover:text-primary-contrast ${
+                                  activeTab.toString() === index.toString()
+                                    ? "bg-primary-dark [&>span]:text-primary-contrast [&>span]:font-bold"
+                                    : "bg-white [&>span]:text-black [&>span]:font-medium"
+                                } ...`,
+                                tabLabel: "truncate",
+                              }}
                               styles={{
                                 tab: {
                                   backgroundColor: "",
@@ -301,6 +304,7 @@ export const MultipleImageViewer = ({
                                   color: "",
                                 },
                               }}
+                              title={edge}
                             >
                               {edge}
                             </Tabs.Tab>
@@ -314,7 +318,11 @@ export const MultipleImageViewer = ({
                               {data?.edges[edge].map((file, index) => (
                                 <List.Item
                                   key={`${file.file_id}${file.submitter_id}`}
-                                  className="mb-2"
+                                  classNames={{
+                                    item: "mb-2",
+                                    itemLabel: "w-full",
+                                  }}
+                                  title={file.submitter_id}
                                 >
                                   <Slides
                                     file_id={file.file_id}
