@@ -5,7 +5,7 @@ import {
   IoIosArrowDropupCircle as CollapseIcon,
 } from "react-icons/io";
 import { createKeyboardAccessibleFunction } from "src/utils";
-import { StyledTabsList, StyledTab } from "@/components/StyledComponents/Tabs";
+import { StyledTab } from "@/components/StyledComponents/Tabs";
 import { MatchResults } from "./utils";
 import MatchedTable from "./MatchedTable";
 import UnmatchedTable from "./UnmatchedTable";
@@ -51,7 +51,7 @@ const MatchTablesWrapper: React.FC<MatchTablesProps> = ({
       </span>
       <Collapse in={showTable}>
         <Tabs value={activeTab} onChange={setActiveTab}>
-          <StyledTabsList>
+          <Tabs.List>
             <StyledTab value="matched">
               Matched
               <Badge
@@ -76,7 +76,7 @@ const MatchTablesWrapper: React.FC<MatchTablesProps> = ({
                 {unmatched.length}
               </Badge>
             </StyledTab>
-          </StyledTabsList>
+          </Tabs.List>
           <Tabs.Panel value="matched">
             <MatchedTable
               matched={matched}
