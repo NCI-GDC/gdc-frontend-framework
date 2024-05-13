@@ -7,7 +7,7 @@ describe("<UserProfileModal />", () => {
     jest.clearAllMocks();
     jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
     jest
-      .spyOn(core, "useLazyGetBannerNotificationsQuery")
+      .spyOn(core, "useGetBannerNotificationsQuery")
       .mockImplementation(jest.fn().mockReturnValue([jest.fn()]));
   });
 

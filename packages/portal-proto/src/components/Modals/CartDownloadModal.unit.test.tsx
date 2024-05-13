@@ -9,7 +9,7 @@ jest
   .spyOn(core, "useLazyFetchUserDetailsQuery")
   .mockImplementation(jest.fn().mockReturnValue([jest.fn()]));
 jest
-  .spyOn(core, "useLazyGetBannerNotificationsQuery")
+  .spyOn(core, "useGetBannerNotificationsQuery")
   .mockImplementation(jest.fn().mockReturnValue([jest.fn()]));
 
 describe("<CartDownloadModal />", () => {
