@@ -17,10 +17,10 @@ tags: gdc-data-portal-v2, regression, home-page, cohort-bar
 * Is modal with text "Liver has been created. This is now your current cohort." present on the page and "Remove Modal"
 * Wait for cohort bar case count loading spinner
 * Validate the cohort query filter area has these filters
-  |facet_name               |selections                                                                   |position in filter area  |
-  |-------------------------|-----------------------------------------------------------------------------|-------------------------|
-  |Primary Site             |liver and intrahepatic bile ducts                                            |1                        |
-  |Tissue or Organ of Origin|intrahepatic bile ductliver                                                  |2                        |
+  |facet_name               |selections                         |position in filter area  |
+  |-------------------------|-----------------------------------|-------------------------|
+  |Primary Site             |liver and intrahepatic bile ducts  |1                        |
+  |Tissue or Organ of Origin|intrahepatic bile ductliver        |2                        |
 
 ## Replace Previous Unsaved Cohort and Save the Cohort
 * Navigate to "Home" from "Header" "section"
@@ -30,10 +30,10 @@ tags: gdc-data-portal-v2, regression, home-page, cohort-bar
 * Select "Yes"
 * Is modal with text "Kidney has been created. This is now your current cohort." present on the page and "Remove Modal"
 * Validate the cohort query filter area has these filters
-  |facet_name               |selections                                                                   |position in filter area  |
-  |-------------------------|-----------------------------------------------------------------------------|-------------------------|
-  |Primary Site             |Kidney                                                                       |1                        |
-  |Tissue or Organ of Origin|kidney, nos                                                                  |2                        |
+  |facet_name               |selections                         |position in filter area  |
+  |-------------------------|-----------------------------------|-------------------------|
+  |Primary Site             |Kidney                             |1                        |
+  |Tissue or Organ of Origin|kidney, nos                        |2                        |
 * Select "Save" from the Cohort Bar
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
@@ -47,10 +47,10 @@ tags: gdc-data-portal-v2, regression, home-page, cohort-bar
 * Select "Yes"
 * Is modal with text "Adrenal Gland has been created. This is now your current cohort." present on the page and "Remove Modal"
 * Validate the cohort query filter area has these filters
-  |facet_name               |selections                                                                   |position in filter area  |
-  |-------------------------|-----------------------------------------------------------------------------|-------------------------|
-  |Primary Site             |adrenal gland                                                                |1                        |
-  |Tissue or Organ of Origin|adrenal gland, noscortex of adrenal glandmedulla of adrenal gland            |2                        |
+  |facet_name               |selections                                                       |position in filter area  |
+  |-------------------------|-----------------------------------------------------------------|-------------------------|
+  |Primary Site             |adrenal gland                                                    |1                        |
+  |Tissue or Organ of Origin|adrenal gland, noscortex of adrenal glandmedulla of adrenal gland|2                        |
 * Select "Delete" from the Cohort Bar
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
