@@ -170,7 +170,7 @@ export const CasesCohortButtonFromFilters: React.FC<
     [case_filters, createSet, filters],
   );
   const { data, isSuccess, isLoading } = useGetCasesQuery(
-    { filters, fields: ["case_id"], size: 50000 },
+    { request: { filters, fields: ["case_id"], size: 50000 } },
     { skip: filters === undefined },
   );
 
@@ -179,7 +179,7 @@ export const CasesCohortButtonFromFilters: React.FC<
       onCreateSet={onCreateSet}
       response={response}
       numCases={numCases}
-      cases={isSuccess ? data.map((d) => d.case_id) : []}
+      cases={isSuccess ? data?.hits.map((d) => d.case_id) : []}
       fetchingCases={isLoading}
     />
   );

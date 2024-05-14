@@ -1,11 +1,7 @@
 import { Reducer } from "@reduxjs/toolkit";
 
-import {
-  endpointSlice,
-  GdcApiRequest,
-  GdcApiResponse,
-  ProjectDefaults,
-} from "../gdcapi/gdcapi";
+import { endpointSlice, GdcApiRequest, GdcApiResponse } from "../gdcapi/gdcapi";
+import { ProjectDefaults } from "../gdcapi/types";
 
 /**
  *  RTK Query endpoint to fetch clinical analysis data using case_filter with the cases endpoint

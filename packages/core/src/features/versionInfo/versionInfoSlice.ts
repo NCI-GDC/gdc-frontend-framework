@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import Cookies from "js-cookie";
 import { GDC_API } from "../../constants";
 import {
   CoreDataSelectorResponse,
@@ -55,6 +56,7 @@ const slice = createSlice({
       .addCase(fetchVersionInfo.fulfilled, (state, action) => {
         const response = action.payload;
         state.data = { ...response };
+        Cookies.set("gdc_api_version", response.data_release);
         state.status = "fulfilled";
         return state;
       })

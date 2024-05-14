@@ -17,16 +17,11 @@ import {
   projectPrimarySiteApiSliceReducer,
   projectPrimarySiteApiSliceReducerPath,
 } from "./features/projects/projectsPrimarySiteSlice";
-import { annotationsReducer } from "./features/annotations/annotationsSlice";
 import { casesReducer } from "./features/cases/casesSlice";
 import { genomicReducers } from "./features/genomic/genomicSlice";
-import { imageDetailsReducer } from "./features/imageDetails/imageDetailsSlice";
-import { imageViewerReducer } from "./features/imageDetails/imageViewer";
 import { bannerReducer } from "./features/bannerNotification";
 import { cartReducer } from "./features/cart";
 import { totalCountsReducer } from "./features/summary/totalCountsSlice";
-import { ssmsReducer } from "./features/genomic/ssmsSummary/ssmsSummarySlice";
-
 import {
   cohortApiReducer,
   cohortApiSliceReducerPath,
@@ -40,10 +35,12 @@ import {
   survivalApiReducer,
 } from "./features/survival/survivalApiSlice";
 import { clinicalDataAnalysisReducer } from "./features/clinicalDataAnalysis";
-import { caseSummarySliceReducer } from "./features/cases/caseSummarySlice";
 import { facetsByNameTypeAndFilterReducer } from "./features/facets/facetsByNameTypeAndFilter";
 import { modalReducer } from "./features/modals/modalsSlice";
-import { quickSearchReducer } from "./features/quickSearch/quickSearch";
+import {
+  quickSearchApiReducer,
+  quickSearchApiReducerPath,
+} from "./features/quickSearch/quickSearch";
 import { versionInfoReducer } from "./features/versionInfo/versionInfoSlice";
 import {
   graphqlAPISliceReducerPath,
@@ -63,6 +60,10 @@ import {
   historyApiReducer,
   historyApiSliceReducerPath,
 } from "./features/history/historySlice";
+import {
+  imageDetailsApiReducerPath,
+  imageDetailsApiReducer,
+} from "./features/imageDetails/imageDetailsSlice";
 
 // We want unsaved cohorts to be persisted through a refresh but not through a user ending their session
 const cohortPersistConfig = {
@@ -78,19 +79,15 @@ export const reducers = combineReducers({
   facetsGQL: fileCaseGenesMutationsFacetReducers,
   facetsByNameTypeFilter: facetsByNameTypeAndFilterReducer,
   gdcApps: gdcAppReducer,
-  annotations: annotationsReducer,
   cases: casesReducer,
   genomic: genomicReducers,
-  imageDetails: imageDetailsReducer,
-  imageViewer: imageViewerReducer,
   cart: cartReducer,
   bannerNotification: bannerReducer,
   summary: totalCountsReducer,
   clinicalDataAnalysis: clinicalDataAnalysisReducer,
-  caseSummary: caseSummarySliceReducer,
-  ssms: ssmsReducer,
   modals: modalReducer,
-  quickSearch: quickSearchReducer,
+  [imageDetailsApiReducerPath]: imageDetailsApiReducer,
+  [quickSearchApiReducerPath]: quickSearchApiReducer,
   [filesApiSliceReducerPath]: filesApiReducer,
   [allFilesApiSliceReducerPath]: allFilesApiReducer,
   [projectsApiSliceReducerPath]: projectsApiReducer,
