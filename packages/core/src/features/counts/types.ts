@@ -1,4 +1,4 @@
-import { FilterSet } from "../cohort";
+// import { FilterSet } from "../cohort";
 
 export type CountQueryResponse = {
   count: number; // return count or -1 if not loaded
@@ -7,6 +7,6 @@ export type CountQueryResponse = {
   isSuccess: boolean; // return true if success
 };
 
-export type CountHook = (filters: FilterSet) => any;
+export type CountHook = () => any;
 
 export type CountHookMap = { [key: string]: CountHook };

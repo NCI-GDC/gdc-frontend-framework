@@ -1,4 +1,4 @@
-import CountHookRegistry from "../countHooksRegistry";
+import CountHookRegistry, { defaultCountHook } from "../countHooksRegistry";
 import { CountHook } from "../types"; // Replace '?' with accurate file path
 
 describe("CountHookRegistry", () => {
@@ -21,7 +21,7 @@ describe("CountHookRegistry", () => {
       const mockFunction: CountHook = jest.fn();
 
       registry.registerFunction("testFunc", mockFunction);
-      const actualFunction = registry.getFunction("testFunc");
+      const actualFunction = registry.getHook("testFunc");
 
       expect(actualFunction).toBe(mockFunction);
     });
@@ -33,16 +33,16 @@ describe("CountHookRegistry", () => {
       const mockFunction: CountHook = jest.fn();
 
       registry.registerFunction("testFunc", mockFunction);
-      const actualFunction = registry.getFunction("testFunc");
+      const actualFunction = registry.getHook("testFunc");
 
       expect(actualFunction).toBe(mockFunction);
     });
 
     it("returns undefined for function names that have not been registered", () => {
       const registry = CountHookRegistry.getInstance();
-      const actualFunction = registry.getFunction("nonexistentFunc");
+      const actualFunction = registry.getHook("nonexistentFunc");
 
-      expect(actualFunction).toBeUndefined();
+      expect(actualFunction).toBe(defaultCountHook);
     });
   });
 

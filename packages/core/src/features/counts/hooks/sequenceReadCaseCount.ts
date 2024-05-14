@@ -25,10 +25,24 @@ const sequenceReadCaseCountSlice = graphqlAPISlice.injectEndpoints({
             op: "and",
             content: [
               {
-                op: "in",
+                op: "=",
                 content: {
-                  field: "files.analysis.workflow_type",
-                  value: ["sequence_read"],
+                  field: "files.index_files.data_format",
+                  value: "bai",
+                },
+              },
+              {
+                op: "=",
+                content: {
+                  field: "files.data_type",
+                  value: "Aligned Reads",
+                },
+              },
+              {
+                op: "=",
+                content: {
+                  field: "files.data_format",
+                  value: "bam",
                 },
               },
             ],
@@ -40,9 +54,10 @@ const sequenceReadCaseCountSlice = graphqlAPISlice.injectEndpoints({
         };
       },
       transformResponse: (response) =>
-        response?.data?.viewer?.repository?.sequenceReads?.hits?.total ?? -1,
+        response?.data?.viewer?.repository?.sequenceReads?.hits?.total ?? 0,
     }),
   }),
 });
 
-export const { useSequenceReadCaseCountsQuery } = sequenceReadCaseCountSlice;
+export const { useLazySequenceReadCaseCountsQuery } =
+  sequenceReadCaseCountSlice;

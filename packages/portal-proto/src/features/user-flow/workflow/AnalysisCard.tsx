@@ -8,7 +8,6 @@ import {
 } from "react-icons/md";
 import { Button, Card, Loader, Tooltip } from "@mantine/core";
 import { useElementSize } from "@mantine/hooks";
-import { useCoreSelector, selectCohortCounts } from "@gff/core";
 import { AppRegistrationEntry } from "./utils";
 import Link from "next/link";
 
@@ -16,22 +15,24 @@ export interface AnalysisCardProps {
   entry: AppRegistrationEntry;
   readonly descriptionVisible: boolean;
   readonly setDescriptionVisible: () => void;
+  useApplicationDataCounts: any; // TODO replace with type
 }
 
 const AnalysisCard: React.FC<AnalysisCardProps> = ({
   entry,
   descriptionVisible,
   setDescriptionVisible,
+  useApplicationDataCounts,
 }: AnalysisCardProps) => {
-  const cohortCounts = useCoreSelector((state) => selectCohortCounts(state));
-  let caseCounts = cohortCounts?.[entry.countsField] || 0;
+  const cohortCounts = useApplicationDataCounts();
+  let caseCounts = cohortCounts?.data || 0;
 
   // TODO - remove, just for demo purposes
   if (entry.name === "scRNA-Seq" || entry.name === "Gene Expression") {
     caseCounts = 0;
   }
 
-  const inactive = caseCounts === 0 || cohortCounts?.status === "pending";
+  const inactive = caseCounts === 0 || cohortCounts.isLoading;
   const { ref: descRef, height: descHeight } = useElementSize();
 
   return (
@@ -157,11 +158,15 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             data-testid="text-case-count-tool"
             className="flex items-center text-secondary-darkest"
           >
-            {cohortCounts.status === "fulfilled" ? (
+            {cohortCounts.isSuccess ? (
               <span>{`${caseCounts.toLocaleString()} Cases`}</span>
-            ) : (
+            ) : cohortCounts.isLoading ? (
               <span className="flex mr-2 items-center">
                 <Loader color="gray" size="xs" className="mr-2" /> Cases
+              </span>
+            ) : (
+              <span className="flex mr-2 items-center text-utility-error">
+                0 Cases
               </span>
             )}
             {caseCounts === 0 && (

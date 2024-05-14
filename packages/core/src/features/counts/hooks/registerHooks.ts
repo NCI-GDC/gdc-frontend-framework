@@ -1,5 +1,5 @@
 import CountHookRegistry from "../countHooksRegistry";
-import { useSequenceReadCaseCountsQuery } from "./sequenceReadCaseCount";
+import { useLazySequenceReadCaseCountsQuery } from "./sequenceReadCaseCount";
 
 // register Default Hooks for Various Counts
 
@@ -11,6 +11,6 @@ export const registerDefaultCountsHooks = () => {
   // Register hooks here
   instance.registerFunction(
     "sequenceReadCaseCount",
-    useSequenceReadCaseCountsQuery,
+    useLazySequenceReadCaseCountsQuery,
   );
 };

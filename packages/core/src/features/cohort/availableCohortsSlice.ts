@@ -863,7 +863,7 @@ export const selectCohortCountsResults = (
 export const selectCohortCounts = (
   state: CoreState,
   cohortId: EntityId = getCurrentCohortFromCoreState(state),
-): CoreDataSelectorResponse<CountsDataAndStatus> =>
+): CountsDataAndStatus =>
   cohortSelectors.selectById(state, cohortId)?.counts ?? NullCountsData;
 
 export const selectCohortCountsByName = (
