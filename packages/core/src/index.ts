@@ -61,4 +61,5 @@ export * from "./features/api/cohortApiTypes";
 export * from "./features/sets";
 export * from "./features/bodyplot";
 export * from "./features/setOperations";
+export * from "./features/counts";
 export { CoreState } from "./reducers";

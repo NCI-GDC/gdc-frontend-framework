@@ -1,5 +1,6 @@
 import { FilterSet } from "./filters";
 import { isIntersectionOrUnion, Operation } from "../gdcapi/filters";
+import { CoreState } from "../../reducers";
 
 export const defaultCohortNameGenerator = (): string =>
   `Custom cohort ${new Date()
@@ -38,4 +39,17 @@ export const extractFiltersWithPrefixFromFilterSet = (
     },
     { mode: "and", root: {} } as FilterSet,
   );
+};
+
+/**
+ * Local selector to get cohort filters to prevent circular dependency.
+ * @param state - CoreState to get value from
+ * @param cohortId - id of cohort to get filters from
+ */
+export const selectCohortFilterSetById = (
+  state: CoreState,
+  cohortId: string,
+): FilterSet | undefined => {
+  const cohort = state.cohort.availableCohorts.entities[cohortId];
+  return cohort?.filters;
 };

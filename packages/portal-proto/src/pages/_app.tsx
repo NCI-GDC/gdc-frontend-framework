@@ -7,7 +7,11 @@ import "@/features/genomic/registerApp";
 import "@/features/projectsCenter/registerApp";
 import "@/features/repositoryApp/registerApp";
 import { datadogRum } from "@datadog/browser-rum";
-import { CoreProvider, PUBLIC_APP_INFO } from "@gff/core";
+import {
+  CoreProvider,
+  PUBLIC_APP_INFO,
+  registerDefaultCountsHooks,
+} from "@gff/core";
 import {
   MantineProvider,
   createEmotionCache,
@@ -18,8 +22,7 @@ import "@nci-gdc/sapien/dist/bodyplot.css";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useState } from "react";
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 // ReactModal needs the app element set for a11y reasons.
 // It hides the main application from screen readers while modals are open.
 import ReactModal from "react-modal";
@@ -89,6 +92,10 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
     setPrevPath(currentPath);
     setCurrentPath(globalThis.location.pathname + globalThis.location.search);
   }, [currentPath, router.asPath]);
+
+  useEffect(() => {
+    registerDefaultCountsHooks();
+  }, []);
 
   const [entityMetadata, setEntityMetadata] = useState<entityMetadataType>({
     entity_type: null,

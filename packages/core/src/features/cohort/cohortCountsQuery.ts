@@ -1,11 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { DataStatus } from "../../dataAccess";
-import { buildCohortGqlOperator, joinFilters, FilterSet } from "./filters";
+import { buildCohortGqlOperator, FilterSet, joinFilters } from "./filters";
 
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { UnknownJson } from "../gdcapi/gdcapi";
+import { selectCohortFilterSetById } from "./utils";
 
 /**
  *  CountsData holds all the case counts for a cohort
@@ -121,19 +122,6 @@ const CountsGraphQLQuery = `
     }
   }
 }`;
-
-/**
- * Local selector to get cohort filters to prevent circular dependency.
- * @param state - CoreState to get value from
- * @param cohortId - id of cohort to get filters from
- */
-const selectCohortFilterSetById = (
-  state: CoreState,
-  cohortId: string,
-): FilterSet | undefined => {
-  const cohort = state.cohort.availableCohorts.entities[cohortId];
-  return cohort?.filters;
-};
 
 interface CohortCountsResponse extends GraphQLApiResponse {
   cohortFilters?: FilterSet;
