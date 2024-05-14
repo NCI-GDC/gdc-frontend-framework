@@ -3,7 +3,6 @@ import {
   createEntityAdapter,
   PayloadAction,
   nanoid,
-  createAsyncThunk,
   ThunkAction,
   AnyAction,
   EntityId,
@@ -13,15 +12,12 @@ import {
 
 import { CoreState } from "../../reducers";
 import { buildCohortGqlOperator, FilterSet } from "./filters";
-import { GqlOperation, Operation, isIncludes } from "../gdcapi/filters";
+import { GqlOperation, Operation } from "../gdcapi/filters";
 import { CoreDataSelectorResponse, DataStatus } from "../../dataAccess";
-import { graphqlAPI } from "../gdcapi/gdcgraphql";
 import { CoreDispatch } from "../../store";
 import { useCoreSelector } from "../../hooks";
 import { SetTypes } from "../sets";
 import { defaultCohortNameGenerator } from "./utils";
-import { createSetMutationFactory } from "../sets/createSetSlice";
-import { setCountQueryFactory } from "../sets/setCountSlice";
 import {
   CountsData,
   CountsDataAndStatus,
@@ -71,181 +67,6 @@ export interface Cohort {
   readonly saved?: boolean; // flag indicating if cohort has been saved.
   readonly counts: CountsDataAndStatus; //case, file, etc. counts of a cohort
 }
-
-interface SetIdResponse {
-  viewer: {
-    [index: string]: {
-      [docType: string]: {
-        hits: {
-          edges: {
-            node: {
-              [field: string]: string;
-            };
-          }[];
-        };
-      };
-    };
-  };
-}
-
-const setIdQueryFactory = async (
-  field: string,
-  filters: Record<string, any>,
-): Promise<string[] | undefined> => {
-  let response;
-
-  switch (field) {
-    case "genes.gene_id":
-      response = await graphqlAPI<SetIdResponse>(
-        `query setInfo(
-             $filters: FiltersArgument
-         ) {
-             viewer {
-               explore {
-                 genes {
-                  hits(filters: $filters, first: 50000) {
-                    edges {
-                      node {
-                        gene_id
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }`,
-        filters,
-      );
-      return response.data.viewer.explore.genes.hits.edges.map(
-        (node) => node.node.gene_id,
-      );
-
-    case "ssms.ssm_id":
-      response = await graphqlAPI<SetIdResponse>(
-        `query setInfo(
-        $filters: FiltersArgument
-    ) {
-        viewer {
-          explore {
-            ssms {
-             hits(filters: $filters, first: 50000) {
-               edges {
-                 node {
-                   ssm_id
-                 }
-               }
-             }
-           }
-         }
-       }
-     }`,
-        filters,
-      );
-      return response.data.viewer.explore.ssms.hits.edges.map(
-        (node) => node.node.ssm_id,
-      );
-    case "cases.case_id":
-      response = await graphqlAPI<SetIdResponse>(
-        `query setInfo(
-        $filters: FiltersArgument
-    ) {
-        viewer {
-          repository {
-            cases {
-             hits(filters: $filters, first: 50000) {
-               edges {
-                 node {
-                   case_id
-                 }
-               }
-             }
-           }
-         }
-       }
-     }`,
-        filters,
-      );
-      return response.data.viewer.repository.cases.hits.edges.map(
-        (node) => node.node.case_id,
-      );
-  }
-
-  return Promise.resolve(undefined);
-};
-
-/*
-  Adds sets to filters. Stores set if it's new or recreates set based on our stored ids if it has disappeared.
-*/
-const handleFiltersForSet = createAsyncThunk<
-  void,
-  {
-    field: string;
-    setIds: string[];
-  },
-  { dispatch: CoreDispatch; state: CoreState }
->(
-  "cohort/fetchFiltersForSet",
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async ({ field, setIds }, thunkAPI) => {
-    const [docType] = field.split(".");
-
-    const currentCohort = cohortSelectors.selectById(
-      thunkAPI.getState(),
-      getCurrentCohortFromCoreState(thunkAPI.getState()),
-    ) as Cohort;
-
-    for (const setId of setIds) {
-      const filters = {
-        op: "=",
-        content: {
-          field,
-          value: `set_id:${setId}`,
-        },
-      };
-
-      const storedSet = (currentCohort?.sets || []).find(
-        (set) => set.setId === setId,
-      );
-      if (storedSet === undefined) {
-        const setResult = await setIdQueryFactory(field, filters);
-        if (setResult !== undefined) {
-          const newSet = {
-            setId: setId,
-            setType: docType as SetTypes,
-            ids: setResult,
-            field,
-          };
-          thunkAPI.dispatch(addNewCohortSet(newSet));
-        }
-      } else {
-        const setCount = await setCountQueryFactory(field, filters);
-        if (setCount === 0) {
-          const newSetId = await createSetMutationFactory(field, {
-            input: {
-              filters: {
-                op: "in",
-                content: {
-                  field,
-                  value: storedSet.ids,
-                },
-              },
-            },
-          });
-          if (newSetId) {
-            const newSet = {
-              setId: newSetId,
-              setType: docType as SetTypes,
-              ids: storedSet.ids,
-              field,
-            };
-            thunkAPI.dispatch(removeCohortSet(setId));
-            thunkAPI.dispatch(addNewCohortSet(newSet));
-          }
-        }
-      }
-    }
-  },
-);
 
 const cohortsAdapter = createEntityAdapter<Cohort>({
   sortComparer: (a, b) => {
@@ -1111,27 +932,6 @@ export const updateActiveCohortFilter =
     operation,
   }: UpdateFilterParams): ThunkAction<void, CoreState, undefined, AnyAction> =>
   async (dispatch: CoreDispatch /* getState */) => {
-    const includesSet =
-      isIncludes(operation) &&
-      operation.operands.some(
-        (operand) => typeof operand === "string" && operand.includes("set_id:"),
-      );
-
-    if (includesSet) {
-      const setIds = operation.operands
-        .filter(
-          (operand) =>
-            typeof operand === "string" && operand.includes("set_id:"),
-        )
-        .map((operand) => (operand as string).split("set_id:")[1]);
-
-      dispatch(
-        handleFiltersForSet({
-          field,
-          setIds,
-        }),
-      );
-    }
     dispatch(updateCohortFilter({ field, operation }));
   };
 

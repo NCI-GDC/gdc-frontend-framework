@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { useDeepCompareEffect } from "use-deep-compare";
 import dynamic from "next/dynamic";
 import {
   Tabs,
@@ -14,10 +15,8 @@ import {
 } from "@mantine/core";
 import {
   selectCurrentCohortFilters,
-  resetEdgesState,
-  useCoreDispatch,
   useCoreSelector,
-  useImageViewer,
+  useImageViewerQuery,
   FilterSet,
   joinFilters,
   parseJSONParam,
@@ -55,8 +54,8 @@ export const MultipleImageViewer = ({
   const [searchValues, setSearchValues] = useState([]);
   const [imageDetails, setImageDetails] = useState([]);
   const [cases_offset, setCasesOffSet] = useState(0);
+  const [totalData, setTotalData] = useState({});
   const router = useRouter();
-  const dispatch = useCoreDispatch();
 
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
@@ -70,23 +69,24 @@ export const MultipleImageViewer = ({
     ) as FilterSet,
   );
 
-  const { data, isFetching } = useImageViewer({
+  const { data, isFetching } = useImageViewerQuery({
     cases_offset,
     searchValues,
     case_id,
     caseFilters: filters,
   });
 
-  useEffect(() => {
-    return () => {
-      dispatch(resetEdgesState());
-    };
-  }, [dispatch]);
+  useDeepCompareEffect(() => {
+    if (data?.edges) {
+      setTotalData({ ...totalData, ...data.edges });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.edges]);
 
-  useEffect(() => {
-    if (!isFetching) {
+  useDeepCompareEffect(() => {
+    if (!isFetching && Object.keys(totalData).length > 0) {
       const inside =
-        data?.edges[Object.keys(data.edges)[showMorePressed ? activeTab : 0]];
+        totalData[Object.keys(totalData)[showMorePressed ? activeTab : 0]];
 
       const index = inside?.findIndex((elem) => elem.file_id === selectedId);
       setActiveImage(selectedId || inside?.[activeSlide].file_id);
@@ -95,7 +95,7 @@ export const MultipleImageViewer = ({
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFetching, showMorePressed]);
+  }, [isFetching, showMorePressed, totalData]);
 
   const resetStates = () => {
     setActiveTab(0);
@@ -105,7 +105,6 @@ export const MultipleImageViewer = ({
 
   const removeFilters = (filter: string) => {
     setSearchValues(searchValues.filter((value) => value !== filter));
-    dispatch(resetEdgesState());
     resetStates();
   };
 
@@ -113,20 +112,20 @@ export const MultipleImageViewer = ({
     const active = parseInt(sValue);
     setActiveTab(active);
     setActiveSlide(0);
-    const inside = data?.edges[Object.keys(data.edges)[active]];
+    const inside = totalData[Object.keys(totalData)[active]];
     setActiveImage(inside?.[0].file_id);
     setImageDetails(formatImageDetailsInfo(inside?.[0]));
   };
 
   const performSearch = () => {
-    dispatch(resetEdgesState());
     setShowMorePressed(false);
     setSearchValues([searchText.toUpperCase().trim(), ...searchValues]);
     setSearchText("");
     resetStates();
   };
 
-  const shouldShowMoreButton = Object.keys(data?.edges).length < data.total;
+  const shouldShowMoreButton =
+    Object.keys(totalData || {}).length < data?.total;
 
   return (
     <>
@@ -236,7 +235,7 @@ export const MultipleImageViewer = ({
                     </div>
                     <div
                       className={`flex-1 text-left items-center ${
-                        Object.keys(data?.edges).length <= 10 ? "-ml-2" : "ml-8"
+                        Object.keys(totalData).length <= 10 ? "-ml-2" : "ml-8"
                       }`}
                     >
                       <h2 className="text-xl font-bold">Slides</h2>
@@ -250,7 +249,7 @@ export const MultipleImageViewer = ({
               </div>
 
               <div className="flex">
-                {Object.keys(data?.edges).length > 0 && activeImage && (
+                {Object.keys(totalData).length > 0 && activeImage && (
                   <div className="flex-1/2 w-[31em]">
                     <Tabs
                       data-testid="cases-slides-image-viewer"
@@ -282,7 +281,7 @@ export const MultipleImageViewer = ({
                       })}
                     >
                       <Tabs.List>
-                        {Object.keys(data?.edges).map((edge, index) => {
+                        {Object.keys(totalData).map((edge, index) => {
                           return (
                             <Tabs.Tab
                               data-testid={edge}
@@ -299,11 +298,11 @@ export const MultipleImageViewer = ({
                           );
                         })}
                       </Tabs.List>
-                      {Object.keys(data?.edges).map((edge, index) => {
+                      {Object.keys(totalData).map((edge, index) => {
                         return (
                           <Tabs.Panel key={edge} value={index.toString()}>
                             <List classNames={{ itemWrapper: "w-full" }}>
-                              {data?.edges[edge].map((file, index) => (
+                              {totalData[edge].map((file, index) => (
                                 <List.Item
                                   key={`${file.file_id}${file.submitter_id}`}
                                   className="mb-2"
@@ -345,9 +344,8 @@ export const MultipleImageViewer = ({
                       )}
 
                       <Text data-testid="showing-image-viewer" size="sm">
-                        Showing{" "}
-                        <strong>{Object.keys(data?.edges).length}</strong> of{" "}
-                        <strong>{data?.total}</strong>
+                        Showing <strong>{Object.keys(totalData).length}</strong>{" "}
+                        of <strong>{data?.total}</strong>
                       </Text>
                     </div>
                   </div>
