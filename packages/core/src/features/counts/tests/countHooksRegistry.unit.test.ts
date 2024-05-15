@@ -1,4 +1,8 @@
-import CountHookRegistry, { errorCountHook } from "../countHooksRegistry";
+import CountHookRegistry, {
+  errorCountHook,
+  createUseCountHook,
+} from "../countHooksRegistry";
+import * as countsRegistry from "../countHooksRegistry";
 import { CountHook } from "../types"; // Replace '?' with accurate file path
 
 describe("CountHookRegistry", () => {
@@ -15,7 +19,28 @@ describe("CountHookRegistry", () => {
     });
   });
 
+  describe("Test suite for createUseCountHook", () => {
+    it("should spy on createUseCountHook function", () => {
+      const spy = jest.spyOn(countsRegistry, "createUseCountHook");
+      const mockFunction: CountHook = jest.fn();
+      createUseCountHook(mockFunction); // calling the function to track its invocation
+      expect(spy).toHaveBeenCalled();
+      spy.mockRestore(); // Restoring the mocked function to its original state
+    });
+  });
+
   describe("registerFunction()", () => {
+    let spyCreateUseCountHook: ReturnType<typeof jest.spyOn>;
+    beforeAll(() => {
+      spyCreateUseCountHook = jest
+        .spyOn(countsRegistry, "createUseCountHook")
+        .mockImplementation((hook: any) => hook);
+    });
+
+    afterAll(() => {
+      spyCreateUseCountHook.mockRestore();
+    });
+
     it("registers a function with a given name", () => {
       const registry = CountHookRegistry.getInstance();
       const mockFunction: CountHook = jest.fn();
@@ -25,15 +50,15 @@ describe("CountHookRegistry", () => {
 
       expect(actualFunction).toBe(mockFunction);
     });
-  });
 
-  describe("getFunction()", () => {
     it("returns the function that was registered with the given name", () => {
       const registry = CountHookRegistry.getInstance();
       const mockFunction: CountHook = jest.fn();
 
-      registry.registerHook("testFunc", mockFunction);
-      const actualFunction = registry.getHook("testFunc");
+      // add jest.spyOne of createUseCountHook
+
+      registry.registerHook("testFunc2", mockFunction);
+      const actualFunction = registry.getHook("testFunc2");
 
       expect(actualFunction).toBe(mockFunction);
     });
@@ -51,13 +76,15 @@ describe("CountHookRegistry", () => {
       const registry = CountHookRegistry.getInstance();
       const mockFunction1: CountHook = jest.fn();
       const mockFunction2: CountHook = jest.fn();
-
-      registry.registerHook("testFunc", mockFunction1);
-      expect(() => {
+      expect.assertions(1);
+      try {
+        registry.registerHook("testFunc", mockFunction1);
         registry.registerHook("testFunc", mockFunction2);
-      }).toThrowError(
-        "Function with name testFunc already exists in the registry",
-      );
+      } catch (e: any) {
+        expect(e.message).toBe(
+          "Function with name testFunc already exists in the registry",
+        );
+      }
     });
   });
 });

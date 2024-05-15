@@ -25,7 +25,7 @@ export const errorCountHook = () => {
  * @param queryHook - The query hook to be used.
  * @returns - The created custom hook.
  */
-const createUseCountHook = (queryHook: any) => {
+export const createUseCountHook = (queryHook: any) => {
   return () => {
     const currentCohort = useCoreSelector(selectCurrentCohortFilters);
     const [trigger, { data, isFetching, isSuccess, isError }] = queryHook();
@@ -45,7 +45,8 @@ const createUseCountHook = (queryHook: any) => {
 /**
  * A class representing a registry for count hooks. This class is a Singleton
  * with two functions:
- *  registerHook anmd
+ *  registerHook
+ *  getHook
  */
 class CountHookRegistry {
   private static instance: CountHookRegistry;
