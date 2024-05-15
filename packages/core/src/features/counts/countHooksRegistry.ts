@@ -1,4 +1,4 @@
-import { CountHookMap, CountHook } from "./types";
+import { CountHookMap, CountHook, CountHookLazyQuery } from "./types";
 import { useCoreSelector } from "../../hooks";
 import { selectCurrentCohortFilters } from "../cohort";
 import { useDeepCompareEffect } from "use-deep-compare";
@@ -28,14 +28,14 @@ export const errorCountHook = () => {
 export const createUseCountHook = (queryHook: any) => {
   return () => {
     const currentCohort = useCoreSelector(selectCurrentCohortFilters);
-    const [trigger, { data, isFetching, isSuccess, isError }] = queryHook();
+    const [trigger, { data, isLoading, isSuccess, isError }] = queryHook();
 
     useDeepCompareEffect(() => {
       trigger(currentCohort);
     }, [currentCohort, trigger]);
     return {
       data,
-      isLoading: isFetching,
+      isLoading,
       isSuccess,
       isError,
     };
@@ -64,7 +64,7 @@ class CountHookRegistry {
     return CountHookRegistry.instance;
   }
 
-  registerHook(name: string, func: CountHook): void {
+  registerHook(name: string, func: CountHook | CountHookLazyQuery): void {
     if (this.registry[name]) {
       throw new Error(
         `Function with name ${name} already exists in the registry`,
