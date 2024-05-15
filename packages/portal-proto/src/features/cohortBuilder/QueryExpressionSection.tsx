@@ -24,8 +24,7 @@ const QueryExpressionContainer = tw.div`
   border-secondary-darkest
   border-1
   border-l-4
-  my-4
-  mx-3
+  m-4
 `;
 
 const MAX_HEIGHT_QE_SECTION = 120;

@@ -123,7 +123,7 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
 
   return (
     <div
-      className="bg-base-max pr-6 grid grid-cols-4 justify-stretch gap-4 my-4 ml-4"
+      className="bg-base-max grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 w-content gap-4 m-4"
       data-testid="title-cohort-builder-facet-groups"
     >
       {children}
