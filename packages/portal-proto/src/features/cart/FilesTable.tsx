@@ -95,6 +95,20 @@ const FilesTable: React.FC<FilesTableProps> = () => {
                 value: `*${searchTerm}*`,
               },
             },
+            {
+              op: "=",
+              content: {
+                field: "cases.case_id",
+                value: `*${searchTerm}*`,
+              },
+            },
+            {
+              op: "=",
+              content: {
+                field: "cases.submitter_id",
+                value: `*${searchTerm}*`,
+              },
+            },
           ],
         },
       ],
@@ -404,7 +418,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
       search={{
         enabled: true,
         tooltip:
-          "e.g. HCM-CSHL-0062-C18.json, 4b5f5ba0-3010-4449-99d4-7bd7a6d73422",
+          "e.g. HCM-CSHL-0062-C18.json, 4b5f5ba0-3010-4449-99d4-7bd7a6d73422, HCM-CSHL-0062-C18",
       }}
       showControls={true}
       setColumnVisibility={setColumnVisibility}
