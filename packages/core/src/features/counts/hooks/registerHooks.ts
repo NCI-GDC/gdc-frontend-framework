@@ -1,5 +1,9 @@
 import CountHookRegistry from "../countHooksRegistry";
-import { useLazySequenceReadCaseCountsQuery } from "./sequenceReadCaseCount";
+import { useLazySequenceReadCaseCountQuery } from "./sequenceReadCaseCount";
+import { useLazySsmsCaseCountQuery } from "./ssmsCaseCount";
+import { useLazyCnvOrSsmCaseCountQuery } from "./cnvOrSsmCaseCount";
+import { useLazyGeneExpressionCaseCountQuery } from "./geneExpressionCaseCount";
+import { useLazyMafFileCountQuery } from "./mafFileCount";
 
 // register Default Hooks for Various Counts
 
@@ -9,8 +13,19 @@ export const registerDefaultCountsHooks = () => {
   const instance = CountHookRegistry.getInstance();
 
   // Register hooks here
-  instance.registerFunction(
+  instance.registerHook(
     "sequenceReadCaseCount",
-    useLazySequenceReadCaseCountsQuery,
+    useLazySequenceReadCaseCountQuery,
   );
+
+  instance.registerHook("ssmCaseCount", useLazySsmsCaseCountQuery);
+
+  instance.registerHook("cnvOrSsmCaseCount", useLazyCnvOrSsmCaseCountQuery);
+
+  instance.registerHook(
+    "geneExpressionCaseCount",
+    useLazyGeneExpressionCaseCountQuery,
+  );
+
+  instance.registerHook("mafFileCount", useLazyMafFileCountQuery);
 };

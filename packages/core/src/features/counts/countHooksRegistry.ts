@@ -7,7 +7,11 @@ import {
   useDefaultFileCountHook,
 } from "./hooks/defaultCaseCounts";
 
-export const defaultCountHook = () => {
+/**
+ * Represents a hook for error count. Returned in getHook if no hook by the passed name is found.
+ * @returns - The hook object containing a count of 0 and isError set to True
+ */
+export const errorCountHook = () => {
   return {
     data: 0,
     isLoading: false,
@@ -16,6 +20,11 @@ export const defaultCountHook = () => {
   };
 };
 
+/**
+ * Creates a custom hook that uses a query hook and manages a count of its usage.
+ * @param queryHook - The query hook to be used.
+ * @returns - The created custom hook.
+ */
 const createUseCountHook = (queryHook: any) => {
   return () => {
     const currentCohort = useCoreSelector(selectCurrentCohortFilters);
@@ -33,6 +42,11 @@ const createUseCountHook = (queryHook: any) => {
   };
 };
 
+/**
+ * A class representing a registry for count hooks. This class is a Singleton
+ * with two functions:
+ *  registerHook anmd
+ */
 class CountHookRegistry {
   private static instance: CountHookRegistry;
   private registry: CountHookMap = {
@@ -49,7 +63,7 @@ class CountHookRegistry {
     return CountHookRegistry.instance;
   }
 
-  registerFunction(name: string, func: CountHook): void {
+  registerHook(name: string, func: CountHook): void {
     if (this.registry[name]) {
       throw new Error(
         `Function with name ${name} already exists in the registry`,
@@ -59,7 +73,7 @@ class CountHookRegistry {
   }
 
   getHook(name: string): CountHook {
-    if (!Object.keys(this.registry).includes(name)) return defaultCountHook;
+    if (!Object.keys(this.registry).includes(name)) return errorCountHook;
 
     return this.registry[name];
   }

@@ -2,12 +2,12 @@ import { graphqlAPISlice } from "../../gdcapi/gdcgraphql";
 import { buildCohortGqlOperator, FilterSet } from "../../cohort";
 
 const graphQLQuery = `
-  query countsQuery($filters: FiltersArgument,
+  query sequenceReadCaseCountQuery($cohortFilters: FiltersArgument,
   $sequenceReadsCaseFilter: FiltersArgument) {
   viewer {
     repository {
       sequenceReads : cases {
-        hits(filters: $sequenceReadsCaseFilter, case_filters: $filters, first: 0) {
+        hits(filters: $sequenceReadsCaseFilter, case_filters: $cohortFilters, first: 0) {
           total
         }
       }
@@ -15,12 +15,15 @@ const graphQLQuery = `
   }
 }`;
 
+/**
+ * Injects endpoints for case counts for sequenceReads
+ */
 const sequenceReadCaseCountSlice = graphqlAPISlice.injectEndpoints({
   endpoints: (builder) => ({
-    sequenceReadCaseCounts: builder.query<number, FilterSet>({
+    sequenceReadCaseCount: builder.query<number, FilterSet>({
       query: (cohortFilters) => {
         const graphQLFilters = {
-          filters: buildCohortGqlOperator(cohortFilters),
+          cohortFilters: buildCohortGqlOperator(cohortFilters),
           sequenceReadsCaseFilter: {
             op: "and",
             content: [
@@ -59,5 +62,4 @@ const sequenceReadCaseCountSlice = graphqlAPISlice.injectEndpoints({
   }),
 });
 
-export const { useLazySequenceReadCaseCountsQuery } =
-  sequenceReadCaseCountSlice;
+export const { useLazySequenceReadCaseCountQuery } = sequenceReadCaseCountSlice;

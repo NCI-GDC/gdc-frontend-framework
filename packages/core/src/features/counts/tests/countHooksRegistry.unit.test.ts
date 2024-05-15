@@ -1,4 +1,4 @@
-import CountHookRegistry, { defaultCountHook } from "../countHooksRegistry";
+import CountHookRegistry, { errorCountHook } from "../countHooksRegistry";
 import { CountHook } from "../types"; // Replace '?' with accurate file path
 
 describe("CountHookRegistry", () => {
@@ -20,7 +20,7 @@ describe("CountHookRegistry", () => {
       const registry = CountHookRegistry.getInstance();
       const mockFunction: CountHook = jest.fn();
 
-      registry.registerFunction("testFunc", mockFunction);
+      registry.registerHook("testFunc", mockFunction);
       const actualFunction = registry.getHook("testFunc");
 
       expect(actualFunction).toBe(mockFunction);
@@ -32,7 +32,7 @@ describe("CountHookRegistry", () => {
       const registry = CountHookRegistry.getInstance();
       const mockFunction: CountHook = jest.fn();
 
-      registry.registerFunction("testFunc", mockFunction);
+      registry.registerHook("testFunc", mockFunction);
       const actualFunction = registry.getHook("testFunc");
 
       expect(actualFunction).toBe(mockFunction);
@@ -42,7 +42,7 @@ describe("CountHookRegistry", () => {
       const registry = CountHookRegistry.getInstance();
       const actualFunction = registry.getHook("nonexistentFunc");
 
-      expect(actualFunction).toBe(defaultCountHook);
+      expect(actualFunction).toBe(errorCountHook);
     });
   });
 
@@ -52,9 +52,9 @@ describe("CountHookRegistry", () => {
       const mockFunction1: CountHook = jest.fn();
       const mockFunction2: CountHook = jest.fn();
 
-      registry.registerFunction("testFunc", mockFunction1);
+      registry.registerHook("testFunc", mockFunction1);
       expect(() => {
-        registry.registerFunction("testFunc", mockFunction2);
+        registry.registerHook("testFunc", mockFunction2);
       }).toThrowError(
         "Function with name testFunc already exists in the registry",
       );
