@@ -83,9 +83,9 @@ describe("totalCounts reducer", () => {
                 },
               },
               repository: {
-                cases: {
+                files: {
                   hits: {
-                    total: 5000,
+                    total: 900,
                   },
                 },
               },
