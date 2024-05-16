@@ -1,4 +1,5 @@
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
+import serializeQueryArgsWithDataRelease from "src/serializeQueryArgs";
 import { DAYS_IN_YEAR, GDC_APP_API_AUTH } from "../../constants";
 import { coreCreateApi } from "../../coreCreateApi";
 
@@ -46,6 +47,7 @@ export const survivalApiSlice = coreCreateApi({
 
     return { error: { status: res.status, data: await res.text() } };
   },
+  serializeQueryArgs: serializeQueryArgsWithDataRelease,
   endpoints: (builder) => ({
     getSurvivalPlot: builder.query({
       query: (request) => ({

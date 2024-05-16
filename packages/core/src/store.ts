@@ -22,9 +22,11 @@ import { endpointSliceMiddleware } from "./features/gdcapi/gdcapi";
 import { projectApiSliceMiddleware } from "./features/projects/projectsSlice";
 import { filesApiSliceMiddleware } from "./features/files/filesSlice";
 import { historyApiSliceMiddleware } from "./features/history/historySlice";
-import storage from "./storage-persist";
+import { quickSearchApiMiddleware } from "./features/quickSearch/quickSearch";
 import { userAuthApiMiddleware } from "./features/users/usersSlice";
 import { bannerNotificationApiSliceMiddleware } from "./features/bannerNotification/bannerNotificationSlice";
+import { imageDetailsApiMiddleware } from "./features/imageDetails/imageDetailsSlice";
+import storage from "./storage-persist";
 
 const persistConfig = {
   key: "root",
@@ -73,6 +75,8 @@ export const coreStore = configureStore({
         userAuthApiMiddleware,
         historyApiSliceMiddleware,
         bannerNotificationApiSliceMiddleware,
+        quickSearchApiMiddleware,
+        imageDetailsApiMiddleware,
       )
       .prepend(coreStoreListenerMiddleware.middleware), // needs to be prepended
 });

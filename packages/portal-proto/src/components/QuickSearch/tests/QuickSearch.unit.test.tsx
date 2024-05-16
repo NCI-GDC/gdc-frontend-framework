@@ -14,7 +14,7 @@ jest.spyOn(router, "useRouter").mockImplementation(
 
 describe("<QuickSearch />", () => {
   test("displays results", async () => {
-    jest.spyOn(core, "useQuickSearch").mockReturnValue({
+    jest.spyOn(core, "useQuickSearchQuery").mockReturnValue({
       data: {
         searchList: [
           { id: btoa("Gene:111"), symbol: "TH" },
@@ -42,7 +42,7 @@ describe("<QuickSearch />", () => {
   });
 
   test("displays superseded file", async () => {
-    jest.spyOn(core, "useQuickSearch").mockReturnValue({
+    jest.spyOn(core, "useQuickSearchQuery").mockReturnValue({
       data: {
         searchList: [],
         query: "111-222",

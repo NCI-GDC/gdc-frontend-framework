@@ -1,7 +1,7 @@
 import React from "react";
 import {
   useGetProjectsQuery,
-  useAnnotations,
+  useGetAnnotationsQuery,
   useFilesFacetsByNameFilter,
 } from "@gff/core";
 import { LoadingOverlay } from "@mantine/core";
@@ -34,12 +34,14 @@ export const ProjectSummary: React.FC<ContextualProjectViewProps> = ({
       ],
     });
   const { data: annotationCountData, isFetching: isAnnotationFetching } =
-    useAnnotations({
-      filters: {
-        op: "=",
-        content: {
-          field: "project.project_id",
-          value: projectId,
+    useGetAnnotationsQuery({
+      request: {
+        filters: {
+          op: "=",
+          content: {
+            field: "project.project_id",
+            value: projectId,
+          },
         },
       },
     });

@@ -34,7 +34,7 @@ describe("<Header />", () => {
       isUninitialized: false,
     });
 
-    jest.spyOn(core, "useQuickSearch").mockReturnValue({
+    jest.spyOn(core, "useQuickSearchQuery").mockReturnValue({
       data: { searchList: [], query: "" },
     } as any);
 

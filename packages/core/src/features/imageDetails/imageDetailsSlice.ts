@@ -1,82 +1,42 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {
-  CoreDataSelectorResponse,
-  createUseCoreDataHook,
-  DataStatus,
-} from "../../dataAccess";
-import { CoreDispatch } from "../../store";
-import { CoreState } from "../../reducers";
-import { fetchSlideImages, ImageMetadataResponse } from "./imageDetailsApi";
+import type { Middleware, Reducer } from "@reduxjs/toolkit";
+import { GDC_API } from "../../constants";
+import { coreCreateApi } from "src/coreCreateApi";
+import serializeQueryArgsWithDataRelease from "src/serializeQueryArgs";
 
-export const fetchImageDetails = createAsyncThunk<
-  ImageMetadataResponse,
-  string,
-  { dispatch: CoreDispatch; state: CoreState }
->("imageDetails/fetchImageDetails", async (imageId: string) => {
-  return await fetchSlideImages(imageId);
-});
-export interface imageDetailsState {
-  readonly details: ImageMetadataResponse;
-  readonly status: DataStatus;
-  readonly requestId?: string;
+export interface ImageMetadataResponse {
+  readonly Format: string;
+  readonly Height: string;
+  readonly Width: string;
+  readonly Overlap: string;
+  readonly TileSize: string;
+  readonly uuid: string;
 }
 
-const initialState: imageDetailsState = {
-  details: {
-    Format: "",
-    Height: "",
-    Width: "",
-    TileSize: "",
-    Overlap: "",
-    uuid: "",
-  },
-  status: "uninitialized",
+export const fetchSlideImages = async (file_id: string) => {
+  const response = await fetch(`${GDC_API}/tile/metadata/${file_id}`);
+
+  if (response.ok) {
+    return { data: response.json() };
+  }
+
+  return { error: await response.text() };
 };
 
-const slice = createSlice({
-  name: "imageDetails",
-  initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchImageDetails.fulfilled, (state, action) => {
-        if (state.requestId != action.meta.requestId) return state;
-
-        state.details = action.payload;
-        state.status = "fulfilled";
-
-        return state;
-      })
-      .addCase(fetchImageDetails.pending, (state, action) => {
-        state.status = "pending";
-        state.requestId = action.meta.requestId;
-        return state;
-      })
-      .addCase(fetchImageDetails.rejected, (state, action) => {
-        if (state.requestId != action.meta.requestId) return state;
-        state.status = "rejected";
-        return state;
-      });
-  },
+const imageDetailsApi = coreCreateApi({
+  reducerPath: "imageDetails",
+  serializeQueryArgs: serializeQueryArgsWithDataRelease,
+  baseQuery: fetchSlideImages,
+  endpoints: (builder) => ({
+    imageDetails: builder.query<ImageMetadataResponse, string>({
+      query: (file_id) => file_id,
+    }),
+  }),
 });
 
-export const imageDetailsReducer = slice.reducer;
+export const { useImageDetailsQuery } = imageDetailsApi;
 
-export const selectImageDetailsInfo = (
-  state: CoreState,
-): CoreDataSelectorResponse<ImageMetadataResponse> => ({
-  data: {
-    Height: state.imageDetails.details.Height,
-    Width: state.imageDetails.details.Width,
-    Format: state.imageDetails.details.Format,
-    Overlap: state.imageDetails.details.Overlap,
-    TileSize: state.imageDetails.details.TileSize,
-    uuid: state.imageDetails.details.uuid,
-  },
-  status: state.imageDetails.status,
-});
-
-export const useImageDetails = createUseCoreDataHook(
-  fetchImageDetails,
-  selectImageDetailsInfo,
-);
+export const imageDetailsApiMiddleware =
+  imageDetailsApi.middleware as Middleware;
+export const imageDetailsApiReducerPath: string = imageDetailsApi.reducerPath;
+export const imageDetailsApiReducer: Reducer =
+  imageDetailsApi.reducer as Reducer;

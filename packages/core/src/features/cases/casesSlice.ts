@@ -8,12 +8,11 @@ import {
   fetchGdcAnnotations,
   fetchGdcCases,
   Pagination,
-  AnnotationDefaults,
   SortBy,
 } from "../gdcapi/gdcapi";
+import { AnnotationDefaults, CaseDefaults } from "../gdcapi/types";
 import { CoreDispatch } from "../../store";
 import { groupBy } from "lodash";
-import { caseSummaryDefaults } from "./types";
 import {
   convertFilterToGqlFilter,
   Intersection,
@@ -58,7 +57,7 @@ interface CaseSliceResponseData {
   annotations: AnnotationDefaults[];
 }
 
-interface CaseResponseData extends caseSummaryDefaults {
+interface CaseResponseData extends CaseDefaults {
   annotations: AnnotationDefaults[];
 }
 
