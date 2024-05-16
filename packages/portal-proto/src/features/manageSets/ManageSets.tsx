@@ -132,7 +132,7 @@ const ManageSets: React.FC = () => {
         <div className="p-4">
           <WarningBanner
             text={
-              "Please be aware that your custom sets are deleted during each new GDC data release. You can export and re-upload them on this page."
+              "Please be aware that your custom sets may be deleted during a release. You can export and re-upload them on this page."
             }
           />
           <CreateSetInstructions />
