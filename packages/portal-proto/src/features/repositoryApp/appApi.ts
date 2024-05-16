@@ -48,8 +48,7 @@ export const { id, AppStore, AppContext, useAppSelector, useAppDispatch } =
   createAppStore({
     reducers: persistReducer(persistConfig, downloadAppReducers),
     name: REPOSITORY_APP_NAME,
-    //version: "0.0.1",
-    version: "1.0.0",
+    version: "0.0.1",
   });
 
 export type AppState = ReturnType<typeof downloadAppReducers>;
