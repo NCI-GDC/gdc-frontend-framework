@@ -64,7 +64,7 @@ import {
   bannerNotificationApiReducer,
   bannerNotificationApiSliceReducerPath,
 } from "./features/bannerNotification/bannerNotificationSlice";
-import { 
+import {
   imageDetailsApiReducerPath,
   imageDetailsApiReducer,
 } from "./features/imageDetails/imageDetailsSlice";
