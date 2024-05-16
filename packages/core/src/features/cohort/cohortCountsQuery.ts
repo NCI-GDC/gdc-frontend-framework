@@ -14,7 +14,6 @@ import { selectCohortFilterSetById } from "./utils";
  *  @property fileCount - number of files in cohort
  *  @property genesCount - number of genes in cohort
  *  @property mutationCount - number of mutations in cohort
- *  @property repositoryCaseCount - number of cases using the repository index in cohort
  *  @category Cohort
  */
 export interface CountsData {
@@ -22,7 +21,6 @@ export interface CountsData {
   readonly fileCount: number;
   readonly genesCount: number;
   readonly mutationCount: number;
-  readonly repositoryCaseCount: number;
 }
 
 export interface CountsDataAndStatus extends CountsData {
@@ -39,7 +37,6 @@ export const NullCountsData: CountsDataAndStatus = {
   fileCount: -1,
   genesCount: -1,
   mutationCount: -1,
-  repositoryCaseCount: -1,
   status: "uninitialized",
   requestId: undefined,
 };
@@ -48,11 +45,6 @@ const CountsGraphQLQuery = `
   query countsQuery($filters: FiltersArgument) {
   viewer {
     repository {
-      cases {
-        hits(case_filters: $filters, first: 0) {
-          total
-        }
-      },
       files {
         hits(case_filters: $filters, first: 0) {
           total

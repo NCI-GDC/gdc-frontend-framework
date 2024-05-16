@@ -51,7 +51,7 @@ export const createUseCountHook = (queryHook: any) => {
 class CountHookRegistry {
   private static instance: CountHookRegistry;
   private registry: CountHookMap = {
-    repositoryCaseCount: useDefaultCaseCountHook,
+    caseCount: useDefaultCaseCountHook,
     fileCount: useDefaultFileCountHook,
   };
 

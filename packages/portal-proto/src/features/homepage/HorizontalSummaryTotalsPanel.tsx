@@ -60,7 +60,7 @@ const HorizontalSummaryTotalsPanel = (): JSX.Element => {
         <SummaryStatsItem
           title="Cases"
           customDataTestID="text-cases-gdc-count"
-          count={countsInfo.repositoryCaseCounts}
+          count={countsInfo.caseCounts}
           icon={<IconFormatted label="Cases counts" Icon={UsersIcon} />}
         />
         <SummaryStatsItem
