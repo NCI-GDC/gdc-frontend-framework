@@ -14,7 +14,7 @@ import {
 export const errorCountHook = () => {
   return {
     data: 0,
-    isLoading: false,
+    isFetching: false,
     isSuccess: false,
     isError: true,
   };
@@ -28,14 +28,14 @@ export const errorCountHook = () => {
 export const createUseCountHook = (queryHook: any) => {
   return () => {
     const currentCohort = useCoreSelector(selectCurrentCohortFilters);
-    const [trigger, { data, isLoading, isSuccess, isError }] = queryHook();
+    const [trigger, { data, isFetching, isSuccess, isError }] = queryHook();
 
     useDeepCompareEffect(() => {
       trigger(currentCohort);
     }, [currentCohort, trigger]);
     return {
       data,
-      isLoading,
+      isFetching,
       isSuccess,
       isError,
     };

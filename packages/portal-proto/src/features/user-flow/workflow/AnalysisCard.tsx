@@ -25,14 +25,9 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
   useApplicationDataCounts,
 }: AnalysisCardProps) => {
   const cohortCounts = useApplicationDataCounts();
-  let caseCounts = cohortCounts?.data || 0;
+  const caseCounts = cohortCounts?.data || 0;
 
-  // TODO - remove, just for demo purposes
-  if (entry.name === "scRNA-Seq" || entry.name === "Gene Expression") {
-    caseCounts = 0;
-  }
-
-  const inactive = caseCounts === 0 || cohortCounts.isLoading;
+  const inactive = caseCounts === 0 || cohortCounts.isFetching;
   const { ref: descRef, height: descHeight } = useElementSize();
 
   return (
@@ -158,12 +153,12 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             data-testid="text-case-count-tool"
             className="flex items-center text-secondary-darkest"
           >
-            {cohortCounts.isSuccess ? (
-              <span>{`${caseCounts.toLocaleString()} Cases`}</span>
-            ) : cohortCounts.isLoading ? (
+            {cohortCounts.isFetching ? (
               <span className="flex mr-2 items-center">
                 <Loader color="gray" size="xs" className="mr-2" /> Cases
               </span>
+            ) : cohortCounts.isSuccess ? (
+              <span>{`${caseCounts.toLocaleString()} Cases`}</span>
             ) : (
               <span className="flex mr-2 items-center text-utility-error">
                 0 Cases

@@ -24,7 +24,7 @@ export type CountHookLazyQuery = UseLazyQuery<
 
 export type CountQueryResponse = {
   data: number; // return count or 0 if not loaded
-  isLoading: boolean; // return true if fetching
+  isFetching: boolean; // return true if fetching
   isError: boolean; // return true if error
   isSuccess: boolean; // return true if success
 };

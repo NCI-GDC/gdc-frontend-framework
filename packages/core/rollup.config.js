@@ -23,6 +23,7 @@ const globals = {
   "js-cookie": "jsCookie",
   queue: "queue",
   "blueimp-md5": "blueimp-md5",
+  "use-deep-compare": "use-deep-compare",
 };
 
 const config = [
