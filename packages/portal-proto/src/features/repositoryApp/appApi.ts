@@ -20,16 +20,7 @@ const downloadAppReducers = combineReducers({
 });
 
 const migrations = {
-  //"0.0.1": (state : AppState) => {
-  //  return {
-  //    ...state,
-  //    facets: {
-  //      ...RepositoryDefaultConfig,
-  //      facets: [...RepositoryDefaultConfig.facets, ...state.facets.customFacets]
-  //    }
-  //  }
-  //},
-  "1.0.0": (state) => {
+  2: (state) => {
     return {
       ...state,
       facets: {
@@ -43,7 +34,7 @@ const migrations = {
 
 const persistConfig = {
   key: REPOSITORY_APP_NAME,
-  version: 1,
+  version: 2,
   storage,
   whitelist: ["facets", "filters"],
   migrate: createMigrate(migrations),
