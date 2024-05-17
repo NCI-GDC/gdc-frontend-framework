@@ -152,7 +152,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
             disabled={noData || downloadInProgress}
           />
           <Tooltip
-            label={"Remove Card"}
+            label="Remove Card"
             position="bottom-end"
             withArrow
             arrowSize={7}
