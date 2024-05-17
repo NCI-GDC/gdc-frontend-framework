@@ -34,7 +34,7 @@ describe("<Header />", () => {
       isUninitialized: false,
     });
 
-    jest.spyOn(core, "useQuickSearch").mockReturnValue({
+    jest.spyOn(core, "useQuickSearchQuery").mockReturnValue({
       data: { searchList: [], query: "" },
     } as any);
 
@@ -44,6 +44,9 @@ describe("<Header />", () => {
           pathname: "",
         } as any),
     );
+    jest
+      .spyOn(core, "useGetBannerNotificationsQuery")
+      .mockImplementation(jest.fn().mockReturnValue([jest.fn()]));
   });
 
   test("should show login button when the username is null initially", () => {

@@ -1,6 +1,6 @@
 import openAuthWindow from "@/features/layout/auth/openAuthWindow";
 import {
-  fetchNotifications,
+  useGetBannerNotificationsQuery,
   hideModal,
   useCoreDispatch,
   useLazyFetchUserDetailsQuery,
@@ -17,6 +17,7 @@ export const LoginButton = ({
 }): JSX.Element => {
   const dispatch = useCoreDispatch();
   const [fetchUserDetails] = useLazyFetchUserDetailsQuery();
+  const { refetch: fetchNotifications } = useGetBannerNotificationsQuery();
   return (
     <Button
       className={`p-1 ${
@@ -28,7 +29,7 @@ export const LoginButton = ({
         fromSession && dispatch(hideModal());
         await openAuthWindow();
         await fetchUserDetails();
-        await dispatch(fetchNotifications());
+        await fetchNotifications();
       }}
       leftSection={
         fromHeader ? (

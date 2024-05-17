@@ -1,7 +1,7 @@
 import React from "react";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
-import { useSSMS } from "@gff/core";
+import { useSsmsSummaryQuery } from "@gff/core";
 import { Loader } from "@mantine/core";
 import { pick } from "lodash";
 import { HorizontalTableProps } from "@/components/HorizontalTable";
@@ -23,7 +23,7 @@ export const SSMSSummary = ({
   ssm_id: string;
   isModal?: boolean;
 }): JSX.Element => {
-  const { data: summaryData, isFetching } = useSSMS({
+  const { data: summaryData, isFetching } = useSsmsSummaryQuery({
     filters: {
       content: {
         field: "ssm_id",

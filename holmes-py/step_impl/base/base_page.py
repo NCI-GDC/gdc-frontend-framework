@@ -5,7 +5,7 @@ from step_impl.base.webdriver import WebDriver
 
 
 class GenericLocators:
-    TEXT_IDENT = lambda text: f'text="{text}" >> nth=0'
+    TEXT_IDENT = lambda text: f'text={text} >> nth=0'
     TEXT_IN_PARAGRAPH = lambda text: f'p:has-text("{text}") >> nth=0'
 
     X_BUTTON_IN_TEMP_MESSAGE = (
@@ -174,6 +174,13 @@ class BasePage:
     def normalize_button_identifier(self, button_name: str) -> str:
         """Takes BDD spec file input and converts it to the ID formatting in the data portal"""
         return button_name.lower().replace(" ", "-")
+
+    def normalize_button_identifier_keep_capitalization(self, button_name: str) -> str:
+        """
+        Takes BDD spec file input and converts it to the ID formatting in the data portal.
+        Does not change the capitalization of the string.
+        """
+        return button_name.replace(" ", "-")
 
     def normalize_identifier_underscore(self, identifier_name: str) -> str:
         """Takes BDD spec file input and converts it to the ID formatting in the data portal"""

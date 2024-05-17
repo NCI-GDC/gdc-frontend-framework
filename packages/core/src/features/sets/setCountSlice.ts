@@ -1,8 +1,4 @@
-import {
-  graphqlAPISlice,
-  graphqlAPI,
-  GraphQLApiResponse,
-} from "../gdcapi/gdcgraphql";
+import { graphqlAPISlice, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 
 const geneSetCountQuery = `query geneSetCounts(
   $filters: FiltersArgument
@@ -283,30 +279,6 @@ export const setCountSlice = graphqlAPISlice
       }),
     }),
   });
-
-export const setCountQueryFactory = async (
-  field: string,
-  filters: Record<string, any>,
-): Promise<number | undefined> => {
-  let setCount;
-  let response;
-  switch (field) {
-    case "genes.gene_id":
-      response = await graphqlAPI(geneSetCountQuery, filters);
-      setCount = transformGeneSetCountResponse(response);
-      break;
-    case "ssms.ssm_id":
-      response = await graphqlAPI(ssmsSetCountQuery, filters);
-      setCount = transformSsmsSetCountResponse(response);
-      break;
-    case "cases.case_id":
-      response = await graphqlAPI(caseSetCountQuery, filters);
-      setCount = transformCaseSetCountResponse(response);
-      break;
-  }
-
-  return Promise.resolve(setCount);
-};
 
 export const {
   useGeneSetCountQuery,

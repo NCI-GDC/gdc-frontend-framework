@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   AnnotationDefaults,
+  GdcApiData,
   ProjectDefaults,
   useCoreDispatch,
 } from "@gff/core";
@@ -27,10 +28,7 @@ import ProjectsIcon from "public/user-flow/icons/summary/projects.svg";
 import useScrollToHash from "@/hooks/useScrollToHash";
 
 export interface ProjectViewProps extends ProjectDefaults {
-  readonly annotation: {
-    list: AnnotationDefaults[];
-    count: number;
-  };
+  readonly annotation: GdcApiData<AnnotationDefaults>;
   hasControlledAccess: boolean;
   isModal?: boolean;
 }
@@ -78,16 +76,18 @@ export const ProjectView: React.FC<ProjectViewProps> = (
   const Annotations = (
     <span className="flex items-center gap-1">
       <FaEdit size={24} />
-      {projectData.annotation.count > 0 ? (
+      {projectData.annotation.pagination.total > 0 ? (
         <a href="#annotations" className="underline font-bold">
-          {projectData.annotation.count.toLocaleString()}
+          {projectData.annotation.pagination.total.toLocaleString()}
         </a>
       ) : (
         <span className="font-bold">
-          {projectData.annotation.count.toLocaleString()}
+          {projectData.annotation.pagination.total.toLocaleString()}
         </span>
       )}
-      {projectData.annotation.count == 1 ? "Annotation" : "Annotations"}
+      {projectData.annotation.pagination.total == 1
+        ? "Annotation"
+        : "Annotations"}
     </span>
   );
 
@@ -405,7 +405,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
               />
             </div>
           )}
-          {projectData?.annotation?.count > 0 && (
+          {projectData?.annotation?.pagination.count > 0 && (
             <div
               className={`mb-16 mx-4 ${
                 projectData.isModal ? "scroll-mt-36" : "scroll-mt-72"

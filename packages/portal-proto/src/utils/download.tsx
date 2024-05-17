@@ -166,7 +166,7 @@ const download = async ({
       ...params,
       downloadCookieKey: cookieKey,
       downloadCookiePath: "/",
-      attachment: true,
+      attachment: params?.attachment ?? true,
     },
     (result, value, key) => {
       const paramValue = processParamObj(key, value);

@@ -4,10 +4,11 @@ import AnnotationSummary from "./AnnotationSummary";
 
 describe("<AnnotationSummary />", () => {
   test("Entity link should go to cases", () => {
-    jest.spyOn(core, "useAnnotations").mockReturnValue({
-      data: { list: [{ entity_type: "case", entity_id: "45" }], count: 2 },
+    jest.spyOn(core, "useGetAnnotationsQuery").mockReturnValue({
+      data: { hits: [{ entity_type: "case", entity_id: "45" }] },
+      pagination: { total: 2 },
     } as any);
-    jest.spyOn(core, "useQuickSearch").mockReturnValue({
+    jest.spyOn(core, "useQuickSearchQuery").mockReturnValue({
       data: { searchList: [{ id: btoa("Case:111") }] },
     } as any);
     const { getByRole } = render(<AnnotationSummary annotationId="2" />);
@@ -18,13 +19,13 @@ describe("<AnnotationSummary />", () => {
   });
 
   test("Entity link should go to files", () => {
-    jest.spyOn(core, "useAnnotations").mockReturnValue({
+    jest.spyOn(core, "useGetAnnotationsQuery").mockReturnValue({
       data: {
-        list: [{ entity_type: "aggregated_somatic_mutation", entity_id: "45" }],
-        count: 2,
+        hits: [{ entity_type: "aggregated_somatic_mutation", entity_id: "45" }],
+        pagination: { total: 2 },
       },
     } as any);
-    jest.spyOn(core, "useQuickSearch").mockReturnValue({
+    jest.spyOn(core, "useQuickSearchQuery").mockReturnValue({
       data: { searchList: [{ id: btoa("File:111") }] },
     } as any);
     const { getByRole } = render(<AnnotationSummary annotationId="2" />);
@@ -35,13 +36,13 @@ describe("<AnnotationSummary />", () => {
   });
 
   test("Entity link should go to biospecimen browser", () => {
-    jest.spyOn(core, "useAnnotations").mockReturnValue({
+    jest.spyOn(core, "useGetAnnotationsQuery").mockReturnValue({
       data: {
-        list: [{ entity_type: "slide", entity_id: "45", case_id: "390" }],
-        count: 2,
+        hits: [{ entity_type: "slide", entity_id: "45", case_id: "390" }],
+        pagination: { total: 2 },
       },
     } as any);
-    jest.spyOn(core, "useQuickSearch").mockReturnValue({
+    jest.spyOn(core, "useQuickSearchQuery").mockReturnValue({
       data: { searchList: [{ id: btoa("Case:111") }] },
     } as any);
     const { getByRole } = render(<AnnotationSummary annotationId="2" />);
@@ -52,11 +53,14 @@ describe("<AnnotationSummary />", () => {
   });
 
   test("Entity is gone, no link should be displayed", () => {
-    jest.spyOn(core, "useAnnotations").mockReturnValue({
-      data: { list: [{ entity_type: "case", entity_id: "45" }], count: 2 },
+    jest.spyOn(core, "useGetAnnotationsQuery").mockReturnValue({
+      data: {
+        hits: [{ entity_type: "case", entity_id: "45" }],
+        pagination: { total: 2 },
+      },
     } as any);
     jest
-      .spyOn(core, "useQuickSearch")
+      .spyOn(core, "useQuickSearchQuery")
       .mockReturnValue({ data: { searchList: [] } } as any);
     const { getByRole } = render(<AnnotationSummary annotationId="2" />);
 
@@ -66,13 +70,13 @@ describe("<AnnotationSummary />", () => {
   });
 
   test("Annotation doesn't exist", () => {
-    jest.spyOn(core, "useAnnotations").mockReturnValue({
-      data: { list: [], count: 0 },
+    jest.spyOn(core, "useGetAnnotationsQuery").mockReturnValue({
+      data: { hits: [], pagination: { total: 0 } },
       isSuccess: true,
       isFetching: false,
     } as any);
     jest
-      .spyOn(core, "useQuickSearch")
+      .spyOn(core, "useQuickSearchQuery")
       .mockReturnValue({ data: { searchList: [] } } as any);
 
     const { getByText } = render(<AnnotationSummary annotationId="2" />);

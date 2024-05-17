@@ -5,8 +5,8 @@ import {
   useCoreSelector,
   selectCart,
   Demographic,
-  caseSummaryDefaults,
   FilterSet,
+  CaseDefaults,
 } from "@gff/core";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
@@ -35,7 +35,7 @@ import AnnotationsTable from "./AnnotationsTable";
 import useScrollToHash from "@/hooks/useScrollToHash";
 
 export interface CaseViewProps {
-  readonly data: caseSummaryDefaults;
+  readonly data: CaseDefaults;
   readonly isModal: boolean;
   readonly annotationCountData: number;
   readonly bio_id: string;

@@ -150,16 +150,17 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
   );
 
   useDeepCompareEffect(() => {
-    setSelectedSurvivalPlots(
-      displayedData
-        .filter(
-          ({ count, key }) =>
-            key !== MISSING_KEY && count >= SURVIVAL_PLOT_MIN_COUNT,
-        )
-        .sort((a, b) => b.count - a.count)
-        .map(({ key }) => key)
-        .slice(0, 2),
-    );
+    selectedSurvivalPlots.length === 0 &&
+      setSelectedSurvivalPlots(
+        displayedData
+          .filter(
+            ({ count, key }) =>
+              key !== MISSING_KEY && count >= SURVIVAL_PLOT_MIN_COUNT,
+          )
+          .sort((a, b) => b.count - a.count)
+          .map(({ key }) => key)
+          .slice(0, 2),
+      );
 
     if (customBinnedData === null) {
       setYTotal(displayedData.reduce((a, b) => a + b.count, 0));

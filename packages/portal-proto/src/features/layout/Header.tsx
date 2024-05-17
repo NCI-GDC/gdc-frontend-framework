@@ -4,15 +4,11 @@ import {
   useCoreDispatch,
   useTotalCounts,
   useFacetDictionary,
-  GDC_AUTH,
   showModal,
   Modals,
   selectCurrentModal,
-  useFetchUserDetailsQuery,
-  useLazyFetchTokenQuery,
 } from "@gff/core";
 import {
-  Button,
   LoadingOverlay,
   Menu,
   Badge,
@@ -24,18 +20,16 @@ import {
   Collapse,
   ActionIcon,
 } from "@mantine/core";
-import { ReactNode, useContext, useEffect, useRef, useState } from "react";
+import { ReactNode, useContext, useEffect, useState } from "react";
 import tw from "tailwind-styled-components";
 import { Image } from "@/components/Image";
 import { useCookies } from "react-cookie";
 import {
   MdShoppingCart as CartIcon,
   MdOutlineApps as AppsIcon,
-  MdLogout as LogoutIcon,
   MdArrowDropDown as ArrowDropDownIcon,
   MdKeyboardBackspace as LeftArrowIcon,
 } from "react-icons/md";
-import { FaDownload, FaUserCheck } from "react-icons/fa";
 import {
   FiPlayCircle as PlayIcon,
   FiChevronDown as DownArrowCollapseIcon,
@@ -43,18 +37,10 @@ import {
 import { VscFeedback as FeebackIcon } from "react-icons/vsc";
 import { HiOutlinePencilSquare as PencilIcon } from "react-icons/hi2";
 import { IoOptions as OptionsIcon } from "react-icons/io5";
-import saveAs from "file-saver";
-import { cleanNotifications, showNotification } from "@mantine/notifications";
-import urlJoin from "url-join";
-import { LoginButton } from "@/components/LoginButton";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { theme } from "tailwind.config";
 import { QuickSearch } from "@/components/QuickSearch/QuickSearch";
-import {
-  DropdownMenu,
-  DropdownMenuItem,
-} from "@/components/StyledComponents/DropdownMenu";
 import { UserProfileModal } from "@/components/Modals/UserProfileModal";
 import { SessionExpireModal } from "@/components/Modals/SessionExpireModal";
 import { NoAccessModal } from "@/components/Modals/NoAccessModal";
@@ -67,6 +53,7 @@ import SendFeedbackModal from "@/components/Modals/SendFeedbackModal";
 import { useDisclosure, useViewportSize } from "@mantine/hooks";
 import React from "react";
 import { GDCAppLink, NavButton, NavLinkWithIcon } from "@/components/Nav";
+import LoginButtonOrUserDropdown from "./LoginButtonOrUserDropdown";
 
 const MAX_WIDTH_FOR_HAMBURGER = 1280;
 
@@ -90,13 +77,11 @@ export const Header: React.FC<HeaderProps> = ({
   const dispatch = useCoreDispatch();
   const router = useRouter();
   const [openFeedbackModal, setOpenFeedbackModal] = useState(false);
-  const { data: userInfo } = useFetchUserDetailsQuery();
 
   const currentCart = useCoreSelector((state) => selectCart(state));
   const modal = useCoreSelector((state) => selectCurrentModal(state));
   const { isSuccess: totalSuccess } = useTotalCounts(); // request total counts and facet dictionary
   const { isSuccess: dictSuccess } = useFacetDictionary();
-  const userDropdownRef = useRef<HTMLButtonElement>();
   const [cookie] = useCookies(["NCI-Warning"]);
 
   useEffect(() => {
@@ -120,126 +105,6 @@ export const Header: React.FC<HeaderProps> = ({
       closeDrawer();
     }
   }, [width, drawerOpened, closeDrawer]);
-
-  const LoginButtonOrUserDropdown = () => {
-    return (
-      <>
-        {userInfo?.data?.username ? (
-          <Menu width={200} data-testid="userdropdown" zIndex={9} offset={-5}>
-            <Menu.Target>
-              <Button
-                rightSection={
-                  <ArrowDropDownIcon size="2em" aria-hidden="true" />
-                }
-                variant="subtle"
-                className="text-primary-darkest font-header text-sm font-medium font-heading"
-                classNames={{ section: "ml-0" }}
-                data-testid="usernameButton"
-                ref={userDropdownRef}
-              >
-                {userInfo?.data?.username}
-              </Button>
-            </Menu.Target>
-            <DropdownMenu>
-              <DropdownMenuItem
-                icon={<FaUserCheck size="1.25em" />}
-                onClick={async () => {
-                  dispatch(showModal({ modal: Modals.UserProfileModal }));
-                  // This is done inorder to set the last focused element as the menu target element
-                  // This is done to return focus to the target element if the modal is closed with ESC
-                  userDropdownRef?.current && userDropdownRef?.current?.focus();
-                }}
-                data-testid="userprofilemenu"
-              >
-                User Profile
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                icon={<FaDownload size="1.25em" />}
-                data-testid="downloadTokenMenuItem"
-                onClick={async () => {
-                  if (
-                    Object.keys(userInfo?.data?.projects.gdc_ids).length > 0
-                  ) {
-                    await fetchToken()
-                      .unwrap()
-                      .then((token) => {
-                        if (token.status === 401) {
-                          dispatch(
-                            showModal({ modal: Modals.SessionExpireModal }),
-                          );
-                          return;
-                        }
-                        saveAs(
-                          new Blob([token.data], {
-                            type: "text/plain;charset=us-ascii",
-                          }),
-                          `gdc-user-token.${new Date().toISOString()}.txt`,
-                        );
-                      });
-                  } else {
-                    cleanNotifications();
-                    showNotification({
-                      message: (
-                        <p>
-                          {userInfo?.data.username} does not have access to any
-                          protected data within the GDC. Click{" "}
-                          <a
-                            href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
-                            target="_blank"
-                            rel="noreferrer"
-                            style={{
-                              textDecoration: "underline",
-                              color: theme.extend.colors["nci-blue"].darkest,
-                            }}
-                          >
-                            here
-                          </a>{" "}
-                          to learn more about obtaining access to protected
-                          data.
-                        </p>
-                      ),
-                      styles: () => ({
-                        root: {
-                          textAlign: "center",
-                        },
-                        closeButton: {
-                          color: "black",
-                          "&:hover": {
-                            backgroundColor:
-                              theme.extend.colors["gdc-grey"].lighter,
-                          },
-                        },
-                      }),
-                      closeButtonProps: {
-                        "aria-label": "Close notification",
-                      },
-                    });
-                  }
-                }}
-              >
-                Download Token
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                icon={<LogoutIcon size="1.25em" />}
-                onClick={() => {
-                  window.location.assign(
-                    urlJoin(GDC_AUTH, `logout?next=${window.location.href}`),
-                  );
-                }}
-                data-testid="logoutMenuItem"
-              >
-                Logout
-              </DropdownMenuItem>
-            </DropdownMenu>
-          </Menu>
-        ) : (
-          <LoginButton fromHeader />
-        )}
-      </>
-    );
-  };
-
-  const [fetchToken] = useLazyFetchTokenQuery({ refetchOnFocus: false });
 
   return (
     <div className="px-4 py-3 border-b border-gdc-grey-lightest flex flex-col">

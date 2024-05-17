@@ -2,7 +2,7 @@ import React from "react";
 import { useDeepCompareMemo } from "use-deep-compare";
 import Link from "next/link";
 import { Loader } from "@mantine/core";
-import { useAnnotations, useQuickSearch } from "@gff/core";
+import { useGetAnnotationsQuery, useQuickSearchQuery } from "@gff/core";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import { HorizontalTable } from "@/components/HorizontalTable";
@@ -20,20 +20,22 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
     data: annotationData,
     isSuccess,
     isFetching,
-  } = useAnnotations({
-    filters: {
-      op: "=",
-      content: {
-        field: "annotation_id",
-        value: annotationId,
+  } = useGetAnnotationsQuery({
+    request: {
+      filters: {
+        op: "=",
+        content: {
+          field: "annotation_id",
+          value: annotationId,
+        },
       },
+      expand: ["project"],
     },
-    expand: ["project"],
   });
 
-  const annotation = annotationData?.list?.[0];
+  const annotation = annotationData?.hits?.[0];
 
-  const { data: entityData } = useQuickSearch(annotation?.entity_id);
+  const { data: entityData } = useQuickSearchQuery(annotation?.entity_id);
 
   const entityLink = useDeepCompareMemo(() => {
     if (annotation === undefined) {
@@ -41,8 +43,8 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
     }
 
     if (
-      entityData.searchList === undefined ||
-      entityData.searchList.length == 0
+      entityData?.searchList === undefined ||
+      entityData?.searchList.length == 0
     ) {
       return annotation?.entity_id ?? "--";
     } else {
@@ -147,7 +149,7 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
 
   return isFetching ? (
     <Loader />
-  ) : isSuccess && annotationData?.list.length === 0 ? (
+  ) : isSuccess && annotationData?.hits.length === 0 ? (
     <SummaryErrorHeader label="Annotation Not Found" />
   ) : (
     <>

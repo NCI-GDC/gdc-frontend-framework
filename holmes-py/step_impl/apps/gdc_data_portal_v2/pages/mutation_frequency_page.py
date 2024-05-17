@@ -9,6 +9,7 @@ from ....base.base_page import GenericLocators
 class MutationFrequencyLocators:
     BUTTON_GENE_MUTATION_TAB = lambda tab_name: f'[data-testid="button-{tab_name}-tab"]'
     BUTTON_CUSTOM_FILTER = lambda button_name: f'[data-testid="button-{button_name}"]'
+    BUTTON_TABLE_DOWNLOAD = lambda button_name: f'[data-testid="button-{button_name}-mutation-frequency"]'
 
     MODAL_ADD_CUSTOM_FILTER = 'label:has-text("Type or copy-and-paste a list of")'
 
@@ -48,3 +49,9 @@ class MutationFrequencyPage(BasePage):
         self.click(
             GenericLocators.BUTTON_BY_DISPLAYED_TEXT(button_text_name), force=True
         )
+
+    def click_table_download_button(self, button_name):
+        """Click a download button on the Mutation Frequency app"""
+        button_name = button_name.lower()
+        locator = MutationFrequencyLocators.BUTTON_TABLE_DOWNLOAD(button_name)
+        self.click(locator)

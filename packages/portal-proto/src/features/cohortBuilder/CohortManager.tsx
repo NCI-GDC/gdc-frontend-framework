@@ -165,9 +165,13 @@ const CohortManager: React.FC = () => {
     isError: isErrorCaseIds,
   } = useGetCasesQuery(
     {
-      case_filters: buildCohortGqlOperator(currentCohort?.filters ?? undefined),
-      fields: ["case_id"],
-      size: 50000,
+      request: {
+        case_filters: buildCohortGqlOperator(
+          currentCohort?.filters ?? undefined,
+        ),
+        fields: ["case_id"],
+      },
+      fetchAll: true,
     },
     { skip: !exportCohortPending },
   );
@@ -176,7 +180,7 @@ const CohortManager: React.FC = () => {
     if (isErrorCaseIds) {
       setExportCohortPending(false);
     } else if (exportCohortPending && !isFetchingCaseIds) {
-      exportCohort(caseIds, cohortName);
+      exportCohort(caseIds?.hits, cohortName);
       setExportCohortPending(false);
     }
   }, [
