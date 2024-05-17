@@ -88,6 +88,16 @@ const FilesTables: React.FC = () => {
           field: "files.file_id",
           operand: `*${term}*`,
         },
+        {
+          operator: "=",
+          field: "cases.case_id",
+          operand: `*${term}*`,
+        },
+        {
+          operator: "=",
+          field: "cases.submitter_id",
+          operand: `*${term}*`,
+        },
       ],
     };
   };
@@ -483,7 +493,7 @@ const FilesTables: React.FC = () => {
           search={{
             enabled: true,
             tooltip:
-              "e.g. HCM-CSHL-0062-C18.json, 4b5f5ba0-3010-4449-99d4-7bd7a6d73422",
+              "e.g. HCM-CSHL-0062-C18.json, 4b5f5ba0-3010-4449-99d4-7bd7a6d73422, HCM-CSHL-0062-C18",
           }}
           showControls={true}
           setColumnVisibility={setColumnVisibility}
