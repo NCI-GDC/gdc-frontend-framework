@@ -157,18 +157,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
     intervalForm.validate();
     // Adding form objects to dep array causes infinite rerenders
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [intervalForm.getValues()]);
-
-  useEffect(() => {
-    if (binMethod === "interval") {
-      rangeForm.clearErrors();
-      intervalForm.validate();
-    } else {
-      intervalForm.clearErrors();
-    }
-    // Adding form objects to dep array causes infinite rerenders
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [binMethod]);
+  }, [intervalForm.values]);
 
   const saveBins = () => {
     setModalOpen(false);
