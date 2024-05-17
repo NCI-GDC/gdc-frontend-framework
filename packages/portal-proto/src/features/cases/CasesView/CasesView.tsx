@@ -9,6 +9,7 @@ import {
   buildCohortGqlOperator,
   GqlOperation,
   useCurrentCohortCounts,
+  selectCurrentCohortId,
 } from "@gff/core";
 import { Divider, Loader } from "@mantine/core";
 import FunctionButton from "@/components/FunctionButton";
@@ -61,6 +62,9 @@ export const ContextualCasesView: React.FC = () => {
   );
   const currentCart = useCoreSelector((state) => selectCart(state));
   const cohortCounts = useCurrentCohortCounts();
+  const currentCohortId = useCoreSelector((state) =>
+    selectCurrentCohortId(state),
+  );
 
   /* download active */
   const [biospecimenDownloadActive, setBiospecimenDownloadActive] =
@@ -71,6 +75,10 @@ export const ContextualCasesView: React.FC = () => {
   const [cohortTableTSVDownloadActive, setCohortTableTSVDownloadActive] =
     useState(false);
   /* download active end */
+
+  useEffect(() => {
+    setCohortTableTSVDownloadActive(false);
+  }, [currentCohortId]);
 
   const { data, isFetching, isSuccess, isError, pagination } = useAllCases({
     fields: [
@@ -235,14 +243,16 @@ export const ContextualCasesView: React.FC = () => {
         }
       : buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation);
 
+  // TODO - restore attachment option, PEAR-1947
   const handleTSVDownload = async () => {
     setCohortTableTSVDownloadActive(true);
     await download({
       endpoint: "cases",
       method: "POST",
       params: {
-        attachment: true,
-        filename: `cohort.${convertDateToString(new Date())}.tsv`,
+        attachment: false,
+        size: cohortCounts?.data?.caseCount,
+        //filename: `cohort.${convertDateToString(new Date())}.tsv`,
         case_filters:
           buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation),
         fields: [
@@ -265,7 +275,7 @@ export const ContextualCasesView: React.FC = () => {
         format: "tsv",
       },
       dispatch,
-      done: () => setCohortTableTSVDownloadActive(false),
+      //done: () => setCohortTableTSVDownloadActive(false),
     });
   };
 
