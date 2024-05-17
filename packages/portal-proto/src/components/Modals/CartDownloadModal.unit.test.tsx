@@ -8,6 +8,9 @@ jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
 jest
   .spyOn(core, "useLazyFetchUserDetailsQuery")
   .mockImplementation(jest.fn().mockReturnValue([jest.fn()]));
+jest
+  .spyOn(core, "useGetBannerNotificationsQuery")
+  .mockImplementation(jest.fn().mockReturnValue([jest.fn()]));
 
 describe("<CartDownloadModal />", () => {
   it("shows number of auth and unauth files", () => {

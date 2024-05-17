@@ -44,6 +44,9 @@ describe("<Header />", () => {
           pathname: "",
         } as any),
     );
+    jest
+      .spyOn(core, "useGetBannerNotificationsQuery")
+      .mockImplementation(jest.fn().mockReturnValue([jest.fn()]));
   });
 
   test("should show login button when the username is null initially", () => {

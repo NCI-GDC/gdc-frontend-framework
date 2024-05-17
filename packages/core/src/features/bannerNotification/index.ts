@@ -1,12 +1,20 @@
 import {
   bannerReducer,
-  fetchNotifications,
   selectBanners,
   dismissNotification,
+  bannerNotificationApiReducer,
+  bannerNotificationApiSliceMiddleware,
+  bannerNotificationApiSliceReducerPath,
+  useGetBannerNotificationsQuery,
+  useLazyGetBannerNotificationsQuery,
 } from "./bannerNotificationSlice";
 export {
   bannerReducer,
-  fetchNotifications,
   selectBanners,
   dismissNotification,
+  bannerNotificationApiReducer,
+  bannerNotificationApiSliceMiddleware,
+  bannerNotificationApiSliceReducerPath,
+  useGetBannerNotificationsQuery,
+  useLazyGetBannerNotificationsQuery,
 };

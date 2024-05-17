@@ -61,6 +61,10 @@ import {
   historyApiSliceReducerPath,
 } from "./features/history/historySlice";
 import {
+  bannerNotificationApiReducer,
+  bannerNotificationApiSliceReducerPath,
+} from "./features/bannerNotification/bannerNotificationSlice";
+import {
   imageDetailsApiReducerPath,
   imageDetailsApiReducer,
 } from "./features/imageDetails/imageDetailsSlice";
@@ -98,6 +102,7 @@ export const reducers = combineReducers({
   [endpointSliceReducerPath]: endpointReducer,
   [userAuthApiReducerPath]: userAuthApiReducer,
   [historyApiSliceReducerPath]: historyApiReducer,
+  [bannerNotificationApiSliceReducerPath]: bannerNotificationApiReducer,
   versionInfo: versionInfoReducer,
   sets: setsReducer,
 });
