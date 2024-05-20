@@ -36,7 +36,7 @@ export const REGISTERED_APPS = [
     icon: <ClinicalDataIcon aria-hidden="true" />,
     tags: ["clinicalAnalysis"],
     hasDemo: true,
-    countsField: "repositoryCaseCount",
+    countsField: "caseCount",
     id: "CDave",
     description:
       "Use clinical variables to perform basic statistical analysis of your cohort.",
@@ -57,7 +57,7 @@ export const REGISTERED_APPS = [
     tags: ["generalUtility"],
     hasDemo: false,
     id: "CohortBuilder",
-    countsField: "repositoryCaseCount",
+    countsField: "caseCount",
     description:
       "Build and define your custom cohorts using a variety of clinical and biospecimen features.",
     rightComponent: SearchInput,
@@ -80,7 +80,7 @@ export const REGISTERED_APPS = [
     icon: <RepositoryIcon aria-hidden="true" />,
     tags: ["files"],
     hasDemo: false,
-    countsField: "repositoryCaseCount",
+    countsField: "caseCount",
     id: "Downloads",
     description:
       "Browse and download the files associated with your cohort for more sophisticated analysis.",
@@ -98,7 +98,7 @@ export const REGISTERED_APPS = [
     tags: [],
     hasDemo: false,
     id: "Projects",
-    countsField: "repositoryCaseCount",
+    countsField: "caseCount",
     description:
       "View the Projects available within the GDC and select them for further exploration and analysis.",
   },
@@ -108,7 +108,7 @@ export const REGISTERED_APPS = [
     tags: ["clinicalAnalysis"],
     hasDemo: true,
     id: "CohortComparisonApp",
-    countsField: "repositoryCaseCount",
+    countsField: "caseCount",
     description:
       "Display the survival analysis of your cohorts and compare characteristics such as gender, vital status and age at diagnosis.",
     noDataTooltip:
@@ -136,7 +136,7 @@ export const REGISTERED_APPS = [
     tags: ["generalUtility"],
     hasDemo: true,
     hideCounts: true,
-    countsField: "repositoryCaseCount",
+    countsField: "caseCount",
     description:
       "Display a Venn diagram and compare/contrast your cohorts or sets of the same type.",
     id: "SetOperations",

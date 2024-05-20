@@ -1,13 +1,13 @@
 import {
-  createSlice,
-  createEntityAdapter,
-  PayloadAction,
-  nanoid,
-  ThunkAction,
   AnyAction,
+  createEntityAdapter,
+  createSlice,
+  Dictionary,
   EntityId,
   EntityState,
-  Dictionary,
+  nanoid,
+  PayloadAction,
+  ThunkAction,
 } from "@reduxjs/toolkit";
 
 import { CoreState } from "../../reducers";
@@ -472,17 +472,6 @@ const slice = createSlice({
               genesCount: response.data.viewer.explore.genes.hits.total,
               mutationCount: response.data.viewer.explore.ssms.hits.total,
               fileCount: response.data.viewer.repository.files.hits.total,
-              ssmCaseCount: response.data.viewer.explore.ssmsCases.hits.total,
-              cnvOrSsmCaseCount:
-                response.data.viewer.explore.cnvsOrSsmsCases.hits.total,
-              sequenceReadCaseCount:
-                response.data.viewer.repository.sequenceReads.hits.total,
-              repositoryCaseCount:
-                response.data.viewer.repository.cases.hits.total,
-              geneExpressionCaseCount:
-                response.data.viewer.repository.geneExpression.hits.total,
-              mafFileCount:
-                response.data.viewer.explore.mafFileCount.hits.total,
               status: "fulfilled",
             },
           },
@@ -497,12 +486,6 @@ const slice = createSlice({
               fileCount: -1,
               genesCount: -1,
               mutationCount: -1,
-              ssmCaseCount: -1,
-              cnvOrSsmCaseCount: -1,
-              sequenceReadCaseCount: -1,
-              repositoryCaseCount: -1,
-              geneExpressionCaseCount: -1,
-              mafFileCount: -1,
               status: "pending",
               requestId: action.meta.requestId,
             },
@@ -524,12 +507,6 @@ const slice = createSlice({
               fileCount: -1,
               genesCount: -1,
               mutationCount: -1,
-              ssmCaseCount: -1,
-              cnvOrSsmCaseCount: -1,
-              sequenceReadCaseCount: -1,
-              repositoryCaseCount: -1,
-              geneExpressionCaseCount: -1,
-              mafFileCount: -1,
               status: "rejected",
             },
           },
@@ -863,7 +840,7 @@ export const selectCohortCountsResults = (
 export const selectCohortCounts = (
   state: CoreState,
   cohortId: EntityId = getCurrentCohortFromCoreState(state),
-): CoreDataSelectorResponse<CountsDataAndStatus> =>
+): CountsDataAndStatus =>
   cohortSelectors.selectById(state, cohortId)?.counts ?? NullCountsData;
 
 export const selectCohortCountsByName = (
