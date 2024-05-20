@@ -284,14 +284,15 @@ const Controls: React.FC<ControlPanelProps> = ({
         <Input
           data-testid="textbox-cdave-search-bar"
           placeholder="Search"
-          className="p-2"
+          className="py-2"
           value={searchTerm}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setSearchTerm(e.currentTarget.value)
           }
+          rightSectionPointerEvents="all"
           rightSection={
             searchTerm && (
-              <ActionIcon onClick={() => setSearchTerm("")}>
+              <ActionIcon onClick={() => setSearchTerm("")} variant="subtle">
                 <CloseIcon aria-label="clear search" />
               </ActionIcon>
             )

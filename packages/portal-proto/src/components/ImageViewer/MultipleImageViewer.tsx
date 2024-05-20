@@ -189,6 +189,7 @@ export const MultipleImageViewer = ({
                           className="mt-1 w-11/12"
                           rightSectionWidth={50}
                           onChange={(e) => setSearchText(e.target.value)}
+                          rightSectionPointerEvents="all"
                           rightSection={
                             <Badge
                               data-testid="go-image-viewer"

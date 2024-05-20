@@ -219,8 +219,8 @@ export const Biospecimen = ({
                   data-testid="textbox-biospecimen-search-bar"
                   leftSection={<MdOutlineSearch size={24} aria-hidden="true" />}
                   placeholder="Search"
-                  className="basis-5/6"
                   classNames={{
+                    wrapper: "basis-5/6",
                     input: "border-base-lighter",
                   }}
                   onChange={(e) => {
@@ -235,9 +235,11 @@ export const Biospecimen = ({
                     setSearchText(e.target.value);
                   }}
                   value={searchText}
+                  rightSectionPointerEvents="all"
                   rightSection={
                     searchText.length > 0 && (
                       <ActionIcon
+                        variant="subtle"
                         onClick={() => {
                           setExpandedCount(0);
                           setTreeStatusOverride(overrideMessage.Expanded);
@@ -262,7 +264,7 @@ export const Biospecimen = ({
                     );
                     setExpandedCount(0);
                   }}
-                  className="text-primary hover:bg-primary-darker hover:text-base-lightest"
+                  className="flex-none text-primary hover:enabled:bg-primary-darker hover:enabled:text-base-lightest"
                   disabled={searchText.length > 0}
                   variant="outline"
                 >
