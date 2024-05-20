@@ -46,7 +46,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
   const [filteredTableData, setFilteredTableData] = useState([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-    case_id: false,
+    case_submitter_id: false,
     entity_id: false,
     status: false,
     notes: false,
@@ -76,15 +76,11 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
         id: "case_id",
         header: "Case UUID",
         enableSorting: false,
-        cell: ({ getValue }) => getValue() ?? "--",
-      }),
-      annotationsTableColumnHelper.accessor("case_submitter_id", {
-        id: "case_submitter_id",
-        header: "Case ID",
+        // cell: ({ getValue }) => getValue() ?? "--",
         cell: ({ getValue, row }) =>
           getValue() ? (
             <Link
-              href={`cases/${row.original.case_id}`}
+              href={`/cases/${row.original.case_id}`}
               className="text-utility-link underline font-content"
             >
               {getValue()}
@@ -92,6 +88,22 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
           ) : (
             "--"
           ),
+      }),
+      annotationsTableColumnHelper.accessor("case_submitter_id", {
+        id: "case_submitter_id",
+        header: "Case ID",
+        // cell: ({ getValue, row }) =>
+        //   getValue() ? (
+        //     <Link
+        //       href={`cases/${row.original.case_id}`}
+        //       className="text-utility-link underline font-content"
+        //     >
+        //       {getValue()}
+        //     </Link>
+        //   ) : (
+        //     "--"
+        //   ),
+        cell: ({ getValue }) => getValue() ?? "--",
       }),
       annotationsTableColumnHelper.accessor("entity_type", {
         id: "entity_type",
