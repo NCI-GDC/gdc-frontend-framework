@@ -5,7 +5,7 @@ import { useDeepCompareEffect } from "use-deep-compare";
 import {
   useDefaultCaseCountHook,
   useDefaultFileCountHook,
-} from "./hooks/defaultCaseCounts";
+} from "./hooks/defaultCaseAndFileCounts";
 
 /**
  * Represents a hook for error count. Returned in getHook if no hook by the passed name is found.
