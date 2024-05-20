@@ -8,7 +8,7 @@ import "@/features/projectsCenter/registerApp";
 import "@/features/repositoryApp/registerApp";
 import { datadogRum } from "@datadog/browser-rum";
 import { CoreProvider, PUBLIC_APP_INFO } from "@gff/core";
-import { createTheme, MantineProvider, Modal } from "@mantine/core";
+import { createTheme, MantineProvider, Modal, Button } from "@mantine/core";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import { useLocalStorage } from "@mantine/hooks";
@@ -208,6 +208,31 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
           zIndex: 1000,
         },
       },
+      Button: Button.extend({
+        vars: (_, props) => {
+          const tempButtonProps: any = {
+            root: {},
+            loader: {
+              left: "20px",
+              transformOrigin: "top 20px",
+            },
+          };
+          if (props.loading) {
+            tempButtonProps.inner = {
+              opacity: "1",
+              transform: "translateY(0)",
+            };
+            tempButtonProps.label = {
+              opacity: "1",
+            };
+            tempButtonProps.section = {
+              visibility: "hidden",
+            };
+          }
+
+          return tempButtonProps;
+        },
+      }),
     },
   });
 

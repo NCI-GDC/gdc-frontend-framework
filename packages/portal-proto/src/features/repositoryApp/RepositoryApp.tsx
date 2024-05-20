@@ -318,6 +318,7 @@ export const RepositoryApp = (): JSX.Element => {
                     <CartIcon aria-hidden="true" className="hidden xl:block" />
                   }
                   loading={allFilesLoading}
+                  variant="outline"
                   disabled={fileDataFetching}
                   onClick={() => {
                     // check number of files selected before making call

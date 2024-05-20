@@ -5,6 +5,9 @@ export default tw(FunctionButton)`
 bg-secondary-dark
 text-secondary-contrast-min
 border-secondary-darker
-hover:bg-secondary-darkest
-hover:text-secondary-contrast-min
+${(p) =>
+  p.loading !== true
+    ? `hover:bg-secondary-darkest
+    hover:text-secondary-contrast-min`
+    : ""}
 `;
