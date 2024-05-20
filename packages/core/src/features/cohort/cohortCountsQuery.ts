@@ -1,12 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { DataStatus } from "../../dataAccess";
 import { buildCohortGqlOperator, FilterSet } from "./filters";
-
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { UnknownJson } from "../gdcapi/gdcapi";
-import { selectCohortFilterSetById } from "./utils";
+import { selectCohortFilterSetById } from "./availableCohortsSlice";
 
 /**
  *  CountsData holds all the case counts for a cohort

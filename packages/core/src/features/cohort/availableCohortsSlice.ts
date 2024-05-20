@@ -1,13 +1,13 @@
 import {
-  createSlice,
-  createEntityAdapter,
-  PayloadAction,
-  nanoid,
-  ThunkAction,
   AnyAction,
+  createEntityAdapter,
+  createSlice,
+  Dictionary,
   EntityId,
   EntityState,
-  Dictionary,
+  nanoid,
+  PayloadAction,
+  ThunkAction,
 } from "@reduxjs/toolkit";
 
 import { CoreState } from "../../reducers";
