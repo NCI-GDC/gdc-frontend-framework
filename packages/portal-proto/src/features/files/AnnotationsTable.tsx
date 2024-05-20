@@ -20,12 +20,12 @@ import { downloadTSV } from "@/components/Table/utils";
 interface AnnotationsTableProps {
   readonly annotations: ReadonlyArray<FileAnnontationsType>;
 }
-
+// TODO when DEV-2653 is fixed, re-add case ID col, hide case UUID col by default
 type AnnotationTableData = Pick<
   FileAnnontationsType,
   | "annotation_id"
   | "case_id"
-  | "case_submitter_id"
+  // | "case_submitter_id"
   | "entity_type"
   | "entity_id"
   | "entity_submitter_id"
@@ -89,22 +89,21 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
             "--"
           ),
       }),
-      annotationsTableColumnHelper.accessor("case_submitter_id", {
-        id: "case_submitter_id",
-        header: "Case ID",
-        // cell: ({ getValue, row }) =>
-        //   getValue() ? (
-        //     <Link
-        //       href={`cases/${row.original.case_id}`}
-        //       className="text-utility-link underline font-content"
-        //     >
-        //       {getValue()}
-        //     </Link>
-        //   ) : (
-        //     "--"
-        //   ),
-        cell: ({ getValue }) => getValue() ?? "--",
-      }),
+      // annotationsTableColumnHelper.accessor("case_submitter_id", {
+      //   id: "case_submitter_id",
+      //   header: "Case ID",
+      //   cell: ({ getValue, row }) =>
+      //     getValue() ? (
+      //       <Link
+      //         href={`/cases/${row.original.case_id}`}
+      //         className="text-utility-link underline font-content"
+      //       >
+      //         {getValue()}
+      //       </Link>
+      //     ) : (
+      //       "--"
+      //     ),
+      // }),
       annotationsTableColumnHelper.accessor("entity_type", {
         id: "entity_type",
         header: "Entity Type",
