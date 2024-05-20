@@ -60,8 +60,8 @@ const Homepage = (): JSX.Element => {
         body={
           <>
             High-quality datasets spanning{" "}
-            {countsInfo?.repositoryCaseCounts?.toLocaleString()} cases from
-            cancer genomic studies such as{" "}
+            {countsInfo?.caseCount?.toLocaleString()} cases from cancer genomic
+            studies such as{" "}
             <strong className="italic font-bold">
               The Cancer Genomic Atlas (TCGA), Human Cancer Models Initiative
               (HCMI), Foundation Medicine Inc. (FMI), and Clinical Proteomic

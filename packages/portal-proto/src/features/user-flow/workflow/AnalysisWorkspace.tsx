@@ -14,6 +14,7 @@ import {
   chartDownloadReducer,
   DashboardDownloadContext,
 } from "@/utils/contexts";
+import { CountHookRegistry } from "@gff/core";
 
 const ActiveAnalysisToolNoSSR = dynamic(
   () => import("@/features/user-flow/workflow/ActiveAnalysisTool"),
@@ -38,6 +39,7 @@ const AnalysisGrid: React.FC = () => {
   const [recommendedApps] = useState([...RECOMMENDED_APPS]); // recommended apps based on Context
   const [activeApps] = useState([...ALL_OTHER_APPS]); // set of active apps i.e. not recommended but filterable/dimmable
   const [activeAnalysisCard, setActiveAnalysisCard] = useState(null);
+  const registry = CountHookRegistry.getInstance();
 
   return (
     <div className="flex flex-col font-heading mb-4">
@@ -74,6 +76,7 @@ const AnalysisGrid: React.FC = () => {
             .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
             .map((k) => initialApps[k])
             .map((x: AppRegistrationEntry, idx: number) => {
+              const countHook = registry.getHook(x.countsField);
               return (
                 <div
                   key={x.name}
@@ -87,6 +90,7 @@ const AnalysisGrid: React.FC = () => {
                         idx === activeAnalysisCard ? null : idx,
                       )
                     }
+                    useApplicationDataCounts={countHook}
                   />
                 </div>
               );
