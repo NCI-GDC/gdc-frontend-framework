@@ -55,8 +55,6 @@ describe("CountHookRegistry", () => {
       const registry = CountHookRegistry.getInstance();
       const mockFunction: CountHook = jest.fn();
 
-      // add jest.spyOne of createUseCountHook
-
       registry.registerHook("testFunc2", mockFunction);
       const actualFunction = registry.getHook("testFunc2");
 
