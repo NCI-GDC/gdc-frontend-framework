@@ -6,7 +6,7 @@ import {
   ColumnDef,
 } from "@tanstack/react-table";
 import Link from "next/link";
-import { FileAnnontationsType, useCoreDispatch } from "@gff/core";
+import { FileAnnotationsType, useCoreDispatch } from "@gff/core";
 import { createColumnHelper, SortingState } from "@tanstack/react-table";
 import { convertDateToString } from "src/utils/date";
 import download from "src/utils/download";
@@ -18,11 +18,11 @@ import useStandardPagination from "@/hooks/useStandardPagination";
 import { downloadTSV } from "@/components/Table/utils";
 
 interface AnnotationsTableProps {
-  readonly annotations: ReadonlyArray<FileAnnontationsType>;
+  readonly annotations: ReadonlyArray<FileAnnotationsType>;
 }
 // TODO when DEV-2653 is fixed, re-add case ID col, hide case UUID col by default
 type AnnotationTableData = Pick<
-  FileAnnontationsType,
+  FileAnnotationsType,
   | "annotation_id"
   | "case_id"
   // | "case_submitter_id"
