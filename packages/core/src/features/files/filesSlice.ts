@@ -36,7 +36,7 @@ export interface GdcCartFile {
   readonly submitterId: string;
   readonly md5sum: string;
 }
-export type FileAnnontationsType = {
+export type FileAnnotationsType = {
   readonly annotation_id: string;
   readonly case_id?: string;
   readonly case_submitter_id?: string;
@@ -125,7 +125,7 @@ export interface GdcFile {
   readonly version?: string;
   readonly experimental_strategy?: string;
   readonly project_id?: string;
-  readonly annotations?: ReadonlyArray<FileAnnontationsType>;
+  readonly annotations?: ReadonlyArray<FileAnnotationsType>;
   readonly cases?: FileCaseType;
   readonly associated_entities?: ReadonlyArray<{
     readonly entity_submitter_id: string;

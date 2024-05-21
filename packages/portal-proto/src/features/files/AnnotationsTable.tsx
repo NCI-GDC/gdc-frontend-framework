@@ -25,7 +25,7 @@ type AnnotationTableData = Pick<
   FileAnnotationsType,
   | "annotation_id"
   | "case_id"
-  // | "case_submitter_id"
+  | "case_submitter_id"
   | "entity_type"
   | "entity_id"
   | "entity_submitter_id"
@@ -46,7 +46,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
   const [filteredTableData, setFilteredTableData] = useState([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-    case_submitter_id: false,
+    // case_id: false,
     entity_id: false,
     status: false,
     notes: false,

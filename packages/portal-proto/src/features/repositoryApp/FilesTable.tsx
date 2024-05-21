@@ -14,7 +14,7 @@ import {
   SortBy,
   AccessType,
   FileCaseType,
-  FileAnnontationsType,
+  FileAnnotationsType,
 } from "@gff/core";
 import { MdSave, MdPerson } from "react-icons/md";
 import { useAppSelector } from "@/features/repositoryApp/appApi";
@@ -55,7 +55,7 @@ export type FilesTableDataType = {
   experimental_strategy?: string;
   platform: string;
   file_size: string;
-  annotations: FileAnnontationsType[];
+  annotations: FileAnnotationsType[];
 };
 
 const filesTableColumnHelper = createColumnHelper<FilesTableDataType>();
