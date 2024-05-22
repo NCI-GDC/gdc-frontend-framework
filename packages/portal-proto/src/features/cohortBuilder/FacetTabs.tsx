@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import tw from "tailwind-styled-components";
 import {
   addFilterToCohortBuilder,
-  CohortBuilderCategory,
+  CohortBuilderCategoryConfig,
   FacetDefinition,
   GQLDocType,
   GQLIndexType,
@@ -160,15 +160,11 @@ const CustomFacetGroup = (): JSX.Element => {
 
   const handleFilterSelected = (filter: string) => {
     setOpened(false);
-    coreDispatch(
-      addFilterToCohortBuilder({ category: "custom", facetName: filter }),
-    );
+    coreDispatch(addFilterToCohortBuilder({ facetName: filter }));
   };
 
   const handleRemoveFilter = (filter: string) => {
-    coreDispatch(
-      removeFilterFromCohortBuilder({ category: "custom", facetName: filter }),
-    );
+    coreDispatch(removeFilterFromCohortBuilder({ facetName: filter }));
   };
 
   const customEnumFacets = customFacetDefinitions.filter(
@@ -329,7 +325,7 @@ export const FacetTabs = (): JSX.Element => {
       >
         <Tabs.List>
           {Object.entries(tabsConfig).map(
-            ([key, tabEntry]: [string, CohortBuilderCategory]) => {
+            ([key, tabEntry]: [string, CohortBuilderCategoryConfig]) => {
               return (
                 <Tabs.Tab
                   key={key}
@@ -349,7 +345,7 @@ export const FacetTabs = (): JSX.Element => {
           )}
         </Tabs.List>
         {Object.entries(tabsConfig).map(
-          ([key, tabEntry]: [string, CohortBuilderCategory]) => {
+          ([key, tabEntry]: [string, CohortBuilderCategoryConfig]) => {
             const facetList =
               key === "custom" ? [] : getFacetInfo(tabEntry.facets, facets);
             return (
