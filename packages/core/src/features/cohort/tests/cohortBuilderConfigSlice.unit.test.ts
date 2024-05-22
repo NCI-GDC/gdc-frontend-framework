@@ -40,7 +40,7 @@ const stateWithCustomFacets = {
     builderConfig: {
       customFacets: [
         "demographic.country_of_residence_at_enrollment",
-        "demogrpahic.education_level",
+        "demographic.education_level",
       ],
     },
   },
@@ -126,7 +126,7 @@ describe("cohortConfig reducer", () => {
       label: "Custom Filters",
       facets: [
         "demographic.country_of_residence_at_enrollment",
-        "demogrpahic.education_level",
+        "demographic.education_level",
       ],
       docType: "cases",
       index: "explore",
@@ -207,7 +207,7 @@ describe("cohortConfig reducer", () => {
       "files.platform",
       "files.access",
       "demographic.country_of_residence_at_enrollment",
-      "demogrpahic.education_level",
+      "demographic.education_level",
     ];
     const usedFacets = selectCohortBuilderConfigFilters(stateWithCustomFacets);
     expect(usedFacets).toEqual(expected);
