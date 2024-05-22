@@ -10,7 +10,6 @@ import {
   PURGE,
   REGISTER,
   createTransform,
-  createMigrate,
 } from "redux-persist";
 import Cookies from "js-cookie";
 import { reducers } from "./reducers";
@@ -29,23 +28,9 @@ import { bannerNotificationApiSliceMiddleware } from "./features/bannerNotificat
 import { imageDetailsApiMiddleware } from "./features/imageDetails/imageDetailsSlice";
 import storage from "./storage-persist";
 
-const migrations = {
-  2: (state: any) => {
-    return {
-      ...state,
-      cohort: {
-        ...state.cohort,
-        builderConfig: {
-          customFacets: state.cohort.builderConfig.custom.facets,
-        },
-      },
-    };
-  },
-};
-
 const persistConfig = {
   key: "root",
-  version: 2,
+  version: 1,
   storage,
   whitelist: ["cart", "bannerNotification", "sets"],
   transforms: [
@@ -66,7 +51,6 @@ const persistConfig = {
       },
     ),
   ],
-  migrate: createMigrate(migrations),
 };
 
 export const coreStore = configureStore({
