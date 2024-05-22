@@ -71,7 +71,6 @@ import {
 
 const migrations = {
   2: (state: any) => {
-    console.log({ state });
     return {
       ...state,
       builderConfig: {
