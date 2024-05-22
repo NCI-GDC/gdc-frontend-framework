@@ -74,11 +74,8 @@ const migrations = {
     console.log({ state });
     return {
       ...state,
-      cohort: {
-        ...state.cohort,
-        builderConfig: {
-          customFacets: state.cohort.builderConfig.custom.facets,
-        },
+      builderConfig: {
+        customFacets: state.builderConfig.custom.facets,
       },
     };
   },
