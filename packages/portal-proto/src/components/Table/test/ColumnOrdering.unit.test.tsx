@@ -1,5 +1,6 @@
 import React from "react";
-import { render, fireEvent, screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
+import { render } from "test-utils";
 import userEvent from "@testing-library/user-event";
 import ColumnOrdering from "../ColumnOrdering";
 
@@ -108,6 +109,9 @@ describe("ColumnOrdering", () => {
     );
     const button = screen.getByTestId("button-column-selector-box");
     await userEvent.click(button);
+    await waitFor(() =>
+      expect(screen.getByTestId("textbox-column-selector")).toBeDefined(),
+    );
     const searchInput = screen.getByTestId("textbox-column-selector");
     fireEvent.change(searchInput, { target: { value: "col1" } });
     expect(screen.getByTestId("column-selector-row-col1")).toBeInTheDocument();
@@ -127,13 +131,18 @@ describe("ColumnOrdering", () => {
     );
     const button = screen.getByTestId("button-column-selector-box");
     await userEvent.click(button);
-
+    await waitFor(() =>
+      expect(screen.getByTestId("textbox-column-selector")).toBeDefined(),
+    );
     const searchInput = screen.getByTestId("textbox-column-selector");
     fireEvent.change(searchInput, { target: { value: "col1" } });
 
     await userEvent.click(button);
     await userEvent.click(button);
 
+    await waitFor(() =>
+      expect(screen.getByTestId("textbox-column-selector")).toBeDefined(),
+    );
     const updatedSearchInput = screen.getByTestId("textbox-column-selector");
     expect(updatedSearchInput).toHaveValue("col1");
   });

@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { render } from "test-utils";
 import { Biospecimen } from "./Biospecimen";
 import * as func from "@gff/core";
 

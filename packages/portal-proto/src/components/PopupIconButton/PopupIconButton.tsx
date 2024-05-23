@@ -29,7 +29,7 @@ export const PopupIconButton = forwardRef<
         className={customStyle}
         onClick={handleClick}
         aria-label={customAriaLabel ?? `Open ${label} information in modal`}
-        leftIcon={
+        leftSection={
           <Image
             src="/user-flow/icons/OpenModal.svg"
             width={10}
@@ -42,10 +42,10 @@ export const PopupIconButton = forwardRef<
         classNames={{
           label: "font-normal",
           root: "hover:bg-inherit px-0 h-4 w-auto border-0 flex items-center",
-          leftIcon: "mr-1.5 mt-0.5",
+          section: "mr-1.5 mt-0.5",
         }}
         variant="subtle"
-        compact
+        size="compact-sm"
       >
         {ariaId ? <span id={ariaId}>{label}</span> : <>{label}</>}
       </Button>

@@ -106,44 +106,46 @@ export const useGenerateCasesTableColumns = ({
             .filter((item) => item.length > 0).length;
           const isPlural = row.original.files_count > 1;
           return (
-            <Menu position="bottom-start">
+            <Menu position="bottom-start" zIndex={300}>
               <Menu.Target>
                 <Button
                   aria-label={`${
                     isAllFilesInCart ? "remove" : "add"
                   } all files ${isAllFilesInCart ? "from" : "to"} the cart`}
-                  leftIcon={
-                    <CartIcon
-                      className={
-                        isAllFilesInCart && "text-primary-contrast-darkest"
-                      }
-                      aria-hidden="true"
-                    />
+                  leftSection={
+                    <div className="mr-2">
+                      <CartIcon
+                        className={
+                          isAllFilesInCart && "text-primary-contrast-darkest"
+                        }
+                        aria-hidden="true"
+                      />
+                    </div>
                   }
-                  rightIcon={
-                    <Dropdown
-                      className={
-                        isAllFilesInCart && "text-primary-contrast-darkest"
-                      }
-                      size={18}
-                      aria-hidden="true"
-                    />
+                  rightSection={
+                    <div className="border-l">
+                      <Dropdown
+                        className={
+                          isAllFilesInCart && "text-primary-contrast-darkest"
+                        }
+                        size={18}
+                        aria-hidden="true"
+                      />
+                    </div>
                   }
                   variant="outline"
-                  compact
                   classNames={{
                     root: "w-12 pr-0",
-                    rightIcon: "border-l ml-0",
-                    leftIcon: "mr-2",
+                    section: "m-0",
                   }}
-                  size="xs"
+                  size="compact-xs"
                   className={`${isAllFilesInCart && "bg-primary-darkest"}`}
                 />
               </Menu.Target>
               <Menu.Dropdown>
                 {numberOfFilesToRemove < row.original.files_count && (
                   <Menu.Item
-                    icon={<BiAddToQueue />}
+                    leftSection={<BiAddToQueue />}
                     onClick={() => {
                       addToCart(row.original.files, currentCart, dispatch);
                     }}
@@ -155,7 +157,7 @@ export const useGenerateCasesTableColumns = ({
 
                 {numberOfFilesToRemove > 0 && (
                   <Menu.Item
-                    icon={<BsTrash />}
+                    leftSection={<BsTrash />}
                     onClick={() => {
                       removeFromCart(row.original.files, currentCart, dispatch);
                     }}

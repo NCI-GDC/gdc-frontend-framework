@@ -132,16 +132,21 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             <Button
               classNames={{
                 root: `${buttonStyle} ml-4 ${focusStyles}`,
-                rightIcon: "border-l pl-1 -mr-2",
               }}
-              leftIcon={
+              leftSection={
                 downloadActive ? (
                   <Loader size={15} />
                 ) : (
                   <DownloadIcon aria-hidden="true" />
                 )
               }
-              rightIcon={<DropdownIcon size={20} aria-hidden="true" />}
+              rightSection={
+                <DropdownIcon
+                  size={20}
+                  aria-hidden="true"
+                  className="border-l pl-1 -mr-2"
+                />
+              }
             >
               Download Cart
             </Button>
@@ -152,7 +157,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 setDownloadActive(true);
                 downloadManifest(cart, setDownloadActive, dispatch);
               }}
-              icon={<DownloadIcon aria-label="download" />}
+              leftSection={<DownloadIcon aria-label="download" />}
             >
               Manifest
             </Menu.Item>
@@ -166,7 +171,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                   dispatch,
                 );
               }}
-              icon={<DownloadIcon aria-label="download" />}
+              leftSection={<DownloadIcon aria-label="download" />}
             >
               Cart
             </Menu.Item>
@@ -177,16 +182,21 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             <Button
               classNames={{
                 root: `${buttonStyle} ${focusStyles}`,
-                rightIcon: "border-l pl-1 -mr-2",
               }}
-              leftIcon={
+              leftSection={
                 downloadActive ? (
                   <Loader size={15} />
                 ) : (
                   <DownloadIcon aria-hidden="true" />
                 )
               }
-              rightIcon={<DropdownIcon size={20} aria-hidden="true" />}
+              rightSection={
+                <DropdownIcon
+                  size={20}
+                  aria-hidden="true"
+                  className="border-l pl-1 -mr-2"
+                />
+              }
             >
               Download Associated Data
             </Button>
@@ -194,7 +204,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
           <Menu.Dropdown>
             <Menu.Item
               component={DownloadButton}
-              classNames={{ inner: "font-normal" }}
+              classNames={{ item: "font-normal" }}
               displayVariant="subtle"
               activeText="Processing"
               inactiveText="Clinical: TSV"
@@ -225,7 +235,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
 
             <Menu.Item
               component={DownloadButton}
-              classNames={{ inner: "font-normal" }}
+              classNames={{ item: "font-normal" }}
               displayVariant="subtle"
               activeText="Processing"
               inactiveText="Clinical: JSON"
@@ -256,7 +266,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
 
             <Menu.Item
               component={DownloadButton}
-              classNames={{ inner: "font-normal" }}
+              classNames={{ item: "font-normal" }}
               displayVariant="subtle"
               activeText="Processing"
               inactiveText="Biospecimen: TSV"
@@ -286,7 +296,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             />
             <Menu.Item
               component={DownloadButton}
-              classNames={{ inner: "font-normal" }}
+              classNames={{ item: "font-normal" }}
               displayVariant="subtle"
               activeText="Processing"
               inactiveText="Biospecimen: JSON"
@@ -316,7 +326,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             />
             <Menu.Item
               component={DownloadButton}
-              classNames={{ inner: "font-normal" }}
+              classNames={{ item: "font-normal" }}
               displayVariant="subtle"
               activeText="Processing"
               inactiveText="Sample Sheet"
@@ -358,7 +368,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             />
             <Menu.Item
               component={DownloadButton}
-              classNames={{ inner: "font-normal" }}
+              classNames={{ item: "font-normal" }}
               activeText="Processing"
               inactiveText="Metadata"
               showIcon={true}
@@ -449,11 +459,16 @@ const CartHeader: React.FC<CartHeaderProps> = ({
         <Menu>
           <Menu.Target>
             <Button
-              leftIcon={<TrashIcon aria-hidden="true" />}
-              rightIcon={<DropdownIcon size={20} aria-hidden="true" />}
+              leftSection={<TrashIcon aria-hidden="true" />}
+              rightSection={
+                <DropdownIcon
+                  size={20}
+                  aria-hidden="true"
+                  className="border-l pl-1 -mr-2"
+                />
+              }
               classNames={{
                 root: `bg-nci-red-darker font-medium text-base-max ${focusStyles}`, //TODO: find good color theme for this
-                rightIcon: "border-l pl-1 -mr-2",
               }}
             >
               Remove From Cart

@@ -484,7 +484,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                   targetButtonDisabled={isFetching && !isSuccess}
                   TargetButtonChildren="Save/Edit Mutation Set"
                   disableTargetWidth={true}
-                  LeftIcon={
+                  LeftSection={
                     selectedMutations.length ? (
                       <CountsIcon $count={selectedMutations.length}>
                         {selectedMutations.length}
@@ -493,7 +493,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                   }
                   menuLabelCustomClass="bg-primary text-primary-contrast font-heading font-bold mb-2"
                   customPosition="bottom-start"
-                  zIndex={10}
                   customDataTestId="button-save-edit-mutation-set"
                 />
 

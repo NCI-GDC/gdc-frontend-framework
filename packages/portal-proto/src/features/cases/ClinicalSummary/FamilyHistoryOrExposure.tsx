@@ -71,14 +71,10 @@ export const FamilyHistoryOrExposure = ({
     <>
       {dataInfo.length > 1 ? (
         <Tabs
-          variant="default"
+          variant="pills"
           orientation="vertical"
           value={activeTab.toString()}
-          onTabChange={onTabChange}
-          classNames={{
-            tabLabel: "text-sm pr-2 font-medium",
-            tabsList: "border-r-0 max-w-[160px]",
-          }}
+          onChange={onTabChange}
           data-testid="verticalTabs"
         >
           <div className="max-h-[500px] overflow-y-auto overflow-x-hidden min-w-[160px] mr-2">

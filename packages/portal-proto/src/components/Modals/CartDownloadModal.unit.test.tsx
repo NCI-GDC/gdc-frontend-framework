@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { render } from "test-utils";
 import UserEvent from "@testing-library/user-event";
 import { CartFile } from "@gff/core";
 import * as core from "@gff/core";

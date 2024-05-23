@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { render } from "test-utils";
 import NumeratorDenominator from "./NumeratorDenominator";
 
 describe("<NumeratorDenominator />", () => {

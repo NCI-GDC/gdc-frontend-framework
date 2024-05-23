@@ -1,7 +1,7 @@
 import React, { createContext, useState } from "react";
 import { Modal, Tabs } from "@mantine/core";
 import { useCoreDispatch, hideModal } from "@gff/core";
-import { StyledTabsList, StyledTab } from "@/components/StyledComponents/Tabs";
+import { StyledTab } from "@/components/StyledComponents/Tabs";
 import DiscardChangesModal from "./DiscardChangesModal";
 
 export const UserInputContext = createContext([]);
@@ -75,15 +75,15 @@ const UserInputModal: React.FC<UserInputModalProps> = ({
               <Tabs
                 value={activeTab}
                 keepMounted={false}
-                onTabChange={onTabChange}
+                onChange={onTabChange}
               >
-                <StyledTabsList>
+                <Tabs.List>
                   {tabs.map((tab) => (
                     <StyledTab value={tab.value} key={tab.value}>
                       {tab.label}
                     </StyledTab>
                   ))}
-                </StyledTabsList>
+                </Tabs.List>
                 {children}
               </Tabs>
             ) : (

@@ -1,0 +1,16 @@
+.header {
+  position: sticky;
+  top: 0;
+  transition: box-shadow 150ms ease;
+  height: 56px;
+  background-color: #ffffff;
+}
+
+.header:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1;
+  border-bottom: 4px solid #c5c5c5;
+}

@@ -129,7 +129,9 @@ const FileVersions = ({
                     },
                   ]}
                   TargetButtonChildren="Download"
-                  LeftIcon={<DownloadIcon size="1rem" aria-label="download" />}
+                  LeftSection={
+                    <DownloadIcon size="1rem" aria-label="download" />
+                  }
                 />
               </div>
             }

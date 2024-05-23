@@ -1,4 +1,5 @@
-import { render, waitFor } from "@testing-library/react";
+import { waitFor } from "@testing-library/react";
+import { render } from "test-utils";
 import userEvent from "@testing-library/user-event";
 import * as router from "next/router";
 import * as core from "@gff/core";
@@ -27,9 +28,9 @@ describe("<QuickSearch />", () => {
       .spyOn(core, "useGetHistoryQuery")
       .mockReturnValue({ data: undefined } as any);
 
-    const { getAllByTestId, getByLabelText } = render(<QuickSearch />);
-    userEvent.click(getByLabelText("Quick Search Input"));
-    userEvent.type(getByLabelText("Quick Search Input"), "th");
+    const { getAllByTestId, getByTestId } = render(<QuickSearch />);
+    userEvent.click(getByTestId("textbox-quick-search-bar"));
+    userEvent.type(getByTestId("textbox-quick-search-bar"), "th");
 
     await waitFor(
       () =>
@@ -58,9 +59,9 @@ describe("<QuickSearch />", () => {
       ],
     } as any);
 
-    const { getAllByTestId, getByLabelText } = render(<QuickSearch />);
-    userEvent.click(getByLabelText("Quick Search Input"));
-    userEvent.type(getByLabelText("Quick Search Input"), "111-222");
+    const { getAllByTestId, getByTestId } = render(<QuickSearch />);
+    userEvent.click(getByTestId("textbox-quick-search-bar"));
+    userEvent.type(getByTestId("textbox-quick-search-bar"), "111-222");
 
     await waitFor(
       () =>

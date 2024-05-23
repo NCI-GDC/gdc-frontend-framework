@@ -123,7 +123,11 @@ const CardControls: React.FC<CardControlsProps> = ({
         <div className="flex items-end">
           <DropdownWithIcon
             customDataTestId="button-customize-bins"
-            RightIcon={<DownIcon size={20} aria-hidden="true" />}
+            RightSection={
+              <div className="border-l pl-1 -mr-2">
+                <DownIcon size={20} aria-hidden="true" />
+              </div>
+            }
             TargetButtonChildren={"Customize Bins"}
             disableTargetWidth={true}
             dropdownElements={[
@@ -137,7 +141,6 @@ const CardControls: React.FC<CardControlsProps> = ({
                 onClick: () => setCustomBinnedData(null),
               },
             ]}
-            zIndex={100}
           />
         </div>
       </div>

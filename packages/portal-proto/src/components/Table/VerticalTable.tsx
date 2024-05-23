@@ -290,45 +290,47 @@ function VerticalTable<TData>({
               className="flex items-center gap-2"
               data-testid="table-options-menu"
             >
-              {search?.enabled && (
-                <TextInput
-                  icon={<MdSearch size={24} aria-hidden="true" />}
-                  data-testid="textbox-table-search-bar"
-                  placeholder={search.placeholder ?? "Search"}
-                  aria-label="Table Search Input"
-                  classNames={{
-                    input: `border-base-lighter focus:border-2 focus:border-primary${
-                      TooltipContainer ? " focus:rounded-b-none" : ""
-                    }`,
-                    wrapper: "xl:w-72",
-                  }}
-                  size="sm"
-                  rightSection={
-                    searchTerm.length > 0 && (
-                      <ActionIcon onClick={handleClearClick}>
-                        <MdClose aria-label="clear search" />
-                      </ActionIcon>
-                    )
-                  }
-                  value={searchTerm}
-                  onChange={handleInputChange}
-                  ref={inputRef}
-                  onFocus={() => setSearchFocused(true)}
-                  onBlur={() => setSearchFocused(false)}
-                  inputContainer={TooltipContainer}
-                />
-              )}
-              {showControls && (
-                <ColumnOrdering
-                  table={table}
-                  handleColumnOrderingReset={() => {
-                    table.resetColumnVisibility();
-                    table.resetColumnOrder();
-                  }}
-                  columnOrder={columnOrder}
-                  setColumnOrder={setColumnOrder}
-                />
-              )}
+              <div className="flex gap-2">
+                {search?.enabled && (
+                  <TextInput
+                    leftSection={<MdSearch size={24} aria-hidden="true" />}
+                    data-testid="textbox-table-search-bar"
+                    placeholder={search.placeholder ?? "Search"}
+                    aria-label="Table Search Input"
+                    classNames={{
+                      input: `border-base-lighter focus:border-2 focus:border-primary${
+                        TooltipContainer ? " focus:rounded-b-none" : ""
+                      }`,
+                      wrapper: "xl:w-72",
+                    }}
+                    size="sm"
+                    rightSection={
+                      searchTerm.length > 0 && (
+                        <ActionIcon onClick={handleClearClick}>
+                          <MdClose aria-label="clear search" />
+                        </ActionIcon>
+                      )
+                    }
+                    value={searchTerm}
+                    onChange={handleInputChange}
+                    ref={inputRef}
+                    onFocus={() => setSearchFocused(true)}
+                    onBlur={() => setSearchFocused(false)}
+                    inputContainer={TooltipContainer}
+                  />
+                )}
+                {showControls && (
+                  <ColumnOrdering
+                    table={table}
+                    handleColumnOrderingReset={() => {
+                      table.resetColumnVisibility();
+                      table.resetColumnOrder();
+                    }}
+                    columnOrder={columnOrder}
+                    setColumnOrder={setColumnOrder}
+                  />
+                )}
+              </div>
             </div>
           )}
         </div>

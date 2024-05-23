@@ -456,16 +456,16 @@ const CohortManager: React.FC = () => {
                 searchable
                 clearable={false}
                 value={cohortId}
-                zIndex={290}
                 onChange={(x) => {
                   coreDispatch(setActiveCohort(x));
                 }}
-                itemComponent={CustomCohortSelectItem}
+                renderOption={CustomCohortSelectItem}
                 classNames={{
-                  root: "border-secondary-darkest w-56 md:w-80",
+                  root: "border-secondary-darkest w-56 md:w-80 z-[290]",
                   input:
                     "text-heading font-medium text-primary-darkest rounded-l-none h-[50px] border-primary border-l-2",
-                  item: "text-heading font-normal text-primary-darkest data-selected:bg-primary-lighter hover:bg-accent-lightest hover:text-accent-contrast-lightest my-0.5",
+                  option:
+                    "text-heading font-normal text-primary-darkest data-selected:bg-primary-lighter hover:bg-accent-lightest hover:text-accent-contrast-lightest my-0.5",
                 }}
                 aria-label="Select cohort"
                 data-testid="switchButton"
@@ -476,7 +476,7 @@ const CohortManager: React.FC = () => {
                   </div>
                 }
                 rightSectionWidth={cohortModified ? 45 : 30}
-                styles={{ rightSection: { pointerEvents: "none" } }}
+                styles={{ section: { pointerEvents: "none" } }}
               />
               <div
                 className={`ml-auto text-heading text-sm font-semibold mt-0.85 text-primary-contrast ${
@@ -509,7 +509,7 @@ const CohortManager: React.FC = () => {
                       disabled: !currentCohort?.saved,
                     },
                   ]}
-                  LeftIcon={
+                  LeftSection={
                     <SaveIcon
                       size="1.5em"
                       className="-mr-2.5"

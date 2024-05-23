@@ -18,7 +18,13 @@ const CoreToolCard: React.FC<CoreToolCardProps> = ({
       }}
       className="group"
     >
-      <Grid className="border-secondary-darkest border h-full m-0 rounded-md p-0">
+      <Grid
+        classNames={{
+          root: "h-full",
+          inner:
+            "border-secondary-darkest border h-full w-full m-0 rounded-md p-0",
+        }}
+      >
         <Grid.Col span={2} className="self-center">
           {entry.icon}
         </Grid.Col>
@@ -26,7 +32,7 @@ const CoreToolCard: React.FC<CoreToolCardProps> = ({
           <Text size="sm" className="font-heading font-bold">
             {entry.name}
           </Text>
-          <Text size="xs" className="font-content">
+          <Text size="xs" className="font-content leading-5">
             {entry.description}
           </Text>
         </Grid.Col>

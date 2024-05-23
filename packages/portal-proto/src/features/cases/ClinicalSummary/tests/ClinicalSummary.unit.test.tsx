@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { render } from "test-utils";
 import { ClinicalSummary } from "../ClinicalSummary";
 import userEvent from "@testing-library/user-event";
 import {

@@ -207,7 +207,10 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
               withArrow
               withinPortal={false}
             >
-              <ActionIcon aria-label="accepted identifier info">
+              <ActionIcon
+                variant="subtle"
+                aria-label="accepted identifier info"
+              >
                 <InfoIcon size={16} className="text-accent" />
               </ActionIcon>
             </Tooltip>
@@ -220,7 +223,9 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
               const tokens = parseTokens(event.currentTarget.value);
               queryForMatchesDebounced(tokens);
             }}
+            autosize
             minRows={5}
+            maxRows={5}
             id="identifier-input"
             placeholder={textInputPlaceholder}
             error={
@@ -247,7 +252,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
                 setProcessingFile(false);
               }
             }}
-            icon={
+            leftSection={
               processingFile ? (
                 <Loader size="xs" />
               ) : file !== null ? (
@@ -257,7 +262,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
             label={<b>Or choose a file to upload</b>}
             classNames={{
               root: "my-2",
-              rightSection: "pointer-events-none",
+              section: "pointer-events-none",
             }}
             accept=".tsv,.txt,.csv"
             rightSection={

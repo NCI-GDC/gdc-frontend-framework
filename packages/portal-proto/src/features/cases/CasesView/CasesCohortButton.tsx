@@ -75,7 +75,7 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
       TargetButtonChildren="Save New Cohort"
       disableTargetWidth={true}
       targetButtonDisabled={numCases === 0}
-      LeftIcon={
+      LeftSection={
         numCases ? (
           <CountsIcon $count={numCases}>{numCases.toLocaleString()}</CountsIcon>
         ) : null
@@ -84,7 +84,6 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
         ${numCases > 1 ? " Cases" : " Case"}`}
       menuLabelCustomClass="bg-primary text-primary-contrast font-heading font-bold mb-2"
       customPosition="bottom-start"
-      zIndex={100}
       tooltip={"Save a new cohort based on selection"}
     />
   );

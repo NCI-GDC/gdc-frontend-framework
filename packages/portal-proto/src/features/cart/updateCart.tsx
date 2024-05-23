@@ -42,7 +42,7 @@ const UndoButton: React.FC<UndoButtonProps> = ({ action }: UndoButtonProps) => {
     <Button
       variant={"white"}
       onClick={action}
-      leftIcon={<UndoIcon aria-hidden="true" />}
+      leftSection={<UndoIcon aria-hidden="true" />}
     >
       <span className="underline">Undo</span>
     </Button>

@@ -1,5 +1,5 @@
 import { useState, useRef, useContext, useEffect } from "react";
-import { ActionIcon, Radio, Loader, Menu, Tooltip } from "@mantine/core";
+import { ActionIcon, Radio, Group, Loader, Menu, Tooltip } from "@mantine/core";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
 import tailwindConfig from "tailwind.config";
 import OffscreenWrapper from "@/components/OffscreenWrapper";
@@ -91,24 +91,25 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
           <div className="flex flex-row justify-between pl-2 pr-0">
             <Radio.Group
               size="sm"
-              className="px-2 flex flex-row gap-2"
               onChange={(value) => setDisplayPercent(value === "percent")}
               defaultValue={"counts"}
             >
-              <Radio
-                data-testid="radio-number-of-cases"
-                classNames={{ label: "font-heading pl-1" }}
-                value="counts"
-                label="# of Cases"
-                color="nci-blue"
-              />
-              <Radio
-                data-testid="radio-percent-of-cases"
-                classNames={{ label: "font-heading pl-1" }}
-                value="percent"
-                label="% of Cases"
-                color="nci-blue"
-              />
+              <Group className="px-2 flex flex-row gap-2">
+                <Radio
+                  data-testid="radio-number-of-cases"
+                  classNames={{ label: "font-heading pl-1" }}
+                  value="counts"
+                  label="# of Cases"
+                  color="blue"
+                />
+                <Radio
+                  data-testid="radio-percent-of-cases"
+                  classNames={{ label: "font-heading pl-1" }}
+                  value="percent"
+                  label="% of Cases"
+                  color="blue"
+                />
+              </Group>
             </Radio.Group>
             <Menu>
               <Menu.Target>

@@ -102,11 +102,10 @@ export const FileFacetPanel = (): JSX.Element => {
 
   return (
     <div className="flex flex-col gap-y-2 mr-3 mb-4">
-      <Group position="apart">
+      <Group justify="space-between">
         <Text
           size="lg"
-          weight={700}
-          className="text-primary-content-darker"
+          className="text-primary-content-darker font-bold"
           data-testid="filters-title"
         >
           Filters
@@ -132,9 +131,7 @@ export const FileFacetPanel = (): JSX.Element => {
         onClick={() => setOpened(true)}
       >
         <AddAdditionalIcon className="text-2xl xl:text-xl" />
-        <Text weight={700} className="text-sm">
-          Add a Custom Filter
-        </Text>
+        <Text className="text-sm font-bold">Add a Custom Filter</Text>
       </Button>
       <div className="flex flex-col gap-y-4" data-testid="filters-facets">
         <Modal

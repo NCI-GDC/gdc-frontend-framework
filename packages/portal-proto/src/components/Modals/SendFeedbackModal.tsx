@@ -14,7 +14,7 @@ const SendFeedbackModal = ({
     closeOnEscape
     title="Send Feedback"
     classNames={{
-      header: "p-2",
+      header: "!p-2",
     }}
   >
     <div className="px-4 pb-4 pt-2 font-content text-sm">
@@ -44,6 +44,7 @@ const SendFeedbackModal = ({
                     }`}
                     onClick={copy}
                     aria-label="Copy email to clipboard"
+                    variant="subtle"
                   >
                     <CopyIcon />
                   </ActionIcon>

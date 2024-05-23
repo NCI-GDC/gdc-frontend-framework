@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { render } from "test-utils";
 import userEvent from "@testing-library/user-event";
 import { FacetTabs } from "../FacetTabs";
 import * as core from "@gff/core";

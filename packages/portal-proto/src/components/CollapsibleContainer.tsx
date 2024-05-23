@@ -5,7 +5,7 @@ import {
   MdExpandLess as ExpandLessIcon,
   MdExpandMore as ExpandMoreIcon,
 } from "react-icons/md";
-import { FloatingPosition } from "@mantine/core/lib/Floating";
+import { FloatingPosition } from "@mantine/core/lib/components/Floating/types";
 import { focusStyles } from "../utils";
 
 export interface CollapsibleContainerProps {

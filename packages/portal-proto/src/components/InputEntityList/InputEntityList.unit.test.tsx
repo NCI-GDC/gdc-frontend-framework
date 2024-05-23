@@ -55,6 +55,9 @@ describe("<InputEntityList />", () => {
     const saveButton = getByRole("button", { name: "Save Set" });
     await waitFor(() => expect(saveButton).toBeEnabled());
     await userEvent.click(saveButton);
+    await waitFor(() =>
+      expect(getByPlaceholderText("New Set Name")).toBeInTheDocument(),
+    );
     await userEvent.type(getByPlaceholderText("New Set Name"), "my set");
     await userEvent.click(getByRole("button", { name: "Save" }));
 

@@ -31,7 +31,7 @@ export const LoginButton = ({
         await fetchUserDetails();
         await fetchNotifications();
       }}
-      leftIcon={
+      leftSection={
         fromHeader ? (
           <LoginIcon
             className="m-0"
@@ -42,7 +42,7 @@ export const LoginButton = ({
         ) : undefined
       }
       variant={fromHeader ? "subtle" : "filled"}
-      compact={fromHeader}
+      size={fromHeader ? "compact-sm" : undefined}
       data-testid="loginButton"
     >
       Login

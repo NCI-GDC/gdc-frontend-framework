@@ -11,7 +11,7 @@ export const HeaderTooltip = ({
     <Tooltip
       disabled={!tooltip}
       label={<Text className="whitespace-pre-line text-left">{tooltip}</Text>}
-      width={200}
+      w={200}
       multiline
       withArrow
       transitionProps={{ duration: 200, transition: "fade" }}

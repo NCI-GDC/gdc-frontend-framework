@@ -135,18 +135,18 @@ export const DownloadButton = forwardRef<
         disabled={!toolTip}
         label={toolTip}
         multiline={multilineToolTip}
-        width={multilineToolTip ? 400 : "auto"}
+        w={multilineToolTip ? 400 : "auto"}
       >
         <FunctionButton
           $variant={displayVariant}
           ref={ref}
-          leftIcon={
+          leftSection={
             showIcon &&
             inactiveText && (
               <FiDownload aria-label="download" className="hidden xl:block" />
             )
           }
-          classNames={{ leftIcon: "mr-0 xl:mr-3" }}
+          classNames={{ section: "mr-0 xl:mr-3" }}
           disabled={disabled}
           loading={showLoading && active}
           variant="outline"

@@ -255,7 +255,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
         leftElement={
           <Button
             data-testid="button-add-all-remove-all-files-case-summary"
-            leftIcon={<FaShoppingCart />}
+            leftSection={<FaShoppingCart />}
             className={`text-primary bg-base-max hover:bg-primary-darkest hover:text-base-max ${focusStyles}`}
             onClick={() =>
               isAllFilesInCart

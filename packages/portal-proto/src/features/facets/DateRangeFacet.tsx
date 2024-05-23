@@ -107,7 +107,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
           position="bottom-start"
           disabled={!description}
           multiline
-          width={220}
+          w={220}
           withArrow
           transitionProps={{ duration: 200, transition: "fade" }}
         >
@@ -154,7 +154,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
           classNames={{ day: "hover:bg-primary hover:text-base-max" }}
           value={dateRangeValue[0]}
           aria-label="Set the since value"
-          icon={<CalendarIcon />}
+          leftSection={<CalendarIcon />}
         />
         <MinusIcon />
         <DateInput
@@ -170,7 +170,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
             setDateRangeValue([dateRangeValue[0], d])
           }
           classNames={{ day: "hover:bg-primary hover:text-base-max" }}
-          icon={<CalendarIcon />}
+          leftSection={<CalendarIcon />}
           aria-label="Set the through value"
         />
         <Popover

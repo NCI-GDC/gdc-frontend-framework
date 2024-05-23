@@ -155,15 +155,15 @@ export const SaveOrCreateEntityBody = ({
         />
       </Box>
       <Box
-        sx={(theme) => ({
-          backgroundColor: theme.colors.base[1],
-          padding: theme.spacing.md,
-          borderRadius: theme.radius.md,
+        style={{
+          backgroundColor: "var(--mantine-color-base-1)",
+          padding: "var(--mantine-spacing-md)",
+          borderRadius: "var(--mantine-radius-md)",
           borderTopRightRadius: 0,
           borderTopLeftRadius: 0,
-        })}
+        }}
       >
-        <Group position="right">
+        <Group justify="flex-end">
           <Button
             variant="outline"
             classNames={{ root: "bg-base-max" }}

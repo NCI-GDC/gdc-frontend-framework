@@ -418,7 +418,7 @@ export const ContextualCasesView: React.FC = () => {
               TargetButtonChildren={
                 biospecimenDownloadActive ? "Processing" : "Biospecimen"
               }
-              LeftIcon={
+              LeftSection={
                 biospecimenDownloadActive ? (
                   <Loader size={20} className="hidden md:block" />
                 ) : pickedCases.length ? (
@@ -452,7 +452,7 @@ export const ContextualCasesView: React.FC = () => {
               TargetButtonChildren={
                 clinicalDownloadActive ? "Processing" : "Clinical"
               }
-              LeftIcon={
+              LeftSection={
                 clinicalDownloadActive ? (
                   <Loader size={20} className="hidden md:block" />
                 ) : pickedCases.length ? (

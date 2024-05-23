@@ -147,7 +147,7 @@ export const RepositoryApp = (): JSX.Element => {
                   <Menu.Target>
                     <Button
                       data-testid="button-download-associated-data-files-table"
-                      rightIcon={
+                      rightSection={
                         <Dropdown
                           size="1.25em"
                           aria-hidden="true"
@@ -155,7 +155,7 @@ export const RepositoryApp = (): JSX.Element => {
                         />
                       }
                       classNames={{
-                        rightIcon: "border-l pl-1 -mr-2",
+                        section: "border-l pl-1 -mr-2",
                       }}
                       variant="outline"
                     >
@@ -165,7 +165,7 @@ export const RepositoryApp = (): JSX.Element => {
                   <Menu.Dropdown data-testid="dropdown-menu-options">
                     <Menu.Item
                       component={DownloadButton}
-                      classNames={{ inner: "font-normal" }}
+                      classNames={{ item: "font-normal" }}
                       displayVariant="subtle"
                       activeText="Processing"
                       inactiveText="Sample Sheet"
@@ -197,7 +197,7 @@ export const RepositoryApp = (): JSX.Element => {
                     />
                     <Menu.Item
                       component={DownloadButton}
-                      classNames={{ inner: "font-normal" }}
+                      classNames={{ item: "font-normal" }}
                       activeText="Processing"
                       inactiveText="Metadata"
                       setActive={setMetadataDownloadActive}
@@ -314,10 +314,11 @@ export const RepositoryApp = (): JSX.Element => {
 
                 <FunctionButton
                   data-testid="button-add-all-files-table"
-                  leftIcon={
+                  leftSection={
                     <CartIcon aria-hidden="true" className="hidden xl:block" />
                   }
                   loading={allFilesLoading}
+                  variant="outline"
                   disabled={fileDataFetching}
                   onClick={() => {
                     // check number of files selected before making call
@@ -334,16 +335,16 @@ export const RepositoryApp = (): JSX.Element => {
                       );
                     }
                   }}
-                  classNames={{ leftIcon: "mr-0 xl:mr-2" }}
+                  classNames={{ section: "mr-0 xl:mr-2" }}
                 >
                   Add All Files to Cart
                 </FunctionButton>
                 <FunctionButtonRemove
                   data-testid="button-remove-all-files-table"
-                  leftIcon={
+                  leftSection={
                     <VscTrash aria-hidden="true" className="hidden xl:block" />
                   }
-                  classNames={{ leftIcon: "mr-0 xl:mr-2" }}
+                  classNames={{ section: "mr-0 xl:mr-2" }}
                   loading={allFilesLoading}
                   onClick={() => {
                     getAllSelectedFiles(

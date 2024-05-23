@@ -1,5 +1,5 @@
 import { CartFile, GdcFile } from "@gff/core";
-import { render } from "@testing-library/react";
+import { render } from "test-utils";
 import { TableActionButtons } from ".";
 import userEvent from "@testing-library/user-event";
 import * as cartFunctions from "@/features/cart/updateCart";

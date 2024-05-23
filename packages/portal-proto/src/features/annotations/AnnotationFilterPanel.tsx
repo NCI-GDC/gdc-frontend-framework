@@ -39,8 +39,8 @@ export const AnnotationFacetPanel = (): JSX.Element => {
 
   return (
     <>
-      <Group position="apart">
-        <Text size="lg" weight={700} className="text-primary-content-darker">
+      <Group justify="space-between">
+        <Text size="lg" className="text-primary-content-darker font-bold">
           Filters
         </Text>
       </Group>

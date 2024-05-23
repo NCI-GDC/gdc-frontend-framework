@@ -406,7 +406,7 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             </Menu.Target>
             <Menu.Dropdown>
-              <div className="grid grid-cols-2 p-1 gap-2">
+              <div className="grid grid-cols-2 p-1 gap-2 font-medium">
                 <AppMenuItem>
                   <NavLinkWithIcon
                     href={indexPath}

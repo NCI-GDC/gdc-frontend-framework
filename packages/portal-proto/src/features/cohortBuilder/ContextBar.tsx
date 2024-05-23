@@ -290,7 +290,7 @@ const ContextBar = ({
               TargetButtonChildren={
                 <CohortCountButton countName="fileCount" label="Files" />
               }
-              LeftIcon={
+              LeftSection={
                 <DownloadIcon
                   size="1rem"
                   aria-hidden="true"
@@ -325,7 +325,7 @@ const ContextBar = ({
                 },
               ]}
               TargetButtonChildren="Custom Filters"
-              LeftIcon={
+              LeftSection={
                 <CohortFilterIcon
                   size="1rem"
                   aria-hidden="true"
@@ -355,7 +355,7 @@ const ContextBar = ({
                   TargetButtonChildren={
                     biospecimenDownloadActive ? "Processing" : "Biospecimen"
                   }
-                  LeftIcon={
+                  LeftSection={
                     <span className="hidden md:block">
                       {biospecimenDownloadActive ? (
                         <Loader size={20} />
@@ -383,7 +383,7 @@ const ContextBar = ({
                   TargetButtonChildren={
                     clinicalDownloadActive ? "Processing" : "Clinical"
                   }
-                  LeftIcon={
+                  LeftSection={
                     <span className="hidden md:block">
                       {biospecimenDownloadActive ? (
                         <Loader size={20} />
@@ -398,9 +398,10 @@ const ContextBar = ({
             )}
           </div>
           <Tabs
+            variant="pills"
             classNames={{
               tab: SecondaryTabStyle,
-              tabsList: "mb-4 border-0",
+              list: "mb-4 gap-0",
               root: "border-0",
               panel: "h-max",
             }}
@@ -408,13 +409,13 @@ const ContextBar = ({
             defaultValue="summary"
             keepMounted={false}
             value={activeTab}
-            onTabChange={setActiveTab}
+            onChange={setActiveTab}
           >
-            <Tabs.List position={width < 1024 ? "left" : "right"}>
+            <Tabs.List justify={width < 1024 ? "flex-start" : "flex-end"}>
               <Tabs.Tab
                 data-tour="cohort_summary_charts"
                 value="summary"
-                icon={<SummaryChartIcon aria-hidden="true" />}
+                leftSection={<SummaryChartIcon aria-hidden="true" />}
               >
                 Summary View
               </Tabs.Tab>
@@ -422,7 +423,7 @@ const ContextBar = ({
               <Tabs.Tab
                 data-tour="cohort_summary_table"
                 value="table"
-                icon={<TableIcon aria-hidden="true" />}
+                leftSection={<TableIcon aria-hidden="true" />}
               >
                 Table View
               </Tabs.Tab>

@@ -80,10 +80,15 @@ export const SummaryModal = ({
       title={`${title} summary modal`}
       zIndex={300}
       classNames={{
-        header: "m-0 p-0 border-0",
+        header: "m-0 p-0 min-h-0",
         title: "sr-only",
-        close: `absolute right-5 top-6 text-base-darkest [&_svg]:h-14 [&_svg]:w-14 float-right z-30 ${focusStyles}`,
+        close: `absolute right-5 top-6 text-base-darkest [&_svg]:!h-14 [&_svg]:!w-14 float-right z-30 ${focusStyles} bg-base-lightest hover:bg-white`,
         content: "scroll-smooth",
+      }}
+      styles={{
+        header: {
+          border: 0,
+        },
       }}
       padding={0}
       overlayProps={{ opacity: 0.5 }}

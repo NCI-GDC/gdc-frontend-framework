@@ -159,45 +159,23 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [intervalForm.values]);
 
-  useEffect(() => {
-    if (binMethod === "interval") {
-      rangeForm.clearErrors();
-      intervalForm.validate();
-    } else {
-      intervalForm.clearErrors();
-      rangeForm.validate();
-      // Ignore empty last row
-      rangeForm.clearFieldError(
-        `ranges.${rangeForm.values.ranges.length - 1}.name`,
-      );
-      rangeForm.clearFieldError(
-        `ranges.${rangeForm.values.ranges.length - 1}.to`,
-      );
-      rangeForm.clearFieldError(
-        `ranges.${rangeForm.values.ranges.length - 1}.from`,
-      );
-    }
-    // Adding form objects to dep array causes infinite rerenders
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [binMethod]);
-
   const saveBins = () => {
     setModalOpen(false);
     // Store bins in the field's original data dimension
     if (binMethod === "interval") {
       const newBins: CustomInterval = {
         interval: convertDataDimension(
-          Number(intervalForm.values.setIntervalSize),
+          Number(intervalForm.getValues().setIntervalSize),
           dataDimension,
           originalDataDimension,
         ),
         min: convertDataDimension(
-          Number(intervalForm.values.setIntervalMin),
+          Number(intervalForm.getValues().setIntervalMin),
           dataDimension,
           originalDataDimension,
         ),
         max: convertDataDimension(
-          Number(intervalForm.values.setIntervalMax),
+          Number(intervalForm.getValues().setIntervalMax),
           dataDimension,
           originalDataDimension,
         ),
@@ -208,8 +186,9 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
         updateBins(null);
       }
     } else {
-      const newBins: NamedFromTo[] = rangeForm.values.ranges
-        .map((r) => ({
+      const newBins: NamedFromTo[] = rangeForm
+        .getValues()
+        .ranges.map((r) => ({
           name: r.name,
           to: convertDataDimension(
             Number(r.to),
@@ -232,14 +211,14 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
   };
 
   const intervalFormAtDefault =
-    intervalForm.values.setIntervalSize === String(binSize) &&
-    intervalForm.values.setIntervalMin === String(formattedStats.min) &&
-    intervalForm.values.setIntervalMax === String(formattedStats.max);
+    intervalForm.getValues().setIntervalSize === String(binSize) &&
+    intervalForm.getValues().setIntervalMin === String(formattedStats.min) &&
+    intervalForm.getValues().setIntervalMax === String(formattedStats.max);
   const rangeFormAtDefault =
-    rangeForm.values.ranges.length === 1 &&
-    rangeForm.values.ranges[0].name === "" &&
-    rangeForm.values.ranges[0].to === "" &&
-    rangeForm.values.ranges[0].from === "";
+    rangeForm.getValues().ranges.length === 1 &&
+    rangeForm.getValues().ranges[0].name === "" &&
+    rangeForm.getValues().ranges[0].to === "" &&
+    rangeForm.getValues().ranges[0].from === "";
 
   return (
     <Modal
@@ -249,7 +228,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
       zIndex={400}
       title={`Create Custom Bins: ${toDisplayName(field)}`}
       classNames={{
-        header: "text-xl m-0 px-0",
+        header: "text-xl !m-0 !px-0",
         content: "p-4",
       }}
     >
@@ -297,7 +276,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                 value="interval"
                 name="binMethod"
                 aria-label="select interval"
-                color="nci-blue"
+                color="blue"
                 checked={binMethod === "interval"}
                 onChange={(e) =>
                   e.target.checked ? setBinMethod("interval") : undefined
@@ -390,7 +369,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
               checked={binMethod === "ranges"}
               className="px-2"
               classNames={{ label: "font-content" }}
-              color="nci-blue"
+              color="blue"
               onChange={(e) =>
                 e.target.checked ? setBinMethod("ranges") : undefined
               }
@@ -410,7 +389,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
               </tr>
             </thead>
             <tbody>
-              {rangeForm.values.ranges.map((_, idx) => (
+              {rangeForm.getValues().ranges.map((_, idx) => (
                 <tr key={idx} className="h-16 align-top">
                   <td>
                     <TextInput
@@ -425,7 +404,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                             : undefined,
                       }}
                       onBlur={() =>
-                        idx !== rangeForm.values.ranges.length - 1
+                        idx !== rangeForm.getValues().ranges.length - 1
                           ? rangeForm.validateField(`ranges.${idx}.name`)
                           : undefined
                       }
@@ -444,7 +423,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                             : undefined,
                       }}
                       onBlur={() =>
-                        idx !== rangeForm.values.ranges.length - 1
+                        idx !== rangeForm.getValues().ranges.length - 1
                           ? validateRangeField("from", idx)
                           : undefined
                       }
@@ -463,25 +442,25 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                             : undefined,
                       }}
                       onBlur={() =>
-                        idx !== rangeForm.values.ranges.length - 1
+                        idx !== rangeForm.getValues().ranges.length - 1
                           ? validateRangeField("to", idx)
                           : undefined
                       }
                     />
                   </td>
                   <td className="float-right">
-                    {idx === rangeForm.values.ranges.length - 1 ? (
+                    {idx === rangeForm.getValues().ranges.length - 1 ? (
                       <FunctionButton
                         data-testid="button-range-add"
-                        leftIcon={<PlusIcon aria-hidden="true" />}
+                        leftSection={<PlusIcon aria-hidden="true" />}
                         onClick={() => {
                           const result = rangeForm.validate();
                           if (!result.hasErrors) {
-                            setSavedRangeRows(rangeForm.values.ranges);
+                            setSavedRangeRows(rangeForm.getValues().ranges);
 
                             rangeForm.setFieldValue(
                               `ranges.${idx}.name`,
-                              rangeForm.values.ranges[idx].name.trim(),
+                              rangeForm.getValues().ranges[idx].name.trim(),
                             );
                             rangeForm.insertListItem("ranges", {
                               name: "",
@@ -491,9 +470,9 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                           }
                         }}
                         disabled={
-                          rangeForm.values.ranges[idx].name === "" ||
-                          rangeForm.values.ranges[idx].from === "" ||
-                          rangeForm.values.ranges[idx].to === ""
+                          rangeForm.getValues().ranges[idx].name === "" ||
+                          rangeForm.getValues().ranges[idx].from === "" ||
+                          rangeForm.getValues().ranges[idx].to === ""
                         }
                       >
                         Add

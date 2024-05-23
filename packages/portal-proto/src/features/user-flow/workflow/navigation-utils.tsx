@@ -14,7 +14,7 @@ export const headerElements = [
     label="Explore and analyze harmonized high-quality clinical and genomics data from cancer genomic studies with the tools in the Analysis Center."
     position="bottom-start"
     multiline
-    width={220}
+    w={220}
     withArrow
   >
     <span>
@@ -43,7 +43,7 @@ export const headerElements = [
     label="View the projects available within the GDC and select them for further exploration and analysis."
     position="bottom-start"
     multiline
-    width={220}
+    w={220}
     withArrow
   >
     <span>
@@ -72,7 +72,7 @@ export const headerElements = [
     label="Build and define your custom cohorts using a variety of clinical and biospecimen features."
     position="bottom-start"
     multiline
-    width={220}
+    w={220}
     withArrow
   >
     <span>
@@ -101,7 +101,7 @@ export const headerElements = [
     label="Browse and download the files associated with your cohort for more sophisticated analysis."
     position="bottom-start"
     multiline
-    width={220}
+    w={220}
     withArrow
   >
     <span>

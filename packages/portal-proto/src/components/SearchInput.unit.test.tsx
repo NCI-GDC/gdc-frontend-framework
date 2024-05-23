@@ -1,4 +1,5 @@
-import { render } from "@testing-library/react";
+import { render } from "test-utils";
+import { waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useRouter, NextRouter } from "next/router";
 import SearchInput from "./SearchInput";
@@ -78,7 +79,9 @@ describe("<SearchInput />", () => {
     await userEvent.hover(
       queryByRole("button", { name: "BioThing Category: General" }),
     );
-    expect(queryByRole("tooltip")).toBeInTheDocument();
+    await waitFor(() => expect(queryByRole("tooltip")).toBeInTheDocument(), {
+      timeout: 2000,
+    });
     expect(getByText("blah blah")).toBeInTheDocument();
     expect(
       getByTestId("cohort-builder-search-matching-values").textContent,
@@ -90,7 +93,10 @@ describe("<SearchInput />", () => {
     await userEvent.hover(
       queryByRole("button", { name: "Biopsy Category: Very General" }),
     );
-    expect(queryByRole("tooltip")).not.toBeInTheDocument();
+    await waitFor(
+      () => expect(queryByRole("tooltip")).not.toBeInTheDocument(),
+      { timeout: 2000 },
+    );
   });
 
   it("click navigates to tab", async () => {

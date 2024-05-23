@@ -46,6 +46,14 @@ export const COLOR_MAP = {
   exposures: "nci-purple",
 };
 
+// this is done so tailwind loads the classes properly
+export const COLOR_CLASS_HOVER_MAP = {
+  demographic: "hover:bg-nci-blue-darker",
+  diagnoses: "hover:bg-nci-orange-darker",
+  treatments: "hover:bg-nci-green-darker",
+  exposures: "hover:bg-nci-purple-darker",
+};
+
 export const CAPITALIZED_TERMS = [
   "ajcc",
   "uicc",

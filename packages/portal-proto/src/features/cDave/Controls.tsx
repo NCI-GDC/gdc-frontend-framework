@@ -20,7 +20,13 @@ import {
 } from "react-icons/fa";
 import { Stats, Buckets } from "@gff/core";
 import { createKeyboardAccessibleFunction } from "src/utils";
-import { COLOR_MAP, DEFAULT_FIELDS, FACET_SORT, TABS } from "./constants";
+import {
+  COLOR_MAP,
+  COLOR_CLASS_HOVER_MAP,
+  DEFAULT_FIELDS,
+  FACET_SORT,
+  TABS,
+} from "./constants";
 import { toDisplayName } from "./utils";
 import tailwindConfig from "../../../tailwind.config";
 import FacetExpander from "../facets/FacetExpander";
@@ -151,36 +157,18 @@ const FieldControl: React.FC<FieldControlProps> = ({
           <Switch
             label={<Highlight highlight={searchTerm}>{displayName}</Highlight>}
             labelPosition="left"
-            styles={(theme) => ({
-              track: {
-                "&:hover": {
-                  backgroundColor: theme.fn.darken(
-                    tailwindConfig.theme.extend.colors[
-                      COLOR_MAP[field.field_type]
-                    ]?.DEFAULT,
-                    0.05,
-                  ),
-                },
-              },
-              input: {
-                "&:checked + .mantine-Switch-track": {
-                  backgroundColor:
-                    tailwindConfig.theme.extend.colors[
-                      COLOR_MAP[field.field_type]
-                    ]?.DEFAULT,
-                  borderColor:
-                    tailwindConfig.theme.extend.colors[
-                      COLOR_MAP[field.field_type]
-                    ]?.DEFAULT,
-                },
-              },
-            })}
+            color={
+              tailwindConfig.theme.extend.colors[COLOR_MAP[field.field_type]]
+                ?.DEFAULT
+            }
             classNames={{
               root: "py-2",
               body: "flex justify-between items-center",
               label:
                 "cursor-pointer text-base text-black font-content font-medium",
-              track: "cursor-pointer",
+              track: `cursor-pointer ${
+                COLOR_CLASS_HOVER_MAP[field.field_type]
+              }`,
             }}
             checked={checked}
             onChange={(e) => {
@@ -199,7 +187,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
             <Tooltip
               label={field?.description || "No description available"}
               withArrow
-              width={200}
+              w={200}
               multiline
               zIndex={15}
             >
@@ -207,36 +195,16 @@ const FieldControl: React.FC<FieldControlProps> = ({
             </Tooltip>
           }
           labelPosition="left"
-          styles={(theme) => ({
-            track: {
-              "&:hover": {
-                backgroundColor: theme.fn.darken(
-                  tailwindConfig.theme.extend.colors[
-                    COLOR_MAP[field.field_type]
-                  ]?.DEFAULT,
-                  0.05,
-                ),
-              },
-            },
-            input: {
-              "&:checked + .mantine-Switch-track": {
-                backgroundColor:
-                  tailwindConfig.theme.extend.colors[
-                    COLOR_MAP[field.field_type]
-                  ]?.DEFAULT,
-                borderColor:
-                  tailwindConfig.theme.extend.colors[
-                    COLOR_MAP[field.field_type]
-                  ]?.DEFAULT,
-              },
-            },
-          })}
+          color={
+            tailwindConfig.theme.extend.colors[COLOR_MAP[field.field_type]]
+              ?.DEFAULT
+          }
           classNames={{
             root: "py-2",
             body: "flex justify-between items-center",
             label:
               "cursor-pointer text-base text-black font-content font-medium",
-            track: "cursor-pointer",
+            track: `cursor-pointer ${COLOR_CLASS_HOVER_MAP[field.field_type]}`,
           }}
           checked={checked}
           onChange={(e) => {
@@ -299,6 +267,7 @@ const Controls: React.FC<ControlPanelProps> = ({
           aria-controls={"cdave-control-panel"}
           aria-expanded={controlsExpanded}
           className="text-base"
+          variant="subtle"
         >
           {controlsExpanded ? (
             <DoubleLeftIcon aria-hidden="true" />
@@ -315,14 +284,15 @@ const Controls: React.FC<ControlPanelProps> = ({
         <Input
           data-testid="textbox-cdave-search-bar"
           placeholder="Search"
-          className="p-2"
+          className="py-2"
           value={searchTerm}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setSearchTerm(e.currentTarget.value)
           }
+          rightSectionPointerEvents="all"
           rightSection={
             searchTerm && (
-              <ActionIcon onClick={() => setSearchTerm("")}>
+              <ActionIcon onClick={() => setSearchTerm("")} variant="subtle">
                 <CloseIcon aria-label="clear search" />
               </ActionIcon>
             )
