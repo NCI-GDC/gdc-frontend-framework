@@ -326,12 +326,12 @@ const FromTo: React.FC<FromToProps> = ({
 
   return (
     <div className="flex flex-col grow m-2 text-base-contrast-max bg-base-max">
-      <fieldset>
+      <fieldset className="flex flex-col gap-y-1">
         <legend className="sr-only">Numeric from/to filters</legend>
-        <div className="flex flex-row justify-end items-center flex-nowrap border font-content">
+        <div className="flex gap-0.5 items-center flex-nowrap border font-content">
           <div className="basis-1/5 text-center">From</div>
           <SegmentedControl
-            className="basis-2/5"
+            className="flex-1"
             size="sm"
             value={fromOp}
             onChange={(value) => {
@@ -346,7 +346,7 @@ const FromTo: React.FC<FromToProps> = ({
           />
           <NumberInput
             data-testid="textbox-input-from-value"
-            className="text-sm grow"
+            className="text-sm flex-1"
             placeholder={`eg. ${lowerUnitRange}${unitsLabel} `}
             min={lowerUnitRange}
             max={upperUnitRange}
@@ -366,10 +366,10 @@ const FromTo: React.FC<FromToProps> = ({
             aria-label="input from value"
           />
         </div>
-        <div className="flex flex-row mt-1 justify-center items-center flex-nowrap border font-content">
+        <div className="flex gap-0.5 items-center flex-nowrap border font-content">
           <div className="basis-1/5 text-center">To</div>
           <SegmentedControl
-            className="basis-2/5"
+            className="flex-1"
             size="sm"
             value={toOp}
             onChange={(value) => {
@@ -384,7 +384,7 @@ const FromTo: React.FC<FromToProps> = ({
           />
           <NumberInput
             data-testid="textbox-input-to-value"
-            className="grow text-sm"
+            className="flex-1 text-sm"
             placeholder={`eg. ${upperUnitRange}${unitsLabel} `}
             min={lowerUnitRange}
             max={upperUnitRange}
