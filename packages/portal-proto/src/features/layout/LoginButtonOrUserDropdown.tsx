@@ -15,6 +15,7 @@ import {
   useCoreDispatch,
   useFetchUserDetailsQuery,
   useLazyFetchTokenQuery,
+  setCohortLoginStatus,
 } from "@gff/core";
 import { LoginButton } from "@/components/LoginButton";
 import {
@@ -22,12 +23,23 @@ import {
   DropdownMenuItem,
 } from "@/components/StyledComponents/DropdownMenu";
 import { theme } from "tailwind.config";
+import { useDeepCompareEffect } from "use-deep-compare";
 
 const LoginButtonOrUserDropdown = () => {
   const dispatch = useCoreDispatch();
   const { data: userInfo } = useFetchUserDetailsQuery();
   const userDropdownRef = useRef<HTMLButtonElement>();
   const [fetchToken] = useLazyFetchTokenQuery({ refetchOnFocus: false });
+
+  useDeepCompareEffect(() => {
+    if (userInfo?.data?.username) {
+      console.log("here in true: ", userInfo?.data?.username);
+      dispatch(setCohortLoginStatus({ isLoggedIn: true }));
+    } else {
+      console.log("here in false: ", userInfo?.data?.username);
+      dispatch(setCohortLoginStatus({ isLoggedIn: false }));
+    }
+  }, [userInfo?.data?.username, dispatch]);
 
   return (
     <>

@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { Paper } from "@mantine/core";
+import { LoadingOverlay, Paper } from "@mantine/core";
 import { FIELD_LABELS } from "src/fields";
 import CohortVennDiagram from "./CohortVennDiagram";
 import Link from "next/link";
@@ -29,6 +29,7 @@ const CohortCard: React.FC<CohortCardProps> = ({
   caseSetIds,
   casesFetching,
 }: CohortCardProps) => {
+  console.log({ casesFetching, caseSetIds, cohorts });
   return (
     <Paper p="md" className="h-fit">
       <div className="font-semibold">
@@ -90,7 +91,9 @@ const CohortCard: React.FC<CohortCardProps> = ({
         </Link>
       </div>
 
-      {!casesFetching && caseSetIds.length !== 0 ? (
+      {casesFetching || caseSetIds.length === 0 ? (
+        <LoadingOverlay visible />
+      ) : !casesFetching && caseSetIds.length !== 0 ? (
         <CohortVennDiagram caseSetIds={caseSetIds} cohorts={cohorts} />
       ) : (
         <VennDiagram

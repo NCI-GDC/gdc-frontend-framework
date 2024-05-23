@@ -15,6 +15,7 @@ import {
   selectCurrentCohortId,
   removeCohort,
   selectCurrentCohort,
+  setCohortLoginStatus,
 } from "./features/cohort/availableCohortsSlice";
 import { fetchCohortCaseCounts } from "./features/cohort/cohortCountsQuery";
 import { cohortApiSlice } from "./features/api/cohortApiSlice";
@@ -39,6 +40,7 @@ startCoreListening({
     removeCohortFilter,
     clearCohortFilters,
     discardCohortChanges,
+    setCohortLoginStatus,
   ),
   effect: async (_, listenerApi) => {
     const currentCohortId = selectCurrentCohortId(listenerApi.getState());
@@ -46,6 +48,19 @@ startCoreListening({
     // the current cohort will be different when the fetch is fulfilled
     currentCohortId &&
       listenerApi.dispatch(fetchCohortCaseCounts(currentCohortId));
+  },
+});
+
+startCoreListening({
+  matcher: isAnyOf(setCohortLoginStatus),
+  effect: async (_, listenerApi) => {
+    const allCohorts = selectAvailableCohorts(listenerApi.getState());
+
+    // here get the list of all the cohorts and fetch it's data.
+
+    allCohorts.forEach((cohort) => {
+      cohort.id && listenerApi.dispatch(fetchCohortCaseCounts(cohort.id));
+    });
   },
 });
 
