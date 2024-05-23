@@ -44,6 +44,7 @@ export const IconWrapperTW = tw.span`
  * @property label - the text label
  * @property numCases - the number of cases in the cohort
  * @property filters - the filters to use for the cohort
+ * @property caseFilters - the case filters to use for the cohort
  * @property filtersCallback - callback to create filters, used when filters are too complicated for FilterSet
  * @property createStaticCohort - whether to create a case set from the filters so the cases in the cohort remain static
  */
