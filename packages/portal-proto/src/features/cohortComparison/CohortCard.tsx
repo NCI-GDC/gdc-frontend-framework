@@ -29,7 +29,6 @@ const CohortCard: React.FC<CohortCardProps> = ({
   caseSetIds,
   casesFetching,
 }: CohortCardProps) => {
-  console.log({ casesFetching, caseSetIds, cohorts });
   return (
     <Paper p="md" className="h-fit">
       <div className="font-semibold">

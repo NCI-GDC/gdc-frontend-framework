@@ -16,6 +16,7 @@ import {
   useFetchUserDetailsQuery,
   useLazyFetchTokenQuery,
   setCohortLoginStatus,
+  usePrevious,
 } from "@gff/core";
 import { LoginButton } from "@/components/LoginButton";
 import {
@@ -31,15 +32,18 @@ const LoginButtonOrUserDropdown = () => {
   const userDropdownRef = useRef<HTMLButtonElement>();
   const [fetchToken] = useLazyFetchTokenQuery({ refetchOnFocus: false });
 
+  const prevUsernameVal = usePrevious(userInfo?.data?.username);
   useDeepCompareEffect(() => {
-    if (userInfo?.data?.username) {
-      console.log("here in true: ", userInfo?.data?.username);
-      dispatch(setCohortLoginStatus({ isLoggedIn: true }));
-    } else {
-      console.log("here in false: ", userInfo?.data?.username);
-      dispatch(setCohortLoginStatus({ isLoggedIn: false }));
+    if (userInfo?.data?.username !== prevUsernameVal) {
+      if (userInfo?.data?.username) {
+        console.log("here in true: ", userInfo?.data?.username);
+        dispatch(setCohortLoginStatus({ isLoggedIn: true }));
+      } else {
+        console.log("here in false: ", userInfo?.data?.username);
+        dispatch(setCohortLoginStatus({ isLoggedIn: false }));
+      }
     }
-  }, [userInfo?.data?.username, dispatch]);
+  }, [prevUsernameVal, userInfo?.data?.username, dispatch]);
 
   return (
     <>

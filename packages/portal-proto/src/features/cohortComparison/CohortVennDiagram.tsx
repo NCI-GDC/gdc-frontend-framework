@@ -34,18 +34,17 @@ const CohortVennDiagram: React.FC<CohortVennDiagramProps> = ({
     caseSetIds,
   );
 
-  console.log({ filters, cohorts, caseSetIds });
   const { data } = useVennDiagramQuery({
     set1Filters: filters.cohort1,
     set2Filters: filters.cohort2,
     intersectionFilters: filters.intersection,
   });
-  console.log({ data });
+
   return (
     <VennDiagram
       chartData={[
         {
-          key: "S1_minus_S1",
+          key: "S1_minus_S2",
           value: data?.set1?.hits?.total.toLocaleString() || 0,
           highlighted: false,
         },

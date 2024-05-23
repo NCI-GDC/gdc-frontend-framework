@@ -40,7 +40,6 @@ startCoreListening({
     removeCohortFilter,
     clearCohortFilters,
     discardCohortChanges,
-    setCohortLoginStatus,
   ),
   effect: async (_, listenerApi) => {
     const currentCohortId = selectCurrentCohortId(listenerApi.getState());
