@@ -46,6 +46,7 @@ export const getQ1Q3Line = (
 
 interface QQPlotProps {
   readonly chartValues: { id: string; x: number; y: number }[];
+  readonly field: string;
   readonly isLoading: boolean;
   readonly color: string;
   readonly height: number;
@@ -56,6 +57,7 @@ interface QQPlotProps {
 
 const QQPlot: React.FC<QQPlotProps> = ({
   chartValues,
+  field,
   isLoading,
   height,
   width,
@@ -81,6 +83,11 @@ const QQPlot: React.FC<QQPlotProps> = ({
   const option: EChartsOption = useDeepCompareMemo(
     () => ({
       animation: false,
+      aria: {
+        label: {
+          description: `The QQ Plot displays the Theoretical Normal Quantiles distribution for ${field} values. For detailed information, download the corresponding QQ JSON or QQ TSV files via the “Download image or data” button.`,
+        },
+      },
       grid: {
         show: false,
         left: 80,
