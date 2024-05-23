@@ -6,7 +6,7 @@ import {
   ColumnDef,
 } from "@tanstack/react-table";
 import Link from "next/link";
-import { FileAnnontationsType, useCoreDispatch } from "@gff/core";
+import { FileAnnotationsType, useCoreDispatch } from "@gff/core";
 import { createColumnHelper, SortingState } from "@tanstack/react-table";
 import { convertDateToString } from "src/utils/date";
 import download from "src/utils/download";
@@ -18,11 +18,11 @@ import useStandardPagination from "@/hooks/useStandardPagination";
 import { downloadTSV } from "@/components/Table/utils";
 
 interface AnnotationsTableProps {
-  readonly annotations: ReadonlyArray<FileAnnontationsType>;
+  readonly annotations: ReadonlyArray<FileAnnotationsType>;
 }
-
+// TODO when DEV-2653 is fixed, re-add case ID col, hide case UUID col by default
 type AnnotationTableData = Pick<
-  FileAnnontationsType,
+  FileAnnotationsType,
   | "annotation_id"
   | "case_id"
   | "case_submitter_id"
@@ -46,7 +46,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
   const [filteredTableData, setFilteredTableData] = useState([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-    case_id: false,
+    // case_id: false,
     entity_id: false,
     status: false,
     notes: false,
@@ -76,15 +76,11 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
         id: "case_id",
         header: "Case UUID",
         enableSorting: false,
-        cell: ({ getValue }) => getValue() ?? "--",
-      }),
-      annotationsTableColumnHelper.accessor("case_submitter_id", {
-        id: "case_submitter_id",
-        header: "Case ID",
+        // cell: ({ getValue }) => getValue() ?? "--",
         cell: ({ getValue, row }) =>
           getValue() ? (
             <Link
-              href={`cases/${row.original.case_id}`}
+              href={`/cases/${row.original.case_id}`}
               className="text-utility-link underline font-content"
             >
               {getValue()}
@@ -93,6 +89,21 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
             "--"
           ),
       }),
+      // annotationsTableColumnHelper.accessor("case_submitter_id", {
+      //   id: "case_submitter_id",
+      //   header: "Case ID",
+      //   cell: ({ getValue, row }) =>
+      //     getValue() ? (
+      //       <Link
+      //         href={`/cases/${row.original.case_id}`}
+      //         className="text-utility-link underline font-content"
+      //       >
+      //         {getValue()}
+      //       </Link>
+      //     ) : (
+      //       "--"
+      //     ),
+      // }),
       annotationsTableColumnHelper.accessor("entity_type", {
         id: "entity_type",
         header: "Entity Type",
