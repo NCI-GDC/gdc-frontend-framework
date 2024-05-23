@@ -378,7 +378,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
           <FilesTable caseId={case_id} />
         </div>
 
-        <div className="mb-16 mx-4">
+        <div className="mb-16">
           <SMTableContainer
             projectId={data.project.project_id}
             case_id={case_id}

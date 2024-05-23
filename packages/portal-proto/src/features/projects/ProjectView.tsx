@@ -407,7 +407,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
           )}
           {projectData?.annotation?.pagination.count > 0 && (
             <div
-              className={`mb-16 mx-4 ${
+              className={`mb-16 ${
                 projectData.isModal ? "scroll-mt-36" : "scroll-mt-72"
               }`}
               id="annotations"
