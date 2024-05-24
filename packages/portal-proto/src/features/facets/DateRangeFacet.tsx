@@ -99,7 +99,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
     <div
       className={`flex flex-col ${
         width ? width : "mx-0"
-      } bg-base-max relative border-primary-lightest border-1 rounded-b-md text-xs transition`}
+      } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition`}
     >
       <FacetHeader>
         <Tooltip
@@ -107,7 +107,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
           position="bottom-start"
           disabled={!description}
           multiline
-          width={220}
+          w={220}
           withArrow
           transitionProps={{ duration: 200, transition: "fade" }}
         >
@@ -128,7 +128,6 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
             <Tooltip label="Remove the facet">
               <FacetIconButton
                 onClick={() => {
-                  clearFilters(field);
                   dismissCallback(field);
                 }}
                 aria-label="Remove the facet"
@@ -142,6 +141,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
       <fieldset className="flex flex-nowrap items-center p-2">
         <legend className="sr-only">Date range filters</legend>
         <DateInput
+          data-testid="textbox-input-since-value"
           clearable
           size="xs"
           placeholder="Since"
@@ -154,10 +154,11 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
           classNames={{ day: "hover:bg-primary hover:text-base-max" }}
           value={dateRangeValue[0]}
           aria-label="Set the since value"
-          icon={<CalendarIcon />}
+          leftSection={<CalendarIcon />}
         />
         <MinusIcon />
         <DateInput
+          data-testid="textbox-input-through-value"
           clearable
           size="xs"
           placeholder="Through"
@@ -169,7 +170,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
             setDateRangeValue([dateRangeValue[0], d])
           }
           classNames={{ day: "hover:bg-primary hover:text-base-max" }}
-          icon={<CalendarIcon />}
+          leftSection={<CalendarIcon />}
           aria-label="Set the through value"
         />
         <Popover

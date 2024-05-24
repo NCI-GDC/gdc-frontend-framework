@@ -2,9 +2,8 @@ import { useState } from "react";
 import { orderBy } from "lodash";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import { FilterSet, useCnvPlot } from "@gff/core";
+import { FilterSet, useCnvPlotQuery } from "@gff/core";
 import ChartTitleBar from "./ChartTitleBar";
-import { processFilters } from "src/utils";
 import { CountSpan } from "@/components/tailwindComponents";
 
 const BarChart = dynamic(() => import("./BarChart"), {
@@ -45,16 +44,17 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
   genomicFilters = undefined,
   cohortFilters = undefined,
 }: CNVPlotProps) => {
-  const contextFilters = processFilters(genomicFilters, cohortFilters);
-
   const router = useRouter();
   const [gainChecked, setGainChecked] = useState(true);
   const [lossChecked, setLossChecked] = useState(true);
 
-  const { data, error, isUninitialized, isFetching, isError } = useCnvPlot({
-    gene,
-    contextFilters,
-  });
+  const { data, error, isUninitialized, isFetching, isError } = useCnvPlotQuery(
+    {
+      gene,
+      cohortFilters,
+      genomicFilters,
+    },
+  );
 
   if (isUninitialized) {
     return <div>Initializing chart...</div>;
@@ -64,8 +64,8 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
     return <div>Fetching chart...</div>;
   }
 
-  if (isError) {
-    return <div>Failed to fetch chart: {error}</div>;
+  if (isError && "text" in error) {
+    return <div>Failed to fetch chart: {error?.text}</div>;
   }
 
   const caseData = data?.cases.filter(
@@ -165,7 +165,10 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
 
   const chartDivId = `${CHART_NAME}_${Math.floor(Math.random() * 100)}`;
   return (
-    <div className="border border-base-lighter p-4">
+    <div
+      data-testid="graph-cancer-distribution-cnv"
+      className="border border-base-lighter p-4"
+    >
       <div>
         <ChartTitleBar
           title={title}

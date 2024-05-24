@@ -6,7 +6,6 @@ import {
   buildCohortGqlOperator,
   useCoreSelector,
   selectCurrentCohortFilters,
-  joinFilters,
 } from "@gff/core";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { CasesCohortButtonFromFilters } from "@/features/cases/CasesView/CasesCohortButton";
@@ -98,7 +97,12 @@ const CardControls: React.FC<CardControlsProps> = ({
             filters={
               selectedFacets.length === 0
                 ? undefined
-                : buildCohortGqlOperator(joinFilters(filters, cohortFilters))
+                : buildCohortGqlOperator(filters)
+            }
+            case_filters={
+              selectedFacets.length === 0
+                ? undefined
+                : buildCohortGqlOperator(cohortFilters)
             }
             numCases={
               selectedFacets.length === 0
@@ -119,18 +123,24 @@ const CardControls: React.FC<CardControlsProps> = ({
         <div className="flex items-end">
           <DropdownWithIcon
             customDataTestId="button-customize-bins"
-            RightIcon={<DownIcon size={20} aria-hidden="true" />}
+            RightSection={
+              <div className="border-l pl-1 -mr-2">
+                <DownIcon size={20} aria-hidden="true" />
+              </div>
+            }
             TargetButtonChildren={"Customize Bins"}
             disableTargetWidth={true}
             dropdownElements={[
-              { title: "Edit Bins", onClick: () => setBinningModalOpen(true) },
+              {
+                title: "Edit Bins",
+                onClick: () => setBinningModalOpen(true),
+              },
               {
                 title: "Reset to Default",
                 disabled: customBinnedData === null,
                 onClick: () => setCustomBinnedData(null),
               },
             ]}
-            zIndex={100}
           />
         </div>
       </div>

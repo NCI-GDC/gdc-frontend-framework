@@ -3,7 +3,7 @@ import { useDeepCompareCallback } from "use-deep-compare";
 import { Tabs } from "@mantine/core";
 import {
   FilterSet,
-  selectCurrentCohortGeneAndSSMCaseSet,
+  selectCurrentCohortFilters,
   useCoreSelector,
   useCoreDispatch,
   removeCohortFilter,
@@ -43,7 +43,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     geneSymbol: undefined,
   });
   const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortGeneAndSSMCaseSet(state),
+    selectCurrentCohortFilters(state),
   );
 
   const overwritingDemoFilter = useMemo(
@@ -73,7 +73,12 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
       if (comparativeSurvival && comparativeSurvival?.symbol === symbol) {
         setComparativeSurvival(undefined);
       } else {
-        setComparativeSurvival({ symbol: symbol, name: name, field: field });
+        setComparativeSurvival({
+          symbol: symbol,
+          name: name,
+          field: field,
+          setManually: true,
+        });
       }
     },
     [comparativeSurvival],
@@ -156,17 +161,18 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
           </DemoText>
         )}
       </>
-      <div className="flex flex-row w-100">
+      <div className="flex flex-row gap-4 m-4">
         <GeneAndSSMFilterPanel isDemoMode={isDemoMode} />
         <Tabs
+          variant="pills"
           value={appMode}
           defaultValue="genes"
           classNames={{
             tab: SecondaryTabStyle,
-            tabsList: "px-2 mt-2 border-0",
+            list: "px-2 mt-2 border-0 gap-0",
             root: "bg-base-max border-0 w-full overflow-x-clip",
           }}
-          onTabChange={handleTabChanged}
+          onChange={handleTabChanged}
           keepMounted={false}
         >
           <Tabs.List>

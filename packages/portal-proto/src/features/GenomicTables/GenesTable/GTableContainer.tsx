@@ -16,10 +16,10 @@ import {
   extractFiltersWithPrefixFromFilterSet,
   GDCGenesTable,
 } from "@gff/core";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useDeepCompareCallback } from "use-deep-compare";
 import FunctionButton from "@/components/FunctionButton";
-import { Loader, Text } from "@mantine/core";
+import { Loader } from "@mantine/core";
 import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
@@ -85,13 +85,14 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   /* Modal end */
 
   /* GeneTable call */
-  const { data, isSuccess, isFetching, isError } = useGenesTable({
-    pageSize: pageSize,
-    offset: (page - 1) * pageSize,
-    searchTerm: searchTerm.length > 0 ? searchTerm : undefined,
-    genomicFilters: genomicFilters,
-    cohortFilters: cohortFilters,
-  });
+  const { data, isSuccess, isFetching, isError, isUninitialized } =
+    useGenesTable({
+      pageSize: pageSize,
+      offset: (page - 1) * pageSize,
+      searchTerm: searchTerm.length > 0 ? searchTerm : undefined,
+      genomicFilters: genomicFilters,
+      cohortFilters: cohortFilters,
+    });
   /* GeneTable call end */
 
   /* Extract only the "genes." filters */
@@ -106,20 +107,13 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const generateFilters = useDeepCompareCallback(
     async (type: columnFilterType, geneId: string) => {
       if (type === null) return;
-      let caseSetCreationFilters = buildCohortGqlOperator(
-        joinFilters(cohortFilters, genomicFilters),
-      );
 
-      // for CNV gain/loss only "genes." filters should be applied
-      // as the counts in the table are based on genes only
-      // ssms filters will not affect the counts
-      if (type === "cnvgain" || type === "cnvloss") {
-        caseSetCreationFilters = buildCohortGqlOperator(
-          joinFilters(cohortFilters, genesOnlyFilters),
-        );
-      }
-
-      return await createSet({ filters: caseSetCreationFilters })
+      return await createSet({
+        filters: buildCohortGqlOperator(genomicFilters),
+        case_filters: buildCohortGqlOperator(cohortFilters),
+        intent: "portal",
+        set_type: "frozen",
+      })
         .unwrap()
         .then((setId) => {
           const commonFilters: FilterSet = {
@@ -348,60 +342,78 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     }
   };
 
+  const handleSaveSelectionAsSetModalClose = useCallback(
+    () => setShowSaveModal(false),
+    [],
+  );
+
+  const handleAddToSetModalClose = useCallback(
+    () => setShowAddModal(false),
+    [],
+  );
+
+  const handleRemoveFromSetModalClose = useCallback(
+    () => setShowRemoveModal(false),
+    [],
+  );
+
   return (
     <>
-      {showSaveModal && (
-        <SaveSelectionAsSetModal
-          filters={buildCohortGqlOperator(setFilters)}
-          initialSetName={
-            selectedGenes.length === 0
-              ? filtersToName(setFilters)
-              : "Custom Gene Selection"
-          }
-          sort="case.project.project_id"
-          saveCount={
-            selectedGenes.length === 0
-              ? data?.genes?.genes_total
-              : selectedGenes.length
-          }
-          setType="genes"
-          setTypeLabel="gene"
-          createSetHook={useCreateGeneSetFromFiltersMutation}
-          closeModal={() => setShowSaveModal(false)}
-        />
-      )}
-      {showAddModal && (
-        <AddToSetModal
-          filters={setFilters}
-          addToCount={
-            selectedGenes.length === 0
-              ? data?.genes?.genes_total
-              : selectedGenes.length
-          }
-          setType="genes"
-          setTypeLabel="gene"
-          singleCountHook={useGeneSetCountQuery}
-          countHook={useGeneSetCountsQuery}
-          appendSetHook={useAppendToGeneSetMutation}
-          closeModal={() => setShowAddModal(false)}
-          field={"genes.gene_id"}
-          sort="case.project.project_id"
-        />
-      )}
-      {showRemoveModal && (
-        <RemoveFromSetModal
-          filters={setFilters}
-          removeFromCount={
-            selectedGenes.length === 0
-              ? data?.genes?.genes_total
-              : selectedGenes.length
-          }
-          setType="genes"
-          setTypeLabel="gene"
-          countHook={useGeneSetCountsQuery}
-          closeModal={() => setShowRemoveModal(false)}
-          removeFromSetHook={useRemoveFromGeneSetMutation}
-        />
+      {isUninitialized || isFetching ? null : (
+        <>
+          <SaveSelectionAsSetModal
+            opened={showSaveModal}
+            closeModal={handleSaveSelectionAsSetModalClose}
+            filters={buildCohortGqlOperator(setFilters)}
+            initialSetName={
+              selectedGenes.length === 0
+                ? filtersToName(setFilters)
+                : "Custom Gene Selection"
+            }
+            sort="case.project.project_id"
+            saveCount={
+              selectedGenes.length === 0
+                ? data?.genes?.genes_total
+                : selectedGenes.length
+            }
+            setType="genes"
+            setTypeLabel="gene"
+            createSetHook={useCreateGeneSetFromFiltersMutation}
+          />
+
+          <AddToSetModal
+            opened={showAddModal}
+            closeModal={handleAddToSetModalClose}
+            filters={setFilters}
+            addToCount={
+              selectedGenes.length === 0
+                ? data?.genes?.genes_total
+                : selectedGenes.length
+            }
+            setType="genes"
+            setTypeLabel="gene"
+            singleCountHook={useGeneSetCountQuery}
+            countHook={useGeneSetCountsQuery}
+            appendSetHook={useAppendToGeneSetMutation}
+            field={"genes.gene_id"}
+            sort="case.project.project_id"
+          />
+
+          <RemoveFromSetModal
+            opened={showRemoveModal}
+            closeModal={handleRemoveFromSetModalClose}
+            filters={setFilters}
+            removeFromCount={
+              selectedGenes.length === 0
+                ? data?.genes?.genes_total
+                : selectedGenes.length
+            }
+            setType="genes"
+            setTypeLabel="gene"
+            countHook={useGeneSetCountsQuery}
+            removeFromSetHook={useRemoveFromGeneSetMutation}
+          />
+        </>
       )}
       <VerticalTable
         data={formattedTableData}
@@ -428,7 +440,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               TargetButtonChildren="Save/Edit Gene Set"
               targetButtonDisabled={isFetching && !isSuccess}
               disableTargetWidth={true}
-              LeftIcon={
+              LeftSection={
                 selectedGenes.length ? (
                   <CountsIcon $count={selectedGenes.length}>
                     {selectedGenes.length}
@@ -437,23 +449,23 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
               }
               menuLabelCustomClass="bg-primary text-primary-contrast font-heading font-bold mb-2"
               customPosition="bottom-start"
-              zIndex={10}
               customDataTestId="button-save-edit-gene-set"
             />
             <FunctionButton
               onClick={handleTSVDownload}
               data-testid="button-tsv-mutation-frequency"
+              disabled={isFetching}
             >
               {downloadMutatedGenesTSVActive ? <Loader size="sm" /> : "TSV"}
             </FunctionButton>
-
-            <Text className="font-heading font-bold text-md">
-              TOTAL OF {data?.genes?.genes_total?.toLocaleString("en-US")}{" "}
-              {data?.genes?.genes_total == 1
-                ? "Gene".toUpperCase()
-                : `${"Gene".toUpperCase()}S`}
-            </Text>
           </div>
+        }
+        tableTitle={
+          <>
+            Total of{" "}
+            <b>{data?.genes?.genes_total?.toLocaleString("en-US") ?? "..."}</b>{" "}
+            {data?.genes?.genes_total == 1 ? "gene" : "genes"}
+          </>
         }
         pagination={pagination}
         showControls={true}

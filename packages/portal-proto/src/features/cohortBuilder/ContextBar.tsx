@@ -249,9 +249,9 @@ const ContextBar = ({
         <StickyControl isSticky={isSticky} handleIsSticky={handleIsSticky} />
       }
     >
-      <div className="flex flex-col bg-nci-violet-lightest">
+      <div className="bg-nci-violet-lightest">
         <div className="relative p-4">
-          <div className="flex flex-row md:relative md:pb-4 lg:pb-0 lg:absolute gap-2">
+          <div className="flex gap-1 pb-4 relative lg:absolute lg:pb-0">
             <DropdownWithIcon
               dropdownElements={[
                 {
@@ -290,7 +290,14 @@ const ContextBar = ({
               TargetButtonChildren={
                 <CohortCountButton countName="fileCount" label="Files" />
               }
-              LeftIcon={<DownloadIcon size="1rem" aria-hidden="true" />}
+              LeftSection={
+                <DownloadIcon
+                  size="1rem"
+                  aria-hidden="true"
+                  className="hidden md:block"
+                />
+              }
+              targetButtonDisabled={cohortCounts.status !== "fulfilled"}
             />
 
             <DropdownWithIcon
@@ -318,9 +325,16 @@ const ContextBar = ({
                 },
               ]}
               TargetButtonChildren="Custom Filters"
-              LeftIcon={<CohortFilterIcon size="1rem" aria-hidden="true" />}
+              LeftSection={
+                <CohortFilterIcon
+                  size="1rem"
+                  aria-hidden="true"
+                  className="hidden md:block"
+                />
+              }
               menuLabelText="Filter your cohort by:"
               menuLabelCustomClass="font-bold text-primary"
+              targetButtonDisabled={cohortCounts.status !== "fulfilled"}
             />
 
             {activeTab === "summary" && (
@@ -341,13 +355,16 @@ const ContextBar = ({
                   TargetButtonChildren={
                     biospecimenDownloadActive ? "Processing" : "Biospecimen"
                   }
-                  LeftIcon={
-                    biospecimenDownloadActive ? (
-                      <Loader size={20} />
-                    ) : (
-                      <DownloadIcon size="1rem" aria-hidden="true" />
-                    )
+                  LeftSection={
+                    <span className="hidden md:block">
+                      {biospecimenDownloadActive ? (
+                        <Loader size={20} />
+                      ) : (
+                        <DownloadIcon size="1rem" aria-hidden="true" />
+                      )}
+                    </span>
                   }
+                  targetButtonDisabled={cohortCounts.status !== "fulfilled"}
                 />
 
                 <DropdownWithIcon
@@ -366,34 +383,39 @@ const ContextBar = ({
                   TargetButtonChildren={
                     clinicalDownloadActive ? "Processing" : "Clinical"
                   }
-                  LeftIcon={
-                    clinicalDownloadActive ? (
-                      <Loader size={20} />
-                    ) : (
-                      <DownloadIcon size="1rem" aria-hidden="true" />
-                    )
+                  LeftSection={
+                    <span className="hidden md:block">
+                      {biospecimenDownloadActive ? (
+                        <Loader size={20} />
+                      ) : (
+                        <DownloadIcon size="1rem" aria-hidden="true" />
+                      )}
+                    </span>
                   }
+                  targetButtonDisabled={cohortCounts.status !== "fulfilled"}
                 />
               </>
             )}
           </div>
           <Tabs
+            variant="pills"
             classNames={{
               tab: SecondaryTabStyle,
-              tabsList: "mb-4 border-0",
+              list: "mb-4 gap-0",
               root: "border-0",
+              panel: "h-max",
             }}
             data-tour="cohort_summary"
             defaultValue="summary"
             keepMounted={false}
             value={activeTab}
-            onTabChange={setActiveTab}
+            onChange={setActiveTab}
           >
-            <Tabs.List position={width < 1024 ? "left" : "right"}>
+            <Tabs.List justify={width < 1024 ? "flex-start" : "flex-end"}>
               <Tabs.Tab
                 data-tour="cohort_summary_charts"
                 value="summary"
-                icon={<SummaryChartIcon aria-hidden="true" />}
+                leftSection={<SummaryChartIcon aria-hidden="true" />}
               >
                 Summary View
               </Tabs.Tab>
@@ -401,7 +423,7 @@ const ContextBar = ({
               <Tabs.Tab
                 data-tour="cohort_summary_table"
                 value="table"
-                icon={<TableIcon aria-hidden="true" />}
+                leftSection={<TableIcon aria-hidden="true" />}
               >
                 Table View
               </Tabs.Tab>

@@ -1,19 +1,25 @@
-import { useCoreSelector, selectUserDetailsInfo } from "@gff/core";
+import { useFetchUserDetailsQuery } from "@gff/core";
 import { Text } from "@mantine/core";
 import { FaCheck } from "react-icons/fa";
 import { ScrollableTableWithFixedHeader } from "../ScrollableTableWithFixedHeader/ScrollableTableWithFixedHeader";
 import { BaseModal } from "./BaseModal";
+import { SessionExpireModal } from "./SessionExpireModal";
 
 export const UserProfileModal = ({
   openModal,
 }: {
   openModal: boolean;
 }): JSX.Element => {
-  const userInfo = useCoreSelector((state) => selectUserDetailsInfo(state));
+  const { data: userInfo } = useFetchUserDetailsQuery();
+
+  if (userInfo?.status === 401) {
+    return <SessionExpireModal openModal={openModal} />;
+  }
+
   const {
     projects: { gdc_ids },
     username,
-  } = userInfo?.data || {};
+  } = userInfo?.data || { username: undefined, projects: {} };
 
   // get the unique permission properties
   const allPermissionValues = Array.from(
@@ -69,7 +75,7 @@ export const UserProfileModal = ({
       buttons={[{ title: "Done", dataTestId: "button-user-profile-done" }]}
     >
       <div className={`${!data ? "py-4" : "py-2"}`}>
-        {data.length > 0 ? (
+        {data?.length > 0 ? (
           <ScrollableTableWithFixedHeader
             tableData={{
               headers: headings,

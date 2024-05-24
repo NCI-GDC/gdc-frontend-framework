@@ -8,7 +8,7 @@ import {
   useCoreSelector,
   selectCurrentModal,
   Modals,
-  useUserDetails,
+  useFetchUserDetailsQuery,
 } from "@gff/core";
 import fileSize from "filesize";
 import { Button, Loader, Menu } from "@mantine/core";
@@ -26,12 +26,10 @@ import { DownloadButton } from "@/components/DownloadButtons";
 import download from "src/utils/download";
 import { removeFromCart } from "./updateCart";
 import { focusStyles } from "@/utils/index";
+import { cartAboveLimit } from "./utils";
 
 const buttonStyle =
   "bg-base-max text-primary border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary text-sm font-normal";
-
-// 5GB
-const MAX_CART_SIZE = 5 * 10e8;
 
 const downloadCart = (
   filesByCanAccess: Record<string, CartFile[]>,
@@ -40,12 +38,7 @@ const downloadCart = (
   dispatch: CoreDispatch,
 ) => {
   if (
-    filesByCanAccess.true
-      ?.map((file) => file.file_size)
-      .reduce((a, b) => a + b) > MAX_CART_SIZE
-  ) {
-    dispatch(showModal({ modal: Modals.CartSizeLimitModal }));
-  } else if (
+    cartAboveLimit(filesByCanAccess) ||
     (filesByCanAccess?.false || []).length > 0 ||
     dbGapList.length > 0
   ) {
@@ -103,7 +96,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
   dbGapList,
 }: CartHeaderProps) => {
   const dispatch = useCoreDispatch();
-  const { data: userDetails } = useUserDetails();
+  const { data: userDetails } = useFetchUserDetailsQuery();
   const [downloadActive, setDownloadActive] = useState(false);
   const [clinicalTSVDownloadActive, setClinicalTSVDownloadActive] =
     useState(false);
@@ -124,7 +117,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
       {modal === Modals.CartDownloadModal && (
         <CartDownloadModal
           openModal
-          user={userDetails}
+          user={userDetails?.data}
           filesByCanAccess={filesByCanAccess}
           dbGapList={dbGapList}
           setActive={setDownloadActive}
@@ -139,16 +132,21 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             <Button
               classNames={{
                 root: `${buttonStyle} ml-4 ${focusStyles}`,
-                rightIcon: "border-l pl-1 -mr-2",
               }}
-              leftIcon={
+              leftSection={
                 downloadActive ? (
                   <Loader size={15} />
                 ) : (
                   <DownloadIcon aria-hidden="true" />
                 )
               }
-              rightIcon={<DropdownIcon size={20} aria-hidden="true" />}
+              rightSection={
+                <DropdownIcon
+                  size={20}
+                  aria-hidden="true"
+                  className="border-l pl-1 -mr-2"
+                />
+              }
             >
               Download Cart
             </Button>
@@ -159,7 +157,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 setDownloadActive(true);
                 downloadManifest(cart, setDownloadActive, dispatch);
               }}
-              icon={<DownloadIcon />}
+              leftSection={<DownloadIcon aria-label="download" />}
             >
               Manifest
             </Menu.Item>
@@ -173,7 +171,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                   dispatch,
                 );
               }}
-              icon={<DownloadIcon />}
+              leftSection={<DownloadIcon aria-label="download" />}
             >
               Cart
             </Menu.Item>
@@ -184,16 +182,21 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             <Button
               classNames={{
                 root: `${buttonStyle} ${focusStyles}`,
-                rightIcon: "border-l pl-1 -mr-2",
               }}
-              leftIcon={
+              leftSection={
                 downloadActive ? (
                   <Loader size={15} />
                 ) : (
                   <DownloadIcon aria-hidden="true" />
                 )
               }
-              rightIcon={<DropdownIcon size={20} aria-hidden="true" />}
+              rightSection={
+                <DropdownIcon
+                  size={20}
+                  aria-hidden="true"
+                  className="border-l pl-1 -mr-2"
+                />
+              }
             >
               Download Associated Data
             </Button>
@@ -201,8 +204,8 @@ const CartHeader: React.FC<CartHeaderProps> = ({
           <Menu.Dropdown>
             <Menu.Item
               component={DownloadButton}
-              classNames={{ inner: "font-normal" }}
-              variant="subtle"
+              classNames={{ item: "font-normal" }}
+              displayVariant="subtle"
               activeText="Processing"
               inactiveText="Clinical: TSV"
               preventClickEvent
@@ -215,7 +218,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 .slice(0, 10)}.tar.gz`}
               format="tsv"
               method="POST"
-              downloadSize={summaryData.total_case_count}
+              downloadSize={summaryData?.total_case_count}
               filters={{
                 content: [
                   {
@@ -232,8 +235,8 @@ const CartHeader: React.FC<CartHeaderProps> = ({
 
             <Menu.Item
               component={DownloadButton}
-              classNames={{ inner: "font-normal" }}
-              variant="subtle"
+              classNames={{ item: "font-normal" }}
+              displayVariant="subtle"
               activeText="Processing"
               inactiveText="Clinical: JSON"
               preventClickEvent
@@ -246,7 +249,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 .slice(0, 10)}.json`}
               format="json"
               method="POST"
-              downloadSize={summaryData.total_case_count}
+              downloadSize={summaryData?.total_case_count}
               filters={{
                 content: [
                   {
@@ -263,8 +266,8 @@ const CartHeader: React.FC<CartHeaderProps> = ({
 
             <Menu.Item
               component={DownloadButton}
-              classNames={{ inner: "font-normal" }}
-              variant="subtle"
+              classNames={{ item: "font-normal" }}
+              displayVariant="subtle"
               activeText="Processing"
               inactiveText="Biospecimen: TSV"
               preventClickEvent
@@ -277,7 +280,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 .slice(0, 10)}.tar.gz`}
               format="tsv"
               method="POST"
-              downloadSize={summaryData.total_case_count}
+              downloadSize={summaryData?.total_case_count}
               filters={{
                 content: [
                   {
@@ -293,8 +296,8 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             />
             <Menu.Item
               component={DownloadButton}
-              classNames={{ inner: "font-normal" }}
-              variant="subtle"
+              classNames={{ item: "font-normal" }}
+              displayVariant="subtle"
               activeText="Processing"
               inactiveText="Biospecimen: JSON"
               preventClickEvent
@@ -307,7 +310,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 .slice(0, 10)}.json`}
               format="json"
               method="POST"
-              downloadSize={summaryData.total_case_count}
+              downloadSize={summaryData?.total_case_count}
               filters={{
                 content: [
                   {
@@ -323,8 +326,8 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             />
             <Menu.Item
               component={DownloadButton}
-              classNames={{ inner: "font-normal" }}
-              variant="subtle"
+              classNames={{ item: "font-normal" }}
+              displayVariant="subtle"
               activeText="Processing"
               inactiveText="Sample Sheet"
               preventClickEvent
@@ -365,11 +368,11 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             />
             <Menu.Item
               component={DownloadButton}
-              classNames={{ inner: "font-normal" }}
+              classNames={{ item: "font-normal" }}
               activeText="Processing"
               inactiveText="Metadata"
               showIcon={true}
-              variant="subtle"
+              displayVariant="subtle"
               preventClickEvent
               endpoint="files"
               setActive={setMetadataDownloadActive}
@@ -456,11 +459,16 @@ const CartHeader: React.FC<CartHeaderProps> = ({
         <Menu>
           <Menu.Target>
             <Button
-              leftIcon={<TrashIcon aria-hidden="true" />}
-              rightIcon={<DropdownIcon size={20} aria-hidden="true" />}
+              leftSection={<TrashIcon aria-hidden="true" />}
+              rightSection={
+                <DropdownIcon
+                  size={20}
+                  aria-hidden="true"
+                  className="border-l pl-1 -mr-2"
+                />
+              }
               classNames={{
                 root: `bg-nci-red-darker font-medium text-base-max ${focusStyles}`, //TODO: find good color theme for this
-                rightIcon: "border-l pl-1 -mr-2",
               }}
             >
               Remove From Cart
@@ -483,15 +491,17 @@ const CartHeader: React.FC<CartHeaderProps> = ({
         <h1 className="uppercase ml-auto mr-4 flex items-center truncate text-2xl">
           Total of{" "}
           <FileIcon size={25} className="ml-2 mr-1" aria-hidden="true" />{" "}
-          <b className="mr-1">{summaryData.total_doc_count.toLocaleString()}</b>{" "}
-          {summaryData.total_doc_count === 1 ? "File" : "Files"}
+          <b className="mr-1">
+            {summaryData?.total_doc_count?.toLocaleString() || "--"}
+          </b>{" "}
+          {summaryData?.total_doc_count === 1 ? "File" : "Files"}
           <PersonIcon size={25} className="ml-2 mr-1" aria-hidden="true" />{" "}
           <b className="mr-1">
-            {summaryData.total_case_count.toLocaleString()}
+            {summaryData?.total_case_count?.toLocaleString() || "--"}
           </b>{" "}
-          {summaryData.total_case_count === 1 ? "Case" : "Cases"}{" "}
+          {summaryData?.total_case_count === 1 ? "Case" : "Cases"}{" "}
           <SaveIcon size={25} className="ml-2 mr-1" aria-hidden="true" />{" "}
-          {fileSize(summaryData.total_file_size)}
+          {fileSize(summaryData?.total_file_size || 0)}
         </h1>
       </div>
     </>

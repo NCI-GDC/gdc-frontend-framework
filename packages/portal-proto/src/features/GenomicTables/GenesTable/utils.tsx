@@ -61,8 +61,9 @@ export const useGenerateGenesTableColumns = ({
             size="xs"
             classNames={{
               input: "checked:bg-accent checked:border-accent",
+              label: "sr-only",
             }}
-            aria-label={`Select all gene rows on page ${currentPage} of ${totalPages}`}
+            label={`Select all gene rows on page ${currentPage} of ${totalPages}`}
             {...{
               checked: table.getIsAllRowsSelected(),
               onChange: table.getToggleAllRowsSelectedHandler(),
@@ -332,7 +333,11 @@ export const useGenerateGenesTableColumns = ({
         header: "Annotations",
         cell: ({ row }) => (
           <Tooltip label="Cancer Gene Census">
-            <span>{row.original.annotations && <AnnotationsIcon />}</span>
+            <span>
+              {row.original.annotations && (
+                <AnnotationsIcon label={"Cancer Gene Census"} />
+              )}
+            </span>
           </Tooltip>
         ),
       }),

@@ -37,7 +37,7 @@ const DownloadNotification = ({ onClick }: { onClick: () => void }) => {
       <p>Download preparation in progress. Please wait...</p>
       <Button
         variant="white"
-        leftIcon={<CloseIcon aria-hidden="true" />}
+        leftSection={<CloseIcon aria-hidden="true" />}
         style={{ color: "#155276", cursor: "pointer" }}
         onClick={onClick}
       >
@@ -70,7 +70,7 @@ const SlowDownloadNotification = ({ onClick }: { onClick: () => void }) => (
       </div>
       <Button
         variant="white"
-        leftIcon={<CloseIcon />}
+        leftSection={<CloseIcon />}
         style={{ color: "#155276", cursor: "pointer" }}
         onClick={onClick}
       >
@@ -166,7 +166,7 @@ const download = async ({
       ...params,
       downloadCookieKey: cookieKey,
       downloadCookiePath: "/",
-      attachment: true,
+      attachment: params?.attachment ?? true,
     },
     (result, value, key) => {
       const paramValue = processParamObj(key, value);

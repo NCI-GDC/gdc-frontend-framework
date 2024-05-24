@@ -1,7 +1,8 @@
 import React from "react";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
-import { useSSMS } from "@gff/core";
+import { useSsmsSummaryQuery } from "@gff/core";
+import { Loader } from "@mantine/core";
 import { pick } from "lodash";
 import { HorizontalTableProps } from "@/components/HorizontalTable";
 import { formatDataForHorizontalTable } from "../files/utils";
@@ -12,6 +13,8 @@ import SSMPlot from "../charts/SSMPlot";
 import { ConsequenceTable } from "@/features/mutationSummary/ConsequenceTable";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import SSMSCancerDistributionTable from "../cancerDistributionTable/SSMSCancerDistributionTable";
+import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
+import MutationsIcon from "public/user-flow/icons/summary/gene-mutation.svg";
 
 export const SSMSSummary = ({
   ssm_id,
@@ -20,7 +23,7 @@ export const SSMSSummary = ({
   ssm_id: string;
   isModal?: boolean;
 }): JSX.Element => {
-  const { data: summaryData, isFetching } = useSSMS({
+  const { data: summaryData, isFetching } = useSsmsSummaryQuery({
     filters: {
       content: {
         field: "ssm_id",
@@ -164,10 +167,13 @@ export const SSMSSummary = ({
 
   return (
     <div>
-      {!isFetching && summaryData ? (
+      {isFetching ? (
+        <Loader />
+      ) : summaryData ? (
         <>
           <SummaryHeader
-            iconText="mu"
+            Icon={MutationsIcon}
+            headerTitleLeft="Mutation"
             headerTitle={summaryData.dna_change}
             isModal={isModal}
           />
@@ -175,10 +181,14 @@ export const SSMSSummary = ({
           <div className={`mx-4 ${!isModal ? "mt-24" : "mt-6"}`}>
             <div className="flex gap-8">
               <div className="flex-1">
-                <SummaryCard tableData={formatDataForSummary()} />
+                <SummaryCard
+                  customDataTestID="table-summary-mutation-summary"
+                  tableData={formatDataForSummary()}
+                />
               </div>
               <div className="flex-1">
                 <SummaryCard
+                  customDataTestID="table-external-references-mutation-summary"
                   tableData={formatDataForExternalReferences()}
                   title="External References"
                 />
@@ -191,7 +201,10 @@ export const SSMSSummary = ({
               <ConsequenceTable ssmsId={ssm_id} />
             </div>
 
-            <div className="mt-8 mb-16">
+            <div
+              data-testid="table-cancer-distribution-mutation-summary"
+              className="mt-8 mb-16"
+            >
               <HeaderTitle>Cancer Distribution</HeaderTitle>
               <div className="grid grid-cols-2 mb-8">
                 <SSMPlot page="ssms" ssms={ssm_id} />
@@ -204,7 +217,9 @@ export const SSMSSummary = ({
             </div>
           </div>
         </>
-      ) : null}
+      ) : (
+        <SummaryErrorHeader label="Mutation Not Found" />
+      )}
     </div>
   );
 };

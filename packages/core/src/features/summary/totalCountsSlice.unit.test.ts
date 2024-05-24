@@ -6,9 +6,9 @@ const initialCounts = {
     fileCounts: -1,
     genesCounts: -1,
     mutationCounts: -1,
-    repositoryCaseCounts: -1,
     projectsCounts: -1,
     primarySiteCounts: -1,
+    annotationCounts: -1,
   },
   status: "uninitialized",
 };
@@ -30,9 +30,9 @@ describe("totalCounts reducer", () => {
           fileCounts: -1,
           genesCounts: -1,
           mutationCounts: -1,
-          repositoryCaseCounts: -1,
           projectsCounts: -1,
           primarySiteCounts: -1,
+          annotationCounts: -1,
         },
         status: "uninitialized",
         requestId: "test",
@@ -60,6 +60,11 @@ describe("totalCounts reducer", () => {
                   total: 70,
                 },
               },
+              annotations: {
+                hits: {
+                  total: 9000,
+                },
+              },
               explore: {
                 cases: {
                   hits: {
@@ -78,11 +83,6 @@ describe("totalCounts reducer", () => {
                 },
               },
               repository: {
-                cases: {
-                  hits: {
-                    total: 5000,
-                  },
-                },
                 files: {
                   hits: {
                     total: 900,
@@ -100,9 +100,9 @@ describe("totalCounts reducer", () => {
         fileCounts: 900,
         genesCounts: 20000,
         mutationCounts: 30000,
-        repositoryCaseCounts: 5000,
         projectsCounts: 70,
         primarySiteCounts: 2,
+        annotationCounts: 9000,
       },
       status: "fulfilled",
       requestId: "test",

@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Project",
+    "field": "project",
+    "full": "project.project_id",
+    "type": "keyword",
+    "doc_type": "annotation",
+    "facet_type": "enum"
+  },
+  {
+    "title": "Entity Type",
+    "field": "entity_type",
+    "full": "entity_type",
+    "type": "keyword",
+    "doc_type": "annotation",
+    "facet_type": "enum"
+  },
+  {
+    "title": "Category",
+    "field": "category",
+    "full": "category",
+    "type": "keyword",
+    "doc_type": "annotation",
+    "facet_type": "enum"
+  },
+  {
+    "title": "Classification",
+    "field": "classification",
+    "full": "classification",
+    "type": "keyword",
+    "doc_type": "annotation",
+    "facet_type": "enum"
+  },
+  {
+    "title": "Created Datetime",
+    "field": "created_datetime",
+    "full": "created_datetime",
+    "type": "keyword",
+    "doc_type": "annotation",
+    "facet_type": "datetime"
+  }
+]

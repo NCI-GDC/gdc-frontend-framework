@@ -5,9 +5,7 @@ import * as core from "@gff/core";
 import userEvent from "@testing-library/user-event";
 
 jest.mock("@mantine/notifications");
-const mockedShowNotification = showNotification as jest.Mock<
-  typeof showNotification
->;
+const mockedShowNotification = showNotification as jest.Mock;
 
 beforeEach(() => mockedShowNotification.mockClear());
 
@@ -59,7 +57,7 @@ describe("<ProjectCohortButton />", () => {
     );
 
     // this button is in SaveCohortModal
-    await userEvent.type(getByTestId("input-field"), "New Cohort");
+    await userEvent.type(getByTestId("textbox-name-input-field"), "New Cohort");
     await userEvent.click(getByTestId("action-button"));
     expect(mockMutation).toBeCalledWith({
       cohort: {

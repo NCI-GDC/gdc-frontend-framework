@@ -36,7 +36,7 @@ tags: gdc-data-portal-v2, manage-sets, regression
 * Select "Unmatched"
 * Is text "0 submitted gene identifiers not recognized" present on the page
 * Select "Submit"
-* Enter text "Gene Set CSV" in the "Input field for new set name" search bar
+* Enter "Gene Set CSV" in the text box "Name Input Field"
 * Select "Save"
 * Is text "Set has been saved." present on the page
 * Pause "3" seconds

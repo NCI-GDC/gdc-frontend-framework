@@ -141,7 +141,7 @@ function ColumnOrdering<TData>({
           onChange={(event) => setSearchValue(event.currentTarget.value.trim())}
           placeholder="Filter Columns"
           aria-label="Search input for columns"
-          icon={<SearchIcon aria-hidden="true" />}
+          leftSection={<SearchIcon aria-hidden="true" />}
           className="mb-2 mt-4"
           data-testid="textbox-column-selector"
         />
@@ -235,7 +235,11 @@ function DraggableColumnItem<TData>({
         <DragIcon size="1rem" className="text-primary" />
         <Switch
           labelPosition="left"
-          label={humanify({ term: column.id })}
+          label={
+            typeof column?.columnDef?.header === "string"
+              ? column.columnDef.header
+              : humanify({ term: column.id })
+          }
           classNames={{
             root: "w-full",
             body: "grow flex justify-between",

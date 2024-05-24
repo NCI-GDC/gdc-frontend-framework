@@ -117,7 +117,6 @@
     "biospecimen": {
       "label": "Biospecimen",
       "facets": [
-        "cases.samples.sample_type",
         "cases.samples.tissue_type",
         "cases.samples.biospecimen_anatomic_site",
         "cases.samples.composition",

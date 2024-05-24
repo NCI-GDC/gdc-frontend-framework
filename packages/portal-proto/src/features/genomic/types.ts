@@ -17,6 +17,7 @@ export interface ComparativeSurvival {
   symbol: string;
   name: string;
   field: string;
+  setManually?: boolean;
 }
 
 // Persist which tab is active

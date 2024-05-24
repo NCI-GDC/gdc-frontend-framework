@@ -14,6 +14,7 @@ import {
   chartDownloadReducer,
   DashboardDownloadContext,
 } from "@/utils/contexts";
+import { CountHookRegistry } from "@gff/core";
 
 const ActiveAnalysisToolNoSSR = dynamic(
   () => import("@/features/user-flow/workflow/ActiveAnalysisTool"),
@@ -38,6 +39,7 @@ const AnalysisGrid: React.FC = () => {
   const [recommendedApps] = useState([...RECOMMENDED_APPS]); // recommended apps based on Context
   const [activeApps] = useState([...ALL_OTHER_APPS]); // set of active apps i.e. not recommended but filterable/dimmable
   const [activeAnalysisCard, setActiveAnalysisCard] = useState(null);
+  const registry = CountHookRegistry.getInstance();
 
   return (
     <div className="flex flex-col font-heading mb-4">
@@ -47,14 +49,14 @@ const AnalysisGrid: React.FC = () => {
           <h2 className="text-primary-content-darkest font-bold uppercase text-xl mb-2">
             Core Tools
           </h2>
-          <div className="flex gap-6 flex-wrap">
+          <div className="flex gap-4 lg:gap-6 flex-wrap">
             {recommendedApps
               .map((k) => initialApps[k])
               .map((x: AppRegistrationEntry) => {
                 return (
                   <div
                     key={x.name}
-                    className="basis-coretools"
+                    className="basis-tools-sm md:basis-tools-md lg:basis-coretools"
                     data-testid={`button-core-tools-${x.name}`}
                   >
                     <CoreToolCard entry={{ ...{ applicable: true, ...x } }} />
@@ -69,13 +71,17 @@ const AnalysisGrid: React.FC = () => {
           Analysis Tools
         </h2>
 
-        <div className="flex gap-6 flex-wrap">
+        <div className="flex gap-4 lg:gap-6 flex-wrap">
           {activeApps
             .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
             .map((k) => initialApps[k])
             .map((x: AppRegistrationEntry, idx: number) => {
+              const countHook = registry.getHook(x.countsField);
               return (
-                <div key={x.name} className="min-w-0 basis-tools">
+                <div
+                  key={x.name}
+                  className="min-w-0 basis-tools-sm md:basis-tools-md lg:basis-tools"
+                >
                   <AnalysisCard
                     entry={{ ...{ applicable: true, ...x } }}
                     descriptionVisible={activeAnalysisCard === idx}
@@ -84,6 +90,7 @@ const AnalysisGrid: React.FC = () => {
                         idx === activeAnalysisCard ? null : idx,
                       )
                     }
+                    useApplicationDataCounts={countHook}
                   />
                 </div>
               );

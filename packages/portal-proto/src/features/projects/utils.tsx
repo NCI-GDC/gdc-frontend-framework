@@ -44,11 +44,10 @@ export const formatDataForSummary = (
     dbGaP_study_accession: (
       <Link
         href={`https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=${dbGaP_study_accession}`}
-        passHref
+        className="underline text-utility-link"
+        target="_blank"
       >
-        <a className="underline text-utility-link" target="_blank">
-          {dbGaP_study_accession}
-        </a>
+        {dbGaP_study_accession}
       </Link>
     ),
     project_name,
@@ -166,17 +165,6 @@ export const formatDataForDataCategoryTable = (
   ];
 
   return { data: sortedDataCategories, columns: dataCategoryTableColumns };
-};
-
-export const getAnnotationsLinkParams = (
-  projectData: ProjectViewProps,
-): string => {
-  if (projectData.annotation.count === 0) return null;
-
-  if (projectData.annotation.count === 1) {
-    return `https://portal.gdc.cancer.gov/v1/annotations/${projectData.annotation.list[0].annotation_id}`;
-  }
-  return `https://portal.gdc.cancer.gov/v1/annotations?filters={"content":[{"content":{"field":"annotations.project.project_id","value":["${projectData.project_id}"]},"op":"in"}],"op":"and"}`;
 };
 
 export const formatDataForExpCategoryTable = (

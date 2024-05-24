@@ -3,7 +3,6 @@ import {
   bannerReducer,
   dismissNotification,
   BannerNotification,
-  fetchNotifications,
   selectBanners,
 } from "./bannerNotificationSlice";
 
@@ -28,8 +27,17 @@ describe("banner notfication reducer", () => {
         { id: 1, dismissed: false, components: ["PORTAL_V2"] },
       ] as BannerNotification[],
       {
-        type: fetchNotifications.fulfilled,
+        type: "bannerNotificationApi/executeQuery/fulfilled",
         payload: [{ id: 2, components: ["API"] }],
+        meta: {
+          arg: {
+            type: "query",
+            endpointName: "getBannerNotifications",
+            queryCacheKey: "getBannerNotifications(undefined)",
+          },
+          requestId: "BwKKFNi34O1q0ytRcMRBB",
+          requestStatus: "fulfilled",
+        },
       },
     );
     expect(state).toEqual([{ id: 2, dismissed: false, components: ["API"] }]);
@@ -41,7 +49,7 @@ describe("banner notfication reducer", () => {
         { id: 1, dismissed: false, components: ["PORTAL_V2"] },
       ] as BannerNotification[],
       {
-        type: fetchNotifications.fulfilled,
+        type: "bannerNotificationApi/executeQuery/fulfilled",
         payload: [
           { id: 1, dismissed: false, components: ["PORTAL_V2"] },
           { id: 2, components: ["OTHER"] },
@@ -52,6 +60,15 @@ describe("banner notfication reducer", () => {
           { id: 7, components: ["SUBMISSION_API"] },
           { id: 8, components: ["DOCUMENTATION"] },
         ],
+        meta: {
+          arg: {
+            type: "query",
+            endpointName: "getBannerNotifications",
+            queryCacheKey: "getBannerNotifications(undefined)",
+          },
+          requestId: "BwKKFNi34O1q0ytRcMRBB",
+          requestStatus: "fulfilled",
+        },
       },
     );
     expect(state).toEqual([
@@ -65,11 +82,20 @@ describe("banner notfication reducer", () => {
         { id: 1, dismissed: true, components: ["PORTAL_V2"] },
       ] as BannerNotification[],
       {
-        type: fetchNotifications.fulfilled,
+        type: "bannerNotificationApi/executeQuery/fulfilled",
         payload: [
           { id: 2, components: ["API"] },
           { id: 1, components: ["PORTAL_V2"] },
         ],
+        meta: {
+          arg: {
+            type: "query",
+            endpointName: "getBannerNotifications",
+            queryCacheKey: "getBannerNotifications(undefined)",
+          },
+          requestId: "BwKKFNi34O1q0ytRcMRBB",
+          requestStatus: "fulfilled",
+        },
       },
     );
     expect(state).toEqual([

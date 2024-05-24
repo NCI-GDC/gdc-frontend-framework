@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { render } from "test-utils";
 import userEvent from "@testing-library/user-event";
 import { Statistics } from "@gff/core";
 import ContinuousBinningModal from "./ContinuousBinningModal";
@@ -7,6 +7,7 @@ describe("<ContinuousBinningModal />", () => {
   it("shows field name", () => {
     const { getByText } = render(
       <ContinuousBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"diagnoses.age_at_diagnoses"}
         stats={{ min: 0, max: 1 } as Statistics}
@@ -23,6 +24,7 @@ describe("<ContinuousBinningModal />", () => {
   it("show available values and bin size", () => {
     const { getByText } = render(
       <ContinuousBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"diagnoses.age_at_diagnoses"}
         stats={{ min: 0, max: 1 } as Statistics}
@@ -46,6 +48,7 @@ describe("<ContinuousBinningModal />", () => {
   it("populates interval values", () => {
     const { getByLabelText } = render(
       <ContinuousBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"diagnoses.age_at_diagnoses"}
         stats={{ min: 0, max: 1 } as Statistics}
@@ -62,6 +65,7 @@ describe("<ContinuousBinningModal />", () => {
   it("shows custom interval if one already set", () => {
     const { getByLabelText } = render(
       <ContinuousBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"Gender"}
         stats={{ min: 0, max: 1 } as Statistics}
@@ -78,6 +82,7 @@ describe("<ContinuousBinningModal />", () => {
   it("validates intervals", async () => {
     const { getByLabelText, getByText } = render(
       <ContinuousBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"diagnoses.age_at_diagnoses"}
         stats={{ min: 0, max: 1 } as Statistics}
@@ -95,6 +100,7 @@ describe("<ContinuousBinningModal />", () => {
   it("shows an empty range row to start", () => {
     const { getByLabelText } = render(
       <ContinuousBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"diagnoses.age_at_diagnoses"}
         stats={{ min: 0, max: 1 } as Statistics}
@@ -111,6 +117,7 @@ describe("<ContinuousBinningModal />", () => {
   it("shows custom ranges to start if available", () => {
     const { getAllByLabelText } = render(
       <ContinuousBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"diagnoses.age_at_diagnoses"}
         stats={{ min: 0, max: 1 } as Statistics}
@@ -138,6 +145,7 @@ describe("<ContinuousBinningModal />", () => {
   it("validates row on add", async () => {
     const { getByLabelText, getByText } = render(
       <ContinuousBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"diagnoses.age_at_diagnoses"}
         stats={{ min: 0, max: 1 } as Statistics}
@@ -160,6 +168,7 @@ describe("<ContinuousBinningModal />", () => {
   it("can delete row", async () => {
     const { getByLabelText, getAllByLabelText, getByText } = render(
       <ContinuousBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"diagnoses.age_at_diagnoses"}
         stats={{ min: 0, max: 1 } as Statistics}
@@ -184,6 +193,7 @@ describe("<ContinuousBinningModal />", () => {
     const mockSave = jest.fn();
     const { getByLabelText, getByRole } = render(
       <ContinuousBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"diagnoses.age_at_diagnoses"}
         stats={{ min: 0, max: 1 } as Statistics}
@@ -212,6 +222,7 @@ describe("<ContinuousBinningModal />", () => {
     const mockSave = jest.fn();
     const { getByLabelText, getByRole } = render(
       <ContinuousBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"diagnoses.age_at_diagnoses"}
         stats={{ min: 0, max: 1 } as Statistics}
@@ -233,6 +244,7 @@ describe("<ContinuousBinningModal />", () => {
   it("reset to default values", async () => {
     const { getByLabelText } = render(
       <ContinuousBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"diagnoses.age_at_diagnoses"}
         stats={{ min: 0, max: 1 } as Statistics}
@@ -255,6 +267,7 @@ describe("<ContinuousBinningModal />", () => {
   it("reset button available when starting with custom bins", async () => {
     const { getByLabelText } = render(
       <ContinuousBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"diagnoses.age_at_diagnoses"}
         stats={{ min: 0, max: 1 } as Statistics}
@@ -276,6 +289,7 @@ describe("<ContinuousBinningModal />", () => {
     const saveBins = jest.fn();
     const { getAllByLabelText, getByRole } = render(
       <ContinuousBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"diagnoses.age_at_diagnoses"}
         stats={{ min: 0, max: 1 } as Statistics}
@@ -301,6 +315,7 @@ describe("<ContinuousBinningModal />", () => {
   it("changes to range inputs validates overlapping bins", async () => {
     const { getAllByLabelText, getByText } = render(
       <ContinuousBinningModal
+        opened
         setModalOpen={jest.fn()}
         field={"diagnoses.age_at_diagnoses"}
         stats={{ min: 0, max: 1 } as Statistics}

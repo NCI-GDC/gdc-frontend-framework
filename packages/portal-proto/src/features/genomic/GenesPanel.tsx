@@ -66,8 +66,8 @@ export const GenesPanel = ({
   );
 
   return (
-    <div className="flex flex-col w-100 mx-6">
-      <Grid className="mx-2 bg-base-max">
+    <div className="flex flex-col">
+      <Grid className="mx-2 bg-base-max mb-4">
         <Grid.Col span={6}>
           <GeneFrequencyChart
             marginBottom={95}

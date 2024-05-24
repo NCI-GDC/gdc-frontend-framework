@@ -4,7 +4,6 @@ import {
   getExpandedRowModel,
   getSortedRowModel,
   Header,
-  Row,
   SortDirection,
   useReactTable,
 } from "@tanstack/react-table";
@@ -16,7 +15,9 @@ import {
   useEffect,
   useRef,
   useState,
+  useMemo,
 } from "react";
+import { useDeepCompareMemo } from "use-deep-compare";
 import { BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
 import {
   LoadingOverlay,
@@ -25,12 +26,13 @@ import {
   TextInput,
   Tooltip,
   ActionIcon,
+  Text,
 } from "@mantine/core";
 import { MdClose, MdSearch } from "react-icons/md";
 import ColumnOrdering from "./ColumnOrdering";
 import { DataStatus } from "@gff/core";
-import { v4 as uuidv4 } from "uuid";
 import { useDeepCompareEffect } from "use-deep-compare";
+import { getDefaultRowId } from "./utils";
 
 /**
  * VerticalTable is a table component that displays data in a vertical format.
@@ -65,6 +67,7 @@ import { useDeepCompareEffect } from "use-deep-compare";
  * @param setExpanded - A function that sets the expanded.
  * @param getRowId  - A function that returns the row id.
  * @param baseZIndex  - The base z index.
+ * @param customDataTestID - optional locator for test automation
  * @category Table
  */
 
@@ -95,9 +98,9 @@ function VerticalTable<TData>({
   setSorting,
   expanded,
   setExpanded,
-  getRowId = (_originalRow: TData, _index: number, _parent?: Row<TData>) =>
-    uuidv4(),
+  getRowId = getDefaultRowId,
   baseZIndex = 0,
+  customDataTestID,
 }: TableProps<TData>): JSX.Element {
   const [tableData, setTableData] = useState(data);
   const [searchTerm, setSearchTerm] = useState(search?.defaultSearchTerm ?? "");
@@ -130,22 +133,36 @@ function VerticalTable<TData>({
     }
   }, [search?.defaultSearchTerm]);
 
-  const [clickedColumnId, setClickedColumnId] = useState<string>(null);
-  const table = useReactTable({
-    columns,
-    data: tableData,
-    getRowCanExpand,
-    initialState: {
+  const initialState = useDeepCompareMemo(
+    () => ({
       columnVisibility,
       columnOrder,
-    },
-    state: {
+    }),
+    [columnVisibility, columnOrder],
+  );
+
+  const state = useDeepCompareMemo(
+    () => ({
       sorting,
       rowSelection,
       columnVisibility,
       columnOrder,
       expanded,
-    },
+    }),
+    [sorting, rowSelection, columnVisibility, columnOrder, expanded],
+  );
+
+  const expandedRowModel = useMemo(() => getExpandedRowModel<TData>(), []);
+  const coreRowModel = useMemo(() => getCoreRowModel<TData>(), []);
+  const sortedRowModel = useMemo(() => getSortedRowModel<TData>(), []);
+
+  const [clickedColumnId, setClickedColumnId] = useState<string>(null);
+  const table = useReactTable({
+    columns,
+    data: tableData,
+    getRowCanExpand,
+    initialState,
+    state,
     manualSorting: columnSorting === "manual",
     sortDescFirst: false,
     autoResetExpanded: false,
@@ -154,9 +171,9 @@ function VerticalTable<TData>({
     enableRowSelection: enableRowSelection,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
-    getExpandedRowModel: getExpandedRowModel<TData>(),
-    getCoreRowModel: getCoreRowModel<TData>(),
-    getSortedRowModel: getSortedRowModel<TData>(),
+    getExpandedRowModel: expandedRowModel,
+    getCoreRowModel: coreRowModel,
+    getSortedRowModel: sortedRowModel,
     getRowId: getRowId,
     enableSorting: columnSorting === "manual" || columnSorting === "enable",
   });
@@ -254,60 +271,69 @@ function VerticalTable<TData>({
   };
 
   return (
-    <div className="grow overflow-hidden pt-1">
+    <div data-testid={customDataTestID} className="grow overflow-hidden">
       <div
-        className={`flex ${
+        className={`flex flex-wrap gap-y-4 mb-2 ${
           !additionalControls ? "justify-end" : "justify-between"
         }`}
       >
-        {additionalControls && (
-          <div className="flex-1">{additionalControls}</div>
-        )}
-        {(search?.enabled || showControls) && (
-          <div className="flex items-center" data-testid="table-options-menu">
-            <div className="flex mb-2 gap-2">
-              {search?.enabled && (
-                <TextInput
-                  icon={<MdSearch size={24} aria-hidden="true" />}
-                  data-testid="textbox-table-search-bar"
-                  placeholder={search.placeholder ?? "Search"}
-                  aria-label="Table Search Input"
-                  classNames={{
-                    input: `border-base-lighter focus:border-2 focus:border-primary${
-                      TooltipContainer ? " focus:rounded-b-none" : ""
-                    }`,
-                    wrapper: "w-72 h-8",
-                  }}
-                  size="sm"
-                  rightSection={
-                    searchTerm.length > 0 && (
-                      <ActionIcon onClick={handleClearClick}>
-                        <MdClose aria-label="clear search" />
-                      </ActionIcon>
-                    )
-                  }
-                  value={searchTerm}
-                  onChange={handleInputChange}
-                  ref={inputRef}
-                  onFocus={() => setSearchFocused(true)}
-                  onBlur={() => setSearchFocused(false)}
-                  inputContainer={TooltipContainer}
-                />
-              )}
-              {showControls && (
-                <ColumnOrdering
-                  table={table}
-                  handleColumnOrderingReset={() => {
-                    table.resetColumnVisibility();
-                    table.resetColumnOrder();
-                  }}
-                  columnOrder={columnOrder}
-                  setColumnOrder={setColumnOrder}
-                />
-              )}
+        {additionalControls && <>{additionalControls}</>}
+        <div className="flex flex-wrap gap-y-2 gap-x-4 items-center">
+          {tableTitle && (
+            <Text className="self-center uppercase text-lg text-left ml-0 lg:ml-auto">
+              {tableTitle}
+            </Text>
+          )}
+
+          {(search?.enabled || showControls) && (
+            <div
+              className="flex items-center gap-2"
+              data-testid="table-options-menu"
+            >
+              <div className="flex gap-2">
+                {search?.enabled && (
+                  <TextInput
+                    leftSection={<MdSearch size={24} aria-hidden="true" />}
+                    data-testid="textbox-table-search-bar"
+                    placeholder={search.placeholder ?? "Search"}
+                    aria-label="Table Search Input"
+                    classNames={{
+                      input: `border-base-lighter focus:border-2 focus:border-primary${
+                        TooltipContainer ? " focus:rounded-b-none" : ""
+                      }`,
+                      wrapper: "xl:w-72",
+                    }}
+                    size="sm"
+                    rightSection={
+                      searchTerm.length > 0 && (
+                        <ActionIcon onClick={handleClearClick}>
+                          <MdClose aria-label="clear search" />
+                        </ActionIcon>
+                      )
+                    }
+                    value={searchTerm}
+                    onChange={handleInputChange}
+                    ref={inputRef}
+                    onFocus={() => setSearchFocused(true)}
+                    onBlur={() => setSearchFocused(false)}
+                    inputContainer={TooltipContainer}
+                  />
+                )}
+                {showControls && (
+                  <ColumnOrdering
+                    table={table}
+                    handleColumnOrderingReset={() => {
+                      table.resetColumnVisibility();
+                      table.resetColumnOrder();
+                    }}
+                    columnOrder={columnOrder}
+                    setColumnOrder={setColumnOrder}
+                  />
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       <div className="overflow-y-auto w-full relative">
@@ -323,9 +349,6 @@ function VerticalTable<TData>({
           zIndex={0}
         />
         <table className="w-full text-left font-content shadow-xs text-sm">
-          {tableTitle && (
-            <caption className="font-semibold text-left">{tableTitle}</caption>
-          )}
           <thead className="h-12">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr
@@ -433,8 +456,9 @@ function VerticalTable<TData>({
                         {row.getCanExpand() &&
                         expandableColumnIds.includes(columnId) &&
                         // check to make sure item is expandable
-                        Array.isArray(cellValue) &&
-                        cellValue.length > 1 ? (
+                        (cellValue !== undefined
+                          ? Array.isArray(cellValue) && cellValue.length > 1
+                          : true) ? (
                           <button
                             onClick={() => {
                               setClickedColumnId(columnId);
@@ -481,52 +505,65 @@ function VerticalTable<TData>({
         </table>
       </div>
       {pagination && (
-        <div className="flex font-heading items-center text-content justify-between bg-base-max border-base-lighter border-1 border-t-0 py-3 px-4">
+        <div className="flex flex-col w-full md:px-4 lg:flex-nowrap font-heading items-center text-content bg-base-max border-base-lighter border-1 border-t-0 py-3 xl:flex-row xl:justify-between">
           {!disablePageSize && (
-            <div
-              data-testid="area-show-number-of-entries"
-              className="flex flex-row items-center m-auto ml-0 text-sm"
-            >
-              <span className="my-auto mx-1">Show</span>
-              <Select
-                size="xs"
-                radius="md"
-                onChange={handlePageSizeChange}
-                value={pageSize?.toString()}
-                data={[
-                  { value: "10", label: "10" },
-                  { value: "20", label: "20" },
-                  { value: "40", label: "40" },
-                  { value: "100", label: "100" },
-                ]}
-                classNames={{
-                  root: "w-16 font-heading",
-                }}
-                data-testid="button-show-entries"
-                aria-label="select page size"
-              />
-              <span className="my-auto mx-1">Entries</span>
+            <div className="flex justify-between items-center w-full xl:w-fit">
+              <div
+                data-testid="area-show-number-of-entries"
+                className="flex items-center m-auto ml-0 text-sm"
+              >
+                <span className="my-auto mx-1">Show</span>
+                <Select
+                  size="xs"
+                  radius="md"
+                  onChange={handlePageSizeChange}
+                  value={pageSize?.toString()}
+                  data={[
+                    { value: "10", label: "10" },
+                    { value: "20", label: "20" },
+                    { value: "40", label: "40" },
+                    { value: "100", label: "100" },
+                  ]}
+                  classNames={{
+                    root: "w-16 font-heading",
+                  }}
+                  data-testid="button-show-entries"
+                  aria-label="select page size"
+                />
+                <span className="my-auto mx-1">Entries</span>
+              </div>
+              <div className="flex xl:hidden">
+                <ShowingCount
+                  from={pagination?.from}
+                  label={pagination?.label}
+                  total={pagination?.total}
+                  dataLength={tableData?.length}
+                  status={status}
+                  pageSize={pageSize}
+                  customDataTestID="xl-hidden-text-showing-count"
+                />
+              </div>
             </div>
           )}
-
-          <ShowingCount
-            from={pagination?.from}
-            label={pagination?.label}
-            total={pagination?.total}
-            dataLength={tableData?.length}
-            status={status}
-            pageSize={pageSize}
-          />
-
+          <div className="hidden xl:flex xl:items-center">
+            <ShowingCount
+              from={pagination?.from}
+              label={pagination?.label}
+              total={pagination?.total}
+              dataLength={tableData?.length}
+              status={status}
+              pageSize={pageSize}
+            />
+          </div>
           <Pagination
             data-testid="pagination"
             color="accent.5"
-            className="ml-auto"
+            className="mt-4 gap-1 mx-auto xl:mx-0 xl:gap-2 xl:mr-0 xl:mt-0"
             value={pageOn}
             onChange={handlePageChange}
             total={pageTotal}
-            size="sm"
             radius="xs"
+            size="sm"
             withEdges
             classNames={{ control: "border-0" }}
             getControlProps={(control) => {
@@ -557,6 +594,7 @@ function ShowingCount({
   dataLength,
   status,
   pageSize,
+  customDataTestID = "text-showing-count",
 }: {
   from: number;
   total: number;
@@ -564,6 +602,7 @@ function ShowingCount({
   dataLength: number;
   status: DataStatus;
   pageSize: number;
+  customDataTestID?: string;
 }) {
   let outputString: JSX.Element;
   if (!isNaN(from) && status === "fulfilled") {
@@ -585,7 +624,7 @@ function ShowingCount({
   }
 
   return (
-    <p data-testid="text-showing-count" className="text-heading text-sm">
+    <p data-testid={customDataTestID} className="text-heading text-sm">
       Showing {outputString ?? "--"}
     </p>
   );

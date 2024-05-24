@@ -1,8 +1,11 @@
-import { Button, ButtonProps, Loader, Tooltip } from "@mantine/core";
+import { ButtonProps, Loader, Tooltip } from "@mantine/core";
 import { FiDownload } from "react-icons/fi";
 import download from "src/utils/download";
 import { hideModal, Modals, useCoreDispatch } from "@gff/core";
 import { Dispatch, SetStateAction, forwardRef } from "react";
+import FunctionButton, {
+  FunctionButtonVariants,
+} from "@/components/FunctionButton";
 
 /**
  * Properties for the DownloadButton component.
@@ -53,6 +56,8 @@ interface DownloadButtonProps {
   Modal403?: Modals;
   Modal400?: Modals;
   toolTip?: string;
+  multilineToolTip?: boolean;
+  displayVariant?: FunctionButtonVariants;
 }
 
 /**
@@ -81,6 +86,7 @@ interface DownloadButtonProps {
  * @param Modal403 - The modal to display when a 403 error occurs.
  * @param Modal400 - The modal to display when a 400 error occurs.
  * @param toolTip - The tooltip to display.
+ * @param multilineToolTip - The tooltip will be displayed in multiple lines
  * @category Buttons
  */
 export const DownloadButton = forwardRef<
@@ -101,7 +107,6 @@ export const DownloadButton = forwardRef<
       activeText,
       extraParams,
       method = "POST",
-      customStyle,
       setActive,
       onClick,
       showLoading = true,
@@ -111,6 +116,8 @@ export const DownloadButton = forwardRef<
       Modal400,
       Modal403,
       toolTip,
+      multilineToolTip = false,
+      displayVariant,
       ...buttonProps
     }: DownloadButtonProps,
     ref,
@@ -120,22 +127,29 @@ export const DownloadButton = forwardRef<
     const Icon = active ? (
       <Loader size="sm" className="p-1" />
     ) : (
-      <FiDownload title="download" size={16} />
+      <FiDownload title="download" size={16} className="hidden xl:block" />
     );
 
     return (
-      <Tooltip disabled={!toolTip} label={toolTip}>
-        <Button
+      <Tooltip
+        disabled={!toolTip}
+        label={toolTip}
+        multiline={multilineToolTip}
+        w={multilineToolTip ? 400 : "auto"}
+      >
+        <FunctionButton
+          $variant={displayVariant}
           ref={ref}
-          leftIcon={showIcon && inactiveText && <FiDownload />}
-          disabled={disabled}
-          className={
-            customStyle ||
-            `text-base-lightest ${
-              disabled ? "bg-base" : "bg-primary hover:bg-primary-darker"
-            } `
+          leftSection={
+            showIcon &&
+            inactiveText && (
+              <FiDownload aria-label="download" className="hidden xl:block" />
+            )
           }
+          classNames={{ section: "mr-0 xl:mr-3" }}
+          disabled={disabled}
           loading={showLoading && active}
+          variant="outline"
           onClick={() => {
             if (!preventClickEvent && onClick) {
               onClick();
@@ -167,7 +181,7 @@ export const DownloadButton = forwardRef<
           {...buttonProps}
         >
           {text || Icon}
-        </Button>
+        </FunctionButton>
       </Tooltip>
     );
   },

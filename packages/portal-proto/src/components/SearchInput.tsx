@@ -17,7 +17,7 @@ import {
   Tooltip,
   ActionIcon,
 } from "@mantine/core";
-import { useFocusWithin } from "@mantine/hooks";
+import { useFocusWithin, useViewportSize } from "@mantine/hooks";
 import { MdSearch as SearchIcon, MdClose as CloseIcon } from "react-icons/md";
 import { FaCheck as CheckIcon } from "react-icons/fa";
 import { SearchResult } from "minisearch";
@@ -25,10 +25,13 @@ import {
   FacetSearchDocument,
   useFacetSearch,
 } from "@/features/cohortBuilder/dictionary";
-import BtnWithHoverCallout from "./BtnWithHoverCallout";
+import {
+  BtnWithHoverCalloutTopArrow,
+  BtnWithHoverCalloutLeftArrow,
+} from "./BtnWithHoverCallout";
 
 const PAGE_SIZE = 5;
-
+const MAX_MATCHED_VALUES = 30;
 const P = tw.p`
   uppercase
   text-base
@@ -50,7 +53,7 @@ export const SearchInput: React.FC = () => {
       setActivedescendant(undefined);
     },
   });
-
+  const { width } = useViewportSize();
   const miniSearch = useFacetSearch();
 
   const searchFacets = (s: string) => {
@@ -221,7 +224,8 @@ export const SearchInput: React.FC = () => {
         setActivedescendant(undefined);
     }
   };
-
+  const BtnWithHoverCallout =
+    width > 860 ? BtnWithHoverCalloutLeftArrow : BtnWithHoverCalloutTopArrow;
   return (
     <div ref={ref} className="relative">
       <TextInput
@@ -235,9 +239,9 @@ export const SearchInput: React.FC = () => {
             ? null
             : `${comboboxItemId}${activedescendant}`
         }
-        icon={<SearchIcon size={24} aria-hidden="true" />}
+        leftSection={<SearchIcon size={24} aria-hidden="true" />}
         placeholder="Search"
-        data-testid="textbox-search-bar"
+        data-testid="textbox-cohort-builder-search-bar"
         aria-label="App Search Input"
         value={searchTerm}
         onChange={onSearchChanged}
@@ -265,7 +269,8 @@ export const SearchInput: React.FC = () => {
       />
       {dropdownOpen && (
         <div
-          className="absolute z-10 bg-base-max w-[400px] p-4 drop-shadow-md"
+          data-testid="search-result-list"
+          className="absolute z-10 bg-base-max w-[400px] p-4 drop-shadow-md rounded-b"
           id={comboboxId}
           onKeyDown={menuKeybordNav}
           role="grid"
@@ -331,9 +336,11 @@ export const SearchInput: React.FC = () => {
                 {filteredResults
                   .slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
                   .map((result, index) => {
-                    const matchingEnums = result?.enum.filter((e) =>
-                      result.terms.some((t) => e.toLowerCase().includes(t)),
-                    );
+                    const matchingEnums = result?.enum
+                      .slice(0, MAX_MATCHED_VALUES)
+                      .filter((e) =>
+                        result.terms.some((t) => e.toLowerCase().includes(t)),
+                      );
                     const showTooltip =
                       result.description !== "" || matchingEnums.length > 0;
                     const extraAttributes =
@@ -368,7 +375,10 @@ export const SearchInput: React.FC = () => {
                                 matchingEnums.length > 0 && <br />}
                               {matchingEnums.length > 0 && (
                                 <div data-testid="cohort-builder-search-matching-values">
-                                  <b>Values Matched: </b>
+                                  <b>
+                                    Top Values Matched (max of{" "}
+                                    {MAX_MATCHED_VALUES}):
+                                  </b>
                                   <Highlight
                                     highlight={searchTerm}
                                     highlightStyles={{ fontStyle: "italic" }}
@@ -380,11 +390,12 @@ export const SearchInput: React.FC = () => {
                             </>
                           }
                           multiline
-                          position="left-start"
-                          width={400}
+                          position={width > 860 ? "left" : "top"}
+                          w={400}
                           color="white"
                           classNames={{
-                            tooltip: "text-black drop-shadow-md rounded-none",
+                            tooltip:
+                              "text-black shadow-lg rounded-none border-1 border-primary",
                           }}
                           offset={17}
                           opened={

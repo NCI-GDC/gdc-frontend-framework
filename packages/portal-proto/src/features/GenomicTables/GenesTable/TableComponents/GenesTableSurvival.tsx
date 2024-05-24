@@ -38,7 +38,7 @@ const GenesTableSurvival = ({
       margin="ml-0.5"
       ariaText={`Toggle survival plot for ${symbol} gene`}
       isActive={survival.checked}
-      icon={<SurvivalIcon size={24} />}
+      icon={<SurvivalIcon size={24} aria-hidden="true" />}
       selected={survival as unknown as Record<string, string>} // need to fix this
       handleSwitch={handleSurvivalPlotToggled}
       survivalProps={{ plot: "gene.symbol" }}

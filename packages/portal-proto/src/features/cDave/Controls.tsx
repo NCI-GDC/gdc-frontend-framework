@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  Box,
   Switch,
   Divider,
   Tooltip,
@@ -21,7 +20,13 @@ import {
 } from "react-icons/fa";
 import { Stats, Buckets } from "@gff/core";
 import { createKeyboardAccessibleFunction } from "src/utils";
-import { COLOR_MAP, DEFAULT_FIELDS, FACET_SORT, TABS } from "./constants";
+import {
+  COLOR_MAP,
+  COLOR_CLASS_HOVER_MAP,
+  DEFAULT_FIELDS,
+  FACET_SORT,
+  TABS,
+} from "./constants";
 import { toDisplayName } from "./utils";
 import tailwindConfig from "../../../tailwind.config";
 import FacetExpander from "../facets/FacetExpander";
@@ -142,109 +147,71 @@ const FieldControl: React.FC<FieldControlProps> = ({
   const displayName = toDisplayName(field.field_name);
 
   return (
-    <li key={field.full} className="px-2 pt-2">
+    <li
+      data-testid={`row-field-${displayName}-cdave`}
+      key={field.full}
+      className="px-2 pt-2"
+    >
       {searchTerm ? (
         <>
-          <div className="flex justify-between items-center pb-1">
-            <label
-              className="font-content font-medium text-md"
-              htmlFor={`switch-${field.full}`}
-            >
-              <Highlight highlight={searchTerm}>{displayName}</Highlight>
-            </label>
-            <Switch
-              styles={(theme) => ({
-                track: {
-                  "&:hover": {
-                    backgroundColor: theme.fn.darken(
-                      tailwindConfig.theme.extend.colors[
-                        COLOR_MAP[field.field_type]
-                      ]?.DEFAULT,
-                      0.05,
-                    ),
-                  },
-                },
-                input: {
-                  "&:checked + .mantine-Switch-track": {
-                    backgroundColor:
-                      tailwindConfig.theme.extend.colors[
-                        COLOR_MAP[field.field_type]
-                      ]?.DEFAULT,
-                    borderColor:
-                      tailwindConfig.theme.extend.colors[
-                        COLOR_MAP[field.field_type]
-                      ]?.DEFAULT,
-                  },
-                },
-              })}
-              classNames={{
-                input: "bg-none rounded-lg",
-              }}
-              checked={checked}
-              onChange={(e) => {
-                setChecked(e.currentTarget.checked);
-                updateFields(field.full);
-              }}
-              id={`switch-${field.full}`}
-            />
-          </div>
-          <Highlight highlight={searchTerm}>
-            {field?.description || ""}
-          </Highlight>
-        </>
-      ) : (
-        <div className="flex justify-between cursor-pointer items-center bg-none py-2">
-          <Tooltip
-            label={field?.description || "No description available"}
-            withArrow
-            width={200}
-            multiline
-          >
-            <Box>
-              <label
-                className="pointer-events-none font-content font-medium"
-                htmlFor={`switch-${field.full}`}
-              >
-                {displayName}
-              </label>
-            </Box>
-          </Tooltip>
           <Switch
-            styles={(theme) => ({
-              track: {
-                "&:hover": {
-                  backgroundColor: theme.fn.darken(
-                    tailwindConfig.theme.extend.colors[
-                      COLOR_MAP[field.field_type]
-                    ]?.DEFAULT,
-                    0.05,
-                  ),
-                },
-              },
-              input: {
-                "&:checked + .mantine-Switch-track": {
-                  backgroundColor:
-                    tailwindConfig.theme.extend.colors[
-                      COLOR_MAP[field.field_type]
-                    ]?.DEFAULT,
-                  borderColor:
-                    tailwindConfig.theme.extend.colors[
-                      COLOR_MAP[field.field_type]
-                    ]?.DEFAULT,
-                },
-              },
-            })}
+            label={<Highlight highlight={searchTerm}>{displayName}</Highlight>}
+            labelPosition="left"
+            color={
+              tailwindConfig.theme.extend.colors[COLOR_MAP[field.field_type]]
+                ?.DEFAULT
+            }
             classNames={{
-              input: "bg-none rounded-lg",
+              root: "py-2",
+              body: "flex justify-between items-center",
+              label:
+                "cursor-pointer text-base text-black font-content font-medium",
+              track: `cursor-pointer ${
+                COLOR_CLASS_HOVER_MAP[field.field_type]
+              }`,
             }}
             checked={checked}
             onChange={(e) => {
               setChecked(e.currentTarget.checked);
               updateFields(field.full);
             }}
-            id={`switch-${field.full}`}
           />
-        </div>
+          <Highlight highlight={searchTerm}>
+            {field?.description || ""}
+          </Highlight>
+        </>
+      ) : (
+        <Switch
+          data-testid={`button-field-${displayName}-cdave`}
+          label={
+            <Tooltip
+              label={field?.description || "No description available"}
+              withArrow
+              w={200}
+              multiline
+              zIndex={15}
+            >
+              <div>{displayName}</div>
+            </Tooltip>
+          }
+          labelPosition="left"
+          color={
+            tailwindConfig.theme.extend.colors[COLOR_MAP[field.field_type]]
+              ?.DEFAULT
+          }
+          classNames={{
+            root: "py-2",
+            body: "flex justify-between items-center",
+            label:
+              "cursor-pointer text-base text-black font-content font-medium",
+            track: `cursor-pointer ${COLOR_CLASS_HOVER_MAP[field.field_type]}`,
+          }}
+          checked={checked}
+          onChange={(e) => {
+            setChecked(e.currentTarget.checked);
+            updateFields(field.full);
+          }}
+        />
       )}
       <Divider />
     </li>
@@ -300,6 +267,7 @@ const Controls: React.FC<ControlPanelProps> = ({
           aria-controls={"cdave-control-panel"}
           aria-expanded={controlsExpanded}
           className="text-base"
+          variant="subtle"
         >
           {controlsExpanded ? (
             <DoubleLeftIcon aria-hidden="true" />
@@ -316,14 +284,15 @@ const Controls: React.FC<ControlPanelProps> = ({
         <Input
           data-testid="textbox-cdave-search-bar"
           placeholder="Search"
-          className="p-2"
+          className="py-2"
           value={searchTerm}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setSearchTerm(e.currentTarget.value)
           }
+          rightSectionPointerEvents="all"
           rightSection={
             searchTerm && (
-              <ActionIcon onClick={() => setSearchTerm("")}>
+              <ActionIcon onClick={() => setSearchTerm("")} variant="subtle">
                 <CloseIcon aria-label="clear search" />
               </ActionIcon>
             )

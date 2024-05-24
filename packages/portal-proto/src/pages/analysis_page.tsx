@@ -2,6 +2,7 @@ import { useState } from "react";
 import { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { datadogRum } from "@datadog/browser-rum";
 import {
   selectCurrentCohortId,
   selectCurrentCohortName,
@@ -15,6 +16,7 @@ import AnalysisWorkspace from "@/features/user-flow/workflow/AnalysisWorkspace";
 import QueryExpressionSection from "@/features/cohortBuilder/QueryExpressionSection";
 import { useCohortFacetFilters } from "@/features/cohortBuilder/utils";
 import { useSetupInitialCohorts } from "@/features/cohortBuilder/hooks";
+import { REGISTERED_APPS } from "@/features/user-flow/workflow/registeredApps";
 
 const SingleAppsPage: NextPage = () => {
   const router = useRouter();
@@ -31,6 +33,11 @@ const SingleAppsPage: NextPage = () => {
   const initialCohortsFetched = useSetupInitialCohorts();
   const filters = useCohortFacetFilters();
   const [isSticky, setIsSticky] = useState(true);
+  const appInfo = REGISTERED_APPS.find((a) => a.id === app);
+
+  datadogRum.startView({
+    name: appInfo?.name ?? "Analysis Center",
+  });
 
   return (
     <UserFlowVariedPages
@@ -53,7 +60,10 @@ const SingleAppsPage: NextPage = () => {
           key="gdc-analysis-center"
         />
       </Head>
-      <LoadingOverlay visible={!initialCohortsFetched} />
+      <LoadingOverlay
+        data-testid="loading-spinner"
+        visible={!initialCohortsFetched}
+      />
       <QueryExpressionSection
         filters={filters}
         currentCohortName={currentCohortName}

@@ -27,7 +27,7 @@ export const CohortCreationStyledButton = tw.button`
   disabled:text-base-light
 `;
 
-export const IconWrapper = tw.span`
+export const IconWrapperTW = tw.span`
   ${(p) => (p.$disabled ? "bg-base-light" : "bg-accent")}
   border-r-1
   border-solid
@@ -101,6 +101,10 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
         <CohortCreationStyledButton
           data-testid="button-save-filtered-cohort"
           onClick={async () => {
+            if (loading) {
+              return;
+            }
+
             if (filtersCallback) {
               setLoading(true);
               const createdFilters = await filtersCallback();
@@ -109,26 +113,26 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
             }
             setShowSaveCohort(true);
           }}
-          disabled={disabled || loading}
+          disabled={disabled}
           $fullWidth={React.isValidElement(label)} // if label is JSX.Element take the full width
           aria-label={tooltipText}
         >
-          <IconWrapper $disabled={disabled} aria-hidden="true">
+          <IconWrapperTW $disabled={disabled} aria-hidden="true">
             {loading ? (
               <Loader size={12} />
             ) : (
               <PlusIcon color="white" size={12} />
             )}
-          </IconWrapper>
+          </IconWrapperTW>
           <span className="pr-2 self-center">{label ?? "--"}</span>
         </CohortCreationStyledButton>
       </Tooltip>
-      {showSaveCohort && (
-        <SaveCohortModal
-          onClose={() => setShowSaveCohort(false)}
-          filters={cohortFilters}
-        />
-      )}
+
+      <SaveCohortModal
+        onClose={() => setShowSaveCohort(false)}
+        opened={showSaveCohort}
+        filters={cohortFilters}
+      />
     </div>
   );
 };

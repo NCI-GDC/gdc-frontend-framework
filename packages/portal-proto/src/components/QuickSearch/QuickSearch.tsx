@@ -1,142 +1,172 @@
-import { useQuickSearch } from "@gff/core";
-import { Badge, Loader, Highlight, Select } from "@mantine/core";
+import React, { useState } from "react";
+import { useDeepCompareEffect } from "use-deep-compare";
 import { useRouter } from "next/router";
-import { useEffect, useState, forwardRef } from "react";
+import { Loader, Highlight, Select, SelectProps } from "@mantine/core";
+import { useDebouncedValue } from "@mantine/hooks";
 import { MdSearch as SearchIcon, MdClose as CloseIcon } from "react-icons/md";
-import { TypeIcon } from "../TypeIcon";
-import { entityShortNameMapping } from "./entityShortNameMapping";
+import { validate as uuidValidate } from "uuid";
+import {
+  useGetHistoryQuery,
+  useQuickSearchQuery,
+  HistoryDefaults,
+} from "@gff/core";
+import {
+  entityIconMapping,
+  QuickSearchEntities,
+} from "./entityShortNameMapping";
 import { extractEntityPath, findMatchingToken } from "./utils";
+
+interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
+  value: string;
+  label: string;
+  symbol?: string;
+  "data-hovered": boolean;
+  obj: Record<string, any>;
+  superseded?: boolean;
+  entity?: QuickSearchEntities;
+  last?: boolean;
+}
 
 export const QuickSearch = (): JSX.Element => {
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const [searchTextForApi, setSearchTextForApi] = useState("");
+  const [debounced] = useDebouncedValue(searchText, 250);
   const [matchedSearchList, setMatchedSearchList] = useState([]);
 
   const router = useRouter();
 
-  const {
-    data: { searchList, query },
-  } = useQuickSearch(searchTextForApi);
+  const { data } = useQuickSearchQuery(debounced);
+
+  const { searchList, query } = data || {};
+
+  const { data: fileHistory } = useGetHistoryQuery(searchText.trim(), {
+    skip:
+      searchText === "" ||
+      debounced === "" ||
+      searchList?.length > 0 ||
+      !uuidValidate(debounced.trim()),
+  });
 
   // Checks search results returned against current search to make sure it matches
-  useEffect(() => {
-    if (searchTextForApi === "") {
+  useDeepCompareEffect(() => {
+    if (debounced === "") {
       setLoading(false);
-    } else if (query === searchTextForApi) {
-      setMatchedSearchList(
-        searchList.map((obj) => ({
-          value: obj.id, // requiered by plugin
-          label: obj.id, // requiered by plugin
-          symbol: obj.symbol,
-          obj: obj,
-        })),
-      );
+      setMatchedSearchList([]);
+    } else if (query === debounced) {
+      if (fileHistory !== undefined) {
+        const latestVersion = fileHistory.find(
+          (f) => f.file_change === "released",
+        )?.uuid;
+        setMatchedSearchList([
+          {
+            value: latestVersion,
+            label: latestVersion,
+            obj: fileHistory,
+            superseded: true,
+            entity: "File",
+          },
+        ]);
+      } else {
+        setMatchedSearchList(
+          searchList.map((obj, i) => ({
+            value: obj.id, // required by plugin
+            label: obj.id, // required by plugin
+            symbol: obj.symbol,
+            obj: obj,
+            last: searchList.length === i + 1, // for styling
+          })),
+        );
+      }
       setLoading(false);
     }
-  }, [searchTextForApi, searchList, query]);
+  }, [debounced, searchList, query, fileHistory]);
 
-  interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
-    value: string;
-    label: string;
-    symbol?: string;
-    "data-hovered": boolean;
-    obj: Record<string, any>;
-  }
+  const renderItem: SelectProps["renderOption"] = ({
+    option: { value, label, symbol, obj, superseded, entity, last, ...others },
+  }: {
+    option: ItemProps;
+  }) => {
+    let badgeText: string;
+    if (superseded) {
+      badgeText = (obj as HistoryDefaults[]).find(
+        (f) => f.file_change === "released",
+      )?.uuid;
+    } else {
+      badgeText = symbol || atob(label).split(":")?.[1];
+    }
+    const matchingToken = findMatchingToken(
+      obj,
+      searchText.trim().toLocaleLowerCase(),
+    );
+    const mainText = superseded
+      ? `File ${matchingToken} has been updated`
+      : matchingToken;
 
-  const renderItem = forwardRef<HTMLDivElement, ItemProps>(
-    ({ value, label, symbol, obj, ...others }: ItemProps, ref) => {
-      const badgeText = symbol || atob(label).split(":")[1];
-      const mainText = findMatchingToken(
-        obj,
-        searchText.trim().toLocaleLowerCase(),
-      );
-      return (
+    const IconFormatted = ({ Icon }: { Icon: any }): JSX.Element => (
+      <div className="bg-accent-cool-content-lighter rounded-full">
+        <Icon className="p-1.5 w-10 h-10" aria-hidden />
+      </div>
+    );
+    const entityForMapping = entity || atob(label).split(":")[0];
+    return (
+      <div
+        data-testid="text-search-result"
+        {...others}
+        aria-label={`${badgeText}, ${matchingToken}, Category: ${entityForMapping}`}
+      >
         <div
-          data-testid="text-search-result"
-          ref={ref}
-          {...others}
-          aria-label={`${badgeText}, ${mainText}`}
+          className={`px-4 ${
+            others["data-hovered"] ? "bg-primary-lightest" : ""
+          }`}
         >
           <div
-            className={`flex p-2 px-4 ${
-              others["data-hovered"] &&
-              "bg-primary-darkest text-primary-contrast-darkest"
+            className={`py-2 flex gap-2 ${
+              last ? "" : "border-b border-gdc-grey-light"
             }`}
           >
             <div className="self-center">
-              <TypeIcon
-                iconText={entityShortNameMapping[atob(label).split(":")[0]]}
-                changeOnHover={others["data-hovered"]}
-              />
+              <IconFormatted Icon={entityIconMapping[entityForMapping].icon} />
             </div>
-            <div className="flex flex-col">
-              <div style={{ width: 200 }}>
-                <Badge
-                  classNames={{
-                    inner: "text-xs",
-                    root: `${
-                      others["data-hovered"]
-                        ? "bg-primary-contrast-darker text-primary-darker"
-                        : "bg-primary-darker text-primary-contrast-darker"
-                    }`,
-                  }}
-                  className="cursor-pointer"
-                >
-                  {badgeText}
-                </Badge>
-              </div>
-              <span className="text-sm">
+            <div className="flex flex-col leading-5">
+              <div className="font-bold">{badgeText}</div>
+              <span className="">
                 <Highlight
                   highlight={searchText.trim()}
-                  highlightStyles={{
-                    fontStyle: "italic",
-                    fontWeight: "bold",
-                    fontSize: "14px",
-                    color: `${others["data-hovered"] && "#38393a"}`, //nciGrayDarkest : might need to change the color
-                  }}
+                  highlightStyles={{ fontStyle: "italic" }}
+                  span
+                  className="break-normal"
                 >
                   {mainText}
                 </Highlight>
               </span>
+              <span className="text-base-content-dark">
+                <b>Category:</b>{" "}
+                {entityIconMapping[entityForMapping].category
+                  ? entityIconMapping[entityForMapping].category
+                  : entityForMapping}
+              </span>
             </div>
           </div>
         </div>
-      );
-    },
-  );
+      </div>
+    );
+  };
 
   const onSelectItem = (id: string) => {
     if (!id) {
       return;
     }
-    const selectedObj = matchedSearchList.find((obj) => obj.value == id).obj;
+    const selectedObj = fileHistory
+      ? fileHistory.find((h) => h.uuid === id)
+      : matchedSearchList.find((obj) => obj.value == id).obj;
     const entityPath = extractEntityPath(selectedObj);
-    // Note: for annotations we need to open v1 portal in a new tab
-    if (entityPath.includes("annotations")) {
-      window.open(entityPath, "_ blank");
-      return;
-    }
     router.push(entityPath);
     setSearchText("");
   };
 
-  useEffect(() => {
-    setMatchedSearchList([]);
-    const trimedSearchText = searchText.trim();
-    if (trimedSearchText.length > 0) {
-      setLoading(true);
-      //prevents unneeded api calls if user is typing something
-      const delayDebounceFn = setTimeout(() => {
-        setSearchTextForApi(trimedSearchText);
-      }, 250);
-      return () => clearTimeout(delayDebounceFn);
-    }
-  }, [searchText]);
-
   return (
     <Select
-      icon={
+      leftSection={
         loading ? (
           <Loader size={24} />
         ) : (
@@ -148,31 +178,47 @@ export const QuickSearch = (): JSX.Element => {
       aria-label="Quick Search Input"
       classNames={{
         input: "focus:border-2 focus:border-primary text-sm",
-        dropdown: "bg-base-lightest border-r-10 border-1 border-base",
-        item: "p-0 m-0",
+        dropdown:
+          "bg-base-max rounded-t-none rounded-b border-0 drop-shadow-md -mt-2",
+        option: "p-0 m-0 block",
       }}
       maxDropdownHeight={1000} //large number so no scroll bar
-      dropdownPosition="bottom"
+      comboboxProps={{
+        position: "bottom",
+        middlewares: { flip: false, shift: false },
+      }}
       size="sm"
       rightSection={
-        searchText.length > 0 ? <CloseIcon className="cursor-pointer" /> : <></>
+        searchText.length > 0 ? (
+          <CloseIcon className="cursor-pointer" aria-label="clear" />
+        ) : (
+          <></>
+        )
       }
-      clearable
-      itemComponent={renderItem}
+      rightSectionPointerEvents="all"
+      renderOption={renderItem}
       data={matchedSearchList}
       searchable
-      nothingFound={
-        searchText.length > 0 && searchTextForApi.length > 0 && !loading
+      nothingFoundMessage={
+        //This is so it does not show no results when loading or when user has not entered anything
+        searchText.length > 0 && debounced.length > 0 && !loading
           ? "No results found"
           : undefined
-      } //This is so it does not show no results when loading or when user has not entered anything
-      filter={() => true} //dont have plugin filter results
-      onSearchChange={setSearchText}
+      }
+      onSearchChange={(query) => {
+        setLoading(true);
+        setMatchedSearchList([]);
+        setSearchText(query);
+      }}
+      filter={({ options }) => options}
       searchValue={searchText}
       onChange={onSelectItem}
       value="" // set to blank so that a value does not flash when making a selection before the next page loads
       onDropdownClose={() => {
-        setLoading(false);
+        // setTimeout added to make sure this is called after onSearchChange
+        setTimeout(() => {
+          setLoading(false);
+        }, 0);
       }}
     />
   );

@@ -40,10 +40,11 @@ const TableElement = ({
         diagnosis_uuid,
         classification_of_tumor,
         age_at_diagnosis: ageDisplay(age_at_diagnosis),
-        days_to_last_follow_up: days_to_last_follow_up?.toLocaleString(),
-        days_to_last_known_disease_status:
-          days_to_last_known_disease_status?.toLocaleString(),
-        days_to_recurrence: days_to_recurrence?.toLocaleString(),
+        days_to_last_follow_up: ageDisplay(days_to_last_follow_up),
+        days_to_last_known_disease_status: ageDisplay(
+          days_to_last_known_disease_status,
+        ),
+        days_to_recurrence: ageDisplay(days_to_recurrence),
         last_known_disease_status,
         morphology,
         primary_diagnosis,
@@ -76,7 +77,7 @@ const TableElement = ({
       tableData = {
         follow_up_id,
         follow_up_uuid,
-        days_to_follow_up: days_to_follow_up?.toLocaleString(),
+        days_to_follow_up: ageDisplay(days_to_follow_up),
         comorbidity,
         risk_factor,
         progression_or_recurrence_type,
@@ -108,8 +109,7 @@ const TableElement = ({
         therapeutic_agents: diagnosis.therapeutic_agents ?? "--",
         treatment_intent_type: diagnosis.treatment_intent_type ?? "--",
         treatment_or_therapy: diagnosis.treatment_or_therapy ?? "--",
-        days_to_treatment_start:
-          diagnosis.days_to_treatment_start?.toLocaleString() ?? "--",
+        days_to_treatment_start: ageDisplay(diagnosis.days_to_treatment_start),
       }));
 
     const treatmentTableColumnHelper =
@@ -257,7 +257,7 @@ const TableElement = ({
   return (
     <>
       <HorizontalTable tableData={formatDataForDiagnosesorFollowUps(data)} />
-      <Text className="my-2" size="lg" weight={700}>
+      <Text className="my-2 font-bold" size="lg">
         {"diagnosis_id" in data
           ? `Total of ${(data.treatments || []).length} Treatments`
           : `Total of ${(data.molecular_tests || []).length} Molecular Tests`}
@@ -284,14 +284,10 @@ export const DiagnosesOrFollowUps = ({
     <>
       {dataInfo.length > 1 ? (
         <Tabs
-          variant="default"
+          variant="pills"
           orientation="vertical"
           value={activeTab.toString()}
-          onTabChange={onTabChange}
-          classNames={{
-            tabLabel: "text-sm pr-2 font-medium",
-            tabsList: "border-r-0 max-w-[160px]",
-          }}
+          onChange={onTabChange}
           data-testid="verticalTabs"
         >
           <div className="max-h-[500px] overflow-y-auto overflow-x-hidden min-w-[160px] mr-2">
@@ -306,9 +302,19 @@ export const DiagnosesOrFollowUps = ({
                       : "bg-base-lightest text-base-contrast-lightest"
                   }`}
                   data-testid="tab"
+                  {...(!data?.submitter_id && {
+                    "aria-label": "No follow-up ID available",
+                  })}
                 >
-                  <Tooltip label={data.submitter_id} withinPortal={true}>
-                    <div>{`${data.submitter_id.substring(0, 13)}...`}</div>
+                  <Tooltip
+                    label={data?.submitter_id ?? "No follow-up ID available"}
+                    withinPortal={true}
+                  >
+                    <div>
+                      {data?.submitter_id
+                        ? `${data?.submitter_id?.substring(0, 13)}...`
+                        : "--"}
+                    </div>
                   </Tooltip>
                 </Tabs.Tab>
               ))}

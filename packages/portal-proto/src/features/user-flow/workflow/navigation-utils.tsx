@@ -1,24 +1,12 @@
 import { Tooltip } from "@mantine/core";
-import tw from "tailwind-styled-components";
 import AnalysisCenterIcon from "public/user-flow/icons/dna.svg";
 import ProjectsIcon from "public/user-flow/icons/crowd-of-users.svg";
 import CohortBuilderIcon from "public/user-flow/icons/apps/CohortBuilder.svg";
 import DownloadIcon from "public/user-flow/icons/database.svg";
 import Link from "next/link";
 
-const NavLink = tw.a`
-flex
-items-center
-gap-1
-font-heading
-text-sm
-font-medium
-text-base-darker
-p-1
-mr-2
-hover:rounded-md
-hover:bg-primary-lightest
-`;
+const commonLinkClasses =
+  "flex items-center gap-1 font-heading text-sm font-medium text-base-darker p-1 mr-2 hover:rounded-md hover:bg-primary-lightest";
 
 export const headerElements = [
   <Tooltip
@@ -26,7 +14,7 @@ export const headerElements = [
     label="Explore and analyze harmonized high-quality clinical and genomics data from cancer genomic studies with the tools in the Analysis Center."
     position="bottom-start"
     multiline
-    width={220}
+    w={220}
     withArrow
   >
     <span>
@@ -35,13 +23,18 @@ export const headerElements = [
           pathname: "/analysis_page",
           query: { app: undefined },
         }}
-        className="cursor-pointer"
-        passHref
+        className={commonLinkClasses}
+        data-testid="button-header-analysis"
       >
-        <NavLink data-testid="button-header-analysis">
-          <AnalysisCenterIcon width={24} height={24} viewBox="0 0 500 500" />
+        <>
+          <AnalysisCenterIcon
+            width={24}
+            height={24}
+            viewBox="0 0 500 500"
+            aria-hidden
+          />
           Analysis Center
-        </NavLink>
+        </>
       </Link>
     </span>
   </Tooltip>,
@@ -50,7 +43,7 @@ export const headerElements = [
     label="View the projects available within the GDC and select them for further exploration and analysis."
     position="bottom-start"
     multiline
-    width={220}
+    w={220}
     withArrow
   >
     <span>
@@ -59,13 +52,18 @@ export const headerElements = [
           pathname: "/analysis_page",
           query: { app: "Projects" },
         }}
-        className="cursor-pointer"
-        passHref
+        className={commonLinkClasses}
+        data-testid="button-header-projects"
       >
-        <NavLink data-testid="button-header-projects">
-          <ProjectsIcon width={24} height={24} viewBox="0 -15 100 100" />
+        <>
+          <ProjectsIcon
+            width={24}
+            height={24}
+            viewBox="0 -15 100 100"
+            aria-hidden
+          />
           Projects
-        </NavLink>
+        </>
       </Link>
     </span>
   </Tooltip>,
@@ -74,7 +72,7 @@ export const headerElements = [
     label="Build and define your custom cohorts using a variety of clinical and biospecimen features."
     position="bottom-start"
     multiline
-    width={220}
+    w={220}
     withArrow
   >
     <span>
@@ -83,13 +81,18 @@ export const headerElements = [
           pathname: "/analysis_page",
           query: { app: "CohortBuilder" },
         }}
-        className="cursor-pointer"
-        passHref
+        className={commonLinkClasses}
+        data-testid="button-header-cohort"
       >
-        <NavLink data-testid="button-header-cohort">
-          <CohortBuilderIcon width={24} height={24} viewBox="0 0 50 50" />
+        <>
+          <CohortBuilderIcon
+            width={24}
+            height={24}
+            viewBox="0 0 50 50"
+            aria-hidden
+          />
           Cohort Builder
-        </NavLink>
+        </>
       </Link>
     </span>
   </Tooltip>,
@@ -98,7 +101,7 @@ export const headerElements = [
     label="Browse and download the files associated with your cohort for more sophisticated analysis."
     position="bottom-start"
     multiline
-    width={220}
+    w={220}
     withArrow
   >
     <span>
@@ -107,13 +110,18 @@ export const headerElements = [
           pathname: "/analysis_page",
           query: { app: "Downloads" },
         }}
-        className="cursor-pointer"
-        passHref
+        className={commonLinkClasses}
+        data-testid="button-header-downloads"
       >
-        <NavLink data-testid="button-header-downloads">
-          <DownloadIcon width={24} height={24} viewBox="0 0 50 50" />
+        <>
+          <DownloadIcon
+            width={24}
+            height={24}
+            viewBox="0 0 50 50"
+            aria-hidden
+          />
           Repository
-        </NavLink>
+        </>
       </Link>
     </span>
   </Tooltip>,

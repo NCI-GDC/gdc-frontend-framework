@@ -24,8 +24,9 @@ import {
   selectCurrentCohortFiltersByNames,
   GqlOperation,
   buildCohortGqlOperator,
-  selectCurrentCohortGeneAndSSMCaseSet,
-  useCurrentCohortWithGeneAndSsmCaseSet,
+  selectCurrentCohortFilters,
+  useCurrentCohortFilters,
+  CoreState,
 } from "@gff/core";
 import { useEffect, useMemo } from "react";
 import isEqual from "lodash/isEqual";
@@ -41,9 +42,7 @@ import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
  * Filter selector for all the facet filters
  */
 const useCohortFacetFilter = (): FilterSet => {
-  return useCoreSelector((state) =>
-    selectCurrentCohortGeneAndSSMCaseSet(state),
-  );
+  return useCoreSelector((state) => selectCurrentCohortFilters(state));
 };
 
 export const extractValue = (op: Operation): EnumOperandValue => {
@@ -90,8 +89,7 @@ export const useEnumFacet = (
   );
 
   const enumValues = useCohortFacetFilterByName(field);
-  const currentCohortFilters = useCurrentCohortWithGeneAndSsmCaseSet();
-  const cohortFilters = useCohortFacetFilter();
+  const currentCohortFilters = useCurrentCohortFilters();
   const prevCohortFilters = usePrevious(currentCohortFilters);
   const prevEnumValues = usePrevious(enumValues);
 
@@ -106,6 +104,7 @@ export const useEnumFacet = (
           field: field,
           docType: docType,
           index: indexType,
+          caseFilterSelector: selectCurrentCohortFilters,
         }),
       );
     }
@@ -113,7 +112,6 @@ export const useEnumFacet = (
     coreDispatch,
     facet,
     field,
-    cohortFilters,
     docType,
     indexType,
     prevCohortFilters,
@@ -151,8 +149,7 @@ export const useEnumFacets = (
   const coreDispatch = useCoreDispatch();
 
   const enumValues = useEnumFiltersByNames(fields);
-  const currentCohortFilters = useCurrentCohortWithGeneAndSsmCaseSet();
-  const cohortFilters = useCohortFacetFilter();
+  const currentCohortFilters = useCohortFacetFilter();
   const prevCohortFilters = usePrevious(currentCohortFilters);
   const prevEnumValues = usePrevious(enumValues);
   const prevFilterLength = usePrevious(facet.length);
@@ -170,6 +167,7 @@ export const useEnumFacets = (
           field: fields,
           docType: docType,
           index: indexType,
+          caseFilterSelector: selectCurrentCohortFilters,
         }),
       );
     }
@@ -177,7 +175,6 @@ export const useEnumFacets = (
     coreDispatch,
     facet,
     fields,
-    cohortFilters,
     docType,
     indexType,
     prevCohortFilters,
@@ -349,4 +346,58 @@ export const FacetDocTypeToLabelsMap = {
   genes: "Genes",
   ssms: "Mutations",
   projects: "Projects",
+};
+
+export const useLocalFilters = (
+  field: string,
+  docType: GQLDocType,
+  selectFieldEnumValues: (field: string) => OperandValue,
+  selectLocalFilters: () => FilterSet,
+  facetSelector: (state: CoreState, field: string) => FacetBuckets,
+): EnumFacetResponse => {
+  const coreDispatch = useCoreDispatch();
+
+  const facet: FacetBuckets = useCoreSelector((state) =>
+    facetSelector(state, field),
+  ); // Facet data is always cached in the coreState
+
+  const enumValues = selectFieldEnumValues(field);
+  const localFilters = selectLocalFilters();
+  const prevLocalFilters = usePrevious(localFilters);
+  const prevEnumValues = usePrevious(enumValues);
+
+  useEffect(() => {
+    if (
+      !facet ||
+      !isEqual(prevLocalFilters, localFilters) ||
+      !isEqual(prevEnumValues, enumValues)
+    ) {
+      coreDispatch(
+        fetchFacetByNameGQL({
+          field: field,
+          docType: docType,
+          localFilters,
+        }),
+      );
+    }
+  }, [
+    coreDispatch,
+    facet,
+    field,
+    localFilters,
+    docType,
+    prevLocalFilters,
+    prevEnumValues,
+    enumValues,
+  ]);
+
+  return {
+    data: facet?.buckets,
+    enumFilters: (enumValues as EnumOperandValue)?.map((x) => x.toString()),
+    error: facet?.error,
+    isUninitialized: facet === undefined,
+    isFetching: facet?.status === "pending",
+    isSuccess: facet?.status === "fulfilled",
+    isError: facet?.status === "rejected",
+  };
 };

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import getConfig from "next/config";
 import OpenSeadragon from "openseadragon";
-import { useImageDetails } from "@gff/core";
+import { useImageDetailsQuery } from "@gff/core";
 import { Button, LoadingOverlay } from "@mantine/core";
 import { HorizontalTable, HorizontalTableProps } from "../HorizontalTable";
 import { GDC_API } from "@gff/core";
@@ -57,7 +57,11 @@ const ImageViewer = ({ imageId, tableData }: ImageViewerProp): JSX.Element => {
   const detailsButtonWrapperRef = useRef<HTMLDivElement>(null);
   const [showDetails, setShowDetails] = useState(false);
 
-  const { data: imageDetails, isFetching, isError } = useImageDetails(imageId);
+  const {
+    data: imageDetails,
+    isFetching,
+    isError,
+  } = useImageDetailsQuery(imageId);
 
   useOutsideClickAlert(
     detailsButtonWrapperRef as React.RefObject<HTMLDivElement>,

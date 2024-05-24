@@ -28,19 +28,18 @@ export const ImageSlideCount = forwardRef<
   ({ slideCount, onClick }, ref): JSX.Element => (
     <Tooltip label="No slide images to view" disabled={slideCount !== 0}>
       <Button
-        compact
-        leftIcon={
+        data-testid="button-view-slide-images"
+        leftSection={
           slideCount === 0 ? <DisabledMicroscopeIcon /> : <MicroscopeIcon />
         }
-        size="xs"
+        size="compact-xs"
         disabled={slideCount === 0}
         variant="outline"
         className="bg-base-max border-base-lighter"
         classNames={{
-          rightIcon: "ml-0",
-          leftIcon: "mr-2",
+          section: "ml-0 mr-2",
         }}
-        rightIcon={
+        rightSection={
           <SlideCountsIcon $count={slideCount}>
             {slideCount === 0 ? "--" : slideCount}
           </SlideCountsIcon>

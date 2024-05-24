@@ -24,13 +24,12 @@ import DeleteSetsNotification from "./DeleteSetsNotification";
 const CreateSetInstructions = () => (
   <p data-testid="text-manage-sets-description" className="py-2 text-sm">
     Create gene and mutation sets using the <b>Create Set</b> button or from the{" "}
-    <Link href="/analysis_page?app=MutationFrequencyApp" passHref>
-      <a
-        data-testid="link-mutation-frequency"
-        className="text-utility-link underline font-heading"
-      >
-        Mutation Frequency app
-      </a>
+    <Link
+      href="/analysis_page?app=MutationFrequencyApp"
+      data-testid="link-mutation-frequency"
+      className="text-utility-link underline font-heading"
+    >
+      Mutation Frequency app
     </Link>
     .
   </p>
@@ -56,7 +55,7 @@ const SelectedSetButton: React.FC<SelectedSetButtonProps> = ({
       data-testid={customDataTestID}
       onClick={onClick}
       disabled={selection.length == 0}
-      leftIcon={
+      leftSection={
         selection.length ? (
           <CountsIcon $count={selection.length}>{selection.length} </CountsIcon>
         ) : null
@@ -133,7 +132,7 @@ const ManageSets: React.FC = () => {
         <div className="p-4">
           <WarningBanner
             text={
-              "Please be aware that your custom sets are deleted during each new GDC data release. You can export and re-upload them on this page."
+              "Please be aware that your custom sets may be deleted during a release. You can export and re-upload them on this page."
             }
           />
           <CreateSetInstructions />

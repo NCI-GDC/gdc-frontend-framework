@@ -20,11 +20,13 @@ const MutationSetModal: React.FC<SavedSetModalProps> = ({
   selectSetInstructions,
   updateFilters,
   existingFiltersHook,
+  opened,
 }: SavedSetModalProps) => {
   const dispatch = useCoreDispatch();
 
   return (
     <UserInputModal
+      opened={opened}
       modalTitle={modalTitle}
       tabs={[
         { label: "Enter Mutations", value: "input" },
@@ -65,14 +67,12 @@ const MutationSetModal: React.FC<SavedSetModalProps> = ({
               Mutation sets can be created from the <b>Enter Mutations tab</b>,
               or from the{" "}
               <Link href="/analysis_page?app=MutationFrequencyApp" passHref>
-                <a>
-                  <button
-                    className="text-utility-link underline font-heading"
-                    onClick={() => dispatch(hideModal())}
-                  >
-                    Mutation Frequency app.
-                  </button>
-                </a>
+                <button
+                  className="text-utility-link underline font-heading"
+                  onClick={() => dispatch(hideModal())}
+                >
+                  Mutation Frequency app.
+                </button>
               </Link>
             </p>
           }

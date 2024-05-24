@@ -33,7 +33,7 @@ describe("<SaveOrCreateEntityBody />", () => {
       />,
     );
 
-    expect(getByTestId("input-field")).toHaveValue("testName");
+    expect(getByTestId("textbox-name-input-field")).toHaveValue("testName");
   });
 
   it("no more than 100 char can be entered", async () => {
@@ -50,7 +50,7 @@ describe("<SaveOrCreateEntityBody />", () => {
       />,
     );
 
-    const inputField = getByTestId("input-field");
+    const inputField = getByTestId("textbox-name-input-field");
 
     await userEvent.type(inputField, moreThan100CharText);
 
@@ -125,7 +125,7 @@ describe("<SaveOrCreateEntityBody />", () => {
       />,
     );
 
-    const inputField = getByTestId("input-field");
+    const inputField = getByTestId("textbox-name-input-field");
     await userEvent.type(inputField, "disallowed_test_name");
     await userEvent.click(getByTestId("action-button"));
     expect(
@@ -151,7 +151,7 @@ describe("<SaveOrCreateEntityBody />", () => {
       />,
     );
 
-    const inputField = getByTestId("input-field");
+    const inputField = getByTestId("textbox-name-input-field");
     await userEvent.type(inputField, "  disallowed_test_name  ");
     await userEvent.click(getByTestId("action-button"));
     expect(
@@ -177,7 +177,7 @@ describe("<SaveOrCreateEntityBody />", () => {
       />,
     );
 
-    const inputField = getByTestId("input-field");
+    const inputField = getByTestId("textbox-name-input-field");
     await userEvent.type(inputField, "disaLLOwed_test_name");
     await userEvent.click(getByTestId("action-button"));
     expect(
@@ -203,7 +203,7 @@ describe("<SaveOrCreateEntityBody />", () => {
       />,
     );
 
-    const inputField = getByTestId("input-field");
+    const inputField = getByTestId("textbox-name-input-field");
     await userEvent.type(inputField, "DISALLOWED_TEST_NAME");
     await userEvent.click(getByTestId("action-button"));
     expect(

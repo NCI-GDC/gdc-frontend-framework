@@ -59,7 +59,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   const noData = continuous
     ? (data as Stats)?.stats?.count === 0
     : data !== undefined &&
-      (data as Buckets).buckets.every((bucket) => bucket.key === MISSING_KEY);
+      (data as Buckets)?.buckets?.every((bucket) => bucket.key === MISSING_KEY);
 
   const fieldName = toDisplayName(field);
 
@@ -131,7 +131,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
       radius="md"
       p="xs"
       ref={(ref) => (targetRef.current = ref)}
-      className="border-1 border-base-lightest"
+      className="border-1 border-base-lightest h-full flex flex-col"
     >
       <div className="flex justify-between mb-1">
         <h2 className="font-heading font-medium">{fieldName}</h2>
@@ -152,7 +152,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
             disabled={noData || downloadInProgress}
           />
           <Tooltip
-            label={"Remove Card"}
+            label="Remove Card"
             position="bottom-end"
             withArrow
             arrowSize={7}

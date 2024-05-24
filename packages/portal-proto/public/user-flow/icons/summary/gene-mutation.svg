@@ -7,311 +7,297 @@
    id="svg9490"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <defs
-     id="defs9494" />
-  <g
-     id="MutationIcn"
-     transform="translate(-647 -546)">
-    <circle
-       id="Ellipse_21"
-       data-name="Ellipse 21"
-       cx="20"
-       cy="20"
-       r="20"
-       transform="translate(647 546)"
-       fill="#fbd5c7" />
-    <g
-       id="Mutation"
-       transform="translate(683.756 -253.158) rotate(45)">
-      <path
-         id="Subtraction_2"
-         data-name="Subtraction 2"
-         d="M6.078,12.169A6.086,6.086,0,0,1,0,6.387l1.015-.013a5.076,5.076,0,1,0,1.5-3.9L1.8,1.758a6.084,6.084,0,0,1,8.58,8.629A6.045,6.045,0,0,1,6.078,12.169Z"
-         transform="translate(562.191 584.33)"
-         fill="#233c68" />
-      <g
-         id="Group_484"
-         data-name="Group 484"
-         transform="translate(566.07 588.433) rotate(-45)">
-        <rect
-           id="Rectangle_259"
-           data-name="Rectangle 259"
-           width="6.184"
-           height="1.171"
-           transform="translate(1.242 0.414) rotate(45)"
-           fill="#233c68" />
-        <circle
-           id="Ellipse_17"
-           data-name="Ellipse 17"
-           cx="0.585"
-           cy="0.585"
-           r="0.585"
-           transform="translate(0.828 0) rotate(45)"
-           fill="#233c68" />
-      </g>
+   <g
+      id="Mutation"
+      transform="translate(31 -806) rotate(45)">
+   <path
+      id="Subtraction_2"
+      data-name="Subtraction 2"
+      d="M6.078,12.169A6.086,6.086,0,0,1,0,6.387l1.015-.013a5.076,5.076,0,1,0,1.5-3.9L1.8,1.758a6.084,6.084,0,0,1,8.58,8.629A6.045,6.045,0,0,1,6.078,12.169Z"
+      transform="translate(562.191 584.33)"
+      fill="#233c68" />
+   <g
+      id="Group_484"
+      data-name="Group 484"
+      transform="translate(566.07 588.433) rotate(-45)">
       <rect
-         id="Rectangle_260"
-         data-name="Rectangle 260"
+         id="Rectangle_259"
+         data-name="Rectangle 259"
+         width="6.184"
+         height="1.171"
+         transform="translate(1.242 0.414) rotate(45)"
+         fill="#233c68" />
+      <circle
+         id="Ellipse_17"
+         data-name="Ellipse 17"
+         cx="0.585"
+         cy="0.585"
+         r="0.585"
+         transform="translate(0.828 0) rotate(45)"
+         fill="#233c68" />
+   </g>
+   <rect
+      id="Rectangle_260"
+      data-name="Rectangle 260"
+      width="10.141"
+      height="1.171"
+      transform="translate(563.198 591.604)"
+      fill="#233c68" />
+   <g
+      id="Group_479"
+      data-name="Group 479"
+      transform="translate(568.941 587.207)">
+      <circle
+         id="Ellipse_11"
+         data-name="Ellipse 11"
+         cx="1.268"
+         cy="1.268"
+         r="1.268"
+         transform="translate(0)"
+         fill="#233c68" />
+      <circle
+         id="Ellipse_12"
+         data-name="Ellipse 12"
+         cx="0.444"
+         cy="0.444"
+         r="0.444"
+         transform="translate(0.824 0.824)"
+         fill="#233c68" />
+   </g>
+   <g
+      id="Group_480"
+      data-name="Group 480"
+      transform="translate(565.226 590.922)">
+      <circle
+         id="Ellipse_11-2"
+         data-name="Ellipse 11"
+         cx="1.268"
+         cy="1.268"
+         r="1.268"
+         transform="translate(0 0)"
+         fill="#233c68" />
+      <circle
+         id="Ellipse_12-2"
+         data-name="Ellipse 12"
+         cx="0.444"
+         cy="0.444"
+         r="0.444"
+         transform="translate(0.824 0.824)"
+         fill="#233c68" />
+   </g>
+   <g
+      id="Group_482"
+      data-name="Group 482"
+      transform="translate(562.184 578.5)">
+      <path
+         id="Subtraction_1"
+         data-name="Subtraction 1"
+         d="M6.085,6.117a6.044,6.044,0,0,1-4.3-1.782A6.04,6.04,0,0,1,0,.032H1.015A5.037,5.037,0,0,0,2.5,3.616,5.037,5.037,0,0,0,6.085,5.1,5.076,5.076,0,0,0,11.156.032h1.013v0a6.041,6.041,0,0,1-1.783,4.3A6.038,6.038,0,0,1,6.085,6.117Z"
+         transform="translate(0 0.475)"
+         fill="#233c68" />
+      <rect
+         id="Rectangle_262"
+         data-name="Rectangle 262"
          width="10.141"
          height="1.171"
-         transform="translate(563.198 591.604)"
+         transform="translate(1.014 1.475)"
+         fill="#233c68" />
+      <circle
+         id="Ellipse_15"
+         data-name="Ellipse 15"
+         cx="0.507"
+         cy="0.507"
+         r="0.507"
+         transform="translate(0)"
+         fill="#233c68" />
+      <circle
+         id="Ellipse_16"
+         data-name="Ellipse 16"
+         cx="0.507"
+         cy="0.507"
+         r="0.507"
+         transform="translate(11.155)"
          fill="#233c68" />
       <g
-         id="Group_479"
-         data-name="Group 479"
-         transform="translate(568.941 587.207)">
-        <circle
-           id="Ellipse_11"
-           data-name="Ellipse 11"
-           cx="1.268"
-           cy="1.268"
-           r="1.268"
-           transform="translate(0)"
-           fill="#233c68" />
-        <circle
-           id="Ellipse_12"
-           data-name="Ellipse 12"
-           cx="0.444"
-           cy="0.444"
-           r="0.444"
-           transform="translate(0.824 0.824)"
-           fill="#233c68" />
+         id="Group_481"
+         data-name="Group 481"
+         transform="translate(3.042 0.793)">
+         <circle
+            id="Ellipse_11-3"
+            data-name="Ellipse 11"
+            cx="1.268"
+            cy="1.268"
+            r="1.268"
+            transform="translate(0 0)"
+            fill="#233c68" />
+         <circle
+            id="Ellipse_12-3"
+            data-name="Ellipse 12"
+            cx="0.444"
+            cy="0.444"
+            r="0.444"
+            transform="translate(0.824 0.824)"
+            fill="#233c68" />
       </g>
+   </g>
+   <g
+      id="Group_483"
+      data-name="Group 483"
+      transform="translate(574.353 602.495) rotate(180)">
+      <path
+         id="Subtraction_1-2"
+         data-name="Subtraction 1"
+         d="M6.085,6.117a6.044,6.044,0,0,1-4.3-1.782A6.04,6.04,0,0,1,0,.032H1.015A5.037,5.037,0,0,0,2.5,3.616,5.037,5.037,0,0,0,6.085,5.1,5.076,5.076,0,0,0,11.156.032h1.013v0a6.041,6.041,0,0,1-1.783,4.3A6.038,6.038,0,0,1,6.085,6.117Z"
+         transform="translate(0 0.475)"
+         fill="#233c68" />
+      <rect
+         id="Rectangle_261"
+         data-name="Rectangle 261"
+         width="10.141"
+         height="1.171"
+         transform="translate(11.155 2.746) rotate(180)"
+         fill="#233c68" />
+      <circle
+         id="Ellipse_15-2"
+         data-name="Ellipse 15"
+         cx="0.507"
+         cy="0.507"
+         r="0.507"
+         transform="translate(0)"
+         fill="#233c68" />
+      <circle
+         id="Ellipse_16-2"
+         data-name="Ellipse 16"
+         cx="0.507"
+         cy="0.507"
+         r="0.507"
+         transform="translate(11.155)"
+         fill="#233c68" />
       <g
-         id="Group_480"
-         data-name="Group 480"
-         transform="translate(565.226 590.922)">
-        <circle
-           id="Ellipse_11-2"
-           data-name="Ellipse 11"
-           cx="1.268"
-           cy="1.268"
-           r="1.268"
-           transform="translate(0 0)"
-           fill="#233c68" />
-        <circle
-           id="Ellipse_12-2"
-           data-name="Ellipse 12"
-           cx="0.444"
-           cy="0.444"
-           r="0.444"
-           transform="translate(0.824 0.824)"
-           fill="#233c68" />
+         id="Group_481-2"
+         data-name="Group 481"
+         transform="translate(3.042 0.893)">
+         <circle
+            id="Ellipse_11-4"
+            data-name="Ellipse 11"
+            cx="1.268"
+            cy="1.268"
+            r="1.268"
+            fill="#233c68" />
+         <circle
+            id="Ellipse_12-4"
+            data-name="Ellipse 12"
+            cx="0.444"
+            cy="0.444"
+            r="0.444"
+            transform="translate(0.824 0.824)"
+            fill="#233c68" />
       </g>
+      <circle
+         id="Ellipse_18"
+         data-name="Ellipse 18"
+         cx="0.507"
+         cy="0.507"
+         r="0.507"
+         transform="translate(11.145 11.209)"
+         fill="#233c68" />
+      <circle
+         id="Ellipse_19"
+         data-name="Ellipse 19"
+         cx="0.507"
+         cy="0.507"
+         r="0.507"
+         transform="translate(9.51 15.527)"
+         fill="#233c68" />
       <g
-         id="Group_482"
-         data-name="Group 482"
-         transform="translate(562.184 578.5)">
-        <path
-           id="Subtraction_1"
-           data-name="Subtraction 1"
-           d="M6.085,6.117a6.044,6.044,0,0,1-4.3-1.782A6.04,6.04,0,0,1,0,.032H1.015A5.037,5.037,0,0,0,2.5,3.616,5.037,5.037,0,0,0,6.085,5.1,5.076,5.076,0,0,0,11.156.032h1.013v0a6.041,6.041,0,0,1-1.783,4.3A6.038,6.038,0,0,1,6.085,6.117Z"
-           transform="translate(0 0.475)"
-           fill="#233c68" />
-        <rect
-           id="Rectangle_262"
-           data-name="Rectangle 262"
-           width="10.141"
-           height="1.171"
-           transform="translate(1.014 1.475)"
-           fill="#233c68" />
-        <circle
-           id="Ellipse_15"
-           data-name="Ellipse 15"
-           cx="0.507"
-           cy="0.507"
-           r="0.507"
-           transform="translate(0)"
-           fill="#233c68" />
-        <circle
-           id="Ellipse_16"
-           data-name="Ellipse 16"
-           cx="0.507"
-           cy="0.507"
-           r="0.507"
-           transform="translate(11.155)"
-           fill="#233c68" />
-        <g
-           id="Group_481"
-           data-name="Group 481"
-           transform="translate(3.042 0.793)">
-          <circle
-             id="Ellipse_11-3"
-             data-name="Ellipse 11"
-             cx="1.268"
-             cy="1.268"
-             r="1.268"
-             transform="translate(0 0)"
-             fill="#233c68" />
-          <circle
-             id="Ellipse_12-3"
-             data-name="Ellipse 12"
-             cx="0.444"
-             cy="0.444"
-             r="0.444"
-             transform="translate(0.824 0.824)"
-             fill="#233c68" />
-        </g>
+         id="Group_488"
+         data-name="Group 488"
+         transform="matrix(-0.309, 0.951, -0.951, -0.309, 18.968, 11.419)">
+         <g
+            id="Group_485"
+            data-name="Group 485"
+            transform="translate(3.887 0)">
+         <rect
+            id="Rectangle_259-2"
+            data-name="Rectangle 259"
+            width="3.144"
+            height="1.171"
+            transform="translate(1.413 0.828) rotate(90)"
+            fill="#233c68" />
+         <circle
+            id="Ellipse_17-2"
+            data-name="Ellipse 17"
+            cx="0.585"
+            cy="0.585"
+            r="0.585"
+            transform="translate(0.828 0) rotate(45)"
+            fill="#233c68" />
+         <circle
+            id="Ellipse_20"
+            data-name="Ellipse 20"
+            cx="0.585"
+            cy="0.585"
+            r="0.585"
+            transform="translate(0.828 3.134) rotate(45)"
+            fill="#233c68" />
+         </g>
+         <g
+            id="Group_486"
+            data-name="Group 486"
+            transform="matrix(0.866, -0.5, 0.5, 0.866, 0, 1.827)">
+         <rect
+            id="Rectangle_259-3"
+            data-name="Rectangle 259"
+            width="3.144"
+            height="1.171"
+            transform="translate(1.413 0.828) rotate(90)"
+            fill="#233c68" />
+         <circle
+            id="Ellipse_17-3"
+            data-name="Ellipse 17"
+            cx="0.585"
+            cy="0.585"
+            r="0.585"
+            transform="translate(0.828 0) rotate(45)"
+            fill="#233c68" />
+         <circle
+            id="Ellipse_20-2"
+            data-name="Ellipse 20"
+            cx="0.585"
+            cy="0.585"
+            r="0.585"
+            transform="translate(0.828 3.134) rotate(45)"
+            fill="#233c68" />
+         </g>
+         <g
+            id="Group_487"
+            data-name="Group 487"
+            transform="matrix(0.875, 0.485, -0.485, 0.875, 7.888, 0.983)">
+         <rect
+            id="Rectangle_259-4"
+            data-name="Rectangle 259"
+            width="3.144"
+            height="1.171"
+            transform="translate(1.413 0.828) rotate(90)"
+            fill="#233c68" />
+         <circle
+            id="Ellipse_17-4"
+            data-name="Ellipse 17"
+            cx="0.585"
+            cy="0.585"
+            r="0.585"
+            transform="translate(0.828 0) rotate(45)"
+            fill="#233c68" />
+         <circle
+            id="Ellipse_20-3"
+            data-name="Ellipse 20"
+            cx="0.585"
+            cy="0.585"
+            r="0.585"
+            transform="translate(0.828 3.134) rotate(45)"
+            fill="#233c68" />
+         </g>
       </g>
-      <g
-         id="Group_483"
-         data-name="Group 483"
-         transform="translate(574.353 602.495) rotate(180)">
-        <path
-           id="Subtraction_1-2"
-           data-name="Subtraction 1"
-           d="M6.085,6.117a6.044,6.044,0,0,1-4.3-1.782A6.04,6.04,0,0,1,0,.032H1.015A5.037,5.037,0,0,0,2.5,3.616,5.037,5.037,0,0,0,6.085,5.1,5.076,5.076,0,0,0,11.156.032h1.013v0a6.041,6.041,0,0,1-1.783,4.3A6.038,6.038,0,0,1,6.085,6.117Z"
-           transform="translate(0 0.475)"
-           fill="#233c68" />
-        <rect
-           id="Rectangle_261"
-           data-name="Rectangle 261"
-           width="10.141"
-           height="1.171"
-           transform="translate(11.155 2.746) rotate(180)"
-           fill="#233c68" />
-        <circle
-           id="Ellipse_15-2"
-           data-name="Ellipse 15"
-           cx="0.507"
-           cy="0.507"
-           r="0.507"
-           transform="translate(0)"
-           fill="#233c68" />
-        <circle
-           id="Ellipse_16-2"
-           data-name="Ellipse 16"
-           cx="0.507"
-           cy="0.507"
-           r="0.507"
-           transform="translate(11.155)"
-           fill="#233c68" />
-        <g
-           id="Group_481-2"
-           data-name="Group 481"
-           transform="translate(3.042 0.893)">
-          <circle
-             id="Ellipse_11-4"
-             data-name="Ellipse 11"
-             cx="1.268"
-             cy="1.268"
-             r="1.268"
-             fill="#233c68" />
-          <circle
-             id="Ellipse_12-4"
-             data-name="Ellipse 12"
-             cx="0.444"
-             cy="0.444"
-             r="0.444"
-             transform="translate(0.824 0.824)"
-             fill="#233c68" />
-        </g>
-        <circle
-           id="Ellipse_18"
-           data-name="Ellipse 18"
-           cx="0.507"
-           cy="0.507"
-           r="0.507"
-           transform="translate(11.145 11.209)"
-           fill="#233c68" />
-        <circle
-           id="Ellipse_19"
-           data-name="Ellipse 19"
-           cx="0.507"
-           cy="0.507"
-           r="0.507"
-           transform="translate(9.51 15.527)"
-           fill="#233c68" />
-        <g
-           id="Group_488"
-           data-name="Group 488"
-           transform="matrix(-0.309, 0.951, -0.951, -0.309, 18.968, 11.419)">
-          <g
-             id="Group_485"
-             data-name="Group 485"
-             transform="translate(3.887 0)">
-            <rect
-               id="Rectangle_259-2"
-               data-name="Rectangle 259"
-               width="3.144"
-               height="1.171"
-               transform="translate(1.413 0.828) rotate(90)"
-               fill="#233c68" />
-            <circle
-               id="Ellipse_17-2"
-               data-name="Ellipse 17"
-               cx="0.585"
-               cy="0.585"
-               r="0.585"
-               transform="translate(0.828 0) rotate(45)"
-               fill="#233c68" />
-            <circle
-               id="Ellipse_20"
-               data-name="Ellipse 20"
-               cx="0.585"
-               cy="0.585"
-               r="0.585"
-               transform="translate(0.828 3.134) rotate(45)"
-               fill="#233c68" />
-          </g>
-          <g
-             id="Group_486"
-             data-name="Group 486"
-             transform="matrix(0.866, -0.5, 0.5, 0.866, 0, 1.827)">
-            <rect
-               id="Rectangle_259-3"
-               data-name="Rectangle 259"
-               width="3.144"
-               height="1.171"
-               transform="translate(1.413 0.828) rotate(90)"
-               fill="#233c68" />
-            <circle
-               id="Ellipse_17-3"
-               data-name="Ellipse 17"
-               cx="0.585"
-               cy="0.585"
-               r="0.585"
-               transform="translate(0.828 0) rotate(45)"
-               fill="#233c68" />
-            <circle
-               id="Ellipse_20-2"
-               data-name="Ellipse 20"
-               cx="0.585"
-               cy="0.585"
-               r="0.585"
-               transform="translate(0.828 3.134) rotate(45)"
-               fill="#233c68" />
-          </g>
-          <g
-             id="Group_487"
-             data-name="Group 487"
-             transform="matrix(0.875, 0.485, -0.485, 0.875, 7.888, 0.983)">
-            <rect
-               id="Rectangle_259-4"
-               data-name="Rectangle 259"
-               width="3.144"
-               height="1.171"
-               transform="translate(1.413 0.828) rotate(90)"
-               fill="#233c68" />
-            <circle
-               id="Ellipse_17-4"
-               data-name="Ellipse 17"
-               cx="0.585"
-               cy="0.585"
-               r="0.585"
-               transform="translate(0.828 0) rotate(45)"
-               fill="#233c68" />
-            <circle
-               id="Ellipse_20-3"
-               data-name="Ellipse 20"
-               cx="0.585"
-               cy="0.585"
-               r="0.585"
-               transform="translate(0.828 3.134) rotate(45)"
-               fill="#233c68" />
-          </g>
-        </g>
-      </g>
-    </g>
+   </g>
   </g>
 </svg>

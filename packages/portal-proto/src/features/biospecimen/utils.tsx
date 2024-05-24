@@ -10,14 +10,14 @@ import Link from "next/link";
 import {
   CartFile,
   CoreDispatch,
-  entityType,
+  BiospecimenEntityType,
   FileDefaults,
   mapFileData,
 } from "@gff/core";
 import { addToCart, removeFromCart } from "@/features/cart/updateCart";
 import { get } from "lodash";
 import { entityTypes } from "@/components/BioTree/types";
-import { humanify, fileInCart } from "src/utils";
+import { humanify, fileInCart, ageDisplay } from "src/utils";
 import { DownloadFile } from "@/components/DownloadButtons";
 import { GiMicroscope } from "react-icons/gi";
 
@@ -64,7 +64,7 @@ export const idFields = [
 ];
 
 export const formatEntityInfo = (
-  entity: entityType,
+  entity: BiospecimenEntityType,
   foundType: string,
   caseId: string,
   dispatch: CoreDispatch,
@@ -81,14 +81,14 @@ export const formatEntityInfo = (
   )[];
 }[] => {
   const ids = {
-    [`${foundType}_ID`]: entity.submitter_id,
-    [`${foundType}_UUID`]: entity[idFields.find((id) => entity[id])],
+    [`${foundType}_ID`]: entity?.submitter_id,
+    [`${foundType}_UUID`]: entity?.[idFields.find((id) => entity?.[id])],
   };
 
   const ordered: Record<string, any> = Object.entries(
-    getOrder(foundType).reduce((next, k) => {
+    getOrder(foundType)?.reduce((next, k) => {
       return { ...next, [k]: entity[k] };
-    }, {}),
+    }, {}) ?? {},
   );
 
   const filtered = Object.entries(ids).concat(
@@ -118,6 +118,7 @@ export const formatEntityInfo = (
       <div className="flex gap-4" key={selectedSlide[0]?.file_id}>
         <Tooltip label="View Slide Image" withinPortal={true} withArrow>
           <ActionIcon
+            data-testid="button-view-slide-image-biospecimen"
             variant="outline"
             size="sm"
             className="w-8 p-0 h-6 text-primary bg-base-max border-primary hover:bg-primary hover:text-base-max"
@@ -126,9 +127,7 @@ export const formatEntityInfo = (
             <Link
               href={`/image-viewer/MultipleImageViewerPage?caseId=${caseId}&selectedId=${selectedSlide[0]?.file_id}`}
             >
-              <a>
-                <GiMicroscope size={17} />
-              </a>
+              <GiMicroscope size={17} />
             </Link>
           </ActionIcon>
         </Tooltip>
@@ -139,6 +138,7 @@ export const formatEntityInfo = (
           withArrow
         >
           <ActionIcon
+            data-testid="button-add-remove-cart-biospecimen"
             variant="outline"
             size="sm"
             className={`w-8 h-6 p-0 border-primary hover:bg-primary hover:text-base-max ${
@@ -165,10 +165,11 @@ export const formatEntityInfo = (
         </Tooltip>
 
         <Tooltip label="Download" withinPortal={true} withArrow>
-          <div>
+          <div data-testid="button-download-slide-biospecimen">
             <DownloadFile
               file={mapFileData(selectedSlide)[0]}
               showLoading={false}
+              displayVariant="icon"
             />
           </div>
         </Tooltip>
@@ -176,10 +177,17 @@ export const formatEntityInfo = (
     ]);
   }
 
-  const headersConfig = filtered.map(([key]) => ({
-    field: key,
-    name: humanify({ term: key }),
-  }));
+  const headersConfig = filtered.map(([key]) => {
+    const tempHeaderConfig: { field: string; name: string; modifier?: any } = {
+      field: key,
+      name: humanify({ term: key }),
+    };
+    //Format day fields
+    if (["days_to_sample_procurement", "days_to_collection"].includes(key)) {
+      tempHeaderConfig.modifier = (a) => ageDisplay(a);
+    }
+    return tempHeaderConfig;
+  });
 
   const obj = { ...ids, ...Object.fromEntries(filtered) };
 

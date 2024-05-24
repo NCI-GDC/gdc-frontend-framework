@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useDeepCompareEffect } from "react-use";
 import {
   MdClose as CloseIcon,
   MdFlip as FlipIcon,
@@ -21,8 +22,8 @@ import {
   buildRangeOperator,
   extractRangeValues,
   buildRangeBuckets,
-  adjustYearsToDays,
-  adjustDaysToYears,
+  adjustYearsToDaysIfUnitsAreYears,
+  adjustDaysToYearsIfUnitsAreYears,
 } from "./utils";
 import {
   FacetCardProps,
@@ -208,9 +209,13 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
                   checked={rangeKey === selected}
                   className={RadioStyle}
                   onChange={() => handleSelection(rangeKey)}
+                  data-testid={`checkbox-${rangeLabelsAndValues[rangeKey].label}`}
                 />
                 <span>{rangeLabelsAndValues[rangeKey].label}</span>
-                <span className="ml-auto">
+                <span
+                  data-testid={`text-${rangeLabelsAndValues[rangeKey].label}`}
+                  className="ml-auto"
+                >
                   {rangeLabelsAndValues[rangeKey].valueLabel}
                 </span>
               </div>
@@ -320,105 +325,105 @@ const FromTo: React.FC<FromToProps> = ({
     units !== "years" ? maximum : getLowerAgeYears(maximum);
 
   return (
-    <div className="relative w-full">
-      <div className="flex flex-col text-base-contrast-max bg-base-max text-md">
-        <fieldset>
-          <legend className="sr-only">Numeric from/to filters</legend>
-          <div className="flex flex-row justify-end items-center flex-nowrap border font-content">
-            <div className="basis-1/5 text-center">From</div>
-            <SegmentedControl
-              className="basis-2/5"
-              size="sm"
-              value={fromOp}
-              onChange={(value) => {
-                setFromOp(value as RangeFromOp);
-                changedCallback();
-              }}
-              data={[
-                { label: "\u2265", value: ">=" },
-                { label: ">", value: ">" },
-              ]}
-              aria-label="select greater and equal or greater than"
-            />
-            <NumberInput
-              className="basis-2/5 text-sm"
-              placeholder={`eg. ${lowerUnitRange}${unitsLabel} `}
-              min={lowerUnitRange}
-              max={upperUnitRange}
-              // units are always days
-              value={adjustDaysToYears(fromValue, units)}
-              onChange={(value) => {
-                if (value === "") return;
-                setFromValue(
-                  adjustYearsToDays(
-                    clamp(value, lowerUnitRange, upperUnitRange),
-                    units,
-                  ),
-                );
-                changedCallback();
-              }}
-              hideControls
-              aria-label="input from value"
-            />
-          </div>
-          <div className="flex flex-row mt-1 justify-center items-center flex-nowrap border font-content">
-            <div className="basis-1/5 text-center">To</div>
-            <SegmentedControl
-              className="basis-2/5"
-              size="sm"
-              value={toOp}
-              onChange={(value) => {
-                setToOp(value as RangeToOp);
-                changedCallback();
-              }}
-              data={[
-                { label: "\u2264", value: "<=" },
-                { label: "<", value: "<" },
-              ]}
-              aria-label="select less or less than and equal"
-            />
-            <NumberInput
-              className="basis-2/5"
-              placeholder={`eg. ${upperUnitRange}${unitsLabel} `}
-              min={lowerUnitRange}
-              max={upperUnitRange}
-              onChange={(value) => {
-                if (value === "") return;
-                setToValue(
-                  adjustYearsToDays(
-                    clamp(value, lowerUnitRange, upperUnitRange),
-                    units,
-                  ),
-                );
-                changedCallback();
-              }}
-              value={adjustDaysToYears(toValue, units)}
-              hideControls
-              aria-label="input to value"
-            />
-          </div>
-        </fieldset>
-        {isWarning ? (
-          <div className="bg-utility-warning border-utility-warning">
-            <span>
-              {" "}
-              <WarningIcon size="24px" />
-              {`For health information privacy concerns, individuals over 89
-                    will all appear as 90 years old. For more information, click `}
-              <a
-                href="https://gdc.cancer.gov/about-gdc/gdc-faqs#collapsible-item-618-question"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                here
-              </a>
-              .
-            </span>
-          </div>
-        ) : null}
-        <div className="flex items-stretch w-100 pt-1">
-          <ApplyButton onClick={handleApply}>Apply</ApplyButton>
+    <div className="flex flex-col grow m-2 text-base-contrast-max bg-base-max">
+      <fieldset className="flex flex-col gap-y-1">
+        <legend className="sr-only">Numeric from/to filters</legend>
+        <div className="flex gap-0.5 items-center flex-nowrap border font-content">
+          <div className="basis-1/5 text-center">From</div>
+          <SegmentedControl
+            className="flex-1"
+            size="sm"
+            value={fromOp}
+            onChange={(value) => {
+              setFromOp(value as RangeFromOp);
+              changedCallback();
+            }}
+            data={[
+              { label: "\u2265", value: ">=" },
+              { label: ">", value: ">" },
+            ]}
+            aria-label="select greater and equal or greater than"
+          />
+          <NumberInput
+            data-testid="textbox-input-from-value"
+            className="text-sm flex-1"
+            placeholder={`eg. ${lowerUnitRange}${unitsLabel} `}
+            min={lowerUnitRange}
+            max={upperUnitRange}
+            // units are always days
+            value={adjustDaysToYearsIfUnitsAreYears(fromValue, units)}
+            onChange={(value) => {
+              if (value === "" || typeof value === "string") return;
+              setFromValue(
+                adjustYearsToDaysIfUnitsAreYears(
+                  clamp(value, lowerUnitRange, upperUnitRange),
+                  units,
+                ),
+              );
+              changedCallback();
+            }}
+            hideControls
+            aria-label="input from value"
+          />
         </div>
+        <div className="flex gap-0.5 items-center flex-nowrap border font-content">
+          <div className="basis-1/5 text-center">To</div>
+          <SegmentedControl
+            className="flex-1"
+            size="sm"
+            value={toOp}
+            onChange={(value) => {
+              setToOp(value as RangeToOp);
+              changedCallback();
+            }}
+            data={[
+              { label: "\u2264", value: "<=" },
+              { label: "<", value: "<" },
+            ]}
+            aria-label="select less or less than and equal"
+          />
+          <NumberInput
+            data-testid="textbox-input-to-value"
+            className="flex-1 text-sm"
+            placeholder={`eg. ${upperUnitRange}${unitsLabel} `}
+            min={lowerUnitRange}
+            max={upperUnitRange}
+            onChange={(value) => {
+              if (value === "" || typeof value === "string") return;
+              setToValue(
+                adjustYearsToDaysIfUnitsAreYears(
+                  clamp(value, lowerUnitRange, upperUnitRange),
+                  units,
+                ),
+              );
+              changedCallback();
+            }}
+            value={adjustDaysToYearsIfUnitsAreYears(toValue, units)}
+            hideControls
+            aria-label="input to value"
+          />
+        </div>
+      </fieldset>
+      {isWarning ? (
+        <div className="bg-utility-warning border-utility-warning">
+          <span>
+            {" "}
+            <WarningIcon size="24px" />
+            {`For health information privacy concerns, individuals over 89
+                    will all appear as 90 years old. For more information, click `}
+            <a
+              href="https://gdc.cancer.gov/about-gdc/gdc-faqs#collapsible-item-618-question"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              here
+            </a>
+            .
+          </span>
+        </div>
+      ) : null}
+      <div className="flex items-stretch w-100 pt-1">
+        <ApplyButton onClick={handleApply}>Apply</ApplyButton>
       </div>
     </div>
   );
@@ -459,6 +464,7 @@ interface RangeInputWithPrefixedRangesProps {
   readonly showZero?: boolean;
   readonly clearValues?: boolean;
   readonly isFacetView?: boolean;
+  readonly setHasData?: (boolean) => void;
 }
 
 const RangeInputWithPrefixedRanges: React.FC<
@@ -474,6 +480,7 @@ const RangeInputWithPrefixedRanges: React.FC<
   showZero = false,
   clearValues = undefined,
   isFacetView = true,
+  setHasData = () => null,
 }: RangeInputWithPrefixedRangesProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false); // handles the expanded group
 
@@ -540,11 +547,26 @@ const RangeInputWithPrefixedRanges: React.FC<
     setIsGroupExpanded(!isGroupExpanded);
   };
 
+  // informs the parent component if there is data or no data
+  // only used by the DaysOrYears component
+  useDeepCompareEffect(() => {
+    if (isSuccess && filterValues === undefined && totalBuckets === 0)
+      setHasData(false);
+    else setHasData(true);
+  }, [filterValues, isSuccess, setHasData, totalBuckets]);
+
+  // If no data and no filter values, show the no data message
+  // otherwise this facet has some filters set and the custom range
+  // should be shown
+  if (isSuccess && filterValues === undefined && totalBuckets === 0) {
+    return <div className="mx-4 font-content pb-2">No data for this field</div>;
+  }
+
   return (
     <>
       <LoadingOverlay data-testid="loading-spinner" visible={!isSuccess} />
-      <div className="flex flex-col w-100 space-y-2 mt-1 ">
-        <div className="flex flex-row  justify-items-stretch items-center">
+      <div className="flex flex-col space-y-2 mt-1 ">
+        <div className="flex justify-items-stretch items-center">
           <input
             aria-label="custom range"
             type="radio"
@@ -611,7 +633,7 @@ const RangeInputWithPrefixedRanges: React.FC<
               isFacetView ? "invisible" : ""
             }`}
           >
-            {!isFacetView && (
+            {!isFacetView && totalBuckets > 0 && (
               <EnumFacetChart
                 field={field}
                 data={chartData}
@@ -647,6 +669,9 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
   isFacetView,
 }: NumericFacetData) => {
   const [units, setUnits] = useState("years");
+  // no data if true means the Day/Year SegmentedControl should not be rendered.
+  // TODO: this is not ideal and perhaps should be refactored
+  const [hasData, setHasData] = useState(true);
   // set up a fixed range -90 to 90 years over 19 buckets
   const rangeMinimum = -32873;
   const rangeMaximum = 32873;
@@ -654,15 +679,18 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
 
   return (
     <div className="flex flex-col w-100 space-y-2 px-2  mt-1 ">
-      <SegmentedControl
-        data={[
-          { label: "Days", value: "days" },
-          { label: "Years", value: "years" },
-        ]}
-        value={units}
-        color={"primary"}
-        onChange={setUnits}
-      />
+      {hasData && (
+        <SegmentedControl
+          data={[
+            { label: "Days", value: "days" },
+            { label: "Years", value: "years" },
+          ]}
+          value={units}
+          color="primary"
+          onChange={setUnits}
+        />
+      )}
+
       <RangeInputWithPrefixedRanges
         units={units}
         hooks={{ ...hooks }}
@@ -673,6 +701,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
         valueLabel={valueLabel}
         clearValues={clearValues}
         isFacetView={isFacetView}
+        setHasData={(value) => setHasData(value)}
       />
     </div>
   );
@@ -837,14 +866,15 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
       <div
         className={`flex flex-col ${
           width ? width : "mx-0"
-        } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition `}
+        } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition`}
       >
         <FacetHeader>
           <Tooltip
+            disabled={!description}
             label={description}
             position="bottom-start"
             multiline
-            width={220}
+            w={220}
             withArrow
             transitionProps={{ duration: 200, transition: "fade" }}
           >
@@ -858,7 +888,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 <FacetIconButton
                   onClick={toggleFlip}
                   aria-pressed={!isFacetView}
-                  aria-label="chart view"
+                  aria-label={isFacetView ? "Chart view" : "Selection view"}
                 >
                   <FlipIcon size="1.45em" className={controlsIconStyle} />
                 </FacetIconButton>
@@ -879,7 +909,6 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
               <Tooltip label="Remove the facet">
                 <FacetIconButton
                   onClick={() => {
-                    clearFilters(field);
                     dismissCallback(field);
                   }}
                   aria-label="Remove the facet"

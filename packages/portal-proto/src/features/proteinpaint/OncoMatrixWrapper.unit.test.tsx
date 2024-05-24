@@ -15,7 +15,7 @@ jest.mock("@gff/core", () => ({
   selectCurrentCohortFilterSet: jest.fn().mockReturnValue({}),
   buildCohortGqlOperator: jest.fn(() => filter),
   useAddCohortMutation: jest.fn(() => [() => null, { isSuccess: true }]),
-  useUserDetails: jest.fn(() => userDetails),
+  useFetchUserDetailsQuery: jest.fn(() => userDetails),
   useCoreDispatch: jest.fn(() => nullFunction()),
   PROTEINPAINT_API: "host:port/basepath",
   useCreateCaseSetFromValuesMutation: () => [
@@ -45,8 +45,8 @@ test("OncoMatrix arguments", () => {
     <MantineProvider
       theme={{
         colors: {
-          primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
-          base: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+          primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+          base: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
         },
       }}
     >
@@ -66,8 +66,8 @@ test("OncoMatrix arguments", () => {
     <MantineProvider
       theme={{
         colors: {
-          primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
-          base: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+          primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+          base: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
         },
       }}
     >
@@ -86,8 +86,8 @@ test("OncoMatrix demo filter0", () => {
     <MantineProvider
       theme={{
         colors: {
-          primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
-          base: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+          primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+          base: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
         },
       }}
     >

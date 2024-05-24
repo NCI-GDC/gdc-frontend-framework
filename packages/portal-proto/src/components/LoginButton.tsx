@@ -1,9 +1,9 @@
 import openAuthWindow from "@/features/layout/auth/openAuthWindow";
 import {
-  fetchNotifications,
-  fetchUserDetails,
+  useGetBannerNotificationsQuery,
   hideModal,
   useCoreDispatch,
+  useLazyFetchUserDetailsQuery,
 } from "@gff/core";
 import { Button } from "@mantine/core";
 import { MdOutlineLogin as LoginIcon } from "react-icons/md";
@@ -16,20 +16,22 @@ export const LoginButton = ({
   fromHeader?: boolean;
 }): JSX.Element => {
   const dispatch = useCoreDispatch();
+  const [fetchUserDetails] = useLazyFetchUserDetailsQuery();
+  const { refetch: fetchNotifications } = useGetBannerNotificationsQuery();
   return (
     <Button
-      className={`${
+      className={`p-1 ${
         fromHeader
-          ? "font-medium text-primary-darkest p-1 pr-2 hover:bg-primary-lightest"
+          ? "font-medium text-primary-darkest hover:bg-primary-lightest"
           : "hover:bg-primary-darker"
       }`}
       onClick={async () => {
         fromSession && dispatch(hideModal());
         await openAuthWindow();
-        await dispatch(fetchUserDetails());
-        await dispatch(fetchNotifications());
+        await fetchUserDetails();
+        await fetchNotifications();
       }}
-      leftIcon={
+      leftSection={
         fromHeader ? (
           <LoginIcon
             className="m-0"
@@ -40,7 +42,7 @@ export const LoginButton = ({
         ) : undefined
       }
       variant={fromHeader ? "subtle" : "filled"}
-      compact={fromHeader}
+      size={fromHeader ? "compact-sm" : undefined}
       data-testid="loginButton"
     >
       Login

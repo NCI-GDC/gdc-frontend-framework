@@ -1,13 +1,18 @@
+import time
+
 from playwright.sync_api import Page
 
 from ....base.base_page import BasePage
 from ....base.base_page import GenericLocators
 
+
 class MutationFrequencyLocators:
     BUTTON_GENE_MUTATION_TAB = lambda tab_name: f'[data-testid="button-{tab_name}-tab"]'
     BUTTON_CUSTOM_FILTER = lambda button_name: f'[data-testid="button-{button_name}"]'
+    BUTTON_TABLE_DOWNLOAD = lambda button_name: f'[data-testid="button-{button_name}-mutation-frequency"]'
 
     MODAL_ADD_CUSTOM_FILTER = 'label:has-text("Type or copy-and-paste a list of")'
+
 
 class MutationFrequencyPage(BasePage):
     def __init__(self, driver: Page, url: str) -> None:
@@ -22,16 +27,31 @@ class MutationFrequencyPage(BasePage):
         tab_name = tab_name.lower()
         tab = MutationFrequencyLocators.BUTTON_GENE_MUTATION_TAB(tab_name)
         self.click(tab)
+        time.sleep(1)
+        self.wait_for_loading_spinner_to_detatch()
+        self.wait_for_loading_spinner_table_to_detatch()
+        self.wait_for_loading_spinner_to_detatch()
+        self.wait_for_loading_spinner_table_to_detatch()
 
     def click_custom_filter_button(self, button_name):
         button_locator = MutationFrequencyLocators.BUTTON_CUSTOM_FILTER(button_name)
         self.click(button_locator)
 
-    def click_custom_filter_import_browse(self, button_text_name:str):
+    def click_custom_filter_import_browse(self, button_text_name: str):
         """
         After add custom filter button has been clicked, we make sure the correct modal has loaded.
         Then, we click the 'browse' button to open the file explorer.
         """
-        self.wait_until_locator_is_visible(MutationFrequencyLocators.MODAL_ADD_CUSTOM_FILTER)
+        self.wait_until_locator_is_visible(
+            MutationFrequencyLocators.MODAL_ADD_CUSTOM_FILTER
+        )
         # It does not click the 'browse' button without force parameter set to 'True'
-        self.click(GenericLocators.BUTTON_BY_DISPLAYED_TEXT(button_text_name), force = True)
+        self.click(
+            GenericLocators.BUTTON_BY_DISPLAYED_TEXT(button_text_name), force=True
+        )
+
+    def click_table_download_button(self, button_name):
+        """Click a download button on the Mutation Frequency app"""
+        button_name = button_name.lower()
+        locator = MutationFrequencyLocators.BUTTON_TABLE_DOWNLOAD(button_name)
+        self.click(locator)

@@ -16,3 +16,7 @@ def add_file_to_cart():
 @step("Remove all files from cart on the case summary page")
 def add_file_to_cart():
     APP.case_summary_page.remove_file_from_cart()
+
+@step("Search <text_to_send> in the files table on the case summary page")
+def search_in_files_table(text_to_send:str):
+    APP.case_summary_page.search_in_files_table(text_to_send)

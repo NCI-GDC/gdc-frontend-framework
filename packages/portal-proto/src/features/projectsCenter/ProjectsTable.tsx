@@ -46,6 +46,8 @@ type ProjectDataType = {
   files: string;
 };
 
+const projectsTableColumnHelper = createColumnHelper<ProjectDataType>();
+
 const ProjectsTable: React.FC = () => {
   const coreDispatch = useCoreDispatch();
   const [pageSize, setPageSize] = useState(20);
@@ -162,7 +164,6 @@ const ProjectsTable: React.FC = () => {
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [expandedColumnId, setExpandedColumnId] = useState(null);
   const [expandedRowId, setExpandedRowId] = useState(null);
-  const projectsTableColumnHelper = createColumnHelper<ProjectDataType>();
 
   const projectsTableDefaultColumns = useMemo<ColumnDef<ProjectDataType>[]>(
     () => [
@@ -173,8 +174,9 @@ const ProjectsTable: React.FC = () => {
             size="xs"
             classNames={{
               input: "checked:bg-accent checked:border-accent",
+              label: "sr-only",
             }}
-            aria-label={`Select all project rows of page ${activePage} of ${data?.pagination?.total}`}
+            label={`Select all project rows on page ${activePage} of ${data?.pagination?.pages}`}
             {...{
               checked: table.getIsAllRowsSelected(),
               onChange: table.getToggleAllRowsSelectedHandler(),
@@ -270,13 +272,7 @@ const ProjectsTable: React.FC = () => {
         enableSorting: true,
       }),
     ],
-    [
-      projectsTableColumnHelper,
-      setEntityMetadata,
-      expandedColumnId,
-      activePage,
-      data?.pagination?.total,
-    ],
+    [setEntityMetadata, expandedColumnId, activePage, data?.pagination?.pages],
   );
 
   const getRowId = (originalRow: ProjectDataType) => {
@@ -373,21 +369,26 @@ const ProjectsTable: React.FC = () => {
 
   return (
     <VerticalTable
-      tableTitle={`Total of ${data?.pagination?.total?.toLocaleString()} ${
-        data?.pagination?.total > 1 ? "Projects" : "Project"
-      }`}
+      tableTitle={
+        <>
+          Total of <b>{data?.pagination?.total?.toLocaleString()}</b>{" "}
+          {data?.pagination?.total > 1 ? "Projects" : "Project"}
+        </>
+      }
       additionalControls={
         <div className="flex gap-2">
           <ProjectsCohortButton pickedProjects={pickedProjects} />
           <FunctionButton
             data-testid="button-json-projects-table"
             onClick={handleDownloadJSON}
+            disabled={isFetching}
           >
             JSON
           </FunctionButton>
           <FunctionButton
             data-testid="button-tsv-projects-table"
             onClick={handleDownloadTSV}
+            disabled={isFetching}
           >
             TSV
           </FunctionButton>

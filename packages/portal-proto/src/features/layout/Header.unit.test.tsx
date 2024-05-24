@@ -1,4 +1,3 @@
-import { fireEvent } from "@testing-library/react";
 import { headerElements } from "../user-flow/workflow/navigation-utils";
 import { Header } from "./Header";
 import * as router from "next/router";
@@ -35,7 +34,7 @@ describe("<Header />", () => {
       isUninitialized: false,
     });
 
-    jest.spyOn(core, "useQuickSearch").mockReturnValue({
+    jest.spyOn(core, "useQuickSearchQuery").mockReturnValue({
       data: { searchList: [], query: "" },
     } as any);
 
@@ -45,113 +44,46 @@ describe("<Header />", () => {
           pathname: "",
         } as any),
     );
+    jest
+      .spyOn(core, "useGetBannerNotificationsQuery")
+      .mockImplementation(jest.fn().mockReturnValue([jest.fn()]));
   });
 
   test("should show login button when the username is null initially", () => {
     jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
-    jest
-      .spyOn(core, "useCoreSelector")
-      .mockReturnValueOnce({
+    jest.spyOn(core, "useCoreSelector").mockImplementation(jest.fn());
+    jest.spyOn(core, "useFetchUserDetailsQuery").mockReturnValue({
+      data: {
         data: {
           username: null,
           projects: { gdc_ids: {} },
         },
-      })
-      .mockReturnValueOnce(["1", "2"])
-      .mockReturnValueOnce(null);
+      },
+    } as any);
 
-    const { getByTestId, queryByTestId } = render(
+    const { getAllByText, queryByTestId } = render(
       <Header {...{ headerElements, indexPath: "/" }} />,
     );
-    expect(getByTestId("loginButton")).toBeInTheDocument();
+    expect(getAllByText("Login")[0]).toBeInTheDocument();
     expect(queryByTestId("userdropdown")).toBeNull();
   });
 
   test("should not show login button when the username is present", () => {
     jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
-    jest
-      .spyOn(core, "useCoreSelector")
-      .mockReturnValueOnce({
-        data: {
-          username: "testName",
-          projects: { gdc_ids: {} },
-        },
-      })
-      .mockReturnValueOnce(["1", "2"])
-      .mockReturnValueOnce(null);
-
-    const { getByTestId, queryByTestId } = render(
-      <Header {...{ headerElements, indexPath: "/" }} />,
-    );
-    expect(queryByTestId("loginButton")).toBeNull();
-    expect(getByTestId("userdropdown")).toBeInTheDocument();
-  });
-
-  test("should show Session Expire Modal when fetch token returns 401", async () => {
-    const mockDispatch = jest.fn();
-    jest.spyOn(core, "useCoreDispatch").mockImplementation(() => mockDispatch);
-
-    jest
-      .spyOn(core, "useCoreSelector")
-      .mockReturnValueOnce({
-        data: {
-          username: "testName",
-          projects: { gdc_ids: {} },
-        },
-      })
-      .mockReturnValueOnce(["1", "2"])
-      .mockReturnValueOnce(null);
-
-    jest
-      .spyOn(core, "fetchToken")
-      .mockReturnValue(Promise.resolve({ text: "", status: 401 }));
-    const { getByTestId } = render(
-      <Header {...{ headerElements, indexPath: "/" }} />,
-    );
-
-    await fireEvent.click(getByTestId("userdropdown"));
-    await fireEvent.click(getByTestId("userprofilemenu"));
-    expect(mockDispatch).toBeCalledWith({
-      payload: { modal: "SessionExpireModal" },
-      type: "modals/showModal",
-    });
-    expect(mockDispatch).not.toBeCalledWith({
-      payload: { modal: "UserProfileModal" },
-      type: "modals/showModal",
-    });
-  });
-});
-
-test("should show User Profile Modal when fetch token returns 401", async () => {
-  const mockDispatch = jest.fn();
-  jest.spyOn(core, "useCoreDispatch").mockImplementation(() => mockDispatch);
-
-  jest
-    .spyOn(core, "useCoreSelector")
-    .mockReturnValueOnce({
+    jest.spyOn(core, "useCoreSelector").mockImplementation(jest.fn());
+    jest.spyOn(core, "useFetchUserDetailsQuery").mockReturnValue({
       data: {
-        username: "testName",
-        projects: { gdc_ids: {} },
+        data: {
+          username: "testName",
+          projects: { gdc_ids: {} },
+        },
       },
-    })
-    .mockReturnValueOnce(["1", "2"])
-    .mockReturnValueOnce(null);
+    } as any);
 
-  jest
-    .spyOn(core, "fetchToken")
-    .mockReturnValue(Promise.resolve({ text: "", status: 200 }));
-  const { getByTestId } = render(
-    <Header {...{ headerElements, indexPath: "/" }} />,
-  );
-
-  await fireEvent.click(getByTestId("userdropdown"));
-  await fireEvent.click(getByTestId("userprofilemenu"));
-  expect(mockDispatch).not.toBeCalledWith({
-    payload: { modal: "SessionExpireModal" },
-    type: "modals/showModal",
-  });
-  expect(mockDispatch).toBeCalledWith({
-    payload: { modal: "UserProfileModal" },
-    type: "modals/showModal",
+    const { getAllByText, queryByText } = render(
+      <Header {...{ headerElements, indexPath: "/" }} />,
+    );
+    expect(queryByText("Login")).toBeNull();
+    expect(getAllByText("testName")[0]).toBeInTheDocument();
   });
 });

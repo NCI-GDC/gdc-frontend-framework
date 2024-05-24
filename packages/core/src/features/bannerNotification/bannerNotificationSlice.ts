@@ -1,8 +1,8 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CoreDispatch } from "../../store";
+import type { Middleware, Reducer } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, isAnyOf } from "@reduxjs/toolkit";
 import { CoreState } from "../../reducers";
-import { buildFetchError } from "../gdcapi/gdcapi";
 import { GDC_APP_API_AUTH } from "../../constants";
+import { coreCreateApi } from "src/coreCreateApi";
 
 export interface BannerNotification {
   readonly id: number;
@@ -16,16 +16,12 @@ export interface BannerNotification {
 
 const initialState: BannerNotification[] = [];
 
-export const fetchNotifications = createAsyncThunk<
-  BannerNotification[],
-  void,
-  { dispatch: CoreDispatch; state: CoreState }
->("bannerNotifications/fetchNew", async () => {
+const fetchNotifications = async () => {
   const res = await fetch(`${GDC_APP_API_AUTH}/notifications`);
   const loginRes = await fetch(`${GDC_APP_API_AUTH}/login-notifications`);
 
   if (!res.ok) {
-    throw await buildFetchError(res);
+    return { error: res };
   }
 
   const results = await res.json();
@@ -33,10 +29,20 @@ export const fetchNotifications = createAsyncThunk<
 
   if (loginRes.ok) {
     const loginResults = await loginRes.json();
-    newNotifications.push(...loginResults.data);
+    return { data: [...newNotifications, ...loginResults.data] };
   }
 
-  return newNotifications;
+  return { data: newNotifications };
+};
+
+const bannerNotificationApiSlice = coreCreateApi({
+  reducerPath: "bannerNotificationApi",
+  baseQuery: fetchNotifications,
+  endpoints: (builder) => ({
+    getBannerNotifications: builder.query<BannerNotification[], void>({
+      query: () => {},
+    }),
+  }),
 });
 
 const slice = createSlice({
@@ -58,24 +64,30 @@ const slice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchNotifications.fulfilled, (state, action) => {
-      const newNotifications = action.payload
-        .filter(
-          (notification) =>
-            notification.components.includes("PORTAL_V2") ||
-            notification.components.includes("API") ||
-            notification.components.includes("LOGIN"),
-        )
-        .map(
-          (notification) =>
-            state.find((n) => n.id === notification.id) ?? {
-              ...notification,
-              dismissed: false,
-            },
-        );
+    builder.addMatcher(
+      isAnyOf(
+        bannerNotificationApiSlice.endpoints.getBannerNotifications
+          .matchFulfilled,
+      ),
+      (state, action) => {
+        const newNotifications = action.payload
+          .filter(
+            (notification) =>
+              notification.components.includes("PORTAL_V2") ||
+              notification.components.includes("API") ||
+              notification.components.includes("LOGIN"),
+          )
+          .map(
+            (notification) =>
+              state.find((n) => n.id === notification.id) ?? {
+                ...notification,
+                dismissed: false,
+              },
+          );
 
-      return newNotifications;
-    });
+        return newNotifications;
+      },
+    );
   },
 });
 
@@ -88,3 +100,15 @@ export const selectBanners = (state: CoreState): BannerNotification[] =>
       !banner.dismissed &&
       (banner.end_date === null || new Date(banner.end_date) >= new Date()),
   );
+
+export const {
+  useGetBannerNotificationsQuery,
+  useLazyGetBannerNotificationsQuery,
+} = bannerNotificationApiSlice;
+
+export const bannerNotificationApiSliceMiddleware =
+  bannerNotificationApiSlice.middleware as Middleware;
+export const bannerNotificationApiSliceReducerPath: string =
+  bannerNotificationApiSlice.reducerPath;
+export const bannerNotificationApiReducer: Reducer =
+  bannerNotificationApiSlice.reducer as Reducer;

@@ -1,12 +1,5 @@
-import { HomepageButton } from "./index";
+import { homepageButtonClass } from "./index";
 import Link, { LinkProps } from "next/link";
-
-// TODO eliminate duplicate styles
-const homepageButtonStyles = `
-bg-primary text-sm text-base-max border-base-light border-1
-hover:bg-primary-darker hover:text-primary-darker-contrast
-font-medium font-heading rounded mt-4 px-4 py-3 w-fit inline-block
-`;
 
 interface HPCardProps {
   head: string;
@@ -28,23 +21,25 @@ const HPCard = ({
   return (
     <div className={`px-7 ${mainClassName}`}>
       <div className="text-center py-12 max-w-screen-lg m-auto">
-        <h2 className="font-heading font-bold text-2xl pb-5 text-summarybar-text tracking-tight">
+        <h2 className="font-heading font-bold text-4xl md:text-3xl lg:text-2xl tracking-normal pb-5 text-summarybar-text xl:tracking-tight">
           {head}
           {subhead && <span className="block font-medium">{subhead}</span>}
         </h2>
-        <p className="py-1 font-content">{body}</p>
+        <p className="py-1 font-content text-2xl md:text-xl lg:text-[1rem] text-secondary-contrast-lighter">
+          {body}
+        </p>
         {typeof href === "string" ? (
           <a
             href={href}
             target="_blank"
             rel="noreferrer"
-            className={homepageButtonStyles}
+            className={homepageButtonClass}
           >
             {linkText}
           </a>
         ) : (
-          <Link href={href} passHref>
-            <HomepageButton>{linkText}</HomepageButton>
+          <Link href={href} className={homepageButtonClass}>
+            {linkText}
           </Link>
         )}
       </div>

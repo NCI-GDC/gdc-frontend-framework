@@ -23,7 +23,7 @@ const Node = ({
         <div className="flex">
           <span
             className={`w-full flex justify-between text-xs cursor-pointer hover:underline hover:font-bold ml-3 mt-1 py-1 px-6 border border-base-lighter ${
-              selectedEntity[`${type.s}_id`] === entity[`${type.s}_id`]
+              selectedEntity?.[`${type.s}_id`] === entity[`${type.s}_id`]
                 ? "bg-accent-vivid text-base-max font-bold"
                 : "bg-nci-violet-lightest"
             }
@@ -38,7 +38,7 @@ const Node = ({
             tabIndex={0}
           >
             <Highlight search={query} text={entity.submitter_id} />
-            {selectedEntity[`${type.s}_id`] === entity[`${type.s}_id`] && (
+            {selectedEntity?.[`${type.s}_id`] === entity[`${type.s}_id`] && (
               <ArrowRight color="white" size={16} />
             )}
           </span>
@@ -153,7 +153,6 @@ export const BioTree = ({
     }
     return key;
   };
-
   return (
     <ul className="my-2">
       <li>

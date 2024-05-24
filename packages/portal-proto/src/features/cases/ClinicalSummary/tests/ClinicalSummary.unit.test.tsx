@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { render } from "test-utils";
 import { ClinicalSummary } from "../ClinicalSummary";
 import userEvent from "@testing-library/user-event";
 import {
@@ -45,16 +45,16 @@ describe("<ClinicalSummary /> ", () => {
 
     expect(getByText("demographic-test")).toBeInTheDocument();
 
-    await userEvent.click(getByTestId("diagnosisTab"));
+    await userEvent.click(getByTestId("button-diagnoses-treatments-tab"));
     expect(getByText("diagnosis-test")).toBeInTheDocument();
 
-    await userEvent.click(getByTestId("familyTab"));
+    await userEvent.click(getByTestId("button-family-histories-tab"));
     expect(getByText("family-test-1")).toBeInTheDocument();
 
-    await userEvent.click(getByTestId("exposuresTab"));
+    await userEvent.click(getByTestId("button-exposures-tab"));
     expect(getByText("exposure-test-1")).toBeInTheDocument();
 
-    await userEvent.click(getByTestId("followUpsTab"));
+    await userEvent.click(getByTestId("button-followups-molecular-tests-tab"));
     expect(getByText("follow-up-test-1")).toBeInTheDocument();
   });
 
@@ -74,16 +74,16 @@ describe("<ClinicalSummary /> ", () => {
 
     expect(getByText("No Demographic Found.")).toBeInTheDocument();
 
-    await userEvent.click(getByTestId("diagnosisTab"));
+    await userEvent.click(getByTestId("button-diagnoses-treatments-tab"));
     expect(getByText("No Diagnoses Found.")).toBeInTheDocument();
 
-    await userEvent.click(getByTestId("familyTab"));
+    await userEvent.click(getByTestId("button-family-histories-tab"));
     expect(getByText("No Family Histories Found.")).toBeInTheDocument();
 
-    await userEvent.click(getByTestId("exposuresTab"));
+    await userEvent.click(getByTestId("button-exposures-tab"));
     expect(getByText("No Exposures Found.")).toBeInTheDocument();
 
-    await userEvent.click(getByTestId("followUpsTab"));
+    await userEvent.click(getByTestId("button-followups-molecular-tests-tab"));
     expect(getByText("No Follow Ups Found.")).toBeInTheDocument();
   });
 });

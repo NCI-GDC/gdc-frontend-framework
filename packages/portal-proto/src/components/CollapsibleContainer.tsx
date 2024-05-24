@@ -1,10 +1,11 @@
 import { PropsWithChildren, ReactNode } from "react";
-import { Collapse, Tooltip } from "@mantine/core";
+import { Tooltip } from "@mantine/core";
+import { useElementSize } from "@mantine/hooks";
 import {
   MdExpandLess as ExpandLessIcon,
   MdExpandMore as ExpandMoreIcon,
 } from "react-icons/md";
-import { FloatingPosition } from "@mantine/core/lib/Floating";
+import { FloatingPosition } from "@mantine/core/lib/components/Floating/types";
 import { focusStyles } from "../utils";
 
 export interface CollapsibleContainerProps {
@@ -37,15 +38,18 @@ export const CollapsibleContainer = (
     TargetElement,
     ExtraControl,
   } = props;
+
+  const { ref: descRef, height: descHeight } = useElementSize();
+
   return (
     <div
       className={`flex flex-col ${
-        isContextBar && "overflow-y-auto max-h-screen-90vh"
+        isContextBar && "overflow-y-auto max-h-screen-100vh"
       }`}
     >
       <div className="flex flex-wrap">
         <div className="flex-grow">{Top}</div>
-        <div className="flex items-center bg-primary pr-4 gap-4 md:flex-wrap md:w-full md:py-5 md:pl-5 lg:flex-no-wrap lg:w-auto lg:py-0 lg:pl-0">
+        <div className="flex items-center bg-primary pr-4 gap-4 flex-wrap w-full py-5 pl-5 lg:flex-no-wrap lg:w-auto lg:py-0 lg:pl-0">
           <Tooltip label={tooltipText} position={tooltipPosition} withArrow>
             <span>
               <button
@@ -83,13 +87,20 @@ export const CollapsibleContainer = (
           {ExtraControl && <>{ExtraControl}</>}
         </div>
       </div>
-      <Collapse
-        in={!isCollapsed}
-        transitionDuration={200}
-        transitionTimingFunction="linear"
+      <div
+        aria-hidden={isCollapsed}
+        style={{ height: !isCollapsed ? descHeight : 0 }}
+        className="transition-[height] duration-300 overflow-hidden"
       >
-        {children}
-      </Collapse>
+        <div
+          className={`${
+            !isCollapsed ? "opacity-100" : "opacity-0"
+          } transition-opacity`}
+          ref={descRef}
+        >
+          {children}
+        </div>
+      </div>
     </div>
   );
 };

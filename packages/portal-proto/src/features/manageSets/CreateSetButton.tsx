@@ -12,9 +12,9 @@ import UserInputModal from "@/components/Modals/UserInputModal";
 import InputEntityList from "@/components/InputEntityList/InputEntityList";
 import { SubmitSaveSetButton } from "@/components/SaveSetButton";
 
-const CreateGeneModal = () => {
+const CreateGeneModal = ({ opened }: { opened: boolean }) => {
   return (
-    <UserInputModal modalTitle="Create Gene Set">
+    <UserInputModal modalTitle="Create Gene Set" opened={opened}>
       <InputEntityList
         inputInstructions={
           "Enter one or more gene identifiers in the field below or upload a file to create a gene set."
@@ -44,9 +44,9 @@ const CreateGeneModal = () => {
   );
 };
 
-const CreateMutationModal = () => {
+const CreateMutationModal = ({ opened }: { opened: boolean }) => {
   return (
-    <UserInputModal modalTitle="Create Mutation Set">
+    <UserInputModal modalTitle="Create Mutation Set" opened={opened}>
       <InputEntityList
         inputInstructions={
           "Enter one or more mutation identifiers in the field below or upload a file to create a mutation set."
@@ -79,8 +79,8 @@ const CreateSetButton: React.FC = () => {
 
   return (
     <>
-      {modal === Modals.GlobalGeneSetModal && <CreateGeneModal />}
-      {modal === Modals.GlobalMutationSetModal && <CreateMutationModal />}
+      <CreateGeneModal opened={modal === Modals.GlobalGeneSetModal} />
+      <CreateMutationModal opened={modal === Modals.GlobalMutationSetModal} />
       <DropdownWithIcon
         customDataTestId="button-create-set"
         TargetButtonChildren={<>Create Set</>}
@@ -96,7 +96,6 @@ const CreateSetButton: React.FC = () => {
               dispatch(showModal({ modal: Modals.GlobalMutationSetModal })),
           },
         ]}
-        zIndex={10}
       />
     </>
   );

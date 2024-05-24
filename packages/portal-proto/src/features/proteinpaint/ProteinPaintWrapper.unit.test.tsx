@@ -15,7 +15,7 @@ jest.mock("@gff/core", () => ({
   selectCurrentCohortFilterSet: jest.fn(() => filter),
   buildCohortGqlOperator: jest.fn(() => filter),
   useAddCohortMutation: jest.fn(() => [() => null, { isSuccess: true }]),
-  useUserDetails: jest.fn(() => userDetails),
+  useFetchUserDetailsQuery: jest.fn(() => userDetails),
   useCoreDispatch: jest.fn(() => nullFunction()),
   setActiveCohort: jest.fn(() => null),
   PROTEINPAINT_API: "host:port/basepath",
@@ -47,8 +47,8 @@ test("SSM lolliplot arguments", () => {
     <MantineProvider
       theme={{
         colors: {
-          primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
-          base: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+          primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+          base: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
         },
       }}
     >
@@ -81,8 +81,8 @@ test("SSM lolliplot arguments", () => {
     <MantineProvider
       theme={{
         colors: {
-          primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
-          base: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+          primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+          base: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
         },
       }}
     >

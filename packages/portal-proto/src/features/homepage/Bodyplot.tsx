@@ -1,7 +1,7 @@
 import { useCallback, useRef, useEffect, useState, useMemo } from "react";
 import Router from "next/router";
 import { createHumanBody, colorCodes } from "@nci-gdc/sapien";
-import { useMouse } from "@mantine/hooks";
+import { useMouse, useViewportSize } from "@mantine/hooks";
 import { Modal, Text } from "@mantine/core";
 import {
   useBodyplotCountsQuery,
@@ -15,6 +15,7 @@ import {
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 import FunctionButton from "@/components/FunctionButton";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
+import tailwindConfig from "tailwind.config";
 
 const createCohort = (site: string) => {
   const key = site.replace(/-/g, " ");
@@ -35,6 +36,9 @@ interface ExploreCohortModalProps {
   readonly setOpened: (opened: boolean) => void;
   readonly site: string;
 }
+
+const EXTRA_BODY_PLOT_SPACE_HEIGHT = 20;
+const EXTRA_BODY_PLOT_SPACE_WIDTH = 50;
 
 const ExploreCohortModal: React.FC<ExploreCohortModalProps> = ({
   opened,
@@ -177,12 +181,18 @@ export const Bodyplot = (): JSX.Element => {
     [],
   );
 
+  const mediumWidth = parseInt(
+    tailwindConfig.theme.extend.screens.md.replace(/\D/g, ""),
+    10,
+  );
+
+  const { width } = useViewportSize();
   useMemo(() => {
     if (bodyplotRef?.current) {
       createHumanBody({
         title: "Cases by Major Primary Site",
         selector: bodyplotRef.current,
-        width: 500,
+        width: width >= mediumWidth ? 500 : 400,
         height: 500,
         data: processedData ?? [],
         labelSize: "12px",
@@ -200,10 +210,20 @@ export const Bodyplot = (): JSX.Element => {
         mouseOutHandler: mouseOutHandler,
       });
     }
-  }, [mouseOutHandler, processedData, root, bodyplotRef]);
+  }, [width, mediumWidth, mouseOutHandler, processedData, root, bodyplotRef]);
 
   return (
-    <div ref={mouseRef} className="relative">
+    <div
+      ref={mouseRef}
+      style={{
+        height:
+          (bodyplotRef?.current?.scrollHeight ?? 0) +
+          EXTRA_BODY_PLOT_SPACE_HEIGHT,
+        width:
+          (bodyplotRef?.current?.scrollWidth ?? 0) -
+          EXTRA_BODY_PLOT_SPACE_WIDTH, // this is needed not to cram hero area left hand side
+      }}
+    >
       <div
         className={`${
           bodyplotTooltipContent ? "opacity-100" : "opacity-0"

@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { render } from "test-utils";
 import { CaseSummary } from "./CaseSummary";
 import * as func from "@gff/core";
 
@@ -22,8 +22,12 @@ describe("<CaseSummary />", () => {
       isUninitialized: false,
     };
 
-    jest.spyOn(func, "useCaseSummary").mockReturnValue(loadingResponse);
-    jest.spyOn(func, "useAnnotations").mockReturnValue(loadingResponse);
+    jest
+      .spyOn(func, "useGetCasesQuery")
+      .mockReturnValue(loadingResponse as any);
+    jest
+      .spyOn(func, "useGetAnnotationsQuery")
+      .mockReturnValue(loadingResponse as any);
     const { getByTestId } = render(<CaseSummary case_id="testId" bio_id="" />);
 
     expect(getByTestId("loading-spinner")).toBeInTheDocument();
@@ -38,8 +42,12 @@ describe("<CaseSummary />", () => {
       isUninitialized: false,
     };
 
-    jest.spyOn(func, "useCaseSummary").mockReturnValue(loadingResponse);
-    jest.spyOn(func, "useAnnotations").mockReturnValue(loadingResponse);
+    jest
+      .spyOn(func, "useGetCasesQuery")
+      .mockReturnValue(loadingResponse as any);
+    jest
+      .spyOn(func, "useGetAnnotationsQuery")
+      .mockReturnValue(loadingResponse as any);
     const { getByText } = render(<CaseSummary case_id="testId" bio_id="" />);
 
     expect(getByText("Case Not Found")).toBeInTheDocument();

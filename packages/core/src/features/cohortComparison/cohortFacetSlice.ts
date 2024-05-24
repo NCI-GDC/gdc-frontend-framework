@@ -1,11 +1,6 @@
 import { graphqlAPISlice } from "../gdcapi/gdcgraphql";
 import { DAYS_IN_YEAR } from "../../constants";
 
-export interface CohortFacetDoc {
-  readonly key: string;
-  readonly doc_count: number;
-}
-
 const graphQLQuery = `
   query CohortComparison(
     $cohort1: FiltersArgument

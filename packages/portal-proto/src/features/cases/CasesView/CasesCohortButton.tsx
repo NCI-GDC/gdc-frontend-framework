@@ -75,7 +75,7 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
       TargetButtonChildren="Save New Cohort"
       disableTargetWidth={true}
       targetButtonDisabled={numCases === 0}
-      LeftIcon={
+      LeftSection={
         numCases ? (
           <CountsIcon $count={numCases}>{numCases.toLocaleString()}</CountsIcon>
         ) : null
@@ -84,7 +84,6 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
         ${numCases > 1 ? " Cases" : " Case"}`}
       menuLabelCustomClass="bg-primary text-primary-contrast font-heading font-bold mb-2"
       customPosition="bottom-start"
-      zIndex={100}
       tooltip={"Save a new cohort based on selection"}
     />
   );
@@ -100,29 +99,27 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
         )}
       </span>
 
-      {openSelectCohorts && (
-        <SelectCohortsModal
-          opened
-          onClose={() => setOpenSelectCohorts(false)}
-          withOrWithoutCohort={withOrWithoutCohort}
-          pickedCases={cases}
-        />
-      )}
-      {showSaveCohort && (
-        <SaveCohortModal
-          onClose={() => setShowSaveCohort(false)}
-          filters={{
-            mode: "and",
-            root: {
-              "cases.case_id": {
-                operator: "includes",
-                field: "cases.case_id",
-                operands: [numCases > 1 ? `set_id:${response.data}` : cases[0]],
-              },
+      <SelectCohortsModal
+        opened={openSelectCohorts}
+        onClose={() => setOpenSelectCohorts(false)}
+        withOrWithoutCohort={withOrWithoutCohort}
+        pickedCases={cases}
+      />
+
+      <SaveCohortModal
+        opened={showSaveCohort}
+        onClose={() => setShowSaveCohort(false)}
+        filters={{
+          mode: "and",
+          root: {
+            "cases.case_id": {
+              operator: "includes",
+              field: "cases.case_id",
+              operands: [numCases > 1 ? `set_id:${response.data}` : cases[0]],
             },
-          }}
-        />
-      )}
+          },
+        }}
+      />
     </>
   );
 };
@@ -136,7 +133,8 @@ export const CasesCohortButtonFromValues: React.FC<
 > = ({ pickedCases }: CasesCohortButtonFromValuesProps) => {
   const [createSet, response] = useCreateCaseSetFromValuesMutation();
   const onCreateSet = useCallback(
-    () => createSet({ values: pickedCases }),
+    () =>
+      createSet({ values: pickedCases, intent: "portal", set_type: "frozen" }),
     [createSet, pickedCases],
   );
 
@@ -152,19 +150,26 @@ export const CasesCohortButtonFromValues: React.FC<
 
 interface CasesCohortButtonFromFilters {
   readonly filters?: GqlOperation;
+  readonly case_filters?: GqlOperation;
   readonly numCases: number;
 }
 
 export const CasesCohortButtonFromFilters: React.FC<
   CasesCohortButtonFromFilters
-> = ({ filters, numCases }: CasesCohortButtonFromFilters) => {
+> = ({ filters, case_filters, numCases }: CasesCohortButtonFromFilters) => {
   const [createSet, response] = useCreateCaseSetFromFiltersMutation();
   const onCreateSet = useDeepCompareCallback(
-    () => createSet({ filters }),
-    [createSet, filters],
+    () =>
+      createSet({
+        case_filters,
+        filters,
+        intent: "portal",
+        set_type: "frozen",
+      }),
+    [case_filters, createSet, filters],
   );
   const { data, isSuccess, isLoading } = useGetCasesQuery(
-    { filters, fields: ["case_id"], size: 50000 },
+    { request: { filters, fields: ["case_id"], size: 50000 } },
     { skip: filters === undefined },
   );
 
@@ -173,7 +178,7 @@ export const CasesCohortButtonFromFilters: React.FC<
       onCreateSet={onCreateSet}
       response={response}
       numCases={numCases}
-      cases={isSuccess ? data.map((d) => d.case_id) : []}
+      cases={isSuccess ? data?.hits.map((d) => d.case_id) : []}
       fetchingCases={isLoading}
     />
   );

@@ -6,9 +6,8 @@ import {
   joinFilters,
   isIncludes,
   DataStatus,
-  GdcFile,
 } from "@gff/core";
-import { replace, sortBy, zip } from "lodash";
+import { replace, sortBy } from "lodash";
 import { DocumentWithWebkit } from "@/features/types";
 
 export const toggleFullScreen = async (
@@ -173,38 +172,47 @@ export const humanify = ({
 };
 
 /*https://github.com/NCI-GDC/portal-ui/blob/develop/src/packages/%40ncigdc/utils/ageDisplay.js*/
+/**
+ * Converts age in days into a human-readable format.
+ *
+ * @param ageInDays - The age in days.
+ * @param yearsOnly - If true, only display years.
+ *   @defaultValue false
+ * @param defaultValue - The default value to return if ageInDays is falsy.
+ *   @defaultValue "--"
+ * @returns The formatted age string.
+ */
 export const ageDisplay = (
   ageInDays: number,
-  yearsOnly = false,
-  defaultValue = "--",
+  yearsOnly: boolean = false,
+  defaultValue: string = "--",
 ): string => {
-  const leapThenPair = (years: number, days: number): number[] =>
-    days === 365 ? [years + 1, 0] : [years, days];
-
-  const timeString = (
-    num: number,
-    singular: string,
-    plural?: string,
-  ): string => {
-    const pluralChecked = plural || `${singular}s`;
-    return `${num} ${num === 1 ? singular : pluralChecked}`;
-  };
-
   if (!ageInDays) {
     return defaultValue;
   }
+  const calculateYearsAndDays = (
+    years: number,
+    days: number,
+  ): [number, number] => (days === 365 ? [years + 1, 0] : [years, days]);
 
-  return zip(
-    leapThenPair(
-      Math.floor(ageInDays / DAYS_IN_YEAR),
-      Math.ceil(ageInDays % DAYS_IN_YEAR),
-    ),
-    ["year", "day"],
-  )
-    .filter((p) => (yearsOnly ? p[1] === "year" : p[0] > 0))
-    .map((p) => (yearsOnly ? p[0] : timeString(...p)))
-    .join(" ")
-    .trim();
+  const ABS_AGE_DAYS = Math.abs(ageInDays);
+
+  const [years, remainingDays] = calculateYearsAndDays(
+    Math.floor(ABS_AGE_DAYS / DAYS_IN_YEAR),
+    Math.ceil(ABS_AGE_DAYS % DAYS_IN_YEAR),
+  );
+
+  const formattedYears =
+    years === 0 ? "" : `${years} ${years === 1 ? "year" : "years"}`;
+
+  const formattedDays =
+    !yearsOnly && remainingDays > 0
+      ? `${remainingDays} ${remainingDays === 1 ? "day" : "days"}`
+      : "";
+
+  const ageString = [formattedYears, formattedDays].filter(Boolean).join(" ");
+
+  return ageInDays >= 0 ? ageString : `-${ageString}`;
 };
 
 export const extractToArray = (
@@ -270,24 +278,6 @@ export const statusBooleansToDataStatus = (
     : isError
     ? "rejected"
     : "uninitialized";
-};
-
-export const getAnnotationsLinkParamsFromFiles = (
-  file: GdcFile,
-): string | null => {
-  // Due to limitation in the length of URI, we decided to cap a link to be created for files which has < 150 annotations for now
-  // 150 annotations was a safe number. It was tested in Chrome, Firefox, Safari and Edge.
-  // TODO: Follow Up Ticket - https://jira.opensciencedatacloud.org/browse/PEAR-758
-  const MAX_ANNOATATION_COUNT = 150;
-  if (!file?.annotations || file.annotations.length > MAX_ANNOATATION_COUNT)
-    return null;
-
-  if (file?.annotations?.length === 1) {
-    return `https://portal.gdc.cancer.gov/v1/annotations/${file.annotations[0].annotation_id}`;
-  }
-  return `https://portal.gdc.cancer.gov/v1/annotations?filters={"content":[{"content":{"field":"annotations.annotation_id","value":[${[
-    file.annotations.map((annotation) => `"${annotation.annotation_id}"`),
-  ]}]},"op":"in"}],"op":"and"}`;
 };
 
 export const focusStyles =

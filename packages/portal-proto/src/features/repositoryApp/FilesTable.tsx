@@ -1,23 +1,20 @@
 import { useState, useContext, useEffect, useMemo } from "react";
-import { capitalize, isEqual } from "lodash";
+import { capitalize } from "lodash";
 import fileSize from "filesize";
 import { SingleItemAddToCartButton } from "../cart/updateCart";
-import Link from "next/link";
 import {
   useCoreDispatch,
   useCoreSelector,
   selectCurrentCohortFilters,
   buildCohortGqlOperator,
-  joinFilters,
-  useFilesSize,
+  useTotalFileSizeQuery,
   GdcFile,
   Operation,
   useGetFilesQuery,
-  usePrevious,
   SortBy,
   AccessType,
   FileCaseType,
-  FileAnnontationsType,
+  FileAnnotationsType,
 } from "@gff/core";
 import { MdSave, MdPerson } from "react-icons/md";
 import { useAppSelector } from "@/features/repositoryApp/appApi";
@@ -42,10 +39,8 @@ import {
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { downloadTSV } from "@/components/Table/utils";
-import {
-  getAnnotationsLinkParamsFromFiles,
-  statusBooleansToDataStatus,
-} from "src/utils";
+import { statusBooleansToDataStatus } from "src/utils";
+import { useDeepCompareEffect } from "use-deep-compare";
 
 export type FilesTableDataType = {
   file: GdcFile;
@@ -60,8 +55,10 @@ export type FilesTableDataType = {
   experimental_strategy?: string;
   platform: string;
   file_size: string;
-  annotations: FileAnnontationsType;
+  annotations: FileAnnotationsType[];
 };
+
+const filesTableColumnHelper = createColumnHelper<FilesTableDataType>();
 
 const FilesTables: React.FC = () => {
   const coreDispatch = useCoreDispatch();
@@ -75,8 +72,6 @@ const FilesTables: React.FC = () => {
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
   );
-  const allFilters = joinFilters(cohortFilters, repositoryFilters);
-  const prevAllFilters = usePrevious(allFilters);
 
   // TODO fix filters
   const buildSearchFilters = (term: string): Operation => {
@@ -91,6 +86,16 @@ const FilesTables: React.FC = () => {
         {
           operator: "=",
           field: "files.file_id",
+          operand: `*${term}*`,
+        },
+        {
+          operator: "=",
+          field: "cases.case_id",
+          operand: `*${term}*`,
+        },
+        {
+          operator: "=",
+          field: "cases.submitter_id",
           operand: `*${term}*`,
         },
       ],
@@ -110,12 +115,10 @@ const FilesTables: React.FC = () => {
     return () => removeFilter("joinOrToAllfilesSearch");
   }, [searchTerm, updateFilter, removeFilter]);
 
-  useEffect(() => {
-    if (!isEqual(prevAllFilters, allFilters)) {
-      setPageSize(20);
-      setOffset(0);
-    }
-  }, [prevAllFilters, allFilters]);
+  useDeepCompareEffect(() => {
+    setPageSize(20);
+    setOffset(0);
+  }, [cohortFilters, repositoryFilters]);
 
   const { data, isFetching, isError, isSuccess } = useGetFilesQuery({
     case_filters: buildCohortGqlOperator(cohortFilters),
@@ -182,14 +185,13 @@ const FilesTables: React.FC = () => {
       ];
   }, [isFetching, isSuccess, data?.files, data?.pagination]);
 
-  const filesTableColumnHelper = createColumnHelper<FilesTableDataType>();
   const filesTableDefaultColumns = useMemo<ColumnDef<FilesTableDataType>[]>(
     () => [
       filesTableColumnHelper.display({
         id: "cart",
         header: "Cart",
         cell: ({ row }) => (
-          <SingleItemAddToCartButton file={row.original.file} iconOnly />
+          <SingleItemAddToCartButton file={row.original.file} />
         ),
       }),
       filesTableColumnHelper.accessor("file_uuid", {
@@ -309,28 +311,10 @@ const FilesTables: React.FC = () => {
       filesTableColumnHelper.display({
         id: "annotations",
         header: "Annotations",
-        cell: ({ row }) => (
-          <span className="font-content">
-            {getAnnotationsLinkParamsFromFiles(row.original.file) ? (
-              <Link
-                href={getAnnotationsLinkParamsFromFiles(row.original.file)}
-                passHref
-              >
-                <a
-                  className="text-utility-link underline font-content"
-                  target="_blank"
-                >
-                  {row.original.annotations.length}
-                </a>
-              </Link>
-            ) : (
-              row.original?.annotations?.length ?? 0
-            )}
-          </span>
-        ),
+        cell: ({ row }) => row.original?.annotations?.length ?? 0,
       }),
     ],
-    [filesTableColumnHelper, setEntityMetadata],
+    [setEntityMetadata],
   );
 
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -425,10 +409,9 @@ const FilesTables: React.FC = () => {
   let totalFileSize = <strong>--</strong>;
   let totalCaseCount = "--";
 
-  const fileSizeSliceData = useFilesSize({
+  const fileSizeSliceData = useTotalFileSizeQuery({
     cohortFilters: buildCohortGqlOperator(cohortFilters),
     localFilters: buildCohortGqlOperator(repositoryFilters),
-    allFilters: buildCohortGqlOperator(allFilters),
   });
   if (fileSizeSliceData.isSuccess && fileSizeSliceData?.data) {
     const fileSizeObj = fileSize(fileSizeSliceData.data?.total_file_size || 0, {
@@ -443,7 +426,7 @@ const FilesTables: React.FC = () => {
   }
 
   const Stats = () => (
-    <div className="flex gap-1 text-xl items-center">
+    <div className="flex gap-1 text-xl items-center uppercase">
       <div>
         Total of{" "}
         <strong>{tempPagination?.total?.toLocaleString() || "--"}</strong>{" "}
@@ -468,53 +451,60 @@ const FilesTables: React.FC = () => {
 
   return (
     <>
-      <div className="flex justify-end Custom-Repo-Width:hidden">
+      <div className="flex xl:justify-end Custom-Repo-Width:hidden">
         <Stats />
       </div>
-      <VerticalTable
-        additionalControls={
-          <div className="flex gap-2 items-center justify-between mr-2">
-            <div className="flex gap-2">
+      <div className="">
+        <VerticalTable
+          additionalControls={
+            <div className="flex gap-2 items-center justify-between">
               <FunctionButton
                 onClick={handleDownloadJSON}
                 data-testid="button-json-files-table"
+                disabled={isFetching}
               >
                 JSON
               </FunctionButton>
               <FunctionButton
                 onClick={handleDownloadTSV}
                 data-testid="button-tsv-files-table"
+                disabled={isFetching}
               >
                 TSV
               </FunctionButton>
             </div>
-            <div className="hidden Custom-Repo-Width:block">
+          }
+          tableTitle={
+            <div
+              data-testid="text-counts-files-table"
+              className="hidden Custom-Repo-Width:block"
+            >
               <Stats />
             </div>
-          </div>
-        }
-        data={formattedTableData}
-        columns={filesTableDefaultColumns}
-        pagination={{
-          ...tempPagination,
-          label: "files",
-        }}
-        status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
-        handleChange={handleChange}
-        search={{
-          enabled: true,
-          tooltip:
-            "e.g. HCM-CSHL-0062-C18.json, 4b5f5ba0-3010-4449-99d4-7bd7a6d73422",
-        }}
-        showControls={true}
-        setColumnVisibility={setColumnVisibility}
-        columnVisibility={columnVisibility}
-        columnOrder={columnOrder}
-        columnSorting="manual"
-        sorting={sorting}
-        setSorting={setSorting}
-        setColumnOrder={setColumnOrder}
-      />
+          }
+          data={formattedTableData}
+          columns={filesTableDefaultColumns}
+          pagination={{
+            ...tempPagination,
+            label: "files",
+          }}
+          status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
+          handleChange={handleChange}
+          search={{
+            enabled: true,
+            tooltip:
+              "e.g. HCM-CSHL-0062-C18.json, 4b5f5ba0-3010-4449-99d4-7bd7a6d73422, HCM-CSHL-0062-C18",
+          }}
+          showControls={true}
+          setColumnVisibility={setColumnVisibility}
+          columnVisibility={columnVisibility}
+          columnOrder={columnOrder}
+          columnSorting="manual"
+          sorting={sorting}
+          setSorting={setSorting}
+          setColumnOrder={setColumnOrder}
+        />
+      </div>
     </>
   );
 };

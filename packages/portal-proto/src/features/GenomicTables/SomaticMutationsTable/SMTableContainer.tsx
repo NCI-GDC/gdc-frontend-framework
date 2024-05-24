@@ -14,12 +14,10 @@ import {
   useCoreDispatch,
   useCreateCaseSetFromFiltersMutation,
   GDCSsmsTable,
-  getSSMTestedCases,
-  selectCurrentCohortFilters,
 } from "@gff/core";
-import { useEffect, useState, useContext, useMemo } from "react";
+import { useEffect, useState, useContext, useMemo, useCallback } from "react";
 import { useDeepCompareCallback } from "use-deep-compare";
-import { Loader, Text } from "@mantine/core";
+import { Loader } from "@mantine/core";
 import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
@@ -140,21 +138,17 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const [showRemoveModal, setShowRemoveModal] = useState(false);
   /* Modal end */
 
-  const cohortFiltersNoSet = useCoreSelector((state) =>
-    selectCurrentCohortFilters(state),
-  );
-
   /* SM Table Call */
-  const { data, isSuccess, isFetching, isError } = useGetSssmTableDataQuery({
-    pageSize: pageSize,
-    offset: pageSize * (page - 1),
-    searchTerm: searchTerm.length > 0 ? searchTerm : undefined,
-    geneSymbol: geneSymbol,
-    genomicFilters: genomicFilters,
-    cohortFilters: cohortFilters,
-    _cohortFiltersNoSet: cohortFiltersNoSet,
-    caseFilter: caseFilter,
-  });
+  const { data, isSuccess, isFetching, isError, isUninitialized } =
+    useGetSssmTableDataQuery({
+      pageSize: pageSize,
+      offset: pageSize * (page - 1),
+      searchTerm: searchTerm.length > 0 ? searchTerm : undefined,
+      geneSymbol: geneSymbol,
+      genomicFilters: genomicFilters,
+      cohortFilters: cohortFilters,
+      caseFilter: caseFilter,
+    });
 
   /* SM Table Call end */
 
@@ -170,7 +164,10 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const generateFilters = useDeepCompareCallback(
     async (ssmId: string) => {
       return await createSet({
-        filters: buildCohortGqlOperator(combinedFilters),
+        case_filters: buildCohortGqlOperator(cohortFilters),
+        filters: buildCohortGqlOperator(genomicFilters),
+        intent: "portal",
+        set_type: "frozen",
       })
         .unwrap()
         .then((setId) => {
@@ -191,7 +188,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           } as FilterSet;
         });
     },
-    [combinedFilters, createSet],
+    [createSet, cohortFilters, genomicFilters],
   );
   /* Create Cohort end  */
 
@@ -300,7 +297,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       method: "POST",
       params: {
         filters: buildCohortGqlOperator(genomicFilters) ?? {},
-        case_filters: getSSMTestedCases(cohortFilters),
+        case_filters: buildCohortGqlOperator(cohortFilters) ?? {},
         gene_id,
         attachment: true,
         filename: `frequent-mutations.${convertDateToString(new Date())}.tsv`,
@@ -333,7 +330,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       method: "POST",
       params: {
         filters: buildCohortGqlOperator(genomicFilters) ?? {},
-        case_filters: getSSMTestedCases(cohortFilters),
+        case_filters: buildCohortGqlOperator(cohortFilters) ?? {},
         attachment: true,
         filename: `frequent-mutations.${convertDateToString(new Date())}.tsv`,
       },
@@ -376,6 +373,20 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     }
   };
 
+  const handleSaveSelectionAsSetModalClose = useCallback(
+    () => setShowSaveModal(false),
+    [],
+  );
+
+  const handleAddToSetModalClose = useCallback(
+    () => setShowAddModal(false),
+    [],
+  );
+
+  const handleRemoveFromSetModalClose = useCallback(
+    () => setShowRemoveModal(false),
+    [],
+  );
   return (
     <>
       {caseFilter && searchTerm.length === 0 && data?.ssmsTotal === 0 ? null : (
@@ -388,62 +399,67 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               </p>
             </div>
           )}
-          {showSaveModal && (
-            <SaveSelectionAsSetModal
-              filters={buildCohortGqlOperator(setFilters)}
-              sort="occurrence.case.project.project_id"
-              initialSetName={
-                selectedMutations.length === 0
-                  ? filtersToName(setFilters)
-                  : "Custom Mutation Selection"
-              }
-              saveCount={
-                selectedMutations.length === 0
-                  ? data?.ssmsTotal
-                  : selectedMutations.length
-              }
-              setType="ssms"
-              setTypeLabel="mutation"
-              createSetHook={useCreateSsmsSetFromFiltersMutation}
-              closeModal={() => setShowSaveModal(false)}
-            />
-          )}
-          {showAddModal && (
-            <AddToSetModal
-              filters={setFilters}
-              addToCount={
-                selectedMutations.length === 0
-                  ? data?.ssmsTotal
-                  : selectedMutations.length
-              }
-              setType="ssms"
-              setTypeLabel="mutation"
-              singleCountHook={useSsmSetCountQuery}
-              countHook={useSsmSetCountsQuery}
-              appendSetHook={useAppendToSsmSetMutation}
-              closeModal={() => setShowAddModal(false)}
-              field={"ssms.ssm_id"}
-              sort="occurrence.case.project.project_id"
-            />
-          )}
-          {showRemoveModal && (
-            <RemoveFromSetModal
-              filters={setFilters}
-              removeFromCount={
-                selectedMutations.length === 0
-                  ? data?.ssmsTotal
-                  : selectedMutations.length
-              }
-              setType="ssms"
-              setTypeLabel="mutation"
-              countHook={useSsmSetCountsQuery}
-              closeModal={() => setShowRemoveModal(false)}
-              removeFromSetHook={useRemoveFromSsmSetMutation}
-            />
+
+          {isUninitialized || isFetching ? null : (
+            <>
+              <SaveSelectionAsSetModal
+                opened={showSaveModal}
+                filters={buildCohortGqlOperator(setFilters)}
+                sort="occurrence.case.project.project_id"
+                initialSetName={
+                  selectedMutations.length === 0
+                    ? filtersToName(setFilters)
+                    : "Custom Mutation Selection"
+                }
+                saveCount={
+                  selectedMutations.length === 0
+                    ? data?.ssmsTotal
+                    : selectedMutations.length
+                }
+                setType="ssms"
+                setTypeLabel="mutation"
+                createSetHook={useCreateSsmsSetFromFiltersMutation}
+                closeModal={handleSaveSelectionAsSetModalClose}
+              />
+
+              <AddToSetModal
+                opened={showAddModal}
+                filters={setFilters}
+                addToCount={
+                  selectedMutations.length === 0
+                    ? data?.ssmsTotal
+                    : selectedMutations.length
+                }
+                setType="ssms"
+                setTypeLabel="mutation"
+                singleCountHook={useSsmSetCountQuery}
+                countHook={useSsmSetCountsQuery}
+                appendSetHook={useAppendToSsmSetMutation}
+                closeModal={handleAddToSetModalClose}
+                field={"ssms.ssm_id"}
+                sort="occurrence.case.project.project_id"
+              />
+
+              <RemoveFromSetModal
+                opened={showRemoveModal}
+                filters={setFilters}
+                removeFromCount={
+                  selectedMutations.length === 0
+                    ? data?.ssmsTotal
+                    : selectedMutations.length
+                }
+                setType="ssms"
+                setTypeLabel="mutation"
+                countHook={useSsmSetCountsQuery}
+                closeModal={handleRemoveFromSetModalClose}
+                removeFromSetHook={useRemoveFromSsmSetMutation}
+              />
+            </>
           )}
           {tableTitle && <HeaderTitle>{tableTitle}</HeaderTitle>}
 
           <VerticalTable
+            customDataTestID="table-most-frequent-somatic-mutations"
             data={formattedTableData ?? []}
             columns={SMTableDefaultColumns}
             additionalControls={
@@ -468,7 +484,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                   targetButtonDisabled={isFetching && !isSuccess}
                   TargetButtonChildren="Save/Edit Mutation Set"
                   disableTargetWidth={true}
-                  LeftIcon={
+                  LeftSection={
                     selectedMutations.length ? (
                       <CountsIcon $count={selectedMutations.length}>
                         {selectedMutations.length}
@@ -477,7 +493,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                   }
                   menuLabelCustomClass="bg-primary text-primary-contrast font-heading font-bold mb-2"
                   customPosition="bottom-start"
-                  zIndex={10}
                   customDataTestId="button-save-edit-mutation-set"
                 />
 
@@ -488,6 +503,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                       caseFilter ? handleTSVCaseDownload : handleTSVGeneDownload
                     }
                     aria-label="Download TSV"
+                    disabled={isFetching}
                   >
                     {downloadMutationsFrequencyTSVActive ? (
                       <Loader size="sm" />
@@ -500,6 +516,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                     onClick={handleTSVDownload}
                     data-testid="button-tsv-mutation-frequency"
                     aria-label="Download TSV"
+                    disabled={isFetching}
                   >
                     {downloadMutationsFrequencyTSVActive ? (
                       <Loader size="sm" />
@@ -508,12 +525,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                     )}
                   </FunctionButton>
                 )}
-                <Text className="font-heading font-bold text-md">
-                  TOTAL OF {data?.ssmsTotal?.toLocaleString("en-US")}{" "}
-                  {data?.ssmsTotal == 1
-                    ? "Somatic Mutation".toUpperCase()
-                    : `${"Somatic Mutation".toUpperCase()}S`}
-                </Text>
               </div>
             }
             search={{
@@ -521,6 +532,14 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               defaultSearchTerm: searchTerm,
               tooltip: "e.g. TP53, ENSG00000141510, chr17:g.7675088C>T, R175H",
             }}
+            tableTitle={
+              <>
+                Total of <b>{data?.ssmsTotal?.toLocaleString("en-US")}</b>{" "}
+                {data?.ssmsTotal == 1
+                  ? "somatic mutation"
+                  : "somatic mutations"}
+              </>
+            }
             pagination={pagination}
             showControls={true}
             enableRowSelection={true}

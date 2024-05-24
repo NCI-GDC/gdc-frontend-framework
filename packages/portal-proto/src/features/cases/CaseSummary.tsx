@@ -1,4 +1,4 @@
-import { useCaseSummary, useAnnotations } from "@gff/core";
+import { useGetCasesQuery, useGetAnnotationsQuery } from "@gff/core";
 import { LoadingOverlay } from "@mantine/core";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import { caseSummaryFields } from "./utils";
@@ -12,28 +12,34 @@ export const CaseSummary = ({
   isModal = false,
 }: {
   case_id: string;
-  bio_id: string;
+  bio_id?: string;
   isModal?: boolean;
 }): JSX.Element => {
-  const [shouldScrollToBio, setShouldScrollToBio] = useState(false);
-  const { data, isFetching } = useCaseSummary({
-    filters: {
-      content: {
-        field: "case_id",
-        value: case_id,
+  const [shouldScrollToBio, setShouldScrollToBio] = useState(
+    bio_id !== undefined,
+  );
+  const { data, isFetching } = useGetCasesQuery({
+    request: {
+      filters: {
+        content: {
+          field: "case_id",
+          value: case_id,
+        },
+        op: "=",
       },
-      op: "=",
+      fields: caseSummaryFields,
     },
-    fields: caseSummaryFields,
   });
 
   const { data: annotationCountData, isFetching: isAnnotationCallFetching } =
-    useAnnotations({
-      filters: {
-        op: "=",
-        content: {
-          field: "annotations.case_id",
-          value: case_id,
+    useGetAnnotationsQuery({
+      request: {
+        filters: {
+          op: "=",
+          content: {
+            field: "annotations.case_id",
+            value: case_id,
+          },
         },
       },
     });
@@ -54,14 +60,16 @@ export const CaseSummary = ({
     <>
       {isFetching ||
       isAnnotationCallFetching ||
-      (data && data.case_id !== case_id) ? (
+      (data && data?.hits?.[0]?.case_id !== case_id) ? (
         <LoadingOverlay visible data-testid="loading-spinner" />
-      ) : data && Object.keys(data).length > 0 && annotationCountData ? (
+      ) : data &&
+        Object.keys(data).length > 0 &&
+        annotationCountData !== undefined ? (
         <CaseView
           case_id={case_id}
           bio_id={bio_id}
-          data={data}
-          annotationCountData={annotationCountData}
+          data={data?.hits?.[0]}
+          annotationCountData={annotationCountData?.pagination.total}
           isModal={isModal}
           shouldScrollToBio={shouldScrollToBio}
         />

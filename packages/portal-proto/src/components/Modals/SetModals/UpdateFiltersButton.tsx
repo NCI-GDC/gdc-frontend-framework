@@ -6,6 +6,7 @@ import {
   isIncludes,
   Operation,
   FilterSet,
+  CreateSetValueArgs,
 } from "@gff/core";
 import { showNotification } from "@mantine/notifications";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
@@ -16,7 +17,9 @@ interface UpdateCohortButtonProps {
   readonly disabled: boolean;
   readonly hooks: {
     readonly updateFilters?: (field: string, op: Operation) => void;
-    readonly createSet?: UseMutation<MutationDefinition<any, any, any, string>>;
+    readonly createSet?: UseMutation<
+      MutationDefinition<CreateSetValueArgs, any, any, string>
+    >;
     readonly getExistingFilters?: () => FilterSet;
   };
   readonly facetField: string;
@@ -69,7 +72,7 @@ const UpdateCohortButton: React.FC<UpdateCohortButtonProps> = ({
       disabled={disabled}
       onClick={() => {
         if (ids.length > 1) {
-          createSet({ values: ids });
+          createSet({ values: ids, intent: "portal", set_type: "mutable" });
         } else {
           hooks.updateFilters(facetField, {
             field: facetField,

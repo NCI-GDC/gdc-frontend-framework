@@ -8,7 +8,6 @@ import {
   Operation,
   NumericFromTo,
 } from "@gff/core";
-import _ from "lodash";
 import {
   FromToRange,
   UpdateFacetFilterFunction,
@@ -27,39 +26,6 @@ export const getLowerAgeYears = (days?: number): number | undefined =>
   days !== undefined ? symmetricalRound(days / DAYS_IN_YEAR) : undefined;
 export const getLowerAgeFromYears = (years?: number): number | undefined =>
   years !== undefined ? symmetricalRound(years * DAYS_IN_YEAR) : undefined;
-
-export const AgeDisplay = (
-  ageInDays: number,
-  yearsOnly = false,
-  defaultValue = "--",
-): string => {
-  const leapThenPair = (years: number, days: number): number[] =>
-    days === 365 ? [years + 1, 0] : [years, days];
-  const timeString = (
-    num: number,
-    singular: string,
-    plural: string,
-  ): string => {
-    const pluralChecked = plural || `${singular}s`;
-    return `${num} ${num === 1 ? singular : pluralChecked}`;
-  };
-  const _timeString = _.spread(timeString);
-
-  if (!ageInDays) {
-    return defaultValue;
-  }
-  return _.zip(
-    leapThenPair(
-      Math.floor(ageInDays / DAYS_IN_YEAR),
-      Math.ceil(ageInDays % DAYS_IN_YEAR),
-    ),
-    ["year", "day"],
-  )
-    .filter((p) => (yearsOnly ? p[1] === "year" : p[0] > 0))
-    .map((p) => (!yearsOnly ? _timeString(p) : p[0]))
-    .join(" ")
-    .trim();
-};
 
 export const buildRangeOperator = <T extends string | number>(
   field: string,
@@ -281,11 +247,15 @@ export const buildRangeBuckets = (
   return [bucketEntries, r];
 };
 
-export const adjustYearsToDays = (value: number, units: string): number =>
-  units == "years" ? getLowerAgeFromYears(value) : value;
+export const adjustYearsToDaysIfUnitsAreYears = (
+  value: number,
+  units: string,
+): number => (units == "years" ? getLowerAgeFromYears(value) : value);
 
-export const adjustDaysToYears = (value: number, units: string): number =>
-  units == "days" ? value : getLowerAgeYears(value);
+export const adjustDaysToYearsIfUnitsAreYears = (
+  value: number,
+  units: string,
+): number => (units === "years" ? getLowerAgeYears(value) : value);
 
 export const leapThenPair = (years: number, days: number): number[] =>
   days === 365 ? [years + 1, 0] : [years, days];

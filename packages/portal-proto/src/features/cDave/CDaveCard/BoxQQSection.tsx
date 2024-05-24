@@ -114,13 +114,17 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
     isLoading,
     isSuccess,
   } = useGetCaseSsmsQuery({
-    fields: [field],
-    filters: buildCohortGqlOperator(joinFilters(missingFilter, cohortFilters)),
-    size: 10000,
+    request: {
+      fields: [field],
+      filters: buildCohortGqlOperator(
+        joinFilters(missingFilter, cohortFilters),
+      ),
+      size: 10000,
+    },
   });
 
   const parsedQQValues = useDeepCompareMemo(
-    () => (isSuccess ? parseNestedQQResponseData(qqData, field) : []),
+    () => (isSuccess ? parseNestedQQResponseData(qqData?.hits, field) : []),
     [qqData, isSuccess, field],
   );
   const formattedQQValues = useDeepCompareMemo(
@@ -273,10 +277,9 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
             height={boundingRectBox.height}
           />
         </div>
-        <div className="w-full h-72 basis-2/3" ref={qqPlotRef}>
+        <div className="w-full h-72 basis-2/3 overflow-hidden" ref={qqPlotRef}>
           <QQPlot
             chartValues={formattedQQValues}
-            field={fieldName}
             isLoading={isLoading}
             color={color}
             width={boundingRectQQ.width}
@@ -298,7 +301,6 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
         <OffscreenWrapper>
           <QQPlot
             chartValues={formattedQQValues}
-            field={fieldName}
             isLoading={isLoading}
             color={color}
             chartRef={qqDownloadChartRef}
@@ -310,7 +312,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
       </div>
       <Button
         data-testid="button-stats-tsv-cdave-card"
-        className="bg-base-max text-primary border-primary mb-2"
+        className="bg-base-max text-primary border-primary mb-2 w-fit"
         onClick={downloadTableTSVFile}
       >
         TSV

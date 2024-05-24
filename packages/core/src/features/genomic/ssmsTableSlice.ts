@@ -16,7 +16,7 @@ import {
 import { appendFilterToOperation, getSSMTestedCases } from "./utils";
 import { joinFilters } from "../cohort";
 import { Reducer } from "@reduxjs/toolkit";
-import { DataStatus } from "src/dataAccess";
+import { DataStatus } from "../../dataAccess";
 
 const SSMSTableGraphQLQuery = `query SsmsTable(
   $ssmTested: FiltersArgument
@@ -37,7 +37,7 @@ $sort: [Sort]
         }
       }
       filteredCases: cases {
-        hits(first: 0, case_filters: $ssmCaseFilter) {
+        hits(first: 0, case_filters: $caseFilters,  filters: $ssmCaseFilter) {
           total
         }
       }
@@ -52,7 +52,7 @@ $sort: [Sort]
               mutation_subtype
               ssm_id
               consequence {
-                hits(first: 1, filters: $consequenceFilters) {
+                hits(first: 1, case_filters: $caseFilters, filters: $consequenceFilters) {
                   edges {
                     node {
                       transcript {
@@ -77,7 +77,7 @@ $sort: [Sort]
                 }
               }
               filteredOccurences: occurrence {
-                hits(first: 0, filters: $ssmCaseFilter) {
+                hits(first: 0, case_filters: $caseFilters,  filters: $ssmCaseFilter) {
                   total
                 }
               }
@@ -244,12 +244,9 @@ const generateFilter = ({
   geneSymbol,
   genomicFilters, // local genomic filters
   cohortFilters, // the cohort filters which used to filter the cases
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  _cohortFiltersNoSet, // the cohort filters without the internal case set, only passed in for request caching
   caseFilter = undefined,
 }: SsmsTableRequestParameters) => {
-  const cohortFiltersGQl = buildCohortGqlOperator(cohortFilters);
+  const cohortFiltersGQL = buildCohortGqlOperator(cohortFilters);
   const genomicFiltersWithPossibleGeneSymbol = geneSymbol
     ? joinFilters(
         {
@@ -277,12 +274,12 @@ const generateFilter = ({
   );
 
   const graphQlFilters = {
-    ssmCaseFilter: getSSMTestedCases(cohortFilters, geneSymbol),
+    ssmCaseFilter: getSSMTestedCases(geneSymbol),
     // for table filters use both cohort and genomic filter along with search filter
     // for case summary we need to not use case filter
     caseFilters: caseFilter
       ? buildCohortGqlOperator(caseFilter)
-      : cohortFiltersGQl,
+      : cohortFiltersGQL,
     ssmsTable_filters: tableFilters,
     consequenceFilters: {
       content: [

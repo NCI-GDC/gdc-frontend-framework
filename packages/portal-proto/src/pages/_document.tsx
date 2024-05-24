@@ -1,8 +1,6 @@
 import Document, { DocumentContext, DocumentInitialProps } from "next/document";
 import { resetIdCounter } from "react-tabs";
-import { ServerStyles, createStylesServer } from "@mantine/next";
-
-const stylesServer = createStylesServer();
+import { ColorSchemeScript } from "@mantine/core";
 
 class GdcDocument extends Document {
   static async getInitialProps(
@@ -19,7 +17,7 @@ class GdcDocument extends Document {
       styles: (
         <>
           {initialProps.styles}
-          <ServerStyles html={initialProps.html} server={stylesServer} />
+          <ColorSchemeScript defaultColorScheme="auto" />
         </>
       ),
     };

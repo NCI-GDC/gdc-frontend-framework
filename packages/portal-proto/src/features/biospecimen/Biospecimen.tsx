@@ -9,8 +9,8 @@ import {
   ActionIcon,
 } from "@mantine/core";
 import {
-  entityType,
-  useBiospecimenData,
+  BiospecimenEntityType,
+  useBiospecimenDataQuery,
   useCoreDispatch,
   useCoreSelector,
   selectCart,
@@ -24,6 +24,7 @@ import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import download from "@/utils/download";
 import { HeaderTitle } from "@/components/tailwindComponents";
+import { useDeepCompareEffect } from "use-deep-compare";
 
 interface BiospecimenProps {
   readonly caseId: string;
@@ -45,7 +46,8 @@ export const Biospecimen = ({
     useState(false);
   const [treeStatusOverride, setTreeStatusOverride] =
     useState<overrideMessage | null>(null);
-  const [selectedEntity, setSelectedEntity] = useState<entityType>(null);
+  const [selectedEntity, setSelectedEntity] =
+    useState<BiospecimenEntityType>(null);
   const [isAllExpanded, setIsAllExpanded] = useState(false);
   const [selectedType, setSelectedType] = useState(undefined);
   const [expandedCount, setExpandedCount] = useState(1);
@@ -57,7 +59,7 @@ export const Biospecimen = ({
   const dispatch = useCoreDispatch();
 
   const { data: bioSpecimenData, isFetching: isBiospecimentDataFetching } =
-    useBiospecimenData(caseId);
+    useBiospecimenDataQuery(caseId);
 
   useEffect(() => {
     setIsAllExpanded(expandedCount === totalNodeCount);
@@ -66,7 +68,7 @@ export const Biospecimen = ({
   const getType = (node) =>
     (entityTypes.find((type) => node[`${type.s}_id`]) || { s: null }).s;
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (
       !isBiospecimentDataFetching &&
       bioSpecimenData?.samples?.hits?.edges?.length
@@ -76,7 +78,10 @@ export const Biospecimen = ({
         return searchForStringInNode(escapedSearchText, e);
       });
       const flattened = flatten(founds);
-      const foundNode = flattened[0]?.node;
+      const foundNode =
+        flattened.length > 0
+          ? flattened[0]?.node
+          : bioSpecimenData?.samples?.hits?.edges?.[0]?.node;
 
       if (!entityClicked && foundNode) {
         setSelectedEntity(foundNode);
@@ -87,12 +92,11 @@ export const Biospecimen = ({
     bioSpecimenData?.samples?.hits?.edges,
     isBiospecimentDataFetching,
     searchText,
-    selectedEntity,
-    selectedType,
     entityClicked,
   ]);
 
   const onSelectEntity = (entity, type) => {
+    setSearchText("");
     setSelectedEntity(entity);
     setSelectedType(type.s);
     setEntityClicked(true);
@@ -199,24 +203,24 @@ export const Biospecimen = ({
             TargetButtonChildren={
               biospecimenDownloadActive ? "Processing" : "Download"
             }
-            LeftIcon={
+            LeftSection={
               biospecimenDownloadActive ? (
                 <Loader size={20} />
               ) : (
                 <DownloadIcon size="1rem" aria-label="download" />
               )
             }
-            zIndex={5}
           />
 
           <div className="flex mt-2 gap-4">
             <div className="basis-4/12">
               <div className="flex mb-4 gap-4">
                 <Input
-                  icon={<MdOutlineSearch size={24} aria-hidden="true" />}
+                  data-testid="textbox-biospecimen-search-bar"
+                  leftSection={<MdOutlineSearch size={24} aria-hidden="true" />}
                   placeholder="Search"
-                  className="basis-5/6"
                   classNames={{
+                    wrapper: "basis-5/6",
                     input: "border-base-lighter",
                   }}
                   onChange={(e) => {
@@ -231,9 +235,11 @@ export const Biospecimen = ({
                     setSearchText(e.target.value);
                   }}
                   value={searchText}
+                  rightSectionPointerEvents="all"
                   rightSection={
                     searchText.length > 0 && (
                       <ActionIcon
+                        variant="subtle"
                         onClick={() => {
                           setExpandedCount(0);
                           setTreeStatusOverride(overrideMessage.Expanded);
@@ -258,7 +264,7 @@ export const Biospecimen = ({
                     );
                     setExpandedCount(0);
                   }}
-                  className="text-primary hover:bg-primary-darker hover:text-base-lightest"
+                  className="flex-none text-primary hover:enabled:bg-primary-darker hover:enabled:text-base-lightest"
                   disabled={searchText.length > 0}
                   variant="outline"
                 >
@@ -288,6 +294,7 @@ export const Biospecimen = ({
             </div>
             <div className="basis-3/4">
               <HorizontalTable
+                customDataTestID="table-selection-information-biospecimen"
                 tableData={formatEntityInfo(
                   selectedEntity,
                   selectedType,

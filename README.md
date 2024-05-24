@@ -4,26 +4,26 @@
 
 ### Prerequisites
 
-This is a multi-workspace repo that requires npm v8. The minimum node version is set to v16.15.1.
+This is a multi-workspace repo that requires npm v10.2.4. The minimum node version is set to v20.11.0.
 
 Node can be downloaded from the official Node.js site. You may also consider using a [Node version manager](https://docs.npmjs.com/cli/v7/configuring-npm/install#using-a-node-version-manager-to-install-nodejs-and-npm).
 
-Your version of Node may not ship with npm v8. To install it, run:
+Your version of Node may not ship with npm v10.2.4. To install it, run:
 
 ```bash
-npm install npm@8
+npm install npm@10.2.4
 ```
 
 If you are using a Node version manager, you can run the following to install the correct version of Node:
 
 ```bash
-nvm install 16.15.1
+nvm install 20.11.0
 ```
 
 to use the correct version of Node:
 
 ```bash
-nvm use 16.15.1
+nvm use 20.11.0
 ```
 
 ### Install Dependencies
@@ -149,7 +149,7 @@ to run it:
 local-ssl-proxy --source 3010 --target 3000 --cert localhost.pem --key localhost-key.pem
 ```
 
-4. After these steps, you can access the app on `https://localhost.gdc.cancer.gov:3010/v2`.
+4. After these steps, you can access the app on `https://localhost.gdc.cancer.gov:3010`.
 5. Even after all these steps you will see `SecurityError: Blocked a frame with origin "https://localhost.gdc.cancer.gov:3010" from accessing a cross-origin frame` error. But you can close the error and refresh the page. This warning will be suppressed in production.
 6. Now you can Login and use features that are available with Authentication.
 7. For developing 3rd party tools with its own server API endpoint or URL:
@@ -182,11 +182,19 @@ mkcert localhost
 local-ssl-proxy --config path/to/ssl-proxy.json --cert localhost.pem --key localhost-key.pem
 ```
 
+## Version
+
+Update the versions of all workspaces at the same time. (Replace 2.13.0 with the new version to set)
+
+```bash
+npm run version -- 2.13.0
+```
+
 ## Documentation
 
 Run build-docs to generate documentation for "portal-proto" and "core" packages
 For developing applications for the GDC Portal, please review
-[Developer Guide](docs/DevelopersGuide/Developers_Guide.md).
+[Developer Guide](https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Developers_Guide).
 
 ```bash
 npm run build-docs

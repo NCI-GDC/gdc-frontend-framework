@@ -717,6 +717,10 @@ module.exports = {
     extend: {
       screens: {
         "Custom-Repo-Width": "1370px",
+        sm: "640px",
+        md: "768px",
+        lg: "1024px",
+        xl: "1280px",
       },
       colors: {
         /* These colors come from the NCI color palette. The palette defines
@@ -781,9 +785,10 @@ module.exports = {
           "icon-background": "#FBD5C7",
           border: "#C5E3DF",
           borderAlt: "#F0E4CB",
+          "link-text": "#863787",
         },
         warningColor: "#FFAD0D", //orangish
-        warningColorText: "#976F21", //lighter orangish
+        warningColorText: "#8A661E", //lighter orangish
         cartDarkerOrange: "#C7501A",
         cartLighterOrange: "#C7501A33",
         linkDarkerColor: "#1D6796",
@@ -815,11 +820,15 @@ module.exports = {
         "screen/5": "calc(100vw / 5)",
       },
       flexBasis: {
+        "tools-sm": "296px",
+        "tools-md": "350px",
         coretools: "400px",
         tools: "188px",
       },
       gridTemplateColumns: {
         "2flex1": "1fr auto",
+        "footer-large": "1.5fr 1fr 1fr 1fr",
+        "footer-small": "2fr 1fr",
       },
       fontFamily: {
         montserrat: ["Montserrat", "sans-serif"],

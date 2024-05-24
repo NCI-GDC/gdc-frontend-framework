@@ -5,11 +5,11 @@ import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import {
-  useGenesSummaryData,
+  useGeneSummaryQuery,
   GeneSummaryData,
   FilterSet,
   useCoreSelector,
-  selectCurrentCohortGeneAndSSMCaseSet,
+  selectCurrentCohortFilters,
 } from "@gff/core";
 import { HiPlus, HiMinus } from "react-icons/hi";
 import { externalLinkNames, externalLinks, humanify } from "src/utils";
@@ -24,11 +24,10 @@ import { overwritingDemoFilterMutationFrequency } from "../genomic/GenesAndMutat
 import { CollapsibleList } from "@/components/CollapsibleList";
 import SMTableContainer from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
 import GeneCancerDistributionTable from "../cancerDistributionTable/GeneCancerDistributionTable";
+import GenesIcon from "public/user-flow/icons/summary/genes.svg";
 
 interface GeneViewProps {
-  data: {
-    genes: GeneSummaryData;
-  };
+  data: GeneSummaryData;
   gene_id: string;
   isModal: boolean;
   contextSensitive: boolean;
@@ -46,7 +45,7 @@ export const GeneSummary = ({
   contextSensitive?: boolean;
   contextFilters?: FilterSet;
 }): JSX.Element => {
-  const { data, isFetching } = useGenesSummaryData({
+  const { data, isFetching } = useGeneSummaryQuery({
     gene_id,
   });
 
@@ -54,7 +53,7 @@ export const GeneSummary = ({
     <>
       {isFetching ? (
         <LoadingOverlay data-testid="loading-spinner" visible />
-      ) : data && data.genes ? (
+      ) : data ? (
         <GeneView
           data={data}
           gene_id={gene_id}
@@ -78,7 +77,7 @@ const GeneView = ({
 }: GeneViewProps) => {
   const isDemo = useIsDemoApp();
   const currentCohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortGeneAndSSMCaseSet(state),
+    selectCurrentCohortFilters(state),
   );
 
   // Since genomic filter lies in different store, it cannot be accessed using selectors.
@@ -100,18 +99,16 @@ const GeneView = ({
 
   const formatDataForSummary = () => {
     const {
-      genes: {
-        symbol,
-        name,
-        synonyms,
-        biotype: type,
-        gene_chromosome,
-        gene_start,
-        gene_end,
-        gene_strand,
-        description,
-        is_cancer_gene_census,
-      },
+      symbol,
+      name,
+      synonyms,
+      biotype: type,
+      gene_chromosome,
+      gene_start,
+      gene_end,
+      gene_strand,
+      description,
+      is_cancer_gene_census,
     } = data;
 
     const location = `chr${gene_chromosome}:${gene_start}-${gene_end} (GRCh38)`;
@@ -157,11 +154,9 @@ const GeneView = ({
 
   const formatDataForExternalReferences = () => {
     const {
-      genes: {
-        external_db_ids: { entrez_gene, uniprotkb_swissprot, hgnc, omim_gene },
-        gene_id,
-        civic,
-      },
+      external_db_ids: { entrez_gene, uniprotkb_swissprot, hgnc, omim_gene },
+      gene_id,
+      civic,
     } = data;
 
     const externalLinksObj = {
@@ -218,11 +213,12 @@ const GeneView = ({
 
   return (
     <div>
-      {data?.genes && (
+      {data && (
         <>
           <SummaryHeader
-            iconText="gn"
-            headerTitle={data.genes.symbol}
+            Icon={GenesIcon}
+            headerTitleLeft="Gene"
+            headerTitle={data.symbol}
             isModal={isModal}
           />
 
@@ -239,17 +235,24 @@ const GeneView = ({
             <div className="text-primary-content">
               <div className="flex gap-8">
                 <div className="flex-1">
-                  <SummaryCard tableData={formatDataForSummary()} />
+                  <SummaryCard
+                    customDataTestID="table-summary-gene-summary"
+                    tableData={formatDataForSummary()}
+                  />
                 </div>
                 <div className="flex-1">
                   <SummaryCard
+                    customDataTestID="table-external-references-gene-summary"
                     tableData={formatDataForExternalReferences()}
                     title="External References"
                   />
                 </div>
               </div>
             </div>
-            <div className="mt-8 mb-16">
+            <div
+              data-testid="table-cancer-distribution-gene-summary"
+              className="mt-8 mb-16"
+            >
               <HeaderTitle>Cancer Distribution</HeaderTitle>
 
               <div className="grid grid-cols-2 gap-8 mt-2 mb-8">
@@ -269,14 +272,14 @@ const GeneView = ({
               </div>
               <GeneCancerDistributionTable
                 gene={gene_id}
-                symbol={data.genes.symbol}
+                symbol={data.symbol}
                 genomicFilters={genomicFilters}
                 cohortFilters={cohortFilters}
               />
 
               <div className="mt-14">
                 <SMTableContainer
-                  geneSymbol={data.genes.symbol}
+                  geneSymbol={data.symbol}
                   gene_id={gene_id}
                   cohortFilters={cohortFilters}
                   genomicFilters={genomicFilters}

@@ -55,10 +55,17 @@ describe("<InputEntityList />", () => {
     const saveButton = getByRole("button", { name: "Save Set" });
     await waitFor(() => expect(saveButton).toBeEnabled());
     await userEvent.click(saveButton);
+    await waitFor(() =>
+      expect(getByPlaceholderText("New Set Name")).toBeInTheDocument(),
+    );
     await userEvent.type(getByPlaceholderText("New Set Name"), "my set");
     await userEvent.click(getByRole("button", { name: "Save" }));
 
-    expect(createSet).toBeCalledWith({ values: ["7890-123"] });
+    expect(createSet).toBeCalledWith({
+      values: ["7890-123"],
+      intent: "user",
+      set_type: "mutable",
+    });
   });
 
   it("Clear button should be disabled initially", () => {

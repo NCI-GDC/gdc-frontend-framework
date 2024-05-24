@@ -42,7 +42,7 @@ const UndoButton: React.FC<UndoButtonProps> = ({ action }: UndoButtonProps) => {
     <Button
       variant={"white"}
       onClick={action}
-      leftIcon={<UndoIcon aria-hidden="true" />}
+      leftSection={<UndoIcon aria-hidden="true" />}
     >
       <span className="underline">Undo</span>
     </Button>
@@ -249,6 +249,7 @@ export const AddToCartButton: React.FC<CartButtonProps> = ({
     </ActionIcon>
   ) : (
     <Button
+      data-testid="button-add-to-cart"
       className={`font-medium text-sm text-primary bg-base-max hover:bg-primary-darkest hover:text-primary-contrast-darker ${focusStyles}`}
       onClick={() => addToCart(files, currentCart, dispatch)}
       variant="outline"
@@ -278,6 +279,7 @@ export const RemoveFromCartButton: React.FC<CartButtonProps> = ({
     </ActionIcon>
   ) : (
     <Button
+      data-testid="button-remove-from-cart"
       onClick={() => removeFromCart(files, currentCart, dispatch)}
       className={`font-medium text-sm text-primary bg-base-max hover:bg-primary-darkest hover:text-primary-contrast-darker ${focusStyles}`}
       variant="outline"
@@ -290,26 +292,29 @@ export const RemoveFromCartButton: React.FC<CartButtonProps> = ({
 
 interface SingleItemCartButtonProps {
   readonly file: CartFile;
-  readonly iconOnly?: boolean;
 }
 
 export const SingleItemAddToCartButton: React.FC<SingleItemCartButtonProps> = ({
   file,
-  iconOnly = false,
 }: SingleItemCartButtonProps) => {
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
+  const inCart = fileInCart(currentCart, file.file_id);
 
-  return fileInCart(currentCart, file.file_id) ? (
+  return (
     <ActionIcon
-      title="Remove From Cart"
-      aria-label="Remove from cart"
-      onClick={() => removeFromCart([file], currentCart, dispatch)}
-      className="mx-auto text-primary-content-darkest border-primary-darkest bg-primary-light"
+      title={inCart ? "Remove From Cart" : "Add to Cart"}
+      aria-label={inCart ? "Remove from cart" : "Add to Cart"}
+      onClick={() => {
+        inCart
+          ? removeFromCart([file], currentCart, dispatch)
+          : addToCart([file], currentCart, dispatch);
+      }}
+      className={`mx-auto text-primary-content-darkest border-primary-darkest ${
+        inCart ? "bg-primary-light" : ""
+      }`}
     >
       <CartIcon />
     </ActionIcon>
-  ) : (
-    <AddToCartButton files={[file]} iconOnly={iconOnly} />
   );
 };

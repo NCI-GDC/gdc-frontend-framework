@@ -150,16 +150,17 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
   );
 
   useDeepCompareEffect(() => {
-    setSelectedSurvivalPlots(
-      displayedData
-        .filter(
-          ({ count, key }) =>
-            key !== MISSING_KEY && count >= SURVIVAL_PLOT_MIN_COUNT,
-        )
-        .sort((a, b) => b.count - a.count)
-        .map(({ key }) => key)
-        .slice(0, 2),
-    );
+    selectedSurvivalPlots.length === 0 &&
+      setSelectedSurvivalPlots(
+        displayedData
+          .filter(
+            ({ count, key }) =>
+              key !== MISSING_KEY && count >= SURVIVAL_PLOT_MIN_COUNT,
+          )
+          .sort((a, b) => b.count - a.count)
+          .map(({ key }) => key)
+          .slice(0, 2),
+      );
 
     if (customBinnedData === null) {
       setYTotal(displayedData.reduce((a, b) => a + b.count, 0));
@@ -179,23 +180,25 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
         />
       ) : (
         <>
-          {chartType === "histogram" ? (
-            <CDaveHistogram
-              field={field}
-              data={displayedData}
-              yTotal={yTotal}
-              isFetching={isFetching}
-              hideYTicks={displayedData.every((val) => val.count === 0)}
-              noData={noData}
-            />
-          ) : (
-            <ClinicalSurvivalPlot
-              field={field}
-              selectedSurvivalPlots={selectedSurvivalPlots}
-              continuous={true}
-              customBinnedData={customBinnedData}
-            />
-          )}
+          <div className="flex-grow">
+            {chartType === "histogram" ? (
+              <CDaveHistogram
+                field={field}
+                data={displayedData}
+                yTotal={yTotal}
+                isFetching={isFetching}
+                hideYTicks={displayedData.every((val) => val.count === 0)}
+                noData={noData}
+              />
+            ) : (
+              <ClinicalSurvivalPlot
+                field={field}
+                selectedSurvivalPlots={selectedSurvivalPlots}
+                continuous={true}
+                customBinnedData={customBinnedData}
+              />
+            )}
+          </div>
           <CardControls
             continuous={true}
             field={field}
@@ -223,16 +226,16 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
           />
         </>
       )}
-      {binningModalOpen && (
-        <ContinuousBinningModal
-          setModalOpen={setBinningModalOpen}
-          field={field}
-          stats={initialData}
-          updateBins={setCustomBinnedData}
-          customBins={customBinnedData}
-          dataDimension={dataDimension}
-        />
-      )}
+
+      <ContinuousBinningModal
+        opened={binningModalOpen}
+        setModalOpen={setBinningModalOpen}
+        field={field}
+        stats={initialData}
+        updateBins={setCustomBinnedData}
+        customBins={customBinnedData}
+        dataDimension={dataDimension}
+      />
     </>
   );
 };

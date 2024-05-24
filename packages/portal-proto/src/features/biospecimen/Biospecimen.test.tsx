@@ -1,6 +1,10 @@
-import { render } from "@testing-library/react";
+import { render } from "test-utils";
 import { Biospecimen } from "./Biospecimen";
 import * as func from "@gff/core";
+
+jest.mock("next/router", () => ({
+  useRouter: jest.fn(),
+}));
 
 const mockResponse = {
   composition: null,
@@ -39,7 +43,7 @@ describe("<Biospecimen />", () => {
   });
 
   it("should show Loading Overlay when fetching", () => {
-    jest.spyOn(func, "useBiospecimenData").mockReturnValue({
+    jest.spyOn(func, "useBiospecimenDataQuery").mockReturnValue({
       data: {
         files: { hits: { edges: [] } },
         samples: {
@@ -52,7 +56,7 @@ describe("<Biospecimen />", () => {
       isFetching: true,
       isSuccess: true,
       isUninitialized: false,
-    });
+    } as any);
     const { getByTestId } = render(
       <Biospecimen
         caseId="testId"
@@ -66,7 +70,7 @@ describe("<Biospecimen />", () => {
   });
 
   it("should not show error text when the results are NOT empty and should render a Biotree comp with given data", () => {
-    jest.spyOn(func, "useBiospecimenData").mockReturnValue({
+    jest.spyOn(func, "useBiospecimenDataQuery").mockReturnValue({
       data: {
         files: { hits: { edges: [] } },
         samples: {
@@ -79,7 +83,7 @@ describe("<Biospecimen />", () => {
       isFetching: false,
       isSuccess: true,
       isUninitialized: false,
-    });
+    } as any);
     jest.spyOn(func, "useCoreSelector").mockReturnValue(["test1id", "test2id"]);
     const { queryByLabelText, getAllByRole, getByText } = render(
       <Biospecimen

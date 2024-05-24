@@ -1,7 +1,7 @@
 import React, { createContext, useState } from "react";
 import { Modal, Tabs } from "@mantine/core";
 import { useCoreDispatch, hideModal } from "@gff/core";
-import { StyledTabsList, StyledTab } from "@/components/StyledComponents/Tabs";
+import { StyledTab } from "@/components/StyledComponents/Tabs";
 import DiscardChangesModal from "./DiscardChangesModal";
 
 export const UserInputContext = createContext([]);
@@ -10,6 +10,7 @@ interface UserInputModalProps {
   readonly modalTitle: string;
   readonly children: React.ReactNode;
   readonly tabs?: { label: string; value: string }[];
+  readonly opened: boolean;
 }
 
 /***
@@ -19,12 +20,14 @@ interface UserInputModalProps {
  * @param modalTitle - title of the modal
  * @param children - children to render in the modal
  * @param tabs - tabs to render in the modal
+ * @param opened - boolean to open and close the modal
  * @category Modals
  */
 const UserInputModal: React.FC<UserInputModalProps> = ({
   modalTitle,
   children,
   tabs,
+  opened,
 }: UserInputModalProps) => {
   const dispatch = useCoreDispatch();
   const [showDiscardModal, setShowDiscardModal] = useState<
@@ -47,40 +50,48 @@ const UserInputModal: React.FC<UserInputModalProps> = ({
 
   return (
     <Modal
-      opened
+      opened={opened}
       title={modalTitle}
       onClose={() =>
         userEnteredInput ? setShowDiscardModal("close") : dispatch(hideModal())
       }
       size={900}
     >
-      <DiscardChangesModal
-        openModal={showDiscardModal !== null}
-        action={() => {
-          showDiscardModal === "close"
-            ? dispatch(hideModal())
-            : setActiveTab(activeTabInWaiting);
-        }}
-        onClose={() => setShowDiscardModal(null)}
-      />
-      <UserInputContext.Provider
-        value={[userEnteredInput, setUserEnteredInput]}
-      >
-        {tabs ? (
-          <Tabs value={activeTab} keepMounted={false} onTabChange={onTabChange}>
-            <StyledTabsList>
-              {tabs.map((tab) => (
-                <StyledTab value={tab.value} key={tab.value}>
-                  {tab.label}
-                </StyledTab>
-              ))}
-            </StyledTabsList>
-            {children}
-          </Tabs>
-        ) : (
-          children
-        )}
-      </UserInputContext.Provider>
+      {opened && (
+        <>
+          <DiscardChangesModal
+            openModal={showDiscardModal !== null}
+            action={() => {
+              showDiscardModal === "close"
+                ? dispatch(hideModal())
+                : setActiveTab(activeTabInWaiting);
+            }}
+            onClose={() => setShowDiscardModal(null)}
+          />
+          <UserInputContext.Provider
+            value={[userEnteredInput, setUserEnteredInput]}
+          >
+            {tabs ? (
+              <Tabs
+                value={activeTab}
+                keepMounted={false}
+                onChange={onTabChange}
+              >
+                <Tabs.List>
+                  {tabs.map((tab) => (
+                    <StyledTab value={tab.value} key={tab.value}>
+                      {tab.label}
+                    </StyledTab>
+                  ))}
+                </Tabs.List>
+                {children}
+              </Tabs>
+            ) : (
+              children
+            )}
+          </UserInputContext.Provider>
+        </>
+      )}
     </Modal>
   );
 };

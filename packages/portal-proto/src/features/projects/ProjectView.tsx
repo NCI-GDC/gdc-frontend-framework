@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   AnnotationDefaults,
+  GdcApiData,
   ProjectDefaults,
   useCoreDispatch,
 } from "@gff/core";
@@ -8,7 +9,6 @@ import { FaUser, FaFile, FaEdit } from "react-icons/fa";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { Button, Loader, Tooltip } from "@mantine/core";
-import Link from "next/link";
 import CategoryTableSummary from "@/components/Summary/CategoryTableSummary";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
@@ -20,16 +20,15 @@ import {
   formatDataForDataCategoryTable,
   formatDataForExpCategoryTable,
   formatDataForSummary,
-  getAnnotationsLinkParams,
 } from "./utils";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 import { focusStyles } from "@/utils/index";
+import AnnotationsTable from "./AnnotationsTable";
+import ProjectsIcon from "public/user-flow/icons/summary/projects.svg";
+import useScrollToHash from "@/hooks/useScrollToHash";
 
 export interface ProjectViewProps extends ProjectDefaults {
-  readonly annotation: {
-    list: AnnotationDefaults[];
-    count: number;
-  };
+  readonly annotation: GdcApiData<AnnotationDefaults>;
   hasControlledAccess: boolean;
   isModal?: boolean;
 }
@@ -44,19 +43,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
     useState(false);
   const [showSaveCohort, setShowSaveCohort] = useState(false);
 
-  const addLinkValue = () => (
-    <span className="text-base-lightest">
-      {getAnnotationsLinkParams(projectData) ? (
-        <Link href={getAnnotationsLinkParams(projectData)} passHref>
-          <a className="underline" target="_blank">
-            {projectData.annotation.count.toLocaleString()}
-          </a>
-        </Link>
-      ) : (
-        projectData.annotation.count.toLocaleString()
-      )}
-    </span>
-  );
+  useScrollToHash(["annotations"]);
 
   const Cases = (
     <span className="flex items-center gap-0.5">
@@ -65,6 +52,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
       </div>
 
       <SingularOrPluralSpan
+        customDataTestID="text-case-count-project-summary"
         count={projectData.summary?.case_count}
         title="Case"
       />
@@ -78,6 +66,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
       </div>
 
       <SingularOrPluralSpan
+        customDataTestID="text-file-count-project-summary"
         count={projectData.summary?.file_count}
         title="File"
       />
@@ -85,14 +74,20 @@ export const ProjectView: React.FC<ProjectViewProps> = (
   );
 
   const Annotations = (
-    <span className="flex items-center gap-0.5">
-      <div className="text-sm 2xl:text-xl">
-        <FaEdit />
-      </div>
-      <span>
-        <span className="font-bold">{addLinkValue()} </span>
-        {`Annotation${projectData.annotation.count === 1 ? `` : `s`}`}
-      </span>
+    <span className="flex items-center gap-1">
+      <FaEdit size={24} />
+      {projectData.annotation.pagination.total > 0 ? (
+        <a href="#annotations" className="underline font-bold">
+          {projectData.annotation.pagination.total.toLocaleString()}
+        </a>
+      ) : (
+        <span className="font-bold">
+          {projectData.annotation.pagination.total.toLocaleString()}
+        </span>
+      )}
+      {projectData.annotation.pagination.total == 1
+        ? "Annotation"
+        : "Annotations"}
     </span>
   );
 
@@ -101,6 +96,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
       The project has controlled access data which requires dbGaP Access. See
       instructions for{" "}
       <a
+        data-testid="link-obtaining-access-to-controlled-data"
         href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
         className="text-utility-link underline"
         target="_blank"
@@ -231,7 +227,8 @@ export const ProjectView: React.FC<ProjectViewProps> = (
   return (
     <>
       <SummaryHeader
-        iconText="pr"
+        Icon={ProjectsIcon}
+        headerTitleLeft="Project"
         headerTitle={projectData.project_id}
         isModal={projectData.isModal}
         leftElement={
@@ -241,6 +238,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
               withArrow
             >
               <Button
+                data-testid="button-save-new-cohort-project-summary"
                 color="primary"
                 variant="outline"
                 className={`bg-base-max border-primary font-medium text-sm ${focusStyles}`}
@@ -249,22 +247,24 @@ export const ProjectView: React.FC<ProjectViewProps> = (
                 Save New Cohort
               </Button>
             </Tooltip>
-            {showSaveCohort && (
-              <SaveCohortModal
-                filters={{
-                  mode: "and",
-                  root: {
-                    "cases.project.project_id": {
-                      operator: "includes",
-                      field: "cases.project.project_id",
-                      operands: [projectData.project_id],
-                    },
+
+            <SaveCohortModal
+              opened={showSaveCohort}
+              filters={{
+                mode: "and",
+                root: {
+                  "cases.project.project_id": {
+                    operator: "includes",
+                    field: "cases.project.project_id",
+                    operands: [projectData.project_id],
                   },
-                }}
-                onClose={() => setShowSaveCohort(false)}
-              />
-            )}
+                },
+              }}
+              onClose={() => setShowSaveCohort(false)}
+            />
+
             <DropdownWithIcon
+              customDataTestId="button-biospecimen-project-summary"
               dropdownElements={[
                 {
                   title: "TSV",
@@ -282,7 +282,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
                   {biospecimenDownloadActive ? "Processing" : "Biospecimen"}
                 </span>
               }
-              LeftIcon={
+              LeftSection={
                 biospecimenDownloadActive ? (
                   <Loader size={20} />
                 ) : (
@@ -291,6 +291,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
               }
             />
             <DropdownWithIcon
+              customDataTestId="button-clinical-project-summary"
               dropdownElements={[
                 {
                   title: "TSV",
@@ -308,7 +309,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
                   {clinicalDownloadActive ? "Processing" : "Clinical"}
                 </span>
               }
-              LeftIcon={
+              LeftSection={
                 clinicalDownloadActive ? (
                   <Loader size={20} />
                 ) : (
@@ -318,7 +319,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
             />
             <Tooltip
               transitionProps={{ duration: 200, transition: "fade" }}
-              width={220}
+              w={220}
               label="Download a manifest for use with the GDC Data Transfer Tool. The GDC
               Data Transfer Tool is recommended for transferring large volumes of data."
               arrowSize={10}
@@ -327,12 +328,13 @@ export const ProjectView: React.FC<ProjectViewProps> = (
               withArrow
             >
               <Button
+                data-testid="button-manifest-project-summary"
                 variant="outline"
-                leftIcon={
+                leftSection={
                   manifestDownloadActive ? (
                     <Loader size={20} />
                   ) : (
-                    <DownloadIcon size="1.25em" />
+                    <DownloadIcon size="1.25em" aria-label="download" />
                   )
                 }
                 className={`text-primary bg-base-max border-primary hover:bg-primary-darkest hover:text-base-max ${focusStyles}`}
@@ -357,7 +359,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
             <HeaderTitle>Summary</HeaderTitle>
             {message && <div className="text-sm text-right">{message}</div>}
           </div>
-          <div className="flex">
+          <div data-testid="table-summary-project-summary" className="flex">
             <div className="basis-1/2">
               <HorizontalTable
                 tableData={formatDataForSummary(projectData).slice(
@@ -381,12 +383,14 @@ export const ProjectView: React.FC<ProjectViewProps> = (
             <div className="flex gap-8 mt-8 mb-14">
               {projectData?.summary?.data_categories && (
                 <CategoryTableSummary
+                  customDataTestID="table-data-category-project-summary"
                   title="Cases and File Counts by Data Category"
                   {...formatDataForDataCategoryTable(projectData)}
                 />
               )}
               {projectData?.summary?.experimental_strategies && (
                 <CategoryTableSummary
+                  customDataTestID="table-experimental-strategy-project-summary"
                   title="Cases and File Counts by Experimental Strategy"
                   {...formatDataForExpCategoryTable(projectData)}
                 />
@@ -399,6 +403,16 @@ export const ProjectView: React.FC<ProjectViewProps> = (
                 projectId={projectData?.project_id}
                 primarySites={projectData?.primary_site}
               />
+            </div>
+          )}
+          {projectData?.annotation?.pagination.count > 0 && (
+            <div
+              className={`mb-16 ${
+                projectData.isModal ? "scroll-mt-36" : "scroll-mt-72"
+              }`}
+              id="annotations"
+            >
+              <AnnotationsTable project_id={projectData.project_id} />
             </div>
           )}
         </div>

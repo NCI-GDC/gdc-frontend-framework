@@ -1,34 +1,11 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
-  CoreDataSelectorResponse,
-  createUseCoreDataHook,
-  DataStatus,
-} from "../../../dataAccess";
-import { CoreState } from "../../../reducers";
-import { CoreDispatch } from "../../../store";
-import {
-  fetchGdcSsms,
-  SSMSDefaults,
+  endpointSlice,
   GdcApiRequest,
   GdcApiResponse,
 } from "../../gdcapi/gdcapi";
+import { SSMSDefaults } from "../../gdcapi/types";
 
-export interface SsmsState {
-  readonly summaryData?: summaryData;
-  readonly status: DataStatus;
-  readonly error?: string;
-  readonly requestId?: string;
-}
-
-export const fetchSsms = createAsyncThunk<
-  GdcApiResponse<SSMSDefaults>,
-  GdcApiRequest,
-  { dispatch: CoreDispatch; state: CoreState }
->("ssms/fetchSsms", async (request?: GdcApiRequest) => {
-  return await fetchGdcSsms(request);
-});
-
-interface summaryData {
+interface SummaryData {
   uuid: string;
   dna_change: string;
   type: string;
@@ -50,23 +27,15 @@ interface summaryData {
   };
 }
 
-const initialState: SsmsState = {
-  status: "uninitialized",
-  error: undefined,
-};
-
-const slice = createSlice({
-  name: "ssms",
-  initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchSsms.fulfilled, (state, action) => {
-        if (state.requestId != action.meta.requestId) return state;
-
-        const response = action.payload;
-
-        state.summaryData = response.data.hits.map((hit) => ({
+export const ssmsSummarySlice = endpointSlice.injectEndpoints({
+  endpoints: (builder) => ({
+    ssmsSummary: builder.query<SummaryData, GdcApiRequest>({
+      query: (request) => ({
+        request,
+        endpoint: "ssms",
+      }),
+      transformResponse: (response: GdcApiResponse<SSMSDefaults>) => {
+        return response.data.hits.map((hit) => ({
           uuid: hit.id,
           dna_change: hit.genomic_dna_change,
           type: hit.mutation_subtype,
@@ -90,35 +59,9 @@ const slice = createSlice({
                 },
               }))[0] || {},
         }))[0];
-
-        state.status = "fulfilled";
-
-        return state;
-      })
-      .addCase(fetchSsms.pending, (state, action) => {
-        state.summaryData = undefined;
-        state.status = "pending";
-        state.requestId = action.meta.requestId;
-        state.error = undefined;
-      })
-      .addCase(fetchSsms.rejected, (state, action) => {
-        if (state.requestId != action.meta.requestId) return state;
-        state.summaryData = undefined;
-        state.status = "rejected";
-        state.error = undefined;
-        return state;
-      });
-  },
+      },
+    }),
+  }),
 });
 
-export const ssmsReducer = slice.reducer;
-
-export const selectSsmsSummaryData = (
-  state: CoreState,
-): CoreDataSelectorResponse<summaryData | undefined> => ({
-  data: state.ssms.summaryData,
-  status: state.ssms.status,
-  error: state.ssms.error,
-});
-
-export const useSSMS = createUseCoreDataHook(fetchSsms, selectSsmsSummaryData);
+export const { useSsmsSummaryQuery } = ssmsSummarySlice;

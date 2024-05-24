@@ -13,7 +13,7 @@ import {
 import { Divider, Loader, Tabs, Text } from "@mantine/core";
 import { useState } from "react";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
-import { humanify } from "src/utils";
+import { humanify, ageDisplay } from "src/utils";
 import { DiagnosesOrFollowUps } from "./DiagnosesOrFollowUps";
 import { FamilyHistoryOrExposure } from "./FamilyHistoryOrExposure";
 import download from "@/utils/download";
@@ -59,8 +59,8 @@ export const ClinicalSummary = ({
       ethnicity,
       gender,
       race,
-      days_to_birth: days_to_birth?.toLocaleString(),
-      days_to_death: days_to_death?.toLocaleString(),
+      days_to_birth: ageDisplay(days_to_birth),
+      days_to_death: ageDisplay(days_to_death),
       vital_status,
     };
 
@@ -155,7 +155,7 @@ export const ClinicalSummary = ({
         TargetButtonChildren={
           clinicalDownloadActive ? "Processing" : "Download"
         }
-        LeftIcon={
+        LeftSection={
           clinicalDownloadActive ? (
             <Loader size={20} />
           ) : (
@@ -168,11 +168,11 @@ export const ClinicalSummary = ({
         variant="pills"
         defaultValue="gallery"
         value={activeTab}
-        onTabChange={setActiveTab}
+        onChange={setActiveTab}
         keepMounted={false}
         classNames={{
           root: "w-full",
-          tabsList: "mt-2 border-1 border-base-lighter border-b-3 p-2",
+          list: "mt-2 border-1 border-base-lighter border-b-3 p-2",
           panel: "max-w-full overflow-x-auto pt-0",
           tab: "text-secondary-contrast-lighter font-bold font-heading text-sm px-4 py-1 mr-2 data-active:bg-nci-cyan-lightest data-active:border-2 data-active:border-primary data-active:text-primary",
         }}
@@ -183,10 +183,13 @@ export const ClinicalSummary = ({
         })}
       >
         <Tabs.List>
-          <Tabs.Tab value="demographic" data-testid="demographicTab">
+          <Tabs.Tab value="demographic" data-testid="button-demographic-tab">
             Demographic
           </Tabs.Tab>
-          <Tabs.Tab value="diagnoses" data-testid="diagnosisTab">
+          <Tabs.Tab
+            value="diagnoses"
+            data-testid="button-diagnoses-treatments-tab"
+          >
             <span className="flex gap-2">
               <span>
                 Diagnoses
@@ -199,19 +202,22 @@ export const ClinicalSummary = ({
               </span>
             </span>
           </Tabs.Tab>
-          <Tabs.Tab value="family" data-testid="familyTab">
+          <Tabs.Tab value="family" data-testid="button-family-histories-tab">
             <span>
               Family Histories
               <CountComponent count={family_histories.length} />
             </span>
           </Tabs.Tab>
-          <Tabs.Tab value="exposures" data-testid="exposuresTab">
+          <Tabs.Tab value="exposures" data-testid="button-exposures-tab">
             <span>
               Exposures
               <CountComponent count={exposures.length} />
             </span>
           </Tabs.Tab>
-          <Tabs.Tab value="followups" data-testid="followUpsTab">
+          <Tabs.Tab
+            value="followups"
+            data-testid="button-followups-molecular-tests-tab"
+          >
             <span className="flex gap-2">
               <span>
                 Follow-Ups
@@ -230,7 +236,7 @@ export const ClinicalSummary = ({
           {Object.keys(demographic).length > 0 ? (
             <HorizontalTable tableData={formatDataForDemographics()} />
           ) : (
-            <Text className="p-5 bg-base-contrast" weight="bold">
+            <Text className="p-5 bg-base-contrast font-bold">
               No Demographic Found.
             </Text>
           )}
@@ -238,7 +244,7 @@ export const ClinicalSummary = ({
 
         <Tabs.Panel value="diagnoses" pt="xs">
           {diagnoses.length === 0 ? (
-            <Text className="p-5 bg-base-contrast" weight="bold">
+            <Text className="p-5 bg-base-contrast font-bold">
               No Diagnoses Found.
             </Text>
           ) : (
@@ -248,7 +254,7 @@ export const ClinicalSummary = ({
 
         <Tabs.Panel value="family" pt="xs">
           {family_histories.length === 0 ? (
-            <Text className="p-5 bg-base-contrast" weight="bold">
+            <Text className="p-5 bg-base-contrast font-bold">
               No Family Histories Found.
             </Text>
           ) : (
@@ -258,7 +264,7 @@ export const ClinicalSummary = ({
 
         <Tabs.Panel value="exposures" pt="xs">
           {exposures.length === 0 ? (
-            <Text className="p-5 bg-base-contrast" weight="bold">
+            <Text className="p-5 bg-base-contrast font-bold">
               No Exposures Found.
             </Text>
           ) : (
@@ -268,7 +274,7 @@ export const ClinicalSummary = ({
 
         <Tabs.Panel value="followups" pt="xs">
           {follow_ups.length === 0 ? (
-            <Text className="p-5 bg-base-contrast" weight="bold">
+            <Text className="p-5 bg-base-contrast font-bold">
               No Follow Ups Found.
             </Text>
           ) : (

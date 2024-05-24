@@ -20,6 +20,7 @@ const GeneSetModal: React.FC<SavedSetModalProps> = ({
   selectSetInstructions,
   updateFilters,
   existingFiltersHook,
+  opened,
 }: SavedSetModalProps) => {
   const dispatch = useCoreDispatch();
   return (
@@ -29,6 +30,7 @@ const GeneSetModal: React.FC<SavedSetModalProps> = ({
         { label: "Enter Genes", value: "input" },
         { label: "Saved Sets", value: "saved" },
       ]}
+      opened={opened}
     >
       <Tabs.Panel value="input" className="pt-4">
         <InputEntityList
@@ -67,14 +69,12 @@ const GeneSetModal: React.FC<SavedSetModalProps> = ({
               Gene sets can be created from the <b>Enter Genes tab</b>, or from
               the{" "}
               <Link href="/analysis_page?app=MutationFrequencyApp" passHref>
-                <a>
-                  <button
-                    className="text-utility-link underline font-heading"
-                    onClick={() => dispatch(hideModal())}
-                  >
-                    Mutation Frequency app.
-                  </button>
-                </a>
+                <button
+                  className="text-utility-link underline font-heading"
+                  onClick={() => dispatch(hideModal())}
+                >
+                  Mutation Frequency app.
+                </button>
               </Link>
             </p>
           }

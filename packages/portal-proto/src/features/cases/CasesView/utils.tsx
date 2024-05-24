@@ -1,5 +1,5 @@
 import { AnnotationDefaults, CartFile, useCoreDispatch } from "@gff/core";
-import { ColumnDef, ColumnHelper } from "@tanstack/react-table";
+import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Dispatch, SetStateAction, useMemo } from "react";
 import { Button, Checkbox, Menu } from "@mantine/core";
 import { FaShoppingCart as CartIcon } from "react-icons/fa";
@@ -44,14 +44,14 @@ export type casesTableDataType = {
   annotations: AnnotationDefaults[];
 };
 
+const casesDataColumnHelper = createColumnHelper<casesTableDataType>();
+
 export const useGenerateCasesTableColumns = ({
-  casesDataColumnHelper,
   currentCart,
   setEntityMetadata,
   currentPage,
   totalPages,
 }: {
-  casesDataColumnHelper: ColumnHelper<casesTableDataType>;
   currentCart: CartFile[];
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
   currentPage: number;
@@ -67,8 +67,9 @@ export const useGenerateCasesTableColumns = ({
             size="xs"
             classNames={{
               input: "checked:bg-accent checked:border-accent",
+              label: "sr-only",
             }}
-            aria-label={`Select all the case rows of page ${currentPage} of ${totalPages}`}
+            label={`Select all the case rows on page ${currentPage} of ${totalPages}`}
             {...{
               checked: table.getIsAllRowsSelected(),
               onChange: table.getToggleAllRowsSelectedHandler(),
@@ -105,44 +106,46 @@ export const useGenerateCasesTableColumns = ({
             .filter((item) => item.length > 0).length;
           const isPlural = row.original.files_count > 1;
           return (
-            <Menu position="bottom-start">
+            <Menu position="bottom-start" zIndex={300}>
               <Menu.Target>
                 <Button
                   aria-label={`${
                     isAllFilesInCart ? "remove" : "add"
                   } all files ${isAllFilesInCart ? "from" : "to"} the cart`}
-                  leftIcon={
-                    <CartIcon
-                      className={
-                        isAllFilesInCart && "text-primary-contrast-darkest"
-                      }
-                      aria-hidden="true"
-                    />
+                  leftSection={
+                    <div className="mr-2">
+                      <CartIcon
+                        className={
+                          isAllFilesInCart && "text-primary-contrast-darkest"
+                        }
+                        aria-hidden="true"
+                      />
+                    </div>
                   }
-                  rightIcon={
-                    <Dropdown
-                      className={
-                        isAllFilesInCart && "text-primary-contrast-darkest"
-                      }
-                      size={18}
-                      aria-hidden="true"
-                    />
+                  rightSection={
+                    <div className="border-l">
+                      <Dropdown
+                        className={
+                          isAllFilesInCart && "text-primary-contrast-darkest"
+                        }
+                        size={18}
+                        aria-hidden="true"
+                      />
+                    </div>
                   }
                   variant="outline"
-                  compact
                   classNames={{
                     root: "w-12 pr-0",
-                    rightIcon: "border-l ml-0",
-                    leftIcon: "mr-2",
+                    section: "m-0",
                   }}
-                  size="xs"
+                  size="compact-xs"
                   className={`${isAllFilesInCart && "bg-primary-darkest"}`}
                 />
               </Menu.Target>
               <Menu.Dropdown>
                 {numberOfFilesToRemove < row.original.files_count && (
                   <Menu.Item
-                    icon={<BiAddToQueue />}
+                    leftSection={<BiAddToQueue />}
                     onClick={() => {
                       addToCart(row.original.files, currentCart, dispatch);
                     }}
@@ -154,7 +157,7 @@ export const useGenerateCasesTableColumns = ({
 
                 {numberOfFilesToRemove > 0 && (
                   <Menu.Item
-                    icon={<BsTrash />}
+                    leftSection={<BsTrash />}
                     onClick={() => {
                       removeFromCart(row.original.files, currentCart, dispatch);
                     }}
@@ -175,6 +178,7 @@ export const useGenerateCasesTableColumns = ({
         id: "slides",
         header: "Slides",
         cell: ({ row }) => (
+          // This needs both passHref and legacyBehavior: https://nextjs.org/docs/pages/api-reference/components/link#if-the-child-is-a-functional-component
           <Link
             href={{
               pathname: "/image-viewer/MultipleImageViewerPage",
@@ -283,50 +287,13 @@ export const useGenerateCasesTableColumns = ({
       casesDataColumnHelper.display({
         id: "annotations",
         header: "Annotations",
-        cell: ({ row }) =>
-          getCasesTableAnnotationsLinkParams(
-            row.original.annotations,
-            row.original.case_uuid,
-          ) ? (
-            <Link
-              href={getCasesTableAnnotationsLinkParams(
-                row.original.annotations,
-                row.original.case_uuid,
-              )}
-              passHref
-            >
-              <a className="text-utility-link underline" target={"_blank"}>
-                {row.original.annotations.length}
-              </a>
-            </Link>
-          ) : (
-            0
-          ),
+        cell: ({ row }) => row.original.annotations.length,
       }),
     ],
-    [
-      casesDataColumnHelper,
-      currentCart,
-      dispatch,
-      setEntityMetadata,
-      currentPage,
-      totalPages,
-    ],
+    [currentCart, dispatch, setEntityMetadata, currentPage, totalPages],
   );
 
   return CasesTableDefaultColumns;
-};
-
-export const getCasesTableAnnotationsLinkParams = (
-  annotations: AnnotationDefaults[],
-  case_id: string,
-): string => {
-  if (annotations.length === 0) return null;
-
-  if (annotations.length === 1) {
-    return `https://portal.gdc.cancer.gov/v1/annotations/${annotations[0].annotation_id}`;
-  }
-  return `https://portal.gdc.cancer.gov/v1/annotations?filters={"content":[{"content":{"field":"annotations.case_id","value":["${case_id}"]},"op":"in"}],"op":"and"}`;
 };
 
 export const MAX_CASE_IDS = 100000;

@@ -9,8 +9,10 @@ import {
   buildCohortGqlOperator,
   GqlOperation,
   useCurrentCohortCounts,
+  selectCurrentCohortId,
 } from "@gff/core";
-import { Button, Divider, Loader } from "@mantine/core";
+import { Divider, Loader } from "@mantine/core";
+import FunctionButton from "@/components/FunctionButton";
 import { SummaryModalContext } from "src/utils/contexts";
 import {
   ageDisplay,
@@ -28,7 +30,6 @@ import {
   ColumnOrderState,
   SortingState,
   VisibilityState,
-  createColumnHelper,
 } from "@tanstack/react-table";
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
@@ -61,6 +62,9 @@ export const ContextualCasesView: React.FC = () => {
   );
   const currentCart = useCoreSelector((state) => selectCart(state));
   const cohortCounts = useCurrentCohortCounts();
+  const currentCohortId = useCoreSelector((state) =>
+    selectCurrentCohortId(state),
+  );
 
   /* download active */
   const [biospecimenDownloadActive, setBiospecimenDownloadActive] =
@@ -71,6 +75,10 @@ export const ContextualCasesView: React.FC = () => {
   const [cohortTableTSVDownloadActive, setCohortTableTSVDownloadActive] =
     useState(false);
   /* download active end */
+
+  useEffect(() => {
+    setCohortTableTSVDownloadActive(false);
+  }, [currentCohortId]);
 
   const { data, isFetching, isSuccess, isError, pagination } = useAllCases({
     fields: [
@@ -142,10 +150,7 @@ export const ContextualCasesView: React.FC = () => {
       annotations: datum.annotations,
     })) ?? [];
 
-  const casesDataColumnHelper = createColumnHelper<casesTableDataType>();
-
   const casesTableDefaultColumns = useGenerateCasesTableColumns({
-    casesDataColumnHelper,
     currentCart,
     setEntityMetadata,
     currentPage: pagination?.page,
@@ -238,14 +243,16 @@ export const ContextualCasesView: React.FC = () => {
         }
       : buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation);
 
+  // TODO - restore attachment option, PEAR-1947
   const handleTSVDownload = async () => {
     setCohortTableTSVDownloadActive(true);
     await download({
       endpoint: "cases",
       method: "POST",
       params: {
-        attachment: true,
-        filename: `cohort.${convertDateToString(new Date())}.tsv`,
+        attachment: false,
+        size: cohortCounts?.data?.caseCount,
+        //filename: `cohort.${convertDateToString(new Date())}.tsv`,
         case_filters:
           buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation),
         fields: [
@@ -268,7 +275,7 @@ export const ContextualCasesView: React.FC = () => {
         format: "tsv",
       },
       dispatch,
-      done: () => setCohortTableTSVDownloadActive(false),
+      //done: () => setCohortTableTSVDownloadActive(false),
     });
   };
 
@@ -391,10 +398,11 @@ export const ContextualCasesView: React.FC = () => {
         pagination={{ ...pagination, label: "cases" }}
         handleChange={handleChange}
         additionalControls={
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-1 lg:gap-2">
             <CasesCohortButtonFromValues pickedCases={pickedCases} />
 
             <DropdownWithIcon
+              targetButtonDisabled={isFetching}
               dropdownElements={[
                 {
                   title: "JSON",
@@ -410,20 +418,25 @@ export const ContextualCasesView: React.FC = () => {
               TargetButtonChildren={
                 biospecimenDownloadActive ? "Processing" : "Biospecimen"
               }
-              LeftIcon={
+              LeftSection={
                 biospecimenDownloadActive ? (
-                  <Loader size={20} />
+                  <Loader size={20} className="hidden md:block" />
                 ) : pickedCases.length ? (
                   <CountsIcon $count={pickedCases.length}>
                     {pickedCases.length}
                   </CountsIcon>
                 ) : (
-                  <DownloadIcon size="1rem" aria-hidden="true" />
+                  <DownloadIcon
+                    size="1rem"
+                    aria-hidden="true"
+                    className="hidden md:block"
+                  />
                 )
               }
             />
 
             <DropdownWithIcon
+              targetButtonDisabled={isFetching}
               dropdownElements={[
                 {
                   title: "JSON",
@@ -439,41 +452,46 @@ export const ContextualCasesView: React.FC = () => {
               TargetButtonChildren={
                 clinicalDownloadActive ? "Processing" : "Clinical"
               }
-              LeftIcon={
+              LeftSection={
                 clinicalDownloadActive ? (
-                  <Loader size={20} />
+                  <Loader size={20} className="hidden md:block" />
                 ) : pickedCases.length ? (
                   <CountsIcon $count={pickedCases.length}>
                     {pickedCases.length}
                   </CountsIcon>
                 ) : (
-                  <DownloadIcon size="1rem" aria-hidden="true" />
+                  <DownloadIcon
+                    size="1rem"
+                    aria-hidden="true"
+                    className="hidden md:block"
+                  />
                 )
               }
             />
 
-            <Button
+            <FunctionButton
               onClick={handleJSONDownload}
-              variant="outline"
-              color="primary"
-              className="bg-base-max"
+              disabled={isFetching}
+              size="sm"
             >
               {cohortTableJSONDownloadActive ? <Loader /> : "JSON"}
-            </Button>
+            </FunctionButton>
 
-            <Button
-              variant="outline"
-              color="primary"
-              className="bg-base-max"
+            <FunctionButton
               onClick={handleTSVDownload}
+              disabled={isFetching}
+              size="sm"
             >
               {cohortTableTSVDownloadActive ? <Loader /> : "TSV"}
-            </Button>
+            </FunctionButton>
           </div>
         }
-        tableTitle={`Total of ${pagination?.total?.toLocaleString() ?? "..."} ${
-          pagination?.total > 1 ? "Cases" : "Case"
-        }`}
+        tableTitle={
+          <>
+            Total of <b>{pagination?.total?.toLocaleString() ?? "..."}</b>{" "}
+            {pagination?.total > 1 ? "Cases" : "Case"}
+          </>
+        }
         columnSorting="manual"
         enableRowSelection={true}
         showControls={true}

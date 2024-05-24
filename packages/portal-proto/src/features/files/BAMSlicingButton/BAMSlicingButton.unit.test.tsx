@@ -1,6 +1,6 @@
 import { BAMSlicingButton } from "@/features/files/BAMSlicingButton";
 import * as core from "@gff/core";
-import { render } from "@testing-library/react";
+import { render } from "test-utils";
 import userEvent from "@testing-library/user-event";
 import * as util from "src/utils/userProjectUtils";
 
@@ -13,16 +13,18 @@ describe("<BAMSlicingButton />", () => {
   it("show NoAccessModal when not logged in", async () => {
     const mockDispatch = jest.fn();
     jest.spyOn(core, "useCoreDispatch").mockImplementation(() => mockDispatch);
-    jest.spyOn(core, "useCoreSelector").mockReturnValueOnce({
+    jest.spyOn(core, "useFetchUserDetailsQuery").mockReturnValueOnce({
       data: {
-        username: null,
-        projects: { gdc_ids: {} },
+        data: {
+          username: null,
+          projects: { gdc_ids: {} },
+        },
       },
-    });
+    } as any);
     const { getByTestId } = render(
       <BAMSlicingButton isActive={false} file={{} as core.GdcFile} />,
     );
-    const button = getByTestId("bamButton");
+    const button = getByTestId("button-bam-slicing");
     await userEvent.click(button);
     expect(mockDispatch).toBeCalledWith({
       payload: { modal: "NoAccessModal" },
@@ -33,17 +35,19 @@ describe("<BAMSlicingButton />", () => {
   it("show NoAccessModal when not logged in", async () => {
     const mockDispatch = jest.fn();
     jest.spyOn(core, "useCoreDispatch").mockImplementation(() => mockDispatch);
-    jest.spyOn(core, "useCoreSelector").mockReturnValueOnce({
+    jest.spyOn(core, "useFetchUserDetailsQuery").mockReturnValueOnce({
       data: {
-        username: "testid",
-        projects: { gdc_ids: {} },
+        data: {
+          username: "testid",
+          projects: { gdc_ids: {} },
+        },
       },
-    });
+    } as any);
     jest.spyOn(util, "userCanDownloadFile").mockReturnValueOnce(true);
     const { getByTestId } = render(
       <BAMSlicingButton isActive={false} file={{} as core.GdcFile} />,
     );
-    const button = getByTestId("bamButton");
+    const button = getByTestId("button-bam-slicing");
     await userEvent.click(button);
     expect(mockDispatch).toBeCalledWith({
       payload: { modal: "BAMSlicingModal" },
@@ -54,17 +58,19 @@ describe("<BAMSlicingButton />", () => {
   it("show NoAccessToProjectModal when not logged in", async () => {
     const mockDispatch = jest.fn();
     jest.spyOn(core, "useCoreDispatch").mockImplementation(() => mockDispatch);
-    jest.spyOn(core, "useCoreSelector").mockReturnValueOnce({
+    jest.spyOn(core, "useFetchUserDetailsQuery").mockReturnValueOnce({
       data: {
-        username: "testid",
-        projects: { gdc_ids: {} },
+        data: {
+          username: "testid",
+          projects: { gdc_ids: {} },
+        },
       },
-    });
+    } as any);
     jest.spyOn(util, "userCanDownloadFile").mockReturnValueOnce(false);
     const { getByTestId } = render(
       <BAMSlicingButton isActive={false} file={{} as core.GdcFile} />,
     );
-    const button = getByTestId("bamButton");
+    const button = getByTestId("button-bam-slicing");
     await userEvent.click(button);
     expect(mockDispatch).toBeCalledWith({
       payload: { modal: "NoAccessToProjectModal" },

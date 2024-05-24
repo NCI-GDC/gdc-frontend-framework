@@ -1,4 +1,5 @@
-import { useEffect, useRef, useCallback, useState, FC } from "react";
+import { useRef, useCallback, useState, FC } from "react";
+import { useDeepCompareEffect } from "use-deep-compare";
 import { runproteinpaint } from "@sjcrh/proteinpaint-client";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import {
@@ -7,7 +8,7 @@ import {
   buildCohortGqlOperator,
   FilterSet,
   PROTEINPAINT_API,
-  useUserDetails,
+  useFetchUserDetailsQuery,
   useCoreDispatch,
   useCreateCaseSetFromValuesMutation,
 } from "@gff/core";
@@ -38,7 +39,7 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
   const filter0 = isDemoMode
     ? defaultFilter
     : buildCohortGqlOperator(currentCohort);
-  const userDetails = useUserDetails();
+  const userDetails = useFetchUserDetailsQuery();
   const ppRef = useRef<PpApi>();
   const ppPromise = useRef<Promise<PpApi>>();
   const initialFilter0Ref = useRef<any>();
@@ -56,14 +57,26 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
     (arg: SelectSamplesCallBackArg) => {
       const cases = arg.samples.map((d) => d["cases.case_id"]);
       if (cases.length > 1) {
-        createSet({ values: cases });
+        createSet({ values: cases, intent: "portal", set_type: "frozen" });
+      } else {
+        setNewCohortFilters({
+          mode: "and",
+          root: {
+            "cases.case_id": {
+              operator: "includes",
+              field: "cases.case_id",
+              operands: cases,
+            },
+          },
+        });
+        setShowSaveCohort(true);
       }
     },
     [createSet],
   );
 
   // a set for the new cohort is created, now show the save cohort modal
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (response.isSuccess) {
       const filters: FilterSet = {
         mode: "and",
@@ -96,7 +109,7 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
     "postRender.gdcPlotApp": hideLoadingOverlay,
   };
 
-  useEffect(
+  useDeepCompareEffect(
     () => {
       const rootElem = divRef.current as HTMLElement;
       // debounce until one of these is true
@@ -187,12 +200,13 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
         className="sjpp-wrapper-root-div"
         //userDetails={userDetails}
       />
-      {showSaveCohort && newCohortFilters && (
-        <SaveCohortModal // Show the modal, create a saved cohort when save button is clicked
-          onClose={() => setShowSaveCohort(false)}
-          filters={newCohortFilters}
-        />
-      )}
+
+      <SaveCohortModal // Show the modal, create a saved cohort when save button is clicked
+        onClose={() => setShowSaveCohort(false)}
+        opened={showSaveCohort}
+        filters={newCohortFilters}
+      />
+
       <LoadingOverlay
         data-testid="loading-spinner"
         visible={isLoading}

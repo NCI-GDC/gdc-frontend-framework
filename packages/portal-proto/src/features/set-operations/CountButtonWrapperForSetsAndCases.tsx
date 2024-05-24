@@ -12,7 +12,7 @@ import { Loader, Tooltip } from "@mantine/core";
 import { FaPlus as PlusIcon } from "react-icons/fa";
 import CohortCreationButton, {
   CohortCreationStyledButton,
-  IconWrapper,
+  IconWrapperTW,
 } from "@/components/CohortCreationButton";
 
 export const CreateFromCountButton = ({
@@ -39,9 +39,9 @@ export const CreateFromCountButton = ({
             onClick={handleOnClick}
             aria-label={ariaLabel}
           >
-            <IconWrapper $disabled={disabled}>
+            <IconWrapperTW $disabled={disabled}>
               <PlusIcon color="white" size={12} aria-disabled />
-            </IconWrapper>
+            </IconWrapperTW>
             <span className="w-fit">
               {loading ? (
                 <Loader size="xs" />
@@ -75,32 +75,29 @@ const CountButtonWrapperForSet: React.FC<CountButtonWrapperForSetProps> = ({
 
   return (
     <>
-      {showSaveModal &&
-        (entityType === "mutations" ? (
-          <SaveSelectionAsSetModal
-            filters={filters}
-            sort="occurrence.case.project.project_id"
-            initialSetName="Custom Mutation Selection"
-            saveCount={count}
-            setType="ssms"
-            setTypeLabel="mutation"
-            createSetHook={useCreateSsmsSetFromFiltersMutation}
-            closeModal={() => setShowSaveModal(false)}
-          />
-        ) : (
-          entityType === "genes" && (
-            <SaveSelectionAsSetModal
-              filters={filters}
-              initialSetName={"Custom Gene Selection"}
-              sort="case.project.project_id"
-              saveCount={count}
-              setType="genes"
-              setTypeLabel="gene"
-              createSetHook={useCreateGeneSetFromFiltersMutation}
-              closeModal={() => setShowSaveModal(false)}
-            />
-          )
-        ))}
+      <SaveSelectionAsSetModal
+        opened={showSaveModal && entityType === "mutations"}
+        filters={filters}
+        sort="occurrence.case.project.project_id"
+        initialSetName="Custom Mutation Selection"
+        saveCount={count}
+        setType="ssms"
+        setTypeLabel="mutation"
+        createSetHook={useCreateSsmsSetFromFiltersMutation}
+        closeModal={() => setShowSaveModal(false)}
+      />
+
+      <SaveSelectionAsSetModal
+        opened={showSaveModal && entityType === "genes"}
+        filters={filters}
+        initialSetName={"Custom Gene Selection"}
+        sort="case.project.project_id"
+        saveCount={count}
+        setType="genes"
+        setTypeLabel="gene"
+        createSetHook={useCreateGeneSetFromFiltersMutation}
+        closeModal={() => setShowSaveModal(false)}
+      />
 
       <CreateFromCountButton
         tooltipLabel={
@@ -140,6 +137,8 @@ const CountButtonWrapperForSetsAndCases: React.FC<
     return await createSet({
       // TODO: possibly add error handling
       filters: filters,
+      intent: entityType == "cohort" ? "portal" : "user",
+      set_type: entityType == "cohort" ? "frozen" : "mutable",
     })
       .unwrap()
       .then((setId) => {

@@ -1,4 +1,4 @@
-import { useSsmsConsequenceTable } from "@gff/core";
+import { useSsmsConsequenceTableQuery } from "@gff/core";
 import { useEffect, useMemo, useState } from "react";
 import { ConsequenceTableData } from "@/features/mutationSummary/types";
 import useStandardPagination from "@/hooks/useStandardPagination";
@@ -40,11 +40,11 @@ export const ConsequenceTable = ({
   ] = useState(false);
 
   const {
-    data: { ssmsConsequence: initialData },
+    data: initialData,
     isFetching,
     isSuccess,
     isError,
-  } = useSsmsConsequenceTable({
+  } = useSsmsConsequenceTableQuery({
     pageSize: 99, // get max 100 entries
     offset: 0,
     mutationId: ssmsId,
@@ -78,10 +78,10 @@ export const ConsequenceTable = ({
     if (isSuccess) {
       // need to sort the table data and then store all entries in tableData
       const sortedData: ConsequenceTableData[] = [
-        ...initialData.consequence.filter(
+        ...(initialData.consequence || []).filter(
           ({ transcript: { is_canonical } }) => is_canonical,
         ),
-        ...initialData.consequence
+        ...(initialData.consequence || [])
           .filter(({ transcript: { is_canonical } }) => !is_canonical)
           .sort((a, b) => {
             if (
@@ -142,7 +142,7 @@ export const ConsequenceTable = ({
       );
       setTableData(sortedData);
     }
-  }, [isSuccess, initialData.consequence]);
+  }, [isSuccess, initialData?.consequence]);
 
   const consequenceTableColumnHelper =
     createColumnHelper<ConsequenceTableData>();
@@ -155,10 +155,11 @@ export const ConsequenceTable = ({
         id: "gene",
         header: "Gene",
         cell: ({ row }) => (
-          <Link href={`/genes/${row.original.gene_id}`}>
-            <a className="text-utility-link font-content underline">
-              {row.original.gene}
-            </a>
+          <Link
+            href={`/genes/${row.original.gene_id}`}
+            className="text-utility-link font-content underline"
+          >
+            {row.original.gene}
           </Link>
         ),
       }),
@@ -346,6 +347,7 @@ export const ConsequenceTable = ({
 
   return (
     <VerticalTable
+      customDataTestID="table-consequences-mutation-summary"
       data={displayedData}
       columns={consequenceTableDefaultColumns}
       setColumnVisibility={setColumnVisibility}
@@ -363,10 +365,12 @@ export const ConsequenceTable = ({
       }}
       additionalControls={
         <div className="flex gap-2 mb-2">
-          <FunctionButton onClick={handleJSONDownload}>
+          <FunctionButton onClick={handleJSONDownload} disabled={isFetching}>
             {consequenceTableJSONDownloadActive ? <Loader /> : "JSON"}
           </FunctionButton>
-          <FunctionButton onClick={handleTSVDownload}>TSV</FunctionButton>
+          <FunctionButton onClick={handleTSVDownload} disabled={isFetching}>
+            TSV
+          </FunctionButton>
         </div>
       }
       status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}

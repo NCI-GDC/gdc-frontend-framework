@@ -9,7 +9,7 @@ import {
 } from "../../dataAccess";
 
 const CountsGraphQLQuery = `
-  query countsQuery($filters: FiltersArgument) {
+  query totalCountsQuery($filters: FiltersArgument) {
   viewer {
       projects {
       aggregations {
@@ -23,12 +23,12 @@ const CountsGraphQLQuery = `
         total
       }
     }
+    annotations {
+      hits(first: 0) {
+        total
+      }
+    }
     repository {
-      cases {
-        hits(case_filters: $filters, first: 0) {
-          total
-        }
-      },
       files {
         hits(case_filters: $filters, first: 0) {
           total
@@ -68,9 +68,9 @@ const initialState: TotalCountsState = {
     fileCounts: -1,
     genesCounts: -1,
     mutationCounts: -1,
-    repositoryCaseCounts: -1,
     projectsCounts: -1,
     primarySiteCounts: -1,
+    annotationCounts: -1,
   },
   status: "uninitialized",
 };
@@ -107,8 +107,7 @@ const slice = createSlice({
             primarySiteCounts:
               response.data.viewer.projects.aggregations.primary_site.buckets
                 .length,
-            repositoryCaseCounts:
-              response.data.viewer.repository.cases.hits.total,
+            annotationCounts: response.data.viewer.annotations.hits.total,
           };
           state.status = "fulfilled";
           state.error = undefined;

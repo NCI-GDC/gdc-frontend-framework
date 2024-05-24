@@ -8,7 +8,6 @@ import {
 } from "react-icons/md";
 import { Button, Card, Loader, Tooltip } from "@mantine/core";
 import { useElementSize } from "@mantine/hooks";
-import { useCoreSelector, selectCohortCounts } from "@gff/core";
 import { AppRegistrationEntry } from "./utils";
 import Link from "next/link";
 
@@ -16,22 +15,19 @@ export interface AnalysisCardProps {
   entry: AppRegistrationEntry;
   readonly descriptionVisible: boolean;
   readonly setDescriptionVisible: () => void;
+  useApplicationDataCounts: any; // TODO replace with type
 }
 
 const AnalysisCard: React.FC<AnalysisCardProps> = ({
   entry,
   descriptionVisible,
   setDescriptionVisible,
+  useApplicationDataCounts,
 }: AnalysisCardProps) => {
-  const cohortCounts = useCoreSelector((state) => selectCohortCounts(state));
-  let caseCounts = cohortCounts?.[entry.countsField] || 0;
+  const cohortCounts = useApplicationDataCounts();
+  const caseCounts = cohortCounts?.data || 0;
 
-  // TODO - remove, just for demo purposes
-  if (entry.name === "scRNA-Seq" || entry.name === "Gene Expression") {
-    caseCounts = 0;
-  }
-
-  const inactive = caseCounts === 0;
+  const inactive = caseCounts === 0 || cohortCounts.isFetching;
   const { ref: descRef, height: descHeight } = useElementSize();
 
   return (
@@ -54,30 +50,26 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
               pathname: "/analysis_page",
               query: { app: entry.id },
             }}
-            passHref
+            data-testid={`button-${entry.name}`}
+            className={`
+              flex
+              justify-center
+              items-center
+              bg-secondary
+              hover:bg-secondary-dark
+              hover:border-secondary-dark
+              focus:bg-secondary-dark
+              focus:border-secondary-dark
+              mb-1
+              w-[50px]
+              ${inactive ? "opacity-50 pointer-events-none" : ""}
+              rounded
+              h-5
+            `}
+            aria-disabled={inactive}
+            aria-label={entry.name}
           >
-            <a
-              data-testid={`button-${entry.name}`}
-              className={`
-                flex
-                justify-center
-                items-center
-                bg-secondary
-                hover:bg-secondary-dark
-                hover:border-secondary-dark
-                focus:bg-secondary-dark
-                focus:border-secondary-dark
-                mb-1
-                w-[50px]
-                ${inactive ? "opacity-50 pointer-events-none" : ""}
-                rounded
-                h-5
-              `}
-              aria-disabled={inactive}
-              aria-label={entry.name}
-            >
-              <MdPlayArrow size={16} color="white" />
-            </a>
+            <MdPlayArrow size={16} color="white" />
           </Link>
 
           {entry.hasDemo ? (
@@ -89,34 +81,30 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
                   demoMode: true,
                 },
               }}
-              passHref
+              data-testid={`button-${entry.name} Demo`}
+              className={`
+                flex
+                justify-center
+                items-center
+                hover:bg-secondary-dark
+                hover:border-secondary-dark
+                hover:text-primary-content-max
+                focus:bg-secondary-dark
+                focus:border-secondary-dark
+                focus:text-primary-content-max
+                mb-1
+                w-[50px]
+                rounded
+                h-5
+                text-xs
+                text-secondary
+                p-0
+                border
+                border-secondary
+                font-semibold
+              `}
             >
-              <a
-                data-testid={`button-${entry.name} Demo`}
-                className={`
-                  flex
-                  justify-center
-                  items-center
-                  hover:bg-secondary-dark
-                  hover:border-secondary-dark
-                  hover:text-primary-content-max
-                  focus:bg-secondary-dark
-                  focus:border-secondary-dark
-                  focus:text-primary-content-max
-                  mb-1
-                  w-[50px]
-                  rounded
-                  h-5
-                  text-xs
-                  text-secondary
-                  p-0
-                  border
-                  border-secondary
-                  font-semibold
-                `}
-              >
-                Demo
-              </a>
+              Demo
             </Link>
           ) : null}
         </div>
@@ -128,7 +116,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
           onClick={() => setDescriptionVisible()}
           variant="white"
           size="xs"
-          rightIcon={
+          rightSection={
             descriptionVisible ? (
               <MdArrowDropUp size={16} aria-hidden="true" />
             ) : (
@@ -137,7 +125,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
           }
           classNames={{
             root: "text-secondary-darkest font-bold bg-transparent",
-            rightIcon: "ml-0",
+            section: "ml-0",
           }}
           aria-expanded={descriptionVisible}
         >
@@ -165,20 +153,19 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             data-testid="text-case-count-tool"
             className="flex items-center text-secondary-darkest"
           >
-            {cohortCounts.status === "fulfilled" ? (
-              <span>{`${caseCounts.toLocaleString()} Cases`}</span>
-            ) : (
+            {cohortCounts.isFetching ? (
               <span className="flex mr-2 items-center">
                 <Loader color="gray" size="xs" className="mr-2" /> Cases
               </span>
+            ) : cohortCounts.isSuccess ? (
+              <span>{`${caseCounts.toLocaleString()} Cases`}</span>
+            ) : (
+              <span className="flex mr-2 items-center text-utility-error">
+                0 Cases
+              </span>
             )}
             {caseCounts === 0 && (
-              <Tooltip
-                label={entry?.noDataTooltip}
-                withArrow
-                width={200}
-                multiline
-              >
+              <Tooltip label={entry?.noDataTooltip} withArrow w={200} multiline>
                 <div>
                   <MdInfo className="inline-block ml-1" />
                 </div>

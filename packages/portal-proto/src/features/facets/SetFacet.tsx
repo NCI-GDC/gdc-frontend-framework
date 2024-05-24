@@ -72,14 +72,15 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
     <div
       className={`flex flex-col ${
         width ? width : "mx-0"
-      } bg-base-max relative shadow-lg border-primary-lightest border-1 rounded-b-md text-xs transition`}
+      } bg-base-max relative shadow-lg border-base-lighter border-1 rounded-b-md text-xs transition`}
     >
       <FacetHeader>
         <Tooltip
-          label={description || "No description available"}
+          disabled={!description}
+          label={description}
           position="bottom-start"
           multiline
-          width={220}
+          w={220}
           withArrow
           transitionProps={{ duration: 200, transition: "fade" }}
         >
@@ -105,10 +106,11 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
           variant="outline"
           size="xs"
           data-testid={`button-${facetTitle}`}
+          classNames={{ label: "break-words whitespace-pre-wrap" }}
         >
           + Add {facetTitle}
         </Button>
-        <Group spacing="xs" className="px-2 py-1" data-testid="values group">
+        <Group gap="xs" className="px-2 py-1" data-testid="values group">
           {facetValues.map((operand, i) => (
             <Badge
               size="sm"

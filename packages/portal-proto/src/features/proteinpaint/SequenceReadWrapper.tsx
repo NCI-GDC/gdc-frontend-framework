@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState, FC } from "react";
+import { useRef, useState, FC } from "react";
+import { useDeepCompareEffect } from "use-deep-compare";
 import { runproteinpaint } from "@sjcrh/proteinpaint-client";
 import {
   useCoreSelector,
@@ -6,7 +7,7 @@ import {
   buildCohortGqlOperator,
   FilterSet,
   PROTEINPAINT_API,
-  useUserDetails,
+  useFetchUserDetailsQuery,
 } from "@gff/core";
 import { isEqual, cloneDeep } from "lodash";
 
@@ -22,7 +23,8 @@ export const SequenceReadWrapper: FC<PpProps> = (props: PpProps) => {
     useCoreSelector(selectCurrentCohortFilters),
   );
 
-  const { data: userDetails } = useUserDetails();
+  const { data: userDetails } = useFetchUserDetailsQuery();
+
   const [alertDisplay, setAlertDisplay] = useState("none");
   const [rootDisplay, setRootDisplay] = useState("none");
 
@@ -30,15 +32,17 @@ export const SequenceReadWrapper: FC<PpProps> = (props: PpProps) => {
   const ppRef = useRef<PpApi>();
   const prevArg = useRef<any>();
 
-  useEffect(
+  useDeepCompareEffect(
     () => {
       const rootElem = divRef.current as HTMLElement;
-      const isAuthorized = userDetails.username && true;
+      const isAuthorized = userDetails?.data?.username && true;
       setAlertDisplay(isAuthorized ? "none" : "block");
       setRootDisplay(isAuthorized ? "block" : "none");
       if (!isAuthorized) return;
 
-      const data = userDetails?.username ? getBamTrack(props, filter0) : null;
+      const data = userDetails?.data?.username
+        ? getBamTrack(props, filter0)
+        : null;
 
       if (!data) return;
       if (isEqual(prevArg.current, data)) return;

@@ -1,6 +1,7 @@
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
 import { GDC_APP_API_AUTH } from "../../constants";
 import { coreCreateApi } from "../../coreCreateApi";
+import serializeQueryArgsWithDataRelease from "src/serializeQueryArgs";
 
 export interface GraphQLFetchError {
   readonly url: string;
@@ -76,13 +77,14 @@ export interface GraphqlApiSliceRequest {
 
 export const graphqlAPISlice = coreCreateApi({
   reducerPath: "graphql",
+  serializeQueryArgs: serializeQueryArgsWithDataRelease,
   baseQuery: async (request: GraphqlApiSliceRequest) => {
     let results: GraphQLApiResponse<any>;
 
     try {
       results = await graphqlAPI(request.graphQLQuery, request.graphQLFilters);
     } catch (e) {
-      return { error: e };
+      return { error: e as GraphQLFetchError };
     }
 
     return { data: results };

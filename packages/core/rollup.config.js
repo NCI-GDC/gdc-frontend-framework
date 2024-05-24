@@ -20,6 +20,10 @@ const globals = {
   immer: "immer",
   "redux-persist/integration/react": "integration",
   "react-cookie": "reactCookie",
+  "js-cookie": "jsCookie",
+  queue: "queue",
+  "blueimp-md5": "blueimp-md5",
+  "use-deep-compare": "use-deep-compare",
 };
 
 const config = [
@@ -57,6 +61,9 @@ const config = [
       "redux",
       "redux-toolkit",
       "react-cookie",
+      "js-cookie",
+      "blueimp-md5",
+      "queue",
     ],
     plugins: [
       peerDepsExternal(),

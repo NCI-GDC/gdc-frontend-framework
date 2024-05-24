@@ -8,6 +8,7 @@ import {
   useCoreDispatch,
   CartFile,
   SortBy,
+  GdcFile,
 } from "@gff/core";
 import { RemoveFromCartButton } from "./updateCart";
 import FunctionButton from "@/components/FunctionButton";
@@ -15,12 +16,8 @@ import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
 import { convertDateToString } from "src/utils/date";
 import download from "src/utils/download";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
-import {
-  getAnnotationsLinkParamsFromFiles,
-  statusBooleansToDataStatus,
-} from "src/utils";
+import { statusBooleansToDataStatus } from "src/utils";
 import { SummaryModalContext } from "src/utils/contexts";
-import Link from "next/link";
 import { FilesTableDataType } from "../repositoryApp/FilesTable";
 import {
   ColumnDef,
@@ -33,10 +30,13 @@ import VerticalTable from "@/components/Table/VerticalTable";
 import { HandleChangeInput } from "@/components/Table/types";
 import { downloadTSV } from "@/components/Table/utils";
 import { Tooltip } from "@mantine/core";
+import { useDeepCompareMemo } from "use-deep-compare";
 
 interface FilesTableProps {
   readonly filesByCanAccess: Record<string, CartFile[]>;
 }
+
+const cartFilesTableColumnHelper = createColumnHelper<FilesTableDataType>();
 
 const FilesTable: React.FC<FilesTableProps> = () => {
   const { setEntityMetadata } = useContext(SummaryModalContext);
@@ -95,6 +95,20 @@ const FilesTable: React.FC<FilesTableProps> = () => {
                 value: `*${searchTerm}*`,
               },
             },
+            {
+              op: "=",
+              content: {
+                field: "cases.case_id",
+                value: `*${searchTerm}*`,
+              },
+            },
+            {
+              op: "=",
+              content: {
+                field: "cases.submitter_id",
+                value: `*${searchTerm}*`,
+              },
+            },
           ],
         },
       ],
@@ -106,7 +120,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
   useEffect(() => {
     setTableData(
       isSuccess
-        ? (data?.files.map((file) => ({
+        ? (data?.files.map((file: GdcFile) => ({
             file: file,
             file_uuid: file.file_id,
             access: file.access,
@@ -123,9 +137,30 @@ const FilesTable: React.FC<FilesTableProps> = () => {
           })) as FilesTableDataType[])
         : [],
     );
-  }, [isSuccess, data?.files, setEntityMetadata]);
+  }, [isSuccess, data?.files]);
 
-  const cartFilesTableColumnHelper = createColumnHelper<FilesTableDataType>();
+  const pagination = useDeepCompareMemo(() => {
+    return isSuccess
+      ? {
+          count: pageSize,
+          from: (activePage - 1) * pageSize,
+          page: activePage,
+          pages: Math.ceil(data?.pagination?.total / pageSize),
+          size: pageSize,
+          total: data?.pagination?.total,
+          sort: "None",
+          label: "files",
+        }
+      : {
+          count: undefined,
+          from: undefined,
+          page: undefined,
+          pages: undefined,
+          size: undefined,
+          total: undefined,
+        };
+  }, [pageSize, activePage, data?.pagination?.total, isSuccess]);
+
   const cartFilesTableDefaultColumns = useMemo<ColumnDef<FilesTableDataType>[]>(
     () => [
       cartFilesTableColumnHelper.display({
@@ -252,28 +287,10 @@ const FilesTable: React.FC<FilesTableProps> = () => {
       cartFilesTableColumnHelper.display({
         id: "annotations",
         header: "Annotations",
-        cell: ({ row }) => (
-          <span className="font-content">
-            {getAnnotationsLinkParamsFromFiles(row.original.file) ? (
-              <Link
-                href={getAnnotationsLinkParamsFromFiles(row.original.file)}
-                passHref
-              >
-                <a
-                  className="text-utility-link underline font-content"
-                  target="_blank"
-                >
-                  {row.original.annotations.length}
-                </a>
-              </Link>
-            ) : (
-              row.original?.annotations?.length ?? 0
-            )}
-          </span>
-        ),
+        cell: ({ row }) => row.original?.annotations?.length ?? 0,
       }),
     ],
-    [cartFilesTableColumnHelper, setEntityMetadata],
+    [setEntityMetadata],
   );
 
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
@@ -301,6 +318,12 @@ const FilesTable: React.FC<FilesTableProps> = () => {
         break;
     }
   };
+
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  useEffect(() => {
+    sortByActions(sorting);
+  }, [sorting]);
 
   const handleDownloadJSON = async () => {
     await download({
@@ -339,12 +362,6 @@ const FilesTable: React.FC<FilesTableProps> = () => {
     });
   };
 
-  const [sorting, setSorting] = useState<SortingState>([]);
-
-  useEffect(() => {
-    sortByActions(sorting);
-  }, [sorting]);
-
   const handleDownloadTSV = () => {
     downloadTSV({
       tableData,
@@ -379,6 +396,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
             <FunctionButton
               onClick={handleDownloadJSON}
               aria-label="Download JSON"
+              disabled={isFetching}
             >
               JSON
             </FunctionButton>
@@ -387,22 +405,20 @@ const FilesTable: React.FC<FilesTableProps> = () => {
             <FunctionButton
               onClick={handleDownloadTSV}
               aria-label="Download TSV"
+              disabled={isFetching}
             >
               TSV
             </FunctionButton>
           </Tooltip>
         </div>
       }
-      pagination={{
-        ...data?.pagination,
-        label: "files",
-      }}
+      pagination={pagination}
       status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
       handleChange={handleChange}
       search={{
         enabled: true,
         tooltip:
-          "e.g. HCM-CSHL-0062-C18.json, 4b5f5ba0-3010-4449-99d4-7bd7a6d73422",
+          "e.g. HCM-CSHL-0062-C18.json, 4b5f5ba0-3010-4449-99d4-7bd7a6d73422, HCM-CSHL-0062-C18",
       }}
       showControls={true}
       setColumnVisibility={setColumnVisibility}

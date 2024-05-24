@@ -3,10 +3,10 @@ import tw from "tailwind-styled-components";
 import { MdShoppingCart as CartIcon } from "react-icons/md";
 import { MdExpandMore as ExpandMoreIcon } from "react-icons/md";
 import {
-  useCartSummary,
+  useCartSummaryQuery,
   useCoreSelector,
   selectCart,
-  useUserDetails,
+  useFetchUserDetailsQuery,
 } from "@gff/core";
 import FilesTable from "./FilesTable";
 import ProjectTable from "./ProjectTable";
@@ -32,10 +32,10 @@ const P = tw.p`
 
 const Cart: React.FC = () => {
   const cart = useCoreSelector((state) => selectCart(state));
-  const { data: summaryData } = useCartSummary(cart.map((f) => f.file_id));
+  const { data: summaryData } = useCartSummaryQuery(cart.map((f) => f.file_id));
   const { data: userDetails, isFetching: userDetailsFetching } =
-    useUserDetails();
-  const filesByCanAccess = groupByAccess(cart, userDetails);
+    useFetchUserDetailsQuery();
+  const filesByCanAccess = groupByAccess(cart, userDetails?.data);
   const dbGapList = Array.from(
     new Set(
       (filesByCanAccess?.true || [])
@@ -145,7 +145,7 @@ const Cart: React.FC = () => {
           </div>
           <div className="flex-1">
             <HeaderTitle>File counts by project</HeaderTitle>
-            <ProjectTable projectData={summaryData.byProject} />
+            <ProjectTable projectData={summaryData?.byProject} />
           </div>
         </div>
         <div className="mt-6">

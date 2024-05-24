@@ -1,28 +1,7 @@
 /* Courtesy of https://github.com/mantinedev/ui.mantine.dev/blob/master/components/TableScrollArea/TableScrollArea.tsx */
-import { createStyles, Table, ScrollArea } from "@mantine/core";
+import { Table, ScrollArea } from "@mantine/core";
 import { ReactNode, useEffect, useRef, useState } from "react";
-
-const useStyles = createStyles((theme) => ({
-  header: {
-    position: "sticky",
-    top: 0,
-    transition: "box-shadow 150ms ease",
-    height: "56px",
-    backgroundColor: "#FFFFFF",
-
-    "&::after": {
-      content: '""',
-      position: "absolute",
-      left: 0,
-      right: 0,
-      bottom: -1,
-      borderBottom: "4px solid #c5c5c5",
-    },
-  },
-  scrolled: {
-    boxShadow: theme.shadows.xl,
-  },
-}));
+import classes from "./ScrollableTableWithFixedHeader.module.css";
 
 interface ScrollableTableWithFixedHeaderProps {
   readonly tableData: {
@@ -38,7 +17,6 @@ export const ScrollableTableWithFixedHeader = ({
   tableMinWidth = undefined,
   maxRowsBeforeScroll,
 }: ScrollableTableWithFixedHeaderProps): JSX.Element => {
-  const { classes, cx } = useStyles();
   const [scrolled, setScrolled] = useState(false);
   const [tableMaxHeight, setTableMaxHeight] = useState(0);
 
@@ -98,12 +76,12 @@ export const ScrollableTableWithFixedHeader = ({
       ref={scrollAreaRef}
     >
       <Table
-        sx={{
+        style={{
           minWidth: tableMinWidth,
         }}
       >
         <thead
-          className={cx(classes.header, { [classes.scrolled]: scrolled })}
+          className={`${classes.header} ${scrolled ? "shadow-xl" : ""}`}
           ref={tableHeaderRef}
         >
           <tr className="font-heading text-sm font-bold text-base-contrast-max whitespace-pre-line leading-5 shadow-md h-full">

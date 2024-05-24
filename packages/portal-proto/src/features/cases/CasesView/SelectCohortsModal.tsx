@@ -101,7 +101,7 @@ export const SelectCohortsModal = ({
 
     try {
       const res = await fetchGdcCases({
-        filters: buildCohortGqlOperator(cohortFilter),
+        case_filters: buildCohortGqlOperator(cohortFilter),
         fields: ["case_id"],
         size: MAX_CASE_IDS,
       });
@@ -148,6 +148,8 @@ export const SelectCohortsModal = ({
               },
             ],
           },
+          intent: "portal",
+          set_type: "frozen",
         },
       },
     );
@@ -190,15 +192,14 @@ export const SelectCohortsModal = ({
         size="xl"
         zIndex={400}
       >
-        {showSaveCohort && (
-          <SaveCohortModal
-            onClose={() => {
-              setShowSaveCohorts(false);
-              onClose();
-            }}
-            filters={saveCohortFilters}
-          />
-        )}
+        <SaveCohortModal
+          onClose={() => {
+            setShowSaveCohorts(false);
+            onClose();
+          }}
+          opened={showSaveCohort}
+          filters={saveCohortFilters}
+        />
 
         <div className="px-4">
           <Text className="text-xs mb-4 block">{description}</Text>

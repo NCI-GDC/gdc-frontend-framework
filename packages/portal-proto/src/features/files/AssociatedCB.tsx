@@ -6,19 +6,6 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import VerticalTable from "@/components/Table/VerticalTable";
-import Link from "next/link";
-
-const getAnnotationsLinkParams = (
-  annotations: readonly string[],
-  case_id: string,
-) => {
-  if (!annotations) return null;
-
-  if (annotations.length === 1) {
-    return `https://portal.gdc.cancer.gov/v1/annotations/${annotations[0]}`;
-  }
-  return `https://portal.gdc.cancer.gov/v1/annotations?filters={"content":[{"content":{"field":"annotations.entity_id","value":["${case_id}"]},"op":"in"}],"op":"and"}`;
-};
 
 const AssociatedCB = ({
   cases,
@@ -68,21 +55,6 @@ const AssociatedCB = ({
         entityQuery = { bioId: entity.entity_id };
       }
 
-      const url =
-        caseData !== undefined
-          ? getAnnotationsLinkParams(caseData?.annotations, caseData.case_id)
-          : undefined;
-
-      const annotationsLink = url ? (
-        <Link href={url} passHref>
-          <a className="text-utility-link underline" target="_blank">
-            {caseData.annotations.length}
-          </a>
-        </Link>
-      ) : (
-        0
-      );
-
       if (
         caseData?.submitter_id &&
         (associatedCBSearchTerm === "" ||
@@ -109,7 +81,7 @@ const AssociatedCB = ({
               text={caseData?.submitter_id}
             />
           ),
-          annotations: annotationsLink,
+          annotations: caseData?.annotations?.length || 0,
         });
       }
     });

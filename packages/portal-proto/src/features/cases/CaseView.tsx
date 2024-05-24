@@ -4,13 +4,9 @@ import {
   useCoreDispatch,
   useCoreSelector,
   selectCart,
-  AnnotationDefaults,
-  mapFileData,
-  caseFileType,
   Demographic,
-  caseSummaryDefaults,
   FilterSet,
-  AccessType,
+  CaseDefaults,
 } from "@gff/core";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
@@ -23,31 +19,25 @@ import {
   formatDataForHorizontalTable,
   mapGdcFileToCartFile,
 } from "../files/utils";
-import { allFilesInCart, fileInCart, focusStyles, humanify } from "src/utils";
+import { allFilesInCart, focusStyles, humanify } from "src/utils";
 import CategoryTableSummary from "@/components/Summary/CategoryTableSummary";
 import { ClinicalSummary } from "./ClinicalSummary/ClinicalSummary";
-import fileSize from "filesize";
-import { FileAccessBadge } from "@/components/FileAccessBadge";
-import { TableActionButtons } from "@/components/TableActionButtons";
 import { ImageSlideCount } from "@/components/ImageSlideCount";
 import {
   formatDataForDataCateogryTable,
   formatDataForExpCateogryTable,
-  getAnnotationsLinkParams,
   getSlideCountFromCaseSummary,
 } from "./utils";
-import { SingularOrPluralSpan } from "@/components/SingularOrPluralSpan/SingularOrPluralSpan";
 import SMTableContainer from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
-import { createColumnHelper } from "@tanstack/react-table";
-import VerticalTable from "@/components/Table/VerticalTable";
+import FilesTable from "./FilesTable";
+import UsersIcon from "public/user-flow/icons/summary/users.svg";
+import AnnotationsTable from "./AnnotationsTable";
+import useScrollToHash from "@/hooks/useScrollToHash";
 
 export interface CaseViewProps {
-  readonly data: caseSummaryDefaults;
+  readonly data: CaseDefaults;
   readonly isModal: boolean;
-  readonly annotationCountData: {
-    list: AnnotationDefaults[];
-    count: number;
-  };
+  readonly annotationCountData: number;
   readonly bio_id: string;
   readonly case_id: string;
   readonly shouldScrollToBio: boolean;
@@ -62,7 +52,6 @@ export const CaseView: React.FC<CaseViewProps> = ({
   shouldScrollToBio,
 }: CaseViewProps) => {
   const filesCountTotal = data?.files?.length ?? 0;
-  const annotationsCountTotal = annotationCountData?.count;
   const headerTitle = `${data?.project?.project_id} / ${data?.submitter_id}`;
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
@@ -73,13 +62,14 @@ export const CaseView: React.FC<CaseViewProps> = ({
     ? allFilesInCart(currentCart, mapGdcFileToCartFile(data?.files))
     : false;
 
+  useScrollToHash(["files", "annotations"]);
+
   const {
     diagnoses = [],
     demographic = {} as Demographic,
     family_histories = [],
     follow_ups = [],
     exposures = [],
-    files = [],
   } = data || {};
 
   useEffect(() => {
@@ -87,14 +77,6 @@ export const CaseView: React.FC<CaseViewProps> = ({
       scrollIntoView();
     }
   }, [scrollIntoView, shouldScrollToBio]);
-
-  const clinicalFilteredFiles = files?.filter(
-    (file) => file.data_type === "Clinical Supplement",
-  );
-
-  const biospecimenFilteredFiles = files?.filter(
-    (file) => file.data_type === "Biospecimen Supplement",
-  );
 
   const formatDataForCaseSummary = () => {
     const {
@@ -122,8 +104,11 @@ export const CaseView: React.FC<CaseViewProps> = ({
       case_uuid: case_id,
       case_id: submitter_id,
       project: (
-        <Link href={`/projects/${project_id}`}>
-          <a className="underline text-utility-link"> {project_id}</a>
+        <Link
+          href={`/projects/${project_id}`}
+          className="underline text-utility-link"
+        >
+          {project_id}
         </Link>
       ),
       project_name,
@@ -147,6 +132,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
             offset={-2}
           >
             <div className="pt-0.5">
+              {/* This needs both passHref and legacyBehavior: https://nextjs.org/docs/pages/api-reference/components/link#if-the-child-is-a-functional-component */}
               <Link
                 href={`/image-viewer/MultipleImageViewerPage?caseId=${case_id}`}
                 passHref
@@ -163,6 +149,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
             withArrow
           >
             <ActionIcon
+              data-testid="button-add-remove-files-case-summary"
               variant="outline"
               size="sm"
               className={`hover:bg-primary hover:text-base-max border-primary ${
@@ -203,137 +190,37 @@ export const CaseView: React.FC<CaseViewProps> = ({
     return formatDataForHorizontalTable(caseSummaryObject, headersConfig);
   };
 
-  const supplementFilesRender = (files: caseFileType[]) => {
-    type SupplementFilesDataType = {
-      access: AccessType;
-      file_id: string;
-      file_name: string;
-      data_format: string;
-      file_size: string;
-      file: caseFileType;
-    };
-
-    const supplementFilesTableData: SupplementFilesDataType[] = files.map(
-      (file) => ({
-        access: file.access,
-        file_id: file.file_id,
-        file_name: file.file_name,
-        data_format: file.data_format,
-        file_size: fileSize(file.file_size),
-        file: file,
-      }),
-    );
-
-    const supplementFilesTableColumnHelper =
-      createColumnHelper<SupplementFilesDataType>();
-
-    const supplementFilesTableColumns = [
-      supplementFilesTableColumnHelper.display({
-        id: "access",
-        header: "Access",
-        cell: ({ row }) => <FileAccessBadge access={row.original.access} />,
-      }),
-      supplementFilesTableColumnHelper.display({
-        id: "file_name",
-        header: "File Name",
-        cell: ({ row }) => (
-          <Link href={`/files/${row.original.file_id}`}>
-            <a className="text-utility-link underline">
-              {row.original.file_name}
-            </a>
-          </Link>
-        ),
-      }),
-      supplementFilesTableColumnHelper.accessor("data_format", {
-        id: "data_format",
-        header: "Data Format",
-      }),
-      supplementFilesTableColumnHelper.accessor("file_size", {
-        id: "file_size",
-        header: "File Size",
-      }),
-      supplementFilesTableColumnHelper.display({
-        id: "action",
-        header: "Action",
-        cell: ({ row }) => {
-          const isOutputFileInCart = fileInCart(
-            currentCart,
-            row.original.file_id,
-          );
-          return (
-            <TableActionButtons
-              isOutputFileInCart={isOutputFileInCart}
-              file={mapGdcFileToCartFile([row.original.file])}
-              downloadFile={mapFileData([row.original.file])[0]}
-            />
-          );
-        },
-      }),
-    ];
-
-    return {
-      data: supplementFilesTableData,
-      columns: supplementFilesTableColumns,
-    };
-  };
-
-  const formatDataForClinicalFiles = () => {
-    const { files } = data;
-
-    const filteredFiles = files.filter(
-      (file) => file.data_type === "Clinical Supplement",
-    );
-
-    return supplementFilesRender(filteredFiles);
-  };
-
-  const formatDataForBioSpecimenFiles = () => {
-    const { files } = data;
-
-    const filteredFiles = files.filter(
-      (file) => file.data_type === "Biospecimen Supplement",
-    );
-
-    return supplementFilesRender(filteredFiles);
-  };
-
-  const addLinkValue = () => (
-    <span className="text-base-lightest">
-      {getAnnotationsLinkParams(annotationCountData, case_id) ? (
-        <Link
-          href={getAnnotationsLinkParams(annotationCountData, case_id)}
-          passHref
-        >
-          <a
-            className="underline"
-            target="_blank"
-            aria-label={`${annotationsCountTotal.toLocaleString()} Annotation${
-              annotationsCountTotal > 1 ? "s" : ""
-            }`}
-          >
-            {annotationsCountTotal.toLocaleString()}
-          </a>
-        </Link>
-      ) : (
-        annotationsCountTotal.toLocaleString()
-      )}
-    </span>
-  );
-
   const Files = (
     <span className="flex items-center gap-1">
       <FaFile size={24} />
-      <SingularOrPluralSpan count={filesCountTotal} title="File" />
+      {filesCountTotal > 0 ? (
+        <a
+          data-testid="text-file-count-case-summary"
+          href="#files"
+          className="underline font-bold"
+        >
+          {filesCountTotal.toLocaleString()}
+        </a>
+      ) : (
+        <span className="font-bold">{filesCountTotal.toLocaleString()}</span>
+      )}
+      {filesCountTotal > 1 ? "Files" : "File"}
     </span>
   );
 
   const Annotations = (
     <span className="flex items-center gap-1">
       <FaEdit size={24} />
-      <span>
-        {addLinkValue()}{" "}
-        {annotationsCountTotal > 1 ? "Annotations" : "Annotation"}
-      </span>
+      {annotationCountData > 0 ? (
+        <a href="#annotations" className="underline font-bold">
+          {annotationCountData.toLocaleString()}
+        </a>
+      ) : (
+        <span className="font-bold">
+          {annotationCountData.toLocaleString()}
+        </span>
+      )}
+      {annotationCountData == 1 ? "Annotation" : "Annotations"}
     </span>
   );
 
@@ -362,11 +249,13 @@ export const CaseView: React.FC<CaseViewProps> = ({
   return (
     <>
       <SummaryHeader
-        iconText="ca"
+        Icon={UsersIcon}
+        headerTitleLeft="Case"
         headerTitle={headerTitle}
         leftElement={
           <Button
-            leftIcon={<FaShoppingCart />}
+            data-testid="button-add-all-remove-all-files-case-summary"
+            leftSection={<FaShoppingCart />}
             className={`text-primary bg-base-max hover:bg-primary-darkest hover:text-base-max ${focusStyles}`}
             onClick={() =>
               isAllFilesInCart
@@ -399,7 +288,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
 
       <div className={`${!isModal && "mt-32"} mx-4`}>
         <div className="mt-8">
-          <div className="flex">
+          <div data-testid="table-summary-case-summary" className="flex">
             <div className="basis-1/2">
               <SummaryCard tableData={formatDataForCaseSummary().slice(0, 4)} />
             </div>
@@ -419,20 +308,28 @@ export const CaseView: React.FC<CaseViewProps> = ({
             <div className="flex gap-4 mt-8 mb-14">
               {data.summary.data_categories && (
                 <CategoryTableSummary
+                  customDataTestID="table-data-category-case-summary"
                   title="File Counts by Data Category"
                   {...formatDataForDataCateogryTable(
                     data.summary.data_categories,
                     filesCountTotal,
                   )}
+                  tooltip={
+                    "A detailed list of the files is located in the Files section of this page."
+                  }
                 />
               )}
               {data.summary.experimental_strategies && (
                 <CategoryTableSummary
+                  customDataTestID="table-experimental-strategy-case-summary"
                   title="File Counts by Experimental Strategy"
                   {...formatDataForExpCateogryTable(
                     data.summary.experimental_strategies,
                     filesCountTotal,
                   )}
+                  tooltip={
+                    "A detailed list of the files is located in the Files section of this page."
+                  }
                 />
               )}
             </div>
@@ -440,6 +337,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
         </div>
 
         <div
+          data-testid="table-clinical-case-summary"
           className={`${
             !(
               data.summary.data_categories ||
@@ -459,18 +357,12 @@ export const CaseView: React.FC<CaseViewProps> = ({
           />
         </div>
 
-        {clinicalFilteredFiles?.length > 0 && (
-          <div className="mt-8">
-            <div className="flex gap-2 bg-nci-violet-lightest text-primary-content p-2 border border-b-0 border-base-lighter">
-              <h2 className="text-xl text-primary-content-darkest font-medium">
-                Clinical Supplement File
-              </h2>
-            </div>
-            <VerticalTable {...formatDataForClinicalFiles()} />
-          </div>
-        )}
-
-        <div ref={targetRef} id="biospecimen" className="mb-8">
+        <div
+          data-testid="table-biospecimen-case-summary"
+          ref={targetRef}
+          id="biospecimen"
+          className="mb-8"
+        >
           <Biospecimen
             caseId={case_id}
             bioId={bio_id}
@@ -479,16 +371,12 @@ export const CaseView: React.FC<CaseViewProps> = ({
             project_id={data?.project?.project_id}
           />
         </div>
-        {biospecimenFilteredFiles?.length > 0 && (
-          <div className="mb-16">
-            <div className="flex gap-2 bg-nci-violet-lightest text-primary-content p-2 border border-b-0 border-base-lighter">
-              <h2 className="text-xl text-primary-content-darkest font-medium">
-                Biospecimen Supplement File
-              </h2>
-            </div>
-            <VerticalTable {...formatDataForBioSpecimenFiles()} />
-          </div>
-        )}
+        <div
+          className={`mb-8 ${isModal ? "scroll-mt-36" : "scroll-mt-72"}`}
+          id="files"
+        >
+          <FilesTable caseId={case_id} />
+        </div>
 
         <div className="mb-16">
           <SMTableContainer
@@ -501,6 +389,15 @@ export const CaseView: React.FC<CaseViewProps> = ({
           />
         </div>
       </div>
+
+      {annotationCountData > 0 && (
+        <div
+          className={`mb-16 mx-4 ${isModal ? "scroll-mt-36" : "scroll-mt-72"}`}
+          id="annotations"
+        >
+          <AnnotationsTable case_id={case_id} />
+        </div>
+      )}
     </>
   );
 };

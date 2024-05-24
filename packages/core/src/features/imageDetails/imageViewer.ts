@@ -1,35 +1,90 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {
-  CoreDataSelectorResponse,
-  createUseCoreDataHook,
-} from "../../dataAccess";
-import { CoreState } from "../../reducers";
-import { GraphQLApiResponse } from "../gdcapi/gdcgraphql";
-import { fetchImageViewerQuery, queryParams } from "./imageDetailsApi";
+import { buildCohortGqlOperator, FilterSet } from "../cohort";
+import { GqlIntersection, GqlOperation, GqlUnion } from "../gdcapi/filters";
+import { graphqlAPISlice } from "../gdcapi/gdcgraphql";
 import { trimEnd, find } from "lodash";
-import {
-  caseNodeType,
-  ImageViewerInfo,
-  imageViewerInitialState,
-} from "./types";
+import { caseNodeType } from "./types";
 
-export const fetchImageViewer = createAsyncThunk(
-  "imageDetails/fetchImageViewer",
-  async (params: queryParams): Promise<GraphQLApiResponse> => {
-    return await fetchImageViewerQuery(params);
-  },
-);
-
-export interface edgeDetails {
-  readonly file_id: string;
-  readonly submitter_id: string;
-}
-
-const initialState: imageViewerInitialState = {
-  status: "uninitialized",
-  total: 0,
-  edges: {},
-};
+const imageViewerGraphlQLQuery = `
+  query ImageViewer(
+    $filters: FiltersArgument
+    $slideFilter: FiltersArgument
+    $cases_size: Int
+    $cases_offset: Int
+  ) {
+    viewer {
+      repository {
+        cases {
+          hits(
+            case_filters: $filters
+            first: $cases_size
+            offset: $cases_offset
+          ) {
+            total
+            edges {
+              cursor
+              node {
+                id
+                case_id
+                submitter_id
+                project {
+                  project_id
+                }
+                files {
+                  hits(filters: $slideFilter, first: 99) {
+                    edges {
+                      node {
+                        file_id
+                        submitter_id
+                      }
+                    }
+                  }
+                }
+                samples {
+                  hits(first: 99) {
+                    edges {
+                      node {
+                        portions {
+                          hits(first: 99) {
+                            edges {
+                              node {
+                                slides {
+                                  hits(first: 99) {
+                                    edges {
+                                      node {
+                                        submitter_id
+                                        slide_id
+                                        percent_tumor_nuclei
+                                        percent_monocyte_infiltration
+                                        percent_normal_cells
+                                        percent_stromal_cells
+                                        percent_eosinophil_infiltration
+                                        percent_lymphocyte_infiltration
+                                        percent_neutrophil_infiltration
+                                        section_location
+                                        percent_granulocyte_infiltration
+                                        percent_necrosis
+                                        percent_inflam_infiltration
+                                        number_proliferating_cells
+                                        percent_tumor_cells
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+}`;
 
 export const getSlides: (caseNode: caseNodeType) => any[] = (
   caseNode: caseNodeType,
@@ -67,22 +122,122 @@ export const getSlides: (caseNode: caseNodeType) => any[] = (
   });
 };
 
-const slice = createSlice({
-  name: "imageViewer",
-  initialState,
-  reducers: {
-    resetEdgesState(state) {
-      state.edges = {};
-    },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchImageViewer.fulfilled, (state, action) => {
-        const response = action.payload;
+interface ImageViewerQueryParams {
+  cases_offset: number;
+  searchValues: Array<string>;
+  case_id: string;
+  caseFilters?: FilterSet;
+}
 
+interface ImageViewerReponse {
+  readonly total: number;
+  readonly edges: Record<string, any[]>;
+}
+
+const imageViewerSlice = graphqlAPISlice.injectEndpoints({
+  endpoints: (builder) => ({
+    imageViewer: builder.query<ImageViewerReponse, ImageViewerQueryParams>({
+      query: ({ cases_offset, searchValues, case_id, caseFilters }) => {
+        let graphQLFilters = {
+          slideFilter: {
+            op: "and",
+            content: [
+              {
+                op: "in",
+                content: {
+                  field: "files.data_type",
+                  value: ["Slide Image"],
+                },
+              },
+              {
+                op: "in",
+                content: {
+                  field: "files.access",
+                  value: ["open"],
+                },
+              },
+            ],
+          },
+          // caseFilters
+          filters: {
+            op: "and",
+            content: [
+              {
+                op: "in",
+                content: {
+                  field:
+                    "summary.experimental_strategies.experimental_strategy",
+                  value: ["Tissue Slide", "Diagnostic Slide"],
+                },
+              },
+            ] as GqlOperation[],
+          },
+        };
+
+        if (case_id) {
+          graphQLFilters = {
+            ...graphQLFilters,
+            filters: {
+              ...graphQLFilters.filters,
+              content: [
+                ...graphQLFilters.filters.content,
+                {
+                  op: "in",
+                  content: {
+                    field: "cases.case_id",
+                    value: [case_id],
+                  },
+                },
+              ],
+            },
+          };
+        }
+
+        if (searchValues.length > 0) {
+          graphQLFilters = {
+            ...graphQLFilters,
+            filters: {
+              ...graphQLFilters.filters,
+              content: [
+                ...graphQLFilters.filters.content,
+                {
+                  op: "in",
+                  content: {
+                    field: "cases.submitter_id",
+                    value: searchValues,
+                  },
+                },
+              ],
+            },
+          };
+        }
+
+        if (caseFilters) {
+          const caseGQL = buildCohortGqlOperator(caseFilters) as
+            | GqlIntersection
+            | GqlUnion
+            | undefined;
+          if (caseGQL) {
+            graphQLFilters = {
+              ...graphQLFilters,
+              filters: {
+                ...graphQLFilters.filters,
+                content: [
+                  ...graphQLFilters.filters.content,
+                  ...caseGQL.content,
+                ],
+              },
+            };
+          }
+        }
+
+        return {
+          graphQLQuery: imageViewerGraphlQLQuery,
+          graphQLFilters: { ...graphQLFilters, cases_size: 10, cases_offset },
+        };
+      },
+      transformResponse: (response) => {
         const hits = response?.data?.viewer?.repository?.cases?.hits;
-        state.status = "fulfilled";
-        state.total = hits?.total;
 
         const obj = Object.fromEntries(
           hits?.edges?.map((edge: any) => {
@@ -94,36 +249,13 @@ const slice = createSlice({
           }),
         );
 
-        state.edges = { ...state.edges, ...obj };
-
-        return state;
-      })
-      .addCase(fetchImageViewer.pending, (state) => {
-        state.status = "pending";
-        return state;
-      })
-      .addCase(fetchImageViewer.rejected, (state) => {
-        state.status = "rejected";
-        return state;
-      });
-  },
+        return {
+          total: hits?.total,
+          edges: obj,
+        };
+      },
+    }),
+  }),
 });
 
-export const imageViewerReducer = slice.reducer;
-
-export const { resetEdgesState } = slice.actions;
-
-export const selectImageViewerInfo = (
-  state: CoreState,
-): CoreDataSelectorResponse<ImageViewerInfo> => ({
-  data: {
-    edges: state.imageViewer.edges,
-    total: state.imageViewer.total,
-  },
-  status: state.imageViewer.status,
-});
-
-export const useImageViewer = createUseCoreDataHook(
-  fetchImageViewer,
-  selectImageViewerInfo,
-);
+export const { useImageViewerQuery } = imageViewerSlice;

@@ -192,7 +192,13 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
 
   return (
     <VerticalTable
-      tableTitle={`Total of ${paginationProps?.total?.toLocaleString()} Primary Sites`}
+      customDataTestID="table-primary-sites-project-summary"
+      tableTitle={
+        <>
+          Total of <b>{paginationProps?.total?.toLocaleString()}</b> Primary
+          Sites
+        </>
+      }
       data={displayedData}
       columns={primarySitesTableColumns}
       additionalControls={

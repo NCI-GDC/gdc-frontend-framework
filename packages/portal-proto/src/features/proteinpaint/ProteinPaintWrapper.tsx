@@ -1,4 +1,5 @@
-import { useEffect, useRef, useCallback, useState, FC } from "react";
+import { useRef, useCallback, useState, FC } from "react";
+import { useDeepCompareEffect } from "use-deep-compare";
 import { runproteinpaint } from "@sjcrh/proteinpaint-client";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import {
@@ -6,7 +7,7 @@ import {
   selectCurrentCohortFilters,
   FilterSet,
   PROTEINPAINT_API,
-  useUserDetails,
+  useFetchUserDetailsQuery,
   useCoreDispatch,
   buildCohortGqlOperator,
   useCreateCaseSetFromValuesMutation,
@@ -35,7 +36,8 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   const isDemoMode = useIsDemoApp();
   const currentCohort = useCoreSelector(selectCurrentCohortFilters);
   const filter0 = isDemoMode ? null : buildCohortGqlOperator(currentCohort);
-  const { data: userDetails } = useUserDetails();
+  const userDetails = useFetchUserDetailsQuery();
+
   // to track reusable instance for mds3 skewer track
   const ppRef = useRef<PpApi>();
   const prevArg = useRef<any>({});
@@ -49,14 +51,26 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
     (arg: SelectSamplesCallBackArg) => {
       const cases = arg.samples.map((d) => d["cases.case_id"]);
       if (cases.length > 1) {
-        createSet({ values: cases });
+        createSet({ values: cases, intent: "portal", set_type: "frozen" });
+      } else {
+        setNewCohortFilters({
+          mode: "and",
+          root: {
+            "cases.case_id": {
+              operator: "includes",
+              field: "cases.case_id",
+              operands: cases,
+            },
+          },
+        });
+        setShowSaveCohort(true);
       }
     },
     [createSet],
   );
 
   // a set for the new cohort is created, now show the save cohort modal
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (response.isSuccess) {
       const filters: FilterSet = {
         mode: "and",
@@ -73,7 +87,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
     }
   }, [response.isSuccess, coreDispatch, response.data]);
 
-  useEffect(
+  useDeepCompareEffect(
     () => {
       const rootElem = divRef.current as HTMLElement;
       const data = getLollipopTrack(props, filter0, callback);
@@ -125,12 +139,12 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
         className="sjpp-wrapper-root-div"
         //userDetails={userDetails}
       />
-      {showSaveCohort && newCohortFilters && (
-        <SaveCohortModal // Show the modal, create a saved cohort when save button is clicked
-          onClose={() => setShowSaveCohort(false)}
-          filters={newCohortFilters}
-        />
-      )}
+
+      <SaveCohortModal // Show the modal, create a saved cohort when save button is clicked
+        opened={showSaveCohort}
+        onClose={() => setShowSaveCohort(false)}
+        filters={newCohortFilters}
+      />
     </div>
   );
 };

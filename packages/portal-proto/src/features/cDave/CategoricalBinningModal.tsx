@@ -78,6 +78,7 @@ interface CategoricalBinningModalProps {
   readonly results: Record<string, number>;
   readonly customBins: CategoricalBins;
   readonly updateBins: (bin: CategoricalBins) => void;
+  readonly opened: boolean;
 }
 
 const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
@@ -86,6 +87,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
   results,
   customBins,
   updateBins,
+  opened,
 }: CategoricalBinningModalProps) => {
   const [values, setValues] = useState<CategoricalBins>(
     customBins !== null ? customBins : results,
@@ -173,13 +175,13 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
 
   return (
     <Modal
-      opened
+      opened={opened}
       onClose={() => setModalOpen(false)}
       size={800}
       zIndex={400}
       title={`Create Custom Bins: ${field}`}
       classNames={{
-        header: "text-xl m-0 px-0",
+        header: "text-xl !m-0 !px-0",
         content: "p-4",
       }}
     >
@@ -218,7 +220,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
                     : selectedValues?.[k],
                 ).length < 2
               }
-              leftIcon={<GroupIcon aria-hidden="true" />}
+              leftSection={<GroupIcon aria-hidden="true" />}
             >
               Group
             </FunctionButton>
@@ -241,7 +243,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
                     ),
                 )
               }
-              leftIcon={<UngroupIcon aria-hidden="true" />}
+              leftSection={<UngroupIcon aria-hidden="true" />}
             >
               Ungroup
             </FunctionButton>
@@ -249,7 +251,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
               data-testid="button-custom-bins-hide-values"
               onClick={hideValues}
               disabled={Object.keys(selectedValues).length === 0}
-              leftIcon={<HideIcon aria-hidden="true" />}
+              leftSection={<HideIcon aria-hidden="true" />}
             >
               Hide
             </FunctionButton>
@@ -307,7 +309,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
               );
               setSelectedHiddenValues({});
             }}
-            leftIcon={<ShowIcon aria-hidden="true" />}
+            leftSection={<ShowIcon aria-hidden="true" />}
           >
             Show
           </FunctionButton>
@@ -329,12 +331,12 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
       </div>
       <div className="mt-2 flex gap-2 justify-end">
         {errorMessage && (
-          <Group className="grow" spacing={8} position="center">
+          <Group className="grow" gap={8} justify="center">
             <AlertIcon color="red" />
             <Text color="red">{errorMessage}</Text>
           </Group>
         )}
-        <Group spacing={8}>
+        <Group gap={8}>
           <Button
             data-testid="button-custom-bins-cancel"
             onClick={() => setModalOpen(false)}

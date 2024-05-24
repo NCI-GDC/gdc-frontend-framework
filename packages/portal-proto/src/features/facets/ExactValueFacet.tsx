@@ -115,14 +115,15 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
     <div
       className={`flex flex-col ${
         width ? width : "mx-0"
-      } bg-base-max relative shadow-lg border-primary-lightest border-1 rounded-b-md text-xs transition`}
+      } bg-base-max relative shadow-lg border-base-lighter border-1 rounded-b-md text-xs transition`}
     >
       <FacetHeader>
         <Tooltip
-          label={description || "No description available"}
+          disabled={!description}
+          label={description}
           position="bottom-start"
           multiline
-          width={220}
+          w={220}
           withArrow
           transitionProps={{ duration: 200, transition: "fade" }}
         >
@@ -141,7 +142,6 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
             <Tooltip label="Remove the facet">
               <FacetIconButton
                 onClick={() => {
-                  clearFilters(field);
                   dismissCallback(field);
                 }}
                 aria-label="Remove the facet"
@@ -154,6 +154,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
       </FacetHeader>
       <div className="flex flex-nowrap items-center p-2">
         <TextInput
+          data-testid="textbox-add-filter-value"
           size="xs"
           placeholder={`Enter ${facetTitle}`}
           classNames={{ root: "grow", input: "border-r-0 rounded-r-none py-1" }}
@@ -172,7 +173,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
           <PlusIcon />
         </ActionIcon>
       </div>
-      <Group spacing="xs" className="px-2 py-1" data-testid="values group">
+      <Group gap="xs" className="px-2 py-1" data-testid="values group">
         {textValues.map((x) => (
           <Badge
             size="sm"
