@@ -23,6 +23,7 @@ import {
   showModal,
   Modals,
   fetchCohortCaseCounts,
+  useCreateCaseSetFromFiltersMutation,
 } from "@gff/core";
 import { SaveOrCreateEntityBody } from "./SaveOrCreateEntityModal";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
@@ -34,6 +35,8 @@ import { INVALID_COHORT_NAMES } from "@/features/cohortBuilder/utils";
  * @param onClose - callback triggered when modal closes
  * @param cohortId - id of existing cohort we are saving, if undefined we are not saving a cohort that already exists
  * @param filters - the filters associated with the cohort
+ * @param caseFilters - the case filters to use for the cohort
+ * @param createStaticCohort - whether to create a case set from the filters so the cases in the cohort remain static
  * @param setAsCurrent - whether to set the new cohort as the user's current cohort, should not also pass in cohortId
  * @param saveAs - whether to save existing cohort as new cohort, requires cohortId
  * @category Modals
@@ -44,6 +47,8 @@ const SaveCohortModal = ({
   onClose,
   cohortId,
   filters,
+  caseFilters,
+  createStaticCohort = false,
   setAsCurrent = false,
   saveAs = false,
 }: {
@@ -52,6 +57,8 @@ const SaveCohortModal = ({
   onClose: () => void;
   cohortId?: string;
   filters: FilterSet;
+  caseFilters?: FilterSet;
+  createStaticCohort?: boolean;
   setAsCurrent?: boolean;
   saveAs?: boolean;
 }): JSX.Element => {
@@ -62,6 +69,7 @@ const SaveCohortModal = ({
   const [addCohort, { isLoading }] = useAddCohortMutation();
   const [cohortSavedMessage, setCohortSavedMessage] = useState<string[]>();
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
+  const [createSet] = useCreateCaseSetFromFiltersMutation();
 
   const {
     data: cohortsListData,
@@ -108,13 +116,36 @@ const SaveCohortModal = ({
 
   const saveAction = async (newName: string, replace: boolean) => {
     const prevCohort = cohortId;
+    let cohortFilters = filters;
+
+    if (createStaticCohort) {
+      await createSet({
+        filters: buildCohortGqlOperator(filters),
+        case_filters: buildCohortGqlOperator(caseFilters),
+        intent: "portal",
+        set_type: "frozen",
+      })
+        .unwrap()
+        .then((setId: string) => {
+          cohortFilters = {
+            mode: "and",
+            root: {
+              "cases.case_id": {
+                field: "cases.case_id",
+                operands: [`set_id:${setId}`],
+                operator: "includes",
+              },
+            },
+          } as FilterSet;
+        });
+    }
 
     const addBody = {
       name: newName,
       type: "dynamic",
       filters:
-        Object.keys(filters.root).length > 0
-          ? buildCohortGqlOperator(filters)
+        Object.keys(cohortFilters.root).length > 0
+          ? buildCohortGqlOperator(cohortFilters)
           : {},
     };
 
