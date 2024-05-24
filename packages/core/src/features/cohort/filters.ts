@@ -36,6 +36,7 @@ import { isEqual } from "lodash";
 export interface FilterSet {
   readonly root: Record<string, Operation>;
   readonly mode: string;
+  readonly isLoggedIn?: boolean;
 }
 
 /**
@@ -266,6 +267,7 @@ export const buildCohortGqlOperator = (
         content: fsKeys.map((k): GqlOperation => {
           return convertFilterToGqlFilter(fs.root[k]);
         }),
+        isLoggedIn: fs?.isLoggedIn,
       };
   }
   return undefined;

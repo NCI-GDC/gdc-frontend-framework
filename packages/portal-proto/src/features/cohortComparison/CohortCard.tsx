@@ -95,7 +95,7 @@ const CohortCard: React.FC<CohortCardProps> = ({
       ) : (
         <VennDiagram
           chartData={[
-            { key: "S1_minus_S1", value: 0, highlighted: false },
+            { key: "S1_minus_S2", value: 0, highlighted: false },
             { key: "S2_minus_S1", value: 0, highlighted: false },
             { key: "S1_intersect_S2", value: 0, highlighted: false },
           ]}

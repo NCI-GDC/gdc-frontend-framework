@@ -9,7 +9,6 @@ import {
   PayloadAction,
   ThunkAction,
 } from "@reduxjs/toolkit";
-
 import { CoreState } from "../../reducers";
 import { buildCohortGqlOperator, FilterSet } from "./filters";
 import { GqlOperation, Operation } from "../gdcapi/filters";
@@ -78,11 +77,13 @@ const cohortsAdapter = createEntityAdapter<Cohort>({
 export interface CurrentCohortState {
   readonly currentCohort: string | undefined;
   readonly message: string[] | undefined;
+  readonly isLoggedIn: boolean | undefined;
 }
 
 const emptyInitialState = cohortsAdapter.getInitialState<CurrentCohortState>({
   currentCohort: undefined,
   message: undefined, // message is used to inform frontend components of changes to the cohort.
+  isLoggedIn: undefined,
 });
 
 interface UpdateFilterParams {
@@ -404,6 +405,9 @@ const slice = createSlice({
     setCohortMessage: (state, action: PayloadAction<string[]>) => {
       state.message = action.payload;
     },
+    setIsLoggedIn: (state, action: PayloadAction<boolean>) => {
+      state.isLoggedIn = action.payload;
+    },
     clearCaseSet: (state) => {
       cohortsAdapter.updateOne(state, {
         id: getCurrentCohort(state),
@@ -533,6 +537,7 @@ export const {
   copyToSavedCohort,
   discardCohortChanges,
   setCohortMessage,
+  setIsLoggedIn,
   addNewCohortSet,
   removeCohortSet,
 } = slice.actions;
@@ -581,6 +586,14 @@ export const selectCurrentCohortId = (state: CoreState): string | undefined =>
  */
 export const selectCohortMessage = (state: CoreState): string[] | undefined =>
   state.cohort.availableCohorts.message;
+
+/**
+ * Returns the current cohort login status
+ * @param state - the CoreState
+ * @hidden
+ */
+export const selectCohortIsLoggedIn = (state: CoreState): boolean | undefined =>
+  state.cohort.availableCohorts.isLoggedIn;
 
 /**
  * Returns if the current cohort is modified
@@ -659,6 +672,7 @@ export const selectAvailableCohortByName = (
     .selectAll(state)
     .find((cohort: Cohort) => cohort.name === name);
 
+// remove this and update in necessary places
 /**
  * Returns the current cohort filters as a {@link FilterSet}
  * @category Cohort
@@ -726,12 +740,14 @@ export const selectCurrentCohortGqlFilters = (
  * @category Selectors
  */
 export const selectCurrentCohortFilters = (state: CoreState): FilterSet => {
+  const isLoggedIn = state.cohort.availableCohorts.isLoggedIn;
   const cohort = cohortSelectors.selectById(
     state,
     getCurrentCohortFromCoreState(state),
   );
-  if (cohort === undefined) return { mode: "and", root: {} };
-  return cohort.filters;
+  if (cohort === undefined)
+    return { mode: "and", root: {}, isLoggedIn: isLoggedIn };
+  return { ...cohort.filters, isLoggedIn: isLoggedIn };
 };
 
 /**

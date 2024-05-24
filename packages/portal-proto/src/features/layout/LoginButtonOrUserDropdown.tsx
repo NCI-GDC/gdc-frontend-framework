@@ -15,6 +15,9 @@ import {
   useCoreDispatch,
   useFetchUserDetailsQuery,
   useLazyFetchTokenQuery,
+  setIsLoggedIn,
+  selectCohortIsLoggedIn,
+  useCoreSelector,
 } from "@gff/core";
 import { LoginButton } from "@/components/LoginButton";
 import {
@@ -22,17 +25,30 @@ import {
   DropdownMenuItem,
 } from "@/components/StyledComponents/DropdownMenu";
 import { theme } from "tailwind.config";
+import { useDeepCompareEffect } from "use-deep-compare";
 
 const LoginButtonOrUserDropdown = () => {
   const dispatch = useCoreDispatch();
   const { data: userInfo } = useFetchUserDetailsQuery();
   const userDropdownRef = useRef<HTMLButtonElement>();
   const [fetchToken] = useLazyFetchTokenQuery({ refetchOnFocus: false });
+  const cohortIsLoggedIn = useCoreSelector((state) =>
+    selectCohortIsLoggedIn(state),
+  );
+
+  useDeepCompareEffect(() => {
+    if (userInfo?.data?.username) {
+      cohortIsLoggedIn !== true && dispatch(setIsLoggedIn(true));
+    } else {
+      (cohortIsLoggedIn !== false || cohortIsLoggedIn !== undefined) &&
+        dispatch(setIsLoggedIn(false));
+    }
+  }, [cohortIsLoggedIn, userInfo?.data?.username, dispatch]);
 
   return (
     <>
       {userInfo?.data?.username ? (
-        <Menu width={200} data-testid="userdropdown" zIndex={9} offset={-5}>
+        <Menu width={200} data-testid="userdropdown" zIndex={400} offset={-5}>
           <Menu.Target>
             <Button
               rightSection={<ArrowDropDownIcon size="2em" aria-hidden="true" />}

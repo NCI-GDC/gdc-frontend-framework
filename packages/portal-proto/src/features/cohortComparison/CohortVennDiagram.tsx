@@ -44,7 +44,7 @@ const CohortVennDiagram: React.FC<CohortVennDiagramProps> = ({
     <VennDiagram
       chartData={[
         {
-          key: "S1_minus_S1",
+          key: "S1_minus_S2",
           value: data?.set1?.hits?.total.toLocaleString() || 0,
           highlighted: false,
         },
