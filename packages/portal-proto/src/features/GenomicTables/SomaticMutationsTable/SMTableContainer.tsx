@@ -273,6 +273,13 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         } as FilterSet)
       : contextSensitiveFilters;
 
+  // local filters for setCreation
+  const createSetFilters = geneSymbol
+    ? joinFilters(genomicFilters, geneFilter)
+    : caseFilter
+    ? caseFilter
+    : genomicFilters;
+
   const handleTSVGeneDownload = () => {
     setDownloadMutationsFrequencyTSVActive(true);
     download({
@@ -387,8 +394,16 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             <>
               <SaveSelectionAsSetModal
                 opened={showSaveModal}
-                filters={buildCohortGqlOperator(setFilters)}
-                sort="occurrence.case.project.project_id"
+                cohortFilters={
+                  selectedMutations.length === 0
+                    ? buildCohortGqlOperator(cohortFilters)
+                    : undefined
+                }
+                filters={buildCohortGqlOperator(
+                  selectedMutations.length === 0
+                    ? createSetFilters
+                    : setFilters,
+                )}
                 initialSetName={
                   selectedMutations.length === 0
                     ? filtersToName(setFilters)

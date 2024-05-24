@@ -178,13 +178,13 @@ export const createSetSlice = graphqlAPISlice
         transformResponse: transformCaseSetResponse,
       }),
       createGeneSetFromFilters: builder.mutation<string, CreateSetFilterArgs>({
-        query: ({ filters, size, score, intent, set_type }) => ({
+        query: ({ case_filters, filters, size, intent, set_type }) => ({
           graphQLQuery: createGeneSetMutation,
           graphQLFilters: {
             input: {
-              filters,
+              case_filters: case_filters ?? {},
+              filters: filters ?? {},
               size,
-              score,
               intent,
               set_type,
             },
@@ -199,14 +199,14 @@ export const createSetSlice = graphqlAPISlice
         },
       }),
       createSsmsSetFromFilters: builder.mutation<string, CreateSetFilterArgs>({
-        query: ({ filters, size, score, set_id, intent, set_type }) => ({
+        query: ({ case_filters, filters, size, set_id, intent, set_type }) => ({
           graphQLQuery: createSsmsSetMutation,
           graphQLFilters: {
             input: {
-              filters,
+              case_filters: case_filters ?? {},
+              filters: filters ?? {},
               set_id,
               size,
-              score,
               intent,
               set_type,
             },
@@ -221,15 +221,7 @@ export const createSetSlice = graphqlAPISlice
         },
       }),
       createCaseSetFromFilters: builder.mutation<string, CreateSetFilterArgs>({
-        query: ({
-          case_filters,
-          filters,
-          size,
-          score,
-          set_id,
-          intent,
-          set_type,
-        }) => ({
+        query: ({ case_filters, filters, size, set_id, intent, set_type }) => ({
           graphQLQuery: createCaseSetExploreMutation,
           graphQLFilters: {
             input: {
@@ -237,7 +229,6 @@ export const createSetSlice = graphqlAPISlice
               filters: filters ?? {},
               set_id,
               size,
-              score,
               intent,
               set_type,
             },

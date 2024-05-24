@@ -326,13 +326,19 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           <SaveSelectionAsSetModal
             opened={showSaveModal}
             closeModal={handleSaveSelectionAsSetModalClose}
-            filters={buildCohortGqlOperator(setFilters)}
+            cohortFilters={
+              selectedGenes.length === 0
+                ? buildCohortGqlOperator(cohortFilters)
+                : undefined
+            }
+            filters={buildCohortGqlOperator(
+              selectedGenes.length === 0 ? genomicFilters : setFilters,
+            )}
             initialSetName={
               selectedGenes.length === 0
                 ? filtersToName(setFilters)
                 : "Custom Gene Selection"
             }
-            sort="case.project.project_id"
             saveCount={
               selectedGenes.length === 0
                 ? data?.genes?.genes_total
