@@ -32,6 +32,7 @@ interface SaveSelectionAsSetModalProps {
     MutationDefinition<CreateSetFilterArgs, any, any, any>
   >;
   readonly closeModal: () => void;
+  readonly sort?: string;
   readonly opened: boolean;
 }
 
@@ -44,14 +45,12 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
   setTypeLabel,
   createSetHook,
   closeModal,
+  sort,
   opened,
 }: SaveSelectionAsSetModalProps) => {
   const dispatch = useCoreDispatch();
   const sets = useCoreSelector((state) => selectSetsByType(state, setType));
   const [createSet, response] = createSetHook();
-
-  console.log("create set cohortFilters", cohortFilters);
-  console.log("create set filters", filters);
 
   const max = saveCount > SET_COUNT_LIMIT ? SET_COUNT_LIMIT : saveCount;
   const form = useForm({
@@ -132,6 +131,7 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
               case_filters: cohortFilters ?? {},
               filters: filters ?? {},
               size: form.values.top,
+              score: sort,
               set_type: "mutable",
               intent: "user",
             })
