@@ -135,7 +135,6 @@ const CountButtonWrapperForSetsAndCases: React.FC<
 
   const createCohort = async () => {
     return await createSet({
-      // TODO: possibly add error handling
       filters: filters,
       intent: entityType == "cohort" ? "portal" : "user",
       set_type: entityType == "cohort" ? "frozen" : "mutable",

@@ -21,6 +21,9 @@ beforeEach(() => {
   jest
     .spyOn(core, "useLazyGetCohortByIdQuery")
     .mockReturnValue([jest.fn()] as any);
+  jest
+    .spyOn(core, "useCreateCaseSetFromFiltersMutation")
+    .mockReturnValue([jest.fn()] as any);
 });
 
 describe("CasesCohortButton", () => {

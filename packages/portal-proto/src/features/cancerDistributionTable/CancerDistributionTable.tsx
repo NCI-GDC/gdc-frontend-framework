@@ -1,11 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import {
-  useGetProjectsQuery,
-  FilterSet,
-  useCreateCaseSetFromFiltersMutation,
-  buildCohortGqlOperator,
-} from "@gff/core";
+import { useGetProjectsQuery, FilterSet, joinFilters } from "@gff/core";
 import FunctionButton from "@/components/FunctionButton";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import {
@@ -44,8 +39,6 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   cohortFilters,
   genomicFilters,
 }: CancerDistributionTableProps) => {
-  const [createSet] = useCreateCaseSetFromFiltersMutation();
-
   const { data: projects, isFetching: projectsFetching } = useGetProjectsQuery({
     filters: {
       op: "in",
@@ -142,96 +135,66 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   );
 
   const createSSMAffectedFilters = useCallback(
-    async (
+    (
       project: string,
       id: string,
       cohortFilters: FilterSet = undefined,
       genomicFilters: FilterSet = undefined,
-    ): Promise<FilterSet> => {
-      return await createSet({
-        case_filters: buildCohortGqlOperator(cohortFilters),
-        filters: buildCohortGqlOperator(genomicFilters),
-        intent: "portal",
-        set_type: "frozen",
-      })
-        .unwrap()
-        .then((setId) => {
-          if (isGene) {
-            return {
-              mode: "and",
-              root: {
-                "cases.case_id": {
-                  field: "cases.case_id",
-                  operands: [`set_id:${setId}`],
-                  operator: "includes",
-                },
-                "cases.project.project_id": {
-                  field: "cases.project.project_id",
-                  operator: "includes",
-                  operands: [project],
-                },
-                "genes.gene_id": {
-                  field: "genes.gene_id",
-                  operator: "includes",
-                  operands: [id],
-                },
-                "ssms.ssm_id": {
-                  field: "ssms.ssm_id",
-                  operator: "exists",
-                },
-                ...genomicFilters?.root,
-              },
-            };
-          } else {
-            return {
-              mode: "and",
-              root: {
-                "cases.case_id": {
-                  field: "cases.case_id",
-                  operands: [`set_id:${setId}`],
-                  operator: "includes",
-                },
-                "cases.project.project_id": {
-                  field: "cases.project.project_id",
-                  operator: "includes",
-                  operands: [project],
-                },
-                "ssms.ssm_id": {
-                  field: "ssms.ssm_id",
-                  operator: "includes",
-                  operands: [id],
-                },
-              },
-            };
-          }
-        });
+    ): FilterSet => {
+      if (isGene) {
+        return {
+          mode: "and",
+          root: {
+            "cases.project.project_id": {
+              field: "cases.project.project_id",
+              operator: "includes",
+              operands: [project],
+            },
+            "genes.gene_id": {
+              field: "genes.gene_id",
+              operator: "includes",
+              operands: [id],
+            },
+            "ssms.ssm_id": {
+              field: "ssms.ssm_id",
+              operator: "exists",
+            },
+            ...genomicFilters?.root,
+            ...cohortFilters?.root,
+          },
+        };
+      } else {
+        return {
+          mode: "and",
+          root: {
+            "cases.project.project_id": {
+              field: "cases.project.project_id",
+              operator: "includes",
+              operands: [project],
+            },
+            "ssms.ssm_id": {
+              field: "ssms.ssm_id",
+              operator: "includes",
+              operands: [id],
+            },
+          },
+          ...cohortFilters?.root,
+        };
+      }
     },
-    [createSet, isGene],
+    [isGene],
   );
 
   const createCNVGainLossFilters = useCallback(
-    async (
+    (
       project: string,
       filter: "Loss" | "Gain",
-      cohortFilters: FilterSet = undefined,
-      genomicFilters: FilterSet = undefined,
-    ): Promise<FilterSet> => {
-      return await createSet({
-        case_filters: buildCohortGqlOperator(cohortFilters),
-        filters: buildCohortGqlOperator(genomicFilters),
-        intent: "portal",
-        set_type: "frozen",
-      })
-        .unwrap()
-        .then((setId) => {
-          return {
+      genomicFilters: FilterSet,
+    ): FilterSet => {
+      return genomicFilters
+        ? joinFilters(genomicFilters, {
             mode: "and",
             root: {
-              "cases.case_id": {
-                field: "cases.case_id",
-                operands: [`set_id:${setId}`],
-                operator: "includes",
-              },
               "cases.project.project_id": {
                 field: "cases.project.project_id",
                 operator: "includes",
@@ -247,12 +210,30 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 operator: "=",
                 operand: filter,
               },
-              ...genomicFilters?.root,
+            },
+          })
+        : {
+            mode: "and",
+            root: {
+              "cases.project.project_id": {
+                field: "cases.project.project_id",
+                operator: "includes",
+                operands: [project],
+              },
+              "genes.gene_id": {
+                field: "genes.gene_id",
+                operator: "=",
+                operand: id,
+              },
+              "genes.cnv.cnv_change": {
+                field: "genes.cnv.cnv_change",
+                operator: "=",
+                operand: filter,
+              },
             },
           };
-        });
     },
-    [createSet, id],
+    [id],
   );
 
   const cancerDistributionTableColumns = useDeepCompareMemo(
@@ -306,14 +287,12 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         cell: ({ row }) => (
           <CohortCreationButton
             numCases={row.original.ssm_affected_cases.numerator || 0}
-            filtersCallback={async () =>
-              createSSMAffectedFilters(
-                row.original.project,
-                id,
-                cohortFilters,
-                genomicFilters,
-              )
-            }
+            filters={createSSMAffectedFilters(
+              row.original.project,
+              id,
+              cohortFilters,
+              genomicFilters,
+            )}
             label={
               <NumeratorDenominator
                 numerator={row.original.ssm_affected_cases.numerator || 0}
@@ -321,6 +300,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
                 boldNumerator
               />
             }
+            createStaticCohort
           />
         ),
         meta: {
@@ -351,14 +331,13 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
               cell: ({ row }) => (
                 <CohortCreationButton
                   numCases={row.original.cnv_gains.numerator || 0}
-                  filtersCallback={async () =>
-                    createCNVGainLossFilters(
-                      row.original.project,
-                      "Gain",
-                      cohortFilters,
-                      genomicFilters,
-                    )
-                  }
+                  filters={createCNVGainLossFilters(
+                    row.original.project,
+                    "Gain",
+                    genomicFilters,
+                  )}
+                  caseFilters={cohortFilters}
+                  createStaticCohort
                   label={
                     <NumeratorDenominator
                       numerator={row.original.cnv_gains.numerator || 0}
@@ -394,14 +373,13 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
               cell: ({ row }) => (
                 <CohortCreationButton
                   numCases={row.original.cnv_losses.numerator || 0}
-                  filtersCallback={async () =>
-                    createCNVGainLossFilters(
-                      row.original.project,
-                      "Loss",
-                      cohortFilters,
-                      genomicFilters,
-                    )
-                  }
+                  filters={createCNVGainLossFilters(
+                    row.original.project,
+                    "Loss",
+                    genomicFilters,
+                  )}
+                  caseFilters={cohortFilters}
+                  createStaticCohort
                   label={
                     <NumeratorDenominator
                       numerator={row.original.cnv_losses.numerator || 0}

@@ -12,7 +12,6 @@ import {
   joinFilters,
   buildCohortGqlOperator,
   useCoreDispatch,
-  useCreateCaseSetFromFiltersMutation,
   extractFiltersWithPrefixFromFilterSet,
   GDCGenesTable,
 } from "@gff/core";
@@ -101,101 +100,63 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     "genes.",
   );
 
-  /* Create Cohort*/
-  const [createSet] = useCreateCaseSetFromFiltersMutation();
-
   const generateFilters = useDeepCompareCallback(
-    async (type: columnFilterType, geneId: string) => {
+    (type: columnFilterType, geneId: string) => {
       if (type === null) return;
 
-      return await createSet({
-        filters: buildCohortGqlOperator(genomicFilters),
-        case_filters: buildCohortGqlOperator(cohortFilters),
-        intent: "portal",
-        set_type: "frozen",
-      })
-        .unwrap()
-        .then((setId) => {
-          const commonFilters: FilterSet = {
-            mode: "and",
-            root: {
-              "cases.case_id": {
-                field: "cases.case_id",
-                operands: [`set_id:${setId}`],
-                operator: "includes",
-              },
-              ...genomicFilters?.root,
+      if (type === "cnvgain") {
+        // only genes filters
+        return joinFilters(genesOnlyFilters, {
+          mode: "and",
+          root: {
+            "genes.cnv.cnv_change": {
+              field: "genes.cnv.cnv_change",
+              operator: "=",
+              operand: "gain",
             },
-          };
-
-          // for CNV gain/loss only "genes." filters should be added to the
-          // new cohort
-          const commonFiltersWithGenesOnly: FilterSet = {
-            mode: "and",
-            root: {
-              "cases.case_id": {
-                field: "cases.case_id",
-                operands: [`set_id:${setId}`],
-                operator: "includes",
-              },
-              ...genesOnlyFilters?.root,
+            "genes.gene_id": {
+              field: "genes.gene_id",
+              operator: "=",
+              operand: geneId,
             },
-          };
-
-          if (type === "cnvgain") {
-            // only genes filters
-            return joinFilters(commonFiltersWithGenesOnly, {
-              mode: "and",
-              root: {
-                "genes.cnv.cnv_change": {
-                  field: "genes.cnv.cnv_change",
-                  operator: "=",
-                  operand: "gain",
-                },
-                "genes.gene_id": {
-                  field: "genes.gene_id",
-                  operator: "=",
-                  operand: geneId,
-                },
-              },
-            });
-          } else if (type === "cnvloss") {
-            // only genes filters
-            return joinFilters(commonFiltersWithGenesOnly, {
-              mode: "and",
-              root: {
-                "genes.cnv.cnv_change": {
-                  field: "genes.cnv.cnv_change",
-                  operator: "=",
-                  operand: "loss",
-                },
-                "genes.gene_id": {
-                  field: "genes.gene_id",
-                  operator: "=",
-                  operand: geneId,
-                },
-              },
-            });
-          } else {
-            // any other type will use all filters
-            return joinFilters(commonFilters, {
-              mode: "and",
-              root: {
-                "ssms.ssm_id": {
-                  field: "ssms.ssm_id",
-                  operator: "exists",
-                },
-                "genes.gene_id": {
-                  field: "genes.gene_id",
-                  operator: "includes",
-                  operands: [geneId],
-                },
-              },
-            });
-          }
+          },
         });
+      } else if (type === "cnvloss") {
+        // only genes filters
+        return joinFilters(genesOnlyFilters, {
+          mode: "and",
+          root: {
+            "genes.cnv.cnv_change": {
+              field: "genes.cnv.cnv_change",
+              operator: "=",
+              operand: "loss",
+            },
+            "genes.gene_id": {
+              field: "genes.gene_id",
+              operator: "=",
+              operand: geneId,
+            },
+          },
+        });
+      } else {
+        // any other type will use all filters
+        return joinFilters(genomicFilters, {
+          mode: "and",
+          root: {
+            "ssms.ssm_id": {
+              field: "ssms.ssm_id",
+              operator: "exists",
+            },
+            "genes.gene_id": {
+              field: "genes.gene_id",
+              operator: "includes",
+              operands: [geneId],
+            },
+          },
+        });
+      }
     },
-    [cohortFilters, genomicFilters, createSet, genesOnlyFilters],
+    [genomicFilters, genesOnlyFilters],
   );
   /* End Create Cohort */
 
@@ -256,6 +217,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     toggledGenes,
     isDemoMode,
     setEntityMetadata,
+    cohortFilters,
     genomicFilters,
     generateFilters,
     handleMutationCountClick,
