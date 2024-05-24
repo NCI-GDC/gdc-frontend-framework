@@ -27,11 +27,9 @@ describe("<SetFacet />", () => {
       isError: false,
     });
     jest.spyOn(core, "useCoreDispatch").mockReturnValue(jest.fn());
-    jest
-      .spyOn(core, "useCoreSelector")
-      .mockReturnValue({
-        genes: { DS: "default set", FS: "future set", PS: "past set" },
-      });
+    jest.spyOn(core, "useCoreSelector").mockReturnValue({
+      genes: { DS: "default set", FS: "future set", PS: "past set" },
+    });
     jest.clearAllMocks();
   });
 
