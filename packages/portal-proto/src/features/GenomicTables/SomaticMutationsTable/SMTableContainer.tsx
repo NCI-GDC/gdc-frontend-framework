@@ -7,6 +7,7 @@ import {
   useAppendToSsmSetMutation,
   useRemoveFromSsmSetMutation,
   useCreateSsmsSetFromFiltersMutation,
+  useCreateTopNSsmsSetFromFiltersMutation,
   useCoreSelector,
   selectSetsByType,
   joinFilters,
@@ -404,6 +405,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                     ? createSetFilters
                     : setFilters,
                 )}
+                sort="occurrence.case.project.project_id"
                 initialSetName={
                   selectedMutations.length === 0
                     ? filtersToName(setFilters)
@@ -416,7 +418,11 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 }
                 setType="ssms"
                 setTypeLabel="mutation"
-                createSetHook={useCreateSsmsSetFromFiltersMutation}
+                createSetHook={
+                  selectedMutations.length === 0
+                    ? useCreateTopNSsmsSetFromFiltersMutation
+                    : useCreateSsmsSetFromFiltersMutation
+                }
                 closeModal={handleSaveSelectionAsSetModalClose}
               />
 

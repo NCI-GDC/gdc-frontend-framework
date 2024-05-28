@@ -6,6 +6,7 @@ import {
   useCreateSsmsSetFromFiltersMutation,
   useCreateCaseSetFromFiltersMutation,
   useCreateTopNGeneSetFromFiltersMutation,
+  useCreateTopNSsmsSetFromFiltersMutation,
   CreateSetFilterArgs,
   CreateSetValueArgs,
 } from "./createSetSlice";
@@ -41,6 +42,7 @@ export {
   useCreateSsmsSetFromFiltersMutation,
   useCreateCaseSetFromFiltersMutation,
   useCreateTopNGeneSetFromFiltersMutation,
+  useCreateTopNSsmsSetFromFiltersMutation,
   setsReducer,
   addSet,
   removeSets,

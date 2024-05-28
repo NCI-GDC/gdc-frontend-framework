@@ -62,24 +62,27 @@ const createSsmsSetMutation = `mutation createSet(
   }
 }`;
 
-const TopNGenesQuery = `
-query topNGenesQuery($cohortFilter: FiltersArgument,
+const CreateTopNQuery = (
+  index: "genes" | "ssms",
+  field: "gene_id" | "ssm_id",
+) => {
+  return `query topN${index}Query($cohortFilter: FiltersArgument,
   $filters: FiltersArgument, $score: String, $size: Int) {
   viewer {
     explore {
-      genes  {
+      ${index}  {
         hits(filters: $filters, case_filters: $cohortFilter, score:$score, first: $size) {
           edges {
             node {
-                gene_id
+                ${field}
             }
           }
         }
       }
     }
   }
-}
-`;
+}`;
+};
 
 const transformSsmsSetResponse = (
   response: GraphQLApiResponse<any>,
@@ -237,7 +240,7 @@ export const createSetSlice = graphqlAPISlice
           let results: GraphQLApiResponse<any>;
           // get the top N genes listed by score
           try {
-            results = await graphqlAPI(TopNGenesQuery, {
+            results = await graphqlAPI(CreateTopNQuery("genes", "gene_id"), {
               cohortFilter: case_filters,
               filters,
               size,
@@ -310,6 +313,72 @@ export const createSetSlice = graphqlAPISlice
           return [];
         },
       }),
+      createTopNSsmsSetFromFilters: builder.mutation<
+        string,
+        CreateSetFilterArgs
+      >({
+        queryFn: async ({
+          case_filters,
+          filters,
+          score,
+          size,
+          intent,
+          set_type,
+        }) => {
+          let results: GraphQLApiResponse<any>;
+          // get the top N ssms listed by score
+          try {
+            results = await graphqlAPI(CreateTopNQuery("ssms", "ssm_id"), {
+              cohortFilter: case_filters,
+              filters,
+              size,
+              score,
+            });
+          } catch (e) {
+            return { error: e as GraphQLFetchError };
+          }
+          // get the top N ssms_ids
+          const ssmsIds = results.data.viewer.explore.ssms.hits.edges.map(
+            ({ node }: Record<string, any>) => node.ssm_id,
+          );
+          // create the ssms set
+          const setFilters = {
+            op: "and",
+            content: [
+              {
+                op: "in",
+                content: {
+                  field: "ssms.ssm_id",
+                  value: ssmsIds,
+                },
+              },
+            ],
+          };
+
+          try {
+            results = await graphqlAPI(createSsmsSetMutation, {
+              input: {
+                case_filters: {},
+                filters: setFilters,
+                size,
+                intent,
+                set_type,
+              },
+            });
+          } catch (e) {
+            return { error: e as GraphQLFetchError };
+          }
+          return {
+            data: results.data.sets.create.explore.ssm.set_id as string,
+          };
+        },
+        invalidatesTags: (_result, _error, arg) => {
+          if (arg?.set_id) {
+            return [{ type: "ssmsSets", id: arg?.set_id }];
+          }
+          return [];
+        },
+      }),
       createCaseSetFromFilters: builder.mutation<string, CreateSetFilterArgs>({
         query: ({ case_filters, filters, size, set_id, intent, set_type }) => ({
           graphQLQuery: createCaseSetExploreMutation,
@@ -344,4 +413,5 @@ export const {
   useCreateSsmsSetFromFiltersMutation,
   useCreateCaseSetFromFiltersMutation,
   useCreateTopNGeneSetFromFiltersMutation,
+  useCreateTopNSsmsSetFromFiltersMutation,
 } = createSetSlice;
