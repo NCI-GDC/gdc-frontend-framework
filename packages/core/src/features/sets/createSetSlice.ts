@@ -1,5 +1,10 @@
 import { GqlOperation } from "../gdcapi/filters";
-import { GraphQLApiResponse, graphqlAPISlice } from "../gdcapi/gdcgraphql";
+import {
+  graphqlAPI,
+  GraphQLApiResponse,
+  graphqlAPISlice,
+  GraphQLFetchError,
+} from "../gdcapi/gdcgraphql";
 
 type SetIntent = "user" | "portal";
 type SetCreationType = "instant" | "ephemeral" | "mutable" | "frozen";
@@ -56,6 +61,25 @@ const createSsmsSetMutation = `mutation createSet(
     }
   }
 }`;
+
+const TopNGenesQuery = `
+query topNGenesQuery($cohortFilter: FiltersArgument,
+  $filters: FiltersArgument, $score: String, $size: Int) {
+  viewer {
+    explore {
+      genes  {
+        hits(filters: $filters, case_filters: $cohortFilter, score:$score, first: $size) {
+          edges {
+            node {
+                gene_id
+            }
+          }
+        }
+      }
+    }
+  }
+}
+`;
 
 const transformSsmsSetResponse = (
   response: GraphQLApiResponse<any>,
@@ -198,6 +222,72 @@ export const createSetSlice = graphqlAPISlice
           return [];
         },
       }),
+      createTopNGeneSetFromFilters: builder.mutation<
+        string,
+        CreateSetFilterArgs
+      >({
+        queryFn: async ({
+          case_filters,
+          filters,
+          score,
+          size,
+          intent,
+          set_type,
+        }) => {
+          let results: GraphQLApiResponse<any>;
+          // get the top N genes listed by score
+          try {
+            results = await graphqlAPI(TopNGenesQuery, {
+              cohortFilter: case_filters,
+              filters,
+              size,
+              score,
+            });
+          } catch (e) {
+            return { error: e as GraphQLFetchError };
+          }
+          // get the top N gene_ids
+          const geneIds = results.data.viewer.explore.genes.hits.edges.map(
+            ({ node }: Record<string, any>) => node.gene_id,
+          );
+          // creat the gene set
+          const setFilters = {
+            op: "and",
+            content: [
+              {
+                op: "in",
+                content: {
+                  field: "genes.gene_id",
+                  value: geneIds,
+                },
+              },
+            ],
+          };
+
+          try {
+            results = await graphqlAPI(createGeneSetMutation, {
+              input: {
+                case_filters: {},
+                filters: setFilters,
+                size,
+                intent,
+                set_type,
+              },
+            });
+          } catch (e) {
+            return { error: e as GraphQLFetchError };
+          }
+          return {
+            data: results.data.sets.create.explore.gene.set_id as string,
+          };
+        },
+        invalidatesTags: (_result, _error, arg) => {
+          if (arg?.set_id) {
+            return [{ type: "geneSets", id: arg?.set_id }];
+          }
+          return [];
+        },
+      }),
       createSsmsSetFromFilters: builder.mutation<string, CreateSetFilterArgs>({
         query: ({ case_filters, filters, size, set_id, intent, set_type }) => ({
           graphQLQuery: createSsmsSetMutation,
@@ -253,4 +343,5 @@ export const {
   useCreateGeneSetFromFiltersMutation,
   useCreateSsmsSetFromFiltersMutation,
   useCreateCaseSetFromFiltersMutation,
+  useCreateTopNGeneSetFromFiltersMutation,
 } = createSetSlice;

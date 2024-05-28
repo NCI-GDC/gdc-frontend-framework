@@ -3,6 +3,7 @@ import {
   FilterSet,
   usePrevious,
   useCreateGeneSetFromFiltersMutation,
+  useCreateTopNGeneSetFromFiltersMutation,
   useCoreSelector,
   selectSetsByType,
   useGeneSetCountQuery,
@@ -339,6 +340,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
                 ? filtersToName(setFilters)
                 : "Custom Gene Selection"
             }
+            sort="case.project.project_id"
             saveCount={
               selectedGenes.length === 0
                 ? data?.genes?.genes_total
@@ -346,7 +348,11 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             }
             setType="genes"
             setTypeLabel="gene"
-            createSetHook={useCreateGeneSetFromFiltersMutation}
+            createSetHook={
+              selectedGenes.length === 0
+                ? useCreateTopNGeneSetFromFiltersMutation
+                : useCreateGeneSetFromFiltersMutation
+            }
           />
 
           <AddToSetModal
