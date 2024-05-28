@@ -18,3 +18,12 @@ def add_file_to_cart():
 @step("Remove file from cart on the file summary page")
 def add_file_to_cart():
     APP.file_summary_page.remove_file_from_cart()
+
+@step("Select file download button on the file summary page")
+def click_download_file():
+    APP.file_summary_page.click_download_file_button()
+
+@step("Validate text is present in table <table_name> <table>")
+def validate_table_text(table_name: str, table):
+    for k, v in enumerate(table):
+        is_text_visible = APP.file_summary_page.is_text_visible_in_table(table_name, v[0])

@@ -13,7 +13,9 @@ class FileSummaryLocators:
     REMOVED_FROM_CART_MESSAGE_IDENT = 'p:has-text("Removed")'
 
     DOWNLOAD_BUTTON_IDENT = 'text="Download" >> nth=0'
+    BUTTON_DOWNLOAD_FILE_IDENT = '[data-testid="button-download-file-summary"]'
 
+    TEXT_IN_TABLE_IDENT = lambda table_name, text: f'[data-testid="table-{table_name}-file-summary"] >> text={text}'
 
 class FileSummaryPage(BasePage):
     def __init__(self, driver: Page, url):
@@ -33,6 +35,15 @@ class FileSummaryPage(BasePage):
         removed_file_message = FileSummaryLocators.REMOVED_FROM_CART_MESSAGE_IDENT
         self.wait_until_locator_is_visible(removed_file_message)
 
-    # Clicks first 'Download' button on the file summary apge
+    def click_download_file_button(self):
+        """Clicks download file button in upper-left corner"""
+        self.click(FileSummaryLocators.BUTTON_DOWNLOAD_FILE_IDENT)
+
+    # Clicks first 'Download' button on the file summary page
     def click_download_button(self):
         self.click(FileSummaryLocators.DOWNLOAD_BUTTON_IDENT)
+
+    def is_text_visible_in_table(self, table_name, text):
+        table_name = self.normalize_button_identifier(table_name)
+        locator = FileSummaryLocators.TEXT_IN_TABLE_IDENT(table_name, text)
+        return self.is_visible(locator)
