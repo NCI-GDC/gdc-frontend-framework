@@ -33,6 +33,7 @@ import {
 } from "@tanstack/react-table";
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
+import { useDeepCompareEffect } from "use-deep-compare";
 
 const getSlideCountFromCaseSummary = (
   experimental_strategies: Array<{
@@ -115,7 +116,7 @@ export const ContextualCasesView: React.FC = () => {
     searchTerm,
   });
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     setRowSelection({});
     setOffset(0);
   }, [cohortFilters]);

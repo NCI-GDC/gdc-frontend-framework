@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
-import { useDeepCompareCallback } from "use-deep-compare";
+import React, { useCallback, useState, useMemo } from "react";
+import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
 import { Tabs } from "@mantine/core";
 import {
   FilterSet,
@@ -144,7 +144,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   );
 
   // clear local filters when cohort changes or tabs change
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     appDispatch(clearGeneAndSSMFilters());
   }, [overwritingDemoFilter, cohortFilters, appDispatch]);
 
