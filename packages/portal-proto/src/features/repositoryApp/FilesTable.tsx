@@ -425,6 +425,7 @@ const FilesTables: React.FC = () => {
     totalCaseCount = fileSizeSliceData.data.total_case_count.toLocaleString();
   }
 
+  console.log({ isFetching, isSuccess, isError });
   const Stats = () => (
     <div className="flex gap-1 text-xl items-center uppercase">
       <div>

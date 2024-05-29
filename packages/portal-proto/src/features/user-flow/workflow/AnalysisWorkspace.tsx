@@ -15,6 +15,7 @@ import {
   DashboardDownloadContext,
 } from "@/utils/contexts";
 import { CountHookRegistry } from "@gff/core";
+// import { useIsLoggedIn } from "@/hooks/useIsLoggedIn";
 
 const ActiveAnalysisToolNoSSR = dynamic(
   () => import("@/features/user-flow/workflow/ActiveAnalysisTool"),
@@ -40,7 +41,8 @@ const AnalysisGrid: React.FC = () => {
   const [activeApps] = useState([...ALL_OTHER_APPS]); // set of active apps i.e. not recommended but filterable/dimmable
   const [activeAnalysisCard, setActiveAnalysisCard] = useState(null);
   const registry = CountHookRegistry.getInstance();
-
+  // const loggedIn = useIsLoggedIn()
+  console.log("AnalysisGrid rendered");
   return (
     <div className="flex flex-col font-heading mb-4">
       <div data-tour="analysis_tool_management" className="flex items-center">
@@ -115,6 +117,7 @@ interface AnalysisWorkspaceProps {
 const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   app,
 }: AnalysisWorkspaceProps) => {
+  console.log("AnalysisWorkspace rendered");
   const [cohortSelectionOpen, setCohortSelectionOpen] = useState(false);
   const router = useRouter();
   const isDemoMode = useIsDemoApp();
@@ -134,6 +137,13 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
 
   const [chartDownloadState, dispatch] = useReducer(chartDownloadReducer, []);
 
+  // const { isLoggedIn } = useContext(LoggedInContext);
+  // const [log, setLog] = useState(isLoggedIn);
+  // useEffect(() => {
+  //   console.log({log, isLoggedIn})
+  //   setLog(isLoggedIn);
+  // }, [isLoggedIn]);
+  // const loggedIn = useIsLoggedIn()
   return (
     <div>
       {app && (

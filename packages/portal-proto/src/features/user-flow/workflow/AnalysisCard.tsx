@@ -24,6 +24,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
   setDescriptionVisible,
   useApplicationDataCounts,
 }: AnalysisCardProps) => {
+  console.log("Analysis Card rendered");
   const cohortCounts = useApplicationDataCounts();
   const caseCounts = cohortCounts?.data || 0;
 

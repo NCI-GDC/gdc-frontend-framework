@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useContext, useRef } from "react";
 import { Button, Menu } from "@mantine/core";
 import { cleanNotifications, showNotification } from "@mantine/notifications";
 import {
@@ -22,17 +22,36 @@ import {
   DropdownMenuItem,
 } from "@/components/StyledComponents/DropdownMenu";
 import { theme } from "tailwind.config";
+import { useDeepCompareEffect } from "use-deep-compare";
+import Cookies from "universal-cookie";
+import { LoggedInContext } from "@/utils/contexts";
 
 const LoginButtonOrUserDropdown = () => {
   const dispatch = useCoreDispatch();
   const { data: userInfo } = useFetchUserDetailsQuery();
   const userDropdownRef = useRef<HTMLButtonElement>();
   const [fetchToken] = useLazyFetchTokenQuery({ refetchOnFocus: false });
+  const { isLoggedIn, setIsLoggedIn } = useContext(LoggedInContext);
+  const cookies = new Cookies();
+  useDeepCompareEffect(() => {
+    const username = userInfo?.data?.username;
+
+    if (username) {
+      console.log("here in true: ", username);
+      if (!isLoggedIn) {
+        cookies.set("loggedIn", "true");
+        setIsLoggedIn(true);
+      }
+    } else {
+      cookies.set("loggedIn", "false");
+      setIsLoggedIn(false);
+    }
+  }, [isLoggedIn, userInfo?.data?.username, setIsLoggedIn]);
 
   return (
     <>
       {userInfo?.data?.username ? (
-        <Menu width={200} data-testid="userdropdown" zIndex={9} offset={-5}>
+        <Menu width={200} data-testid="userdropdown" zIndex={400} offset={-5}>
           <Menu.Target>
             <Button
               rightSection={<ArrowDropDownIcon size="2em" aria-hidden="true" />}

@@ -40,10 +40,15 @@ const serializeQueryArgsWithDataRelease = ({
   }
 
   const dataRelease = Cookies.get("gdc_api_version");
+  const loggedIn = Cookies.get("loggedIn");
+  console.log({ loggedIn, dataRelease });
+  console.log("serializeQueryArgsWithDataRelease called");
 
-  return dataRelease
-    ? `${dataRelease}:${endpointName}(${serialized})`
+  const retVal = loggedIn
+    ? `${loggedIn}:${endpointName}(${serialized})`
     : `${endpointName}(${serialized})`;
+  // console.log({ retVal });
+  return retVal;
 };
 
 export default serializeQueryArgsWithDataRelease;

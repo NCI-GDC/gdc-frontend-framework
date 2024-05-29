@@ -229,6 +229,8 @@ const ContextBar = ({
     });
   };
 
+  console.log("ContextBar rendered");
+
   return (
     <CollapsibleContainer
       Top={<CohortManager />}

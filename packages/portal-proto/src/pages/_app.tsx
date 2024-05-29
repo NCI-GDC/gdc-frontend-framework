@@ -28,6 +28,7 @@ import ReactModal from "react-modal";
 import "react-tabs/style/react-tabs.css";
 import {
   entityMetadataType,
+  LoggedInContext,
   SummaryModalContext,
   URLContext,
 } from "src/utils/contexts";
@@ -58,6 +59,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
   const [prevPath, setPrevPath] = useState("");
   const [currentPath, setCurrentPath] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [localStorageTheme] = useLocalStorage({
     key: "color-scheme",
     defaultValue: "default",
@@ -252,15 +254,22 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
           } color-transition duration-500`}
         >
           <URLContext.Provider value={{ prevPath, currentPath }}>
-            <SummaryModalContext.Provider
+            <LoggedInContext.Provider
               value={{
-                entityMetadata,
-                setEntityMetadata,
+                isLoggedIn,
+                setIsLoggedIn,
               }}
             >
-              <Notifications position="top-center" />
-              <Component {...pageProps} />
-            </SummaryModalContext.Provider>
+              <SummaryModalContext.Provider
+                value={{
+                  entityMetadata,
+                  setEntityMetadata,
+                }}
+              >
+                <Notifications position="top-center" />
+                <Component {...pageProps} loggedIn={isLoggedIn} />
+              </SummaryModalContext.Provider>
+            </LoggedInContext.Provider>
           </URLContext.Provider>
           <Head>
             <script src="https://assets.adobedtm.com/6a4249cd0a2c/073fd0859f8f/launch-39d47c17b228.min.js" />

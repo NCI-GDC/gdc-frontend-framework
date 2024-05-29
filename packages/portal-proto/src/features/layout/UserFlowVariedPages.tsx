@@ -26,6 +26,8 @@ import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { useElementSize } from "@mantine/hooks";
 import ClearStoreErrorBoundary from "@/components/ClearStoreErrorBoundary";
+import { useIsLoggedIn } from "@/hooks/useIsLoggedIn";
+import Cookies from "universal-cookie";
 
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
@@ -52,7 +54,8 @@ export const UserFlowVariedPages = ({
     selectCurrentCohortName(state),
   );
   const cohortMessage = useCoreSelector((state) => selectCohortMessage(state));
-
+  const cookie = new Cookies();
+  console.log("loggedIn cookie: ", cookie.get("loggedIn"));
   useEffect(() => {
     if (cohortMessage) {
       for (const message of cohortMessage) {
@@ -170,7 +173,8 @@ export const UserFlowVariedPages = ({
   }, [cohortMessage, dispatch, currentCohortName]);
 
   const { ref: headerRef, height: headerHeight } = useElementSize();
-
+  const isLoggedIn = useIsLoggedIn();
+  console.log({ isLoggedIn });
   return (
     <div className="flex flex-col min-h-screen min-w-full bg-base-max">
       <header

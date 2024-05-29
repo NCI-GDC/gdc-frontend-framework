@@ -20,6 +20,11 @@ interface ChartDownloadInfo {
   readonly filename: string;
 }
 
+export const LoggedInContext = createContext<{
+  isLoggedIn: boolean;
+  setIsLoggedIn: Dispatch<SetStateAction<boolean>>;
+}>(null);
+
 export const chartDownloadReducer = (
   state: ChartDownloadInfo[],
   action: { type: "add" | "remove"; payload: ChartDownloadInfo[] },
