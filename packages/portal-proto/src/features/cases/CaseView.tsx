@@ -212,11 +212,18 @@ export const CaseView: React.FC<CaseViewProps> = ({
     <span className="flex items-center gap-1">
       <FaEdit size={24} />
       {annotationCountData > 0 ? (
-        <a href="#annotations" className="underline font-bold">
+        <a
+          data-testid="text-annotation-count-case-summary"
+          href="#annotations"
+          className="underline font-bold"
+        >
           {annotationCountData.toLocaleString()}
         </a>
       ) : (
-        <span className="font-bold">
+        <span
+          data-testid="text-annotation-count-case-summary"
+          className="font-bold"
+        >
           {annotationCountData.toLocaleString()}
         </span>
       )}
