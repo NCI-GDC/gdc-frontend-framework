@@ -712,8 +712,11 @@ export const selectCohortFilterSetById = (
   state: CoreState,
   cohortId: string,
 ): FilterSet | undefined => {
+  const isLoggedIn = state.cohort.availableCohorts.isLoggedIn;
   const cohort = cohortSelectors.selectById(state, cohortId);
-  return cohort?.filters;
+  if (cohort === undefined)
+    return { mode: "and", root: {}, isLoggedIn: isLoggedIn };
+  return { ...cohort.filters, isLoggedIn: isLoggedIn };
 };
 
 /**
