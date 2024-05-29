@@ -8,7 +8,7 @@ import { render } from "test-utils";
 describe("<Header />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
+    jest.spyOn(core, "useCoreDispatch").mockReturnValue(jest.fn());
     jest.spyOn(tour, "useTour").mockReturnValue({
       setIsOpen: jest.fn(),
       steps: [{ selector: "div", content: "string" }],
@@ -50,7 +50,6 @@ describe("<Header />", () => {
   });
 
   test("should show login button when the username is null initially", () => {
-    jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
     jest.spyOn(core, "useCoreSelector").mockImplementation(jest.fn());
     jest.spyOn(core, "useFetchUserDetailsQuery").mockReturnValue({
       data: {
@@ -69,7 +68,6 @@ describe("<Header />", () => {
   });
 
   test("should not show login button when the username is present", () => {
-    jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
     jest.spyOn(core, "useCoreSelector").mockImplementation(jest.fn());
     jest.spyOn(core, "useFetchUserDetailsQuery").mockReturnValue({
       data: {

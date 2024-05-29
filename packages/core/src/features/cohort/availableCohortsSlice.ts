@@ -672,19 +672,6 @@ export const selectAvailableCohortByName = (
     .selectAll(state)
     .find((cohort: Cohort) => cohort.name === name);
 
-// remove this and update in necessary places
-/**
- * Returns the current cohort filters as a {@link FilterSet}
- * @category Cohort
- * @category Selectors
- */
-export const selectCurrentCohortFilterSet = (
-  state: CoreState,
-): FilterSet | undefined => {
-  return cohortSelectors.selectById(state, getCurrentCohortFromCoreState(state))
-    ?.filters;
-};
-
 /**
  * Returns the cohort's name given the id
  * @param state - the CoreState
@@ -889,7 +876,7 @@ export const selectUnsavedCohortName = (state: CoreState): string | undefined =>
  */
 export const useCurrentCohortFilters = (): FilterSet | undefined => {
   return useCoreSelector((state: CoreState) =>
-    selectCurrentCohortFilterSet(state),
+    selectCurrentCohortFilters(state),
   );
 };
 
