@@ -77,7 +77,7 @@ const cohortsAdapter = createEntityAdapter<Cohort>({
 export interface CurrentCohortState {
   readonly currentCohort: string | undefined;
   readonly message: string[] | undefined;
-  readonly isLoggedIn: boolean | undefined;
+  readonly isLoggedIn?: boolean | undefined;
 }
 
 const emptyInitialState = cohortsAdapter.getInitialState<CurrentCohortState>({
