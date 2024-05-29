@@ -70,7 +70,7 @@ describe("ColumnOrdering", () => {
       screen.getByTestId("column-selector-popover-modal"),
     ).toBeInTheDocument();
 
-    await userEvent.click(button);
+    await userEvent.click(button, { delay: 100 });
     await waitFor(() =>
       expect(screen.queryByTestId("column-selector-popover-modal")).toBeNull(),
     );
