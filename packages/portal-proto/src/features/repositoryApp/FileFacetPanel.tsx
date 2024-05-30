@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
+import { useDeepCompareEffect } from "use-deep-compare";
 import {
   FacetDefinition,
   selectFacetDefinitionsByName,
   useCoreSelector,
   useFacetDictionary,
-  usePrevious,
   fieldNameToTitle,
 } from "@gff/core";
 import {
@@ -12,17 +12,17 @@ import {
   useAppDispatch,
 } from "@/features/repositoryApp/appApi";
 import {
-  selectRepositoryConfig,
+  selectCustomFacets,
   addFilter,
   removeFilter,
   resetToDefault,
   getDefaultFacets,
+  selectRepositoryConfigFacets,
 } from "@/features/repositoryApp/repositoryConfigSlice";
 import FacetSelection from "@/components/FacetSelection";
 import { Group, Button, LoadingOverlay, Text, Modal } from "@mantine/core";
 import { MdAdd as AddAdditionalIcon } from "react-icons/md";
 import { FaUndo as UndoIcon } from "react-icons/fa";
-import isEqual from "lodash/isEqual";
 import partial from "lodash/partial";
 
 import {
@@ -45,15 +45,15 @@ const useRepositoryEnumData = (field: string) =>
   useLocalFilters(field, useRepositoryEnumValues, useRepositoryFilters);
 
 export const FileFacetPanel = (): JSX.Element => {
-  const config = useAppSelector(selectRepositoryConfig);
+  const customFacets = useAppSelector(selectCustomFacets);
+  const facetsConfig = useAppSelector(selectRepositoryConfigFacets);
   const { isSuccess: isDictionaryReady } = useFacetDictionary();
   const facets = useCoreSelector((state) =>
-    selectFacetDefinitionsByName(state, config.facets),
+    selectFacetDefinitionsByName(state, facetsConfig),
   );
 
   const [facetDefinitions, setFacetDefinitions] =
     useState<ReadonlyArray<FacetDefinition>>(facets);
-  const prevCustomFacets = usePrevious(facets);
   const [opened, setOpened] = useState(false);
   const dispatch = useAppDispatch();
 
@@ -78,15 +78,13 @@ export const FileFacetPanel = (): JSX.Element => {
   }, [dispatch]);
 
   // rebuild customFacets
-  useEffect(() => {
-    if (isDictionaryReady && !isEqual(prevCustomFacets, facets)) {
+  useDeepCompareEffect(() => {
+    if (isDictionaryReady) {
       setFacetDefinitions(facets);
     }
-  }, [facets, isDictionaryReady, prevCustomFacets]);
+  }, [facets, isDictionaryReady]);
 
-  const showReset = facetDefinitions.some(
-    (facetDef) => !getDefaultFacets().includes(facetDef.full),
-  );
+  const showReset = customFacets?.length > 0;
 
   const FileFacetHooks: FacetRequiredHooks = {
     useGetEnumFacetData: useRepositoryEnumData,
@@ -145,7 +143,7 @@ export const FileFacetPanel = (): JSX.Element => {
             <FacetSelection
               facetType="files"
               handleFilterSelected={handleFilterSelected}
-              usedFacets={config.facets}
+              usedFacets={customFacets}
             />
           </div>
         </Modal>

@@ -77,11 +77,18 @@ export const ProjectView: React.FC<ProjectViewProps> = (
     <span className="flex items-center gap-1">
       <FaEdit size={24} />
       {projectData.annotation.pagination.total > 0 ? (
-        <a href="#annotations" className="underline font-bold">
+        <a
+          data-testid="text-annotation-count-project-summary"
+          href="#annotations"
+          className="underline font-bold"
+        >
           {projectData.annotation.pagination.total.toLocaleString()}
         </a>
       ) : (
-        <span className="font-bold">
+        <span
+          data-testid="text-annotation-count-project-summary"
+          className="font-bold"
+        >
           {projectData.annotation.pagination.total.toLocaleString()}
         </span>
       )}

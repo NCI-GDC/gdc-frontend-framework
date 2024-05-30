@@ -65,7 +65,7 @@ import {
 } from "./availableCohortsSlice";
 
 import {
-  CohortBuilderCategory,
+  CohortBuilderCategoryConfig,
   addFilterToCohortBuilder,
   removeFilterFromCohortBuilder,
   resetCohortBuilderToDefault,
@@ -94,7 +94,7 @@ export {
   OperandValue,
   EnumValueExtractorHandler,
   ValueExtractorHandler,
-  CohortBuilderCategory,
+  CohortBuilderCategoryConfig,
   joinFilters,
   buildCohortGqlOperator,
   filterSetToOperation,

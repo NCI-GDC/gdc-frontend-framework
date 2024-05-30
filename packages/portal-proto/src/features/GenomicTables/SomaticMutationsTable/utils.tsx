@@ -49,6 +49,7 @@ export const useGenerateSMTableColumns = ({
   generateFilters,
   currentPage,
   totalPages,
+  cohortFilters,
 }: {
   toggledSsms: string[];
   isDemoMode: boolean;
@@ -62,9 +63,10 @@ export const useGenerateSMTableColumns = ({
   geneSymbol: string;
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
   projectId: string;
-  generateFilters: (ssmId: string) => Promise<FilterSet>;
+  generateFilters: (ssmId: string) => FilterSet;
   currentPage: number;
   totalPages: number;
+  cohortFilters: FilterSet;
 }): ColumnDef<SomaticMutation>[] => {
   const componentId = useId();
   const SMTableColumnHelper = useMemo(
@@ -240,9 +242,9 @@ export const useGenerateSMTableColumns = ({
               />
             }
             numCases={row.original["#_affected_cases_in_cohort"].numerator}
-            filtersCallback={async () =>
-              generateFilters(row.original.mutation_id)
-            }
+            filters={generateFilters(row.original.mutation_id)}
+            caseFilters={cohortFilters}
+            createStaticCohort
           />
         ),
       }),
@@ -303,6 +305,7 @@ export const useGenerateSMTableColumns = ({
       componentId,
       currentPage,
       totalPages,
+      cohortFilters,
     ],
   );
 

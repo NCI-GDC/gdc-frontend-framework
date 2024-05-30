@@ -64,6 +64,7 @@ const config = [
       "js-cookie",
       "blueimp-md5",
       "queue",
+      "use-deep-compare",
     ],
     plugins: [
       peerDepsExternal(),

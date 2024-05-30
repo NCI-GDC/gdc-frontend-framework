@@ -3,14 +3,10 @@ import {
   removeFilter,
   resetToDefault,
   repositoryConfigReducer,
-  selectRepositoryConfig,
 } from "./repositoryConfigSlice";
-import DownloadFiltersDefault from "./config/filters.json";
-import { getInitialAppState } from "./store.unit.test";
 
 const defaultState = {
-  label: "Repository Default",
-  facets: [
+  customFacets: [
     "files.experimental_strategy",
     "files.wgs_coverage",
     "files.data_category",
@@ -24,13 +20,10 @@ const defaultState = {
     "cases.samples.specimen_type",
     "cases.samples.preservation_method",
   ],
-  docType: "files",
-  index: "repository",
 };
 
 const alteredConfig = {
-  label: "Repository Default",
-  facets: [
+  customFacets: [
     "file.test_facet",
     "files.experimental_strategy",
     "files.wgs_coverage",
@@ -45,13 +38,10 @@ const alteredConfig = {
     "cases.samples.specimen_type",
     "cases.samples.preservation_method",
   ],
-  docType: "files",
-  index: "repository",
 };
 
 const removeFacetTestState = {
-  label: "Repository Default",
-  facets: [
+  customFacets: [
     "files.experimental_strategy",
     "files.wgs_coverage",
     "files.data_category",
@@ -66,8 +56,6 @@ const removeFacetTestState = {
     "cases.samples.preservation_method",
     "example.facet_type",
   ],
-  docType: "files",
-  index: "repository",
 };
 
 describe("repository config reduce", () => {
@@ -108,15 +96,6 @@ describe("repository config reduce", () => {
 
   test("resetCohortBuilderToDefault action should return builderConfig to the default configuration", () => {
     const state = repositoryConfigReducer(alteredConfig, resetToDefault());
-    expect(state).toEqual(DownloadFiltersDefault);
-  });
-});
-
-const state = getInitialAppState();
-
-describe("selectRepositoryConfig", () => {
-  test("should select the default configuration", () => {
-    const builderConfig = selectRepositoryConfig(state);
-    expect(builderConfig).toEqual(DownloadFiltersDefault);
+    expect(state).toEqual({ customFacets: [] });
   });
 });

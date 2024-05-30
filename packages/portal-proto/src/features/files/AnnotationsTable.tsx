@@ -254,6 +254,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
     <>
       <HeaderTitle>Annotations</HeaderTitle>
       <VerticalTable
+        customDataTestID="table-annotations-file-summary"
         additionalControls={
           <div className="flex gap-2">
             <FunctionButton

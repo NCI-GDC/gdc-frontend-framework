@@ -121,9 +121,7 @@ export const createAppID = (name: string, version: string): string =>
 // Apps with Local Storage
 //
 
-export const createAppStore = (
-  options: CreateGDCAppStore,
-): Record<any, any> => {
+export const createAppStore = (options: CreateGDCAppStore) => {
   const { name, version, reducers } = options;
   const nameVersion = `${name}::${version}`;
   const id = createAppID(name, version);
