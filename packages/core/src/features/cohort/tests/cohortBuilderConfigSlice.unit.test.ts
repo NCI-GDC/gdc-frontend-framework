@@ -11,169 +11,77 @@ import {
 import CohortBuilderDefaultConfig from "../data/cohort_builder.json";
 
 const defaultState = {
-  general: {
-    label: "General",
-    facets: [
-      "demographic.gender",
-      "demographic.race",
-      "demographic.ethnicity",
-      "diagnoses.age_at_diagnosis",
-      "diagnoses.vital_status",
-    ],
-    docType: "cases",
-    index: "explore",
-  },
-  custom: {
-    label: "Custom",
-    facets: [],
-    docType: "cases",
-    index: "explore",
-  },
+  customFacets: [
+    "demographic.gender",
+    "demographic.race",
+    "demographic.ethnicity",
+    "diagnoses.age_at_diagnosis",
+    "diagnoses.vital_status",
+  ],
 };
 
 const alteredConfig = {
-  general: {
-    label: "General",
-    facets: [
-      "demographic.gender",
-      "demographic.race",
-      "demographic.ethnicity",
-      "diagnoses.age_at_diagnosis",
-      "diagnoses.vital_status",
-      "case.test_facet",
-    ],
-    docType: "cases",
-    index: "explore",
-  },
-  custom: {
-    label: "Custom",
-    facets: [],
-    docType: "cases",
-    index: "explore",
-  },
-};
-
-const alteredCustomConfig = {
-  general: { ...defaultState.general },
-  custom: {
-    label: "Custom",
-    facets: ["case.test_facet", "case.test_facet_other"],
-    docType: "cases",
-    index: "explore",
-  },
-};
-
-const removeFacetTestState = {
-  general: {
-    label: "General",
-    facets: [
-      "demographic.gender",
-      "demographic.race",
-      "demographic.ethnicity",
-      "diagnoses.age_at_diagnosis",
-      "diagnoses.vital_status",
-      "example.facet_type",
-    ],
-    docType: "cases",
-    index: "explore",
-  },
-  additional: {
-    label: "General",
-    facets: ["example.facet_type", "case.test_facet"],
-    docType: "cases",
-    index: "explore",
-  },
+  customFacets: [
+    "demographic.gender",
+    "demographic.race",
+    "demographic.ethnicity",
+    "diagnoses.age_at_diagnosis",
+    "diagnoses.vital_status",
+    "case.test_facet",
+  ],
 };
 
 const state = getInitialCoreState();
 
-describe("cohortConfig reducer", () => {
-  test("should return the default state for unknown actions", () => {
-    const state = cohortBuilderConfigReducer(defaultState, { type: "noop" });
-    expect(state).toEqual(defaultState);
-  });
+const stateWithCustomFacets = {
+  ...state,
+  cohort: {
+    ...state.cohort,
+    builderConfig: {
+      customFacets: [
+        "demographic.country_of_residence_at_enrollment",
+        "demographic.education_level",
+      ],
+    },
+  },
+};
 
-  test("addFilterToCohortBuilder action should add a facetName to the general category", () => {
+describe("cohortConfig reducer", () => {
+  test("addFilterToCohortBuilder action should remove field", () => {
     const state = cohortBuilderConfigReducer(
       defaultState,
       addFilterToCohortBuilder({
-        category: "general",
         facetName: "case.test_facet",
       }),
     );
 
     expect(state).toEqual(alteredConfig);
-  });
-
-  test("addFilterToCohortBuilder action should add a facetName to the custom category", () => {
-    const altered_state = cohortBuilderConfigReducer(
-      defaultState,
-      addFilterToCohortBuilder({
-        category: "custom",
-        facetName: "case.test_facet",
-      }),
-    );
-
-    const state = cohortBuilderConfigReducer(
-      altered_state,
-      addFilterToCohortBuilder({
-        category: "custom",
-        facetName: "case.test_facet_other",
-      }),
-    );
-    expect(state).toEqual(alteredCustomConfig);
   });
 
   test("addFilter that exists should be ignored", () => {
     const state = cohortBuilderConfigReducer(
       alteredConfig,
       addFilterToCohortBuilder({
-        category: "general",
         facetName: "case.test_facet",
       }),
     );
     expect(state).toEqual(alteredConfig);
   });
 
-  test("addFilterToCohortBuilder with bad category should do nothing", () => {
-    const state = cohortBuilderConfigReducer(
-      defaultState,
-      addFilterToCohortBuilder({
-        category: "none",
-        facetName: "case.test_facet",
-      }),
-    );
-    expect(state).toEqual(defaultState);
-  });
-
-  test("removeFilterFromCohortBuilder action should add a facetName to the config category", () => {
+  test("removeFilterFromCohortBuilder action should remove field", () => {
     const expected = {
-      general: {
-        label: "General",
-        facets: [
-          "demographic.gender",
-          "demographic.race",
-          "demographic.ethnicity",
-          "diagnoses.age_at_diagnosis",
-          "diagnoses.vital_status",
-          "example.facet_type",
-        ],
-        docType: "cases",
-        index: "explore",
-      },
-      additional: {
-        label: "General",
-        facets: ["case.test_facet"],
-        docType: "cases",
-        index: "explore",
-      },
+      customFacets: [
+        "demographic.gender",
+        "demographic.race",
+        "demographic.ethnicity",
+        "diagnoses.age_at_diagnosis",
+      ],
     };
 
     const state = cohortBuilderConfigReducer(
-      removeFacetTestState,
+      defaultState,
       removeFilterFromCohortBuilder({
-        category: "additional",
-        facetName: "example.facet_type",
+        facetName: "diagnoses.vital_status",
       }),
     );
     expect(state).toEqual(expected);
@@ -184,13 +92,14 @@ describe("cohortConfig reducer", () => {
       alteredConfig,
       resetCohortBuilderToDefault(),
     );
-    expect(state).toEqual(CohortBuilderDefaultConfig.config);
+    expect(state).toEqual({ customFacets: [] });
   });
 
   test("should select the default configuration", () => {
     const builderConfig = selectCohortBuilderConfig(state);
     expect(builderConfig).toEqual(CohortBuilderDefaultConfig.config);
   });
+
   test("should select the 'common' configuration", () => {
     const expected = {
       label: "General",
@@ -208,6 +117,24 @@ describe("cohortConfig reducer", () => {
     const builderCommonConfig = selectCohortBuilderConfigCategory(
       state,
       "general",
+    );
+    expect(builderCommonConfig).toEqual(expected);
+  });
+
+  test("should select the 'custom' configuration", () => {
+    const expected = {
+      label: "Custom Filters",
+      facets: [
+        "demographic.country_of_residence_at_enrollment",
+        "demographic.education_level",
+      ],
+      docType: "cases",
+      index: "explore",
+    };
+
+    const builderCommonConfig = selectCohortBuilderConfigCategory(
+      stateWithCustomFacets,
+      "custom",
     );
     expect(builderCommonConfig).toEqual(expected);
   });
@@ -279,16 +206,10 @@ describe("cohortConfig reducer", () => {
       "files.data_format",
       "files.platform",
       "files.access",
+      "demographic.country_of_residence_at_enrollment",
+      "demographic.education_level",
     ];
-    const usedFacets = selectCohortBuilderConfigFilters(state);
+    const usedFacets = selectCohortBuilderConfigFilters(stateWithCustomFacets);
     expect(usedFacets).toEqual(expected);
-  });
-
-  test("should return undefined", () => {
-    const builderCommonConfig = selectCohortBuilderConfigCategory(
-      state,
-      "none",
-    );
-    expect(builderCommonConfig).toBeUndefined();
   });
 });
