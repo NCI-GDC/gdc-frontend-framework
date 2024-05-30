@@ -49,7 +49,7 @@ describe("ColumnOrdering", () => {
       />,
     );
     const button = screen.getByTestId("button-column-selector-box");
-    await userEvent.click(button, { delay: 100 });
+    await userEvent.click(button);
     expect(
       screen.getByTestId("column-selector-popover-modal"),
     ).toBeInTheDocument();
@@ -65,12 +65,12 @@ describe("ColumnOrdering", () => {
       />,
     );
     const button = screen.getByTestId("button-column-selector-box");
-    await userEvent.click(button, { delay: 100 });
+    await userEvent.click(button);
     expect(
       screen.getByTestId("column-selector-popover-modal"),
     ).toBeInTheDocument();
 
-    await userEvent.click(button, { delay: 100 });
+    await userEvent.click(button);
     await waitFor(() =>
       expect(screen.queryByTestId("column-selector-popover-modal")).toBeNull(),
     );
@@ -86,7 +86,7 @@ describe("ColumnOrdering", () => {
       />,
     );
     const button = screen.getByTestId("button-column-selector-box");
-    await userEvent.click(button, { delay: 100 });
+    await userEvent.click(button);
 
     expect(
       screen.getByTestId("column-selector-popover-modal"),
@@ -158,7 +158,7 @@ describe("ColumnOrdering", () => {
     );
 
     const button = screen.getByTestId("button-column-selector-box");
-    await userEvent.click(button, { delay: 100 });
+    await userEvent.click(button);
     // Simulate clicking on the switch to toggle visibility of the first column
     const switchToggle = getAllByTestId("switch-toggle");
     await userEvent.click(switchToggle[0]);
