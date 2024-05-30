@@ -191,7 +191,6 @@ export interface GqlLessThan {
     readonly field: string;
     readonly value: string | number;
   };
-  readonly isLoggedIn?: boolean;
 }
 
 export interface GqlLessThanOrEquals {
@@ -208,7 +207,6 @@ export interface GqlGreaterThan {
     readonly field: string;
     readonly value: string | number;
   };
-  readonly isLoggedIn?: boolean;
 }
 
 export interface GqlGreaterThanOrEquals {
@@ -249,7 +247,6 @@ export interface GqlExcludes {
     readonly field: string;
     readonly value: ReadonlyArray<string | number>;
   };
-  readonly isLoggedIn?: boolean;
 }
 
 export interface GqlExcludeIfAny {
