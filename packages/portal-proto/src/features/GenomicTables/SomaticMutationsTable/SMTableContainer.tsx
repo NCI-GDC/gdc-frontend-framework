@@ -7,6 +7,7 @@ import {
   useAppendToSsmSetMutation,
   useRemoveFromSsmSetMutation,
   useCreateSsmsSetFromFiltersMutation,
+  useCreateTopNSsmsSetFromFiltersMutation,
   useCoreSelector,
   selectSetsByType,
   joinFilters,
@@ -273,6 +274,13 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         } as FilterSet)
       : contextSensitiveFilters;
 
+  // local filters for setCreation
+  const createSetFilters = geneSymbol
+    ? joinFilters(genomicFilters, geneFilter)
+    : caseFilter
+    ? caseFilter
+    : genomicFilters;
+
   const handleTSVGeneDownload = () => {
     setDownloadMutationsFrequencyTSVActive(true);
     download({
@@ -387,7 +395,16 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             <>
               <SaveSelectionAsSetModal
                 opened={showSaveModal}
-                filters={buildCohortGqlOperator(setFilters)}
+                cohortFilters={
+                  selectedMutations.length === 0
+                    ? buildCohortGqlOperator(cohortFilters)
+                    : undefined
+                }
+                filters={buildCohortGqlOperator(
+                  selectedMutations.length === 0
+                    ? createSetFilters
+                    : setFilters,
+                )}
                 sort="occurrence.case.project.project_id"
                 initialSetName={
                   selectedMutations.length === 0
@@ -401,7 +418,11 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 }
                 setType="ssms"
                 setTypeLabel="mutation"
-                createSetHook={useCreateSsmsSetFromFiltersMutation}
+                createSetHook={
+                  selectedMutations.length === 0
+                    ? useCreateTopNSsmsSetFromFiltersMutation
+                    : useCreateSsmsSetFromFiltersMutation
+                }
                 closeModal={handleSaveSelectionAsSetModalClose}
               />
 
