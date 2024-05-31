@@ -13,9 +13,16 @@ tags: gdc-data-portal-v2, data-release
 * Validate the quick search bar result in position "1" of the result list has the text "File f8f20eda-b70f-4767-ad3b-1a704faa5d36 has been updated"
 * Select the quick search bar result in position "1"
 * Is text "HCM-SANG-0282-C18.json" present on the page
-* Validate text is present in table "File Properties"
+* Validate text is present in table "File Properties" on the file summary page
     |text_to_validate                       |
     |---------------------------------------|
     |547f5ad0-d93d-4299-b2c0-34ac05b63779   |
     |249722ea264253c3572619e6d2c38885       |
     |open                                   |
+* Validate text is present in table "File Properties" on the file summary page
+    |text_to_validate                                   |
+    |---------------------------------------------------|
+    |547f5ad0-d93d-4299-b2c0-34ac05b63779Current Version|
+    |2024-03-29                                         |
+    |40.0                                               |
+    |f8f20eda-b70f-4767-ad3b-1a704faa5d36               |

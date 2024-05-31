@@ -13,9 +13,15 @@ tags: gdc-data-portal-v2, data-release
 * Select file download button on the file summary page
 * Is text "You don't have access to this file. Please login." present on the page
 * Select "Close"
-* Validate text is present in table "File Properties"
+* Validate text is present in table "File Properties" on the file summary page
     |text_to_validate                       |
     |---------------------------------------|
     |bcc10436-c964-4597-93d9-da1e4013be76   |
     |1c525454405c23de56474349c01243e5       |
     |controlled                             |
+* Validate text is present in table "File Versions" on the file summary page
+    |text_to_validate                                       |
+    |-------------------------------------------------------|
+    |bcc10436-c964-4597-93d9-da1e4013be76Current Version    |
+    |2024-03-29                                             |
+    |	40.0                                                |
