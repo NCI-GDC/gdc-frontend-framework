@@ -72,24 +72,6 @@ const CohortCard: React.FC<CohortCardProps> = ({
         </div>
       </div>
       <hr />
-      <div className="mt-2 flex justify-center">
-        <Link
-          href={{
-            pathname: "/analysis_page",
-            query: {
-              app: "SetOperations",
-              skipSelectionScreen: "true",
-              cohort1Id: cohorts.primary_cohort.id,
-              cohort2Id: cohorts.comparison_cohort.id,
-            },
-          }}
-          data-testid="link-open-venn-diagram"
-          className="underline text-primary font-bold"
-        >
-          Open Venn diagram
-        </Link>
-      </div>
-
       {!casesFetching && caseSetIds.length !== 0 ? (
         <CohortVennDiagram caseSetIds={caseSetIds} cohorts={cohorts} />
       ) : (
@@ -103,7 +85,26 @@ const CohortCard: React.FC<CohortCardProps> = ({
           interactable={false}
         />
       )}
+      <div className="mt-2 flex justify-center">
+        <Link
+          href={{
+            pathname: "/analysis_page",
+            query: {
+              app: "SetOperations",
+              skipSelectionScreen: "true",
+              cohort1Id: cohorts.primary_cohort.id,
+              cohort2Id: cohorts.comparison_cohort.id,
+            },
+          }}
+          data-testid="link-open-venn-diagram"
+          className="underline text-primary font-bold"
+          aria-label="View Venn diagram in Set Operations. Note: you will be directed to the Set Operations tool. Close the tool to return to the Analysis Center if you wish to use Cohort Comparison."
+        >
+          View Venn diagram in Set Operations
+        </Link>
+      </div>
       <hr />
+
       {Object.entries(options).map(([value, field]) => (
         <div key={value}>
           <input

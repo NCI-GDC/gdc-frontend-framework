@@ -59,7 +59,7 @@ const CohortVennDiagram: React.FC<CohortVennDiagramProps> = ({
           highlighted: false,
         },
       ]}
-      labels={["S<sub>1</sub>", "S<sub>2</sub>"]}
+      labels={["S₁", "S₂"]}
       interactable={false}
     />
   );

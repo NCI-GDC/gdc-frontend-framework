@@ -46,7 +46,7 @@ export const SetOperations: React.FC<SetOperationsProps> = ({
       </div>
       <div className="flex flex-row pt-2">
         <VennDiagram
-          labels={["S<sub>1</sub>", "S<sub>2</sub>", "S<sub>3</sub>"]}
+          labels={["S₁", "S₂", "S₃"]}
           chartData={chartData}
           onClickHandler={onClickHandler}
         />
