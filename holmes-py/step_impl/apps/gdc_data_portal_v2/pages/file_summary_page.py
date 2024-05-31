@@ -39,11 +39,12 @@ class FileSummaryPage(BasePage):
         """Clicks download file button in upper-left corner"""
         self.click(FileSummaryLocators.BUTTON_DOWNLOAD_FILE_IDENT)
 
-    # Clicks first 'Download' button on the file summary page
     def click_download_button(self):
+        """Clicks first 'Download' button on the file summary page"""
         self.click(FileSummaryLocators.DOWNLOAD_BUTTON_IDENT)
 
     def is_text_visible_in_table(self, table_name, text):
+        """Returns if text is visible in given table on a file summary page"""
         table_name = self.normalize_button_identifier(table_name)
         locator = FileSummaryLocators.TEXT_IN_TABLE_IDENT(table_name, text)
         return self.is_visible(locator)
