@@ -15,8 +15,6 @@ class FileSummaryLocators:
     DOWNLOAD_BUTTON_IDENT = 'text="Download" >> nth=0'
     BUTTON_DOWNLOAD_FILE_IDENT = '[data-testid="button-download-file-summary"]'
 
-    TEXT_IN_TABLE_IDENT = lambda table_name, text: f'[data-testid="table-{table_name}-file-summary"] >> text={text}'
-
 class FileSummaryPage(BasePage):
     def __init__(self, driver: Page, url):
         self.driver = driver  # driver is PW page
@@ -42,9 +40,3 @@ class FileSummaryPage(BasePage):
     def click_download_button(self):
         """Clicks first 'Download' button on the file summary page"""
         self.click(FileSummaryLocators.DOWNLOAD_BUTTON_IDENT)
-
-    def is_text_visible_in_table(self, table_name, text):
-        """Returns if text is visible in given table on a file summary page"""
-        table_name = self.normalize_button_identifier(table_name)
-        locator = FileSummaryLocators.TEXT_IN_TABLE_IDENT(table_name, text)
-        return self.is_visible(locator)

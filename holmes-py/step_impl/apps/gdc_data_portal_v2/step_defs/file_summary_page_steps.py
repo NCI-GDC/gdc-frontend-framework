@@ -22,9 +22,3 @@ def add_file_to_cart():
 @step("Select file download button on the file summary page")
 def click_download_file():
     APP.file_summary_page.click_download_file_button()
-
-@step("Validate text is present in table <table_name> on the file summary page <table>")
-def validate_table_text(table_name: str, table):
-    for k, v in enumerate(table):
-        is_text_visible = APP.file_summary_page.is_text_visible_in_table(table_name, v[0])
-        assert is_text_visible, f"On table '{table_name}', expected text '{v[0]}' is NOT present"
