@@ -187,6 +187,7 @@ export const ageDisplay = (
   yearsOnly: boolean = false,
   defaultValue: string = "--",
 ): string => {
+  if (ageInDays === 0) return "0 days";
   if (!ageInDays) {
     return defaultValue;
   }
