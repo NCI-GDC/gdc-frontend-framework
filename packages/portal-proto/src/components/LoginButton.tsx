@@ -1,9 +1,9 @@
 import openAuthWindow from "@/features/layout/auth/openAuthWindow";
 import {
-  useGetBannerNotificationsQuery,
   hideModal,
   useCoreDispatch,
   useLazyFetchUserDetailsQuery,
+  useLazyGetBannerNotificationsQuery,
 } from "@gff/core";
 import { Button } from "@mantine/core";
 import { MdOutlineLogin as LoginIcon } from "react-icons/md";
@@ -17,7 +17,7 @@ export const LoginButton = ({
 }): JSX.Element => {
   const dispatch = useCoreDispatch();
   const [fetchUserDetails] = useLazyFetchUserDetailsQuery();
-  const { refetch: fetchNotifications } = useGetBannerNotificationsQuery();
+  const [fetchNotifications] = useLazyGetBannerNotificationsQuery();
   return (
     <Button
       className={`p-1 ${
