@@ -377,13 +377,13 @@ export const twoCircleLayout: GraphicComponentOption[] = [
 ];
 
 export const threeCircleLabelLayout = {
-  S1_minus_S2_union_S3: { x: 100, y: 115 },
+  S1_minus_S2_union_S3: { x: 110, y: 115 },
   S2_minus_S1_union_S3: { x: 290, y: 115 },
-  S3_minus_S1_union_S2: { x: 250, y: 210 },
-  S1_intersect_S2_minus_S3: { x: 190, y: 115 },
-  S1_intersect_S3_minus_S2: { x: 150, y: 210 },
-  S2_intersect_S3_minus_S1: { x: 190, y: 290 },
-  S1_intersect_S2_intersect_S3: { x: 190, y: 180 },
+  S3_minus_S1_union_S2: { x: 255, y: 210 },
+  S1_intersect_S2_minus_S3: { x: 200, y: 115 },
+  S1_intersect_S3_minus_S2: { x: 145, y: 210 },
+  S2_intersect_S3_minus_S1: { x: 200, y: 290 },
+  S1_intersect_S2_intersect_S3: { x: 200, y: 185 },
 };
 
 export const twoCircleLabelLayout = {
@@ -395,13 +395,13 @@ export const twoCircleLabelLayout = {
 const threeCircleOuterLabelLayout = [
   {
     type: "text",
-    left: 45,
-    top: 45,
+    left: 55,
+    top: 55,
   },
   {
     type: "text",
-    left: 350,
-    top: 45,
+    left: 340,
+    top: 55,
   },
   {
     type: "text",
@@ -578,6 +578,7 @@ export const useLayout = ({
           ...labelConfig,
           style: {
             text: labels[idx],
+            textAlign: "middle",
           },
         })),
       ],
@@ -587,11 +588,14 @@ export const useLayout = ({
           z: 300,
           renderItem: (params, api) => {
             return {
-              type: "text" as const,
+              type: "text",
+              ...labelLayout[chartData[params.dataIndex].key],
               style: {
                 text: String(api.value(0)),
+                textAlign: "middle",
+                fill: "#333333",
               },
-              ...labelLayout[chartData[params.dataIndex].key],
+              z: 400,
             };
           },
           data: chartData,
