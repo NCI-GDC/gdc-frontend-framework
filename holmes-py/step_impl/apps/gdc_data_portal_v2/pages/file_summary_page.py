@@ -13,7 +13,7 @@ class FileSummaryLocators:
     REMOVED_FROM_CART_MESSAGE_IDENT = 'p:has-text("Removed")'
 
     DOWNLOAD_BUTTON_IDENT = 'text="Download" >> nth=0'
-
+    BUTTON_DOWNLOAD_FILE_IDENT = '[data-testid="button-download-file-summary"]'
 
 class FileSummaryPage(BasePage):
     def __init__(self, driver: Page, url):
@@ -33,6 +33,10 @@ class FileSummaryPage(BasePage):
         removed_file_message = FileSummaryLocators.REMOVED_FROM_CART_MESSAGE_IDENT
         self.wait_until_locator_is_visible(removed_file_message)
 
-    # Clicks first 'Download' button on the file summary apge
+    def click_download_file_button(self):
+        """Clicks download file button in upper-left corner"""
+        self.click(FileSummaryLocators.BUTTON_DOWNLOAD_FILE_IDENT)
+
     def click_download_button(self):
+        """Clicks first 'Download' button on the file summary page"""
         self.click(FileSummaryLocators.DOWNLOAD_BUTTON_IDENT)
