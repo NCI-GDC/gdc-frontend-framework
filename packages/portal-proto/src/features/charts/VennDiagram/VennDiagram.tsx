@@ -1,11 +1,12 @@
 import { useMemo } from "react";
-import EChartWrapper from "@/features/cDave/CDaveCard/EChartWrapper";
+import EChartWrapper from "@/features/charts/EChartWrapper";
 import { useLayout } from "./useLayouts";
 import { VennDiagramProps } from "./types";
 
 const VennDiagram: React.FC<VennDiagramProps> = ({
   chartData,
   labels,
+  ariaLabel,
   onClickHandler,
   interactable = true,
 }: VennDiagramProps) => {
@@ -18,18 +19,12 @@ const VennDiagram: React.FC<VennDiagramProps> = ({
     chartData,
     highlightedIndices,
     labels,
+    ariaLabel,
     onClickHandler,
     interactable,
   });
 
-  return (
-    <EChartWrapper
-      option={option}
-      label="Venn Diagram"
-      height={400}
-      width={400}
-    />
-  );
+  return <EChartWrapper option={option} height={400} width={400} />;
 };
 
 export default VennDiagram;

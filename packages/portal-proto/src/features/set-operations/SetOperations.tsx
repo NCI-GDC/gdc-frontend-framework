@@ -47,6 +47,7 @@ export const SetOperations: React.FC<SetOperationsProps> = ({
       <div className="flex flex-row pt-2">
         <VennDiagram
           labels={["S₁", "S₂", "S₃"]}
+          ariaLabel="The Venn diagram displays the number of cases shared between the cohorts."
           chartData={chartData}
           onClickHandler={onClickHandler}
         />

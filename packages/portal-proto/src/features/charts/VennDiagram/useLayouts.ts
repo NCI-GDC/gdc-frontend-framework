@@ -387,9 +387,9 @@ export const threeCircleLabelLayout = {
 };
 
 export const twoCircleLabelLayout = {
-  S1_minus_S2: { x: 1.5, y: 2.5 },
-  S2_minus_S1: { x: 3.5, y: 2.5 },
-  S1_union_S2: { x: 2.5, y: 2.5 },
+  S1_minus_S2: { x: 100, y: 200 },
+  S2_minus_S1: { x: 300, y: 200 },
+  S1_intersect_S2: { x: 200, y: 200 },
 };
 
 const threeCircleOuterLabelLayout = [
@@ -413,13 +413,13 @@ const threeCircleOuterLabelLayout = [
 const twoCircleOuterLabelLayout = [
   {
     type: "text",
-    left: 45,
-    top: 45,
+    left: 20,
+    top: 200,
   },
   {
     type: "text",
-    left: 350,
-    top: 45,
+    left: 380,
+    top: 200,
   },
 ];
 
@@ -497,6 +497,7 @@ export const useLayout = ({
   chartData,
   highlightedIndices,
   labels,
+  ariaLabel,
   onClickHandler,
   interactable,
 }: UseLayoutProps): EChartsOption => {
@@ -572,6 +573,11 @@ export const useLayout = ({
   useDeepCompareEffect(() => {
     const fullChartOption = {
       ...chartConfig,
+      aria: {
+        label: {
+          description: ariaLabel,
+        },
+      },
       graphic: [
         ...addEvents(chartLayout, interactable),
         ...outerLabelLayout.map((labelConfig, idx) => ({
@@ -579,6 +585,7 @@ export const useLayout = ({
           style: {
             text: labels[idx],
             textAlign: "middle",
+            fill: "#333333",
           },
         })),
       ],
@@ -595,7 +602,6 @@ export const useLayout = ({
                 textAlign: "middle",
                 fill: "#333333",
               },
-              z: 400,
             };
           },
           data: chartData,
@@ -613,6 +619,7 @@ export const useLayout = ({
     outerLabelLayout,
     chartData,
     labelLayout,
+    ariaLabel,
   ]);
 
   return option;

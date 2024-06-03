@@ -77,11 +77,12 @@ const CohortCard: React.FC<CohortCardProps> = ({
       ) : (
         <VennDiagram
           chartData={[
-            { key: "S1_minus_S1", value: 0, highlighted: false },
+            { key: "S1_minus_S2", value: 0, highlighted: false },
             { key: "S2_minus_S1", value: 0, highlighted: false },
             { key: "S1_intersect_S2", value: 0, highlighted: false },
           ]}
-          labels={["S<sub>1</sub>", "S<sub>2</sub>"]}
+          labels={["S₁", "S₂"]}
+          ariaLabel="The Venn diagram displays the intersections, unions, or differences in the cohorts or sets. Additional information can be found in the Summary Table and the Overlap Table."
           interactable={false}
         />
       )}

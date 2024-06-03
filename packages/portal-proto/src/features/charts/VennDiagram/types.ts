@@ -9,6 +9,7 @@ export interface chartData {
 export interface VennDiagramProps {
   readonly chartData: chartData[];
   readonly labels: string[];
+  readonly ariaLabel: string;
   readonly onClickHandler?: (key: string) => void;
   readonly interactable?: boolean;
 }

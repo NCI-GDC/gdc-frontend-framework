@@ -1,7 +1,7 @@
 import React from "react";
 import { useDeepCompareMemo } from "use-deep-compare";
 import { Loader } from "@mantine/core";
-import EChartWrapper from "./EChartWrapper";
+import EChartWrapper from "@/features/charts/EChartWrapper";
 import { EChartsOption } from "echarts";
 
 const getQuantile = (count: number, quantile: number) =>
@@ -195,7 +195,6 @@ const QQPlot: React.FC<QQPlotProps> = ({
       height={height}
       chartRef={chartRef}
       width={width}
-      label={label}
     />
   );
 };
