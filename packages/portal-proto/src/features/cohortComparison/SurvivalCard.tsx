@@ -4,15 +4,15 @@ import {
   buildCohortGqlOperator,
   useGetSurvivalPlotQuery,
   FilterSet,
+  GqlIntersection,
   GqlOperation,
   useCreateCaseSetFromFiltersMutation,
-  GqlIntersection,
 } from "@gff/core";
 import SurvivalPlot, { SurvivalPlotTypes } from "../charts/SurvivalPlot";
 import makeIntersectionFilters from "./makeIntersectionFilters";
 import CohortCreationButton from "@/components/CohortCreationButton";
 
-const survivalDataCompletenessFilters: readonly GqlOperation[] = [
+const survivalDataCompletenessFilters: GqlOperation[] = [
   {
     op: "or",
     content: [
@@ -115,10 +115,6 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
     caseSetIds,
   );
   const [createSet] = useCreateCaseSetFromFiltersMutation();
-  const { data, isUninitialized, isFetching, isError } =
-    useGetSurvivalPlotQuery({
-      filters: [filters.cohort1, filters.cohort2],
-    });
 
   const generateFilters = async (
     primarySetId: string,
@@ -143,6 +139,11 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
         } as FilterSet;
       });
   };
+
+  const { data, isUninitialized, isFetching, isError } =
+    useGetSurvivalPlotQuery({
+      filters: [filters.cohort1, filters.cohort2],
+    });
 
   useEffect(() => {
     setSurvivalPlotSelectable(data?.survivalData.length !== 0);

@@ -2,18 +2,32 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import CohortBuilderDefaultConfig from "./data/cohort_builder.json";
 import { CoreState } from "../../reducers";
 
-export interface CohortBuilderCategory {
+export interface CohortBuilderCategoryConfig {
   readonly label: string;
   readonly docType: string;
   readonly index: string;
   readonly facets: ReadonlyArray<string>;
 }
 
-const initialState: Record<string, CohortBuilderCategory> =
-  CohortBuilderDefaultConfig.config;
+type CohortBuilderCategory =
+  | "general"
+  | "demographic"
+  | "general_diagnosis"
+  | "disease_status"
+  | "stage_classification"
+  | "grade_classification"
+  | "other_classification"
+  | "treatment"
+  | "exposure"
+  | "biospecimen"
+  | "available_data"
+  | "custom";
+
+const initialState: { customFacets: string[] } = {
+  customFacets: [],
+};
 
 export interface CohortBuilderCategoryFacet {
-  readonly category: string;
   readonly facetName: string;
 }
 
@@ -25,28 +39,21 @@ const slice = createSlice({
       state,
       action: PayloadAction<CohortBuilderCategoryFacet>,
     ) => {
-      if (action.payload.category in state)
-        if (
-          // only add if not already added
-          !state[action.payload.category].facets.includes(
-            action.payload.facetName,
-          )
-        )
-          state[action.payload.category].facets = [
-            ...state[action.payload.category].facets,
-            action.payload.facetName,
-          ];
+      if (!state.customFacets.includes(action.payload.facetName)) {
+        state.customFacets = [...state.customFacets, action.payload.facetName];
+      }
     },
     removeFilterFromCohortBuilder: (
       state,
       action: PayloadAction<CohortBuilderCategoryFacet>,
     ) => {
-      if (action.payload.category in state)
-        state[action.payload.category].facets = state[
-          action.payload.category
-        ].facets.filter((x) => x != action.payload.facetName);
+      state.customFacets = state.customFacets.filter(
+        (x) => x != action.payload.facetName,
+      );
     },
-    resetCohortBuilderToDefault: () => initialState,
+    resetCohortBuilderToDefault: (state) => {
+      state.customFacets = [];
+    },
   },
 });
 
@@ -59,21 +66,37 @@ export const {
 
 export const selectCohortBuilderConfig = (
   state: CoreState,
-): Record<string, CohortBuilderCategory> => state.cohort.builderConfig;
+): Record<CohortBuilderCategory, CohortBuilderCategoryConfig> => ({
+  ...CohortBuilderDefaultConfig.config,
+  custom: {
+    ...CohortBuilderDefaultConfig.config.custom,
+    facets: state.cohort.builderConfig.customFacets,
+  },
+});
 
 /**
  * returns an array of all the filters used in the current configuration.
  * @param state - current core state/store
  */
-export const selectCohortBuilderConfigFilters = (state: CoreState): string[] =>
-  Object.values(state.cohort.builderConfig).reduce(
+export const selectCohortBuilderConfigFilters = (
+  state: CoreState,
+): string[] => [
+  ...Object.values(CohortBuilderDefaultConfig.config).reduce(
     (filters: string[], category) => {
       return [...filters, ...category.facets];
     },
     [] as string[],
-  );
+  ),
+  ...state.cohort.builderConfig.customFacets,
+];
 
 export const selectCohortBuilderConfigCategory = (
   state: CoreState,
-  category: string,
-): CohortBuilderCategory => state.cohort.builderConfig[category];
+  category: CohortBuilderCategory,
+): CohortBuilderCategoryConfig =>
+  category === "custom"
+    ? {
+        ...CohortBuilderDefaultConfig.config.custom,
+        facets: state.cohort.builderConfig.customFacets,
+      }
+    : CohortBuilderDefaultConfig.config[category];

@@ -1,5 +1,5 @@
 import { combineReducers } from "@reduxjs/toolkit";
-import { persistReducer } from "redux-persist";
+import { persistReducer, createMigrate } from "redux-persist";
 import { cohortReducers } from "./features/cohort/cohortSlice";
 import { sessionReducer } from "./features/session/sessionSlice";
 import { facetsReducer } from "./features/facets/facetSlice";
@@ -69,11 +69,23 @@ import {
   imageDetailsApiReducer,
 } from "./features/imageDetails/imageDetailsSlice";
 
+const migrations = {
+  2: (state: any) => {
+    return {
+      ...state,
+      builderConfig: {
+        customFacets: state.builderConfig.custom.facets,
+      },
+    };
+  },
+};
+
 // We want unsaved cohorts to be persisted through a refresh but not through a user ending their session
 const cohortPersistConfig = {
   key: "cohort",
-  version: 1,
+  version: 2,
   storage: sessionStorage,
+  migrate: createMigrate(migrations),
 };
 
 export const reducers = combineReducers({
