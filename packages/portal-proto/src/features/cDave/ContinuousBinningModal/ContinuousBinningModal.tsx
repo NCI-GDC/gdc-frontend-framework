@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button, Divider, Modal, Radio, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { MdReplay as ResetIcon } from "react-icons/md";
@@ -15,6 +15,7 @@ import {
 } from "../utils";
 import FunctionButton from "@/components/FunctionButton";
 import { DATA_DIMENSIONS } from "../constants";
+import { useDeepCompareEffect } from "use-deep-compare";
 
 interface ContinuousBinningModalProps {
   readonly setModalOpen: (open: boolean) => void;
@@ -65,7 +66,6 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
       : [],
   );
   const [hasReset, setHasReset] = useState(false);
-
   const initialIntervalForm = {
     setIntervalSize: customIntervalSet
       ? String(
@@ -152,12 +152,21 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
     rangeForm.validateField(`ranges.${idx}.name`);
   };
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     intervalForm.clearErrors();
     intervalForm.validate();
     // Adding form objects to dep array causes infinite rerenders
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [intervalForm.values]);
+
+  useDeepCompareEffect(() => {
+    intervalForm.setValues({
+      setIntervalMax: initialIntervalForm.setIntervalMax,
+      setIntervalMin: initialIntervalForm.setIntervalMin,
+      setIntervalSize: initialIntervalForm.setIntervalSize,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataDimension]);
 
   const saveBins = () => {
     setModalOpen(false);
