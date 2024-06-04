@@ -477,6 +477,9 @@ const CohortManager: React.FC = () => {
                 }
                 rightSectionWidth={cohortModified ? 45 : 30}
                 styles={{ section: { pointerEvents: "none" } }}
+                comboboxProps={{
+                  withinPortal: false,
+                }}
               />
               <div
                 className={`ml-auto text-heading text-sm font-semibold mt-0.85 text-primary-contrast ${
