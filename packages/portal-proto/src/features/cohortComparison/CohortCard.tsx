@@ -82,11 +82,11 @@ const CohortCard: React.FC<CohortCardProps> = ({
             { key: "S1_intersect_S2", value: 0, highlighted: false },
           ]}
           labels={["S₁", "S₂"]}
-          ariaLabel="The Venn diagram displays the intersections, unions, or differences in the cohorts or sets. Additional information can be found in the Summary Table and the Overlap Table."
+          ariaLabel="The Venn diagram displays the number of cases shared between the cohorts."
           interactable={false}
         />
       )}
-      <div className="mt-2 flex justify-center">
+      <div className="-mt-8 mb-2 z-10 flex justify-center relative">
         <Link
           href={{
             pathname: "/analysis_page",
