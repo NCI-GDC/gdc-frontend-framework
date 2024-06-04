@@ -187,8 +187,7 @@ export const ageDisplay = (
   yearsOnly: boolean = false,
   defaultValue: string = "--",
 ): string => {
-  if (ageInDays === 0) return "0 days";
-  if (!ageInDays) {
+  if (ageInDays !== 0 && !ageInDays) {
     return defaultValue;
   }
   const calculateYearsAndDays = (
@@ -209,6 +208,8 @@ export const ageDisplay = (
   const formattedDays =
     !yearsOnly && remainingDays > 0
       ? `${remainingDays} ${remainingDays === 1 ? "day" : "days"}`
+      : years === 0 && remainingDays === 0
+      ? "0 days"
       : "";
 
   const ageString = [formattedYears, formattedDays].filter(Boolean).join(" ");
