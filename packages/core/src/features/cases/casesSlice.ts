@@ -152,7 +152,7 @@ export const fetchAllCases = createAsyncThunk<
 
     if (casesResponse.data.hits.length > 0) {
       const annotationsResponse = await fetchGdcAnnotations({
-        case_filters: {
+        filters: {
           op: "in",
           content: {
             field: "annotations.case_id",
