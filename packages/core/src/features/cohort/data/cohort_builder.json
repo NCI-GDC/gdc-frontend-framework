@@ -92,11 +92,11 @@
     "treatment": {
       "label": "Treatment",
       "facets": [
-        "cases.diagnoses.best_overall_response",
         "cases.diagnoses.treatments.therapeutic_agents",
         "cases.diagnoses.treatments.treatment_intent_type",
         "cases.diagnoses.treatments.treatment_outcome",
-        "cases.diagnoses.treatments.treatment_type"
+        "cases.diagnoses.treatments.treatment_type",
+        "cases.diagnoses.best_overall_response"
       ],
       "docType": "cases",
       "index": "explore"
