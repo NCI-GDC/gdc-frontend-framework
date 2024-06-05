@@ -500,11 +500,10 @@ const RangeInputWithPrefixedRanges: React.FC<
   }, [filter]);
 
   const queryInYears = rangeDatatype === "age_in_years";
-  console.log({ field, queryInYears });
   // build the range for the useRangeFacet and the facet query
   const [bucketRanges, ranges] = useMemo(() => {
     return buildRangeBuckets(numBuckets, units, minimum, queryInYears);
-  }, [minimum, numBuckets, units]);
+  }, [minimum, numBuckets, units, queryInYears]);
 
   const [isCustom, setIsCustom] = useState(filterKey === "custom"); // in custom Range Mode
   const [selectedRange, setSelectedRange] = useState(filterKey); // the current selected range
