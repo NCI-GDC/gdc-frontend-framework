@@ -48,11 +48,19 @@ def click_run_cohort_comparison_selection_screen():
         APP.cohort_comparison_page.wait_for_survival_plot_loading_spinner_to_detatch_cohort_comparison()
     except:
         APP.shared.wait_for_loading_spinner_to_detatch()
+        APP.cohort_comparison_page.wait_for_survival_plot_loading_spinner_to_detatch_cohort_comparison()
 
 @step("Select analysis cards to enable or disable on Cohort Comparison <table>")
 def click_analysis_card_enable_disable_button(table):
     for k, v in enumerate(table):
         APP.cohort_comparison_page.click_analysis_card_button_enable_disable(v[0])
+    try:
+        APP.shared.wait_for_loading_spinner_to_be_visible(2000)
+        APP.shared.wait_for_loading_spinner_to_detatch()
+        APP.cohort_comparison_page.wait_for_survival_plot_loading_spinner_to_detatch_cohort_comparison()
+    except:
+        APP.shared.wait_for_loading_spinner_to_detatch()
+        APP.cohort_comparison_page.wait_for_survival_plot_loading_spinner_to_detatch_cohort_comparison()
 
 @step("Verify analysis cards are visible or not visible as expected on Cohort Comparison <table>")
 def is_analysis_card_visible_or_not_visible_as_expected(table):

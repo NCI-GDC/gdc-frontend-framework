@@ -138,7 +138,7 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
   |analysis-survival      |overall survival analysis        |2              |CC_Overall_Survival_2 Count          |
   |Ethnicity              |not hispanic or latino           |1              |CC_Ethnicity_not_hispanic_1 Count    |
   |Vital Status           |dead                             |2              |CC_Vital_Status_Dead_2 Count         |
-  |Gender                 |missing                          |2              |CC_Gender_Missing_2 Count                |
+  |Gender                 |missing                          |2              |CC_Gender_Missing_2 Count            |
 * Save cohorts from an analysis card on Cohort Comparison
   |analysis_card          |Filter Row                       |Cohort Number  |Cohort Name                    |
   |-----------------------|---------------------------------|---------------|-------------------------------|
