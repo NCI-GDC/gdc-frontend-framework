@@ -457,7 +457,9 @@ const CohortManager: React.FC = () => {
                 clearable={false}
                 value={cohortId}
                 onChange={(x) => {
-                  coreDispatch(setActiveCohort(x));
+                  if (x !== null) {
+                    coreDispatch(setActiveCohort(x));
+                  }
                 }}
                 renderOption={CustomCohortSelectItem}
                 classNames={{
