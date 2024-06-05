@@ -78,10 +78,14 @@ export const MultipleImageViewer = ({
 
   useDeepCompareEffect(() => {
     if (data?.edges) {
-      setTotalData({ ...totalData, ...data.edges });
+      if (showMorePressed) {
+        setTotalData({ ...totalData, ...data.edges });
+      } else {
+        setTotalData({ ...data.edges });
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.edges]);
+  }, [showMorePressed, data?.edges]);
 
   useDeepCompareEffect(() => {
     if (!isFetching && Object.keys(totalData).length > 0) {
@@ -105,6 +109,7 @@ export const MultipleImageViewer = ({
 
   const removeFilters = (filter: string) => {
     setSearchValues(searchValues.filter((value) => value !== filter));
+    setShowMorePressed(false);
     resetStates();
   };
 
