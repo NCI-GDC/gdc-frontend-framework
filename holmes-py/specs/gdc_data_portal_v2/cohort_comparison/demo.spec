@@ -65,7 +65,7 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
   |Ethnicity              |missing                          |1              |CC_Ethnicity_Missing_1 Count         |
   |Ethnicity              |not hispanic or latino           |2              |CC_Ethnicity_Not_Hispanic_2 Count    |
   |Ethnicity              |hispanic or latino               |2              |CC_Ethnicity_Hispanic_2 Count        |
-  |Ethnicity              |not reported                     |2              |CC_Ethnicity_Not_Reported_2 Count
+  |Ethnicity              |not reported                     |2              |CC_Ethnicity_Not_Reported_2 Count    |
   |Ethnicity              |missing                          |2              |CC_Ethnicity_Missing_2 Count         |
 
 * Download "Ethnicity" from "Cohort Comparison"
