@@ -175,6 +175,14 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
           classNames: {
             item: "text-base-min disabled:opacity-50 data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest",
           },
+          withinPortal: false,
+        },
+      },
+      Select: {
+        defaultProps: {
+          comboboxProps: {
+            withinPortal: false,
+          },
         },
       },
       Modal: Modal.extend({
