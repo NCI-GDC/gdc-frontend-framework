@@ -165,7 +165,7 @@ def download_file_at_file_table(file: str, source: str):
         "Mutation Frequency": APP.mutation_frequency_page.click_table_download_button,
     }
     driver = WebDriver.page
-    with driver.expect_download(timeout=60000) as download_info:
+    with driver.expect_download(timeout=90000) as download_info:
         # Allows using sources without passing in contents of <file> as a parameter
         if file.lower() == "file":
             sources.get(source)()

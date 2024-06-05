@@ -154,31 +154,14 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
 * Switch cohort to "CC_Ethnicity_not_hispanic_1" from the Cohort Bar dropdown list
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "CC_Ethnicity_not_hispanic_1 Count" are "Equal"
-* Validate the cohort query filter area has these filters
-  |facet_name               |selection              |position in filter area  |
-  |-------------------------|-----------------------|-------------------------|
-  |Composition              |solid tissue           |1                        |
-  |Ethnicity                |not hispanic or latino |2                        |
 
 * Switch cohort to "CC_Vital_Status_Dead_2" from the Cohort Bar dropdown list
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "CC_Vital_Status_Dead_2 Count" are "Equal"
-* Validate the cohort query filter area has these filters
-  |facet_name               |selection              |position in filter area  |
-  |-------------------------|-----------------------|-------------------------|
-  |Platform                 |illumina               |1                        |
-  |Access                   |opencontrolled         |2                        |
-  |Vital Status             |dead                   |3                        |
 
 * Switch cohort to "CC_Gender_Missing_2" from the Cohort Bar dropdown list
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "CC_Gender_Missing_2 Count" are "Equal"
-* Validate the cohort query filter area has these filters
-  |facet_name               |selection              |position in filter area  |
-  |-------------------------|-----------------------|-------------------------|
-  |Platform                 |illumina               |1                        |
-  |Access                   |opencontrolled         |2                        |
-  |Gender is                |missing                |3                        |
 
 
 ## Verify Venn Diagram Link

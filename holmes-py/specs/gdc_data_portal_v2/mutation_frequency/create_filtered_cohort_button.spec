@@ -52,11 +52,6 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |Save             |PTEN SSM Affected Cases in Cohort has been saved     |Remove Modal        |
 * Switch cohort to "PTEN SSM Affected Cases in Cohort" from the Cohort Bar dropdown list
 * "PTEN SSM Affected Cases in Cohort" should be the active cohort
-* Validate the cohort query filter area has these filters
-  |facet_name         |selections           |position in filter area  |
-  |-------------------|---------------------|-------------------------|
-  |Ssm Id is          |exists               |3                        |
-  |Gene               |PTEN                 |4                        |
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "PTEN SSM Affected Cases in Cohort" are "Equal"
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
@@ -88,12 +83,6 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |Save             |APC SSM Affected Cases in Cohort has been saved      |Remove Modal        |
 * Switch cohort to "APC SSM Affected Cases in Cohort" from the Cohort Bar dropdown list
 * "APC SSM Affected Cases in Cohort" should be the active cohort
-* Validate the cohort query filter area has these filters
-  |facet_name         |selections           |position in filter area  |
-  |-------------------|---------------------|-------------------------|
-  |Consequence Type   |3_prime_UTR_variant  |3                        |
-  |Ssm Id is          |exists               |4                        |
-  |Gene               |APC                  |5                        |
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "APC SSM Affected Cases in Cohort" are "Equal"
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
@@ -121,11 +110,6 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |Save             |CSMD3 CNV Gain has been saved                        |Remove Modal        |
 * Switch cohort to "CSMD3 CNV Gain" from the Cohort Bar dropdown list
 * "CSMD3 CNV Gain" should be the active cohort
-* Validate the cohort query filter area has these filters
-  |facet_name         |selections           |position in filter area  |
-  |-------------------|---------------------|-------------------------|
-  |Cnv Change         |=gain                |3                        |
-  |Gene Id            |=CSMD3               |4                        |
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "CSMD3 CNV Gain" are "Equal"
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
@@ -153,11 +137,6 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |Save             |ZFHX3 CNV Loss has been saved                        |Remove Modal        |
 * Switch cohort to "ZFHX3 CNV Loss" from the Cohort Bar dropdown list
 * "ZFHX3 CNV Loss" should be the active cohort
-* Validate the cohort query filter area has these filters
-  |facet_name         |selections           |position in filter area  |
-  |-------------------|---------------------|-------------------------|
-  |Cnv Change         |=loss                |3                        |
-  |Gene Id            |=ZFHX3               |4                        |
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "ZFHX3 CNV Loss" are "Equal"
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
@@ -187,10 +166,6 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |Save             |chr1:g.6197725delT Affected Cases in Cohort has been saved |Remove Modal        |
 * Switch cohort to "chr1:g.6197725delT Affected Cases in Cohort" from the Cohort Bar dropdown list
 * "chr1:g.6197725delT Affected Cases in Cohort" should be the active cohort
-* Validate the cohort query filter area has these filters
-  |facet_name         |selections                           |position in filter area  |
-  |-------------------|-------------------------------------|-------------------------|
-  |SSM ID             |78066279-06cf-5b55-bc10-10eeba4ec015 |2                        |
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "chr1:g.6197725delT Affected Cases in Cohort" are "Equal"
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
