@@ -81,7 +81,7 @@ describe("test facet dictionary api functions", () => {
         field: "demographic.age_at_index",
         full: "cases.demographic.age_at_index",
         type: "long",
-        facet_type: "age",
+        facet_type: "age_in_years",
         range: {
           minimum: 0,
           maximum: 32507,
