@@ -91,6 +91,7 @@ function ColumnOrdering<TData>({
       middlewares={{ shift: false, flip: false }}
       onChange={setShowColumnMenu}
       offset={0}
+      zIndex={400}
     >
       <Tooltip label="Customize Columns" disabled={showColumnMenu}>
         <Menu.Target>
