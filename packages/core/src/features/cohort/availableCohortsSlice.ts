@@ -589,8 +589,9 @@ export const selectCohortMessage = (state: CoreState): string[] | undefined =>
 
 /**
  * Returns the current cohort login status
- * This status is used to determine if a fresh API call should be triggered
- * when the user logs in or out to avoid using cached data.
+ * The case composition of a cohort can be different based on the
+ * login status of the user. The login status is attached to the cohort
+ * so that the portal and applications are updated are when the login state changes.
  * @param state - the CoreState
  * @hidden
  */
