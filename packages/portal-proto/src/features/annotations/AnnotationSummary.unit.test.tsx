@@ -176,7 +176,7 @@ describe("<AnnotationSummary />", () => {
     const { getByRole } = render(<AnnotationSummary annotationId="2" />);
 
     expect(
-      within(getByRole("row", { name: "Case UUID 456" })).queryByRole("link"),
+      within(getByRole("row", { name: "Case UUID 456" })).getByRole("link"),
     ).toHaveAttribute("href", "/cases/456");
   });
 });
