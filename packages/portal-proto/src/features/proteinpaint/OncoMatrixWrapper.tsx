@@ -11,11 +11,8 @@ import {
   useFetchUserDetailsQuery,
   useCoreDispatch,
   useCreateCaseSetFromValuesMutation,
+  useGetGenesQuery,
 } from "@gff/core";
-import {
-  useUpdateGenomicEnumFacetFilter,
-  useGenomicFacetFilter,
-} from "@/features/genomic/hooks";
 import { isEqual } from "lodash";
 import { DemoText } from "@/components/tailwindComponents";
 import { LoadingOverlay } from "@mantine/core";
@@ -59,6 +56,7 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
   const [createSet, response] = useCreateCaseSetFromValuesMutation();
   const [newCohortFilters, setNewCohortFilters] =
     useState<FilterSet>(undefined);
+  const [customGeneSetParam, setCustomGeneSetParam] = useState(null);
 
   const callback = useCallback<SelectSamplesCallback>(
     (arg: SelectSamplesCallBackArg) => {
@@ -100,6 +98,26 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
     }
   }, [response.isSuccess, coreDispatch, response.data]);
 
+  const { data: geneDetailData, isFetching: isGeneFetching } = useGetGenesQuery(
+    {
+      request: {
+        filters: {
+          op: "in",
+          content: {
+            field: "genes.gene_id",
+            value: customGeneSetParam,
+          },
+        },
+        fields: ["gene_id", "symbol"],
+        size: 1000,
+        //from: currentPage * PAGE_SIZE,
+        //sortBy,
+      },
+      fetchAll: false,
+    },
+    { skip: !customGeneSetParam },
+  );
+  console.log(130, geneDetailData);
   const showLoadingOverlay = () => setIsLoading(true);
   const hideLoadingOverlay = () => setIsLoading(false);
   const matrixCallbacks: RxComponentCallbacks = {
@@ -118,12 +136,14 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
 
   useDeepCompareEffect(
     () => {
-      const rootElem = divRef.current as HTMLElement;
       // debounce until one of these is true
       // otherwise, the userDetails.isFetching changing from false > true > false
       // could trigger unnecessary, wastefule PP-app state update
       if (userDetails?.isSuccess === false && userDetails?.isError === false)
         return;
+      if (isGeneFetching) return;
+
+      const rootElem = divRef.current as HTMLElement;
       const data = { filter0, userData: userDetails?.data };
       // TODO: ignore the cohort filter changes in demo mode, or combine with demo filter ???
       // data.filter0 = defaultFilter
@@ -199,7 +219,12 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
   );
 
   const divRef = useRef();
-  const updateFilters = useUpdateGenomicEnumFacetFilter();
+
+  const updateFilters = (field: string, operation: Operation) => {
+    setShowGeneSetModal(false);
+    setCustomGeneSetParam(operation.operands[0]);
+  };
+  const existingFiltersHook = () => null;
   return (
     <div className="relative">
       {isDemoMode && <DemoText>Demo showing cases with Gliomas.</DemoText>}
@@ -222,7 +247,7 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
         inputInstructions="Enter one or more gene identifiers in the field below or upload a file to create a gene set."
         selectSetInstructions="Select one or more sets below to use as an OncoMatrix gene set."
         updateFilters={updateFilters}
-        existingFiltersHook={useGenomicFacetFilter}
+        existingFiltersHook={existingFiltersHook}
       />
 
       <LoadingOverlay
@@ -272,7 +297,6 @@ function getMatrixTrack(
   genesetCallback?: (arg: string[]) => null,
 ) {
   const defaultFilter = null;
-
   const arg: MatrixArg = {
     // host in gdc is just a relative url path,
     // using the same domain as the GDC portal where PP is embedded
