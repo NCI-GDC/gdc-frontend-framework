@@ -171,6 +171,7 @@ export const SetOperationTable = ({
       sorting={operationTableSorting}
       setSorting={setOperationTableSorting}
       columnSorting="enable"
+      customAriaLabel="Overlap Table"
       footer={
         <tr>
           <td className="p-2 font-bold">Union of selected sets:</td>

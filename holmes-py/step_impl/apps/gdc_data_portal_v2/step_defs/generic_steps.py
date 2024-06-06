@@ -778,17 +778,13 @@ def global_quick_search(text: str):
     APP.shared.global_quick_search(text)
 
 
-@step(
-    "Validate the quick search bar result in position <result_in_list> of the result list has the category <category>"
-)
-def validate_global_quick_search_result_category(
-    result_in_list: str, category: str
-):
+@step("Validate the quick search bar result in position <result_in_list> of the result list has the text <text>")
+def validate_global_quick_search_result_text(result_in_list: str, text: str):
     """
-    Specifies a result from the quick search bar result list. Validates the result category is the one we expect.
+    Specifies a result from the quick search bar result list. Validates expected text is present.
     """
-    APP.shared.validate_global_quick_search_result_category(
-        result_in_list, category
+    APP.shared.validate_global_quick_search_result_text(
+        result_in_list, text
     )
 
 

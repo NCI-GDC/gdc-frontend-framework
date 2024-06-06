@@ -72,7 +72,21 @@ const CohortCard: React.FC<CohortCardProps> = ({
         </div>
       </div>
       <hr />
-      <div className="mt-2 flex justify-center">
+      {!casesFetching && caseSetIds.length !== 0 ? (
+        <CohortVennDiagram caseSetIds={caseSetIds} cohorts={cohorts} />
+      ) : (
+        <VennDiagram
+          chartData={[
+            { key: "S1_minus_S2", value: 0, highlighted: false },
+            { key: "S2_minus_S1", value: 0, highlighted: false },
+            { key: "S1_intersect_S2", value: 0, highlighted: false },
+          ]}
+          labels={["S₁", "S₂"]}
+          ariaLabel="The Venn diagram displays the number of cases shared between the cohorts."
+          interactable={false}
+        />
+      )}
+      <div className="-mt-8 mb-2 z-10 flex justify-center relative">
         <Link
           href={{
             pathname: "/analysis_page",
@@ -85,25 +99,13 @@ const CohortCard: React.FC<CohortCardProps> = ({
           }}
           data-testid="link-open-venn-diagram"
           className="underline text-primary font-bold"
+          aria-label="View Venn diagram in Set Operations. Note: you will be directed to the Set Operations tool. Close the tool to return to the Analysis Center if you wish to use Cohort Comparison."
         >
-          Open Venn diagram
+          View Venn diagram in Set Operations
         </Link>
       </div>
-
-      {!casesFetching && caseSetIds.length !== 0 ? (
-        <CohortVennDiagram caseSetIds={caseSetIds} cohorts={cohorts} />
-      ) : (
-        <VennDiagram
-          chartData={[
-            { key: "S1_minus_S2", value: 0, highlighted: false },
-            { key: "S2_minus_S1", value: 0, highlighted: false },
-            { key: "S1_intersect_S2", value: 0, highlighted: false },
-          ]}
-          labels={["S<sub>1</sub>", "S<sub>2</sub>"]}
-          interactable={false}
-        />
-      )}
       <hr />
+
       {Object.entries(options).map(([value, field]) => (
         <div key={value}>
           <input

@@ -44,6 +44,7 @@ describe("calculatePercentageAsString", () => {
 
 describe("ageDisplay", () => {
   it("should return correct years, day format for non leap year", () => {
+    expect(ageDisplay(0)).toEqual("0 days");
     expect(ageDisplay(12345)).toEqual("33 years 292 days");
     expect(ageDisplay(12345, true)).toEqual("33 years");
   });

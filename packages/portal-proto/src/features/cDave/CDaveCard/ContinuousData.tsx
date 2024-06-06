@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useRef, useState } from "react";
 import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
 import {
   useGetContinuousDataStatsQuery,
@@ -100,6 +100,7 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
   );
   const [selectedFacets, setSelectedFacets] = useState<SelectedFacet[]>([]);
   const [yTotal, setYTotal] = useState(0);
+  const dataDimensionRef = useRef(dataDimension);
 
   const ranges = useDeepCompareMemo(
     () =>
@@ -138,7 +139,7 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
     },
   });
 
-  const displayedData = useMemo(
+  const displayedData = useDeepCompareMemo(
     () =>
       processContinuousResultData(
         isSuccess ? data : {},
@@ -150,7 +151,9 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
   );
 
   useDeepCompareEffect(() => {
-    selectedSurvivalPlots.length === 0 &&
+    if (dataDimensionRef.current !== dataDimension) {
+      dataDimensionRef.current = dataDimension;
+    } else {
       setSelectedSurvivalPlots(
         displayedData
           .filter(
@@ -161,13 +164,14 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
           .map(({ key }) => key)
           .slice(0, 2),
       );
+    }
 
     if (customBinnedData === null) {
       setYTotal(displayedData.reduce((a, b) => a + b.count, 0));
     }
 
     setSelectedFacets([]);
-  }, [displayedData, customBinnedData]);
+  }, [dataDimension, displayedData, customBinnedData]);
 
   return (
     <>

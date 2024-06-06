@@ -45,21 +45,22 @@ const CohortVennDiagram: React.FC<CohortVennDiagramProps> = ({
       chartData={[
         {
           key: "S1_minus_S2",
-          value: data?.set1?.hits?.total.toLocaleString() || 0,
+          value: data?.set1?.hits?.total || 0,
           highlighted: false,
         },
         {
           key: "S2_minus_S1",
-          value: data?.set2?.hits?.total.toLocaleString() || 0,
+          value: data?.set2?.hits?.total || 0,
           highlighted: false,
         },
         {
           key: "S1_intersect_S2",
-          value: data?.intersection?.hits?.total.toLocaleString() || 0,
+          value: data?.intersection?.hits?.total || 0,
           highlighted: false,
         },
       ]}
-      labels={["S<sub>1</sub>", "S<sub>2</sub>"]}
+      labels={["S₁", "S₂"]}
+      ariaLabel="The Venn diagram displays the number of cases shared between the cohorts."
       interactable={false}
     />
   );

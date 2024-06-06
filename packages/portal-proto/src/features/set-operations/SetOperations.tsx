@@ -46,7 +46,8 @@ export const SetOperations: React.FC<SetOperationsProps> = ({
       </div>
       <div className="flex flex-row pt-2">
         <VennDiagram
-          labels={["S<sub>1</sub>", "S<sub>2</sub>", "S<sub>3</sub>"]}
+          labels={["S₁", "S₂", "S₃"]}
+          ariaLabel="The Venn diagram displays the intersections, unions, or differences in the cohorts or sets. Additional information can be found in the Summary Table and the Overlap Table."
           chartData={chartData}
           onClickHandler={onClickHandler}
         />

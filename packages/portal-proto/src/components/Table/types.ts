@@ -251,6 +251,7 @@ export interface TableProps<TData> {
   baseZIndex?: number;
 
   customDataTestID?: string;
+  customAriaLabel?: string;
 }
 
 export interface HandleChangeInput {

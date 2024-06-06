@@ -6,7 +6,6 @@ export interface EChartWrapperProps {
   readonly chartRef?: React.MutableRefObject<HTMLElement>;
   readonly height: number;
   readonly width: number;
-  readonly label: string;
 }
 
 const EChartWrapper: React.FC<EChartWrapperProps> = ({
@@ -14,7 +13,6 @@ const EChartWrapper: React.FC<EChartWrapperProps> = ({
   chartRef,
   height,
   width,
-  label,
 }: EChartWrapperProps) => {
   const ref = useRef<HTMLElement>(null);
   const wrapperRef = chartRef ?? ref;
@@ -46,7 +44,6 @@ const EChartWrapper: React.FC<EChartWrapperProps> = ({
       ref={wrapperRef ? (r) => (wrapperRef.current = r) : undefined}
       style={{ height, width }}
       role="img"
-      aria-label={label}
     />
   );
 };
