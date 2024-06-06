@@ -133,6 +133,7 @@ const buildDayYearRangeBucket = (
   x: number,
   units: string,
   minimum: number,
+  queryInYears: boolean = false,
 ): RangeBucketElement => {
   const from = minimum + x * 10; // in years
   const to = minimum + (x + 1) * 10;
@@ -141,11 +142,11 @@ const buildDayYearRangeBucket = (
   const fromLabel = (units === "years" ? from : fromDays).toFixed(0);
   const toLabel = (units === "years" ? to : toDays).toFixed(0);
   return {
-    from: fromDays,
-    to: toDays,
-    key: `${fromDays.toFixed(RANGE_DECIMAL_PRECISION)}-${toDays.toFixed(
+    from: queryInYears ? from : fromDays,
+    to: queryInYears ? to : toDays,
+    key: `${(queryInYears ? from : fromDays).toFixed(
       RANGE_DECIMAL_PRECISION,
-    )}`,
+    )}-${(queryInYears ? to : toDays).toFixed(RANGE_DECIMAL_PRECISION)}`,
     label: `\u2265 ${fromLabel} to < ${toLabel} ${units}`,
   };
 };
@@ -161,14 +162,15 @@ const build10UnitRange = (
   x: number,
   units: string,
   minimum: number,
-  fractionDigits = RANGE_DECIMAL_PRECISION,
 ): RangeBucketElement => {
   const from = minimum + x * 10;
   const to = minimum + (x + 1) * 10;
   return {
     from: from,
     to: to,
-    key: `${from.toFixed(fractionDigits)}-${to.toFixed(fractionDigits)}`,
+    key: `${from.toFixed(RANGE_DECIMAL_PRECISION)}-${to.toFixed(
+      RANGE_DECIMAL_PRECISION,
+    )}`,
     label: `\u2265 ${from} to < ${to} ${units}`,
   };
 };
@@ -184,16 +186,18 @@ const buildRanges = (
   numBuckets: number,
   units: string,
   minimum,
+  queryInYears: boolean,
   rangeFunction: (
     index: number,
     units: string,
     startValue: number,
+    conversion: boolean,
   ) => RangeBucketElement,
 ): Record<string, RangeBucketElement> => {
   // build the range for the useRangeFacet call
   return [...Array(numBuckets)]
     .map((_x, i) => {
-      return rangeFunction(i, units, minimum);
+      return rangeFunction(i, units, minimum, queryInYears);
     })
     .reduce((r, x) => {
       r[x.key] = x;
@@ -205,11 +209,13 @@ const buildRanges = (
  * @param numBuckets - number of buckets to create
  * @param units - units such as days or percent
  * @param minimum - start value of range
+ * @param conversion - if this is a conversion of a year value to days
  */
 export const buildRangeBuckets = (
   numBuckets: number,
   units: string,
   minimum: number,
+  queryInYears: boolean,
 ): [Record<string, RangeBucketElement>, ReadonlyArray<NumericFromTo>] => {
   const RangeBuilder = {
     days: {
@@ -238,6 +244,7 @@ export const buildRangeBuckets = (
     numBuckets,
     RangeBuilder[units].label,
     RangeBuilder[units].startRange,
+    queryInYears,
     RangeBuilder[units].builder,
   );
   // build ranges for continuous range query

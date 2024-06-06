@@ -295,7 +295,7 @@ describe("Build Bucket Range Test", () => {
       },
     ];
 
-    const [bucketRanges, ranges] = buildRangeBuckets(10, "days", 0);
+    const [bucketRanges, ranges] = buildRangeBuckets(10, "days", 0, false);
     expect(bucketRanges).toEqual(expectedBucketRanges);
     expect(ranges).toEqual(expectedRanges);
   });
@@ -485,10 +485,121 @@ describe("Build Bucket Range Test", () => {
         to: 32873,
       },
     ];
-    const [bucketRanges, ranges] = buildRangeBuckets(18, "days", -32873);
+    const [bucketRanges, ranges] = buildRangeBuckets(18, "days", -32873, false);
     expect(bucketRanges).toEqual(expectedBucketRanges);
     expect(ranges).toEqual(expectedRanges);
   });
+});
+
+test("test to build range and query in years", () => {
+  const expectedBucketRanges = {
+    "0.0-10.0": {
+      from: 0,
+      key: "0.0-10.0",
+      label: "≥ 0 to < 10 years",
+      to: 10,
+    },
+    "10.0-20.0": {
+      from: 10,
+      key: "10.0-20.0",
+      label: "≥ 10 to < 20 years",
+      to: 20,
+    },
+    "20.0-30.0": {
+      from: 20,
+      key: "20.0-30.0",
+      label: "≥ 20 to < 30 years",
+      to: 30,
+    },
+    "30.0-40.0": {
+      from: 30,
+      key: "30.0-40.0",
+      label: "≥ 30 to < 40 years",
+      to: 40,
+    },
+    "40.0-50.0": {
+      from: 40,
+      key: "40.0-50.0",
+      label: "≥ 40 to < 50 years",
+      to: 50,
+    },
+    "50.0-60.0": {
+      from: 50,
+      key: "50.0-60.0",
+      label: "≥ 50 to < 60 years",
+      to: 60,
+    },
+    "60.0-70.0": {
+      from: 60,
+      key: "60.0-70.0",
+      label: "≥ 60 to < 70 years",
+      to: 70,
+    },
+    "70.0-80.0": {
+      from: 70,
+      key: "70.0-80.0",
+      label: "≥ 70 to < 80 years",
+      to: 80,
+    },
+    "80.0-90.0": {
+      from: 80,
+      key: "80.0-90.0",
+      label: "≥ 80 to < 90 years",
+      to: 90,
+    },
+    "90.0-100.0": {
+      from: 90,
+      key: "90.0-100.0",
+      label: "≥ 90 to < 100 years",
+      to: 100,
+    },
+  };
+
+  const expectedRanges = [
+    {
+      from: 0,
+      to: 10,
+    },
+    {
+      from: 10,
+      to: 20,
+    },
+    {
+      from: 20,
+      to: 30,
+    },
+    {
+      from: 30,
+      to: 40,
+    },
+    {
+      from: 40,
+      to: 50,
+    },
+    {
+      from: 50,
+      to: 60,
+    },
+    {
+      from: 60,
+      to: 70,
+    },
+    {
+      from: 70,
+      to: 80,
+    },
+    {
+      from: 80,
+      to: 90,
+    },
+    {
+      from: 90,
+      to: 100,
+    },
+  ];
+  const [bucketRanges, ranges] = buildRangeBuckets(10, "years", 0, true);
+  expect(bucketRanges).toEqual(expectedBucketRanges);
+  expect(ranges).toEqual(expectedRanges);
 });
 
 describe("test years to days conversion", () => {

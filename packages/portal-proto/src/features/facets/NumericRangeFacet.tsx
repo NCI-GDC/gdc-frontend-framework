@@ -59,6 +59,7 @@ interface NumericFacetData
     "field" | "minimum" | "maximum" | "valueLabel" | "hooks" | "clearValues"
   > {
   isFacetView?: boolean;
+  rangeDatatype?: string;
 }
 
 const RadioStyle =
@@ -443,7 +444,7 @@ const BuildRangeLabelsAndValues = (
       key: x,
       value: rangeData ? rangeData[x] : undefined,
       valueLabel: rangeData
-        ? `${rangeData[x].toLocaleString()} (${(
+        ? `${rangeData[x]?.toLocaleString()} (${(
             ((rangeData[x] as number) / totalCount) *
             100
           ).toFixed(2)}%)`
@@ -455,6 +456,7 @@ const BuildRangeLabelsAndValues = (
 
 interface RangeInputWithPrefixedRangesProps {
   readonly field: string;
+  readonly rangeDatatype?: string;
   readonly hooks: RangeFacetHooks;
   readonly numBuckets: number;
   readonly minimum: number;
@@ -477,6 +479,7 @@ const RangeInputWithPrefixedRanges: React.FC<
   minimum,
   maximum,
   valueLabel,
+  rangeDatatype,
   showZero = false,
   clearValues = undefined,
   isFacetView = true,
@@ -496,10 +499,11 @@ const RangeInputWithPrefixedRanges: React.FC<
     return [values, key];
   }, [filter]);
 
+  const queryInYears = rangeDatatype === "age_in_years";
   // build the range for the useRangeFacet and the facet query
   const [bucketRanges, ranges] = useMemo(() => {
-    return buildRangeBuckets(numBuckets, units, minimum);
-  }, [minimum, numBuckets, units]);
+    return buildRangeBuckets(numBuckets, units, minimum, queryInYears);
+  }, [minimum, numBuckets, units, queryInYears]);
 
   const [isCustom, setIsCustom] = useState(filterKey === "custom"); // in custom Range Mode
   const [selectedRange, setSelectedRange] = useState(filterKey); // the current selected range
@@ -663,6 +667,7 @@ const RangeInputWithPrefixedRanges: React.FC<
 
 const DaysOrYears: React.FC<NumericFacetData> = ({
   field,
+  rangeDatatype,
   hooks,
   valueLabel,
   clearValues,
@@ -693,6 +698,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
 
       <RangeInputWithPrefixedRanges
         units={units}
+        rangeDatatype={rangeDatatype}
         hooks={{ ...hooks }}
         minimum={rangeMinimum}
         maximum={rangeMaximum}
@@ -925,6 +931,19 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
               <DaysOrYears
                 valueLabel={valueLabel}
                 field={field}
+                rangeDatatype={rangeDatatype}
+                hooks={{ ...hooks }}
+                minimum={minimum}
+                maximum={maximum}
+                clearValues={clearValues}
+                isFacetView={isFacetView}
+              />
+            ),
+            age_in_years: (
+              <DaysOrYears
+                valueLabel={valueLabel}
+                field={field}
+                rangeDatatype={rangeDatatype}
                 hooks={{ ...hooks }}
                 minimum={minimum}
                 maximum={maximum}
@@ -958,6 +977,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
               <DaysOrYears
                 valueLabel={valueLabel}
                 field={field}
+                rangeDatatype={rangeDatatype}
                 hooks={{ ...hooks }}
                 minimum={minimum}
                 maximum={maximum}

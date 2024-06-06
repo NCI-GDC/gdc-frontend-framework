@@ -97,9 +97,15 @@ export const createFacetCard = (
       />
     );
   if (
-    ["year", "years", "age", "days", "percent", "range"].includes(
-      facet.facet_type,
-    )
+    [
+      "year",
+      "years",
+      "age",
+      "age_in_years",
+      "days",
+      "percent",
+      "range",
+    ].includes(facet.facet_type)
   ) {
     return (
       <NumericRangeFacet

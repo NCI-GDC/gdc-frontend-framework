@@ -43,6 +43,7 @@ export type FacetTypes =
   | "exact"
   | "range"
   | "age"
+  | "age_in_years"
   | "year"
   | "years"
   | "days"
