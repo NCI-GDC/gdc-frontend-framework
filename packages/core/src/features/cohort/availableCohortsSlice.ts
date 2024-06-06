@@ -83,7 +83,7 @@ export interface CurrentCohortState {
 const emptyInitialState = cohortsAdapter.getInitialState<CurrentCohortState>({
   currentCohort: undefined,
   message: undefined, // message is used to inform frontend components of changes to the cohort.
-  isLoggedIn: undefined,
+  isLoggedIn: undefined, // isLoggedIn is used to trigger an api call to fetch fresh data when user logs in or out of the app
 });
 
 interface UpdateFilterParams {
@@ -589,6 +589,8 @@ export const selectCohortMessage = (state: CoreState): string[] | undefined =>
 
 /**
  * Returns the current cohort login status
+ * This status is used to determine if a fresh API call should be triggered
+ * when the user logs in or out to avoid using cached data.
  * @param state - the CoreState
  * @hidden
  */
@@ -689,6 +691,8 @@ export const selectCohortNameById = (
 
 /**
  * Returns the cohort's filters given an id
+ * This includes the `isLoggedIn` state to ensure fresh data is fetched
+ * when the user logs in or out to avoid the use of cached data.
  * @param state - the CoreState
  * @param cohortId - the cohort id
  * @category Cohort
@@ -725,6 +729,8 @@ export const selectCurrentCohortGqlFilters = (
 /**
  * Public selector of the current Cohort Filters.
  * Returns the current cohort filters as a FilterSet
+ * This includes the `isLoggedIn` state to ensure fresh data is fetched
+ * when the user logs in or out to avoid the use of cached data.
  * @param state - the CoreState
  * @category Cohort
  * @category Selectors
