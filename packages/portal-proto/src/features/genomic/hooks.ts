@@ -372,7 +372,7 @@ export const useTopGeneSsms = ({
   const [getTopSSM, { data: topSSM, isSuccess: topSSMSuccess }] =
     useGetSsmTableDataMutation();
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     const { geneId = "", geneSymbol = "" } = searchTermsForGene;
     if (searchTermsForGene && appMode === "ssms") {
       getTopSSM({
