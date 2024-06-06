@@ -198,14 +198,22 @@ const AnnnotationTable: React.FC = () => {
       annotationsTableColumnHelper.accessor("case_submitter_id", {
         id: "case_submitter_id",
         header: "Case ID",
-        cell: ({ getValue, row }) => (
-          <Link
-            href={`cases/${row.original.case_id}`}
-            className="text-utility-link underline font-content"
-          >
-            {getValue()}
-          </Link>
-        ),
+        cell: ({ getValue, row }) =>
+          getValue() ? (
+            row.original.classification === "Redaction" &&
+            row.original.entity_type === "case" ? (
+              getValue()
+            ) : (
+              <Link
+                href={`/cases/${row.original.case_id}`}
+                className="text-utility-link underline font-content"
+              >
+                {getValue()}
+              </Link>
+            )
+          ) : (
+            "--"
+          ),
       }),
       annotationsTableColumnHelper.accessor("program_name", {
         id: "program_name",

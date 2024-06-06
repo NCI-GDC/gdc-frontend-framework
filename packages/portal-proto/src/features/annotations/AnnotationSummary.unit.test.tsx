@@ -83,4 +83,100 @@ describe("<AnnotationSummary />", () => {
 
     expect(getByText("Annotation Not Found")).toBeInTheDocument();
   });
+
+  test("Case UUID link should not be present for entity_type case and classification Redaction", () => {
+    jest.spyOn(core, "useGetAnnotationsQuery").mockReturnValue({
+      data: {
+        hits: [
+          {
+            entity_type: "case",
+            entity_id: "45",
+            case_id: "456",
+            classification: "Redaction",
+          },
+        ],
+      },
+      pagination: { total: 2 },
+    } as any);
+    jest.spyOn(core, "useQuickSearchQuery").mockReturnValue({
+      data: { searchList: [{ id: btoa("Case:111") }] },
+    } as any);
+    const { getByRole } = render(<AnnotationSummary annotationId="2" />);
+
+    expect(
+      within(getByRole("row", { name: "Case UUID 456" })).queryByRole("link"),
+    ).toBeNull();
+  });
+
+  test("Case UUID link should be present for entity_type case and classification other than Redaction", () => {
+    jest.spyOn(core, "useGetAnnotationsQuery").mockReturnValue({
+      data: {
+        hits: [
+          {
+            entity_type: "case",
+            entity_id: "45",
+            case_id: "456",
+            classification: "Notification",
+          },
+        ],
+      },
+      pagination: { total: 2 },
+    } as any);
+    jest.spyOn(core, "useQuickSearchQuery").mockReturnValue({
+      data: { searchList: [{ id: btoa("Case:111") }] },
+    } as any);
+    const { getByRole } = render(<AnnotationSummary annotationId="2" />);
+
+    expect(
+      within(getByRole("row", { name: "Case UUID 456" })).getByRole("link"),
+    ).toHaveAttribute("href", "/cases/456");
+  });
+
+  test("Case UUID link should be present for entity_type other than case and classification as Redaction", () => {
+    jest.spyOn(core, "useGetAnnotationsQuery").mockReturnValue({
+      data: {
+        hits: [
+          {
+            entity_type: "not_case",
+            entity_id: "45",
+            case_id: "456",
+            classification: "Redaction",
+          },
+        ],
+      },
+      pagination: { total: 2 },
+    } as any);
+    jest.spyOn(core, "useQuickSearchQuery").mockReturnValue({
+      data: { searchList: [{ id: btoa("Case:111") }] },
+    } as any);
+    const { getByRole } = render(<AnnotationSummary annotationId="2" />);
+
+    expect(
+      within(getByRole("row", { name: "Case UUID 456" })).getByRole("link"),
+    ).toHaveAttribute("href", "/cases/456");
+  });
+
+  test("Case UUID link should be present for entity_type other than case and classification other than Redaction", () => {
+    jest.spyOn(core, "useGetAnnotationsQuery").mockReturnValue({
+      data: {
+        hits: [
+          {
+            entity_type: "not_case",
+            entity_id: "45",
+            case_id: "456",
+            classification: "Notification",
+          },
+        ],
+      },
+      pagination: { total: 2 },
+    } as any);
+    jest.spyOn(core, "useQuickSearchQuery").mockReturnValue({
+      data: { searchList: [{ id: btoa("Case:111") }] },
+    } as any);
+    const { getByRole } = render(<AnnotationSummary annotationId="2" />);
+
+    expect(
+      within(getByRole("row", { name: "Case UUID 456" })).queryByRole("link"),
+    ).toHaveAttribute("href", "/cases/456");
+  });
 });

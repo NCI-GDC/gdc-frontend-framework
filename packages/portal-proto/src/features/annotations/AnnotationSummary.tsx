@@ -95,13 +95,18 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
         headerName: "Case UUID",
         values: [
           annotation?.case_id ? (
-            <Link
-              href={`/cases/${annotation?.case_id}`}
-              className="underline text-utility-link"
-              key={`case_link_${annotation?.case_id}`}
-            >
-              {annotation?.case_id}
-            </Link>
+            annotation.classification === "Redaction" &&
+            annotation.entity_type === "case" ? (
+              annotation.case_id
+            ) : (
+              <Link
+                href={`/cases/${annotation.case_id}`}
+                className="underline text-utility-link"
+                key={`case_link_${annotation.case_id}`}
+              >
+                {annotation.case_id}
+              </Link>
+            )
           ) : (
             "--"
           ),
