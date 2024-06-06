@@ -4,7 +4,7 @@ import {
   useCoreSelector,
   selectCurrentCohortName,
   FilterSet,
-  selectCurrentCohortFilterSet,
+  selectCurrentCohortFilters,
   Cohort,
   selectCohortFilterSetById,
   selectCurrentCohortId,
@@ -79,7 +79,7 @@ const CohortComparisonApp: React.FC = () => {
     selectCurrentCohortId(state),
   );
   const primaryCohortFilter = useCoreSelector((state) =>
-    selectCurrentCohortFilterSet(state),
+    selectCurrentCohortFilters(state),
   );
   /* Primary Cohort Details End */
 

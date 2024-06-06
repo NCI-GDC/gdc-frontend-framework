@@ -1,7 +1,7 @@
 import {
   FacetDefinition,
   FilterSet,
-  selectCurrentCohortFilterSet,
+  selectCurrentCohortFilters,
   useCoreSelector,
 } from "@gff/core";
 import { SummaryFacetInfo } from "./SummaryFacets";
@@ -20,7 +20,7 @@ export const getFacetInfo = (
 };
 
 export const useCohortFacetFilters = (): FilterSet => {
-  return useCoreSelector((state) => selectCurrentCohortFilterSet(state));
+  return useCoreSelector((state) => selectCurrentCohortFilters(state));
 };
 
 export const METADATA_FIELDS = [

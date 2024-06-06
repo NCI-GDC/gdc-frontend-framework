@@ -12,7 +12,6 @@ const nullFunction = () => null;
 
 jest.mock("@gff/core", () => ({
   useCoreSelector: jest.fn().mockReturnValue({}),
-  selectCurrentCohortFilterSet: jest.fn().mockReturnValue({}),
   buildCohortGqlOperator: jest.fn(() => filter),
   useAddCohortMutation: jest.fn(() => [() => null, { isSuccess: true }]),
   useFetchUserDetailsQuery: jest.fn(() => userDetails),

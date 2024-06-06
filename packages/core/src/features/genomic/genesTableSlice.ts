@@ -14,7 +14,7 @@ import {
   buildCohortGqlOperator,
   extractFiltersWithPrefixFromFilterSet,
   filterSetToOperation,
-  selectCurrentCohortFilterSet,
+  selectCurrentCohortFilters,
 } from "../cohort";
 import {
   convertFilterToGqlFilter,
@@ -464,5 +464,5 @@ export const selectGenesTableData = (
 export const useGenesTable = createUseFiltersCoreDataHook(
   fetchGenesTable,
   selectGenesTableData,
-  selectCurrentCohortFilterSet,
+  selectCurrentCohortFilters,
 );

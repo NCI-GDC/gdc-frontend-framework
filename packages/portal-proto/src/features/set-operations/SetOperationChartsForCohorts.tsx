@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import {
   useCoreSelector,
   useCreateCaseSetFromFiltersMutation,
@@ -16,6 +16,7 @@ import {
 } from "../apps/CohortComparisonApp";
 import { SetOperationsTwo } from "./SetOperationsTwo";
 import { SetOperationsThree } from "./SetOperationsThree";
+import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
 
 /**
  * This component handles the case when the user has selected cohorts for set operations.
@@ -43,7 +44,7 @@ const SetOperationChartsForCohorts = ({
   }, [selectedEntities, allCohorts]);
 
   // if the cohorts are not already case sets, create them
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     createSet0({
       filters: isCohortComparisonDemo
         ? buildCohortGqlOperator(cohortComparisonDemo1.filter)
@@ -65,8 +66,7 @@ const SetOperationChartsForCohorts = ({
         intent: "portal",
         set_type: "ephemeral",
       });
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [cohorts, createSet0, createSet1, createSet2, isCohortComparisonDemo]);
 
   //
   const loading =
@@ -78,7 +78,7 @@ const SetOperationChartsForCohorts = ({
       (createSet2Response.isUninitialized || createSet2Response.isLoading));
 
   // create the sets that will be used for the set operations
-  const selectedSets = useMemo(() => {
+  const selectedSets = useDeepCompareMemo(() => {
     return [
       {
         name: isCohortComparisonDemo

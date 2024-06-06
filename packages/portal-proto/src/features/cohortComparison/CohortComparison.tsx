@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { pickBy } from "lodash";
 import { LoadingOverlay } from "@mantine/core";
 import {
@@ -11,6 +11,7 @@ import CohortCard from "./CohortCard";
 import SurvivalCard from "./SurvivalCard";
 import FacetCard from "./FacetCard";
 import { DemoText } from "@/components/tailwindComponents";
+import { useDeepCompareEffect } from "use-deep-compare";
 
 export interface CohortComparisonType {
   primary_cohort: {
@@ -76,7 +77,7 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
 
   const counts = data?.caseCounts || [];
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     createPrimaryCaseSet({
       filters: buildCohortGqlOperator(cohorts.primary_cohort.filter) ?? {},
       intent: "portal",

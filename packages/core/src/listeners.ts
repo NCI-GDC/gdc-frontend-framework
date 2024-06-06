@@ -15,6 +15,7 @@ import {
   selectCurrentCohortId,
   removeCohort,
   selectCurrentCohort,
+  setIsLoggedIn,
 } from "./features/cohort/availableCohortsSlice";
 import { fetchCohortCaseCounts } from "./features/cohort/cohortCountsQuery";
 import { cohortApiSlice } from "./features/api/cohortApiSlice";
@@ -46,6 +47,16 @@ startCoreListening({
     // the current cohort will be different when the fetch is fulfilled
     currentCohortId &&
       listenerApi.dispatch(fetchCohortCaseCounts(currentCohortId));
+  },
+});
+startCoreListening({
+  matcher: isAnyOf(setIsLoggedIn),
+  effect: async (_, listenerApi) => {
+    const allCohorts = selectAvailableCohorts(listenerApi.getState());
+
+    allCohorts.forEach((cohort) => {
+      cohort.id && listenerApi.dispatch(fetchCohortCaseCounts(cohort.id));
+    });
   },
 });
 

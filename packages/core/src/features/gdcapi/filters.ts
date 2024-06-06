@@ -260,11 +260,13 @@ export interface GqlExcludeIfAny {
 export interface GqlIntersection {
   readonly op: "and";
   readonly content: ReadonlyArray<GqlOperation>;
+  readonly isLoggedIn?: boolean;
 }
 
 export interface GqlUnion {
   readonly op: "or";
   readonly content: ReadonlyArray<GqlOperation>;
+  readonly isLoggedIn?: boolean;
 }
 
 export interface NumericFromTo {

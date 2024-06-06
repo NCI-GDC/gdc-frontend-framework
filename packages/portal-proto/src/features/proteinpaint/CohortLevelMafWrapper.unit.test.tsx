@@ -5,7 +5,6 @@ let filter, runpparg, userDetails;
 
 jest.mock("@gff/core", () => ({
   useCoreSelector: jest.fn().mockReturnValue({}),
-  selectCurrentCohortFilterSet: jest.fn().mockReturnValue({}),
   buildCohortGqlOperator: jest.fn(() => filter),
   useFetchUserDetailsQuery: jest.fn(() => userDetails),
   PROTEINPAINT_API: "host:port/basepath",
