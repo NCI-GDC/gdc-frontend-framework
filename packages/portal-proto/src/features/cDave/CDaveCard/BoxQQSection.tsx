@@ -166,6 +166,8 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
       ["Maximum", formattedData.max].join("\t"),
       ["Mean", formattedData.mean].join("\t"),
       ["Median", formattedData.median].join("\t"),
+      ["Q1", formattedData.q1].join("\t"),
+      ["Q3", formattedData.q3].join("\t"),
       ["Standard Deviation", formattedData.std_dev].join("\t"),
       ["IQR", formattedData.iqr].join("\t"),
     ];
@@ -271,7 +273,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
         <div className="w-full h-72 basis-1/3" ref={boxPlotRef}>
           <BoxPlot
             data={formattedData}
-            field={fieldName}
+            field={displayName}
             color={color}
             width={boundingRectBox.width}
             height={boundingRectBox.height}
@@ -280,6 +282,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
         <div className="w-full h-72 basis-2/3 overflow-hidden" ref={qqPlotRef}>
           <QQPlot
             chartValues={formattedQQValues}
+            field={displayName}
             isLoading={isLoading}
             color={color}
             width={boundingRectQQ.width}
@@ -289,7 +292,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
         <OffscreenWrapper>
           <BoxPlot
             data={formattedData}
-            field={fieldName}
+            field={displayName}
             color={color}
             width={boundingRectBox.width}
             height={boundingRectBox.height}
@@ -301,6 +304,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
         <OffscreenWrapper>
           <QQPlot
             chartValues={formattedQQValues}
+            field={displayName}
             isLoading={isLoading}
             color={color}
             chartRef={qqDownloadChartRef}
@@ -348,6 +352,14 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
             <DarkTableRow>
               <td className="pl-1">Median</td>
               <td>{formattedData.median.toLocaleString()}</td>
+            </DarkTableRow>
+            <LightTableRow>
+              <td className="pl-1">Q1</td>
+              <td>{formattedData.q1.toLocaleString()}</td>
+            </LightTableRow>
+            <DarkTableRow>
+              <td className="pl-1">Q3</td>
+              <td>{formattedData.q3.toLocaleString()}</td>
             </DarkTableRow>
             <LightTableRow>
               <td className="pl-1">Standard Deviation</td>

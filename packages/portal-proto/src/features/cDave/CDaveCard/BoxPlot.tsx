@@ -124,7 +124,7 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
           containerRef={
             chartRef ? (ref) => (chartRef.current = ref) : undefined
           }
-          aria-labelledby={`${field}-box-plot-label`}
+          aria-label={`This Box Plot visualizes the distribution of ${field} values. Refer to the accompanying Statistics table or download the TSV file for details.`}
         />
       }
     >
@@ -134,7 +134,6 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
         text={label}
         style={{ fontSize: 16, fontFamily: "Noto Sans" }}
         textAnchor="middle"
-        id={`${field}-box-plot-label`}
       />
       <VictoryAxis
         dependentAxis

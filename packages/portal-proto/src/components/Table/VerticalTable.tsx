@@ -101,6 +101,7 @@ function VerticalTable<TData>({
   getRowId = getDefaultRowId,
   baseZIndex = 0,
   customDataTestID,
+  customAriaLabel,
 }: TableProps<TData>): JSX.Element {
   const [tableData, setTableData] = useState(data);
   const [searchTerm, setSearchTerm] = useState(search?.defaultSearchTerm ?? "");
@@ -348,7 +349,10 @@ function VerticalTable<TData>({
           visible={status === "pending" || status === "uninitialized"}
           zIndex={0}
         />
-        <table className="w-full text-left font-content shadow-xs text-sm">
+        <table
+          className="w-full text-left font-content shadow-xs text-sm"
+          aria-label={customAriaLabel}
+        >
           <thead className="h-12">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr

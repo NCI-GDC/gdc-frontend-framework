@@ -82,6 +82,7 @@ export const SetOperationsSummaryTable = ({
       setSorting={setSummaryTableSorting}
       columnSorting="enable"
       status={isFetching ? "pending" : "fulfilled"}
+      customAriaLabel={"Summary Table"}
     />
   );
 };

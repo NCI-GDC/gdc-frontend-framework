@@ -61,6 +61,7 @@ const vennDiagramApiSlice = graphqlAPISlice.injectEndpoints({
           graphQLQuery,
         };
       },
+      transformResponse: (response) => response?.data?.viewer?.explore,
     }),
   }),
 });
