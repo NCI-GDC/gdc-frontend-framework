@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Grid, Alert, Loader } from "@mantine/core";
 import {
   GqlOperation,
@@ -50,7 +50,7 @@ const Dashboard: React.FC<DashboardProps> = ({
     }
   });
 
-  const [colCountInLastRow, colSpanInLastRow] = useMemo(() => {
+  const [colCountInLastRow, colSpanInLastRow] = useDeepCompareMemo(() => {
     const colCount = activeFields.length + 1;
     const colCountInRow = controlsExpanded ? 2 : 3;
     const colCountInLastRow = colCount % colCountInRow;
