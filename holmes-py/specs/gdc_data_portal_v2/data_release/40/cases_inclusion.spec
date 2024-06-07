@@ -32,5 +32,5 @@ tags: gdc-data-portal-v2, data-release
     |text_to_validate                       |
     |---------------------------------------|
     |740a2d74-2e3c-4d81-9a4d-2b750306612a   |
-    |MATCH-S1                               |
+    |Genomic Characterization CS-MATCH-0007 Arm S1|
     |Adenomas and Adenocarcinomas           |
