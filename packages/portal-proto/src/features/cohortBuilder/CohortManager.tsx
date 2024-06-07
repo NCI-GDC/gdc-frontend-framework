@@ -170,6 +170,7 @@ const CohortManager: React.FC = () => {
           currentCohort?.filters ?? undefined,
         ),
         fields: ["case_id"],
+        size: 50000,
       },
       fetchAll: true,
     },
