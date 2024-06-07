@@ -21,6 +21,7 @@ def select_repository_page_button(button_name: str):
 @step("Select <button_name> on the Image Viewer page")
 def select_image_viewer_page_button(button_name: str):
     APP.repository_page.click_image_viewer_page_data_testid(button_name)
+    APP.repository_page.wait_for_loading_spinner_to_detatch()
 
 @step("Select case or slide <data_testid> on the Image Viewer page")
 def select_case_slide_on_image_viewer(data_testid: str):
@@ -162,8 +163,10 @@ def search_for_filter_and_searchbox_content(filter_name: str):
 @step("Search for <image_viewer_search> on the Image Viewer page")
 def search_image_viewer(image_viewer_search: str):
     APP.repository_page.search_image_viewer(image_viewer_search)
+    APP.repository_page.wait_for_loading_spinner_to_detatch()
 
 
 @step("Remove search filter <search_filter> on the Image Viewer page")
 def remove_slide_image_viewer_search_filter(search_filter: str):
     APP.repository_page.remove_slide_image_viewer_search_filter(search_filter)
+    APP.repository_page.wait_for_loading_spinner_to_detatch()
