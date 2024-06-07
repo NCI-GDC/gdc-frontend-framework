@@ -32,16 +32,15 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
 * Collect case counts on save cohort buttons from an analysis card on Cohort Comparison
   |analysis_card          |Filter Row                       |Cohort Number  |Collect Case Count Name              |
   |-----------------------|---------------------------------|---------------|-------------------------------------|
-  |analysis-survival      |overall survival analysis        |1              |CC_Demo_Overall_Survival_1 Count     |
   |Gender                 |female                           |2              |CC_Demo_Gender_Female_2 Count        |
   |Vital Status           |alive                            |1              |CC_Demo_Vital_Status_Alive_1 Count   |
   |analysis-survival      |overall survival analysis        |1              |CC_Demo_Overall_Survival_1 Count     |
 * Save cohorts from an analysis card on Cohort Comparison
   |analysis_card          |Filter Row                       |Cohort Number  |Cohort Name                    |
   |-----------------------|---------------------------------|---------------|-------------------------------|
-  |analysis-survival      |overall survival analysis        |1              |CC_Demo_Overall_Survival_1     |
   |Gender                 |female                           |2              |CC_Demo_Gender_Female_2        |
   |Vital Status           |alive                            |1              |CC_Demo_Vital_Status_Alive_1   |
+  |analysis-survival      |overall survival analysis        |1              |CC_Demo_Overall_Survival_1     |
 
 * Switch cohort to "CC_Demo_Overall_Survival_1" from the Cohort Bar dropdown list
 * Collect Cohort Bar Case Count for comparison

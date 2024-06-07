@@ -135,17 +135,24 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
 * Collect case counts on save cohort buttons from an analysis card on Cohort Comparison
   |analysis_card          |Filter Row                       |Cohort Number  |Collect Case Count Name              |
   |-----------------------|---------------------------------|---------------|-------------------------------------|
-  |analysis-survival      |overall survival analysis        |2              |CC_Overall_Survival_2 Count          |
   |Ethnicity              |not hispanic or latino           |1              |CC_Ethnicity_not_hispanic_1 Count    |
   |Vital Status           |dead                             |2              |CC_Vital_Status_Dead_2 Count         |
   |Gender                 |missing                          |2              |CC_Gender_Missing_2 Count            |
 * Save cohorts from an analysis card on Cohort Comparison
   |analysis_card          |Filter Row                       |Cohort Number  |Cohort Name                    |
   |-----------------------|---------------------------------|---------------|-------------------------------|
-  |analysis-survival      |overall survival analysis        |2              |CC_Overall_Survival_2          |
   |Ethnicity              |not hispanic or latino           |1              |CC_Ethnicity_not_hispanic_1    |
   |Vital Status           |dead                             |2              |CC_Vital_Status_Dead_2         |
   |Gender                 |missing                          |2              |CC_Gender_Missing_2            |
+Analysis-survival card loads tricky so we save this for last
+* Collect case counts on save cohort buttons from an analysis card on Cohort Comparison
+  |analysis_card          |Filter Row                       |Cohort Number  |Collect Case Count Name              |
+  |-----------------------|---------------------------------|---------------|-------------------------------------|
+  |analysis-survival      |overall survival analysis        |2              |CC_Overall_Survival_2 Count          |
+* Save cohorts from an analysis card on Cohort Comparison
+  |analysis_card          |Filter Row                       |Cohort Number  |Cohort Name                    |
+  |-----------------------|---------------------------------|---------------|-------------------------------|
+  |analysis-survival      |overall survival analysis        |2              |CC_Overall_Survival_2          |
 
 * Switch cohort to "CC_Overall_Survival_2" from the Cohort Bar dropdown list
 * Collect Cohort Bar Case Count for comparison
@@ -162,7 +169,6 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
 * Switch cohort to "CC_Gender_Missing_2" from the Cohort Bar dropdown list
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "CC_Gender_Missing_2 Count" are "Equal"
-
 
 ## Verify Venn Diagram Link
 * Select the link "Open Venn Diagram"
