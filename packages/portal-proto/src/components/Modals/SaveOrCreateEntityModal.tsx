@@ -2,6 +2,7 @@ import { upperFirst } from "lodash";
 import { Box, Button, Group, Modal, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { RiErrorWarningFill as WarningIcon } from "react-icons/ri";
+import { MdSave as SaveIcon } from "react-icons/md";
 import ErrorMessage from "../ErrorMessage";
 
 interface SaveOrCreateEntityModalProps {
@@ -178,6 +179,7 @@ export const SaveOrCreateEntityBody = ({
             onClick={handleActionClick}
             data-testid="action-button"
             loading={loading}
+            leftSection={<SaveIcon />}
           >
             {upperFirst(action)}
           </Button>

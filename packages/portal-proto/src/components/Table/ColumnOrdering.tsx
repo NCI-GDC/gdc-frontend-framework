@@ -127,7 +127,7 @@ function ColumnOrdering<TData>({
             <span>
               <ActionIcon
                 onClick={handleColumnOrderingReset}
-                className={isBackToDefaults && "invisible"}
+                className={isBackToDefaults ? "invisible" : "border-0"}
                 data-testid="restore-default-icon"
                 aria-label="restore default column ordering"
               >

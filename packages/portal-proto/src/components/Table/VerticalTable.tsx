@@ -307,7 +307,10 @@ function VerticalTable<TData>({
                     size="sm"
                     rightSection={
                       searchTerm.length > 0 && (
-                        <ActionIcon onClick={handleClearClick}>
+                        <ActionIcon
+                          onClick={handleClearClick}
+                          className="border-0"
+                        >
                           <MdClose aria-label="clear search" />
                         </ActionIcon>
                       )
