@@ -143,7 +143,7 @@ export const FileFacetPanel = (): JSX.Element => {
             <FacetSelection
               facetType="files"
               handleFilterSelected={handleFilterSelected}
-              usedFacets={customFacets}
+              usedFacets={facetsConfig}
             />
           </div>
         </Modal>
