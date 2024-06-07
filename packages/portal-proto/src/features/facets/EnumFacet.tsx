@@ -436,12 +436,12 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                           </OverflowTooltippedLabel>
                           <div
                             data-testid={`text-${value}`}
-                            className="flex-none text-right w-14 font-content"
+                            className="flex-none text-right w-14 font-content text-sm"
                           >
                             {count.toLocaleString()}
                           </div>
                           {showPercent ? (
-                            <div className="flex-none text-right w-18 font-content">
+                            <div className="flex-none text-right w-18 font-content text-sm">
                               (
                               {(((count as number) / totalCount) * 100).toFixed(
                                 2,

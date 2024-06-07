@@ -68,7 +68,7 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
   return (
     <div className="flex flex-row items-center justify-between flex-wrap py-1 px-2 mb-1 border-b-2">
       <Button
-        className="pl-0 ml-0"
+        className="pl-0 ml-0 text-sm"
         variant="subtle"
         size="compact-xs"
         color="primary.9"
@@ -90,7 +90,7 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
         Name
       </Button>
       <Button
-        className="pr-0 mr-0"
+        className="pr-0 mr-0 text-sm"
         variant="subtle"
         size="compact-xs"
         color="primary.9"

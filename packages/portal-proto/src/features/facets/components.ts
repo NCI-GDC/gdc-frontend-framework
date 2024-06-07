@@ -15,7 +15,7 @@ export const controlsIconStyle =
   "text-primary-contrast-darker hover:text-primary-lighter";
 
 export const FacetText = tw.div`
-text-primary-contrast-darker font-heading font-semibold sm:text-xs text-[1.25em] break-words py-2
+text-primary-contrast-darker font-heading font-semibold text-[1rem] break-words py-2
 `;
 
 export const FacetHeader = tw.div`
