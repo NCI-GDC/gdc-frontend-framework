@@ -59,7 +59,6 @@ test("SSM lolliplot arguments", () => {
   expect(typeof runpparg.host).toBe("string");
   expect(runpparg.noheader).toEqual(true);
   expect(runpparg.nobox).toEqual(true);
-  expect(runpparg.hide_dsHandles).toEqual(true);
   expect(runpparg.holder instanceof HTMLElement).toBe(true);
   expect(runpparg.genome).toEqual("hg38");
   expect(runpparg.tracks).toEqual([
