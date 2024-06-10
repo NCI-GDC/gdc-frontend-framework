@@ -143,7 +143,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
         <DateInput
           data-testid="textbox-input-since-value"
           clearable
-          size="xs"
+          size="sm"
           placeholder="Since"
           className="px-1"
           maxDate={dateRangeValue[1]}
@@ -160,7 +160,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
         <DateInput
           data-testid="textbox-input-through-value"
           clearable
-          size="xs"
+          size="sm"
           placeholder="Through"
           className="px-1"
           valueFormat="YYYY-MM-DD"
@@ -185,6 +185,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
               aria-label="open the date range picker"
               className="bg-accent text-accent-contrast"
               onClick={() => setOpened((o) => !o)}
+              size="lg"
             >
               <PlusIcon />
             </ActionIcon>
@@ -192,7 +193,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
           <Popover.Dropdown>
             <DatePicker
               classNames={{
-                day: "hover:bg-primary hover:text-base-max data-first-in-range:bg-accent-lighter data-first-in-range:rounded-full data-first-in-range:rounded-r-none data-last-in-range:bg-accent-lighter data-last-in-range:rounded-full data-last-in-range:rounded-l-none data-in-range:bg-accent-lightest data-in-range:text-accent-contrast-lightest",
+                day: "text-sm hover:bg-primary hover:text-base-max data-first-in-range:bg-accent-lighter data-first-in-range:rounded-full data-first-in-range:rounded-r-none data-last-in-range:bg-accent-lighter data-last-in-range:rounded-full data-last-in-range:rounded-l-none data-in-range:bg-accent-lightest data-in-range:text-accent-contrast-lightest",
               }}
               numberOfColumns={2}
               type="range"
