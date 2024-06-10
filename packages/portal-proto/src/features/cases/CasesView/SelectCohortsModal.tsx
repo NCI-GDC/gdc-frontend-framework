@@ -11,7 +11,7 @@ import {
   buildCohortGqlOperator,
   graphqlAPI,
 } from "@gff/core";
-import { Modal, Radio, Text } from "@mantine/core";
+import { Modal, Radio, Text, Loader } from "@mantine/core";
 import { useMemo, useState } from "react";
 import { MAX_CASE_IDS } from "./utils";
 import { createColumnHelper } from "@tanstack/react-table";
@@ -228,7 +228,11 @@ export const SelectCohortsModal = ({
           <DarkFunctionButton
             disabled={!checkedValue}
             loading={loading}
+            leftSection={
+              loading ? <Loader size={15} color="white" /> : undefined
+            }
             onClick={async () => {
+              if (loading) return;
               await createCohortFromCases();
               setShowSaveCohorts(true);
             }}

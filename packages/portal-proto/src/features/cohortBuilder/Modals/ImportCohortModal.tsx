@@ -4,6 +4,7 @@ import {
   hideModal,
   useCreateCaseSetFromValuesMutation,
 } from "@gff/core";
+import { Loader } from "@mantine/core";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import UserInputModal from "@/components/Modals/UserInputModal";
 import InputEntityList from "@/components/InputEntityList/InputEntityList";
@@ -52,10 +53,14 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
 
       <DarkFunctionButton
         disabled={disabled}
-        onClick={() =>
-          createSet({ values: ids, intent: "portal", set_type: "frozen" })
+        onClick={() => {
+          if (!response.isLoading) {
+            createSet({ values: ids, intent: "portal", set_type: "frozen" });
+          }
+        }}
+        leftSection={
+          response.isLoading ? <Loader size={15} color="white" /> : undefined
         }
-        loading={response.isLoading}
       >
         Submit
       </DarkFunctionButton>
