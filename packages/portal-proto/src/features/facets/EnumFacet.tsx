@@ -395,7 +395,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                   visible={!isSuccess}
                 />
                 {facetChartData.filteredData.length == 0 ? (
-                  <div className="mx-4 font-content">
+                  <div className="mx-4 font-content text-sm">
                     No data for this field
                   </div>
                 ) : isSuccess ? (

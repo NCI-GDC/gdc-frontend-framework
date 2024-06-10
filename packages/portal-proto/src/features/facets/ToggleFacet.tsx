@@ -61,7 +61,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     <div
       className={`flex flex-col ${
         width ? width : "mx-0"
-      } bg-base-max relative shadow-lg border-base-lighter border-1 rounded-b-md text-xs transition`}
+      } bg-base-max relative shadow-lg border-base-lighter border-1 rounded-b-md transition text-sm`}
     >
       <FacetHeader>
         <Tooltip
@@ -90,7 +90,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           )}
         </div>
       </FacetHeader>
-      <div className="flex flex-row items-center justify-end flex-wrap p-1 mb-1 border-b-2">
+      <div className="flex items-center justify-end flex-wrap p-1 mb-1 border-b-2">
         <p className="px-2">{valueLabel}</p>
       </div>
       <div className="w-full ">
@@ -110,7 +110,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             classNames={{
               root: "w-full",
               body: "flex justify-between items-center",
-              label: "text-xs font-content",
+              label: "text-sm font-content",
             }}
           />
         </div>
