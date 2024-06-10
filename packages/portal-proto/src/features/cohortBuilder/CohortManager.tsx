@@ -58,6 +58,7 @@ import { CustomCohortSelectItem, UnsavedIcon } from "./CustomCohortSelectItem";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
+import { omit } from "lodash";
 
 const exportCohort = (
   caseIds: readonly Record<string, any>[],
@@ -327,13 +328,14 @@ const CohortManager: React.FC = () => {
         subText={<>You cannot undo this action.</>}
         onActionClick={async () => {
           setShowUpdateCohort(false);
+          const filteredCohortFilters = omit(filters, "isLoggedIn");
           const updateBody = {
             id: cohortId,
             name: cohortName,
             type: "dynamic",
             filters:
-              Object.keys(filters.root).length > 0
-                ? buildCohortGqlOperator(filters)
+              Object.keys(filteredCohortFilters.root).length > 0
+                ? buildCohortGqlOperator(filteredCohortFilters)
                 : {},
           };
 
