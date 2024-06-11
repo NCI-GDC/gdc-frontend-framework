@@ -445,6 +445,7 @@ def wait_for_table_body_text_to_appear(table):
         # are waiting for then it disappears for a moment. Checking for the
         # text twice should account for that.
         APP.shared.wait_for_table_body_text_by_row_column(v[0],v[1],v[2])
+        time.sleep(2)
     APP.shared.wait_for_loading_spinner_table_to_detatch()
     APP.shared.wait_for_loading_spinner_to_detatch()
 

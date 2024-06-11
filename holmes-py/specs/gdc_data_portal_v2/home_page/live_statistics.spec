@@ -12,7 +12,7 @@ tags: gdc-data-portal-v2, regression, home-page
 
 ## Validate Live Statistics
 * Is text "Mutations" present on the page
-* Pause "2" seconds
+* Pause "5" seconds
 * Live statistics should display correct values
   |category       |expected_statistic |
   |---------------|-------------------|

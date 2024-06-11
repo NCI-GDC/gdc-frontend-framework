@@ -55,6 +55,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "PTEN SSM Affected Cases in Cohort" are "Equal"
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
+* Search the table for ""
 
 ## Genes - SSM Affected Cases in Cohort: With Active Filters
 * Switch cohort to "Blank - Mutation Frequency" from the Cohort Bar dropdown list
@@ -86,6 +87,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "APC SSM Affected Cases in Cohort" are "Equal"
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
+* Search the table for ""
 
 ## Genes - CNV Gain
 * Switch cohort to "Blank - Mutation Frequency" from the Cohort Bar dropdown list
@@ -113,6 +115,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "CSMD3 CNV Gain" are "Equal"
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
+* Search the table for ""
 
 ## Genes - CNV Loss
 * Switch cohort to "Blank - Mutation Frequency" from the Cohort Bar dropdown list
@@ -140,6 +143,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "ZFHX3 CNV Loss" are "Equal"
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
+* Search the table for ""
 
 ## Mutations - Affected Cases in Cohort
 * Switch cohort to "Blank - Mutation Frequency" from the Cohort Bar dropdown list
@@ -169,3 +173,4 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "chr1:g.6197725delT Affected Cases in Cohort" are "Equal"
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
+* Search the table for ""
