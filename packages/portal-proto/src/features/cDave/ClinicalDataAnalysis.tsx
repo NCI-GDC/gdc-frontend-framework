@@ -34,8 +34,6 @@ const ClinicalDataAnalysis: React.FC = () => {
     [fields],
   );
 
-  console.log({ cDaveFields });
-
   const currentCohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),
   );
