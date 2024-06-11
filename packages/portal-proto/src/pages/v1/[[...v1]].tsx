@@ -40,7 +40,7 @@ const V1RetiredPage: NextPage = () => {
           </a>
           .<br></br>
           <br></br>
-          Thank you
+          Thank you,
           <br></br>
           The GDC Team
         </p>
