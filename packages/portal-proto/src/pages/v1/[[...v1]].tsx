@@ -20,30 +20,32 @@ const V1RetiredPage: NextPage = () => {
           key="gdc-portal-1.0-retired"
         />
       </Head>
-      <div className="flex flex-col justify-center items-center h-full p-8 gap-2">
-        <h1 className="text-2xl">
-          The GDC Data Portal 1.0 has been retired and is no longer available.
-        </h1>
-        <p className="font-content">
-          Access GDC 2.0{" "}
-          <Link href="/" className="text-primary underline">
-            here
-          </Link>
-          .<br></br>
-          For assistance, contact the GDC Help Desk at{" "}
-          <a
-            href="mailto:support@nci-gdc.datacommons.io"
-            className="text-primary-darker underline"
-            target="blank"
-          >
-            support@nci-gdc.datacommons.io
-          </a>
-          .<br></br>
-          <br></br>
-          Thank you,
-          <br></br>
-          The GDC Team
-        </p>
+      <div className="flex justify-center h-full p-8 gap-2">
+        <div className="flex flex-col items-start gap-2">
+          <h1 className="text-2xl">
+            The GDC Data Portal 1.0 has been retired and is no longer available.
+          </h1>
+          <p className="font-content">
+            Access GDC 2.0{" "}
+            <Link href="/" className="text-primary underline">
+              here
+            </Link>
+            .<br></br>
+            For assistance, contact the GDC Help Desk at{" "}
+            <a
+              href="mailto:support@nci-gdc.datacommons.io"
+              className="text-primary-darker underline"
+              target="blank"
+            >
+              support@nci-gdc.datacommons.io
+            </a>
+            .<br></br>
+            <br></br>
+            Thank you,
+            <br></br>
+            The GDC Team
+          </p>
+        </div>
       </div>
     </UserFlowVariedPages>
   );
