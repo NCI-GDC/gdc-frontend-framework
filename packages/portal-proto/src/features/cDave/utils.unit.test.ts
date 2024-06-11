@@ -6,6 +6,7 @@ import {
   toDisplayName,
   parseNestedQQResponseData,
   createFiltersFromSelectedValues,
+  roundContinuousValue,
 } from "./utils";
 
 describe("filterUsefulFacets", () => {
@@ -530,5 +531,59 @@ describe("createFiltersFromSelectedValues", () => {
         },
       },
     });
+  });
+});
+
+describe("roundContinuousValue", () => {
+  it("format years or days as whole integer", () => {
+    const expectedValue = roundContinuousValue(
+      2.25,
+      "diagnoses.age_at_diagnosis",
+      false,
+    );
+    expect(expectedValue).toEqual(2);
+  });
+
+  it("format years or days as whole integer less than ABS 1", () => {
+    const expectedValue = roundContinuousValue(
+      0.25,
+      "diagnoses.age_at_diagnosis",
+      false,
+    );
+    expect(expectedValue).toEqual(0);
+  });
+
+  it("format non-year/day values as integer", () => {
+    const expectedValue = roundContinuousValue(
+      2.25,
+      "treatments.treatment_dose",
+      false,
+    );
+    expect(expectedValue).toEqual(2);
+  });
+
+  it("format non-year/day values less than ABS 1 to 2 decimal place", () => {
+    const expectedValue = roundContinuousValue(
+      0.25,
+      "treatments.treatment_dose",
+      false,
+    );
+    expect(expectedValue).toEqual(0.25);
+
+    const expectedValue2 = roundContinuousValue(
+      -0.25,
+      "treatments.treatment_dose",
+      false,
+    );
+    expect(expectedValue2).toEqual(-0.25);
+  });
+
+  it("format values in a custom bin to 2 decimal place", () => {
+    const expectedValue = roundContinuousValue(
+      2.25,
+      "diagnoses.age_at_diagnosis",
+      true,
+    );
+    expect(expectedValue).toEqual(2.25);
   });
 });

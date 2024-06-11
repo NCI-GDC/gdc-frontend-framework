@@ -24,7 +24,7 @@ import { COLOR_MAP, DEMO_COHORT_FILTERS, DATA_DIMENSIONS } from "../constants";
 import {
   parseNestedQQResponseData,
   qnorm,
-  formatValue,
+  roundContinuousValue,
   convertDataDimension,
 } from "../utils";
 import QQPlot from "./QQPlot";
@@ -38,6 +38,7 @@ interface BoxQQPlotProps {
   readonly field: string;
   readonly displayName: string;
   readonly data: ClinicalContinuousStatsData;
+  readonly hasCustomBins: boolean;
   readonly dataDimension?: DataDimension;
 }
 
@@ -45,6 +46,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
   field,
   displayName,
   data,
+  hasCustomBins,
   dataDimension,
 }: BoxQQPlotProps) => {
   // Field examples: diagnoses.age_at_diagnosis, diagnoses.treatments.days_to_treatment_start
@@ -68,29 +70,45 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
   const originalDataDimension = DATA_DIMENSIONS[field]?.unit;
 
   const formattedData = {
-    min: formatValue(
+    min: roundContinuousValue(
       convertDataDimension(data.min, originalDataDimension, dataDimension),
+      field,
+      hasCustomBins,
     ),
-    max: formatValue(
+    max: roundContinuousValue(
       convertDataDimension(data.max, originalDataDimension, dataDimension),
+      field,
+      hasCustomBins,
     ),
-    mean: formatValue(
+    mean: roundContinuousValue(
       convertDataDimension(data.mean, originalDataDimension, dataDimension),
+      field,
+      hasCustomBins,
     ),
-    median: formatValue(
+    median: roundContinuousValue(
       convertDataDimension(data.median, originalDataDimension, dataDimension),
+      field,
+      hasCustomBins,
     ),
-    q1: formatValue(
+    q1: roundContinuousValue(
       convertDataDimension(data.q1, originalDataDimension, dataDimension),
+      field,
+      hasCustomBins,
     ),
-    q3: formatValue(
+    q3: roundContinuousValue(
       convertDataDimension(data.q3, originalDataDimension, dataDimension),
+      field,
+      hasCustomBins,
     ),
-    std_dev: formatValue(
+    std_dev: roundContinuousValue(
       convertDataDimension(data.std_dev, originalDataDimension, dataDimension),
+      field,
+      hasCustomBins,
     ),
-    iqr: formatValue(
+    iqr: roundContinuousValue(
       convertDataDimension(data.iqr, originalDataDimension, dataDimension),
+      field,
+      hasCustomBins,
     ),
   };
 

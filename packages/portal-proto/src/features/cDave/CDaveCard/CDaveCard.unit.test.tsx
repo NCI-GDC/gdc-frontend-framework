@@ -200,7 +200,7 @@ describe("CDaveCard", () => {
       />,
     );
 
-    expect(getByRole("cell", { name: "-28 to <166.8" })).toBeInTheDocument();
+    expect(getByRole("cell", { name: "-28 to <167" })).toBeInTheDocument();
   });
 
   it("continuous result with toggled value bucket", async () => {
@@ -238,15 +238,13 @@ describe("CDaveCard", () => {
       />,
     );
 
-    expect(getByRole("cell", { name: "19.72 to <33.55" })).toBeInTheDocument();
-    expect(getByRole("cell", { name: "33.55 to <47.39" })).toBeInTheDocument();
+    expect(getByRole("cell", { name: "20 to <34" })).toBeInTheDocument();
+    expect(getByRole("cell", { name: "34 to <47" })).toBeInTheDocument();
 
     await userEvent.click(getByLabelText("Days"));
 
-    expect(getByRole("cell", { name: "7201 to <12255.8" })).toBeInTheDocument();
-    expect(
-      getByRole("cell", { name: "12255.8 to <17310.6" }),
-    ).toBeInTheDocument();
+    expect(getByRole("cell", { name: "7201 to <12256" })).toBeInTheDocument();
+    expect(getByRole("cell", { name: "12256 to <17311" })).toBeInTheDocument();
   });
 
   it("continuous result with no data", () => {
