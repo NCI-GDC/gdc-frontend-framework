@@ -21,7 +21,7 @@ const V1RetiredPage: NextPage = () => {
         />
       </Head>
       <div className="flex justify-center h-full p-8 gap-2">
-        <div className="flex flex-col items-start gap-2">
+        <div className="flex flex-col gap-2">
           <h1 className="text-2xl">
             The GDC Data Portal 1.0 has been retired and is no longer available.
           </h1>
