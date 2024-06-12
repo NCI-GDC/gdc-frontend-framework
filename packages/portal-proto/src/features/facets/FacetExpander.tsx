@@ -10,7 +10,7 @@ text-accent-content-darker
 p-1
 font-bold
 cursor-pointer
-text-xs
+text-sm
 font-content-noto
 `;
 
@@ -46,7 +46,7 @@ const FacetExpander: React.FC<FacetExpanderProps> = ({
             <MoreIcon
               className="text-accent"
               key="show-more"
-              size="1.5em"
+              size="1rem"
               aria-hidden="true"
             />
             <ExpanderLabel>{remainingValues} more</ExpanderLabel>

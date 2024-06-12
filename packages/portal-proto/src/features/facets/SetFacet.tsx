@@ -104,7 +104,7 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
           onClick={() => dispatch(showModal({ modal: FACET_TO_MODAL[field] }))}
           color="primary"
           variant="outline"
-          size="xs"
+          size="sm"
           data-testid={`button-${facetTitle}`}
           classNames={{ label: "break-words whitespace-pre-wrap" }}
         >
