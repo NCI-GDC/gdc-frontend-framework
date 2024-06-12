@@ -156,4 +156,30 @@ export const MOCK_COHORTS: Cohort[] = [
     saved: false,
     modified_datetime: new Date(2020, 1, 6).toISOString(),
   },
+  {
+    name: "Lung",
+    id: "0000-0000-0000-2222",
+    unsavedCohortId: "abc-def",
+    filters: {
+      root: {
+        "cases.primary_site": {
+          field: "cases.primary_site",
+          operands: ["lung"],
+          operator: "includes",
+        },
+      },
+      mode: "and",
+    },
+    modified_datetime: new Date(2020, 1, 9).toISOString(),
+    caseSet: { status: "uninitialized" },
+    counts: {
+      caseCount: 4456,
+      fileCount: 76000,
+      genesCount: 1290,
+      mutationCount: 2877,
+      status: "fulfilled" as DataStatus,
+    },
+    saved: false,
+    modified: false,
+  },
 ];

@@ -65,6 +65,7 @@ export interface Cohort {
   readonly modified_datetime: string; // last time cohort was modified
   readonly saved?: boolean; // flag indicating if cohort has been saved.
   readonly counts: CountsDataAndStatus; //case, file, etc. counts of a cohort
+  readonly unsavedCohortId?: string; // the id before cohort is saved, used for apps where the cohort can be saved while the user is operating the app
 }
 
 const cohortsAdapter = createEntityAdapter<Cohort>({
@@ -260,6 +261,7 @@ const slice = createSlice({
           id: action.payload.destId,
           modified: false,
           saved: true,
+          unsavedCohortId: action.payload.sourceId,
           counts: {
             // will need to re-request counts
             ...NullCountsData,
@@ -827,7 +829,26 @@ export const selectCurrentCohortCaseSet = (
 export const selectCohortById = (
   state: CoreState,
   cohortId: string,
-): Cohort | undefined => cohortSelectors.selectById(state, cohortId);
+): Cohort | undefined => {
+  const id = cohortSelectors.selectById(state, cohortId);
+
+  if (id === undefined) {
+    const idByUnsaved = cohortSelectors
+      .selectAll(state)
+      .find((c) => c?.unsavedCohortId === cohortId);
+    return idByUnsaved;
+  }
+
+  return id;
+};
+
+export const selectMultipleCohortsById = (
+  state: CoreState,
+  cohortIds: string[],
+) =>
+  cohortIds
+    .map((id) => selectCohortById(state, id))
+    .filter((cohort) => cohort !== undefined);
 
 /**
  * Returns an array of all the cohorts
