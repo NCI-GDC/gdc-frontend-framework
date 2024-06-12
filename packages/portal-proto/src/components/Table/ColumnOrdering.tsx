@@ -92,6 +92,7 @@ function ColumnOrdering<TData>({
       onChange={setShowColumnMenu}
       offset={0}
       zIndex={400}
+      withinPortal={true}
     >
       <Tooltip label="Customize Columns" disabled={showColumnMenu}>
         <Menu.Target>

@@ -4,7 +4,7 @@
   "workspaces": [
     "packages/*"
   ],
-  "version": "2.12.0",
+  "version": "2.14.0",
   "description": "The GDC Frontend Framework",
   "main": "index.js",
   "scripts": {

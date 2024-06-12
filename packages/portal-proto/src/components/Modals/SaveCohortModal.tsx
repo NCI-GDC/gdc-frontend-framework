@@ -28,6 +28,7 @@ import {
 import { SaveOrCreateEntityBody } from "./SaveOrCreateEntityModal";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 import { INVALID_COHORT_NAMES } from "@/features/cohortBuilder/utils";
+import { omit } from "lodash";
 
 /**
  * SaveCohortModal handles saving a user's cohort
@@ -139,13 +140,14 @@ const SaveCohortModal = ({
           } as FilterSet;
         });
     }
+    const filteredCohortFilters = omit(cohortFilters, "isLoggedIn");
 
     const addBody = {
       name: newName,
       type: "dynamic",
       filters:
-        Object.keys(cohortFilters.root).length > 0
-          ? buildCohortGqlOperator(cohortFilters)
+        Object.keys(filteredCohortFilters.root).length > 0
+          ? buildCohortGqlOperator(filteredCohortFilters)
           : {},
     };
 

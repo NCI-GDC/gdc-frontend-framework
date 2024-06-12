@@ -102,7 +102,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
       toolContainer.style.backgroundColor = "#fff";
 
       const arg = Object.assign(
-        { holder: rootElem, noheader: true, nobox: true, hide_dsHandles: true },
+        { holder: rootElem, noheader: true, nobox: true },
         cloneDeep(data),
       ) as Mds3Arg;
 
