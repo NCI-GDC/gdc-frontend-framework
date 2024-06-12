@@ -49,6 +49,8 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
           <Tooltip
             label="Cohort is empty"
             disabled={row.original?.counts.caseCount !== 0}
+            position="right"
+            className="cursor-not-allowed"
           >
             <input
               data-testid={`button-${row.original.name}-cohort-comparison`}

@@ -1,11 +1,13 @@
 import React, { useRef, useEffect } from "react";
 import { init, EChartsOption, ECharts } from "echarts";
+import { useDeepCompareEffect } from "use-deep-compare";
 
 export interface EChartWrapperProps {
   readonly option: EChartsOption;
   readonly chartRef?: React.MutableRefObject<HTMLElement>;
   readonly height: number;
   readonly width: number;
+  readonly disableCursor?: boolean;
 }
 
 const EChartWrapper: React.FC<EChartWrapperProps> = ({
@@ -13,11 +15,12 @@ const EChartWrapper: React.FC<EChartWrapperProps> = ({
   chartRef,
   height,
   width,
+  disableCursor = false,
 }: EChartWrapperProps) => {
   const ref = useRef<HTMLElement>(null);
   const wrapperRef = chartRef ?? ref;
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     let chart: ECharts | undefined;
 
     if (
@@ -30,14 +33,19 @@ const EChartWrapper: React.FC<EChartWrapperProps> = ({
         height,
         width,
       });
+
       chart.setOption(option);
+      console.log({ disableCursor });
+      if (disableCursor) {
+        chart.getZr().setCursorStyle("not-allowed");
+      }
       chart.resize();
     }
 
     return () => {
       chart?.dispose();
     };
-  }, [wrapperRef, height, width, option]);
+  }, [wrapperRef, height, width, option, disableCursor]);
 
   return (
     <div

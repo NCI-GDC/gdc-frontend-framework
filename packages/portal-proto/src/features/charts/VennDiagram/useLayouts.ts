@@ -508,6 +508,7 @@ export const useLayout = ({
       : addHighlight(threeCircleLayout, highlightedIndices),
   );
   const [option, setOption] = useState<EChartsOption>({});
+  const [disableCursor, setDisableCursor] = useState(false);
 
   const labelLayout = twoCircles
     ? twoCircleLabelLayout
@@ -521,13 +522,19 @@ export const useLayout = ({
       // If the event is from a child element, parse the parent id to use
       const eventId = String(event.target.id);
       const id = eventId.includes(".") ? eventId.split(".")[0] : eventId;
+
       setChartLayout(
         twoCircles
           ? addHighlight(twoCircleLayout, [...highlightedIndices, id])
           : addHighlight(threeCircleLayout, [...highlightedIndices, id]),
       );
+      const element = chartData.filter((datum) => datum.key === id);
+      if (element[0].value === 0) {
+        console.log("HEREEEEEE!!!");
+        setDisableCursor(true);
+      }
     },
-    [highlightedIndices, twoCircles],
+    [highlightedIndices, twoCircles, chartData],
   );
 
   const onmouseout = useDeepCompareCallback(() => {
@@ -536,16 +543,20 @@ export const useLayout = ({
         ? addHighlight(twoCircleLayout, highlightedIndices)
         : addHighlight(threeCircleLayout, highlightedIndices),
     );
+    setDisableCursor(false);
   }, [twoCircles, highlightedIndices]);
 
-  const onclick = useCallback(
+  const onclick = useDeepCompareCallback(
     (event: ElementEvent) => {
       // If the event is from a child element, parse the parent id to use
       const eventId = String(event.target.id);
+
       const id = eventId.includes(".") ? eventId.split(".")[0] : eventId;
+      const element = chartData.filter((datum) => datum.key === id);
+      if (element[0].value === 0) return;
       onClickHandler(id);
     },
-    [onClickHandler],
+    [onClickHandler, chartData],
   );
 
   const addEvents = useCallback(
@@ -590,6 +601,7 @@ export const useLayout = ({
           },
         })),
       ],
+      tooltip: {},
       series: [
         {
           type: "custom" as const,
@@ -606,10 +618,23 @@ export const useLayout = ({
             };
           },
           data: chartData,
+          tooltip: {
+            formatter: (params) => {
+              const dataIndex = params?.dataIndex;
+              const dataValue = chartData[dataIndex]?.value;
+              if (dataValue === 0) return `This region contains 0 items`;
+            },
+            // position: ["50%", "50%"],
+            borderWidth: 0,
+            backgroundColor: "black",
+            textStyle: {
+              color: "white",
+            },
+          },
         },
       ],
     };
-
+    // console.log({ fullChartOption });
     setOption(fullChartOption);
   }, [
     chartLayout,
@@ -623,5 +648,5 @@ export const useLayout = ({
     ariaLabel,
   ]);
 
-  return option;
+  return { option, disableCursor };
 };

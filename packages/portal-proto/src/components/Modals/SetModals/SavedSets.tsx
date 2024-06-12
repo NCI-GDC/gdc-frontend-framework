@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect, useContext } from "react";
 import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
 import { upperFirst } from "lodash";
-import { Checkbox } from "@mantine/core";
+import { Checkbox, Tooltip } from "@mantine/core";
 import { AiOutlineFileAdd as FileAddIcon } from "react-icons/ai";
 import {
   useCoreSelector,
@@ -78,17 +78,25 @@ const SavedSets: React.FC<SavedSetsProps> = ({
         id: "select",
         header: "Select",
         cell: ({ row }) => (
-          <Checkbox
-            size="xs"
-            classNames={{
-              input: "checked:bg-accent checked:border-accent",
-            }}
-            aria-label={`${row.original.setId}`}
-            {...{
-              checked: row.getIsSelected(),
-              onChange: row.getToggleSelectedHandler(),
-            }}
-          />
+          <Tooltip
+            label="Set is either empty or deprecated"
+            disabled={row.original.count !== "0"}
+            zIndex={400}
+            position="right"
+          >
+            <Checkbox
+              size="xs"
+              classNames={{
+                input: "checked:bg-accent checked:border-accent",
+              }}
+              aria-label={`${row.original.setId}`}
+              {...{
+                checked: row.getIsSelected(),
+                onChange: row.getToggleSelectedHandler(),
+              }}
+              disabled={row.original.count === "0"}
+            />
+          </Tooltip>
         ),
       }),
       savedSetsTableColumnHelper.accessor("name", {
