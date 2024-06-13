@@ -490,6 +490,14 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
   const { downloadInProgress, setDownloadInProgress } = useContext(
     DownloadProgressContext,
   );
+  // handle errors
+  if (!(dataToUse.length > 0)) {
+    return (
+      <div className="p-1">
+        No Survival data available for this Cohort Comparison
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col">
