@@ -15,7 +15,7 @@ const VennDiagram: React.FC<VennDiagramProps> = ({
     [chartData],
   );
 
-  const { option, disableCursor } = useLayout({
+  const option = useLayout({
     chartData,
     highlightedIndices,
     labels,
@@ -24,14 +24,7 @@ const VennDiagram: React.FC<VennDiagramProps> = ({
     interactable,
   });
 
-  return (
-    <EChartWrapper
-      option={option}
-      disableCursor={disableCursor}
-      height={400}
-      width={400}
-    />
-  );
+  return <EChartWrapper option={option} height={400} width={400} />;
 };
 
 export default VennDiagram;

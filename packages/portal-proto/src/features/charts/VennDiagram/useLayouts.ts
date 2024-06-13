@@ -1,9 +1,17 @@
 import { useState, useCallback, useEffect } from "react";
 import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
-import { EChartsOption, ElementEvent, GraphicComponentOption } from "echarts";
+import {
+  CustomSeriesRenderItemAPI,
+  CustomSeriesRenderItemParams,
+  EChartsOption,
+  ElementEvent,
+  GraphicComponentOption,
+} from "echarts";
 import { GraphicComponentGroupOption, VennDiagramProps } from "./types";
 
 const HIGHLIGHT_COLOR = "#a5d5d9";
+const NOT_ALLOWED_HIGHLIGHT_COLOR = "#9b9b9b";
+const NOT_ALLOWED_TEXT = "#0A0A0A";
 
 // Coordinates where circles intersect, calculated with this: https://gist.github.com/jupdike/bfe5eb23d1c395d8a0a1a4ddd94882ac
 const c1c2I = [
@@ -460,6 +468,7 @@ const chartConfig: EChartsOption = {
 const addHighlight = (
   chartLayout: GraphicComponentOption[],
   highlightedIndices: string[],
+  isCursorAllowed: boolean = true,
 ) => {
   return chartLayout.map((group: GraphicComponentGroupOption) => {
     if (highlightedIndices.includes(group.id)) {
@@ -468,18 +477,24 @@ const addHighlight = (
           ...group,
           children: group.children.map((child) => ({
             ...child,
+            ...(!isCursorAllowed && { cursor: "not-allowed" }),
             style: {
               ...child.style,
-              fill: HIGHLIGHT_COLOR,
+              fill: isCursorAllowed
+                ? HIGHLIGHT_COLOR
+                : NOT_ALLOWED_HIGHLIGHT_COLOR,
             },
           })),
         };
       } else {
         return {
           ...group,
+          ...(!isCursorAllowed && { cursor: "not-allowed" }),
           style: {
             ...group.style,
-            fill: HIGHLIGHT_COLOR,
+            fill: isCursorAllowed
+              ? HIGHLIGHT_COLOR
+              : NOT_ALLOWED_HIGHLIGHT_COLOR,
           },
         };
       }
@@ -487,6 +502,20 @@ const addHighlight = (
       return group;
     }
   });
+};
+
+const getLayout = (
+  twoCircles: boolean,
+  highlightedIndices: string[],
+  id: string = null,
+  isCursorAllowed: boolean = true,
+) => {
+  const layout = twoCircles ? twoCircleLayout : threeCircleLayout;
+  return addHighlight(
+    layout,
+    id ? [...highlightedIndices, id] : highlightedIndices,
+    isCursorAllowed,
+  );
 };
 
 type UseLayoutProps = VennDiagramProps & {
@@ -502,14 +531,9 @@ export const useLayout = ({
   interactable,
 }: UseLayoutProps): EChartsOption => {
   const twoCircles = chartData.length === 3;
-  const [chartLayout, setChartLayout] = useState<GraphicComponentOption[]>(
-    twoCircles
-      ? addHighlight(twoCircleLayout, highlightedIndices)
-      : addHighlight(threeCircleLayout, highlightedIndices),
-  );
+  const [chartLayout, setChartLayout] = useState<GraphicComponentOption[]>([]);
   const [option, setOption] = useState<EChartsOption>({});
-  const [disableCursor, setDisableCursor] = useState(false);
-
+  const [currentMouseOver, setCurrentMouseOver] = useState("");
   const labelLayout = twoCircles
     ? twoCircleLabelLayout
     : threeCircleLabelLayout;
@@ -517,68 +541,44 @@ export const useLayout = ({
     ? twoCircleOuterLabelLayout
     : threeCircleOuterLabelLayout;
 
-  const onmouseover = useDeepCompareCallback(
-    (event: ElementEvent) => {
-      // If the event is from a child element, parse the parent id to use
+  const handleEvent = useDeepCompareCallback(
+    (event: ElementEvent, type: "mouseover" | "mouseout" | "click") => {
       const eventId = String(event.target.id);
       const id = eventId.includes(".") ? eventId.split(".")[0] : eventId;
+      const element = chartData.find((datum) => datum.key === id);
+      const isCursorAllowed = element?.value !== 0;
 
-      setChartLayout(
-        twoCircles
-          ? addHighlight(twoCircleLayout, [...highlightedIndices, id])
-          : addHighlight(threeCircleLayout, [...highlightedIndices, id]),
-      );
-      const element = chartData.filter((datum) => datum.key === id);
-      if (element[0].value === 0) {
-        console.log("HEREEEEEE!!!");
-        setDisableCursor(true);
+      if (type === "mouseover") {
+        setCurrentMouseOver(id);
+        setChartLayout(
+          getLayout(twoCircles, highlightedIndices, id, isCursorAllowed),
+        );
+      } else if (type === "mouseout") {
+        setChartLayout(getLayout(twoCircles, highlightedIndices));
+        setCurrentMouseOver("");
+      } else if (type === "click" && isCursorAllowed) {
+        onClickHandler(id);
       }
     },
-    [highlightedIndices, twoCircles, chartData],
-  );
-
-  const onmouseout = useDeepCompareCallback(() => {
-    setChartLayout(
-      twoCircles
-        ? addHighlight(twoCircleLayout, highlightedIndices)
-        : addHighlight(threeCircleLayout, highlightedIndices),
-    );
-    setDisableCursor(false);
-  }, [twoCircles, highlightedIndices]);
-
-  const onclick = useDeepCompareCallback(
-    (event: ElementEvent) => {
-      // If the event is from a child element, parse the parent id to use
-      const eventId = String(event.target.id);
-
-      const id = eventId.includes(".") ? eventId.split(".")[0] : eventId;
-      const element = chartData.filter((datum) => datum.key === id);
-      if (element[0].value === 0) return;
-      onClickHandler(id);
-    },
-    [onClickHandler, chartData],
+    [highlightedIndices, twoCircles, chartData, onClickHandler],
   );
 
   const addEvents = useCallback(
-    (chartLayout: GraphicComponentOption[], interactable: boolean) => {
-      return interactable
-        ? chartLayout.map((section) => ({
+    (layout: GraphicComponentOption[]) =>
+      interactable
+        ? layout.map((section) => ({
             ...section,
-            onmouseover,
-            onmouseout,
-            onclick,
+            onmouseover: (event: ElementEvent) =>
+              handleEvent(event, "mouseover"),
+            onmouseout: (event: ElementEvent) => handleEvent(event, "mouseout"),
+            onclick: (event: ElementEvent) => handleEvent(event, "click"),
           }))
-        : chartLayout;
-    },
-    [onmouseover, onmouseout, onclick],
+        : layout,
+    [handleEvent, interactable],
   );
 
   useEffect(() => {
-    setChartLayout(
-      twoCircles
-        ? addHighlight(twoCircleLayout, highlightedIndices)
-        : addHighlight(threeCircleLayout, highlightedIndices),
-    );
+    setChartLayout(getLayout(twoCircles, highlightedIndices));
   }, [highlightedIndices, twoCircles]);
 
   useDeepCompareEffect(() => {
@@ -590,7 +590,7 @@ export const useLayout = ({
         },
       },
       graphic: [
-        ...addEvents(chartLayout, interactable),
+        ...addEvents(chartLayout),
         ...outerLabelLayout.map((labelConfig, idx) => ({
           ...labelConfig,
           style: {
@@ -606,15 +606,26 @@ export const useLayout = ({
         {
           type: "custom" as const,
           z: 300,
-          renderItem: (params, api) => {
+          renderItem: (
+            params: CustomSeriesRenderItemParams,
+            api: CustomSeriesRenderItemAPI,
+          ) => {
+            const dataIndex = params?.dataIndex;
+            const key = chartData[dataIndex]?.key;
+            const dataValue = chartData[dataIndex]?.value;
             return {
               type: "text",
-              ...labelLayout[chartData[params.dataIndex].key],
+              ...labelLayout[key],
               style: {
                 text: api.value(0).toLocaleString(),
                 textAlign: "middle",
-                fill: "#333333",
+                fill:
+                  dataValue === 0 && currentMouseOver === key
+                    ? NOT_ALLOWED_TEXT
+                    : "#333333",
               },
+              scaleX: 1.5,
+              scaleY: 1.5,
             };
           },
           data: chartData,
@@ -622,9 +633,10 @@ export const useLayout = ({
             formatter: (params) => {
               const dataIndex = params?.dataIndex;
               const dataValue = chartData[dataIndex]?.value;
-              if (dataValue === 0) return `This region contains 0 items`;
+              return dataValue === 0
+                ? `This region contains 0 items`
+                : undefined;
             },
-            // position: ["50%", "50%"],
             borderWidth: 0,
             backgroundColor: "black",
             textStyle: {
@@ -634,7 +646,6 @@ export const useLayout = ({
         },
       ],
     };
-    // console.log({ fullChartOption });
     setOption(fullChartOption);
   }, [
     chartLayout,
@@ -646,7 +657,8 @@ export const useLayout = ({
     chartData,
     labelLayout,
     ariaLabel,
+    currentMouseOver,
   ]);
 
-  return { option, disableCursor };
+  return option;
 };
