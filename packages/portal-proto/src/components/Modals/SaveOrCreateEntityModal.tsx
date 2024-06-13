@@ -1,5 +1,5 @@
 import { upperFirst } from "lodash";
-import { Box, Button, Group, Modal, TextInput } from "@mantine/core";
+import { Box, Button, Group, Modal, TextInput, Loader } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { RiErrorWarningFill as WarningIcon } from "react-icons/ri";
 import ErrorMessage from "../ErrorMessage";
@@ -121,7 +121,7 @@ export const SaveOrCreateEntityBody = ({
     ));
 
   const handleActionClick = () => {
-    if (form.validate().hasErrors) return;
+    if (form.validate().hasErrors || loading) return;
     onActionClick((form?.values?.name || "").trim());
     if (closeOnAction) {
       onClose();
@@ -177,7 +177,9 @@ export const SaveOrCreateEntityBody = ({
             color="secondary"
             onClick={handleActionClick}
             data-testid="action-button"
-            loading={loading}
+            leftSection={
+              loading ? <Loader size={15} color="white" /> : undefined
+            }
           >
             {upperFirst(action)}
           </Button>

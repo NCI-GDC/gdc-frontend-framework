@@ -114,11 +114,7 @@ export const QuickSearch = (): JSX.Element => {
         {...others}
         aria-label={`${badgeText}, ${matchingToken}, Category: ${entityForMapping}`}
       >
-        <div
-          className={`px-4 ${
-            others["data-hovered"] ? "bg-primary-lightest" : ""
-          }`}
-        >
+        <div className="px-4 hover:bg-primary-lightest ">
           <div
             className={`py-2 flex gap-2 ${
               last ? "" : "border-b border-gdc-grey-light"
@@ -180,7 +176,8 @@ export const QuickSearch = (): JSX.Element => {
         input: "focus:border-2 focus:border-primary text-sm",
         dropdown:
           "bg-base-max rounded-t-none rounded-b border-0 drop-shadow-md -mt-2",
-        option: "p-0 m-0 block",
+        option:
+          "p-0 m-0 block data-[combobox-selected=true]:bg-primary-lightest data-[combobox-selected=true]:text-black",
       }}
       maxDropdownHeight={1000} //large number so no scroll bar
       comboboxProps={{

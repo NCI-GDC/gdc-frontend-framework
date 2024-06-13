@@ -360,6 +360,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                     setSearchTerm("");
                     searchInputRef.current.focus();
                   }}
+                  className="border-0"
                 >
                   <CloseIcon aria-label="clear search" />
                 </ActionIcon>
