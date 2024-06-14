@@ -552,7 +552,7 @@ class BasePage:
         Row and Column indexing begins at '1'
         """
         table_locator_to_select = GenericLocators.TABLE_AREA_TO_CLICK(row, column)
-        self.click(table_locator_to_select)
+        self.click(table_locator_to_select, True)
 
     def send_text_into_search_bar(self, text_to_send, aria_label):
         """Sends text into search bar based on its aria_label"""

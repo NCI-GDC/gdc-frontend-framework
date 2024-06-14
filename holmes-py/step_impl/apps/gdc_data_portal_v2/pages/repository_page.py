@@ -5,7 +5,7 @@ from ....base.base_page import GenericLocators
 
 
 class RepositoryPageLocators:
-    TITLE = lambda title_name: f'div[data-testid="{title_name}-title"]'
+    TITLE = lambda title_name: f'[data-testid="{title_name}-title"]'
     FILTERS_FACETS = '//div[@data-testid="filters-facets"]/div/div'
     FACET_BY_NAME = '//div[@data-testid="filters-facets"]//div[text()="Data Category"]/../../..//input[@value="biospecimen"]'
     FILTER_BUTTON_IDENT = lambda button_name: f"[data-testid='button-{button_name}']"
