@@ -199,7 +199,7 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
             return (
               <div
                 key={`${field}_${rangeKey}`}
-                className="flex justify-start items-center form-check mb-1 font-content"
+                className="flex justify-start items-center form-check mb-1 font-content text-sm"
               >
                 <input
                   type="radio"
@@ -327,7 +327,7 @@ const FromTo: React.FC<FromToProps> = ({
 
   return (
     <div className="flex flex-col grow m-2 text-base-contrast-max bg-base-max">
-      <fieldset className="flex flex-col gap-y-1">
+      <fieldset className="flex flex-col gap-y-1 text-sm">
         <legend className="sr-only">Numeric from/to filters</legend>
         <div className="flex gap-0.5 items-center flex-nowrap border font-content">
           <div className="basis-1/5 text-center">From</div>

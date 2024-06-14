@@ -260,6 +260,7 @@ export const SearchInput: React.FC = () => {
                 ref.current.focus();
               }}
               data-testid="search-input-clear-search"
+              className="border-0"
             >
               <CloseIcon aria-label="clear search" />
             </ActionIcon>

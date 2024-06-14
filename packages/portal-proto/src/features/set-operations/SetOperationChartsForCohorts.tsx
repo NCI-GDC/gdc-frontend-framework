@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import {
   useCoreSelector,
   useCreateCaseSetFromFiltersMutation,
@@ -6,7 +5,7 @@ import {
   useSetOperationsCasesTotalQuery,
   useCaseSetCountsQuery,
   getCohortFilterForAPI,
-  selectAllCohorts,
+  selectMultipleCohortsById,
 } from "@gff/core";
 import { SetOperationsChartInputProps } from "@/features/set-operations/types";
 import { Loader } from "@mantine/core";
@@ -36,12 +35,13 @@ const SetOperationChartsForCohorts = ({
   const [createSet2, createSet2Response] =
     useCreateCaseSetFromFiltersMutation();
 
-  // get all cohorts, and filter down to the ones that are selected
-  const allCohorts = useCoreSelector((state) => selectAllCohorts(state));
-
-  const cohorts = useMemo(() => {
-    return selectedEntities?.map((se) => allCohorts[se.id]);
-  }, [selectedEntities, allCohorts]);
+  const ids = useDeepCompareMemo(
+    () => selectedEntities.map((e) => e.id),
+    [selectedEntities],
+  );
+  const cohorts = useCoreSelector((state) =>
+    selectMultipleCohortsById(state, ids),
+  );
 
   // if the cohorts are not already case sets, create them
   useDeepCompareEffect(() => {

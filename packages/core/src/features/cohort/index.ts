@@ -62,6 +62,7 @@ import {
   selectHasUnsavedCohorts,
   selectUnsavedCohortName,
   UNSAVED_COHORT_NAME,
+  selectMultipleCohortsById,
 } from "./availableCohortsSlice";
 
 import {
@@ -158,4 +159,5 @@ export {
   selectHasUnsavedCohorts,
   selectUnsavedCohortName,
   UNSAVED_COHORT_NAME,
+  selectMultipleCohortsById,
 };

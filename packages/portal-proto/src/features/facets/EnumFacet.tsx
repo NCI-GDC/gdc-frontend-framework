@@ -360,6 +360,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                     setSearchTerm("");
                     searchInputRef.current.focus();
                   }}
+                  className="border-0"
                 >
                   <CloseIcon aria-label="clear search" />
                 </ActionIcon>
@@ -395,7 +396,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                   visible={!isSuccess}
                 />
                 {facetChartData.filteredData.length == 0 ? (
-                  <div className="mx-4 font-content">
+                  <div className="mx-4 font-content text-sm">
                     No data for this field
                   </div>
                 ) : isSuccess ? (
@@ -436,12 +437,12 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                           </OverflowTooltippedLabel>
                           <div
                             data-testid={`text-${value}`}
-                            className="flex-none text-right w-14 font-content"
+                            className="flex-none text-right w-14 font-content text-sm"
                           >
                             {count.toLocaleString()}
                           </div>
                           {showPercent ? (
-                            <div className="flex-none text-right w-18 font-content">
+                            <div className="flex-none text-right w-18 font-content text-sm">
                               (
                               {(((count as number) / totalCount) * 100).toFixed(
                                 2,

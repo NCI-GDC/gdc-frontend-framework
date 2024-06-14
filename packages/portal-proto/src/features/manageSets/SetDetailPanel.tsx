@@ -206,7 +206,11 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
           data-testid="button-close-set-panel"
           className="flex flex-row gap-2 items-center w-full text-primary-darker font-bold p-2 border-b border-base-lighter"
         >
-          <ActionIcon onClick={closePanel} aria-label="Close set panel">
+          <ActionIcon
+            onClick={closePanel}
+            aria-label="Close set panel"
+            className="border-0"
+          >
             <LeftArrowIcon size={30} className="text-primary-darker" />
           </ActionIcon>
           <>{set?.setName}</>

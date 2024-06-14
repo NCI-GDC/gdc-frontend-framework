@@ -166,6 +166,7 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={closeDrawer}
               aria-label="Close navigation panel"
               data-testid="button-close-navigation-panel"
+              className="border-0"
             >
               <LeftArrowIcon
                 size={30}

@@ -12,6 +12,8 @@ import {
   availableCohortsReducer,
   addNewUnsavedCohort,
   divideCurrentCohortFilterSetFilterByPrefix,
+  selectCohortById,
+  selectMultipleCohortsById,
 } from "../availableCohortsSlice";
 import { NullCountsData } from "../cohortCountsQuery";
 import * as cohortSlice from "../availableCohortsSlice";
@@ -860,5 +862,26 @@ describe("add, update, and remove cohort", () => {
         },
       },
     });
+  });
+});
+
+describe("selecting cohorts", () => {
+  test("should return cohort by id", () => {
+    const cohort = selectCohortById(APP_INITIAL_STATE, "0000-0000-1003-0000");
+    expect(cohort).toEqual(MOCK_COHORTS[4]);
+  });
+
+  test("should return cohort by its unsaved id", () => {
+    const cohort = selectCohortById(APP_INITIAL_STATE, "abc-def");
+    expect(cohort).toEqual(MOCK_COHORTS[6]);
+  });
+
+  test("should return multiple cohorts", () => {
+    const cohorts = selectMultipleCohortsById(APP_INITIAL_STATE, [
+      "0000-0000-1000-0000",
+      "abc-def",
+      "made-up-one",
+    ]);
+    expect(cohorts).toEqual([MOCK_COHORTS[1], MOCK_COHORTS[6]]);
   });
 });
