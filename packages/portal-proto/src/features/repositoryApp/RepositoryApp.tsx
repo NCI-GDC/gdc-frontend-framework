@@ -28,10 +28,7 @@ import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
 import { DownloadButton } from "@/components/DownloadButtons";
 import FunctionButtonRemove from "@/components/FunctionButtonRemove";
-import {
-  useClearLocalFilterWhenCohortChanges,
-  useClearAllRepositoryFilters,
-} from "@/features/repositoryApp/hooks";
+import { useClearAllRepositoryFilters } from "@/features/repositoryApp/hooks";
 import { useImageCounts } from "@/features/repositoryApp/slideCountSlice";
 import { Tooltip, Menu, Button } from "@mantine/core";
 import FilesTables from "../repositoryApp/FilesTable";
@@ -121,8 +118,6 @@ export const RepositoryApp = (): JSX.Element => {
   useEffect(() => {
     return () => clearAllFilters();
   }, [clearAllFilters]);
-
-  useClearLocalFilterWhenCohortChanges();
 
   const [metadataDownloadActive, setMetadataDownloadActive] = useState(false);
   const [sampleSheetDownloadActive, setSampleSheetDownloadActive] =

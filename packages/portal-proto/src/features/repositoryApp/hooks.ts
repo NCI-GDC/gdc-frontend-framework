@@ -10,7 +10,6 @@ import {
   joinFilters,
   NumericFromTo,
   selectRangeFacetByField,
-  selectCurrentCohortId,
   FetchDataActionCreator,
   UseAppDataHook,
   UseAppDataResponse,
@@ -271,26 +270,6 @@ export const useRemoveRepositoryFacetFilter = (): ClearFacetFunction => {
 //  Selector Hooks for getting repository filters by name
 export const useSelectFieldFilter = (field: string): Operation => {
   return useAppSelector((state) => selectFiltersByName(state, field));
-};
-
-export const useClearLocalFilterWhenCohortChanges = (): void => {
-  const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilters(state),
-  );
-  const cohortId = useCoreSelector((state) => selectCurrentCohortId(state));
-
-  const appDispatch = useAppDispatch();
-  const prevCohortFilters = usePrevious(cohortFilters);
-  const prevId = usePrevious(cohortId);
-
-  useEffect(() => {
-    if (
-      (prevCohortFilters && !isEqual(prevCohortFilters, cohortFilters)) ||
-      (prevId && !isEqual(prevId, cohortId))
-    ) {
-      appDispatch(clearRepositoryFilters());
-    }
-  }, [prevId, prevCohortFilters, cohortFilters, cohortId, appDispatch]);
 };
 
 export const createUseAppDataHook = <P, A, T>(

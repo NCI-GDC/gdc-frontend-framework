@@ -1,17 +1,13 @@
-import React, { useCallback, useState, useMemo } from "react";
-import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
+import React, { useCallback, useState } from "react";
+import { useDeepCompareCallback } from "use-deep-compare";
 import { Tabs } from "@mantine/core";
 import {
   FilterSet,
-  selectCurrentCohortFilters,
-  useCoreSelector,
   useCoreDispatch,
   removeCohortFilter,
   updateActiveCohortFilter,
 } from "@gff/core";
-import { useAppDispatch } from "@/features/genomic/appApi";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
-import { clearGeneAndSSMFilters } from "@/features/genomic/geneAndSSMFiltersSlice";
 import GeneAndSSMFilterPanel from "@/features/genomic/FilterPanel";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { DemoText } from "@/components/tailwindComponents";
@@ -34,7 +30,6 @@ export const overwritingDemoFilterMutationFrequency: FilterSet = {
 const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const isDemoMode = useIsDemoApp();
   const coreDispatch = useCoreDispatch();
-  const appDispatch = useAppDispatch();
   const [comparativeSurvival, setComparativeSurvival] =
     useState<ComparativeSurvival>(undefined);
   const [appMode, setAppMode] = useState<AppModeState>("genes");
@@ -42,14 +37,6 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     geneId: undefined,
     geneSymbol: undefined,
   });
-  const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilters(state),
-  );
-
-  const overwritingDemoFilter = useMemo(
-    () => overwritingDemoFilterMutationFrequency,
-    [],
-  );
 
   const topGeneSSMSSuccess = useTopGeneSsms({
     appMode,
@@ -142,11 +129,6 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
-
-  // clear local filters when cohort changes or tabs change
-  useDeepCompareEffect(() => {
-    appDispatch(clearGeneAndSSMFilters());
-  }, [overwritingDemoFilter, cohortFilters, appDispatch]);
 
   const clearSearchTermsForGene = useCallback(() => {
     setSearchTermsForGeneId({ geneId: undefined, geneSymbol: undefined });
