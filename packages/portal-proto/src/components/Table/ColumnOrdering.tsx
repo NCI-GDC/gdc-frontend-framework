@@ -75,10 +75,11 @@ function ColumnOrdering<TData>({
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
-    if (active?.id !== over?.id) {
+    if (active?.id && over?.id && active?.id !== over?.id) {
+      console.log({ active, over });
       setColumnOrder((items) => {
-        const oldIndex = items.indexOf(active.id as string);
-        const newIndex = items.indexOf(over.id as string);
+        const oldIndex = items.indexOf(active?.id as string);
+        const newIndex = items.indexOf(over?.id as string);
 
         return arrayMove(items, oldIndex, newIndex);
       });
