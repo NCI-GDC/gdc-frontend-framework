@@ -36,8 +36,11 @@ const SetOperationChartsForCohorts = ({
     useCreateCaseSetFromFiltersMutation();
 
   const ids = useDeepCompareMemo(
-    () => selectedEntities.map((e) => e.id),
-    [selectedEntities],
+    () =>
+      isCohortComparisonDemo
+        ? [cohortComparisonDemo1.id, cohortComparisonDemo2.id]
+        : selectedEntities.map((e) => e.id),
+    [isCohortComparisonDemo, selectedEntities],
   );
   const cohorts = useCoreSelector((state) =>
     selectMultipleCohortsById(state, ids),
