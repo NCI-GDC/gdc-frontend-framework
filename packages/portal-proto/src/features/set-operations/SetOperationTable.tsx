@@ -4,7 +4,8 @@ import {
   createColumnHelper,
   SortingState,
 } from "@tanstack/react-table";
-import { useMemo, useState, useId } from "react";
+import { useState, useId } from "react";
+import { useDeepCompareMemo } from "use-deep-compare";
 import CountButtonWrapperForSetsAndCases from "./CountButtonWrapperForSetsAndCases";
 import { Checkbox } from "@mantine/core";
 import { createSetFiltersByKey, ENTITY_TYPE_TO_CREATE_SET_HOOK } from "./utils";
@@ -20,6 +21,9 @@ type SetOperationTableDataType = {
   count: number;
   operationKey: string;
 };
+
+const setOperationTableColumnsHelper =
+  createColumnHelper<SetOperationTableDataType>();
 
 export const SetOperationTable = ({
   data,
@@ -67,7 +71,7 @@ export const SetOperationTable = ({
     useState<SortingState>([]);
   const componentId = useId();
 
-  const setOperationTableData: SetOperationTableDataType[] = useMemo(
+  const setOperationTableData: SetOperationTableDataType[] = useDeepCompareMemo(
     () =>
       data.map((r) => ({
         setOperation: r.label,
@@ -77,9 +81,7 @@ export const SetOperationTable = ({
     [data],
   );
 
-  const setOperationTableColumnsHelper =
-    createColumnHelper<SetOperationTableDataType>();
-  const setOperationTableColumns = useMemo<
+  const setOperationTableColumns = useDeepCompareMemo<
     ColumnDef<SetOperationTableDataType>[]
   >(
     () => [
