@@ -264,6 +264,8 @@ const CustomFacetGroup = (): JSX.Element => {
               "cohort-builder",
               FacetDocTypeToLabelsMap["cases"],
               handleRemoveFilter,
+              false,
+              2,
             )}
           </FacetGroup>
         )}
