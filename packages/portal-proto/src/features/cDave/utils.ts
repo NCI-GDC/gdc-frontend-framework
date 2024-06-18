@@ -137,8 +137,27 @@ export const useDataDimension = (field: string): boolean => {
   return DATA_DIMENSIONS?.[field]?.toggleValue !== undefined;
 };
 
-export const formatValue = (value: number): number => {
-  return Number(value?.toFixed(2));
+export const formatValue = (value: number): number => Number(value?.toFixed(2));
+
+export const roundContinuousValue = (
+  value: number,
+  field: string,
+  hasCustomBins: boolean,
+): number => {
+  if (hasCustomBins) {
+    return formatValue(value);
+  } else {
+    const unit = DATA_DIMENSIONS?.[field]?.unit;
+    if (unit === "Days" || unit === "Years") {
+      return Math.round(value);
+    } else {
+      if (value < 1 && value > -1) {
+        return formatValue(value);
+      } else {
+        return Math.round(value);
+      }
+    }
+  }
 };
 
 export const convertDataDimension = (

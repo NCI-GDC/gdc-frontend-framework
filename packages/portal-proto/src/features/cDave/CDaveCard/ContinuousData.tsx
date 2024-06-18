@@ -28,7 +28,7 @@ import {
   createBuckets,
   parseContinuousBucket,
   convertDataDimension,
-  formatValue,
+  roundContinuousValue,
 } from "../utils";
 import ContinuousBinningModal from "../ContinuousBinningModal/ContinuousBinningModal";
 import BoxQQSection from "./BoxQQSection";
@@ -48,7 +48,12 @@ const processContinuousResultData = (
   }
 
   return Object.entries(data).map(([k, v]) => ({
-    displayName: toBucketDisplayName(k, field, dataDimension),
+    displayName: toBucketDisplayName(
+      k,
+      field,
+      dataDimension,
+      customBinnedData !== null,
+    ),
     key: k,
     count: v,
   }));
@@ -58,17 +63,22 @@ const toBucketDisplayName = (
   bucket: string,
   field: string,
   dataDimension: DataDimension,
+  hasCustomBins: boolean,
 ): string => {
   const [fromValue, toValue] = parseContinuousBucket(bucket);
   const originalDataDimension = DATA_DIMENSIONS[field]?.unit;
-  return `${formatValue(
+  return `${roundContinuousValue(
     convertDataDimension(
       Number(fromValue),
       originalDataDimension,
       dataDimension,
     ),
-  )} to <${formatValue(
+    field,
+    hasCustomBins,
+  )} to <${roundContinuousValue(
     convertDataDimension(Number(toValue), originalDataDimension, dataDimension),
+    field,
+    hasCustomBins,
   )}`;
 };
 
@@ -101,6 +111,7 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
   const [selectedFacets, setSelectedFacets] = useState<SelectedFacet[]>([]);
   const [yTotal, setYTotal] = useState(0);
   const dataDimensionRef = useRef(dataDimension);
+  const hasCustomBins = customBinnedData !== null;
 
   const ranges = useDeepCompareMemo(
     () =>
@@ -181,6 +192,7 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
           displayName={fieldName}
           data={statsData}
           dataDimension={dataDimension}
+          hasCustomBins={hasCustomBins}
         />
       ) : (
         <>
