@@ -28,7 +28,7 @@ import {
   TabsProps,
   Text,
 } from "@mantine/core";
-import { getFacetInfo } from "@/features/cohortBuilder/utils";
+import { getFacetInfo, trial_facets } from "@/features/cohortBuilder/utils";
 import {
   MdAdd as AddAdditionalIcon,
   MdLibraryAdd as AddFacetIcon,
@@ -282,6 +282,7 @@ export const FacetTabs = (): JSX.Element => {
   const prevRouterTab = usePrevious(routerTab);
   const facets =
     useCoreSelector((state) => selectFacetDefinition(state)).data || {};
+  console.log({ facets });
   const [activeTab, setActiveTab] = useState(
     routerTab ? (routerTab as string) : Object.keys(tabsConfig)[0],
   );
@@ -302,6 +303,7 @@ export const FacetTabs = (): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, routerTab, prevRouterTab]);
 
+  console.log({ tabsConfig });
   return (
     <div className="w-100">
       <StyledFacetTabs
@@ -340,7 +342,10 @@ export const FacetTabs = (): JSX.Element => {
         {Object.entries(tabsConfig).map(
           ([key, tabEntry]: [string, CohortBuilderCategoryConfig]) => {
             const facetList =
-              key === "custom" ? [] : getFacetInfo(tabEntry.facets, facets);
+              key === "custom"
+                ? []
+                : getFacetInfo(tabEntry.facets, { ...facets, ...trial_facets });
+            console.log({ facetList });
             return (
               <Tabs.Panel key={key} value={key}>
                 {key === "custom" ? (

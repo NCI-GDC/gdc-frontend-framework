@@ -6,6 +6,7 @@ import DateRangeFacet from "@/features/facets/DateRangeFacet";
 import ExactValueFacet from "@/features/facets/ExactValueFacet";
 import ToggleFacet from "@/features/facets/ToggleFacet";
 import { FacetRequiredHooks } from "@/features/facets/types";
+import UploadFacet from "./UploadFacet";
 
 /**
  * createFacetCard given a facet definition it will create a
@@ -127,6 +128,20 @@ export const createFacetCard = (
       />
     );
   }
+  if (facet.facet_type === "upload")
+    return (
+      <UploadFacet
+        key={`${idPrefix}-exact-${facet.full}`}
+        title={facet.full}
+        field={facet.field}
+        dismissCallback={dismissCallback}
+        hideIfEmpty={hideIfEmpty}
+        hooks={{ ...dataFunctions }}
+        facetName={facetName}
+        width={width}
+        description={facet.description}
+      />
+    );
   return <div> Unknown FacetType {facet.facet_type}</div>;
 };
 

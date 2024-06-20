@@ -6,6 +6,37 @@ import {
 } from "@gff/core";
 import { SummaryFacetInfo } from "./SummaryFacets";
 
+export const trial_facets: Record<string, FacetDefinition> = {
+  "cases.upload_cases": {
+    description: "Enter/upload cases to filter the current cohort",
+    doc_type: "cases",
+    facet_type: "upload",
+    field: "Upload Cases",
+    full: "cases.case_id",
+    range: undefined,
+    type: "keyword",
+  },
+  "cases.upload_genes": {
+    description:
+      "Enter/upload genes or select gene sets to filter the current cohort",
+    doc_type: "cases",
+    facet_type: "upload",
+    field: "Upload Mutated Genes",
+    full: "cases.gene",
+    range: undefined,
+    type: "keyword",
+  },
+  "cases.upload_ssms": {
+    description:
+      "Enter/upload simple mutations or select mutation sets to filter the current cohort",
+    doc_type: "cases",
+    facet_type: "upload",
+    field: "Upload Simple Mutations",
+    full: "cases.ssms_id",
+    range: undefined,
+    type: "keyword",
+  },
+};
 /**
  * getFacetInfo: returns information from the GDC API: description, full field, type, etc.
  * It returns information ONLY for defined fields
@@ -16,6 +47,7 @@ export const getFacetInfo = (
   fields: ReadonlyArray<string>,
   facets: Record<string, FacetDefinition>,
 ): ReadonlyArray<FacetDefinition> => {
+  console.log({ fields, facets });
   return fields.map((field) => facets[field]).filter((facet) => facet);
 };
 
