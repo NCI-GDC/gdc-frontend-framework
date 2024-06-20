@@ -76,6 +76,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
     >
       <div className="w-fit">
         <ActionIcon
+          data-testid="button-download-tsv-set-operations"
           onClick={() =>
             createSet({ filters, set_type: "instant", intent: "portal" })
           }

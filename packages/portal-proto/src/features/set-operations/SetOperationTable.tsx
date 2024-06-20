@@ -90,6 +90,7 @@ export const SetOperationTable = ({
         header: "Select",
         cell: ({ row }) => (
           <Checkbox
+            data-testid={`checkbox-${row.original.operationKey}-set-operations`}
             size="xs"
             classNames={{
               input: "checked:bg-accent checked:border-accent",
@@ -111,6 +112,7 @@ export const SetOperationTable = ({
         enableSorting: false,
         cell: ({ getValue, row }) => (
           <label
+            data-testid={`text-${row.original.operationKey}-label-set-operations`}
             htmlFor={`${componentId}-setOperation-${row.original.operationKey}`}
           >
             {getValue()}
@@ -163,6 +165,7 @@ export const SetOperationTable = ({
 
   return (
     <VerticalTable
+      customDataTestID="table-set-operations"
       data={setOperationTableData}
       columns={setOperationTableColumns}
       enableRowSelection={true}
@@ -175,7 +178,7 @@ export const SetOperationTable = ({
       columnSorting="enable"
       customAriaLabel="Overlap Table"
       footer={
-        <tr>
+        <tr data-testid="row-union-of-selected-sets">
           <td className="p-2 font-bold">Union of selected sets:</td>
           <td />
           <td className="w-52">

@@ -93,6 +93,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
     >
       <span>
         <Checkbox
+          data-testid={`checkbox-${name}-set-operations`}
           classNames={{
             input: "checked:bg-accent checked:border-accent",
           }}
@@ -288,6 +289,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
         header: "Entity Type",
         cell: ({ getValue, row }) => (
           <span
+            data-testid="text-entity-type-set-operations"
             className={
               shouldDisableInput(
                 row.original.entity_type,
@@ -309,6 +311,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
         header: "Name",
         cell: ({ getValue, row }) => (
           <span
+            data-testid="text-entity-name-set-operations"
             id={`${componentId}-${row.original.entity_type}-selection-${
               (row.original as Record<string, any>).setId
             }`}
@@ -333,6 +336,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
         header: "# Items",
         cell: ({ getValue, row }) => (
           <span
+            data-testid={`text-${row.original.name}-item-count-set-operations`}
             className={
               shouldDisableInput(
                 row.original.entity_type,
@@ -399,6 +403,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
         <p className="pb-2 font-content">
           Create cohorts in the Analysis Center. Create gene/mutation sets in{" "}
           <Link
+            data-testid="link-manage-sets"
             href="/manage_sets"
             className="text-utility-link font-content underline"
           >
@@ -406,6 +411,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
           </Link>{" "}
           or in analysis tools (e.g.{" "}
           <Link
+            data-testid="link-mutation-frequnecy"
             href="/analysis_page?app=MutationFrequencyApp"
             className="text-utility-link font-content underline"
           >
@@ -437,6 +443,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
       </div>
       <div className="flex flex-row justify-end w-full sticky bottom-0 bg-base-lightest py-2 px-4">
         <FunctionButton
+          data-testid="button-cancel-set-operations"
           className="mr-4"
           onClick={() => {
             setActiveApp(null);
@@ -446,6 +453,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
           Cancel
         </FunctionButton>
         <DarkFunctionButton
+          data-testid="button-run-set-operations"
           disabled={selectedEntities.length < 2}
           onClick={() => setOpen(false)}
         >
