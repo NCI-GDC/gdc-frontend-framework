@@ -170,7 +170,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
           classNames={{
             tab: SecondaryTabStyle,
             list: "px-2 mt-2 border-0 gap-0",
-            root: "bg-base-max border-0 w-full overflow-x-clip",
+            root: "bg-base-max border-0 w-full overflow-x-hidden",
           }}
           onChange={handleTabChanged}
           keepMounted={false}
