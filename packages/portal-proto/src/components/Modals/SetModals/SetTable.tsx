@@ -52,6 +52,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
           />
         ) : (
           <Radio
+            data-testid={`radio-select-set`}
             value={setId}
             checked={selected}
             disabled={disabledMessage !== undefined}
@@ -168,6 +169,7 @@ const SetTable: React.FC<SetTableProps> = ({
 
   return (
     <VerticalTable
+      customDataTestID="table-select-set"
       data={displayedData}
       columns={setTableColumns}
       handleChange={handleTableChange}
