@@ -132,10 +132,7 @@ export const createFacetCard = (
     return (
       <UploadFacet
         key={`${idPrefix}-exact-${facet.full}`}
-        title={facet.full}
         field={facet.field}
-        dismissCallback={dismissCallback}
-        hideIfEmpty={hideIfEmpty}
         hooks={{ ...dataFunctions }}
         facetName={facetName}
         width={width}

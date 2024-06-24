@@ -1,8 +1,14 @@
+import React from "react";
 import {
+  FilterSet,
   Modals,
   showModal,
   trimFirstFieldNameToTitle,
   useCoreDispatch,
+  useCoreSelector,
+  useGeneSymbol,
+  selectCurrentCohortId,
+  Operation,
 } from "@gff/core";
 import { Button, Tooltip } from "@mantine/core";
 import {
@@ -11,25 +17,85 @@ import {
   FacetIconButton,
   FacetText,
 } from "./components";
-import { MdClose as CloseIcon } from "react-icons/md";
 import { FaUndo as UndoIcon } from "react-icons/fa";
+import { useCohortFacetFilters } from "../cohortBuilder/utils";
+import CohortBadge from "../cohortBuilder/CohortBadge";
 
-const UploadFacet = ({
-  title,
+interface GroupedOperands {
+  cases?: string[];
+  genes?: string[];
+  ssms?: string[];
+}
+type root = Omit<Operation, "Intersection" | "Union">;
+
+const groupOperandsByKey = (filters: FilterSet): GroupedOperands => {
+  const groupedOperands: GroupedOperands = { cases: [], genes: [], ssms: [] };
+
+  Object.values(filters.root).forEach(({ field, operands }) => {
+    if (field === "cases.case_id") groupedOperands.cases.push(...operands);
+    else if (field === "genes.gene_id") groupedOperands.genes.push(...operands);
+    else if (field === "ssms.ssm_id") groupedOperands.ssms.push(...operands);
+  });
+
+  return groupedOperands;
+};
+
+interface UploadFacetProps {
+  field: string;
+  description?: string;
+  facetName?: string;
+  width?: string;
+  hooks: any;
+}
+
+const UploadFacet: React.FC<UploadFacetProps> = ({
   field,
   description,
-  facetName = undefined,
-  dismissCallback = undefined,
-  width = undefined,
+  facetName,
+  width,
   hooks,
-  hideIfEmpty,
 }) => {
   const coreDispatch = useCoreDispatch();
-
+  const currentCohortId = useCoreSelector(selectCurrentCohortId);
   const clearFilters = hooks.useClearFilter();
-  const facetTitle = facetName
-    ? facetName
-    : trimFirstFieldNameToTitle(field, true);
+  const facetTitle = facetName || trimFirstFieldNameToTitle(field, true);
+  const filters = useCohortFacetFilters();
+  const noFilters = Object.keys(filters?.root || {}).length === 0;
+  const isCases = field.includes("Cases");
+  const isGenes = field.includes("Genes");
+  const isSSM = field.includes("Mutations");
+  const { cases, genes, ssms } = groupOperandsByKey(filters);
+
+  const { data: geneSymbolDict, isSuccess } = useGeneSymbol(
+    field === "genes.gene_id" ? genes.map((x) => x.toString()) : [],
+  );
+
+  const renderBadges = (items, itemField) => {
+    return items.map((item, index) => (
+      <CohortBadge
+        key={index}
+        field={itemField}
+        value={item}
+        customTestid={`query-rep-${itemField}-${item}-${index}`}
+        operands={items}
+        operator="includes"
+        currentCohortId={currentCohortId}
+        geneSymbolDict={geneSymbolDict}
+        isSuccess={isSuccess}
+      />
+    ));
+  };
+
+  const handleButtonClick = () => {
+    if (isCases) {
+      coreDispatch(showModal({ modal: Modals.GlobalCaseSetModal }));
+    } else if (isGenes) {
+      coreDispatch(showModal({ modal: Modals.GlobalGeneSetModal }));
+    } else {
+      coreDispatch(showModal({ modal: Modals.GlobalMutationSetModal }));
+    }
+  };
+
   return (
     <div
       className={`flex flex-col ${
@@ -57,36 +123,23 @@ const UploadFacet = ({
               <UndoIcon size="1.15em" className={controlsIconStyle} />
             </FacetIconButton>
           </Tooltip>
-          {dismissCallback && (
-            <Tooltip label="Remove the facet">
-              <FacetIconButton
-                onClick={() => {
-                  dismissCallback(field);
-                }}
-                aria-label="Remove the facet"
-              >
-                <CloseIcon size="1.25em" className={controlsIconStyle} />
-              </FacetIconButton>
-            </Tooltip>
-          )}
         </div>
       </FacetHeader>
-      <div className="flex justify-center p-2">
-        <Button
-          variant="outline"
-          onClick={() => {
-            if (field.includes("Cases")) {
-              coreDispatch(showModal({ modal: Modals.GlobalCaseSetModal }));
-            } else if (field.includes("Genes")) {
-              coreDispatch(showModal({ modal: Modals.GlobalGeneSetModal }));
-            } else {
-              coreDispatch(showModal({ modal: Modals.GlobalMutationSetModal }));
-            }
-          }}
-        >
-          {field}
-        </Button>
-        <div></div>
+      <div className="p-4">
+        <div className="flex justify-center">
+          <Button variant="outline" fullWidth onClick={handleButtonClick}>
+            {field}
+          </Button>
+        </div>
+        <div className="mt-2">
+          {noFilters ? null : (
+            <div className="flex flex-wrap gap-1">
+              {isCases && renderBadges(cases, "cases.case_id")}
+              {isGenes && renderBadges(genes, "genes.gene_id")}
+              {isSSM && renderBadges(ssms, "ssms.ssm_id")}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
