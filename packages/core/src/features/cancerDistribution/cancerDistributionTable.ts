@@ -81,12 +81,28 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
           },
         };
 
+        const geneFilter = buildCohortGqlOperator({
+          mode: "and",
+          root: {
+            ["genes.gene_id"]: {
+              operator: "includes",
+              field: "genes.gene_id",
+              operands: [request.gene],
+            } as Includes,
+          },
+        });
+
         const gqlContextFilter = buildCohortGqlOperator(genomicWithGene);
         const gqlCohortFilters = buildCohortGqlOperator(request.cohortFilters);
         const gqlContextIntersection =
           gqlContextFilter && (gqlContextFilter as GqlIntersection).content
             ? (gqlContextFilter as GqlIntersection).content
             : [];
+        const geneGqlContextIntersection =
+          geneFilter && (geneFilter as GqlIntersection).content
+            ? (geneFilter as GqlIntersection).content
+            : [];
+
         return {
           graphQLQuery: `
         query CancerDistributionTable(
@@ -220,7 +236,7 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
                   },
                   op: "in",
                 },
-                ...gqlContextIntersection,
+                ...geneGqlContextIntersection,
               ],
             },
             cnvLossFilter: {
@@ -240,7 +256,7 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
                   },
                   op: "in",
                 },
-                ...gqlContextIntersection,
+                ...geneGqlContextIntersection,
               ],
             },
             cnvTested: {

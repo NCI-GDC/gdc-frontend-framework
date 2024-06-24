@@ -1,13 +1,13 @@
 import { GroupProps, ElementProps, PathStyleProps } from "zrender";
 
-export interface chartData {
+export interface ChartData {
   readonly key: string;
   readonly value: number | string;
   readonly highlighted: boolean;
 }
 
 export interface VennDiagramProps {
-  readonly chartData: chartData[];
+  readonly chartData: ChartData[];
   readonly labels: string[];
   readonly ariaLabel: string;
   readonly onClickHandler?: (key: string) => void;
