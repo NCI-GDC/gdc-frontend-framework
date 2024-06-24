@@ -1,5 +1,5 @@
 import React from "react";
-import { FacetDefinition } from "@gff/core";
+import { FacetDefinition, fieldNameToTitle } from "@gff/core";
 import EnumFacet from "@/features/facets/EnumFacet";
 import NumericRangeFacet from "@/features/facets/NumericRangeFacet";
 import DateRangeFacet from "@/features/facets/DateRangeFacet";
@@ -150,7 +150,7 @@ export const createFacetCardsFromList = (
   valueLabel: string,
   dismissCallback: (string) => void = undefined,
   hideIfEmpty = false,
-  facetName?: string,
+  facetNameSections = 1,
   width?: string,
 ): ReadonlyArray<React.ReactNode> => {
   return facets.map((x) =>
@@ -161,7 +161,7 @@ export const createFacetCardsFromList = (
       idPrefix,
       dismissCallback,
       hideIfEmpty,
-      facetName,
+      fieldNameToTitle(x.full, facetNameSections),
       width,
     ),
   );
