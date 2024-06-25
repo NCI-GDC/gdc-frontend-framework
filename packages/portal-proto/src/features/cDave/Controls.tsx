@@ -80,9 +80,9 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
   return filteredFields.length > 0 ? (
     <>
       <span
-        onClick={() => setGroupOpen((prev) => !prev)}
+        onClick={() => setGroupOpen(!groupOpen)}
         onKeyDown={createKeyboardAccessibleFunction(() =>
-          setGroupOpen((prev) => !prev),
+          setGroupOpen(!groupOpen),
         )}
         tabIndex={0}
         role="button"
@@ -114,7 +114,7 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
             <FacetExpander
               remainingValues={filteredFields.length - 5}
               isGroupExpanded={!fieldsCollapsed}
-              onShowChanged={() => setFieldsCollapsed((prev) => !prev)}
+              onShowChanged={() => setFieldsCollapsed(!fieldsCollapsed)}
             />
           </div>
         </div>
@@ -252,49 +252,47 @@ const Controls: React.FC<ControlPanelProps> = ({
           )}
         </ActionIcon>
       </Tooltip>
-      {controlsExpanded && (
-        <>
-          <Input
-            data-testid="textbox-cdave-search-bar"
-            placeholder="Search"
-            className="py-2"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.currentTarget.value)}
-            rightSectionPointerEvents="all"
-            rightSection={
-              searchTerm && (
-                <ActionIcon onClick={() => setSearchTerm("")} variant="subtle">
-                  <CloseIcon aria-label="clear search" />
-                </ActionIcon>
-              )
-            }
-            aria-label="Search fields"
-          />
-          <p
-            data-testid="text-fields-with-values"
-            className="p-2 font-heading font-medium"
-          >
-            {Object.keys(fieldsWithData).length} of {cDaveFields.length} fields
-            with values
-          </p>
-          <div
-            className="block overflow-y-scroll"
-            id="cdave-control-panel"
-            data-testid="cdave-control-panel"
-          >
-            {Object.entries(TABS).map(([key, label]) => (
-              <ControlGroup
-                name={label}
-                fields={sortFacetFields(groupedFields[key] || [], key)}
-                updateFields={updateFields}
-                activeFields={activeFields}
-                searchTerm={searchTerm}
-                key={key}
-              />
-            ))}
-          </div>
-        </>
-      )}
+      <div
+        className={controlsExpanded ? "block" : "hidden"}
+        id="cdave-control-panel"
+        data-testid="cdave-control-panel"
+      >
+        <Input
+          data-testid="textbox-cdave-search-bar"
+          placeholder="Search"
+          className="py-2 pr-4"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.currentTarget.value)}
+          rightSectionPointerEvents="all"
+          rightSection={
+            searchTerm && (
+              <ActionIcon onClick={() => setSearchTerm("")} variant="subtle">
+                <CloseIcon aria-label="clear search" />
+              </ActionIcon>
+            )
+          }
+          aria-label="Search fields"
+        />
+        <p
+          data-testid="text-fields-with-values"
+          className="p-2 font-heading font-medium"
+        >
+          {Object.keys(fieldsWithData).length} of {cDaveFields.length} fields
+          with values
+        </p>
+        <div className="max-h-screen overflow-y-scroll">
+          {Object.entries(TABS).map(([key, label]) => (
+            <ControlGroup
+              name={label}
+              fields={sortFacetFields(groupedFields[key] || [], key)}
+              updateFields={updateFields}
+              activeFields={activeFields}
+              searchTerm={searchTerm}
+              key={key}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
