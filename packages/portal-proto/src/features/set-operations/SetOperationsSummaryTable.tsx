@@ -75,6 +75,7 @@ export const SetOperationsSummaryTable = ({
 
   return (
     <VerticalTable
+      customDataTestID="table-summary-set-operations"
       data={summaryTableData}
       columns={summaryTableColumns}
       showControls={false}

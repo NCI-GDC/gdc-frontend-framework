@@ -100,17 +100,22 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
     >
       <div className="p-4">
         <NumberInput
+          data-testid="textbox-number-of-top-items"
           required
           label="Save top:"
           min={1}
           max={max}
           {...form.getInputProps("top")}
         />
-        <p className="text-sm pb-2 pt-1">
+        <p
+          data-testid="text-up-to-top-items-can-be-saved"
+          className="text-sm pb-2 pt-1"
+        >
           Up to the top {max?.toLocaleString()} {setTypeLabel}
           {max > 1 ? "s" : ""} can be saved.
         </p>
         <TextInput
+          data-testid="textbox-set-name"
           required
           label="Name"
           {...form.getInputProps("name")}
@@ -124,8 +129,11 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
         )}
       </div>
       <ModalButtonContainer data-testid="modal-button-container">
-        <FunctionButton onClick={closeModal}>Cancel</FunctionButton>
+        <FunctionButton data-testid="button-cancel" onClick={closeModal}>
+          Cancel
+        </FunctionButton>
         <DarkFunctionButton
+          data-testid="button-save"
           onClick={() =>
             createSet({
               case_filters: cohortFilters ?? {},

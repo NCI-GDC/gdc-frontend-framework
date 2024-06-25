@@ -35,6 +35,7 @@ export const CreateFromCountButton = ({
       <Tooltip label={tooltipLabel} withArrow>
         <span>
           <CohortCreationStyledButton
+            data-testid="button-save-filtered-set"
             disabled={disabled}
             onClick={handleOnClick}
             aria-label={ariaLabel}
