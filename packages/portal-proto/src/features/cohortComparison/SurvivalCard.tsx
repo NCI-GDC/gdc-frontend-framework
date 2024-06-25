@@ -178,6 +178,7 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
               plotType={SurvivalPlotTypes.cohortComparison}
               data={data}
               hideLegend
+              noDataMessage="No Survival data available for this Cohort Comparison"
             />
           )}
           <div className="font-heading mt-[1.5rem]">

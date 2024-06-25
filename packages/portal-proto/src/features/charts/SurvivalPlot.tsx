@@ -327,6 +327,7 @@ export interface SurvivalPlotProps {
   readonly field?: string;
   readonly downloadFileName?: string;
   readonly tableTooltip?: boolean;
+  readonly noDataMessage?: string;
 }
 
 const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
@@ -339,6 +340,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
   field,
   downloadFileName = "survival-plot",
   tableTooltip = false,
+  noDataMessage = "",
 }: SurvivalPlotProps) => {
   // handle the current range of the xAxis: set to "undefined" to reset
   const [xDomain, setXDomain] = useState(undefined);
@@ -491,8 +493,8 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
     DownloadProgressContext,
   );
   // handle errors
-  if (!(dataToUse.length > 0)) {
-    return <div className="p-1">Not enough survival data</div>;
+  if (!(dataToUse.length > 0 && noDataMessage)) {
+    return <div className="p-1">{noDataMessage}</div>;
   }
 
   return (
@@ -675,6 +677,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
  * @param downloadFileName - name of the file to download
  * @param tableTooltip - whether to show the table tooltip
  * @category Charts
+ * @param noDataMessage - message to show when not enough data
  */
 
 const SurvivalPlot = (props: SurvivalPlotProps) => {
