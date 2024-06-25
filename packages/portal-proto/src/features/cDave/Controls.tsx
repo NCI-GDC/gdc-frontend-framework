@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Switch,
   Divider,
@@ -8,7 +8,7 @@ import {
   Input,
   Highlight,
 } from "@mantine/core";
-import { groupBy, get, sortBy } from "lodash";
+import { groupBy, sortBy } from "lodash";
 import {
   MdKeyboardArrowDown as DownIcon,
   MdKeyboardArrowRight as RightIcon,
@@ -30,6 +30,11 @@ import {
 import { toDisplayName } from "./utils";
 import tailwindConfig from "../../../tailwind.config";
 import FacetExpander from "../facets/FacetExpander";
+import {
+  useDeepCompareCallback,
+  useDeepCompareEffect,
+  useDeepCompareMemo,
+} from "use-deep-compare";
 
 interface CDaveField {
   readonly field_type: string;
@@ -52,32 +57,25 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
   updateFields,
   activeFields,
   searchTerm,
-}: ControlGroupProps) => {
+}) => {
   const [groupOpen, setGroupOpen] = useState(true);
-  const [filteredFields, setFilteredFields] = useState(fields);
   const [fieldsCollapsed, setFieldsCollapsed] = useState(true);
-  const [visibleFields, setVisibleFields] = useState(fields.slice(0, 5));
 
-  useEffect(() => {
-    if (!searchTerm) {
-      setVisibleFields(fieldsCollapsed ? fields.slice(0, 5) : fields);
-      setFilteredFields(fields);
-    } else {
-      const filteredFields = fields.filter(
-        (f) =>
-          f.description?.toLowerCase().search(searchTerm.trim().toLowerCase()) >
-            -1 ||
-          toDisplayName(f.field_name)
-            .toLowerCase()
-            .search(searchTerm.trim().toLowerCase()) > -1,
-      );
+  const filteredFields = useDeepCompareMemo(() => {
+    if (!searchTerm) return fields;
+    return fields.filter(
+      (f) =>
+        f.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        toDisplayName(f.field_name)
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()),
+    );
+  }, [searchTerm, fields]);
 
-      setVisibleFields(
-        fieldsCollapsed ? filteredFields.slice(0, 5) : filteredFields,
-      );
-      setFilteredFields(filteredFields);
-    }
-  }, [searchTerm, fieldsCollapsed, fields]);
+  const visibleFields = useDeepCompareMemo(
+    () => (fieldsCollapsed ? filteredFields.slice(0, 5) : filteredFields),
+    [fieldsCollapsed, filteredFields],
+  );
 
   return filteredFields.length > 0 ? (
     <>
@@ -137,53 +135,32 @@ const FieldControl: React.FC<FieldControlProps> = ({
   updateFields,
   activeFields,
   searchTerm = "",
-}: FieldControlProps) => {
+}) => {
   const [checked, setChecked] = useState(DEFAULT_FIELDS.includes(field.full));
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     setChecked(activeFields.includes(field.full));
   }, [activeFields, field.full]);
 
   const displayName = toDisplayName(field.field_name);
+  const fieldColor =
+    tailwindConfig.theme.extend.colors[COLOR_MAP[field.field_type]]?.DEFAULT;
+
+  const handleChange = useDeepCompareCallback(
+    (e) => {
+      setChecked(e.currentTarget.checked);
+      updateFields(field.full);
+    },
+    [field.full, updateFields],
+  );
 
   return (
-    <li
-      data-testid={`row-field-${displayName}-cdave`}
-      key={field.full}
-      className="px-2 pt-2"
-    >
-      {searchTerm ? (
-        <>
-          <Switch
-            label={<Highlight highlight={searchTerm}>{displayName}</Highlight>}
-            labelPosition="left"
-            color={
-              tailwindConfig.theme.extend.colors[COLOR_MAP[field.field_type]]
-                ?.DEFAULT
-            }
-            classNames={{
-              root: "py-2",
-              body: "flex justify-between items-center",
-              label:
-                "cursor-pointer text-base text-black font-content font-medium",
-              track: `cursor-pointer ${
-                COLOR_CLASS_HOVER_MAP[field.field_type]
-              }`,
-            }}
-            checked={checked}
-            onChange={(e) => {
-              setChecked(e.currentTarget.checked);
-              updateFields(field.full);
-            }}
-          />
-          <Highlight highlight={searchTerm}>
-            {field?.description || ""}
-          </Highlight>
-        </>
-      ) : (
-        <Switch
-          data-testid={`button-field-${displayName}-cdave`}
-          label={
+    <li data-testid={`row-field-${displayName}-cdave`} className="px-2 pt-2">
+      <Switch
+        label={
+          searchTerm ? (
+            <Highlight highlight={searchTerm}>{displayName}</Highlight>
+          ) : (
             <Tooltip
               label={field?.description || "No description available"}
               withArrow
@@ -193,25 +170,21 @@ const FieldControl: React.FC<FieldControlProps> = ({
             >
               <div>{displayName}</div>
             </Tooltip>
-          }
-          labelPosition="left"
-          color={
-            tailwindConfig.theme.extend.colors[COLOR_MAP[field.field_type]]
-              ?.DEFAULT
-          }
-          classNames={{
-            root: "py-2",
-            body: "flex justify-between items-center",
-            label:
-              "cursor-pointer text-base text-black font-content font-medium",
-            track: `cursor-pointer ${COLOR_CLASS_HOVER_MAP[field.field_type]}`,
-          }}
-          checked={checked}
-          onChange={(e) => {
-            setChecked(e.currentTarget.checked);
-            updateFields(field.full);
-          }}
-        />
+          )
+        }
+        labelPosition="left"
+        color={fieldColor}
+        classNames={{
+          root: "py-2",
+          body: "flex justify-between items-center",
+          label: "cursor-pointer text-base text-black font-content font-medium",
+          track: `cursor-pointer ${COLOR_CLASS_HOVER_MAP[field.field_type]}`,
+        }}
+        checked={checked}
+        onChange={handleChange}
+      />
+      {searchTerm && (
+        <Highlight highlight={searchTerm}>{field?.description || ""}</Highlight>
       )}
       <Divider />
     </li>
@@ -245,14 +218,17 @@ const Controls: React.FC<ControlPanelProps> = ({
   activeFields,
   controlsExpanded,
   setControlsExpanded,
-}: ControlPanelProps) => {
+}) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const groupedFields = groupBy(cDaveFields, "field_type");
+  const groupedFields = useDeepCompareMemo(
+    () => groupBy(cDaveFields, "field_type"),
+    [cDaveFields],
+  );
 
   return (
     <div
       className={`${
-        controlsExpanded ? "w-80 bg-base-max shadow-md overflow-y-scroll" : ""
+        controlsExpanded ? "w-80 bg-base-max shadow-md" : ""
       } pl-4 pt-2 flex flex-col min-h-[560px] max-h-screen`}
     >
       <Tooltip
@@ -284,11 +260,9 @@ const Controls: React.FC<ControlPanelProps> = ({
         <Input
           data-testid="textbox-cdave-search-bar"
           placeholder="Search"
-          className="py-2"
+          className="py-2 pr-4"
           value={searchTerm}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setSearchTerm(e.currentTarget.value)
-          }
+          onChange={(e) => setSearchTerm(e.currentTarget.value)}
           rightSectionPointerEvents="all"
           rightSection={
             searchTerm && (
@@ -306,16 +280,18 @@ const Controls: React.FC<ControlPanelProps> = ({
           {Object.keys(fieldsWithData).length} of {cDaveFields.length} fields
           with values
         </p>
-        {Object.entries(TABS).map(([key, label]) => (
-          <ControlGroup
-            name={label}
-            fields={sortFacetFields(get(groupedFields, key, []), key)}
-            updateFields={updateFields}
-            activeFields={activeFields}
-            searchTerm={searchTerm}
-            key={key}
-          />
-        ))}
+        <div className="max-h-screen overflow-y-scroll">
+          {Object.entries(TABS).map(([key, label]) => (
+            <ControlGroup
+              name={label}
+              fields={sortFacetFields(groupedFields[key] || [], key)}
+              updateFields={updateFields}
+              activeFields={activeFields}
+              searchTerm={searchTerm}
+              key={key}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

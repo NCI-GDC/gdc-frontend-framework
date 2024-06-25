@@ -61,7 +61,7 @@ const FacetExpander: React.FC<FacetExpanderProps> = ({
             <LessIcon
               className="text-accent"
               key="show-less"
-              size="1.5em"
+              size="1rem"
               onClick={() => onShowChanged(!isGroupExpanded)}
               aria-hidden="true"
             />
