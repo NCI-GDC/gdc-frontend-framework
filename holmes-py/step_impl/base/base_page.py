@@ -44,6 +44,7 @@ class GenericLocators:
     TEXT_BOX_IDENT = lambda text_box: f'[data-testid="textbox-{text_box}"]'
     SEARCH_BAR_ARIA_IDENT = lambda aria_label: f'[aria-label="{aria_label}"]'
     SEARCH_BAR_TABLE_IDENT = '[data-testid="textbox-table-search-bar"] >> nth=0'
+    SEARCH_BAR_IN_SPECIFIED_TABLE_IDENT = lambda table_specified: f'[data-testid="table-{table_specified}"] >> [data-testid="textbox-table-search-bar"] >> nth=0'
     QUICK_SEARCH_BAR_IDENT = '[data-testid="textbox-quick-search-bar"]'
     QUICK_SEARCH_BAR_FIRST_RESULT = '[data-testid="text-search-result"] >> nth=0'
     QUICK_SEARCH_BAR_NUMBERED_RESULT = (
@@ -564,6 +565,13 @@ class BasePage:
         """Sends text into data-testid textbox"""
         text_box_id = self.normalize_button_identifier(text_box_id)
         locator = GenericLocators.TEXT_BOX_IDENT(text_box_id)
+        self.wait_until_locator_is_visible(locator)
+        self.send_keys(locator, text_to_send)
+
+    def send_text_into_specified_table_search_bar(self, table_specified, text_to_send):
+        """Sends text into a specified table search bar"""
+        table_specified = self.normalize_button_identifier(table_specified)
+        locator = GenericLocators.SEARCH_BAR_IN_SPECIFIED_TABLE_IDENT(table_specified)
         self.wait_until_locator_is_visible(locator)
         self.send_keys(locator, text_to_send)
 
