@@ -411,7 +411,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
           </Link>{" "}
           or in analysis tools (e.g.{" "}
           <Link
-            data-testid="link-mutation-frequnecy"
+            data-testid="link-mutation-frequency"
             href="/analysis_page?app=MutationFrequencyApp"
             className="text-utility-link font-content underline"
           >

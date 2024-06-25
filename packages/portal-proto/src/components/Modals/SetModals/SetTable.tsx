@@ -52,7 +52,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
           />
         ) : (
           <Radio
-            data-testid={`radio-select-set`}
+            data-testid="radio-select-set"
             value={setId}
             checked={selected}
             disabled={disabledMessage !== undefined}
