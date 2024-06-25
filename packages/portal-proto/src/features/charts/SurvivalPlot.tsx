@@ -493,7 +493,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
     DownloadProgressContext,
   );
   // handle errors
-  if (!(dataToUse.length > 0 && noDataMessage)) {
+  if (!(dataToUse.length > 0) && noDataMessage) {
     return <div className="py-1">{noDataMessage}</div>;
   }
 
