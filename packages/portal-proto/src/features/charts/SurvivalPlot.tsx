@@ -494,7 +494,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
   );
   // handle errors
   if (!(dataToUse.length > 0 && noDataMessage)) {
-    return <div className="p-1">{noDataMessage}</div>;
+    return <div className="py-1">{noDataMessage}</div>;
   }
 
   return (
