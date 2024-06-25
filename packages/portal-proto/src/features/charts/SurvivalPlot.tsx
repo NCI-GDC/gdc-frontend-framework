@@ -492,11 +492,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
   );
   // handle errors
   if (!(dataToUse.length > 0)) {
-    return (
-      <div className="p-1">
-        No Survival data available for this Cohort Comparison
-      </div>
-    );
+    return <div className="p-1">Not enough survival data</div>;
   }
 
   return (
