@@ -75,6 +75,8 @@ class RepositoryPage(BasePage):
             item_position = 1
         elif item == "size":
             item_position = 2
+        else:
+            item_position = "Invalid Item Requested"
         locator = RepositoryPageLocators.TEXT_REPO_TABLE_ITEM_COUNT(item_position)
         return self.get_text(locator)
 
