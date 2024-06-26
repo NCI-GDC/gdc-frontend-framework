@@ -282,7 +282,6 @@ export const FacetTabs = (): JSX.Element => {
   const prevRouterTab = usePrevious(routerTab);
   const facets =
     useCoreSelector((state) => selectFacetDefinition(state)).data || {};
-  // console.log({ facets });
   const [activeTab, setActiveTab] = useState(
     routerTab ? (routerTab as string) : Object.keys(tabsConfig)[0],
   );
@@ -303,7 +302,6 @@ export const FacetTabs = (): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, routerTab, prevRouterTab]);
 
-  // console.log({ tabsConfig });
   return (
     <div className="w-100">
       <StyledFacetTabs
