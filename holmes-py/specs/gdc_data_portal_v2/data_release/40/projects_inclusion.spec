@@ -50,6 +50,10 @@ tags: gdc-data-portal-v2, data-release
 * Navigate to "Downloads" from "Header" "section"
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "Case Count Project Summary" are "Equal"
+* Collect "Files" Count on the Repository page
+* Collect "Cases" Count on the Repository page
+* Verify "Files Count Repository Page" and "File Count Project Summary" are "Equal"
+* Verify "Cases Count Repository Page" and "Case Count Project Summary" are "Equal"
 
 ## Project Introduced in this Data Release: MATCH-Z1I
 * Navigate to "Projects" from "Header" "section"
