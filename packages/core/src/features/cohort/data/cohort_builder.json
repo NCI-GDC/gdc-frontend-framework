@@ -9,7 +9,7 @@
         "cases.diagnoses.primary_diagnosis",
         "cases.primary_site",
         "cases.diagnoses.tissue_or_organ_of_origin",
-        "cases.upload_cases"
+        "cases.upload.case_id"
       ],
       "docType": "cases",
       "index": "explore"
@@ -131,7 +131,7 @@
     },
     "molecular_filters": {
       "label": "Molecular Filters",
-      "facets": ["cases.upload_genes", "cases.upload_ssms"],
+      "facets": ["genes.gene_id", "ssms.ssm_id"],
       "docType": "cases",
       "index": "explore"
     },

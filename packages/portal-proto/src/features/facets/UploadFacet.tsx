@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  FilterSet,
   Modals,
   showModal,
   trimFirstFieldNameToTitle,
@@ -20,6 +19,15 @@ import {
 import { FaUndo as UndoIcon } from "react-icons/fa";
 import { useCohortFacetFilters } from "../cohortBuilder/utils";
 import CohortBadge from "../cohortBuilder/CohortBadge";
+import { humanify } from "@/utils/index";
+
+interface UploadFacetProps {
+  field: string;
+  description?: string;
+  facetButtonName?: string;
+  width?: string;
+  hooks: any;
+}
 
 interface GroupedOperands {
   cases?: string[];
@@ -28,10 +36,13 @@ interface GroupedOperands {
 }
 type root = Omit<Operation, "Intersection" | "Union">;
 
-const groupOperandsByKey = (filters: FilterSet): GroupedOperands => {
+export const groupOperandsByKey = (
+  filters: Record<string, root>,
+): GroupedOperands => {
   const groupedOperands: GroupedOperands = { cases: [], genes: [], ssms: [] };
 
-  Object.values(filters.root).forEach(({ field, operands }) => {
+  // need to fix the type here
+  Object.values(filters as any).forEach(({ field, operands }) => {
     if (field === "cases.case_id") groupedOperands.cases.push(...operands);
     else if (field === "genes.gene_id") groupedOperands.genes.push(...operands);
     else if (field === "ssms.ssm_id") groupedOperands.ssms.push(...operands);
@@ -40,37 +51,34 @@ const groupOperandsByKey = (filters: FilterSet): GroupedOperands => {
   return groupedOperands;
 };
 
-interface UploadFacetProps {
-  field: string;
-  description?: string;
-  facetName?: string;
-  width?: string;
-  hooks: any;
-}
-
 const UploadFacet: React.FC<UploadFacetProps> = ({
   field,
   description,
-  facetName,
+  facetButtonName,
   width,
   hooks,
 }) => {
   const coreDispatch = useCoreDispatch();
   const currentCohortId = useCoreSelector(selectCurrentCohortId);
   const clearFilters = hooks.useClearFilter();
-  const facetTitle = facetName || trimFirstFieldNameToTitle(field, true);
+  const facetTitle = humanify({
+    term: trimFirstFieldNameToTitle(field, true),
+  });
   const filters = useCohortFacetFilters();
   const noFilters = Object.keys(filters?.root || {}).length === 0;
-  const isCases = field.includes("Cases");
-  const isGenes = field.includes("Genes");
-  const isSSM = field.includes("Mutations");
-  const { cases, genes, ssms } = groupOperandsByKey(filters);
+  const isCases = field.includes("cases.case_id");
+  const isGenes = field.includes("genes.gene_id");
+  const isSSMS = field.includes("ssms.ssm_id");
+  const { cases, genes, ssms } = groupOperandsByKey(filters.root);
 
   const { data: geneSymbolDict, isSuccess } = useGeneSymbol(
     field === "genes.gene_id" ? genes.map((x) => x.toString()) : [],
   );
 
-  const renderBadges = (items, itemField) => {
+  const renderBadges = (
+    items: string[],
+    itemField: "cases.case_id" | "genes.gene_id" | "ssms.ssm_id",
+  ) => {
     return items.map((item, index) => (
       <CohortBadge
         key={index}
@@ -128,7 +136,7 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
       <div className="p-4">
         <div className="flex justify-center">
           <Button variant="outline" fullWidth onClick={handleButtonClick}>
-            {field}
+            {facetButtonName}
           </Button>
         </div>
         <div className="mt-2">
@@ -136,7 +144,7 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
             <div className="flex flex-wrap gap-1">
               {isCases && renderBadges(cases, "cases.case_id")}
               {isGenes && renderBadges(genes, "genes.gene_id")}
-              {isSSM && renderBadges(ssms, "ssms.ssm_id")}
+              {isSSMS && renderBadges(ssms, "ssms.ssm_id")}
             </div>
           )}
         </div>

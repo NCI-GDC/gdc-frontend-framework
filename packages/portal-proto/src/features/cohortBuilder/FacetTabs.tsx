@@ -28,7 +28,7 @@ import {
   TabsProps,
   Text,
 } from "@mantine/core";
-import { getFacetInfo, trial_facets } from "@/features/cohortBuilder/utils";
+import { getFacetInfo, upload_facets } from "@/features/cohortBuilder/utils";
 import {
   MdAdd as AddAdditionalIcon,
   MdLibraryAdd as AddFacetIcon,
@@ -344,7 +344,10 @@ export const FacetTabs = (): JSX.Element => {
             const facetList =
               key === "custom"
                 ? []
-                : getFacetInfo(tabEntry.facets, { ...facets, ...trial_facets });
+                : getFacetInfo(tabEntry.facets, {
+                    ...facets,
+                    ...upload_facets,
+                  }); // leave a comment here
             return (
               <Tabs.Panel key={key} value={key}>
                 {key === "custom" ? (

@@ -24,6 +24,16 @@ const RemoveButton = ({ value }: { value: string }) => (
   </ActionIcon>
 );
 
+interface CohortBadgeProps {
+  field: string;
+  value: string;
+  customTestid: string;
+  operands: readonly (string | number)[];
+  operator: "includes" | "excludes" | "excludeifany";
+  currentCohortId: string;
+  geneSymbolDict: Record<string, string>;
+  isSuccess: boolean;
+}
 const CohortBadge = ({
   field,
   value,
@@ -33,17 +43,7 @@ const CohortBadge = ({
   currentCohortId,
   geneSymbolDict,
   isSuccess,
-}) => {
-  console.log({
-    field,
-    value,
-    customTestid,
-    operands,
-    operator,
-    currentCohortId,
-    geneSymbolDict,
-    isSuccess,
-  });
+}: CohortBadgeProps) => {
   const dispatch = useCoreDispatch();
 
   const handleOnClick = () => {

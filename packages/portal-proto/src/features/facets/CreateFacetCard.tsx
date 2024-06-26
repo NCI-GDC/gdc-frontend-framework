@@ -128,17 +128,18 @@ export const createFacetCard = (
       />
     );
   }
-  if (facet.facet_type === "upload")
+  if (facet.facet_type === "upload") {
     return (
       <UploadFacet
-        key={`${idPrefix}-exact-${facet.full}`}
-        field={facet.field}
+        key={`${idPrefix}-exact-${facet.field}`}
+        field={facet.field.replace("upload.", "")}
         hooks={{ ...dataFunctions }}
-        facetName={facetName}
+        facetButtonName={facet.full}
         width={width}
         description={facet.description}
       />
     );
+  }
   return <div> Unknown FacetType {facet.facet_type}</div>;
 };
 

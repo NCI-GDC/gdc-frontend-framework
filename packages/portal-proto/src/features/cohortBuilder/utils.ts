@@ -1,38 +1,39 @@
 import {
   FacetDefinition,
   FilterSet,
+  Operation,
   selectCurrentCohortFilters,
   useCoreSelector,
 } from "@gff/core";
 import { SummaryFacetInfo } from "./SummaryFacets";
 
-export const trial_facets: Record<string, FacetDefinition> = {
-  "cases.upload_cases": {
+export const upload_facets: Record<string, FacetDefinition> = {
+  "cases.upload.case_id": {
     description: "Enter/upload cases to filter the current cohort",
     doc_type: "cases",
     facet_type: "upload",
-    field: "Upload Cases",
-    full: "cases.case_id",
+    field: "cases.upload.case_id",
+    full: "Upload Cases",
     range: undefined,
     type: "keyword",
   },
-  "cases.upload_genes": {
+  "genes.gene_id": {
     description:
       "Enter/upload genes or select gene sets to filter the current cohort",
     doc_type: "cases",
     facet_type: "upload",
-    field: "Upload Mutated Genes",
-    full: "cases.gene",
+    field: "genes.gene_id",
+    full: "Upload Mutated Genes",
     range: undefined,
     type: "keyword",
   },
-  "cases.upload_ssms": {
+  "ssms.ssm_id": {
     description:
       "Enter/upload simple mutations or select mutation sets to filter the current cohort",
     doc_type: "cases",
     facet_type: "upload",
-    field: "Upload Simple Mutations",
-    full: "cases.ssms_id",
+    field: "ssms.ssm_id",
+    full: "Upload Simple Mutations",
     range: undefined,
     type: "keyword",
   },

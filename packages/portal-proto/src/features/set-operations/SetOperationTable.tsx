@@ -151,14 +151,7 @@ export const SetOperationTable = ({
       }),
     ],
 
-    [
-      setOperationTableColumnsHelper,
-      selectedSets,
-      entityType,
-      sets,
-      setSelectedSets,
-      componentId,
-    ],
+    [selectedSets, entityType, sets, setSelectedSets, componentId],
   );
 
   return (
