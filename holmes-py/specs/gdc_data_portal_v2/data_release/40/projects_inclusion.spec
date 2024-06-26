@@ -55,7 +55,7 @@ tags: gdc-data-portal-v2, data-release
 * Verify "Files Count Repository Page" and "File Count Project Summary" are "Equal"
 * Verify "Cases Count Repository Page" and "Case Count Project Summary" are "Equal"
 
-## Project Introduced in this Data Release: MATCH-Z1I
+## Verify New Project Appears in Projects Table: MATCH-Z1I
 * Navigate to "Projects" from "Header" "section"
 * Search the table for "MATCH-Z1I"
 * Select "MATCH-Z1I" projects row on the Projects page
