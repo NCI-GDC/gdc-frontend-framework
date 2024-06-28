@@ -79,8 +79,9 @@ When the filters are fixed add tests for them - PEAR-1350
 * Navigate to "Downloads" from "Header" "section"
 * Pause "4" seconds
 * Wait for table loading spinner
-* Wait for cohort bar case count loading spinner
-* Verify cohort case count equals repository table case count
+* Collect Cohort Bar Case Count for comparison
+* Collect "Cases" Count on the Repository page
+* Verify "Cohort Bar Case Count" and "Cases Count Repository Page" are "Equal"
 
 ## File Summary Page
 * Quick search for "0089d221-5807-47f1-a382-1e2e336df201" and go to its page

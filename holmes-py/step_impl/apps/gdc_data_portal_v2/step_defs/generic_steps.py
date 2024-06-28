@@ -163,6 +163,7 @@ def download_file_at_file_table(file: str, source: str):
         "Manage Sets": APP.manage_sets_page.click_on_download_for_set,
         "Cohort Comparison": APP.cohort_comparison_page.click_download_tsv_button_on_analysis_card_cohort_comparison,
         "Mutation Frequency": APP.mutation_frequency_page.click_table_download_button,
+        "Project Summary": APP.project_summary_page.click_button,
     }
     driver = WebDriver.page
     with driver.expect_download(timeout=90000) as download_info:
@@ -746,6 +747,19 @@ def send_text_into_text_box(text: str, text_box_name: str):
     """Sends text into a data-testid text box"""
     APP.shared.send_text_into_text_box(text, text_box_name)
 
+@step("In table <table_name>, search the table for <text>")
+def send_text_into_specified_table_search_bar(table_name:str, text: str):
+    """Sends text into specified table search bar"""
+    APP.shared.send_text_into_specified_table_search_bar(table_name, text)
+    time.sleep(1)
+    # In Mutation Frequency, searching in the table can take a
+    # long time to load. They can also load and spin at different times
+    # in different places (e.g the cohort case count, table, graphs, etc.)
+    # So we have an abundance of waits.
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.keyboard_press("Enter")
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_to_detatch()
 
 @step("Search the table for <text>")
 def send_text_into_table_search_bar(text: str):

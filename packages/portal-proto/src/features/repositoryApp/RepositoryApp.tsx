@@ -139,7 +139,7 @@ export const RepositoryApp = (): JSX.Element => {
           </div>
           <div
             className="w-2/3 xl:w-3/4 overflow-hidden h-full"
-            data-testid="repository-table"
+            data-testid="table-repository"
           >
             <div className="flex xl:justify-end align-center">
               <div className="flex flex-wrap xl:justify-end gap-2 mt-9 mb-4">

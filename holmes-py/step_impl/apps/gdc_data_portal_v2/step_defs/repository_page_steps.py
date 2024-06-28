@@ -5,6 +5,7 @@ from getgauge.python import step, before_spec
 from ..app import GDCDataPortalV2App
 from ....base.webdriver import WebDriver
 
+from getgauge.python import data_store
 
 @before_spec
 def start_app():
@@ -61,17 +62,15 @@ def click_show_more_or_show_less(table):
     for k, v in enumerate(table):
         APP.repository_page.click_show_more_less_within_filter_card_repository(v[0], v[1])
 
+@step("Collect <item> Count on the Repository page")
+def store_count_repository_for_comparison(item: str):
+    """
+    Stores specified item count for comparison in future tests.
+    Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'
 
-@step("Verify cohort case count equals repository table case count")
-def compare_cohort_case_count_and_repo_table_case_count():
-    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
-    are_case_counts_equal = (
-        APP.repository_page.compare_cohort_case_count_and_repo_table_case_count()
-    )
-    assert (
-        are_case_counts_equal
-    ), f"The cohort bar case count is not equal to the repository table case count"
-
+    :param item: The item to collect the count of. Options: Files, Cases, or Size
+    """
+    data_store.spec[f"{item} Count Repository Page"] = APP.repository_page.get_repository_table_item_count(item)
 
 @step("Verify that the following default filters are displayed in order <table>")
 def default_filters(table):
