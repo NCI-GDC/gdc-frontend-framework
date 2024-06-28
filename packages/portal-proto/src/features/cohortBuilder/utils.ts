@@ -1,12 +1,12 @@
 import {
   FacetDefinition,
   FilterSet,
-  Operation,
   selectCurrentCohortFilters,
   useCoreSelector,
 } from "@gff/core";
 import { SummaryFacetInfo } from "./SummaryFacets";
 
+// These new upload facets will not be returned by the mapping API call, hence they are manually defined as upload_facets
 export const upload_facets: Record<string, FacetDefinition> = {
   "cases.upload.case_id": {
     description: "Enter/upload cases to filter the current cohort",
@@ -38,6 +38,7 @@ export const upload_facets: Record<string, FacetDefinition> = {
     type: "keyword",
   },
 };
+
 /**
  * getFacetInfo: returns information from the GDC API: description, full field, type, etc.
  * It returns information ONLY for defined fields

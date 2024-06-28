@@ -7,7 +7,8 @@ import {
   useCoreSelector,
   useGeneSymbol,
   selectCurrentCohortId,
-  Operation,
+  FilterSet,
+  Includes,
 } from "@gff/core";
 import { Button, Tooltip } from "@mantine/core";
 import {
@@ -30,23 +31,22 @@ interface UploadFacetProps {
 }
 
 interface GroupedOperands {
-  cases?: string[];
-  genes?: string[];
-  ssms?: string[];
+  cases?: (string | number)[];
+  genes?: (string | number)[];
+  ssms?: (string | number)[];
 }
-type root = Omit<Operation, "Intersection" | "Union">;
 
-export const groupOperandsByKey = (
-  filters: Record<string, root>,
-): GroupedOperands => {
+export const groupOperandsByKey = (filters: FilterSet): GroupedOperands => {
   const groupedOperands: GroupedOperands = { cases: [], genes: [], ssms: [] };
-
-  // need to fix the type here
-  Object.values(filters as any).forEach(({ field, operands }) => {
-    if (field === "cases.case_id") groupedOperands.cases.push(...operands);
-    else if (field === "genes.gene_id") groupedOperands.genes.push(...operands);
-    else if (field === "ssms.ssm_id") groupedOperands.ssms.push(...operands);
-  });
+  // These will be the type of includes only
+  Object.values(filters.root as Record<string, Includes>).forEach(
+    ({ field, operands }) => {
+      if (field === "cases.case_id") groupedOperands.cases.push(...operands);
+      else if (field === "genes.gene_id")
+        groupedOperands.genes.push(...operands);
+      else if (field === "ssms.ssm_id") groupedOperands.ssms.push(...operands);
+    },
+  );
 
   return groupedOperands;
 };
@@ -69,7 +69,7 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
   const isCases = field.includes("cases.case_id");
   const isGenes = field.includes("genes.gene_id");
   const isSSMS = field.includes("ssms.ssm_id");
-  const { cases, genes, ssms } = groupOperandsByKey(filters.root);
+  const { cases, genes, ssms } = groupOperandsByKey(filters);
 
   const { data: geneSymbolDict, isSuccess } = useGeneSymbol(
     field === "genes.gene_id" ? genes.map((x) => x.toString()) : [],
@@ -142,9 +142,9 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
         <div className="mt-2">
           {noFilters ? null : (
             <div className="flex flex-wrap gap-1">
-              {isCases && renderBadges(cases, "cases.case_id")}
-              {isGenes && renderBadges(genes, "genes.gene_id")}
-              {isSSMS && renderBadges(ssms, "ssms.ssm_id")}
+              {isCases && renderBadges(cases as string[], "cases.case_id")}
+              {isGenes && renderBadges(genes as string[], "genes.gene_id")}
+              {isSSMS && renderBadges(ssms as string[], "ssms.ssm_id")}
             </div>
           )}
         </div>

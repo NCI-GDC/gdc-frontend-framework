@@ -129,7 +129,7 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
                 value={operand.toString()}
                 geneSymbolDict={geneSymbolDict}
                 geneSymbolSuccess={isSuccess}
-                countHook={
+                useCountHook={
                   field === "genes.gene_id"
                     ? useGeneSetCountQuery
                     : useSsmSetCountQuery

@@ -93,7 +93,7 @@ const CohortBadge = ({
           field={field}
           geneSymbolDict={geneSymbolDict}
           geneSymbolSuccess={isSuccess}
-          countHook={
+          useCountHook={
             field === "genes.gene_id"
               ? useGeneSetCountQuery
               : field === "ssms.ssm_id"
