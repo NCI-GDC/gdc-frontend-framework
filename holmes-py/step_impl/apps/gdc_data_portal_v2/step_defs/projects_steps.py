@@ -14,6 +14,7 @@ def start_app():
 def select_repository_page_button(button_name: str):
     APP.projects_page.click_shortened_name_button(button_name)
 
+
 @step("Select <button_name> projects row on the Projects page")
-def click_projects_row(button_name:str):
+def click_projects_row(button_name: str):
     APP.projects_page.click_button_select_project_row(button_name)

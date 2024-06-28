@@ -9,7 +9,9 @@ from ....base.base_page import GenericLocators
 class MutationFrequencyLocators:
     BUTTON_GENE_MUTATION_TAB = lambda tab_name: f'[data-testid="button-{tab_name}-tab"]'
     BUTTON_CUSTOM_FILTER = lambda button_name: f'[data-testid="button-{button_name}"]'
-    BUTTON_TABLE_DOWNLOAD = lambda button_name: f'[data-testid="button-{button_name}-mutation-frequency"]'
+    BUTTON_TABLE_DOWNLOAD = (
+        lambda button_name: f'[data-testid="button-{button_name}-mutation-frequency"]'
+    )
 
     MODAL_ADD_CUSTOM_FILTER = 'label:has-text("Type or copy-and-paste a list of")'
 

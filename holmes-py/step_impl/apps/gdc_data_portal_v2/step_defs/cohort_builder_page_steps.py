@@ -22,6 +22,7 @@ def make_cohort_builder_selections(tab_name: str, table):
         APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
         time.sleep(0.1)
 
+
 @step("Make the following selections on the Cohort Builder page without pauses <table>")
 def select_cohort_builder_filters_without_pauses(table):
     for k, v in enumerate(table):
@@ -30,10 +31,15 @@ def select_cohort_builder_filters_without_pauses(table):
         # before a filter could be selected anyway. We do this so we can check for a plus-icon before
         # attempting to add a filter.
         APP.shared.wait_for_loading_spinner_to_detatch()
-        if APP.cohort_builder_page.is_show_more_or_show_less_button_visible_within_filter_card(v[1], "plus-icon"):
-            APP.cohort_builder_page.click_show_more_less_within_filter_card(v[1], "plus-icon")
+        if APP.cohort_builder_page.is_show_more_or_show_less_button_visible_within_filter_card(
+            v[1], "plus-icon"
+        ):
+            APP.cohort_builder_page.click_show_more_less_within_filter_card(
+                v[1], "plus-icon"
+            )
         APP.cohort_builder_page.make_selection_within_facet_group(v[1], v[2])
         time.sleep(0.1)
+
 
 @step(
     "Perform the following actions from <tab_name> tab on the Cohort Builder page <table>"
@@ -95,7 +101,10 @@ def click_named_object(tab_name: str, table):
         APP.cohort_builder_page.click_named_item_in_facet_group(v[0], v[1])
         time.sleep(0.1)
 
-@step("Collect case counts for the following filters on the Cohort Builder page for cohort <cohort_name> <table>")
+
+@step(
+    "Collect case counts for the following filters on the Cohort Builder page for cohort <cohort_name> <table>"
+)
 def collect_case_counts_on_filters(cohort_name: str, table):
     """
     collect_case_counts_on_filters Collect case count on filters on the cohort builder page
@@ -111,12 +120,21 @@ def collect_case_counts_on_filters(cohort_name: str, table):
         APP.shared.wait_for_loading_spinner_to_detatch()
 
         # Expands list of filters to select if possible
-        if APP.cohort_builder_page.is_show_more_or_show_less_button_visible_within_filter_card(v[1], "plus-icon"):
-            APP.cohort_builder_page.click_show_more_less_within_filter_card(v[1], "plus-icon")
+        if APP.cohort_builder_page.is_show_more_or_show_less_button_visible_within_filter_card(
+            v[1], "plus-icon"
+        ):
+            APP.cohort_builder_page.click_show_more_less_within_filter_card(
+                v[1], "plus-icon"
+            )
 
-        case_count = APP.cohort_builder_page.get_case_count_from_filter_within_facet_group(v[1], v[2])
+        case_count = (
+            APP.cohort_builder_page.get_case_count_from_filter_within_facet_group(
+                v[1], v[2]
+            )
+        )
         # Saves the case count under the facet, filter and cohort name
         data_store.spec[f"{v[1]}_{v[2]}_{cohort_name} Count"] = case_count
+
 
 @step("Add a custom filter from <tab_name> tab on the Cohort Builder page <table>")
 def add_custom_filter_card(tab_name: str, table):

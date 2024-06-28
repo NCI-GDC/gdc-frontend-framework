@@ -26,6 +26,9 @@ def validate_live_statistics_display(table):
             is_stat_present
         ), f"For category '{v[0]}', the expected statistic {v[1]} is NOT present"
 
+
 @step("Select the <label_or_bar_graph> <primary_site> on the Body Plot Graph")
-def click_primary_site_on_body_plot_graph(label_or_bar_graph:str, primary_site:str):
-    APP.home_page.click_primary_site_on_body_plot_graph(label_or_bar_graph, primary_site)
+def click_primary_site_on_body_plot_graph(label_or_bar_graph: str, primary_site: str):
+    APP.home_page.click_primary_site_on_body_plot_graph(
+        label_or_bar_graph, primary_site
+    )

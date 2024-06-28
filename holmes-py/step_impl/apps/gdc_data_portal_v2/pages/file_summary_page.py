@@ -15,6 +15,7 @@ class FileSummaryLocators:
     DOWNLOAD_BUTTON_IDENT = 'text="Download" >> nth=0'
     BUTTON_DOWNLOAD_FILE_IDENT = '[data-testid="button-download-file-summary"]'
 
+
 class FileSummaryPage(BasePage):
     def __init__(self, driver: Page, url):
         self.driver = driver  # driver is PW page

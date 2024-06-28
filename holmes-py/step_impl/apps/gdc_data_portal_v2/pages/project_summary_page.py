@@ -2,9 +2,15 @@ from playwright.sync_api import Page
 
 from ....base.base_page import BasePage
 
+
 class ProjectSummaryLocators:
-    BUTTON_PROJECT_SUMMARY_PAGE = lambda button_name: f"[data-testid='button-{button_name}-project-summary']"
-    TEXT_PROJECT_SUMMARY_PAGE = lambda text_identifier: f"[data-testid='text-{text_identifier}-project-summary']"
+    BUTTON_PROJECT_SUMMARY_PAGE = (
+        lambda button_name: f"[data-testid='button-{button_name}-project-summary']"
+    )
+    TEXT_PROJECT_SUMMARY_PAGE = (
+        lambda text_identifier: f"[data-testid='text-{text_identifier}-project-summary']"
+    )
+
 
 class ProjectSummaryPage(BasePage):
     def __init__(self, driver: Page, url):

@@ -12,7 +12,9 @@ class ClinicalDataAnalysisLocators:
         lambda group: f"div[id='cdave-control-group-{group}'] >> button[data-testid='plus-icon']"
     )
     PROPERTY_ROW = lambda property: f"text='{property}'"
-    FIELD_SELECT_SWITCH_IDENT = lambda field_name: f'[data-testid="row-field-{field_name}-cdave"] >> text={field_name}'
+    FIELD_SELECT_SWITCH_IDENT = (
+        lambda field_name: f'[data-testid="row-field-{field_name}-cdave"] >> text={field_name}'
+    )
 
     ANALYSIS_CARD = lambda card_name: f"[data-testid='{card_name}-card']"
     BUTTON_ON_ANALYSIS_CARD = (
