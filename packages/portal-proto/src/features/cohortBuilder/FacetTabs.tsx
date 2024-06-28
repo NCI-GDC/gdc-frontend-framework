@@ -345,7 +345,7 @@ export const FacetTabs = (): JSX.Element => {
                 : getFacetInfo(tabEntry.facets, {
                     ...facets,
                     ...upload_facets,
-                  }); // leave a comment here
+                  });
             return (
               <Tabs.Panel key={key} value={key}>
                 {key === "custom" ? (
