@@ -26,7 +26,8 @@
   },
   "lint-staged": {
     "!(**/*.png)": [
-      "prettier --write --ignore-unknown"
+      "prettier --write --ignore-unknown",
+      "eslint --fix"
     ]
   },
   "repository": {
