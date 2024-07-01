@@ -2,7 +2,6 @@ import React from "react";
 import {
   Modals,
   showModal,
-  trimFirstFieldNameToTitle,
   useCoreDispatch,
   useCoreSelector,
   useGeneSymbol,
@@ -61,14 +60,16 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
   const coreDispatch = useCoreDispatch();
   const currentCohortId = useCoreSelector(selectCurrentCohortId);
   const clearFilters = hooks.useClearFilter();
-  const facetTitle = humanify({
-    term: trimFirstFieldNameToTitle(field, true),
-  });
-  const filters = useCohortFacetFilters();
-  const noFilters = Object.keys(filters?.root || {}).length === 0;
   const isCases = field.includes("cases.case_id");
   const isGenes = field.includes("genes.gene_id");
   const isSSMS = field.includes("ssms.ssm_id");
+
+  const facetTitle = humanify({
+    term: isCases ? "case id" : isGenes ? "gene" : "ssm id",
+  });
+  const filters = useCohortFacetFilters();
+  const noFilters = Object.keys(filters?.root || {}).length === 0;
+
   const { cases, genes, ssms } = groupOperandsByKey(filters);
 
   const { data: geneSymbolDict, isSuccess } = useGeneSymbol(
@@ -111,17 +112,8 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
       } bg-base-max border-base-lighter border-1 rounded-b-md text-xs transition`}
     >
       <FacetHeader>
-        <Tooltip
-          disabled={!description}
-          label={description}
-          position="bottom-start"
-          multiline
-          w={220}
-          withArrow
-          transitionProps={{ duration: 200, transition: "fade" }}
-        >
-          <FacetText>{facetTitle}</FacetText>
-        </Tooltip>
+        <FacetText>{facetTitle}</FacetText>
+
         <div className="flex flex-row">
           <Tooltip label="Clear selection">
             <FacetIconButton
@@ -135,9 +127,18 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
       </FacetHeader>
       <div className="p-4">
         <div className="flex justify-center">
-          <Button variant="outline" fullWidth onClick={handleButtonClick}>
-            {facetButtonName}
-          </Button>
+          <Tooltip
+            disabled={!description}
+            label={description}
+            multiline
+            w={220}
+            withArrow
+            transitionProps={{ duration: 200, transition: "fade" }}
+          >
+            <Button variant="outline" fullWidth onClick={handleButtonClick}>
+              {facetButtonName}
+            </Button>
+          </Tooltip>
         </div>
         <div className="mt-2">
           {noFilters ? null : (
