@@ -3,6 +3,10 @@ export interface TConfig {
   clickHandler?: (e: any) => void;
   mouseOverHandler?: (e: any) => void;
   mouseOutHandler?: (e: any) => void;
+  keyDownHandler?: ({ elem, data }: { elem: HTMLElement; data: any }) => void;
+  keyUpHandler?: () => void;
+  skipLinkId?: string;
+  ariaLabel?: (d: any) => string;
   data?: any;
   fileCountKey?: string;
   height?: number;

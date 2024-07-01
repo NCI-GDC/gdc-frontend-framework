@@ -148,6 +148,12 @@ const buildBodyplotFilter = (data: BodyplotDataElement): FilterSet => {
   };
 };
 
+interface BodyplotPointData {
+  readonly key: string;
+  readonly caseCount: number;
+  readonly fileCount: number;
+}
+
 /**
  * Bodyplot is the component that renders the bodyplot
  */
@@ -157,6 +163,10 @@ export const Bodyplot = (): JSX.Element => {
   const [selectedSite, setSelectedSite] = useState(undefined);
   const [bodyplotTooltipContent, setBodyplotTooltipContent] =
     useState(undefined);
+  const [keyboardTooltipPosition, setKeyboardTooltipPostion] = useState({
+    x: undefined,
+    y: undefined,
+  });
 
   const { data } = useBodyplotCountsQuery();
   const root = document.getElementById("human-body-parent");
@@ -174,12 +184,32 @@ export const Bodyplot = (): JSX.Element => {
   }, [data]);
 
   const bodyplotRef = useRef(undefined);
-  const { ref: mouseRef, x, y } = useMouse(); // get the mouse position
+  const { ref: tooltipRef, x, y } = useMouse(); // get the mouse position
 
   const mouseOutHandler = useCallback(
     () => setBodyplotTooltipContent(undefined),
     [],
   );
+
+  const keyDownHandler = useCallback(
+    ({ elem, data }: { elem: HTMLElement; data: BodyplotPointData }) => {
+      setBodyplotTooltipContent(data);
+      setKeyboardTooltipPostion({
+        x:
+          elem.getBoundingClientRect().x -
+          tooltipRef.current.getBoundingClientRect().x,
+        y:
+          elem.getBoundingClientRect().y -
+          tooltipRef.current.getBoundingClientRect().y,
+      });
+    },
+    [tooltipRef],
+  );
+
+  const keyUpHandler = useCallback(() => {
+    setKeyboardTooltipPostion({ x: undefined, y: undefined });
+    setBodyplotTooltipContent(undefined);
+  }, []);
 
   const mediumWidth = parseInt(
     tailwindConfig.theme.extend.screens.md.replace(/\D/g, ""),
@@ -208,13 +238,29 @@ export const Bodyplot = (): JSX.Element => {
         },
         mouseOverHandler: setBodyplotTooltipContent,
         mouseOutHandler: mouseOutHandler,
+        keyDownHandler,
+        keyUpHandler,
+        skipLinkId: "#high-quality-datasets-card",
+        ariaLabel: (d) =>
+          `${d?.key}, ${(
+            d?.caseCount * SCALE_CASE_COUNT
+          ).toLocaleString()} cases, ${d?.fileCount.toLocaleString()} files`,
       });
     }
-  }, [width, mediumWidth, mouseOutHandler, processedData, root, bodyplotRef]);
+  }, [
+    width,
+    mediumWidth,
+    mouseOutHandler,
+    processedData,
+    root,
+    bodyplotRef,
+    keyDownHandler,
+    keyUpHandler,
+  ]);
 
   return (
     <div
-      ref={mouseRef}
+      ref={tooltipRef}
       style={{
         height:
           (bodyplotRef?.current?.scrollHeight ?? 0) +
@@ -228,7 +274,10 @@ export const Bodyplot = (): JSX.Element => {
         className={`${
           bodyplotTooltipContent ? "opacity-100" : "opacity-0"
         }  overflow-visible transition-opacity duration-500 z-[1800] shadow-lg absolute`}
-        style={{ left: x - extents[0] - 20, top: y - extents[1] / 2 }}
+        style={{
+          left: (keyboardTooltipPosition.x ?? x) - extents[0] - 20,
+          top: (keyboardTooltipPosition.y ?? y) - extents[1] / 2,
+        }}
       >
         {bodyplotTooltipContent && (
           <PopupContent

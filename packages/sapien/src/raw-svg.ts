@@ -1,5 +1,5 @@
 export const RawSvg = (): string => `
-  <span id="human-body-svg-container">
+  <span id="human-body-svg-container" aria-hidden="true">
     <svg
    width="309px"
    height="516px"

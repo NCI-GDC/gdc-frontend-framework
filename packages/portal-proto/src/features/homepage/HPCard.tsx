@@ -5,6 +5,7 @@ interface HPCardProps {
   head: string;
   subhead?: string;
   body: JSX.Element;
+  cardId?: string;
   linkText: string;
   href: LinkProps["href"];
   mainClassName?: string;
@@ -14,12 +15,13 @@ const HPCard = ({
   head,
   subhead,
   body,
+  cardId,
   linkText,
   href,
   mainClassName = "",
 }: HPCardProps): JSX.Element => {
   return (
-    <div className={`px-7 ${mainClassName}`}>
+    <div className={`px-7 ${mainClassName}`} id={cardId}>
       <div className="text-center py-12 max-w-screen-lg m-auto">
         <h2 className="font-heading font-bold text-4xl md:text-3xl lg:text-2xl tracking-normal pb-5 text-summarybar-text xl:tracking-tight">
           {head}

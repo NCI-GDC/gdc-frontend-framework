@@ -57,6 +57,7 @@ const Homepage = (): JSX.Element => {
       <HPCard
         head="High-quality Datasets"
         subhead="From Foundational Cancer Genomic Studies"
+        cardId="high-quality-datasets-card"
         body={
           <>
             High-quality datasets spanning{" "}

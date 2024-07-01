@@ -232,3 +232,12 @@
   top: 86px;
   left: 197px;
 }
+
+#human-body-root #body-plot-skip-nav {
+  position: absolute;
+  left: -1000px;
+}
+
+#human-body-root #body-plot-skip-nav:focus {
+  left: 0;
+}

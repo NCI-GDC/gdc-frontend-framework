@@ -13,6 +13,10 @@ export const createHumanBody: TCreateHumanBody = ({
   clickHandler = () => null,
   mouseOverHandler,
   mouseOutHandler,
+  keyDownHandler,
+  keyUpHandler,
+  ariaLabel,
+  skipLinkId,
   data,
   selector,
   height,
@@ -62,6 +66,14 @@ export const createHumanBody: TCreateHumanBody = ({
       `left: ${barStartOffset + halfPixel}px; font-size: ${labelSize}`,
     )
     .text(title);
+
+  if (skipLinkId) {
+    svgContainer
+      .append("a")
+      .attr("href", skipLinkId)
+      .attr("id", "body-plot-skip-nav")
+      .text("Skip Navigation");
+  }
 
   // The Bar Chart
   const svg = svgContainer
@@ -247,6 +259,8 @@ export const createHumanBody: TCreateHumanBody = ({
       (d: any) => `Bar-Graph-${toClassName(d[primarySiteKey])}`,
     )
     .attr("class", (d: any) => `bar-${toClassName(d[primarySiteKey])}`)
+    .attr("aria-label", ariaLabel || "Bar")
+    .attr("tabindex", 0)
     .on("mouseover", function (event: any, d: any) {
       const organSelector = toClassName(d[primarySiteKey] as string);
       const organ = document.getElementById(organSelector);
@@ -304,7 +318,47 @@ export const createHumanBody: TCreateHumanBody = ({
       if (mouseOutHandler) mouseOutHandler(d);
       else tooltip.style("opacity", 0);
     })
-    .on("click", (_, d: any) => clickHandler(d));
+    .on("click", (_, d: any) => clickHandler(d))
+    .on("focus", function (event: any, d: any) {
+      const organSelector = toClassName(d[primarySiteKey] as string);
+      const organ = document.getElementById(organSelector);
+      if (organ) organ.style.opacity = "1";
+
+      d3.select(this)
+        .attr("cursor", "pointer")
+        .transition("300")
+        .attr("fill", (d: any): string => {
+          const hsl = d3.hsl(d.color);
+          hsl.s = 1;
+          hsl.l = 0.7;
+          return d3.hsl(hsl).toString();
+        });
+
+      d3.select(`.primary-site-label-${toClassName(d[primarySiteKey])}`)
+        .transition("300")
+        .attr("fill", "red");
+
+      if (keyDownHandler) {
+        keyDownHandler({ elem: event.target, data: d });
+      }
+    })
+    .on("focusout", function (_, d: any) {
+      const organSelector = toClassName(d[primarySiteKey]);
+      const organ = document.getElementById(organSelector);
+      if (organ) organ.style.opacity = "0";
+
+      d3.select(this)
+        .transition("300")
+        .attr("fill", (d: any) => d.color);
+
+      d3.select(`.primary-site-label-${toClassName(d[primarySiteKey])}`)
+        .transition("300")
+        .attr("fill", "rgb(20, 20, 20)");
+
+      if (keyUpHandler) {
+        keyUpHandler();
+      }
+    });
 
   const svgs = document.querySelectorAll("#human-body-highlights svg");
 
