@@ -20,7 +20,7 @@ describe("<QueryRepresentationLabel />", () => {
         value="set_id:ABC"
         geneSymbolDict={{ E10: "TCGA", E40: "FAT3", E60: "FAT4" }}
         geneSymbolSuccess
-        countHook={jest
+        useCountHook={jest
           .fn()
           .mockImplementation(() => ({ isSuccess: true, data: 2 }))}
       />,
@@ -39,7 +39,7 @@ describe("<QueryRepresentationLabel />", () => {
         value="set_id:123"
         geneSymbolDict={{ E10: "TCGA", E40: "FAT3", E60: "FAT4" }}
         geneSymbolSuccess
-        countHook={jest
+        useCountHook={jest
           .fn()
           .mockImplementation(() => ({ isSuccess: true, data: 2 }))}
       />,
@@ -54,7 +54,7 @@ describe("<QueryRepresentationLabel />", () => {
         value="E60"
         geneSymbolDict={{ E10: "TCGA", E40: "FAT3", E60: "FAT4" }}
         geneSymbolSuccess
-        countHook={jest
+        useCountHook={jest
           .fn()
           .mockImplementation(() => ({ isSuccess: true, data: 2 }))}
       />,
