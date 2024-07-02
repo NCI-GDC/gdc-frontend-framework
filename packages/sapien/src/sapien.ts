@@ -319,6 +319,11 @@ export const createHumanBody: TCreateHumanBody = ({
       else tooltip.style("opacity", 0);
     })
     .on("click", (_, d: any) => clickHandler(d))
+    .on("keydown", (e, d) => {
+      if (e.key === "Enter") {
+        clickHandler(d);
+      }
+    })
     .on("focus", function (event: any, d: any) {
       const organSelector = toClassName(d[primarySiteKey] as string);
       const organ = document.getElementById(organSelector);
