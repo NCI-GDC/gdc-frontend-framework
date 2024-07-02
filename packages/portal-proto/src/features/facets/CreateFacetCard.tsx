@@ -6,7 +6,7 @@ import DateRangeFacet from "@/features/facets/DateRangeFacet";
 import ExactValueFacet from "@/features/facets/ExactValueFacet";
 import ToggleFacet from "@/features/facets/ToggleFacet";
 import { FacetRequiredHooks } from "@/features/facets/types";
-import UploadFacet from "./UploadFacet";
+import UploadFacet from "@/features/facets/UploadFacet";
 
 /**
  * createFacetCard given a facet definition it will create a
