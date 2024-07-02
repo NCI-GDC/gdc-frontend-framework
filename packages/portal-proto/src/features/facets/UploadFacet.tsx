@@ -7,6 +7,7 @@ import {
   useGeneSymbol,
   selectCurrentCohortId,
   Includes,
+  trimFirstFieldNameToTitle,
 } from "@gff/core";
 import { Button, Tooltip } from "@mantine/core";
 import {
@@ -28,6 +29,7 @@ interface UploadFacetProps {
   facetButtonName?: string;
   width?: string;
   useClearFilter: FacetRequiredHooks["useClearFilter"];
+  customFaceTitle?: string;
 }
 
 const UploadFacet: React.FC<UploadFacetProps> = ({
@@ -36,16 +38,16 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
   facetButtonName,
   width,
   useClearFilter,
+  customFaceTitle,
 }) => {
   const coreDispatch = useCoreDispatch();
   const currentCohortId = useCoreSelector(selectCurrentCohortId);
   const clearFilters = useClearFilter();
-  const isCases = field === "cases.case_id";
-  const isGenes = field === "genes.gene_id";
-  const isSSMS = field === "ssms.ssm_id";
 
   const facetTitle = humanify({
-    term: isCases ? "case id" : isGenes ? "gene" : "ssm id",
+    term: customFaceTitle
+      ? customFaceTitle
+      : trimFirstFieldNameToTitle(field, true),
   });
 
   const filters = useCohortFacetFilters();
@@ -55,32 +57,14 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
     const includeFilters = Object.values(
       filters.root as Record<string, Includes>,
     );
-    if (isCases) {
-      return (
-        includeFilters.find((f) => f.field === "cases.case_id")?.operands || []
-      );
-    }
-    if (isGenes) {
-      return (
-        includeFilters.find((f) => f.field === "genes.gene_id")?.operands || []
-      );
-    }
-    if (isSSMS) {
-      return (
-        includeFilters.find((f) => f.field === "ssms.ssm_id")?.operands || []
-      );
-    }
-    return [];
-  }, [filters, isCases, isGenes, isSSMS]);
+    return includeFilters.find((f) => f.field === field)?.operands || [];
+  }, [filters, field]);
 
   const { data: geneSymbolDict, isSuccess } = useGeneSymbol(
-    isGenes ? items.map((x) => x.toString()) : [],
+    field === "genes.gene_id" ? items.map((x) => x.toString()) : [],
   );
 
-  const renderBadges = (
-    items: string[],
-    itemField: "cases.case_id" | "genes.gene_id" | "ssms.ssm_id",
-  ) => {
+  const renderBadges = (items: string[], itemField: string) => {
     return items.map((item, index) => (
       <CohortBadge
         key={index}
@@ -97,11 +81,11 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
   };
 
   const handleButtonClick = () => {
-    if (isCases) {
+    if (field === "cases.case_id") {
       coreDispatch(showModal({ modal: Modals.GlobalCaseSetModal }));
-    } else if (isGenes) {
+    } else if (field === "genes.gene_id") {
       coreDispatch(showModal({ modal: Modals.GlobalGeneSetModal }));
-    } else if (isSSMS) {
+    } else if (field === "ssms.ssm_id") {
       coreDispatch(showModal({ modal: Modals.GlobalMutationSetModal }));
     }
   };
@@ -143,9 +127,7 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
         <div className="mt-2">
           {noFilters ? null : (
             <div className="flex flex-wrap gap-1">
-              {isCases && renderBadges(items as string[], "cases.case_id")}
-              {isGenes && renderBadges(items as string[], "genes.gene_id")}
-              {isSSMS && renderBadges(items as string[], "ssms.ssm_id")}
+              {renderBadges(items as string[], field)}
             </div>
           )}
         </div>

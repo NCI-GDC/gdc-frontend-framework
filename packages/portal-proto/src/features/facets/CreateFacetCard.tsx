@@ -129,10 +129,12 @@ export const createFacetCard = (
     );
   }
   if (facet.facet_type === "upload") {
+    const field = facet.field.replace("upload.", "");
     return (
       <UploadFacet
-        key={`${idPrefix}-exact-${facet.field}`}
-        field={facet.field.replace("upload.", "")}
+        key={`${idPrefix}-exact-${field}`}
+        field={field}
+        customFaceTitle={field === "genes.gene_id" ? "gene" : undefined}
         useClearFilter={dataFunctions.useClearFilter}
         facetButtonName={facet.full}
         width={width}
