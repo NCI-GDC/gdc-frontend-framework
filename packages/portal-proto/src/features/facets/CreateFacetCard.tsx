@@ -133,7 +133,7 @@ export const createFacetCard = (
       <UploadFacet
         key={`${idPrefix}-exact-${facet.field}`}
         field={facet.field.replace("upload.", "")}
-        hooks={{ ...dataFunctions }}
+        useClearFilter={dataFunctions.useClearFilter}
         facetButtonName={facet.full}
         width={width}
         description={facet.description}

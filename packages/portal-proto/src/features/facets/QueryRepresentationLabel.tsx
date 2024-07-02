@@ -20,7 +20,7 @@ const QueryRepresentationLabel: React.FC<QueryRepresentationLabelProps> = ({
   value,
   geneSymbolDict,
   geneSymbolSuccess,
-  useCountHook, // rename this to useCountHook
+  useCountHook,
 }: QueryRepresentationLabelProps) => {
   let label: string;
   const [docType] = field.split(".");
@@ -29,7 +29,7 @@ const QueryRepresentationLabel: React.FC<QueryRepresentationLabelProps> = ({
   );
 
   const setId = value.includes("set_id:") ? value.split(":")[1] : null;
-  const { data, isSuccess } = useCountHook({ setId }); // cannot conditionally call the hook
+  const { data, isSuccess } = useCountHook({ setId });
 
   if (setId) {
     const setName = sets?.[setId];

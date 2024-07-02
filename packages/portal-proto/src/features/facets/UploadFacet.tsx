@@ -6,7 +6,6 @@ import {
   useCoreSelector,
   useGeneSymbol,
   selectCurrentCohortId,
-  FilterSet,
   Includes,
 } from "@gff/core";
 import { Button, Tooltip } from "@mantine/core";
@@ -20,60 +19,62 @@ import { FaUndo as UndoIcon } from "react-icons/fa";
 import { useCohortFacetFilters } from "../cohortBuilder/utils";
 import CohortBadge from "../cohortBuilder/CohortBadge";
 import { humanify } from "@/utils/index";
+import { FacetRequiredHooks } from "./types";
+import { useDeepCompareMemo } from "use-deep-compare";
 
 interface UploadFacetProps {
   field: string;
   description?: string;
   facetButtonName?: string;
   width?: string;
-  hooks: any;
+  useClearFilter: FacetRequiredHooks["useClearFilter"];
 }
-
-interface GroupedOperands {
-  cases?: (string | number)[];
-  genes?: (string | number)[];
-  ssms?: (string | number)[];
-}
-
-export const groupOperandsByKey = (filters: FilterSet): GroupedOperands => {
-  const groupedOperands: GroupedOperands = { cases: [], genes: [], ssms: [] };
-  // These will be the type of includes only
-  Object.values(filters.root as Record<string, Includes>).forEach(
-    ({ field, operands }) => {
-      if (field === "cases.case_id") groupedOperands.cases.push(...operands);
-      else if (field === "genes.gene_id")
-        groupedOperands.genes.push(...operands);
-      else if (field === "ssms.ssm_id") groupedOperands.ssms.push(...operands);
-    },
-  );
-
-  return groupedOperands;
-};
 
 const UploadFacet: React.FC<UploadFacetProps> = ({
   field,
   description,
   facetButtonName,
   width,
-  hooks,
+  useClearFilter,
 }) => {
   const coreDispatch = useCoreDispatch();
   const currentCohortId = useCoreSelector(selectCurrentCohortId);
-  const clearFilters = hooks.useClearFilter();
-  const isCases = field.includes("cases.case_id");
-  const isGenes = field.includes("genes.gene_id");
-  const isSSMS = field.includes("ssms.ssm_id");
+  const clearFilters = useClearFilter();
+  const isCases = field === "cases.case_id";
+  const isGenes = field === "genes.gene_id";
+  const isSSMS = field === "ssms.ssm_id";
 
   const facetTitle = humanify({
     term: isCases ? "case id" : isGenes ? "gene" : "ssm id",
   });
+
   const filters = useCohortFacetFilters();
   const noFilters = Object.keys(filters?.root || {}).length === 0;
 
-  const { cases, genes, ssms } = groupOperandsByKey(filters);
+  const items = useDeepCompareMemo(() => {
+    const includeFilters = Object.values(
+      filters.root as Record<string, Includes>,
+    );
+    if (isCases) {
+      return (
+        includeFilters.find((f) => f.field === "cases.case_id")?.operands || []
+      );
+    }
+    if (isGenes) {
+      return (
+        includeFilters.find((f) => f.field === "genes.gene_id")?.operands || []
+      );
+    }
+    if (isSSMS) {
+      return (
+        includeFilters.find((f) => f.field === "ssms.ssm_id")?.operands || []
+      );
+    }
+    return [];
+  }, [filters, isCases, isGenes, isSSMS]);
 
   const { data: geneSymbolDict, isSuccess } = useGeneSymbol(
-    field === "genes.gene_id" ? genes.map((x) => x.toString()) : [],
+    isGenes ? items.map((x) => x.toString()) : [],
   );
 
   const renderBadges = (
@@ -100,7 +101,7 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
       coreDispatch(showModal({ modal: Modals.GlobalCaseSetModal }));
     } else if (isGenes) {
       coreDispatch(showModal({ modal: Modals.GlobalGeneSetModal }));
-    } else {
+    } else if (isSSMS) {
       coreDispatch(showModal({ modal: Modals.GlobalMutationSetModal }));
     }
   };
@@ -108,12 +109,11 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
   return (
     <div
       className={`flex flex-col ${
-        width ? width : "mx-0"
+        width || "mx-0"
       } bg-base-max border-base-lighter border-1 rounded-b-md text-xs transition`}
     >
       <FacetHeader>
         <FacetText>{facetTitle}</FacetText>
-
         <div className="flex flex-row">
           <Tooltip label="Clear selection">
             <FacetIconButton
@@ -143,9 +143,9 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
         <div className="mt-2">
           {noFilters ? null : (
             <div className="flex flex-wrap gap-1">
-              {isCases && renderBadges(cases as string[], "cases.case_id")}
-              {isGenes && renderBadges(genes as string[], "genes.gene_id")}
-              {isSSMS && renderBadges(ssms as string[], "ssms.ssm_id")}
+              {isCases && renderBadges(items as string[], "cases.case_id")}
+              {isGenes && renderBadges(items as string[], "genes.gene_id")}
+              {isSSMS && renderBadges(items as string[], "ssms.ssm_id")}
             </div>
           )}
         </div>
