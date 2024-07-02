@@ -43,7 +43,7 @@ const LoginButtonOrUserDropdown = () => {
 
   return (
     <>
-      {!userInfo?.data?.username ? (
+      {userInfo?.data?.username ? (
         <Menu
           width={200}
           data-testid="userdropdown"
