@@ -63,7 +63,7 @@ const LoginButtonOrUserDropdown = () => {
               data-testid="usernameButton"
               ref={userDropdownRef}
             >
-              {userInfo?.data?.username || "TEST"}
+              {userInfo?.data?.username}
             </Button>
           </Menu.Target>
           <Menu.Dropdown>
