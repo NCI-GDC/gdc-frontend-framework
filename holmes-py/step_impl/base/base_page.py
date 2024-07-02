@@ -5,7 +5,7 @@ from step_impl.base.webdriver import WebDriver
 
 
 class GenericLocators:
-    TEXT_IDENT = lambda text: f'text={text} >> nth=0'
+    TEXT_IDENT = lambda text: f"text={text} >> nth=0"
     TEXT_IN_PARAGRAPH = lambda text: f'p:has-text("{text}") >> nth=0'
 
     X_BUTTON_IN_TEMP_MESSAGE = (
@@ -44,7 +44,9 @@ class GenericLocators:
     TEXT_BOX_IDENT = lambda text_box: f'[data-testid="textbox-{text_box}"]'
     SEARCH_BAR_ARIA_IDENT = lambda aria_label: f'[aria-label="{aria_label}"]'
     SEARCH_BAR_TABLE_IDENT = '[data-testid="textbox-table-search-bar"] >> nth=0'
-    SEARCH_BAR_IN_SPECIFIED_TABLE_IDENT = lambda table_specified: f'[data-testid="table-{table_specified}"] >> [data-testid="textbox-table-search-bar"] >> nth=0'
+    SEARCH_BAR_IN_SPECIFIED_TABLE_IDENT = (
+        lambda table_specified: f'[data-testid="table-{table_specified}"] >> [data-testid="textbox-table-search-bar"] >> nth=0'
+    )
     QUICK_SEARCH_BAR_IDENT = '[data-testid="textbox-quick-search-bar"]'
     QUICK_SEARCH_BAR_FIRST_RESULT = '[data-testid="text-search-result"] >> nth=0'
     QUICK_SEARCH_BAR_NUMBERED_RESULT = (
@@ -123,7 +125,10 @@ class GenericLocators:
     SHOWING_NUMBER_OF_ITEMS = "[data-testid='text-showing-count']"
 
     BUTTON_ENTRIES_SHOWN = '[data-testid="button-show-entries"]'
-    DROPDOWN_LIST_CHANGE_NUMBER_OF_ENTRIES_SHOWN = lambda number_of_entries: f'[data-testid="area-show-number-of-entries"] >> text="{number_of_entries}"'
+    DROPDOWN_LIST_CHANGE_NUMBER_OF_ENTRIES_SHOWN = (
+        lambda number_of_entries: f'[data-testid="area-show-number-of-entries"] >> text="{number_of_entries}"'
+    )
+
 
 class BasePage:
     def __init__(self, driver) -> None:
@@ -525,7 +530,11 @@ class BasePage:
         entries_button_locator = GenericLocators.BUTTON_ENTRIES_SHOWN
         self.click(entries_button_locator)
 
-        dropdown_entries_to_show_locator = GenericLocators.DROPDOWN_LIST_CHANGE_NUMBER_OF_ENTRIES_SHOWN(entries_to_show)
+        dropdown_entries_to_show_locator = (
+            GenericLocators.DROPDOWN_LIST_CHANGE_NUMBER_OF_ENTRIES_SHOWN(
+                entries_to_show
+            )
+        )
         self.click(dropdown_entries_to_show_locator)
 
     def make_selection_within_filter_group(self, filter_group_name, selection):
@@ -597,10 +606,8 @@ class BasePage:
     def validate_global_quick_search_result_text(self, result_in_list, text):
         """Specifies a result from the quick search bar result list. Validates expected text is present."""
         result_in_list = self.make_input_0_index(result_in_list)
-        locator_result_category = (
-            GenericLocators.QUICK_SEARCH_BAR_RESULT_TEXT(
-                result_in_list, text
-            )
+        locator_result_category = GenericLocators.QUICK_SEARCH_BAR_RESULT_TEXT(
+            result_in_list, text
         )
         self.wait_until_locator_is_visible(locator_result_category)
 

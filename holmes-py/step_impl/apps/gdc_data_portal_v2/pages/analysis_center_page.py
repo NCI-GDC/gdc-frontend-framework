@@ -4,7 +4,9 @@ from playwright.sync_api import Page
 
 from ....base.base_page import BasePage
 from step_impl.apps.gdc_data_portal_v2.pages.header_section import HeaderSectionLocators
-from step_impl.apps.gdc_data_portal_v2.pages.cohort_comparison_page import CohortComparisonLocators
+from step_impl.apps.gdc_data_portal_v2.pages.cohort_comparison_page import (
+    CohortComparisonLocators,
+)
 
 
 class AnalysisCenterLocators:
@@ -106,24 +108,33 @@ class AnalysisCenterPage(BasePage):
     # We want to wait for the main content of the page to load before continuing the test.
     def wait_for_app_page_to_load(self, page_to_load):
         page_to_load = page_to_load.lower()
-        if (page_to_load == "mutation frequency" or page_to_load == "mutation frequency demo"):
+        if (
+            page_to_load == "mutation frequency"
+            or page_to_load == "mutation frequency demo"
+        ):
             # Been running into loading failures on mutation frequency.
             # Usually happens when running regression. The page will not load at all.
             # Simple solution I can think of is refreshing the page if that happens.
             try:
-                self.wait_for_selector(AnalysisCenterLocators.MUTATION_FREQUENCY_WAIT_FOR_ELEMENT, 15000)
+                self.wait_for_selector(
+                    AnalysisCenterLocators.MUTATION_FREQUENCY_WAIT_FOR_ELEMENT, 15000
+                )
             except:
                 self.driver.reload()
                 time.sleep(10)
-                self.wait_for_selector(AnalysisCenterLocators.MUTATION_FREQUENCY_WAIT_FOR_ELEMENT, 30000)
+                self.wait_for_selector(
+                    AnalysisCenterLocators.MUTATION_FREQUENCY_WAIT_FOR_ELEMENT, 30000
+                )
 
-        if (page_to_load == "cohort comparison demo"):
+        if page_to_load == "cohort comparison demo":
             # Need to wait for loading spinners to be present, for them to disappear,
             # and wait for a special loading spinner attached to the survival plot to disappear
             try:
                 self.wait_for_loading_spinner_to_be_visible(15000)
                 self.wait_for_loading_spinner_to_detatch()
-                survival_plot_spinner_locator = CohortComparisonLocators.LOADING_SPINNER_SURVIVAL_PLOT
+                survival_plot_spinner_locator = (
+                    CohortComparisonLocators.LOADING_SPINNER_SURVIVAL_PLOT
+                )
                 self.wait_until_locator_is_detached(survival_plot_spinner_locator)
             except:
                 self.wait_for_loading_spinner_to_detatch()

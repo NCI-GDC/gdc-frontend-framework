@@ -205,7 +205,9 @@ def upload_file(
     file_chooser = file_chooser_info.value
     file_name = file_name.lower().replace(" ", "_")
     folder_name = folder_name.lower().replace(" ", "_")
-    file_path = f"{Utility.parent_dir()}/resources/{folder_name}/{file_name}.{extension}"
+    file_path = (
+        f"{Utility.parent_dir()}/resources/{folder_name}/{file_name}.{extension}"
+    )
     file_chooser.set_files(file_path)
 
 
@@ -247,13 +249,16 @@ def verify_file_content(file_type, table):
             v[0] in data_store.spec[f"{file_type} contents"]
         ), f"'{v[0]}' is NOT found in the file"
 
+
 @step("Verify that <file_type> has expected information from collected data <table>")
 def verify_file_content(file_type, table):
     """Checks if collected information is inside content from read-in files"""
     for k, v in enumerate(table):
-            # Get first statistic to compare
+        # Get first statistic to compare
         collected_data_string = data_store.spec[f"{v[0]}"]
-        collected_data_string = APP.shared.strip_string_for_comparison(collected_data_string)
+        collected_data_string = APP.shared.strip_string_for_comparison(
+            collected_data_string
+        )
         if collected_data_string == "--":
             assert (
                 "0" in data_store.spec[f"{file_type} contents"]
@@ -440,12 +445,12 @@ def wait_for_table_body_text_to_appear(table):
         v[1] - Row
         v[2] - Column
         """
-        APP.shared.wait_for_table_body_text_by_row_column(v[0],v[1],v[2])
+        APP.shared.wait_for_table_body_text_by_row_column(v[0], v[1], v[2])
         time.sleep(2)
         # Occasionally, the screen flickers where it shows the text we
         # are waiting for then it disappears for a moment. Checking for the
         # text twice should account for that.
-        APP.shared.wait_for_table_body_text_by_row_column(v[0],v[1],v[2])
+        APP.shared.wait_for_table_body_text_by_row_column(v[0], v[1], v[2])
         time.sleep(2)
     APP.shared.wait_for_loading_spinner_table_to_detatch()
     APP.shared.wait_for_loading_spinner_to_detatch()
@@ -526,14 +531,18 @@ def store_cohort_bar_case_count_for_comparison():
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
     data_store.spec["Cohort Bar Case Count"] = APP.shared.get_cohort_bar_case_count()
 
+
 @step("Collect <cohort_name> Case Count for comparison")
-def store_cohort_bar_case_count_for_comparison(cohort_name:str):
+def store_cohort_bar_case_count_for_comparison(cohort_name: str):
     """
     Stores current cohort bar case count for comparison in future tests.
     Store the information using a key based on the cohort name.
     Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'
     """
-    data_store.spec[f"{cohort_name} Case Count"] = APP.shared.get_cohort_bar_case_count()
+    data_store.spec[
+        f"{cohort_name} Case Count"
+    ] = APP.shared.get_cohort_bar_case_count()
+
 
 @step("The cohort bar case count should be <case_count>")
 def is_cohort_bar_case_count_present_on_the_page(case_count: str):
@@ -634,8 +643,9 @@ def click_create_or_save_in_cohort_modal(table):
         APP.shared.click_switch_for_column_selector(v[0])
     APP.shared.click_column_selector_button()
 
+
 @step("Change number of entries shown in the table to <number_of_entries>")
-def change_number_of_entries_shown(change_number_of_entries_shown:str):
+def change_number_of_entries_shown(change_number_of_entries_shown: str):
     """
     Changes number of entries shown in the table using the show entries button,
     and selecting an option from the dropdown list.
@@ -747,8 +757,9 @@ def send_text_into_text_box(text: str, text_box_name: str):
     """Sends text into a data-testid text box"""
     APP.shared.send_text_into_text_box(text, text_box_name)
 
+
 @step("In table <table_name>, search the table for <text>")
-def send_text_into_specified_table_search_bar(table_name:str, text: str):
+def send_text_into_specified_table_search_bar(table_name: str, text: str):
     """Sends text into specified table search bar"""
     APP.shared.send_text_into_specified_table_search_bar(table_name, text)
     time.sleep(1)
@@ -760,6 +771,7 @@ def send_text_into_specified_table_search_bar(table_name:str, text: str):
     APP.shared.keyboard_press("Enter")
     APP.shared.wait_for_loading_spinner_table_to_detatch()
     APP.shared.wait_for_loading_spinner_to_detatch()
+
 
 @step("Search the table for <text>")
 def send_text_into_table_search_bar(text: str):
@@ -793,14 +805,14 @@ def global_quick_search(text: str):
     APP.shared.global_quick_search(text)
 
 
-@step("Validate the quick search bar result in position <result_in_list> of the result list has the text <text>")
+@step(
+    "Validate the quick search bar result in position <result_in_list> of the result list has the text <text>"
+)
 def validate_global_quick_search_result_text(result_in_list: str, text: str):
     """
     Specifies a result from the quick search bar result list. Validates expected text is present.
     """
-    APP.shared.validate_global_quick_search_result_text(
-        result_in_list, text
-    )
+    APP.shared.validate_global_quick_search_result_text(result_in_list, text)
 
 
 @step("Select the quick search bar result in position <result_in_list>")
@@ -832,6 +844,7 @@ def click_nav_item_check_text_in_new_tab(page_name: str, table):
         ), f"After click on '{v[0]}', the expected text '{v[1]}' in NOT present"
         new_tab.close()
 
+
 @step(
     "Check that <var_to_check> cookie is accessible using Javascript and that it's generated using uuid version <ver>"
 )
@@ -844,8 +857,8 @@ def check_if_cookie_accessible(var_to_check: str, ver: int):
 
     start_value = cookie[cookie.index(var_to_check) + len(var_to_check) :]
     gdc_context_id = start_value[: start_value.find(";")]
-    start_value = cookie[cookie.index(var_to_check)+len(var_to_check):]
-    gdc_context_id = start_value[:start_value.find(";")]
+    start_value = cookie[cookie.index(var_to_check) + len(var_to_check) :]
+    gdc_context_id = start_value[: start_value.find(";")]
 
     # check if the gdc_context_id is version 4
     assert UUID(gdc_context_id).version == int(ver)

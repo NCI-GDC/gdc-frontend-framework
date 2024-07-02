@@ -26,6 +26,7 @@ class HomePageLocators:
         lambda label_or_bar_graph, primary_site: f"[data-testid='{label_or_bar_graph}-{primary_site}']"
     )
 
+
 class HomePage(BasePage):
     def __init__(self, driver: Page, url):
         self.URL = "{}".format(url)
@@ -53,7 +54,13 @@ class HomePage(BasePage):
         return self.get_text(locator)
 
     def click_primary_site_on_body_plot_graph(self, label_or_bar_graph, primary_site):
-        label_or_bar_graph = self.normalize_button_identifier_keep_capitalization(label_or_bar_graph)
-        primary_site = self.normalize_button_identifier_keep_capitalization(primary_site)
-        locator = HomePageLocators.BODY_PLOT_GRAPH_PRIMARY_SITE(label_or_bar_graph, primary_site)
+        label_or_bar_graph = self.normalize_button_identifier_keep_capitalization(
+            label_or_bar_graph
+        )
+        primary_site = self.normalize_button_identifier_keep_capitalization(
+            primary_site
+        )
+        locator = HomePageLocators.BODY_PLOT_GRAPH_PRIMARY_SITE(
+            label_or_bar_graph, primary_site
+        )
         self.click(locator)

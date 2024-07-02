@@ -26,11 +26,12 @@ class RepositoryPageLocators:
         lambda group_name, more_or_less: f'[data-testid="filters-facets"] >> div >> div:has-text("{group_name}") >> button[data-testid="{more_or_less}"]'
     )
 
-
     IMAGE_VIEWER_IDENT = (
         lambda data_testid: f"[data-testid='{data_testid}-image-viewer']"
     )
-    IMAGE_VIEWER_CASES_SLIDES = lambda data_testid: f'[data-testid="cases-slides-image-viewer"] >> [data-testid="{data_testid}"]'
+    IMAGE_VIEWER_CASES_SLIDES = (
+        lambda data_testid: f'[data-testid="cases-slides-image-viewer"] >> [data-testid="{data_testid}"]'
+    )
     IMAGE_VIEWER_SEARCH_BOX = '[data-testid="search-bar-image-viewer"]'
     IMAGE_VIEWER_MAIN_IMAGE = "div[class='openseadragon-canvas'] >> nth=0"
     IMAGE_VIEWER_VIEWPORT_NAVIGATOR = "div[class='openseadragon-canvas'] >> nth=1"
@@ -44,7 +45,10 @@ class RepositoryPageLocators:
         lambda field_name, value: f'[data-testid="table-image-viewer-details"] >> text={field_name}{value} >> td'
     )
 
-    TEXT_REPO_TABLE_ITEM_COUNT = lambda item_position: f'[data-testid="text-counts-files-table"] >> strong >> nth={item_position}'
+    TEXT_REPO_TABLE_ITEM_COUNT = (
+        lambda item_position: f'[data-testid="text-counts-files-table"] >> strong >> nth={item_position}'
+    )
+
 
 class RepositoryPage(BasePage):
     def __init__(self, driver: Page, url: str) -> None:
@@ -102,7 +106,9 @@ class RepositoryPage(BasePage):
             filter_names.append(nth_inner_element)
         return filter_names
 
-    def make_selection_within_filter_group_repository(self, filter_group_name, selection):
+    def make_selection_within_filter_group_repository(
+        self, filter_group_name, selection
+    ):
         """Clicks a checkbox within a filter group"""
         locator = RepositoryPageLocators.FILTER_GROUP_SELECTION_IDENT(
             filter_group_name, selection
@@ -111,10 +117,14 @@ class RepositoryPage(BasePage):
 
     def perform_action_within_filter_card_repository(self, filter_group_name, action):
         """Performs an action in a filter group e.g sorting, resetting, flipping the chart, etc."""
-        locator = RepositoryPageLocators.FILTER_GROUP_ACTION_IDENT(filter_group_name, action)
+        locator = RepositoryPageLocators.FILTER_GROUP_ACTION_IDENT(
+            filter_group_name, action
+        )
         self.click(locator)
 
-    def click_show_more_less_within_filter_card_repository(self, filter_group_name, label):
+    def click_show_more_less_within_filter_card_repository(
+        self, filter_group_name, label
+    ):
         """Clicks the show more or show less object"""
         locator = RepositoryPageLocators.FILTER_GROUP_SHOW_MORE_LESS_IDENT(
             filter_group_name, label
