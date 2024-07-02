@@ -131,7 +131,7 @@
     },
     "molecular_filters": {
       "label": "Molecular Filters",
-      "facets": ["genes.gene_id", "ssms.ssm_id"],
+      "facets": ["genes.upload.gene_id", "ssms.upload.ssm_id"],
       "docType": "cases",
       "index": "explore"
     },

@@ -17,7 +17,7 @@ export const upload_facets: Record<string, FacetDefinition> = {
     range: undefined,
     type: "keyword",
   },
-  "genes.gene_id": {
+  "genes.upload.gene_id": {
     description:
       "Enter/upload genes or select gene sets to filter the current cohort",
     doc_type: "cases",
@@ -27,7 +27,7 @@ export const upload_facets: Record<string, FacetDefinition> = {
     range: undefined,
     type: "keyword",
   },
-  "ssms.ssm_id": {
+  "ssms.upload.ssm_id": {
     description:
       "Enter/upload simple mutations or select mutation sets to filter the current cohort",
     doc_type: "cases",
