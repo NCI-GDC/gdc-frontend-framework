@@ -288,13 +288,11 @@ export const Bodyplot = (): JSX.Element => {
           />
         )}
       </div>
-      {createCohortModalOpen && (
-        <ExploreCohortModal
-          opened
-          setOpened={setCreateCohortModalOpen}
-          site={selectedSite}
-        />
-      )}
+      <ExploreCohortModal
+        opened={createCohortModalOpen}
+        setOpened={setCreateCohortModalOpen}
+        site={selectedSite}
+      />
       <div id="human-body-root" ref={bodyplotRef}></div>
     </div>
   );
