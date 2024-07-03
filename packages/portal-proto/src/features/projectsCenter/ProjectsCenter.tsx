@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useCoreSelector, selectCurrentCohortId, usePrevious } from "@gff/core";
 import { useClearAllProjectFilters } from "./hooks";
 import ProjectFacetPanel from "./ProjectFacetPanel";
 import ProjectsTable from "./ProjectsTable";
@@ -13,6 +14,15 @@ export const ProjectsCenter = (): JSX.Element => {
   useEffect(() => {
     return () => clearAllFilters();
   }, [clearAllFilters]);
+
+  const cohortId = useCoreSelector((state) => selectCurrentCohortId(state));
+  const prevId = usePrevious(cohortId);
+
+  useEffect(() => {
+    if (cohortId !== prevId) {
+      clearAllFilters();
+    }
+  }, [cohortId, prevId, clearAllFilters]);
 
   return (
     <>
