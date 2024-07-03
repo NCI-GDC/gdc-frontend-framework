@@ -240,7 +240,7 @@ export const Bodyplot = (): JSX.Element => {
         mouseOutHandler: mouseOutHandler,
         keyDownHandler,
         keyUpHandler,
-        skipLinkId: "#high-quality-datasets-card",
+        skipLinkId: "#high-quality-datasets-section",
         ariaLabel: (d) =>
           `${d?.key}, ${(
             d?.caseCount * SCALE_CASE_COUNT
