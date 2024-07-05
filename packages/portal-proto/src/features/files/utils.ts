@@ -152,3 +152,19 @@ export const mapGdcFileToCartFile = (
       "file_name",
     ]),
   );
+
+export const REF_GENOME_EXCLUDED_TYPES = {
+  fileType: ["masked_methylation_array"],
+  workflow_type: ["Birdseed"],
+};
+
+export const shouldDisplayReferenceGenome = (file: GdcFile) => {
+  const isIncluded = (type: string, value: string) => {
+    return REF_GENOME_EXCLUDED_TYPES[type]?.includes(value);
+  };
+
+  return (
+    !isIncluded("fileType", file.fileType) &&
+    !isIncluded("workflow_type", file?.analysis?.workflow_type)
+  );
+};

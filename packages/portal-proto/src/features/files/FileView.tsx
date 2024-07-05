@@ -17,6 +17,7 @@ import {
   formatDataForHorizontalTable,
   mapGdcFileToCartFile,
   parseSlideDetailsInfo,
+  shouldDisplayReferenceGenome,
 } from "./utils";
 import { BAMSlicingModal } from "@/components/Modals/BAMSlicingModal/BAMSlicingModal";
 import { NoAccessToProjectModal } from "@/components/Modals/NoAccessToProjectModal";
@@ -247,16 +248,18 @@ export const FileView: React.FC<FileViewProps> = ({
                   tableData={formatDataForAnalysis()}
                 />
               </div>
-              <div className="flex-1">
-                <SummaryCard
-                  customDataTestID="table-reference-genome-file-summary"
-                  title="Reference Genome"
-                  tableData={[
-                    { headerName: "Genome Build	", values: ["GRCh38.p0"] },
-                    { headerName: "Genome Name	", values: ["GRCh38.d1.vd1"] },
-                  ]}
-                />
-              </div>
+              {shouldDisplayReferenceGenome(file) ? (
+                <div className="flex-1">
+                  <SummaryCard
+                    customDataTestID="table-reference-genome-file-summary"
+                    title="Reference Genome"
+                    tableData={[
+                      { headerName: "Genome Build	", values: ["GRCh38.p0"] },
+                      { headerName: "Genome Name	", values: ["GRCh38.d1.vd1"] },
+                    ]}
+                  />
+                </div>
+              ) : null}
             </div>
             {file?.analysis?.input_files?.length > 0 && (
               <DivWithMargin>
