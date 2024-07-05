@@ -6,6 +6,7 @@ import DateRangeFacet from "@/features/facets/DateRangeFacet";
 import ExactValueFacet from "@/features/facets/ExactValueFacet";
 import ToggleFacet from "@/features/facets/ToggleFacet";
 import { FacetRequiredHooks } from "@/features/facets/types";
+import UploadFacet from "@/features/facets/UploadFacet";
 
 /**
  * createFacetCard given a facet definition it will create a
@@ -124,6 +125,20 @@ export const createFacetCard = (
         dismissCallback={dismissCallback}
         facetName={facetName}
         width={width}
+      />
+    );
+  }
+  if (facet.facet_type === "upload") {
+    const field = facet.field.replace("upload.", "");
+    return (
+      <UploadFacet
+        key={`${idPrefix}-exact-${field}`}
+        field={field}
+        customFaceTitle={field === "genes.gene_id" ? "gene" : undefined}
+        useClearFilter={dataFunctions.useClearFilter}
+        facetButtonName={facet.full}
+        width={width}
+        description={facet.description}
       />
     );
   }

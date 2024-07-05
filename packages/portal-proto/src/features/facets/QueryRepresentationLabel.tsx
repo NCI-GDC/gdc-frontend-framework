@@ -12,7 +12,7 @@ interface QueryRepresentationLabelProps {
   readonly value: string;
   readonly geneSymbolDict: Record<string, string>;
   readonly geneSymbolSuccess: boolean;
-  readonly countHook: UseQuery<any>;
+  readonly useCountHook: UseQuery<any>;
 }
 
 const QueryRepresentationLabel: React.FC<QueryRepresentationLabelProps> = ({
@@ -20,19 +20,19 @@ const QueryRepresentationLabel: React.FC<QueryRepresentationLabelProps> = ({
   value,
   geneSymbolDict,
   geneSymbolSuccess,
-  countHook,
+  useCountHook,
 }: QueryRepresentationLabelProps) => {
   let label: string;
   const [docType] = field.split(".");
   const sets = useCoreSelector((state) =>
     selectSetsByType(state, docType as SetTypes),
   );
-  if (value.includes("set_id:")) {
-    const setId = value.split(":")[1];
 
+  const setId = value.includes("set_id:") ? value.split(":")[1] : null;
+  const { data, isSuccess } = useCountHook({ setId });
+
+  if (setId) {
     const setName = sets?.[setId];
-
-    const { data, isSuccess } = countHook({ setId });
     label =
       setName !== undefined
         ? setName
@@ -48,6 +48,7 @@ const QueryRepresentationLabel: React.FC<QueryRepresentationLabelProps> = ({
       label = value;
     }
   }
+
   return <>{label}</>;
 };
 
