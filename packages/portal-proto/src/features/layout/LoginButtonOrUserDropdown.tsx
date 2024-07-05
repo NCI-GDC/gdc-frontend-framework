@@ -20,10 +20,6 @@ import {
   useCoreSelector,
 } from "@gff/core";
 import { LoginButton } from "@/components/LoginButton";
-import {
-  DropdownMenu,
-  DropdownMenuItem,
-} from "@/components/StyledComponents/DropdownMenu";
 import { theme } from "tailwind.config";
 import { useDeepCompareEffect } from "use-deep-compare";
 
@@ -48,7 +44,16 @@ const LoginButtonOrUserDropdown = () => {
   return (
     <>
       {userInfo?.data?.username ? (
-        <Menu width={200} data-testid="userdropdown" zIndex={400} offset={-5}>
+        <Menu
+          width={200}
+          data-testid="userdropdown"
+          offset={-5}
+          position="bottom-end"
+          classNames={{
+            dropdown: "border-primary-darker shadow-xl",
+            item: "text-base-darker data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest",
+          }}
+        >
           <Menu.Target>
             <Button
               rightSection={<ArrowDropDownIcon size="2em" aria-hidden="true" />}
@@ -61,9 +66,9 @@ const LoginButtonOrUserDropdown = () => {
               {userInfo?.data?.username}
             </Button>
           </Menu.Target>
-          <DropdownMenu>
-            <DropdownMenuItem
-              icon={<FaUserCheck size="1.25em" />}
+          <Menu.Dropdown>
+            <Menu.Item
+              leftSection={<FaUserCheck size="1.25em" />}
               onClick={async () => {
                 dispatch(showModal({ modal: Modals.UserProfileModal }));
                 // This is done inorder to set the last focused element as the menu target element
@@ -73,9 +78,9 @@ const LoginButtonOrUserDropdown = () => {
               data-testid="userprofilemenu"
             >
               User Profile
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              icon={<FaDownload size="1.25em" />}
+            </Menu.Item>
+            <Menu.Item
+              leftSection={<FaDownload size="1.25em" />}
               data-testid="downloadTokenMenuItem"
               onClick={async () => {
                 if (Object.keys(userInfo?.data?.projects.gdc_ids).length > 0) {
@@ -136,9 +141,9 @@ const LoginButtonOrUserDropdown = () => {
               }}
             >
               Download Token
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              icon={<LogoutIcon size="1.25em" />}
+            </Menu.Item>
+            <Menu.Item
+              leftSection={<LogoutIcon size="1.25em" />}
               onClick={() => {
                 window.location.assign(
                   urlJoin(GDC_AUTH, `logout?next=${window.location.href}`),
@@ -147,8 +152,8 @@ const LoginButtonOrUserDropdown = () => {
               data-testid="logoutMenuItem"
             >
               Logout
-            </DropdownMenuItem>
-          </DropdownMenu>
+            </Menu.Item>
+          </Menu.Dropdown>
         </Menu>
       ) : (
         <LoginButton fromHeader />
