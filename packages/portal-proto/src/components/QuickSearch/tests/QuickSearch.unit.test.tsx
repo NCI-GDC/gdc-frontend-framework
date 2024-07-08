@@ -73,4 +73,28 @@ describe("<QuickSearch />", () => {
       "444-555File 111-222 has been updatedCategory: File",
     );
   });
+
+  test("displays no results found if history is empty", async () => {
+    jest.spyOn(core, "useQuickSearchQuery").mockReturnValue({
+      data: {
+        searchList: [],
+        query: "111-222",
+      },
+    } as any);
+    jest.spyOn(core, "useGetHistoryQuery").mockReturnValue({
+      data: [],
+    } as any);
+
+    const { getByTestId } = render(<QuickSearch />);
+    userEvent.click(getByTestId("textbox-quick-search-bar"));
+    userEvent.type(getByTestId("textbox-quick-search-bar"), "111-222");
+
+    await waitFor(
+      () =>
+        expect(getByTestId("no-results-quick-search-bar")).toBeInTheDocument(),
+      { timeout: 3000 },
+    );
+    const noResults = getByTestId("no-results-quick-search-bar");
+    expect(noResults).toBeInTheDocument();
+  });
 });
