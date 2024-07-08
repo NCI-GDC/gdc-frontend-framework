@@ -11,6 +11,7 @@ class GenericLocators:
     X_BUTTON_IN_TEMP_MESSAGE = (
         '>> .. >> .. >> .. >> svg[xmlns="http://www.w3.org/2000/svg"]'
     )
+    BUTTON_CLOSE_NOTIFICATION = '[aria-label="Close notification"]'
     UNDO_BUTTON_IN_TEMP_MESSAGE = 'span:text("Undo")'
     SET_AS_CURRENT_COHORT_IN_TEMP_MESSAGE = (
         'span:text("Set this as your current cohort.")'
