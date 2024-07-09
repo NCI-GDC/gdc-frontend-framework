@@ -5,7 +5,7 @@ from ....base.base_page import GenericLocators
 
 
 class SetOperationsLocators:
-    BUTTON_CREATE_SET = '[data-testid="button-create-set"]'
+    CHECKBOX_SELECT_SET = lambda checkbox_name: f'[data-testid="checkbox-{checkbox_name}-set-operations"]'
 
 
 
@@ -16,3 +16,15 @@ class SetOperationsPage(BasePage):
 
     def visit(self):
         self.driver.goto(self.URL)
+
+    def is_checkbox_disabled_set_operations(self, checkbox_name):
+        locator = SetOperationsLocators.CHECKBOX_SELECT_SET(checkbox_name)
+        return self.is_disabled(locator)
+
+    def is_checkbox_enabled_set_operations(self, checkbox_name):
+        locator = SetOperationsLocators.CHECKBOX_SELECT_SET(checkbox_name)
+        return self.is_enabled(locator)
+
+    def click_checkbox_set_operations(self, checkbox_name):
+        locator = SetOperationsLocators.CHECKBOX_SELECT_SET(checkbox_name)
+        return self.click(locator)

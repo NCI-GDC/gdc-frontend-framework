@@ -169,6 +169,10 @@ class BasePage:
         """Returns if the locator has the attribute 'disabled'"""
         return self.driver.locator(locator).is_disabled()
 
+    def is_enabled(self, locator):
+        """Returns if the locator is enabled"""
+        return self.driver.locator(locator).is_enabled()
+
     def send_keys(self, locator, text):
         return self.driver.locator(locator).fill(text)
 
