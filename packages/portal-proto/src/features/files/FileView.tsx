@@ -161,6 +161,7 @@ export const FileView: React.FC<FileViewProps> = ({
       ]),
     [file],
   );
+
   const formattedDataForAnalysis = useDeepCompareMemo(
     () =>
       formatDataForHorizontalTable(file, [
@@ -171,7 +172,7 @@ export const FileView: React.FC<FileViewProps> = ({
         {
           field: "analysis.updated_datetime",
           name: "Workflow Completion Date",
-          modifier: (v) => v.split("T")[0],
+          modifier: (v) => v?.split("T")[0],
         },
       ]),
     [file],
