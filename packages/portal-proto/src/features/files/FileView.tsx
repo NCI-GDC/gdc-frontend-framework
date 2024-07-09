@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDeepCompareCallback } from "use-deep-compare";
+import { useDeepCompareMemo } from "use-deep-compare";
 import {
   GdcFile,
   HistoryDefaults,
@@ -99,8 +99,9 @@ export const FileView: React.FC<FileViewProps> = ({
   const [bamActive, setBamActive] = useState(false);
   const [fileToDownload, setFileToDownload] = useState(file);
   const isFileInCart = fileInCart(currentCart, file.file_id);
+  const shouldDisplayRefGenome = shouldDisplayReferenceGenome(file);
 
-  const formatDataForFileProperties = useDeepCompareCallback(
+  const formattedDataForFileProperties = useDeepCompareMemo(
     () =>
       formatDataForHorizontalTable(file, [
         {
@@ -138,7 +139,7 @@ export const FileView: React.FC<FileViewProps> = ({
     [file],
   );
 
-  const formatDataForDataInformation = useDeepCompareCallback(
+  const formattedDataForDataInformation = useDeepCompareMemo(
     () =>
       formatDataForHorizontalTable(file, [
         {
@@ -160,8 +161,7 @@ export const FileView: React.FC<FileViewProps> = ({
       ]),
     [file],
   );
-
-  const formatDataForAnalysis = useDeepCompareCallback(
+  const formattedDataForAnalysis = useDeepCompareMemo(
     () =>
       formatDataForHorizontalTable(file, [
         {
@@ -199,13 +199,13 @@ export const FileView: React.FC<FileViewProps> = ({
             <SummaryCard
               customDataTestID="table-file-properties-file-summary"
               title="File Properties"
-              tableData={formatDataForFileProperties()}
+              tableData={formattedDataForFileProperties}
             />
           </div>
           <div className="flex-1">
             <SummaryCard
               customDataTestID="table-data-information-file-summary"
-              tableData={formatDataForDataInformation()}
+              tableData={formattedDataForDataInformation}
               title="Data Information"
             />
           </div>
@@ -241,25 +241,41 @@ export const FileView: React.FC<FileViewProps> = ({
         {file?.analysis && (
           <>
             <div className="mt-14 flex gap-8">
-              <div className="flex-1">
-                <SummaryCard
-                  customDataTestID="table-analysis-file-summary"
-                  title="Analysis"
-                  tableData={formatDataForAnalysis()}
-                />
+              <div className={`flex-1 ${!shouldDisplayRefGenome && "flex"}`}>
+                <div className="basis-1/2">
+                  <SummaryCard
+                    customDataTestID="table-analysis-file-summary"
+                    title="Analysis"
+                    tableData={
+                      shouldDisplayRefGenome
+                        ? formattedDataForAnalysis
+                        : [formattedDataForAnalysis[0]]
+                    }
+                  />
+                </div>
+                {!shouldDisplayRefGenome && (
+                  <div className="basis-1/2">
+                    <SummaryCard
+                      customDataTestID="table-analysis-file-summary"
+                      title="" // should be empty
+                      tableData={[formattedDataForAnalysis[1]]}
+                    />
+                  </div>
+                )}
               </div>
-              {shouldDisplayReferenceGenome(file) ? (
+
+              {shouldDisplayRefGenome && (
                 <div className="flex-1">
                   <SummaryCard
                     customDataTestID="table-reference-genome-file-summary"
                     title="Reference Genome"
                     tableData={[
-                      { headerName: "Genome Build	", values: ["GRCh38.p0"] },
-                      { headerName: "Genome Name	", values: ["GRCh38.d1.vd1"] },
+                      { headerName: "Genome Build", values: ["GRCh38.p0"] },
+                      { headerName: "Genome Name", values: ["GRCh38.d1.vd1"] },
                     ]}
                   />
                 </div>
-              ) : null}
+              )}
             </div>
             {file?.analysis?.input_files?.length > 0 && (
               <DivWithMargin>
