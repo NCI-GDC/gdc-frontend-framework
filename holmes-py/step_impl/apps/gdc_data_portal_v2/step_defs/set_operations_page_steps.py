@@ -2,6 +2,7 @@ from getgauge.python import step, before_spec
 
 from ..app import GDCDataPortalV2App
 from ....base.webdriver import WebDriver
+from getgauge.python import data_store
 
 import time
 
@@ -9,6 +10,24 @@ import time
 def start_app():
     global APP
     APP = GDCDataPortalV2App(WebDriver.page)
+
+@step("Collect these set item counts on the Set Operations selection screen <table>")
+def store_count_repository_for_comparison(table):
+    """
+    Stores specified set item count for comparison in future tests.
+    Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'
+
+    :param v[0]: The set to collect count of (typically a cohort set).
+    """
+    for k, v in enumerate(table):
+        data_store.spec[f"{v[0]} Count Set Operations"] = APP.set_operations_page.get_item_count_selection_screen_set_operations(v[0])
+
+@step("Validate these item counts are correct in the Set Operations selection screen <table>")
+def validate_set_item_counts(table):
+    for k, v in enumerate(table):
+        item_count = APP.set_operations_page.get_item_count_selection_screen_set_operations(v[0])
+        assert item_count == v[1], f"Item count for set '{v[0]}' is {item_count} when we expected {v[1]}"
+        time.sleep(0.1)
 
 @step("Checkbox <checkbox_name> should be disabled in the Set Operations app")
 def is_checkbox_disabled(checkbox_name: str):

@@ -51,9 +51,22 @@ tags: gdc-data-portal-v2, set-operations, regression
   |cohort_name              |number_of_filters|
   |-------------------------|-----------------|
   |A-Cohort_SO_SS_1         |2                |
+* Collect "A-Cohort_SO_SS_1" Case Count for comparison
+* Create and save cohorts with randomly assigned filters
+  |cohort_name              |number_of_filters|
+  |-------------------------|-----------------|
   |A-Cohort_SO_SS_2         |2                |
+* Collect "A-Cohort_SO_SS_2" Case Count for comparison
+* Create and save cohorts with randomly assigned filters
+  |cohort_name              |number_of_filters|
+  |-------------------------|-----------------|
   |A-Cohort_SO_SS_3         |2                |
+* Collect "A-Cohort_SO_SS_3" Case Count for comparison
+* Create and save cohorts with randomly assigned filters
+  |cohort_name              |number_of_filters|
+  |-------------------------|-----------------|
   |A-Cohort_SO_SS_4         |2                |
+* Collect "A-Cohort_SO_SS_4" Case Count for comparison
 
 ## Navigate to Set Operations
 * Navigate to "Analysis" from "Header" "section"
@@ -128,6 +141,30 @@ tags: gdc-data-portal-v2, set-operations, regression
   |A-Cohort_SO_SS_1         |
   |A-Cohort_SO_SS_2         |
   |A-Cohort_SO_SS_3         |
+
+## Validate Item Counts
+* Validate these item counts are correct in the Set Operations selection screen
+  |set_name                 |expected_item_count|
+  |-------------------------|-------------------|
+  |A-Gene_Set_SO_SS_1       |5                  |
+  |A-Gene_Set_SO_SS_2       |10                 |
+  |A-Gene_Set_SO_SS_3       |15                 |
+  |A-Gene_Set_SO_SS_4       |20                 |
+  |A-Mutation_Set_SO_SS_1   |4                  |
+  |A-Mutation_Set_SO_SS_2   |8                  |
+  |A-Mutation_Set_SO_SS_3   |12                 |
+  |A-Mutation_Set_SO_SS_4   |16                 |
+* Collect these set item counts on the Set Operations selection screen
+  |set_name                 |
+  |-------------------------|
+  |A-Cohort_SO_SS_1         |
+  |A-Cohort_SO_SS_2         |
+  |A-Cohort_SO_SS_3         |
+  |A-Cohort_SO_SS_4         |
+* Verify "A-Cohort_SO_SS_1 Case Count" and "A-Cohort_SO_SS_1 Count Set Operations" are "equal"
+* Verify "A-Cohort_SO_SS_2 Case Count" and "A-Cohort_SO_SS_2 Count Set Operations" are "equal"
+* Verify "A-Cohort_SO_SS_3 Case Count" and "A-Cohort_SO_SS_3 Count Set Operations" are "equal"
+* Verify "A-Cohort_SO_SS_4 Case Count" and "A-Cohort_SO_SS_4 Count Set Operations" are "equal"
 
 ## Test Cancel Button
 * Select "Cancel"
