@@ -164,6 +164,9 @@ def download_file_at_file_table(file: str, source: str):
         "Cohort Comparison": APP.cohort_comparison_page.click_download_tsv_button_on_analysis_card_cohort_comparison,
         "Mutation Frequency": APP.mutation_frequency_page.click_table_download_button,
         "Project Summary": APP.project_summary_page.click_button,
+        "Set Operations": APP.set_operations_page.click_download_tsv_button_set_operations,
+        "Set Operations Union Row": APP.set_operations_page.click_union_row_download_tsv_button_set_operations,
+
     }
     driver = WebDriver.page
     with driver.expect_download(timeout=90000) as download_info:
