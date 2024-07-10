@@ -11,6 +11,7 @@ class GenericLocators:
     X_BUTTON_IN_TEMP_MESSAGE = (
         '>> .. >> .. >> .. >> svg[xmlns="http://www.w3.org/2000/svg"]'
     )
+    BUTTON_CLOSE_NOTIFICATION = '[aria-label="Close notification"]'
     UNDO_BUTTON_IN_TEMP_MESSAGE = 'span:text("Undo")'
     SET_AS_CURRENT_COHORT_IN_TEMP_MESSAGE = (
         'span:text("Set this as your current cohort.")'
@@ -167,6 +168,10 @@ class BasePage:
     def is_disabled(self, locator):
         """Returns if the locator has the attribute 'disabled'"""
         return self.driver.locator(locator).is_disabled()
+
+    def is_enabled(self, locator):
+        """Returns if the locator is enabled"""
+        return self.driver.locator(locator).is_enabled()
 
     def send_keys(self, locator, text):
         return self.driver.locator(locator).fill(text)
