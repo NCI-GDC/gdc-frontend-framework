@@ -43,7 +43,6 @@ def store_set_item_count_for_comparison(table):
         while set_count == "--":
             time.sleep(1)
             set_count = APP.manage_sets_page.get_item_list_count_on_set_row_in_manage_sets(set_to_check)
-            print(f"Counts {set_to_check}: {set_count}")
             retry_counter = retry_counter+1
             if retry_counter >= 15:
                 break

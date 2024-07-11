@@ -41,7 +41,6 @@ def store_save_set_item_count_for_comparison(save_as_name:str):
 
     :param save_as_name: The identifier to access the saved data at a later point.
     """
-    print(APP.set_operations_page.get_union_row_save_set_button_count_analysis_screen_set_operations())
     data_store.spec[f"{save_as_name} Count Set Operations"] = APP.set_operations_page.get_union_row_save_set_button_count_analysis_screen_set_operations()
 
 @step("Validate these item counts are correct in the Set Operations selection screen <table>")
