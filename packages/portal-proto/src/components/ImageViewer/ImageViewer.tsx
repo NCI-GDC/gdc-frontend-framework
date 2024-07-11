@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState, useCallback, useEffect } from "react";
 import getConfig from "next/config";
 import OpenSeadragon from "openseadragon";
 import { useImageDetailsQuery } from "@gff/core";
@@ -7,7 +7,6 @@ import { HorizontalTable, HorizontalTableProps } from "../HorizontalTable";
 import { GDC_API } from "@gff/core";
 import { toggleFullScreen } from "src/utils";
 import useOutsideClickAlert from "@/hooks/useOutsideClickAlert";
-import { useRouter } from "next/router";
 import { useDeepCompareEffect } from "use-deep-compare";
 
 export interface ImageViewerProp extends HorizontalTableProps {
@@ -25,7 +24,7 @@ const InitOpenseadragon = (
 ) => {
   OpenSeadragon.setString("Tooltips.Home", "Reset Zoom");
   const viewer = OpenSeadragon({
-    id: "osd",
+    element: osdContainerRef.current,
     prefixUrl: `${basePath}/OpenseadragonImages/`,
     visibilityRatio: 1,
     showNavigator: true,
@@ -60,7 +59,6 @@ const ImageViewer = ({ imageId, tableData }: ImageViewerProp): JSX.Element => {
   const osdContainerRef = useRef<HTMLDivElement>(null);
   const detailsButtonWrapperRef = useRef<HTMLDivElement>(null);
   const [showDetails, setShowDetails] = useState(false);
-  const router = useRouter();
   const {
     data: imageDetails,
     isFetching,
@@ -72,64 +70,52 @@ const ImageViewer = ({ imageId, tableData }: ImageViewerProp): JSX.Element => {
     () => setShowDetails(false),
   );
 
+  const loadImage = useCallback(() => {
+    if (
+      viewer &&
+      !isFetching &&
+      imageDetails &&
+      imageDetails.Height &&
+      imageDetails.Width
+    ) {
+      viewer.open({
+        height: Number(imageDetails.Height),
+        width: Number(imageDetails.Width),
+        tileSize: Number(imageDetails.TileSize),
+        tileOverlap: Number(imageDetails.Overlap),
+        getTileUrl: (level, x, y) => {
+          return `${GDC_API}/tile/${imageId}?level=${level}&x=${x}&y=${y}`;
+        },
+      });
+    }
+  }, [viewer, isFetching, imageDetails, imageId]);
+
   useEffect(() => {
-    if (!viewer) {
+    if (!viewer && osdContainerRef.current) {
       const newViewer = InitOpenseadragon(
         basePath,
         osdContainerRef,
         detailsButtonWrapperRef,
       );
       setViewer(newViewer);
-
-      return () => {
-        newViewer.destroy();
-      };
     }
+    return () => {
+      if (viewer) {
+        viewer.destroy();
+      }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useDeepCompareEffect(() => {
-    const handleRouteChange = () => {
-      if (viewer) {
-        viewer.world.removeAll();
-        viewer._cancelPendingImages();
-      }
-    };
-
-    router.events.on("routeChangeStart", handleRouteChange);
-
-    return () => {
-      router.events.off("routeChangeStart", handleRouteChange);
-    };
-  }, [viewer, router]);
-
-  useDeepCompareEffect(() => {
-    if (
-      isFetching ||
-      !imageDetails ||
-      !imageDetails.Height ||
-      !imageDetails.Width ||
-      !viewer ||
-      !imageId
-    ) {
-      return;
-    }
-
-    viewer.open({
-      height: Number(imageDetails.Height),
-      width: Number(imageDetails.Width),
-      tileSize: Number(imageDetails.TileSize),
-      tileOverlap: Number(imageDetails.Overlap),
-      getTileUrl: (level, x, y) => {
-        return `${GDC_API}/tile/${imageId}?level=${level}&x=${x}&y=${y}`;
-      },
-    });
-
-    return () => {
+    if (viewer && imageDetails) {
+      // Clear existing image and cancel pending requests
       viewer.world.removeAll();
       viewer._cancelPendingImages();
-    };
-  }, [isFetching, imageId, viewer, imageDetails]);
+
+      loadImage();
+    }
+  }, [imageId, viewer, imageDetails, isFetching, loadImage]);
 
   return (
     <>
@@ -146,7 +132,6 @@ const ImageViewer = ({ imageId, tableData }: ImageViewerProp): JSX.Element => {
 
       <div
         ref={osdContainerRef}
-        id="osd"
         className={
           isFetching || isError
             ? "invisible"
