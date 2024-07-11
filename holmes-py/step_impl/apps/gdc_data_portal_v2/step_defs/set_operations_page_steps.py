@@ -12,7 +12,7 @@ def start_app():
     APP = GDCDataPortalV2App(WebDriver.page)
 
 @step("Collect these set item counts on the Set Operations selection screen <table>")
-def store_count_repository_for_comparison(table):
+def store_set_item_count_for_comparison(table):
     """
     Stores specified set item count for comparison in future tests.
     Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'
@@ -21,6 +21,28 @@ def store_count_repository_for_comparison(table):
     """
     for k, v in enumerate(table):
         data_store.spec[f"{v[0]} Count Set Operations"] = APP.set_operations_page.get_item_count_selection_screen_set_operations(v[0])
+
+@step("Collect these save set item counts on the Set Operations analysis screen <table>")
+def store_save_set_item_count_for_comparison(table):
+    """
+    Stores specified save set item count buttons for comparison in future tests.
+    Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'
+
+    :param v[0]: The save set button to collect count of.
+    """
+    for k, v in enumerate(table):
+        data_store.spec[f"{v[0]} Count Set Operations"] = APP.set_operations_page.get_save_set_button_count_analysis_screen_set_operations(v[0])
+
+@step("Collect union row save set item count as <save_as_name> on the Set Operations analysis screen")
+def store_save_set_item_count_for_comparison(save_as_name:str):
+    """
+    Stores union row save set item count button for comparison in future tests.
+    Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'
+
+    :param save_as_name: The identifier to access the saved data at a later point.
+    """
+    print(APP.set_operations_page.get_union_row_save_set_button_count_analysis_screen_set_operations())
+    data_store.spec[f"{save_as_name} Count Set Operations"] = APP.set_operations_page.get_union_row_save_set_button_count_analysis_screen_set_operations()
 
 @step("Validate these item counts are correct in the Set Operations selection screen <table>")
 def validate_set_item_counts(table):

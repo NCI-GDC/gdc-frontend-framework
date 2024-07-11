@@ -36,6 +36,15 @@ class SetOperationsPage(BasePage):
         locator = SetOperationsLocators.TEXT_ITEM_COUNT(set_name)
         return self.get_text(locator)
 
+    def get_save_set_button_count_analysis_screen_set_operations(self, set_name):
+        set_name = self.normalize_identifier_underscore_keep_capitalization(set_name)
+        locator = SetOperationsLocators.BUTTON_SAVE_NEW_SET(set_name)
+        return self.get_text(locator)
+
+    def get_union_row_save_set_button_count_analysis_screen_set_operations(self):
+        locator = SetOperationsLocators.BUTTON_UNION_OF_SELECTED_SETS_SAVE_NEW_SET
+        return self.get_text(locator)
+
     def click_run_set_operations_selection_screen(self):
         button_run_locator = (SetOperationsLocators.BUTTON_RUN_SELECTION_SCREEN)
         self.click(button_run_locator)
@@ -50,7 +59,7 @@ class SetOperationsPage(BasePage):
         return self.click(locator)
 
     def click_union_row_save_set_button_set_operations(self):
-        locator = SetOperationsLocators.BUTTON_UNION_OF_SELECTED_SETS_SAVE_NEW_SET()
+        locator = SetOperationsLocators.BUTTON_UNION_OF_SELECTED_SETS_SAVE_NEW_SET
         return self.click(locator)
 
     def click_download_tsv_button_set_operations(self, set_name):
@@ -59,5 +68,5 @@ class SetOperationsPage(BasePage):
         return self.click(locator)
 
     def click_union_row_download_tsv_button_set_operations(self):
-        locator = SetOperationsLocators.BUTTON_UNION_OF_SELECTED_SETS_DOWNLOAD_TSV()
+        locator = SetOperationsLocators.BUTTON_UNION_OF_SELECTED_SETS_DOWNLOAD_TSV
         return self.click(locator)

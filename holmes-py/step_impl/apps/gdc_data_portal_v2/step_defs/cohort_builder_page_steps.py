@@ -107,7 +107,8 @@ def click_named_object(tab_name: str, table):
 )
 def collect_case_counts_on_filters(cohort_name: str, table):
     """
-    collect_case_counts_on_filters Collect case count on filters on the cohort builder page
+    collect_case_counts_on_filters Collect case count on filters on the cohort builder page.
+    Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'.
     :param cohort_name: Cohort Name we are collecting the information under
     :param v[0]: Tab to select on cohort builder
     :param v[1]: Facet Card Name
