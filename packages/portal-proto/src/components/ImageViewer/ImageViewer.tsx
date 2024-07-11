@@ -7,6 +7,9 @@ import { HorizontalTable, HorizontalTableProps } from "../HorizontalTable";
 import { GDC_API } from "@gff/core";
 import { toggleFullScreen } from "src/utils";
 import useOutsideClickAlert from "@/hooks/useOutsideClickAlert";
+import { useRouter } from "next/router";
+import { useDeepCompareEffect } from "use-deep-compare";
+
 export interface ImageViewerProp extends HorizontalTableProps {
   imageId: string;
 }
@@ -28,6 +31,7 @@ const InitOpenseadragon = (
     showNavigator: true,
     minZoomLevel: 0,
     showFullPageControl: false,
+    imageLoaderLimit: 1,
   });
 
   const fullPageButton = new OpenSeadragon.Button({
@@ -52,11 +56,11 @@ const InitOpenseadragon = (
 };
 
 const ImageViewer = ({ imageId, tableData }: ImageViewerProp): JSX.Element => {
-  const [viewer, setViewer] = useState<OpenSeadragon.Viewer>(null);
+  const [viewer, setViewer] = useState<OpenSeadragon.Viewer | null>(null);
   const osdContainerRef = useRef<HTMLDivElement>(null);
   const detailsButtonWrapperRef = useRef<HTMLDivElement>(null);
   const [showDetails, setShowDetails] = useState(false);
-
+  const router = useRouter();
   const {
     data: imageDetails,
     isFetching,
@@ -69,40 +73,62 @@ const ImageViewer = ({ imageId, tableData }: ImageViewerProp): JSX.Element => {
   );
 
   useEffect(() => {
-    // Set up the viewer only if it hasn't been initialized yet
     if (!viewer) {
-      setViewer(
-        InitOpenseadragon(basePath, osdContainerRef, detailsButtonWrapperRef),
+      const newViewer = InitOpenseadragon(
+        basePath,
+        osdContainerRef,
+        detailsButtonWrapperRef,
       );
-    }
+      setViewer(newViewer);
 
-    return () => {
-      viewer?.destroy();
-    };
+      return () => {
+        newViewer.destroy();
+      };
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
+    const handleRouteChange = () => {
+      if (viewer) {
+        viewer.world.removeAll();
+        viewer._cancelPendingImages();
+      }
+    };
+
+    router.events.on("routeChangeStart", handleRouteChange);
+
+    return () => {
+      router.events.off("routeChangeStart", handleRouteChange);
+    };
+  }, [viewer, router]);
+
+  useDeepCompareEffect(() => {
     if (
       isFetching ||
       !imageDetails ||
       !imageDetails.Height ||
-      !imageDetails.Width
+      !imageDetails.Width ||
+      !viewer ||
+      !imageId
     ) {
-      return; // Don't proceed if image details are missing or invalid
+      return;
     }
 
-    if (imageId && viewer && imageDetails) {
-      viewer.open({
-        height: Number(imageDetails.Height),
-        width: Number(imageDetails.Width),
-        tileSize: Number(imageDetails.TileSize),
-        tileOverlap: Number(imageDetails.Overlap),
-        getTileUrl: (level, x, y) => {
-          return `${GDC_API}/tile/${imageId}?level=${level}&x=${x}&y=${y}`;
-        },
-      });
-    }
+    viewer.open({
+      height: Number(imageDetails.Height),
+      width: Number(imageDetails.Width),
+      tileSize: Number(imageDetails.TileSize),
+      tileOverlap: Number(imageDetails.Overlap),
+      getTileUrl: (level, x, y) => {
+        return `${GDC_API}/tile/${imageId}?level=${level}&x=${x}&y=${y}`;
+      },
+    });
+
+    return () => {
+      viewer.world.removeAll();
+      viewer._cancelPendingImages();
+    };
   }, [isFetching, imageId, viewer, imageDetails]);
 
   return (
