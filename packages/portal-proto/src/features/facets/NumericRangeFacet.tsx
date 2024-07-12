@@ -563,7 +563,11 @@ const RangeInputWithPrefixedRanges: React.FC<
   // otherwise this facet has some filters set and the custom range
   // should be shown
   if (isSuccess && filterValues === undefined && totalBuckets === 0) {
-    return <div className="mx-4 font-content pb-2">No data for this field</div>;
+    return (
+      <div className="mx-4 font-content pb-2 text-sm">
+        No data for this field
+      </div>
+    );
   }
 
   return (
@@ -683,7 +687,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
   const numBuckets = 18;
 
   return (
-    <div className="flex flex-col w-100 space-y-2 px-2  mt-1 ">
+    <div className="flex flex-col w-100 space-y-2 px-2 mt-1 ">
       {hasData && (
         <SegmentedControl
           data={[
@@ -727,7 +731,7 @@ const Year: React.FC<NumericFacetData> = ({
   const numBuckets = Math.round((adjMaximum - adjMinimum) / 10);
 
   return (
-    <div className="flex flex-col w-100 space-y-2 px-2  mt-1 ">
+    <div className="flex flex-col w-100 space-y-2 px-2 mt-1 ">
       <RangeInputWithPrefixedRanges
         hooks={{ ...hooks }}
         units="year"
