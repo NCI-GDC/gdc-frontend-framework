@@ -154,7 +154,7 @@ tags: gdc-data-portal-v2, set-operations, regression
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                              |Keep or Remove Modal|
   |-----------------|-------------------------------------------------------|--------------------|
-  |Save             |"S2 intersect S3 minus S1 Set Operations has been saved|Remove Modal        |
+  |Save             |S2 intersect S3 minus S1 Set Operations has been saved |Remove Modal        |
 
 ## Cohorts Union Row - 3 Sets
 * Select the following checkboxes in the Set Operations analysis screen
