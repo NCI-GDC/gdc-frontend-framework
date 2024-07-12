@@ -1,8 +1,8 @@
 # Set Operations - Cohort
 Date Created    : 07/11/2024
 Version	        : 1.0
-Owner		    : GDC QA
-Description		: Set Operations - Cohort Main Page
+Owner		        : GDC QA
+Description		  : Set Operations - Cohort Main Page
 Test-Case       : PEAR-1230
 
 tags: gdc-data-portal-v2, set-operations, regression
