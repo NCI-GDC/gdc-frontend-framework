@@ -42,6 +42,8 @@ class SetOperationsPage(BasePage):
         set_name = self.normalize_identifier_underscore_keep_capitalization(set_name)
         gene_mutation_set_locator = SetOperationsLocators.BUTTON_SAVE_NEW_SET(set_name)
         case_set_locator = SetOperationsLocators.BUTTON_SAVE_NEW_COHORT_SET(set_name)
+        # There is one button for gene/mutation and one button for cohort.
+        # Check for either button.
         if self.is_visible(gene_mutation_set_locator):
             return self.get_text(gene_mutation_set_locator)
         elif self.is_visible(case_set_locator):
@@ -52,6 +54,8 @@ class SetOperationsPage(BasePage):
     def get_union_row_save_set_button_count_analysis_screen_set_operations(self):
         gene_mutation_set_locator = SetOperationsLocators.BUTTON_UNION_OF_SELECTED_SETS_SAVE_NEW_SET
         case_set_locator = SetOperationsLocators.BUTTON_UNION_OF_SELECTED_COHORT_SETS_SAVE_NEW_SET
+        # There is one button for gene/mutation and one button for cohort.
+        # Check for either button.
         if self.is_visible(gene_mutation_set_locator):
             return self.get_text(gene_mutation_set_locator)
         elif self.is_visible(case_set_locator):
@@ -71,6 +75,8 @@ class SetOperationsPage(BasePage):
         set_name = self.normalize_identifier_underscore_keep_capitalization(set_name)
         gene_mutation_set_locator = SetOperationsLocators.BUTTON_SAVE_NEW_SET(set_name)
         case_set_locator = SetOperationsLocators.BUTTON_SAVE_NEW_COHORT_SET(set_name)
+        # There is one button for gene/mutation and one button for cohort.
+        # Check for either button.
         if self.is_visible(gene_mutation_set_locator):
             self.click(gene_mutation_set_locator)
         elif self.is_visible(case_set_locator):
@@ -79,6 +85,8 @@ class SetOperationsPage(BasePage):
     def click_union_row_save_set_button_set_operations(self):
         gene_mutation_set_locator = SetOperationsLocators.BUTTON_UNION_OF_SELECTED_SETS_SAVE_NEW_SET
         case_set_locator = SetOperationsLocators.BUTTON_UNION_OF_SELECTED_COHORT_SETS_SAVE_NEW_SET
+        # There is one button for gene/mutation and one button for cohort.
+        # Check for either button.
         if self.is_visible(gene_mutation_set_locator):
             self.click(gene_mutation_set_locator)
         elif self.is_visible(case_set_locator):

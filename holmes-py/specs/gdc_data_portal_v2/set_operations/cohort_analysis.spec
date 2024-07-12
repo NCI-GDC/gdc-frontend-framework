@@ -148,7 +148,6 @@ tags: gdc-data-portal-v2, set-operations, regression
   |fff35c80-88cd-4923-80c1-0273ba5bed0f |
   |ffe3332f-44ef-5879-b9aa-c14325042aea |
   |00a29522-5eb0-4dbe-ae63-875aba3bf1b1 |
-* Pause "3" seconds
 * Select set "S2 intersect S3 minus S1" to save as a new set in the Set Operations analysis screen
 * Name the cohort "S2 intersect S3 minus S1 Set Operations" in the Cohort Bar section
 * Perform action and validate modal text
