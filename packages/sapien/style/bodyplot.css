@@ -236,6 +236,7 @@
 #human-body-root #body-plot-skip-nav {
   position: absolute;
   left: -5000px;
+  color: #111111;
 }
 
 #human-body-root #body-plot-skip-nav:focus {

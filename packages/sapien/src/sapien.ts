@@ -57,6 +57,14 @@ export const createHumanBody: TCreateHumanBody = ({
     .append("div")
     .attr("id", "svgContainer");
 
+  if (skipLinkId) {
+    svgContainer
+      .append("a")
+      .attr("href", skipLinkId)
+      .attr("id", "body-plot-skip-nav")
+      .text("Skip Charts");
+  }
+
   // Title
   svgContainer
     .append("div")
@@ -66,14 +74,6 @@ export const createHumanBody: TCreateHumanBody = ({
       `left: ${barStartOffset + halfPixel}px; font-size: ${labelSize}`,
     )
     .text(title);
-
-  if (skipLinkId) {
-    svgContainer
-      .append("a")
-      .attr("href", skipLinkId)
-      .attr("id", "body-plot-skip-nav")
-      .text("Skip Navigation");
-  }
 
   // The Bar Chart
   const svg = svgContainer
@@ -107,6 +107,18 @@ export const createHumanBody: TCreateHumanBody = ({
 
   const xAxisLabels = svg.append("g").attr("id", "xAxisLabels");
 
+  if (xAxisLabel) {
+    xAxisLabels
+      .append("text")
+      .attr("y", plotHeight + 26)
+      .attr("x", x(tickInterval * numberOfVerticalAxis) / 2 + barStartOffset)
+      .attr("fill", "rgba(40,40,40,0.7)")
+      .attr("font-size", "12px")
+      .style("text-anchor", "middle")
+      .style("font-family", "Noto Sans")
+      .text(() => xAxisLabel);
+  }
+
   // Vertical Axis
   for (let i = 0; i < numberOfVerticalAxis; i++) {
     svg
@@ -125,19 +137,9 @@ export const createHumanBody: TCreateHumanBody = ({
         .attr("x", x(tickInterval) * i + barStartOffset)
         .attr("fill", "rgba(40,40,40,0.7)")
         .attr("font-size", "12px")
+        .attr("aria-hidden", true)
         .style("text-anchor", "middle")
         .text(() => (tickInterval * i).toLocaleString());
-    }
-    if (xAxisLabel) {
-      xAxisLabels
-        .append("text")
-        .attr("y", plotHeight + 26)
-        .attr("x", x(tickInterval * numberOfVerticalAxis) / 2 + barStartOffset)
-        .attr("fill", "rgba(94,94,94,0.7)")
-        .attr("font-size", "12px")
-        .style("text-anchor", "middle")
-        .style("font-family", "Noto Sans")
-        .text(() => xAxisLabel);
     }
   }
 
