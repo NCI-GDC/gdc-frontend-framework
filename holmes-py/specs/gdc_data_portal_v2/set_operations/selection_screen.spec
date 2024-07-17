@@ -75,21 +75,21 @@ tags: gdc-data-portal-v2, set-operations, regression
 
 ## Gene Set Selection Logic
 * Verify the button "Run Set Operations" is disabled
-* Select the following checkboxes in the Set Operations app
+* Select the following checkboxes in the Set Operations selection screen
   |checkbox_name            |
   |-------------------------|
   |A-Gene_Set_SO_SS_1       |
 * Checkbox "A-Cohort_SO_SS_1" should be disabled in the Set Operations app
 * Checkbox "A-Mutation_Set_SO_SS_1" should be disabled in the Set Operations app
 * Checkbox "A-Gene_Set_SO_SS_4" should be enabled in the Set Operations app
-* Select the following checkboxes in the Set Operations app
+* Select the following checkboxes in the Set Operations selection screen
   |checkbox_name            |
   |-------------------------|
   |A-Gene_Set_SO_SS_2       |
   |A-Gene_Set_SO_SS_3       |
 * Verify the button "Run Set Operations" is enabled
 * Checkbox "A-Gene_Set_SO_SS_4" should be disabled in the Set Operations app
-* Select the following checkboxes in the Set Operations app
+* Select the following checkboxes in the Set Operations selection screen
   |checkbox_name            |
   |-------------------------|
   |A-Gene_Set_SO_SS_1       |
@@ -98,21 +98,21 @@ tags: gdc-data-portal-v2, set-operations, regression
 
 ## Mutation Set Selection Logic
 * Verify the button "Run Set Operations" is disabled
-* Select the following checkboxes in the Set Operations app
+* Select the following checkboxes in the Set Operations selection screen
   |checkbox_name            |
   |-------------------------|
   |A-Mutation_Set_SO_SS_1   |
 * Checkbox "A-Cohort_SO_SS_1" should be disabled in the Set Operations app
 * Checkbox "A-Gene_Set_SO_SS_1" should be disabled in the Set Operations app
 * Checkbox "A-Mutation_Set_SO_SS_4" should be enabled in the Set Operations app
-* Select the following checkboxes in the Set Operations app
+* Select the following checkboxes in the Set Operations selection screen
   |checkbox_name            |
   |-------------------------|
   |A-Mutation_Set_SO_SS_2   |
   |A-Mutation_Set_SO_SS_3   |
 * Verify the button "Run Set Operations" is enabled
 * Checkbox "A-Mutation_Set_SO_SS_4" should be disabled in the Set Operations app
-* Select the following checkboxes in the Set Operations app
+* Select the following checkboxes in the Set Operations selection screen
   |checkbox_name            |
   |-------------------------|
   |A-Mutation_Set_SO_SS_1   |
@@ -121,21 +121,21 @@ tags: gdc-data-portal-v2, set-operations, regression
 
 ## Cohort Set Selection Logic
 * Verify the button "Run Set Operations" is disabled
-* Select the following checkboxes in the Set Operations app
+* Select the following checkboxes in the Set Operations selection screen
   |checkbox_name            |
   |-------------------------|
   |A-Cohort_SO_SS_1         |
 * Checkbox "A-Mutation_Set_SO_SS_1" should be disabled in the Set Operations app
 * Checkbox "A-Gene_Set_SO_SS_1" should be disabled in the Set Operations app
 * Checkbox "A-Cohort_SO_SS_4" should be enabled in the Set Operations app
-* Select the following checkboxes in the Set Operations app
+* Select the following checkboxes in the Set Operations selection screen
   |checkbox_name            |
   |-------------------------|
   |A-Cohort_SO_SS_2         |
   |A-Cohort_SO_SS_3         |
 * Verify the button "Run Set Operations" is enabled
 * Checkbox "A-Cohort_SO_SS_4" should be disabled in the Set Operations app
-* Select the following checkboxes in the Set Operations app
+* Select the following checkboxes in the Set Operations selection screen
   |checkbox_name            |
   |-------------------------|
   |A-Cohort_SO_SS_1         |

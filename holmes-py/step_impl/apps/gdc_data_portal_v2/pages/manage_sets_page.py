@@ -57,6 +57,11 @@ class ManageSetsPage(BasePage):
             return False
         return True
 
+    def get_item_list_count_on_set_row_in_manage_sets(self, set_name):
+        "Identifies the row based on set name, then returns the count of the item/set list button"
+        locator = ManageSetsLocators.ITEM_LIST_BUTTON_IN_SET_ROW(set_name)
+        return self.get_text(locator)
+
     def click_create_set_and_select_from_dropdown(self, dropdown_option):
         "Clicks create set dropdown button, and then selects a set option from the dropdown"
         self.click(ManageSetsLocators.BUTTON_CREATE_SET)

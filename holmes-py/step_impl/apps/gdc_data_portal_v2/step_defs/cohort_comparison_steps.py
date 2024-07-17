@@ -27,6 +27,7 @@ def select_cohort_to_compare_with(cohort_name: str):
 def store_cohort_case_count_selection_screen_cohort_comparison(cohort_name: str):
     """
     Stores the case count of the specified cohort on the cohort comparison selection screen.
+    Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'.
     """
     cohort_case_count = (
         APP.cohort_comparison_page.get_cohort_case_count_on_selection_screen(
@@ -40,6 +41,7 @@ def store_cohort_case_count_selection_screen_cohort_comparison(cohort_name: str)
 def store_cohort_case_count_main_screen_cohort_comparison():
     """
     Stores the case count of the two cohorts shown on the cohort comparison main screen.
+    Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'.
     """
     cohort_case_count_s1 = (
         APP.cohort_comparison_page.get_cohort_case_count_on_main_screen("0")
@@ -108,6 +110,7 @@ def collect_case_counts_on_save_cohort_buttons_from_analysis_card_cohort_compari
     collect_case_counts_on_save_cohort_buttons_from_analysis_card_cohort_comparison Collect case count on
     specified save filtered cohort buttons from an analysis card on cohort comparison main screen.
     on the cohort comparison main screen.
+    Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'.
 
     :param v[0]: Analysis Card
     :param v[1]: Filter Row Name

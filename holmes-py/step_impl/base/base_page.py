@@ -197,6 +197,13 @@ class BasePage:
         """Takes BDD spec file input and converts it to the ID formatting in the data portal"""
         return identifier_name.lower().replace(" ", "_")
 
+    def normalize_identifier_underscore_keep_capitalization(self, identifier_name: str) -> str:
+        """
+        Takes BDD spec file input and converts it to the ID formatting in the data portal
+        Does not change the capitalization of the string.
+        """
+        return identifier_name.replace(" ", "_")
+
     def normalize_applied_filter_name(self, filter_name: str) -> List[str]:
         periods = [char for char in filter_name if char == "."]
         filter_name = filter_name.replace("_", " ").replace(".", " ")
