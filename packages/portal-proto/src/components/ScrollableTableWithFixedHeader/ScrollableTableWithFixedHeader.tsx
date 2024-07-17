@@ -96,7 +96,7 @@ export const ScrollableTableWithFixedHeader = ({
           {tableData.tableRows.map((row, index) => (
             <tr
               key={index}
-              className={`border-y-1 border-y-base-lighter last:border-b-0 ${
+              className={`border-y-1 border-y-base-lighter last:border-b-0 h-10 ${
                 index % 2 === 1 ? "bg-base-max" : "bg-base-lightest"
               }`}
             >
