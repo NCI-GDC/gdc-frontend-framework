@@ -63,13 +63,13 @@ export interface Pagination {
 export const isBucketsAggregation = (
   aggregation: unknown,
 ): aggregation is Buckets => {
-  return isObject(aggregation) && "buckets" in aggregation;
+  return !!aggregation && isObject(aggregation) && "buckets" in aggregation;
 };
 
 export const isStatsAggregation = (
   aggregation: unknown,
 ): aggregation is Stats => {
-  return isObject(aggregation) && "stats" in aggregation;
+  return !!aggregation && isObject(aggregation) && "stats" in aggregation;
 };
 
 export type gdcEndpoint =
