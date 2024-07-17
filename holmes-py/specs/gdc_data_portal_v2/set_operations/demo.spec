@@ -1,5 +1,5 @@
 # Set Operations - Demo Mode
-Date Created    : 07/11/2024
+Date Created    : 07/17/2024
 Version	        : 1.0
 Owner		    : GDC QA
 Description	    : Set Operations - Demo Mode
@@ -13,6 +13,12 @@ tags: gdc-data-portal-v2, set-operations, regression
 
 ## Demo Text Check
 * Is text "Demo showing high impact mutations overlap in Bladder between Mutect, Varscan and Muse pipelines." present on the page
+* Verify the table "Summary Set Operations" is displaying this information
+    |text_to_validate                       |
+    |---------------------------------------|
+    |Bladder, High impact, Muse             |
+    |Bladder, High impact, Mutect2          |
+    |Bladder, High impact, Varscan2         |
 
 ## Validate TSV Downloads
 * Download "S1 intersect S2 minus S3" from "Set Operations"
