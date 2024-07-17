@@ -86,7 +86,7 @@ export const ScrollableTableWithFixedHeader = ({
         >
           <tr className="font-heading text-sm font-bold text-base-contrast-max whitespace-pre-line leading-5 shadow-md h-full">
             {tableData.headers.map((text, index) => (
-              <th key={index} className="px-2 py-3">
+              <th key={index} className="px-2.5 py-3">
                 {text}
               </th>
             ))}
@@ -101,7 +101,7 @@ export const ScrollableTableWithFixedHeader = ({
               }`}
             >
               {Object.values(row).map((item, index) => (
-                <td key={index} className="text-sm px-2 py-2.5 border-0">
+                <td key={index} className="text-sm px-2.5 py-2 border-0">
                   {item !== undefined ? (item as ReactNode) : "--"}
                 </td>
               ))}

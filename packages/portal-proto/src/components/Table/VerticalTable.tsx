@@ -449,11 +449,11 @@ function VerticalTable<TData>({
               </tr>
             ))}
           </thead>
-          <tbody className="border-1 border-base-lighter">
+          <tbody>
             {table.getRowModel().rows.map((row, index) => (
               <Fragment key={row.id}>
                 <tr
-                  className={`border border-base-lighter max-h-10 ${
+                  className={`first:border-t-0 border border-base-lighter max-h-10 ${
                     index % 2 === 1 ? "bg-base-max" : "bg-base-lightest"
                   }`}
                 >
