@@ -273,73 +273,77 @@ function VerticalTable<TData>({
 
   return (
     <div data-testid={customDataTestID} className="grow overflow-hidden">
-      <div
-        className={`flex flex-wrap gap-y-4 mb-2 ${
-          !additionalControls ? "justify-end" : "justify-between"
-        }`}
-      >
-        {additionalControls && <>{additionalControls}</>}
-        <div className="flex flex-wrap gap-y-2 gap-x-4 items-center">
-          {tableTitle && (
-            <Text className="self-center uppercase text-lg text-left ml-0 lg:ml-auto">
-              {tableTitle}
-            </Text>
-          )}
+      {(additionalControls ||
+        tableTitle ||
+        search?.enabled ||
+        showControls) && (
+        <div
+          className={`flex flex-wrap gap-y-4 mb-2 ${
+            !additionalControls ? "justify-end" : "justify-between"
+          }`}
+        >
+          {additionalControls && <>{additionalControls}</>}
+          <div className="flex flex-wrap gap-y-2 gap-x-4 items-center">
+            {tableTitle && (
+              <Text className="self-center uppercase text-lg text-left ml-0 lg:ml-auto">
+                {tableTitle}
+              </Text>
+            )}
 
-          {(search?.enabled || showControls) && (
-            <div
-              className="flex items-center gap-2"
-              data-testid="table-options-menu"
-            >
-              <div className="flex gap-2">
-                {search?.enabled && (
-                  <TextInput
-                    leftSection={<MdSearch size={24} aria-hidden="true" />}
-                    data-testid="textbox-table-search-bar"
-                    placeholder={search.placeholder ?? "Search"}
-                    aria-label="Table Search Input"
-                    classNames={{
-                      input: `border-base-lighter focus:border-2 focus:border-primary${
-                        TooltipContainer ? " focus:rounded-b-none" : ""
-                      }`,
-                      wrapper: "xl:w-72",
-                    }}
-                    size="sm"
-                    rightSection={
-                      searchTerm.length > 0 && (
-                        <ActionIcon
-                          onClick={handleClearClick}
-                          className="border-0"
-                        >
-                          <MdClose aria-label="clear search" />
-                        </ActionIcon>
-                      )
-                    }
-                    value={searchTerm}
-                    onChange={handleInputChange}
-                    ref={inputRef}
-                    onFocus={() => setSearchFocused(true)}
-                    onBlur={() => setSearchFocused(false)}
-                    inputContainer={TooltipContainer}
-                  />
-                )}
-                {showControls && (
-                  <ColumnOrdering
-                    table={table}
-                    handleColumnOrderingReset={() => {
-                      table.resetColumnVisibility();
-                      table.resetColumnOrder();
-                    }}
-                    columnOrder={columnOrder}
-                    setColumnOrder={setColumnOrder}
-                  />
-                )}
+            {(search?.enabled || showControls) && (
+              <div
+                className="flex items-center gap-2"
+                data-testid="table-options-menu"
+              >
+                <div className="flex gap-2">
+                  {search?.enabled && (
+                    <TextInput
+                      leftSection={<MdSearch size={24} aria-hidden="true" />}
+                      data-testid="textbox-table-search-bar"
+                      placeholder={search.placeholder ?? "Search"}
+                      aria-label="Table Search Input"
+                      classNames={{
+                        input: `border-base-lighter focus:border-2 focus:border-primary${
+                          TooltipContainer ? " focus:rounded-b-none" : ""
+                        }`,
+                        wrapper: "xl:w-72",
+                      }}
+                      size="sm"
+                      rightSection={
+                        searchTerm.length > 0 && (
+                          <ActionIcon
+                            onClick={handleClearClick}
+                            className="border-0"
+                          >
+                            <MdClose aria-label="clear search" />
+                          </ActionIcon>
+                        )
+                      }
+                      value={searchTerm}
+                      onChange={handleInputChange}
+                      ref={inputRef}
+                      onFocus={() => setSearchFocused(true)}
+                      onBlur={() => setSearchFocused(false)}
+                      inputContainer={TooltipContainer}
+                    />
+                  )}
+                  {showControls && (
+                    <ColumnOrdering
+                      table={table}
+                      handleColumnOrderingReset={() => {
+                        table.resetColumnVisibility();
+                        table.resetColumnOrder();
+                      }}
+                      columnOrder={columnOrder}
+                      setColumnOrder={setColumnOrder}
+                    />
+                  )}
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-      </div>
-
+      )}
       <div className="overflow-y-auto w-full relative">
         <div
           key={announcementTimestamp}

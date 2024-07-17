@@ -69,7 +69,7 @@ export const ScrollableTableWithFixedHeader = ({
       data-testid="scrolltable"
       type="auto"
       onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
-      className="border border-base-lighter"
+      className="border border-base-lighter text-left"
       classNames={{
         scrollbar: "-m-0.5",
       }}
