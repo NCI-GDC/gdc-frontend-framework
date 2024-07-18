@@ -10,6 +10,7 @@ import {
 } from "../gdcapi/gdcapi";
 
 import { selectCurrentCohortFilters, buildCohortGqlOperator } from "../cohort";
+import { ERROR_UNHANDLED_AGGREGATION } from "../../constants";
 
 export const fetchFacetByName = createAsyncThunk<
   GdcApiResponse<unknown>,
@@ -73,7 +74,7 @@ const slice = createSlice({
                 } else {
                   // Unhandled aggregation
                   state.cases[field].status = "fulfilled";
-                  state.cases[field].error = "Unhandled aggregation";
+                  state.cases[field].error = ERROR_UNHANDLED_AGGREGATION;
                 }
               },
             );

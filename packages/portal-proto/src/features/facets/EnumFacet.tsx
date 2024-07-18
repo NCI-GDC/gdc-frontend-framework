@@ -27,6 +27,7 @@ import FacetSortPanel from "@/features/facets/FacetSortPanel";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { SortType } from "./types";
 import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
+import { BAD_DATA_MESSAGE } from "./constants";
 
 /**
  *  Enumeration facet filters handle display and selection of
@@ -343,7 +344,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
       </div>
       <div className="h-full">
         {isSuccess && error ? (
-          <div className="m-4 font-content pb-2">{error}</div>
+          <div className="m-4 font-content pb-2">{BAD_DATA}</div>
         ) : (
           <>
             {isSearching && (
@@ -403,7 +404,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                     />
                     {facetChartData.filteredData.length == 0 ? (
                       <div className="mx-4 font-content text-sm">
-                        No data for this field
+                        {BAD_DATA_MESSAGE}
                       </div>
                     ) : isSuccess ? (
                       !sortedData || Object.entries(sortedData).length === 0 ? (

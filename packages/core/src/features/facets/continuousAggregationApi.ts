@@ -5,6 +5,7 @@
 import { Buckets, Stats } from "../gdcapi/gdcapi";
 import { normalizeGQLFacetName, ProcessBucketsFunction } from "./facetApiGQL";
 import { isObject } from "../../ts-utils";
+import { ERROR_UNHANDLED_AGGREGATION } from "../../constants";
 
 export interface RangeBuckets extends Stats {
   readonly range: Buckets;
@@ -51,7 +52,7 @@ export const processRangeResults: ProcessBucketsFunction = (
     } else {
       // Unhandled aggregation
       state[normalizedField].status = "fulfilled";
-      state[normalizedField].error = "Unhandled aggregation";
+      state[normalizedField].error = ERROR_UNHANDLED_AGGREGATION;
     }
   });
   return state;

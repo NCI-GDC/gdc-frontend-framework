@@ -1,5 +1,6 @@
 import { isBucketsAggregation, isStatsAggregation } from "../gdcapi/gdcapi";
 import { GQLIndexType, GQLDocType } from "./types";
+import { ERROR_UNHANDLED_AGGREGATION } from "../../constants";
 
 export const convertFacetNameToGQL: (x: string) => string = (x: string) =>
   x.replaceAll(".", "__");
@@ -125,7 +126,7 @@ export const processBuckets: ProcessBucketsFunction = (
     } else {
       // Unhandled aggregation
       state[normalizedField].status = "fulfilled";
-      state[normalizedField].error = "Unhandled aggregation";
+      state[normalizedField].error = ERROR_UNHANDLED_AGGREGATION;
     }
   });
   return state;
