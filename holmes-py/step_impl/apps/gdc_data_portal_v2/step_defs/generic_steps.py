@@ -314,6 +314,19 @@ def verify_file_has_expected_field_names(file_type, field_name):
     assert not fails, f"{file_type} validation failed!\nFails: {fails}"
 
 
+@step("Verify these items are not on the page <table>")
+def verify_item_does_not_appear_on_page(table):
+    """Verifies if the given data-testid is not present on the page"""
+    for k, v in enumerate(table):
+        data_testid_to_check = APP.shared.normalize_button_identifier(v[0])
+
+        is_filter_visible = APP.shared.is_data_testid_present(data_testid_to_check)
+        assert is_filter_visible == False, f"The item '{v[0]}' is visible when it should NOT be"
+
+        # Also check exactly the way it was given as test data
+        is_filter_visible = APP.shared.is_data_testid_present(v[0])
+        assert is_filter_visible == False, f"The item '{v[0]}' is visible when it should NOT be"
+
 @step("Verify presence of filter card <table>")
 def make_cohort_builder_selections(table):
     for k, v in enumerate(table):
@@ -567,7 +580,7 @@ def is_cart_count_correct(correct_file_count: str):
 
 @step("Is data-testid button <data_testid> not present on the page")
 def is_data_testid_not_present_on_the_page(data_testid: str):
-    is_data_testid_present = APP.shared.is_data_testid_present(data_testid)
+    is_data_testid_present = APP.shared.is_data_testid_button_present(data_testid)
     assert (
         is_data_testid_present == False
     ), f"The data-testid '{data_testid}' IS present"

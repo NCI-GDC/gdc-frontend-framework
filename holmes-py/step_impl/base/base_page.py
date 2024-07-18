@@ -390,6 +390,11 @@ class BasePage:
         return True
 
     def is_data_testid_present(self, data_testid):
+        locator = GenericLocators.DATA_TEST_ID_IDENT(data_testid)
+        is_data_testid_present = self.is_visible(locator)
+        return is_data_testid_present
+
+    def is_data_testid_button_present(self, data_testid):
         locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(data_testid)
         is_data_testid_present = self.is_visible(locator)
         return is_data_testid_present
