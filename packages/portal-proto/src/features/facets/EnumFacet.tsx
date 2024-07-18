@@ -344,7 +344,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
       </div>
       <div className="h-full">
         {isSuccess && error ? (
-          <div className="m-4 font-content pb-2">{BAD_DATA}</div>
+          <div className="m-4 font-content pb-2">{BAD_DATA_MESSAGE}</div>
         ) : (
           <>
             {isSearching && (
