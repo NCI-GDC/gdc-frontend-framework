@@ -71,7 +71,7 @@ function TableHeader<TData>({
           label={search.tooltip}
           position="bottom-start"
           opened={searchFocused}
-          zIndex={baseZIndex + 1}
+          zIndex={baseZIndex + 1} // needs to be higher z-index when in a modal
           offset={0}
           classNames={{
             tooltip:
