@@ -58,6 +58,10 @@ export const useSurvival: UseSurvivalType = (
             e,
             { censored, project_id, submitter_id, survivalEstimate, time = 0 },
           ) => {
+            const years = Number(time.toFixed(1));
+            const months = Math.round(time * 12);
+            const timeString = `${years} years (${months} months)`;
+
             setTooltip(
               <div className="font-montserrat text-xs bg-base-darkest text-base-contrast-darkest shadow-md p-1">
                 <span className="font-bold">Case ID:&#160;</span>
@@ -66,15 +70,12 @@ export const useSurvival: UseSurvivalType = (
                 <span className="font-bold">Survival Rate:&#160;</span>
                 {`${Math.round(survivalEstimate * 100)}%`}
                 <br />
-
                 <span className="font-bold">
                   {censored
                     ? "Interval of last follow-up: "
                     : "Time of Death: "}
                 </span>
-                {censored
-                  ? `${time.toLocaleString()} years`
-                  : `${time.toLocaleString()} years`}
+                {timeString}
               </div>,
             );
           },

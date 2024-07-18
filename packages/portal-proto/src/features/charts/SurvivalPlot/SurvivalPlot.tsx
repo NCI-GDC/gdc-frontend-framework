@@ -139,7 +139,9 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
 
     const header = [
       "id",
-      "time",
+      "time (days)",
+      "time (months)",
+      "time (years)",
       "censored",
       "survivalEstimate",
       "submitter_id",
@@ -154,9 +156,15 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
       .map((element, index) =>
         element.donors
           .map((row) => {
+            const timeDays = Math.round(row.time * 365.25);
+            const timeMonths = Math.round(row.time * 12);
+            const timeYears = Number(row.time.toFixed(1));
+
             const rowValues = [
               row.id,
-              row.time,
+              timeDays,
+              timeMonths,
+              timeYears,
               row.censored,
               row.survivalEstimate,
               row.submitter_id,
@@ -172,6 +180,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
           .join("\n"),
       )
       .join("\n");
+
     const tsv = [header.join("\t"), body].join("\n");
     const blob = new Blob([tsv], { type: "text/csv" });
 
