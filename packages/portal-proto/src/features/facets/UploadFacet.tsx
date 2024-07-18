@@ -124,7 +124,8 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
             </Button>
           </Tooltip>
         </div>
-        <div className="mt-2">
+        {/* h-96 is max height for the content of ExactValueFacet, EnumFacet, UploadFacet */}
+        <div className="mt-2 max-h-96 overflow-y-auto">
           {noFilters ? null : (
             <div className="flex flex-wrap gap-1">
               {renderBadges(items as string[], field)}

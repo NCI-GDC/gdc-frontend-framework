@@ -147,7 +147,8 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             : remainingValues > 0
             ? Math.min(96, remainingValues * 5 + 40)
             : 24;
-        return `flex-none  h-${cardHeight} overflow-y-scroll `;
+        /* h-96 is max height for the content of ExactValueFacet, EnumFacet, UploadFacet */
+        return `flex-none h-${cardHeight} overflow-y-scroll `;
       } else {
         return "overflow-hidden h-auto";
       }
