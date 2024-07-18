@@ -246,7 +246,6 @@ function VerticalTable<TData>({
           className="w-full text-left font-content shadow-xs text-sm"
           aria-label={customAriaLabel}
         >
-          {/* Table header Section*/}
           <thead className="h-12">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr
@@ -336,7 +335,6 @@ function VerticalTable<TData>({
               </tr>
             ))}
           </thead>
-          {/* Table body Section */}
           <tbody>
             {table.getRowModel().rows.map((row, index) => (
               <Fragment key={row.id}>
@@ -396,7 +394,6 @@ function VerticalTable<TData>({
               </Fragment>
             ))}
           </tbody>
-          {/* Table footer Section */}
           {footer && (
             <tfoot className="font-heading text-sm text-base-contrast-max whitespace-pre-line leading-5 shadow-md border-1 border-base-lighter border-t-4 h-full">
               {footer}
@@ -404,7 +401,6 @@ function VerticalTable<TData>({
           )}
         </table>
       </div>
-      {/* Pagination Section */}
       {pagination && (
         <div className="flex flex-col w-full md:px-4 lg:flex-nowrap font-heading items-center text-content bg-base-max border-base-lighter border-1 border-t-0 py-3 xl:flex-row xl:justify-between">
           {!disablePageSize && (
