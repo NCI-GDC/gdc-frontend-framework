@@ -508,7 +508,11 @@ const RangeInputWithPrefixedRanges: React.FC<
   const [isCustom, setIsCustom] = useState(filterKey === "custom"); // in custom Range Mode
   const [selectedRange, setSelectedRange] = useState(filterKey); // the current selected range
 
-  const { data: rangeData, isSuccess } = hooks.useGetFacetData(field, ranges);
+  const {
+    data: rangeData,
+    isSuccess,
+    error,
+  } = hooks.useGetFacetData(field, ranges);
   const rangeLabelsAndValues = BuildRangeLabelsAndValues(
     bucketRanges,
     totalCount,
@@ -554,10 +558,18 @@ const RangeInputWithPrefixedRanges: React.FC<
   // informs the parent component if there is data or no data
   // only used by the DaysOrYears component
   useDeepCompareEffect(() => {
-    if (isSuccess && filterValues === undefined && totalBuckets === 0)
+    if (error) {
       setHasData(false);
-    else setHasData(true);
-  }, [filterValues, isSuccess, setHasData, totalBuckets]);
+    } else if (isSuccess && filterValues === undefined && totalBuckets === 0) {
+      setHasData(false);
+    } else {
+      setHasData(true);
+    }
+  }, [filterValues, isSuccess, setHasData, totalBuckets, error]);
+
+  if (error) {
+    return <div className="m-4 font-content pb-2">{error}</div>;
+  }
 
   // If no data and no filter values, show the no data message
   // otherwise this facet has some filters set and the custom range

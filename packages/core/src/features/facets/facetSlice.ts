@@ -72,6 +72,8 @@ const slice = createSlice({
                   };
                 } else {
                   // Unhandled aggregation
+                  state.cases[field].status = "fulfilled";
+                  state.cases[field].error = "Unhandled aggregation";
                 }
               },
             );

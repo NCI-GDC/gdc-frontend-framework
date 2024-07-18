@@ -20,7 +20,10 @@ export const isRangeBucketsAggregation = (
   aggregation: unknown,
 ): aggregation is RangeBuckets => {
   return (
-    isObject(aggregation) && "range" in aggregation && "stats" in aggregation
+    !!aggregation &&
+    isObject(aggregation) &&
+    "range" in aggregation &&
+    "stats" in aggregation
   );
 };
 
@@ -47,7 +50,8 @@ export const processRangeResults: ProcessBucketsFunction = (
       );
     } else {
       // Unhandled aggregation
-      // TODO: this smells and should at least be logged.
+      state[normalizedField].status = "fulfilled";
+      state[normalizedField].error = "Unhandled aggregation";
     }
   });
   return state;
