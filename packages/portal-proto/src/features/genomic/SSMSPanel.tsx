@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from "react";
 import { useDeepCompareMemo } from "use-deep-compare";
 import dynamic from "next/dynamic";
 import { LoadingOverlay } from "@mantine/core";
-import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
+import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot/types";
 import {
   emptySurvivalPlot,
   ComparativeSurvival,
@@ -13,9 +13,12 @@ import {
 } from "@/features/genomic/hooks";
 import { useScrollIntoView } from "@mantine/hooks";
 import { SMTableContainer } from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
-const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
-  ssr: false,
-});
+const SurvivalPlot = dynamic(
+  () => import("../charts/SurvivalPlot/SurvivalPlot"),
+  {
+    ssr: false,
+  },
+);
 
 interface SSMSPanelProps {
   topGeneSSMSSuccess: boolean;

@@ -8,14 +8,12 @@ import {
   useGetSurvivalPlotQuery,
 } from "@gff/core";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
-import {
-  ExternalDownloadStateSurvivalPlot,
-  SurvivalPlotTypes,
-} from "@/features/charts/SurvivalPlot";
+import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot/types";
 import { convertDateToString } from "@/utils/date";
 import { isInterval, parseContinuousBucket } from "../utils";
 import { CategoricalBins, CustomInterval, NamedFromTo } from "../types";
 import { DEMO_COHORT_FILTERS } from "../constants";
+import { ExternalDownloadStateSurvivalPlot } from "@/features/charts/SurvivalPlot/SurvivalPlot";
 
 interface ClinicalSurvivalPlotProps {
   readonly field: string;

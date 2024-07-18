@@ -9,9 +9,10 @@ import {
   useGetSurvivalPlotQuery,
 } from "@gff/core";
 import { convertDateToString } from "@/utils/date";
-import SurvivalPlot, { SurvivalPlotTypes } from "../charts/SurvivalPlot";
+import SurvivalPlot from "../charts/SurvivalPlot/SurvivalPlot";
 import CDaveCard from "./CDaveCard/CDaveCard";
 import { useDeepCompareMemo } from "use-deep-compare";
+import { SurvivalPlotTypes } from "../charts/SurvivalPlot/types";
 
 interface DashboardProps {
   readonly cohortFilters: GqlOperation;

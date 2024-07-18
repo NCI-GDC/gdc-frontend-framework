@@ -1,334 +1,33 @@
-import {
-  Dispatch,
-  MutableRefObject,
-  SetStateAction,
-  useContext,
-  useLayoutEffect,
-  useState,
-  useEffect,
-  useRef,
-} from "react";
-import { Survival, SurvivalElement } from "@gff/core";
-import { renderPlot } from "@oncojs/survivalplot";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { MdRestartAlt as ResetIcon } from "react-icons/md";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { Box, Menu, Tooltip, Loader } from "@mantine/core";
 import { IoMdTrendingDown as SurvivalIcon } from "react-icons/io";
 import isNumber from "lodash/isNumber";
-import { useMouse, useResizeObserver } from "@mantine/hooks";
+import { useMouse } from "@mantine/hooks";
 import saveAs from "file-saver";
-import { handleDownloadSVG, handleDownloadPNG } from "./utils";
 import {
-  entityMetadataType,
   SummaryModalContext,
   DownloadProgressContext,
 } from "src/utils/contexts";
 import { DashboardDownloadContext } from "@/utils/contexts";
 import { DownloadButton } from "@/components/tailwindComponents";
 import OffscreenWrapper from "@/components/OffscreenWrapper";
-
-// based on schemeCategory10
-// 4.5:1 colour contrast for normal text
-interface SurvivalPlotLegend {
-  key: string;
-  style?: Record<string, string | number>;
-  value: string | JSX.Element;
-}
-
-const textColors = [
-  "#1F77B4",
-  "#BD5800",
-  "#258825",
-  "#D62728",
-  "#8E5FB9",
-  "#8C564B",
-  "#D42BA1",
-  "#757575",
-  "#7A7A15",
-  "#10828E",
-];
-
-const SVG_MARGINS = {
-  bottom: 40,
-  left: 50,
-  right: 20,
-  top: 15,
-};
-
-export const MINIMUM_CASES = 10;
-export const MAXIMUM_CURVES = 5;
-
-type survival = (
-  data: any,
-  xDomain: any,
-  setXDomain: any,
-  height: number,
-  setTooltip?: (x?: any) => any,
-  setEntityMetadata?: Dispatch<SetStateAction<entityMetadataType>>,
-) => MutableRefObject<any>;
-
-export const useSurvival: survival = (
-  data,
-  xDomain,
-  setXDomain,
-  height,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  setTooltip = (x?) => null,
-  setEntityMetadata,
-) => {
-  const [ref, rect] = useResizeObserver();
-
-  useLayoutEffect(() => {
-    ref.current
-      ? renderPlot({
-          height,
-          container: ref.current,
-          palette: textColors,
-          margins: SVG_MARGINS,
-          dataSets: data,
-          shouldShowConfidenceIntervals: false,
-          confidenceAreaOpacity: 0.2,
-          xAxisLabel: "Duration (years)",
-          yAxisLabel: "Survival Rate",
-          xDomain: xDomain,
-          onDomainChange: setXDomain,
-          minimumDonors: MINIMUM_CASES,
-          getSetSymbol: (curve, curves) =>
-            curves.length === 1
-              ? ""
-              : `<tspan font-style="italic">S</tspan><tspan font-size="0.7em" baseline-shift="-25%">${
-                  curves.indexOf(curve) + 1
-                }</tspan>`,
-          onMouseEnterDonor: (
-            e,
-            { censored, project_id, submitter_id, survivalEstimate, time = 0 },
-          ) => {
-            setTooltip(
-              <div className="font-montserrat text-xs bg-base-darkest text-base-contrast-darkest shadow-md p-1">
-                <span className="font-bold">Case ID:&#160;</span>
-                {`${project_id} / ${submitter_id}`}
-                <br />
-                <span className="font-bold">Survival Rate:&#160;</span>
-                {`${Math.round(survivalEstimate * 100)}%`}
-                <br />
-
-                <span className="font-bold">
-                  {censored
-                    ? "Interval of last follow-up: "
-                    : "Time of Death: "}
-                </span>
-                {censored
-                  ? `${time.toLocaleString()} years`
-                  : `${time.toLocaleString()} years`}
-              </div>,
-            );
-          },
-          onClickDonor: (e, { id }) => {
-            setEntityMetadata({
-              entity_type: "case",
-              entity_id: id,
-            });
-          },
-
-          onMouseLeaveDonor: () => setTooltip(undefined),
-        })
-      : null;
-  }, [
-    ref,
-    data,
-    xDomain,
-    setXDomain,
-    setTooltip,
-    height,
-    rect,
-    setEntityMetadata,
-  ]);
-
-  return ref;
-};
-
-const enoughData = (data: ReadonlyArray<SurvivalElement>) =>
-  data && data.length && data.every((r) => r.donors.length >= MINIMUM_CASES);
-
-const enoughDataOnSomeCurves = (data: ReadonlyArray<SurvivalElement>) =>
-  data && data.length && data.some((r) => r.donors.length >= MINIMUM_CASES);
-
-const buildOnePlotLegend = (data, name) => {
-  const hasMultipleCurves = data.length > 0;
-  const hasEnoughData = hasMultipleCurves
-    ? enoughDataOnSomeCurves(data)
-    : enoughData(data);
-  return hasEnoughData
-    ? name && [
-        {
-          key: name,
-          value: `${data[0].donors.length.toLocaleString()} Cases with Survival Data`,
-        },
-      ]
-    : [
-        {
-          key: `${name || ""}-not-enough-data`,
-          value: "Not enough survival data",
-        },
-      ];
-};
-
-const buildTwoPlotLegend = (data, name: string, plotType: string) => {
-  const hasEnoughData = enoughData(data);
-  const results1 = data.length > 0 ? data[0].donors : [];
-  const results2 = data.length > 1 ? data[1].donors : [];
-
-  const getCaseCount = (condition) =>
-    condition
-      ? results1.length.toLocaleString()
-      : results2.length.toLocaleString();
-
-  return hasEnoughData
-    ? [
-        {
-          key: `${name}-not-mutated`,
-          value: (
-            <div className="text-gdc-survival-0 font-content">
-              S<sub>1</sub>
-              {` (N = ${getCaseCount(results2.length > 0)})`}
-              {["mutation", "gene"].includes(plotType) && (
-                <span>
-                  {" - "}
-                  {name}
-                  {" Not Mutated Cases"}
-                </span>
-              )}
-            </div>
-          ),
-        },
-        {
-          key: `${name}-mutated`,
-          value: (
-            <div className="text-gdc-survival-1 font-content">
-              S<sub>2</sub>
-              {` (N = ${getCaseCount(results2.length === 0)})`}
-              {["mutation", "gene"].includes(plotType) && (
-                <span>
-                  {" - "}
-                  {name}
-                  {` Mutated ${plotType === "gene" ? `(SSM/CNV)` : ``} Cases`}
-                </span>
-              )}
-            </div>
-          ),
-        },
-        ...(results2.length === 0
-          ? [
-              {
-                key: `${name}-cannot-compare`,
-                value: (
-                  <div>
-                    <span className="font-content">
-                      Not enough data to compare
-                    </span>
-                  </div>
-                ),
-                style: {
-                  width: "100%",
-                  marginTop: 5,
-                },
-              },
-            ]
-          : []),
-      ]
-    : [
-        {
-          key: `${name}-not-enough-data`,
-          value: (
-            // displayed for ["genes", "mutation"] plotTypes
-            <span className="font-content">
-              {plotType !== "cohortComparison"
-                ? `${`Not enough survival data ${name ? `for ${name}` : ``}`}`
-                : null}
-            </span>
-          ),
-        },
-      ];
-};
-
-const buildManyLegend = (
-  data: readonly SurvivalElement[],
-  names: readonly string[],
-  field: string,
-  plotType: SurvivalPlotTypes,
-) => {
-  const hasEnoughDataOnSomeCurves = enoughDataOnSomeCurves(data);
-
-  return hasEnoughDataOnSomeCurves
-    ? data.map((r, i) => {
-        return data.length === 0
-          ? {
-              key: `${names[i]}-cannot-compare`,
-              style: {
-                marginTop: 5,
-                width: "100%",
-              },
-              value: (
-                <div className="font-content">
-                  <span>Not enough data to compare</span>
-                </div>
-              ),
-            }
-          : r.donors.length < MINIMUM_CASES
-          ? {
-              key: `${names[i]}-not-enough-data`,
-              value: (
-                <span
-                  className={`text-gdc-survival-${i} font-content`}
-                >{`Not enough survival data for ${names[i]}`}</span>
-              ),
-            }
-          : {
-              key: names[i],
-              value: (
-                <span className={`text-gdc-survival-${i} font-content`}>
-                  S<sub>{i + 1}</sub>
-                  {` (N = ${r.donors.length.toLocaleString()})`}
-                  {plotType === SurvivalPlotTypes.categorical && (
-                    <span>{` - ${names[i]}`}</span>
-                  )}
-                </span>
-              ),
-            };
-      })
-    : [
-        {
-          key: `${field}-not-enough-data`,
-          value: (
-            <span className="font-content">
-              Not enough survival data for this facet
-            </span>
-          ),
-        },
-      ];
-};
-
-export enum SurvivalPlotTypes {
-  gene = "gene",
-  mutation = "mutation",
-  categorical = "categorical",
-  continuous = "continuous",
-  overall = "overall",
-  cohortComparison = "cohortComparison",
-}
-
-export interface SurvivalPlotProps {
-  readonly data: Survival;
-  readonly names?: ReadonlyArray<string>;
-  readonly plotType?: SurvivalPlotTypes;
-  readonly title?: string;
-  readonly hideLegend?: boolean;
-  readonly height?: number;
-  readonly field?: string;
-  readonly downloadFileName?: string;
-  readonly tableTooltip?: boolean;
-  readonly noDataMessage?: string;
-}
+import {
+  MINIMUM_CASES,
+  SurvivalPlotLegend,
+  SurvivalPlotProps,
+  SurvivalPlotTypes,
+} from "./types";
+import { useSurvival } from "./useSurvival";
+import {
+  buildManyLegend,
+  buildOnePlotLegend,
+  buildTwoPlotLegend,
+  enoughData,
+  enoughDataOnSomeCurves,
+} from "./utils";
+import { handleDownloadPNG, handleDownloadSVG } from "../utils";
 
 const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
   data,
@@ -342,11 +41,10 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
   tableTooltip = false,
   noDataMessage = "",
 }: SurvivalPlotProps) => {
-  // handle the current range of the xAxis: set to "undefined" to reset
   const [xDomain, setXDomain] = useState(undefined);
   const [survivalPlotLineTooltipContent, setSurvivalPlotLineTooltipContent] =
     useState(undefined);
-  const { ref: mouseRef, x, y } = useMouse(); // for survival plot tooltip
+  const { ref: mouseRef, x, y } = useMouse();
   const downloadRef = useRef<HTMLDivElement | null>(null);
 
   const pValue = data.overallStats.pValue;
@@ -368,7 +66,6 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
     plotData
       .map(({ donors }) => donors)
       .every(({ length }) => length >= MINIMUM_CASES);
-  // hook to call renderSurvivalPlot
   const shouldUsePlotData =
     (["gene", "mutation"].includes(plotType) && shouldPlot) ||
     (["categorical", "continuous", "overall", "cohortComparison"].includes(
@@ -664,21 +361,6 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
     </div>
   );
 };
-
-/**
- * Survival plot component
- * @param data - data to be plotted
- * @param names - names of the data to be plotted
- * @param plotType - type of the plot
- * @param title - title of the plot
- * @param hideLegend - whether to hide the legend
- * @param height - height of the plot
- * @param field - field of the plot
- * @param downloadFileName - name of the file to download
- * @param tableTooltip - whether to show the table tooltip
- * @category Charts
- * @param noDataMessage - message to show when not enough data
- */
 
 const SurvivalPlot = (props: SurvivalPlotProps) => {
   const [downloadInProgress, setDownloadInProgress] = useState(false);
