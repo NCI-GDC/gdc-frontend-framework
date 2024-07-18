@@ -386,7 +386,9 @@ function VerticalTable<TData>({
                       "_",
                     )}
                   >
+                    {/* 2nd row is a custom 1 cell row */}
                     <td colSpan={row.getVisibleCells().length}>
+                      {/* Need to pass in the SubRow component to render here */}
                       {renderSubComponent({ row, clickedColumnId })}
                     </td>
                   </tr>
