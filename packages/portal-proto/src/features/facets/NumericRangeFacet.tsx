@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useDeepCompareMemo } from "use-deep-compare";
 import { useDeepCompareEffect } from "react-use";
 import {
   MdClose as CloseIcon,
@@ -352,7 +353,11 @@ const FromTo: React.FC<FromToProps> = ({
             min={lowerUnitRange}
             max={upperUnitRange}
             // units are always days
-            value={adjustDaysToYearsIfUnitsAreYears(fromValue, units)}
+            value={
+              fromValue
+                ? adjustDaysToYearsIfUnitsAreYears(fromValue, units)
+                : ""
+            }
             onChange={(value) => {
               if (value === "" || typeof value === "string") return;
               setFromValue(
@@ -399,7 +404,9 @@ const FromTo: React.FC<FromToProps> = ({
               );
               changedCallback();
             }}
-            value={adjustDaysToYearsIfUnitsAreYears(toValue, units)}
+            value={
+              toValue ? adjustDaysToYearsIfUnitsAreYears(toValue, units) : ""
+            }
             hideControls
             aria-label="input to value"
           />
@@ -782,12 +789,21 @@ const NumericRangePanel: React.FC<NumericFacetData> = ({
 }: NumericFacetData) => {
   const adjMinimum = minimum != undefined ? minimum : 0;
   const adjMaximum = maximum != undefined ? maximum : 999999;
+
+  const filter = hooks.useGetFacetFilters(field);
+  const [filterValues] = useDeepCompareMemo(() => {
+    const values = extractRangeValues<number>(filter);
+    const key = ClassifyRangeType(values);
+    return [values, key];
+  }, [filter]);
+
   return (
     <div>
       <FromTo
         field={field}
         minimum={adjMinimum}
         maximum={adjMaximum}
+        values={filterValues}
         units="range"
         {...hooks}
         clearValues={clearValues}
