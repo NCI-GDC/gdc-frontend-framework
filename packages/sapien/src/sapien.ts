@@ -114,6 +114,7 @@ export const createHumanBody: TCreateHumanBody = ({
       .attr("x", x(tickInterval * numberOfVerticalAxis) / 2 + barStartOffset)
       .attr("fill", "rgba(40,40,40,0.7)")
       .attr("font-size", "12px")
+      .attr("aria-hidden", true)
       .style("text-anchor", "middle")
       .style("font-family", "Noto Sans")
       .text(() => xAxisLabel);
@@ -160,6 +161,7 @@ export const createHumanBody: TCreateHumanBody = ({
     .attr("x", barStartOffset - 10)
     .attr("fill", "rgb(10, 10, 10)")
     .attr("font-size", labelSize)
+    .attr("aria-hidden", true)
     .style("text-anchor", "end")
     .style("font-family", "Noto Sans")
     .text((d: any) => d[primarySiteKey])
