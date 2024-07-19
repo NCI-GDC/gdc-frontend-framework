@@ -123,7 +123,8 @@ class GenericLocators:
         lambda group_name, more_or_less: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> button[data-testid="{more_or_less}"]'
     )
 
-    SHOWING_NUMBER_OF_ITEMS = "[data-testid='text-showing-count']"
+    SHOWING_NUMBER_OF_ITEMS_IN_TABLE = lambda table_specified: f'[data-testid="table-{table_specified}"] >> [data-testid="text-showing-count"]'
+    SHOWING_NUMBER_OF_ITEMS = '[data-testid="text-showing-count"]'
 
     BUTTON_ENTRIES_SHOWN = '[data-testid="button-show-entries"]'
     DROPDOWN_LIST_CHANGE_NUMBER_OF_ENTRIES_SHOWN = (
@@ -239,6 +240,12 @@ class BasePage:
     def get_showing_count_text(self):
         """Returns the text of how many items are being shown on the page"""
         locator = GenericLocators.SHOWING_NUMBER_OF_ITEMS
+        return self.get_text(locator)
+
+    def get_table_showing_count_text(self, table_name):
+        """Returns the text of how many items are being shown on the specified table"""
+        table_name = self.normalize_button_identifier(table_name)
+        locator = GenericLocators.SHOWING_NUMBER_OF_ITEMS_IN_TABLE(table_name)
         return self.get_text(locator)
 
     def get_filter_selection_count(self, filter_group_name, selection):

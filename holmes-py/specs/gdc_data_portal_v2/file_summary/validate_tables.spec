@@ -7,6 +7,22 @@ Test-Case           : PEAR-474, PEAR-476, PEAR-463
 
 tags: gdc-data-portal-v2, regression, file-summary
 
+## Navigate to Summary Page: 0b439a6e-9f34-4d45-8a1a-b76c8e0ca8f3
+* Quick search for "0b439a6e-9f34-4d45-8a1a-b76c8e0ca8f3" and go to its page
+
+## Data Information Table
+* Verify the table "Data Information File Summary" is displaying this information
+    |text_to_validate                       |
+    |---------------------------------------|
+    |Data Category                          |
+    |Data Type                              |
+    |Experimental Strategy                  |
+    |Platform                               |
+    |Copy Number Variation                  |
+    |Raw Intensities                        |
+    |Genotyping Array                       |
+    |Affymetrix SNP 6.0                     |
+
 ## Navigate to Summary Page: e6f75fe2-981d-4ef4-bc58-bed5e715ce8c
 * On GDC Data Portal V2 app
 * Quick search for "e6f75fe2-981d-4ef4-bc58-bed5e715ce8c" and go to its page
@@ -89,6 +105,9 @@ table-associated-cases-biospecimens-file-summary
     |Sample Type                            |
     |Case ID                                |
     |Annotations                            |
+* In table "Associated Cases Biospecimens File Summary", search the table for "tcga-72-4237"
+* Verify the table "Associated Cases Biospecimens File Summary" is showing "Showing 1 - 1 of 1 associated cases/biospecimen"
+
 
 ## Navigate to Summary Page: c0bb7fd5-e472-4068-b90a-4d6e192b3861
 * Quick search for "c0bb7fd5-e472-4068-b90a-4d6e192b3861" and go to its page
@@ -103,6 +122,10 @@ table-associated-cases-biospecimens-file-summary
     |Library Name                           |
     |Sequencing Center                      |
     |Sequencing Date                        |
+    |de426b87-5784-4f9e-806d-92ed1824f58e   |
+    |b274c3a1-7f64-49fb-8490-619744742924   |
+    |ad9a43f8-ec27-4774-975f-6f76a2724cba   |
+    |a1973538-39d6-4a8a-87e7-e3def0882e97   |
 
 ## Downstream Analyses Files
 * Verify the table "Downstream Analyses Files File Summary" is displaying this information
@@ -117,7 +140,7 @@ table-associated-cases-biospecimens-file-summary
     |Size                                   |
     |Action                                 |
     |f34e1c33-cf41-4383-a56a-49c1c41866d1.wxs.pindel.raw_somatic_mutation.vcf.gz|
-
+    |373.44 kB                              |
 
 ## Navigate to Summary Page: d847b5f7-cc33-4008-bd21-91ca1b06c3f1
 * Quick search for "d847b5f7-cc33-4008-bd21-91ca1b06c3f1" and go to its page
@@ -134,21 +157,54 @@ table-associated-cases-biospecimens-file-summary
     |40.0                                   |
     |Current Version                        |
 
-## Navigate to Summary Page: 0b439a6e-9f34-4d45-8a1a-b76c8e0ca8f3
-* Quick search for "0b439a6e-9f34-4d45-8a1a-b76c8e0ca8f3" and go to its page
-
-## Data Information Table
-* Verify the table "Data Information File Summary" is displaying this information
-    |text_to_validate                       |
+## File Versions Table - Download and Validate TSV
+* Download "TSV" from "File Summary File Versions"
+* Read from "TSV from File Summary File Versions"
+* Verify that "TSV from File Summary File Versions" has expected information
+    |required_info                          |
     |---------------------------------------|
-    |Data Category                          |
-    |Data Type                              |
-    |Experimental Strategy                  |
-    |Platform                               |
-    |Copy Number Variation                  |
-    |Raw Intensities                        |
-    |Genotyping Array                       |
-    |Affymetrix SNP 6.0                     |
+    |Version                                |
+    |File UUID                              |
+    |Release Date                           |
+    |Release Number                         |
+    |d847b5f7-cc33-4008-bd21-91ca1b06c3f1 Current Version|
+    |2024-03-29                             |
+    |40.0                                   |
+    |19f606e9-704c-4ef0-b5ea-aec7dd83dd97   |
+    |2021-09-23                             |
+    |30.0                                   |
+    |9a5ddf5b-f598-4c6c-b26f-531088534751   |
+    |2022-09-28                             |
+    |35.0                                   |
+
+## File Versions Table - Download JSON
+* Download "JSON" from "File Summary File Versions"
+* Read from "JSON from File Summary File Versions"
+* Verify that "JSON from File Summary File Versions" has expected information
+    |required_info                          |
+    |---------------------------------------|
+    |9a5ddf5b-f598-4c6c-b26f-531088534751   |
+    |4                                      |
+    |superseded                             |
+    |2022-09-28                             |
+    |35.0                                   |
+    |d847b5f7-cc33-4008-bd21-91ca1b06c3f1   |
+    |6                                      |
+    |released                               |
+    |2024-03-29                             |
+    |40.0                                   |
+
+## File Versions Table - Validate JSON File Fields
+  |field_name                               |
+  |-----------------------------------------|
+  |uuid                                     |
+  |version                                  |
+  |file_change                              |
+  |release_date                             |
+* Verify that the "JSON from File Summary File Versions" has <field_name> for each object
+
+## Navigate to Summary Page: b19afd49-21c2-4b3f-bdea-3bdc25fafa1f
+* Quick search for "b19afd49-21c2-4b3f-bdea-3bdc25fafa1f" and go to its page
 
 ## Annotations Table
 * Verify the table "Annotations File Summary" is displaying this information
@@ -160,6 +216,83 @@ table-associated-cases-biospecimens-file-summary
     |Category                               |
     |Classification                         |
     |Created Datetime                       |
+* In table "Annotations File Summary", search the table for "2d3a860d-81e6-5ae7-8cee-a8bcf5f07621"
+* Verify the table "Annotations File Summary" is showing "Showing 1 - 1 of 1 annotations"
+* Verify the table "Annotations File Summary" is displaying this information
+    |text_to_validate                       |
+    |---------------------------------------|
+    |49f975ea-a1cf-4a9b-bf13-030c68cc99e4   |
+    |TCGA-33-4589|
+    |Prior malignancy|
+    |Notification|
+    |2012-10-31T00:00:00|
+* In table "Annotations File Summary", search the table for "f516991c-5139-4b3e-b605-5a3d90688209"
+* Verify the table "Annotations File Summary" is showing "Showing 1 - 2 of 2 annotations"
+* Verify the table "Annotations File Summary" is displaying this information
+    |text_to_validate                       |
+    |---------------------------------------|
+    |0e54c4b6-b4ab-5978-97e9-82ecf9a5ab46   |
+    |c53f22b1-677b-5528-a438-39d5390e2c68   |
+    |History of unacceptable prior treatment related to a prior/other malignancy|
+
+## Annotations Table - Download and Validate TSV
+* In table "Annotations File Summary", search the table for "9f1ee78d-f022-5495-b6ad-fa6aa56bafdb"
+* Download "TSV" from "File Summary Annotation Table"
+* Read from "TSV from File Summary Annotation Table"
+* Verify that "TSV from File Summary Annotation Table" has expected information
+    |required_info                          |
+    |---------------------------------------|
+    |UUID                                   |
+    |Case UUID                              |
+    |Entity Type                            |
+    |Entity ID                              |
+    |Category                               |
+    |Classification                         |
+    |Created Datetime                       |
+    |9f1ee78d-f022-5495-b6ad-fa6aa56bafdb   |
+    |972476b7-d7f3-4865-b978-0c13f29457cb   |
+    |History of acceptable prior treatment related to a prior/other malignancy|
+    |case                                   |
+    |TCGA-22-1000                           |
+    |Notification                           |
+    |2012-11-10T00:00:00                    |
+
+## Annotations Table - Download JSON
+* Download "JSON" from "File Summary Annotation Table"
+* Read from "JSON from File Summary Annotation Table"
+* Verify that "JSON from File Summary Annotation Table" has expected information
+    |required_info                          |
+    |---------------------------------------|
+    |140098ef-3eec-59d0-bde7-ce23997b25ff   |
+    |[intgen.org]: Molecular Results off Spec |
+    |399c936e-ba68-4040-98d4-917a87dad603   |
+    |TCGA-21-A5DI                           |
+    |Case submitted is found to be a recurrence after submission |
+    |a172b257-ccbb-55a0-a16f-48115cd57753   |
+    |12ff5a02-93fa-5f33-bb20-3ce7fedea7a3   |
+    |Notification                           |
+    |Approved                               |
+    |2012-10-31T00:00:00                    |
+
+## Annotations Table - Validate JSON File Fields
+  |field_name                               |
+  |-----------------------------------------|
+  |annotation_id                            |
+  |entity_submitter_id                      |
+  |notes                                    |
+  |entity_type                              |
+  |case_id                                  |
+  |classification                           |
+  |entity_id                                |
+  |category                                 |
+  |created_datetime                         |
+  |status                                   |
+  |case_submitter_id                        |
+  |project.project_id                       |
+  |project.program.name                     |
+
+* Verify that the "JSON from File Summary Annotation Table" has <field_name> for each object
+
 
 ## Navigate to Summary Page: 74388890-3613-4b96-9277-bd9cffe5edb9
 * Quick search for "74388890-3613-4b96-9277-bd9cffe5edb9" and go to its page

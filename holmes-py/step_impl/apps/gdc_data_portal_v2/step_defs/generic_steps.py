@@ -158,6 +158,8 @@ def download_file_at_file_table(file: str, source: str):
         "Projects": APP.projects_page.click_button,
         "Repository": APP.repository_page.click_button,
         "File Summary": APP.file_summary_page.click_download_button,
+        "File Summary File Versions": APP.file_summary_page.click_file_version_download_option,
+        "File Summary Annotation Table": APP.file_summary_page.click_annotation_table_download_option,
         "Case Summary Files Table": APP.case_summary_page.click_files_table_download_file_button,
         "Cohort Bar": APP.cohort_bar.click_cohort_bar_button,
         "Manage Sets": APP.manage_sets_page.click_on_download_for_set,
@@ -342,6 +344,13 @@ def verify_showing_item_text(number_of_items_text):
         f"{showing_items_text}" in showing_items_text
     ), f"The page is NOT showing expected number of items - {number_of_items_text}"
 
+@step("Verify the table <table_name> is showing <number_of_items_text>")
+def verify_table_showing_item_text(table_name, number_of_items_text):
+    """Verifies the specified table's 'Showing' text is correct"""
+    showing_items_text = APP.shared.get_table_showing_count_text(table_name)
+    assert (
+        f"{showing_items_text}" in showing_items_text
+    ), f"The table '{table_name}' is NOT showing expected number of items - {number_of_items_text}"
 
 @step("Verify the table header text is correct <table>")
 def verify_table_header_text(table):

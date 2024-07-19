@@ -15,6 +15,9 @@ class FileSummaryLocators:
     DOWNLOAD_BUTTON_IDENT = 'text="Download" >> nth=0'
     BUTTON_DOWNLOAD_FILE_IDENT = '[data-testid="button-download-file-summary"]'
 
+    BUTTON_DOWNLOAD_FILE_VERSIONS = '[data-testid="table-file-versions-file-summary"] >> button:has-text("Download")'
+    BUTTON_DOWNLOAD_ANNOTATIONS_OPTION = lambda download_option: f'[data-testid="table-annotations-file-summary"] >> button:has-text("{download_option}")'
+
 
 class FileSummaryPage(BasePage):
     def __init__(self, driver: Page, url):
@@ -41,3 +44,17 @@ class FileSummaryPage(BasePage):
     def click_download_button(self):
         """Clicks first 'Download' button on the file summary page"""
         self.click(FileSummaryLocators.DOWNLOAD_BUTTON_IDENT)
+
+    def click_file_version_download_option(self, download_option):
+        """
+        In file versions table, clicks download button.
+        Then, selects option from dropdown menu.
+        """
+        file_version_download_button = FileSummaryLocators.BUTTON_DOWNLOAD_FILE_VERSIONS
+        self.click(file_version_download_button)
+        self.click_text_option_from_dropdown_menu(download_option)
+
+    def click_annotation_table_download_option(self, download_option):
+        """In annotations table, clicks specified download button."""
+        annotation_table_download_button = FileSummaryLocators.BUTTON_DOWNLOAD_ANNOTATIONS_OPTION(download_option)
+        self.click(annotation_table_download_button)
