@@ -5,6 +5,8 @@ import { MINIMUM_CASES, UseSurvivalType } from "./types";
 import { DAYS_IN_YEAR } from "@gff/core";
 import { DAYS_IN_MONTH_ROUNDED } from "./utils";
 
+// based on schemeCategory10
+// 4.5:1 colour contrast for normal text
 const textColors = [
   "#1F77B4",
   "#BD5800",

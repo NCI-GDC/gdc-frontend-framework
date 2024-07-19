@@ -43,10 +43,11 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
   tableTooltip = false,
   noDataMessage = "",
 }: SurvivalPlotProps) => {
+  // handle the current range of the xAxis: set to "undefined" to reset
   const [xDomain, setXDomain] = useState(undefined);
   const [survivalPlotLineTooltipContent, setSurvivalPlotLineTooltipContent] =
     useState(undefined);
-  const { ref: mouseRef, x, y } = useMouse();
+  const { ref: mouseRef, x, y } = useMouse(); // for survival plot tooltip
   const downloadRef = useRef<HTMLDivElement | null>(null);
 
   const pValue = data.overallStats.pValue;
@@ -68,6 +69,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
     plotData
       .map(({ donors }) => donors)
       .every(({ length }) => length >= MINIMUM_CASES);
+  // hook to call renderSurvivalPlot
   const shouldUsePlotData =
     (["gene", "mutation"].includes(plotType) && shouldPlot) ||
     (["categorical", "continuous", "overall", "cohortComparison"].includes(

@@ -96,6 +96,7 @@ export const buildTwoPlotLegend = (data, name: string, plotType: string) => {
         {
           key: `${name}-not-enough-data`,
           value: (
+            // displayed for ["genes", "mutation"] plotTypes
             <span className="font-content">
               {plotType !== "cohortComparison"
                 ? `${`Not enough survival data ${name ? `for ${name}` : ``}`}`
