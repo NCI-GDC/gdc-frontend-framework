@@ -24,10 +24,13 @@ import {
   buildManyLegend,
   buildOnePlotLegend,
   buildTwoPlotLegend,
+  DAYS_IN_MONTH_ROUNDED,
+  DAYS_IN_YEAR_ROUNDED,
   enoughData,
   enoughDataOnSomeCurves,
 } from "./utils";
 import { handleDownloadPNG, handleDownloadSVG } from "../utils";
+import { DAYS_IN_YEAR } from "@gff/core";
 
 const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
   data,
@@ -156,9 +159,9 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
       .map((element, index) =>
         element.donors
           .map((row) => {
-            const timeDays = Math.round(row.time * 365.25);
-            const timeMonths = Math.round(row.time * 12);
-            const timeYears = Number(row.time.toFixed(1));
+            const timeDays = Math.round(row.time * DAYS_IN_YEAR); // Converting to actual days from API
+            const timeMonths = Math.round(timeDays / DAYS_IN_MONTH_ROUNDED);
+            const timeYears = (timeDays / DAYS_IN_YEAR_ROUNDED).toFixed(1);
 
             const rowValues = [
               row.id,

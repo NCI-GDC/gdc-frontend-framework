@@ -1,6 +1,9 @@
 import { SurvivalElement } from "@gff/core";
 import { MINIMUM_CASES, SurvivalPlotTypes } from "./types";
 
+export const DAYS_IN_YEAR_ROUNDED = 360;
+export const DAYS_IN_MONTH_ROUNDED = 30;
+
 export const enoughData = (data: ReadonlyArray<SurvivalElement>) =>
   data && data.length && data.every((r) => r.donors.length >= MINIMUM_CASES);
 
