@@ -25,7 +25,6 @@ import {
   buildOnePlotLegend,
   buildTwoPlotLegend,
   DAYS_IN_MONTH_ROUNDED,
-  DAYS_IN_YEAR_ROUNDED,
   enoughData,
   enoughDataOnSomeCurves,
 } from "./utils";
@@ -161,7 +160,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
           .map((row) => {
             const timeDays = Math.round(row.time * DAYS_IN_YEAR); // Converting to actual days from API
             const timeMonths = Math.round(timeDays / DAYS_IN_MONTH_ROUNDED);
-            const timeYears = (timeDays / DAYS_IN_YEAR_ROUNDED).toFixed(1);
+            const timeYears = row.time.toFixed(1);
 
             const rowValues = [
               row.id,

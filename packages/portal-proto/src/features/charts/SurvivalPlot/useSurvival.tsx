@@ -3,7 +3,7 @@ import { renderPlot } from "@oncojs/survivalplot";
 import { useResizeObserver } from "@mantine/hooks";
 import { MINIMUM_CASES, UseSurvivalType } from "./types";
 import { DAYS_IN_YEAR } from "@gff/core";
-import { DAYS_IN_MONTH_ROUNDED, DAYS_IN_YEAR_ROUNDED } from "./utils";
+import { DAYS_IN_MONTH_ROUNDED } from "./utils";
 
 const textColors = [
   "#1F77B4",
@@ -62,7 +62,7 @@ export const useSurvival: UseSurvivalType = (
           ) => {
             const days = Math.round(time * DAYS_IN_YEAR); // Converting to actual days from API
             const months = Math.round(days / DAYS_IN_MONTH_ROUNDED);
-            const years = Number((days / DAYS_IN_YEAR_ROUNDED).toFixed(1));
+            const years = Number(time.toFixed(1));
             const yearsString = years === 1 ? "year" : "years";
             const monthsString = months === 1 ? "month" : "months";
             const timeString = `${years} ${yearsString} (${months} ${monthsString})`;
