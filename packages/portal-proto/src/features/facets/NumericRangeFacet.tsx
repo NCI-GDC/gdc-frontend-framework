@@ -45,6 +45,7 @@ import {
 import FacetExpander from "@/features/facets/FacetExpander";
 import FacetSortPanel from "@/features/facets/FacetSortPanel";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
+import { BAD_DATA_MESSAGE } from "./constants";
 
 interface NumericFacetProps extends FacetCardProps<RangeFacetHooks> {
   readonly rangeDatatype: string;
@@ -508,7 +509,11 @@ const RangeInputWithPrefixedRanges: React.FC<
   const [isCustom, setIsCustom] = useState(filterKey === "custom"); // in custom Range Mode
   const [selectedRange, setSelectedRange] = useState(filterKey); // the current selected range
 
-  const { data: rangeData, isSuccess } = hooks.useGetFacetData(field, ranges);
+  const {
+    data: rangeData,
+    isSuccess,
+    error,
+  } = hooks.useGetFacetData(field, ranges);
   const rangeLabelsAndValues = BuildRangeLabelsAndValues(
     bucketRanges,
     totalCount,
@@ -554,16 +559,24 @@ const RangeInputWithPrefixedRanges: React.FC<
   // informs the parent component if there is data or no data
   // only used by the DaysOrYears component
   useDeepCompareEffect(() => {
-    if (isSuccess && filterValues === undefined && totalBuckets === 0)
+    if (error) {
       setHasData(false);
-    else setHasData(true);
-  }, [filterValues, isSuccess, setHasData, totalBuckets]);
+    } else if (isSuccess && filterValues === undefined && totalBuckets === 0) {
+      setHasData(false);
+    } else {
+      setHasData(true);
+    }
+  }, [filterValues, isSuccess, setHasData, totalBuckets, error]);
+
+  if (error) {
+    return <div className="m-4 font-content pb-2">{BAD_DATA_MESSAGE}</div>;
+  }
 
   // If no data and no filter values, show the no data message
   // otherwise this facet has some filters set and the custom range
   // should be shown
   if (isSuccess && filterValues === undefined && totalBuckets === 0) {
-    return <div className="mx-4 font-content pb-2">No data for this field</div>;
+    return <div className="mx-4 font-content pb-2">{BAD_DATA_MESSAGE}</div>;
   }
 
   return (
@@ -607,7 +620,7 @@ const RangeInputWithPrefixedRanges: React.FC<
             }`}
           >
             {totalBuckets == 0 ? (
-              <div className="mx-4 font-content">No data for this field</div>
+              <div className="mx-4 font-content">{BAD_DATA_MESSAGE}</div>
             ) : isSuccess ? (
               <RangeValueSelector
                 field={`${field}`}
