@@ -74,7 +74,11 @@ tags: gdc-data-portal-v2, set-operations, regression
   |fa9713e8-ce92-5413-aacc-ed3d95ab7906 |
 * Select set "S1 intersect S2" to save as a new set in the Set Operations analysis screen
 * Name set "B-S1 intersect S2 Mutation Set" in Save Set modal
-
+* Verify the table "Summary Set Operations" is displaying this information
+    |text_to_validate             |
+    |-----------------------------|
+    |B-Mutation_Set_SO_Main_3     |
+    |B-Mutation_Set_SO_Main_2     |
 ## Mutations Union Row - 2 Sets
 * Select the following checkboxes in the Set Operations analysis screen
   |checkbox_name                |
@@ -208,6 +212,12 @@ tags: gdc-data-portal-v2, set-operations, regression
   |fa9713e8-ce92-5413-aacc-ed3d95ab7906 |
 * Select set "S1 intersect S2 intersect S3" to save as a new set in the Set Operations analysis screen
 * Name set "B-S1 intersect S2 intersect S3 Mutation Set" in Save Set modal
+* Verify the table "Summary Set Operations" is displaying this information
+    |text_to_validate             |
+    |-----------------------------|
+    |B-Mutation_Set_SO_Main_1     |
+    |B-Mutation_Set_SO_Main_2     |
+    |B-Mutation_Set_SO_Main_3     |
 
 ## Mutations Union Row - 3 Sets
 * Select the following checkboxes in the Set Operations analysis screen
