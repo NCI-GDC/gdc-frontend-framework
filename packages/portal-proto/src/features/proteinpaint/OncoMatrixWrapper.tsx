@@ -12,6 +12,8 @@ import {
   useCoreDispatch,
   useCreateCaseSetFromValuesMutation,
   useGetGenesQuery,
+  Operation,
+  Includes,
 } from "@gff/core";
 import { isEqual } from "lodash";
 import { DemoText } from "@/components/tailwindComponents";
@@ -57,6 +59,7 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
   const [newCohortFilters, setNewCohortFilters] =
     useState<FilterSet>(undefined);
   const [customGeneSetParam, setCustomGeneSetParam] = useState(null);
+  const [lastGeneSetRequestId, setLastGeneSetRequestId] = useState(undefined);
 
   const callback = useCallback<SelectSamplesCallback>(
     (arg: SelectSamplesCallBackArg) => {
@@ -98,7 +101,7 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
     }
   }, [response.isSuccess, coreDispatch, response.data]);
 
-  const { data: geneDetailData, isFetching: isGeneFetching } = useGetGenesQuery(
+  const genesResponse = useGetGenesQuery(
     {
       request: {
         filters: {
@@ -117,7 +120,13 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
     },
     { skip: !customGeneSetParam },
   );
-  console.log(130, geneDetailData);
+  const {
+    data: geneDetailData,
+    isFetching: isGeneFetching,
+    requestId: genesRequestId,
+  } = genesResponse;
+  //console.log(130, 'geneDetailData', geneDetailData, 'isGeneSuccess', isGeneSuccess, genesResponse);
+
   const showLoadingOverlay = () => setIsLoading(true);
   const hideLoadingOverlay = () => setIsLoading(false);
   const matrixCallbacks: RxComponentCallbacks = {
@@ -144,14 +153,22 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
       if (isGeneFetching) return;
 
       const rootElem = divRef.current as HTMLElement;
-      const data = { filter0, userData: userDetails?.data };
+      const data = { filter0, userData: userDetails?.data, geneDetailData };
       // TODO: ignore the cohort filter changes in demo mode, or combine with demo filter ???
       // data.filter0 = defaultFilter
       if (isEqual(prevData.current, data)) return;
 
       if (ppRef.current) {
-        if (!isEqual(data, prevData.current))
-          ppRef.current.update({ filter0: data.filter0 });
+        if (!isEqual(data, prevData.current)) {
+          if (lastGeneSetRequestId != genesRequestId) {
+            setLastGeneSetRequestId(genesRequestId);
+            ppRef.current.update({
+              genes: geneDetailData.hits.map((h) => ({ gene: h.symbol })),
+            });
+          } else {
+            ppRef.current.update({ filter0: data.filter0 });
+          }
+        }
       } else if (ppPromise.current) {
         // in case another state update comes in when there is already
         // an instance that is being created, debounce to the last update
@@ -215,14 +232,14 @@ export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
       prevData.current = data;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [filter0, userDetails],
+    [filter0, userDetails, geneDetailData],
   );
 
   const divRef = useRef();
 
   const updateFilters = (field: string, operation: Operation) => {
     setShowGeneSetModal(false);
-    setCustomGeneSetParam(operation.operands[0]);
+    setCustomGeneSetParam((operation as Includes).operands[0]);
   };
   const existingFiltersHook = () => null;
   return (
@@ -286,6 +303,12 @@ interface MatrixArgOptsApp {
 interface MatrixArgOptsMatrix {
   allow2selectSamples?: SelectSamples;
   callbacks?: RxComponentCallbacks;
+  customInputs?: {
+    geneset?: {
+      label: string;
+      showInput: () => void;
+    }[];
+  };
 }
 
 function getMatrixTrack(
@@ -294,7 +317,7 @@ function getMatrixTrack(
   callback?: SelectSamplesCallback,
   matrixCallbacks?: RxComponentCallbacks,
   appCallbacks?: RxComponentCallbacks,
-  genesetCallback?: (arg: string[]) => null,
+  genesetCallback?: () => void,
 ) {
   const defaultFilter = null;
   const arg: MatrixArg = {
