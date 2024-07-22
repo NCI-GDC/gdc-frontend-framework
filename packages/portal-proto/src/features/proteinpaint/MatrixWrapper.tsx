@@ -30,10 +30,11 @@ import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
 const basepath = PROTEINPAINT_API;
 
 interface PpProps {
+  chartType: "matrix" | "hierCluster";
   basepath?: string;
 }
 
-export const OncoMatrixWrapper: FC<PpProps> = (props: PpProps) => {
+export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
   const isDemoMode = useIsDemoApp();
   const defaultFilter = {
     op: "in",
@@ -287,13 +288,15 @@ interface MatrixArg {
   hide_dsHandles?: boolean;
   host: string;
   launchGdcMatrix: boolean;
+  launchGdcHierCluster: boolean;
   filter0: FilterSet;
   opts: MatrixArgOpts;
 }
 
 interface MatrixArgOpts {
   app: MatrixArgOptsApp;
-  matrix: MatrixArgOptsMatrix;
+  matrix?: MatrixArgOptsMatrix;
+  hierCluster?: MatrixArgOptsMatrix;
 }
 
 interface MatrixArgOptsApp {
@@ -324,13 +327,14 @@ function getMatrixTrack(
     // host in gdc is just a relative url path,
     // using the same domain as the GDC portal where PP is embedded
     host: props.basepath || (basepath as string),
-    launchGdcMatrix: true,
+    launchGdcMatrix: props.chartType == "matrix",
+    launchGdcHierCluster: props.chartType == "hierCluster",
     filter0: filter0 || defaultFilter,
     opts: {
       app: {
         callbacks: appCallbacks,
       },
-      matrix: {
+      [props.chartType]: {
         allow2selectSamples: {
           buttonText: "Create Cohort",
           attributes: [

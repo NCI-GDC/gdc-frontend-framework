@@ -1,5 +1,5 @@
 import { render } from "@testing-library/react";
-import { OncoMatrixWrapper } from "./OncoMatrixWrapper";
+import { MatrixWrapper } from "./MatrixWrapper";
 import { MantineProvider } from "@mantine/core";
 
 const filter = {};
@@ -57,7 +57,7 @@ test("OncoMatrix arguments", () => {
         },
       }}
     >
-      <OncoMatrixWrapper />
+      <MatrixWrapper chartType="matrix" />
     </MantineProvider>,
   );
   expect(typeof runpparg).toBe("object");
@@ -78,7 +78,7 @@ test("OncoMatrix arguments", () => {
         },
       }}
     >
-      <OncoMatrixWrapper />
+      <MatrixWrapper chartType="matrix" />
     </MantineProvider>,
   );
   // there should be only one runpp instance when switching to this tool,
@@ -98,7 +98,7 @@ test("OncoMatrix demo filter0", () => {
         },
       }}
     >
-      <OncoMatrixWrapper />
+      <MatrixWrapper chartType="matrix" />
     </MantineProvider>,
   );
   expect(runpparg.filter0).not.toEqual(filter);

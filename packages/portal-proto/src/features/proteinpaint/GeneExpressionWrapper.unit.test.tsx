@@ -1,5 +1,5 @@
 import { render } from "@testing-library/react";
-import { GeneExpressionWrapper } from "./GeneExpressionWrapper";
+import { MatrixWrapper } from "./MatrixWrapper";
 import { MantineProvider } from "@mantine/core";
 
 const filter = {};
@@ -55,7 +55,7 @@ test("GeneExpression arguments", () => {
         },
       }}
     >
-      <GeneExpressionWrapper />
+      <MatrixWrapper chartType="hierCluster" />
     </MantineProvider>,
   );
   expect(typeof runpparg).toBe("object");
@@ -76,7 +76,7 @@ test("GeneExpression arguments", () => {
         },
       }}
     >
-      <GeneExpressionWrapper />
+      <MatrixWrapper chartType="hierCluster" />
     </MantineProvider>,
   );
   // there should be only one runpp instance when switching to this tool,
@@ -96,7 +96,7 @@ test("GeneExpression demo filter0", () => {
         },
       }}
     >
-      <GeneExpressionWrapper />
+      <MatrixWrapper chartType="hierCluster" />
     </MantineProvider>,
   );
   expect(runpparg.filter0).not.toEqual(filter);
