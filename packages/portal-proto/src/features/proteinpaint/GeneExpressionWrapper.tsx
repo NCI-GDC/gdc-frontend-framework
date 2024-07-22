@@ -11,6 +11,9 @@ import {
   useFetchUserDetailsQuery,
   useCoreDispatch,
   useCreateCaseSetFromValuesMutation,
+  useGetGenesQuery,
+  Operation,
+  Includes,
 } from "@gff/core";
 import { isEqual } from "lodash";
 import { DemoText } from "@/components/tailwindComponents";
@@ -22,6 +25,7 @@ import {
   RxComponentCallbacks,
 } from "./sjpp-types";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
+import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
 
 const basepath = PROTEINPAINT_API;
 
@@ -48,10 +52,13 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
   const prevData = useRef<any>();
   const coreDispatch = useCoreDispatch();
   const [showSaveCohort, setShowSaveCohort] = useState(false);
+  const [showGeneSetModal, setShowGeneSetModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [createSet, response] = useCreateCaseSetFromValuesMutation();
   const [newCohortFilters, setNewCohortFilters] =
     useState<FilterSet>(undefined);
+  const [customGeneSetParam, setCustomGeneSetParam] = useState(null);
+  const [lastGeneSetRequestId, setLastGeneSetRequestId] = useState(undefined);
 
   const callback = useCallback<SelectSamplesCallback>(
     (arg: SelectSamplesCallBackArg) => {
@@ -93,6 +100,31 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
     }
   }, [response.isSuccess, coreDispatch, response.data]);
 
+  const genesResponse = useGetGenesQuery(
+    {
+      request: {
+        filters: {
+          op: "in",
+          content: {
+            field: "genes.gene_id",
+            value: customGeneSetParam,
+          },
+        },
+        fields: ["gene_id", "symbol"],
+        size: 1000,
+        //from: currentPage * PAGE_SIZE,
+        //sortBy,
+      },
+      fetchAll: false,
+    },
+    { skip: !customGeneSetParam },
+  );
+  const {
+    data: geneDetailData,
+    isFetching: isGeneFetching,
+    requestId: genesRequestId,
+  } = genesResponse;
+
   const showLoadingOverlay = () => setIsLoading(true);
   const hideLoadingOverlay = () => setIsLoading(false);
   const geneExpCallbacks: RxComponentCallbacks = {
@@ -108,6 +140,10 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
     // app and so would not have been updated via the rx component.update() chain to rerender
     "postRender.gdcPlotApp": hideLoadingOverlay,
   };
+  const genesetCallback = (/*{callback}*/) => {
+    setShowGeneSetModal(true);
+    // TODO: pass the gene set to the callback
+  };
 
   useDeepCompareEffect(
     () => {
@@ -117,14 +153,24 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
       // could trigger unnecessary, wastefule PP-app state update
       if (userDetails?.isSuccess === false && userDetails?.isError === false)
         return;
-      const data = { filter0, userDetails: userDetails?.data };
+      if (isGeneFetching) return;
+
+      const data = { filter0, userDetails: userDetails?.data, geneDetailData };
       // TODO: ignore the cohort filter changes in demo mode, or combine with demo filter ???
       // data.filter0 = defaultFilter
       if (isEqual(prevData.current, data)) return;
 
       if (ppRef.current) {
-        if (!isEqual(data, prevData.current))
-          ppRef.current.update({ filter0: data.filter0 });
+        if (!isEqual(data, prevData.current)) {
+          if (lastGeneSetRequestId != genesRequestId) {
+            setLastGeneSetRequestId(genesRequestId);
+            ppRef.current.update({
+              genes: geneDetailData.hits.map((h) => ({ gene: h.symbol })),
+            });
+          } else {
+            ppRef.current.update({ filter0: data.filter0 });
+          }
+        }
       } else if (ppPromise.current) {
         // in case another state update comes in when there is already
         // an instance that is being created, debounce to the last update
@@ -165,6 +211,7 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
           callback,
           geneExpCallbacks,
           appCallbacks,
+          genesetCallback,
         );
         if (!geArgs) return;
 
@@ -187,10 +234,16 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
       prevData.current = data;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [filter0, userDetails],
+    [filter0, userDetails, geneDetailData],
   );
 
   const divRef = useRef();
+
+  const updateFilters = (field: string, operation: Operation) => {
+    setShowGeneSetModal(false);
+    setCustomGeneSetParam((operation as Includes).operands[0]);
+  };
+  const existingFiltersHook = () => null;
   return (
     <div className="relative">
       {isDemoMode && <DemoText>Demo showing cases with Gliomas.</DemoText>}
@@ -205,6 +258,15 @@ export const GeneExpressionWrapper: FC<PpProps> = (props: PpProps) => {
         onClose={() => setShowSaveCohort(false)}
         opened={showSaveCohort}
         filters={newCohortFilters}
+      />
+
+      <GeneSetModal
+        opened={showGeneSetModal}
+        modalTitle="Use a previously saved gene set"
+        inputInstructions="Enter one or more gene identifiers in the field below or upload a file to create a gene set."
+        selectSetInstructions="Select one or more sets below to use as an OncoMatrix gene set."
+        updateFilters={updateFilters}
+        existingFiltersHook={existingFiltersHook}
       />
 
       <LoadingOverlay
@@ -241,6 +303,12 @@ interface GeneExpressionArgOpts {
 interface GeneExpressionArgHierCluster {
   allow2selectSamples?: SelectSamples;
   callbacks?: RxComponentCallbacks;
+  customInputs?: {
+    geneset?: {
+      label: string;
+      showInput: () => void;
+    }[];
+  };
 }
 
 function getGeneExpressionTrack(
@@ -249,6 +317,7 @@ function getGeneExpressionTrack(
   callback?: SelectSamplesCallback,
   geneExpCallbacks?: RxComponentCallbacks,
   appCallbacks?: RxComponentCallbacks,
+  genesetCallback?: () => void,
 ) {
   const defaultFilter = null;
 
@@ -275,6 +344,14 @@ function getGeneExpressionTrack(
           callback,
         },
         callbacks: geneExpCallbacks,
+        customInputs: {
+          geneset: [
+            {
+              label: "Load Gene Sets",
+              showInput: genesetCallback,
+            },
+          ],
+        },
       },
     },
   };

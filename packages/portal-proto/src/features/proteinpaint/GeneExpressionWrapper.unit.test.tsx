@@ -24,6 +24,13 @@ jest.mock("@gff/core", () => ({
   useLazyGetCohortByIdQuery: jest.fn().mockReturnValue([jest.fn()]),
   useGetCohortsByContextIdQuery: jest.fn().mockReturnValue([jest.fn()]),
   useCreateCaseSetFromFiltersMutation: jest.fn().mockReturnValue([jest.fn()]),
+  useGetGenesQuery: jest.fn().mockReturnValue({
+    data: {
+      hits: [],
+    },
+    isFetching: false,
+    requestId: "abc123",
+  }),
 }));
 
 jest.mock("@/hooks/useIsDemoApp", () => ({
