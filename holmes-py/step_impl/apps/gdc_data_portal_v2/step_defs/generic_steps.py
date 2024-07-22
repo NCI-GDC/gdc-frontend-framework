@@ -151,6 +151,10 @@ def verify_compared_statistics_are_equal_or_not_equal(
 def close_the_modal():
     APP.shared.click_close_modal_button()
 
+@step("Close the message")
+def close_the_modal():
+    """Clicks the 'x' to close temporary message"""
+    APP.shared.click_close_temporary_message()
 
 @step("Download <file> from <source>")
 def download_file_at_file_table(file: str, source: str):
@@ -181,6 +185,25 @@ def download_file_at_file_table(file: str, source: str):
     file_path = f"{Utility.parent_dir()}/downloads/{dt.timestamp(dt.now())}_{download.suggested_filename}"
     download.save_as(file_path)
     data_store.spec[f"{file} from {source}"] = file_path
+
+@step("In table <table_name> on row <row_identifier> select <button_id> to download file <file_name_to_store>")
+def click_button_in_table_download_file(table_name:str, row_identifier:str, button_id: str, file_name_to_store:str):
+    """
+    click_button_in_table_download_file In specified table with given identifier click the download button.
+    A file downloads and we store the information using given identifier.
+
+    :param table_name: The table ID to access.
+    :param row_identifier: A unique piece of text to identify which row we want to click the button.
+    :param button_id: The button ID to click.
+    :param file_name_to_store: Identifier used to store contents of file.
+    """
+    driver = WebDriver.page
+    with driver.expect_download(timeout=90000) as download_info:
+        APP.file_summary_page.click_button_in_table(table_name, row_identifier, button_id)
+    download = download_info.value
+    file_path = f"{Utility.parent_dir()}/downloads/{dt.timestamp(dt.now())}_{download.suggested_filename}"
+    download.save_as(file_path)
+    data_store.spec[f"{file_name_to_store}"] = file_path
 
 
 @step("Upload <file_name> <extension> from <folder_name> in <source> through <button>")

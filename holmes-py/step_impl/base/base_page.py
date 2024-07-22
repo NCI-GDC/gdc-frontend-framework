@@ -11,12 +11,12 @@ class GenericLocators:
     X_BUTTON_IN_TEMP_MESSAGE = (
         '>> .. >> .. >> .. >> svg[xmlns="http://www.w3.org/2000/svg"]'
     )
-    BUTTON_CLOSE_NOTIFICATION = '[aria-label="Close notification"]'
     UNDO_BUTTON_IN_TEMP_MESSAGE = 'span:text("Undo")'
     SET_AS_CURRENT_COHORT_IN_TEMP_MESSAGE = (
         'span:text("Set this as your current cohort.")'
     )
 
+    BUTTON_CLOSE_NOTIFICATION = '[aria-label="Close notification"]'
     BUTTON_CLOSE_MODAL = 'button[aria-label="Close Modal"]'
 
     LOADING_SPINNER_GENERIC = '[data-testid="loading-spinner"] >> nth=0'
@@ -499,6 +499,12 @@ class BasePage:
         """Clicks 'X' to close a modal"""
         locator = GenericLocators.BUTTON_CLOSE_MODAL
         self.click(locator)
+
+    def click_close_temporary_message(self):
+        """Clicks 'X' to close a modal"""
+        locator = GenericLocators.BUTTON_CLOSE_NOTIFICATION
+        self.click(locator)
+        time.sleep(0.5)
 
     def click_undo_in_message(self):
         """Clicks 'undo' in a modal message"""

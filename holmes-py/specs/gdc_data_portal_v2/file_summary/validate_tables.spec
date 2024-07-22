@@ -86,12 +86,41 @@ table-associated-cases-biospecimens-file-summary
     |Copy Number Variation                  |
     |Raw Intensities                        |
     |MESNE_p_TCGAb_401_02_03_04_05_N_GenomeWideSNP_6_F10_1486958.CEL |
+* In table "Source Files File Summary" on row "MESNE_p_TCGAb_401_02_03_04_05_N_GenomeWideSNP_6_F10_1486958.CEL" select "Download File"
+* Is text "Access Alert" present on the page
+* Is text "You don't have access to this file. Please login." present on the page
+* Select "Close"
+* In table "Source Files File Summary" on row "MESNE_p_TCGAb_401_02_03_04_05_N_GenomeWideSNP_6_F10_1486958.CEL" select "Add Remove Cart"
+* Is text "Added MESNE_p_TCGAb_401_02_03_04_05_N_GenomeWideSNP_6_F10_1486958.CEL to the cart" present on the page
+* Close the message
+* In table "Source Files File Summary" on row "MESNE_p_TCGAb_401_02_03_04_05_N_GenomeWideSNP_6_F10_1486958.CEL" select "Add Remove Cart"
+* Is text "Removed MESNE_p_TCGAb_401_02_03_04_05_N_GenomeWideSNP_6_F10_1486958.CEL from the cart" present on the page
+* Close the message
 
 ## Verify Downstream Analysis Table is Not Present
 * Verify these items are not on the page
     |item_to_validate                               |
     |-----------------------------------------------|
     |Table Downstream Analyses Files File Summary   |
+
+## Navigate to Summary Page: 61ca2fed-0a04-4987-a7fa-a1f7151f3ee1
+* Quick search for "61ca2fed-0a04-4987-a7fa-a1f7151f3ee1" and go to its page
+
+## Source Files: Open Access
+* Verify the table "Source Files File Summary" is displaying this information
+    |text_to_validate                       |
+    |---------------------------------------|
+    |Transcriptome Profiling                |
+    |Gene Expression Quantification         |
+* In table "Source Files File Summary" on row "597f3e18-9281-429c-842e-19eaaffc6842.qc_filtered_feature_bc_matrix.tar.gz" select "Download File" to download file "Open Access Source File 597f3e18"
+* Read metadata from compressed "Open Access Source File 597f3e18"
+* Verify that "Open Access Source File 597f3e18" has expected information
+  |required_info                          |
+  |---------------------------------------|
+  |b23449fb-b4e2-4816-9f9e-721eed95a124   |
+  |2d4e3510d40dec23524673b22bc22ecc       |
+  |validated                              |
+  |8519124                                |
 
 ## Navigate to Summary Page: f924f238-8520-4821-a263-40ca70a47323
 * Quick search for "f924f238-8520-4821-a263-40ca70a47323" and go to its page
@@ -141,6 +170,30 @@ table-associated-cases-biospecimens-file-summary
     |Action                                 |
     |f34e1c33-cf41-4383-a56a-49c1c41866d1.wxs.pindel.raw_somatic_mutation.vcf.gz|
     |373.44 kB                              |
+* In table "Downstream Analyses Files File Summary" on row "b66ff9e0-91d9-41f2-82f7-36d1853ede2b.wxs.mutect2.raw_somatic_mutation.vcf.gz" select "Download File"
+* Is text "Access Alert" present on the page
+* Is text "You don't have access to this file. Please login." present on the page
+* Select "Close"
+* In table "Downstream Analyses Files File Summary" on row "b66ff9e0-91d9-41f2-82f7-36d1853ede2b.wxs.mutect2.raw_somatic_mutation.vcf.gz" select "Add Remove Cart"
+* Is text "Added b66ff9e0-91d9-41f2-82f7-36d1853ede2b.wxs.mutect2.raw_somatic_mutation.vcf.gz to the cart" present on the page
+* Close the message
+* In table "Downstream Analyses Files File Summary" on row "b66ff9e0-91d9-41f2-82f7-36d1853ede2b.wxs.mutect2.raw_somatic_mutation.vcf.gz" select "Add Remove Cart"
+* Is text "Removed b66ff9e0-91d9-41f2-82f7-36d1853ede2b.wxs.mutect2.raw_somatic_mutation.vcf.gz from the cart" present on the page
+* Close the message
+
+## Navigate to Summary Page: 6a499b8a-fe81-4ab3-adfe-a31581efb7e8
+* Quick search for "6a499b8a-fe81-4ab3-adfe-a31581efb7e8" and go to its page
+
+## Downstream Analyses Files: Open Access
+* In table "Downstream Analyses Files File Summary" on row "TCGA-LIHC.42b4eab1-b538-4a0a-8f1f-91a90979d8a1.ascat3.allelic_specific.seg.txt" select "Download File" to download file "Open Access Downstream Analyses File TCGA-LIHC 42b4eab1"
+* Read metadata from compressed "Open Access Downstream Analyses File TCGA-LIHC 42b4eab1"
+* Verify that "Open Access Downstream Analyses File TCGA-LIHC 42b4eab1" has expected information
+  |required_info                          |
+  |---------------------------------------|
+  |810ae8e3-c355-4186-a810-67c68d6ad4be   |
+  |d8f7e2440ebb7ec558064f92aaa603fc       |
+  |validated                              |
+  |4469                                   |
 
 ## Navigate to Summary Page: d847b5f7-cc33-4008-bd21-91ca1b06c3f1
 * Quick search for "d847b5f7-cc33-4008-bd21-91ca1b06c3f1" and go to its page
