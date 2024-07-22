@@ -8,8 +8,8 @@ Test-Case           : PEAR-474, PEAR-476, PEAR-463
 tags: gdc-data-portal-v2, regression, file-summary
 
 ## Navigate to Summary Page: 0b439a6e-9f34-4d45-8a1a-b76c8e0ca8f3
+* On GDC Data Portal V2 app
 * Quick search for "0b439a6e-9f34-4d45-8a1a-b76c8e0ca8f3" and go to its page
-
 ## Data Information Table
 * Verify the table "Data Information File Summary" is displaying this information
     |text_to_validate                       |
@@ -23,10 +23,9 @@ tags: gdc-data-portal-v2, regression, file-summary
     |Genotyping Array                       |
     |Affymetrix SNP 6.0                     |
 
-## Navigate to Summary Page: e6f75fe2-981d-4ef4-bc58-bed5e715ce8c
-* On GDC Data Portal V2 app
-* Quick search for "e6f75fe2-981d-4ef4-bc58-bed5e715ce8c" and go to its page
 
+## Navigate to Summary Page: e6f75fe2-981d-4ef4-bc58-bed5e715ce8c
+* Quick search for "e6f75fe2-981d-4ef4-bc58-bed5e715ce8c" and go to its page
 ## File Properties Table
 * Verify the table "File Properties File Summary" is displaying this information
     |text_to_validate                       |
@@ -103,9 +102,9 @@ table-associated-cases-biospecimens-file-summary
     |-----------------------------------------------|
     |Table Downstream Analyses Files File Summary   |
 
+
 ## Navigate to Summary Page: 61ca2fed-0a04-4987-a7fa-a1f7151f3ee1
 * Quick search for "61ca2fed-0a04-4987-a7fa-a1f7151f3ee1" and go to its page
-
 ## Source Files: Open Access
 * Verify the table "Source Files File Summary" is displaying this information
     |text_to_validate                       |
@@ -122,9 +121,9 @@ table-associated-cases-biospecimens-file-summary
   |validated                              |
   |8519124                                |
 
+
 ## Navigate to Summary Page: f924f238-8520-4821-a263-40ca70a47323
 * Quick search for "f924f238-8520-4821-a263-40ca70a47323" and go to its page
-
 ## Associated Cases Biospecimens Table
 * Verify the table "Associated Cases Biospecimens File Summary" is displaying this information
     |text_to_validate                       |
@@ -140,7 +139,6 @@ table-associated-cases-biospecimens-file-summary
 
 ## Navigate to Summary Page: c0bb7fd5-e472-4068-b90a-4d6e192b3861
 * Quick search for "c0bb7fd5-e472-4068-b90a-4d6e192b3861" and go to its page
-
 ## Read Groups
 * Verify the table "Read Groups File Summary" is displaying this information
     |text_to_validate                       |
@@ -181,9 +179,9 @@ table-associated-cases-biospecimens-file-summary
 * Is text "Removed b66ff9e0-91d9-41f2-82f7-36d1853ede2b.wxs.mutect2.raw_somatic_mutation.vcf.gz from the cart" present on the page
 * Close the message
 
+
 ## Navigate to Summary Page: 6a499b8a-fe81-4ab3-adfe-a31581efb7e8
 * Quick search for "6a499b8a-fe81-4ab3-adfe-a31581efb7e8" and go to its page
-
 ## Downstream Analyses Files: Open Access
 * In table "Downstream Analyses Files File Summary" on row "TCGA-LIHC.42b4eab1-b538-4a0a-8f1f-91a90979d8a1.ascat3.allelic_specific.seg.txt" select "Download File" to download file "Open Access Downstream Analyses File TCGA-LIHC 42b4eab1"
 * Read metadata from compressed "Open Access Downstream Analyses File TCGA-LIHC 42b4eab1"
@@ -195,9 +193,9 @@ table-associated-cases-biospecimens-file-summary
   |validated                              |
   |4469                                   |
 
+
 ## Navigate to Summary Page: d847b5f7-cc33-4008-bd21-91ca1b06c3f1
 * Quick search for "d847b5f7-cc33-4008-bd21-91ca1b06c3f1" and go to its page
-
 ## File Versions Table
 * Verify the table "File Versions File Summary" is displaying this information
     |text_to_validate                       |
@@ -256,9 +254,9 @@ table-associated-cases-biospecimens-file-summary
   |release_date                             |
 * Verify that the "JSON from File Summary File Versions" has <field_name> for each object
 
+
 ## Navigate to Summary Page: b19afd49-21c2-4b3f-bdea-3bdc25fafa1f
 * Quick search for "b19afd49-21c2-4b3f-bdea-3bdc25fafa1f" and go to its page
-
 ## Annotations Table
 * Verify the table "Annotations File Summary" is displaying this information
     |text_to_validate                       |
@@ -275,10 +273,10 @@ table-associated-cases-biospecimens-file-summary
     |text_to_validate                       |
     |---------------------------------------|
     |49f975ea-a1cf-4a9b-bf13-030c68cc99e4   |
-    |TCGA-33-4589|
-    |Prior malignancy|
-    |Notification|
-    |2012-10-31T00:00:00|
+    |TCGA-33-4589                           |
+    |Prior malignancy                       |
+    |Notification                           |
+    |2012-10-31T00:00:00                    |
 * In table "Annotations File Summary", search the table for "f516991c-5139-4b3e-b605-5a3d90688209"
 * Verify the table "Annotations File Summary" is showing "Showing 1 - 2 of 2 annotations"
 * Verify the table "Annotations File Summary" is displaying this information
@@ -349,7 +347,6 @@ table-associated-cases-biospecimens-file-summary
 
 ## Navigate to Summary Page: 74388890-3613-4b96-9277-bd9cffe5edb9
 * Quick search for "74388890-3613-4b96-9277-bd9cffe5edb9" and go to its page
-
 ## Slide Image Viewer
 * Is text "Slide Image Viewer" present on the page
 * Select "Details" on the Image Viewer page
@@ -373,9 +370,9 @@ table-associated-cases-biospecimens-file-summary
   |Number_proliferating_cells	    |--                                     |
   |Percent_tumor_cells	            |40                                     |
 
+
 ## Navigate to Summary Page: d032300f-713d-419f-b6b6-ccb34a433adf
 * Quick search for "d032300f-713d-419f-b6b6-ccb34a433adf" and go to its page
-
 ## Bam Slicing Button
 * Select button "Bam Slicing"
 * Is text "Access Alert" present on the page
