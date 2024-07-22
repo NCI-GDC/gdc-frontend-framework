@@ -45,6 +45,7 @@ import {
   selectHasUnsavedCohorts,
   addNewSavedCohort,
   hideModal,
+  selectCurrentCohortSaved,
 } from "@gff/core";
 import { INVALID_COHORT_NAMES, useCohortFacetFilters } from "./utils";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
@@ -59,6 +60,7 @@ import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import { omit } from "lodash";
+import { useDeepCompareMemo } from "use-deep-compare";
 
 const exportCohort = (
   caseIds: readonly Record<string, any>[],
@@ -141,6 +143,13 @@ const CohortManager: React.FC = () => {
   const cohortModified = useCoreSelector((state) =>
     selectCurrentCohortModified(state),
   );
+  const cohortSaved = useCoreSelector((state) =>
+    selectCurrentCohortSaved(state),
+  );
+  const cohortStatusMessage = cohortSaved
+    ? "Changes not saved"
+    : "Cohort not saved";
+  const isSavedUnchanged = cohortSaved && !cohortModified;
   const cohortId = useCoreSelector((state) => selectCurrentCohortId(state));
   const filters = useCohortFacetFilters(); // make sure using this one //TODO maybe use from one amongst the selectors
   const counts = useCurrentCohortCounts();
@@ -209,17 +218,23 @@ const CohortManager: React.FC = () => {
   const [showUpdateCohort, setShowUpdateCohort] = useState(false);
   const modal = useCoreSelector((state) => selectCurrentModal(state));
 
-  const menu_items = [
-    ...cohorts
-      .sort((a, b) => (a.modified_datetime <= b.modified_datetime ? 1 : -1))
-      .map((x) => {
-        return {
-          value: x.id,
-          label: x.name,
-          modified: x.modified,
-        };
-      }),
-  ];
+  const menu_items = useDeepCompareMemo(
+    () => [
+      ...cohorts
+        .sort((a, b) => (a.modified_datetime <= b.modified_datetime ? 1 : -1))
+        .map((x) => {
+          return {
+            value: x.id,
+            label: x.name,
+            isSavedUnchanged: x.saved && !x.modified,
+            cohortStatusMessage: x.saved
+              ? "Changes not saved"
+              : "Cohort not saved",
+          };
+        }),
+    ],
+    [cohorts],
+  );
 
   const updateCohortFilters = (field: string, operation: Operation) => {
     coreDispatch(updateActiveCohortFilter({ field, operation }));
@@ -476,19 +491,21 @@ const CohortManager: React.FC = () => {
                 data-testid="switchButton"
                 rightSection={
                   <div className="flex gap-1 items-center">
-                    {cohortModified && <UnsavedIcon />}
+                    {!isSavedUnchanged && (
+                      <UnsavedIcon label={cohortStatusMessage} />
+                    )}
                     <DownArrowIcon size={20} className="text-primary" />
                   </div>
                 }
-                rightSectionWidth={cohortModified ? 45 : 30}
+                rightSectionWidth={!isSavedUnchanged ? 45 : 30}
                 styles={{ section: { pointerEvents: "none" } }}
               />
               <div
                 className={`ml-auto text-heading text-sm font-semibold mt-0.85 text-primary-contrast ${
-                  cohortModified ? "visible" : "invisible"
+                  !isSavedUnchanged ? "visible" : "invisible"
                 }`}
               >
-                Changes not saved
+                {cohortStatusMessage}
               </div>
             </div>
           </div>

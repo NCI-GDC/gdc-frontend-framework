@@ -100,7 +100,6 @@ export const createCohortId = (): string => nanoid();
 
 const newCohort = ({
   filters = { mode: "and", root: {} },
-  modified = true,
   customName,
 }: {
   filters?: FilterSet;
@@ -119,7 +118,7 @@ const newCohort = ({
       status: "uninitialized" as DataStatus,
     },
     filters: filters,
-    modified: modified,
+    modified: false,
     saved: false,
     modified_datetime: ts.toISOString(),
     counts: {
