@@ -1,7 +1,7 @@
 import { useCallback, useRef, useEffect, useState, useMemo } from "react";
 import Router from "next/router";
 import { createHumanBody, colorCodes } from "@nci-gdc/sapien";
-import { useMouse, useViewportSize } from "@mantine/hooks";
+import { useMouse, useViewportSize, useScrollIntoView } from "@mantine/hooks";
 import { Modal, Text } from "@mantine/core";
 import {
   useBodyplotCountsQuery,
@@ -148,6 +148,12 @@ const buildBodyplotFilter = (data: BodyplotDataElement): FilterSet => {
   };
 };
 
+interface BodyplotPointData {
+  readonly key: string;
+  readonly caseCount: number;
+  readonly fileCount: number;
+}
+
 /**
  * Bodyplot is the component that renders the bodyplot
  */
@@ -157,6 +163,10 @@ export const Bodyplot = (): JSX.Element => {
   const [selectedSite, setSelectedSite] = useState(undefined);
   const [bodyplotTooltipContent, setBodyplotTooltipContent] =
     useState(undefined);
+  const [keyboardTooltipPosition, setKeyboardTooltipPostion] = useState({
+    x: undefined,
+    y: undefined,
+  });
 
   const { data } = useBodyplotCountsQuery();
   const root = document.getElementById("human-body-parent");
@@ -174,12 +184,38 @@ export const Bodyplot = (): JSX.Element => {
   }, [data]);
 
   const bodyplotRef = useRef(undefined);
-  const { ref: mouseRef, x, y } = useMouse(); // get the mouse position
+  const { ref: tooltipRef, x, y } = useMouse(); // get the mouse position
+  const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({
+    offset: 200,
+    duration: 400,
+    isList: true,
+  });
 
   const mouseOutHandler = useCallback(
     () => setBodyplotTooltipContent(undefined),
     [],
   );
+
+  const keyDownHandler = useCallback(
+    ({ elem, data }: { elem: HTMLElement; data: BodyplotPointData }) => {
+      setBodyplotTooltipContent(data);
+      setKeyboardTooltipPostion({
+        x:
+          elem.getBoundingClientRect().x -
+          tooltipRef.current.getBoundingClientRect().x,
+        y:
+          elem.getBoundingClientRect().y -
+          tooltipRef.current.getBoundingClientRect().y,
+      });
+      scrollIntoView();
+    },
+    [tooltipRef, scrollIntoView],
+  );
+
+  const keyUpHandler = useCallback(() => {
+    setKeyboardTooltipPostion({ x: undefined, y: undefined });
+    setBodyplotTooltipContent(undefined);
+  }, []);
 
   const mediumWidth = parseInt(
     tailwindConfig.theme.extend.screens.md.replace(/\D/g, ""),
@@ -208,45 +244,64 @@ export const Bodyplot = (): JSX.Element => {
         },
         mouseOverHandler: setBodyplotTooltipContent,
         mouseOutHandler: mouseOutHandler,
+        keyDownHandler,
+        keyUpHandler,
+        skipLinkId: "#high-quality-datasets-section",
+        ariaLabel: (d) =>
+          `${d?.key}, ${(
+            d?.caseCount * SCALE_CASE_COUNT
+          ).toLocaleString()} cases, ${d?.fileCount.toLocaleString()} files`,
       });
     }
-  }, [width, mediumWidth, mouseOutHandler, processedData, root, bodyplotRef]);
+  }, [
+    width,
+    mediumWidth,
+    mouseOutHandler,
+    processedData,
+    root,
+    bodyplotRef,
+    keyDownHandler,
+    keyUpHandler,
+  ]);
 
   return (
-    <div
-      ref={mouseRef}
-      style={{
-        height:
-          (bodyplotRef?.current?.scrollHeight ?? 0) +
-          EXTRA_BODY_PLOT_SPACE_HEIGHT,
-        width:
-          (bodyplotRef?.current?.scrollWidth ?? 0) -
-          EXTRA_BODY_PLOT_SPACE_WIDTH, // this is needed not to cram hero area left hand side
-      }}
-    >
+    <div ref={targetRef}>
       <div
-        className={`${
-          bodyplotTooltipContent ? "opacity-100" : "opacity-0"
-        }  overflow-visible transition-opacity duration-500 z-[1800] shadow-lg absolute`}
-        style={{ left: x - extents[0] - 20, top: y - extents[1] / 2 }}
+        ref={tooltipRef}
+        style={{
+          height:
+            (bodyplotRef?.current?.scrollHeight ?? 0) +
+            EXTRA_BODY_PLOT_SPACE_HEIGHT,
+          width:
+            (bodyplotRef?.current?.scrollWidth ?? 0) -
+            EXTRA_BODY_PLOT_SPACE_WIDTH, // this is needed not to cram hero area left hand side
+        }}
       >
-        {bodyplotTooltipContent && (
-          <PopupContent
-            label={bodyplotTooltipContent?.key}
-            caseCount={bodyplotTooltipContent?.caseCount * SCALE_CASE_COUNT}
-            fileCount={bodyplotTooltipContent?.fileCount}
-            setSize={setExtents}
-          />
-        )}
-      </div>
-      {createCohortModalOpen && (
+        <div
+          className={`${
+            bodyplotTooltipContent ? "opacity-100" : "opacity-0"
+          }  overflow-visible transition-opacity duration-500 z-[1800] shadow-lg absolute`}
+          style={{
+            left: (keyboardTooltipPosition.x ?? x) - extents[0] - 20,
+            top: (keyboardTooltipPosition.y ?? y) - extents[1] / 2,
+          }}
+        >
+          {bodyplotTooltipContent && (
+            <PopupContent
+              label={bodyplotTooltipContent?.key}
+              caseCount={bodyplotTooltipContent?.caseCount * SCALE_CASE_COUNT}
+              fileCount={bodyplotTooltipContent?.fileCount}
+              setSize={setExtents}
+            />
+          )}
+        </div>
         <ExploreCohortModal
-          opened
+          opened={createCohortModalOpen}
           setOpened={setCreateCohortModalOpen}
           site={selectedSite}
         />
-      )}
-      <div id="human-body-root" ref={bodyplotRef}></div>
+        <div id="human-body-root" ref={bodyplotRef}></div>
+      </div>
     </div>
   );
 };
