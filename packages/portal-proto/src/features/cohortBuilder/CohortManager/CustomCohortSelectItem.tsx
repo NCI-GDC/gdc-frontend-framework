@@ -14,7 +14,7 @@ export const UnsavedIcon = ({ label }: { label: string }): JSX.Element => (
         width={16}
         height={16}
         layout="fixed"
-        alt="this cohort is not saved"
+        alt={label}
       />
     </span>
   </Tooltip>

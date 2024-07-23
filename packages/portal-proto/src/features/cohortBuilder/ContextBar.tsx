@@ -4,7 +4,7 @@ import { CollapsibleContainer } from "@/components/CollapsibleContainer";
 import { Loader, Tabs } from "@mantine/core";
 import { ContextualCasesView } from "../cases/CasesView/CasesView";
 import CohortCountButton from "./CohortCountButton";
-import CohortManager from "./CohortManager";
+import CohortManager from "./CohortManager/CohortManager";
 import {
   useCoreDispatch,
   useCoreSelector,

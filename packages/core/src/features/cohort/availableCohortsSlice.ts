@@ -103,7 +103,6 @@ const newCohort = ({
   customName,
 }: {
   filters?: FilterSet;
-  modified?: boolean;
   customName?: string;
 }): Cohort => {
   const ts = new Date();
