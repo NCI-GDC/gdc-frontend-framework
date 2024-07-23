@@ -151,6 +151,10 @@ def verify_compared_statistics_are_equal_or_not_equal(
 def close_the_modal():
     APP.shared.click_close_modal_button()
 
+@step("Close the message")
+def close_the_modal():
+    """Clicks the 'x' to close temporary message"""
+    APP.shared.click_close_temporary_message()
 
 @step("Download <file> from <source>")
 def download_file_at_file_table(file: str, source: str):
@@ -158,6 +162,8 @@ def download_file_at_file_table(file: str, source: str):
         "Projects": APP.projects_page.click_button,
         "Repository": APP.repository_page.click_button,
         "File Summary": APP.file_summary_page.click_download_button,
+        "File Summary File Versions": APP.file_summary_page.click_file_version_download_option,
+        "File Summary Annotation Table": APP.file_summary_page.click_annotation_table_download_option,
         "Case Summary Files Table": APP.case_summary_page.click_files_table_download_file_button,
         "Cohort Bar": APP.cohort_bar.click_cohort_bar_button,
         "Manage Sets": APP.manage_sets_page.click_on_download_for_set,
@@ -179,6 +185,25 @@ def download_file_at_file_table(file: str, source: str):
     file_path = f"{Utility.parent_dir()}/downloads/{dt.timestamp(dt.now())}_{download.suggested_filename}"
     download.save_as(file_path)
     data_store.spec[f"{file} from {source}"] = file_path
+
+@step("In table <table_name> on row <row_identifier> select <button_id> to download file <file_name_to_store>")
+def click_button_in_table_download_file(table_name:str, row_identifier:str, button_id: str, file_name_to_store:str):
+    """
+    click_button_in_table_download_file In specified table with given identifier click the download button.
+    A file downloads and we store the information using given identifier.
+
+    :param table_name: The table ID to access.
+    :param row_identifier: A unique piece of text to identify which row we want to click the button.
+    :param button_id: The button ID to click.
+    :param file_name_to_store: Identifier used to store contents of file.
+    """
+    driver = WebDriver.page
+    with driver.expect_download(timeout=90000) as download_info:
+        APP.file_summary_page.click_button_in_table(table_name, row_identifier, button_id)
+    download = download_info.value
+    file_path = f"{Utility.parent_dir()}/downloads/{dt.timestamp(dt.now())}_{download.suggested_filename}"
+    download.save_as(file_path)
+    data_store.spec[f"{file_name_to_store}"] = file_path
 
 
 @step("Upload <file_name> <extension> from <folder_name> in <source> through <button>")
@@ -314,6 +339,19 @@ def verify_file_has_expected_field_names(file_type, field_name):
     assert not fails, f"{file_type} validation failed!\nFails: {fails}"
 
 
+@step("Verify these items are not on the page <table>")
+def verify_item_does_not_appear_on_page(table):
+    """Verifies if the given data-testid is not present on the page"""
+    for k, v in enumerate(table):
+        data_testid_to_check = APP.shared.normalize_button_identifier(v[0])
+
+        is_filter_visible = APP.shared.is_data_testid_present(data_testid_to_check)
+        assert is_filter_visible == False, f"The item '{v[0]}' is visible when it should NOT be"
+
+        # Also check exactly the way it was given as test data
+        is_filter_visible = APP.shared.is_data_testid_present(v[0])
+        assert is_filter_visible == False, f"The item '{v[0]}' is visible when it should NOT be"
+
 @step("Verify presence of filter card <table>")
 def make_cohort_builder_selections(table):
     for k, v in enumerate(table):
@@ -329,6 +367,13 @@ def verify_showing_item_text(number_of_items_text):
         f"{showing_items_text}" in showing_items_text
     ), f"The page is NOT showing expected number of items - {number_of_items_text}"
 
+@step("Verify the table <table_name> is showing <number_of_items_text>")
+def verify_table_showing_item_text(table_name, number_of_items_text):
+    """Verifies the specified table's 'Showing' text is correct"""
+    showing_items_text = APP.shared.get_table_showing_count_text(table_name)
+    assert (
+        f"{showing_items_text}" in showing_items_text
+    ), f"The table '{table_name}' is NOT showing expected number of items - {number_of_items_text}"
 
 @step("Verify the table header text is correct <table>")
 def verify_table_header_text(table):
@@ -567,7 +612,7 @@ def is_cart_count_correct(correct_file_count: str):
 
 @step("Is data-testid button <data_testid> not present on the page")
 def is_data_testid_not_present_on_the_page(data_testid: str):
-    is_data_testid_present = APP.shared.is_data_testid_present(data_testid)
+    is_data_testid_present = APP.shared.is_data_testid_button_present(data_testid)
     assert (
         is_data_testid_present == False
     ), f"The data-testid '{data_testid}' IS present"

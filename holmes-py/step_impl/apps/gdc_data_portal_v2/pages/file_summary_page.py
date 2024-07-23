@@ -12,8 +12,13 @@ class FileSummaryLocators:
     ADDED_TO_CART_MESSAGE_IDENT = 'p:has-text("Added")'
     REMOVED_FROM_CART_MESSAGE_IDENT = 'p:has-text("Removed")'
 
-    DOWNLOAD_BUTTON_IDENT = 'text="Download" >> nth=0'
+    DOWNLOAD_BUTTON_IDENT = '[data-testid="button-download-file-summary"]'
     BUTTON_DOWNLOAD_FILE_IDENT = '[data-testid="button-download-file-summary"]'
+
+    BUTTON_DOWNLOAD_FILE_VERSIONS = '[data-testid="table-file-versions-file-summary"] >> button:has-text("Download")'
+    BUTTON_DOWNLOAD_ANNOTATIONS_OPTION = lambda download_option: f'[data-testid="table-annotations-file-summary"] >> button:has-text("{download_option}")'
+
+    BUTTON_IN_TABLE = lambda table_name, row_identifier, button_id: f'[data-testid="table-{table_name}"] >> tr:has-text("{row_identifier}") >> [data-testid="button-{button_id}"]'
 
 
 class FileSummaryPage(BasePage):
@@ -41,3 +46,30 @@ class FileSummaryPage(BasePage):
     def click_download_button(self):
         """Clicks first 'Download' button on the file summary page"""
         self.click(FileSummaryLocators.DOWNLOAD_BUTTON_IDENT)
+
+    def click_button_in_table(self, table_name, row_identifier, button_id):
+        """
+        click_button_in_table In specified table with given identifier click the given button.
+
+        :param table_name: The table ID to access.
+        :param row_identifier: A unique piece of text to identify which row we want to click the button.
+        :param button_id: The button ID to click.
+        """
+        table_name = self.normalize_button_identifier(table_name)
+        button_id = self.normalize_button_identifier(button_id)
+        locator = FileSummaryLocators.BUTTON_IN_TABLE(table_name, row_identifier, button_id)
+        self.click(locator)
+
+    def click_file_version_download_option(self, download_option):
+        """
+        In file versions table, clicks download button.
+        Then, selects option from dropdown menu.
+        """
+        file_version_download_button = FileSummaryLocators.BUTTON_DOWNLOAD_FILE_VERSIONS
+        self.click(file_version_download_button)
+        self.click_text_option_from_dropdown_menu(download_option)
+
+    def click_annotation_table_download_option(self, download_option):
+        """In annotations table, clicks specified download button."""
+        annotation_table_download_button = FileSummaryLocators.BUTTON_DOWNLOAD_ANNOTATIONS_OPTION(download_option)
+        self.click(annotation_table_download_button)
