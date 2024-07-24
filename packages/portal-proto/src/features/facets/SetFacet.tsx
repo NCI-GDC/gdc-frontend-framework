@@ -39,14 +39,19 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
   field,
   description,
   facetName = undefined,
+  facetTitle = undefined,
+  facetBtnToolTip = undefined,
   width = undefined,
   hooks,
 }) => {
   const clearFilters = hooks.useClearFilter();
   const updateFacetFilters = hooks.useUpdateFacetFilters();
-  const facetTitle = facetName
-    ? facetName
-    : trimFirstFieldNameToTitle(field, true);
+  if (!facetName) {
+    facetName = trimFirstFieldNameToTitle(field, true);
+  }
+  if (!facetTitle) {
+    facetTitle = facetName;
+  }
   const dispatch = useCoreDispatch();
   const facetValues = (hooks.useGetFacetValues(field) ||
     []) as EnumOperandValue;
@@ -100,16 +105,28 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
         </div>
       </FacetHeader>
       <div className="p-2">
-        <Button
-          onClick={() => dispatch(showModal({ modal: FACET_TO_MODAL[field] }))}
-          color="primary"
-          variant="outline"
-          size="sm"
-          data-testid={`button-${facetTitle}`}
-          classNames={{ label: "break-words whitespace-pre-wrap" }}
+        <Tooltip
+          label={facetBtnToolTip}
+          disabled={!facetBtnToolTip}
+          position="bottom-start"
+          multiline
+          w={220}
+          withArrow
+          transitionProps={{ duration: 200, transition: "fade" }}
         >
-          + Add {facetTitle}
-        </Button>
+          <Button
+            onClick={() =>
+              dispatch(showModal({ modal: FACET_TO_MODAL[field] }))
+            }
+            color="primary"
+            variant="outline"
+            size="sm"
+            data-testid={`button-${facetName}`}
+            classNames={{ label: "break-words whitespace-pre-wrap" }}
+          >
+            Upload {facetName}
+          </Button>
+        </Tooltip>
         <Group gap="xs" className="px-2 py-1" data-testid="values group">
           {facetValues.map((operand, i) => (
             <Badge

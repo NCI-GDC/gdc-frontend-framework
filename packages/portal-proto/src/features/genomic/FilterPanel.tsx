@@ -87,6 +87,7 @@ const GeneAndSSMFilterPanel = ({
                 ),
               }}
               facetName={x.name}
+              facetTitle={x.title}
               valueLabel={FacetDocTypeToLabelsMap[x.docType]}
               showPercent={false}
               hideIfEmpty={false}
@@ -97,6 +98,8 @@ const GeneAndSSMFilterPanel = ({
             <SetFacet
               key={`genes-mutations-app-${x.facet_filter}-${index}`}
               facetName={x.name}
+              facetTitle={x.title}
+              facetBtnToolTip={x.toolTip}
               field={x.facet_filter}
               valueLabel={FacetDocTypeToLabelsMap[x.docType]}
               hooks={{
@@ -125,6 +128,7 @@ const GeneAndSSMFilterPanel = ({
               ),
             }}
             facetName={x.name}
+            facetTitle={x.title}
             valueLabel={FacetDocTypeToLabelsMap[x.docType]}
             showPercent={false}
             hideIfEmpty={false}

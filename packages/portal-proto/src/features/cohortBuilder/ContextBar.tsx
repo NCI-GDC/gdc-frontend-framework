@@ -310,14 +310,14 @@ const ContextBar = ({
                     ),
                 },
                 {
-                  title: "Genes",
+                  title: "Mutated Genes",
                   onClick: () =>
                     coreDispatch(
                       showModal({ modal: Modals.GlobalGeneSetModal }),
                     ),
                 },
                 {
-                  title: "Mutations",
+                  title: "Somatic Mutations",
                   onClick: () =>
                     coreDispatch(
                       showModal({ modal: Modals.GlobalMutationSetModal }),

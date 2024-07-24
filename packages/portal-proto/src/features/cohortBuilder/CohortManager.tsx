@@ -411,7 +411,7 @@ const CohortManager: React.FC = () => {
 
       <GeneSetModal
         opened={modal === Modals.GlobalGeneSetModal}
-        modalTitle="Filter Current Cohort by Genes"
+        modalTitle="Filter Current Cohort by Mutated Genes"
         inputInstructions="Enter one or more gene identifiers in the field below or upload a file to filter your cohort. Your filtered cohort will consist of cases that have mutations in any of these genes."
         selectSetInstructions="Select one or more sets below to filter your cohort."
         updateFilters={updateCohortFilters}
@@ -420,7 +420,7 @@ const CohortManager: React.FC = () => {
 
       <MutationSetModal
         opened={modal === Modals.GlobalMutationSetModal}
-        modalTitle="Filter Current Cohort by Mutations"
+        modalTitle="Filter Current Cohort by Somatic Mutations"
         inputInstructions="Enter one or more mutation identifiers in the field below or upload a file to filter your cohort. Your filtered cohort will consist of cases that have any of these mutations."
         selectSetInstructions="Select one or more sets below to filter your cohort."
         updateFilters={updateCohortFilters}
