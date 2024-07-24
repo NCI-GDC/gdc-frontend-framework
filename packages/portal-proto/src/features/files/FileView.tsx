@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useDeepCompareMemo } from "use-deep-compare";
 import {
   GdcFile,
-  HistoryDefaults,
   useCoreSelector,
   selectCart,
   Modals,
@@ -83,7 +82,6 @@ const ImageViewer = dynamic(
 
 export interface FileViewProps {
   readonly file?: GdcFile;
-  readonly fileHistory?: HistoryDefaults[];
   readonly isModal?: boolean;
 }
 
@@ -91,7 +89,6 @@ const DivWithMargin = tw.div`mt-14`;
 
 export const FileView: React.FC<FileViewProps> = ({
   file,
-  fileHistory,
   isModal,
 }: FileViewProps) => {
   const currentCart = useCoreSelector((state) => selectCart(state));
@@ -309,7 +306,7 @@ export const FileView: React.FC<FileViewProps> = ({
             />
           </DivWithMargin>
         )}
-        <FileVersions fileHistory={fileHistory} file_id={file.file_id} />
+        <FileVersions file_id={file.file_id} />
         {file?.annotations?.length > 0 && (
           <div
             className={`mb-16 ${isModal ? "scroll-mt-36" : "scroll-mt-72"}`}
