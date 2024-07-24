@@ -156,6 +156,14 @@ const AssociatedCB = ({
         enabled: true,
         tooltip: "e.g. TCGA-AR-A24Z, TCGA-AR-A24Z-10A-01D-A167-09",
       }}
+      tableTitle={
+        <>
+          Total of <b>{data?.length?.toLocaleString()}</b>{" "}
+          {data?.length > 1
+            ? "associated cases/biospecimens"
+            : "associated case/biospecimen"}
+        </>
+      }
       additionalControls={
         <div className="mt-3.5">
           <HeaderTitle>Associated Cases/Biospecimens</HeaderTitle>

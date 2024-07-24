@@ -267,6 +267,12 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
       <HeaderTitle>Annotations</HeaderTitle>
       <VerticalTable
         customDataTestID="table-annotations-case-summary"
+        tableTitle={
+          <>
+            Total of <b>{data?.pagination?.total?.toLocaleString()}</b>{" "}
+            {data?.pagination?.total > 1 ? "annotations" : "annotation"}
+          </>
+        }
         additionalControls={
           <div className="flex gap-2">
             <FunctionButton

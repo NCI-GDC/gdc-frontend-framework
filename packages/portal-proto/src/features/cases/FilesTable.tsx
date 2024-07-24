@@ -349,6 +349,12 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
         customDataTestID="table-files-case-summary"
         data={tableData}
         columns={caseFilesTableDefaultColumns}
+        tableTitle={
+          <>
+            Total of <b>{pagination?.total?.toLocaleString()}</b>{" "}
+            {pagination?.total > 1 ? "files" : "file"}
+          </>
+        }
         status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
         additionalControls={
           <div className="flex gap-2 mb-2">

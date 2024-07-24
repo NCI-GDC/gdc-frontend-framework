@@ -120,6 +120,14 @@ const DownstreamAnalyses = ({
     <VerticalTable
       data={downstreamTableData}
       columns={downstremAnalysesDefaultColumns}
+      tableTitle={
+        <>
+          Total of <b>{downstreamTableData?.length?.toLocaleString()}</b>{" "}
+          {downstreamTableData?.length > 1
+            ? "downstream analyses files"
+            : "downstream analyses file"}
+        </>
+      }
     />
   );
 };

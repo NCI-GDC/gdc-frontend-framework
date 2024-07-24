@@ -336,6 +336,12 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
         }
         data={formattedTableData}
         columns={columns}
+        tableTitle={
+          <>
+            Total of <b>{data?.pagination?.total?.toLocaleString()}</b>{" "}
+            {data?.pagination?.total > 1 ? "annotations" : "annotation"}
+          </>
+        }
         showControls
         search={{
           enabled: true,

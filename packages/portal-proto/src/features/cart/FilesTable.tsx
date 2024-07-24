@@ -390,6 +390,12 @@ const FilesTable: React.FC<FilesTableProps> = () => {
     <VerticalTable
       data={tableData}
       columns={cartFilesTableDefaultColumns}
+      tableTitle={
+        <>
+          Total of <b>{data?.pagination?.total?.toLocaleString()}</b>{" "}
+          {data?.pagination?.total > 1 ? "cart items" : "cart item"}
+        </>
+      }
       additionalControls={
         <div className="flex gap-2 mb-2">
           <Tooltip label="Download JSON">

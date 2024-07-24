@@ -488,6 +488,14 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       <VerticalTable
         data={displayedData}
         columns={cancerDistributionTableColumns}
+        tableTitle={
+          <>
+            Total of <b>{formattedData?.length?.toLocaleString()}</b>{" "}
+            {formattedData?.length > 1
+              ? "cancer distributions"
+              : "cancer distribution"}
+          </>
+        }
         columnSorting="manual"
         additionalControls={
           <div className="flex gap-2 mb-2">
