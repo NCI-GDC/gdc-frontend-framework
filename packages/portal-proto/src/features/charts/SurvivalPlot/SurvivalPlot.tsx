@@ -124,7 +124,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
             meta: { ...element.meta, label: `S${index + 1}` },
             donors: element.donors.map((donor) => ({
               ...donor,
-              time: Math.round(donor.time * DAYS_IN_YEAR),
+              time: Math.round(donor.time * DAYS_IN_YEAR), // Converting to actual days from API
             })),
           })),
           null,
