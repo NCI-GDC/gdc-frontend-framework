@@ -3,15 +3,15 @@ import { FileView } from "./FileView";
 import { LoadingOverlay } from "@mantine/core";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 
-export interface ContextualFileViewProps {
+export interface FileSummaryProps {
   readonly file_id: string;
   readonly isModal?: boolean;
 }
 
-export const FileSummary: React.FC<ContextualFileViewProps> = ({
+export const FileSummary: React.FC<FileSummaryProps> = ({
   file_id,
   isModal,
-}: ContextualFileViewProps) => {
+}: FileSummaryProps) => {
   const { data: { files } = {}, isFetching } = useGetFilesQuery({
     filters: {
       op: "=",
