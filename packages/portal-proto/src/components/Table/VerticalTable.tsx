@@ -9,7 +9,6 @@ import {
 } from "@tanstack/react-table";
 import { TableProps } from "./types";
 import {
-  ChangeEvent,
   Fragment,
   ReactNode,
   useEffect,
@@ -19,20 +18,11 @@ import {
 } from "react";
 import { useDeepCompareMemo } from "use-deep-compare";
 import { BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
-import {
-  LoadingOverlay,
-  Pagination,
-  Select,
-  TextInput,
-  Tooltip,
-  ActionIcon,
-  Text,
-} from "@mantine/core";
-import { MdClose, MdSearch } from "react-icons/md";
-import ColumnOrdering from "./ColumnOrdering";
+import { LoadingOverlay, Pagination, Select } from "@mantine/core";
 import { DataStatus } from "@gff/core";
 import { useDeepCompareEffect } from "use-deep-compare";
 import { getDefaultRowId } from "./utils";
+import TableHeader from "./TableHeader";
 
 /**
  * VerticalTable is a table component that displays data in a vertical format.
@@ -70,7 +60,6 @@ import { getDefaultRowId } from "./utils";
  * @param customDataTestID - optional locator for test automation
  * @category Table
  */
-
 function VerticalTable<TData>({
   columns,
   data = [],
@@ -104,12 +93,8 @@ function VerticalTable<TData>({
   customAriaLabel,
 }: TableProps<TData>): JSX.Element {
   const [tableData, setTableData] = useState(data);
-  const [searchTerm, setSearchTerm] = useState(search?.defaultSearchTerm ?? "");
-  const [searchFocused, setSearchFocused] = useState(false);
-  const inputRef = useRef(null);
-  const timeoutRef = useRef(null);
-  const liveRegionRef = useRef(null); // Reference to the Live Region
-  const [sortingStatus, setSortingStatus] = useState(""); // Sorting status announcement
+  const liveRegionRef = useRef(null);
+  const [sortingStatus, setSortingStatus] = useState("");
   const [announcementTimestamp, setAnnouncementTimestamp] = useState(
     Date.now(),
   );
@@ -127,12 +112,6 @@ function VerticalTable<TData>({
       setTableData(data);
     }
   }, [data, status]);
-
-  useEffect(() => {
-    if (search?.defaultSearchTerm) {
-      inputRef?.current?.focus();
-    }
-  }, [search?.defaultSearchTerm]);
 
   const initialState = useDeepCompareMemo(
     () => ({
@@ -212,44 +191,6 @@ function VerticalTable<TData>({
       });
   };
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const newSearchTerm = e.target.value;
-    setSearchTerm(newSearchTerm);
-
-    // Clear the previous timeout
-    clearTimeout(timeoutRef.current);
-
-    // Set a new timeout to perform the search after 400ms
-    timeoutRef.current = setTimeout(() => {
-      handleChange({ newSearch: newSearchTerm.trim() });
-    }, 400);
-  };
-
-  const handleClearClick = () => {
-    setSearchTerm("");
-    clearTimeout(timeoutRef.current);
-    handleChange({ newSearch: "" });
-  };
-
-  const TooltipContainer = search?.tooltip
-    ? (children) => (
-        <Tooltip
-          multiline
-          label={search.tooltip}
-          position="bottom-start"
-          opened={searchFocused}
-          zIndex={baseZIndex + 1} // needs to be higher z-index when in a modal
-          offset={0}
-          classNames={{
-            tooltip:
-              "w-72 border border-base-lighter absolute bg-white p-2 text-nci-gray text-sm  overflow-wrap break-all rounded-b rounded-t-none font-content",
-          }}
-        >
-          {children}
-        </Tooltip>
-      )
-    : undefined;
-
   const handleSorting = (
     header: Header<TData, unknown>,
     headerName: ReactNode | JSX.Element,
@@ -273,73 +214,22 @@ function VerticalTable<TData>({
 
   return (
     <div data-testid={customDataTestID} className="grow overflow-hidden">
-      <div
-        className={`flex flex-wrap gap-y-4 mb-2 ${
-          !additionalControls ? "justify-end" : "justify-between"
-        }`}
-      >
-        {additionalControls && <>{additionalControls}</>}
-        <div className="flex flex-wrap gap-y-2 gap-x-4 items-center">
-          {tableTitle && (
-            <Text className="self-center uppercase text-lg text-left ml-0 lg:ml-auto">
-              {tableTitle}
-            </Text>
-          )}
-
-          {(search?.enabled || showControls) && (
-            <div
-              className="flex items-center gap-2"
-              data-testid="table-options-menu"
-            >
-              <div className="flex gap-2">
-                {search?.enabled && (
-                  <TextInput
-                    leftSection={<MdSearch size={24} aria-hidden="true" />}
-                    data-testid="textbox-table-search-bar"
-                    placeholder={search.placeholder ?? "Search"}
-                    aria-label="Table Search Input"
-                    classNames={{
-                      input: `border-base-lighter focus:border-2 focus:border-primary${
-                        TooltipContainer ? " focus:rounded-b-none" : ""
-                      }`,
-                      wrapper: "xl:w-72",
-                    }}
-                    size="sm"
-                    rightSection={
-                      searchTerm.length > 0 && (
-                        <ActionIcon
-                          onClick={handleClearClick}
-                          className="border-0"
-                        >
-                          <MdClose aria-label="clear search" />
-                        </ActionIcon>
-                      )
-                    }
-                    value={searchTerm}
-                    onChange={handleInputChange}
-                    ref={inputRef}
-                    onFocus={() => setSearchFocused(true)}
-                    onBlur={() => setSearchFocused(false)}
-                    inputContainer={TooltipContainer}
-                  />
-                )}
-                {showControls && (
-                  <ColumnOrdering
-                    table={table}
-                    handleColumnOrderingReset={() => {
-                      table.resetColumnVisibility();
-                      table.resetColumnOrder();
-                    }}
-                    columnOrder={columnOrder}
-                    setColumnOrder={setColumnOrder}
-                  />
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
+      {(additionalControls ||
+        tableTitle ||
+        search?.enabled ||
+        showControls) && (
+        <TableHeader
+          additionalControls={additionalControls}
+          tableTitle={tableTitle}
+          search={search}
+          showControls={showControls}
+          handleChange={handleChange}
+          table={table}
+          columnOrder={columnOrder}
+          setColumnOrder={setColumnOrder}
+          baseZIndex={baseZIndex}
+        />
+      )}
       <div className="overflow-y-auto w-full relative">
         <div
           key={announcementTimestamp}
@@ -445,11 +335,11 @@ function VerticalTable<TData>({
               </tr>
             ))}
           </thead>
-          <tbody className="border-1 border-base-lighter">
+          <tbody>
             {table.getRowModel().rows.map((row, index) => (
               <Fragment key={row.id}>
                 <tr
-                  className={`border border-base-lighter max-h-10 ${
+                  className={`first:border-t-0 border border-base-lighter h-10 ${
                     index % 2 === 1 ? "bg-base-max" : "bg-base-lightest"
                   }`}
                 >

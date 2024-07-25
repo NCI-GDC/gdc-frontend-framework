@@ -138,6 +138,14 @@ class AnalysisCenterPage(BasePage):
                 self.wait_until_locator_is_detached(survival_plot_spinner_locator)
             except:
                 self.wait_for_loading_spinner_to_detatch()
+
+        if page_to_load == "set operations demo":
+            # Need to wait for loading spinners to be present, for them to disappear
+            try:
+                self.wait_for_loading_spinner_to_be_visible(7500)
+                self.wait_for_loading_spinner_to_detatch()
+            except:
+                self.wait_for_loading_spinner_to_detatch()
         self.wait_for_loading_spinner_to_detatch()
         self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
         self.wait_for_loading_spinner_table_to_detatch()

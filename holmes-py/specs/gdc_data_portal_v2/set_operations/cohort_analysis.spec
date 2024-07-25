@@ -65,6 +65,11 @@ tags: gdc-data-portal-v2, set-operations, regression
   |Action to Perform|Text to validate in modal                            |Keep or Remove Modal|
   |-----------------|-----------------------------------------------------|--------------------|
   |Save             |S1 minus S2 Set Operations has been saved            |Remove Modal        |
+* Verify the table "Summary Set Operations" is displaying this information
+    |text_to_validate             |
+    |-----------------------------|
+    |B-Cohort_Set_SO_Main_3       |
+    |B-Cohort_Set_SO_Main_1       |
 
 ## Cohorts Union Row - 2 Sets
 * Select the following checkboxes in the Set Operations analysis screen
@@ -154,6 +159,12 @@ tags: gdc-data-portal-v2, set-operations, regression
   |Action to Perform|Text to validate in modal                              |Keep or Remove Modal|
   |-----------------|-------------------------------------------------------|--------------------|
   |Save             |S2 intersect S3 minus S1 Set Operations has been saved |Remove Modal        |
+* Verify the table "Summary Set Operations" is displaying this information
+    |text_to_validate             |
+    |-----------------------------|
+    |B-Cohort_Set_SO_Main_2       |
+    |B-Cohort_Set_SO_Main_3       |
+    |B-Cohort_Set_SO_Main_1       |
 
 ## Cohorts Union Row - 3 Sets
 * Select the following checkboxes in the Set Operations analysis screen

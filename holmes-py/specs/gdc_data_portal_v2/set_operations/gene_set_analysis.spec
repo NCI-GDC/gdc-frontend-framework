@@ -68,6 +68,11 @@ tags: gdc-data-portal-v2, set-operations, regression
   |ENSG00000118058  |
 * Select set "S2 minus S1" to save as a new set in the Set Operations analysis screen
 * Name set "B-S2 minus S1 Gene Set" in Save Set modal
+* Verify the table "Summary Set Operations" is displaying this information
+    |text_to_validate         |
+    |-------------------------|
+    |B-Gene_Set_SO_Main_1     |
+    |B-Gene_Set_SO_Main_2     |
 
 ## Genes Union Row - 2 Sets
 * Select the following checkboxes in the Set Operations analysis screen
@@ -174,7 +179,12 @@ tags: gdc-data-portal-v2, set-operations, regression
   |ENSG00000040731  |
 * Select set "S3 minus S1 union S2" to save as a new set in the Set Operations analysis screen
 * Name set "B-S3 minus S1 union S2 Gene Set" in Save Set modal
-
+* Verify the table "Summary Set Operations" is displaying this information
+    |text_to_validate         |
+    |-------------------------|
+    |B-Gene_Set_SO_Main_1     |
+    |B-Gene_Set_SO_Main_2     |
+    |B-Gene_Set_SO_Main_3     |
 ## Genes Union Row - 3 Sets
 * Select the following checkboxes in the Set Operations analysis screen
   |checkbox_name                |

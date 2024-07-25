@@ -11,12 +11,12 @@ class GenericLocators:
     X_BUTTON_IN_TEMP_MESSAGE = (
         '>> .. >> .. >> .. >> svg[xmlns="http://www.w3.org/2000/svg"]'
     )
-    BUTTON_CLOSE_NOTIFICATION = '[aria-label="Close notification"]'
     UNDO_BUTTON_IN_TEMP_MESSAGE = 'span:text("Undo")'
     SET_AS_CURRENT_COHORT_IN_TEMP_MESSAGE = (
         'span:text("Set this as your current cohort.")'
     )
 
+    BUTTON_CLOSE_NOTIFICATION = '[aria-label="Close notification"]'
     BUTTON_CLOSE_MODAL = 'button[aria-label="Close Modal"]'
 
     LOADING_SPINNER_GENERIC = '[data-testid="loading-spinner"] >> nth=0'
@@ -123,7 +123,8 @@ class GenericLocators:
         lambda group_name, more_or_less: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> button[data-testid="{more_or_less}"]'
     )
 
-    SHOWING_NUMBER_OF_ITEMS = "[data-testid='text-showing-count']"
+    SHOWING_NUMBER_OF_ITEMS_IN_TABLE = lambda table_specified: f'[data-testid="table-{table_specified}"] >> [data-testid="text-showing-count"]'
+    SHOWING_NUMBER_OF_ITEMS = '[data-testid="text-showing-count"]'
 
     BUTTON_ENTRIES_SHOWN = '[data-testid="button-show-entries"]'
     DROPDOWN_LIST_CHANGE_NUMBER_OF_ENTRIES_SHOWN = (
@@ -239,6 +240,12 @@ class BasePage:
     def get_showing_count_text(self):
         """Returns the text of how many items are being shown on the page"""
         locator = GenericLocators.SHOWING_NUMBER_OF_ITEMS
+        return self.get_text(locator)
+
+    def get_table_showing_count_text(self, table_name):
+        """Returns the text of how many items are being shown on the specified table"""
+        table_name = self.normalize_button_identifier(table_name)
+        locator = GenericLocators.SHOWING_NUMBER_OF_ITEMS_IN_TABLE(table_name)
         return self.get_text(locator)
 
     def get_filter_selection_count(self, filter_group_name, selection):
@@ -390,6 +397,11 @@ class BasePage:
         return True
 
     def is_data_testid_present(self, data_testid):
+        locator = GenericLocators.DATA_TEST_ID_IDENT(data_testid)
+        is_data_testid_present = self.is_visible(locator)
+        return is_data_testid_present
+
+    def is_data_testid_button_present(self, data_testid):
         locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(data_testid)
         is_data_testid_present = self.is_visible(locator)
         return is_data_testid_present
@@ -487,6 +499,12 @@ class BasePage:
         """Clicks 'X' to close a modal"""
         locator = GenericLocators.BUTTON_CLOSE_MODAL
         self.click(locator)
+
+    def click_close_temporary_message(self):
+        """Clicks 'X' to close a modal"""
+        locator = GenericLocators.BUTTON_CLOSE_NOTIFICATION
+        self.click(locator)
+        time.sleep(0.5)
 
     def click_undo_in_message(self):
         """Clicks 'undo' in a modal message"""
