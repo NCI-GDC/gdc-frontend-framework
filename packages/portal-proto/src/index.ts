@@ -27,7 +27,7 @@ import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 //charts
 import BarChart from "@/features/charts/BarChart";
 import CNVBarChart from "@/features/charts/CNVPlot";
-import SurvivalPlot from "@/features/charts/SurvivalPlot";
+import SurvivalPlot from "@/features/charts/SurvivalPlot/SurvivalPlot";
 
 export {
   AnchorLink,
