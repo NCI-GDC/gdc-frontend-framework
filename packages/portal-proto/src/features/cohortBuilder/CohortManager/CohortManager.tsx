@@ -63,11 +63,7 @@ const CohortManager: React.FC = () => {
       <div className="border-opacity-0">
         <div className="flex flex-wrap gap-2 lg:gap-4">
           <div className="flex justify-center items-center">
-            <Tooltip
-              label="Discard Unsaved Changes"
-              position="bottom"
-              withArrow
-            >
+            <Tooltip label="Discard Changes" position="bottom" withArrow>
               <span>
                 <CohortGroupButton
                   data-testid="discardButton"
