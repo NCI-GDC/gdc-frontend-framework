@@ -25,6 +25,7 @@ import { downloadTSV } from "@/components/Table/utils";
 import download from "src/utils/download";
 import { useAppSelector } from "./appApi";
 import { selectFilters } from "./annotationBrowserFilterSlice";
+import TotalItems from "@/components/Table/TotalItem";
 
 type AnnotationTableData =
   | Pick<
@@ -335,13 +336,7 @@ const AnnnotationTable: React.FC = () => {
   return (
     <VerticalTable
       tableTitle={
-        <>
-          Total of{" "}
-          <b>
-            {data?.pagination ? data.pagination.total.toLocaleString() : "--"}
-          </b>{" "}
-          Annotations
-        </>
+        <TotalItems total={data?.pagination?.total} itemName="annotation" />
       }
       additionalControls={
         <div className="flex gap-2">

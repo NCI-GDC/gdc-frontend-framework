@@ -38,6 +38,7 @@ import { convertDateToString } from "@/utils/date";
 import { AgreementModal } from "@/components/Modals/AgreementModal";
 import { NoAccessToProjectModal } from "@/components/Modals/NoAccessToProjectModal";
 import { GeneralErrorModal } from "@/components/Modals/GeneraErrorModal";
+import TotalItems from "@/components/Table/TotalItem";
 
 interface FilesTableProps {
   caseId: string;
@@ -349,12 +350,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
         customDataTestID="table-files-case-summary"
         data={tableData}
         columns={caseFilesTableDefaultColumns}
-        tableTitle={
-          <>
-            Total of <b>{pagination?.total?.toLocaleString()}</b>{" "}
-            {pagination?.total > 1 ? "files" : "file"}
-          </>
-        }
+        tableTitle={<TotalItems total={pagination?.total} itemName="file" />}
         status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
         additionalControls={
           <div className="flex gap-2 mb-2">

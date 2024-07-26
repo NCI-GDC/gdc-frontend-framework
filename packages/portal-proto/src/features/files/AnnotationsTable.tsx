@@ -16,6 +16,7 @@ import { HandleChangeInput } from "@/components/Table/types";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { downloadTSV } from "@/components/Table/utils";
+import TotalItems from "@/components/Table/TotalItem";
 
 interface AnnotationsTableProps {
   readonly annotations: ReadonlyArray<FileAnnotationsType>;
@@ -259,10 +260,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
       <VerticalTable
         customDataTestID="table-annotations-file-summary"
         tableTitle={
-          <>
-            Total of <b>{annotations?.length?.toLocaleString()}</b>{" "}
-            {annotations?.length > 1 ? "annotations" : "annotation"}
-          </>
+          <TotalItems total={annotations?.length} itemName="annotation" />
         }
         additionalControls={
           <div className="flex gap-2">

@@ -27,6 +27,7 @@ import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
 import NumeratorDenominator from "@/components/NumeratorDenominator";
 import { useDeepCompareMemo } from "use-deep-compare";
 import SubrowPrimarySiteDiseaseType from "@/components/SubrowPrimarySiteDiseaseType/SubrowPrimarySiteDiseaseType";
+import TotalItems from "@/components/Table/TotalItem";
 
 const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   data,
@@ -489,12 +490,10 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         data={displayedData}
         columns={cancerDistributionTableColumns}
         tableTitle={
-          <>
-            Total of <b>{formattedData?.length?.toLocaleString()}</b>{" "}
-            {formattedData?.length > 1
-              ? "cancer distributions"
-              : "cancer distribution"}
-          </>
+          <TotalItems
+            total={formattedData?.length}
+            itemName="cancer distribution"
+          />
         }
         columnSorting="manual"
         additionalControls={

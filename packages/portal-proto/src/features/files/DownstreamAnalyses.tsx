@@ -8,6 +8,7 @@ import { mapGdcFileToCartFile } from "./utils";
 import { TableActionButtons } from "@/components/TableActionButtons";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
+import TotalItems from "@/components/Table/TotalItem";
 
 const DownstreamAnalyses = ({
   downstream_analyses,
@@ -121,12 +122,10 @@ const DownstreamAnalyses = ({
       data={downstreamTableData}
       columns={downstremAnalysesDefaultColumns}
       tableTitle={
-        <>
-          Total of <b>{downstreamTableData?.length?.toLocaleString()}</b>{" "}
-          {downstreamTableData?.length > 1
-            ? "downstream analyses files"
-            : "downstream analyses file"}
-        </>
+        <TotalItems
+          total={downstreamTableData?.length}
+          itemName="downstream analyses file"
+        />
       }
     />
   );

@@ -28,6 +28,7 @@ import { Loader } from "@mantine/core";
 import { convertDateToString } from "@/utils/date";
 import { downloadTSV } from "@/components/Table/utils";
 import ImpactHeaderWithTooltip from "../GenomicTables/SharedComponent/ImpactHeaderWithTooltip";
+import TotalItems from "@/components/Table/TotalItem";
 
 const consequenceTableColumnHelper = createColumnHelper<ConsequenceTableData>();
 
@@ -349,10 +350,7 @@ export const ConsequenceTable = ({
       customDataTestID="table-consequences-mutation-summary"
       data={displayedData}
       tableTitle={
-        <>
-          Total of <b>{tableData?.length?.toLocaleString()}</b>{" "}
-          {tableData?.length > 1 ? "consequences" : "consequence"}
-        </>
+        <TotalItems total={tableData?.length} itemName="consequence" />
       }
       columns={consequenceTableDefaultColumns}
       setColumnVisibility={setColumnVisibility}
