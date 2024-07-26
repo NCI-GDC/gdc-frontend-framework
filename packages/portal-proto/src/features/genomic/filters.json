@@ -12,7 +12,7 @@
     "name": "Somatic Mutation",
     "type": "set",
     "docType": "ssms",
-    "toolTip": "Filter the current cohort by entering/uploading specific Simple Somatic Mutations (SSMs) or selecting mutation sets"
+    "toolTip": "Filter Mutation Frequency by entering/uploading specific Simple Somatic Mutations (SSMs) or selecting mutation sets"
   },
   {
     "facet_filter": "genes.biotype",
