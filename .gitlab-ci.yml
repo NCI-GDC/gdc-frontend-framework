@@ -40,6 +40,13 @@ variables:
 Linting:
   stage: test
   before_script:
+    - whoami
+    - pwd
+    - locate npm
+    - echo ${PATH}
+    - which npm
+    - ls -lh $(which npm)
+    - ls -lsha
     - npm ci --cache .npm
   script:
     - npm run lint
