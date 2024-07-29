@@ -43,8 +43,6 @@ Linting:
     - whoami
     - pwd
     - echo ${PATH}
-    - which npm
-    - ls -lh $(which npm)
     - ls -lsha
     - npm ci --cache .npm
   script:
