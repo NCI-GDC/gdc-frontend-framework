@@ -24,7 +24,7 @@ stages:
   - deploy
   - .trigger_ui_tests
 
-image: docker.osdc.io/ncigdc/nodejs20:feat_aug-2024-updates-82773a9
+image: docker.osdc.io/ncigdc/nodejs20:3.0.6
 
 variables:
   npm_config_registry: https://nexus.osdc.io/repository/npm-all/
