@@ -40,11 +40,7 @@ variables:
 Linting:
   stage: test
   before_script:
-    - whoami
-    - pwd
-    - echo ${PATH}
-    - ls -lsha
-    - npm ci --cache .npm
+    - npm ci --include=dev --cache .npm
   script:
     - npm run lint
   <<: *default_rules
@@ -52,7 +48,7 @@ Linting:
 Prettier Checks:
   stage: test
   before_script:
-    - npm ci --cache .npm
+    - npm ci --include=dev --cache .npm
   script:
     - npm run format:check
   <<: *default_rules
@@ -60,7 +56,7 @@ Prettier Checks:
 Build and test core and portal:
   stage: test
   before_script:
-    - npm ci --cache .npm
+    - npm ci --include=dev --cache .npm
   script:
     - cd ${CI_PROJECT_DIR}/packages/core
     - npm run build:clean
