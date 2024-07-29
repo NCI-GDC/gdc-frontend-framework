@@ -39,24 +39,30 @@ variables:
 
 Linting:
   stage: test
+  variables:
+    NODE_ENV: test
   before_script:
-    - npm ci --include=dev --cache .npm
+    - npm ci --cache .npm
   script:
     - npm run lint
   <<: *default_rules
 
 Prettier Checks:
   stage: test
+  variables:
+    NODE_ENV: test
   before_script:
-    - npm ci --include=dev --cache .npm
+    - npm ci --cache .npm
   script:
     - npm run format:check
   <<: *default_rules
 
 Build and test core and portal:
   stage: test
+  variables:
+    NODE_ENV: test
   before_script:
-    - npm ci --include=dev --cache .npm
+    - npm ci --cache .npm
   script:
     - cd ${CI_PROJECT_DIR}/packages/core
     - npm run build:clean
