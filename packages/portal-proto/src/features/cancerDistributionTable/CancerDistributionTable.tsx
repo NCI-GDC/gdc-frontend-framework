@@ -490,10 +490,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
         data={displayedData}
         columns={cancerDistributionTableColumns}
         tableTitle={
-          <TotalItems
-            total={formattedData?.length}
-            itemName="cancer distribution"
-          />
+          <TotalItems total={formattedData?.length} itemName="project" />
         }
         columnSorting="manual"
         additionalControls={

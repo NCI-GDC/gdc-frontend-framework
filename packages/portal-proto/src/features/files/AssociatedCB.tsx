@@ -160,8 +160,8 @@ const AssociatedCB = ({
       tableTitle={
         <TotalItems
           total={data?.length}
-          itemName="associated case/biospecimen"
-          pluralName="associated cases/biospecimens"
+          itemName="case/biospecimen"
+          pluralName="cases/biospecimens"
         />
       }
       additionalControls={

@@ -32,7 +32,7 @@ import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import GenericLink from "@/components/GenericLink";
 import AssociatedCB from "./AssociatedCB";
 import DownstreamAnalyses from "./DownstreamAnalyses";
-import AnalysisInputFiles from "./AnalysisInput";
+import SourceFiles from "./SourceFiles";
 import ReadGroups from "./ReadGroups";
 import FileVersions from "./FileVersions";
 import AnnnotationsTable from "./AnnotationsTable";
@@ -280,7 +280,7 @@ export const FileView: React.FC<FileViewProps> = ({
             </div>
             {file?.analysis?.input_files?.length > 0 && (
               <DivWithMargin>
-                <AnalysisInputFiles
+                <SourceFiles
                   inputFiles={file.analysis.input_files}
                   currentCart={currentCart}
                   setFileToDownload={setFileToDownload}

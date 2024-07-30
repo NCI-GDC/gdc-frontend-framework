@@ -392,7 +392,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
       data={tableData}
       columns={cartFilesTableDefaultColumns}
       tableTitle={
-        <TotalItems total={data?.pagination?.total} itemName="cart item" />
+        <TotalItems total={data?.pagination?.total} itemName="file" />
       }
       additionalControls={
         <div className="flex gap-2 mb-2">

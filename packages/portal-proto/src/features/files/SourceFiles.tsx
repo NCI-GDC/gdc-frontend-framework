@@ -9,8 +9,9 @@ import { fileInCart } from "@/utils/index";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
+import TotalItems from "@/components/Table/TotalItem";
 
-type AnalysisInputDataItem = {
+type SourceFilesItems = {
   file: GdcCartFile;
   access: AccessType;
   file_name: string;
@@ -21,7 +22,9 @@ type AnalysisInputDataItem = {
   file_size: string;
 };
 
-const AnalysisInputFiles = ({
+const columnHelper = createColumnHelper<SourceFilesItems>();
+
+const SourceFiles = ({
   inputFiles,
   currentCart,
   setFileToDownload,
@@ -30,7 +33,7 @@ const AnalysisInputFiles = ({
   currentCart: CartFile[];
   setFileToDownload: Dispatch<SetStateAction<GdcFile>>;
 }): JSX.Element => {
-  const data: AnalysisInputDataItem[] = useMemo(() => {
+  const data: SourceFilesItems[] = useMemo(() => {
     return inputFiles.map((ipFile) => ({
       file: ipFile,
       access: ipFile.access,
@@ -42,8 +45,6 @@ const AnalysisInputFiles = ({
       file_size: fileSize(ipFile.file_size),
     }));
   }, [inputFiles]);
-
-  const columnHelper = createColumnHelper<AnalysisInputDataItem>();
 
   const columns = useMemo(
     () => [
@@ -94,6 +95,7 @@ const AnalysisInputFiles = ({
       customDataTestID="table-source-files-file-summary"
       data={data}
       columns={columns}
+      tableTitle={<TotalItems total={data?.length} itemName="file" />}
       additionalControls={
         <div className="mt-3.5">
           <HeaderTitle>Source Files</HeaderTitle>
@@ -103,4 +105,4 @@ const AnalysisInputFiles = ({
   );
 };
 
-export default AnalysisInputFiles;
+export default SourceFiles;

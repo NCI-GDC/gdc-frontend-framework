@@ -122,10 +122,7 @@ const DownstreamAnalyses = ({
       data={downstreamTableData}
       columns={downstremAnalysesDefaultColumns}
       tableTitle={
-        <TotalItems
-          total={downstreamTableData?.length}
-          itemName="downstream analyses file"
-        />
+        <TotalItems total={downstreamTableData?.length} itemName="file" />
       }
     />
   );

@@ -6,6 +6,7 @@ import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon
 import VerticalTable from "@/components/Table/VerticalTable";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import { createColumnHelper } from "@tanstack/react-table";
+import TotalItems from "@/components/Table/TotalItem";
 
 const FileVersions = ({
   fileHistory,
@@ -136,6 +137,9 @@ const FileVersions = ({
               </div>
             }
             data={tableData}
+            tableTitle={
+              <TotalItems total={tableData?.length} itemName="version" />
+            }
             columns={readGroupsColumns}
           />
         </div>
