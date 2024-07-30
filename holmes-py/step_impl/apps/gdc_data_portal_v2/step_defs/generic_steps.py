@@ -41,17 +41,28 @@ def setup_test_run():
     """
     print("setup execution")
     APP.analysis_center_page.visit()
+    print("setup execution - 1")
     APP.header_section.wait_for_page_to_load("analysis")
+    print("setup execution - 2")
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    print("setup execution - 3")
+
     time.sleep(2)
     APP.cohort_bar.click_cohort_bar_button("Save")
+    print("setup execution - 4")
     APP.shared.click_text_option_from_dropdown_menu("Save")
+    print("setup execution - 5")
     APP.shared.send_text_into_text_box("never_use_this_cohort_name", "Name Input Field")
+    print("setup execution - 6")
+
     APP.shared.click_button_in_modal_with_displayed_text_name("Save")
+    print("setup execution - 7")
     APP.cohort_bar.wait_for_text_in_temporary_message(
         "Cohort has been saved", "Remove Modal"
     )
+    print("setup execution - 8")
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    print("setup execution - 9")
     time.sleep(2)
 
 
@@ -69,10 +80,14 @@ def setup_next_spec_run():
     """
     print("cleanup execution")
     APP.analysis_center_page.visit()
+    print("cleanup execution - 2")
     APP.header_section.wait_for_page_to_load("analysis")
+    print("cleanup execution - 3")
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    print("cleanup execution - 4")
     if not APP.shared.is_no_active_cohort_filter_text_present():
         APP.shared.clear_active_cohort_filters()
+        print("cleanup execution - 5")
 
 
 @step("On GDC Data Portal V2 app")
