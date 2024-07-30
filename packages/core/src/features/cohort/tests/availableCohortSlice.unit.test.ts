@@ -415,7 +415,7 @@ describe("add, update, and remove cohort", () => {
             ...NullCountsData,
           },
           modified_datetime: "2020-11-01T00:00:00.000Z",
-          modified: true,
+          modified: false,
           saved: false,
         },
       },
@@ -501,7 +501,7 @@ describe("add, update, and remove cohort", () => {
           counts: {
             ...NullCountsData,
           },
-          modified: true,
+          modified: false,
           modified_datetime: "2020-11-01T00:00:00.000Z",
           name: "New Cohort 2",
           saved: false,
@@ -566,7 +566,7 @@ describe("add, update, and remove cohort", () => {
           counts: {
             ...NullCountsData,
           },
-          modified: true,
+          modified: false,
           modified_datetime: "2020-11-01T00:00:00.000Z",
           name: "Unsaved_Cohort",
           saved: false,
@@ -855,7 +855,7 @@ describe("add, update, and remove cohort", () => {
           counts: {
             ...NullCountsData,
           },
-          modified: true,
+          modified: false,
           modified_datetime: "2020-11-01T00:00:00.000Z",
           name: "New Cohort 2",
           saved: false,

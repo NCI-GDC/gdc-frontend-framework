@@ -3,10 +3,10 @@ import { NextPage } from "next";
 import { useRouter } from "next/dist/client/router";
 import { datadogRum } from "@datadog/browser-rum";
 import { UserFlowVariedPages } from "../../features/layout/UserFlowVariedPages";
-import { ContextualFileView } from "../../features/files/FileSummary";
+import { FileSummary } from "../../features/files/FileSummary";
 import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
 
-const FileSummary: NextPage = () => {
+const FilePage: NextPage = () => {
   const router = useRouter();
   const uuid = router.asPath.split("/")[2];
 
@@ -24,9 +24,9 @@ const FileSummary: NextPage = () => {
 
   return (
     <UserFlowVariedPages headerElements={headerElements}>
-      {ready && <ContextualFileView setCurrentFile={uuid} />}
+      {ready && <FileSummary file_id={uuid} />}
     </UserFlowVariedPages>
   );
 };
 
-export default FileSummary;
+export default FilePage;

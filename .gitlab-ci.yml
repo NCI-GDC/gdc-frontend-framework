@@ -5,6 +5,9 @@ include:
     ref: 0.7.8
     file:
       - templates/global/full.yaml
+  - project: nci-gdc/gitlab-templates
+    ref: master
+    file:
       - templates/deployments/salt-service.yaml
 
 pre-commit:
@@ -21,7 +24,7 @@ stages:
   - deploy
   - .trigger_ui_tests
 
-image: docker.osdc.io/node:20.11.0-alpine3.18
+image: docker.osdc.io/ncigdc/nodejs20:3.0.6
 
 variables:
   npm_config_registry: https://nexus.osdc.io/repository/npm-all/
@@ -36,8 +39,9 @@ variables:
 
 Linting:
   stage: test
+  variables:
+    NODE_ENV: test
   before_script:
-    - npm install npm@10.2.4
     - npm ci --cache .npm
   script:
     - npm run lint
@@ -45,8 +49,9 @@ Linting:
 
 Prettier Checks:
   stage: test
+  variables:
+    NODE_ENV: test
   before_script:
-    - npm install npm@10.2.4
     - npm ci --cache .npm
   script:
     - npm run format:check
@@ -54,8 +59,9 @@ Prettier Checks:
 
 Build and test core and portal:
   stage: test
+  variables:
+    NODE_ENV: test
   before_script:
-    - npm install npm@10.2.4
     - npm ci --cache .npm
   script:
     - cd ${CI_PROJECT_DIR}/packages/core

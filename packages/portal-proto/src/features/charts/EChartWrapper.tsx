@@ -43,7 +43,13 @@ const EChartWrapper: React.FC<EChartWrapperProps> = ({
 
   return (
     <div
-      ref={wrapperRef ? (r) => (wrapperRef.current = r) : undefined}
+      ref={
+        wrapperRef
+          ? (ref: HTMLDivElement | null) => {
+              if (ref) wrapperRef.current = ref;
+            }
+          : undefined
+      }
       style={{ height, width }}
       role="img"
     />
