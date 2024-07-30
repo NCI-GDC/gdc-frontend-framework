@@ -20,14 +20,19 @@ def pause_10_seconds(sleep_time):
 
 @before_suite
 def start_app():
+    print("app setup - 1")
     global APP
+    print("app setup - 2")
     APP = GDCDataPortalV2App(WebDriver.page)
-
+    print("app setup - 3")
 
 @before_suite
 def navigate_to_app():
+    print("first setup execution - 1")
     APP.navigate()
+    print("first setup execution - 2")
     APP.warning_modal.accept_warning()
+    print("first setup execution - 3")
 
 
 @before_suite
