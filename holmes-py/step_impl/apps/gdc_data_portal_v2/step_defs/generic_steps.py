@@ -101,7 +101,6 @@ def setup_next_spec_run():
 
 @step("On GDC Data Portal V2 app")
 def navigate_to_app():
-    APP.navigate()
     APP.warning_modal.accept_warning()
 
 
