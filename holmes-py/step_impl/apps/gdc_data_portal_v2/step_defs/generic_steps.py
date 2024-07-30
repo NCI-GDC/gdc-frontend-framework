@@ -39,6 +39,7 @@ def setup_test_run():
     the initial one has been saved. This function saves that initial cohort so subsequent tests can run, as some
     depend on a starting condition that they be able to create a cohort.
     """
+    print("setup execution")
     APP.analysis_center_page.visit()
     APP.header_section.wait_for_page_to_load("analysis")
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
@@ -66,6 +67,7 @@ def setup_next_spec_run():
     If not, we click the 'Clear All' button to remove the active cohort filters.
     Finally, we wait to see the the text confirming there are no active cohort filters present.
     """
+    print("cleanup execution")
     APP.analysis_center_page.visit()
     APP.header_section.wait_for_page_to_load("analysis")
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
