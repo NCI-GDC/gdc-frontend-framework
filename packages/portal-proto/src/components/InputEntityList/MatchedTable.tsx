@@ -59,16 +59,6 @@ const MatchedTable = ({
                 row?.original[`mapped_${id.replaceAll(".", "_")}`] ?? "--",
               meta: {
                 highlighted: true,
-                sortingFn: (rowA, rowB) => {
-                  const property = `mapped_${id.replaceAll(".", "_")}`;
-                  if (rowA[property] > rowB[property]) {
-                    return 1;
-                  }
-                  if (rowA[property] < rowB[property]) {
-                    return -1;
-                  }
-                  return 0;
-                },
               },
             },
           );
@@ -92,13 +82,28 @@ const MatchedTable = ({
               meta: {
                 sortingFn: (rowA, rowB) => {
                   const property = `submitted_${id.replaceAll(".", "_")}`;
-                  if (rowA[property] > rowB[property]) {
-                    return 1;
+
+                  const valueA = rowA[property];
+                  const valueB = rowB[property];
+
+                  // if values are undefined i.e., "--"
+                  if (!valueA && !valueB) return 0;
+                  if (!valueA) return 1;
+                  if (!valueB) return -1;
+
+                  const numA = Number(valueA);
+                  const numB = Number(valueB);
+
+                  const isNumA = !isNaN(numA);
+                  const isNumB = !isNaN(numB);
+
+                  // if values are numbers
+                  if (isNumA && isNumB) {
+                    return numA - numB;
                   }
-                  if (rowA[property] < rowB[property]) {
-                    return -1;
-                  }
-                  return 0;
+
+                  // if values are strings
+                  return valueA.localeCompare(valueB);
                 },
               },
             },
@@ -207,7 +212,7 @@ const MatchedTable = ({
             label: `${entityLabel}s`,
           }}
           handleChange={handleMatchedTableChange}
-          columnSorting="enable"
+          columnSorting="manual"
           sorting={matchTableSorting}
           setSorting={setMatchTableSorting}
         />
