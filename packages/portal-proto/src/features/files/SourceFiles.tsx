@@ -1,15 +1,16 @@
+import { Dispatch, SetStateAction } from "react";
 import GenericLink from "@/components/GenericLink";
 import { TableActionButtons } from "@/components/TableActionButtons";
 import { AccessType, CartFile, GdcCartFile, GdcFile } from "@gff/core";
 import { createColumnHelper } from "@tanstack/react-table";
 import fileSize from "filesize";
-import { Dispatch, SetStateAction, useMemo } from "react";
 import { mapGdcFileToCartFile } from "./utils";
 import { fileInCart } from "@/utils/index";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
 import TotalItems from "@/components/Table/TotalItem";
+import { useDeepCompareMemo } from "use-deep-compare";
 
 type SourceFilesItems = {
   file: GdcCartFile;
@@ -22,7 +23,7 @@ type SourceFilesItems = {
   file_size: string;
 };
 
-const columnHelper = createColumnHelper<SourceFilesItems>();
+const SourceFilesTableColumnHelper = createColumnHelper<SourceFilesItems>();
 
 const SourceFiles = ({
   inputFiles,
@@ -33,7 +34,7 @@ const SourceFiles = ({
   currentCart: CartFile[];
   setFileToDownload: Dispatch<SetStateAction<GdcFile>>;
 }): JSX.Element => {
-  const data: SourceFilesItems[] = useMemo(() => {
+  const data: SourceFilesItems[] = useDeepCompareMemo(() => {
     return inputFiles.map((ipFile) => ({
       file: ipFile,
       access: ipFile.access,
@@ -46,14 +47,14 @@ const SourceFiles = ({
     }));
   }, [inputFiles]);
 
-  const columns = useMemo(
+  const columns = useDeepCompareMemo(
     () => [
-      columnHelper.accessor("access", {
+      SourceFilesTableColumnHelper.accessor("access", {
         id: "access",
         header: "Access",
         cell: ({ getValue }) => <FileAccessBadge access={getValue()} />,
       }),
-      columnHelper.accessor("file_name", {
+      SourceFilesTableColumnHelper.accessor("file_name", {
         header: "File Name",
         cell: ({ row }) => (
           <GenericLink
@@ -62,19 +63,19 @@ const SourceFiles = ({
           />
         ),
       }),
-      columnHelper.accessor("data_category", {
+      SourceFilesTableColumnHelper.accessor("data_category", {
         header: "Data Category",
       }),
-      columnHelper.accessor("data_type", {
+      SourceFilesTableColumnHelper.accessor("data_type", {
         header: "Data Type",
       }),
-      columnHelper.accessor("data_format", {
+      SourceFilesTableColumnHelper.accessor("data_format", {
         header: "Data Format",
       }),
-      columnHelper.accessor("file_size", {
+      SourceFilesTableColumnHelper.accessor("file_size", {
         header: "Size",
       }),
-      columnHelper.display({
+      SourceFilesTableColumnHelper.display({
         id: "action",
         header: "Action",
         cell: ({ row }) => (
@@ -87,7 +88,7 @@ const SourceFiles = ({
         ),
       }),
     ],
-    [columnHelper, currentCart, setFileToDownload],
+    [currentCart, setFileToDownload],
   );
 
   return (

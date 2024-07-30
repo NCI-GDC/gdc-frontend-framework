@@ -530,6 +530,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
           size,
           from,
           total,
+          label: "project",
         }}
         status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
         handleChange={handleChange}
