@@ -1,5 +1,5 @@
 import { CaseSummary } from "@/features/cases/CaseSummary";
-import { ContextualFileView } from "@/features/files/FileSummary";
+import { FileSummary } from "@/features/files/FileSummary";
 import { GeneSummary } from "@/features/GeneSummary/GeneSummary";
 import { SSMSSummary } from "@/features/mutationSummary/SSMSSummary";
 import { ProjectSummary } from "@/features/projects/ProjectSummary";
@@ -49,9 +49,7 @@ export const SummaryModal = ({
         }
       : entity_type === "file"
       ? {
-          SummaryPage: (
-            <ContextualFileView setCurrentFile={entity_id} isModal={true} />
-          ),
+          SummaryPage: <FileSummary file_id={entity_id} isModal={true} />,
           title: "File",
         }
       : entity_type === "ssms"
