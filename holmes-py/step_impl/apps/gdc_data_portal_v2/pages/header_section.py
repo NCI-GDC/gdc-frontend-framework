@@ -2,6 +2,7 @@ from playwright.sync_api import Page
 
 from ....base.base_page import BasePage
 
+import time
 
 class HeaderSectionLocators:
     BUTTON_IDENT = lambda button_name: f"[data-testid='button-header-{button_name}']"
@@ -14,6 +15,7 @@ class HeaderSectionLocators:
     REPOSITORY_ADDITIONAL_WAIT_FOR_ELEMENT = "[data-testid='text-showing-count']"
     HOME_WAIT_FOR_ELEMENT = "[data-testid='text-cases-gdc-count']"
     MANAGE_SETS_WAIT_FOR_ELEMENT = "[data-testid='button-create-set']"
+    NIH_LOGO_IDENT = "[data-testid='NIHLogoButton']"
 
 
 class HeaderSection(BasePage):
@@ -70,3 +72,6 @@ class HeaderSection(BasePage):
         self.wait_for_loading_spinner_table_to_detatch()
         self.wait_for_loading_spinner_to_detatch()
         self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        if self.is_visible(HeaderSectionLocators.NIH_LOGO_IDENT):
+            self.hover(HeaderSectionLocators.NIH_LOGO_IDENT)
+            time.sleep(0.5)
