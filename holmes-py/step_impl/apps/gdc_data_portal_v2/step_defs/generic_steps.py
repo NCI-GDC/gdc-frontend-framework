@@ -44,6 +44,7 @@ def setup_test_run():
     the initial one has been saved. This function saves that initial cohort so subsequent tests can run, as some
     depend on a starting condition that they be able to create a cohort.
     """
+    locator = '[data-testid="addButton"]'
     print("setup execution")
     APP.analysis_center_page.visit()
     print("setup execution - 1")
@@ -51,7 +52,8 @@ def setup_test_run():
     print("setup execution - 2")
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
     print("setup execution - 3")
-
+    print("is add button enabled:")
+    print(APP.shared.is_enabled(locator))
     time.sleep(2)
     APP.cohort_bar.click_cohort_bar_button("Save")
     print("setup execution - 4")
@@ -68,6 +70,8 @@ def setup_test_run():
     print("setup execution - 8")
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
     print("setup execution - 9")
+    print("is add button enabled:")
+    print(APP.shared.is_enabled(locator))
     time.sleep(2)
 
 
