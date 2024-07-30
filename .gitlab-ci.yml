@@ -158,23 +158,11 @@ Build UI tests Docker image:
     matrix:
       - BROWSER: ["headless chrome", "headless firefox", "headless safari"]
 
-trigger_ui_tests_yellow:
+trigger_ui_tests_int:
   extends: .trigger_ui_tests
   stage: .trigger_ui_tests
   variables:
-    APP_ENVIRONMENT: QA_YELLOW
-  needs:
-    - job: deploy_qa/uat
-      artifacts: true
-  rules:
-    - if: '$DEPLOY_JOB_NAME == "deploy_qa/uat" && $CI_PIPELINE_SOURCE != "schedule"'
-      allow_failure: true
-
-trigger_ui_tests_uat:
-  extends: .trigger_ui_tests
-  stage: .trigger_ui_tests
-  variables:
-    APP_ENVIRONMENT: QA_UAT
+    APP_ENVIRONMENT: QA_INT
   needs:
     - job: deploy_qa/uat
       artifacts: true
@@ -189,7 +177,7 @@ trigger_ui_tests_scheduled:
       when: always
   parallel:
     matrix:
-      - APP_ENVIRONMENT: ["QA_YELLOW", "QA_UAT"]
+      - APP_ENVIRONMENT: ["QA_INT"]
 
 .deploy-service-with-salt:
   before_script:
