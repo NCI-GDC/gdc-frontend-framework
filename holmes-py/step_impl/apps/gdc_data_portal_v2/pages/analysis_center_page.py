@@ -39,6 +39,7 @@ class AnalysisCenterPage(BasePage):
 
     def visit(self):
         self.driver.goto(self.URL)
+        print(self.URL)
 
     def is_analysis_center_page_present(self):
         locator = AnalysisCenterLocators.CORE_TOOL_REPOSITORY
