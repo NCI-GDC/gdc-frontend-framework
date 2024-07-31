@@ -28,6 +28,9 @@ import { Loader } from "@mantine/core";
 import { convertDateToString } from "@/utils/date";
 import { downloadTSV } from "@/components/Table/utils";
 import ImpactHeaderWithTooltip from "../GenomicTables/SharedComponent/ImpactHeaderWithTooltip";
+import TotalItems from "@/components/Table/TotalItem";
+
+const consequenceTableColumnHelper = createColumnHelper<ConsequenceTableData>();
 
 export const ConsequenceTable = ({
   ssmsId,
@@ -144,9 +147,6 @@ export const ConsequenceTable = ({
     }
   }, [isSuccess, initialData?.consequence]);
 
-  const consequenceTableColumnHelper =
-    createColumnHelper<ConsequenceTableData>();
-
   const consequenceTableDefaultColumns = useMemo<
     ColumnDef<ConsequenceTableData>[]
   >(
@@ -225,7 +225,7 @@ export const ConsequenceTable = ({
         ),
       }),
     ],
-    [consequenceTableColumnHelper],
+    [],
   );
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
     consequenceTableDefaultColumns.map((column) => column.id as string), //must start out with populated columnOrder so we can splice
@@ -349,6 +349,9 @@ export const ConsequenceTable = ({
     <VerticalTable
       customDataTestID="table-consequences-mutation-summary"
       data={displayedData}
+      tableTitle={
+        <TotalItems total={tableData?.length} itemName="consequence" />
+      }
       columns={consequenceTableDefaultColumns}
       setColumnVisibility={setColumnVisibility}
       columnVisibility={columnVisibility}

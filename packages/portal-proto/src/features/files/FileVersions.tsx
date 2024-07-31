@@ -6,6 +6,7 @@ import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon
 import VerticalTable from "@/components/Table/VerticalTable";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import { createColumnHelper } from "@tanstack/react-table";
+import TotalItems from "@/components/Table/TotalItem";
 import { statusBooleansToDataStatus } from "@/utils/index";
 import { useDeepCompareMemo } from "use-deep-compare";
 
@@ -140,6 +141,9 @@ const FileVersions = ({ file_id }: { file_id: string }): JSX.Element => {
               </div>
             }
             data={tableData}
+            tableTitle={
+              <TotalItems total={tableData?.length} itemName="version" />
+            }
             columns={readGroupsColumns}
             status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
           />

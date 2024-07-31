@@ -24,6 +24,7 @@ import VerticalTable from "@/components/Table/VerticalTable";
 import { HandleChangeInput } from "@/components/Table/types";
 import { downloadTSV } from "@/components/Table/utils";
 import { HeaderTitle } from "@/components/tailwindComponents";
+import TotalItems from "@/components/Table/TotalItem";
 
 interface AnnotationsTableProps {
   readonly case_id: string;
@@ -267,6 +268,9 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
       <HeaderTitle>Annotations</HeaderTitle>
       <VerticalTable
         customDataTestID="table-annotations-case-summary"
+        tableTitle={
+          <TotalItems total={data?.pagination?.total} itemName="annotation" />
+        }
         additionalControls={
           <div className="flex gap-2">
             <FunctionButton

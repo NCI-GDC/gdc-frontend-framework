@@ -17,6 +17,7 @@ import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import SubrowPrimarySiteDiseaseType from "@/components/SubrowPrimarySiteDiseaseType/SubrowPrimarySiteDiseaseType";
 import { ArraySeparatedSpan } from "@/components/ArraySeparatedSpan/ArraySeparatedSpan";
+import TotalItems from "@/components/Table/TotalItem";
 
 interface PrimarySiteTableProps {
   readonly projectId: string;
@@ -194,10 +195,7 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
     <VerticalTable
       customDataTestID="table-primary-sites-project-summary"
       tableTitle={
-        <>
-          Total of <b>{paginationProps?.total?.toLocaleString()}</b> Primary
-          Sites
-        </>
+        <TotalItems total={paginationProps?.total} itemName="primary site" />
       }
       data={displayedData}
       columns={primarySitesTableColumns}

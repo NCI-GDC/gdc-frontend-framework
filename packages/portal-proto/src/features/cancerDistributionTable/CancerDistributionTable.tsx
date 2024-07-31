@@ -27,6 +27,7 @@ import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
 import NumeratorDenominator from "@/components/NumeratorDenominator";
 import { useDeepCompareMemo } from "use-deep-compare";
 import SubrowPrimarySiteDiseaseType from "@/components/SubrowPrimarySiteDiseaseType/SubrowPrimarySiteDiseaseType";
+import TotalItems from "@/components/Table/TotalItem";
 
 const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
   data,
@@ -488,6 +489,9 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       <VerticalTable
         data={displayedData}
         columns={cancerDistributionTableColumns}
+        tableTitle={
+          <TotalItems total={formattedData?.length} itemName="project" />
+        }
         columnSorting="manual"
         additionalControls={
           <div className="flex gap-2 mb-2">
@@ -526,6 +530,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
           size,
           from,
           total,
+          label: "project",
         }}
         status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
         handleChange={handleChange}
