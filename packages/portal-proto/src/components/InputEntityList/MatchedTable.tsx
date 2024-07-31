@@ -91,14 +91,20 @@ const MatchedTable = ({
                   if (!valueA) return 1;
                   if (!valueB) return -1;
 
+                  // check for HGNC
+                  const isHGNC = (value: string) => value.startsWith("HGNC:");
+                  if (isHGNC(valueA) && isHGNC(valueB)) {
+                    return (
+                      Number(valueA.split(":")[1]) -
+                      Number(valueB.split(":")[1])
+                    );
+                  }
+
                   const numA = Number(valueA);
                   const numB = Number(valueB);
 
-                  const isNumA = !isNaN(numA);
-                  const isNumB = !isNaN(numB);
-
-                  // if values are numbers
-                  if (isNumA && isNumB) {
+                  // Check if both values are numbers
+                  if (!Number.isNaN(numA) && !Number.isNaN(numB)) {
                     return numA - numB;
                   }
 
