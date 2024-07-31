@@ -18,7 +18,17 @@ import {
 export const DEFAULT_VISIBLE_ITEMS = 6;
 const RANGE_DECIMAL_PRECISION = 1;
 
-const symmetricalRound = (x: number): number =>
+// clamp value between min and max
+export const clamp = (
+  value: number,
+  min: number,
+  max: number,
+): number | undefined => {
+  if (value === undefined) return undefined;
+  return Math.min(Math.max(value, min), max);
+};
+
+export const symmetricalRound = (x: number): number =>
   x < 0 ? Math.round(Math.abs(x)) * -1 : Math.round(x);
 
 // TODO write unit test for these

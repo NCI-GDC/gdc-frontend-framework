@@ -4,7 +4,10 @@ import {
   buildRangeBuckets,
   adjustDaysToYearsIfUnitsAreYears,
   adjustYearsToDaysIfUnitsAreYears,
-} from "./utils";
+  symmetricalRound,
+  getLowerAgeYears,
+  getLowerAgeFromYears,
+} from "../utils";
 
 describe("Build Range Tests for Numeric Ranges", () => {
   test("a closed numeric range", () => {
@@ -645,5 +648,24 @@ describe("test days to years conversion", () => {
     expect(adjustDaysToYearsIfUnitsAreYears(-50, "percent")).toEqual(-50);
     expect(adjustDaysToYearsIfUnitsAreYears(0, "percent")).toEqual(0);
     expect(adjustDaysToYearsIfUnitsAreYears(100, "percent")).toEqual(100);
+  });
+
+  test("symmetricalRound", () => {
+    expect(symmetricalRound(4.5)).toBe(5);
+    expect(symmetricalRound(-4.5)).toBe(-5);
+    expect(symmetricalRound(4.4)).toBe(4);
+    expect(symmetricalRound(-4.4)).toBe(-4);
+  });
+
+  test("getLowerAgeYears", () => {
+    expect(getLowerAgeYears(730.5)).toBe(2);
+    expect(getLowerAgeYears(undefined)).toBeUndefined();
+    expect(getLowerAgeYears(365.25)).toBe(1);
+  });
+
+  test("getLowerAgeFromYears", () => {
+    expect(getLowerAgeFromYears(2)).toBe(731);
+    expect(getLowerAgeFromYears(undefined)).toBeUndefined();
+    expect(getLowerAgeFromYears(1)).toBe(365);
   });
 });

@@ -1,5 +1,5 @@
 import { render } from "test-utils";
-import ToggleFacet from "./ToggleFacet";
+import ToggleFacet from "../ToggleFacet";
 import { EnumFacetResponse } from "@/features/facets/types";
 
 describe("<ToggleFacet />", () => {

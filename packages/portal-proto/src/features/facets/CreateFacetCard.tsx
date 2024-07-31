@@ -1,7 +1,7 @@
 import React from "react";
 import { FacetDefinition, fieldNameToTitle } from "@gff/core";
 import EnumFacet from "@/features/facets/EnumFacet";
-import NumericRangeFacet from "@/features/facets/NumericRangeFacet";
+import NumericRangeFacet from "@/features/facets/NumericRangeFacet/NumericRangeFacet";
 import DateRangeFacet from "@/features/facets/DateRangeFacet";
 import ExactValueFacet from "@/features/facets/ExactValueFacet";
 import ToggleFacet from "@/features/facets/ToggleFacet";
