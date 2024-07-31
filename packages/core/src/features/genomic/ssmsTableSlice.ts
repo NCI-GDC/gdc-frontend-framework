@@ -3,20 +3,11 @@ import {
   graphqlAPISlice,
   TablePageOffsetProps,
 } from "../gdcapi/gdcgraphql";
-import {
-  buildCohortGqlOperator,
-  FilterSet,
-  filterSetToOperation,
-} from "../cohort";
-import {
-  convertFilterToGqlFilter,
-  UnionOrIntersection,
-  Union,
-} from "../gdcapi/filters";
-import { appendFilterToOperation, getSSMTestedCases } from "./utils";
-import { joinFilters } from "../cohort";
+import { buildCohortGqlOperator, FilterSet } from "../cohort";
+import { Union } from "../gdcapi/filters";
 import { Reducer } from "@reduxjs/toolkit";
 import { DataStatus } from "../../dataAccess";
+import { getSSMTestedCases } from "./utils";
 
 const SSMSTableGraphQLQuery = `query SsmsTable(
   $ssmTested: FiltersArgument
@@ -173,6 +164,7 @@ export interface SsmsTableRequestParameters extends TablePageOffsetProps {
   readonly geneSymbol?: string;
   readonly genomicFilters: FilterSet;
   readonly cohortFilters: FilterSet;
+  readonly tableFilters: FilterSet;
   readonly _cohortFiltersNoSet?: FilterSet;
   readonly caseFilter: FilterSet | undefined;
 }
@@ -240,38 +232,12 @@ export interface TopSsm {
 const generateFilter = ({
   pageSize,
   offset,
-  searchTerm,
   geneSymbol,
-  genomicFilters, // local genomic filters
   cohortFilters, // the cohort filters which used to filter the cases
+  tableFilters,
   caseFilter = undefined,
 }: SsmsTableRequestParameters) => {
   const cohortFiltersGQL = buildCohortGqlOperator(cohortFilters);
-  const genomicFiltersWithPossibleGeneSymbol = geneSymbol
-    ? joinFilters(
-        {
-          mode: "and",
-          root: {
-            "genes.symbol": {
-              field: "genes.symbol",
-              operator: "includes",
-              operands: [geneSymbol],
-            },
-          },
-        },
-        genomicFilters,
-      )
-    : genomicFilters;
-
-  const searchFilters = buildSSMSTableSearchFilters(searchTerm);
-  const tableFilters = convertFilterToGqlFilter(
-    appendFilterToOperation(
-      filterSetToOperation(genomicFiltersWithPossibleGeneSymbol) as
-        | UnionOrIntersection
-        | undefined,
-      searchFilters,
-    ),
-  );
 
   const graphQlFilters = {
     ssmCaseFilter: getSSMTestedCases(geneSymbol),
@@ -280,7 +246,7 @@ const generateFilter = ({
     caseFilters: caseFilter
       ? buildCohortGqlOperator(caseFilter)
       : cohortFiltersGQL,
-    ssmsTable_filters: tableFilters,
+    ssmsTable_filters: buildCohortGqlOperator(tableFilters) ?? {},
     consequenceFilters: {
       content: [
         {
