@@ -35,6 +35,7 @@ class GDCDataPortalV2App:
 
     def navigate(self):
         self.driver.goto(self.URL)
+        print(self.URL)
 
     def init_pages(self):
         # 'Shared' contains common functions and locators seen throughout the Data Portal.
