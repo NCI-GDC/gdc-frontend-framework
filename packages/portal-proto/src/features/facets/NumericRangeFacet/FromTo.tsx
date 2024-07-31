@@ -1,6 +1,6 @@
+import { useState } from "react";
 import { DAYS_IN_YEAR } from "@gff/core";
 import { NumberInput, SegmentedControl } from "@mantine/core";
-import { useEffect, useState } from "react";
 import {
   ClearFacetHook,
   FromToRange,
@@ -10,6 +10,7 @@ import {
 } from "../types";
 import { buildRangeOperator, getLowerAgeYears } from "../utils";
 import { MdWarning as WarningIcon } from "react-icons/md";
+import { useDeepCompareEffect } from "use-deep-compare";
 
 interface FromToProps {
   readonly minimum: number;
@@ -24,6 +25,25 @@ interface FromToProps {
 }
 
 const WARNING_DAYS = Math.floor(90 * DAYS_IN_YEAR);
+
+const applyButtonClasses = `
+  flex
+  flex-row
+  subpixel-antialiased
+  rounded-md
+  text-base-max
+  font-montserrat
+  font-medium
+  text-sm
+  transition
+  w-full
+  justify-center
+  align-center
+  py-1
+  bg-primary-dark
+  hover:bg-primary-darkest
+  hover:shadow-[0_4px_5px_0px_rgba(0,0,0,0.35)]
+`;
 
 /**
  * A Component which manages a range. The From/To values are managed by a numeric text entry
@@ -58,21 +78,21 @@ const FromTo: React.FC<FromToProps> = ({
   const clearFilter = useClearFilter();
   const updateFacetFilters = useUpdateFacetFilters();
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     setFromOp(values?.fromOp ?? ">=");
     setFromValue(values?.from);
     setToOp(values?.toOp ?? "<");
     setToValue(values?.to);
   }, [values]);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (clearValues) {
       setFromValue(undefined);
       setToValue(undefined);
     }
   }, [clearValues]);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (["diagnoses.age_at_diagnosis"].includes(field)) {
       if (toValue >= WARNING_DAYS || fromValue >= WARNING_DAYS)
         setIsWarning(true);
@@ -210,10 +230,7 @@ const FromTo: React.FC<FromToProps> = ({
         </div>
       ) : null}
       <div className="flex items-stretch w-100 pt-1">
-        <button
-          className="form-check-input form-check-input appearance-none rounded-full h-3 w-3 border border-base-light bg-base-lightest checked:bg-primary-dark focus:ring-0 focus:ring-offset-0 focus:outline-none focus:bg-primary-darkest active:bg-primary-dark transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
-          onClick={handleApply}
-        >
+        <button className={applyButtonClasses} onClick={handleApply}>
           Apply
         </button>
       </div>
