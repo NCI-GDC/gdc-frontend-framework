@@ -1,5 +1,6 @@
 FROM mcr.microsoft.com/playwright:v1.23.1-focal
 
+RUN echo "${GDC_DEV_CA}" > ca.crt
 RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip \
@@ -21,8 +22,6 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 RUN curl -SsL https://downloads.gauge.org/stable | sh
-RUN curl -LJO https://github.com/NCI-GDC/tungsten/blob/develop/salt/srv/static/dev_ca_2029/dev_ca_2029_ca_cert.crt
-RUN dev_ca_2029_ca_cert.crt && update-ca-certificates
 
 COPY . /app
 RUN pip install -r /app/docker-requirements.txt
