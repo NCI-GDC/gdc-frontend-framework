@@ -9,6 +9,9 @@ import { HandleChangeInput } from "../Table/types";
 import { MatchResults } from "./utils";
 import FunctionButton from "../FunctionButton";
 
+// check for HGNC
+const isHGNC = (value: string) => value.startsWith("HGNC:");
+
 const MatchedTable = ({
   matched,
   entityLabel,
@@ -91,8 +94,6 @@ const MatchedTable = ({
                   if (!valueA) return 1;
                   if (!valueB) return -1;
 
-                  // check for HGNC
-                  const isHGNC = (value: string) => value.startsWith("HGNC:");
                   if (isHGNC(valueA) && isHGNC(valueB)) {
                     return (
                       Number(valueA.split(":")[1]) -
