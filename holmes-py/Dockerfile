@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 RUN curl -SsL https://downloads.gauge.org/stable | sh
-RUN wget https://github.com/NCI-GDC/tungsten/blob/develop/salt/srv/static/dev_ca_2029/dev_ca_2029_ca_cert.crt
+RUN curl -LJO https://github.com/NCI-GDC/tungsten/blob/develop/salt/srv/static/dev_ca_2029/dev_ca_2029_ca_cert.crt
 RUN dev_ca_2029_ca_cert.crt && update-ca-certificates
 
 COPY . /app
