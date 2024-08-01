@@ -1,6 +1,6 @@
 import { render } from "test-utils";
 import * as core from "@gff/core";
-import NumericRangeFacet from "../NumericRangeFacet/NumericRangeFacet";
+import NumericRangeFacet from "../NumericRangeFacet";
 import { EnumFacetResponse } from "@/features/facets/types";
 
 describe("<NumericRangeFacet />", () => {
