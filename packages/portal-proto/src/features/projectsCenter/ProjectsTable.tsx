@@ -60,23 +60,24 @@ const ProjectsTable: React.FC = () => {
   const { setEntityMetadata } = useContext(SummaryModalContext);
 
   const projectFilters = useAppSelector((state) => selectFilters(state));
+  const tableFilters =
+    searchTerm.length > 0
+      ? buildCohortGqlOperator(
+          joinFilters(projectFilters, {
+            mode: "and",
+            root: {
+              "projects.project_id": {
+                operator: "includes",
+                field: "projects.project_id",
+                operands: [`*${searchTerm}*`],
+              },
+            },
+          }),
+        )
+      : buildCohortGqlOperator(projectFilters);
 
   const { data, isSuccess, isFetching, isError } = useGetProjectsQuery({
-    filters:
-      searchTerm.length > 0
-        ? buildCohortGqlOperator(
-            joinFilters(projectFilters, {
-              mode: "and",
-              root: {
-                "projects.project_id": {
-                  operator: "includes",
-                  field: "projects.project_id",
-                  operands: [`*${searchTerm}*`],
-                },
-              },
-            }),
-          )
-        : buildCohortGqlOperator(projectFilters),
+    filters: tableFilters,
     expand: [
       "summary",
       "summary.experimental_strategies",
@@ -322,7 +323,7 @@ const ProjectsTable: React.FC = () => {
       endpoint: "projects",
       method: "POST",
       params: {
-        filters: buildCohortGqlOperator(projectFilters) ?? {},
+        filters: tableFilters,
         size: 10000,
         attachment: true,
         format: "JSON",
