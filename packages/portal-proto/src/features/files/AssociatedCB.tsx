@@ -6,6 +6,7 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import VerticalTable from "@/components/Table/VerticalTable";
+import TotalItems from "@/components/Table/TotalItem";
 
 const AssociatedCB = ({
   cases,
@@ -156,6 +157,13 @@ const AssociatedCB = ({
         enabled: true,
         tooltip: "e.g. TCGA-AR-A24Z, TCGA-AR-A24Z-10A-01D-A167-09",
       }}
+      tableTitle={
+        <TotalItems
+          total={data?.length}
+          itemName="case/biospecimen"
+          pluralName="cases/biospecimens"
+        />
+      }
       additionalControls={
         <div className="mt-3.5">
           <HeaderTitle>Associated Cases/Biospecimens</HeaderTitle>

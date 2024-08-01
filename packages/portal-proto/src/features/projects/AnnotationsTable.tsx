@@ -25,6 +25,7 @@ import VerticalTable from "@/components/Table/VerticalTable";
 import { HandleChangeInput } from "@/components/Table/types";
 import { downloadTSV } from "@/components/Table/utils";
 import { HeaderTitle } from "@/components/tailwindComponents";
+import TotalItems from "@/components/Table/TotalItem";
 
 interface AnnotationsTableProps {
   readonly project_id: string;
@@ -339,6 +340,9 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
         }
         data={formattedTableData}
         columns={columns}
+        tableTitle={
+          <TotalItems total={data?.pagination?.total} itemName="annotation" />
+        }
         showControls
         search={{
           enabled: true,

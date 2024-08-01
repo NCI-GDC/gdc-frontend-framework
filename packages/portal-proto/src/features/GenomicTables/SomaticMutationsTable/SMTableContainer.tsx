@@ -43,6 +43,7 @@ import VerticalTable from "@/components/Table/VerticalTable";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import SMTableSubcomponent from "./SMTableSubcomponent";
 import { ComparativeSurvival } from "@/features/genomic/types";
+import TotalItems from "@/components/Table/TotalItem";
 
 export interface SMTableContainerProps {
   readonly selectedSurvivalPlot?: ComparativeSurvival;
@@ -535,12 +536,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               tooltip: "e.g. TP53, ENSG00000141510, chr17:g.7675088C>T, R175H",
             }}
             tableTitle={
-              <>
-                Total of <b>{data?.ssmsTotal?.toLocaleString("en-US")}</b>{" "}
-                {data?.ssmsTotal == 1
-                  ? "somatic mutation"
-                  : "somatic mutations"}
-              </>
+              <TotalItems total={data?.ssmsTotal} itemName="somatic mutation" />
             }
             pagination={pagination}
             showControls={true}

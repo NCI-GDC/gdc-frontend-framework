@@ -1,6 +1,6 @@
 import { Grid, LoadingOverlay } from "@mantine/core";
 import { GeneFrequencyChart } from "@/features/charts/GeneFrequencyChart";
-import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot";
+import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot/types";
 import React, { useCallback } from "react";
 import { useDeepCompareMemo } from "use-deep-compare";
 import {
@@ -14,9 +14,12 @@ import {
 import dynamic from "next/dynamic";
 import { GTableContainer } from "../GenomicTables/GenesTable/GTableContainer";
 
-const SurvivalPlot = dynamic(() => import("../charts/SurvivalPlot"), {
-  ssr: false,
-});
+const SurvivalPlot = dynamic(
+  () => import("../charts/SurvivalPlot/SurvivalPlot"),
+  {
+    ssr: false,
+  },
+);
 
 interface GenesPanelProps {
   topGeneSSMSSuccess: boolean;

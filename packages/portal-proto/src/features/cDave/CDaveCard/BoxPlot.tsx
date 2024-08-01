@@ -122,7 +122,11 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
       containerComponent={
         <VictoryContainer
           containerRef={
-            chartRef ? (ref) => (chartRef.current = ref) : undefined
+            chartRef
+              ? (ref: HTMLElement | null) => {
+                  if (ref) chartRef.current = ref;
+                }
+              : undefined
           }
           aria-label={`This Box Plot visualizes the distribution of ${field} values. Refer to the accompanying Statistics table or download the TSV file for details.`}
         />

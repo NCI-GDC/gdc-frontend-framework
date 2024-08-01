@@ -501,21 +501,18 @@ function ShowingCount({
   pageSize: number;
   customDataTestID?: string;
 }) {
-  let outputString: JSX.Element;
+  let outputString: JSX.Element | null = null;
+
   if (!isNaN(from) && status === "fulfilled") {
     const paginationFrom = from >= 0 && dataLength > 0 ? from + 1 : 0;
-
-    const defaultPaginationTo = from + pageSize;
-
-    const paginationTo =
-      defaultPaginationTo < total ? defaultPaginationTo : total;
-
+    const paginationTo = Math.min(from + pageSize, total);
     const totalValue = total.toLocaleString();
+    const updatedLabel = label && total > 1 ? `${label}s` : label;
 
     outputString = (
       <span>
         <b>{paginationFrom}</b> - <b>{paginationTo}</b> of <b>{totalValue}</b>
-        {label && ` ${label}`}
+        {label && ` ${updatedLabel}`}
       </span>
     );
   }
