@@ -275,7 +275,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
       endpoint: "/analysis/top_mutated_genes",
       method: "POST",
       params: {
-        filters: buildCohortGqlOperator(genomicFilters) ?? {},
+        filters: buildCohortGqlOperator(genesTableFilters) ?? {},
         case_filters: buildCohortGqlOperator(cohortFilters) ?? {},
         attachment: true,
         filename: `frequently-mutated-genes.${convertDateToString(

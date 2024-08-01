@@ -292,7 +292,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       endpoint: "/analysis/top_ssms_by_gene",
       method: "POST",
       params: {
-        filters: buildCohortGqlOperator(genomicFilters) ?? {},
+        filters: buildCohortGqlOperator(tableFilters) ?? {},
         case_filters: buildCohortGqlOperator(cohortFilters) ?? {},
         gene_id,
         attachment: true,
@@ -310,6 +310,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       method: "POST",
       params: {
         case_id,
+        filters: buildCohortGqlOperator(tableFilters) ?? {},
         attachment: true,
         filename: `frequent-mutations.${convertDateToString(new Date())}.tsv`,
       },
@@ -325,7 +326,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       endpoint: "/analysis/top_ssms",
       method: "POST",
       params: {
-        filters: buildCohortGqlOperator(genomicFilters) ?? {},
+        filters: buildCohortGqlOperator(tableFilters) ?? {},
         case_filters: buildCohortGqlOperator(cohortFilters) ?? {},
         attachment: true,
         filename: `frequent-mutations.${convertDateToString(new Date())}.tsv`,
