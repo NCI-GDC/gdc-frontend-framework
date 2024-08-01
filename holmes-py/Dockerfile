@@ -1,6 +1,5 @@
 FROM mcr.microsoft.com/playwright:v1.23.1-focal
 
-RUN echo "${GDC_DEV_CA}" > ca.crt
 RUN apt-get update && apt-get install -y \
     python3 \
     python3-pip \
