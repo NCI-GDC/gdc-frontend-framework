@@ -46,7 +46,6 @@ import { ComparativeSurvival } from "@/features/genomic/types";
 import { appendSearchTermFilters } from "../utils";
 import TotalItems from "@/components/Table/TotalItem";
 
-
 export interface GTableContainerProps {
   readonly selectedSurvivalPlot: ComparativeSurvival;
   handleSurvivalPlotToggled: (
