@@ -11,7 +11,11 @@ import {
 } from "../utils";
 import FromTo from "./FromTo";
 import RangeValueSelector from "./RangeValueSelector";
-import { buildRangeLabelsAndValues, classifyRangeType } from "./utils";
+import {
+  buildRangeLabelsAndValues,
+  classifyRangeType,
+  radioStyle,
+} from "./utils";
 
 interface RangeInputWithPrefixedRangesProps {
   readonly field: string;
@@ -27,9 +31,6 @@ interface RangeInputWithPrefixedRangesProps {
   readonly isFacetView?: boolean;
   readonly setHasData?: (boolean) => void;
 }
-
-const RadioStyle =
-  "form-check-input form-check-input appearance-none rounded-full h-3 w-3 border border-base-light bg-base-lightest checked:bg-primary-dark checked:bg-primary-dark focus:ring-0 focus:ring-offset-0 focus:outline-none focus:bg-primary-darkest active:bg-primary-dark transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer";
 
 const RangeInputWithPrefixedRanges: React.FC<
   RangeInputWithPrefixedRangesProps
@@ -140,7 +141,7 @@ const RangeInputWithPrefixedRanges: React.FC<
           <input
             aria-label="custom range"
             type="radio"
-            className={RadioStyle}
+            className={radioStyle}
             id={`${field}_custom`}
             name={`${field}_range_selection`}
             checked={selectedRange === "custom"}

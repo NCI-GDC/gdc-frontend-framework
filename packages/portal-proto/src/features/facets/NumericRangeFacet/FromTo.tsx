@@ -8,9 +8,16 @@ import {
   RangeToOp,
   UpdateFacetFilterHook,
 } from "../types";
-import { buildRangeOperator, getLowerAgeYears } from "../utils";
+import {
+  adjustDaysToYearsIfUnitsAreYears,
+  adjustYearsToDaysIfUnitsAreYears,
+  buildRangeOperator,
+  getLowerAgeYears,
+} from "../utils";
+import { RiErrorWarningFill as ErrorWarningIcon } from "react-icons/ri";
 import { MdWarning as WarningIcon } from "react-icons/md";
 import { useDeepCompareEffect } from "use-deep-compare";
+import { useForm } from "@mantine/form";
 
 interface FromToProps {
   readonly minimum: number;
@@ -45,6 +52,46 @@ const applyButtonClasses = `
   hover:shadow-[0_4px_5px_0px_rgba(0,0,0,0.35)]
 `;
 
+interface WarningOrErrorProps {
+  hasErrors: boolean;
+  isWarning: boolean;
+  lowerUnitRange: number;
+  upperUnitRange: number;
+}
+
+const WarningOrError: React.FC<WarningOrErrorProps> = ({
+  hasErrors,
+  isWarning,
+  lowerUnitRange,
+  upperUnitRange,
+}: WarningOrErrorProps) => (
+  <div className="flex flex-col gap-1 my-1">
+    {hasErrors ? (
+      <span className="text-[#AD2B4A]">
+        <ErrorWarningIcon className="inline mr-0.5" />
+        Please enter a number between {lowerUnitRange} and {upperUnitRange}.
+      </span>
+    ) : null}
+    {isWarning ? (
+      <div className="bg-utility-warning border-utility-warning">
+        <span>
+          {" "}
+          <WarningIcon size="24px" />
+          {`For health information privacy concerns, individuals over 89 will all appear as 90 years old. For more information, click `}
+          <a
+            href="https://gdc.cancer.gov/about-gdc/gdc-faqs#collapsible-item-618-question"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            here
+          </a>
+          .
+        </span>
+      </div>
+    ) : null}
+  </div>
+);
+
 /**
  * A Component which manages a range. The From/To values are managed by a numeric text entry
  * @param field - field for this range
@@ -68,37 +115,83 @@ const FromTo: React.FC<FromToProps> = ({
   units = "years",
   clearValues = undefined,
 }: FromToProps) => {
-  const unitsLabel = "%" != units ? ` ${units}` : "%";
-  const [fromOp, setFromOp] = useState(values?.fromOp ?? ">=");
-  const [fromValue, setFromValue] = useState(values?.from);
-  const [toOp, setToOp] = useState(values?.toOp ?? "<");
-  const [toValue, setToValue] = useState(values?.to);
   const [isWarning, setIsWarning] = useState(false);
-
   const clearFilter = useClearFilter();
   const updateFacetFilters = useUpdateFacetFilters();
+  const unitsLabel = "%" != units ? ` ${units}` : "%";
+  const lowerUnitRange =
+    units !== "years" ? minimum : getLowerAgeYears(minimum);
+  const upperUnitRange =
+    units !== "years" ? maximum : getLowerAgeYears(maximum);
+
+  const form = useForm({
+    initialValues: {
+      fromOp: values?.fromOp ?? ">=",
+      fromValue: values?.from
+        ? adjustDaysToYearsIfUnitsAreYears(values.from, units)
+        : undefined,
+      toOp: values?.toOp ?? "<",
+      toValue: values?.to
+        ? adjustDaysToYearsIfUnitsAreYears(values.to, units)
+        : undefined,
+    },
+    validate: {
+      fromValue: (value) => {
+        if (
+          value !== undefined &&
+          (value < lowerUnitRange || value > upperUnitRange)
+        )
+          return true;
+      },
+      toValue: (value) => {
+        if (
+          value !== undefined &&
+          (value < lowerUnitRange || value > upperUnitRange)
+        )
+          return true;
+      },
+    },
+  });
 
   useDeepCompareEffect(() => {
-    setFromOp(values?.fromOp ?? ">=");
-    setFromValue(values?.from);
-    setToOp(values?.toOp ?? "<");
-    setToValue(values?.to);
-  }, [values]);
+    form.setValues({
+      fromOp: values?.fromOp ?? ">=",
+      fromValue: values?.from
+        ? adjustDaysToYearsIfUnitsAreYears(values.from, units)
+        : undefined,
+      toOp: values?.toOp ?? "<",
+      toValue: values?.to
+        ? adjustDaysToYearsIfUnitsAreYears(values.to, units)
+        : undefined,
+    });
+    // https://github.com/mantinedev/mantine/issues/5338
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values, units]);
 
   useDeepCompareEffect(() => {
     if (clearValues) {
-      setFromValue(undefined);
-      setToValue(undefined);
+      form.setValues({ fromValue: undefined, toValue: undefined });
     }
+    // https://github.com/mantinedev/mantine/issues/5338
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clearValues]);
 
   useDeepCompareEffect(() => {
+    const fromValueInDays =
+      form.values.fromValue !== undefined
+        ? adjustYearsToDaysIfUnitsAreYears(form.values.fromValue, units)
+        : undefined;
+    const toValueInDays =
+      form.values.toValue !== undefined
+        ? adjustYearsToDaysIfUnitsAreYears(form.values.toValue, units)
+        : undefined;
     if (["diagnoses.age_at_diagnosis"].includes(field)) {
-      if (toValue >= WARNING_DAYS || fromValue >= WARNING_DAYS)
-        setIsWarning(true);
-      else setIsWarning(false);
+      setIsWarning(
+        (toValueInDays !== undefined && toValueInDays >= WARNING_DAYS) ||
+          (fromValueInDays !== undefined && fromValueInDays >= WARNING_DAYS),
+      );
     }
-  }, [field, toValue, fromValue]);
+  }, [field, form.values.toValue, form.values.fromValue, units]);
 
   /**
    * Handle Apply button which will add/update/remove a range filter to the field.
@@ -106,12 +199,18 @@ const FromTo: React.FC<FromToProps> = ({
    * for the filters
    */
   const handleApply = () => {
-    //need to verify the values here and show red border and text if there's an issue
+    if (form.validate().hasErrors) return;
     const data = {
-      fromOp: fromOp as RangeFromOp,
-      from: fromValue,
-      toOp: toOp as RangeToOp,
-      to: toValue,
+      fromOp: form.values.fromOp as RangeFromOp,
+      from:
+        form.values.fromValue !== undefined
+          ? adjustYearsToDaysIfUnitsAreYears(form.values.fromValue, units)
+          : undefined,
+      toOp: form.values.toOp as RangeToOp,
+      to:
+        form.values.toValue !== undefined
+          ? adjustYearsToDaysIfUnitsAreYears(form.values.toValue, units)
+          : undefined,
     };
     const rangeFilters = buildRangeOperator(field, data);
     if (rangeFilters === undefined) {
@@ -120,11 +219,6 @@ const FromTo: React.FC<FromToProps> = ({
       updateFacetFilters(field, rangeFilters);
     }
   };
-
-  const lowerUnitRange =
-    units !== "years" ? minimum : getLowerAgeYears(minimum);
-  const upperUnitRange =
-    units !== "years" ? maximum : getLowerAgeYears(maximum);
 
   return (
     <div className="flex flex-col grow m-2 text-base-contrast-max bg-base-max">
@@ -135,9 +229,9 @@ const FromTo: React.FC<FromToProps> = ({
           <SegmentedControl
             className="flex-1"
             size="sm"
-            value={fromOp}
+            value={form.values.fromOp}
             onChange={(value) => {
-              setFromOp(value as RangeFromOp);
+              form.setFieldValue("fromOp", value as RangeFromOp);
               changedCallback();
             }}
             data={[
@@ -151,22 +245,13 @@ const FromTo: React.FC<FromToProps> = ({
             className="text-sm flex-1"
             placeholder={`Min: ${lowerUnitRange}${unitsLabel} `}
             // units are always days
-            value={
-              fromValue
-              // ? adjustDaysToYearsIfUnitsAreYears(fromValue, units)
-              // : ""
-            }
+            value={form.values.fromValue ?? ""}
             onChange={(value) => {
               if (value === "" || typeof value === "string") return;
-              setFromValue(
-                // adjustYearsToDaysIfUnitsAreYears(
-                //   clamp(value, lowerUnitRange, upperUnitRange),
-                //   units,
-                // ),
-                value,
-              );
+              form.setFieldValue("fromValue", value);
               changedCallback();
             }}
+            error={form?.errors?.fromValue}
             hideControls
             aria-label="input from value"
           />
@@ -176,9 +261,9 @@ const FromTo: React.FC<FromToProps> = ({
           <SegmentedControl
             className="flex-1"
             size="sm"
-            value={toOp}
+            value={form.values.toOp}
             onChange={(value) => {
-              setToOp(value as RangeToOp);
+              form.setFieldValue("toOp", value as RangeToOp);
               changedCallback();
             }}
             data={[
@@ -193,41 +278,24 @@ const FromTo: React.FC<FromToProps> = ({
             placeholder={`Max: ${upperUnitRange}${unitsLabel} `}
             onChange={(value) => {
               if (value === "" || typeof value === "string") return;
-              setToValue(
-                // adjustYearsToDaysIfUnitsAreYears(
-                //   clamp(value, lowerUnitRange, upperUnitRange),
-                //   units,
-                // ),
-                value,
-              );
+              form.setFieldValue("toValue", value);
+
               changedCallback();
             }}
-            value={
-              toValue
-              // ? adjustDaysToYearsIfUnitsAreYears(toValue, units) : ""
-            }
+            value={form.values.toValue ?? ""}
+            error={form?.errors?.toValue}
             hideControls
             aria-label="input to value"
           />
         </div>
       </fieldset>
-      {isWarning ? (
-        <div className="bg-utility-warning border-utility-warning">
-          <span>
-            {" "}
-            <WarningIcon size="24px" />
-            {`For health information privacy concerns, individuals over 89
-                    will all appear as 90 years old. For more information, click `}
-            <a
-              href="https://gdc.cancer.gov/about-gdc/gdc-faqs#collapsible-item-618-question"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              here
-            </a>
-            .
-          </span>
-        </div>
+      {Object.keys(form.errors).length > 0 || isWarning ? (
+        <WarningOrError
+          hasErrors={Object.keys(form.errors).length > 0}
+          isWarning={isWarning}
+          lowerUnitRange={lowerUnitRange}
+          upperUnitRange={upperUnitRange}
+        />
       ) : null}
       <div className="flex items-stretch w-100 pt-1">
         <button className={applyButtonClasses} onClick={handleApply}>
