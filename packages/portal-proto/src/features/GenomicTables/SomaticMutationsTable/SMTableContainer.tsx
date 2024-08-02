@@ -223,6 +223,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           pages: undefined,
           size: undefined,
           total: undefined,
+          label: undefined,
         };
   }, [pageSize, page, data?.ssmsTotal, isSuccess]);
 

@@ -210,6 +210,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           pages: undefined,
           size: undefined,
           total: undefined,
+          label: undefined,
         };
   }, [pageSize, page, data?.genes?.genes_total, isSuccess]);
 

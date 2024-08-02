@@ -10,7 +10,7 @@ import { useDeepCompareEffect } from "use-deep-compare";
 function useStandardPagination<TData>(
   fullData: TData[],
   columns?: ColumnDef<TData, any>[],
-): PaginationOptions & {
+): Omit<PaginationOptions, "label"> & {
   displayedData: TData[];
   /**
    * full data that is sorted or filtered without the slice

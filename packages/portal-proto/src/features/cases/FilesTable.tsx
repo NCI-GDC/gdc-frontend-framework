@@ -157,6 +157,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
           pages: undefined,
           size: undefined,
           total: undefined,
+          label: undefined,
         };
   }, [pageSize, activePage, data?.pagination?.total, isSuccess]);
 

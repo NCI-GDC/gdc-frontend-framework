@@ -159,6 +159,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
           pages: undefined,
           size: undefined,
           total: undefined,
+          label: undefined,
         };
   }, [pageSize, activePage, data?.pagination?.total, isSuccess]);
 
