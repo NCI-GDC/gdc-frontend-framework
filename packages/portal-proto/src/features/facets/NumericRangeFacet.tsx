@@ -244,6 +244,7 @@ interface FromToProps {
   readonly values?: FromToRange<number>;
   readonly changedCallback?: () => void;
   readonly clearValues?: boolean;
+  readonly rangeDatatype?: string;
 }
 
 /**
@@ -268,6 +269,7 @@ const FromTo: React.FC<FromToProps> = ({
   changedCallback = () => null,
   units = "years",
   clearValues = undefined,
+  rangeDatatype = undefined,
 }: FromToProps) => {
   const unitsLabel = "%" != units ? ` ${units}` : "%";
   const [fromOp, setFromOp] = useState(values?.fromOp ?? ">=");
@@ -278,6 +280,7 @@ const FromTo: React.FC<FromToProps> = ({
 
   const clearFilter = useClearFilter();
   const updateFacetFilters = useUpdateFacetFilters();
+  const queryInYears = rangeDatatype === "age_in_years";
 
   useEffect(() => {
     setFromOp(values?.fromOp ?? ">=");
@@ -354,8 +357,12 @@ const FromTo: React.FC<FromToProps> = ({
             max={upperUnitRange}
             // units are always days
             value={
-              fromValue
-                ? adjustDaysToYearsIfUnitsAreYears(fromValue, units)
+              fromValue !== undefined
+                ? adjustDaysToYearsIfUnitsAreYears(
+                    fromValue,
+                    units,
+                    queryInYears,
+                  )
                 : ""
             }
             onChange={(value) => {
@@ -405,7 +412,9 @@ const FromTo: React.FC<FromToProps> = ({
               changedCallback();
             }}
             value={
-              toValue ? adjustDaysToYearsIfUnitsAreYears(toValue, units) : ""
+              toValue !== undefined
+                ? adjustDaysToYearsIfUnitsAreYears(toValue, units, queryInYears)
+                : ""
             }
             hideControls
             aria-label="input to value"
@@ -603,6 +612,7 @@ const RangeInputWithPrefixedRanges: React.FC<
             changedCallback={resetToCustom}
             {...hooks}
             clearValues={clearValues}
+            rangeDatatype={rangeDatatype}
           />
         </div>
         <div
@@ -741,7 +751,7 @@ const Year: React.FC<NumericFacetData> = ({
     <div className="flex flex-col w-100 space-y-2 px-2 mt-1 ">
       <RangeInputWithPrefixedRanges
         hooks={{ ...hooks }}
-        units="year"
+        units="years"
         valueLabel={valueLabel}
         minimum={adjMinimum}
         maximum={adjMaximum}
@@ -757,6 +767,7 @@ const Year: React.FC<NumericFacetData> = ({
 const Years: React.FC<NumericFacetData> = ({
   field,
   valueLabel,
+  rangeDatatype,
   hooks,
   clearValues,
   minimum = undefined,
@@ -772,6 +783,7 @@ const Years: React.FC<NumericFacetData> = ({
       <RangeInputWithPrefixedRanges
         valueLabel={valueLabel}
         hooks={{ ...hooks }}
+        rangeDatatype={rangeDatatype}
         units="years"
         minimum={adjMinimum}
         maximum={adjMaximum}
@@ -960,7 +972,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
             />
           ),
           age_in_years: (
-            <DaysOrYears
+            <Years
               valueLabel={valueLabel}
               field={field}
               rangeDatatype={rangeDatatype}
