@@ -41,7 +41,7 @@ if (process.env.NEXT_PUBLIC_DD_ENABLED) {
     applicationId: "3faf9c0a-311f-4935-a596-3347666ef35d",
     clientToken: "pub9f7e31eaacd4afa71ac5161cbd5b0c11",
     site: "datadoghq.com",
-    service: "portal-2.0",
+    service: "portal2",
     sessionSampleRate: 100,
     sessionReplaySampleRate: 0,
     trackUserInteractions: true,
