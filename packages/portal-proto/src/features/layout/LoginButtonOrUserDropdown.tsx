@@ -1,6 +1,5 @@
 import React, { useRef } from "react";
 import { Button, Menu } from "@mantine/core";
-import { cleanNotifications, showNotification } from "@mantine/notifications";
 import {
   MdLogout as LogoutIcon,
   MdArrowDropDown as ArrowDropDownIcon,
@@ -20,7 +19,6 @@ import {
   useCoreSelector,
 } from "@gff/core";
 import { LoginButton } from "@/components/LoginButton";
-import { theme } from "tailwind.config";
 import { useDeepCompareEffect } from "use-deep-compare";
 
 const LoginButtonOrUserDropdown = () => {
@@ -83,7 +81,10 @@ const LoginButtonOrUserDropdown = () => {
               leftSection={<FaDownload size="1.25em" />}
               data-testid="downloadTokenMenuItem"
               onClick={async () => {
-                if (Object.keys(userInfo?.data?.projects.gdc_ids).length > 0) {
+                if (
+                  Object.keys(userInfo?.data?.projects.gdc_ids ?? {})?.length >
+                  0
+                ) {
                   await fetchToken()
                     .unwrap()
                     .then((token) => {
@@ -101,42 +102,10 @@ const LoginButtonOrUserDropdown = () => {
                       );
                     });
                 } else {
-                  cleanNotifications();
-                  showNotification({
-                    message: (
-                      <p>
-                        {userInfo?.data.username} does not have access to any
-                        protected data within the GDC. Click{" "}
-                        <a
-                          href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
-                          target="_blank"
-                          rel="noreferrer"
-                          style={{
-                            textDecoration: "underline",
-                            color: theme.extend.colors["nci-blue"].darkest,
-                          }}
-                        >
-                          here
-                        </a>{" "}
-                        to learn more about obtaining access to protected data.
-                      </p>
-                    ),
-                    styles: () => ({
-                      root: {
-                        textAlign: "center",
-                      },
-                      closeButton: {
-                        color: "black",
-                        "&:hover": {
-                          backgroundColor:
-                            theme.extend.colors["gdc-grey"].lighter,
-                        },
-                      },
-                    }),
-                    closeButtonProps: {
-                      "aria-label": "Close notification",
-                    },
-                  });
+                  dispatch(showModal({ modal: Modals.UserProfileModal }));
+                  // This is done inorder to set the last focused element as the menu target element
+                  // This is done to return focus to the target element if the modal is closed with ESC
+                  userDropdownRef?.current && userDropdownRef?.current?.focus();
                 }
               }}
             >
