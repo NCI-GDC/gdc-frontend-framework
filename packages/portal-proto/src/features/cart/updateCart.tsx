@@ -14,6 +14,7 @@ import {
   CartFile,
 } from "@gff/core";
 import { useEffect } from "react";
+import AccessibleNotificationWrapper from "@/components/AccessibleNotificationWrapper";
 
 interface OverLimitNotificationProps {
   readonly numFilesInCart: number;
@@ -174,16 +175,19 @@ export const removeFromCart = (
   cleanNotifications();
   showNotification({
     message: (
-      <RemoveNotification
-        files={files}
-        currentCart={currentCart}
-        dispatch={dispatch}
-      />
+      <AccessibleNotificationWrapper>
+        <RemoveNotification
+          files={files}
+          currentCart={currentCart}
+          dispatch={dispatch}
+        />
+      </AccessibleNotificationWrapper>
     ),
     classNames: {
       description: "flex flex-col content-center text-center",
     },
     closeButtonProps: { "aria-label": "Close notification" },
+    autoClose: false,
   });
   const filesToRemove = files.map((f) => f.file_id);
   dispatch(removeFilesFromCart(filesToRemove));
@@ -191,11 +195,16 @@ export const removeFromCart = (
 
 export const showCartOverLimitNotification = (numFilesInCart: number): void => {
   showNotification({
-    message: <OverLimitNotification numFilesInCart={numFilesInCart} />,
+    message: (
+      <AccessibleNotificationWrapper>
+        <OverLimitNotification numFilesInCart={numFilesInCart} />
+      </AccessibleNotificationWrapper>
+    ),
     classNames: {
       description: "flex flex-col content-center text-center",
     },
     closeButtonProps: { "aria-label": "Close notification" },
+    autoClose: false,
   });
 };
 
@@ -212,16 +221,19 @@ export const addToCart = (
   } else {
     showNotification({
       message: (
-        <AddNotification
-          files={files}
-          currentCart={currentCart}
-          dispatch={dispatch}
-        />
+        <AccessibleNotificationWrapper>
+          <AddNotification
+            files={files}
+            currentCart={currentCart}
+            dispatch={dispatch}
+          />
+        </AccessibleNotificationWrapper>
       ),
       classNames: {
         description: "flex flex-col content-center text-center",
       },
       closeButtonProps: { "aria-label": "Close notification" },
+      autoClose: false,
     });
   }
 };
