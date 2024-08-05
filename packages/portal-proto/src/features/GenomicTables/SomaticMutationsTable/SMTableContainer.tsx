@@ -214,7 +214,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           size: pageSize,
           total: data?.ssmsTotal,
           sort: "None",
-          label: "somatic mutations",
+          label: "somatic mutation",
         }
       : {
           count: undefined,

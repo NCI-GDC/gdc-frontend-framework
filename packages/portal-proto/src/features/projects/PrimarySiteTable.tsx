@@ -220,7 +220,7 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
       setColumnOrder={setColumnOrder}
       pagination={{
         ...paginationProps,
-        label: "Primary Sites",
+        label: "Primary Site",
       }}
       status={isFetching ? "pending" : "fulfilled"}
       search={{

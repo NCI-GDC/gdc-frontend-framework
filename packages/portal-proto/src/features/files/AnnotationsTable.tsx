@@ -292,7 +292,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
           size,
           from,
           total,
-          label: "annotations",
+          label: "annotation",
         }}
         handleChange={handleChange}
         columnVisibility={columnVisibility}

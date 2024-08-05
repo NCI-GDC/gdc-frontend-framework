@@ -150,7 +150,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
           size: pageSize,
           total: data?.pagination?.total,
           sort: "None",
-          label: "files",
+          label: "file",
         }
       : {
           count: undefined,

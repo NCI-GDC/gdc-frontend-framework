@@ -204,7 +204,7 @@ const MatchedTable = ({
           status="fulfilled"
           pagination={{
             ...matchPaginationProps,
-            label: `${entityLabel}s`,
+            label: `${entityLabel}`,
           }}
           handleChange={handleMatchedTableChange}
           columnSorting="enable"
