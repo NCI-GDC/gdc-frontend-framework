@@ -46,7 +46,7 @@ def setup_test_run():
     """
     locator = '[data-testid="addButton"]'
     print("setup execution")
-    APP.analysis_center_page.visit()
+    APP.header_section.navigate_to_main_pages("analysis")
     print("setup execution - 1")
     APP.header_section.wait_for_page_to_load("analysis")
     print("setup execution - 2")
@@ -88,7 +88,7 @@ def setup_next_spec_run():
     Finally, we wait to see the the text confirming there are no active cohort filters present.
     """
     print("cleanup execution")
-    APP.analysis_center_page.visit()
+    APP.header_section.navigate_to_main_pages("analysis")
     print("cleanup execution - 2")
     APP.header_section.wait_for_page_to_load("analysis")
     print("cleanup execution - 3")
