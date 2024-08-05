@@ -22,7 +22,7 @@ import { useForm } from "@mantine/form";
 interface FromToProps {
   readonly minimum: number;
   readonly maximum: number;
-  readonly units: string;
+  readonly units?: string;
   readonly field: string;
   readonly useClearFilter: ClearFacetHook;
   readonly useUpdateFacetFilters: UpdateFacetFilterHook;
@@ -112,7 +112,7 @@ const FromTo: React.FC<FromToProps> = ({
   maximum,
   values,
   changedCallback = () => null,
-  units = "years",
+  units = "",
   clearValues = undefined,
 }: FromToProps) => {
   const [isWarning, setIsWarning] = useState(false);

@@ -28,7 +28,6 @@ const NumericRangePanel: React.FC<NumericFacetData> = ({
         minimum={adjMinimum}
         maximum={adjMaximum}
         values={filterValues}
-        units="range"
         {...hooks}
         clearValues={clearValues}
       />
