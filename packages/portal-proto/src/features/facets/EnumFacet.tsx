@@ -148,7 +148,8 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             : remainingValues > 0
             ? Math.min(96, remainingValues * 5 + 40)
             : 24;
-        return `flex-none  h-${cardHeight} overflow-y-scroll `;
+        /* h-96 is max height for the content of ExactValueFacet, EnumFacet, UploadFacet */
+        return `flex-none h-${cardHeight} overflow-y-scroll `;
       } else {
         return "overflow-hidden h-auto";
       }
@@ -169,13 +170,9 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   useDeepCompareEffect(() => {
     if (isSuccess && data) {
       // get all the data except the missing and empty values
-      const tempFilteredData = Object.entries(data)
-        .filter((entry) => entry[0] != "_missing" && entry[0] != "")
-        .filter((entry) =>
-          searchTerm === ""
-            ? entry
-            : entry[0].toLowerCase().includes(searchTerm.toLowerCase().trim()),
-        );
+      const tempFilteredData = Object.entries(data).filter(
+        (entry) => entry[0] != "_missing" && entry[0] != "",
+      );
 
       // it is possible that the selected enums are not in the data as their counts are 0
       // therefore we need to add them to the data
@@ -188,10 +185,16 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           }, [] as Array<[string, number]>)
         : [];
 
-      const remainingValues =
-        tempFilteredData.length +
-        selectedEnumNotInData.length -
-        maxValuesToDisplay;
+      const filteredData = [
+        ...tempFilteredData,
+        ...selectedEnumNotInData,
+      ].filter((entry) =>
+        searchTerm === ""
+          ? entry
+          : entry[0].toLowerCase().includes(searchTerm.toLowerCase().trim()),
+      );
+
+      const remainingValues = filteredData.length - maxValuesToDisplay;
       const cardStyle = calcCardStyle(remainingValues);
       const numberOfBarsToDisplay = calcNumberOfBarsToDisplay(
         tempFilteredData.length + selectedEnumNotInData.length,
@@ -199,11 +202,8 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
 
       setFacetChartData((prevFacetChartData) => ({
         ...prevFacetChartData,
-        filteredData: [...tempFilteredData, ...selectedEnumNotInData], // merge any selected enums that are not in the data
-        filteredDataObj: Object.fromEntries([
-          ...tempFilteredData,
-          ...selectedEnumNotInData,
-        ]),
+        filteredData,
+        filteredDataObj: Object.fromEntries(filteredData),
         remainingValues,
         numberOfBarsToDisplay,
         isSuccess: true,

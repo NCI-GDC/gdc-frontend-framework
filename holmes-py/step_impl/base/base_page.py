@@ -5,7 +5,7 @@ from step_impl.base.webdriver import WebDriver
 
 
 class GenericLocators:
-    TEXT_IDENT = lambda text: f'text={text} >> nth=0'
+    TEXT_IDENT = lambda text: f"text={text} >> nth=0"
     TEXT_IN_PARAGRAPH = lambda text: f'p:has-text("{text}") >> nth=0'
 
     X_BUTTON_IN_TEMP_MESSAGE = (
@@ -16,6 +16,7 @@ class GenericLocators:
         'span:text("Set this as your current cohort.")'
     )
 
+    BUTTON_CLOSE_NOTIFICATION = '[aria-label="Close notification"]'
     BUTTON_CLOSE_MODAL = 'button[aria-label="Close Modal"]'
 
     LOADING_SPINNER_GENERIC = '[data-testid="loading-spinner"] >> nth=0'
@@ -44,6 +45,9 @@ class GenericLocators:
     TEXT_BOX_IDENT = lambda text_box: f'[data-testid="textbox-{text_box}"]'
     SEARCH_BAR_ARIA_IDENT = lambda aria_label: f'[aria-label="{aria_label}"]'
     SEARCH_BAR_TABLE_IDENT = '[data-testid="textbox-table-search-bar"] >> nth=0'
+    SEARCH_BAR_IN_SPECIFIED_TABLE_IDENT = (
+        lambda table_specified: f'[data-testid="table-{table_specified}"] >> [data-testid="textbox-table-search-bar"] >> nth=0'
+    )
     QUICK_SEARCH_BAR_IDENT = '[data-testid="textbox-quick-search-bar"]'
     QUICK_SEARCH_BAR_FIRST_RESULT = '[data-testid="text-search-result"] >> nth=0'
     QUICK_SEARCH_BAR_NUMBERED_RESULT = (
@@ -119,10 +123,14 @@ class GenericLocators:
         lambda group_name, more_or_less: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> button[data-testid="{more_or_less}"]'
     )
 
-    SHOWING_NUMBER_OF_ITEMS = "[data-testid='text-showing-count']"
+    SHOWING_NUMBER_OF_ITEMS_IN_TABLE = lambda table_specified: f'[data-testid="table-{table_specified}"] >> [data-testid="text-showing-count"]'
+    SHOWING_NUMBER_OF_ITEMS = '[data-testid="text-showing-count"]'
 
     BUTTON_ENTRIES_SHOWN = '[data-testid="button-show-entries"]'
-    DROPDOWN_LIST_CHANGE_NUMBER_OF_ENTRIES_SHOWN = lambda number_of_entries: f'[data-testid="area-show-number-of-entries"] >> text="{number_of_entries}"'
+    DROPDOWN_LIST_CHANGE_NUMBER_OF_ENTRIES_SHOWN = (
+        lambda number_of_entries: f'[data-testid="area-show-number-of-entries"] >> text="{number_of_entries}"'
+    )
+
 
 class BasePage:
     def __init__(self, driver) -> None:
@@ -162,6 +170,10 @@ class BasePage:
         """Returns if the locator has the attribute 'disabled'"""
         return self.driver.locator(locator).is_disabled()
 
+    def is_enabled(self, locator):
+        """Returns if the locator is enabled"""
+        return self.driver.locator(locator).is_enabled()
+
     def send_keys(self, locator, text):
         return self.driver.locator(locator).fill(text)
 
@@ -185,6 +197,13 @@ class BasePage:
     def normalize_identifier_underscore(self, identifier_name: str) -> str:
         """Takes BDD spec file input and converts it to the ID formatting in the data portal"""
         return identifier_name.lower().replace(" ", "_")
+
+    def normalize_identifier_underscore_keep_capitalization(self, identifier_name: str) -> str:
+        """
+        Takes BDD spec file input and converts it to the ID formatting in the data portal
+        Does not change the capitalization of the string.
+        """
+        return identifier_name.replace(" ", "_")
 
     def normalize_applied_filter_name(self, filter_name: str) -> List[str]:
         periods = [char for char in filter_name if char == "."]
@@ -221,6 +240,12 @@ class BasePage:
     def get_showing_count_text(self):
         """Returns the text of how many items are being shown on the page"""
         locator = GenericLocators.SHOWING_NUMBER_OF_ITEMS
+        return self.get_text(locator)
+
+    def get_table_showing_count_text(self, table_name):
+        """Returns the text of how many items are being shown on the specified table"""
+        table_name = self.normalize_button_identifier(table_name)
+        locator = GenericLocators.SHOWING_NUMBER_OF_ITEMS_IN_TABLE(table_name)
         return self.get_text(locator)
 
     def get_filter_selection_count(self, filter_group_name, selection):
@@ -372,6 +397,11 @@ class BasePage:
         return True
 
     def is_data_testid_present(self, data_testid):
+        locator = GenericLocators.DATA_TEST_ID_IDENT(data_testid)
+        is_data_testid_present = self.is_visible(locator)
+        return is_data_testid_present
+
+    def is_data_testid_button_present(self, data_testid):
         locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(data_testid)
         is_data_testid_present = self.is_visible(locator)
         return is_data_testid_present
@@ -470,6 +500,12 @@ class BasePage:
         locator = GenericLocators.BUTTON_CLOSE_MODAL
         self.click(locator)
 
+    def click_close_temporary_message(self):
+        """Clicks 'X' to close a modal"""
+        locator = GenericLocators.BUTTON_CLOSE_NOTIFICATION
+        self.click(locator)
+        time.sleep(0.5)
+
     def click_undo_in_message(self):
         """Clicks 'undo' in a modal message"""
         locator = GenericLocators.UNDO_BUTTON_IN_TEMP_MESSAGE
@@ -524,7 +560,11 @@ class BasePage:
         entries_button_locator = GenericLocators.BUTTON_ENTRIES_SHOWN
         self.click(entries_button_locator)
 
-        dropdown_entries_to_show_locator = GenericLocators.DROPDOWN_LIST_CHANGE_NUMBER_OF_ENTRIES_SHOWN(entries_to_show)
+        dropdown_entries_to_show_locator = (
+            GenericLocators.DROPDOWN_LIST_CHANGE_NUMBER_OF_ENTRIES_SHOWN(
+                entries_to_show
+            )
+        )
         self.click(dropdown_entries_to_show_locator)
 
     def make_selection_within_filter_group(self, filter_group_name, selection):
@@ -552,7 +592,7 @@ class BasePage:
         Row and Column indexing begins at '1'
         """
         table_locator_to_select = GenericLocators.TABLE_AREA_TO_CLICK(row, column)
-        self.click(table_locator_to_select)
+        self.click(table_locator_to_select, True)
 
     def send_text_into_search_bar(self, text_to_send, aria_label):
         """Sends text into search bar based on its aria_label"""
@@ -564,6 +604,13 @@ class BasePage:
         """Sends text into data-testid textbox"""
         text_box_id = self.normalize_button_identifier(text_box_id)
         locator = GenericLocators.TEXT_BOX_IDENT(text_box_id)
+        self.wait_until_locator_is_visible(locator)
+        self.send_keys(locator, text_to_send)
+
+    def send_text_into_specified_table_search_bar(self, table_specified, text_to_send):
+        """Sends text into a specified table search bar"""
+        table_specified = self.normalize_button_identifier(table_specified)
+        locator = GenericLocators.SEARCH_BAR_IN_SPECIFIED_TABLE_IDENT(table_specified)
         self.wait_until_locator_is_visible(locator)
         self.send_keys(locator, text_to_send)
 
@@ -589,10 +636,8 @@ class BasePage:
     def validate_global_quick_search_result_text(self, result_in_list, text):
         """Specifies a result from the quick search bar result list. Validates expected text is present."""
         result_in_list = self.make_input_0_index(result_in_list)
-        locator_result_category = (
-            GenericLocators.QUICK_SEARCH_BAR_RESULT_TEXT(
-                result_in_list, text
-            )
+        locator_result_category = GenericLocators.QUICK_SEARCH_BAR_RESULT_TEXT(
+            result_in_list, text
         )
         self.wait_until_locator_is_visible(locator_result_category)
 

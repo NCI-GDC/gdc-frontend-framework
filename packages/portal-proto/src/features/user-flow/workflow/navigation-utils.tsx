@@ -79,7 +79,7 @@ export const headerElements = [
       <Link
         href={{
           pathname: "/analysis_page",
-          query: { app: "CohortBuilder" },
+          query: { app: "CohortBuilder", tab: "general" },
         }}
         className={commonLinkClasses}
         data-testid="button-header-cohort"

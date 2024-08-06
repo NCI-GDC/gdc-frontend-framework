@@ -115,7 +115,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
     <div
       className={`flex flex-col ${
         width ? width : "mx-0"
-      } bg-base-max relative shadow-lg border-base-lighter border-1 rounded-b-md text-xs transition`}
+      } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition`}
     >
       <FacetHeader>
         <Tooltip
@@ -173,7 +173,12 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
           <PlusIcon />
         </ActionIcon>
       </div>
-      <Group gap="xs" className="px-2 py-1" data-testid="values group">
+      {/* h-96 is max height for the content of ExactValueFacet, EnumFacet, UploadFacet */}
+      <Group
+        gap="xs"
+        className="px-2 py-2 max-h-96 overflow-y-auto"
+        data-testid="values group"
+      >
         {textValues.map((x) => (
           <Badge
             size="sm"

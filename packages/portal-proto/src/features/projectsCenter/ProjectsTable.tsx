@@ -35,6 +35,7 @@ import { isEqual } from "lodash";
 import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
 import { HandleChangeInput } from "@/components/Table/types";
 import SubrowPrimarySiteDiseaseType from "@/components/SubrowPrimarySiteDiseaseType/SubrowPrimarySiteDiseaseType";
+import TotalItems from "@/components/Table/TotalItem";
 
 type ProjectDataType = {
   project: string;
@@ -370,10 +371,7 @@ const ProjectsTable: React.FC = () => {
   return (
     <VerticalTable
       tableTitle={
-        <>
-          Total of <b>{data?.pagination?.total?.toLocaleString()}</b>{" "}
-          {data?.pagination?.total > 1 ? "Projects" : "Project"}
-        </>
+        <TotalItems total={data?.pagination?.total} itemName="project" />
       }
       additionalControls={
         <div className="flex gap-2">

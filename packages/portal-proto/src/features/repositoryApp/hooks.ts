@@ -10,8 +10,8 @@ import {
   joinFilters,
   NumericFromTo,
   selectRangeFacetByField,
-  selectCurrentCohortId,
   FetchDataActionCreator,
+  selectCurrentCohortId,
   UseAppDataHook,
   UseAppDataResponse,
   buildCohortGqlOperator,
@@ -274,23 +274,16 @@ export const useSelectFieldFilter = (field: string): Operation => {
 };
 
 export const useClearLocalFilterWhenCohortChanges = (): void => {
-  const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilters(state),
-  );
   const cohortId = useCoreSelector((state) => selectCurrentCohortId(state));
 
   const appDispatch = useAppDispatch();
-  const prevCohortFilters = usePrevious(cohortFilters);
   const prevId = usePrevious(cohortId);
 
   useEffect(() => {
-    if (
-      (prevCohortFilters && !isEqual(prevCohortFilters, cohortFilters)) ||
-      (prevId && !isEqual(prevId, cohortId))
-    ) {
+    if (prevId && !isEqual(prevId, cohortId)) {
       appDispatch(clearRepositoryFilters());
     }
-  }, [prevId, prevCohortFilters, cohortFilters, cohortId, appDispatch]);
+  }, [prevId, cohortId, appDispatch]);
 };
 
 export const createUseAppDataHook = <P, A, T>(

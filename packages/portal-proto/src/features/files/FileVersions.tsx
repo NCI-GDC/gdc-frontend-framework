@@ -1,20 +1,33 @@
-import { HistoryDefaults } from "@gff/core";
-import saveAs from "file-saver";
 import { useMemo } from "react";
+import { useGetHistoryQuery } from "@gff/core";
+import saveAs from "file-saver";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import { createColumnHelper } from "@tanstack/react-table";
+import TotalItems from "@/components/Table/TotalItem";
+import { statusBooleansToDataStatus } from "@/utils/index";
+import { useDeepCompareMemo } from "use-deep-compare";
 
-const FileVersions = ({
-  fileHistory,
-  file_id,
-}: {
-  fileHistory: HistoryDefaults[];
+type FileVersionsDataType = {
+  version: string;
   file_id: string;
-}): JSX.Element => {
-  const sortedFileHistory = useMemo(
+  isCurrent: boolean;
+  release_date: string;
+  data_release: string;
+};
+
+const fileVersionsColumnHelper = createColumnHelper<FileVersionsDataType>();
+
+const FileVersions = ({ file_id }: { file_id: string }): JSX.Element => {
+  const {
+    data: fileHistory,
+    isFetching,
+    isSuccess,
+    isError,
+  } = useGetHistoryQuery(file_id);
+  const sortedFileHistory = useDeepCompareMemo(
     () =>
       [...(fileHistory ?? [])].sort(
         (a, b) =>
@@ -56,26 +69,18 @@ const FileVersions = ({
     );
   };
 
-  type FileVersionsDataType = {
-    version: string;
-    file_id: string;
-    isCurrent: boolean;
-    release_date: string;
-    data_release: string;
-  };
+  const tableData: FileVersionsDataType[] = useDeepCompareMemo(
+    () =>
+      sortedFileHistory.map((obj, index, { length }) => ({
+        version: obj.version,
+        file_id: obj.uuid,
+        isCurrent: index + 1 === length,
 
-  const tableData: FileVersionsDataType[] = sortedFileHistory.map(
-    (obj, index, { length }) => ({
-      version: obj.version,
-      file_id: obj.uuid,
-      isCurrent: index + 1 === length,
-
-      release_date: obj.release_date,
-      data_release: obj.data_release,
-    }),
+        release_date: obj.release_date,
+        data_release: obj.data_release,
+      })),
+    [sortedFileHistory],
   );
-
-  const fileVersionsColumnHelper = createColumnHelper<FileVersionsDataType>();
 
   const readGroupsColumns = useMemo(
     () => [
@@ -103,7 +108,7 @@ const FileVersions = ({
         header: "Release Number",
       }),
     ],
-    [fileVersionsColumnHelper],
+    [],
   );
 
   return (
@@ -136,7 +141,11 @@ const FileVersions = ({
               </div>
             }
             data={tableData}
+            tableTitle={
+              <TotalItems total={tableData?.length} itemName="version" />
+            }
             columns={readGroupsColumns}
+            status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
           />
         </div>
       )}

@@ -17,6 +17,7 @@ class CaseSummaryLocators:
     SEARCH_BAR_FILES_TABLE = '[data-testid="table-files-case-summary"] >> [data-testid="textbox-table-search-bar"]'
     BUTTON_DOWNLOAD_FILE_FILES_TABLE = '[data-testid="table-files-case-summary"] >> [data-testid="button-download-file"]'
 
+
 class CaseSummaryPage(BasePage):
     def __init__(self, driver: Page, url):
         self.driver = driver  # driver is PW page

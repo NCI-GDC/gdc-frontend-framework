@@ -134,7 +134,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
         <div
           data-testid="text-description-tool"
           style={{ height: descriptionVisible ? descHeight : 0 }}
-          className="transition-[height] duration-300 bg-primary-lightest overflow-hidden -mx-1.5 mb-1"
+          className="transition-[height] duration-300 bg-primary-lightest overflow-hidden w-full mb-1"
           aria-hidden={!descriptionVisible}
         >
           <div

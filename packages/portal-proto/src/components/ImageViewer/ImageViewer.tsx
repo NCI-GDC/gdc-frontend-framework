@@ -28,6 +28,7 @@ const InitOpenseadragon = (
     showNavigator: true,
     minZoomLevel: 0,
     showFullPageControl: false,
+    imageLoaderLimit: 1,
   });
 
   const fullPageButton = new OpenSeadragon.Button({

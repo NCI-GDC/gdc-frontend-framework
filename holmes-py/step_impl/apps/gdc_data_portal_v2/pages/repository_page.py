@@ -5,7 +5,7 @@ from ....base.base_page import GenericLocators
 
 
 class RepositoryPageLocators:
-    TITLE = lambda title_name: f'div[data-testid="{title_name}-title"]'
+    TITLE = lambda title_name: f'[data-testid="{title_name}-title"]'
     FILTERS_FACETS = '//div[@data-testid="filters-facets"]/div/div'
     FACET_BY_NAME = '//div[@data-testid="filters-facets"]//div[text()="Data Category"]/../../..//input[@value="biospecimen"]'
     FILTER_BUTTON_IDENT = lambda button_name: f"[data-testid='button-{button_name}']"
@@ -26,11 +26,12 @@ class RepositoryPageLocators:
         lambda group_name, more_or_less: f'[data-testid="filters-facets"] >> div >> div:has-text("{group_name}") >> button[data-testid="{more_or_less}"]'
     )
 
-
     IMAGE_VIEWER_IDENT = (
         lambda data_testid: f"[data-testid='{data_testid}-image-viewer']"
     )
-    IMAGE_VIEWER_CASES_SLIDES = lambda data_testid: f'[data-testid="cases-slides-image-viewer"] >> [data-testid="{data_testid}"]'
+    IMAGE_VIEWER_CASES_SLIDES = (
+        lambda data_testid: f'[data-testid="cases-slides-image-viewer"] >> [data-testid="{data_testid}"]'
+    )
     IMAGE_VIEWER_SEARCH_BOX = '[data-testid="search-bar-image-viewer"]'
     IMAGE_VIEWER_MAIN_IMAGE = "div[class='openseadragon-canvas'] >> nth=0"
     IMAGE_VIEWER_VIEWPORT_NAVIGATOR = "div[class='openseadragon-canvas'] >> nth=1"
@@ -44,8 +45,8 @@ class RepositoryPageLocators:
         lambda field_name, value: f'[data-testid="table-image-viewer-details"] >> text={field_name}{value} >> td'
     )
 
-    TEXT_REPO_TABLE_CASE_COUNT = (
-        lambda case_count: f'[data-testid="text-counts-files-table"] >> text="{case_count}"'
+    TEXT_REPO_TABLE_ITEM_COUNT = (
+        lambda item_position: f'[data-testid="text-counts-files-table"] >> strong >> nth={item_position}'
     )
 
 
@@ -57,6 +58,31 @@ class RepositoryPage(BasePage):
 
     def visit(self):
         self.driver.goto(self.URL)
+
+    def get_repository_table_item_count(self, item):
+        """
+        Returns specified item count displayed on top of the repository table.
+        Displayed are the total Files, Cases, and Size counts of the objects actively shown in the repository table.
+
+        :param item: The item to collect the count of. Options: Files, Cases, or Size
+        """
+        item = item.lower()
+        # I could not place a specific data-testid on each of the counts by themselves. I could
+        # only make a data-testid in the block of text that contains all 3 item counts.
+
+        # So, we will return the item count requested based on the position. In the DOM,
+        # files is first, cases is second, and size is third. I am using the data-testid I was able to make,
+        # and drilling down from there to return desired item count.
+        if item == "files":
+            item_position = 0
+        elif item == "cases":
+            item_position = 1
+        elif item == "size":
+            item_position = 2
+        else:
+            item_position = "Invalid Item Requested"
+        locator = RepositoryPageLocators.TEXT_REPO_TABLE_ITEM_COUNT(item_position)
+        return self.get_text(locator)
 
     def get_title(self, title_name):
         """Gets the text content of the title"""
@@ -80,7 +106,9 @@ class RepositoryPage(BasePage):
             filter_names.append(nth_inner_element)
         return filter_names
 
-    def make_selection_within_filter_group_repository(self, filter_group_name, selection):
+    def make_selection_within_filter_group_repository(
+        self, filter_group_name, selection
+    ):
         """Clicks a checkbox within a filter group"""
         locator = RepositoryPageLocators.FILTER_GROUP_SELECTION_IDENT(
             filter_group_name, selection
@@ -89,10 +117,14 @@ class RepositoryPage(BasePage):
 
     def perform_action_within_filter_card_repository(self, filter_group_name, action):
         """Performs an action in a filter group e.g sorting, resetting, flipping the chart, etc."""
-        locator = RepositoryPageLocators.FILTER_GROUP_ACTION_IDENT(filter_group_name, action)
+        locator = RepositoryPageLocators.FILTER_GROUP_ACTION_IDENT(
+            filter_group_name, action
+        )
         self.click(locator)
 
-    def click_show_more_less_within_filter_card_repository(self, filter_group_name, label):
+    def click_show_more_less_within_filter_card_repository(
+        self, filter_group_name, label
+    ):
         """Clicks the show more or show less object"""
         locator = RepositoryPageLocators.FILTER_GROUP_SHOW_MORE_LESS_IDENT(
             filter_group_name, label
@@ -129,17 +161,6 @@ class RepositoryPage(BasePage):
         data_testid = data_testid.upper()
         locator = RepositoryPageLocators.IMAGE_VIEWER_CASES_SLIDES(data_testid)
         self.click(locator)
-
-    def compare_cohort_case_count_and_repo_table_case_count(self):
-        self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
-        self.wait_for_loading_spinner_table_to_detatch()
-        cohort_bar_case_count = self.get_text(
-            GenericLocators.TEXT_COHORT_BAR_CASE_COUNT
-        )
-        repo_table_case_count_locator = (
-            RepositoryPageLocators.TEXT_REPO_TABLE_CASE_COUNT(cohort_bar_case_count)
-        )
-        return self.is_visible(repo_table_case_count_locator)
 
     def get_text_on_add_custom_filter_modal(self, text):
         result = None

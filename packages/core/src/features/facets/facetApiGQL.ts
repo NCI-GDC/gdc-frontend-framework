@@ -124,7 +124,7 @@ export const processBuckets: ProcessBucketsFunction = (
         count: aggregation.stats.count,
       };
     } else {
-      // Unhandled aggregation
+      // Unhandled aggregation, set to fulfilled otherwise it will show loading status
       state[normalizedField].status = "fulfilled";
       state[normalizedField].error = ERROR_UNHANDLED_AGGREGATION;
     }

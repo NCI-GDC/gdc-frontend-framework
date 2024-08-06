@@ -119,8 +119,11 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
         )}
       </div>
       <ModalButtonContainer data-testid="modal-button-container">
-        <FunctionButton onClick={closeModal}>Cancel</FunctionButton>
+        <FunctionButton data-testid="button-cancel" onClick={closeModal}>
+          Cancel
+        </FunctionButton>
         <DarkFunctionButton
+          data-testid="button-save"
           disabled={
             selectedSets.length === 0 || nothingToAdd || !isSuccessCount
           }

@@ -151,6 +151,10 @@ def verify_compared_statistics_are_equal_or_not_equal(
 def close_the_modal():
     APP.shared.click_close_modal_button()
 
+@step("Close the message")
+def close_the_modal():
+    """Clicks the 'x' to close temporary message"""
+    APP.shared.click_close_temporary_message()
 
 @step("Download <file> from <source>")
 def download_file_at_file_table(file: str, source: str):
@@ -158,14 +162,20 @@ def download_file_at_file_table(file: str, source: str):
         "Projects": APP.projects_page.click_button,
         "Repository": APP.repository_page.click_button,
         "File Summary": APP.file_summary_page.click_download_button,
+        "File Summary File Versions": APP.file_summary_page.click_file_version_download_option,
+        "File Summary Annotation Table": APP.file_summary_page.click_annotation_table_download_option,
         "Case Summary Files Table": APP.case_summary_page.click_files_table_download_file_button,
         "Cohort Bar": APP.cohort_bar.click_cohort_bar_button,
         "Manage Sets": APP.manage_sets_page.click_on_download_for_set,
         "Cohort Comparison": APP.cohort_comparison_page.click_download_tsv_button_on_analysis_card_cohort_comparison,
         "Mutation Frequency": APP.mutation_frequency_page.click_table_download_button,
+        "Project Summary": APP.project_summary_page.click_button,
+        "Set Operations": APP.set_operations_page.click_download_tsv_button_set_operations,
+        "Set Operations Union Row": APP.set_operations_page.click_union_row_download_tsv_button_set_operations,
+
     }
     driver = WebDriver.page
-    with driver.expect_download(timeout=60000) as download_info:
+    with driver.expect_download(timeout=90000) as download_info:
         # Allows using sources without passing in contents of <file> as a parameter
         if file.lower() == "file":
             sources.get(source)()
@@ -175,6 +185,25 @@ def download_file_at_file_table(file: str, source: str):
     file_path = f"{Utility.parent_dir()}/downloads/{dt.timestamp(dt.now())}_{download.suggested_filename}"
     download.save_as(file_path)
     data_store.spec[f"{file} from {source}"] = file_path
+
+@step("In table <table_name> on row <row_identifier> select <button_id> to download file <file_name_to_store>")
+def click_button_in_table_download_file(table_name:str, row_identifier:str, button_id: str, file_name_to_store:str):
+    """
+    click_button_in_table_download_file In specified table with given identifier click the download button.
+    A file downloads and we store the information using given identifier.
+
+    :param table_name: The table ID to access.
+    :param row_identifier: A unique piece of text to identify which row we want to click the button.
+    :param button_id: The button ID to click.
+    :param file_name_to_store: Identifier used to store contents of file.
+    """
+    driver = WebDriver.page
+    with driver.expect_download(timeout=90000) as download_info:
+        APP.file_summary_page.click_button_in_table(table_name, row_identifier, button_id)
+    download = download_info.value
+    file_path = f"{Utility.parent_dir()}/downloads/{dt.timestamp(dt.now())}_{download.suggested_filename}"
+    download.save_as(file_path)
+    data_store.spec[f"{file_name_to_store}"] = file_path
 
 
 @step("Upload <file_name> <extension> from <folder_name> in <source> through <button>")
@@ -204,7 +233,9 @@ def upload_file(
     file_chooser = file_chooser_info.value
     file_name = file_name.lower().replace(" ", "_")
     folder_name = folder_name.lower().replace(" ", "_")
-    file_path = f"{Utility.parent_dir()}/resources/{folder_name}/{file_name}.{extension}"
+    file_path = (
+        f"{Utility.parent_dir()}/resources/{folder_name}/{file_name}.{extension}"
+    )
     file_chooser.set_files(file_path)
 
 
@@ -246,13 +277,16 @@ def verify_file_content(file_type, table):
             v[0] in data_store.spec[f"{file_type} contents"]
         ), f"'{v[0]}' is NOT found in the file"
 
+
 @step("Verify that <file_type> has expected information from collected data <table>")
 def verify_file_content(file_type, table):
     """Checks if collected information is inside content from read-in files"""
     for k, v in enumerate(table):
-            # Get first statistic to compare
+        # Get first statistic to compare
         collected_data_string = data_store.spec[f"{v[0]}"]
-        collected_data_string = APP.shared.strip_string_for_comparison(collected_data_string)
+        collected_data_string = APP.shared.strip_string_for_comparison(
+            collected_data_string
+        )
         if collected_data_string == "--":
             assert (
                 "0" in data_store.spec[f"{file_type} contents"]
@@ -305,6 +339,19 @@ def verify_file_has_expected_field_names(file_type, field_name):
     assert not fails, f"{file_type} validation failed!\nFails: {fails}"
 
 
+@step("Verify these items are not on the page <table>")
+def verify_item_does_not_appear_on_page(table):
+    """Verifies if the given data-testid is not present on the page"""
+    for k, v in enumerate(table):
+        data_testid_to_check = APP.shared.normalize_button_identifier(v[0])
+
+        is_filter_visible = APP.shared.is_data_testid_present(data_testid_to_check)
+        assert is_filter_visible == False, f"The item '{v[0]}' is visible when it should NOT be"
+
+        # Also check exactly the way it was given as test data
+        is_filter_visible = APP.shared.is_data_testid_present(v[0])
+        assert is_filter_visible == False, f"The item '{v[0]}' is visible when it should NOT be"
+
 @step("Verify presence of filter card <table>")
 def make_cohort_builder_selections(table):
     for k, v in enumerate(table):
@@ -320,6 +367,13 @@ def verify_showing_item_text(number_of_items_text):
         f"{showing_items_text}" in showing_items_text
     ), f"The page is NOT showing expected number of items - {number_of_items_text}"
 
+@step("Verify the table <table_name> is showing <number_of_items_text>")
+def verify_table_showing_item_text(table_name, number_of_items_text):
+    """Verifies the specified table's 'Showing' text is correct"""
+    showing_items_text = APP.shared.get_table_showing_count_text(table_name)
+    assert (
+        f"{showing_items_text}" in showing_items_text
+    ), f"The table '{table_name}' is NOT showing expected number of items - {number_of_items_text}"
 
 @step("Verify the table header text is correct <table>")
 def verify_table_header_text(table):
@@ -439,12 +493,13 @@ def wait_for_table_body_text_to_appear(table):
         v[1] - Row
         v[2] - Column
         """
-        APP.shared.wait_for_table_body_text_by_row_column(v[0],v[1],v[2])
+        APP.shared.wait_for_table_body_text_by_row_column(v[0], v[1], v[2])
         time.sleep(2)
         # Occasionally, the screen flickers where it shows the text we
         # are waiting for then it disappears for a moment. Checking for the
         # text twice should account for that.
-        APP.shared.wait_for_table_body_text_by_row_column(v[0],v[1],v[2])
+        APP.shared.wait_for_table_body_text_by_row_column(v[0], v[1], v[2])
+        time.sleep(2)
     APP.shared.wait_for_loading_spinner_table_to_detatch()
     APP.shared.wait_for_loading_spinner_to_detatch()
 
@@ -524,14 +579,18 @@ def store_cohort_bar_case_count_for_comparison():
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
     data_store.spec["Cohort Bar Case Count"] = APP.shared.get_cohort_bar_case_count()
 
+
 @step("Collect <cohort_name> Case Count for comparison")
-def store_cohort_bar_case_count_for_comparison(cohort_name:str):
+def store_cohort_bar_case_count_for_comparison(cohort_name: str):
     """
     Stores current cohort bar case count for comparison in future tests.
     Store the information using a key based on the cohort name.
     Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'
     """
-    data_store.spec[f"{cohort_name} Case Count"] = APP.shared.get_cohort_bar_case_count()
+    data_store.spec[
+        f"{cohort_name} Case Count"
+    ] = APP.shared.get_cohort_bar_case_count()
+
 
 @step("The cohort bar case count should be <case_count>")
 def is_cohort_bar_case_count_present_on_the_page(case_count: str):
@@ -553,7 +612,7 @@ def is_cart_count_correct(correct_file_count: str):
 
 @step("Is data-testid button <data_testid> not present on the page")
 def is_data_testid_not_present_on_the_page(data_testid: str):
-    is_data_testid_present = APP.shared.is_data_testid_present(data_testid)
+    is_data_testid_present = APP.shared.is_data_testid_button_present(data_testid)
     assert (
         is_data_testid_present == False
     ), f"The data-testid '{data_testid}' IS present"
@@ -632,8 +691,9 @@ def click_create_or_save_in_cohort_modal(table):
         APP.shared.click_switch_for_column_selector(v[0])
     APP.shared.click_column_selector_button()
 
+
 @step("Change number of entries shown in the table to <number_of_entries>")
-def change_number_of_entries_shown(change_number_of_entries_shown:str):
+def change_number_of_entries_shown(change_number_of_entries_shown: str):
     """
     Changes number of entries shown in the table using the show entries button,
     and selecting an option from the dropdown list.
@@ -746,6 +806,21 @@ def send_text_into_text_box(text: str, text_box_name: str):
     APP.shared.send_text_into_text_box(text, text_box_name)
 
 
+@step("In table <table_name>, search the table for <text>")
+def send_text_into_specified_table_search_bar(table_name: str, text: str):
+    """Sends text into specified table search bar"""
+    APP.shared.send_text_into_specified_table_search_bar(table_name, text)
+    time.sleep(1)
+    # In Mutation Frequency, searching in the table can take a
+    # long time to load. They can also load and spin at different times
+    # in different places (e.g the cohort case count, table, graphs, etc.)
+    # So we have an abundance of waits.
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.keyboard_press("Enter")
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_to_detatch()
+
+
 @step("Search the table for <text>")
 def send_text_into_table_search_bar(text: str):
     """Sends text into a table search bar"""
@@ -778,14 +853,14 @@ def global_quick_search(text: str):
     APP.shared.global_quick_search(text)
 
 
-@step("Validate the quick search bar result in position <result_in_list> of the result list has the text <text>")
+@step(
+    "Validate the quick search bar result in position <result_in_list> of the result list has the text <text>"
+)
 def validate_global_quick_search_result_text(result_in_list: str, text: str):
     """
     Specifies a result from the quick search bar result list. Validates expected text is present.
     """
-    APP.shared.validate_global_quick_search_result_text(
-        result_in_list, text
-    )
+    APP.shared.validate_global_quick_search_result_text(result_in_list, text)
 
 
 @step("Select the quick search bar result in position <result_in_list>")
@@ -817,6 +892,7 @@ def click_nav_item_check_text_in_new_tab(page_name: str, table):
         ), f"After click on '{v[0]}', the expected text '{v[1]}' in NOT present"
         new_tab.close()
 
+
 @step(
     "Check that <var_to_check> cookie is accessible using Javascript and that it's generated using uuid version <ver>"
 )
@@ -829,8 +905,8 @@ def check_if_cookie_accessible(var_to_check: str, ver: int):
 
     start_value = cookie[cookie.index(var_to_check) + len(var_to_check) :]
     gdc_context_id = start_value[: start_value.find(";")]
-    start_value = cookie[cookie.index(var_to_check)+len(var_to_check):]
-    gdc_context_id = start_value[:start_value.find(";")]
+    start_value = cookie[cookie.index(var_to_check) + len(var_to_check) :]
+    gdc_context_id = start_value[: start_value.find(";")]
 
     # check if the gdc_context_id is version 4
     assert UUID(gdc_context_id).version == int(ver)

@@ -5,6 +5,8 @@ from getgauge.python import step, before_spec
 from ..app import GDCDataPortalV2App
 from ....base.webdriver import WebDriver
 
+from getgauge.python import data_store
+
 
 @before_spec
 def start_app():
@@ -21,11 +23,14 @@ def select_repository_page_button(button_name: str):
 @step("Select <button_name> on the Image Viewer page")
 def select_image_viewer_page_button(button_name: str):
     APP.repository_page.click_image_viewer_page_data_testid(button_name)
+    APP.repository_page.wait_for_loading_spinner_to_detatch()
+
 
 @step("Select case or slide <data_testid> on the Image Viewer page")
 def select_case_slide_on_image_viewer(data_testid: str):
     APP.repository_page.click_image_viewer_page_case_or_slide(data_testid)
     APP.repository_page.wait_for_loading_spinner_to_detatch()
+
 
 @step("Select file filter, <filter_name>, nth: <nth>")
 def select_file_filter_and_validate(filter_name: str, nth: int):
@@ -34,6 +39,7 @@ def select_file_filter_and_validate(filter_name: str, nth: int):
         repository.click_button(filter_name)
     except:
         repository.select_nth_file_filters_result(int(nth) - 1)
+
 
 # These 3 functions are for filter cards on the repository page.
 @step("Make the following selections on a filter card on the Repository page <table>")
@@ -46,6 +52,7 @@ def filter_card_selections(table):
         APP.shared.wait_for_loading_spinner_to_detatch()
         time.sleep(0.1)
 
+
 @step("Perform the following actions on a filter card on the Repository page <table>")
 def perform_filter_card_action(table):
     for k, v in enumerate(table):
@@ -55,21 +62,26 @@ def perform_filter_card_action(table):
         APP.shared.wait_for_loading_spinner_to_detatch()
         time.sleep(0.1)
 
+
 @step("Expand or contract a filter on the Repository page <table>")
 def click_show_more_or_show_less(table):
     for k, v in enumerate(table):
-        APP.repository_page.click_show_more_less_within_filter_card_repository(v[0], v[1])
+        APP.repository_page.click_show_more_less_within_filter_card_repository(
+            v[0], v[1]
+        )
 
 
-@step("Verify cohort case count equals repository table case count")
-def compare_cohort_case_count_and_repo_table_case_count():
-    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
-    are_case_counts_equal = (
-        APP.repository_page.compare_cohort_case_count_and_repo_table_case_count()
-    )
-    assert (
-        are_case_counts_equal
-    ), f"The cohort bar case count is not equal to the repository table case count"
+@step("Collect <item> Count on the Repository page")
+def store_count_repository_for_comparison(item: str):
+    """
+    Stores specified item count for comparison in future tests.
+    Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'
+
+    :param item: The item to collect the count of. Options: Files, Cases, or Size
+    """
+    data_store.spec[
+        f"{item} Count Repository Page"
+    ] = APP.repository_page.get_repository_table_item_count(item)
 
 
 @step("Verify that the following default filters are displayed in order <table>")
@@ -162,8 +174,10 @@ def search_for_filter_and_searchbox_content(filter_name: str):
 @step("Search for <image_viewer_search> on the Image Viewer page")
 def search_image_viewer(image_viewer_search: str):
     APP.repository_page.search_image_viewer(image_viewer_search)
+    APP.repository_page.wait_for_loading_spinner_to_detatch()
 
 
 @step("Remove search filter <search_filter> on the Image Viewer page")
 def remove_slide_image_viewer_search_filter(search_filter: str):
     APP.repository_page.remove_slide_image_viewer_search_filter(search_filter)
+    APP.repository_page.wait_for_loading_spinner_to_detatch()

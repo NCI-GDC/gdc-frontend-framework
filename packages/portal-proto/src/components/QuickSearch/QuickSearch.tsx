@@ -53,7 +53,7 @@ export const QuickSearch = (): JSX.Element => {
       setLoading(false);
       setMatchedSearchList([]);
     } else if (query === debounced) {
-      if (fileHistory !== undefined) {
+      if (fileHistory !== undefined && fileHistory.length > 0) {
         const latestVersion = fileHistory.find(
           (f) => f.file_change === "released",
         )?.uuid;
@@ -198,9 +198,11 @@ export const QuickSearch = (): JSX.Element => {
       searchable
       nothingFoundMessage={
         //This is so it does not show no results when loading or when user has not entered anything
-        searchText.length > 0 && debounced.length > 0 && !loading
-          ? "No results found"
-          : undefined
+        searchText.length > 0 && debounced.length > 0 && !loading ? (
+          <span data-testid="no-results-quick-search-bar">
+            {"No results found"}
+          </span>
+        ) : undefined
       }
       onSearchChange={(query) => {
         setLoading(true);

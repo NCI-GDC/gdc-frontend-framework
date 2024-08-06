@@ -24,33 +24,17 @@ import {
   selectCurrentCohortId,
   useGeneSymbol,
   updateActiveCohortFilter,
-  useGeneSetCountQuery,
-  useSsmSetCountQuery,
-  useCaseSetCountQuery,
-  removeCohortSet,
 } from "@gff/core";
-import { ActionIcon, Badge, Divider, Group } from "@mantine/core";
+import { ActionIcon, Divider, Group } from "@mantine/core";
 import {
   MdClose as ClearIcon,
   MdOutlineArrowBack as LeftArrow,
   MdOutlineArrowForward as RightArrow,
 } from "react-icons/md";
 import tw from "tailwind-styled-components";
-import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
-import QueryRepresentationLabel from "@/features/facets/QueryRepresentationLabel";
 import { QueryExpressionsExpandedContext } from "./QueryExpressionSection";
+import CohortBadge from "./CohortBadge";
 
-const RemoveButton = ({ value }: { value: string }) => (
-  <ActionIcon
-    size="xs"
-    color="white"
-    radius="xl"
-    variant="transparent"
-    aria-label={`remove ${value}`}
-  >
-    <ClearIcon size={10} aria-hidden="true" />
-  </ActionIcon>
-);
 const QueryRepresentationText = tw.div`
 flex truncate ... px-2 py-1 bg-base-max h-full
 `;
@@ -119,7 +103,6 @@ const IncludeExcludeQueryElement: React.FC<
   operator,
   operands: operandsProp,
 }: Includes | Excludes | ExcludeIfAny) => {
-  const dispatch = useCoreDispatch();
   const [queryExpressionsExpanded, setQueryExpressionsExpanded] = useContext(
     QueryExpressionsExpandedContext,
   );
@@ -193,60 +176,17 @@ const IncludeExcludeQueryElement: React.FC<
             {operands.map((x, i) => {
               const value = x.toString();
               return (
-                <Badge
+                <CohortBadge
                   key={`query-rep-${field}-${value}-${i}`}
-                  data-testid={`query-rep-${field}-${value}-${i}`}
-                  variant="filled"
-                  color="accent-cool"
-                  size="md"
-                  className="normal-case items-center max-w-[162px] cursor-pointer pl-1.5 pr-0 hover:bg-accent-cool-darker"
-                  rightSection={<RemoveButton value={value} />}
-                  onClick={() => {
-                    const newOperands = operands.filter((o) => o !== x);
-
-                    if (newOperands.length === 0) {
-                      setQueryExpressionsExpanded({
-                        type: "clear",
-                        cohortId: currentCohortId,
-                        field,
-                      });
-                      dispatch(removeCohortFilter(field));
-                    } else
-                      dispatch(
-                        updateActiveCohortFilter({
-                          field,
-                          operation: {
-                            operator,
-                            field,
-                            operands: newOperands,
-                          },
-                        }),
-                      );
-
-                    if (value.includes("set_id:")) {
-                      dispatch(removeCohortSet(value.split("set_id:")[1]));
-                    }
-                  }}
-                >
-                  <OverflowTooltippedLabel
-                    label={value}
-                    className="flex-grow text-md font-content-noto"
-                  >
-                    <QueryRepresentationLabel
-                      value={value}
-                      field={field}
-                      geneSymbolDict={geneSymbolDict}
-                      geneSymbolSuccess={isSuccess}
-                      countHook={
-                        field === "genes.gene_id"
-                          ? useGeneSetCountQuery
-                          : field === "ssms.ssm_id"
-                          ? useSsmSetCountQuery
-                          : useCaseSetCountQuery
-                      }
-                    />
-                  </OverflowTooltippedLabel>
-                </Badge>
+                  field={field}
+                  value={value}
+                  customTestid={`query-rep-${field}-${value}-${i}`}
+                  operands={operands}
+                  operator={operator}
+                  currentCohortId={currentCohortId}
+                  geneSymbolDict={geneSymbolDict}
+                  isSuccess={isSuccess}
+                />
               );
             })}
           </Group>

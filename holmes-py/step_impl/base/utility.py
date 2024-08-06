@@ -13,7 +13,6 @@ class Utility:
             elif git_dir.is_dir():
                 return path
 
-
     def is_file_found(file_path: str):
         CURRENT_TIME = 0
         WAIT_TIME = 0.05

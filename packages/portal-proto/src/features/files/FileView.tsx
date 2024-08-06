@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { useDeepCompareCallback } from "use-deep-compare";
+import { useDeepCompareMemo } from "use-deep-compare";
 import {
   GdcFile,
-  HistoryDefaults,
   useCoreSelector,
   selectCart,
   Modals,
@@ -17,6 +16,7 @@ import {
   formatDataForHorizontalTable,
   mapGdcFileToCartFile,
   parseSlideDetailsInfo,
+  shouldDisplayReferenceGenome,
 } from "./utils";
 import { BAMSlicingModal } from "@/components/Modals/BAMSlicingModal/BAMSlicingModal";
 import { NoAccessToProjectModal } from "@/components/Modals/NoAccessToProjectModal";
@@ -31,7 +31,7 @@ import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import GenericLink from "@/components/GenericLink";
 import AssociatedCB from "./AssociatedCB";
 import DownstreamAnalyses from "./DownstreamAnalyses";
-import AnalysisInputFiles from "./AnalysisInput";
+import SourceFiles from "./SourceFiles";
 import ReadGroups from "./ReadGroups";
 import FileVersions from "./FileVersions";
 import AnnnotationsTable from "./AnnotationsTable";
@@ -82,7 +82,6 @@ const ImageViewer = dynamic(
 
 export interface FileViewProps {
   readonly file?: GdcFile;
-  readonly fileHistory?: HistoryDefaults[];
   readonly isModal?: boolean;
 }
 
@@ -90,7 +89,6 @@ const DivWithMargin = tw.div`mt-14`;
 
 export const FileView: React.FC<FileViewProps> = ({
   file,
-  fileHistory,
   isModal,
 }: FileViewProps) => {
   const currentCart = useCoreSelector((state) => selectCart(state));
@@ -98,8 +96,9 @@ export const FileView: React.FC<FileViewProps> = ({
   const [bamActive, setBamActive] = useState(false);
   const [fileToDownload, setFileToDownload] = useState(file);
   const isFileInCart = fileInCart(currentCart, file.file_id);
+  const shouldDisplayRefGenome = shouldDisplayReferenceGenome(file);
 
-  const formatDataForFileProperties = useDeepCompareCallback(
+  const formattedDataForFileProperties = useDeepCompareMemo(
     () =>
       formatDataForHorizontalTable(file, [
         {
@@ -137,7 +136,7 @@ export const FileView: React.FC<FileViewProps> = ({
     [file],
   );
 
-  const formatDataForDataInformation = useDeepCompareCallback(
+  const formattedDataForDataInformation = useDeepCompareMemo(
     () =>
       formatDataForHorizontalTable(file, [
         {
@@ -160,7 +159,7 @@ export const FileView: React.FC<FileViewProps> = ({
     [file],
   );
 
-  const formatDataForAnalysis = useDeepCompareCallback(
+  const formattedDataForAnalysis = useDeepCompareMemo(
     () =>
       formatDataForHorizontalTable(file, [
         {
@@ -170,7 +169,7 @@ export const FileView: React.FC<FileViewProps> = ({
         {
           field: "analysis.updated_datetime",
           name: "Workflow Completion Date",
-          modifier: (v) => v.split("T")[0],
+          modifier: (v) => v?.split("T")[0],
         },
       ]),
     [file],
@@ -198,13 +197,13 @@ export const FileView: React.FC<FileViewProps> = ({
             <SummaryCard
               customDataTestID="table-file-properties-file-summary"
               title="File Properties"
-              tableData={formatDataForFileProperties()}
+              tableData={formattedDataForFileProperties}
             />
           </div>
           <div className="flex-1">
             <SummaryCard
               customDataTestID="table-data-information-file-summary"
-              tableData={formatDataForDataInformation()}
+              tableData={formattedDataForDataInformation}
               title="Data Information"
             />
           </div>
@@ -240,27 +239,45 @@ export const FileView: React.FC<FileViewProps> = ({
         {file?.analysis && (
           <>
             <div className="mt-14 flex gap-8">
-              <div className="flex-1">
-                <SummaryCard
-                  customDataTestID="table-analysis-file-summary"
-                  title="Analysis"
-                  tableData={formatDataForAnalysis()}
-                />
+              <div className={`flex-1 ${!shouldDisplayRefGenome && "flex"}`}>
+                <div className="basis-1/2">
+                  <SummaryCard
+                    customDataTestID="table-analysis-file-summary"
+                    title="Analysis"
+                    tableData={
+                      shouldDisplayRefGenome
+                        ? formattedDataForAnalysis
+                        : [formattedDataForAnalysis[0]]
+                    }
+                  />
+                </div>
+                {!shouldDisplayRefGenome && (
+                  <div className="basis-1/2">
+                    <SummaryCard
+                      customDataTestID="table-analysis-file-summary"
+                      title="" // should be empty
+                      tableData={[formattedDataForAnalysis[1]]}
+                    />
+                  </div>
+                )}
               </div>
-              <div className="flex-1">
-                <SummaryCard
-                  customDataTestID="table-reference-genome-file-summary"
-                  title="Reference Genome"
-                  tableData={[
-                    { headerName: "Genome Build	", values: ["GRCh38.p0"] },
-                    { headerName: "Genome Name	", values: ["GRCh38.d1.vd1"] },
-                  ]}
-                />
-              </div>
+
+              {shouldDisplayRefGenome && (
+                <div className="flex-1">
+                  <SummaryCard
+                    customDataTestID="table-reference-genome-file-summary"
+                    title="Reference Genome"
+                    tableData={[
+                      { headerName: "Genome Build", values: ["GRCh38.p0"] },
+                      { headerName: "Genome Name", values: ["GRCh38.d1.vd1"] },
+                    ]}
+                  />
+                </div>
+              )}
             </div>
             {file?.analysis?.input_files?.length > 0 && (
               <DivWithMargin>
-                <AnalysisInputFiles
+                <SourceFiles
                   inputFiles={file.analysis.input_files}
                   currentCart={currentCart}
                   setFileToDownload={setFileToDownload}
@@ -289,7 +306,7 @@ export const FileView: React.FC<FileViewProps> = ({
             />
           </DivWithMargin>
         )}
-        <FileVersions fileHistory={fileHistory} file_id={file.file_id} />
+        <FileVersions file_id={file.file_id} />
         {file?.annotations?.length > 0 && (
           <div
             className={`mb-16 ${isModal ? "scroll-mt-36" : "scroll-mt-72"}`}

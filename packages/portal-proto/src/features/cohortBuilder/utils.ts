@@ -6,6 +6,39 @@ import {
 } from "@gff/core";
 import { SummaryFacetInfo } from "./SummaryFacets";
 
+// These new upload facets will not be returned by the mapping API call, hence they are manually defined as upload_facets
+export const upload_facets: Record<string, FacetDefinition> = {
+  "cases.upload.case_id": {
+    description: "Enter/upload cases to filter the current cohort",
+    doc_type: "cases",
+    facet_type: "upload",
+    field: "cases.upload.case_id",
+    full: "Upload Cases",
+    range: undefined,
+    type: "keyword",
+  },
+  "genes.upload.gene_id": {
+    description:
+      "Enter/upload genes or select gene sets to filter the current cohort",
+    doc_type: "cases",
+    facet_type: "upload",
+    field: "genes.upload.gene_id",
+    full: "Upload Mutated Genes",
+    range: undefined,
+    type: "keyword",
+  },
+  "ssms.upload.ssm_id": {
+    description:
+      "Enter/upload simple mutations or select mutation sets to filter the current cohort",
+    doc_type: "cases",
+    facet_type: "upload",
+    field: "ssms.upload.ssm_id",
+    full: "Upload Simple Mutations",
+    range: undefined,
+    type: "keyword",
+  },
+};
+
 /**
  * getFacetInfo: returns information from the GDC API: description, full field, type, etc.
  * It returns information ONLY for defined fields

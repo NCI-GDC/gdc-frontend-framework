@@ -1,13 +1,14 @@
-import React, { useCallback, useState, useMemo } from "react";
+import React, { useCallback, useState } from "react";
 import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
 import { Tabs } from "@mantine/core";
 import {
   FilterSet,
-  selectCurrentCohortFilters,
   useCoreSelector,
   useCoreDispatch,
   removeCohortFilter,
   updateActiveCohortFilter,
+  selectCurrentCohortId,
+  usePrevious,
 } from "@gff/core";
 import { useAppDispatch } from "@/features/genomic/appApi";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
@@ -42,14 +43,6 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     geneId: undefined,
     geneSymbol: undefined,
   });
-  const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilters(state),
-  );
-
-  const overwritingDemoFilter = useMemo(
-    () => overwritingDemoFilterMutationFrequency,
-    [],
-  );
 
   const topGeneSSMSSuccess = useTopGeneSsms({
     appMode,
@@ -57,6 +50,16 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     setComparativeSurvival,
     searchTermsForGene: searchTermsForGeneId,
   });
+
+  const cohortId = useCoreSelector((state) => selectCurrentCohortId(state));
+  const prevId = usePrevious(cohortId);
+
+  // clear local filters when cohort changes or tabs change
+  useDeepCompareEffect(() => {
+    if (cohortId !== prevId) {
+      appDispatch(clearGeneAndSSMFilters());
+    }
+  }, [cohortId, prevId, appDispatch]);
 
   /**
    * Update survival plot in response to user actions. There are two "states"
@@ -142,11 +145,6 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
-
-  // clear local filters when cohort changes or tabs change
-  useDeepCompareEffect(() => {
-    appDispatch(clearGeneAndSSMFilters());
-  }, [overwritingDemoFilter, cohortFilters, appDispatch]);
 
   const clearSearchTermsForGene = useCallback(() => {
     setSearchTermsForGeneId({ geneId: undefined, geneSymbol: undefined });

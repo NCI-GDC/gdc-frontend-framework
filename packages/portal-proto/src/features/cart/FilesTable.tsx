@@ -31,6 +31,7 @@ import { HandleChangeInput } from "@/components/Table/types";
 import { downloadTSV } from "@/components/Table/utils";
 import { Tooltip } from "@mantine/core";
 import { useDeepCompareMemo } from "use-deep-compare";
+import TotalItems from "@/components/Table/TotalItem";
 
 interface FilesTableProps {
   readonly filesByCanAccess: Record<string, CartFile[]>;
@@ -390,6 +391,9 @@ const FilesTable: React.FC<FilesTableProps> = () => {
     <VerticalTable
       data={tableData}
       columns={cartFilesTableDefaultColumns}
+      tableTitle={
+        <TotalItems total={data?.pagination?.total} itemName="file" />
+      }
       additionalControls={
         <div className="flex gap-2 mb-2">
           <Tooltip label="Download JSON">

@@ -8,9 +8,10 @@ import {
   GqlOperation,
   useCreateCaseSetFromFiltersMutation,
 } from "@gff/core";
-import SurvivalPlot, { SurvivalPlotTypes } from "../charts/SurvivalPlot";
+import SurvivalPlot from "../charts/SurvivalPlot/SurvivalPlot";
 import makeIntersectionFilters from "./makeIntersectionFilters";
 import CohortCreationButton from "@/components/CohortCreationButton";
+import { SurvivalPlotTypes } from "../charts/SurvivalPlot/types";
 
 const survivalDataCompletenessFilters: GqlOperation[] = [
   {
@@ -178,6 +179,7 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
               plotType={SurvivalPlotTypes.cohortComparison}
               data={data}
               hideLegend
+              noDataMessage="No Survival data available for this Cohort Comparison"
             />
           )}
           <div className="font-heading mt-[1.5rem]">

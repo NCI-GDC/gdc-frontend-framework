@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect, useContext } from "react";
 import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
 import { upperFirst } from "lodash";
-import { Checkbox } from "@mantine/core";
+import { Checkbox, Tooltip } from "@mantine/core";
 import { AiOutlineFileAdd as FileAddIcon } from "react-icons/ai";
 import {
   useCoreSelector,
@@ -22,6 +22,7 @@ import { UserInputContext } from "../UserInputModal";
 import { createColumnHelper } from "@tanstack/react-table";
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
+import { useDeepCompareMemo } from "use-deep-compare";
 
 interface SavedSetsProps {
   readonly setType: SetTypes;
@@ -35,6 +36,14 @@ interface SavedSetsProps {
   readonly facetField: string;
   readonly existingFiltersHook: () => FilterSet;
 }
+
+interface TableData {
+  setId: string;
+  name: string;
+  count: number;
+}
+
+const savedSetsTableColumnHelper = createColumnHelper<TableData>();
 
 const SavedSets: React.FC<SavedSetsProps> = ({
   setType,
@@ -60,35 +69,41 @@ const SavedSets: React.FC<SavedSetsProps> = ({
     return Object.entries(sets).map(([setId, name]) => ({
       setId,
       name,
-      count: isSuccess ? (counts?.[setId] || 0).toLocaleString() : "...",
+      count: counts?.[setId] || 0,
     }));
-  }, [sets, counts, isSuccess]);
+  }, [sets, counts]);
 
-  const savedSetsTableColumnHelper = createColumnHelper<typeof tableData[0]>();
-
-  const getRowId = (originalRow: typeof tableData[0]) => {
+  const getRowId = (originalRow: TableData) => {
     return originalRow.setId;
   };
   const [rowSelection, setRowSelection] = useState({});
   const selectedSets = Object.entries(rowSelection)?.map(([setId]) => setId);
 
-  const savedSetsColumns = useMemo(
+  const savedSetsColumns = useDeepCompareMemo(
     () => [
       savedSetsTableColumnHelper.display({
         id: "select",
         header: "Select",
         cell: ({ row }) => (
-          <Checkbox
-            size="xs"
-            classNames={{
-              input: "checked:bg-accent checked:border-accent",
-            }}
-            aria-label={`${row.original.setId}`}
-            {...{
-              checked: row.getIsSelected(),
-              onChange: row.getToggleSelectedHandler(),
-            }}
-          />
+          <Tooltip
+            label="Set is either empty or deprecated"
+            disabled={row.original.count !== 0}
+            zIndex={400}
+            position="right"
+          >
+            <Checkbox
+              size="xs"
+              classNames={{
+                input: "checked:bg-accent checked:border-accent",
+              }}
+              aria-label={`${row.original.setId}`}
+              {...{
+                checked: row.getIsSelected(),
+                onChange: row.getToggleSelectedHandler(),
+              }}
+              disabled={row.original.count === 0}
+            />
+          </Tooltip>
         ),
       }),
       savedSetsTableColumnHelper.accessor("name", {
@@ -98,9 +113,12 @@ const SavedSets: React.FC<SavedSetsProps> = ({
       savedSetsTableColumnHelper.accessor("count", {
         id: "count",
         header: `# ${upperFirst(setTypeLabel)}s`,
+        cell: ({ row }) => (
+          <>{isSuccess ? row.original.count.toLocaleString() : "..."}</>
+        ),
       }),
     ],
-    [savedSetsTableColumnHelper, setTypeLabel],
+    [isSuccess, setTypeLabel],
   );
 
   useEffect(() => {

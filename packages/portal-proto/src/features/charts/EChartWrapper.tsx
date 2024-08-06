@@ -1,5 +1,6 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import { init, EChartsOption, ECharts } from "echarts";
+import { useDeepCompareEffect } from "use-deep-compare";
 
 export interface EChartWrapperProps {
   readonly option: EChartsOption;
@@ -17,7 +18,7 @@ const EChartWrapper: React.FC<EChartWrapperProps> = ({
   const ref = useRef<HTMLElement>(null);
   const wrapperRef = chartRef ?? ref;
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     let chart: ECharts | undefined;
 
     if (
@@ -30,6 +31,7 @@ const EChartWrapper: React.FC<EChartWrapperProps> = ({
         height,
         width,
       });
+
       chart.setOption(option);
       chart.resize();
     }
@@ -41,7 +43,13 @@ const EChartWrapper: React.FC<EChartWrapperProps> = ({
 
   return (
     <div
-      ref={wrapperRef ? (r) => (wrapperRef.current = r) : undefined}
+      ref={
+        wrapperRef
+          ? (ref: HTMLDivElement | null) => {
+              if (ref) wrapperRef.current = ref;
+            }
+          : undefined
+      }
       style={{ height, width }}
       role="img"
     />

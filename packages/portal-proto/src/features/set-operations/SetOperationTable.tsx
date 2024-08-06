@@ -7,7 +7,7 @@ import {
 import { useState, useId } from "react";
 import { useDeepCompareMemo } from "use-deep-compare";
 import CountButtonWrapperForSetsAndCases from "./CountButtonWrapperForSetsAndCases";
-import { Checkbox } from "@mantine/core";
+import { Checkbox, Tooltip } from "@mantine/core";
 import { createSetFiltersByKey, ENTITY_TYPE_TO_CREATE_SET_HOOK } from "./utils";
 import { GqlOperation } from "@gff/core";
 import { pickBy } from "lodash";
@@ -89,21 +89,29 @@ export const SetOperationTable = ({
         id: "select",
         header: "Select",
         cell: ({ row }) => (
-          <Checkbox
-            size="xs"
-            classNames={{
-              input: "checked:bg-accent checked:border-accent",
-            }}
-            value={row.original.operationKey}
-            id={`${componentId}-setOperation-${row.original.operationKey}`}
-            checked={selectedSets[row.original.operationKey]}
-            onChange={(e) => {
-              setSelectedSets({
-                ...selectedSets,
-                [e.target.value]: !selectedSets[e.target.value],
-              });
-            }}
-          />
+          <Tooltip
+            label="This region contains 0 items"
+            disabled={row.original.count !== 0}
+            position="right"
+          >
+            <Checkbox
+              data-testid={`checkbox-${row.original.operationKey}-set-operations`}
+              size="xs"
+              classNames={{
+                input: "checked:bg-accent checked:border-accent",
+              }}
+              value={row.original.operationKey}
+              id={`${componentId}-setOperation-${row.original.operationKey}`}
+              checked={selectedSets[row.original.operationKey]}
+              onChange={(e) => {
+                setSelectedSets({
+                  ...selectedSets,
+                  [e.target.value]: !selectedSets[e.target.value],
+                });
+              }}
+              disabled={row.original.count === 0}
+            />
+          </Tooltip>
         ),
       },
       setOperationTableColumnsHelper.accessor("setOperation", {
@@ -111,6 +119,7 @@ export const SetOperationTable = ({
         enableSorting: false,
         cell: ({ getValue, row }) => (
           <label
+            data-testid={`text-${row.original.operationKey}-label-set-operations`}
             htmlFor={`${componentId}-setOperation-${row.original.operationKey}`}
           >
             {getValue()}
@@ -151,18 +160,12 @@ export const SetOperationTable = ({
       }),
     ],
 
-    [
-      setOperationTableColumnsHelper,
-      selectedSets,
-      entityType,
-      sets,
-      setSelectedSets,
-      componentId,
-    ],
+    [selectedSets, entityType, sets, setSelectedSets, componentId],
   );
 
   return (
     <VerticalTable
+      customDataTestID="table-set-operations"
       data={setOperationTableData}
       columns={setOperationTableColumns}
       enableRowSelection={true}
@@ -175,7 +178,7 @@ export const SetOperationTable = ({
       columnSorting="enable"
       customAriaLabel="Overlap Table"
       footer={
-        <tr>
+        <tr data-testid="row-union-of-selected-sets">
           <td className="p-2 font-bold">Union of selected sets:</td>
           <td />
           <td className="w-52">

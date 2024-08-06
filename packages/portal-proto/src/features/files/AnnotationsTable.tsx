@@ -16,6 +16,7 @@ import { HandleChangeInput } from "@/components/Table/types";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { downloadTSV } from "@/components/Table/utils";
+import TotalItems from "@/components/Table/TotalItem";
 
 interface AnnotationsTableProps {
   readonly annotations: ReadonlyArray<FileAnnotationsType>;
@@ -46,6 +47,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
   const [filteredTableData, setFilteredTableData] = useState([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    // TODO when DEV-2653 is fixed, re-add case ID col, hide case UUID col by default
     // case_id: false,
     entity_id: false,
     status: false,
@@ -76,6 +78,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
         id: "case_id",
         header: "Case UUID",
         enableSorting: false,
+        // TODO when DEV-2653 is fixed, re-add case ID col, hide case UUID col by default
         // cell: ({ getValue }) => getValue() ?? "--",
         cell: ({ getValue, row }) =>
           getValue() ? (
@@ -89,6 +92,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
             "--"
           ),
       }),
+      // TODO when DEV-2653 is fixed, re-add case ID col, hide case UUID col by default
       // annotationsTableColumnHelper.accessor("case_submitter_id", {
       //   id: "case_submitter_id",
       //   header: "Case ID",
@@ -255,6 +259,9 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
       <HeaderTitle>Annotations</HeaderTitle>
       <VerticalTable
         customDataTestID="table-annotations-file-summary"
+        tableTitle={
+          <TotalItems total={annotations?.length} itemName="annotation" />
+        }
         additionalControls={
           <div className="flex gap-2">
             <FunctionButton

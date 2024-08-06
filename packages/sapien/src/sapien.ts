@@ -13,6 +13,10 @@ export const createHumanBody: TCreateHumanBody = ({
   clickHandler = () => null,
   mouseOverHandler,
   mouseOutHandler,
+  keyDownHandler,
+  keyUpHandler,
+  ariaLabel,
+  skipLinkId,
   data,
   selector,
   height,
@@ -52,6 +56,14 @@ export const createHumanBody: TCreateHumanBody = ({
     .select(selector)
     .append("div")
     .attr("id", "svgContainer");
+
+  if (skipLinkId) {
+    svgContainer
+      .append("a")
+      .attr("href", skipLinkId)
+      .attr("id", "body-plot-skip-nav")
+      .text("Skip Charts");
+  }
 
   // Title
   svgContainer
@@ -95,6 +107,19 @@ export const createHumanBody: TCreateHumanBody = ({
 
   const xAxisLabels = svg.append("g").attr("id", "xAxisLabels");
 
+  if (xAxisLabel) {
+    xAxisLabels
+      .append("text")
+      .attr("y", plotHeight + 26)
+      .attr("x", x(tickInterval * numberOfVerticalAxis) / 2 + barStartOffset)
+      .attr("fill", "rgba(40,40,40,0.7)")
+      .attr("font-size", "12px")
+      .attr("aria-hidden", true)
+      .style("text-anchor", "middle")
+      .style("font-family", "Noto Sans")
+      .text(() => xAxisLabel);
+  }
+
   // Vertical Axis
   for (let i = 0; i < numberOfVerticalAxis; i++) {
     svg
@@ -113,19 +138,9 @@ export const createHumanBody: TCreateHumanBody = ({
         .attr("x", x(tickInterval) * i + barStartOffset)
         .attr("fill", "rgba(40,40,40,0.7)")
         .attr("font-size", "12px")
+        .attr("aria-hidden", true)
         .style("text-anchor", "middle")
         .text(() => (tickInterval * i).toLocaleString());
-    }
-    if (xAxisLabel) {
-      xAxisLabels
-        .append("text")
-        .attr("y", plotHeight + 26)
-        .attr("x", x(tickInterval * numberOfVerticalAxis) / 2 + barStartOffset)
-        .attr("fill", "rgba(94,94,94,0.7)")
-        .attr("font-size", "12px")
-        .style("text-anchor", "middle")
-        .style("font-family", "Noto Sans")
-        .text(() => xAxisLabel);
     }
   }
 
@@ -146,6 +161,7 @@ export const createHumanBody: TCreateHumanBody = ({
     .attr("x", barStartOffset - 10)
     .attr("fill", "rgb(10, 10, 10)")
     .attr("font-size", labelSize)
+    .attr("aria-hidden", true)
     .style("text-anchor", "end")
     .style("font-family", "Noto Sans")
     .text((d: any) => d[primarySiteKey])
@@ -247,6 +263,8 @@ export const createHumanBody: TCreateHumanBody = ({
       (d: any) => `Bar-Graph-${toClassName(d[primarySiteKey])}`,
     )
     .attr("class", (d: any) => `bar-${toClassName(d[primarySiteKey])}`)
+    .attr("aria-label", ariaLabel || "Bar")
+    .attr("tabindex", 0)
     .on("mouseover", function (event: any, d: any) {
       const organSelector = toClassName(d[primarySiteKey] as string);
       const organ = document.getElementById(organSelector);
@@ -304,7 +322,52 @@ export const createHumanBody: TCreateHumanBody = ({
       if (mouseOutHandler) mouseOutHandler(d);
       else tooltip.style("opacity", 0);
     })
-    .on("click", (_, d: any) => clickHandler(d));
+    .on("click", (_, d: any) => clickHandler(d))
+    .on("keydown", (e, d) => {
+      if (e.key === "Enter") {
+        clickHandler(d);
+      }
+    })
+    .on("focus", function (event: any, d: any) {
+      const organSelector = toClassName(d[primarySiteKey] as string);
+      const organ = document.getElementById(organSelector);
+      if (organ) organ.style.opacity = "1";
+
+      d3.select(this)
+        .attr("cursor", "pointer")
+        .transition("300")
+        .attr("fill", (d: any): string => {
+          const hsl = d3.hsl(d.color);
+          hsl.s = 1;
+          hsl.l = 0.7;
+          return d3.hsl(hsl).toString();
+        });
+
+      d3.select(`.primary-site-label-${toClassName(d[primarySiteKey])}`)
+        .transition("300")
+        .attr("fill", "red");
+
+      if (keyDownHandler) {
+        keyDownHandler({ elem: event.target, data: d });
+      }
+    })
+    .on("focusout", function (_, d: any) {
+      const organSelector = toClassName(d[primarySiteKey]);
+      const organ = document.getElementById(organSelector);
+      if (organ) organ.style.opacity = "0";
+
+      d3.select(this)
+        .transition("300")
+        .attr("fill", (d: any) => d.color);
+
+      d3.select(`.primary-site-label-${toClassName(d[primarySiteKey])}`)
+        .transition("300")
+        .attr("fill", "rgb(20, 20, 20)");
+
+      if (keyUpHandler) {
+        keyUpHandler();
+      }
+    });
 
   const svgs = document.querySelectorAll("#human-body-highlights svg");
 

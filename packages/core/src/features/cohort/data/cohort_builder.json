@@ -8,7 +8,8 @@
         "cases.disease_type",
         "cases.diagnoses.primary_diagnosis",
         "cases.primary_site",
-        "cases.diagnoses.tissue_or_organ_of_origin"
+        "cases.diagnoses.tissue_or_organ_of_origin",
+        "cases.upload.case_id"
       ],
       "docType": "cases",
       "index": "explore"
@@ -125,6 +126,12 @@
         "cases.samples.tumor_descriptor",
         "cases.samples.portions.analytes.aliquots.analyte_type"
       ],
+      "docType": "cases",
+      "index": "explore"
+    },
+    "molecular_filters": {
+      "label": "Molecular Filters",
+      "facets": ["genes.upload.gene_id", "ssms.upload.ssm_id"],
       "docType": "cases",
       "index": "explore"
     },

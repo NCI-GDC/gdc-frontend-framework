@@ -1,11 +1,12 @@
 import React from "react";
-import { FacetDefinition } from "@gff/core";
+import { FacetDefinition, fieldNameToTitle } from "@gff/core";
 import EnumFacet from "@/features/facets/EnumFacet";
 import NumericRangeFacet from "@/features/facets/NumericRangeFacet";
 import DateRangeFacet from "@/features/facets/DateRangeFacet";
 import ExactValueFacet from "@/features/facets/ExactValueFacet";
 import ToggleFacet from "@/features/facets/ToggleFacet";
 import { FacetRequiredHooks } from "@/features/facets/types";
+import UploadFacet from "@/features/facets/UploadFacet";
 
 /**
  * createFacetCard given a facet definition it will create a
@@ -127,6 +128,20 @@ export const createFacetCard = (
       />
     );
   }
+  if (facet.facet_type === "upload") {
+    const field = facet.field.replace("upload.", "");
+    return (
+      <UploadFacet
+        key={`${idPrefix}-exact-${field}`}
+        field={field}
+        customFaceTitle={field === "genes.gene_id" ? "gene" : undefined}
+        useClearFilter={dataFunctions.useClearFilter}
+        facetButtonName={facet.full}
+        width={width}
+        description={facet.description}
+      />
+    );
+  }
   return <div> Unknown FacetType {facet.facet_type}</div>;
 };
 
@@ -150,7 +165,7 @@ export const createFacetCardsFromList = (
   valueLabel: string,
   dismissCallback: (string) => void = undefined,
   hideIfEmpty = false,
-  facetName?: string,
+  facetNameSections = 1,
   width?: string,
 ): ReadonlyArray<React.ReactNode> => {
   return facets.map((x) =>
@@ -161,7 +176,7 @@ export const createFacetCardsFromList = (
       idPrefix,
       dismissCallback,
       hideIfEmpty,
-      facetName,
+      fieldNameToTitle(x.full, facetNameSections),
       width,
     ),
   );

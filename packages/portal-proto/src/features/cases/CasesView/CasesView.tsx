@@ -34,6 +34,7 @@ import {
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { useDeepCompareEffect } from "use-deep-compare";
+import TotalItems from "@/components/Table/TotalItem";
 
 const getSlideCountFromCaseSummary = (
   experimental_strategies: Array<{
@@ -487,12 +488,7 @@ export const ContextualCasesView: React.FC = () => {
             </FunctionButton>
           </div>
         }
-        tableTitle={
-          <>
-            Total of <b>{pagination?.total?.toLocaleString() ?? "..."}</b>{" "}
-            {pagination?.total > 1 ? "Cases" : "Case"}
-          </>
-        }
+        tableTitle={<TotalItems total={pagination?.total} itemName="case" />}
         columnSorting="manual"
         enableRowSelection={true}
         showControls={true}
