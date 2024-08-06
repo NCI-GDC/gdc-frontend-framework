@@ -8,11 +8,7 @@ import SetOperationsChartsForGeneSSMS from "@/features/set-operations/SetOperati
 import { SelectionScreenContext } from "@/features/user-flow/workflow/AnalysisWorkspace";
 import SelectionPanel from "@/features/set-operations/SelectionPanel";
 import { useRouter } from "next/router";
-import {
-  useCoreSelector,
-  selectMultipleCohortsById,
-  selectCohortById,
-} from "@gff/core";
+import { useCoreSelector, selectMultipleCohortsById } from "@gff/core";
 import { LoadingOverlay } from "@mantine/core";
 
 const SetOperationsSelection = (): JSX.Element => {
