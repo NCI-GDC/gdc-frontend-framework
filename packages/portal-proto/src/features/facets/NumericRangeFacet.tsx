@@ -977,8 +977,6 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
               field={field}
               rangeDatatype={rangeDatatype}
               hooks={{ ...hooks }}
-              minimum={minimum}
-              maximum={maximum}
               clearValues={clearValues}
               isFacetView={isFacetView}
             />
