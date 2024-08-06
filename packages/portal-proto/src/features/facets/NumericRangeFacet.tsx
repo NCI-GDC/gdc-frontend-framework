@@ -751,7 +751,7 @@ const Year: React.FC<NumericFacetData> = ({
     <div className="flex flex-col w-100 space-y-2 px-2 mt-1 ">
       <RangeInputWithPrefixedRanges
         hooks={{ ...hooks }}
-        units="years"
+        units="year"
         valueLabel={valueLabel}
         minimum={adjMinimum}
         maximum={adjMaximum}
