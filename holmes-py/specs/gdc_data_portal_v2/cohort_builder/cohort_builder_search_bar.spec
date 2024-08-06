@@ -61,11 +61,11 @@ with automation, performing it manually works as expected.
 * Expected result "age at index" in the search bar on the Cohort Builder page
 
 * Select search bar result and validate the presence of correct facet card
-  |text_to_click          |facet_to_check         |
-  |-----------------------|-----------------------|
-  |age at index           |Age at Index           |
+  |text_to_click          |facet_to_check           |
+  |-----------------------|-----------------------  |
+  |age at index           |Demographic Age at Index |
 
 * Perform the following actions from "Custom Filters" tab on the Cohort Builder page
-  |facet_name       |action               |
-  |-----------------|---------------------|
-  |Age at Index     |Remove the facet     |
+  |facet_name               |action               |
+  |-------------------------|---------------------|
+  |Demographic Age at Index |Remove the facet     |
