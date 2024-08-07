@@ -30,7 +30,7 @@ RUN mkdir /usr/share/ca-certificates/extra
 COPY /app/gdc_ca.crt /usr/share/ca-certificates/extra/gdc_ca.crt
 RUN cat /usr/share/ca-certificates/extra/gdc_ca.crt
 RUN chmod 644 /usr/share/ca-certificates/extra/gdc_ca.crt
-RUN echo gdc_ca.crt >> /etc/ca-certificates.conf
+RUN echo "extra/gdc_ca.crt" >> /etc/ca-certificates.conf
 RUN update-ca-certificates
 
 RUN pip install -r /app/docker-requirements.txt
