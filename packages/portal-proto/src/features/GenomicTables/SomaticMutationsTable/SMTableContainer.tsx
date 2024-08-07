@@ -429,6 +429,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               <AddToSetModal
                 opened={showAddModal}
                 filters={setFilters}
+                cohortFilters={
+                  selectedMutations.length === 0 ? cohortFilters : undefined
+                }
                 addToCount={
                   selectedMutations.length === 0
                     ? data?.ssmsTotal
@@ -447,6 +450,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               <RemoveFromSetModal
                 opened={showRemoveModal}
                 filters={setFilters}
+                cohortFilters={
+                  selectedMutations.length === 0 ? cohortFilters : undefined
+                }
                 removeFromCount={
                   selectedMutations.length === 0
                     ? data?.ssmsTotal

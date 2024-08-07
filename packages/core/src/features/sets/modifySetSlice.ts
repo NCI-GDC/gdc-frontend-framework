@@ -38,7 +38,7 @@ export const modifySetSlice = graphqlAPISlice
         ],
       }),
       appendToSsmSet: builder.mutation({
-        query: ({ setId, filters, size, score }) => ({
+        query: ({ setId, filters, case_filters, size, score }) => ({
           graphQLQuery: `mutation mutationsAppendExploreSsmSetMutation(
           $input: AppendSetInput
         ) {
@@ -58,6 +58,7 @@ export const modifySetSlice = graphqlAPISlice
             input: {
               set_id: `set_id:${setId}`,
               filters,
+              case_filters,
               size,
               score,
             },

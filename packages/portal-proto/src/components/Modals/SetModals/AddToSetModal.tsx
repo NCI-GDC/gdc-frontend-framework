@@ -26,6 +26,7 @@ import { SET_COUNT_LIMIT } from "./constants";
 
 interface AddToSetModalProps {
   readonly filters: FilterSet;
+  readonly cohortFilters?: FilterSet;
   readonly addToCount: number;
   readonly setType: SetTypes;
   readonly setTypeLabel: string;
@@ -46,6 +47,7 @@ interface AddToSetModalProps {
 
 const AddToSetModal: React.FC<AddToSetModalProps> = ({
   filters,
+  cohortFilters,
   addToCount,
   setType,
   setTypeLabel,
@@ -130,6 +132,7 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
           onClick={() => {
             appendToSet({
               setId: selectedSets[0][0],
+              case_filters: buildCohortGqlOperator(cohortFilters) ?? {},
               filters: {
                 content: buildCohortGqlOperator(filters)
                   ? [
