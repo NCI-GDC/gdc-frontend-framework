@@ -45,7 +45,7 @@ class WebDriver:
     @before_suite
     def start_page(self):
         if getenv("IS_DOCKER") == "1":
-            ignore_https_errors = True
+            ignore_https_errors = False
         else:
             ignore_https_errors = False
         WebDriver.context = WebDriver.instance.new_context(
