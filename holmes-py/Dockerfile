@@ -26,9 +26,9 @@ COPY . /app
 
 RUN update-ca-certificates
 RUN cat /app/gdc_ca.crt
-RUN mv /app/gdc_ca.crt /usr/local/share/ca-certificates/gdc_ca.crt
-RUN cat /usr/local/share/ca-certificates/gdc_ca.crt
-RUN chmod 644 /usr/local/share/ca-certificates/gdc_ca.crt
+RUN mv /app/gdc_ca.crt /usr/share/ca-certificates/gdc_ca.crt
+RUN cat /usr/share/ca-certificates/gdc_ca.crt
+RUN chmod 644 /usr/share/ca-certificates/gdc_ca.crt
 RUN echo gdc_ca.crt >> /etc/ca-certificates.conf
 RUN update-ca-certificates
 
