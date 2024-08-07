@@ -23,6 +23,9 @@ RUN apt-get update && apt-get install -y \
 RUN curl -SsL https://downloads.gauge.org/stable | sh
 
 COPY . /app
+ADD gdc_ca.crt /usr/local/share/ca-certificates/gdc_ca.crt
+RUN chmod 644 /usr/local/share/ca-certificates/gdc_ca.crt && sudo update-ca-certificates
+
 RUN pip install -r /app/docker-requirements.txt
 
 RUN npm install -g --force playwright@1.23.1 && \
