@@ -130,7 +130,11 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
       containerComponent={
         <VictoryContainer
           containerRef={
-            chartRef ? (ref) => (chartRef.current = ref) : undefined
+            chartRef
+              ? (ref: HTMLElement | null) => {
+                  if (ref) chartRef.current = ref;
+                }
+              : undefined
           }
           role="figure"
         />

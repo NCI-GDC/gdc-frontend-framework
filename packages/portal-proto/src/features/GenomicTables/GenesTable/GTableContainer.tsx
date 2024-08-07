@@ -42,6 +42,7 @@ import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon
 import GenesTableSubcomponent from "./GenesTableSubcomponent";
 import { convertDateToString } from "@/utils/date";
 import { ComparativeSurvival } from "@/features/genomic/types";
+import TotalItems from "@/components/Table/TotalItem";
 
 export interface GTableContainerProps {
   readonly selectedSurvivalPlot: ComparativeSurvival;
@@ -435,11 +436,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           </div>
         }
         tableTitle={
-          <>
-            Total of{" "}
-            <b>{data?.genes?.genes_total?.toLocaleString("en-US") ?? "..."}</b>{" "}
-            {data?.genes?.genes_total == 1 ? "gene" : "genes"}
-          </>
+          <TotalItems total={data?.genes?.genes_total} itemName="gene" />
         }
         pagination={pagination}
         showControls={true}

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { ColumnDef, SortingState } from "@tanstack/react-table";
 import { PaginationOptions } from "@/components/Table/types";
 import { useDeepCompareEffect } from "use-deep-compare";
@@ -74,7 +74,7 @@ function useStandardPagination<TData>(
     setColumnSortingFns(sortingFns);
   }, [columns, recursivelyExtractSortingFns]);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     const tempData = [...fullData];
     if (activeSort.length > 0) {
       // If multiple filters

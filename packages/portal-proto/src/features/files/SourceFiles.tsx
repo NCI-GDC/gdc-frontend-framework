@@ -1,16 +1,18 @@
+import { Dispatch, SetStateAction } from "react";
 import GenericLink from "@/components/GenericLink";
 import { TableActionButtons } from "@/components/TableActionButtons";
 import { AccessType, CartFile, GdcCartFile, GdcFile } from "@gff/core";
 import { createColumnHelper } from "@tanstack/react-table";
 import fileSize from "filesize";
-import { Dispatch, SetStateAction, useMemo } from "react";
 import { mapGdcFileToCartFile } from "./utils";
 import { fileInCart } from "@/utils/index";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
+import TotalItems from "@/components/Table/TotalItem";
+import { useDeepCompareMemo } from "use-deep-compare";
 
-type AnalysisInputDataItem = {
+type SourceFilesItems = {
   file: GdcCartFile;
   access: AccessType;
   file_name: string;
@@ -21,7 +23,9 @@ type AnalysisInputDataItem = {
   file_size: string;
 };
 
-const AnalysisInputFiles = ({
+const SourceFilesTableColumnHelper = createColumnHelper<SourceFilesItems>();
+
+const SourceFiles = ({
   inputFiles,
   currentCart,
   setFileToDownload,
@@ -30,7 +34,7 @@ const AnalysisInputFiles = ({
   currentCart: CartFile[];
   setFileToDownload: Dispatch<SetStateAction<GdcFile>>;
 }): JSX.Element => {
-  const data: AnalysisInputDataItem[] = useMemo(() => {
+  const data: SourceFilesItems[] = useDeepCompareMemo(() => {
     return inputFiles.map((ipFile) => ({
       file: ipFile,
       access: ipFile.access,
@@ -43,16 +47,14 @@ const AnalysisInputFiles = ({
     }));
   }, [inputFiles]);
 
-  const columnHelper = createColumnHelper<AnalysisInputDataItem>();
-
-  const columns = useMemo(
+  const columns = useDeepCompareMemo(
     () => [
-      columnHelper.accessor("access", {
+      SourceFilesTableColumnHelper.accessor("access", {
         id: "access",
         header: "Access",
         cell: ({ getValue }) => <FileAccessBadge access={getValue()} />,
       }),
-      columnHelper.accessor("file_name", {
+      SourceFilesTableColumnHelper.accessor("file_name", {
         header: "File Name",
         cell: ({ row }) => (
           <GenericLink
@@ -61,19 +63,19 @@ const AnalysisInputFiles = ({
           />
         ),
       }),
-      columnHelper.accessor("data_category", {
+      SourceFilesTableColumnHelper.accessor("data_category", {
         header: "Data Category",
       }),
-      columnHelper.accessor("data_type", {
+      SourceFilesTableColumnHelper.accessor("data_type", {
         header: "Data Type",
       }),
-      columnHelper.accessor("data_format", {
+      SourceFilesTableColumnHelper.accessor("data_format", {
         header: "Data Format",
       }),
-      columnHelper.accessor("file_size", {
+      SourceFilesTableColumnHelper.accessor("file_size", {
         header: "Size",
       }),
-      columnHelper.display({
+      SourceFilesTableColumnHelper.display({
         id: "action",
         header: "Action",
         cell: ({ row }) => (
@@ -86,7 +88,7 @@ const AnalysisInputFiles = ({
         ),
       }),
     ],
-    [columnHelper, currentCart, setFileToDownload],
+    [currentCart, setFileToDownload],
   );
 
   return (
@@ -94,6 +96,7 @@ const AnalysisInputFiles = ({
       customDataTestID="table-source-files-file-summary"
       data={data}
       columns={columns}
+      tableTitle={<TotalItems total={data?.length} itemName="file" />}
       additionalControls={
         <div className="mt-3.5">
           <HeaderTitle>Source Files</HeaderTitle>
@@ -103,4 +106,4 @@ const AnalysisInputFiles = ({
   );
 };
 
-export default AnalysisInputFiles;
+export default SourceFiles;
