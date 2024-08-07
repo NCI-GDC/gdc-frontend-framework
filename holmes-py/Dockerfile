@@ -24,7 +24,7 @@ RUN curl -SsL https://downloads.gauge.org/stable | sh
 
 COPY . /app
 RUN mv /app/gdc_ca.crt /usr/local/share/ca-certificates/gdc_ca.crt
-RUN chmod 644 /usr/local/share/ca-certificates/gdc_ca.crt && sudo update-ca-certificates
+RUN chmod 644 /usr/local/share/ca-certificates/gdc_ca.crt && update-ca-certificates
 
 RUN pip install -r /app/docker-requirements.txt
 
