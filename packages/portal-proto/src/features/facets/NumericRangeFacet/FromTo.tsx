@@ -67,10 +67,12 @@ const WarningOrError: React.FC<WarningOrErrorProps> = ({
 }: WarningOrErrorProps) => (
   <div className="flex flex-col gap-1 my-1">
     {hasErrors ? (
-      <span className="text-[#AD2B4A]">
-        <ErrorWarningIcon className="inline mr-0.5" />
-        Please enter a number between {lowerUnitRange} and {upperUnitRange}.
-      </span>
+      <div className="text-utility-error flex-col text-sm">
+        <ErrorWarningIcon className="mr-2" />
+        <span>
+          Please enter a number between {lowerUnitRange} and {upperUnitRange}.
+        </span>
+      </div>
     ) : null}
     {isWarning ? (
       <div className="bg-utility-warning border-utility-warning">

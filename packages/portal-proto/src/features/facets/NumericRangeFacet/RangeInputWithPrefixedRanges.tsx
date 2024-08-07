@@ -136,20 +136,22 @@ const RangeInputWithPrefixedRanges: React.FC<
   return (
     <>
       <LoadingOverlay data-testid="loading-spinner" visible={!isSuccess} />
-      <div className="flex flex-col space-y-2 mt-1 ">
+      <div className="flex flex-col space-y-2 mt-1">
         <div className="flex justify-items-stretch items-center">
-          <input
-            aria-label="custom range"
-            type="radio"
-            className={radioStyle}
-            id={`${field}_custom`}
-            name={`${field}_range_selection`}
-            checked={selectedRange === "custom"}
-            onChange={() => {
-              setSelectedRange("custom");
-              setIsCustom(true);
-            }}
-          />
+          <div>
+            <input
+              aria-label="custom range"
+              type="radio"
+              className={radioStyle}
+              id={`${field}_custom`}
+              name={`${field}_range_selection`}
+              checked={selectedRange === "custom"}
+              onChange={() => {
+                setSelectedRange("custom");
+                setIsCustom(true);
+              }}
+            />
+          </div>
           <FromTo
             minimum={minimum}
             maximum={maximum}
