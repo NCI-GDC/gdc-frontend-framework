@@ -127,11 +127,11 @@ const FromTo: React.FC<FromToProps> = ({
   const clearFilter = useClearFilter();
   const updateFacetFilters = useUpdateFacetFilters();
   const unitsLabel = "%" != units ? ` ${units}` : "%";
-  const lowerUnitRange =
-    units !== "years" ? minimum : getLowerAgeYears(minimum);
-  const upperUnitRange =
-    units !== "years" ? maximum : getLowerAgeYears(maximum);
   const queryInYears = rangeDatatype === "age_in_years";
+  const lowerUnitRange =
+    units !== "years" || queryInYears ? minimum : getLowerAgeYears(minimum);
+  const upperUnitRange =
+    units !== "years" || queryInYears ? maximum : getLowerAgeYears(maximum);
 
   const form = useForm({
     initialValues: {
@@ -237,7 +237,6 @@ const FromTo: React.FC<FromToProps> = ({
             )
           : undefined,
     };
-    console.log({ data });
     const rangeFilters = buildRangeOperator(field, data);
     if (rangeFilters === undefined) {
       clearFilter(field);
