@@ -61,14 +61,11 @@ table-associated-cases-biospecimens-file-summary
     |Birdseed                               |
     |2023-03-10                             |
 
-## Reference Genome Table
-* Verify the table "Reference Genome File Summary" is displaying this information
-    |text_to_validate                       |
-    |---------------------------------------|
-    |Genome Build                           |
-    |GRCh38.p0                              |
-    |Genome Name                            |
-    |GRCh38.d1.vd1                          |
+## Verify Reference Genome Table is Not Present
+* Verify these items are not on the page
+    |item_to_validate                               |
+    |-----------------------------------------------|
+    |Table Reference Genome File Summary            |
 
 ## Source Files
 * Verify the table "Source Files File Summary" is displaying this information
@@ -102,6 +99,16 @@ table-associated-cases-biospecimens-file-summary
     |-----------------------------------------------|
     |Table Downstream Analyses Files File Summary   |
 
+## Navigate to Summary Page: 593eee9b-bd8e-4672-aed4-24d406b257fa
+* Quick search for "593eee9b-bd8e-4672-aed4-24d406b257fa" and go to its page
+## Reference Genome Table
+* Verify the table "Reference Genome File Summary" is displaying this information
+    |text_to_validate                       |
+    |---------------------------------------|
+    |Genome Build                           |
+    |GRCh38.p0                              |
+    |Genome Name                            |
+    |GRCh38.d1.vd1                          |
 
 ## Navigate to Summary Page: 61ca2fed-0a04-4987-a7fa-a1f7151f3ee1
 * Quick search for "61ca2fed-0a04-4987-a7fa-a1f7151f3ee1" and go to its page

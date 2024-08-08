@@ -1,6 +1,6 @@
 import { render } from "test-utils";
 import * as core from "@gff/core";
-import QueryRepresentationLabel from "./QueryRepresentationLabel";
+import QueryRepresentationLabel from "../QueryRepresentationLabel";
 
 jest.spyOn(core, "useCoreDispatch").mockReturnValue(jest.fn());
 jest.spyOn(core, "useGeneSymbol").mockReturnValue({

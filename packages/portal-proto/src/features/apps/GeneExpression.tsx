@@ -1,8 +1,8 @@
 import { FC } from "react";
-import { GeneExpressionWrapper } from "../proteinpaint/GeneExpressionWrapper";
+import { MatrixWrapper } from "../proteinpaint/MatrixWrapper";
 
 const GeneExpressionApp: FC = () => {
-  return <GeneExpressionWrapper />;
+  return <MatrixWrapper chartType="hierCluster" />;
 };
 
 export default GeneExpressionApp;
