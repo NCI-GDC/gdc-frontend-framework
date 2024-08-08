@@ -65,27 +65,31 @@ const WarningOrError: React.FC<WarningOrErrorProps> = ({
   lowerUnitRange,
   upperUnitRange,
 }: WarningOrErrorProps) => (
-  <div className="flex flex-col gap-1 my-1">
+  <div className="flex flex-col gap-1 my-1 text-xs">
     {hasErrors ? (
-      <div className="text-utility-error flex-col text-sm">
-        <ErrorWarningIcon className="mr-2" />
+      <div className="text-utility-error flex gap-2">
+        <div>
+          <ErrorWarningIcon size="1rem" />
+        </div>
         <span>
           Please enter a number between {lowerUnitRange} and {upperUnitRange}.
         </span>
       </div>
     ) : null}
     {isWarning ? (
-      <div className="bg-utility-warning border-utility-warning">
+      <div className="bg-utility-warning border-utility-warning flex gap-2 p-1">
+        <div>
+          <WarningIcon size="1rem" />
+        </div>
         <span>
-          {" "}
-          <WarningIcon size="24px" />
-          {`For health information privacy concerns, individuals over 89 will all appear as 90 years old. For more information, click `}
+          {`For health information privacy concerns, individuals over 89 will all appear as 90 years old. For more information, `}
           <a
             href="https://gdc.cancer.gov/about-gdc/gdc-faqs#collapsible-item-618-question"
             rel="noopener noreferrer"
             target="_blank"
+            className="underline"
           >
-            here
+            click here
           </a>
           .
         </span>
