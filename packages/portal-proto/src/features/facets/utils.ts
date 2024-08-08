@@ -18,7 +18,7 @@ import {
 export const DEFAULT_VISIBLE_ITEMS = 6;
 const RANGE_DECIMAL_PRECISION = 1;
 
-const symmetricalRound = (x: number): number =>
+export const symmetricalRound = (x: number): number =>
   x < 0 ? Math.round(Math.abs(x)) * -1 : Math.round(x);
 
 // TODO write unit test for these

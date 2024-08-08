@@ -74,6 +74,8 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
   const setValues = useDeepCompareCallback(
     () =>
       form.setValues((prev) => ({ ...prev, name: initialSetName, top: max })),
+    // https://github.com/mantinedev/mantine/issues/5338
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [form.setValues, initialSetName, max],
   );
 
