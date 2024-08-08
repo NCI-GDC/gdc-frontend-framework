@@ -607,13 +607,17 @@ test("test to build range and query in years", () => {
 
 describe("test years to days conversion", () => {
   test("years to days", () => {
-    expect(adjustYearsToDaysIfUnitsAreYears(2, "years")).toEqual(731);
-    expect(adjustYearsToDaysIfUnitsAreYears(0, "years")).toEqual(0);
-    expect(adjustYearsToDaysIfUnitsAreYears(7305, "days")).toEqual(7305);
-    expect(adjustYearsToDaysIfUnitsAreYears(80, "years")).toEqual(29220);
-    expect(adjustYearsToDaysIfUnitsAreYears(-90, "years")).toEqual(-32873);
-    expect(adjustYearsToDaysIfUnitsAreYears(-70, "years")).toEqual(-25568);
-    expect(adjustYearsToDaysIfUnitsAreYears(90, "years")).toEqual(32873);
+    expect(adjustYearsToDaysIfUnitsAreYears(2, "years", false)).toEqual(731);
+    expect(adjustYearsToDaysIfUnitsAreYears(0, "years", false)).toEqual(0);
+    expect(adjustYearsToDaysIfUnitsAreYears(7305, "days", false)).toEqual(7305);
+    expect(adjustYearsToDaysIfUnitsAreYears(80, "years", false)).toEqual(29220);
+    expect(adjustYearsToDaysIfUnitsAreYears(-90, "years", false)).toEqual(
+      -32873,
+    );
+    expect(adjustYearsToDaysIfUnitsAreYears(-70, "years", false)).toEqual(
+      -25568,
+    );
+    expect(adjustYearsToDaysIfUnitsAreYears(90, "years", false)).toEqual(32873);
   });
 });
 
