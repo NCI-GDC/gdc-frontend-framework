@@ -253,7 +253,11 @@ const FromTo: React.FC<FromToProps> = ({
             className="text-sm flex-1"
             placeholder={`Min: ${lowerUnitRange}${unitsLabel} `}
             // units are always days
-            value={form.values.fromValue}
+            value={
+              typeof form.values.fromValue === "number"
+                ? form.values.fromValue
+                : ""
+            }
             onChange={(value) => {
               if (value === "" || typeof value === "string") return;
               form.setFieldValue("fromValue", value);
@@ -290,7 +294,9 @@ const FromTo: React.FC<FromToProps> = ({
 
               changedCallback();
             }}
-            value={form.values.toValue}
+            value={
+              typeof form.values.toValue === "number" ? form.values.toValue : ""
+            }
             error={form?.errors?.toValue}
             hideControls
             aria-label="input to value"
