@@ -9,7 +9,7 @@
   },
   {
     "facet_filter": "ssms.ssm_id",
-    "name": "Somatic Mutation",
+    "name": "Somatic Mutations",
     "type": "set",
     "docType": "ssms",
     "toolTip": "Filter Mutation Frequency by entering/uploading specific Simple Somatic Mutations (SSMs) or selecting mutation sets"
