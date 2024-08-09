@@ -50,10 +50,20 @@ const SetOperationsSelection = (): JSX.Element => {
   const isCohortComparisonDemo =
     cohort1Id === "demoCohort1Id" && cohort2Id === "demoCohort2Id";
 
+  useEffect(() => {
+    if (cohorts.length > 0 || isCohortComparisonDemo) {
+      setSelectedEntityType("cohort");
+
+      // A cohort has been deleted, kick user back to selection screen
+      if (cohorts.length < 2 && !isCohortComparisonDemo) {
+        setSelectionScreenOpen(true);
+      }
+    }
+  }, [cohorts, isCohortComparisonDemo, setSelectionScreenOpen]);
+
   return !ready ? (
     <LoadingOverlay data-testid="loading-spinner" visible />
-  ) : (!cohort1Id && !cohort2Id && selectionScreenOpen) ||
-    (cohorts.length < 2 && !isCohortComparisonDemo) ? (
+  ) : selectionScreenOpen ? (
     <SelectionPanel
       app={app}
       setActiveApp={setActiveApp}
@@ -70,7 +80,7 @@ const SetOperationsSelection = (): JSX.Element => {
       selectedEntityType={selectedEntityType}
       setSelectedEntityType={setSelectedEntityType}
     />
-  ) : !cohort1Id && !cohort2Id && selectedEntityType !== "cohort" ? ( // not a cohort, so presumably an existing gene or mutation set
+  ) : selectedEntityType !== "cohort" ? ( // not a cohort, so presumably an existing gene or mutation set
     // use the set operations panel as usual
     <SetOperationsChartsForGeneSSMS
       selectedEntities={selectedEntities}
