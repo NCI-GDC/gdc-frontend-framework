@@ -53,15 +53,19 @@ const SetOperationsSelection = (): JSX.Element => {
   return !ready ? (
     <LoadingOverlay data-testid="loading-spinner" visible />
   ) : (!cohort1Id && !cohort2Id && selectionScreenOpen) ||
-    cohorts.length < 2 ? (
+    (cohorts.length < 2 && !isCohortComparisonDemo) ? (
     <SelectionPanel
       app={app}
       setActiveApp={setActiveApp}
       setOpen={setSelectionScreenOpen}
-      selectedEntities={cohorts.map((cohort) => ({
-        id: cohort.id,
-        name: cohort.name,
-      }))}
+      selectedEntities={
+        selectedEntityType === "cohort"
+          ? cohorts.map((cohort) => ({
+              id: cohort.id,
+              name: cohort.name,
+            }))
+          : selectedEntities
+      }
       setSelectedEntities={setSelectedEntities}
       selectedEntityType={selectedEntityType}
       setSelectedEntityType={setSelectedEntityType}
