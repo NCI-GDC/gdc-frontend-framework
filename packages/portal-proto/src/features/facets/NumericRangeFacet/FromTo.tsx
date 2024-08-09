@@ -133,13 +133,15 @@ const FromTo: React.FC<FromToProps> = ({
   const form = useForm({
     initialValues: {
       fromOp: values?.fromOp ?? ">=",
-      fromValue: values?.from
-        ? adjustDaysToYearsIfUnitsAreYears(values.from, units)
-        : undefined,
+      fromValue:
+        typeof values?.from === "number"
+          ? adjustDaysToYearsIfUnitsAreYears(values.from, units)
+          : undefined,
       toOp: values?.toOp ?? "<",
-      toValue: values?.to
-        ? adjustDaysToYearsIfUnitsAreYears(values.to, units)
-        : undefined,
+      toValue:
+        typeof values?.to === "number"
+          ? adjustDaysToYearsIfUnitsAreYears(values.to, units)
+          : undefined,
     },
     validate: {
       fromValue: (value) => {
@@ -251,7 +253,7 @@ const FromTo: React.FC<FromToProps> = ({
             className="text-sm flex-1"
             placeholder={`Min: ${lowerUnitRange}${unitsLabel} `}
             // units are always days
-            value={form.values.fromValue ?? ""}
+            value={form.values.fromValue}
             onChange={(value) => {
               if (value === "" || typeof value === "string") return;
               form.setFieldValue("fromValue", value);
@@ -288,7 +290,7 @@ const FromTo: React.FC<FromToProps> = ({
 
               changedCallback();
             }}
-            value={form.values.toValue ?? ""}
+            value={form.values.toValue}
             error={form?.errors?.toValue}
             hideControls
             aria-label="input to value"
