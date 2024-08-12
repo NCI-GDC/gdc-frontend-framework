@@ -10,6 +10,7 @@ import SelectionPanel from "@/features/set-operations/SelectionPanel";
 import { useRouter } from "next/router";
 import { useCoreSelector, selectMultipleCohortsById } from "@gff/core";
 import { LoadingOverlay } from "@mantine/core";
+import { useDeepCompareEffect } from "use-deep-compare";
 
 const SetOperationsSelection = (): JSX.Element => {
   const [selectedEntities, setSelectedEntities] = useState<SelectedEntities>(
@@ -50,7 +51,7 @@ const SetOperationsSelection = (): JSX.Element => {
   const isCohortComparisonDemo =
     cohort1Id === "demoCohort1Id" && cohort2Id === "demoCohort2Id";
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     if (cohorts.length > 0 || isCohortComparisonDemo) {
       setSelectedEntityType("cohort");
 
