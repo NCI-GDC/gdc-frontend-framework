@@ -42,7 +42,7 @@ but it usually requires a wait. So I've put 5 seconds.
 ## Validate Custom Mutation Filters
 * Switch to "Mutations" tab in the Mutation Frequency app
 * Wait for table loading spinner
-* Select "Somatic Mutation" in the Mutation Frequency app
+* Select "Somatic Mutations" in the Mutation Frequency app
 * Upload "Custom Mutation Filters" "txt" from "Mutation Frequency" in "Mutation Frequency Custom Filter" through "Browse"
 * Pause "5" seconds
 * Is text "4 submitted mutation identifiers mapped to 4 unique GDC mutations" present on the page
@@ -63,4 +63,4 @@ but it usually requires a wait. So I've put 3 seconds.
 * Perform the following actions on a filter card
   |filter_name              |action               |
   |-------------------------|---------------------|
-  |Somatic Mutation         |clear selection      |
+  |Somatic Mutations        |clear selection      |

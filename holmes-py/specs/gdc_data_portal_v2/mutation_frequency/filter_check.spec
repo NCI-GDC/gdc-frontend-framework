@@ -17,7 +17,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |filter_name            |
   |-----------------------|
   |Mutated Gene           |
-  |Somatic Mutation       |
+  |Somatic Mutations      |
   |Biotype                |
   |VEP Impact             |
   |SIFT Impact            |
@@ -30,7 +30,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |filter_name            |
   |-----------------------|
   |Mutated Gene           |
-  |Somatic Mutation       |
+  |Somatic Mutations      |
   |Biotype                |
   |VEP Impact             |
   |SIFT Impact            |
