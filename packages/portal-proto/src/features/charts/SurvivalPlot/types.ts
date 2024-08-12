@@ -31,6 +31,7 @@ export interface SurvivalPlotProps {
   readonly downloadFileName?: string;
   readonly tableTooltip?: boolean;
   readonly noDataMessage?: string;
+  readonly isLoading?: boolean;
 }
 
 export interface SurvivalPlotLegend {
