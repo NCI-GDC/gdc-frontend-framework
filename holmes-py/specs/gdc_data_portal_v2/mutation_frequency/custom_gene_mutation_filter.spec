@@ -14,7 +14,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 
 ## Validate Custom Gene Filters
 * Is text "Overall Survival Plot" present on the page
-* Select "Custom Gene Filters" in the Mutation Frequency app
+* Select "Genes" in the Mutation Frequency app
 * Upload "Custom Gene Filters" "txt" from "Mutation Frequency" in "Mutation Frequency Custom Filter" through "Browse"
 * Pause "5" seconds
 * Is text "6 submitted gene identifiers mapped to 6 unique GDC genes" present on the page
@@ -37,12 +37,12 @@ but it usually requires a wait. So I've put 5 seconds.
 * Perform the following actions on a filter card
   |filter_name          |action               |
   |---------------------|---------------------|
-  |Custom Gene Filters  |clear selection      |
+  |Mutated Gene         |clear selection      |
 
 ## Validate Custom Mutation Filters
 * Switch to "Mutations" tab in the Mutation Frequency app
 * Wait for table loading spinner
-* Select "Custom Mutation Filters" in the Mutation Frequency app
+* Select "Somatic Mutation" in the Mutation Frequency app
 * Upload "Custom Mutation Filters" "txt" from "Mutation Frequency" in "Mutation Frequency Custom Filter" through "Browse"
 * Pause "5" seconds
 * Is text "4 submitted mutation identifiers mapped to 4 unique GDC mutations" present on the page
@@ -63,4 +63,4 @@ but it usually requires a wait. So I've put 3 seconds.
 * Perform the following actions on a filter card
   |filter_name              |action               |
   |-------------------------|---------------------|
-  |Custom Mutation Filters  |clear selection      |
+  |Somatic Mutation         |clear selection      |
