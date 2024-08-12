@@ -1,5 +1,6 @@
 import React, { ReactNode, useState } from "react";
 import { Tooltip } from "@mantine/core";
+import { showNotification } from "@mantine/notifications";
 import { FaPlus as PlusIcon } from "react-icons/fa";
 import tw from "tailwind-styled-components";
 import { FilterSet } from "@gff/core";
@@ -115,11 +116,22 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
 
             if (filtersCallback) {
               setLoading(true);
-              const createdFilters = await filtersCallback();
-              setCohortFilters(createdFilters);
-              setLoading(false);
+              await filtersCallback()
+                .then((createdFilters) => {
+                  setCohortFilters(createdFilters);
+                  setLoading(false);
+                  setShowSaveCohort(true);
+                })
+                .catch(() => {
+                  showNotification({
+                    message: "Problem creating cohort.",
+                    color: "red",
+                    closeButtonProps: { "aria-label": "Close notification" },
+                  });
+                });
+            } else {
+              setShowSaveCohort(true);
             }
-            setShowSaveCohort(true);
           }}
           disabled={disabled}
           $fullWidth={React.isValidElement(label)} // if label is JSX.Element take the full width

@@ -117,12 +117,30 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
   );
   const [createSet] = useCreateCaseSetFromFiltersMutation();
 
-  const generateFilters = async (
-    primarySetId: string,
-    comparisonSetId: string,
-  ) => {
+  const generatePrimaryFilters = async () => {
     return await createSet({
-      filters: makeSurvivalCaseFilters(primarySetId, comparisonSetId),
+      filters: makeSurvivalCaseFilters(caseSetIds[0], caseSetIds[1]),
+      intent: "portal",
+      set_type: "frozen",
+    })
+      .unwrap()
+      .then((setId) => {
+        return {
+          mode: "and",
+          root: {
+            "cases.case_id": {
+              field: "cases.case_id",
+              operands: [`set_id:${setId}`],
+              operator: "includes",
+            },
+          },
+        } as FilterSet;
+      });
+  };
+
+  const generateComparisonFilters = async () => {
+    return await createSet({
+      filters: makeSurvivalCaseFilters(caseSetIds[1], caseSetIds[0]),
       intent: "portal",
       set_type: "frozen",
     })
@@ -217,9 +235,7 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
                     <CohortCreationButton
                       numCases={cohort1Count}
                       label={cohort1Count.toLocaleString()}
-                      filtersCallback={async () =>
-                        generateFilters(caseSetIds[0], caseSetIds[1])
-                      }
+                      filtersCallback={generatePrimaryFilters}
                     />
                   </td>
                   <td>{((cohort1Count / counts[0]) * 100).toFixed(0)}%</td>
@@ -227,9 +243,7 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
                     <CohortCreationButton
                       numCases={cohort2Count}
                       label={cohort2Count.toLocaleString()}
-                      filtersCallback={async () =>
-                        generateFilters(caseSetIds[1], caseSetIds[0])
-                      }
+                      filtersCallback={generateComparisonFilters}
                     />
                   </td>
                   <td>{((cohort2Count / counts[1]) * 100).toFixed(0)}%</td>

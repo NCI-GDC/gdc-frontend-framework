@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { UseMutation } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { ActionIcon, Loader, Tooltip } from "@mantine/core";
+import { showNotification } from "@mantine/notifications";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { MutationDefinition } from "@reduxjs/toolkit/query";
 import { SetOperationEntityType } from "@/features/set-operations/types";
@@ -66,8 +67,21 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
         dispatch,
         hideNotification: true,
       });
+    } else if (response.isError) {
+      showNotification({
+        message: "Problem exporting sets.",
+        color: "red",
+        closeButtonProps: { "aria-label": "Close notification" },
+      });
     }
-  }, [dispatch, entityType, response.data, response.isSuccess, setKey]);
+  }, [
+    dispatch,
+    entityType,
+    response.data,
+    response.isSuccess,
+    response.isError,
+    setKey,
+  ]);
 
   return (
     <Tooltip

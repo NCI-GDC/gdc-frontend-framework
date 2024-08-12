@@ -14,10 +14,11 @@ import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { CountsIcon } from "@/components/tailwindComponents";
 import { Tooltip } from "@mantine/core";
+import { showNotification } from "@mantine/notifications";
 
 interface CasesCohortButtonProps {
   readonly onCreateSet: () => void;
-  readonly response: { isSuccess: boolean; data?: string };
+  readonly response: { isSuccess: boolean; isError: boolean; data?: string };
   readonly cases: readonly string[];
   readonly numCases: number;
   readonly fetchingCases?: boolean;
@@ -38,8 +39,15 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
   useEffect(() => {
     if (response.isSuccess) {
       setShowSaveCohort(true);
+    } else if (response.isError) {
+      showNotification({
+        message: "Problem creating cohort.",
+        color: "red",
+        closeButtonProps: { "aria-label": "Close notification" },
+      });
     }
-  }, [response.isSuccess]);
+  }, [response.isSuccess, response.isError]);
+
   const dropDownIcon = (
     <DropdownWithIcon
       dropdownElements={
