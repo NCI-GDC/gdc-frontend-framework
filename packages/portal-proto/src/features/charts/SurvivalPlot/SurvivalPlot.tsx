@@ -50,8 +50,8 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
   const { ref: mouseRef, x, y } = useMouse(); // for survival plot tooltip
   const downloadRef = useRef<HTMLDivElement | null>(null);
 
-  const pValue = data.overallStats.pValue;
-  const plotData = data.survivalData;
+  const pValue = data?.overallStats.pValue;
+  const plotData = data?.survivalData ?? [];
 
   const hasEnoughData = [
     "gene",
