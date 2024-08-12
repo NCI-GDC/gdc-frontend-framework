@@ -1,5 +1,5 @@
 import { ActionIcon, Button } from "@mantine/core";
-import { showNotification, cleanNotifications } from "@mantine/notifications";
+import { showNotification } from "@mantine/notifications";
 import { VscTrash as TrashIcon } from "react-icons/vsc";
 import { FaUndo as UndoIcon, FaShoppingCart as CartIcon } from "react-icons/fa";
 import { fileInCart, focusStyles } from "src/utils";
@@ -172,7 +172,6 @@ export const removeFromCart = (
   currentCart: CartFile[],
   dispatch: CoreDispatch,
 ): void => {
-  cleanNotifications();
   showNotification({
     message: (
       <AccessibleNotificationWrapper>
@@ -214,7 +213,6 @@ export const addToCart = (
   dispatch: CoreDispatch,
 ): void => {
   const newCartSize = files.length + currentCart.length;
-  cleanNotifications();
 
   if (newCartSize > CART_LIMIT) {
     showCartOverLimitNotification(currentCart.length);
