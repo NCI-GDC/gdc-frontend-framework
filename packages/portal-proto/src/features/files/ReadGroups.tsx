@@ -66,7 +66,7 @@ const ReadGroups = ({
       data={data}
       columns={readGroupsColumns}
       tableTitle={
-        <TotalItems total={readGroups.length} itemName="read group" />
+        <TotalItems total={readGroups?.length} itemName="read group" />
       }
     />
   );
