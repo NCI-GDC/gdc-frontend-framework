@@ -255,8 +255,11 @@ const FromTo: React.FC<FromToProps> = ({
             placeholder={`Min: ${lowerUnitRange}${unitsLabel} `}
             // units are always days
             onChange={(value) => {
-              if (value === "" || typeof value === "string") return;
-              form.setFieldValue("fromValue", value);
+              if (value === "" || typeof value === "string") {
+                form.setFieldValue("fromValue", undefined);
+              } else {
+                form.setFieldValue("fromValue", value);
+              }
               changedCallback();
             }}
             error={form?.errors?.fromValue}
@@ -286,9 +289,11 @@ const FromTo: React.FC<FromToProps> = ({
             className="flex-1 text-sm"
             placeholder={`Max: ${upperUnitRange}${unitsLabel} `}
             onChange={(value) => {
-              if (value === "" || typeof value === "string") return;
-              form.setFieldValue("toValue", value);
-
+              if (value === "" || typeof value === "string") {
+                form.setFieldValue("toValue", undefined);
+              } else {
+                form.setFieldValue("toValue", value);
+              }
               changedCallback();
             }}
             error={form?.errors?.toValue}
