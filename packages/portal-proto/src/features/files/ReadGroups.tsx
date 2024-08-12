@@ -1,6 +1,7 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import { useMemo } from "react";
 import VerticalTable from "@/components/Table/VerticalTable";
+import TotalItems from "@/components/Table/TotalItem";
 
 type ReadGroupsDataType = {
   read_group_id: string;
@@ -60,7 +61,15 @@ const ReadGroups = ({
     [readGroupsColumnHelper],
   );
 
-  return <VerticalTable data={data} columns={readGroupsColumns} />;
+  return (
+    <VerticalTable
+      data={data}
+      columns={readGroupsColumns}
+      tableTitle={
+        <TotalItems total={readGroups.length} itemName="read group" />
+      }
+    />
+  );
 };
 
 export default ReadGroups;
