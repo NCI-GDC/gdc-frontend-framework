@@ -134,14 +134,14 @@ const FromTo: React.FC<FromToProps> = ({
     initialValues: {
       fromOp: values?.fromOp ?? ">=",
       fromValue:
-        typeof values?.from === "number"
-          ? adjustDaysToYearsIfUnitsAreYears(values.from, units)
-          : undefined,
+        values?.from === undefined
+          ? undefined
+          : adjustDaysToYearsIfUnitsAreYears(values.from, units),
       toOp: values?.toOp ?? "<",
       toValue:
-        typeof values?.to === "number"
-          ? adjustDaysToYearsIfUnitsAreYears(values.to, units)
-          : undefined,
+        values?.to === undefined
+          ? undefined
+          : adjustDaysToYearsIfUnitsAreYears(values.to, units),
     },
     validate: {
       fromValue: (value) => {
@@ -249,15 +249,11 @@ const FromTo: React.FC<FromToProps> = ({
             aria-label="select greater and equal or greater than"
           />
           <NumberInput
+            {...form.getInputProps("fromValue")}
             data-testid="textbox-input-from-value"
             className="text-sm flex-1"
             placeholder={`Min: ${lowerUnitRange}${unitsLabel} `}
             // units are always days
-            value={
-              typeof form.values.fromValue === "number"
-                ? form.values.fromValue
-                : ""
-            }
             onChange={(value) => {
               if (value === "" || typeof value === "string") return;
               form.setFieldValue("fromValue", value);
@@ -285,6 +281,7 @@ const FromTo: React.FC<FromToProps> = ({
             aria-label="select less or less than and equal"
           />
           <NumberInput
+            {...form.getInputProps("toValue")}
             data-testid="textbox-input-to-value"
             className="flex-1 text-sm"
             placeholder={`Max: ${upperUnitRange}${unitsLabel} `}
@@ -294,9 +291,6 @@ const FromTo: React.FC<FromToProps> = ({
 
               changedCallback();
             }}
-            value={
-              typeof form.values.toValue === "number" ? form.values.toValue : ""
-            }
             error={form?.errors?.toValue}
             hideControls
             aria-label="input to value"
