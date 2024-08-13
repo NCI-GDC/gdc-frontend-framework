@@ -161,6 +161,7 @@ const RangeInputWithPrefixedRanges: React.FC<
             changedCallback={resetToCustom}
             {...hooks}
             clearValues={clearValues}
+            rangeDatatype={rangeDatatype}
           />
         </div>
         <div

@@ -4,6 +4,7 @@ import { NumericFacetData } from "./types";
 const Years: React.FC<NumericFacetData> = ({
   field,
   valueLabel,
+  rangeDatatype,
   hooks,
   clearValues,
   minimum = undefined,
@@ -19,6 +20,7 @@ const Years: React.FC<NumericFacetData> = ({
       <RangeInputWithPrefixedRanges
         valueLabel={valueLabel}
         hooks={{ ...hooks }}
+        rangeDatatype={rangeDatatype}
         units="years"
         minimum={adjMinimum}
         maximum={adjMaximum}

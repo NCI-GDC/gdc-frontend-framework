@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useDeepCompareEffect } from "use-deep-compare";
 import { useRouter } from "next/router";
 import tw from "tailwind-styled-components";
 import {
@@ -138,7 +139,6 @@ const CustomFacetGroup = (): JSX.Element => {
     selectCohortBuilderConfigFilters(state),
   );
 
-  const prevCustomFacets = usePrevious(customConfig.facets);
   const [customFacetDefinitions, setCustomFacetDefinitions] = useState<
     ReadonlyArray<FacetDefinition>
   >([]);
@@ -151,11 +151,11 @@ const CustomFacetGroup = (): JSX.Element => {
   );
 
   // rebuild customFacets
-  useEffect(() => {
-    if (isDictionaryReady && !isEqual(prevCustomFacets, customConfig.facets)) {
+  useDeepCompareEffect(() => {
+    if (isDictionaryReady) {
       setCustomFacetDefinitions(facets);
     }
-  }, [customConfig.facets, facets, isDictionaryReady, prevCustomFacets]);
+  }, [facets, isDictionaryReady]);
 
   const handleFilterSelected = (filter: string) => {
     setOpened(false);
