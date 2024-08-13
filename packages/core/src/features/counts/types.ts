@@ -13,7 +13,7 @@ export type CountHookLazyQuery = UseLazyQuery<
     (
       request: GraphqlApiSliceRequest,
     ) => Promise<
-      | { error: GraphQLFetchError; data?: undefined }
+      | { error: GraphQLFetchError | string; data?: undefined }
       | { data: GraphQLApiResponse<any>; error?: undefined }
     >,
     never,
