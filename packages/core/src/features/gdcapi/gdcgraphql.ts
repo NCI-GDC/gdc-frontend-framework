@@ -84,7 +84,7 @@ export const graphqlAPISlice = coreCreateApi({
     try {
       results = await graphqlAPI(request.graphQLQuery, request.graphQLFilters);
     } catch (e) {
-      return { error: e as GraphQLFetchError };
+      return { error: typeof e === "string" ? e : (e as Error)?.message };
     }
 
     return { data: results };

@@ -128,6 +128,7 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
                     color: "red",
                     closeButtonProps: { "aria-label": "Close notification" },
                   });
+                  setLoading(false);
                 });
             } else {
               setShowSaveCohort(true);
