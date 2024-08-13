@@ -31,7 +31,7 @@ describe("CasesCohortButton", () => {
     const { getByText } = render(
       <CasesCohortButton
         onCreateSet={() => {}}
-        response={{ isSuccess: false }}
+        response={{ isSuccess: false, isError: false }}
         cases={["case 1"]}
         numCases={1}
         fetchingCases={true}
@@ -46,7 +46,7 @@ describe("CasesCohortButton", () => {
     const { getByTestId } = render(
       <CasesCohortButton
         onCreateSet={() => {}}
-        response={{ isSuccess: false }}
+        response={{ isSuccess: false, isError: false }}
         cases={[]}
         numCases={0}
       />,
