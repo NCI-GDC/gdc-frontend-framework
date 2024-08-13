@@ -86,7 +86,9 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
       <DarkFunctionButton
         disabled={disabled}
         onClick={() => setShowSaveModal(true)}
-        leftSection={response?.isLoading && <Loader size="sm" color="white" />}
+        leftSection={
+          response?.isLoading ? <Loader size="sm" color="white" /> : undefined
+        }
       >
         {buttonText}
       </DarkFunctionButton>

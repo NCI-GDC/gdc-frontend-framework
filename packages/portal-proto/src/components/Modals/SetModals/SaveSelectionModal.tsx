@@ -173,7 +173,7 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
           }}
           disabled={!form.isValid()}
           leftSection={
-            response?.isLoading && <Loader size="sm" color="white" />
+            response?.isLoading ? <Loader size="sm" color="white" /> : undefined
           }
         >
           Save

@@ -28,7 +28,7 @@ export const SetOperations: React.FC<SetOperationsProps> = ({
     () =>
       data.map((set) => ({
         key: set.key,
-        value: isLoading ? 0 : set.value,
+        value: isLoading ? "..." : set.value,
         highlighted: selectedSets[set.key],
       })),
     [data, isLoading, selectedSets],
