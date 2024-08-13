@@ -257,22 +257,26 @@ const Controls: React.FC<ControlPanelProps> = ({
         id="cdave-control-panel"
         data-testid="cdave-control-panel"
       >
-        <Input
-          data-testid="textbox-cdave-search-bar"
-          placeholder="Search"
-          className="py-2 pr-4"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.currentTarget.value)}
-          rightSectionPointerEvents="all"
-          rightSection={
-            searchTerm && (
-              <ActionIcon onClick={() => setSearchTerm("")} variant="subtle">
-                <CloseIcon aria-label="clear search" />
-              </ActionIcon>
-            )
-          }
-          aria-label="Search fields"
-        />
+        <div className="mr-4">
+          <Input
+            data-testid="textbox-cdave-search-bar"
+            placeholder="Search"
+            className="py-2"
+            value={searchTerm}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setSearchTerm(e.target.value)
+            }
+            rightSectionPointerEvents="all"
+            rightSection={
+              searchTerm && (
+                <ActionIcon onClick={() => setSearchTerm("")} variant="subtle">
+                  <CloseIcon aria-label="clear search" />
+                </ActionIcon>
+              )
+            }
+            aria-label="Search fields"
+          />
+        </div>
         <p
           data-testid="text-fields-with-values"
           className="p-2 font-heading font-medium"

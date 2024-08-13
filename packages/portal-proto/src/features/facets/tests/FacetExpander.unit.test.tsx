@@ -1,6 +1,6 @@
 import React from "react";
 import { render, waitFor } from "@testing-library/react";
-import FacetExpander from "./FacetExpander";
+import FacetExpander from "../FacetExpander";
 
 const renderFacetExpander = (props) => {
   return render(<FacetExpander {...props} />);

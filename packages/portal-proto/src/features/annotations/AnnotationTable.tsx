@@ -14,6 +14,7 @@ import {
   SortBy,
   Pagination,
   useCoreDispatch,
+  GqlOperation,
 } from "@gff/core";
 import { createColumnHelper, SortingState } from "@tanstack/react-table";
 import { statusBooleansToDataStatus } from "src/utils";
@@ -129,19 +130,21 @@ const AnnnotationTable: React.FC = () => {
 
   const filters = useAppSelector((state) => selectFilters(state));
 
+  const tableFilters: GqlOperation = searchTerm
+    ? buildCohortGqlOperator(filters)
+      ? {
+          op: "and",
+          content: [
+            buildSearchFilters(searchTerm),
+            buildCohortGqlOperator(filters),
+          ],
+        }
+      : buildSearchFilters(searchTerm)
+    : buildCohortGqlOperator(filters);
+
   const { data, isSuccess, isFetching, isError } = useGetAnnotationsQuery({
     request: {
-      filters: searchTerm
-        ? buildCohortGqlOperator(filters)
-          ? {
-              op: "and",
-              content: [
-                buildSearchFilters(searchTerm),
-                buildCohortGqlOperator(filters),
-              ],
-            }
-          : buildSearchFilters(searchTerm)
-        : buildCohortGqlOperator(filters),
+      filters: tableFilters,
       expand: ["project", "project.program"],
       size: pageSize,
       from: (activePage - 1) * pageSize,
@@ -299,7 +302,7 @@ const AnnnotationTable: React.FC = () => {
       endpoint: "annotations",
       method: "POST",
       params: {
-        filters: buildCohortGqlOperator(filters) ?? {},
+        filters: tableFilters,
         attachment: true,
         format: "JSON",
         pretty: true,

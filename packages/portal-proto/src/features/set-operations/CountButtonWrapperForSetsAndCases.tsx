@@ -3,8 +3,10 @@ import {
   useCreateSsmsSetFromFiltersMutation,
   useCreateGeneSetFromFiltersMutation,
   useCreateCaseSetFromFiltersMutation,
-  GqlOperation,
   FilterSet,
+  buildGqlOperationToFilterSet,
+  GqlUnion,
+  GqlIntersection,
 } from "@gff/core";
 import { SetOperationEntityType } from "@/features/set-operations/types";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
@@ -59,7 +61,7 @@ export const CreateFromCountButton = ({
 
 interface CountButtonWrapperForSetProps {
   readonly count: number | undefined;
-  readonly filters: GqlOperation;
+  readonly filters: GqlUnion | GqlIntersection;
   readonly entityType?: SetOperationEntityType;
 }
 
@@ -78,7 +80,7 @@ const CountButtonWrapperForSet: React.FC<CountButtonWrapperForSetProps> = ({
     <>
       <SaveSelectionAsSetModal
         opened={showSaveModal && entityType === "mutations"}
-        filters={filters}
+        filters={buildGqlOperationToFilterSet(filters)}
         sort="occurrence.case.project.project_id"
         initialSetName="Custom Mutation Selection"
         saveCount={count}
@@ -90,7 +92,7 @@ const CountButtonWrapperForSet: React.FC<CountButtonWrapperForSetProps> = ({
 
       <SaveSelectionAsSetModal
         opened={showSaveModal && entityType === "genes"}
-        filters={filters}
+        filters={buildGqlOperationToFilterSet(filters)}
         initialSetName={"Custom Gene Selection"}
         sort="case.project.project_id"
         saveCount={count}

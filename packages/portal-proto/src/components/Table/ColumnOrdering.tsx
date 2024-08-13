@@ -124,7 +124,11 @@ function ColumnOrdering<TData>({
             Customize Columns
           </span>
 
-          <Tooltip label="Restore defaults" disabled={isBackToDefaults}>
+          <Tooltip
+            label="Restore defaults"
+            disabled={isBackToDefaults}
+            zIndex={400}
+          >
             <span>
               <ActionIcon
                 onClick={handleColumnOrderingReset}

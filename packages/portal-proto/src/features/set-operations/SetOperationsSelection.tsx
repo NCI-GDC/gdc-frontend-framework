@@ -8,8 +8,9 @@ import SetOperationsChartsForGeneSSMS from "@/features/set-operations/SetOperati
 import { SelectionScreenContext } from "@/features/user-flow/workflow/AnalysisWorkspace";
 import SelectionPanel from "@/features/set-operations/SelectionPanel";
 import { useRouter } from "next/router";
-import { useCoreSelector, selectCohortNameById } from "@gff/core";
+import { useCoreSelector, selectMultipleCohortsById } from "@gff/core";
 import { LoadingOverlay } from "@mantine/core";
+import { useDeepCompareEffect } from "use-deep-compare";
 
 const SetOperationsSelection = (): JSX.Element => {
   const [selectedEntities, setSelectedEntities] = useState<SelectedEntities>(
@@ -34,29 +35,53 @@ const SetOperationsSelection = (): JSX.Element => {
   const { selectionScreenOpen, setSelectionScreenOpen, app, setActiveApp } =
     useContext(SelectionScreenContext);
 
+  // Link from Cohort Comparison app can set the viewed cohorts
   const overwriteSelectedEntities = cohort1Id && cohort2Id;
-  const cohort1Name = useCoreSelector((state) =>
-    selectCohortNameById(state, cohort1Id as string),
+
+  // Need to get current ids of selected cohorts because the ids update after the cohort is saved
+  const cohorts = useCoreSelector((state) =>
+    selectMultipleCohortsById(
+      state,
+      overwriteSelectedEntities
+        ? [cohort1Id as string, cohort2Id as string]
+        : selectedEntities.map((e) => e.id),
+    ),
   );
-  const cohort2Name = useCoreSelector((state) =>
-    selectCohortNameById(state, cohort2Id as string),
-  );
+
   const isCohortComparisonDemo =
     cohort1Id === "demoCohort1Id" && cohort2Id === "demoCohort2Id";
 
+  useDeepCompareEffect(() => {
+    if (cohorts.length > 0 || isCohortComparisonDemo) {
+      setSelectedEntityType("cohort");
+
+      // A cohort has been deleted, kick user back to selection screen
+      if (cohorts.length < 2 && !isCohortComparisonDemo) {
+        setSelectionScreenOpen(true);
+      }
+    }
+  }, [cohorts, isCohortComparisonDemo, setSelectionScreenOpen]);
+
   return !ready ? (
     <LoadingOverlay data-testid="loading-spinner" visible />
-  ) : !cohort1Id && !cohort2Id && selectionScreenOpen ? (
+  ) : selectionScreenOpen ? (
     <SelectionPanel
       app={app}
       setActiveApp={setActiveApp}
       setOpen={setSelectionScreenOpen}
-      selectedEntities={selectedEntities}
+      selectedEntities={
+        selectedEntityType === "cohort"
+          ? cohorts.map((cohort) => ({
+              id: cohort.id,
+              name: cohort.name,
+            }))
+          : selectedEntities
+      }
       setSelectedEntities={setSelectedEntities}
       selectedEntityType={selectedEntityType}
       setSelectedEntityType={setSelectedEntityType}
     />
-  ) : !cohort1Id && !cohort2Id && selectedEntityType !== "cohort" ? ( // not a cohort, so presumably an existing gene or mutation set
+  ) : selectedEntityType !== "cohort" ? ( // not a cohort, so presumably an existing gene or mutation set
     // use the set operations panel as usual
     <SetOperationsChartsForGeneSSMS
       selectedEntities={selectedEntities}
@@ -65,22 +90,7 @@ const SetOperationsSelection = (): JSX.Element => {
   ) : (
     // handle cohorts as they require case set to be available
     <SetOperationChartsForCohorts
-      selectedEntities={
-        isCohortComparisonDemo
-          ? undefined
-          : overwriteSelectedEntities
-          ? [
-              {
-                name: cohort1Name,
-                id: cohort1Id as string,
-              },
-              {
-                name: cohort2Name,
-                id: cohort2Id as string,
-              },
-            ]
-          : selectedEntities
-      }
+      cohorts={isCohortComparisonDemo ? undefined : cohorts}
       isCohortComparisonDemo={isCohortComparisonDemo}
     />
   );

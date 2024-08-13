@@ -19,7 +19,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar,smoke-test
   |-----------------|---------------------|
   |Gender           |female               |
   |Vital Status     |alive                |
-* Is text "Changes not saved" present on the page
+* Is text "Cohort not saved" present on the page
 * Select "Save" from the Cohort Bar
 * Name the cohort "test save 1" in the Cohort Bar section
 * Perform action and validate modal text
@@ -27,7 +27,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar,smoke-test
   |-----------------|-------------------------------------------|--------------------|
   |Save             |Cohort has been saved                      |Remove Modal        |
 * "test save 1" should be the active cohort
-* Is text "Changes not saved" not present on the page
+* Is text "Cohort not saved" not present on the page
 
 ## Save a cohort for the second time
 * Make the following selections from "General" tab on the Cohort Builder page
@@ -50,10 +50,10 @@ Message when saving second cohort will be fixed in PEAR-1651
 * Is modal with text "Unsaved_Cohort has been created" present on the page and "Remove Modal"
 * Switch cohort to "test save 1" from the Cohort Bar dropdown list
 * "test save 1" should be the active cohort
-* Is text "Changes not saved" not present on the page
+* Is text "Cohort not saved" not present on the page
 * Switch cohort to "Unsaved_Cohort" from the Cohort Bar dropdown list
 * "Unsaved_Cohort" should be the active cohort
-* Is text "Changes not saved" present on the page
+* Is text "Cohort not saved" present on the page
 * Switch cohort to "test save 1" from the Cohort Bar dropdown list
 * "test save 1" should be the active cohort
 
@@ -75,7 +75,7 @@ Message when saving second cohort will be fixed in PEAR-1651
   |facet_name               |selection                    |
   |-------------------------|-----------------------------|
   |Tobacco Smoking Status   |lifelong non-smoker          |
-* Is text "Changes not saved" present on the page
+* Is text "Cohort not saved" present on the page
 * Select "Delete" from the Cohort Bar
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|

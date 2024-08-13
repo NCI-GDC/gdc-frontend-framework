@@ -21,7 +21,6 @@ import {
   Union,
   UnionOrIntersection,
 } from "../gdcapi/filters";
-import { appendFilterToOperation } from "./utils";
 
 const GenesTableGraphQLQuery = `
           query GenesTable(
@@ -168,7 +167,7 @@ export const fetchGenesTable = createAsyncThunk<
     {
       pageSize,
       offset,
-      searchTerm,
+      genesTableFilters,
       genomicFilters,
       cohortFilters,
     }: GenomicTableProps,
@@ -177,18 +176,11 @@ export const fetchGenesTable = createAsyncThunk<
     const cohortFiltersContent = caseFilters?.content
       ? Object(caseFilters?.content)
       : [];
+    const genesTable_filters = buildCohortGqlOperator(genesTableFilters);
 
-    const searchFilters = buildGeneTableSearchFilters(searchTerm);
-
-    // get filters already applied
     const baseFilters = filterSetToOperation(genomicFilters) as
       | UnionOrIntersection
       | undefined;
-
-    // filters for the genes table using local filters
-    const genesTableFilters = convertFilterToGqlFilter(
-      appendFilterToOperation(baseFilters, searchFilters),
-    );
 
     const rawFilterContents =
       baseFilters && convertFilterToGqlFilter(baseFilters)?.content;
@@ -203,7 +195,7 @@ export const fetchGenesTable = createAsyncThunk<
 
     const graphQlFilters = {
       caseFilters: caseFilters ? caseFilters : {},
-      genesTable_filters: genesTableFilters ? genesTableFilters : {},
+      genesTable_filters: genesTable_filters ? genesTable_filters : {},
       genesTable_size: pageSize,
       genesTable_offset: offset,
       score: "case.project.project_id",

@@ -19,7 +19,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |facet_name       |selection            |
   |-----------------|---------------------|
   |Primary Site     |adrenal gland        |
-* Is text "Changes not saved" present on the page
+* Is text "Cohort not saved" present on the page
 * Select "Save" from the Cohort Bar
 * Name the cohort "Same Cohort Name" in the Cohort Bar section
 * Perform action and validate modal text
@@ -27,7 +27,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |-----------------|-------------------------------------------|--------------------|
   |Save             |Cohort has been saved                      |Remove Modal        |
 * "Same Cohort Name" should be the active cohort
-* Is text "Changes not saved" not present on the page
+* Is text "Cohort not saved" not present on the page
 
 ## Create, Save, Replace, Edit with Second Cohort
 * Select "Add" from the Cohort Bar
@@ -37,7 +37,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |facet_name       |selection            |
   |-----------------|---------------------|
   |Program          |CPTAC                |
-* Is text "Changes not saved" present on the page
+* Is text "Cohort not saved" present on the page
 * Select "Save" from the Cohort Bar
 * Name the cohort "SaMe CoHoRt NaMe" in the Cohort Bar section
 * Select "Save"
@@ -63,7 +63,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |facet_name       |selection            |
   |-----------------|---------------------|
   |Disease Type     |acinar cell neoplasms|
-* Is text "Changes not saved" present on the page
+* Is text "Cohort not saved" present on the page
 * Select "Save" from the Cohort Bar
 * Name the cohort "Same cohort name" in the Cohort Bar section
 * Select "Save"
@@ -74,5 +74,5 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |Replace          |Cohort has been saved                      |Remove Modal        |
 * Switch cohort to "Same cohort name" from the Cohort Bar dropdown list
 * "Same cohort name" should be the active cohort
-* Is text "Changes not saved" not present on the page
+* Is text "Cohort not saved" not present on the page
 * The cohort "SaMe CoHoRt NaMe" should not appear in the cohort dropdown list

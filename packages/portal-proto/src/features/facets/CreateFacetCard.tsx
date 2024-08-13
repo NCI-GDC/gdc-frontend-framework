@@ -134,7 +134,7 @@ export const createFacetCard = (
       <UploadFacet
         key={`${idPrefix}-exact-${field}`}
         field={field}
-        customFaceTitle={field === "genes.gene_id" ? "gene" : undefined}
+        customFaceTitle={facet.title}
         useClearFilter={dataFunctions.useClearFilter}
         facetButtonName={facet.full}
         width={width}
