@@ -15,6 +15,7 @@ import {
   useCoreDispatch,
   extractFiltersWithPrefixFromFilterSet,
   GDCGenesTable,
+  buildGeneTableSearchFilters,
 } from "@gff/core";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useDeepCompareCallback } from "use-deep-compare";
@@ -42,6 +43,7 @@ import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon
 import GenesTableSubcomponent from "./GenesTableSubcomponent";
 import { convertDateToString } from "@/utils/date";
 import { ComparativeSurvival } from "@/features/genomic/types";
+import { appendSearchTermFilters } from "../utils";
 import TotalItems from "@/components/Table/TotalItem";
 
 export interface GTableContainerProps {
@@ -85,6 +87,14 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
   const [showRemoveModal, setShowRemoveModal] = useState(false);
   /* Modal end */
 
+  const searchFilters = buildGeneTableSearchFilters(searchTerm);
+
+  // filters for the genes table using local filters
+  const genesTableFilters = appendSearchTermFilters(
+    genomicFilters,
+    searchFilters,
+  );
+
   /* GeneTable call */
   const { data, isSuccess, isFetching, isError, isUninitialized } =
     useGenesTable({
@@ -93,6 +103,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
       searchTerm: searchTerm.length > 0 ? searchTerm : undefined,
       genomicFilters: genomicFilters,
       cohortFilters: cohortFilters,
+      genesTableFilters,
     });
   /* GeneTable call end */
 
@@ -255,7 +266,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           },
           mode: "and",
         } as FilterSet)
-      : joinFilters(cohortFilters, genomicFilters);
+      : genesTableFilters;
 
   const handleTSVDownload = async () => {
     setDownloadMutatedGenesTSVActive(true);
@@ -263,7 +274,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
       endpoint: "/analysis/top_mutated_genes",
       method: "POST",
       params: {
-        filters: buildCohortGqlOperator(genomicFilters) ?? {},
+        filters: buildCohortGqlOperator(genesTableFilters) ?? {},
         case_filters: buildCohortGqlOperator(cohortFilters) ?? {},
         attachment: true,
         filename: `frequently-mutated-genes.${convertDateToString(
@@ -329,13 +340,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             opened={showSaveModal}
             closeModal={handleSaveSelectionAsSetModalClose}
             cohortFilters={
-              selectedGenes.length === 0
-                ? buildCohortGqlOperator(cohortFilters)
-                : undefined
+              selectedGenes.length === 0 ? cohortFilters : undefined
             }
-            filters={buildCohortGqlOperator(
-              selectedGenes.length === 0 ? genomicFilters : setFilters,
-            )}
+            filters={setFilters}
             initialSetName={
               selectedGenes.length === 0
                 ? filtersToName(setFilters)

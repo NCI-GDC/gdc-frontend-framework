@@ -9,6 +9,7 @@ import {
   CartFile,
   SortBy,
   GdcFile,
+  GqlOperation,
 } from "@gff/core";
 import { RemoveFromCartButton } from "./updateCart";
 import FunctionButton from "@/components/FunctionButton";
@@ -66,54 +67,56 @@ const FilesTable: React.FC<FilesTableProps> = () => {
     setSortBy(tempSortBy);
   };
 
+  const tableFilters: GqlOperation = {
+    op: "and",
+    content: [
+      {
+        op: "in",
+        content: {
+          field: "files.file_id",
+          value: cart.map((f) => f.file_id),
+        },
+      },
+      {
+        op: "or",
+        content: [
+          {
+            op: "=",
+            content: {
+              field: "files.file_id",
+              value: `*${searchTerm}*`,
+            },
+          },
+          {
+            op: "=",
+            content: {
+              field: "files.file_name",
+              value: `*${searchTerm}*`,
+            },
+          },
+          {
+            op: "=",
+            content: {
+              field: "cases.case_id",
+              value: `*${searchTerm}*`,
+            },
+          },
+          {
+            op: "=",
+            content: {
+              field: "cases.submitter_id",
+              value: `*${searchTerm}*`,
+            },
+          },
+        ],
+      },
+    ],
+  };
+
   const { data, isFetching, isSuccess, isError } = useGetFilesQuery({
     size: pageSize,
     from: pageSize * (activePage - 1),
-    filters: {
-      op: "and",
-      content: [
-        {
-          op: "in",
-          content: {
-            field: "files.file_id",
-            value: cart.map((f) => f.file_id),
-          },
-        },
-        {
-          op: "or",
-          content: [
-            {
-              op: "=",
-              content: {
-                field: "files.file_id",
-                value: `*${searchTerm}*`,
-              },
-            },
-            {
-              op: "=",
-              content: {
-                field: "files.file_name",
-                value: `*${searchTerm}*`,
-              },
-            },
-            {
-              op: "=",
-              content: {
-                field: "cases.case_id",
-                value: `*${searchTerm}*`,
-              },
-            },
-            {
-              op: "=",
-              content: {
-                field: "cases.submitter_id",
-                value: `*${searchTerm}*`,
-              },
-            },
-          ],
-        },
-      ],
-    },
+    filters: tableFilters,
     expand: ["annotations", "cases", "cases.project"],
     sortBy: sortBy,
   });
@@ -331,13 +334,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
       endpoint: "files",
       method: "POST",
       params: {
-        filters: {
-          op: "in",
-          content: {
-            field: "files.file_id",
-            value: cart.map((f) => f.file_id),
-          },
-        },
+        filters: tableFilters,
         size: 10000,
         attachment: true,
         format: "JSON",
