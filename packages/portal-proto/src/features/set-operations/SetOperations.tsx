@@ -5,6 +5,7 @@ import { SetOperationsProps } from "./types";
 import { SetOperationsSummaryTable } from "./SetOperationsSummaryTable";
 import { SetOperationTable } from "./SetOperationTable";
 import { LoadingOverlay } from "@mantine/core";
+import { useDeepCompareCallback, useDeepCompareMemo } from "use-deep-compare";
 
 const VennDiagram = dynamic(() => import("../charts/VennDiagram"), {
   ssr: false,
@@ -23,18 +24,25 @@ export const SetOperations: React.FC<SetOperationsProps> = ({
     Object.fromEntries(data.map((set) => [set.key, false])),
   );
 
-  const chartData = data.map((set) => ({
-    key: set.key,
-    value: set.value,
-    highlighted: selectedSets[set.key],
-  }));
+  const chartData = useDeepCompareMemo(
+    () =>
+      data.map((set) => ({
+        key: set.key,
+        value: isLoading ? 0 : set.value,
+        highlighted: selectedSets[set.key],
+      })),
+    [data, isLoading, selectedSets],
+  );
 
-  const onClickHandler = (clickedKey: string) => {
-    setSelectedSets({
-      ...selectedSets,
-      [clickedKey]: !selectedSets[clickedKey],
-    });
-  };
+  const onClickHandler = useDeepCompareCallback(
+    (clickedKey: string) => {
+      setSelectedSets({
+        ...selectedSets,
+        [clickedKey]: !selectedSets[clickedKey],
+      });
+    },
+    [selectedSets],
+  );
 
   return (
     <div className="flex flex-col p-2">

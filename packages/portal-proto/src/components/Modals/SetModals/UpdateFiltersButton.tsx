@@ -88,8 +88,9 @@ const UpdateCohortButton: React.FC<UpdateCohortButtonProps> = ({
           dispatch(hideModal());
         }
       }}
+      leftSection={response?.isLoading && <Loader size="sm" color="white" />}
     >
-      {response.isLoading ? <Loader size="sm" color="white" /> : "Submit"}
+      Submit
     </DarkFunctionButton>
   );
 };
