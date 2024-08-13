@@ -14,6 +14,7 @@ import {
   buildCohortGqlOperator,
   useCoreDispatch,
   GDCSsmsTable,
+  buildSSMSTableSearchFilters,
 } from "@gff/core";
 import { useEffect, useState, useContext, useMemo, useCallback } from "react";
 import { useDeepCompareCallback } from "use-deep-compare";
@@ -37,6 +38,7 @@ import {
   VisibilityState,
 } from "@tanstack/react-table";
 import { getMutation, useGenerateSMTableColumns } from "./utils";
+import { appendSearchTermFilters } from "../utils";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import SMTableSubcomponent from "./SMTableSubcomponent";
@@ -121,23 +123,37 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
 
   const dispatch = useCoreDispatch();
   const { setEntityMetadata } = useContext(SummaryModalContext);
-  const combinedFilters = joinFilters(genomicFilters, cohortFilters);
-  const geneFilter: FilterSet = {
-    mode: "and",
-    root: {
-      "genes.symbol": {
-        field: "genes.symbol",
-        operator: "includes",
-        operands: [geneSymbol],
-      },
-    },
-  };
 
   /* Modal start */
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showRemoveModal, setShowRemoveModal] = useState(false);
   /* Modal end */
+
+  const genomicFiltersWithPossibleGeneSymbol = geneSymbol
+    ? joinFilters(
+        {
+          mode: "and",
+          root: {
+            "genes.symbol": {
+              field: "genes.symbol",
+              operator: "includes",
+              operands: [geneSymbol],
+            },
+          },
+        },
+        genomicFilters,
+      )
+    : genomicFilters;
+
+  const searchFilters = buildSSMSTableSearchFilters(searchTerm);
+  const genomicTableFilters = appendSearchTermFilters(
+    genomicFiltersWithPossibleGeneSymbol,
+    searchFilters,
+  );
+  const caseTableFilters = appendSearchTermFilters(caseFilter, searchFilters);
+
+  const tableFilters = caseFilter ? caseTableFilters : genomicTableFilters;
 
   /* SM Table Call */
   const { data, isSuccess, isFetching, isError, isUninitialized } =
@@ -149,6 +165,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       genomicFilters: genomicFilters,
       cohortFilters: cohortFilters,
       caseFilter: caseFilter,
+      tableFilters,
     });
 
   /* SM Table Call end */
@@ -255,12 +272,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     mutation_id: false,
   });
 
-  const contextSensitiveFilters = geneSymbol
-    ? joinFilters(combinedFilters, geneFilter)
-    : caseFilter
-    ? caseFilter
-    : combinedFilters;
-
   const setFilters =
     selectedMutations.length > 0
       ? ({
@@ -273,14 +284,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           },
           mode: "and",
         } as FilterSet)
-      : contextSensitiveFilters;
-
-  // local filters for setCreation
-  const createSetFilters = geneSymbol
-    ? joinFilters(genomicFilters, geneFilter)
-    : caseFilter
-    ? caseFilter
-    : genomicFilters;
+      : tableFilters;
 
   const handleTSVGeneDownload = () => {
     setDownloadMutationsFrequencyTSVActive(true);
@@ -288,7 +292,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       endpoint: "/analysis/top_ssms_by_gene",
       method: "POST",
       params: {
-        filters: buildCohortGqlOperator(genomicFilters) ?? {},
+        filters: buildCohortGqlOperator(tableFilters) ?? {},
         case_filters: buildCohortGqlOperator(cohortFilters) ?? {},
         gene_id,
         attachment: true,
@@ -306,6 +310,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       method: "POST",
       params: {
         case_id,
+        filters: buildCohortGqlOperator(tableFilters) ?? {},
         attachment: true,
         filename: `frequent-mutations.${convertDateToString(new Date())}.tsv`,
       },
@@ -321,7 +326,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       endpoint: "/analysis/top_ssms",
       method: "POST",
       params: {
-        filters: buildCohortGqlOperator(genomicFilters) ?? {},
+        filters: buildCohortGqlOperator(tableFilters) ?? {},
         case_filters: buildCohortGqlOperator(cohortFilters) ?? {},
         attachment: true,
         filename: `frequent-mutations.${convertDateToString(new Date())}.tsv`,
@@ -397,15 +402,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               <SaveSelectionAsSetModal
                 opened={showSaveModal}
                 cohortFilters={
-                  selectedMutations.length === 0
-                    ? buildCohortGqlOperator(cohortFilters)
-                    : undefined
+                  selectedMutations.length === 0 ? cohortFilters : undefined
                 }
-                filters={buildCohortGqlOperator(
-                  selectedMutations.length === 0
-                    ? createSetFilters
-                    : setFilters,
-                )}
+                filters={setFilters}
                 sort="occurrence.case.project.project_id"
                 initialSetName={
                   selectedMutations.length === 0
@@ -430,6 +429,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               <AddToSetModal
                 opened={showAddModal}
                 filters={setFilters}
+                cohortFilters={
+                  selectedMutations.length === 0 ? cohortFilters : undefined
+                }
                 addToCount={
                   selectedMutations.length === 0
                     ? data?.ssmsTotal
@@ -448,6 +450,9 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               <RemoveFromSetModal
                 opened={showRemoveModal}
                 filters={setFilters}
+                cohortFilters={
+                  selectedMutations.length === 0 ? cohortFilters : undefined
+                }
                 removeFromCount={
                   selectedMutations.length === 0
                     ? data?.ssmsTotal

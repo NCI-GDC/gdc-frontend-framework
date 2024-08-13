@@ -1,13 +1,11 @@
 import {
-  useCoreSelector,
   useCreateCaseSetFromFiltersMutation,
   buildCohortGqlOperator,
   useSetOperationsCasesTotalQuery,
   useCaseSetCountsQuery,
   getCohortFilterForAPI,
-  selectMultipleCohortsById,
+  Cohort,
 } from "@gff/core";
-import { SetOperationsChartInputProps } from "@/features/set-operations/types";
 import { Loader } from "@mantine/core";
 import {
   cohortComparisonDemo1,
@@ -24,9 +22,12 @@ import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
  * @param selectedEntities - the selected cohorts
  */
 const SetOperationChartsForCohorts = ({
-  selectedEntities,
+  cohorts,
   isCohortComparisonDemo,
-}: SetOperationsChartInputProps): JSX.Element => {
+}: {
+  cohorts: Cohort[] | undefined;
+  isCohortComparisonDemo: boolean;
+}): JSX.Element => {
   // set up three calls to create case set from filters for cohorts 0, 1, and 2
   const [createSet0, createSet0Response] =
     useCreateCaseSetFromFiltersMutation();
@@ -35,34 +36,27 @@ const SetOperationChartsForCohorts = ({
   const [createSet2, createSet2Response] =
     useCreateCaseSetFromFiltersMutation();
 
-  const ids = useDeepCompareMemo(
-    () =>
-      isCohortComparisonDemo
-        ? [cohortComparisonDemo1.id, cohortComparisonDemo2.id]
-        : selectedEntities.map((e) => e.id),
-    [isCohortComparisonDemo, selectedEntities],
-  );
-  const cohorts = useCoreSelector((state) =>
-    selectMultipleCohortsById(state, ids),
-  );
-
   // if the cohorts are not already case sets, create them
   useDeepCompareEffect(() => {
     createSet0({
       filters: isCohortComparisonDemo
         ? buildCohortGqlOperator(cohortComparisonDemo1.filter)
-        : buildCohortGqlOperator(getCohortFilterForAPI(cohorts[0])),
+        : buildCohortGqlOperator(
+            cohorts[0] ? getCohortFilterForAPI(cohorts[0]) : undefined,
+          ),
       intent: "portal",
       set_type: "ephemeral",
     });
     createSet1({
       filters: isCohortComparisonDemo
         ? buildCohortGqlOperator(cohortComparisonDemo2.filter)
-        : buildCohortGqlOperator(getCohortFilterForAPI(cohorts[1])),
+        : buildCohortGqlOperator(
+            cohorts[1] ? getCohortFilterForAPI(cohorts[1]) : undefined,
+          ),
       intent: "portal",
       set_type: "ephemeral",
     });
-    if (cohorts?.length == 3)
+    if (cohorts?.length == 3 && cohorts[2])
       // if there are 3 cohorts, create the third one
       createSet2({
         filters: buildCohortGqlOperator(getCohortFilterForAPI(cohorts[2])),
@@ -107,11 +101,11 @@ const SetOperationChartsForCohorts = ({
     createSet2Response.data,
   ]);
 
-  return selectedEntities?.length === 0 || loading ? (
+  return cohorts?.length === 0 || loading ? (
     <div className="flex items-center justify-center w-100 h-96">
       <Loader size={100} />
     </div>
-  ) : isCohortComparisonDemo || selectedEntities?.length === 2 ? (
+  ) : isCohortComparisonDemo || cohorts?.length === 2 ? (
     <SetOperationsTwo
       sets={selectedSets}
       entityType="cohort"

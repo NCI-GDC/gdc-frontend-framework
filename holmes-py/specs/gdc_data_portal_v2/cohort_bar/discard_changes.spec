@@ -32,7 +32,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |-------------------|---------------------|-------------------------|
   |Alcohol History    |not reported         |1                        |
   |Preservation Method|ffpe                 |2                        |
-* Is text "Changes not saved" present on the page
+* Is text "Cohort not saved" present on the page
 * Select "Discard" from the Cohort Bar
 * Is text "Discard Changes" present on the page
 * Is text "Are you sure you want to permanently discard the unsaved changes?" present on the page
@@ -43,7 +43,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Equal"
 * "Discard" should be "disabled" in the Cohort Bar
-* Is text "Changes not saved" not present on the page
+* Is text "Cohort not saved" present on the page
 * Validate the cohort query filter does not have these filters
   |facet_name         |selections           |
   |-------------------|---------------------|

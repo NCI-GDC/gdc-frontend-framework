@@ -1,15 +1,18 @@
 [
   {
     "facet_filter": "genes.gene_id",
-    "name": "Custom Gene Filters",
+    "title": "Mutated Gene",
+    "name": "Genes",
     "type": "set",
-    "docType": "genes"
+    "docType": "genes",
+    "toolTip": "Filter Mutation Frequency by entering/uploading specific genes or selecting gene sets"
   },
   {
     "facet_filter": "ssms.ssm_id",
-    "name": "Custom Mutation Filters",
+    "name": "Somatic Mutations",
     "type": "set",
-    "docType": "ssms"
+    "docType": "ssms",
+    "toolTip": "Filter Mutation Frequency by entering/uploading specific Simple Somatic Mutations (SSMs) or selecting mutation sets"
   },
   {
     "facet_filter": "genes.biotype",

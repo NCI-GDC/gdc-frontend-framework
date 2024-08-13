@@ -142,8 +142,8 @@ export const SaveOrCreateEntityBody = ({
           classNames={{
             description: "mt-1",
             input:
-              "font-content data-[invalid=true]:text-[#AD2B4A] data-[invalid=true]:border-[#AD2B4A]",
-            error: "text-[#AD2B4A]",
+              "font-content data-[invalid=true]:text-utility-error data-[invalid=true]:border-utility-error",
+            error: "text-utility-error",
           }}
           data-autofocus
           maxLength={100}

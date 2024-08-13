@@ -51,7 +51,7 @@ const GeneAndSSMFilterPanel = ({
     >
       <GeneSetModal
         opened={modal === Modals.LocalGeneSetModal}
-        modalTitle="Filter Mutation Frequency by Genes"
+        modalTitle="Filter Mutation Frequency by Mutated Genes"
         inputInstructions="Enter one or more gene identifiers in the field below or upload a file to filter Mutation Frequency."
         selectSetInstructions="Select one or more sets below to filter Mutation Frequency."
         updateFilters={updateFilters}
@@ -60,7 +60,7 @@ const GeneAndSSMFilterPanel = ({
 
       <MutationSetModal
         opened={modal === Modals.LocalMutationSetModal}
-        modalTitle="Filter Mutation Frequency by Mutations"
+        modalTitle="Filter Mutation Frequency by Somatic Mutations"
         inputInstructions="Enter one or more mutation identifiers in the field below or upload a file to filter Mutation Frequency."
         selectSetInstructions="Select one or more sets below to filter Mutation Frequency."
         updateFilters={updateFilters}
@@ -87,6 +87,7 @@ const GeneAndSSMFilterPanel = ({
                 ),
               }}
               facetName={x.name}
+              facetTitle={x.title}
               valueLabel={FacetDocTypeToLabelsMap[x.docType]}
               showPercent={false}
               hideIfEmpty={false}
@@ -97,6 +98,8 @@ const GeneAndSSMFilterPanel = ({
             <SetFacet
               key={`genes-mutations-app-${x.facet_filter}-${index}`}
               facetName={x.name}
+              facetTitle={x.title}
+              facetBtnToolTip={x.toolTip}
               field={x.facet_filter}
               valueLabel={FacetDocTypeToLabelsMap[x.docType]}
               hooks={{
@@ -125,6 +128,7 @@ const GeneAndSSMFilterPanel = ({
               ),
             }}
             facetName={x.name}
+            facetTitle={x.title}
             valueLabel={FacetDocTypeToLabelsMap[x.docType]}
             showPercent={false}
             hideIfEmpty={false}

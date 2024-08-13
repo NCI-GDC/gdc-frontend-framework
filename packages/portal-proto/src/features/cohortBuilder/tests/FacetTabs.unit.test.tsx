@@ -13,7 +13,6 @@ jest.mock("next/router", () => ({
 describe("<FacetTabs />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(func, "useCoreSelector").mockImplementation(jest.fn());
     jest.spyOn(func, "useCoreDispatch").mockImplementation(jest.fn());
     jest.spyOn(func, "useFacetDictionary").mockImplementation(jest.fn());
   });
@@ -25,7 +24,11 @@ describe("<FacetTabs />", () => {
       isSuccess: true,
       isError: false,
     });
-    jest.spyOn(core, "useCoreSelector").mockReturnValue({
+    jest
+      .spyOn(core, "selectFacetDefinition")
+      .mockReturnValue({ data: {} } as any);
+    jest.spyOn(core, "selectFacetDefinitionsByName").mockReturnValue([]);
+    jest.spyOn(core, "selectCohortBuilderConfig").mockReturnValue({
       general: {
         label: "General",
         facets: [],
@@ -38,7 +41,7 @@ describe("<FacetTabs />", () => {
         docType: "cases",
         index: "repository",
       },
-    });
+    } as any);
     jest.spyOn(hooks, "useEnumFacets").mockImplementation(jest.fn());
     (useRouter as jest.Mock<NextRouter>).mockReturnValue({
       push: jest.fn(),
