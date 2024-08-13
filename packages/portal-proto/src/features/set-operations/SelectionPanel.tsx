@@ -429,7 +429,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
               size,
               from,
               total,
-              label: "sets",
+              label: "set",
             }}
             status={
               isGeneSuccess && isMutationSuccess ? "fulfilled" : "pending"
