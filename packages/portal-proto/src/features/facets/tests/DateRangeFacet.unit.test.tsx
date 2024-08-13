@@ -1,5 +1,5 @@
 import { render } from "test-utils";
-import DateRangeFacet from "./DateRangeFacet";
+import DateRangeFacet from "../DateRangeFacet";
 import * as core from "@gff/core";
 
 window.ResizeObserver =

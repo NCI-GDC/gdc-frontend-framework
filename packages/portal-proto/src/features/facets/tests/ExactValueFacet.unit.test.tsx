@@ -1,6 +1,6 @@
 import { render } from "test-utils";
 import userEvent from "@testing-library/user-event";
-import ExactValueFacet from "./ExactValueFacet";
+import ExactValueFacet from "../ExactValueFacet";
 import * as core from "@gff/core";
 import { Operation } from "@gff/core";
 
