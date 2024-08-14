@@ -122,7 +122,10 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
             variant="outline"
             size="sm"
             data-testid={`button-${facetName}`}
-            classNames={{ label: "break-words whitespace-pre-wrap" }}
+            classNames={{
+              label: "break-words whitespace-pre-wrap",
+              root: "w-full",
+            }}
           >
             Upload {facetName}
           </Button>

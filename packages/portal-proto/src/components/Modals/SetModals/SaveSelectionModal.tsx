@@ -11,7 +11,8 @@ import {
   useCoreSelector,
   selectSetsByType,
   CreateSetFilterArgs,
-  GqlOperation,
+  FilterSet,
+  buildCohortGqlOperator,
 } from "@gff/core";
 import FunctionButton from "@/components/FunctionButton";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
@@ -22,8 +23,8 @@ import { SET_COUNT_LIMIT } from "./constants";
 import { useDeepCompareCallback } from "use-deep-compare";
 
 interface SaveSelectionAsSetModalProps {
-  readonly cohortFilters?: GqlOperation;
-  readonly filters: GqlOperation;
+  readonly cohortFilters?: FilterSet;
+  readonly filters: FilterSet;
   readonly initialSetName: string;
   readonly saveCount: number;
   readonly setType: SetTypes;
@@ -138,8 +139,8 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
           data-testid="button-save"
           onClick={() =>
             createSet({
-              case_filters: cohortFilters ?? {},
-              filters: filters ?? {},
+              case_filters: buildCohortGqlOperator(cohortFilters) ?? {},
+              filters: buildCohortGqlOperator(filters) ?? {},
               size: form.values.top,
               score: sort,
               set_type: "mutable",

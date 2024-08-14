@@ -50,7 +50,6 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
             label="Cohort is empty"
             disabled={row.original?.counts.caseCount !== 0}
             position="right"
-            className="cursor-not-allowed"
           >
             <input
               data-testid={`button-${row.original.name}-cohort-comparison`}
@@ -63,6 +62,11 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
               // eslint-disable-next-line jsx-a11y/no-autofocus
               autoFocus={selectedCohort?.id === row.original.id}
               disabled={!row.original?.counts.caseCount}
+              className={
+                !row.original?.counts.caseCount
+                  ? "cursor-not-allowed"
+                  : undefined
+              }
             />
           </Tooltip>
         ),
@@ -143,7 +147,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
               size,
               from,
               total,
-              label: "cohorts",
+              label: "cohort",
             }}
             status="fulfilled"
             handleChange={handleChange}

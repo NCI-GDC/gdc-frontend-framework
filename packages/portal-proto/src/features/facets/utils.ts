@@ -257,12 +257,17 @@ export const buildRangeBuckets = (
 export const adjustYearsToDaysIfUnitsAreYears = (
   value: number,
   units: string,
-): number => (units == "years" ? getLowerAgeFromYears(value) : value);
+  queryInYears: boolean,
+): number =>
+  units == "years" && !queryInYears ? getLowerAgeFromYears(value) : value;
 
 export const adjustDaysToYearsIfUnitsAreYears = (
   value: number,
   units: string,
-): number => (units === "years" ? getLowerAgeYears(value) : value);
+  queryInYears: boolean,
+): number => {
+  return units === "years" && !queryInYears ? getLowerAgeYears(value) : value;
+};
 
 export const leapThenPair = (years: number, days: number): number[] =>
   days === 365 ? [years + 1, 0] : [years, days];

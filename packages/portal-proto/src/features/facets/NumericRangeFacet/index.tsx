@@ -130,13 +130,11 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
             />
           ),
           age_in_years: (
-            <DaysOrYears
+            <Years
               valueLabel={valueLabel}
               field={field}
               rangeDatatype={rangeDatatype}
               hooks={{ ...hooks }}
-              minimum={minimum}
-              maximum={maximum}
               clearValues={clearValues}
               isFacetView={isFacetView}
             />

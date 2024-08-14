@@ -9,12 +9,12 @@ import { useDeepCompareMemo } from "use-deep-compare";
 import CountButtonWrapperForSetsAndCases from "./CountButtonWrapperForSetsAndCases";
 import { Checkbox, Tooltip } from "@mantine/core";
 import { createSetFiltersByKey, ENTITY_TYPE_TO_CREATE_SET_HOOK } from "./utils";
-import { GqlOperation } from "@gff/core";
 import { pickBy } from "lodash";
 import { SelectedEntities } from "./types";
 import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
 import DownloadButtonTotal from "./DownloadButton";
+import { GqlUnion } from "@gff/core";
 
 type SetOperationTableDataType = {
   setOperation: string;
@@ -55,7 +55,7 @@ export const SetOperationTable = ({
     content: Object.keys(pickBy(selectedSets, (v) => v)).map((set) =>
       createSetFiltersByKey(set, entityType, sets),
     ),
-  } as GqlOperation;
+  } as GqlUnion;
 
   const { data: totalSelectedSets, isFetching } = queryHook({
     filters: {

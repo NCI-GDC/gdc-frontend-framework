@@ -23,6 +23,7 @@ import SetTable from "./SetTable";
 
 interface RemoveFromSetModalProps {
   readonly filters: FilterSet;
+  readonly cohortFilters?: FilterSet;
   readonly removeFromCount: number;
   readonly setType: SetTypes;
   readonly setTypeLabel: string;
@@ -38,6 +39,7 @@ interface RemoveFromSetModalProps {
 
 const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
   filters,
+  cohortFilters,
   removeFromCount,
   setType,
   setTypeLabel,
@@ -87,6 +89,7 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
                     op: "and",
                   }
                 : {},
+              case_filters: buildCohortGqlOperator(cohortFilters) ?? {},
               setId: selectedSets[0][0],
             })
               .unwrap()

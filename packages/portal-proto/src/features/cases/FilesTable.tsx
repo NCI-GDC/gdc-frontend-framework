@@ -18,6 +18,7 @@ import {
   useCoreDispatch,
   useCoreSelector,
   useGetFilesQuery,
+  GqlOperation,
 } from "@gff/core";
 import { Loader, Tooltip } from "@mantine/core";
 import {
@@ -81,40 +82,42 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
     setSortBy(tempSortBy);
   };
 
+  const tableFilters: GqlOperation = {
+    op: "and",
+    content: [
+      {
+        op: "in",
+        content: {
+          field: "cases.case_id",
+          value: [caseId],
+        },
+      },
+      {
+        op: "or",
+        content: [
+          {
+            op: "=",
+            content: {
+              field: "files.file_id",
+              value: `*${searchTerm}*`,
+            },
+          },
+          {
+            op: "=",
+            content: {
+              field: "files.file_name",
+              value: `*${searchTerm}*`,
+            },
+          },
+        ],
+      },
+    ],
+  };
+
   const { data, isFetching, isSuccess, isError } = useGetFilesQuery({
     size: pageSize,
     from: pageSize * (activePage - 1),
-    filters: {
-      op: "and",
-      content: [
-        {
-          op: "in",
-          content: {
-            field: "cases.case_id",
-            value: [caseId],
-          },
-        },
-        {
-          op: "or",
-          content: [
-            {
-              op: "=",
-              content: {
-                field: "files.file_id",
-                value: `*${searchTerm}*`,
-              },
-            },
-            {
-              op: "=",
-              content: {
-                field: "files.file_name",
-                value: `*${searchTerm}*`,
-              },
-            },
-          ],
-        },
-      ],
-    },
+    filters: tableFilters,
     sortBy: sortBy,
   });
 
@@ -148,7 +151,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
           size: pageSize,
           total: data?.pagination?.total,
           sort: "None",
-          label: "files",
+          label: "file",
         }
       : {
           count: undefined,
@@ -157,6 +160,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
           pages: undefined,
           size: undefined,
           total: undefined,
+          label: undefined,
         };
   }, [pageSize, activePage, data?.pagination?.total, isSuccess]);
 
@@ -286,13 +290,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
       endpoint: "files",
       method: "POST",
       params: {
-        filters: {
-          op: "in",
-          content: {
-            field: "cases.case_id",
-            value: [caseId],
-          },
-        },
+        filters: tableFilters,
         size: 10000,
         attachment: true,
         format: "JSON",

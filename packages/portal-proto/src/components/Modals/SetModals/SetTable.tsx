@@ -174,7 +174,7 @@ const SetTable: React.FC<SetTableProps> = ({
       columns={setTableColumns}
       handleChange={handleTableChange}
       status={isSuccess ? "fulfilled" : "pending"}
-      pagination={{ ...paginationProps, label: `${setTypeLabel} sets` }}
+      pagination={{ ...paginationProps, label: `${setTypeLabel} set` }}
     />
   );
 };

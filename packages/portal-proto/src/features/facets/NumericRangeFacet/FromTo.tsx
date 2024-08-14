@@ -29,6 +29,7 @@ interface FromToProps {
   readonly values?: FromToRange<number>;
   readonly changedCallback?: () => void;
   readonly clearValues?: boolean;
+  readonly rangeDatatype?: string;
 }
 
 const WARNING_DAYS = Math.floor(90 * DAYS_IN_YEAR);
@@ -120,27 +121,29 @@ const FromTo: React.FC<FromToProps> = ({
   changedCallback = () => null,
   units = "",
   clearValues = undefined,
+  rangeDatatype = undefined,
 }: FromToProps) => {
   const [isWarning, setIsWarning] = useState(false);
   const clearFilter = useClearFilter();
   const updateFacetFilters = useUpdateFacetFilters();
   const unitsLabel = "%" != units ? ` ${units}` : "%";
+  const queryInYears = rangeDatatype === "age_in_years";
   const lowerUnitRange =
-    units !== "years" ? minimum : getLowerAgeYears(minimum);
+    units !== "years" || queryInYears ? minimum : getLowerAgeYears(minimum);
   const upperUnitRange =
-    units !== "years" ? maximum : getLowerAgeYears(maximum);
+    units !== "years" || queryInYears ? maximum : getLowerAgeYears(maximum);
 
   const form = useForm({
     initialValues: {
       fromOp: values?.fromOp ?? ">=",
       fromValue:
         values?.from !== undefined
-          ? adjustDaysToYearsIfUnitsAreYears(values.from, units)
+          ? adjustDaysToYearsIfUnitsAreYears(values.from, units, queryInYears)
           : undefined,
       toOp: values?.toOp ?? "<",
       toValue:
         values?.to !== undefined
-          ? adjustDaysToYearsIfUnitsAreYears(values.to, units)
+          ? adjustDaysToYearsIfUnitsAreYears(values.to, units, queryInYears)
           : undefined,
     },
     validate: {
@@ -166,12 +169,12 @@ const FromTo: React.FC<FromToProps> = ({
       fromOp: values?.fromOp ?? ">=",
       fromValue:
         values?.from !== undefined
-          ? adjustDaysToYearsIfUnitsAreYears(values.from, units)
+          ? adjustDaysToYearsIfUnitsAreYears(values.from, units, queryInYears)
           : undefined,
       toOp: values?.toOp ?? "<",
       toValue:
         values?.to !== undefined
-          ? adjustDaysToYearsIfUnitsAreYears(values.to, units)
+          ? adjustDaysToYearsIfUnitsAreYears(values.to, units, queryInYears)
           : undefined,
     });
     // https://github.com/mantinedev/mantine/issues/5338
@@ -189,11 +192,19 @@ const FromTo: React.FC<FromToProps> = ({
   useDeepCompareEffect(() => {
     const fromValueInDays =
       form.values.fromValue !== undefined
-        ? adjustYearsToDaysIfUnitsAreYears(form.values.fromValue, units)
+        ? adjustYearsToDaysIfUnitsAreYears(
+            form.values.fromValue,
+            units,
+            queryInYears,
+          )
         : undefined;
     const toValueInDays =
       form.values.toValue !== undefined
-        ? adjustYearsToDaysIfUnitsAreYears(form.values.toValue, units)
+        ? adjustYearsToDaysIfUnitsAreYears(
+            form.values.toValue,
+            units,
+            queryInYears,
+          )
         : undefined;
     if (["diagnoses.age_at_diagnosis"].includes(field)) {
       setIsWarning(
@@ -214,12 +225,20 @@ const FromTo: React.FC<FromToProps> = ({
       fromOp: form.values.fromOp as RangeFromOp,
       from:
         form.values.fromValue !== undefined
-          ? adjustYearsToDaysIfUnitsAreYears(form.values.fromValue, units)
+          ? adjustYearsToDaysIfUnitsAreYears(
+              form.values.fromValue,
+              units,
+              queryInYears,
+            )
           : undefined,
       toOp: form.values.toOp as RangeToOp,
       to:
         form.values.toValue !== undefined
-          ? adjustYearsToDaysIfUnitsAreYears(form.values.toValue, units)
+          ? adjustYearsToDaysIfUnitsAreYears(
+              form.values.toValue,
+              units,
+              queryInYears,
+            )
           : undefined,
     };
     const rangeFilters = buildRangeOperator(field, data);

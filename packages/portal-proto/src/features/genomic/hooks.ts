@@ -26,6 +26,7 @@ import {
   useTopGeneQuery,
   useGetSsmTableDataMutation,
   GqlOperation,
+  buildSSMSTableSearchFilters,
 } from "@gff/core";
 import { useEffect, useMemo } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
@@ -45,6 +46,7 @@ import { buildGeneHaveAndHaveNotFilters } from "@/features/genomic/utils";
 import { AppModeState, ComparativeSurvival } from "./types";
 import { humanify } from "@/utils/index";
 import { useDeepCompareMemo } from "use-deep-compare";
+import { appendSearchTermFilters } from "@/features/GenomicTables/utils";
 
 /**
  * Update Genomic Enum Facets filters. These are app local updates and are not added
@@ -375,6 +377,12 @@ export const useTopGeneSsms = ({
   useDeepCompareEffect(() => {
     const { geneId = "", geneSymbol = "" } = searchTermsForGene;
     if (searchTermsForGene && appMode === "ssms") {
+      const searchFilters = buildSSMSTableSearchFilters(geneId);
+      const tableFilters = appendSearchTermFilters(
+        genomicFilters,
+        searchFilters,
+      );
+
       getTopSSM({
         pageSize: 1,
         offset: 0,
@@ -383,6 +391,7 @@ export const useTopGeneSsms = ({
         genomicFilters: genomicFilters,
         cohortFilters: cohortFilters,
         caseFilter: undefined,
+        tableFilters,
       });
     }
   }, [

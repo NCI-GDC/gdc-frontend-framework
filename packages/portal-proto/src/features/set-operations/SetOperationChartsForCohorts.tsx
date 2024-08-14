@@ -41,18 +41,22 @@ const SetOperationChartsForCohorts = ({
     createSet0({
       filters: isCohortComparisonDemo
         ? buildCohortGqlOperator(cohortComparisonDemo1.filter)
-        : buildCohortGqlOperator(getCohortFilterForAPI(cohorts[0])),
+        : buildCohortGqlOperator(
+            cohorts[0] ? getCohortFilterForAPI(cohorts[0]) : undefined,
+          ),
       intent: "portal",
       set_type: "ephemeral",
     });
     createSet1({
       filters: isCohortComparisonDemo
         ? buildCohortGqlOperator(cohortComparisonDemo2.filter)
-        : buildCohortGqlOperator(getCohortFilterForAPI(cohorts[1])),
+        : buildCohortGqlOperator(
+            cohorts[1] ? getCohortFilterForAPI(cohorts[1]) : undefined,
+          ),
       intent: "portal",
       set_type: "ephemeral",
     });
-    if (cohorts?.length == 3)
+    if (cohorts?.length == 3 && cohorts[2])
       // if there are 3 cohorts, create the third one
       createSet2({
         filters: buildCohortGqlOperator(getCohortFilterForAPI(cohorts[2])),

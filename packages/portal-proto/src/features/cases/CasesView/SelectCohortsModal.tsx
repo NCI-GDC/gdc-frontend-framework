@@ -214,7 +214,7 @@ export const SelectCohortsModal = ({
               size,
               from,
               total,
-              label: "cohorts",
+              label: "cohort",
             }}
             handleChange={handleChange}
             disablePageSize={true}
