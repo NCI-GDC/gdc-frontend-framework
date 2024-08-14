@@ -147,7 +147,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
               size,
               from,
               total,
-              label: "cohorts",
+              label: "cohort",
             }}
             status="fulfilled"
             handleChange={handleChange}

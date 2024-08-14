@@ -486,7 +486,7 @@ const FilesTables: React.FC = () => {
           columns={filesTableDefaultColumns}
           pagination={{
             ...tempPagination,
-            label: "files",
+            label: "file",
           }}
           status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
           handleChange={handleChange}

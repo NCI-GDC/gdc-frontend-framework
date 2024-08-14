@@ -398,7 +398,7 @@ const ProjectsTable: React.FC = () => {
       showControls={true}
       pagination={{
         ...tempPagination,
-        label: "projects",
+        label: "project",
       }}
       search={{
         enabled: true,

@@ -82,7 +82,7 @@ const UnmatchedTable = ({
           status="fulfilled"
           pagination={{
             ...unmatchedPaginationProps,
-            label: `${entityLabel}s`,
+            label: `${entityLabel}`,
           }}
           handleChange={handleUnmatchedTableChange}
           columnSorting="enable"
