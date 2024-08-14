@@ -45,7 +45,6 @@ if (process.env.NEXT_PUBLIC_DD_ENABLED) {
     sessionSampleRate: 100,
     sessionReplaySampleRate: 0,
     trackUserInteractions: true,
-    trackFrustrations: true,
     trackResources: true,
     trackLongTasks: true,
     trackViewsManually: true,
