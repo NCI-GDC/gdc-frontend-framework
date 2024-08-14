@@ -617,7 +617,10 @@ export const useLayout = ({
               type: "text",
               ...labelLayout[key],
               style: {
-                text: api.value(0).toLocaleString(),
+                text:
+                  typeof dataValue === "string"
+                    ? dataValue
+                    : api.value(0)?.toLocaleString() || "",
                 textAlign: "middle",
                 fill:
                   dataValue === 0 && currentMouseOver === key
