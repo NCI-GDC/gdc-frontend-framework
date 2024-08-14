@@ -134,14 +134,14 @@ const FromTo: React.FC<FromToProps> = ({
     initialValues: {
       fromOp: values?.fromOp ?? ">=",
       fromValue:
-        values?.from === undefined
-          ? undefined
-          : adjustDaysToYearsIfUnitsAreYears(values.from, units),
+        values?.from !== undefined
+          ? adjustDaysToYearsIfUnitsAreYears(values.from, units)
+          : undefined,
       toOp: values?.toOp ?? "<",
       toValue:
-        values?.to === undefined
-          ? undefined
-          : adjustDaysToYearsIfUnitsAreYears(values.to, units),
+        values?.to !== undefined
+          ? adjustDaysToYearsIfUnitsAreYears(values.to, units)
+          : undefined,
     },
     validate: {
       fromValue: (value) => {
@@ -164,13 +164,15 @@ const FromTo: React.FC<FromToProps> = ({
   useDeepCompareEffect(() => {
     form.setValues({
       fromOp: values?.fromOp ?? ">=",
-      fromValue: values?.from
-        ? adjustDaysToYearsIfUnitsAreYears(values.from, units)
-        : undefined,
+      fromValue:
+        values?.from !== undefined
+          ? adjustDaysToYearsIfUnitsAreYears(values.from, units)
+          : undefined,
       toOp: values?.toOp ?? "<",
-      toValue: values?.to
-        ? adjustDaysToYearsIfUnitsAreYears(values.to, units)
-        : undefined,
+      toValue:
+        values?.to !== undefined
+          ? adjustDaysToYearsIfUnitsAreYears(values.to, units)
+          : undefined,
     });
     // https://github.com/mantinedev/mantine/issues/5338
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -178,7 +180,7 @@ const FromTo: React.FC<FromToProps> = ({
 
   useDeepCompareEffect(() => {
     if (clearValues) {
-      form.setValues({ fromValue: undefined, toValue: undefined });
+      form.reset();
     }
     // https://github.com/mantinedev/mantine/issues/5338
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -250,6 +252,7 @@ const FromTo: React.FC<FromToProps> = ({
           />
           <NumberInput
             {...form.getInputProps("fromValue")}
+            value={form.values.fromValue ?? ""}
             data-testid="textbox-input-from-value"
             className="text-sm flex-1"
             placeholder={`Min: ${lowerUnitRange}${unitsLabel} `}
@@ -285,6 +288,7 @@ const FromTo: React.FC<FromToProps> = ({
           />
           <NumberInput
             {...form.getInputProps("toValue")}
+            value={form.values.toValue ?? ""}
             data-testid="textbox-input-to-value"
             className="flex-1 text-sm"
             placeholder={`Max: ${upperUnitRange}${unitsLabel} `}
