@@ -14,7 +14,7 @@
     "test:all": "jest"
   },
   "dependencies": {
-    "@datadog/browser-rum": "^4.32.0",
+    "@datadog/browser-rum": "^5.23.3",
     "@dnd-kit/core": "^6.0.8",
     "@dnd-kit/modifiers": "^6.0.1",
     "@dnd-kit/sortable": "^7.0.2",
