@@ -141,6 +141,23 @@ gauge run [args] [flags]
 ````bash
 PWDEBUG=1 gauge run specs
 ````
+
+### Execute Tests in Parallel
+Let gauge choose number of execution streams (depends on the number of CPU cores available):
+````bash
+gauge run --parallel specs
+````
+OR, choose number of streams:
+````bash
+gauge run --parallel -n=number_here specs
+````
+I found there was no difference in test success rate if you let gauge choose the number of
+execution streams, or if you specified a smaller amount. So, the best course of action is to let
+gauge choose the number of streams and finish the regression tests faster.
+
+If a test does fail, rerun them individually before reporting results.
+
+### Gauge Execution Documentation
 See [Run Gauge Specifications](https://docs.gauge.org/execution.html?os=macos&language=python&ide=vscode)
 
 This will also compile all the supporting code implementations.
