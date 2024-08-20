@@ -214,6 +214,12 @@ class CohortBuilderPage(BasePage):
         result = self.is_visible(locator)
         return result
 
+    def remove_facet_card_custom_filter_text(self, facet_card, text):
+        """Clicks the custom filter text to remove it on given facet card"""
+        locator = CohortBuilderPageLocators.FACET_GROUP_CUSTOM_FILTER_TEXT_IDENT(facet_card, text)
+        self.hover(locator)
+        self.click(locator, True)
+
     # Clicks a filter card object using its visible, displayed name
     def click_named_item_in_facet_group(self, facet_group_name, object_name):
         locator = CohortBuilderPageLocators.FACET_GROUP_NAMED_OBJECT_IDENT(

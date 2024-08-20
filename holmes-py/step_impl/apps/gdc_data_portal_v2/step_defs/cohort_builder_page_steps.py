@@ -168,14 +168,30 @@ def make_cohort_builder_selections(tab_name: str, table):
         ), f"In tab '{tab_name}', the facet card '{v[0]}' is NOT visible"
         time.sleep(0.1)
 
-@step("Validate expected custom filters are present in facet cards on the <tab_name> tab on the Cohort Builder page <table>")
+@step("Validate expected custom filters <are_or_are_not> present in facet cards on the <tab_name> tab on the Cohort Builder page <table>")
+def make_cohort_builder_selections(are_or_are_not:str, tab_name: str, table):
+    APP.cohort_builder_page.click_button(tab_name)
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    APP.shared.wait_for_loading_spinner_to_detatch()
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    for k, v in enumerate(table):
+        is_custom_filter_visible = APP.cohort_builder_page.is_facet_card_custom_filter_text_present(v[0], v[1])
+        if are_or_are_not.lower() == "are":
+            assert is_custom_filter_visible, f"In tab '{tab_name}' and facet card '{v[0]}', the custom filter text '{v[1]}' is NOT visible"
+        elif are_or_are_not.lower() == "are not":
+            assert is_custom_filter_visible == False, f"In tab '{tab_name}' and facet card '{v[0]}', the custom filter text '{v[1]}' is present when it should NOT be"
+        time.sleep(0.1)
+
+@step("Remove the following custom filters in facet cards on the <tab_name> tab on the Cohort Builder page <table>")
 def make_cohort_builder_selections(tab_name: str, table):
     APP.cohort_builder_page.click_button(tab_name)
     for k, v in enumerate(table):
-        is_custom_filter_visible = APP.cohort_builder_page.is_facet_card_custom_filter_text_present(v[0], v[1])
-        assert is_custom_filter_visible, f"In tab '{tab_name}' and facet card '{v[0]}', the custom filter text '{v[1]}' is NOT visible"
-        time.sleep(0.1)
-
+        APP.cohort_builder_page.remove_facet_card_custom_filter_text(v[0], v[1])
+        APP.shared.wait_for_loading_spinner_table_to_detatch()
+        APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        APP.shared.wait_for_loading_spinner_to_detatch()
+        APP.shared.wait_for_loading_spinner_table_to_detatch()
 
 @step("Navigate to the <tab_name> tab on the Cohort Builder page")
 def click_cohort_builder_tab(tab_name: str):

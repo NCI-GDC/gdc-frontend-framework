@@ -19,11 +19,16 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
 * Upload "One Case" "txt" from "Cohort Builder" in "Cohort Builder Import" through "Browse"
 * Is text "1 submitted case identifier mapped to 1 unique GDC case" present on the page
 * Select "Submit"
+* Validate expected custom filters "are" present in facet cards on the "General" tab on the Cohort Builder page
+  |facet_name           |custom_filter_text                     |
+  |---------------------|---------------------------------------|
+  |Case Id              |a757f96a-a173-45e2-a292-62ea007efd9d   |
 * Validate the cohort query filter area has these filters
   |facet_name           |selections                             |position in filter area  |
   |---------------------|---------------------------------------|-------------------------|
   |Case Id              |a757f96a-a173-45e2-a292-62ea007efd9d   |1                        |
-* Validate expected custom filters are present in facet cards on the "General" tab on the Cohort Builder page
+* Clear active cohort filters
+* Validate expected custom filters "not are" present in facet cards on the "General" tab on the Cohort Builder page
   |facet_name           |custom_filter_text                     |
   |---------------------|---------------------------------------|
   |Case Id              |a757f96a-a173-45e2-a292-62ea007efd9d   |
@@ -38,11 +43,16 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
 * Upload "All Case Identifiers" "txt" from "Cohort Builder" in "Cohort Builder Import" through "Browse"
 * Is text "12 submitted case identifiers mapped to 12 unique GDC cases" present on the page
 * Select "Submit"
+* Validate expected custom filters "are" present in facet cards on the "General" tab on the Cohort Builder page
+  |facet_name           |custom_filter_text                     |
+  |---------------------|---------------------------------------|
+  |Case Id              |12 input case ids                      |
 * Validate the cohort query filter area has these filters
   |facet_name           |selections                             |position in filter area  |
   |---------------------|---------------------------------------|-------------------------|
   |Case Id              |12 input case ids                      |1                        |
-* Validate expected custom filters are present in facet cards on the "General" tab on the Cohort Builder page
+* Remove the following custom filters in facet cards on the "General" tab on the Cohort Builder page
   |facet_name           |custom_filter_text                     |
   |---------------------|---------------------------------------|
   |Case Id              |12 input case ids                      |
+* Validate there are no active cohort filters
