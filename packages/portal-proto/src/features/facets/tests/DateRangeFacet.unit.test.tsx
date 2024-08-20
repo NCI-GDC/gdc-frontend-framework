@@ -21,11 +21,13 @@ describe("<DateRangeFacet />", () => {
       <DateRangeFacet
         field="files.analysis.input_files.created_datetime"
         width="w-1/3"
-        hooks={{
-          useGetFacetFilters: jest.fn(),
-          useUpdateFacetFilters: jest.fn(),
-          useClearFilter: jest.fn(),
-        }}
+        hooks={
+          {
+            useGetFacetFilters: jest.fn(),
+            useUpdateFacetFilters: jest.fn(),
+            useClearFilter: jest.fn(),
+          } as any
+        }
       />,
     );
 

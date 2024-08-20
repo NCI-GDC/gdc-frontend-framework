@@ -134,9 +134,7 @@ export const RepositoryApp = (): JSX.Element => {
     <>
       <PersistGate persistor={persistor}>
         <div className="flex m-4 gap-0.5">
-          <div className="w-1/3 xl:w-1/4">
-            <FileFacetPanel />
-          </div>
+          <FileFacetPanel />
           <div
             className="w-2/3 xl:w-3/4 overflow-hidden h-full"
             data-testid="table-repository"

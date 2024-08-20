@@ -14,6 +14,12 @@ import {
   updateProjectFilter,
   clearProjectFilters,
 } from "@/features/projectsCenter/projectCenterFiltersSlice";
+import {
+  toggleProjectFilter,
+  toggleAllFilters,
+  selectFilterExpanded,
+  selectAllFiltersCollapsed,
+} from "@/features/projectsCenter/projectCenterFilterExpandSlice";
 import { useCallback } from "react";
 import { extractValue } from "@/features/facets/hooks";
 
@@ -50,6 +56,28 @@ export const useClearAllProjectFilters = () => {
   return useCallback(() => {
     dispatch(clearProjectFilters());
   }, [dispatch]);
+};
+
+export const useToggleExpandProjectFilter = () => {
+  const dispatch = useAppDispatch();
+  return (field: string, expanded: boolean) => {
+    dispatch(toggleProjectFilter({ field, expanded }));
+  };
+};
+
+export const useToggleAllProjectFilters = () => {
+  const dispatch = useAppDispatch();
+  return (expanded: boolean) => {
+    dispatch(toggleAllFilters(expanded));
+  };
+};
+
+export const useFilterExpandedState = (field: string) => {
+  return useAppSelector((state) => selectFilterExpanded(state, field));
+};
+
+export const useAllFiltersCollapsed = () => {
+  return useAppSelector((state) => selectAllFiltersCollapsed(state));
 };
 
 /**

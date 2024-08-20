@@ -8,6 +8,7 @@ import { createAppStore, AppDataSelectorResponse } from "@gff/core";
 import { imageCountsReducer } from "@/features/repositoryApp/slideCountSlice";
 import { repositoryRangeFacetsReducer } from "@/features/repositoryApp/repositoryRangeFacet";
 import RepositoryDefaultConfig from "./config/filters.json";
+import { repositoryExpandedReducer } from "./repositoryFilterExpandedSlice";
 
 const REPOSITORY_APP_NAME = "DownloadApp";
 
@@ -17,6 +18,7 @@ const downloadAppReducers = combineReducers({
   images: imageCountsReducer,
   facetBuckets: repositoryFacetsGQLReducer,
   facetRanges: repositoryRangeFacetsReducer,
+  filtersExpanded: repositoryExpandedReducer,
 });
 
 const migrations = {

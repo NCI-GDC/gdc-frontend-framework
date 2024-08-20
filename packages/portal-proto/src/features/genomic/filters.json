@@ -1,59 +1,60 @@
 [
   {
-    "facet_filter": "genes.gene_id",
+    "full": "genes.gene_id",
     "title": "Mutated Gene",
     "name": "Genes",
-    "type": "set",
-    "docType": "genes",
+    "facet_type": "set",
+    "doc_type": "genes",
     "toolTip": "Filter Mutation Frequency by entering/uploading specific genes or selecting gene sets"
   },
   {
-    "facet_filter": "ssms.ssm_id",
+    "full": "ssms.ssm_id",
+    "title": "Somatic Mutations",
     "name": "Somatic Mutations",
-    "type": "set",
-    "docType": "ssms",
+    "facet_type": "set",
+    "doc_type": "ssms",
     "toolTip": "Filter Mutation Frequency by entering/uploading specific Simple Somatic Mutations (SSMs) or selecting mutation sets"
   },
   {
-    "facet_filter": "genes.biotype",
-    "name": "Biotype",
-    "type": "enum",
-    "docType": "genes"
+    "full": "genes.biotype",
+    "title": "Biotype",
+    "facet_type": "enum",
+    "doc_type": "genes"
   },
   {
-    "facet_filter": "genes.is_cancer_gene_census",
-    "name": "Is Cancer Gene Census",
-    "type": "toggle",
-    "docType": "genes"
+    "full": "genes.is_cancer_gene_census",
+    "title": "Is Cancer Gene Census",
+    "facet_type": "toggle",
+    "doc_type": "genes"
   },
   {
-    "facet_filter": "ssms.consequence.transcript.annotation.vep_impact",
-    "name": "VEP Impact",
-    "type": "enum",
-    "docType": "ssms"
+    "full": "ssms.consequence.transcript.annotation.vep_impact",
+    "title": "VEP Impact",
+    "facet_type": "enum",
+    "doc_type": "ssms"
   },
   {
-    "facet_filter": "ssms.consequence.transcript.annotation.sift_impact",
-    "name": "SIFT Impact",
-    "type": "enum",
-    "docType": "ssms"
+    "full": "ssms.consequence.transcript.annotation.sift_impact",
+    "title": "SIFT Impact",
+    "facet_type": "enum",
+    "doc_type": "ssms"
   },
   {
-    "facet_filter": "ssms.consequence.transcript.annotation.polyphen_impact",
-    "name": "Polyphen Impact",
-    "type": "enum",
-    "docType": "ssms"
+    "full": "ssms.consequence.transcript.annotation.polyphen_impact",
+    "title": "Polyphen Impact",
+    "facet_type": "enum",
+    "doc_type": "ssms"
   },
   {
-    "facet_filter": "ssms.consequence.transcript.consequence_type",
-    "name": "Consequence Type",
-    "type": "enum",
-    "docType": "ssms"
+    "full": "ssms.consequence.transcript.consequence_type",
+    "title": "Consequence Type",
+    "facet_type": "enum",
+    "doc_type": "ssms"
   },
   {
-    "facet_filter": "ssms.mutation_subtype",
-    "name": "Type",
-    "type": "enum",
-    "docType": "ssms"
+    "full": "ssms.mutation_subtype",
+    "title": "facet_type",
+    "facet_type": "enum",
+    "doc_type": "ssms"
   }
 ]

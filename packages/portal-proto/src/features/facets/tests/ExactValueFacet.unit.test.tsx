@@ -15,11 +15,13 @@ describe("<ExactValueFacet />", () => {
       <ExactValueFacet
         field="cases.diagnoses.annotations.case_id"
         width="w-1/3"
-        hooks={{
-          useGetFacetFilters: jest.fn(),
-          useUpdateFacetFilters: jest.fn(),
-          useClearFilter: jest.fn(),
-        }}
+        hooks={
+          {
+            useGetFacetFilters: jest.fn(),
+            useUpdateFacetFilters: jest.fn(),
+            useClearFilter: jest.fn(),
+          } as any
+        }
       />,
     );
 
@@ -44,18 +46,22 @@ describe("<ExactValueFacet />", () => {
       <ExactValueFacet
         field="cases.diagnoses.annotations.case_id"
         width="w-1/3"
-        hooks={{
-          useClearFilter: jest.fn(),
-          useGetFacetFilters: jest.fn(() => values),
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          useUpdateFacetFilters: jest.fn(() => (_1: string, _2: Operation) => {
-            values = {
-              operator: "includes",
-              field: "cases.diagnoses.annotations.case_id",
-              operands: ["case_id_1000"],
-            };
-          }),
-        }}
+        hooks={
+          {
+            useClearFilter: jest.fn(),
+            useGetFacetFilters: jest.fn(() => values),
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            useUpdateFacetFilters: jest.fn(
+              () => (_1: string, _2: Operation) => {
+                values = {
+                  operator: "includes",
+                  field: "cases.diagnoses.annotations.case_id",
+                  operands: ["case_id_1000"],
+                };
+              },
+            ),
+          } as any
+        }
       />,
     );
 

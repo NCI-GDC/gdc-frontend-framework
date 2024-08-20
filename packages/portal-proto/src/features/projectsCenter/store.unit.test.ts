@@ -10,5 +10,6 @@ test("initial state", () => {
         root: {},
       },
     },
+    projectExpandedState: {},
   });
 });

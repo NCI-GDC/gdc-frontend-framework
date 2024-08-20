@@ -49,9 +49,7 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
   if (!facetName) {
     facetName = trimFirstFieldNameToTitle(field, true);
   }
-  if (!facetTitle) {
-    facetTitle = facetName;
-  }
+
   const dispatch = useCoreDispatch();
   const facetValues = (hooks.useGetFacetValues(field) ||
     []) as EnumOperandValue;

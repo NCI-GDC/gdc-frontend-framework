@@ -52,7 +52,7 @@ const RangeInputWithPrefixedRanges: React.FC<
 
   // get the current filter for this facet
   const filter = hooks.useGetFacetFilters(field);
-  const totalCount = hooks.useTotalCounts();
+  const totalCount = hooks.useTotalCounts(field);
 
   // giving the filter value, extract the From/To values and
   // build it's key
@@ -71,7 +71,10 @@ const RangeInputWithPrefixedRanges: React.FC<
   const [isCustom, setIsCustom] = useState(filterKey === "custom"); // in custom Range Mode
   const [selectedRange, setSelectedRange] = useState(filterKey); // the current selected range
 
-  const { data: rangeData, isSuccess } = hooks.useGetFacetData(field, ranges);
+  const { data: rangeData, isSuccess } = hooks.useGetRangeFacetData(
+    field,
+    ranges,
+  );
   const rangeLabelsAndValues = buildRangeLabelsAndValues(
     bucketRanges,
     totalCount,

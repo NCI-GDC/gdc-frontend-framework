@@ -1,4 +1,9 @@
-import { NumericFromTo, OperandValue, Operation } from "@gff/core";
+import {
+  FacetDefinition,
+  NumericFromTo,
+  OperandValue,
+  Operation,
+} from "@gff/core";
 import { ComponentType, ReactNode } from "react";
 
 export interface FacetResponse {
@@ -21,50 +26,45 @@ export type UpdateFacetFilterFunction = (field: string, op: Operation) => void;
 export type UpdateFacetFilterHook = () => UpdateFacetFilterFunction;
 export type ClearFacetFunction = (field: string) => void;
 export type ClearFacetHook = () => ClearFacetFunction;
-export type GetTotalCountsFunction = () => number;
+export type GetTotalCountsFunction = (field?: string) => number;
 
 export type GetRangeFacetDataFunction = (
   field: string,
   ranges: ReadonlyArray<NumericFromTo>,
 ) => FacetResponse;
 
-export interface FacetDataHooks {
-  useClearFilter: ClearFacetHook;
-}
-
-export interface EnumFacetHooks extends FacetDataHooks {
-  useUpdateFacetFilters: UpdateFacetFilterHook;
-  useGetFacetData: GetEnumFacetDataFunction;
-  useTotalCounts: GetTotalCountsFunction;
-}
-
-export interface ValueFacetHooks extends FacetDataHooks {
-  useUpdateFacetFilters: UpdateFacetFilterHook;
-  useGetFacetFilters: SelectFacetFilterFunction;
-}
-
-export interface RangeFacetHooks extends FacetDataHooks {
-  useGetFacetFilters: SelectFacetFilterFunction;
-  useUpdateFacetFilters: UpdateFacetFilterHook;
-  useGetFacetData: GetRangeFacetDataFunction;
-  useTotalCounts: GetTotalCountsFunction;
-}
-
-export interface SetFacetHooks extends FacetDataHooks {
-  useUpdateFacetFilters: UpdateFacetFilterHook;
-  useGetFacetValues: (field: string) => OperandValue;
-}
-
-export interface FacetRequiredHooks {
-  useClearFilter: ClearFacetHook; // clear Facet Filters and remove facet from filter set
-  useGetFacetFilters: SelectFacetFilterFunction; // gets the current filters
-  useUpdateFacetFilters: UpdateFacetFilterHook; // updates the filters
+export type EnumFacetHooks = FacetCommonHooks & {
   useGetEnumFacetData: GetEnumFacetDataFunction; // gets data for EnumFacets and ToggleFacet
-  useGetRangeFacetData?: GetRangeFacetDataFunction; // gets the data for Range Facets
+};
+
+export type ValueFacetHooks = FacetCommonHooks & {
+  useGetFacetFilters: SelectFacetFilterFunction; // gets the current filters
+};
+
+export type RangeFacetHooks = FacetCommonHooks & {
+  useGetRangeFacetData: GetRangeFacetDataFunction; // gets the data for Range Facets
+  useGetFacetFilters: SelectFacetFilterFunction; // gets the current filters
+};
+
+export type SetFacetHooks = FacetCommonHooks & {
+  useGetFacetValues: (field: string) => OperandValue;
+};
+
+export interface FacetCommonHooks {
+  useClearFilter: ClearFacetHook; // clear Facet Filters and remove facet from filter set
+  useUpdateFacetFilters: UpdateFacetFilterHook; // updates the filters
   useTotalCounts: GetTotalCountsFunction; // get the totals count by type: cases, files, genes, ssms, projects
+  useToggleExpandFilter?: () => (field: string, expanded: boolean) => void;
+  useFilterExpanded?: (field: string) => boolean;
 }
 
-export interface FacetCardProps<T extends FacetDataHooks> {
+export type FacetRequiredHooks =
+  | EnumFacetHooks
+  | ValueFacetHooks
+  | RangeFacetHooks
+  | SetFacetHooks;
+
+export interface FacetCardProps<T extends FacetCommonHooks> {
   readonly field: string;
   readonly hooks: T;
   readonly valueLabel: string;
@@ -86,6 +86,7 @@ export interface FacetCardProps<T extends FacetDataHooks> {
     readonly Label?: ComponentType<{ children: ReactNode }>; // optional facet label component
     readonly iconStyle?: string; // optional facet button component
   };
+  readonly updateFilters?: (action) => void;
 }
 
 export type RangeFromOp = ">" | ">=";
@@ -128,3 +129,8 @@ export interface SortType {
   type: "value" | "alpha";
   direction: "asc" | "dsc";
 }
+
+export type FacetCardDefinition = FacetDefinition & {
+  name?: string;
+  toolTip?: string;
+};
