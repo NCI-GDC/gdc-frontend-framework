@@ -93,7 +93,7 @@ def click_show_more_or_show_less(tab_name: str, table):
 
 
 @step(
-    "Activate the following objects from <tab_name> tab on the Cohort Builder page <table>"
+    "Select the following labels from <tab_name> tab on the Cohort Builder page <table>"
 )
 def click_named_object(tab_name: str, table):
     APP.cohort_builder_page.click_button(tab_name)
@@ -166,6 +166,14 @@ def make_cohort_builder_selections(tab_name: str, table):
         assert (
             is_facet_visible
         ), f"In tab '{tab_name}', the facet card '{v[0]}' is NOT visible"
+        time.sleep(0.1)
+
+@step("Validate expected custom filters are present in facet cards on the <tab_name> tab on the Cohort Builder page <table>")
+def make_cohort_builder_selections(tab_name: str, table):
+    APP.cohort_builder_page.click_button(tab_name)
+    for k, v in enumerate(table):
+        is_custom_filter_visible = APP.cohort_builder_page.is_facet_card_custom_filter_text_present(v[0], v[1])
+        assert is_custom_filter_visible, f"In tab '{tab_name}' and facet card '{v[0]}', the custom filter text '{v[1]}' is NOT visible"
         time.sleep(0.1)
 
 

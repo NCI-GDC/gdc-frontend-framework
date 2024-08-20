@@ -35,6 +35,9 @@ class CohortBuilderPageLocators:
     FACET_GROUP_NAMED_OBJECT_IDENT = (
         lambda group_name, object_name: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> div >> text="{object_name}"'
     )
+    FACET_GROUP_CUSTOM_FILTER_TEXT_IDENT = (
+        lambda group_name, filter_text: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> text="{filter_text}"'
+    )
 
     FILTER_TAB_LIST = (
         'main[data-tour="full_page_content"] >> div[role="tablist"] > button'
@@ -202,6 +205,12 @@ class CohortBuilderPage(BasePage):
     # Used to check the text displayed in the query expression area
     def is_query_expression_area_text_present(self, text):
         locator = CohortBuilderPageLocators.QUERY_EXPRESSION_TEXT(text)
+        result = self.is_visible(locator)
+        return result
+
+    def is_facet_card_custom_filter_text_present(self, facet_card, text):
+        """Returns if filter text is present on given facet card"""
+        locator = CohortBuilderPageLocators.FACET_GROUP_CUSTOM_FILTER_TEXT_IDENT(facet_card, text)
         result = self.is_visible(locator)
         return result
 
