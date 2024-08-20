@@ -136,13 +136,15 @@ const FromTo: React.FC<FromToProps> = ({
   const form = useForm({
     initialValues: {
       fromOp: values?.fromOp ?? ">=",
-      fromValue: values?.from
-        ? adjustDaysToYearsIfUnitsAreYears(values.from, units, queryInYears)
-        : undefined,
+      fromValue:
+        values?.from !== undefined
+          ? adjustDaysToYearsIfUnitsAreYears(values.from, units, queryInYears)
+          : undefined,
       toOp: values?.toOp ?? "<",
-      toValue: values?.to
-        ? adjustDaysToYearsIfUnitsAreYears(values.to, units, queryInYears)
-        : undefined,
+      toValue:
+        values?.to !== undefined
+          ? adjustDaysToYearsIfUnitsAreYears(values.to, units, queryInYears)
+          : undefined,
     },
     validate: {
       fromValue: (value) => {
@@ -165,13 +167,15 @@ const FromTo: React.FC<FromToProps> = ({
   useDeepCompareEffect(() => {
     form.setValues({
       fromOp: values?.fromOp ?? ">=",
-      fromValue: values?.from
-        ? adjustDaysToYearsIfUnitsAreYears(values.from, units, queryInYears)
-        : undefined,
+      fromValue:
+        values?.from !== undefined
+          ? adjustDaysToYearsIfUnitsAreYears(values.from, units, queryInYears)
+          : undefined,
       toOp: values?.toOp ?? "<",
-      toValue: values?.to
-        ? adjustDaysToYearsIfUnitsAreYears(values.to, units, queryInYears)
-        : undefined,
+      toValue:
+        values?.to !== undefined
+          ? adjustDaysToYearsIfUnitsAreYears(values.to, units, queryInYears)
+          : undefined,
     });
     // https://github.com/mantinedev/mantine/issues/5338
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -179,7 +183,7 @@ const FromTo: React.FC<FromToProps> = ({
 
   useDeepCompareEffect(() => {
     if (clearValues) {
-      form.setValues({ fromValue: undefined, toValue: undefined });
+      form.reset();
     }
     // https://github.com/mantinedev/mantine/issues/5338
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -266,14 +270,18 @@ const FromTo: React.FC<FromToProps> = ({
             aria-label="select greater and equal or greater than"
           />
           <NumberInput
+            {...form.getInputProps("fromValue")}
+            value={form.values.fromValue ?? ""}
             data-testid="textbox-input-from-value"
             className="text-sm flex-1"
             placeholder={`Min: ${lowerUnitRange}${unitsLabel} `}
             // units are always days
-            value={form.values.fromValue ?? ""}
             onChange={(value) => {
-              if (value === "" || typeof value === "string") return;
-              form.setFieldValue("fromValue", value);
+              if (value === "" || typeof value === "string") {
+                form.setFieldValue("fromValue", undefined);
+              } else {
+                form.setFieldValue("fromValue", value);
+              }
               changedCallback();
             }}
             error={form?.errors?.fromValue}
@@ -298,16 +306,19 @@ const FromTo: React.FC<FromToProps> = ({
             aria-label="select less or less than and equal"
           />
           <NumberInput
+            {...form.getInputProps("toValue")}
+            value={form.values.toValue ?? ""}
             data-testid="textbox-input-to-value"
             className="flex-1 text-sm"
             placeholder={`Max: ${upperUnitRange}${unitsLabel} `}
             onChange={(value) => {
-              if (value === "" || typeof value === "string") return;
-              form.setFieldValue("toValue", value);
-
+              if (value === "" || typeof value === "string") {
+                form.setFieldValue("toValue", undefined);
+              } else {
+                form.setFieldValue("toValue", value);
+              }
               changedCallback();
             }}
-            value={form.values.toValue ?? ""}
             error={form?.errors?.toValue}
             hideControls
             aria-label="input to value"
