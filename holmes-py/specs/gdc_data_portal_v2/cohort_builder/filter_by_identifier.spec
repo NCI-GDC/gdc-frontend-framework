@@ -27,12 +27,14 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
   |facet_name           |selections                             |position in filter area  |
   |---------------------|---------------------------------------|-------------------------|
   |Case Id              |a757f96a-a173-45e2-a292-62ea007efd9d   |1                        |
-* Clear active cohort filters
+* Remove these filters from the cohort query area
+  |Filter to Remove             |
+  |-----------------------------|
+  |Case Id                      |
 * Validate expected custom filters "not are" present in facet cards on the "General" tab on the Cohort Builder page
   |facet_name           |custom_filter_text                     |
   |---------------------|---------------------------------------|
   |Case Id              |a757f96a-a173-45e2-a292-62ea007efd9d   |
-
 
 ## Case ID - Multiple Identifiers
 * Clear active cohort filters
@@ -55,4 +57,52 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
   |facet_name           |custom_filter_text                     |
   |---------------------|---------------------------------------|
   |Case Id              |12 input case ids                      |
+* Validate there are no active cohort filters
+
+## Mutated Gene - Single Identifier
+* Select the following labels from "Molecular Filters" tab on the Cohort Builder page
+  |facet_name       |selection            |
+  |-----------------|---------------------|
+  |Mutated Gene     |Upload Genes         |
+* Upload "One Gene" "txt" from "Cohort Builder" in "Cohort Builder Import" through "Browse"
+* Is text "1 submitted gene identifier mapped to 1 unique GDC gene" present on the page
+* Select "Submit"
+* Validate expected custom filters "are" present in facet cards on the "Molecular Filters" tab on the Cohort Builder page
+  |facet_name           |custom_filter_text                     |
+  |---------------------|---------------------------------------|
+  |Mutated Gene         |USH2A                                  |
+* Validate the cohort query filter area has these filters
+  |facet_name           |selections                             |position in filter area  |
+  |---------------------|---------------------------------------|-------------------------|
+  |Mutated Gene         |USH2A                                  |1                        |
+* Remove these filters from the cohort query area
+  |Filter to Remove             |
+  |-----------------------------|
+  |Gene Id                      |
+* Validate expected custom filters "not are" present in facet cards on the "Molecular Filters" tab on the Cohort Builder page
+  |facet_name           |custom_filter_text                     |
+  |---------------------|---------------------------------------|
+  |Mutated Gene         |USH2A                                  |
+
+## Mutated Gene - Multiple Identifiers
+* Clear active cohort filters
+* Select the following labels from "Molecular Filters" tab on the Cohort Builder page
+  |facet_name       |selection            |
+  |-----------------|---------------------|
+  |Mutated Gene     |Upload Genes         |
+* Upload "Multiple Genes" "txt" from "Cohort Builder" in "Cohort Builder Import" through "Browse"
+* Is text "5 submitted gene identifiers mapped to 5 unique GDC genes" present on the page
+* Select "Submit"
+* Validate expected custom filters "are" present in facet cards on the "Molecular Filters" tab on the Cohort Builder page
+  |facet_name           |custom_filter_text                     |
+  |---------------------|---------------------------------------|
+  |Mutated Gene         |5 input genes                          |
+* Validate the cohort query filter area has these filters
+  |facet_name           |selections                             |position in filter area  |
+  |---------------------|---------------------------------------|-------------------------|
+  |Mutated Gene         |5 input genes                          |1                        |
+* Remove the following custom filters in facet cards on the "Molecular Filters" tab on the Cohort Builder page
+  |facet_name           |custom_filter_text                     |
+  |---------------------|---------------------------------------|
+  |Mutated Gene         |5 input genes                          |
 * Validate there are no active cohort filters
