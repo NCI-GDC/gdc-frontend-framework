@@ -38,7 +38,7 @@ const persistConfig = {
   key: REPOSITORY_APP_NAME,
   version: 2,
   storage,
-  whitelist: ["facets", "filters"],
+  whitelist: ["facets", "filters", "filtersExpanded"],
   migrate: createMigrate(migrations),
 };
 

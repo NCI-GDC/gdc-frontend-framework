@@ -9,7 +9,7 @@ const persistConfig = {
   key: "MutationFrequency",
   version: 1,
   storage,
-  whitelist: ["filters"],
+  whitelist: ["filters", "filtersExpanded"],
 };
 
 const reducers = combineReducers({
