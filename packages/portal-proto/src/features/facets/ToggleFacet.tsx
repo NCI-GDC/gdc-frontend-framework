@@ -1,17 +1,9 @@
 import React, { useMemo } from "react";
 import { EnumFacetHooks, FacetCardProps } from "./types";
 import { updateFacetEnum } from "./utils";
-
-import {
-  controlsIconStyle,
-  FacetIconButton,
-  FacetText,
-  FacetHeader,
-} from "@/features/facets/components";
-
 import { trimFirstFieldNameToTitle } from "@gff/core";
-import { LoadingOverlay, Switch, Tooltip } from "@mantine/core";
-import { MdClose as CloseIcon } from "react-icons/md";
+import { LoadingOverlay, Switch } from "@mantine/core";
+import FacetControlsHeader from "./FacetControlsHeader";
 
 const extractToggleValue = (values?: ReadonlyArray<string>): boolean =>
   values !== undefined && values.length > 0 && values.includes("true");
@@ -39,6 +31,8 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
 }: FacetCardProps<EnumFacetHooks>) => {
   const clearFilters = hooks.useClearFilter();
   const updateFacetFilters = hooks.useUpdateFacetFilters();
+  const isFilterExpanded =
+    hooks?.useFilterExpanded && hooks.useFilterExpanded(field);
 
   const facetTitle = facetName
     ? facetName
@@ -63,58 +57,45 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
         width ? width : "mx-0"
       } bg-base-max relative shadow-lg border-base-lighter border-1 rounded-b-md transition text-sm`}
     >
-      <FacetHeader>
-        <Tooltip
-          disabled={!description}
-          label={description}
-          position="bottom-start"
-          multiline
-          w={220}
-          withArrow
-          transitionProps={{ duration: 200, transition: "fade" }}
-        >
-          <FacetText>{facetTitle}</FacetText>
-        </Tooltip>
-        <div className="flex flex-row">
-          {dismissCallback && (
-            <Tooltip label="Remove the facet">
-              <FacetIconButton
-                onClick={() => {
-                  dismissCallback(field);
+      <FacetControlsHeader
+        field={field}
+        description={description}
+        hooks={hooks}
+        facetName={facetName}
+        dismissCallback={dismissCallback}
+      />
+      {(isFilterExpanded === undefined || isFilterExpanded) && (
+        <>
+          <div className="flex items-center justify-end flex-wrap p-1 mb-1 border-b-2">
+            <p className="px-2">{valueLabel}</p>
+          </div>
+          <div className="w-full ">
+            <div className="flex flex-nowrap justify-between items-center p-2 ">
+              <LoadingOverlay
+                data-testid="loading-spinner"
+                visible={!isSuccess}
+              />
+              <Switch
+                label={
+                  data === undefined || Object.keys(data).length == 0
+                    ? "No data for this field"
+                    : data["1"].toLocaleString("en-US")
+                }
+                color="accent"
+                checked={toggleValue}
+                onChange={(event) => setValue(event.currentTarget.checked)}
+                aria-label={facetTitle}
+                data-testid="toggle-facet-value"
+                classNames={{
+                  root: "w-full",
+                  body: "flex justify-between items-center",
+                  label: "text-sm font-content",
                 }}
-                aria-label="Remove the facet"
-              >
-                <CloseIcon size="1.25em" className={controlsIconStyle} />
-              </FacetIconButton>
-            </Tooltip>
-          )}
-        </div>
-      </FacetHeader>
-      <div className="flex items-center justify-end flex-wrap p-1 mb-1 border-b-2">
-        <p className="px-2">{valueLabel}</p>
-      </div>
-      <div className="w-full ">
-        <div className="flex flex-nowrap justify-between items-center p-2 ">
-          <LoadingOverlay data-testid="loading-spinner" visible={!isSuccess} />
-          <Switch
-            label={
-              data === undefined || Object.keys(data).length == 0
-                ? "No data for this field"
-                : data["1"].toLocaleString("en-US")
-            }
-            color="accent"
-            checked={toggleValue}
-            onChange={(event) => setValue(event.currentTarget.checked)}
-            aria-label={facetTitle}
-            data-testid="toggle-facet-value"
-            classNames={{
-              root: "w-full",
-              body: "flex justify-between items-center",
-              label: "text-sm font-content",
-            }}
-          />
-        </div>
-      </div>
+              />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import { ActionIcon, Tooltip } from "@mantine/core";
 import {
   MdFlip as FlipIcon,
@@ -26,10 +27,10 @@ type FacetHeaderProps = Pick<
   | "showFlip"
   | "dismissCallback"
 > & {
-  header: any;
-  isFacetView: boolean;
-  toggleFlip: () => void;
-  toggleSearch: () => void;
+  header?: any;
+  isFacetView?: boolean;
+  toggleFlip?: () => void;
+  toggleSearch?: () => void;
 };
 
 const FacetControlsHeader = ({
@@ -37,11 +38,11 @@ const FacetControlsHeader = ({
   description,
   hooks,
   facetName = null,
-  showSearch = true,
-  showFlip = true,
-  isFacetView,
-  toggleFlip,
-  toggleSearch,
+  showSearch = false,
+  showFlip = false,
+  isFacetView = false,
+  toggleFlip = undefined,
+  toggleSearch = undefined,
   dismissCallback = undefined,
   header = {
     Panel: HeaderComponent,
@@ -54,6 +55,13 @@ const FacetControlsHeader = ({
     hooks?.useFilterExpanded && hooks.useFilterExpanded(field);
   const toggleExpandFilter =
     hooks?.useToggleExpandFilter && hooks.useToggleExpandFilter();
+
+  useEffect(() => {
+    // Initialize filter as expanded
+    if (isFilterExpanded === undefined && toggleExpandFilter) {
+      toggleExpandFilter(field, true);
+    }
+  }, [field, isFilterExpanded, toggleExpandFilter]);
 
   return (
     <header.Panel>

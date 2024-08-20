@@ -70,8 +70,6 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   const updateFacetFilters = hooks.useUpdateFacetFilters();
   const isFilterExpanded =
     hooks?.useFilterExpanded && hooks.useFilterExpanded(field);
-  const toggleExpandFilter =
-    hooks?.useToggleExpandFilter && hooks.useToggleExpandFilter();
 
   useEffect(() => {
     if (isSearching) {
@@ -82,13 +80,6 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   useDeepCompareEffect(() => {
     setSelectedEnums(enumFilters);
   }, [enumFilters]);
-
-  useEffect(() => {
-    // Initialize filter as expanded
-    if (isFilterExpanded === undefined && toggleExpandFilter) {
-      toggleExpandFilter(field, true);
-    }
-  }, []);
 
   const maxValuesToDisplay = DEFAULT_VISIBLE_ITEMS;
 
