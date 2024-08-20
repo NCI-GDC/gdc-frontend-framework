@@ -63,6 +63,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
         hooks={hooks}
         facetName={facetName}
         dismissCallback={dismissCallback}
+        showClearSelection={false}
       />
       {(isFilterExpanded === undefined || isFilterExpanded) && (
         <>

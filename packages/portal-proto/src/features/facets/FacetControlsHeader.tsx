@@ -29,6 +29,7 @@ type FacetHeaderProps = Pick<
 > & {
   header?: any;
   isFacetView?: boolean;
+  showClearSelection?: boolean;
   toggleFlip?: () => void;
   toggleSearch?: () => void;
 };
@@ -40,6 +41,7 @@ const FacetControlsHeader = ({
   facetName = null,
   showSearch = false,
   showFlip = false,
+  showClearSelection = true,
   isFacetView = false,
   toggleFlip = undefined,
   toggleSearch = undefined,
@@ -67,17 +69,19 @@ const FacetControlsHeader = ({
     <header.Panel>
       <div className="flex flex-row">
         {toggleExpandFilter && (
-          <ActionIcon
-            variant="subtle"
-            onClick={() => toggleExpandFilter(field, !isFilterExpanded)}
-            className="mt-0.5"
-          >
-            {isFilterExpanded ? (
-              <ExpandLessIcon size="3em" color="white" />
-            ) : (
-              <ExpandMoreIcon size="3em" color="white" />
-            )}
-          </ActionIcon>
+          <Tooltip label={isFilterExpanded ? "Collapse card" : "Expand card"}>
+            <ActionIcon
+              variant="subtle"
+              onClick={() => toggleExpandFilter(field, !isFilterExpanded)}
+              className="mt-0.5"
+            >
+              {isFilterExpanded ? (
+                <ExpandLessIcon size="3em" color="white" />
+              ) : (
+                <ExpandMoreIcon size="3em" color="white" />
+              )}
+            </ActionIcon>
+          </Tooltip>
         )}
         <Tooltip
           label={description}
@@ -96,7 +100,13 @@ const FacetControlsHeader = ({
       <div className="flex flex-row">
         {showSearch ? (
           <Tooltip label="Search values">
-            <FacetIconButton onClick={toggleSearch} aria-label="Search">
+            <FacetIconButton
+              onClick={() => {
+                toggleExpandFilter(field, true);
+                toggleSearch();
+              }}
+              aria-label="Search"
+            >
               <SearchIcon
                 size="1.45em"
                 className={header.iconStyle}
@@ -108,7 +118,10 @@ const FacetControlsHeader = ({
         {showFlip ? (
           <Tooltip label={isFacetView ? "Chart view" : "Selection view"}>
             <FacetIconButton
-              onClick={toggleFlip}
+              onClick={() => {
+                toggleExpandFilter(field, true);
+                toggleFlip();
+              }}
               aria-pressed={!isFacetView}
               aria-label={isFacetView ? "Chart view" : "Selection view"}
             >
@@ -120,18 +133,20 @@ const FacetControlsHeader = ({
             </FacetIconButton>
           </Tooltip>
         ) : null}
-        <Tooltip label="Clear selection">
-          <FacetIconButton
-            onClick={() => clearFilters(field)}
-            aria-label="clear selection"
-          >
-            <UndoIcon
-              size="1.25em"
-              className={header.iconStyle}
-              aria-hidden="true"
-            />
-          </FacetIconButton>
-        </Tooltip>
+        {showClearSelection && (
+          <Tooltip label="Clear selection">
+            <FacetIconButton
+              onClick={() => clearFilters(field)}
+              aria-label="clear selection"
+            >
+              <UndoIcon
+                size="1.25em"
+                className={header.iconStyle}
+                aria-hidden="true"
+              />
+            </FacetIconButton>
+          </Tooltip>
+        )}
         {dismissCallback ? (
           <Tooltip label="Remove the facet">
             <FacetIconButton
