@@ -70,6 +70,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   const updateFacetFilters = hooks.useUpdateFacetFilters();
   const isFilterExpanded =
     hooks?.useFilterExpanded && hooks.useFilterExpanded(field);
+  const showFilters = isFilterExpanded === undefined || isFilterExpanded;
 
   useEffect(() => {
     if (isSearching) {
@@ -248,6 +249,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   if (facetChartData.filteredData.length == 0 && hideIfEmpty) {
     return null; // nothing to render if visibleItems == 0
   }
+
   return (
     <div
       className={`flex flex-col ${
@@ -270,185 +272,180 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           header={header}
         />
       </div>
-      {(isFilterExpanded === undefined || isFilterExpanded) && (
-        <div className="h-full">
-          {isSearching && (
-            <TextInput
-              data-testid="textbox-search-values"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              aria-label={`${
-                facetName ? facetName : fieldNameToTitle(field)
-              } values`}
-              className={"p-2"}
-              placeholder="Search"
-              ref={searchInputRef}
-              rightSection={
-                searchTerm.length > 0 && (
-                  <ActionIcon
-                    onClick={() => {
-                      setSearchTerm("");
-                      searchInputRef.current.focus();
-                    }}
-                    className="border-0"
-                  >
-                    <CloseIcon aria-label="clear search" />
-                  </ActionIcon>
-                )
-              }
-              role="search"
-            />
-          )}
-          <div
-            className={
-              isFacetView ? `flip-card ` : `flip-card flip-card-flipped`
-            }
-            ref={cardRef}
-          >
-            <div
-              className={`card-face bg-base-max rounded-b-md flex flex-col justify-between ${
-                !isFacetView ? "invisible" : ""
-              }`}
-            >
-              <div>
-                <FacetSortPanel
-                  sortType={sortType}
-                  valueLabel={valueLabel}
-                  setSort={setSortType}
-                  field={facetName ? facetName : fieldNameToTitle(field)}
-                />
-
-                <div
-                  className={facetChartData.cardStyle}
-                  role="group"
-                  aria-label="Filter values"
+      <div
+        className={showFilters ? "h-full" : "h-0 invisible"}
+        aria-hidden={!showFilters}
+      >
+        {isSearching && (
+          <TextInput
+            data-testid="textbox-search-values"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            aria-label={`${
+              facetName ? facetName : fieldNameToTitle(field)
+            } values`}
+            className={"p-2"}
+            placeholder="Search"
+            ref={searchInputRef}
+            rightSection={
+              searchTerm.length > 0 && (
+                <ActionIcon
+                  onClick={() => {
+                    setSearchTerm("");
+                    searchInputRef.current.focus();
+                  }}
+                  className="border-0"
                 >
-                  <LoadingOverlay
-                    data-testid="loading-spinner"
-                    visible={!isSuccess}
-                  />
-                  {facetChartData.filteredData.length == 0 ? (
-                    <div className="mx-4 font-content text-sm">
-                      No data for this field
-                    </div>
-                  ) : isSuccess ? (
-                    !sortedData || Object.entries(sortedData).length === 0 ? (
-                      <div className="mx-4">No results found</div>
-                    ) : (
-                      Object.entries(sortedData).map(([value, count]) => {
+                  <CloseIcon aria-label="clear search" />
+                </ActionIcon>
+              )
+            }
+            role="search"
+          />
+        )}
+        <div
+          className={isFacetView ? `flip-card ` : `flip-card flip-card-flipped`}
+          ref={cardRef}
+        >
+          <div
+            className={`card-face bg-base-max rounded-b-md flex flex-col justify-between ${
+              !isFacetView ? "invisible" : ""
+            }`}
+          >
+            <div>
+              <FacetSortPanel
+                sortType={sortType}
+                valueLabel={valueLabel}
+                setSort={setSortType}
+                field={facetName ? facetName : fieldNameToTitle(field)}
+              />
+
+              <div
+                className={facetChartData.cardStyle}
+                role="group"
+                aria-label="Filter values"
+              >
+                <LoadingOverlay
+                  data-testid="loading-spinner"
+                  visible={!isSuccess}
+                />
+                {facetChartData.filteredData.length == 0 ? (
+                  <div className="mx-4 font-content text-sm">
+                    No data for this field
+                  </div>
+                ) : isSuccess ? (
+                  !sortedData || Object.entries(sortedData).length === 0 ? (
+                    <div className="mx-4">No results found</div>
+                  ) : (
+                    Object.entries(sortedData).map(([value, count]) => {
+                      return (
+                        <div
+                          key={`${field}-${value}`}
+                          className="flex flex-row items-center gap-x-1 px-2"
+                        >
+                          <div className="flex-none">
+                            <Checkbox
+                              data-testid={`checkbox-${value}`}
+                              aria-label={`${value}`}
+                              value={value}
+                              size="xs"
+                              color="accent"
+                              onChange={(e) =>
+                                handleChange(
+                                  e.currentTarget.value,
+                                  e.currentTarget.checked,
+                                )
+                              }
+                              classNames={{
+                                input: "hover:bg-accent-darker",
+                              }}
+                              checked={
+                                !!(
+                                  selectedEnums && selectedEnums.includes(value)
+                                )
+                              }
+                            />
+                          </div>
+                          <OverflowTooltippedLabel label={value}>
+                            <span className="font-content">{value}</span>
+                          </OverflowTooltippedLabel>
+                          <div
+                            data-testid={`text-${value}`}
+                            className="flex-none text-right w-14 font-content text-sm"
+                          >
+                            {count.toLocaleString()}
+                          </div>
+                          {showPercent ? (
+                            <div className="flex-none text-right w-18 font-content text-sm">
+                              (
+                              {(((count as number) / totalCount) * 100).toFixed(
+                                2,
+                              )}
+                              %)
+                            </div>
+                          ) : null}
+                        </div>
+                      );
+                    })
+                  )
+                ) : (
+                  <div>
+                    {
+                      // uninitialized, loading, error animated bars
+                      Array.from(Array(maxValuesToDisplay)).map((_, index) => {
                         return (
                           <div
-                            key={`${field}-${value}`}
-                            className="flex flex-row items-center gap-x-1 px-2"
+                            key={`${field}-${index}`}
+                            className="flex items-center px-2 w-full"
                           >
                             <div className="flex-none">
                               <Checkbox
-                                data-testid={`checkbox-${value}`}
-                                aria-label={`${value}`}
-                                value={value}
                                 size="xs"
-                                color="accent"
-                                onChange={(e) =>
-                                  handleChange(
-                                    e.currentTarget.value,
-                                    e.currentTarget.checked,
-                                  )
-                                }
-                                classNames={{
-                                  input: "hover:bg-accent-darker",
-                                }}
-                                checked={
-                                  !!(
-                                    selectedEnums &&
-                                    selectedEnums.includes(value)
-                                  )
-                                }
+                                className="bg-base-lightest text-primary-contrast-lightest hover:bg-base-darkest hover:text-base-contrast-darkest"
                               />
                             </div>
-                            <OverflowTooltippedLabel label={value}>
-                              <span className="font-content">{value}</span>
-                            </OverflowTooltippedLabel>
-                            <div
-                              data-testid={`text-${value}`}
-                              className="flex-none text-right w-14 font-content text-sm"
-                            >
-                              {count.toLocaleString()}
-                            </div>
-                            {showPercent ? (
-                              <div className="flex-none text-right w-18 font-content text-sm">
-                                (
-                                {(
-                                  ((count as number) / totalCount) *
-                                  100
-                                ).toFixed(2)}
-                                %)
-                              </div>
-                            ) : null}
+                            <div className="flex-grow h-3.5 align-center justify-center mt-1 ml-1 mr-8 bg-base-light rounded-b-sm animate-pulse" />
+                            <div className="flex-none h-3.5 align-center justify-center mt-1 w-10 bg-base-light rounded-b-sm animate-pulse" />
                           </div>
                         );
                       })
-                    )
-                  ) : (
-                    <div>
-                      {
-                        // uninitialized, loading, error animated bars
-                        Array.from(Array(maxValuesToDisplay)).map(
-                          (_, index) => {
-                            return (
-                              <div
-                                key={`${field}-${index}`}
-                                className="flex items-center px-2 w-full"
-                              >
-                                <div className="flex-none">
-                                  <Checkbox
-                                    size="xs"
-                                    className="bg-base-lightest text-primary-contrast-lightest hover:bg-base-darkest hover:text-base-contrast-darkest"
-                                  />
-                                </div>
-                                <div className="flex-grow h-3.5 align-center justify-center mt-1 ml-1 mr-8 bg-base-light rounded-b-sm animate-pulse" />
-                                <div className="flex-none h-3.5 align-center justify-center mt-1 w-10 bg-base-light rounded-b-sm animate-pulse" />
-                              </div>
-                            );
-                          },
-                        )
-                      }
-                    </div>
-                  )}
-                </div>
+                    }
+                  </div>
+                )}
               </div>
-              {
-                <FacetExpander
-                  remainingValues={facetChartData.remainingValues}
-                  isGroupExpanded={isGroupExpanded}
-                  onShowChanged={setIsGroupExpanded}
+            </div>
+            {
+              <FacetExpander
+                remainingValues={facetChartData.remainingValues}
+                isGroupExpanded={isGroupExpanded}
+                onShowChanged={setIsGroupExpanded}
+              />
+            }
+          </div>
+          <div
+            className={`card-face card-back rounded-b-md bg-base-max h-full pb-1 ${
+              isFacetView ? "invisible" : ""
+            }`}
+          >
+            {facetChartData.filteredData.length === 0 ? (
+              <div className="mx-4">No results found</div>
+            ) : (
+              !isFacetView && (
+                <EnumFacetChart
+                  field={field}
+                  data={facetChartData.filteredDataObj}
+                  selectedEnums={selectedEnums}
+                  isSuccess={facetChartData.isSuccess}
+                  showTitle={false}
+                  valueLabel={valueLabel}
+                  maxBins={facetChartData.numberOfBarsToDisplay}
+                  height={facetChartData.height}
                 />
-              }
-            </div>
-            <div
-              className={`card-face card-back rounded-b-md bg-base-max h-full pb-1 ${
-                isFacetView ? "invisible" : ""
-              }`}
-            >
-              {facetChartData.filteredData.length === 0 ? (
-                <div className="mx-4">No results found</div>
-              ) : (
-                !isFacetView && (
-                  <EnumFacetChart
-                    field={field}
-                    data={facetChartData.filteredDataObj}
-                    selectedEnums={selectedEnums}
-                    isSuccess={facetChartData.isSuccess}
-                    showTitle={false}
-                    valueLabel={valueLabel}
-                    maxBins={facetChartData.numberOfBarsToDisplay}
-                    height={facetChartData.height}
-                  />
-                )
-              )}
-            </div>
+              )
+            )}
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };

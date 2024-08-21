@@ -46,6 +46,7 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
   }
   const isFilterExpanded =
     hooks?.useFilterExpanded && hooks.useFilterExpanded(field);
+  const showFilters = isFilterExpanded === undefined || isFilterExpanded;
 
   const dispatch = useCoreDispatch();
   const facetValues = (hooks.useGetFacetValues(field) ||
@@ -80,63 +81,64 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
         hooks={hooks}
         facetName={facetTitle}
       />
-      {(isFilterExpanded === undefined || isFilterExpanded) && (
-        <div className="p-2">
-          <Tooltip
-            label={facetBtnToolTip}
-            disabled={!facetBtnToolTip}
-            position="bottom-start"
-            multiline
-            w={220}
-            withArrow
-            transitionProps={{ duration: 200, transition: "fade" }}
+      <div
+        className={`p-2 ${showFilters ? "h-full" : "h-0 invisible"}`}
+        aria-hidden={!showFilters}
+      >
+        <Tooltip
+          label={facetBtnToolTip}
+          disabled={!facetBtnToolTip}
+          position="bottom-start"
+          multiline
+          w={220}
+          withArrow
+          transitionProps={{ duration: 200, transition: "fade" }}
+        >
+          <Button
+            onClick={() =>
+              dispatch(showModal({ modal: FACET_TO_MODAL[field] }))
+            }
+            color="primary"
+            variant="outline"
+            size="sm"
+            data-testid={`button-${facetName}`}
+            classNames={{
+              label: "break-words whitespace-pre-wrap",
+              root: "w-full",
+            }}
           >
-            <Button
-              onClick={() =>
-                dispatch(showModal({ modal: FACET_TO_MODAL[field] }))
-              }
-              color="primary"
-              variant="outline"
+            Upload {facetName}
+          </Button>
+        </Tooltip>
+        <Group gap="xs" className="px-2 py-1" data-testid="values group">
+          {facetValues.map((operand, i) => (
+            <Badge
               size="sm"
-              data-testid={`button-${facetName}`}
-              classNames={{
-                label: "break-words whitespace-pre-wrap",
-                root: "w-full",
+              variant="filled"
+              color="accent-cool"
+              className="normal-case items-center pl-1.5 pr-0 cursor-pointer"
+              key={`${field}-${operand}-${i}`}
+              data-testid={`set-facet-${field}-${operand}-${i}`}
+              rightSection={removeButton(operand)}
+              onClick={() => {
+                setValues(facetValues.filter((o) => o !== operand));
               }}
             >
-              Upload {facetName}
-            </Button>
-          </Tooltip>
-          <Group gap="xs" className="px-2 py-1" data-testid="values group">
-            {facetValues.map((operand, i) => (
-              <Badge
-                size="sm"
-                variant="filled"
-                color="accent-cool"
-                className="normal-case items-center pl-1.5 pr-0 cursor-pointer"
-                key={`${field}-${operand}-${i}`}
-                data-testid={`set-facet-${field}-${operand}-${i}`}
-                rightSection={removeButton(operand)}
-                onClick={() => {
-                  setValues(facetValues.filter((o) => o !== operand));
-                }}
-              >
-                <QueryRepresentationLabel
-                  field={field}
-                  value={operand.toString()}
-                  geneSymbolDict={geneSymbolDict}
-                  geneSymbolSuccess={isSuccess}
-                  useCountHook={
-                    field === "genes.gene_id"
-                      ? useGeneSetCountQuery
-                      : useSsmSetCountQuery
-                  }
-                />
-              </Badge>
-            ))}
-          </Group>
-        </div>
-      )}
+              <QueryRepresentationLabel
+                field={field}
+                value={operand.toString()}
+                geneSymbolDict={geneSymbolDict}
+                geneSymbolSuccess={isSuccess}
+                useCountHook={
+                  field === "genes.gene_id"
+                    ? useGeneSetCountQuery
+                    : useSsmSetCountQuery
+                }
+              />
+            </Badge>
+          ))}
+        </Group>
+      </div>
     </div>
   );
 };

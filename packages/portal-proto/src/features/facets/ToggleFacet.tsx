@@ -33,6 +33,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   const updateFacetFilters = hooks.useUpdateFacetFilters();
   const isFilterExpanded =
     hooks?.useFilterExpanded && hooks.useFilterExpanded(field);
+  const showFilters = isFilterExpanded === undefined || isFilterExpanded;
 
   const facetTitle = facetName
     ? facetName
@@ -65,38 +66,39 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
         dismissCallback={dismissCallback}
         showClearSelection={false}
       />
-      {(isFilterExpanded === undefined || isFilterExpanded) && (
-        <>
-          <div className="flex items-center justify-end flex-wrap p-1 mb-1 border-b-2">
-            <p className="px-2">{valueLabel}</p>
+      <div
+        className={showFilters ? "h-full" : "h-0 invisible"}
+        aria-hidden={!showFilters}
+      >
+        <div className="flex items-center justify-end flex-wrap p-1 mb-1 border-b-2">
+          <p className="px-2">{valueLabel}</p>
+        </div>
+        <div className="w-full ">
+          <div className="flex flex-nowrap justify-between items-center p-2 ">
+            <LoadingOverlay
+              data-testid="loading-spinner"
+              visible={!isSuccess}
+            />
+            <Switch
+              label={
+                data === undefined || Object.keys(data).length == 0
+                  ? "No data for this field"
+                  : data["1"].toLocaleString("en-US")
+              }
+              color="accent"
+              checked={toggleValue}
+              onChange={(event) => setValue(event.currentTarget.checked)}
+              aria-label={facetTitle}
+              data-testid="toggle-facet-value"
+              classNames={{
+                root: "w-full",
+                body: "flex justify-between items-center",
+                label: "text-sm font-content",
+              }}
+            />
           </div>
-          <div className="w-full ">
-            <div className="flex flex-nowrap justify-between items-center p-2 ">
-              <LoadingOverlay
-                data-testid="loading-spinner"
-                visible={!isSuccess}
-              />
-              <Switch
-                label={
-                  data === undefined || Object.keys(data).length == 0
-                    ? "No data for this field"
-                    : data["1"].toLocaleString("en-US")
-                }
-                color="accent"
-                checked={toggleValue}
-                onChange={(event) => setValue(event.currentTarget.checked)}
-                aria-label={facetTitle}
-                data-testid="toggle-facet-value"
-                classNames={{
-                  root: "w-full",
-                  body: "flex justify-between items-center",
-                  label: "text-sm font-content",
-                }}
-              />
-            </div>
-          </div>
-        </>
-      )}
+        </div>
+      </div>
     </div>
   );
 };

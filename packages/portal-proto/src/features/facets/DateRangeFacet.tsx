@@ -61,6 +61,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
   const updateFacetFilters = hooks.useUpdateFacetFilters();
   const isFilterExpanded =
     hooks?.useFilterExpanded && hooks.useFilterExpanded(field);
+  const showFilters = isFilterExpanded === undefined || isFilterExpanded;
 
   const dateRange = useMemo(
     () => extractRangeValues<string>(facetValue),
@@ -99,7 +100,10 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
         facetName={facetName}
         dismissCallback={dismissCallback}
       />
-      {(isFilterExpanded === undefined || isFilterExpanded) && (
+      <div
+        className={showFilters ? "h-full" : "h-0 invisible"}
+        aria-hidden={!showFilters}
+      >
         <fieldset className="flex flex-nowrap items-center p-2">
           <legend className="sr-only">Date range filters</legend>
           <DateInput
@@ -169,7 +173,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
             </Popover.Dropdown>
           </Popover>
         </fieldset>
-      )}
+      </div>
     </div>
   );
 };

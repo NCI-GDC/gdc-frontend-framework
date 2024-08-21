@@ -62,6 +62,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
   const textValues = useMemo(() => extractValues(facetValue), [facetValue]);
   const isFilterExpanded =
     hooks?.useFilterExpanded && hooks.useFilterExpanded(field);
+  const showFilters = isFilterExpanded === undefined || isFilterExpanded;
 
   const setValues = (values: EnumOperandValue) => {
     if (values.length > 0) {
@@ -121,52 +122,53 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
         facetName={facetName}
         dismissCallback={dismissCallback}
       />
-      {(isFilterExpanded === undefined || isFilterExpanded) && (
-        <>
-          <div className="flex flex-nowrap items-center p-2">
-            <TextInput
-              data-testid="textbox-add-filter-value"
-              size="sm"
-              placeholder={`Enter ${facetTitle}`}
-              classNames={{
-                root: "grow",
-                input: "border-r-0 rounded-r-none py-1",
-              }}
-              aria-label="enter value to add filter"
-              value={textValue}
-              onChange={(event) => setTextValue(event.currentTarget.value)}
-            />
-            <ActionIcon
-              size="lg"
-              aria-label="add string value"
-              className="bg-accent text-accent-contrast border-base-min border-1 rounded-l-none h-[30px]"
-              onClick={() => {
-                if (textValue.length > 0) addValue(textValue.trim());
-              }}
-            >
-              <PlusIcon />
-            </ActionIcon>
-          </div>
-          {/* h-96 is max height for the content of ExactValueFacet, EnumFacet, UploadFacet */}
-          <Group
-            gap="xs"
-            className="px-2 py-2 max-h-96 overflow-y-auto"
-            data-testid="values group"
+      <div
+        className={showFilters ? "h-full" : "h-0 invisible"}
+        aria-hidden={!showFilters}
+      >
+        <div className="flex flex-nowrap items-center p-2">
+          <TextInput
+            data-testid="textbox-add-filter-value"
+            size="sm"
+            placeholder={`Enter ${facetTitle}`}
+            classNames={{
+              root: "grow",
+              input: "border-r-0 rounded-r-none py-1",
+            }}
+            aria-label="enter value to add filter"
+            value={textValue}
+            onChange={(event) => setTextValue(event.currentTarget.value)}
+          />
+          <ActionIcon
+            size="lg"
+            aria-label="add string value"
+            className="bg-accent text-accent-contrast border-base-min border-1 rounded-l-none h-[30px]"
+            onClick={() => {
+              if (textValue.length > 0) addValue(textValue.trim());
+            }}
           >
-            {textValues.map((x) => (
-              <Badge
-                size="sm"
-                variant="filled"
-                color="accent"
-                key={x}
-                rightSection={removeButton(x)}
-              >
-                {x}
-              </Badge>
-            ))}
-          </Group>
-        </>
-      )}
+            <PlusIcon />
+          </ActionIcon>
+        </div>
+        {/* h-96 is max height for the content of ExactValueFacet, EnumFacet, UploadFacet */}
+        <Group
+          gap="xs"
+          className="px-2 py-2 max-h-96 overflow-y-auto"
+          data-testid="values group"
+        >
+          {textValues.map((x) => (
+            <Badge
+              size="sm"
+              variant="filled"
+              color="accent"
+              key={x}
+              rightSection={removeButton(x)}
+            >
+              {x}
+            </Badge>
+          ))}
+        </Group>
+      </div>
     </div>
   );
 };
