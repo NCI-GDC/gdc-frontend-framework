@@ -86,7 +86,6 @@ export interface FacetCardProps<T extends FacetCommonHooks> {
     readonly Label?: ComponentType<{ children: ReactNode }>; // optional facet label component
     readonly iconStyle?: string; // optional facet button component
   };
-  readonly updateFilters?: (action) => void;
 }
 
 export type RangeFromOp = ">" | ">=";

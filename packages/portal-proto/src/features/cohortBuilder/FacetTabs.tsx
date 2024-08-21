@@ -49,7 +49,7 @@ import {
   useEnumFacets,
 } from "@/features/facets/hooks";
 import { partial } from "lodash";
-import { FacetCardDefinition } from "../facets/types";
+import { FacetCardDefinition } from "@/features/facets/types";
 
 const CustomFacetWhenEmptyGroup = tw(Stack)`
 h-64

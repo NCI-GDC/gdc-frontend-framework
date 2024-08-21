@@ -121,7 +121,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
         facetName={facetName}
         dismissCallback={dismissCallback}
       />
-      {isFilterExpanded && (
+      {(isFilterExpanded === undefined || isFilterExpanded) && (
         <>
           <div className="flex flex-nowrap items-center p-2">
             <TextInput
