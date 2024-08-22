@@ -99,7 +99,7 @@ def collect_file_counts_on_filters(table):
                 v[0], v[1]
             )
         )
-        # Saves the file count under the facet, filter and cohort name
+        # Saves the file count under the facet and filter
         data_store.spec[f"{v[0]}_{v[1]} Repository Count"] = file_count
 
 @step("Collect <item> Count on the Repository page")
