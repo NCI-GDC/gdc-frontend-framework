@@ -1,8 +1,8 @@
 # Data Release: 41 - File Exclusion
 Date Created        : 08/20/2024
-Version			    : 1.0
-Owner		        : GDC QA
-Description		    : Files Excluded in DR-41
+Version			        : 1.0
+Owner		            : GDC QA
+Description		      : Files Excluded in DR-41
 Test-Case           : PEAR-1928
 
 tags: gdc-data-portal-v2, data-release
