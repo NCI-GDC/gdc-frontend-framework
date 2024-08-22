@@ -46,6 +46,13 @@ def select_file_filter_and_validate(filter_name: str, nth: int):
 def filter_card_selections(table):
     """Trio of actions for the filter cards and filters on the repository page"""
     for k, v in enumerate(table):
+        # Expands list of filters to select if possible
+        if APP.repository_page.is_show_more_or_show_less_button_visible_within_filter_card_repository(
+            v[0], "plus-icon"
+        ):
+            APP.repository_page.click_show_more_less_within_filter_card_repository(
+                v[0], "plus-icon"
+            )
         APP.repository_page.make_selection_within_filter_group_repository(v[0], v[1])
         APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
         APP.shared.wait_for_loading_spinner_table_to_detatch()
@@ -70,6 +77,30 @@ def click_show_more_or_show_less(table):
             v[0], v[1]
         )
 
+@step("Collect file counts for the following filters on the Repository page <table>")
+def collect_file_counts_on_filters(table):
+    """
+    collect_file_counts_on_filters Collect file count on filters on the repository page.
+    Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'.
+    :param v[1]: Facet Card Name
+    :param v[2]: Filter we are collecting file count info on
+    """
+    for k, v in enumerate(table):
+        # Expands list of filters to select if possible
+        if APP.repository_page.is_show_more_or_show_less_button_visible_within_filter_card_repository(
+            v[0], "plus-icon"
+        ):
+            APP.repository_page.click_show_more_less_within_filter_card_repository(
+                v[0], "plus-icon"
+            )
+
+        file_count = (
+            APP.repository_page.get_file_count_from_filter_within_facet_group(
+                v[0], v[1]
+            )
+        )
+        # Saves the file count under the facet, filter and cohort name
+        data_store.spec[f"{v[0]}_{v[1]} Repository Count"] = file_count
 
 @step("Collect <item> Count on the Repository page")
 def store_count_repository_for_comparison(item: str):
@@ -79,10 +110,20 @@ def store_count_repository_for_comparison(item: str):
 
     :param item: The item to collect the count of. Options: Files, Cases, or Size
     """
-    data_store.spec[
-        f"{item} Count Repository Page"
-    ] = APP.repository_page.get_repository_table_item_count(item)
 
+    # Everything on the repository page could load, except for the file, case, size count.
+    # So, we check to see if the text displays '--' which means it's still loading.
+    # We check for the text to display an actual number for approximately 15 seconds.
+    # If no number appears, we return the '--' as is, and the test will fail as intended.
+    item_count = APP.repository_page.get_repository_table_item_count(item)
+    retry_counter = 0
+    while item_count == "--":
+        time.sleep(1)
+        item_count = APP.repository_page.get_repository_table_item_count(item)
+        retry_counter = retry_counter+1
+        if retry_counter >= 15:
+            break
+    data_store.spec[f"{item} Count Repository Page"] = item_count
 
 @step("Verify that the following default filters are displayed in order <table>")
 def default_filters(table):
