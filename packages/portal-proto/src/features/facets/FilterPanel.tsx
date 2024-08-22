@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Text, Button, Modal, LoadingOverlay } from "@mantine/core";
 import { MdAdd as AddAdditionalIcon } from "react-icons/md";
-import { FaUndo as UndoIcon } from "react-icons/fa";
 import { fieldNameToTitle } from "@gff/core";
 import { createFacetCard } from "@/features/facets/CreateFacetCard";
 import {
