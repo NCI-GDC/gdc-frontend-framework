@@ -18,7 +18,7 @@ import { FacetDocTypeToLabelsMap } from "@/features/facets/hooks";
 import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
 import MutationSetModal from "@/components/Modals/SetModals/MutationSetModal";
 import FilterPanel from "@/features/facets/FilterPanel";
-import { FacetCardDefinition } from "../facets/types";
+import { FacetCardDefinition } from "@/features/facets/types";
 
 const GeneAndSSMFilterPanel = ({
   isDemoMode,

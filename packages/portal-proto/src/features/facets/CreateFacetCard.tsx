@@ -31,7 +31,7 @@ import UploadFacet from "@/features/facets/UploadFacet";
  *                  has a 1) unique 2) persistent id, so each call to createFacetCardsFromList must
  *                  have a unique prefix, the name of the analysis tool is a good choice
  * @param dismissCallback - callback when defined will remove facet from parent panel
- * @param hideIfEmpty - optional name of facet (if undefined it will be extracted from the full field name)
+ * @param hideIfEmpty - hide facets if they do not have data
  * @param showPercent - whether to show the count percent of whole
  * @param facetName - optional name of facet (if undefined it will be extracted from the full field name)
  * @param width -  override the default width

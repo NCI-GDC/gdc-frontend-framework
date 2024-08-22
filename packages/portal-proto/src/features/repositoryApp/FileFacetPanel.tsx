@@ -38,7 +38,7 @@ import {
   useTotalCounts,
 } from "@/features/facets/hooks";
 import { FacetRequiredHooks } from "@/features/facets/types";
-import FilterPanel from "../facets/FilterPanel";
+import FilterPanel from "@/features/facets/FilterPanel";
 
 const useRepositoryEnumData = (field: string) =>
   useLocalFilters(field, useRepositoryEnumValues, useRepositoryFilters);

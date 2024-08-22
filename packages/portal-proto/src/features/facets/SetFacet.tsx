@@ -82,62 +82,64 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
         facetName={facetTitle}
       />
       <div
-        className={`p-2 ${showFilters ? "h-full" : "h-0 invisible"}`}
+        className={showFilters ? "h-full" : "h-0 invisible"}
         aria-hidden={!showFilters}
       >
-        <Tooltip
-          label={facetBtnToolTip}
-          disabled={!facetBtnToolTip}
-          position="bottom-start"
-          multiline
-          w={220}
-          withArrow
-          transitionProps={{ duration: 200, transition: "fade" }}
-        >
-          <Button
-            onClick={() =>
-              dispatch(showModal({ modal: FACET_TO_MODAL[field] }))
-            }
-            color="primary"
-            variant="outline"
-            size="sm"
-            data-testid={`button-${facetName}`}
-            classNames={{
-              label: "break-words whitespace-pre-wrap",
-              root: "w-full",
-            }}
+        <div className="p-2">
+          <Tooltip
+            label={facetBtnToolTip}
+            disabled={!facetBtnToolTip}
+            position="bottom-start"
+            multiline
+            w={220}
+            withArrow
+            transitionProps={{ duration: 200, transition: "fade" }}
           >
-            Upload {facetName}
-          </Button>
-        </Tooltip>
-        <Group gap="xs" className="px-2 py-1" data-testid="values group">
-          {facetValues.map((operand, i) => (
-            <Badge
+            <Button
+              onClick={() =>
+                dispatch(showModal({ modal: FACET_TO_MODAL[field] }))
+              }
+              color="primary"
+              variant="outline"
               size="sm"
-              variant="filled"
-              color="accent-cool"
-              className="normal-case items-center pl-1.5 pr-0 cursor-pointer"
-              key={`${field}-${operand}-${i}`}
-              data-testid={`set-facet-${field}-${operand}-${i}`}
-              rightSection={removeButton(operand)}
-              onClick={() => {
-                setValues(facetValues.filter((o) => o !== operand));
+              data-testid={`button-${facetName}`}
+              classNames={{
+                label: "break-words whitespace-pre-wrap",
+                root: "w-full",
               }}
             >
-              <QueryRepresentationLabel
-                field={field}
-                value={operand.toString()}
-                geneSymbolDict={geneSymbolDict}
-                geneSymbolSuccess={isSuccess}
-                useCountHook={
-                  field === "genes.gene_id"
-                    ? useGeneSetCountQuery
-                    : useSsmSetCountQuery
-                }
-              />
-            </Badge>
-          ))}
-        </Group>
+              Upload {facetName}
+            </Button>
+          </Tooltip>
+          <Group gap="xs" className="px-2 py-1" data-testid="values group">
+            {facetValues.map((operand, i) => (
+              <Badge
+                size="sm"
+                variant="filled"
+                color="accent-cool"
+                className="normal-case items-center pl-1.5 pr-0 cursor-pointer"
+                key={`${field}-${operand}-${i}`}
+                data-testid={`set-facet-${field}-${operand}-${i}`}
+                rightSection={removeButton(operand)}
+                onClick={() => {
+                  setValues(facetValues.filter((o) => o !== operand));
+                }}
+              >
+                <QueryRepresentationLabel
+                  field={field}
+                  value={operand.toString()}
+                  geneSymbolDict={geneSymbolDict}
+                  geneSymbolSuccess={isSuccess}
+                  useCountHook={
+                    field === "genes.gene_id"
+                      ? useGeneSetCountQuery
+                      : useSsmSetCountQuery
+                  }
+                />
+              </Badge>
+            ))}
+          </Group>
+        </div>
       </div>
     </div>
   );

@@ -29,6 +29,26 @@ interface FilterPanelProps {
   readonly isLoading?: boolean;
 }
 
+/**
+ * Component for the facet filter panel on repository, projects, etc
+ * @param facetDefinitions - list of defintions used to create filter cards
+ * @param facetHooks - object defining the hooks required by this facet component
+ * @param valueLabel - label for the values column (e.g. "Cases" "Projects")
+ * @param app - app name
+ * @param toggleAllFiltersExpanded - function to expand/collapse all filters
+ * @param allFiltersCollapsed - whether all filters are collapse
+ * @param hasCustomFilters - whether the user can add custom filter options
+ * @param handleRemoveFilter - callback to remove filter from filter state
+ * @param handleCustomFilterSelected - callback for when a custom filter is selected
+ * @param getDefaultFilters - function to retreive which filters are default vs custom
+ * @param customFacetsConfig - which custom facets have been selected
+ * @param showReset - whether to show the reset filters to default option
+ * @param handleClearAll - callback to remove custom filters
+ * @param hideIfEmpty - hide facets if they do not have data
+ * @param showPercent - whether to show the count percent of whole
+ * @param isLoading - whether the filter defintions are loading
+ */
+
 const FilterPanel = ({
   facetDefinitions,
   facetHooks,
