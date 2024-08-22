@@ -365,6 +365,7 @@ export const ConsequenceTable = ({
         size,
         from,
         total,
+        label: "consequence",
       }}
       additionalControls={
         <div className="flex gap-2 mb-2">

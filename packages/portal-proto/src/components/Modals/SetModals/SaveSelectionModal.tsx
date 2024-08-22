@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { UseMutation } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { MutationDefinition } from "@reduxjs/toolkit/dist/query";
-import { TextInput, NumberInput, Modal } from "@mantine/core";
+import { TextInput, NumberInput, Modal, Loader } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
 import {
@@ -137,7 +137,8 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
         </FunctionButton>
         <DarkFunctionButton
           data-testid="button-save"
-          onClick={() =>
+          onClick={() => {
+            if (response.isLoading) return;
             createSet({
               case_filters: buildCohortGqlOperator(cohortFilters) ?? {},
               filters: buildCohortGqlOperator(filters) ?? {},
@@ -168,9 +169,12 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
                   color: "red",
                   closeButtonProps: { "aria-label": "Close notification" },
                 });
-              })
+              });
+          }}
+          disabled={!form.isValid()}
+          leftSection={
+            response?.isLoading ? <Loader size="sm" color="white" /> : undefined
           }
-          disabled={!form.isValid() || response.isLoading}
         >
           Save
         </DarkFunctionButton>

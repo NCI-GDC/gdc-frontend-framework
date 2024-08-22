@@ -367,7 +367,7 @@ const AnnnotationTable: React.FC = () => {
       }}
       status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
       pagination={{
-        label: "annotations",
+        label: "annotation",
         ...pagination,
       }}
       handleChange={handleChange}

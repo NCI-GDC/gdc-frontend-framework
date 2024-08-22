@@ -212,7 +212,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           size: pageSize,
           total: data?.genes?.genes_total,
           sort: "None",
-          label: "genes",
+          label: "gene",
         }
       : {
           count: undefined,
@@ -221,6 +221,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
           pages: undefined,
           size: undefined,
           total: undefined,
+          label: undefined,
         };
   }, [pageSize, page, data?.genes?.genes_total, isSuccess]);
 

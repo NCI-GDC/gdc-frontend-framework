@@ -11,6 +11,7 @@ import {
 import { showNotification } from "@mantine/notifications";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import { useEffect } from "react";
+import { Loader } from "@mantine/core";
 
 interface UpdateCohortButtonProps {
   readonly ids: string[];
@@ -87,6 +88,9 @@ const UpdateCohortButton: React.FC<UpdateCohortButtonProps> = ({
           dispatch(hideModal());
         }
       }}
+      leftSection={
+        response?.isLoading ? <Loader size="sm" color="white" /> : undefined
+      }
     >
       Submit
     </DarkFunctionButton>

@@ -27,6 +27,7 @@ export interface SetOperationsProps {
   readonly countHook: UseQuery<
     QueryDefinition<any, any, any, Record<string, number>, string>
   >;
+  readonly isLoading: boolean;
 }
 
 export interface SetOperationsExternalProps {

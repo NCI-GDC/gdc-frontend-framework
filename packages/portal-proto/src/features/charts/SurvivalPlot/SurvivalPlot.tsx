@@ -42,6 +42,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
   downloadFileName = "survival-plot",
   tableTooltip = false,
   noDataMessage = "",
+  isLoading,
 }: SurvivalPlotProps) => {
   // handle the current range of the xAxis: set to "undefined" to reset
   const [xDomain, setXDomain] = useState(undefined);
@@ -50,8 +51,8 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
   const { ref: mouseRef, x, y } = useMouse(); // for survival plot tooltip
   const downloadRef = useRef<HTMLDivElement | null>(null);
 
-  const pValue = data.overallStats.pValue;
-  const plotData = data.survivalData;
+  const pValue = data?.overallStats?.pValue;
+  const plotData = data?.survivalData ?? [];
 
   const hasEnoughData = [
     "gene",
@@ -205,8 +206,9 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
   const { downloadInProgress, setDownloadInProgress } = useContext(
     DownloadProgressContext,
   );
+
   // handle errors
-  if (!(dataToUse.length > 0) && noDataMessage) {
+  if (!(dataToUse.length > 0) && !isLoading && noDataMessage) {
     return <div className="py-1">{noDataMessage}</div>;
   }
 

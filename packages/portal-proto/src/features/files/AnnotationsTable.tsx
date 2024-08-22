@@ -352,8 +352,8 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
         }}
         baseZIndex={400}
         pagination={{
-          label: "annotations",
           ...pagination,
+          label: "annotation",
         }}
         handleChange={handleChange}
         columnVisibility={columnVisibility}

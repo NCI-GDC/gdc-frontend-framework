@@ -16,8 +16,8 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Verify presence of filter card
   |filter_name            |
   |-----------------------|
-  |Custom Gene Filters    |
-  |Custom Mutation Filters|
+  |Mutated Gene           |
+  |Somatic Mutations      |
   |Biotype                |
   |VEP Impact             |
   |SIFT Impact            |
@@ -29,8 +29,8 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Verify presence of filter card
   |filter_name            |
   |-----------------------|
-  |Custom Gene Filters    |
-  |Custom Mutation Filters|
+  |Mutated Gene           |
+  |Somatic Mutations      |
   |Biotype                |
   |VEP Impact             |
   |SIFT Impact            |

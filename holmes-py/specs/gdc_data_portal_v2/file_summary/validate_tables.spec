@@ -321,16 +321,13 @@ table-associated-cases-biospecimens-file-summary
 * Verify that "JSON from File Summary Annotation Table" has expected information
     |required_info                          |
     |---------------------------------------|
-    |140098ef-3eec-59d0-bde7-ce23997b25ff   |
-    |[intgen.org]: Molecular Results off Spec |
-    |399c936e-ba68-4040-98d4-917a87dad603   |
-    |TCGA-21-A5DI                           |
-    |Case submitted is found to be a recurrence after submission |
-    |a172b257-ccbb-55a0-a16f-48115cd57753   |
-    |12ff5a02-93fa-5f33-bb20-3ce7fedea7a3   |
+    |9f1ee78d-f022-5495-b6ad-fa6aa56bafdb   |
+    |TCGA-22-1000                           |
+    |Prior malignancy prostate cancer treated w/ radation|
+    |972476b7-d7f3-4865-b978-0c13f29457cb   |
+    |History of acceptable prior treatment related to a prior/other malignancy|
     |Notification                           |
-    |Approved                               |
-    |2012-10-31T00:00:00                    |
+    |2012-11-10T00:00:00                    |
 
 ## Annotations Table - Validate JSON File Fields
   |field_name                               |

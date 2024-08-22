@@ -151,7 +151,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
           size: pageSize,
           total: data?.pagination?.total,
           sort: "None",
-          label: "files",
+          label: "file",
         }
       : {
           count: undefined,
@@ -160,6 +160,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
           pages: undefined,
           size: undefined,
           total: undefined,
+          label: undefined,
         };
   }, [pageSize, activePage, data?.pagination?.total, isSuccess]);
 
