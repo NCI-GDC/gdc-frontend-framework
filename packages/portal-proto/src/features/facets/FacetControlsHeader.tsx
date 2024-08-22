@@ -82,7 +82,7 @@ const FacetControlsHeader = ({
 
   return (
     <header.Panel>
-      <div className="flex flex-row">
+      <div className="flex flex-row items-center">
         {toggleExpandFilter && (
           <Tooltip label={isFilterExpanded ? "Collapse card" : "Expand card"}>
             <ActionIcon

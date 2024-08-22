@@ -58,24 +58,11 @@ const FilterPanel = ({
           </Text>
         </div>
         <div className="flex justify-between">
-          <button
-            onClick={() => toggleAllFiltersExpanded(allFiltersCollapsed)}
-            className="w-fit"
-          >
+          <button onClick={() => toggleAllFiltersExpanded(allFiltersCollapsed)}>
             {allFiltersCollapsed ? "Expand All" : "Collapse All"}
           </button>
           {showReset && (
-            <Button
-              size="xs"
-              color="secondary"
-              variant="subtle"
-              aria-label={`Reset ${
-                typeof valueLabel === "string" ? valueLabel : ""
-              } Filters`}
-              onClick={() => handleClearAll()}
-            >
-              Reset Filters
-            </Button>
+            <button onClick={() => handleClearAll()}>Reset Filters</button>
           )}
         </div>
         {hasCustomFilters && (
