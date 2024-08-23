@@ -45,17 +45,17 @@ const CohortVennDiagram: React.FC<CohortVennDiagramProps> = ({
       chartData={[
         {
           key: "S1_minus_S2",
-          value: data?.set1?.hits?.total || 0,
+          value: data?.set1?.hits?.total || "...",
           highlighted: false,
         },
         {
           key: "S2_minus_S1",
-          value: data?.set2?.hits?.total || 0,
+          value: data?.set2?.hits?.total || "...",
           highlighted: false,
         },
         {
           key: "S1_intersect_S2",
-          value: data?.intersection?.hits?.total || 0,
+          value: data?.intersection?.hits?.total || "...",
           highlighted: false,
         },
       ]}
