@@ -38,6 +38,7 @@ interface BarChartProps {
   readonly onClickHandler?: (mouseEvent: PlotMouseEvent) => void;
   readonly stacked?: boolean;
   readonly divId: string;
+  readonly onAfterPlot?: () => void;
 }
 
 /**
@@ -61,6 +62,7 @@ const BarChart: React.FC<BarChartProps> = ({
   onClickHandler,
   divId,
   stacked = false,
+  onAfterPlot,
 }: BarChartProps) => {
   const chartData = data.datasets.map((dataset) => ({
     x: orientation === "v" ? dataset.x : dataset.y,
@@ -193,7 +195,8 @@ const BarChart: React.FC<BarChartProps> = ({
       config={config}
       useResizeHandler={true}
       onClick={onClickHandler}
-      className={"w-full h-full"}
+      className="w-full h-full"
+      onAfterPlot={onAfterPlot}
     />
   );
 };

@@ -13,6 +13,7 @@ import {
 import { showNotification } from "@mantine/notifications";
 import { SaveOrCreateEntityModal } from "@/components/Modals/SaveOrCreateEntityModal";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
+import { Loader } from "@mantine/core";
 interface SaveSetButttonProps {
   readonly disabled: boolean;
   readonly ids: string[];
@@ -85,6 +86,9 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
       <DarkFunctionButton
         disabled={disabled}
         onClick={() => setShowSaveModal(true)}
+        leftSection={
+          response?.isLoading ? <Loader size="sm" color="white" /> : undefined
+        }
       >
         {buttonText}
       </DarkFunctionButton>

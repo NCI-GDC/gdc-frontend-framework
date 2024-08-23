@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { Paper } from "@mantine/core";
+import { LoadingOverlay, Paper } from "@mantine/core";
 import { FIELD_LABELS } from "src/fields";
 import CohortVennDiagram from "./CohortVennDiagram";
 import Link from "next/link";
@@ -18,6 +18,14 @@ interface CohortCardProps {
   readonly caseSetIds: string[];
   readonly casesFetching: boolean;
 }
+
+const DEFAULT_CHART_DATA = [
+  { key: "S1_minus_S2", value: 0, highlighted: false },
+  { key: "S2_minus_S1", value: 0, highlighted: false },
+  { key: "S1_intersect_S2", value: 0, highlighted: false },
+];
+
+const LABELS = ["S₁", "S₂"];
 
 const CohortCard: React.FC<CohortCardProps> = ({
   selectedCards,
@@ -50,7 +58,11 @@ const CohortCard: React.FC<CohortCardProps> = ({
             data-testid="text-cohort-case-count-cohort-comparison"
             className="basis-1/4 text-right"
           >
-            {casesFetching ? "..." : counts[0] ? counts[0].toLocaleString() : 0}
+            {casesFetching || counts.length === 0
+              ? "..."
+              : counts[0]
+              ? counts[0].toLocaleString()
+              : 0}
           </p>
         </div>
         <div
@@ -67,25 +79,33 @@ const CohortCard: React.FC<CohortCardProps> = ({
             data-testid="text-cohort-case-count-cohort-comparison"
             className="basis-1/4 text-right"
           >
-            {casesFetching ? "..." : counts[1] ? counts[1].toLocaleString() : 0}
+            {casesFetching || counts.length === 0
+              ? "..."
+              : counts[1]
+              ? counts[1].toLocaleString()
+              : 0}
           </p>
         </div>
       </div>
       <hr />
-      {!casesFetching && caseSetIds.length !== 0 ? (
-        <CohortVennDiagram caseSetIds={caseSetIds} cohorts={cohorts} />
-      ) : (
-        <VennDiagram
-          chartData={[
-            { key: "S1_minus_S2", value: 0, highlighted: false },
-            { key: "S2_minus_S1", value: 0, highlighted: false },
-            { key: "S1_intersect_S2", value: 0, highlighted: false },
-          ]}
-          labels={["S₁", "S₂"]}
-          ariaLabel="The Venn diagram displays the number of cases shared between the cohorts."
-          interactable={false}
+
+      <div className="relative">
+        <LoadingOverlay
+          visible={casesFetching || counts.length === 0}
+          zIndex={1}
         />
-      )}
+        {caseSetIds.length > 0 && !(casesFetching || counts.length === 0) ? (
+          <CohortVennDiagram caseSetIds={caseSetIds} cohorts={cohorts} />
+        ) : (
+          <VennDiagram
+            chartData={DEFAULT_CHART_DATA}
+            labels={LABELS}
+            ariaLabel="The Venn diagram displays the number of cases shared between the cohorts."
+            interactable={false}
+          />
+        )}
+      </div>
+
       <div className="-mt-8 mb-2 z-10 flex justify-center relative">
         <Link
           href={{

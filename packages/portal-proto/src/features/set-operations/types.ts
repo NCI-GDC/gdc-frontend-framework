@@ -27,6 +27,7 @@ export interface SetOperationsProps {
   }[];
   readonly queryHook: typeof useSetOperationsCasesTotalQuery;
   readonly countHook: typeof useCaseSetCountsQuery;
+  readonly isLoading: boolean;
 }
 
 export interface SetOperationsExternalProps {

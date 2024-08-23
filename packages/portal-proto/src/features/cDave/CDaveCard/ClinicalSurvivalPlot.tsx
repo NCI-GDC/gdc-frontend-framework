@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Loader, Alert } from "@mantine/core";
+import { Alert, LoadingOverlay } from "@mantine/core";
 import {
   useCoreSelector,
   selectCurrentCohortFilters,
@@ -110,29 +110,30 @@ const ClinicalSurvivalPlot: React.FC<ClinicalSurvivalPlotProps> = ({
           } as GqlOperation;
         });
 
-  const { data, isLoading, isError } = useGetSurvivalPlotQuery({ filters });
+  const { data, isError, isFetching } = useGetSurvivalPlotQuery({
+    filters,
+  });
 
-  return isLoading ? (
+  return isError ? (
     <div className="h-64">
-      <Loader />
-    </div>
-  ) : isError ? (
-    <div className="h-64">
-      <Alert color="red">{"Something's gone wrong"}</Alert>
+      <Alert color="red">Something&apos;s gone wrong</Alert>
     </div>
   ) : (
-    <ExternalDownloadStateSurvivalPlot
-      data={data}
-      height={150}
-      title={""}
-      field={field}
-      names={selectedSurvivalPlots}
-      plotType={plotType}
-      downloadFileName={`${field
-        .split(".")
-        .at(-1)}-survival-plot.${convertDateToString(new Date())}`}
-      tableTooltip
-    />
+    <div className="relative">
+      <LoadingOverlay visible={isFetching} />
+      <ExternalDownloadStateSurvivalPlot
+        data={data}
+        height={150}
+        title={""}
+        field={field}
+        names={selectedSurvivalPlots}
+        plotType={plotType}
+        downloadFileName={`${field
+          .split(".")
+          .at(-1)}-survival-plot.${convertDateToString(new Date())}`}
+        tableTooltip
+      />
+    </div>
   );
 };
 

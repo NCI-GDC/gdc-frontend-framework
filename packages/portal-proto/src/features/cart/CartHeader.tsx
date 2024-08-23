@@ -43,6 +43,7 @@ const downloadCart = (
     dbGapList.length > 0
   ) {
     dispatch(showModal({ modal: Modals.CartDownloadModal }));
+    setActive(false);
   } else {
     download({
       endpoint: "data",
@@ -97,7 +98,8 @@ const CartHeader: React.FC<CartHeaderProps> = ({
 }: CartHeaderProps) => {
   const dispatch = useCoreDispatch();
   const { data: userDetails } = useFetchUserDetailsQuery();
-  const [downloadActive, setDownloadActive] = useState(false);
+  const [cartDownloadActive, setCartDownloadActive] = useState(false);
+  const [manifestDownloadActive, setManifestDownloadActive] = useState(false);
   const [clinicalTSVDownloadActive, setClinicalTSVDownloadActive] =
     useState(false);
   const [clinicalJSONDownloadActive, setClinicalJSONDownloadActive] =
@@ -120,7 +122,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
           user={userDetails?.data}
           filesByCanAccess={filesByCanAccess}
           dbGapList={dbGapList}
-          setActive={setDownloadActive}
+          setActive={setCartDownloadActive}
         />
       )}
       <div
@@ -133,13 +135,6 @@ const CartHeader: React.FC<CartHeaderProps> = ({
               classNames={{
                 root: `${buttonStyle} ml-4 ${focusStyles}`,
               }}
-              leftSection={
-                downloadActive ? (
-                  <Loader size={15} />
-                ) : (
-                  <DownloadIcon aria-hidden="true" />
-                )
-              }
               rightSection={
                 <DropdownIcon
                   size={20}
@@ -154,24 +149,36 @@ const CartHeader: React.FC<CartHeaderProps> = ({
           <Menu.Dropdown>
             <Menu.Item
               onClick={() => {
-                setDownloadActive(true);
-                downloadManifest(cart, setDownloadActive, dispatch);
+                setManifestDownloadActive(true);
+                downloadManifest(cart, setManifestDownloadActive, dispatch);
               }}
-              leftSection={<DownloadIcon aria-label="download" />}
+              leftSection={
+                manifestDownloadActive ? (
+                  <Loader size={15} />
+                ) : (
+                  <DownloadIcon aria-hidden="true" />
+                )
+              }
             >
               Manifest
             </Menu.Item>
             <Menu.Item
               onClick={() => {
-                setDownloadActive(true);
+                setCartDownloadActive(true);
                 downloadCart(
                   filesByCanAccess,
                   dbGapList,
-                  setDownloadActive,
+                  setCartDownloadActive,
                   dispatch,
                 );
               }}
-              leftSection={<DownloadIcon aria-label="download" />}
+              leftSection={
+                cartDownloadActive ? (
+                  <Loader size={15} />
+                ) : (
+                  <DownloadIcon aria-hidden="true" />
+                )
+              }
             >
               Cart
             </Menu.Item>
@@ -183,13 +190,6 @@ const CartHeader: React.FC<CartHeaderProps> = ({
               classNames={{
                 root: `${buttonStyle} ${focusStyles}`,
               }}
-              leftSection={
-                downloadActive ? (
-                  <Loader size={15} />
-                ) : (
-                  <DownloadIcon aria-hidden="true" />
-                )
-              }
               rightSection={
                 <DropdownIcon
                   size={20}
