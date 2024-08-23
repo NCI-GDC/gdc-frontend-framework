@@ -208,7 +208,7 @@ const FromTo: React.FC<FromToProps> = ({
           (fromValueInDays !== undefined && fromValueInDays >= WARNING_DAYS),
       );
     }
-  }, [field, form.values.toValue, form.values.fromValue, units]);
+  }, [field, form.values.toValue, form.values.fromValue, units, queryInYears]);
 
   /**
    * Handle Apply button which will add/update/remove a range filter to the field.

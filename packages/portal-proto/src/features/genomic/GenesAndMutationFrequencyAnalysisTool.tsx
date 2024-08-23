@@ -131,8 +131,9 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     (tabKey: string) => {
       setAppMode(tabKey as AppModeState);
       setComparativeSurvival(undefined);
-      (searchTermsForGeneId.geneId || searchTermsForGeneId.geneSymbol) &&
+      if (searchTermsForGeneId.geneId || searchTermsForGeneId.geneSymbol) {
         setSearchTermsForGeneId({ geneId: undefined, geneSymbol: undefined });
+      }
     },
     [searchTermsForGeneId.geneId, searchTermsForGeneId.geneSymbol],
   );

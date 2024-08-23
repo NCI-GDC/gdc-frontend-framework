@@ -50,10 +50,12 @@ const ToggledCheck: React.FC<ToggleProps> = ({
         color={isActive ? "white" : "black"}
         onChange={() => {
           if (!disabled)
-            // todo: if used for > 2 icons refactor to use switch(icon) statement
-            icon
-              ? handleSwitch(selected[`symbol`], selected[`label`], plot)
-              : handleSwitch(selected);
+            if (icon) {
+              // todo: if used for > 2 icons refactor to use switch(icon) statement
+              handleSwitch(selected[`symbol`], selected[`label`], plot);
+            } else {
+              handleSwitch(selected);
+            }
         }}
         classNames={{
           root: margin,

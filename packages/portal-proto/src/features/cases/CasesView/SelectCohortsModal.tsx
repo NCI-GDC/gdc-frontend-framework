@@ -106,6 +106,7 @@ export const SelectCohortsModal = ({
         size: MAX_CASE_IDS,
       });
       resCases = res.data.hits.map((hit) => hit.case_id);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       // TODO: how to handle this situation?
       // maybe show a modal and ask user to redo the task

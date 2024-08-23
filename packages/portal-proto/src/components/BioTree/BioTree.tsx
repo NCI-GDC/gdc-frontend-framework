@@ -100,7 +100,9 @@ export const BioTree = ({
     } else if (treeStatusOverride) {
       const override = treeStatusOverride === overrideMessage.Expanded;
       isExpanded.current = override;
-      override && setExpandedCount((c) => c + 1);
+      if (override) {
+        setExpandedCount((c) => c + 1);
+      }
     }
   }, [
     treeStatusOverride,
@@ -118,7 +120,9 @@ export const BioTree = ({
 
     return () => {
       setTotalNodeCount((c) => c - 1);
-      isExpanded.current && setExpandedCount((c) => Math.max(c - 1, 0));
+      if (isExpanded.current) {
+        setExpandedCount((c) => Math.max(c - 1, 0));
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -126,9 +130,11 @@ export const BioTree = ({
   const onTreeClick = () => {
     if (query) return;
     isExpanded.current = !isExpanded.current;
-    isExpanded.current
-      ? setExpandedCount((c) => c + 1)
-      : setExpandedCount((c) => Math.max(c - 1, 0));
+    if (isExpanded.current) {
+      setExpandedCount((c) => c + 1);
+    } else {
+      setExpandedCount((c) => Math.max(c - 1, 0));
+    }
     setTreeStatusOverride(null);
   };
 
