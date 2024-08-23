@@ -130,7 +130,11 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
             Upload {facetName}
           </Button>
         </Tooltip>
-        <Group gap="xs" className="px-2 py-1" data-testid="values group">
+        <Group
+          gap="xs"
+          className="px-2 py-1 max-h-96 overflow-y-scroll"
+          data-testid="values group"
+        >
           {facetValues.map((operand, i) => (
             <Badge
               size="sm"
