@@ -1,16 +1,14 @@
 import tw from "tailwind-styled-components";
 
 export const HeaderTitle = tw.h2`
-text-lg text-primary-content-darkest uppercase tracking-wide font-medium mb-1
+text-lg text-primary-content-darkest uppercase tracking-wide font-medium
 `;
 
 export const SummaryHeaderTitle = tw.h2`
-text-xl
-leading-[34px]
 text-base-lightest
-p.$isFileSummary ? "text-lg" : "text-[28px]"}
 tracking-wide
 font-medium
+break-all
 `;
 
 export const PercentBar = tw.div`

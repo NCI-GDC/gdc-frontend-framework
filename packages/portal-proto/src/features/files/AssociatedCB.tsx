@@ -165,9 +165,7 @@ const AssociatedCB = ({
         />
       }
       additionalControls={
-        <div className="mt-3.5">
-          <HeaderTitle>Associated Cases/Biospecimens</HeaderTitle>
-        </div>
+        <HeaderTitle>Associated Cases/Biospecimens</HeaderTitle>
       }
       handleChange={handleChange}
       baseZIndex={300}

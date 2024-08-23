@@ -85,7 +85,7 @@ export interface FileViewProps {
   readonly isModal?: boolean;
 }
 
-const DivWithMargin = tw.div`mt-14`;
+const DivWithMargin = tw.div`mt-8`;
 
 export const FileView: React.FC<FileViewProps> = ({
   file,
@@ -176,7 +176,7 @@ export const FileView: React.FC<FileViewProps> = ({
   );
 
   return (
-    <>
+    <div className="relative">
       <SummaryHeader
         Icon={FilesIcon}
         headerTitleLeft="File"
@@ -191,8 +191,8 @@ export const FileView: React.FC<FileViewProps> = ({
           />
         }
       />
-      <div className={`${!isModal ? "mt-40" : "mt-4"} mx-4`}>
-        <div className="flex gap-8">
+      <div className={`${!isModal ? "mt-6" : "mt-4"} mx-4`}>
+        <div className="flex flex-col lg:flex-row gap-8 xl:gap-4">
           <div className="flex-1">
             <SummaryCard
               customDataTestID="table-file-properties-file-summary"
@@ -238,8 +238,10 @@ export const FileView: React.FC<FileViewProps> = ({
 
         {file?.analysis && (
           <>
-            <div className="mt-14 flex gap-8">
-              <div className={`flex-1 ${!shouldDisplayRefGenome && "flex"}`}>
+            <div className="mt-8 flex flex-col lg:flex-row gap-8 xl:gap-4">
+              <div
+                className={`flex-1 ${!shouldDisplayRefGenome ? "flex" : ""}`}
+              >
                 <div className="basis-1/2">
                   <SummaryCard
                     customDataTestID="table-analysis-file-summary"
@@ -287,8 +289,6 @@ export const FileView: React.FC<FileViewProps> = ({
 
             {file?.analysis?.metadata && (
               <DivWithMargin data-testid="table-read-groups-file-summary">
-                <HeaderTitle>Read Groups</HeaderTitle>
-
                 <ReadGroups readGroups={file?.analysis.metadata.read_groups} />
               </DivWithMargin>
             )}
@@ -298,7 +298,6 @@ export const FileView: React.FC<FileViewProps> = ({
           (byWorkflowType) => byWorkflowType?.output_files?.length > 0,
         ) && (
           <DivWithMargin data-testid="table-downstream-analyses-files-file-summary">
-            <HeaderTitle>Downstream Analyses Files</HeaderTitle>
             <DownstreamAnalyses
               downstream_analyses={file?.downstream_analyses}
               currentCart={currentCart}
@@ -333,6 +332,6 @@ export const FileView: React.FC<FileViewProps> = ({
           />
         )}
       </div>
-    </>
+    </div>
   );
 };

@@ -97,11 +97,7 @@ const SourceFiles = ({
       data={data}
       columns={columns}
       tableTitle={<TotalItems total={data?.length} itemName="file" />}
-      additionalControls={
-        <div className="mt-3.5">
-          <HeaderTitle>Source Files</HeaderTitle>
-        </div>
-      }
+      additionalControls={<HeaderTitle>Source Files</HeaderTitle>}
     />
   );
 };

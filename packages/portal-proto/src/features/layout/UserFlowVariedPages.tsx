@@ -176,6 +176,7 @@ export const UserFlowVariedPages = ({
       <header
         className="flex-none bg-base-max sticky top-0 z-[300] shadow-lg"
         ref={headerRef}
+        id="global-header"
       >
         {banners.map((banner) => (
           <Banner {...banner} key={banner.id} />
