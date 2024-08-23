@@ -35,7 +35,7 @@ const DownstreamAnalyses = ({
 
   downstream_analyses?.forEach((byWorkflowType) => {
     if (byWorkflowType?.output_files) {
-      byWorkflowType?.output_files?.forEach((outputFile) => {
+      byWorkflowType?.output_files?.forEach((outputFile: GdcCartFile) => {
         const transformedFile = {
           access: outputFile.access,
           file_name: outputFile.file_name,

@@ -1,12 +1,4 @@
 import React, { useState } from "react";
-import {
-  UseMutation,
-  UseQuery,
-} from "@reduxjs/toolkit/dist/query/react/buildHooks";
-import {
-  QueryDefinition,
-  MutationDefinition,
-} from "@reduxjs/toolkit/dist/query";
 import { Modal } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import {
@@ -15,6 +7,8 @@ import {
   SetTypes,
   useCoreDispatch,
   addSet,
+  useGeneSetCountsQuery,
+  useRemoveFromGeneSetMutation,
 } from "@gff/core";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
@@ -28,12 +22,8 @@ interface RemoveFromSetModalProps {
   readonly setType: SetTypes;
   readonly setTypeLabel: string;
   readonly closeModal: () => void;
-  readonly countHook: UseQuery<
-    QueryDefinition<any, any, any, Record<string, number>, string>
-  >;
-  readonly removeFromSetHook: UseMutation<
-    MutationDefinition<any, any, any, string, string>
-  >;
+  readonly countHook: typeof useGeneSetCountsQuery;
+  readonly removeFromSetHook: typeof useRemoveFromGeneSetMutation;
   readonly opened: boolean;
 }
 

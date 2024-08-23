@@ -1,10 +1,9 @@
 import VerticalTable from "@/components/Table/VerticalTable";
-import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
-import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { createColumnHelper, SortingState } from "@tanstack/react-table";
 import { upperFirst } from "lodash";
 import { useMemo, useState } from "react";
 import { SelectedEntities } from "./types";
+import { useCaseSetCountsQuery } from "@gff/core";
 
 type SummaryTableDataType = {
   idx: number;
@@ -19,9 +18,7 @@ export const SetOperationsSummaryTable = ({
   entityType,
 }: {
   sets: SelectedEntities;
-  countHook: UseQuery<
-    QueryDefinition<any, any, any, Record<string, number>, string>
-  >;
+  countHook: typeof useCaseSetCountsQuery;
   entityType: "cohort" | "genes" | "mutations";
 }): JSX.Element => {
   const { data: summaryCounts, isFetching } = countHook({

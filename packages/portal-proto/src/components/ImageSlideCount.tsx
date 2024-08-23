@@ -20,12 +20,16 @@ const SlideCountsIcon = tw.div<{
     font-heading
     rounded-sm
   `;
+interface ImageSlideCountProps {
+  slideCount: number;
+  onClick?: () => void;
+}
 
 export const ImageSlideCount = forwardRef<
   HTMLButtonElement,
-  { slideCount: number; onClick?: () => void }
+  ImageSlideCountProps
 >(
-  ({ slideCount, onClick }, ref): JSX.Element => (
+  ({ slideCount, onClick }: ImageSlideCountProps, ref): JSX.Element => (
     <Tooltip label="No slide images to view" disabled={slideCount !== 0}>
       <Button
         data-testid="button-view-slide-images"
