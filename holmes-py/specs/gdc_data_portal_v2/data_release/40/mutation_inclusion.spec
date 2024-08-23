@@ -7,7 +7,7 @@ Test-Case           : PEAR-1932
 
 tags: gdc-data-portal-v2, data-release
 
-## Gene Affected in this Data Release: chr17:g.31327838C>T
+## Mutation Affected in this Data Release: chr17:g.31327838C>T
 * On GDC Data Portal V2 app
 * Quick search for "chr17:g.31327838C>T" and go to its page
 * Verify the table "Summary Mutation Summary" is displaying this information
@@ -26,7 +26,7 @@ tags: gdc-data-portal-v2, data-release
     |COSM4384998                            |
     |--                                     |
 
-## Gene Affected in this Data Release: chr5:g.13913860G>A
+## Mutation Affected in this Data Release: chr5:g.13913860G>A
 * On GDC Data Portal V2 app
 * Quick search for "chr5:g.13913860G>A" and go to its page
 * Verify the table "Summary Mutation Summary" is displaying this information
