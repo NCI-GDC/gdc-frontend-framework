@@ -1,4 +1,4 @@
-# Data Release: 40 - Mutation Inclusion
+# Data Release: 40 - Annotation Inclusion
 Date Created        : 07/05/2024
 Version			    : 1.0
 Owner		        : GDC QA
@@ -7,7 +7,7 @@ Test-Case           : PEAR-1933
 
 tags: gdc-data-portal-v2, data-release
 
-## Gene Affected in this Data Release:  81d534ea-2bf2-4353-920e-8ebaf7618fee
+## Annotation Affected in this Data Release:  81d534ea-2bf2-4353-920e-8ebaf7618fee
 * On GDC Data Portal V2 app
 * Quick search for "81d534ea-2bf2-4353-920e-8ebaf7618fee" and go to its page
 * Verify the table "Summary Annotation Summary" is displaying this information
@@ -26,7 +26,7 @@ tags: gdc-data-portal-v2, data-release
     |The contamination estimate provided by GATK was greater than 0.04. No variant calls will be released for this BAM. |
 
 
-## Gene Affected in this Data Release:  d942a6c9-8c4b-459b-81bc-80c3c721af31
+## Annotation Affected in this Data Release:  d942a6c9-8c4b-459b-81bc-80c3c721af31
 * On GDC Data Portal V2 app
 * Quick search for "d942a6c9-8c4b-459b-81bc-80c3c721af31" and go to its page
 * Verify the table "Summary Annotation Summary" is displaying this information
