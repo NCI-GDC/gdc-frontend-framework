@@ -20,7 +20,7 @@ function CategoryTableSummary<TData>({
   customDataTestID,
 }: CategoryTableSummaryProps<TData>): JSX.Element {
   return (
-    <div className="basis-1/2">
+    <div className="flex flex-col gap-2">
       <div className="text-base-contrast-lighter flex">
         <HeaderTitle>{title}</HeaderTitle>
         {tooltip && (
