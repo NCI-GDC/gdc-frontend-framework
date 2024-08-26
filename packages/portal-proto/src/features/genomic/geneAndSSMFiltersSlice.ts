@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Operation, FilterSet } from "@gff/core";
+import { isEqual } from "lodash";
+import { Operation, FilterSet, isOperandsType } from "@gff/core";
 import { AppState } from "./appApi";
 
 const initialState: FilterSet = {
@@ -59,6 +60,19 @@ export const selectGeneAndSSMFiltersByName = (
   name: string,
 ): Operation | undefined => {
   return state.filters.root?.[name];
+};
+
+export const selectFiltersAppliedCount = (state: AppState): number => {
+  console.log(
+    state.filters.root,
+    initialState.root,
+    isEqual(state.filters.root, initialState.root),
+  );
+  return Object.values(state.filters.root)
+    .filter(
+      (f) => !isEqual(f, initialState.root["genes.is_cancer_gene_census"]),
+    )
+    .reduce((a, b) => (isOperandsType(b) ? b?.operands.length : 1) + a, 0);
 };
 
 export const selectGeneAndSSMFiltersByNames = (

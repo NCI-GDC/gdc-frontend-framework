@@ -7,6 +7,7 @@
  * GDC API Filter as a union of all possible filters
  * @category Filters
  */
+
 export type Operation =
   | Equals
   | NotEquals
@@ -97,6 +98,14 @@ export interface Union {
 }
 
 export type UnionOrIntersection = Union | Intersection;
+
+type OperandsType = Includes | Excludes | ExcludeIfAny | Intersection | Union;
+
+export const isOperandsType = (
+  operation: Operation,
+): operation is OperandsType => {
+  return (operation as OperandsType)?.operands !== undefined;
+};
 
 export interface OperationHandler<T> {
   handleEquals: (op: Equals) => T;

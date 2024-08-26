@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Operation, FilterSet } from "@gff/core";
+import { Operation, FilterSet, isOperandsType } from "@gff/core";
 import { AppState } from "./appApi";
 
 export interface RepositoryFiltersSlice {
@@ -55,6 +55,12 @@ export const {
 
 export const selectFilters = (state: AppState): FilterSet | undefined =>
   state.filters.filters;
+
+export const selectAppliedFilterCount = (state: AppState): number =>
+  Object.values(state.filters.filters.root).reduce(
+    (a, b) => (isOperandsType(b) ? b?.operands.length : 1) + a,
+    0,
+  );
 
 export const selectFiltersByName = (
   state: AppState,

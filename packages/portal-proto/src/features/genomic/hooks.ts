@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useCallback } from "react";
 import {
   ClearFacetFunction,
   EnumFacetResponse,
@@ -28,7 +29,6 @@ import {
   GqlOperation,
   buildSSMSTableSearchFilters,
 } from "@gff/core";
-import { useEffect, useMemo } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
 import isEqual from "lodash/isEqual";
 import {
@@ -43,6 +43,7 @@ import {
   selectGeneAndSSMFilters,
   removeGeneAndSSMFilter,
   selectGeneAndSSMFiltersByNames,
+  clearGeneAndSSMFilters,
 } from "@/features/genomic/geneAndSSMFiltersSlice";
 import {
   toggleFilter,
@@ -80,6 +81,13 @@ export const useClearGenomicFilters = (): ClearFacetFunction => {
   return (field: string) => {
     dispatch(removeGeneAndSSMFilter(field));
   };
+};
+
+export const useClearAllGenomicFilters = () => {
+  const dispatch = useAppDispatch();
+  return useCallback(() => {
+    dispatch(clearGeneAndSSMFilters());
+  }, [dispatch]);
 };
 
 export const useGenomicFilterByName = (field: string): OperandValue => {
