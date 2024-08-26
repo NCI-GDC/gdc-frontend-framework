@@ -5,7 +5,7 @@ Owner		    : GDC QA
 Description		: Test analysis center navigation
 Test-Case       : N/A
 
-tags: gdc-data-portal-v2, navigation, analysis-center, smoke-test
+tags: gdc-data-portal-v2, navigation, analysis-center, smoke-test, regression
 
 ## Navigate to the analysis center
 * On GDC Data Portal V2 app

@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Test Cohort Builder - Searching
 Test-case       : PEAR-797
 
-tags: gdc-data-portal-v2, cohort-builder, search-bar
+tags: gdc-data-portal-v2, cohort-builder, search-bar, regression
 
 ## Navigate to Cohort Builder
 
