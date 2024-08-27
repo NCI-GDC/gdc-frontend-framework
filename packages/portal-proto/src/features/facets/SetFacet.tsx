@@ -77,7 +77,7 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
     <div
       className={`flex flex-col ${
         width ? width : "mx-0"
-      } bg-base-max relative shadow-lg border-base-lighter border-1 rounded-b-md text-xs transition`}
+      } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition`}
     >
       <FacetHeader>
         <Tooltip
