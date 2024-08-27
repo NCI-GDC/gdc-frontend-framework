@@ -5,6 +5,9 @@ import {
   useCreateCaseSetFromFiltersMutation,
   GqlOperation,
   useGetCasesQuery,
+  useCoreDispatch,
+  showModal,
+  Modals,
 } from "@gff/core";
 import {
   SelectCohortsModal,
@@ -14,7 +17,6 @@ import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { CountsIcon } from "@/components/tailwindComponents";
 import { Tooltip } from "@mantine/core";
-import { showNotification } from "@mantine/notifications";
 
 interface CasesCohortButtonProps {
   readonly onCreateSet: () => void;
@@ -35,18 +37,15 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
   const [showSaveCohort, setShowSaveCohort] = useState(false);
   const [withOrWithoutCohort, setWithOrWithoutCohort] =
     useState<WithOrWithoutCohortType>(undefined);
+  const dispatch = useCoreDispatch();
 
   useEffect(() => {
     if (response.isSuccess) {
       setShowSaveCohort(true);
     } else if (response.isError) {
-      showNotification({
-        message: "Problem creating cohort.",
-        color: "red",
-        closeButtonProps: { "aria-label": "Close notification" },
-      });
+      dispatch(showModal({ modal: Modals.SaveCohortErrorModal }));
     }
-  }, [response.isSuccess, response.isError]);
+  }, [response.isSuccess, response.isError, dispatch]);
 
   const dropDownIcon = (
     <DropdownWithIcon

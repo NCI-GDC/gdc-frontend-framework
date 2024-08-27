@@ -1,9 +1,8 @@
 import React, { ReactNode, useState } from "react";
 import { Tooltip } from "@mantine/core";
-import { showNotification } from "@mantine/notifications";
 import { FaPlus as PlusIcon } from "react-icons/fa";
 import tw from "tailwind-styled-components";
-import { FilterSet } from "@gff/core";
+import { FilterSet, useCoreDispatch, Modals, showModal } from "@gff/core";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 
 export const CohortCreationStyledButton = tw.button`
@@ -80,6 +79,7 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
   const [cohortFilters, setCohortFilters] = useState<FilterSet>(filters);
   const [loading, setLoading] = useState(false);
   const disabled = numCases === undefined || numCases === 0;
+  const dispatch = useCoreDispatch();
   const tooltipText = disabled
     ? "No cases available"
     : `Save a new cohort of ${
@@ -123,11 +123,7 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
                   setShowSaveCohort(true);
                 })
                 .catch(() => {
-                  showNotification({
-                    message: "Problem creating cohort.",
-                    color: "red",
-                    closeButtonProps: { "aria-label": "Close notification" },
-                  });
+                  dispatch(showModal({ modal: Modals.SaveCohortErrorModal }));
                   setLoading(false);
                 });
             } else {
