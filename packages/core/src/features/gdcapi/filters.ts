@@ -7,7 +7,6 @@
  * GDC API Filter as a union of all possible filters
  * @category Filters
  */
-
 export type Operation =
   | Equals
   | NotEquals
