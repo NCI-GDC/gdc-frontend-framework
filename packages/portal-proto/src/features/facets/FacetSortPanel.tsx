@@ -73,7 +73,7 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
         size="compact-xs"
         color="primary.9"
         classNames={{
-          section: "ml-0",
+          section: "ml-1",
         }}
         onClick={() => {
           const direction =
@@ -95,7 +95,7 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
       <Button
         className="pr-0 mr-0 text-sm"
         classNames={{
-          section: "ml-0",
+          section: "ml-1",
         }}
         variant="subtle"
         size="compact-xs"
