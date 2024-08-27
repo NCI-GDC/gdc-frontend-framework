@@ -88,7 +88,7 @@ const FacetControlsHeader = ({
             <ActionIcon
               variant="subtle"
               onClick={() => toggleExpandFilter(field, !isFilterExpanded)}
-              className="mt-0.5 -ml-2"
+              className="mt-0.5 -ml-1.5"
               aria-expanded={isFilterExpanded}
               aria-label={isFilterExpanded ? "Collapse card" : "Expand card"}
             >
