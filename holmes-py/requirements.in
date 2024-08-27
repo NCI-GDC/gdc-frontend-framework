@@ -7,4 +7,4 @@ pillow==10.0.1
 pyautogui==0.9.54
 # May have to add setuptools manually to requirements.txt after running
 # 'pip-compile requirements.in'
-setuptools==65.5.1
+setuptools==70.0.0
