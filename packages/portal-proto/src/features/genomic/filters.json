@@ -53,7 +53,7 @@
   },
   {
     "full": "ssms.mutation_subtype",
-    "title": "facet_type",
+    "title": "Type",
     "facet_type": "enum",
     "doc_type": "ssms"
   }
