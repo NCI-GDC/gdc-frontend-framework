@@ -1,6 +1,6 @@
 {
   "name": "portal-proto",
-  "version": "2.14.3",
+  "version": "2.14.4",
   "scripts": {
     "clean": "rimraf .next",
     "dev": "next",
@@ -14,14 +14,14 @@
     "test:all": "jest"
   },
   "dependencies": {
-    "@datadog/browser-rum": "^4.32.0",
+    "@datadog/browser-rum": "^5.23.3",
     "@dnd-kit/core": "^6.0.8",
     "@dnd-kit/modifiers": "^6.0.1",
     "@dnd-kit/sortable": "^7.0.2",
     "@dnd-kit/utilities": "^3.2.1",
     "@fontsource/montserrat": "^4.5.14",
     "@fontsource/noto-sans": "^4.5.11",
-    "@gff/core": "^2.14.3",
+    "@gff/core": "^2.14.4",
     "@mantine/core": "^7.8.1",
     "@mantine/dates": "^7.8.1",
     "@mantine/form": "^7.8.1",
@@ -29,7 +29,7 @@
     "@mantine/notifications": "^7.8.1",
     "@react-spring/web": "^9.5.5",
     "@reduxjs/toolkit": "^1.8.5",
-    "@sjcrh/proteinpaint-client": "^2.69.1-0",
+    "@sjcrh/proteinpaint-client": "^2.73.0",
     "@tanstack/react-table": "^8.9.3",
     "filesize": "^8.0.7",
     "minisearch": "^3.0.4",

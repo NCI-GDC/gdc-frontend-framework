@@ -14,6 +14,7 @@ import {
   Pagination,
   useCoreDispatch,
   GqlEquals,
+  GqlOperation,
 } from "@gff/core";
 import { createColumnHelper, SortingState } from "@tanstack/react-table";
 import { statusBooleansToDataStatus } from "src/utils";
@@ -122,16 +123,18 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
     },
   } as GqlEquals;
 
+  const tableFilters: GqlOperation = searchTerm
+    ? filters
+      ? {
+          op: "and",
+          content: [buildSearchFilters(searchTerm), filters],
+        }
+      : buildSearchFilters(searchTerm)
+    : filters;
+
   const { data, isSuccess, isFetching, isError } = useGetAnnotationsQuery({
     request: {
-      filters: searchTerm
-        ? filters
-          ? {
-              op: "and",
-              content: [buildSearchFilters(searchTerm), filters],
-            }
-          : buildSearchFilters(searchTerm)
-        : filters,
+      filters: tableFilters,
       size: pageSize,
       from: (activePage - 1) * pageSize,
       sortBy,
@@ -280,7 +283,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
       endpoint: "annotations",
       method: "POST",
       params: {
-        filters,
+        filters: tableFilters,
         attachment: true,
         format: "JSON",
         pretty: true,
@@ -348,7 +351,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
         baseZIndex={400}
         status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
         pagination={{
-          label: "annotations",
+          label: "annotation",
           ...pagination,
         }}
         handleChange={handleChange}

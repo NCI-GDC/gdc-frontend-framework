@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Add and Remove from cart, download file
 Test-Case       : N/A
 
-tags: gdc-data-portal-v2, case-summary, cart, file-download
+tags: gdc-data-portal-v2, case-summary, cart, file-download, regression
 
 ## Case Summary Page - Navigate to a case summary page
 * On GDC Data Portal V2 app

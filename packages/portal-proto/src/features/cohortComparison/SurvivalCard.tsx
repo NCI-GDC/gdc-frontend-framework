@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { Alert, Loader, Paper, Tooltip } from "@mantine/core";
+import { Alert, LoadingOverlay, Paper, Tooltip } from "@mantine/core";
 import {
   buildCohortGqlOperator,
   useGetSurvivalPlotQuery,
@@ -12,6 +11,8 @@ import SurvivalPlot from "../charts/SurvivalPlot/SurvivalPlot";
 import makeIntersectionFilters from "./makeIntersectionFilters";
 import CohortCreationButton from "@/components/CohortCreationButton";
 import { SurvivalPlotTypes } from "../charts/SurvivalPlot/types";
+import { useDeepCompareEffect } from "use-deep-compare";
+import { emptySurvivalPlot } from "../genomic/types";
 
 const survivalDataCompletenessFilters: GqlOperation[] = [
   {
@@ -102,6 +103,7 @@ interface SurvivalCardProps {
   };
   readonly setSurvivalPlotSelectable: (selectable: boolean) => void;
   readonly caseSetIds: string[];
+  readonly isSetsloading: boolean;
 }
 
 const SurvivalCard: React.FC<SurvivalCardProps> = ({
@@ -109,6 +111,7 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
   cohorts,
   setSurvivalPlotSelectable,
   caseSetIds,
+  isSetsloading,
 }: SurvivalCardProps) => {
   const filters = makeIntersectionFilters(
     buildCohortGqlOperator(cohorts?.primary_cohort.filter),
@@ -164,7 +167,7 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
       filters: [filters.cohort1, filters.cohort2],
     });
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     setSurvivalPlotSelectable(data?.survivalData.length !== 0);
   }, [data, setSurvivalPlotSelectable]);
 
@@ -175,6 +178,8 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
     ? data.survivalData[1].donors?.length
     : 0;
 
+  const isLoading = isSetsloading || isFetching || isUninitialized;
+
   return (
     <Paper
       data-testid="card-analysis-survival-cohort-comparison"
@@ -184,21 +189,27 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
       <h2 className="font-heading text-lg font-semibold">Survival Analysis</h2>
       {data?.survivalData.length === 0 ? (
         <div className="p-1">
-          {"No Survival data available for this Cohort Comparison"}
+          No Survival data available for this Cohort Comparison
         </div>
       ) : (
         <>
           {isError ? (
-            <Alert>{"Something's gone wrong"}</Alert>
-          ) : isFetching || isUninitialized ? (
-            <Loader />
+            <Alert>Something`&apos;s gone wrong</Alert>
           ) : (
-            <SurvivalPlot
-              plotType={SurvivalPlotTypes.cohortComparison}
-              data={data}
-              hideLegend
-              noDataMessage="No Survival data available for this Cohort Comparison"
-            />
+            <div className="relative">
+              <LoadingOverlay
+                visible={isLoading}
+                zIndex={0}
+                data-testid="loading-spinner"
+              />
+              <SurvivalPlot
+                plotType={SurvivalPlotTypes.cohortComparison}
+                data={isLoading ? emptySurvivalPlot : data}
+                hideLegend
+                noDataMessage="No Survival data available for this Cohort Comparison"
+                isLoading={isLoading}
+              />
+            </div>
           )}
           <div className="font-heading mt-[1.5rem]">
             <table className="bg-base-max w-full text-left text-base-contrast-max border-base-light border-1">
@@ -207,7 +218,7 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
                   <th>
                     <Tooltip label={tooltipLabel}>
                       <span className="underline decoration-dashed pl-2">
-                        {"Cases included in Analysis"}
+                        Cases included in Analysis
                       </span>
                     </Tooltip>
                   </th>
@@ -232,21 +243,37 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
                 <tr>
                   <td className="pl-2">Overall Survival Analysis</td>
                   <td>
-                    <CohortCreationButton
-                      numCases={cohort1Count}
-                      label={cohort1Count.toLocaleString()}
-                      filtersCallback={generatePrimaryFilters}
-                    />
+                    {isLoading ? (
+                      "..."
+                    ) : (
+                      <CohortCreationButton
+                        numCases={cohort1Count}
+                        label={cohort1Count.toLocaleString()}
+                        filtersCallback={generatePrimaryFilters}
+                      />
+                    )}
                   </td>
-                  <td>{((cohort1Count / counts[0]) * 100).toFixed(0)}%</td>
                   <td>
-                    <CohortCreationButton
-                      numCases={cohort2Count}
-                      label={cohort2Count.toLocaleString()}
-                      filtersCallback={generateComparisonFilters}
-                    />
+                    {isLoading
+                      ? "..."
+                      : `${((cohort1Count / counts[0]) * 100).toFixed(0)}%`}
                   </td>
-                  <td>{((cohort2Count / counts[1]) * 100).toFixed(0)}%</td>
+                  <td>
+                    {isLoading ? (
+                      "..."
+                    ) : (
+                      <CohortCreationButton
+                        numCases={cohort2Count}
+                        label={cohort2Count.toLocaleString()}
+                        filtersCallback={generateComparisonFilters}
+                      />
+                    )}
+                  </td>
+                  <td>
+                    {isLoading
+                      ? "..."
+                      : `${((cohort2Count / counts[1]) * 100).toFixed(0)}%`}
+                  </td>
                 </tr>
               </tbody>
             </table>

@@ -55,9 +55,9 @@ export interface PaginationOptions {
    */
   total: number;
   /**
-   * optional label of data shown
+   * label of data shown
    */
-  label?: string;
+  label: string;
 }
 
 /**

@@ -1,12 +1,21 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { useDeepCompareMemo } from "use-deep-compare";
 import {
   VisibilityState,
   ColumnOrderState,
   ColumnDef,
 } from "@tanstack/react-table";
 import Link from "next/link";
-import { FileAnnotationsType, useCoreDispatch } from "@gff/core";
+import {
+  FileAnnotationsType,
+  useCoreDispatch,
+  GqlUnion,
+  GqlOperation,
+  useGetAnnotationsQuery,
+  SortBy,
+  Pagination,
+  AnnotationDefaults,
+  GqlIncludes,
+} from "@gff/core";
 import { createColumnHelper, SortingState } from "@tanstack/react-table";
 import { convertDateToString } from "src/utils/date";
 import download from "src/utils/download";
@@ -14,9 +23,9 @@ import FunctionButton from "@/components/FunctionButton";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { HandleChangeInput } from "@/components/Table/types";
 import { HeaderTitle } from "@/components/tailwindComponents";
-import useStandardPagination from "@/hooks/useStandardPagination";
 import { downloadTSV } from "@/components/Table/utils";
 import TotalItems from "@/components/Table/TotalItem";
+import { useDeepCompareMemo } from "use-deep-compare";
 
 interface AnnotationsTableProps {
   readonly annotations: ReadonlyArray<FileAnnotationsType>;
@@ -37,14 +46,57 @@ type AnnotationTableData = Pick<
   | "notes"
 >;
 
-const matchSearchTerm = (field: string, searchTerm: string) =>
-  field?.toLowerCase().indexOf(searchTerm) > -1;
+const buildSearchFilters = (searchTerm: string) => {
+  return {
+    op: "or",
+    content: [
+      {
+        op: "=",
+        content: {
+          field: "annotation_id",
+          value: `*${searchTerm}*`,
+        },
+      },
+      {
+        op: "=",
+        content: {
+          field: "entity_id",
+          value: `*${searchTerm}*`,
+        },
+      },
+      {
+        op: "=",
+        content: {
+          field: "entity_submitter_id",
+          value: `*${searchTerm}*`,
+        },
+      },
+      {
+        op: "=",
+        content: {
+          field: "case_id",
+          value: `*${searchTerm}*`,
+        },
+      },
+      {
+        op: "=",
+        content: {
+          field: "case_submitter_id",
+          value: `*${searchTerm}*`,
+        },
+      },
+    ],
+  } as GqlUnion;
+};
+
 const annotationsTableColumnHelper = createColumnHelper<AnnotationTableData>();
 
 const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
   annotations,
 }: AnnotationsTableProps) => {
-  const [filteredTableData, setFilteredTableData] = useState([]);
+  const [pageSize, setPageSize] = useState(10);
+  const [activePage, setActivePage] = useState(1);
+  const [sortBy, setSortBy] = useState<SortBy[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     // TODO when DEV-2653 is fixed, re-add case ID col, hide case UUID col by default
@@ -55,10 +107,61 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
   });
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  const memoizedAnnotations = useDeepCompareMemo(
-    () => [...annotations],
-    [annotations],
-  );
+  useEffect(() => {
+    setSortBy(
+      sorting.map((sort) => ({
+        field: sort.id,
+        direction: sort.desc ? "desc" : "asc",
+      })),
+    );
+  }, [sorting]);
+
+  const filters: GqlIncludes = {
+    op: "in",
+    content: {
+      field: "annotation_id",
+      value: annotations.map((annotation) => annotation.annotation_id),
+    },
+  };
+
+  const tableFilters: GqlOperation = searchTerm
+    ? filters
+      ? {
+          op: "and",
+          content: [buildSearchFilters(searchTerm), filters],
+        }
+      : buildSearchFilters(searchTerm)
+    : filters;
+
+  const { data, isSuccess, isFetching } = useGetAnnotationsQuery({
+    request: {
+      filters: tableFilters,
+      size: pageSize,
+      from: (activePage - 1) * pageSize,
+      sortBy,
+    },
+  });
+
+  const [formattedTableData, pagination] = useDeepCompareMemo<
+    [AnnotationDefaults[], Pagination]
+  >(() => {
+    if (isSuccess && !isFetching) {
+      return [data?.hits ? [...data.hits] : [], data.pagination];
+    }
+
+    return [
+      [],
+      {
+        count: undefined,
+        from: undefined,
+        page: undefined,
+        pages: undefined,
+        size: undefined,
+        sort: undefined,
+        total: undefined,
+      },
+    ];
+  }, [data, isSuccess, isFetching]);
 
   const columns = useMemo<ColumnDef<AnnotationTableData>[]>(
     () => [
@@ -155,52 +258,22 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
     [],
   );
 
-  useEffect(() => {
-    if (searchTerm) {
-      setFilteredTableData(
-        memoizedAnnotations.filter((annotation) => {
-          return (
-            matchSearchTerm(annotation?.annotation_id, searchTerm) ||
-            matchSearchTerm(annotation?.case_id, searchTerm) ||
-            matchSearchTerm(annotation?.case_submitter_id, searchTerm) ||
-            matchSearchTerm(annotation?.entity_id, searchTerm) ||
-            matchSearchTerm(annotation?.entity_submitter_id, searchTerm)
-          );
-        }),
-      );
-    } else {
-      setFilteredTableData(memoizedAnnotations);
-    }
-  }, [searchTerm, memoizedAnnotations]);
-
-  const {
-    handlePageChange,
-    handlePageSizeChange,
-    handleSortByChange,
-    page,
-    pages,
-    size,
-    from,
-    total,
-    displayedData,
-  } = useStandardPagination(filteredTableData);
-
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
     columns.map((column) => column.id as string),
   );
 
-  useEffect(() => handleSortByChange(sorting), [sorting, handleSortByChange]);
-
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
       case "newPageSize":
-        handlePageSizeChange(obj.newPageSize);
+        setPageSize(parseInt(obj.newPageSize));
+        setActivePage(1);
         break;
       case "newPageNumber":
-        handlePageChange(obj.newPageNumber);
+        setActivePage(obj.newPageNumber);
         break;
       case "newSearch":
-        setSearchTerm(obj.newSearch?.toLowerCase());
+        setSearchTerm(obj.newSearch);
+        setActivePage(1);
         break;
     }
   };
@@ -212,15 +285,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
       endpoint: "annotations",
       method: "POST",
       params: {
-        filters: {
-          op: "=",
-          content: {
-            field: "annotation_id",
-            value: memoizedAnnotations.map(
-              (annotation) => annotation.annotation_id,
-            ),
-          },
-        },
+        filters: tableFilters,
         attachment: true,
         format: "JSON",
         pretty: true,
@@ -246,7 +311,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
 
   const handleDownloadTSV = () => {
     downloadTSV<AnnotationTableData>({
-      tableData: displayedData,
+      tableData: formattedTableData,
       columnOrder,
       columnVisibility,
       columns,
@@ -278,7 +343,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
             </FunctionButton>
           </div>
         }
-        data={displayedData}
+        data={formattedTableData}
         columns={columns}
         showControls
         search={{
@@ -287,12 +352,8 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
         }}
         baseZIndex={400}
         pagination={{
-          page,
-          pages,
-          size,
-          from,
-          total,
-          label: "annotations",
+          ...pagination,
+          label: "annotation",
         }}
         handleChange={handleChange}
         columnVisibility={columnVisibility}

@@ -326,7 +326,7 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
           size,
           from,
           total,
-          label: "sets",
+          label: "set",
         }}
         handleChange={handleChange}
         columnSorting="enable"

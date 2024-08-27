@@ -14,7 +14,7 @@ class CohortBarLocators:
         lambda cohort_name: f'[data-testid="cohort-list-dropdown"] >> input[value="{cohort_name}"]'
     )
 
-    IMPORT_COHORT_MODAL = 'text="Import a New Cohort"'
+    IMPORT_COHORT_MODAL = '[aria-label="Close Modal"]'
 
     SET_AS_COHORT_BUTTON_TEMP_COHORT_MESSAGE = (
         'span:has-text("Set this as your current cohort.")'

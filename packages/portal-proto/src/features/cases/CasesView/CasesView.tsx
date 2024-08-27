@@ -397,7 +397,7 @@ export const ContextualCasesView: React.FC = () => {
       <VerticalTable
         data={casesData}
         columns={casesTableDefaultColumns}
-        pagination={{ ...pagination, label: "cases" }}
+        pagination={{ ...pagination, label: "case" }}
         handleChange={handleChange}
         additionalControls={
           <div className="flex flex-wrap gap-1 lg:gap-2">

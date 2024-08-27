@@ -93,7 +93,7 @@ def click_show_more_or_show_less(tab_name: str, table):
 
 
 @step(
-    "Activate the following objects from <tab_name> tab on the Cohort Builder page <table>"
+    "Select the following labels from <tab_name> tab on the Cohort Builder page <table>"
 )
 def click_named_object(tab_name: str, table):
     APP.cohort_builder_page.click_button(tab_name)
@@ -159,7 +159,7 @@ def check_text_in_cohort_query_expression(table):
 @step(
     "Validate presence of facet cards on the <tab_name> tab on the Cohort Builder page <table>"
 )
-def make_cohort_builder_selections(tab_name: str, table):
+def validate_filter_cards_presence(tab_name: str, table):
     APP.cohort_builder_page.click_button(tab_name)
     for k, v in enumerate(table):
         is_facet_visible = APP.cohort_builder_page.check_facet_card_presence(v[0])
@@ -168,6 +168,49 @@ def make_cohort_builder_selections(tab_name: str, table):
         ), f"In tab '{tab_name}', the facet card '{v[0]}' is NOT visible"
         time.sleep(0.1)
 
+@step("Validate expected custom filters <are_or_are_not> present in facet cards on the <tab_name> tab on the Cohort Builder page <table>")
+def validate_custom_filter_text_on_facet_card(are_or_are_not:str, tab_name: str, table):
+    """
+    validate_custom_filter_text_on_facet_card validates given text should be present
+    or not present on facet card. Used with cards that allow entry of text as a filter
+    e.g. Case ID, Mutated Gene, Cases Submitter Id, etc.
+
+    :param are_or_are_not: Check if text should be present or should not be present. Acceptable inputs: "are", "are not"
+    :param tab_name: Tab to select on cohort builder
+    :param v[0]: The facet card name to check
+    :param v[1]: Custom filter text to check on the facet card
+    """
+    APP.cohort_builder_page.click_button(tab_name)
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    APP.shared.wait_for_loading_spinner_to_detatch()
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    for k, v in enumerate(table):
+        is_custom_filter_visible = APP.cohort_builder_page.is_facet_card_custom_filter_text_present(v[0], v[1])
+        if are_or_are_not.lower() == "are":
+            assert is_custom_filter_visible, f"In tab '{tab_name}' and facet card '{v[0]}', the custom filter text '{v[1]}' is NOT visible"
+        elif are_or_are_not.lower() == "are not":
+            assert is_custom_filter_visible == False, f"In tab '{tab_name}' and facet card '{v[0]}', the custom filter text '{v[1]}' is present when it should NOT be"
+        time.sleep(0.1)
+
+@step("Remove the following custom filters in facet cards on the <tab_name> tab on the Cohort Builder page <table>")
+def remove_custom_filter_text_on_facet_card(tab_name: str, table):
+    """
+    remove_custom_filter_text_on_facet_card On specified facet card, it removes the given
+    custom filters. Used with cards that allow entry of text as a filter
+    e.g. Case ID, Mutated Gene, Cases Submitter Id, etc.
+
+    :param tab_name: Tab to select on cohort builder
+    :param v[0]: The specified facet card name
+    :param v[1]: The custom filter text to remove
+    """
+    APP.cohort_builder_page.click_button(tab_name)
+    for k, v in enumerate(table):
+        APP.cohort_builder_page.remove_facet_card_custom_filter_text(v[0], v[1])
+        APP.shared.wait_for_loading_spinner_table_to_detatch()
+        APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        APP.shared.wait_for_loading_spinner_to_detatch()
+        APP.shared.wait_for_loading_spinner_table_to_detatch()
 
 @step("Navigate to the <tab_name> tab on the Cohort Builder page")
 def click_cohort_builder_tab(tab_name: str):

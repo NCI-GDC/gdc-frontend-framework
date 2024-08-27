@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { UseMutation } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { MutationDefinition } from "@reduxjs/toolkit/dist/query";
-import { TextInput, NumberInput, Modal } from "@mantine/core";
+import { TextInput, NumberInput, Modal, Loader } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
 import {
@@ -11,7 +11,8 @@ import {
   useCoreSelector,
   selectSetsByType,
   CreateSetFilterArgs,
-  GqlOperation,
+  FilterSet,
+  buildCohortGqlOperator,
 } from "@gff/core";
 import FunctionButton from "@/components/FunctionButton";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
@@ -22,8 +23,8 @@ import { SET_COUNT_LIMIT } from "./constants";
 import { useDeepCompareCallback } from "use-deep-compare";
 
 interface SaveSelectionAsSetModalProps {
-  readonly cohortFilters?: GqlOperation;
-  readonly filters: GqlOperation;
+  readonly cohortFilters?: FilterSet;
+  readonly filters: FilterSet;
   readonly initialSetName: string;
   readonly saveCount: number;
   readonly setType: SetTypes;
@@ -136,10 +137,11 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
         </FunctionButton>
         <DarkFunctionButton
           data-testid="button-save"
-          onClick={() =>
+          onClick={() => {
+            if (response.isLoading) return;
             createSet({
-              case_filters: cohortFilters ?? {},
-              filters: filters ?? {},
+              case_filters: buildCohortGqlOperator(cohortFilters) ?? {},
+              filters: buildCohortGqlOperator(filters) ?? {},
               size: form.values.top,
               score: sort,
               set_type: "mutable",
@@ -167,9 +169,12 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
                   color: "red",
                   closeButtonProps: { "aria-label": "Close notification" },
                 });
-              })
+              });
+          }}
+          disabled={!form.isValid()}
+          leftSection={
+            response?.isLoading ? <Loader size="sm" color="white" /> : undefined
           }
-          disabled={!form.isValid() || response.isLoading}
         >
           Save
         </DarkFunctionButton>
