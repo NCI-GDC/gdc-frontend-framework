@@ -36,6 +36,7 @@ export const SummaryHeader = ({
     };
   }, []);
   const isFile = headerTitleLeft === "File";
+  const isProject = headerTitleLeft === "Project";
   return (
     <div
       className={`bg-primary-vivid py-4 px-4 w-full flex flex-col shadow-lg gap-4 ${
@@ -72,11 +73,21 @@ export const SummaryHeader = ({
       {(leftElement || rightElement) && (
         <>
           <Divider size="md" color="white" opacity={0.4} />
-          <div className="flex flex-col gap-2 lg:flex-row lg:justify-between">
-            <div className="order-2 lg:order-1">
+          <div
+            className={`flex flex-col gap-2 ${
+              isProject
+                ? "xl:flex-row xl:justify-between"
+                : "lg:flex-row lg:justify-between"
+            }`}
+          >
+            <div
+              className={`order-2 ${isProject ? "xl:order-1" : "lg:order-1"}`}
+            >
               {leftElement && leftElement}
             </div>
-            <div className="order-1 lg:order-2">
+            <div
+              className={`order-1 ${isProject ? "xl:order-2" : "lg:order-2"}`}
+            >
               {rightElement && rightElement}
             </div>
           </div>

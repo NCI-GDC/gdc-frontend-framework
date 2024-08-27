@@ -85,7 +85,7 @@ function TableHeader<TData>({
 
   return (
     <div
-      className={`flex flex-wrap gap-y-4 mb-2 ${
+      className={`flex flex-wrap mb-2 ${
         !additionalControls ? "justify-end" : "justify-between"
       }`}
     >

@@ -199,11 +199,7 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
       }
       data={displayedData}
       columns={primarySitesTableColumns}
-      additionalControls={
-        <div className="self-end">
-          <HeaderTitle>Primary Sites</HeaderTitle>
-        </div>
-      }
+      additionalControls={<HeaderTitle>Primary Sites</HeaderTitle>}
       columnSorting="manual"
       sorting={sorting}
       setSorting={setSorting}

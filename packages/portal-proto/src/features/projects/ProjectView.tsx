@@ -26,6 +26,8 @@ import { focusStyles } from "@/utils/index";
 import AnnotationsTable from "./AnnotationsTable";
 import ProjectsIcon from "public/user-flow/icons/summary/projects.svg";
 import useScrollToHash from "@/hooks/useScrollToHash";
+import { useViewportSize } from "@mantine/hooks";
+import { LG_BREAKPOINT } from "../cases/utils";
 
 export interface ProjectViewProps extends ProjectDefaults {
   readonly annotation: GdcApiData<AnnotationDefaults>;
@@ -42,7 +44,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
   const [biospecimenDownloadActive, setBiospecimenDownloadActive] =
     useState(false);
   const [showSaveCohort, setShowSaveCohort] = useState(false);
-
+  const { width } = useViewportSize();
   useScrollToHash(["annotations"]);
 
   const Cases = (
@@ -231,6 +233,12 @@ export const ProjectView: React.FC<ProjectViewProps> = (
     });
   };
 
+  const summaryData = formatDataForSummary(projectData);
+  const [leftColumnData, rightColumnData] = [
+    summaryData.slice(0, summaryData.length === 4 ? 2 : 3),
+    summaryData.slice(summaryData.length === 4 ? 2 : 3),
+  ];
+
   return (
     <>
       <SummaryHeader
@@ -354,75 +362,71 @@ export const ProjectView: React.FC<ProjectViewProps> = (
           </div>
         }
         rightElement={
-          <div className="flex items-center gap-2 text-sm 2xl:text-2xl text-base-lightest leading-4 font-montserrat uppercase whitespace-no-wrap">
+          <div className="flex items-center gap-2 text-lg xl:text-sm 2xl:text-lg text-base-lightest leading-4 font-montserrat uppercase whitespace-no-wrap">
             Total of {Cases} {Files} {Annotations}
           </div>
         }
       />
 
-      <div className={`mx-4 ${projectData.isModal ? "mt-4" : "mt-36"} `}>
-        <div className="mt-8">
-          <div className="flex justify-between gap-8">
-            <HeaderTitle>Summary</HeaderTitle>
-            {message && <div className="text-sm text-right">{message}</div>}
+      <div className={`${!projectData?.isModal ? "mt-6" : "mt-4"} mx-4`}>
+        <div className="flex flex-col lg:flex-row lg:justify-between">
+          <HeaderTitle>Summary</HeaderTitle>
+          {message && <div className="text-sm lg:text-right">{message}</div>}
+        </div>
+        <div data-testid="table-summary-project-summary" className="flex mt-2">
+          <div className="basis-full lg:basis-1/2">
+            <HorizontalTable
+              tableData={width >= LG_BREAKPOINT ? leftColumnData : summaryData}
+            />
           </div>
-          <div data-testid="table-summary-project-summary" className="flex">
-            <div className="basis-1/2">
-              <HorizontalTable
-                tableData={formatDataForSummary(projectData).slice(
-                  0,
-                  formatDataForSummary(projectData).length === 4 ? 2 : 3,
-                )}
-              />
-            </div>
-            <div className="basis-1/2">
-              <HorizontalTable
-                tableData={formatDataForSummary(projectData).slice(
-                  formatDataForSummary(projectData).length === 4 ? 2 : 3,
-                  formatDataForSummary(projectData).length,
-                )}
-              />
-            </div>
-          </div>
-
-          {(projectData?.summary?.data_categories ||
-            projectData?.summary?.experimental_strategies) && (
-            <div className="flex gap-8 mt-8 mb-14">
-              {projectData?.summary?.data_categories && (
-                <CategoryTableSummary
-                  customDataTestID="table-data-category-project-summary"
-                  title="Cases and File Counts by Data Category"
-                  {...formatDataForDataCategoryTable(projectData)}
-                />
-              )}
-              {projectData?.summary?.experimental_strategies && (
-                <CategoryTableSummary
-                  customDataTestID="table-experimental-strategy-project-summary"
-                  title="Cases and File Counts by Experimental Strategy"
-                  {...formatDataForExpCategoryTable(projectData)}
-                />
-              )}
-            </div>
-          )}
-          {projectData?.primary_site?.length > 1 && (
-            <div className="mb-16">
-              <PrimarySiteTable
-                projectId={projectData?.project_id}
-                primarySites={projectData?.primary_site}
-              />
-            </div>
-          )}
-          {projectData?.annotation?.pagination.count > 0 && (
-            <div
-              className={`mb-16 ${
-                projectData.isModal ? "scroll-mt-36" : "scroll-mt-72"
-              }`}
-              id="annotations"
-            >
-              <AnnotationsTable project_id={projectData.project_id} />
+          {width >= LG_BREAKPOINT && (
+            <div className="basis-1/2 h-full">
+              <HorizontalTable tableData={rightColumnData} />
             </div>
           )}
         </div>
+
+        {(projectData?.summary?.data_categories ||
+          projectData?.summary?.experimental_strategies) && (
+          <div className="flex flex-col lg:flex-row gap-8 mt-8">
+            {projectData?.summary?.data_categories && (
+              <CategoryTableSummary
+                customDataTestID="table-data-category-project-summary"
+                title="Cases and File Counts by Data Category"
+                {...formatDataForDataCategoryTable(projectData)}
+              />
+            )}
+            {projectData?.summary?.experimental_strategies && (
+              <CategoryTableSummary
+                customDataTestID="table-experimental-strategy-project-summary"
+                title="Cases and File Counts by Experimental Strategy"
+                {...formatDataForExpCategoryTable(projectData)}
+              />
+            )}
+          </div>
+        )}
+        {projectData?.primary_site?.length > 1 && (
+          <div
+            className={`mt-8 ${
+              projectData?.annotation?.pagination.count === 0 ? "mb-16" : ""
+            }`}
+          >
+            <PrimarySiteTable
+              projectId={projectData?.project_id}
+              primarySites={projectData?.primary_site}
+            />
+          </div>
+        )}
+        {projectData?.annotation?.pagination.count > 0 && (
+          <div
+            className={`mb-16 ${
+              projectData.isModal ? "scroll-mt-36" : "scroll-mt-72"
+            }`}
+            id="annotations"
+          >
+            <AnnotationsTable project_id={projectData.project_id} />
+          </div>
+        )}
       </div>
     </>
   );
