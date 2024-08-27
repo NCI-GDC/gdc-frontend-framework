@@ -126,7 +126,8 @@ const FilterPanel = ({
                 getDefaultFacets !== undefined
                   ? getDefaultFacets().includes(x.full)
                   : true;
-              const facetName = x.title || fieldNameToTitle(x.full);
+              const facetName =
+                x.title || fieldNameToTitle(x.full, isDefault ? 1 : 2);
               return createFacetCard({
                 facet: x,
                 valueLabel:
