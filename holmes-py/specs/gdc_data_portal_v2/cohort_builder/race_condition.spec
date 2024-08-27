@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Add filters quickly and ensure case counts are accurate
 Test-case       :
 
-tags: gdc-data-portal-v2, cohort-builder, filter-card
+tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
 
 ## Navigate to Cohort Builder
 * On GDC Data Portal V2 app

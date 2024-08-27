@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Test Cohort Builder - card functions
 Test-case       : PEAR-792
 
-tags: gdc-data-portal-v2, cohort-builder, filter-card
+tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
 
 ## Navigate to Cohort Builder
 
@@ -95,7 +95,7 @@ tags: cohort-selections
   |-----------------|---------------------|------|
   |Age at Diagnosis |input from value     |59    |
   |Age at Diagnosis |input to value       |71    |
-* Activate the following objects from "Demographic" tab on the Cohort Builder page
+* Select the following labels from "Demographic" tab on the Cohort Builder page
   |facet_name       |selection            |
   |-----------------|---------------------|
   |Age at Diagnosis |Apply                |

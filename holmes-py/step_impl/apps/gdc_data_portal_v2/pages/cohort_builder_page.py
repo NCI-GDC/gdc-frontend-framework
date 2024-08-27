@@ -35,6 +35,9 @@ class CohortBuilderPageLocators:
     FACET_GROUP_NAMED_OBJECT_IDENT = (
         lambda group_name, object_name: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> div >> text="{object_name}"'
     )
+    FACET_GROUP_CUSTOM_FILTER_TEXT_IDENT = (
+        lambda group_name, filter_text: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> text="{filter_text}"'
+    )
 
     FILTER_TAB_LIST = (
         'main[data-tour="full_page_content"] >> div[role="tablist"] > button'
@@ -204,6 +207,18 @@ class CohortBuilderPage(BasePage):
         locator = CohortBuilderPageLocators.QUERY_EXPRESSION_TEXT(text)
         result = self.is_visible(locator)
         return result
+
+    def is_facet_card_custom_filter_text_present(self, facet_card, text):
+        """Returns if filter text is present on given facet card"""
+        locator = CohortBuilderPageLocators.FACET_GROUP_CUSTOM_FILTER_TEXT_IDENT(facet_card, text)
+        result = self.is_visible(locator)
+        return result
+
+    def remove_facet_card_custom_filter_text(self, facet_card, text):
+        """Clicks the custom filter text to remove it on given facet card"""
+        locator = CohortBuilderPageLocators.FACET_GROUP_CUSTOM_FILTER_TEXT_IDENT(facet_card, text)
+        self.hover(locator)
+        self.click(locator, True)
 
     # Clicks a filter card object using its visible, displayed name
     def click_named_item_in_facet_group(self, facet_group_name, object_name):

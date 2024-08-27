@@ -4,7 +4,7 @@ Version			: 1.1
 Owner		    : GDC QA
 Description		: Test JSON, TSV, Manifest Download
 
-tags: gdc-data-portal-v2, repository, json-tsv-file-download, download
+tags: gdc-data-portal-v2, repository, json-tsv-file-download, download, regression
 
 ## JSON, TSV, Manifest file download - repository
 tags: regression, smoke, json-file-download
