@@ -4,8 +4,14 @@ import { ReactNode, useEffect, useState } from "react";
 import { IconType } from "react-icons";
 
 export interface SummaryHeaderProps {
-  Icon?: IconType;
-  headerTitleLeft?: string;
+  Icon: IconType;
+  headerTitleLeft:
+    | "File"
+    | "Case"
+    | "Project"
+    | "Gene"
+    | "Mutation"
+    | "Annotation";
   headerTitle: string | number;
   leftElement?: ReactNode;
   rightElement?: ReactNode;
@@ -20,6 +26,8 @@ export const SummaryHeader = ({
   isModal = false,
 }: SummaryHeaderProps): JSX.Element => {
   const [topOffset, setTopOffset] = useState("0px");
+  const isFile = headerTitleLeft === "File";
+  const isProject = headerTitleLeft === "Project";
 
   useEffect(() => {
     const globalHeader = document.querySelector("#global-header");
@@ -35,8 +43,7 @@ export const SummaryHeader = ({
       resizeObserver.disconnect();
     };
   }, []);
-  const isFile = headerTitleLeft === "File";
-  const isProject = headerTitleLeft === "Project";
+
   return (
     <div
       className={`bg-primary-vivid py-4 px-4 w-full flex flex-col shadow-lg gap-4 ${
@@ -67,29 +74,35 @@ export const SummaryHeader = ({
               </span>
             </div>
           )}
-          <SummaryHeaderTitle>{headerTitle}</SummaryHeaderTitle>
+          <SummaryHeaderTitle $isFile={isFile}>
+            {headerTitle}
+          </SummaryHeaderTitle>
         </div>
       </div>
       {(leftElement || rightElement) && (
         <>
-          <Divider size="md" color="white" opacity={0.4} />
+          <Divider size="sm" color="white" opacity={0.4} />
           <div
             className={`flex flex-col gap-2 ${
               isProject
-                ? "xl:flex-row xl:justify-between"
-                : "lg:flex-row lg:justify-between"
+                ? "xl:flex-row xl:justify-between xl:items-center"
+                : "lg:flex-row lg:justify-between lg:items-center"
             }`}
           >
-            <div
-              className={`order-2 ${isProject ? "xl:order-1" : "lg:order-1"}`}
-            >
-              {leftElement && leftElement}
-            </div>
-            <div
-              className={`order-1 ${isProject ? "xl:order-2" : "lg:order-2"}`}
-            >
-              {rightElement && rightElement}
-            </div>
+            {leftElement && (
+              <div
+                className={`order-2 ${isProject ? "xl:order-1" : "lg:order-1"}`}
+              >
+                {leftElement}
+              </div>
+            )}
+            {rightElement && (
+              <div
+                className={`order-1 ${isProject ? "xl:order-2" : "lg:order-2"}`}
+              >
+                {rightElement}
+              </div>
+            )}
           </div>
         </>
       )}

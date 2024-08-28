@@ -96,28 +96,26 @@ const renderValue = (
   headerName: string,
   index: number,
 ): JSX.Element => {
-  switch (typeof value) {
-    case "undefined":
-      return <span key={`${headerName}-${index}`}></span>;
-    case "object":
-      if (Array.isArray(value) && value.length > 1) {
-        return (
-          <CollapsableTableItems
-            key={`${headerName}-${index}`}
-            expandBtnText={`${headerName}s`}
-            keyId={`${headerName}-${index}`}
-            values={value}
-          />
-        );
-      }
-      if (React.isValidElement(value)) {
-        return (
-          <React.Fragment key={`${headerName}-${index}`}>
-            {value}
-          </React.Fragment>
-        );
-      }
-    default:
-      return <span key={`${headerName}-${index}`}>{value.toString()}</span>;
+  if (value === undefined) {
+    return <span key={`${headerName}-${index}`}></span>;
   }
+
+  if (Array.isArray(value) && value.length > 1) {
+    return (
+      <CollapsableTableItems
+        key={`${headerName}-${index}`}
+        expandBtnText={`${headerName}s`}
+        keyId={`${headerName}-${index}`}
+        values={value}
+      />
+    );
+  }
+
+  if (React.isValidElement(value)) {
+    return (
+      <React.Fragment key={`${headerName}-${index}`}>{value}</React.Fragment>
+    );
+  }
+
+  return <span key={`${headerName}-${index}`}>{String(value)}</span>;
 };

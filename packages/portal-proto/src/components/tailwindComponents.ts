@@ -4,11 +4,18 @@ export const HeaderTitle = tw.h2`
 text-lg text-primary-content-darkest uppercase tracking-wide font-medium
 `;
 
-export const SummaryHeaderTitle = tw.h2`
+interface SummaryHeaderTitleProps {
+  $isFile?: boolean;
+}
+
+export const SummaryHeaderTitle = tw.h2<SummaryHeaderTitleProps>`
+  ${(p: SummaryHeaderTitleProps) =>
+    p.$isFile === true ? "text-[1rem] lg:text-xl" : "text-xl"}
 text-base-lightest
 tracking-wide
 font-medium
 break-all
+
 `;
 
 export const PercentBar = tw.div`

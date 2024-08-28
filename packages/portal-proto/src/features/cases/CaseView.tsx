@@ -295,7 +295,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
           </Button>
         }
         rightElement={
-          <div className="flex items-center gap-4 text-xl lg:text-2xl text-base-lightest font-medium leading-6 font-montserrat uppercase">
+          <div className="flex items-center gap-4 text-xl text-base-lightest font-medium leading-6 font-montserrat uppercase">
             Total of {Files} {Annotations}
           </div>
         }
