@@ -18,6 +18,7 @@ import useScrollToHash from "@/hooks/useScrollToHash";
 import { useViewportSize } from "@mantine/hooks";
 import { LG_BREAKPOINT } from "src/utils";
 import SummaryHeaderLeft from "./SummaryHeaderLeft";
+import { useSynchronizedRowHeights } from "@/components/HorizontalTable/useSynchronizedRowHeights";
 
 export interface ProjectViewProps extends ProjectDefaults {
   readonly annotation: GdcApiData<AnnotationDefaults>;
@@ -102,6 +103,12 @@ export const ProjectView: React.FC<ProjectViewProps> = (
     summaryData.slice(summaryData.length === 4 ? 2 : 3),
   ];
 
+  const isSideBySide = width >= LG_BREAKPOINT;
+
+  const getTableRef = useSynchronizedRowHeights(
+    isSideBySide ? ["left-table", "right-table"] : [],
+  );
+
   return (
     <>
       <SummaryHeader
@@ -126,11 +133,19 @@ export const ProjectView: React.FC<ProjectViewProps> = (
           <div className="basis-full lg:basis-1/2">
             <HorizontalTable
               tableData={width >= LG_BREAKPOINT ? leftColumnData : summaryData}
+              tableId="left-table"
+              ref={getTableRef(0)}
+              enableSync={isSideBySide}
             />
           </div>
           {width >= LG_BREAKPOINT && (
             <div className="basis-1/2 h-full">
-              <HorizontalTable tableData={rightColumnData} />
+              <HorizontalTable
+                tableData={rightColumnData}
+                tableId="right-table"
+                ref={getTableRef(1)}
+                enableSync={true}
+              />
             </div>
           )}
         </div>

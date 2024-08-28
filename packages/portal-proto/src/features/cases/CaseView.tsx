@@ -39,6 +39,7 @@ import FilesTable from "./FilesTable";
 import UsersIcon from "public/user-flow/icons/summary/users.svg";
 import AnnotationsTable from "./AnnotationsTable";
 import useScrollToHash from "@/hooks/useScrollToHash";
+import { useSynchronizedRowHeights } from "@/components/HorizontalTable/useSynchronizedRowHeights";
 
 export interface CaseViewProps {
   readonly data: CaseDefaults;
@@ -265,6 +266,12 @@ export const CaseView: React.FC<CaseViewProps> = ({
     summaryData.slice(ITEMS_PER_COLUMN),
   ];
 
+  const isSideBySide = width >= LG_BREAKPOINT;
+  console.log({ isSideBySide });
+  const getTableRef = useSynchronizedRowHeights(
+    isSideBySide ? ["left-table", "right-table"] : [],
+  );
+
   return (
     <>
       <SummaryHeader
@@ -310,11 +317,20 @@ export const CaseView: React.FC<CaseViewProps> = ({
           <div className="basis-full lg:basis-1/2">
             <SummaryCard
               tableData={width >= LG_BREAKPOINT ? leftColumnData : summaryData}
+              tableId="left-table"
+              ref={getTableRef(0)}
+              enableSync={isSideBySide}
             />
           </div>
           {width >= LG_BREAKPOINT && (
             <div className="basis-1/2 h-full">
-              <SummaryCard tableData={rightColumnData} title="" />
+              <SummaryCard
+                tableData={rightColumnData}
+                title=""
+                tableId="right-table"
+                ref={getTableRef(1)}
+                enableSync={true}
+              />
             </div>
           )}
         </div>
