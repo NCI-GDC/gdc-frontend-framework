@@ -249,5 +249,4 @@ export const formatDataForExpCateogryTable = (
   return { data: sortedExpCategories, columns: expCategoryTableColumns };
 };
 
-export const LG_BREAKPOINT = 1024;
 export const ITEMS_PER_COLUMN = 4;

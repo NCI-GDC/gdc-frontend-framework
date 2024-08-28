@@ -19,7 +19,12 @@ import {
   formatDataForHorizontalTable,
   mapGdcFileToCartFile,
 } from "../files/utils";
-import { allFilesInCart, focusStyles, humanify } from "src/utils";
+import {
+  allFilesInCart,
+  focusStyles,
+  humanify,
+  LG_BREAKPOINT,
+} from "src/utils";
 import CategoryTableSummary from "@/components/Summary/CategoryTableSummary";
 import { ClinicalSummary } from "./ClinicalSummary/ClinicalSummary";
 import { ImageSlideCount } from "@/components/ImageSlideCount";
@@ -28,7 +33,6 @@ import {
   formatDataForExpCateogryTable,
   getSlideCountFromCaseSummary,
   ITEMS_PER_COLUMN,
-  LG_BREAKPOINT,
 } from "./utils";
 import SMTableContainer from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
 import FilesTable from "./FilesTable";
@@ -194,8 +198,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
 
   const Files = (
     <span className="flex items-center gap-1">
-      {/* 16 and 24 */}
-      <FaFile size={16} />
+      <FaFile />
       {filesCountTotal > 0 ? (
         <a
           data-testid="text-file-count-case-summary"
@@ -213,7 +216,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
 
   const Annotations = (
     <span className="flex items-center gap-1">
-      <FaEdit size={16} />
+      <FaEdit />
       {annotationCountData > 0 ? (
         <a
           data-testid="text-annotation-count-case-summary"

@@ -16,7 +16,7 @@ import AnnotationsTable from "./AnnotationsTable";
 import ProjectsIcon from "public/user-flow/icons/summary/projects.svg";
 import useScrollToHash from "@/hooks/useScrollToHash";
 import { useViewportSize } from "@mantine/hooks";
-import { LG_BREAKPOINT } from "../cases/utils";
+import { LG_BREAKPOINT } from "src/utils";
 import SummaryHeaderLeft from "./SummaryHeaderLeft";
 
 export interface ProjectViewProps extends ProjectDefaults {

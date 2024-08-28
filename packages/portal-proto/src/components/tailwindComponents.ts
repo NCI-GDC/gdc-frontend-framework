@@ -15,7 +15,6 @@ text-base-lightest
 tracking-wide
 font-medium
 break-all
-
 `;
 
 export const PercentBar = tw.div`
