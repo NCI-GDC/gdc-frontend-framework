@@ -1,15 +1,19 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useCallback, MutableRefObject } from "react";
 
-export const useSynchronizedRowHeights = (tableIds: string[]) => {
-  const tablesRef = useRef<(HTMLTableElement | null)[]>([]);
-
+export const useSynchronizedRowHeights = (
+  tableRefs: MutableRefObject<HTMLTableElement>[],
+) => {
   const synchronizeRowHeights = useCallback(() => {
-    const tables = tablesRef.current.filter(
-      (table): table is HTMLTableElement => table !== null,
-    );
+    if (
+      tableRefs === undefined ||
+      tableRefs.length === 0 ||
+      tableRefs.some((t) => t.current === null)
+    ) {
+      return;
+    }
 
-    const rowsPerTable = tables.map((table) =>
-      Array.from(table.querySelectorAll("tr")),
+    const rowsPerTable = tableRefs.map((table) =>
+      Array.from(table.current?.querySelectorAll("tr")),
     );
 
     // i added this after our call to sort of reset it to auto before calcuating the height
@@ -20,7 +24,6 @@ export const useSynchronizedRowHeights = (tableIds: string[]) => {
       });
     });
 
-    if (tables.length === 0 || tables.length !== tableIds.length) return;
     // max rows between two tables
     const maxRows = Math.max(...rowsPerTable.map((rows) => rows.length));
     for (let i = 0; i < maxRows; i++) {
@@ -32,7 +35,7 @@ export const useSynchronizedRowHeights = (tableIds: string[]) => {
         }
       });
     }
-  }, [tableIds]);
+  }, [tableRefs]);
 
   useEffect(() => {
     synchronizeRowHeights();
@@ -41,9 +44,4 @@ export const useSynchronizedRowHeights = (tableIds: string[]) => {
       window.removeEventListener("resize", synchronizeRowHeights);
     };
   }, [synchronizeRowHeights]);
-
-  return (index: number) => (el: HTMLTableElement | null) => {
-    tablesRef.current[index] = el;
-    synchronizeRowHeights(); // why do we need to call here?
-  };
 };
