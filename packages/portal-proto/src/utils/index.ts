@@ -9,6 +9,7 @@ import {
 } from "@gff/core";
 import { replace, sortBy } from "lodash";
 import { DocumentWithWebkit } from "@/features/types";
+import tailwindConfig from "tailwind.config";
 
 export const toggleFullScreen = async (
   ref: React.MutableRefObject<any>,
@@ -285,4 +286,4 @@ export const statusBooleansToDataStatus = (
 export const focusStyles =
   "focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor";
 
-export const LG_BREAKPOINT = 1024;
+export const LG_BREAKPOINT = parseInt(tailwindConfig.theme.extend.screens.lg);

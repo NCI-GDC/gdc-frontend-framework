@@ -17,7 +17,7 @@ import ProjectsIcon from "public/user-flow/icons/summary/projects.svg";
 import useScrollToHash from "@/hooks/useScrollToHash";
 import { useViewportSize } from "@mantine/hooks";
 import { LG_BREAKPOINT } from "src/utils";
-import SummaryHeaderLeft from "./SummaryHeaderLeft";
+import SummaryHeaderControls from "./SummaryHeaderControls";
 
 export interface ProjectViewProps extends ProjectDefaults {
   readonly annotation: GdcApiData<AnnotationDefaults>;
@@ -109,7 +109,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
         headerTitleLeft="Project"
         headerTitle={projectData.project_id}
         isModal={projectData.isModal}
-        leftElement={<SummaryHeaderLeft projectData={projectData} />}
+        leftElement={<SummaryHeaderControls projectData={projectData} />}
         rightElement={
           <div className="flex items-center gap-2 text-sm md:text-xl xl:text-sm 2xl:text-xl text-base-lightest leading-4 font-montserrat uppercase whitespace-no-wrap">
             Total of {Cases} {Files} {Annotations}

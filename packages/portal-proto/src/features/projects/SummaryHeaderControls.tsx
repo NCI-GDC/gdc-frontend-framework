@@ -8,7 +8,11 @@ import { useState } from "react";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { ProjectViewProps } from "./ProjectView";
 
-function SummaryHeaderLeft({ projectData }: { projectData: ProjectViewProps }) {
+function SummaryHeaderControls({
+  projectData,
+}: {
+  projectData: ProjectViewProps;
+}) {
   const dispatch = useCoreDispatch();
   const [manifestDownloadActive, setManifestDownloadActive] = useState(false);
   const [clinicalDownloadActive, setClinicalDownloadActive] = useState(false);
@@ -250,4 +254,4 @@ function SummaryHeaderLeft({ projectData }: { projectData: ProjectViewProps }) {
   );
 }
 
-export default SummaryHeaderLeft;
+export default SummaryHeaderControls;
