@@ -26,6 +26,7 @@ export const PopupIconButton = forwardRef<
   ): JSX.Element => {
     return (
       <Button
+        data-testid={`link-open-${label}`}
         className={customStyle}
         onClick={handleClick}
         aria-label={customAriaLabel ?? `Open ${label} information in modal`}

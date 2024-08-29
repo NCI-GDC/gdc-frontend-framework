@@ -243,7 +243,12 @@ const ContextBar = ({
       }
       tooltipPosition="left"
       TargetElement={
-        <CohortCountButton countName="caseCount" label="CASES" bold />
+        <CohortCountButton
+          customDataTestID="button-cases-cohort-bar"
+          countName="caseCount"
+          label="CASES"
+          bold
+        />
       }
       ExtraControl={
         <StickyControl isSticky={isSticky} handleIsSticky={handleIsSticky} />
@@ -253,6 +258,7 @@ const ContextBar = ({
         <div className="relative p-4">
           <div className="flex gap-1 pb-4 relative lg:absolute lg:pb-0">
             <DropdownWithIcon
+              customDataTestId="button-files-cases-table"
               dropdownElements={[
                 {
                   title: "Add to Cart",
@@ -301,6 +307,7 @@ const ContextBar = ({
             />
 
             <DropdownWithIcon
+              customDataTestId="button-custom-filters-cases-table"
               dropdownElements={[
                 {
                   title: "Cases",
@@ -340,6 +347,7 @@ const ContextBar = ({
             {activeTab === "summary" && (
               <>
                 <DropdownWithIcon
+                  customDataTestId="button-biospecimen-cases-table"
                   dropdownElements={[
                     {
                       title: "JSON ",
@@ -368,6 +376,7 @@ const ContextBar = ({
                 />
 
                 <DropdownWithIcon
+                  customDataTestId="button-clinical-cases-table"
                   dropdownElements={[
                     {
                       title: "JSON",
@@ -413,6 +422,7 @@ const ContextBar = ({
           >
             <Tabs.List justify={width < 1024 ? "flex-start" : "flex-end"}>
               <Tabs.Tab
+                data-testid="button-summary-view-cases-table"
                 data-tour="cohort_summary_charts"
                 value="summary"
                 leftSection={<SummaryChartIcon aria-hidden="true" />}
@@ -421,6 +431,7 @@ const ContextBar = ({
               </Tabs.Tab>
 
               <Tabs.Tab
+                data-testid="button-table-view-cases-table"
                 data-tour="cohort_summary_table"
                 value="table"
                 leftSection={<TableIcon aria-hidden="true" />}
