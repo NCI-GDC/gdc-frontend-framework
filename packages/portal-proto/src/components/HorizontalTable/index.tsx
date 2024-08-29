@@ -61,7 +61,7 @@ export const HorizontalTable = forwardRef<
     ref,
   ) => {
     const containerClassName =
-      "bg-base-lightest w-full text-left text-base-contrast-lightest font-content font-medium drop-shadow-sm border-1 border-base-lighter text-sm table-fixed";
+      "bg-base-lightest w-full text-left text-base-contrast-lightest font-content font-medium drop-shadow-sm border-1 border-base-lighter text-sm";
     const updatedContainerClassName = customContainerStyles
       ? containerClassName + ` ${customContainerStyles}`
       : containerClassName;
