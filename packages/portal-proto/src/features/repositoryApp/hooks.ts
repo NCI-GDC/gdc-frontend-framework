@@ -7,9 +7,7 @@ import {
   useCoreSelector,
   selectCurrentCohortFilters,
   usePrevious,
-  joinFilters,
   NumericFromTo,
-  selectRangeFacetByField,
   FetchDataActionCreator,
   selectCurrentCohortId,
   UseAppDataHook,
@@ -17,6 +15,7 @@ import {
   buildCohortGqlOperator,
 } from "@gff/core";
 import { useCallback, useEffect } from "react";
+import { useDeepCompareEffect } from "use-deep-compare";
 import { ThunkDispatch, AnyAction } from "@reduxjs/toolkit";
 import isEqual from "lodash/isEqual";
 import {
@@ -28,7 +27,10 @@ import {
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit/dist/createAction";
 import { extractValue } from "@/features/facets/hooks";
 import { AppDataSelector, AppState } from "@/features/repositoryApp/appApi";
-import { fetchRepositoryFacetContinuousAggregation } from "@/features/repositoryApp/repositoryRangeFacet";
+import {
+  fetchRepositoryFacetContinuousAggregation,
+  selectRangeFacetByField,
+} from "@/features/repositoryApp/repositoryRangeFacet";
 import {
   fetchRepositoryFacetsGQL,
   selectRepositoryFacets,
@@ -197,7 +199,7 @@ export const useRepositoryRangeFacet = (
   ranges: ReadonlyArray<NumericFromTo>,
 ): FacetResponse => {
   const appDispatch = useAppDispatch();
-  const facet: FacetBuckets = useCoreSelector((state) =>
+  const facet: FacetBuckets = useAppSelector((state) =>
     selectRangeFacetByField(state, field),
   );
   const localFilters = useRepositoryFilters();
@@ -205,16 +207,8 @@ export const useRepositoryRangeFacet = (
     selectCurrentCohortFilters(state),
   );
 
-  const allFilters = joinFilters(cohortFilters, localFilters);
-  const prevAllFilters = usePrevious(allFilters);
-  const prevRanges = usePrevious(ranges);
-
-  useEffect(() => {
-    if (
-      !facet ||
-      !isEqual(prevAllFilters, allFilters) ||
-      !isEqual(ranges, prevRanges)
-    ) {
+  useDeepCompareEffect(() => {
+    if (!facet) {
       appDispatch(
         fetchRepositoryFacetContinuousAggregation({
           field: field,
@@ -224,17 +218,7 @@ export const useRepositoryRangeFacet = (
         }),
       );
     }
-  }, [
-    appDispatch,
-    facet,
-    field,
-    cohortFilters,
-    prevAllFilters,
-    ranges,
-    prevRanges,
-    allFilters,
-    localFilters,
-  ]);
+  }, [appDispatch, facet, field, cohortFilters, ranges, localFilters]);
 
   return {
     data: facet?.buckets,
