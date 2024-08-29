@@ -79,7 +79,7 @@ export const useGenerateCasesTableColumns = ({
         ),
         cell: ({ row }) => (
           <Checkbox
-            data-testid="checkbox-select-case-table"
+            data-testid="checkbox-select-cases-table"
             size="xs"
             classNames={{
               input: "checked:bg-accent checked:border-accent",
