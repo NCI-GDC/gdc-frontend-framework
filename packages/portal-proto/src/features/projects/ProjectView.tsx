@@ -103,11 +103,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
     summaryData.slice(summaryData.length === 4 ? 2 : 3),
   ];
 
-  const isSideBySide = width >= LG_BREAKPOINT;
-
-  const getTableRef = useSynchronizedRowHeights(
-    isSideBySide ? ["left-table", "right-table"] : [],
-  );
+  const getTableRef = useSynchronizedRowHeights(["left-table", "right-table"]);
 
   return (
     <>
@@ -135,7 +131,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
               tableData={width >= LG_BREAKPOINT ? leftColumnData : summaryData}
               tableId="left-table"
               ref={getTableRef(0)}
-              enableSync={isSideBySide}
+              enableSync={true}
             />
           </div>
           {width >= LG_BREAKPOINT && (
