@@ -63,16 +63,16 @@ export const selectGeneAndSSMFiltersByName = (
 };
 
 export const selectFiltersAppliedCount = (state: AppState): number => {
-  console.log(
-    state.filters.root,
-    initialState.root,
-    isEqual(state.filters.root, initialState.root),
-  );
-  return Object.values(state.filters.root)
+  const appliedFilterCount = Object.values(state.filters.root)
     .filter(
       (f) => !isEqual(f, initialState.root["genes.is_cancer_gene_census"]),
     )
     .reduce((a, b) => (isOperandsType(b) ? b?.operands.length : 1) + a, 0);
+
+  // If cancer_gene_census filter isn't present, count that as one since the filter starts out true
+  return state.filters.root["genes.is_cancer_gene_census"]
+    ? appliedFilterCount
+    : appliedFilterCount + 1;
 };
 
 export const selectGeneAndSSMFiltersByNames = (
