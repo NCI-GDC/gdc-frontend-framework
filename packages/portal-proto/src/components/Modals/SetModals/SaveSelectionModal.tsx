@@ -1,6 +1,4 @@
 import { useEffect } from "react";
-import { UseMutation } from "@reduxjs/toolkit/dist/query/react/buildHooks";
-import { MutationDefinition } from "@reduxjs/toolkit/dist/query";
 import { TextInput, NumberInput, Modal, Loader } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
@@ -10,9 +8,10 @@ import {
   SetTypes,
   useCoreSelector,
   selectSetsByType,
-  CreateSetFilterArgs,
   FilterSet,
   buildCohortGqlOperator,
+  useCreateTopNGeneSetFromFiltersMutation,
+  useCreateGeneSetFromFiltersMutation,
 } from "@gff/core";
 import FunctionButton from "@/components/FunctionButton";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
@@ -29,9 +28,9 @@ interface SaveSelectionAsSetModalProps {
   readonly saveCount: number;
   readonly setType: SetTypes;
   readonly setTypeLabel: string;
-  readonly createSetHook: UseMutation<
-    MutationDefinition<CreateSetFilterArgs, any, any, any>
-  >;
+  readonly createSetHook:
+    | typeof useCreateTopNGeneSetFromFiltersMutation
+    | typeof useCreateGeneSetFromFiltersMutation;
   readonly closeModal: () => void;
   readonly sort?: string;
   readonly opened: boolean;

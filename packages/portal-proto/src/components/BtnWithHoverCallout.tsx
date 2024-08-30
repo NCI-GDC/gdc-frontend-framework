@@ -16,7 +16,7 @@ const BtnWithHoverCalloutTopArrow = tw.button`
   hover:after:border-r-transparent
   hover:after:border-b-[8px]
   hover:after:border-b-primary-lightest
-  ${(p) =>
+  ${(p: { $focus?: boolean }) =>
     p.$focus &&
     `
     bg-primary-lightest
@@ -51,7 +51,7 @@ const BtnWithHoverCalloutLeftArrow = tw.button`
   hover:before:border-b-transparent
   hover:before:border-r-[10px]
   hover:before:border-r-primary-lightest
-  ${(p) =>
+  ${(p: { $focus?: boolean }) =>
     p.$focus &&
     `
     bg-primary-lightest

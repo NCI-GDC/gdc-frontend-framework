@@ -247,7 +247,7 @@ describe("SaveCohortModal", () => {
     await userEvent.type(getByText("Name"), "my new cohort");
     await userEvent.click(getByText("Save"));
 
-    expect(setCurrentCohortMock).not.toBeCalled;
+    expect(setCurrentCohortMock).not.toHaveBeenCalled();
     expect(addCohortToStoreMock).toBeCalledWith(
       expect.objectContaining({
         id: "2",

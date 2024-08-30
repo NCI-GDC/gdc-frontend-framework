@@ -1,16 +1,20 @@
 import React, { ReactNode, useState } from "react";
-import { Tooltip } from "@mantine/core";
+import { Tooltip, ButtonProps } from "@mantine/core";
 import { FaPlus as PlusIcon } from "react-icons/fa";
 import tw from "tailwind-styled-components";
 import { FilterSet } from "@gff/core";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 
-export const CohortCreationStyledButton = tw.button`
+interface CohortCreationStyledButtonProps extends ButtonProps {
+  $fullWidth?: boolean;
+}
+
+export const CohortCreationStyledButton = tw.button<CohortCreationStyledButtonProps>`
   flex
   items-stretch
   w-52
   h-full
-  ${(p) => !p.$fullWidth && "max-w-[125px]"}
+  ${(p: { $fullWidth: boolean }) => !p.$fullWidth && "max-w-[125px]"}
   gap-2
   rounded
   border-primary
@@ -28,10 +32,12 @@ export const CohortCreationStyledButton = tw.button`
 `;
 
 export const IconWrapperTW = tw.span`
-  ${(p) => (p.$disabled ? "bg-base-light" : "bg-accent")}
+  ${(p: { $disabled: boolean }) =>
+    p.$disabled ? "bg-base-light" : "bg-accent"}
   border-r-1
   border-solid
-  ${(p) => (p.$disabled ? "border-base-light" : "border-primary")}
+  ${(p: { $disabled: boolean }) =>
+    p.$disabled ? "border-base-light" : "border-primary"}
   flex
   items-center
   p-1

@@ -4,7 +4,7 @@ import { Modal } from "@mantine/core";
 import { persistor } from "@gff/core";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
-
+// Done this way because There is currently no way to write an error boundary as a function component.
 interface ClearStoreErrorBoundaryProps {
   children: ReactNode;
   router: NextRouter;
