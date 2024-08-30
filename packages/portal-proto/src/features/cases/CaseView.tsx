@@ -158,17 +158,19 @@ export const CaseView: React.FC<CaseViewProps> = ({
                   : "text-primary bg-base-max"
               }`}
               onClick={() => {
-                isAllImagesFilesInCart
-                  ? removeFromCart(
-                      mapGdcFileToCartFile(imageFiles),
-                      currentCart,
-                      dispatch,
-                    )
-                  : addToCart(
-                      mapGdcFileToCartFile(imageFiles),
-                      currentCart,
-                      dispatch,
-                    );
+                if (isAllImagesFilesInCart) {
+                  removeFromCart(
+                    mapGdcFileToCartFile(imageFiles),
+                    currentCart,
+                    dispatch,
+                  );
+                } else {
+                  addToCart(
+                    mapGdcFileToCartFile(imageFiles),
+                    currentCart,
+                    dispatch,
+                  );
+                }
               }}
             >
               <FaShoppingCart size={12} aria-label="Cart" />

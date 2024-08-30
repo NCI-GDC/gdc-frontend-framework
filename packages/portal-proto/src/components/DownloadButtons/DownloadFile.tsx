@@ -39,7 +39,9 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
     fetchUserDetails()
       .unwrap()
       .then((userInfo) => {
-        setfileToDownload && setfileToDownload(file);
+        if (setfileToDownload) {
+          setfileToDownload(file);
+        }
         if (
           userInfo?.data?.username &&
           userCanDownloadFile({ user: userInfo?.data, file })

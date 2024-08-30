@@ -25,6 +25,7 @@ import {
   LoadingOverlay,
   Modal,
   Stack,
+  StackProps,
   Tabs,
   TabsProps,
   Text,
@@ -50,7 +51,7 @@ import {
 } from "@/features/facets/hooks";
 import { partial } from "lodash";
 
-const CustomFacetWhenEmptyGroup = tw(Stack)`
+const CustomFacetWhenEmptyGroup = tw(Stack)<StackProps>`
 h-64
 bg-base-lightest
 w-1/2

@@ -85,8 +85,8 @@ export const Header: React.FC<HeaderProps> = ({
   const [cookie] = useCookies(["NCI-Warning"]);
 
   useEffect(() => {
-    if (!cookie["NCI-Warning"]) {
-      dispatch && dispatch(showModal({ modal: Modals.FirstTimeModal }));
+    if (!cookie["NCI-Warning"] && dispatch) {
+      dispatch(showModal({ modal: Modals.FirstTimeModal }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -62,9 +62,11 @@ const UserInputModal: React.FC<UserInputModalProps> = ({
           <DiscardChangesModal
             openModal={showDiscardModal !== null}
             action={() => {
-              showDiscardModal === "close"
-                ? dispatch(hideModal())
-                : setActiveTab(activeTabInWaiting);
+              if (showDiscardModal === "close") {
+                dispatch(hideModal());
+              } else {
+                setActiveTab(activeTabInWaiting);
+              }
             }}
             onClose={() => setShowDiscardModal(null)}
           />

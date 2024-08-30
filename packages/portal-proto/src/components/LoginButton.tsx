@@ -26,7 +26,9 @@ export const LoginButton = ({
           : "hover:bg-primary-darker"
       }`}
       onClick={async () => {
-        fromSession && dispatch(hideModal());
+        if (fromSession) {
+          dispatch(hideModal());
+        }
         await openAuthWindow();
         await fetchUserDetails();
         await fetchNotifications();

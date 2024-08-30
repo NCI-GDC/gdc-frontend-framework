@@ -39,17 +39,19 @@ function TablePagination<TData>({
 
   const handlePageSizeChange = (newPageSize: string) => {
     setPageSize(parseInt(newPageSize));
-    handleChange &&
+    if (handleChange) {
       handleChange({
         newPageSize: newPageSize,
       });
+    }
   };
   const handlePageChange = (newPageNumber: number) => {
     setPageOn(newPageNumber);
-    handleChange &&
+    if (handleChange) {
       handleChange({
         newPageNumber: newPageNumber,
       });
+    }
   };
 
   return (

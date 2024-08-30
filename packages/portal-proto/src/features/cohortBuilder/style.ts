@@ -38,7 +38,7 @@ export const getCombinedClassesForRowCollapse = (
 };
 
 interface CohortGroupButtonProps {
-  disabled: boolean;
+  disabled?: boolean;
   $isDiscard?: boolean;
 }
 
