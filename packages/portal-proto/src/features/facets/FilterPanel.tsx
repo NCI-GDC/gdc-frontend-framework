@@ -119,29 +119,30 @@ const FilterPanel = ({
           </>
         )}
         <LoadingOverlay data-testid="loading-spinner" visible={isLoading} />
-        <div data-testid="filters-facets" className="flex flex-col gap-y-4">
-          <div className="h-screen overflow-y-scroll flex flex-col gap-y-4 border-t-1 border-b-1 rounded-md">
-            {facetDefinitions.map((x) => {
-              const isDefault =
-                getDefaultFacets !== undefined
-                  ? getDefaultFacets().includes(x.full)
-                  : true;
-              const facetName =
-                x.title || fieldNameToTitle(x.full, isDefault ? 1 : 2);
-              return createFacetCard({
-                facet: x,
-                valueLabel:
-                  typeof valueLabel === "string" ? valueLabel : valueLabel(x),
-                dataFunctions: facetHooks,
-                idPrefix: app,
-                dismissCallback: !isDefault ? handleRemoveFilter : undefined,
-                hideIfEmpty,
-                showPercent,
-                facetName,
-                width: "w-full",
-              });
-            })}
-          </div>
+        <div
+          data-testid="filters-facets"
+          className="flex flex-col gap-y-4 max-h-screen overflow-y-auto border-t-1 border-b-1 rounded-md w-48 md:w-64 lg:w-80 2xl:w-96"
+        >
+          {facetDefinitions.map((x) => {
+            const isDefault =
+              getDefaultFacets !== undefined
+                ? getDefaultFacets().includes(x.full)
+                : true;
+            const facetName =
+              x.title || fieldNameToTitle(x.full, isDefault ? 1 : 2);
+            return createFacetCard({
+              facet: x,
+              valueLabel:
+                typeof valueLabel === "string" ? valueLabel : valueLabel(x),
+              dataFunctions: facetHooks,
+              idPrefix: app,
+              dismissCallback: !isDefault ? handleRemoveFilter : undefined,
+              hideIfEmpty,
+              showPercent,
+              facetName,
+              width: "w-full",
+            });
+          })}
         </div>
       </div>
     </div>

@@ -1,9 +1,12 @@
 import React, { useMemo, useId } from "react";
-import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
-import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
 import { upperFirst } from "lodash";
 import { Checkbox, Radio, Tooltip } from "@mantine/core";
-import { useCoreSelector, selectSetsByType, SetTypes } from "@gff/core";
+import {
+  useCoreSelector,
+  selectSetsByType,
+  SetTypes,
+  useGeneSetCountsQuery,
+} from "@gff/core";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { createColumnHelper } from "@tanstack/react-table";
 import { HandleChangeInput } from "@/components/Table/types";
@@ -68,9 +71,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
 interface SetTableProps {
   readonly selectedSets: string[][];
   readonly setSelectedSets: (sets: string[][]) => void;
-  readonly countHook: UseQuery<
-    QueryDefinition<any, any, any, Record<string, number>, string>
-  >;
+  readonly countHook: typeof useGeneSetCountsQuery;
   readonly setType: SetTypes;
   readonly setTypeLabel: string;
   readonly multiselect?: boolean;

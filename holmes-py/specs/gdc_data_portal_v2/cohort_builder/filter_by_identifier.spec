@@ -1,8 +1,8 @@
 # Cohort Builder - Filter by Case, Gene, Mutation Identifier
 Date Created    : 08/20/2024
 Version	        : 1.0
-Owner		    : GDC QA
-Description		: Test Cohort Builder - Filter by Case, Gene, Mutation Identifier
+Owner		        : GDC QA
+Description		  : Test Cohort Builder - Filter by Case, Gene, Mutation Identifier
 Test-case       : PEAR-792
 
 tags: gdc-data-portal-v2, cohort-builder, filter-card, regression

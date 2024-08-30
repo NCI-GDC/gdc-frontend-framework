@@ -231,7 +231,9 @@ export const Biospecimen = ({
                         shallow: true,
                       });
                     }
-                    setEntityClicked && setEntityClicked(false);
+                    if (setEntityClicked) {
+                      setEntityClicked(false);
+                    }
                     setSearchText(e.target.value);
                   }}
                   value={searchText}
@@ -244,7 +246,9 @@ export const Biospecimen = ({
                           setExpandedCount(0);
                           setTreeStatusOverride(overrideMessage.Expanded);
                           setSearchText("");
-                          setEntityClicked && setEntityClicked(false);
+                          if (setEntityClicked) {
+                            setEntityClicked(false);
+                          }
                           router.replace(`/cases/${caseId}`, undefined, {
                             shallow: true,
                           });

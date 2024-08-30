@@ -44,7 +44,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
 }: CDaveCardProps) => {
   const [chartType, setChartType] = useState<ChartTypes>("histogram");
   const [downloadInProgress, setDownloadInProgress] = useState(false);
-  const { scrollIntoView, targetRef } = useScrollIntoView();
+  const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>();
   const displayDataDimension = useDataDimension(field);
   const facet = useCoreSelector((state) =>
     selectFacetDefinitionByName(state, `cases.${field}`),
@@ -130,7 +130,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
       shadow="sm"
       radius="md"
       p="xs"
-      ref={(ref) => (targetRef.current = ref)}
+      ref={targetRef}
       className="border-1 border-base-lightest h-full flex flex-col"
     >
       <div className="flex justify-between mb-1">

@@ -167,7 +167,9 @@ export const DownloadButton = forwardRef<
               ...(filename ? { filename } : {}),
               ...extraParams,
             };
-            setActive && setActive(true);
+            if (setActive) {
+              setActive(true);
+            }
             download({
               params,
               endpoint,

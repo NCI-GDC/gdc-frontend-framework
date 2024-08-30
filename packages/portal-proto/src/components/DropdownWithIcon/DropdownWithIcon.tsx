@@ -139,7 +139,9 @@ export const DropdownWithIcon = ({
         {dropdownElements.map(({ title, onClick, icon, disabled }, idx) => (
           <Menu.Item
             onClick={() => {
-              onClick && onClick();
+              if (onClick) {
+                onClick();
+              }
               // This is done inorder to set the last focused element as the menu target element
               // This is done to return focus to the target element if the modal is closed with ESC
               if (targetRef?.current) {

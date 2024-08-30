@@ -32,13 +32,11 @@ export const toggleFullScreen = async (
   }
 };
 
-/* eslint-disable @typescript-eslint/ban-types */
 export const createKeyboardAccessibleFunction = (
-  func: Function,
+  func: () => void,
 ): KeyboardEventHandler<any> => {
   return (e: React.KeyboardEvent<any>) => (e.key === "Enter" ? func() : null);
 };
-/* eslint-enable */
 
 export const capitalize = (original: string): string => {
   const customCapitalizations = {

@@ -25,6 +25,7 @@ import {
   LoadingOverlay,
   Modal,
   Stack,
+  StackProps,
   Tabs,
   TabsProps,
   Text,
@@ -51,7 +52,7 @@ import {
 import { partial } from "lodash";
 import { FacetCardDefinition } from "@/features/facets/types";
 
-const CustomFacetWhenEmptyGroup = tw(Stack)`
+const CustomFacetWhenEmptyGroup = tw(Stack)<StackProps>`
 h-64
 bg-base-lightest
 w-1/2
