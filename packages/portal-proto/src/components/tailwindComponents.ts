@@ -1,7 +1,7 @@
 import tw from "tailwind-styled-components";
 
 export const HeaderTitle = tw.h2`
-text-lg text-primary-content-darkest uppercase tracking-wide font-medium
+text-lg text-primary-content-darkest uppercase tracking-wide font-medium mb-2
 `;
 
 interface SummaryHeaderTitleProps {

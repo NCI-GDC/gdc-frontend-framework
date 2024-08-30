@@ -277,7 +277,7 @@ const GeneView = ({
                 />
               </div>
 
-              <div className="mt-8">
+              <div className="mt-8 mb-16">
                 <SMTableContainer
                   geneSymbol={data.symbol}
                   gene_id={gene_id}

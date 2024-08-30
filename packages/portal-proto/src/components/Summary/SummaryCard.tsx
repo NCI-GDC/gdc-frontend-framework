@@ -13,11 +13,11 @@ export const SummaryCard = ({
   customDataTestID,
 }: SummaryCardProps): JSX.Element => {
   return (
-    <div className="flex flex-col gap-2 flex-grow">
+    <div className="flex flex-col flex-grow">
       {title !== "" ? (
         <HeaderTitle>{title}</HeaderTitle>
       ) : (
-        <div className="h-7" />
+        <div className="h-7 mb-2" />
       )}
 
       <HorizontalTable

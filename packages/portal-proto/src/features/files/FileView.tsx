@@ -226,9 +226,7 @@ export const FileView: React.FC<FileViewProps> = ({
             />
           ) : (
             <>
-              <div className="mt-3.5">
-                <HeaderTitle>Associated Cases/Biospecimens</HeaderTitle>
-              </div>
+              <HeaderTitle>Associated Cases/Biospecimens</HeaderTitle>
               <h3 className="p-2 mx-4 text-primary-content-darker">
                 No cases or biospecimen found.
               </h3>
