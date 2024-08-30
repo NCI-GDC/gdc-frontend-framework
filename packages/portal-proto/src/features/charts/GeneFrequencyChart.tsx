@@ -117,7 +117,7 @@ export const GeneFrequencyChart: React.FC<GeneFrequencyChartProps> = ({
   }));
 
   return (
-    <div className="relative pr-2 border-r-2">
+    <div className="relative pr-2">
       {title ? (
         <ChartTitleBar
           title={title}
@@ -126,7 +126,7 @@ export const GeneFrequencyChart: React.FC<GeneFrequencyChartProps> = ({
           jsonData={jsonData}
         />
       ) : null}
-      <div className="w-100 h-100 relative">
+      <div className="w-100 h-100 relative mt-10">
         <LoadingOverlay
           data-testid="loading-spinner"
           visible={isFetching || isLoading || isPending || isChartRendering}

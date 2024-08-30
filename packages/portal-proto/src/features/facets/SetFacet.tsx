@@ -77,7 +77,7 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
     <div
       className={`flex flex-col ${
         width ? width : "mx-0"
-      } bg-base-max relative shadow-lg border-base-lighter border-1 rounded-b-md text-xs transition`}
+      } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition`}
     >
       <FacetHeader>
         <Tooltip
@@ -130,7 +130,11 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
             Upload {facetName}
           </Button>
         </Tooltip>
-        <Group gap="xs" className="px-2 py-1" data-testid="values group">
+        <Group
+          gap="xs"
+          className="px-2 py-1 max-h-96 overflow-y-scroll"
+          data-testid="values group"
+        >
           {facetValues.map((operand, i) => (
             <Badge
               size="sm"
