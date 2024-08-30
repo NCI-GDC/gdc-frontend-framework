@@ -14,7 +14,7 @@ import {
 import VerticalTable from "@/components/Table/VerticalTable";
 import { HandleChangeInput } from "@/components/Table/types";
 import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
-import { HeaderTitle } from "@/components/tailwindComponents";
+import { HeaderTitleTable } from "@/components/tailwindComponents";
 import SubrowPrimarySiteDiseaseType from "@/components/SubrowPrimarySiteDiseaseType/SubrowPrimarySiteDiseaseType";
 import { ArraySeparatedSpan } from "@/components/ArraySeparatedSpan/ArraySeparatedSpan";
 import TotalItems from "@/components/Table/TotalItem";
@@ -199,7 +199,7 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
       }
       data={displayedData}
       columns={primarySitesTableColumns}
-      additionalControls={<HeaderTitle>Primary Sites</HeaderTitle>}
+      additionalControls={<HeaderTitleTable>Primary Sites</HeaderTitleTable>}
       columnSorting="manual"
       sorting={sorting}
       setSorting={setSorting}

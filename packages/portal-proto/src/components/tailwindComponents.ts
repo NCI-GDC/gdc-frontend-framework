@@ -4,6 +4,10 @@ export const HeaderTitle = tw.h2`
 text-lg text-primary-content-darkest uppercase tracking-wide font-medium mb-2
 `;
 
+export const HeaderTitleTable = tw.h2`
+text-lg text-primary-content-darkest uppercase tracking-wide font-medium
+`;
+
 interface SummaryHeaderTitleProps {
   $isFile?: boolean;
 }

@@ -3,7 +3,7 @@ import { AnnotationDefaults, GdcApiData, ProjectDefaults } from "@gff/core";
 import { FaUser, FaFile, FaEdit } from "react-icons/fa";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import CategoryTableSummary from "@/components/Summary/CategoryTableSummary";
-import { HeaderTitle } from "@/components/tailwindComponents";
+import { HeaderTitleTable } from "@/components/tailwindComponents";
 import { HorizontalTable } from "@/components/HorizontalTable";
 import { SingularOrPluralSpan } from "@/components/SingularOrPluralSpan/SingularOrPluralSpan";
 import PrimarySiteTable from "./PrimarySiteTable";
@@ -119,7 +119,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
 
       <div className={`${!projectData?.isModal ? "mt-6" : "mt-4"} mx-4`}>
         <div className="flex flex-col lg:flex-row lg:justify-between">
-          <HeaderTitle>Summary</HeaderTitle>
+          <HeaderTitleTable>Summary</HeaderTitleTable>
           {message && <div className="text-sm lg:text-right">{message}</div>}
         </div>
         <div data-testid="table-summary-project-summary" className="flex mt-2">

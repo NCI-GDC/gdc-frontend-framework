@@ -214,7 +214,7 @@ export const Biospecimen = ({
 
           <div className="flex mt-2 gap-4">
             <div className="basis-2/5 lg:basis-1/3">
-              <div className="flex flex-col gap-2 mb-4 ">
+              <div className="flex flex-col lg:flex-row gap-2 mb-4 ">
                 <Input
                   data-testid="textbox-biospecimen-search-bar"
                   leftSection={<MdOutlineSearch size={24} aria-hidden="true" />}
