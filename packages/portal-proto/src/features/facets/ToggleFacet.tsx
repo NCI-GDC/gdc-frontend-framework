@@ -56,7 +56,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     <div
       className={`flex flex-col ${
         width ? width : "mx-0"
-      } bg-base-max relative shadow-lg border-base-lighter border-1 rounded-b-md transition text-sm`}
+      } bg-base-max relative border-base-lighter border-1 rounded-b-md transition text-sm`}
     >
       <FacetControlsHeader
         field={field}

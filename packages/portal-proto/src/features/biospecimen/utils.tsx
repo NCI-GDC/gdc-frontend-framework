@@ -147,17 +147,19 @@ export const formatEntityInfo = (
                 : "text-primary bg-base-max"
             }`}
             onClick={() => {
-              isFileInCart
-                ? removeFromCart(
-                    mapGdcFileToCartFile(mapFileData(selectedSlide)),
-                    currentCart,
-                    dispatch,
-                  )
-                : addToCart(
-                    mapGdcFileToCartFile(mapFileData(selectedSlide)),
-                    currentCart,
-                    dispatch,
-                  );
+              if (isFileInCart) {
+                removeFromCart(
+                  mapGdcFileToCartFile(mapFileData(selectedSlide)),
+                  currentCart,
+                  dispatch,
+                );
+              } else {
+                addToCart(
+                  mapGdcFileToCartFile(mapFileData(selectedSlide)),
+                  currentCart,
+                  dispatch,
+                );
+              }
             }}
           >
             <FaShoppingCart size={16} />

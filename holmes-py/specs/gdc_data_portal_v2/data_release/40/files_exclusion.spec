@@ -16,13 +16,15 @@ tags: gdc-data-portal-v2, data-release
 * Verify the table "File Properties File Summary" is displaying this information
     |text_to_validate                       |
     |---------------------------------------|
-    |547f5ad0-d93d-4299-b2c0-34ac05b63779   |
-    |249722ea264253c3572619e6d2c38885       |
+    |4e7519aa-2c79-4237-8c79-8cd6f0addeab   |
+    |861da3c69f57832ff947fa2c32951bbb       |
     |open                                   |
 * Verify the table "File Versions File Summary" is displaying this information
     |text_to_validate                                   |
     |---------------------------------------------------|
-    |547f5ad0-d93d-4299-b2c0-34ac05b63779Current Version|
+    |4e7519aa-2c79-4237-8c79-8cd6f0addeabCurrent Version|
+    |547f5ad0-d93d-4299-b2c0-34ac05b63779               |
     |2024-03-29                                         |
     |40.0                                               |
+    |41.0                                               |
     |f8f20eda-b70f-4767-ad3b-1a704faa5d36               |

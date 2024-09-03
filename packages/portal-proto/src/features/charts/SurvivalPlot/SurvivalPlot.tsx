@@ -214,8 +214,8 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
 
   return (
     <div className="flex flex-col">
-      <div className="flex w-100 items-center justify-center flex-wrap">
-        <div className="flex ml-auto text-montserrat text-lg">{title}</div>
+      <div className="flex items-center justify-center flex-wrap">
+        <div className="text-montserrat text-[1rem]">{title}</div>
         <div className="flex items-center ml-auto gap-1">
           <Menu
             position="bottom-start"
@@ -276,7 +276,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
           </Tooltip>
         </div>
       </div>
-      <div className="flex flex-col items-center ">
+      <div className="flex flex-col">
         <div
           className={
             [
@@ -293,14 +293,14 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
                 <div
                   data-testid="text-cases-with-survival-data"
                   key={`${x.key}-${idx}`}
-                  className="px-2"
+                  className="text-sm"
                 >
                   {x.value}
                 </div>
               );
             })}
         </div>
-        <div>
+        <div className="mt-2">
           <Tooltip
             label={
               <div>
@@ -325,7 +325,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
             in the table below to change the survival plot
           </div>
         )}
-        <div className="flex w-full justify-end text-xs mr-8 text-primary-content no-print font-content">
+        <div className="flex justify-end text-xs text-primary-content font-content">
           drag to zoom
         </div>
       </div>

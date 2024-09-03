@@ -1,12 +1,4 @@
 import React, { useState } from "react";
-import {
-  UseMutation,
-  UseQuery,
-} from "@reduxjs/toolkit/dist/query/react/buildHooks";
-import {
-  QueryDefinition,
-  MutationDefinition,
-} from "@reduxjs/toolkit/dist/query";
 import { Modal } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import {
@@ -15,6 +7,9 @@ import {
   buildCohortGqlOperator,
   addSet,
   useCoreDispatch,
+  useGeneSetCountQuery,
+  useGeneSetCountsQuery,
+  useAppendToGeneSetMutation,
 } from "@gff/core";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
@@ -33,15 +28,9 @@ interface AddToSetModalProps {
   readonly field: string;
   readonly sort?: string;
   readonly closeModal: () => void;
-  readonly singleCountHook: UseQuery<
-    QueryDefinition<any, any, any, number, string>
-  >;
-  readonly countHook: UseQuery<
-    QueryDefinition<any, any, any, Record<string, number>, string>
-  >;
-  readonly appendSetHook: UseMutation<
-    MutationDefinition<any, any, any, string, string>
-  >;
+  readonly singleCountHook: typeof useGeneSetCountQuery;
+  readonly countHook: typeof useGeneSetCountsQuery;
+  readonly appendSetHook: typeof useAppendToGeneSetMutation;
   readonly opened: boolean;
 }
 

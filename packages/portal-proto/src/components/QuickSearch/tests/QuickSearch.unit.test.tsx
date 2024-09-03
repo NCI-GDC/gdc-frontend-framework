@@ -97,4 +97,34 @@ describe("<QuickSearch />", () => {
     const noResults = getByTestId("no-results-quick-search-bar");
     expect(noResults).toBeInTheDocument();
   });
+
+  test("displays no results found if file doesn't have a newer version", async () => {
+    jest.spyOn(core, "useQuickSearchQuery").mockReturnValue({
+      data: {
+        searchList: [],
+        query: "111-222",
+      },
+    } as any);
+    jest.spyOn(core, "useGetHistoryQuery").mockReturnValue({
+      data: [
+        {
+          file_change: "released",
+          uuid: "111-222",
+          version: "1",
+        },
+      ],
+    } as any);
+
+    const { getByTestId } = render(<QuickSearch />);
+    userEvent.click(getByTestId("textbox-quick-search-bar"));
+    userEvent.type(getByTestId("textbox-quick-search-bar"), "111-222");
+
+    await waitFor(
+      () =>
+        expect(getByTestId("no-results-quick-search-bar")).toBeInTheDocument(),
+      { timeout: 3000 },
+    );
+    const noResults = getByTestId("no-results-quick-search-bar");
+    expect(noResults).toBeInTheDocument();
+  });
 });

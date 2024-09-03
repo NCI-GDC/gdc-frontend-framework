@@ -14,7 +14,7 @@ tags: regression, smoke
 * Navigate to "Downloads" from "Header" "section"
 
 ## Filters on Repository
-* Verify that the "Filters" text is displayed on "Repository" "app"
+* Is text "Add a Custom Filter" present on the page
 
 ## Default filters on Repository
 * Verify that the following default filters are displayed in order

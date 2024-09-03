@@ -287,3 +287,8 @@ def validate_cohort_query_filters(table):
         assert (
             is_cohort_filter_query_visible == False
         ), f"The filter '{v[0]}', with values '{v[1]}' IS present in the cohort query filter area when it should not be"
+
+@step("Validate there are no active cohort filters")
+def validate_empty_cohort_filters():
+    is_cohort_filters_empty = APP.shared.is_no_active_cohort_filter_text_present()
+    assert is_cohort_filters_empty, f"There are filters in cohort query area when there should NOT be"

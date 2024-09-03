@@ -276,7 +276,7 @@ const slice = createSlice({
     },
     removeCohort: (
       state,
-      action?: PayloadAction<{
+      action: PayloadAction<{
         shouldShowMessage?: boolean;
         id?: string;
       }>,

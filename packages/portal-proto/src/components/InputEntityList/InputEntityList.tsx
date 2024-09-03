@@ -1,6 +1,4 @@
 import React, { useEffect, useState, useRef, useMemo, useContext } from "react";
-import { UseMutation } from "@reduxjs/toolkit/dist/query/react/buildHooks";
-import { MutationDefinition } from "@reduxjs/toolkit/dist/query";
 import {
   Textarea,
   FileInput,
@@ -18,7 +16,7 @@ import {
   Operation,
   FilterSet,
   fetchGdcEntities,
-  CreateSetValueArgs,
+  useCreateCaseSetFromValuesMutation,
 } from "@gff/core";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import { UserInputContext } from "@/components/Modals/UserInputModal";
@@ -39,9 +37,7 @@ interface InputEntityListProps {
   readonly entityLabel: string;
   readonly hooks: {
     readonly updateFilters?: (field: string, op: Operation) => void;
-    readonly createSet?: UseMutation<
-      MutationDefinition<CreateSetValueArgs, any, any, any>
-    >;
+    readonly createSet?: typeof useCreateCaseSetFromValuesMutation;
     readonly getExistingFilters?: () => FilterSet;
   };
   readonly RightButton: React.ElementType;

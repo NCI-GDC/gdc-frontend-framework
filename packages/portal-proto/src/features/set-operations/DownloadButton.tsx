@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { UseMutation } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import { ActionIcon, Loader, Tooltip } from "@mantine/core";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
-import { MutationDefinition } from "@reduxjs/toolkit/query";
 import { SetOperationEntityType } from "@/features/set-operations/types";
-import { CreateSetFilterArgs, GqlOperation, useCoreDispatch } from "@gff/core";
+import {
+  useCreateCaseSetFromFiltersMutation,
+  useCreateGeneSetFromFiltersMutation,
+  useCreateSsmsSetFromFiltersMutation,
+  GqlOperation,
+  useCoreDispatch,
+} from "@gff/core";
 import download from "@/utils/download";
 import { convertDateToString } from "@/utils/date";
 
@@ -15,9 +19,10 @@ const ENTITY_TYPE_TO_TAR = {
 };
 
 interface DownloadButtonProps {
-  readonly createSetHook: UseMutation<
-    MutationDefinition<CreateSetFilterArgs, any, any, any>
-  >;
+  readonly createSetHook:
+    | typeof useCreateCaseSetFromFiltersMutation
+    | typeof useCreateGeneSetFromFiltersMutation
+    | typeof useCreateSsmsSetFromFiltersMutation;
   readonly entityType: SetOperationEntityType;
   readonly filters: GqlOperation;
   readonly setKey: string;

@@ -223,6 +223,7 @@ def upload_file(
     """
     sources = {
         "Cohort Bar Import": APP.cohort_bar.click_import_cohort_browse,
+        "Cohort Builder Import": APP.cohort_bar.click_import_cohort_browse,
         "Mutation Frequency Custom Filter": APP.mutation_frequency_page.click_custom_filter_import_browse,
         "Manage Sets Import": APP.manage_sets_page.click_browse_import_set,
     }

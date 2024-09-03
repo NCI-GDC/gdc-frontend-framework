@@ -5,7 +5,7 @@ Owner		    : GDC QA
 Description		: Analysis Tool and Core Tool text
 Test-Case       : PEAR-475
 
-tags: gdc-data-portal-v2, navigation, analysis-center
+tags: gdc-data-portal-v2, navigation, analysis-center, regression
 
 ## Tool Text Test Begin
 * On GDC Data Portal V2 app
@@ -18,7 +18,7 @@ tags: gdc-data-portal-v2, navigation, analysis-center
   |facet_name       |label                |text  |
   |-----------------|---------------------|------|
   |Age at Diagnosis |input from value     |90    |
-* Activate the following objects from "Demographic" tab on the Cohort Builder page
+* Select the following labels from "Demographic" tab on the Cohort Builder page
   |facet_name       |selection            |
   |-----------------|---------------------|
   |Age at Diagnosis |Apply                |

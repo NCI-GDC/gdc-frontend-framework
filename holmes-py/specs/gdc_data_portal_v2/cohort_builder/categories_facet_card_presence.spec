@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Test Cohort Builder - category and facet presence
 Test-case       : PEAR-796
 
-tags: gdc-data-portal-v2, cohort-builder, facet-cards
+tags: gdc-data-portal-v2, cohort-builder, facet-cards, regression
 
 ## Navigate to Cohort Builder
 
@@ -23,6 +23,7 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards
   |Tissue or Organ of Origin  |
   |Disease Type               |
   |Primary Diagnosis          |
+  |Case ID                    |
 
 * Validate presence of facet cards on the "Demographic" tab on the Cohort Builder page
   |facet_name                 |
@@ -39,6 +40,7 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards
   |Morphology                 |
   |Year of Diagnosis          |
   |Site of Resection or Biopsy|
+  |Sites of Involvement       |
   |Laterality                 |
 
 * Validate presence of facet cards on the "Disease Status and History" tab on the Cohort Builder page
@@ -110,6 +112,12 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards
   |Tumor Code                 |
   |Tumor Descriptor           |
   |Analyte Type               |
+
+* Validate presence of facet cards on the "Molecular Filters" tab on the Cohort Builder page
+  |facet_name                 |
+  |---------------------------|
+  |Mutated Gene               |
+  |Somatic Mutation           |
 
 * Validate presence of facet cards on the "Available Data" tab on the Cohort Builder page
   |facet_name                 |
