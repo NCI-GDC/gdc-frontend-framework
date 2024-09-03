@@ -83,7 +83,7 @@ class GenericLocators:
     )
 
     TABLE_TEXT_IDENT = (
-        lambda table_name, table_text: f'[data-testid="table-{table_name}"] >> text={table_text}'
+        lambda table_name, table_text: f'[data-testid="table-{table_name}"] >> text={table_text} >> nth=0'
     )
     TABLE_AREA_TO_SELECT = (
         lambda row, column: f"tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0"
