@@ -73,8 +73,8 @@ const FilterPanel = ({
             Filters
           </Text>
         </div>
-        <div className="flex flex-col flex-wrap gap-3">
-          <div className="flex flex-wrap justify-between">
+        <div className="flex flex-col flex-wrap">
+          <div className="flex flex-wrap justify-between text-primary-content-darker">
             <button
               onClick={() => toggleAllFiltersExpanded(allFiltersCollapsed)}
             >
@@ -97,7 +97,7 @@ const FilterPanel = ({
           </div>
           {customConfig !== undefined && (
             <>
-              <div className="flex min-h-[36px] mt-2">
+              <div className="flex min-h-[36px] mt-3.5">
                 <Tooltip
                   label="Reset custom filters"
                   disabled={isEqual(customConfig.defaultFilters, facetFields)}
@@ -148,7 +148,7 @@ const FilterPanel = ({
           )}
         </div>
         <LoadingOverlay data-testid="loading-spinner" visible={isLoading} />
-        <div data-testid="filters-facets" className="flex flex-col gap-y-4">
+        <div data-testid="filters-facets" className="flex flex-col gap-y-3">
           <div className="h-screen overflow-y-scroll flex flex-col gap-y-4 border-t-1 border-b-1 rounded-md">
             {facetDefinitions.map((x) => {
               const isDefault =
