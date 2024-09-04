@@ -66,7 +66,7 @@ const FilterPanel = ({
   const facetFields = facetDefinitions.map((x) => x.full);
 
   return (
-    <div className="w-1/3 xl:w-1/4 pl-[calc(100vw - 100%)]">
+    <div>
       <div className="flex flex-col gap-y-3 mr-3 mb-4">
         <div>
           <Text size="lg" className="text-primary-content-darker font-bold">
@@ -121,29 +121,25 @@ const FilterPanel = ({
                   <Text className="text-sm font-bold">Add a Custom Filter</Text>
                 </button>
               </div>
-              <div
-                className="flex flex-col gap-y-4"
-                data-testid="filters-facets"
+
+              <Modal
+                data-testid="modal-repository-add-custom-filter"
+                size="xl"
+                opened={opened}
+                onClose={() => setOpened(false)}
+                title="Add a Custom Filter"
               >
-                <Modal
-                  data-testid="modal-repository-add-custom-filter"
-                  size="xl"
-                  opened={opened}
-                  onClose={() => setOpened(false)}
-                  title="Add a Custom Filter"
-                >
-                  <div className="p-4">
-                    <FacetSelection
-                      facetType="files"
-                      handleFilterSelected={(filter: string) => {
-                        customConfig.handleCustomFilterSelected(filter);
-                        setOpened(false);
-                      }}
-                      usedFacets={facetFields}
-                    />
-                  </div>
-                </Modal>
-              </div>
+                <div className="p-4">
+                  <FacetSelection
+                    facetType="files"
+                    handleFilterSelected={(filter: string) => {
+                      customConfig.handleCustomFilterSelected(filter);
+                      setOpened(false);
+                    }}
+                    usedFacets={facetFields}
+                  />
+                </div>
+              </Modal>
             </>
           )}
         </div>
