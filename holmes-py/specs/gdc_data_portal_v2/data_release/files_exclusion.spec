@@ -25,8 +25,8 @@ table: resources/data_release/file_exclusion.csv
     |text_to_validate                       |
     |---------------------------------------|
     |<Old File UUID>                        |
-    |<Old Release Date>|
-    |<Old Release Number>|
+    |<Old Release Date>                     |
+    |<Old Release Number>                   |
     |<Current Version>                      |
     |<Release Date>                         |
     |<Release Number>                       |

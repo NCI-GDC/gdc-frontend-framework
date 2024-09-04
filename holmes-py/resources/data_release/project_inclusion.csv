@@ -1,0 +1,3 @@
+Project ID,dbGaP,Project Name,Manifest Info 1,Manifest Info 2,Primary Site,Disease Type,Experimental Strategy,All Experimental Strategies
+MATCH-R,phs002029,Genomic Characterization CS-MATCH-0007 Arm R,c5d34d4e-e093-4e0e-a6fe-bc14b1150c69,e1fcbfb7-fb00-4411-b064-05633851350f,Skin,mature t- and nk-cell lymphomas,"RNA-Seq, WXS","RNA-Seq,WXS"
+MATCH-P,phs002152,Genomic Characterization CS-MATCH-0007 Arm P,a4e51633-13b4-4eeb-a412-134ac4e991ed,cb7b58fb-407b-4d74-a1a6-c86069ed5dab,Small intestine,complex mixed and stromal neoplasms,"RNA-Seq, WXS","RNA-Seq,WXS"
