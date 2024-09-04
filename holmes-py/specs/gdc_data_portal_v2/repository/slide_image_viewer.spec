@@ -74,4 +74,4 @@ tags: gdc-data-portal-v2, repository, regression, slide-image-viewer
 
 ## Go Back to the Repository Page
 * Select "Back" on the Image Viewer page
-* Wait for "Filters Facets" to be present on the page
+* Is text "Add All Files to Cart" present on the page

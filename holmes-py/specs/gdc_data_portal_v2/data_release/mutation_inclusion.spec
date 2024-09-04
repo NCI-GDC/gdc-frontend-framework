@@ -15,14 +15,14 @@ table: resources/data_release/mutation_inclusion.csv
 * Verify the table "Summary Mutation Summary" is displaying this information
     |text_to_validate                       |
     |---------------------------------------|
-    |<Mutation UUID>   |
-    |<DNA Change>                    |
-    |<Type>              |
-    |<Reference Genome Assembly>                                 |
-    |<Functional Impact>                        |
+    |<Mutation UUID>                        |
+    |<DNA Change>                           |
+    |<Type>                                 |
+    |<Reference Genome Assembly>            |
+    |<Functional Impact>                    |
 * Verify the table "External References Mutation Summary" is displaying this information
     |text_to_validate                       |
     |---------------------------------------|
-    |<dbSNP>                           |
-    |<COSMIC>                             |
-    |<CIViC>                            |
+    |<dbSNP>                                |
+    |<COSMIC>                               |
+    |<CIViC>                                |
