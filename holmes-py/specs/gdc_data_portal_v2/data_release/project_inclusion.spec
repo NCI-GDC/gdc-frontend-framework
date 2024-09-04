@@ -19,7 +19,6 @@ table: resources/data_release/project_inclusion.csv
     |<dbGaP>                                |
     |<Project Name>                         |
 
-## Manifest Validation
 * Pause "1" seconds
 * Download "Manifest" from "Project Summary"
 * Read from "Manifest from Project Summary"
@@ -29,7 +28,6 @@ table: resources/data_release/project_inclusion.csv
   |<Manifest Info 1>                    |
   |<Manifest Info 2>                    |
 
-## Primary Sites Table
 * Pause "1" seconds
 * In table "Primary Sites Project Summary", search the table for <Primary Site>
 * Verify the table "Primary Sites Project Summary" is displaying this information
