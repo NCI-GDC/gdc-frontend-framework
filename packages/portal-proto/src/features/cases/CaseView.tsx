@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import {
   useCoreDispatch,
@@ -70,6 +70,10 @@ export const CaseView: React.FC<CaseViewProps> = ({
     : false;
   const { width } = useViewportSize();
   useScrollToHash(["files", "annotations"]);
+  const leftSummaryTableRef = useRef<HTMLTableElement>(null);
+  const rightSummaryTableRef = useRef<HTMLTableElement>(null);
+
+  useSynchronizedRowHeights([leftSummaryTableRef, rightSummaryTableRef]);
 
   const {
     diagnoses = [],
@@ -266,12 +270,6 @@ export const CaseView: React.FC<CaseViewProps> = ({
     summaryData.slice(ITEMS_PER_COLUMN),
   ];
 
-  const isSideBySide = width >= LG_BREAKPOINT;
-  console.log({ isSideBySide });
-  const getTableRef = useSynchronizedRowHeights(
-    isSideBySide ? ["left-table", "right-table"] : [],
-  );
-
   return (
     <>
       <SummaryHeader
@@ -317,9 +315,8 @@ export const CaseView: React.FC<CaseViewProps> = ({
           <div className="basis-full lg:basis-1/2">
             <SummaryCard
               tableData={width >= LG_BREAKPOINT ? leftColumnData : summaryData}
-              tableId="left-table"
-              ref={getTableRef(0)}
-              enableSync={isSideBySide}
+              ref={leftSummaryTableRef}
+              enableSync={true}
             />
           </div>
           {width >= LG_BREAKPOINT && (
@@ -327,8 +324,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
               <SummaryCard
                 tableData={rightColumnData}
                 title=""
-                tableId="right-table"
-                ref={getTableRef(1)}
+                ref={rightSummaryTableRef}
                 enableSync={true}
               />
             </div>

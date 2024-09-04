@@ -6,20 +6,13 @@ export interface SummaryCardProps {
   readonly title?: string;
   readonly tableData: HorizontalTableProps["tableData"];
   readonly customDataTestID?: string;
-  readonly tableId?: string;
   readonly enableSync?: boolean;
   readonly ref?: React.Ref<HTMLTableElement>;
 }
 
 export const SummaryCard = React.forwardRef<HTMLTableElement, SummaryCardProps>(
   (
-    {
-      title = "Summary",
-      tableData,
-      customDataTestID,
-      tableId,
-      enableSync = false,
-    },
+    { title = "Summary", tableData, customDataTestID, enableSync = false },
     ref,
   ): JSX.Element => {
     return (
@@ -33,7 +26,6 @@ export const SummaryCard = React.forwardRef<HTMLTableElement, SummaryCardProps>(
         <HorizontalTable
           customDataTestID={customDataTestID}
           tableData={tableData}
-          tableId={tableId}
           enableSync={enableSync}
           ref={ref}
         />

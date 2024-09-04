@@ -41,13 +41,12 @@ export interface HorizontalTableProps {
   customContainerStyles?: string;
   slideImageDetails?: boolean;
   customDataTestID?: string;
-  tableId?: string;
   enableSync?: boolean;
 }
 
 export const HorizontalTable = forwardRef<
   HTMLTableElement,
-  HorizontalTableProps & { tableId?: string }
+  HorizontalTableProps
 >(
   (
     {
@@ -55,7 +54,6 @@ export const HorizontalTable = forwardRef<
       customContainerStyles,
       slideImageDetails = false,
       customDataTestID,
-      tableId,
       enableSync = false,
     },
     ref,
@@ -71,7 +69,6 @@ export const HorizontalTable = forwardRef<
         data-testid={customDataTestID}
         className={updatedContainerClassName}
         ref={enableSync ? ref : undefined}
-        id={tableId}
       >
         <tbody>
           {tableData.map((obj, rowIndex: number): JSX.Element => {

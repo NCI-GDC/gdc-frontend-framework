@@ -19,7 +19,6 @@ import { useViewportSize } from "@mantine/hooks";
 import { LG_BREAKPOINT } from "src/utils";
 import SummaryHeaderLeft from "./SummaryHeaderLeft";
 import { useSynchronizedRowHeights } from "@/components/HorizontalTable/useSynchronizedRowHeights";
-import { useReactTable } from "@tanstack/react-table";
 
 export interface ProjectViewProps extends ProjectDefaults {
   readonly annotation: GdcApiData<AnnotationDefaults>;
@@ -32,6 +31,9 @@ export const ProjectView: React.FC<ProjectViewProps> = (
 ) => {
   const { width } = useViewportSize();
   useScrollToHash(["annotations"]);
+  const leftSummaryTableRef = useRef<HTMLTableElement>(null);
+  const rightSummaryTableRef = useRef<HTMLTableElement>(null);
+  useSynchronizedRowHeights([leftSummaryTableRef, rightSummaryTableRef]);
 
   const Cases = (
     <span className="flex items-center gap-1">
@@ -104,11 +106,6 @@ export const ProjectView: React.FC<ProjectViewProps> = (
     summaryData.slice(summaryData.length === 4 ? 2 : 3),
   ];
 
-  const leftTableRef = useRef<HTMLTableElement>(null);
-  const rightTableRef = useRef<HTMLTableElement>(null);
-
-  useSynchronizedRowHeights([leftTableRef, rightTableRef]);
-
   return (
     <>
       <SummaryHeader
@@ -133,7 +130,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
           <div className="basis-full lg:basis-1/2">
             <HorizontalTable
               tableData={width >= LG_BREAKPOINT ? leftColumnData : summaryData}
-              ref={leftTableRef}
+              ref={leftSummaryTableRef}
               enableSync={true}
             />
           </div>
@@ -141,8 +138,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
             <div className="basis-1/2 h-full">
               <HorizontalTable
                 tableData={rightColumnData}
-                tableId="right-table"
-                ref={rightTableRef}
+                ref={rightSummaryTableRef}
                 enableSync={true}
               />
             </div>
