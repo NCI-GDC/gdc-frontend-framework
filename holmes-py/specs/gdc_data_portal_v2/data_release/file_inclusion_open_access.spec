@@ -1,8 +1,8 @@
 # Data Release - File Inclusion Controlled Access
-Date Created        :
+Date Created        : 08/04/2024
 Version			    : 1.0
 Owner		        : GDC QA
-Description		    :
+Description		    : Open Access File Inclusion in Data Release
 Test-Case           : PEAR-1928
 
 tags: gdc-data-portal-v2, data-release

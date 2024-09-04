@@ -1,8 +1,8 @@
 # Data Release - Mutation Inclusion
-Date Created        :
+Date Created        : 08/04/2024
 Version			    : 1.0
 Owner		        : GDC QA
-Description		    :
+Description		    : Mutation Inclusion in Data Release
 Test-Case           : PEAR-1932
 
 tags: gdc-data-portal-v2, data-release

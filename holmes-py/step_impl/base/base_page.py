@@ -627,6 +627,7 @@ class BasePage:
         Then clicks the first result in the search result area. Best used with a UUID.
         """
         self.send_keys(GenericLocators.QUICK_SEARCH_BAR_IDENT, text)
+        time.sleep(1)
         first_result_locator = GenericLocators.QUICK_SEARCH_BAR_FIRST_RESULT
         self.click(first_result_locator)
 
