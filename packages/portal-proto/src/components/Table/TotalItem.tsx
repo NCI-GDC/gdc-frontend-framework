@@ -32,7 +32,8 @@ const TotalItems: React.FC<TotalItemsProps> = ({
 
   return (
     <>
-      Total of <b>{formattedTotal}</b> {itemText}
+      Total of <b data-testid="text-total-item-count">{formattedTotal}</b>{" "}
+      {itemText}
     </>
   );
 };

@@ -42,6 +42,7 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
   }, [response.isSuccess]);
   const dropDownIcon = (
     <DropdownWithIcon
+      customDataTestId="button-save-new-cohort-cases-table"
       dropdownElements={
         fetchingCases
           ? [{ title: "Loading..." }]
