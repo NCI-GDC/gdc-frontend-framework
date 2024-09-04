@@ -64,6 +64,7 @@ export const useGenerateCasesTableColumns = ({
         id: "select",
         header: ({ table }) => (
           <Checkbox
+            data-testid="checkbox-select-all-cases-table"
             size="xs"
             classNames={{
               input: "checked:bg-accent checked:border-accent",
@@ -78,6 +79,7 @@ export const useGenerateCasesTableColumns = ({
         ),
         cell: ({ row }) => (
           <Checkbox
+            data-testid="checkbox-select-cases-table"
             size="xs"
             classNames={{
               input: "checked:bg-accent checked:border-accent",
@@ -109,6 +111,7 @@ export const useGenerateCasesTableColumns = ({
             <Menu position="bottom-start" zIndex={300}>
               <Menu.Target>
                 <Button
+                  data-testid="button-add-remove-cases-table"
                   aria-label={`${
                     isAllFilesInCart ? "remove" : "add"
                   } all files ${isAllFilesInCart ? "from" : "to"} the cart`}
@@ -145,6 +148,7 @@ export const useGenerateCasesTableColumns = ({
               <Menu.Dropdown>
                 {numberOfFilesToRemove < row.original.files_count && (
                   <Menu.Item
+                    data-testid="button-add-files-to-cart-cases-table"
                     leftSection={<BiAddToQueue />}
                     onClick={() => {
                       addToCart(row.original.files, currentCart, dispatch);
@@ -157,6 +161,7 @@ export const useGenerateCasesTableColumns = ({
 
                 {numberOfFilesToRemove > 0 && (
                   <Menu.Item
+                    data-testid="button-remove-files-from-cart-cases-table"
                     leftSection={<BsTrash />}
                     onClick={() => {
                       removeFromCart(row.original.files, currentCart, dispatch);

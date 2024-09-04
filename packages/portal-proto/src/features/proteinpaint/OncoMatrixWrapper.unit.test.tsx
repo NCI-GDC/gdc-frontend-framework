@@ -33,6 +33,10 @@ jest.mock("@gff/core", () => ({
     isFetching: false,
     requestId: "abc123",
   }),
+  showModal: jest.fn(() => nullFunction()),
+  hideModal: jest.fn(() => nullFunction()),
+  Modals: jest.fn().mockReturnValue({}),
+  selectCurrentModal: jest.fn(() => nullFunction()),
 }));
 
 jest.mock("@/hooks/useIsDemoApp", () => ({
