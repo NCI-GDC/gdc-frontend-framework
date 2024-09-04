@@ -117,7 +117,6 @@ export const FileFacetPanel = (): JSX.Element => {
       handleCustomFilterSelected={handleFilterSelected}
       getDefaultFacets={getDefaultFacets}
       customFacetsConfig={facetsConfig}
-      isLoading={!isDictionaryReady}
     />
   );
 };

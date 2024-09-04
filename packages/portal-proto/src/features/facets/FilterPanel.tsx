@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, Button, Modal, LoadingOverlay } from "@mantine/core";
+import { Text, Button, Modal } from "@mantine/core";
 import { MdAdd as AddAdditionalIcon } from "react-icons/md";
 import { fieldNameToTitle } from "@gff/core";
 import { createFacetCard } from "@/features/facets/CreateFacetCard";
@@ -25,7 +25,6 @@ interface FilterPanelProps {
   readonly handleClearAll?: () => void;
   readonly hideIfEmpty?: boolean;
   readonly showPercent?: boolean;
-  readonly isLoading?: boolean;
 }
 
 /**
@@ -45,7 +44,6 @@ interface FilterPanelProps {
  * @param handleClearAll - callback to remove custom filters
  * @param hideIfEmpty - hide facets if they do not have data
  * @param showPercent - whether to show the count percent of whole
- * @param isLoading - whether the filter defintions are loading
  */
 
 const FilterPanel = ({
@@ -64,7 +62,6 @@ const FilterPanel = ({
   handleClearAll = undefined,
   hideIfEmpty = false,
   showPercent = true,
-  isLoading = false,
 }: FilterPanelProps) => {
   const [opened, setOpened] = useState(false);
 
@@ -118,22 +115,21 @@ const FilterPanel = ({
             </div>
           </>
         )}
-        <LoadingOverlay data-testid="loading-spinner" visible={isLoading} />
         <div
           data-testid="filters-facets"
           className="flex flex-col gap-y-4 max-h-screen overflow-y-auto border-t-1 border-b-1 rounded-md w-48 md:w-64 lg:w-80 2xl:w-96"
         >
-          {facetDefinitions.map((x) => {
+          {facetDefinitions.map((facet) => {
             const isDefault =
               getDefaultFacets !== undefined
-                ? getDefaultFacets().includes(x.full)
+                ? getDefaultFacets().includes(facet.full)
                 : true;
             const facetName =
-              x.title || fieldNameToTitle(x.full, isDefault ? 1 : 2);
+              facet.title || fieldNameToTitle(facet.full, isDefault ? 1 : 2);
             return createFacetCard({
-              facet: x,
+              facet,
               valueLabel:
-                typeof valueLabel === "string" ? valueLabel : valueLabel(x),
+                typeof valueLabel === "string" ? valueLabel : valueLabel(facet),
               dataFunctions: facetHooks,
               idPrefix: app,
               dismissCallback: !isDefault ? handleRemoveFilter : undefined,
