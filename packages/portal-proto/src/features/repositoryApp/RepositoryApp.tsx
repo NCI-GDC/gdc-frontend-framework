@@ -136,7 +136,7 @@ export const RepositoryApp = (): JSX.Element => {
         <div className="flex m-4 gap-0.5">
           <FileFacetPanel />
           <div
-            className="overflow-hidden h-full"
+            className="overflow-hidden h-full w-full"
             data-testid="table-repository"
           >
             <div className="flex xl:justify-end align-center">
