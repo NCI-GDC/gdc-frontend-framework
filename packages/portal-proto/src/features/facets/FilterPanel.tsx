@@ -67,7 +67,7 @@ const FilterPanel = ({
 
   return (
     <div>
-      <div className="flex flex-col gap-y-3 mr-3 mb-4">
+      <div className="flex flex-col gap-y-4 mr-3 mb-4">
         <div>
           <Text size="lg" className="text-primary-content-darker font-bold">
             Filters
