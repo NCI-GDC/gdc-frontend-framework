@@ -391,10 +391,11 @@ export const ContextualCasesView: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col" data-testid="cases-table">
+    <div className="flex flex-col">
       <Divider color="#C5C5C5" className="mb-3" />
 
       <VerticalTable
+        customDataTestID="table-cases"
         data={casesData}
         columns={casesTableDefaultColumns}
         pagination={{ ...pagination, label: "case" }}
@@ -404,6 +405,7 @@ export const ContextualCasesView: React.FC = () => {
             <CasesCohortButtonFromValues pickedCases={pickedCases} />
 
             <DropdownWithIcon
+              customDataTestId="button-biospecimen-cases-table"
               targetButtonDisabled={isFetching}
               dropdownElements={[
                 {
@@ -438,6 +440,7 @@ export const ContextualCasesView: React.FC = () => {
             />
 
             <DropdownWithIcon
+              customDataTestId="button-clinical-cases-table"
               targetButtonDisabled={isFetching}
               dropdownElements={[
                 {
@@ -472,6 +475,7 @@ export const ContextualCasesView: React.FC = () => {
             />
 
             <FunctionButton
+              data-testid="button-json-cases-table"
               onClick={handleJSONDownload}
               disabled={isFetching}
               size="sm"
@@ -480,6 +484,7 @@ export const ContextualCasesView: React.FC = () => {
             </FunctionButton>
 
             <FunctionButton
+              data-testid="button-tsv-cases-table"
               onClick={handleTSVDownload}
               disabled={isFetching}
               size="sm"

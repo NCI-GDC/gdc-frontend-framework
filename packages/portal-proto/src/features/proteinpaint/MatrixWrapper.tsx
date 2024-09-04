@@ -14,6 +14,10 @@ import {
   useGetGenesQuery,
   Operation,
   Includes,
+  showModal,
+  hideModal,
+  Modals,
+  selectCurrentModal,
 } from "@gff/core";
 import { isEqual } from "lodash";
 import { DemoText } from "@/components/tailwindComponents";
@@ -54,13 +58,15 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
   const prevData = useRef<any>();
   const coreDispatch = useCoreDispatch();
   const [showSaveCohortModal, setShowSaveCohortModal] = useState(false);
-  const [showGeneSetModal, setShowGeneSetModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [createSet, response] = useCreateCaseSetFromValuesMutation();
   const [newCohortFilters, setNewCohortFilters] =
     useState<FilterSet>(undefined);
   const [customGeneSetParam, setCustomGeneSetParam] = useState(null);
   const [lastGeneSetRequestId, setLastGeneSetRequestId] = useState(undefined);
+
+  const dispatch = useCoreDispatch();
+  const modal = useCoreSelector((state) => selectCurrentModal(state));
 
   const callback = useCallback<SelectSamplesCallback>(
     (arg: SelectSamplesCallBackArg) => {
@@ -140,7 +146,7 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
     "postRender.gdcPlotApp": hideLoadingOverlay,
   };
   const genesetCallback = (/*{callback}*/) => {
-    setShowGeneSetModal(true);
+    dispatch(showModal({ modal: Modals.LocalGeneSetModal }));
     // TODO: pass the gene set to the callback
   };
 
@@ -239,7 +245,7 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
   const divRef = useRef();
 
   const updateFilters = (field: string, operation: Operation) => {
-    setShowGeneSetModal(false);
+    dispatch(hideModal());
     setCustomGeneSetParam((operation as Includes).operands[0]);
   };
   const existingFiltersHook = () => null;
@@ -260,7 +266,7 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
       />
 
       <GeneSetModal
-        opened={showGeneSetModal}
+        opened={modal === Modals.LocalGeneSetModal}
         modalTitle="Use a previously saved gene set"
         inputInstructions="Enter one or more gene identifiers in the field below or upload a file to create a gene set."
         selectSetInstructions="Select one or more sets below to use as an OncoMatrix gene set."

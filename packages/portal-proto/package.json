@@ -57,7 +57,7 @@
     "@tailwindcss/line-clamp": "^0.3.1",
     "@tailwindcss/typography": "^0.5.2",
     "@testing-library/jest-dom": "^5.0.0",
-    "@testing-library/react": "^14.0.0",
+    "@testing-library/react": "^14.3.1",
     "@testing-library/user-event": "^14.0.0",
     "@types/jest": "^27.0.6",
     "@types/node": "^20.11.16",

@@ -6,6 +6,7 @@ export interface CountButtonProp {
   readonly label: string;
   readonly className?: string;
   readonly bold?: boolean;
+  readonly customDataTestID?: string;
 }
 
 const CohortCountButton: React.FC<CountButtonProp> = ({
@@ -13,6 +14,7 @@ const CohortCountButton: React.FC<CountButtonProp> = ({
   label,
   className = "",
   bold = false,
+  customDataTestID,
 }: CountButtonProp) => {
   const cohortCounts = useCurrentCohortCounts();
   const adjustedLabel =
@@ -21,7 +23,10 @@ const CohortCountButton: React.FC<CountButtonProp> = ({
       : label.slice(0, -1);
   return (
     <div className={className}>
-      <div className="flex flex-row flex-nowrap items-center font-heading">
+      <div
+        data-testid={customDataTestID}
+        className="flex flex-row flex-nowrap items-center font-heading"
+      >
         {cohortCounts.status === "fulfilled" ? (
           <>
             <span className={`pr-1 ${bold && "font-bold"}`}>
