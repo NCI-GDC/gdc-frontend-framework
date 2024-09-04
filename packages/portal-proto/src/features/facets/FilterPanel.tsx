@@ -97,7 +97,7 @@ const FilterPanel = ({
           </div>
           {customConfig !== undefined && (
             <>
-              <div className="flex min-h-[36px] mt-3.5">
+              <div className="flex min-h-[36px] mt-3.5 w-48 md:w-64 lg:w-80 2xl:w-96">
                 <Tooltip
                   label="Reset custom filters"
                   disabled={isEqual(customConfig.defaultFilters, facetFields)}
