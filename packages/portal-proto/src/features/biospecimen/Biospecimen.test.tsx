@@ -7,7 +7,6 @@ jest.mock("next/router", () => ({
 }));
 
 const mockResponse = {
-  composition: null,
   current_weight: null,
   days_to_collection: null,
   days_to_sample_procurement: 0,
@@ -23,8 +22,6 @@ const mockResponse = {
   },
   preservation_method: "FFPE",
   sample_id: "55864d86-dab8-47bb-a3e3-8cfb198b06c1",
-  sample_type: "Primary Tumor",
-  sample_type_id: "01",
   shortest_dimension: null,
   submitter_id: "TCGA-BH-A0EA-01Z",
   time_between_clamping_and_freezing: null,
@@ -32,7 +29,8 @@ const mockResponse = {
   tissue_type: "Not Reported",
   tumor_code: null,
   tumor_code_id: null,
-  tumor_descriptor: null,
+  tumor_descriptor: "Not Applicable",
+  specimen_type: "Peripheral Blood NOS",
 };
 
 describe("<Biospecimen />", () => {
