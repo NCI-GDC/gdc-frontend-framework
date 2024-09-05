@@ -164,6 +164,7 @@ def download_file_at_file_table(file: str, source: str):
         "File Summary": APP.file_summary_page.click_download_button,
         "File Summary File Versions": APP.file_summary_page.click_file_version_download_option,
         "File Summary Annotation Table": APP.file_summary_page.click_annotation_table_download_option,
+        "Case Summary Clinical Table": APP.case_summary_page.click_clinical_table_download_button,
         "Case Summary Files Table": APP.case_summary_page.click_files_table_download_file_button,
         "Cohort Bar": APP.cohort_bar.click_cohort_bar_button,
         "Manage Sets": APP.manage_sets_page.click_on_download_for_set,

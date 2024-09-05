@@ -14,6 +14,11 @@ class CaseSummaryLocators:
     ADDED_TO_CART_MESSAGE_IDENT = 'p:has-text("Added")'
     REMOVED_FROM_CART_MESSAGE_IDENT = 'p:has-text("Removed")'
 
+    BUTTON_CASE_SUMMARY_PAGE = lambda button_name: f"[data-testid='button-{button_name}-case-summary']"
+
+    BUTTON_CLINICAL_TAB = lambda tab_name: f"[data-testid='button-{tab_name}-tab']"
+    BUTTON_CLINICAL_DOWNLOAD = "[data-testid='table-clinical-case-summary'] >> div:text-is('Download')"
+
     SEARCH_BAR_FILES_TABLE = '[data-testid="table-files-case-summary"] >> [data-testid="textbox-table-search-bar"]'
     BUTTON_DOWNLOAD_FILE_FILES_TABLE = '[data-testid="table-files-case-summary"] >> [data-testid="button-download-file"]'
 
@@ -35,6 +40,24 @@ class CaseSummaryPage(BasePage):
         self.click(remove_file_button_locator)
         removed_file_message = CaseSummaryLocators.REMOVED_FROM_CART_MESSAGE_IDENT
         self.wait_until_locator_is_visible(removed_file_message)
+
+    def click_button(self, button_name):
+        """Clicks specified button on Case Summary page"""
+        button_name = self.normalize_button_identifier(button_name)
+        locator = CaseSummaryLocators.BUTTON_CASE_SUMMARY_PAGE(button_name)
+        self.click(locator)
+
+    def click_clinical_table_tab(self, tab_name):
+        """Clicks specified tab on Clinical table"""
+        tab_name = self.normalize_button_identifier(tab_name)
+        locator = CaseSummaryLocators.BUTTON_CLINICAL_TAB(tab_name)
+        self.click(locator)
+
+    def click_clinical_table_download_button(self, download_type):
+        """Clicks download TSV or JSON in Clinical table"""
+        download_button = CaseSummaryLocators.BUTTON_CLINICAL_DOWNLOAD
+        self.click(download_button)
+        self.click_text_option_from_dropdown_menu(download_type)
 
     def search_in_files_table(self, text_to_send):
         """Sends text into files table search bar"""

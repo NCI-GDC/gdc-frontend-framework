@@ -8,9 +8,6 @@ class GenericLocators:
     TEXT_IDENT = lambda text: f"text={text} >> nth=0"
     TEXT_IN_PARAGRAPH = lambda text: f'p:has-text("{text}") >> nth=0'
 
-    X_BUTTON_IN_TEMP_MESSAGE = (
-        '>> .. >> .. >> .. >> svg[xmlns="http://www.w3.org/2000/svg"]'
-    )
     UNDO_BUTTON_IN_TEMP_MESSAGE = 'span:text("Undo")'
     SET_AS_CURRENT_COHORT_IN_TEMP_MESSAGE = (
         'span:text("Set this as your current cohort.")'
@@ -83,7 +80,7 @@ class GenericLocators:
     )
 
     TABLE_TEXT_IDENT = (
-        lambda table_name, table_text: f'[data-testid="table-{table_name}"] >> text={table_text}'
+        lambda table_name, table_text: f'[data-testid="table-{table_name}"] >> text={table_text} >> nth=0'
     )
     TABLE_AREA_TO_SELECT = (
         lambda row, column: f"tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0"
@@ -309,9 +306,7 @@ class BasePage:
                 # it changes what the active cohort is. I cannot reproduce it manually, and it stops
                 # when I put this sleep here.
                 time.sleep(1)
-                x_button_locator = (
-                    text_locator + GenericLocators.X_BUTTON_IN_TEMP_MESSAGE
-                )
+                x_button_locator = GenericLocators.BUTTON_CLOSE_NOTIFICATION
                 # Remove the message after locating it.
                 # The messages can pile up, so removing them is sometimes necessary for subsequent scenarios
                 self.click(x_button_locator)
