@@ -83,7 +83,7 @@ class GenericLocators:
     )
 
     TABLE_TEXT_IDENT = (
-        lambda table_name, table_text: f'[data-testid="table-{table_name}"] >> text={table_text}'
+        lambda table_name, table_text: f'[data-testid="table-{table_name}"] >> text={table_text} >> nth=0'
     )
     TABLE_AREA_TO_SELECT = (
         lambda row, column: f"tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0"
@@ -627,6 +627,7 @@ class BasePage:
         Then clicks the first result in the search result area. Best used with a UUID.
         """
         self.send_keys(GenericLocators.QUICK_SEARCH_BAR_IDENT, text)
+        time.sleep(1)
         first_result_locator = GenericLocators.QUICK_SEARCH_BAR_FIRST_RESULT
         self.click(first_result_locator)
 

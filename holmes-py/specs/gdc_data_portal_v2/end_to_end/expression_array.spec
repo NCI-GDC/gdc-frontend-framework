@@ -32,7 +32,7 @@ tags: gdc-data-portal-v2, end-to-end, regression
     |text_to_validate                       |
     |---------------------------------------|
     |dc60add8-9c21-4d98-bd3d-93ccf5ded9b9Current Version|
-    |2024-08-21	                            |
+    |2024-08-28	                            |
     |41.0                                   |
 ## File Versions Table - Download and Validate TSV
 * Download "TSV" from "File Summary File Versions"
@@ -41,7 +41,7 @@ tags: gdc-data-portal-v2, end-to-end, regression
     |required_info                          |
     |---------------------------------------|
     |dc60add8-9c21-4d98-bd3d-93ccf5ded9b9 Current Version|
-    |2024-08-21	                            |
+    |2024-08-28	                            |
     |41.0                                   |
 ## Download File - dc60add8-9c21-4d98-bd3d-93ccf5ded9b9
 * Download "File" from "File Summary"
