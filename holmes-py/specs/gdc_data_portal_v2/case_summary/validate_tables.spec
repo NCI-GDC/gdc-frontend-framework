@@ -114,6 +114,41 @@ tags: gdc-data-portal-v2, case-summary
     |Yes                                    |
     |Occasional Drinker                     |
     |Current Reformed Smoker for > 15 yrs   |
+## Clinical Table - TSV Download: Exposure, Pathological Detail
+* Download "TSV" from "Case Summary Clinical Table"
+* Read file content from compressed "TSV from Case Summary Clinical Table"
+* Verify that "TSV from Case Summary Clinical Table" has expected information
+    |required_info                          |
+    |---------------------------------------|
+    |5fd8d17e-57d2-4270-8728-de259ff6b2fe   |
+    |cigarettes_per_day                     |
+    |exposure_type                          |
+    |Tobacco                                |
+    |respirable_crystalline_silica_exposure |
+    |tobacco_smoking_status                 |
+    |Current Reformed Smoker for > 15 yrs   |
+    |diagnosis_id                           |
+    |26a5ccaa-d86d-4283-9a00-39ed229586f9   |
+    |extracapsular_extension_present        |
+    |margin_status                          |
+    |pathology_detail_submitter_id          |
+    |tumor_largest_dimension_diameter       |
+    |3.5                                    |
+
+## Clinical Table - Download JSON: Exposure, Pathological Detail
+* Download "JSON" from "Case Summary Clinical Table"
+* Read from "JSON from Case Summary Clinical Table"
+* Verify that "JSON from Case Summary Clinical Table" has expected information
+    |required_info                          |
+    |---------------------------------------|
+    |Tobacco                                |
+    |Current Reformed Smoker for > 15 yrs   |
+    |1968                                   |
+    |Stage I                                |
+    |Renal cell carcinoma, NOS              |
+    |30196a26-d73e-428c-9f7a-707e6a2c7241   |
+    |C3N-03018-PATH                         |
+    |Kidney, NOS                            |
 
 ## Navigate to Case Summary Page: MMRF_2081
 * Quick search for "3d5ebf3f-0cbd-458a-820d-65652e9682d7" and go to its page
@@ -236,31 +271,45 @@ tags: gdc-data-portal-v2, case-summary
     |2.8                                    |
     |ukat/L                                 |
 
-## Clinical Table - TSV Download
+## Clinical Table - TSV Download: Follow Up, Family History, Clinical
 * Download "TSV" from "Case Summary Clinical Table"
 * Read file content from compressed "TSV from Case Summary Clinical Table"
 * Verify that "TSV from Case Summary Clinical Table" has expected information
     |required_info                          |
     |---------------------------------------|
-    |case_id           |
-    |cause_of_response           |
-    |3d5ebf3f-0cbd-458a-820d-65652e9682d7           |
-    |MMRF_2081           |
-    |additional_pathology_findings           |
+    |case_id                                |
+    |cause_of_response                      |
+    |barretts_esophagus_goblet_cells_present|
+    |hysterectomy_margins_involved          |
+    |recist_targeted_regions_number         |
+    |Lactate Dehydrogenase                  |
+    |molecular_analysis_method              |
+    |bone_marrow_malignant_cells            |
+    |non_nodal_tumor_deposits               |
+    |rhabdoid_present                       |
+    |zone_of_origin_prostate                |
+    |relative_smoker                        |
+    |relatives_with_cancer_history_count    |
+    |relationship_gender                    |
+    |3d5ebf3f-0cbd-458a-820d-65652e9682d7   |
+    |MMRF_2081                              |
+    |additional_pathology_findings          |
+    |treatment_type                         |
+    |MMRF-COMMPASS                          |
 
-## Clinical Table - Download JSON
+## Clinical Table - Download JSON: Follow Up, Family History, Clinical
 * Download "JSON" from "Case Summary Clinical Table"
 * Read from "JSON from Case Summary Clinical Table"
 * Verify that "JSON from Case Summary Clinical Table" has expected information
     |required_info                          |
     |---------------------------------------|
-    |3d5ebf3f-0cbd-458a-820d-65652e9682d7           |
-    |MMRF_2081           |
-    |MMRF_2081_family_history2           |
-    |"MMRF_2081_followup7"           |
-    |MMRF-COMMPASS           |
-    |0ad0643b-8364-4ea3-a600-d03c0be2e6fd           |
-    |not hispanic or latino           |
+    |3d5ebf3f-0cbd-458a-820d-65652e9682d7   |
+    |MMRF_2081                              |
+    |MMRF_2081_family_history2              |
+    |MMRF_2081_followup7                    |
+    |MMRF-COMMPASS                          |
+    |0ad0643b-8364-4ea3-a600-d03c0be2e6fd   |
+    |not hispanic or latino                 |
 
 ## Annotations Table - Validate JSON File Fields
   |field_name                               |
@@ -269,5 +318,4 @@ tags: gdc-data-portal-v2, case-summary
   |submitter_id	                            |
   |family_histories.relative_with_cancer_history|
   |project.project_id                       |
-
 * Verify that the "JSON from Case Summary Clinical Table" has <field_name> for each object
