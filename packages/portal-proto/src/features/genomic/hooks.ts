@@ -31,7 +31,11 @@ import {
 import { useEffect, useMemo } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
 import isEqual from "lodash/isEqual";
-import { extractValue } from "@/features/facets/hooks";
+import {
+  extractValue,
+  FacetDocTypeToCountsIndexMap,
+  useTotalCounts,
+} from "@/features/facets/hooks";
 import { useAppDispatch, useAppSelector } from "@/features/genomic/appApi";
 import {
   updateGeneAndSSMFilter,
@@ -40,6 +44,12 @@ import {
   removeGeneAndSSMFilter,
   selectGeneAndSSMFiltersByNames,
 } from "@/features/genomic/geneAndSSMFiltersSlice";
+import {
+  toggleFilter,
+  toggleAllFilters,
+  selectFilterExpanded,
+  selectAllFiltersCollapsed,
+} from "./geneAndSSMFilterExpandedSlice";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { overwritingDemoFilterMutationFrequency } from "@/features/genomic/GenesAndMutationFrequencyAnalysisTool";
 import { buildGeneHaveAndHaveNotFilters } from "@/features/genomic/utils";
@@ -47,6 +57,7 @@ import { AppModeState, ComparativeSurvival } from "./types";
 import { humanify } from "@/utils/index";
 import { useDeepCompareMemo } from "use-deep-compare";
 import { appendSearchTermFilters } from "@/features/GenomicTables/utils";
+import FilterFacets from "@/features/genomic/filters.json";
 
 /**
  * Update Genomic Enum Facets filters. These are app local updates and are not added
@@ -98,12 +109,37 @@ export const useGenomicFacetFilter = (): FilterSet => {
   return useAppSelector((state) => selectGeneAndSSMFilters(state));
 };
 
-export const useGenesFacetValues = (
-  docType: GQLDocType,
-  indexType: GQLIndexType,
-  field: string,
-): EnumFacetResponse => {
+export const useToggleExpandFilter = () => {
+  const dispatch = useAppDispatch();
+  return (field: string, expanded: boolean) => {
+    dispatch(toggleFilter({ field, expanded }));
+  };
+};
+
+export const useToggleAllFilters = () => {
+  const dispatch = useAppDispatch();
+  return (expanded: boolean) => {
+    dispatch(toggleAllFilters(expanded));
+  };
+};
+
+export const useFilterExpandedState = (field: string) => {
+  return useAppSelector((state) => selectFilterExpanded(state, field));
+};
+
+export const useAllFiltersCollapsed = () => {
+  return useAppSelector((state) => selectAllFiltersCollapsed(state));
+};
+
+export const useTotalGenomicCounts = (field: string) => {
+  const docType = FilterFacets.find((f) => f.full === field)?.doc_type;
+  return useTotalCounts(FacetDocTypeToCountsIndexMap[docType]);
+};
+
+export const useGenesFacetValues = (field: string): EnumFacetResponse => {
   // facet data is store in core
+  const docType = FilterFacets.find((f) => f.full === field)
+    .doc_type as GQLDocType;
   const facet: FacetBuckets = useCoreSelector((state) =>
     selectFacetByDocTypeAndField(state, docType, field),
   );

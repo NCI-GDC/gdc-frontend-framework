@@ -13,7 +13,7 @@ describe("<ToggleFacet />", () => {
         field="gene.is_cancer_gene_census"
         width="w-1/3"
         hooks={{
-          useGetFacetData: jest.fn((): EnumFacetResponse => {
+          useGetEnumFacetData: jest.fn((): EnumFacetResponse => {
             return {
               data: {},
               isSuccess: true,
@@ -45,7 +45,7 @@ describe("<ToggleFacet />", () => {
         field="gene.is_cancer_gene_census"
         width="w-1/3"
         hooks={{
-          useGetFacetData: jest.fn((): EnumFacetResponse => {
+          useGetEnumFacetData: jest.fn((): EnumFacetResponse => {
             return {
               data: { "1": 21734 },
               isSuccess: true,

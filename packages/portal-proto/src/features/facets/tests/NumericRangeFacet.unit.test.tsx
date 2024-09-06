@@ -19,7 +19,7 @@ describe("<NumericRangeFacet />", () => {
         minimum={0}
         maximum={32873}
         hooks={{
-          useGetFacetData: jest.fn((): EnumFacetResponse => {
+          useGetRangeFacetData: jest.fn((): EnumFacetResponse => {
             return {
               data: {
                 "0.0-3653.0": 4109,
