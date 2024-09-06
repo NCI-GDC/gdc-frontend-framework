@@ -86,7 +86,7 @@ export interface FileViewProps {
   readonly isModal?: boolean;
 }
 
-const DivWithMargin = tw.div`mt-8`;
+const DivWithMargin = tw.div`mt-8 flex flex-col gap-2`;
 
 export const FileView: React.FC<FileViewProps> = ({
   file,
