@@ -165,6 +165,7 @@ def download_file_at_file_table(file: str, source: str):
         "File Summary File Versions": APP.file_summary_page.click_file_version_download_option,
         "File Summary Annotation Table": APP.file_summary_page.click_annotation_table_download_option,
         "Case Summary Clinical Table": APP.case_summary_page.click_clinical_table_download_button,
+        "Case Summary Biospecimen Table": APP.case_summary_page.click_biospecimen_table_download_button,
         "Case Summary Files Table": APP.case_summary_page.click_files_table_download_file_button,
         "Cohort Bar": APP.cohort_bar.click_cohort_bar_button,
         "Manage Sets": APP.manage_sets_page.click_on_download_for_set,
@@ -433,6 +434,14 @@ def verify_table_is_displaying_text(table_name, table):
             is_table_text_present
         ), f"The table '{table_name}' is NOT displaying '{v[0]}'"
 
+@step("Verify the table <table_name> is not displaying this information <table>")
+def verify_table_is_not_displaying_text(table_name, table):
+    """Verifies the table is not displaying given text"""
+    for k, v in enumerate(table):
+        is_table_text_present = APP.shared.is_table_displaying_text_no_wait(table_name, v[0])
+        assert (
+            is_table_text_present == False
+        ), f"The table '{table_name}' is displaying '{v[0]}' when it should NOT"
 
 @step("Verify the button <button_name> is disabled")
 def verify_button_is_disabled(button_name: str):
@@ -593,6 +602,13 @@ def store_cohort_bar_case_count_for_comparison(cohort_name: str):
         f"{cohort_name} Case Count"
     ] = APP.shared.get_cohort_bar_case_count()
 
+@step("Collect table <table_name> Item Count for comparison")
+def store_item_count_in_table_for_comparison(table_name:str):
+    """
+    Stores the total number of items in the given table for comparison in future tests.
+    Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'
+    """
+    data_store.spec[f"{table_name} Item Count"] = APP.shared.get_table_item_count_text(table_name)
 
 @step("The cohort bar case count should be <case_count>")
 def is_cohort_bar_case_count_present_on_the_page(case_count: str):

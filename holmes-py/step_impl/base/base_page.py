@@ -79,6 +79,9 @@ class GenericLocators:
         lambda button_text_name: f'footer >> a:has-text("{button_text_name}") >> nth=0'
     )
 
+    TABLE_ITEM_COUNT_IDENT = (
+        lambda table_name: f'[data-testid="table-{table_name}"] >> [data-testid="text-total-item-count"]'
+    )
     TABLE_TEXT_IDENT = (
         lambda table_name, table_text: f'[data-testid="table-{table_name}"] >> text={table_text} >> nth=0'
     )
@@ -243,6 +246,12 @@ class BasePage:
         """Returns the text of how many items are being shown on the specified table"""
         table_name = self.normalize_button_identifier(table_name)
         locator = GenericLocators.SHOWING_NUMBER_OF_ITEMS_IN_TABLE(table_name)
+        return self.get_text(locator)
+
+    def get_table_item_count_text(self, table_name):
+        """Returns how many items are in the table by retrieving the number in the 'Total Of xx Object' string"""
+        table_name = self.normalize_button_identifier(table_name)
+        locator = GenericLocators.TABLE_ITEM_COUNT_IDENT(table_name)
         return self.get_text(locator)
 
     def get_filter_selection_count(self, filter_group_name, selection):
@@ -450,6 +459,13 @@ class BasePage:
         except:
             return False
         return True
+
+    def is_table_displaying_text_no_wait(self, table_id, table_text):
+        """Returns if the given table is displaying specified text. This does not wait
+        for text to appear, it returns immediately if is displayed or not."""
+        table_id = self.normalize_button_identifier(table_id)
+        table_text_locator = GenericLocators.TABLE_TEXT_IDENT(table_id, table_text)
+        return self.is_visible(table_text_locator)
 
     def click_data_testid(self, data_testid):
         locator = GenericLocators.DATA_TEST_ID_IDENT(data_testid)

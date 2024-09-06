@@ -10,7 +10,7 @@ tags: gdc-data-portal-v2, case-summary
 ## Navigate to Case Summary Page: TCGA-13-0920
 * On GDC Data Portal V2 app
 * Quick search for "85a85a11-7200-4e96-97af-6ba26d680d59" and go to its page
-## Data Information Table
+## Summary Table
 * Verify the table "Summary Case Summary" is displaying this information
     |text_to_validate                       |
     |---------------------------------------|
@@ -40,7 +40,7 @@ tags: gdc-data-portal-v2, case-summary
 
 ## Navigate Back To Case Summary Page: TCGA-13-0920
 * Quick search for "85a85a11-7200-4e96-97af-6ba26d680d59" and go to its page
-## File Counts by Data Category Table
+## Data Category Table
 * Verify the table "Data Category Case Summary" is displaying this information
     |text_to_validate                       |
     |---------------------------------------|
@@ -55,7 +55,7 @@ tags: gdc-data-portal-v2, case-summary
     |Structural Variation                   |
     |Transcriptome Profiling                |
 
-## File Counts by Experimental Strategy Table
+## Experimental Strategy Table
 * Verify the table "Experimental Strategy Case Summary" is displaying this information
     |text_to_validate                       |
     |---------------------------------------|
@@ -311,7 +311,7 @@ tags: gdc-data-portal-v2, case-summary
     |0ad0643b-8364-4ea3-a600-d03c0be2e6fd   |
     |not hispanic or latino                 |
 
-## Annotations Table - Validate JSON File Fields
+## Clinical Table - Validate JSON File Fields
   |field_name                               |
   |-----------------------------------------|
   |case_id	                                |
@@ -319,3 +319,235 @@ tags: gdc-data-portal-v2, case-summary
   |family_histories.relative_with_cancer_history|
   |project.project_id                       |
 * Verify that the "JSON from Case Summary Clinical Table" has <field_name> for each object
+
+
+## Navigate to Case Summary Page: TCGA-GV-A3QI
+* Quick search for "06f936e9-5a90-40d3-b91a-713f2b4e6e11" and go to its page
+## Biospecimen Table - Expand/Collapse Button
+* Select "Expand All"
+* Verify the table "Biospecimen Case Summary" is displaying this information
+    |text_to_validate                       |
+    |---------------------------------------|
+    |samples                                |
+    |TCGA-GV-A3QI-10A                       |
+    |portions                               |
+    |TCGA-GV-A3QI-10A-01                    |
+    |analytes                               |
+    |TCGA-GV-A3QI-10A-01                    |
+    |aliquots                               |
+    |TCGA-GV-A3QI-10A-01D-A21Y-01           |
+    |TCGA-GV-A3QI-10A-01D-A21Z-08           |
+    |slides                                 |
+    |TCGA-GV-A3QI-01A-01-TSA                |
+* Select "Collapse All"
+* Pause "2" seconds
+* Verify the table "Biospecimen Case Summary" is not displaying this information
+    |text_to_validate                       |
+    |---------------------------------------|
+    |TCGA-GV-A3QI-10A-01                    |
+    |analytes                               |
+    |TCGA-GV-A3QI-10A-01                    |
+    |aliquots                               |
+    |TCGA-GV-A3QI-10A-01D-A21Y-01           |
+    |TCGA-GV-A3QI-10A-01D-A21Z-08           |
+    |slides                                 |
+    |TCGA-GV-A3QI-01A-01-TSA                |
+    |TCGA-GV-A3QI-01A-11D-A21Z-08           |
+    |TCGA-GV-A3QI-01Z-00-DX1                |
+
+## Biospecimen Table - Samples
+* Enter "074df1cb-b6b7-4d3f-9c0a-fe523b1854e0" in the text box "Biospecimen Search Bar"
+* Verify the table "Selection Information Biospecimen" is displaying this information
+    |text_to_validate                       |
+    |---------------------------------------|
+    |Sample ID                              |
+    |Sample UUID                            |
+    |Sample Type                            |
+    |Sample Type ID                         |
+    |Tissue Type                            |
+    |Tumor Code                             |
+    |Tumor Code ID                          |
+    |Oct Embedded                           |
+    |Shortest Dimension                     |
+    |Intermediate Dimension                 |
+    |Longest Dimension                      |
+    |Is Ffpe                                |
+    |Pathology Report UUID                  |
+    |Tumor Descriptor                       |
+    |Current Weight                         |
+    |Initial Weight                         |
+    |Composition                            |
+    |Time Between Clamping And Freezing     |
+    |Time Between Excision And Freezing     |
+    |Days To Sample Procurement             |
+    |Freezing Method                        |
+    |Preservation Method                    |
+    |Days To Collection                     |
+    |Portions                               |
+    |TCGA-GV-A3QI-10A                       |
+    |074df1cb-b6b7-4d3f-9c0a-fe523b1854e0   |
+    |Blood Derived Normal                   |
+    |10                                     |
+    |Normal                                 |
+    |false                                  |
+    |Not Applicable                         |
+    |Not Reported                           |
+    |105 days                               |
+
+## Biospecimen Table - Portions
+* Enter "1d4435fe-3a24-426d-9b49-d800551fc4a0" in the text box "Biospecimen Search Bar"
+* Verify the table "Selection Information Biospecimen" is displaying this information
+    |text_to_validate                       |
+    |---------------------------------------|
+    |Portion ID                             |
+    |Portion UUID                           |
+    |Portion Number                         |
+    |Weight                                 |
+    |Is Ffpe	                            |
+    |Analytes                               |
+    |Slides                                 |
+    |TCGA-GV-A3QI-01A-11                    |
+    |1d4435fe-3a24-426d-9b49-d800551fc4a0   |
+    |false                                  |
+    |--                                     |
+
+## Biospecimen Table - Slides
+* Enter "88217dc9-06a0-4839-8269-85ce0798ef89" in the text box "Biospecimen Search Bar"
+* Verify the table "Selection Information Biospecimen" is displaying this information
+    |text_to_validate                       |
+    |---------------------------------------|
+    |Slide ID                               |
+    |Slide UUID                             |
+    |Percent Tumor Nuclei                   |
+    |Percent Monocyte Infiltration          |
+    |Percent Normal Cells                   |
+    |Percent Stromal Cells                  |
+    |Percent Eosinophil Infiltration        |
+    |Percent Lymphocyte Infiltration        |
+    |Percent Neutrophil Infiltration        |
+    |Section Location                       |
+    |Percent Granulocyte Infiltration       |
+    |Percent Necrosis                       |
+    |Percent Inflam Infiltration            |
+    |Number Proliferating Cells             |
+    |Percent Tumor Cells                    |
+    |Slide Image                            |
+    |TCGA-GV-A3QI-01A-01-TSA                |
+    |88217dc9-06a0-4839-8269-85ce0798ef89   |
+    |TOP                                    |
+    |100                                    |
+* Select button "Add Remove Cart Biospecimen"
+* Is modal with text "Added TCGA-GV-A3QI-01A-01-TSA.88217DC9-06A0-4839-8269-85CE0798EF89.svs to the cart." present on the page and "Remove Modal"
+* Select button "Add Remove Cart Biospecimen"
+* Is modal with text "Removed TCGA-GV-A3QI-01A-01-TSA.88217DC9-06A0-4839-8269-85CE0798EF89.svs from the cart." present on the page and "Remove Modal"
+* Select button "View Slide Image Biospecimen"
+* Select "Details" on the Image Viewer page
+* Verify details fields and values
+  |field_name                       |value                                  |
+  |---------------------------------|---------------------------------------|
+  |File_id                          |1fa7d4b5-147a-47a5-8605-3baa0d7be899   |
+  |Submitter_id                     |TCGA-GV-A3QI-01A-01-TSA                |
+  |Slide_id                         |88217dc9-06a0-4839-8269-85ce0798ef89   |
+
+## Navigate back to Case Summary Page: TCGA-GV-A3QI
+* Quick search for "06f936e9-5a90-40d3-b91a-713f2b4e6e11" and go to its page
+## Biospecimen Table - Analyte
+* Enter "873bc630-7061-4dee-9973-4a4f1b979eaf" in the text box "Biospecimen Search Bar"
+* Verify the table "Selection Information Biospecimen" is displaying this information
+    |text_to_validate                       |
+    |---------------------------------------|
+    |Analyte ID                             |
+    |Analyte UUID                           |
+    |Analyte Type                           |
+    |Analyte Type ID                        |
+    |Well Number                            |
+    |Amount                                 |
+    |A260 A280 Ratio                        |
+    |Concentration                          |
+    |Spectrophotometer Method               |
+    |Aliquots                               |
+    |TCGA-GV-A3QI-01A-11W                   |
+    |873bc630-7061-4dee-9973-4a4f1b979eaf   |
+    |Repli-G (Qiagen) DNA                   |
+
+## Biospecimen Table - Aliquot
+* Enter "59c24b21-b1e8-4752-bd0a-b48dd802643b" in the text box "Biospecimen Search Bar"
+* Verify the table "Selection Information Biospecimen" is displaying this information
+    |text_to_validate                       |
+    |---------------------------------------|
+    |Aliquot ID                             |
+    |Aliquot UUID                           |
+    |Source Center                          |
+    |Amount                                 |
+    |Concentration                          |
+    |Analyte Type                           |
+    |Analyte Type ID                        |
+    |TCGA-GV-A3QI-10A-01D-A21Z-08           |
+    |59c24b21-b1e8-4752-bd0a-b48dd802643b   |
+    |23                                     |
+    |0.07                                   |
+
+## Biospecimen Table - TSV Download
+* Download "TSV" from "Case Summary Biospecimen Table"
+* Read file content from compressed "TSV from Case Summary Biospecimen Table"
+* Verify that "TSV from Case Summary Biospecimen Table" has expected information
+    |required_info                          |
+    |---------------------------------------|
+    |project_id                             |
+    |sample_id                              |
+    |portion_id                             |
+    |analyte_submitter_id                   |
+    |aliquot_id                             |
+    |TCGA-GV-A3QI-10A-01W-A226-08           |
+    |06f936e9-5a90-40d3-b91a-713f2b4e6e11   |
+    |45f1a50a-8d05-48c5-8f82-ba4955117d1b   |
+    |TCGA-GV-A3QI-01A-11                    |
+    |ffc59e86-1afb-4cdb-8651-191b21ee7876   |
+    |TCGA-GV-A3QI-01A-11D-A21Z-08           |
+    |experimental_protocol_type             |
+    |spectrophotometer_method               |
+    |mirVana (Allprep DNA) RNA              |
+    |analyte_type_id                        |
+    |slide_id                               |
+    |88217dc9-06a0-4839-8269-85ce0798ef89   |
+    |percent_inflam_infiltration            |
+    |percent_tumor_nuclei                   |
+    |portion_submitter_id                   |
+    |creation_datetime                      |
+
+## Biospecimen Table - Download JSON
+* Download "JSON" from "Case Summary Biospecimen Table"
+* Read from "JSON from Case Summary Biospecimen Table"
+* Verify that "JSON from Case Summary Biospecimen Table" has expected information
+    |required_info                          |
+    |---------------------------------------|
+    |06f936e9-5a90-40d3-b91a-713f2b4e6e11   |
+    |TCGA-BLCA                              |
+    |TCGA-GV-A3QI                           |
+    |074df1cb-b6b7-4d3f-9c0a-fe523b1854e0   |
+    |Blood Derived Normal                   |
+    |9d5d3fb7-22e5-4ad5-9036-3074e8ac41a8   |
+    |3792A65B-C233-4DDF-88F8-8829B73616FE   |
+    |873bc630-7061-4dee-9973-4a4f1b979eaf   |
+    |32a26490-4b9f-494c-b298-1bd7367aa070   |
+    |88217dc9-06a0-4839-8269-85ce0798ef89   |
+    |7375d70d-f43f-5589-931e-59e50d743f33   |
+
+## Biospecimen Table - Validate JSON File Fields
+  |field_name                               |
+  |-----------------------------------------|
+  |case_id	                                |
+  |project.project_id                       |
+  |submitter_id	                            |
+  |samples.sample_type_id	                |
+  |samples.portions.portion_id              |
+  |samples.portions.analytes.analyte_id     |
+  |samples.pathology_report_uuid	        |
+  |samples.portions.slides.slide_id         |
+  |samples.portions.analytes.aliquots.aliquot_quantity|
+* Verify that the "JSON from Case Summary Biospecimen Table" has <field_name> for each object
+
+## Files Table
+* Collect "File" Count from Case Summary Header for comparison
+* Collect table "Files Case Summary" Item Count for comparison
+* Verify "File Count from Case Summary Header" and "Files Case Summary Item Count" are "Equal"

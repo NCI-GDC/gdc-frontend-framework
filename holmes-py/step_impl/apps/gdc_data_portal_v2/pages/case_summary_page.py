@@ -14,10 +14,13 @@ class CaseSummaryLocators:
     ADDED_TO_CART_MESSAGE_IDENT = 'p:has-text("Added")'
     REMOVED_FROM_CART_MESSAGE_IDENT = 'p:has-text("Removed")'
 
+    TEXT_HEADER_ITEM_COUNT = lambda item_type: f"[data-testid='text-{item_type}-count-case-summary']"
+
     BUTTON_CASE_SUMMARY_PAGE = lambda button_name: f"[data-testid='button-{button_name}-case-summary']"
 
     BUTTON_CLINICAL_TAB = lambda tab_name: f"[data-testid='button-{tab_name}-tab']"
     BUTTON_CLINICAL_DOWNLOAD = "[data-testid='table-clinical-case-summary'] >> div:text-is('Download')"
+    BUTTON_BIOSPECIMEN_DOWNLOAD = "[data-testid='table-biospecimen-case-summary'] >> div:text-is('Download')"
 
     SEARCH_BAR_FILES_TABLE = '[data-testid="table-files-case-summary"] >> [data-testid="textbox-table-search-bar"]'
     BUTTON_DOWNLOAD_FILE_FILES_TABLE = '[data-testid="table-files-case-summary"] >> [data-testid="button-download-file"]'
@@ -26,6 +29,12 @@ class CaseSummaryLocators:
 class CaseSummaryPage(BasePage):
     def __init__(self, driver: Page, url):
         self.driver = driver  # driver is PW page
+
+    def get_header_item_count(self, item_type):
+        """Returns item count from specified type in the header of case summary page"""
+        item_type = self.normalize_button_identifier(item_type)
+        text_header_count_locator = CaseSummaryLocators.TEXT_HEADER_ITEM_COUNT(item_type)
+        return self.get_text(text_header_count_locator)
 
     # Clicks 'Add all files to the cart' button and waits for confirmation message to appear
     def add_file_to_cart(self):
@@ -56,6 +65,12 @@ class CaseSummaryPage(BasePage):
     def click_clinical_table_download_button(self, download_type):
         """Clicks download TSV or JSON in Clinical table"""
         download_button = CaseSummaryLocators.BUTTON_CLINICAL_DOWNLOAD
+        self.click(download_button)
+        self.click_text_option_from_dropdown_menu(download_type)
+
+    def click_biospecimen_table_download_button(self, download_type):
+        """Clicks download TSV or JSON in Biospecimen table"""
+        download_button = CaseSummaryLocators.BUTTON_BIOSPECIMEN_DOWNLOAD
         self.click(download_button)
         self.click_text_option_from_dropdown_menu(download_type)
 
