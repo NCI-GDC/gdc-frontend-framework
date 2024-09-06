@@ -547,7 +547,70 @@ tags: gdc-data-portal-v2, case-summary
   |samples.portions.analytes.aliquots.aliquot_quantity|
 * Verify that the "JSON from Case Summary Biospecimen Table" has <field_name> for each object
 
-## Files Table
+## Files Table - Count
 * Collect "File" Count from Case Summary Header for comparison
 * Collect table "Files Case Summary" Item Count for comparison
 * Verify "File Count from Case Summary Header" and "Files Case Summary Item Count" are "Equal"
+
+## Files Table - TSV Download
+* Search "tcga-blca" in the files table on the case summary page
+* Download "TSV" from "Case Summary Files Table"
+* Read from "TSV from Case Summary Files Table"
+* Verify that "TSV from Case Summary Files Table" has expected information
+  |required_info                            |
+  |-----------------------------------------|
+  |Access                                   |
+  |File Name                                |
+  |Data Category                            |
+  |Data Format                              |
+  |Experimental Strategy                    |
+  |File Size                                |
+  |TCGA-BLCA.6f417a24-f868-4cd1-a60b-37df5f098c76.gene_level_copy_number.v36.tsv|
+  |Copy Number Variation                    |
+  |BEDPE                                    |
+  |RNA-Seq                                  |
+  |39925                                    |
+  |Controlled                               |
+* Verify that "TSV from Case Summary Files Table" does not contain specified information
+  |required_info                                                            |
+  |-------------------------------------------------------------------------|
+  |nationwidechildrens.org_ssf_normal_controls_blca.txt                     |
+  |TCGA-GV-A3QI-01A-01-TSA.88217DC9-06A0-4839-8269-85CE0798EF89.svs         |
+  |fadf6ebc-28d7-44a5-af0d-518f36cad472.mirbase21.mirnas.quantification.txt |
+
+## Files Table - Download JSON
+* Download "JSON" from "Case Summary Files Table"
+* Read from "JSON from Case Summary Files Table"
+* Verify that "JSON from Case Summary Files Table" has expected information
+    |required_info                          |
+    |---------------------------------------|
+    |00980fb9-5519-4245-bd47-f1858dd69aaf   |
+    |Structural Variation                   |
+    |06f936e9-5a90-40d3-b91a-713f2b4e6e11   |
+    |Genotyping Array                       |
+    |Affymetrix SNP 6.0                     |
+    |Allele-specific Copy Number Segment    |
+    |a1098528-bd94-4d24-bd18-b811fdddd951   |
+    |TCGA-BLCA                              |
+* Verify that "JSON from Case Summary Files Table" does not contain specified information
+  |required_info                                                            |
+  |-------------------------------------------------------------------------|
+  |nationwidechildrens.org_ssf_normal_controls_blca.txt                     |
+  |TCGA-GV-A3QI-01A-01-TSA.88217DC9-06A0-4839-8269-85CE0798EF89.svs         |
+  |fadf6ebc-28d7-44a5-af0d-518f36cad472.mirbase21.mirnas.quantification.txt |
+
+## Files Table - Validate JSON File Fields
+  |field_name                               |
+  |-----------------------------------------|
+  |data_format                              |
+  |cases.case_id                            |
+  |cases.project.project_id                 |
+  |access	                                |
+  |file_name                                |
+  |file_id                                  |
+  |data_type                                |
+  |data_category                            |
+  |experimental_strategy                    |
+  |platform                                 |
+  |file_size                                |
+* Verify that the "JSON from Case Summary Files Table" has <field_name> for each object
