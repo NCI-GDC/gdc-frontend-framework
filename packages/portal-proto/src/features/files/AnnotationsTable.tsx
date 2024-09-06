@@ -30,7 +30,6 @@ import { useDeepCompareMemo } from "use-deep-compare";
 interface AnnotationsTableProps {
   readonly annotations: ReadonlyArray<FileAnnotationsType>;
 }
-// TODO when DEV-2653 is fixed, re-add case ID col, hide case UUID col by default
 type AnnotationTableData = Pick<
   FileAnnotationsType,
   | "annotation_id"
@@ -99,8 +98,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
   const [sortBy, setSortBy] = useState<SortBy[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-    // TODO when DEV-2653 is fixed, re-add case ID col, hide case UUID col by default
-    // case_id: false,
+    case_id: false,
     entity_id: false,
     status: false,
     notes: false,
@@ -181,8 +179,11 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
         id: "case_id",
         header: "Case UUID",
         enableSorting: false,
-        // TODO when DEV-2653 is fixed, re-add case ID col, hide case UUID col by default
-        // cell: ({ getValue }) => getValue() ?? "--",
+        cell: ({ getValue }) => getValue() ?? "--",
+      }),
+      annotationsTableColumnHelper.accessor("case_submitter_id", {
+        id: "case_submitter_id",
+        header: "Case ID",
         cell: ({ getValue, row }) =>
           getValue() ? (
             <Link
@@ -195,22 +196,6 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
             "--"
           ),
       }),
-      // TODO when DEV-2653 is fixed, re-add case ID col, hide case UUID col by default
-      // annotationsTableColumnHelper.accessor("case_submitter_id", {
-      //   id: "case_submitter_id",
-      //   header: "Case ID",
-      //   cell: ({ getValue, row }) =>
-      //     getValue() ? (
-      //       <Link
-      //         href={`/cases/${row.original.case_id}`}
-      //         className="text-utility-link underline font-content"
-      //       >
-      //         {getValue()}
-      //       </Link>
-      //     ) : (
-      //       "--"
-      //     ),
-      // }),
       annotationsTableColumnHelper.accessor("entity_type", {
         id: "entity_type",
         header: "Entity Type",
