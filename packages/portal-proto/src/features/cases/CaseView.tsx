@@ -11,7 +11,7 @@ import {
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { ActionIcon, Button, Tooltip } from "@mantine/core";
-import { useScrollIntoView } from "@mantine/hooks";
+import { useScrollIntoView, useViewportSize } from "@mantine/hooks";
 import { FaFile, FaShoppingCart, FaEdit } from "react-icons/fa";
 import { Biospecimen } from "../biospecimen/Biospecimen";
 import { addToCart, removeFromCart } from "../cart/updateCart";
@@ -19,7 +19,12 @@ import {
   formatDataForHorizontalTable,
   mapGdcFileToCartFile,
 } from "../files/utils";
-import { allFilesInCart, focusStyles, humanify } from "src/utils";
+import {
+  allFilesInCart,
+  focusStyles,
+  humanify,
+  LG_BREAKPOINT,
+} from "src/utils";
 import CategoryTableSummary from "@/components/Summary/CategoryTableSummary";
 import { ClinicalSummary } from "./ClinicalSummary/ClinicalSummary";
 import { ImageSlideCount } from "@/components/ImageSlideCount";
@@ -27,6 +32,7 @@ import {
   formatDataForDataCateogryTable,
   formatDataForExpCateogryTable,
   getSlideCountFromCaseSummary,
+  ITEMS_PER_COLUMN,
 } from "./utils";
 import SMTableContainer from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
 import FilesTable from "./FilesTable";
@@ -61,7 +67,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
   const isAllFilesInCart = data?.files
     ? allFilesInCart(currentCart, mapGdcFileToCartFile(data?.files))
     : false;
-
+  const { width } = useViewportSize();
   useScrollToHash(["files", "annotations"]);
 
   const {
@@ -194,7 +200,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
 
   const Files = (
     <span className="flex items-center gap-1">
-      <FaFile size={24} />
+      <FaFile />
       {filesCountTotal > 0 ? (
         <a
           data-testid="text-file-count-case-summary"
@@ -212,7 +218,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
 
   const Annotations = (
     <span className="flex items-center gap-1">
-      <FaEdit size={24} />
+      <FaEdit />
       {annotationCountData > 0 ? (
         <a
           data-testid="text-annotation-count-case-summary"
@@ -255,6 +261,12 @@ export const CaseView: React.FC<CaseViewProps> = ({
     },
   };
 
+  const summaryData = formatDataForCaseSummary();
+  const [leftColumnData, rightColumnData] = [
+    summaryData.slice(0, ITEMS_PER_COLUMN),
+    summaryData.slice(ITEMS_PER_COLUMN),
+  ];
+
   return (
     <>
       <SummaryHeader
@@ -288,34 +300,32 @@ export const CaseView: React.FC<CaseViewProps> = ({
           </Button>
         }
         rightElement={
-          <div className="flex items-center gap-2 text-2xl text-base-lightest leading-4 font-montserrat uppercase">
+          <div className="flex items-center gap-4 text-xl text-base-lightest font-medium leading-6 font-montserrat uppercase">
             Total of {Files} {Annotations}
           </div>
         }
         isModal={isModal}
       />
 
-      <div className={`${!isModal && "mt-32"} mx-4`}>
-        <div className="mt-8">
-          <div data-testid="table-summary-case-summary" className="flex">
-            <div className="basis-1/2">
-              <SummaryCard tableData={formatDataForCaseSummary().slice(0, 4)} />
-            </div>
-            <div className="basis-1/2">
-              <SummaryCard
-                tableData={formatDataForCaseSummary().slice(
-                  4,
-                  formatDataForCaseSummary().length,
-                )}
-                title=""
-              />
-            </div>
+      <div className={`${!isModal ? "mt-6" : "mt-4"} mx-4`}>
+        <div data-testid="table-summary-case-summary" className="flex">
+          <div className="basis-full lg:basis-1/2">
+            <SummaryCard
+              tableData={width >= LG_BREAKPOINT ? leftColumnData : summaryData}
+            />
           </div>
+          {width >= LG_BREAKPOINT && (
+            <div className="basis-1/2 h-full">
+              <SummaryCard tableData={rightColumnData} title="" />
+            </div>
+          )}
+        </div>
 
-          {(data.summary.data_categories ||
-            data.summary.experimental_strategies) && (
-            <div className="flex gap-4 mt-8 mb-14">
-              {data.summary.data_categories && (
+        {(data.summary.data_categories ||
+          data.summary.experimental_strategies) && (
+          <div className="flex flex-col lg:flex-row gap-8 mt-8">
+            {data.summary.data_categories && (
+              <div className="basis-1/2">
                 <CategoryTableSummary
                   customDataTestID="table-data-category-case-summary"
                   title="File Counts by Data Category"
@@ -327,8 +337,10 @@ export const CaseView: React.FC<CaseViewProps> = ({
                     "A detailed list of the files is located in the Files section of this page."
                   }
                 />
-              )}
-              {data.summary.experimental_strategies && (
+              </div>
+            )}
+            {data.summary.experimental_strategies && (
+              <div className="basis-1/2">
                 <CategoryTableSummary
                   customDataTestID="table-experimental-strategy-case-summary"
                   title="File Counts by Experimental Strategy"
@@ -340,20 +352,12 @@ export const CaseView: React.FC<CaseViewProps> = ({
                     "A detailed list of the files is located in the Files section of this page."
                   }
                 />
-              )}
-            </div>
-          )}
-        </div>
+              </div>
+            )}
+          </div>
+        )}
 
-        <div
-          data-testid="table-clinical-case-summary"
-          className={`${
-            !(
-              data.summary.data_categories ||
-              data.summary.experimental_strategies
-            ) && "mt-14"
-          }`}
-        >
+        <div data-testid="table-clinical-case-summary" className="mt-8">
           <ClinicalSummary
             diagnoses={diagnoses}
             follow_ups={follow_ups}
@@ -370,7 +374,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
           data-testid="table-biospecimen-case-summary"
           ref={targetRef}
           id="biospecimen"
-          className="mb-8"
+          className="mt-8"
         >
           <Biospecimen
             caseId={case_id}
@@ -381,13 +385,13 @@ export const CaseView: React.FC<CaseViewProps> = ({
           />
         </div>
         <div
-          className={`mb-8 ${isModal ? "scroll-mt-36" : "scroll-mt-72"}`}
+          className={`mt-8 ${isModal ? "scroll-mt-36" : "scroll-mt-72"}`}
           id="files"
         >
           <FilesTable caseId={case_id} />
         </div>
 
-        <div className="mb-16">
+        <div className={`mt-8 ${annotationCountData === 0 ? "mb-16" : ""}`}>
           <SMTableContainer
             projectId={data.project.project_id}
             case_id={case_id}
@@ -397,16 +401,17 @@ export const CaseView: React.FC<CaseViewProps> = ({
             inModal={isModal}
           />
         </div>
+        {annotationCountData > 0 && (
+          <div
+            className={`mt-8 mb-16 ${
+              isModal ? "scroll-mt-36" : "scroll-mt-72"
+            }`}
+            id="annotations"
+          >
+            <AnnotationsTable case_id={case_id} />
+          </div>
+        )}
       </div>
-
-      {annotationCountData > 0 && (
-        <div
-          className={`mb-16 mx-4 ${isModal ? "scroll-mt-36" : "scroll-mt-72"}`}
-          id="annotations"
-        >
-          <AnnotationsTable case_id={case_id} />
-        </div>
-      )}
     </>
   );
 };

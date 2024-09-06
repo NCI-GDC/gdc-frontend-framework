@@ -49,7 +49,7 @@ export const HorizontalTable = ({
   customDataTestID,
 }: HorizontalTableProps): JSX.Element => {
   const containerClassName =
-    "bg-base-lightest w-full text-left text-base-contrast-lightest font-content font-medium drop-shadow-sm border-1 border-base-lighter text-sm";
+    "bg-base-lightest w-full text-left text-base-contrast-lightest font-content font-medium drop-shadow-sm border-1 border-base-lighter text-sm table-fixed";
   const updatedContainerClassName = customContainerStyles
     ? containerClassName + ` ${customContainerStyles}`
     : containerClassName;
@@ -68,50 +68,54 @@ export const HorizontalTable = ({
               }
             >
               <th
-                className={`w-4/12 align-top px-2 ${
+                className={`w-2/5 align-top px-2 ${
                   !slideImageDetails && "py-2.5"
-                } border-base-lighter border-1 whitespace-nowrap font-semibold font-heading`}
+                } border-base-lighter border-1 whitespace-normal font-semibold font-heading`}
                 key={`head-${obj.headerName}`}
                 scope="row"
               >
                 {obj.headerName}
               </th>
-              {obj.values.map((value, index): JSX.Element => {
-                const tdObject = (item: string | JSX.Element): JSX.Element => {
-                  return (
-                    <td
-                      key={`${obj.headerName}-${index}`}
-                      className="border-1 border-base-lighter px-2 font-content-noto font-normal"
-                    >
-                      {item}
-                    </td>
-                  );
-                };
-                switch (typeof value) {
-                  case "undefined":
-                    return tdObject("");
-                  case "object":
-                    if (Array.isArray(value) && value.length > 1) {
-                      //collapsible list
-                      return tdObject(
-                        <CollapsableTableItems
-                          expandBtnText={`${obj.headerName}s`}
-                          keyId={`${obj.headerName}-${index}`}
-                          values={value}
-                        />,
-                      );
-                    }
-                    if (React.isValidElement(value)) {
-                      return tdObject(value);
-                    }
-                }
-                // if not caught by switch statement
-                return tdObject(value.toString());
-              })}
+              <td className="w-3/5 border-1 border-base-lighter px-2 font-content-noto font-normal">
+                <div className="flex flex-wrap gap-2">
+                  {obj.values.map((value, index) =>
+                    renderValue(value, obj.headerName, index),
+                  )}
+                </div>
+              </td>
             </tr>
           );
         })}
       </tbody>
     </table>
   );
+};
+
+const renderValue = (
+  value: any,
+  headerName: string,
+  index: number,
+): JSX.Element => {
+  if (value === undefined) {
+    return <span key={`${headerName}-${index}`}></span>;
+  }
+
+  if (Array.isArray(value) && value.length > 1) {
+    return (
+      <CollapsableTableItems
+        key={`${headerName}-${index}`}
+        expandBtnText={`${headerName}s`}
+        keyId={`${headerName}-${index}`}
+        values={value}
+      />
+    );
+  }
+
+  if (React.isValidElement(value)) {
+    return (
+      <React.Fragment key={`${headerName}-${index}`}>{value}</React.Fragment>
+    );
+  }
+
+  return <span key={`${headerName}-${index}`}>{String(value)}</span>;
 };

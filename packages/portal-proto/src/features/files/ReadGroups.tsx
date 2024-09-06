@@ -2,6 +2,7 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { useMemo } from "react";
 import VerticalTable from "@/components/Table/VerticalTable";
 import TotalItems from "@/components/Table/TotalItem";
+import { HeaderTitleTable } from "@/components/tailwindComponents";
 
 type ReadGroupsDataType = {
   read_group_id: string;
@@ -68,6 +69,7 @@ const ReadGroups = ({
       tableTitle={
         <TotalItems total={readGroups?.length} itemName="read group" />
       }
+      additionalControls={<HeaderTitleTable>Read Groups</HeaderTitleTable>}
     />
   );
 };

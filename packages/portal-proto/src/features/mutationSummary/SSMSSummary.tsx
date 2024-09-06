@@ -178,8 +178,8 @@ export const SSMSSummary = ({
             isModal={isModal}
           />
 
-          <div className={`mx-4 ${!isModal ? "mt-24" : "mt-6"}`}>
-            <div className="flex gap-8">
+          <div className={`${!isModal ? "mt-6" : "mt-4"} mx-4`}>
+            <div className="flex flex-col lg:flex-row gap-8">
               <div className="flex-1">
                 <SummaryCard
                   customDataTestID="table-summary-mutation-summary"
@@ -194,7 +194,7 @@ export const SSMSSummary = ({
                 />
               </div>
             </div>
-            <div className="mt-12">
+            <div className="mt-8">
               <div className="mb-2">
                 <HeaderTitle>Consequences</HeaderTitle>
               </div>
@@ -206,7 +206,7 @@ export const SSMSSummary = ({
               className="mt-8 mb-16"
             >
               <HeaderTitle>Cancer Distribution</HeaderTitle>
-              <div className="grid grid-cols-2 mb-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 mb-8">
                 <SSMPlot page="ssms" ssms={ssm_id} />
               </div>
 

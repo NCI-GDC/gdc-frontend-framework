@@ -248,3 +248,5 @@ export const formatDataForExpCateogryTable = (
 
   return { data: sortedExpCategories, columns: expCategoryTableColumns };
 };
+
+export const ITEMS_PER_COLUMN = 4;

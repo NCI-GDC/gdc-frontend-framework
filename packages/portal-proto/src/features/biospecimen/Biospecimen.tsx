@@ -176,7 +176,7 @@ export const Biospecimen = ({
 
   // TODO:  Need to add error message in place after this is moved to the Case Summary page for invalid case ids
   return (
-    <div className="mt-14">
+    <>
       {isBiospecimentDataFetching ? (
         <LoadingOverlay visible data-testid="loading-spinner" />
       ) : selectedEntity &&
@@ -213,8 +213,8 @@ export const Biospecimen = ({
           />
 
           <div className="flex mt-2 gap-4">
-            <div className="basis-4/12">
-              <div className="flex mb-4 gap-4">
+            <div className="basis-2/5 lg:basis-1/3">
+              <div className="flex flex-col lg:flex-row gap-2 mb-4 ">
                 <Input
                   data-testid="textbox-biospecimen-search-bar"
                   leftSection={<MdOutlineSearch size={24} aria-hidden="true" />}
@@ -268,7 +268,7 @@ export const Biospecimen = ({
                     );
                     setExpandedCount(0);
                   }}
-                  className="flex-none text-primary hover:enabled:bg-primary-darker hover:enabled:text-base-lightest"
+                  className="flex-none text-primary hover:enabled:bg-primary-darker hover:enabled:text-base-lightest font-medium"
                   disabled={searchText.length > 0}
                   variant="outline"
                 >
@@ -296,7 +296,7 @@ export const Biospecimen = ({
                   />
                 )}
             </div>
-            <div className="basis-3/4">
+            <div className="basis-3/5 lg:basis-2/3">
               <HorizontalTable
                 customDataTestID="table-selection-information-biospecimen"
                 tableData={formatEntityInfo(
@@ -312,6 +312,6 @@ export const Biospecimen = ({
           </div>
         </>
       ) : null}
-    </div>
+    </>
   );
 };
