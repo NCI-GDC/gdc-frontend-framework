@@ -47,6 +47,12 @@ import {
   removeRepositoryFilter,
   clearRepositoryFilters,
 } from "@/features/repositoryApp/repositoryFiltersSlice";
+import {
+  toggleFilter,
+  toggleAllFilters,
+  selectFilterExpanded,
+  selectAllFiltersCollapsed,
+} from "./repositoryFilterExpandedSlice";
 
 /**
  * Selector for the facet values (if any) from the current cohort
@@ -79,6 +85,28 @@ export const useClearAllRepositoryFilters = () => {
   return useCallback(() => {
     dispatch(clearRepositoryFilters());
   }, [dispatch]);
+};
+
+export const useToggleExpandFilter = () => {
+  const dispatch = useAppDispatch();
+  return (field: string, expanded: boolean) => {
+    dispatch(toggleFilter({ field, expanded }));
+  };
+};
+
+export const useToggleAllProjectFilters = () => {
+  const dispatch = useAppDispatch();
+  return (expanded: boolean) => {
+    dispatch(toggleAllFilters(expanded));
+  };
+};
+
+export const useFilterExpandedState = (field: string) => {
+  return useAppSelector((state) => selectFilterExpanded(state, field));
+};
+
+export const useAllFiltersCollapsed = () => {
+  return useAppSelector((state) => selectAllFiltersCollapsed(state));
 };
 
 type updateEnumFiltersFunc = (

@@ -17,7 +17,7 @@ describe("<NumericRangeFacet />", () => {
         rangeDatatype="age"
         valueLabel="Cases"
         hooks={{
-          useGetFacetData: jest.fn((): EnumFacetResponse => {
+          useGetRangeFacetData: jest.fn((): EnumFacetResponse => {
             return {
               data: {
                 "-32873.0--29220.0": 0,

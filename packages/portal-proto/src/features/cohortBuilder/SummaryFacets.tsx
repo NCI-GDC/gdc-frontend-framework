@@ -73,7 +73,7 @@ export const SummaryFacets: React.FC<SummaryFacetProps> = ({
                 FacetDocTypeToCountsIndexMap[entry.docType],
               ),
               useClearFilter: useClearFilters,
-              useGetFacetData: partial(
+              useGetEnumFacetData: partial(
                 useEnumFacetValues,
                 entry.docType,
                 entry.indexType,

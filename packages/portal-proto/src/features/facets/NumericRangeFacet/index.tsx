@@ -1,20 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { MdClose as CloseIcon, MdFlip as FlipIcon } from "react-icons/md";
-import { FaUndo as UndoIcon } from "react-icons/fa";
-import { Tooltip } from "@mantine/core";
-import { fieldNameToTitle } from "@gff/core";
 import { NumericFacetProps } from "./types";
-import {
-  controlsIconStyle,
-  FacetHeader,
-  FacetIconButton,
-  FacetText,
-} from "../components";
 import DaysOrYears from "./DaysOrYears";
 import Year from "./Year";
 import Years from "./Years";
 import PercentRange from "./PercentRange";
 import NumericRangePanel from "./NumericRangePanel";
+import FacetControlsHeader from "../FacetControlsHeader";
 
 /**
  * A component which manages a numeric range facet
@@ -43,8 +34,10 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
   dismissCallback = undefined,
   width = undefined,
 }: NumericFacetProps) => {
-  const clearFilters = hooks.useClearFilter();
   const [isFacetView, setIsFacetView] = useState(true);
+  const isFilterExpanded =
+    hooks?.useFilterExpanded && hooks.useFilterExpanded(field);
+  const showFilters = isFilterExpanded === undefined || isFilterExpanded;
 
   const toggleFlip = () => {
     setIsFacetView(!isFacetView);
@@ -61,142 +54,106 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
     <div
       className={`flex flex-col ${
         width ? width : "mx-0"
-      } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition`}
+      } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition h-fit`}
       id={field}
     >
-      <FacetHeader>
-        <Tooltip
-          disabled={!description}
-          label={description}
-          position="bottom-start"
-          multiline
-          w={220}
-          withArrow
-          transitionProps={{ duration: 200, transition: "fade" }}
-        >
-          <FacetText>
-            {facetName ? facetName : fieldNameToTitle(field)}
-          </FacetText>
-        </Tooltip>
-        <div className="flex flex-row">
-          {rangeDatatype !== "range" && (
-            <Tooltip label={isFacetView ? "Chart view" : "Selection view"}>
-              <FacetIconButton
-                onClick={toggleFlip}
-                aria-pressed={!isFacetView}
-                aria-label={isFacetView ? "Chart view" : "Selection view"}
-              >
-                <FlipIcon size="1.45em" className={controlsIconStyle} />
-              </FacetIconButton>
-            </Tooltip>
-          )}
-          <Tooltip label="Clear selection">
-            <FacetIconButton
-              onClick={() => {
-                clearFilters(field);
-                setClearValues(true);
-              }}
-              aria-label="clear selection"
-            >
-              <UndoIcon size="1.15em" />
-            </FacetIconButton>
-          </Tooltip>
-          {dismissCallback ? (
-            <Tooltip label="Remove the facet">
-              <FacetIconButton
-                onClick={() => {
-                  dismissCallback(field);
-                }}
-                aria-label="Remove the facet"
-              >
-                <CloseIcon size="1.25em" />
-              </FacetIconButton>
-            </Tooltip>
-          ) : null}
-        </div>
-      </FacetHeader>
-      {
+      <FacetControlsHeader
+        field={field}
+        description={description}
+        hooks={hooks}
+        facetName={facetName}
+        dismissCallback={dismissCallback}
+        isFacetView={isFacetView}
+        toggleFlip={toggleFlip}
+        showFlip={rangeDatatype !== "range"}
+      />
+      <div
+        className={showFilters ? "h-fit" : "h-0 invisible"}
+        aria-hidden={!showFilters}
+      >
         {
-          age: (
-            <DaysOrYears
-              valueLabel={valueLabel}
-              field={field}
-              rangeDatatype={rangeDatatype}
-              hooks={{ ...hooks }}
-              minimum={minimum}
-              maximum={maximum}
-              clearValues={clearValues}
-              isFacetView={isFacetView}
-            />
-          ),
-          age_in_years: (
-            <Years
-              valueLabel={valueLabel}
-              field={field}
-              rangeDatatype={rangeDatatype}
-              hooks={{ ...hooks }}
-              clearValues={clearValues}
-              isFacetView={isFacetView}
-            />
-          ),
-          year: (
-            <Year
-              valueLabel={valueLabel}
-              field={field}
-              hooks={{ ...hooks }}
-              minimum={minimum}
-              maximum={maximum}
-              clearValues={clearValues}
-              isFacetView={isFacetView}
-            />
-          ),
-          years: (
-            <Years
-              valueLabel={valueLabel}
-              field={field}
-              hooks={{ ...hooks }}
-              minimum={minimum}
-              maximum={maximum}
-              clearValues={clearValues}
-              isFacetView={isFacetView}
-            />
-          ),
-          days: (
-            <DaysOrYears
-              valueLabel={valueLabel}
-              field={field}
-              rangeDatatype={rangeDatatype}
-              hooks={{ ...hooks }}
-              minimum={minimum}
-              maximum={maximum}
-              clearValues={clearValues}
-              isFacetView={isFacetView}
-            />
-          ),
-          percent: (
-            <PercentRange
-              valueLabel={valueLabel}
-              field={field}
-              hooks={{ ...hooks }}
-              minimum={minimum}
-              maximum={maximum}
-              clearValues={clearValues}
-              isFacetView={isFacetView}
-            />
-          ),
-          range: (
-            <NumericRangePanel
-              valueLabel={valueLabel}
-              field={field}
-              hooks={{ ...hooks }}
-              minimum={minimum}
-              maximum={maximum}
-              clearValues={clearValues}
-              isFacetView={isFacetView}
-            />
-          ),
-        }[rangeDatatype as string]
-      }
+          {
+            age: (
+              <DaysOrYears
+                valueLabel={valueLabel}
+                field={field}
+                rangeDatatype={rangeDatatype}
+                hooks={{ ...hooks }}
+                minimum={minimum}
+                maximum={maximum}
+                clearValues={clearValues}
+                isFacetView={isFacetView}
+              />
+            ),
+            age_in_years: (
+              <Years
+                valueLabel={valueLabel}
+                field={field}
+                rangeDatatype={rangeDatatype}
+                hooks={{ ...hooks }}
+                clearValues={clearValues}
+                isFacetView={isFacetView}
+              />
+            ),
+            year: (
+              <Year
+                valueLabel={valueLabel}
+                field={field}
+                hooks={{ ...hooks }}
+                minimum={minimum}
+                maximum={maximum}
+                clearValues={clearValues}
+                isFacetView={isFacetView}
+              />
+            ),
+            years: (
+              <Years
+                valueLabel={valueLabel}
+                field={field}
+                hooks={{ ...hooks }}
+                minimum={minimum}
+                maximum={maximum}
+                clearValues={clearValues}
+                isFacetView={isFacetView}
+              />
+            ),
+            days: (
+              <DaysOrYears
+                valueLabel={valueLabel}
+                field={field}
+                rangeDatatype={rangeDatatype}
+                hooks={{ ...hooks }}
+                minimum={minimum}
+                maximum={maximum}
+                clearValues={clearValues}
+                isFacetView={isFacetView}
+              />
+            ),
+            percent: (
+              <PercentRange
+                valueLabel={valueLabel}
+                field={field}
+                hooks={{ ...hooks }}
+                minimum={minimum}
+                maximum={maximum}
+                clearValues={clearValues}
+                isFacetView={isFacetView}
+              />
+            ),
+            range: (
+              <NumericRangePanel
+                valueLabel={valueLabel}
+                field={field}
+                hooks={{ ...hooks }}
+                minimum={minimum}
+                maximum={maximum}
+                clearValues={clearValues}
+                isFacetView={isFacetView}
+              />
+            ),
+          }[rangeDatatype as string]
+        }
+      </div>
     </div>
   );
 };

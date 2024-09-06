@@ -1,8 +1,6 @@
 import React from "react";
 import { useCoreSelector, Modals, selectCurrentModal } from "@gff/core";
 import FilterFacets from "@/features/genomic/filters.json";
-import ToggleFacet from "@/features/facets/ToggleFacet";
-import partial from "lodash/partial";
 import {
   useClearGenomicFilters,
   useGenesFacets,
@@ -10,17 +8,17 @@ import {
   useGenomicFilterByName,
   useGenomicFacetFilter,
   useGenesFacetValues,
+  useAllFiltersCollapsed,
+  useToggleAllFilters,
+  useToggleExpandFilter,
+  useFilterExpandedState,
+  useTotalGenomicCounts,
 } from "@/features/genomic/hooks";
-import {
-  FacetDocTypeToCountsIndexMap,
-  FacetDocTypeToLabelsMap,
-  useTotalCounts,
-} from "@/features/facets/hooks";
-import EnumFacet from "@/features/facets/EnumFacet";
-import SetFacet from "@/features/facets/SetFacet";
+import { FacetDocTypeToLabelsMap } from "@/features/facets/hooks";
 import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
 import MutationSetModal from "@/components/Modals/SetModals/MutationSetModal";
-import { Text } from "@mantine/core";
+import FilterPanel from "@/features/facets/FilterPanel";
+import { FacetCardDefinition } from "@/features/facets/types";
 
 const GeneAndSSMFilterPanel = ({
   isDemoMode,
@@ -33,115 +31,61 @@ const GeneAndSSMFilterPanel = ({
   useGenesFacets(
     "genes",
     "explore",
-    FilterFacets.filter((f) => f.docType === "genes").map(
-      (x) => x.facet_filter,
-    ),
+    FilterFacets.filter((f) => f.doc_type === "genes").map((x) => x.full),
     isDemoMode,
   );
   useGenesFacets(
     "ssms",
     "explore",
-    FilterFacets.filter((f) => f.docType === "ssms").map((x) => x.facet_filter),
+    FilterFacets.filter((f) => f.doc_type === "ssms").map((x) => x.full),
     isDemoMode,
   );
 
+  const allFiltersCollapsed = useAllFiltersCollapsed();
+  const toggleAllFiltersExpanded = useToggleAllFilters();
+
+  const GenomicFilterHooks = {
+    useGetEnumFacetData: useGenesFacetValues,
+    useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
+    useClearFilter: useClearGenomicFilters,
+    useTotalCounts: useTotalGenomicCounts,
+    useGetFacetValues: useGenomicFilterByName,
+    useToggleExpandFilter: useToggleExpandFilter,
+    useFilterExpanded: useFilterExpandedState,
+  };
+
   return (
-    <div>
-      <Text size="lg" className="text-primary-darker font-bold my-4">
-        Filters
-      </Text>
-      <div
-        data-testid="filters-facets"
-        className="flex flex-col gap-y-4 max-h-screen overflow-y-auto border-t-1 border-b-1 rounded-md w-48 md:w-64 lg:w-80 2xl:w-96"
-      >
-        <GeneSetModal
-          opened={modal === Modals.LocalGeneSetModal}
-          modalTitle="Filter Mutation Frequency by Mutated Genes"
-          inputInstructions="Enter one or more gene identifiers in the field below or upload a file to filter Mutation Frequency."
-          selectSetInstructions="Select one or more sets below to filter Mutation Frequency."
-          updateFilters={updateFilters}
-          existingFiltersHook={useGenomicFacetFilter}
-        />
+    <>
+      <GeneSetModal
+        opened={modal === Modals.LocalGeneSetModal}
+        modalTitle="Filter Mutation Frequency by Mutated Genes"
+        inputInstructions="Enter one or more gene identifiers in the field below or upload a file to filter Mutation Frequency."
+        selectSetInstructions="Select one or more sets below to filter Mutation Frequency."
+        updateFilters={updateFilters}
+        existingFiltersHook={useGenomicFacetFilter}
+      />
 
-        <MutationSetModal
-          opened={modal === Modals.LocalMutationSetModal}
-          modalTitle="Filter Mutation Frequency by Somatic Mutations"
-          inputInstructions="Enter one or more mutation identifiers in the field below or upload a file to filter Mutation Frequency."
-          selectSetInstructions="Select one or more sets below to filter Mutation Frequency."
-          updateFilters={updateFilters}
-          existingFiltersHook={useGenomicFacetFilter}
-        />
-
-        {FilterFacets.map((x, index) => {
-          if (x.type == "toggle") {
-            return (
-              <ToggleFacet
-                key={`${x.facet_filter}-${index}`}
-                field={`${x.facet_filter}`}
-                hooks={{
-                  useGetFacetData: partial(
-                    useGenesFacetValues,
-                    x.docType,
-                    "explore",
-                  ),
-                  useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
-                  useClearFilter: useClearGenomicFilters,
-                  useTotalCounts: partial(
-                    useTotalCounts,
-                    FacetDocTypeToCountsIndexMap[x.docType],
-                  ),
-                }}
-                facetName={x.name}
-                facetTitle={x.title}
-                valueLabel={FacetDocTypeToLabelsMap[x.docType]}
-                showPercent={false}
-                hideIfEmpty={false}
-              />
-            );
-          } else if (x.type === "set") {
-            return (
-              <SetFacet
-                key={`genes-mutations-app-${x.facet_filter}-${index}`}
-                facetName={x.name}
-                facetTitle={x.title}
-                facetBtnToolTip={x.toolTip}
-                field={x.facet_filter}
-                valueLabel={FacetDocTypeToLabelsMap[x.docType]}
-                hooks={{
-                  useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
-                  useClearFilter: useClearGenomicFilters,
-                  useGetFacetValues: useGenomicFilterByName,
-                }}
-              />
-            );
-          }
-          return (
-            <EnumFacet
-              key={`genes-mutations-app-${x.facet_filter}-${index}`}
-              field={`${x.facet_filter}`}
-              hooks={{
-                useGetFacetData: partial(
-                  useGenesFacetValues,
-                  x.docType,
-                  "explore",
-                ),
-                useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
-                useClearFilter: useClearGenomicFilters,
-                useTotalCounts: partial(
-                  useTotalCounts,
-                  FacetDocTypeToCountsIndexMap[x.docType],
-                ),
-              }}
-              facetName={x.name}
-              facetTitle={x.title}
-              valueLabel={FacetDocTypeToLabelsMap[x.docType]}
-              showPercent={false}
-              hideIfEmpty={false}
-            />
-          );
-        })}
-      </div>
-    </div>
+      <MutationSetModal
+        opened={modal === Modals.LocalMutationSetModal}
+        modalTitle="Filter Mutation Frequency by Somatic Mutations"
+        inputInstructions="Enter one or more mutation identifiers in the field below or upload a file to filter Mutation Frequency."
+        selectSetInstructions="Select one or more sets below to filter Mutation Frequency."
+        updateFilters={updateFilters}
+        existingFiltersHook={useGenomicFacetFilter}
+      />
+      <FilterPanel
+        facetDefinitions={FilterFacets as FacetCardDefinition[]}
+        facetHooks={GenomicFilterHooks}
+        valueLabel={(x: FacetCardDefinition) =>
+          FacetDocTypeToLabelsMap[x.doc_type]
+        }
+        app="genes-mutations-app"
+        toggleAllFiltersExpanded={toggleAllFiltersExpanded}
+        allFiltersCollapsed={allFiltersCollapsed}
+        hideIfEmpty={false}
+        showPercent={false}
+      />
+    </>
   );
 };
 export default GeneAndSSMFilterPanel;
