@@ -94,6 +94,6 @@ describe("<Biospecimen />", () => {
 
     expect(queryByLabelText("Case ID not found")).toBeNull();
     expect(getAllByRole("button")).toBeDefined();
-    expect(getByText("Primary Tumor")).toBeInTheDocument();
+    expect(getByText("Peripheral Blood NOS")).toBeInTheDocument();
   });
 });
