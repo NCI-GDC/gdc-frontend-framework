@@ -269,6 +269,14 @@ export const buildCohortGqlOperator = (
         }),
         isLoggedIn: fs?.isLoggedIn,
       };
+    case "or":
+      return {
+        op: fs.mode,
+        content: fsKeys.map((k): GqlOperation => {
+          return convertFilterToGqlFilter(fs.root[k]);
+        }),
+        isLoggedIn: fs?.isLoggedIn,
+      };
   }
   return undefined;
 };

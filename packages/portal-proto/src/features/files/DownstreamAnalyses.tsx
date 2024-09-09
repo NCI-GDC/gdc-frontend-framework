@@ -9,6 +9,7 @@ import { TableActionButtons } from "@/components/TableActionButtons";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
 import TotalItems from "@/components/Table/TotalItem";
+import { HeaderTitleTable } from "@/components/tailwindComponents";
 
 const DownstreamAnalyses = ({
   downstream_analyses,
@@ -123,6 +124,9 @@ const DownstreamAnalyses = ({
       columns={downstremAnalysesDefaultColumns}
       tableTitle={
         <TotalItems total={downstreamTableData?.length} itemName="file" />
+      }
+      additionalControls={
+        <HeaderTitleTable>Downstream Analyses Files</HeaderTitleTable>
       }
     />
   );

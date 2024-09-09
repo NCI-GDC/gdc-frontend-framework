@@ -721,6 +721,7 @@ module.exports = {
         md: "768px",
         lg: "1024px",
         xl: "1280px",
+        "2xl": "1536px",
       },
       colors: {
         /* These colors come from the NCI color palette. The palette defines

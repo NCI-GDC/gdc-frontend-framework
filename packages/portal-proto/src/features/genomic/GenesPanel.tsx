@@ -70,15 +70,15 @@ export const GenesPanel = ({
 
   return (
     <div className="flex flex-col">
-      <div className="flex flex-col gap-6 2xl:gap-8 2xl:flex-row bg-base-max mb-4">
-        <div className="w-full 2xl:w-1/2 border border-base-lighter p-4">
+      <div className="flex flex-col gap-6 xl:gap-8 xl:flex-row bg-base-max mb-4">
+        <div className="w-full xl:w-1/2 border border-base-lighter p-4">
           <GeneFrequencyChart
             marginBottom={95}
             genomicFilters={genomicFilters}
             cohortFilters={isDemoMode ? overwritingDemoFilter : cohortFilters}
           />
         </div>
-        <div className="w-full 2xl:w-1/2 relative border border-base-lighter p-4">
+        <div className="w-full xl:w-1/2 relative border border-base-lighter p-4">
           <LoadingOverlay
             zIndex={0}
             data-testid="loading-spinner"

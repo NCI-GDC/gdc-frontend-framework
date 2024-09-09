@@ -80,7 +80,7 @@ export const SummaryModal = ({
       classNames={{
         header: "m-0 p-0 min-h-0",
         title: "sr-only",
-        close: `absolute right-5 top-6 text-base-darkest [&_svg]:!h-14 [&_svg]:!w-14 float-right z-30 ${focusStyles} bg-base-lightest hover:bg-white`,
+        close: `absolute right-5 top-4 text-base-darkest [&_svg]:!h-14 [&_svg]:!w-14 float-right z-30 ${focusStyles} bg-base-lightest hover:bg-white`,
         content: "scroll-smooth",
       }}
       styles={{

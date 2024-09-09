@@ -55,7 +55,7 @@ function TablePagination<TData>({
   };
 
   return (
-    <div className="flex flex-col w-full md:px-4 lg:flex-nowrap font-heading items-center text-content bg-base-max border-base-lighter border-1 border-t-0 py-3 xl:flex-row xl:justify-between">
+    <div className="flex flex-col w-full px-4 lg:flex-nowrap font-heading items-center text-content bg-base-max border-base-lighter border-1 border-t-0 py-3 xl:flex-row xl:justify-between">
       {!disablePageSize && (
         <div className="flex justify-between items-center w-full xl:w-fit">
           <div

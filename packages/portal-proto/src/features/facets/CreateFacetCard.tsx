@@ -218,16 +218,16 @@ export const createFacetCardsFromList = ({
   facetNameSections = 1,
   width = undefined,
 }: CreateFacetCardFromListProps): ReadonlyArray<React.ReactNode> => {
-  return facets.map((x) =>
+  return facets.map((facet) =>
     createFacetCard({
-      facet: x,
+      facet,
       valueLabel,
       dataFunctions,
       idPrefix,
       dismissCallback,
       hideIfEmpty,
       showPercent,
-      facetName: fieldNameToTitle(x.full, facetNameSections),
+      facetName: fieldNameToTitle(facet.full, facetNameSections),
       width,
     }),
   );

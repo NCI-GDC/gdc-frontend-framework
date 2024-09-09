@@ -885,6 +885,10 @@ def click_nav_item_check_text_in_new_tab(page_name: str, table):
     Performs an action to open a new tab.
     Then, checks for expected text on the new tab to indicate it opened correctly.
     """
+
+    # Banners can interfere with this test. Dismiss any banner before beginning.
+    if APP.shared.is_text_present("Dismiss"):
+        APP.shared.click_button_with_displayed_text_name("Dismiss")
     for k, v in enumerate(table):
         new_tab = APP.shared.perform_action_handle_new_tab(page_name, v[0])
         is_text_visible = APP.shared.is_text_visible_on_new_tab(new_tab, v[1])

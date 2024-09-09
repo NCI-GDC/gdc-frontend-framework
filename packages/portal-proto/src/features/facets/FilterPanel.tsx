@@ -148,16 +148,16 @@ const FilterPanel = ({
           data-testid="filters-facets"
           className="flex flex-col gap-y-4 max-h-screen overflow-y-auto border-t-1 border-b-1 rounded-md w-48 md:w-64 lg:w-80 2xl:w-96"
         >
-          {facetDefinitions.map((x) => {
+          {facetDefinitions.map((facet) => {
             const isDefault =
               customConfig?.defaultFilters !== undefined
-                ? customConfig.defaultFilters.includes(x.full)
+                ? customConfig.defaultFilters.includes(facet.full)
                 : true;
-            const facetName = x.title || fieldNameToTitle(x.full);
+            const facetName = facet.title || fieldNameToTitle(facet.full);
             return createFacetCard({
-              facet: x,
+              facet,
               valueLabel:
-                typeof valueLabel === "string" ? valueLabel : valueLabel(x),
+                typeof valueLabel === "string" ? valueLabel : valueLabel(facet),
               dataFunctions: facetHooks,
               idPrefix: app,
               dismissCallback: !isDefault
