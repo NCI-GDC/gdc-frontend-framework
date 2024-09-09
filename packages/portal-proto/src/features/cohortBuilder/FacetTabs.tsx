@@ -25,6 +25,7 @@ import {
   LoadingOverlay,
   Modal,
   Stack,
+  StackProps,
   Tabs,
   TabsProps,
   Text,
@@ -49,8 +50,9 @@ import {
   useEnumFacets,
 } from "@/features/facets/hooks";
 import { partial } from "lodash";
+import { FacetCardDefinition } from "@/features/facets/types";
 
-const CustomFacetWhenEmptyGroup = tw(Stack)`
+const CustomFacetWhenEmptyGroup = tw(Stack)<StackProps>`
 h-64
 bg-base-lightest
 w-1/2
@@ -243,9 +245,9 @@ const CustomFacetGroup = (): JSX.Element => {
                 Add a Custom Filter
               </Text>
             </Button>
-            {createFacetCardsFromList(
-              customFacetDefinitions,
-              {
+            {createFacetCardsFromList({
+              facets: customFacetDefinitions as FacetCardDefinition[],
+              dataFunctions: {
                 useGetEnumFacetData: partial(
                   useEnumFacetValues,
                   "cases",
@@ -261,12 +263,11 @@ const CustomFacetGroup = (): JSX.Element => {
                 useClearFilter: useClearFilters,
                 useTotalCounts: partial(useTotalCounts, "caseCounts"),
               },
-              "cohort-builder",
-              FacetDocTypeToLabelsMap["cases"],
-              handleRemoveFilter,
-              false,
-              2,
-            )}
+              idPrefix: "cohort-builder",
+              valueLabel: FacetDocTypeToLabelsMap["cases"],
+              dismissCallback: handleRemoveFilter,
+              facetNameSections: 2,
+            })}
           </FacetGroup>
         )}
       </div>
@@ -358,9 +359,9 @@ export const FacetTabs = (): JSX.Element => {
                     docType={tabEntry.docType as GQLDocType}
                     facets={facetList}
                   >
-                    {createFacetCardsFromList(
-                      facetList,
-                      {
+                    {createFacetCardsFromList({
+                      facets: facetList as FacetCardDefinition[],
+                      dataFunctions: {
                         useGetEnumFacetData: partial(
                           useEnumFacetValues,
                           tabEntry.docType as GQLDocType,
@@ -379,10 +380,9 @@ export const FacetTabs = (): JSX.Element => {
                           FacetDocTypeToCountsIndexMap[tabEntry.docType],
                         ),
                       },
-                      "cohort-builder",
-                      FacetDocTypeToLabelsMap[tabEntry.docType],
-                      undefined,
-                    )}
+                      idPrefix: "cohort-builder",
+                      valueLabel: FacetDocTypeToLabelsMap[tabEntry.docType],
+                    })}
                   </FacetGroup>
                 )}
               </Tabs.Panel>

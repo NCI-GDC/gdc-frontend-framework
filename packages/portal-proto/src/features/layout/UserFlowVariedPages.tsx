@@ -176,6 +176,7 @@ export const UserFlowVariedPages = ({
       <header
         className="flex-none bg-base-max sticky top-0 z-[300] shadow-lg"
         ref={headerRef}
+        id="global-header"
       >
         {banners.map((banner) => (
           <Banner {...banner} key={banner.id} />
@@ -183,21 +184,25 @@ export const UserFlowVariedPages = ({
         <Header {...{ headerElements, indexPath, Options }} />
       </header>
       <ClearStoreErrorBoundary>
-        <aside
-          className={`${isContextBarSticky ? `sticky z-[299] shadow-lg` : ""}`}
-          style={{
-            top: `${isContextBarSticky && `${Math.round(headerHeight)}px`}`, // switching this to tailwind does not work
-          }}
-        >
-          {ContextBar ? ContextBar : null}
-        </aside>
-        <main
-          data-tour="full_page_content"
-          className="flex flex-grow flex-col overflow-x-clip overflow-y-clip"
-          id="main"
-        >
-          {children}
-        </main>
+        <>
+          <aside
+            className={`${
+              isContextBarSticky ? `sticky z-[299] shadow-lg` : ""
+            }`}
+            style={{
+              top: `${isContextBarSticky && `${Math.round(headerHeight)}px`}`, // switching this to tailwind does not work
+            }}
+          >
+            {ContextBar ? ContextBar : null}
+          </aside>
+          <main
+            data-tour="full_page_content"
+            className="flex flex-grow flex-col overflow-x-clip overflow-y-clip"
+            id="main"
+          >
+            {children}
+          </main>
+        </>
       </ClearStoreErrorBoundary>
       <Footer />
     </div>

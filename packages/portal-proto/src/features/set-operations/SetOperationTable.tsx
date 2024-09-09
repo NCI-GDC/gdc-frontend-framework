@@ -11,10 +11,8 @@ import { Checkbox, Tooltip } from "@mantine/core";
 import { createSetFiltersByKey, ENTITY_TYPE_TO_CREATE_SET_HOOK } from "./utils";
 import { pickBy } from "lodash";
 import { SelectedEntities } from "./types";
-import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
-import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
 import DownloadButtonTotal from "./DownloadButton";
-import { GqlUnion } from "@gff/core";
+import { GqlUnion, useSetOperationsCasesTotalQuery } from "@gff/core";
 
 type SetOperationTableDataType = {
   setOperation: string;
@@ -40,7 +38,7 @@ export const SetOperationTable = ({
     readonly key: string;
     readonly value: number;
   }[];
-  readonly queryHook: UseQuery<QueryDefinition<any, any, any, number, string>>;
+  readonly queryHook: typeof useSetOperationsCasesTotalQuery;
   selectedSets: {
     [k: string]: boolean;
   };

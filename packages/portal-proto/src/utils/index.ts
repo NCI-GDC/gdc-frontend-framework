@@ -9,6 +9,7 @@ import {
 } from "@gff/core";
 import { replace, sortBy } from "lodash";
 import { DocumentWithWebkit } from "@/features/types";
+import tailwindConfig from "tailwind.config";
 
 export const toggleFullScreen = async (
   ref: React.MutableRefObject<any>,
@@ -32,13 +33,11 @@ export const toggleFullScreen = async (
   }
 };
 
-/* eslint-disable @typescript-eslint/ban-types */
 export const createKeyboardAccessibleFunction = (
-  func: Function,
+  func: () => void,
 ): KeyboardEventHandler<any> => {
   return (e: React.KeyboardEvent<any>) => (e.key === "Enter" ? func() : null);
 };
-/* eslint-enable */
 
 export const capitalize = (original: string): string => {
   const customCapitalizations = {
@@ -284,3 +283,5 @@ export const statusBooleansToDataStatus = (
 
 export const focusStyles =
   "focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor";
+
+export const LG_BREAKPOINT = parseInt(tailwindConfig.theme.extend.screens.lg);

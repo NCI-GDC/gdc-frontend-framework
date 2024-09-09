@@ -45,13 +45,6 @@ tags: gdc-data-portal-v2, regression, file-summary
     |017c3ae9433e7310e97cf0e84077e967       |
     |TCGA-LIHC                              |
 
-## Empty Associcated Cases/Biospecimens Table
-table-associated-cases-biospecimens-file-summary
-* Verify the table "Associated Cases Biospecimens File Summary" is displaying this information
-    |text_to_validate                       |
-    |---------------------------------------|
-    |No cases or biospecimen found.         |
-
 ## Analysis Table
 * Verify the table "Analysis File Summary" is displaying this information
     |text_to_validate                       |

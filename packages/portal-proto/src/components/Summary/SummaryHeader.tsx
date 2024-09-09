@@ -1,11 +1,17 @@
 import { SummaryHeaderTitle } from "@/components/tailwindComponents";
 import { Divider } from "@mantine/core";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { IconType } from "react-icons";
 
 export interface SummaryHeaderProps {
-  Icon?: IconType;
-  headerTitleLeft?: string;
+  Icon: IconType;
+  headerTitleLeft:
+    | "File"
+    | "Case"
+    | "Project"
+    | "Gene"
+    | "Mutation"
+    | "Annotation";
   headerTitle: string | number;
   leftElement?: ReactNode;
   rightElement?: ReactNode;
@@ -19,41 +25,87 @@ export const SummaryHeader = ({
   rightElement,
   isModal = false,
 }: SummaryHeaderProps): JSX.Element => {
+  const [topOffset, setTopOffset] = useState("0px");
+  const isFile = headerTitleLeft === "File";
+  const isProject = headerTitleLeft === "Project";
+
+  useEffect(() => {
+    const globalHeader = document.querySelector("#global-header");
+    const resizeObserver = new ResizeObserver((entries) => {
+      setTopOffset(`${entries[0].contentRect.height}px`);
+    });
+
+    if (globalHeader) {
+      resizeObserver.observe(globalHeader);
+    }
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
+
   return (
-    <header
+    <div
       className={`bg-primary-vivid py-4 px-4 w-full flex flex-col shadow-lg gap-4 ${
-        isModal ? "sticky top-0 rounded-t-sm z-20" : "fixed z-10"
+        isModal ? "sticky top-0 rounded-t-sm z-20" : "sticky z-10"
       }`}
+      style={!isModal ? { top: topOffset } : undefined}
     >
-      <div
-        data-testid="text-summary-bar"
-        className="flex flex-nowrap items-center gap-2"
-      >
-        <div className="rounded-full bg-accent-cool-content-lighter">
-          <Icon
-            className="w-10 h-10 text-primary p-1.5"
-            aria-hidden
-            focusable="false"
-          />
+      <div data-testid="text-summary-bar" className="flex gap-4">
+        <div className="rounded-full w-9 h-9 bg-accent-cool-content-lighter text-primary flex-shrink-0">
+          <Icon aria-hidden focusable="false" className="w-full h-full p-1" />
         </div>
-        <SummaryHeaderTitle>
+        <div
+          className={`flex ${
+            isFile
+              ? "flex-col lg:flex-row lg:items-center lg:gap-4"
+              : "flex-row items-center gap-4"
+          }`}
+        >
           {headerTitleLeft && (
-            <span className="font-bold uppercase">
-              {headerTitleLeft} &bull;{" "}
-            </span>
+            <div className="font-bold uppercase text-xl text-base-lightest flex items-center">
+              <span>{headerTitleLeft}</span>
+              <span
+                className={`ml-4 text-2xl ${
+                  isFile ? "hidden lg:inline" : "inline"
+                }`}
+              >
+                &bull;
+              </span>
+            </div>
           )}
-          {headerTitle}
-        </SummaryHeaderTitle>
+          <SummaryHeaderTitle $isFile={isFile}>
+            {headerTitle}
+          </SummaryHeaderTitle>
+        </div>
       </div>
       {(leftElement || rightElement) && (
         <>
-          <Divider size="md" color="white" opacity={0.4} />
-          <div className="flex justify-between">
-            <>{leftElement && leftElement}</>
-            <>{rightElement && rightElement}</>
+          <Divider size="sm" color="white" opacity={0.4} />
+          <div
+            className={`flex flex-col gap-2 ${
+              isProject
+                ? "xl:flex-row xl:justify-between xl:items-center"
+                : "lg:flex-row lg:justify-between lg:items-center"
+            }`}
+          >
+            {leftElement && (
+              <div
+                className={`order-2 ${isProject ? "xl:order-1" : "lg:order-1"}`}
+              >
+                {leftElement}
+              </div>
+            )}
+            {rightElement && (
+              <div
+                className={`order-1 ${isProject ? "xl:order-2" : "lg:order-2"}`}
+              >
+                {rightElement}
+              </div>
+            )}
           </div>
         </>
       )}
-    </header>
+    </div>
   );
 };

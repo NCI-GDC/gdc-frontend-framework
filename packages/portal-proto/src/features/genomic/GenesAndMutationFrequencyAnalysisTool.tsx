@@ -131,8 +131,9 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     (tabKey: string) => {
       setAppMode(tabKey as AppModeState);
       setComparativeSurvival(undefined);
-      (searchTermsForGeneId.geneId || searchTermsForGeneId.geneSymbol) &&
+      if (searchTermsForGeneId.geneId || searchTermsForGeneId.geneSymbol) {
         setSearchTermsForGeneId({ geneId: undefined, geneSymbol: undefined });
+      }
     },
     [searchTermsForGeneId.geneId, searchTermsForGeneId.geneSymbol],
   );
@@ -167,7 +168,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
           defaultValue="genes"
           classNames={{
             tab: SecondaryTabStyle,
-            list: "px-2 mt-2 border-0 gap-0",
+            list: "mt-2 border-0 gap-0 mb-2",
             root: "bg-base-max border-0 w-full overflow-x-hidden",
           }}
           onChange={handleTabChanged}

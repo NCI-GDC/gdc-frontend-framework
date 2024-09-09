@@ -127,7 +127,7 @@ export const DownloadButton = forwardRef<
     const Icon = active ? (
       <Loader size="sm" className="p-1" />
     ) : (
-      <FiDownload title="download" size={16} className="hidden xl:block" />
+      <FiDownload title="download" size={16} />
     );
 
     return (
@@ -167,7 +167,9 @@ export const DownloadButton = forwardRef<
               ...(filename ? { filename } : {}),
               ...extraParams,
             };
-            setActive && setActive(true);
+            if (setActive) {
+              setActive(true);
+            }
             download({
               params,
               endpoint,

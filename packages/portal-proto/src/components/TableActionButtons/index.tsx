@@ -34,9 +34,11 @@ export const TableActionButtons = ({
         } border border-primary rounded px-2 h-6 w-8
          hover:bg-primary hover:text-base-lightest`}
         onClick={() => {
-          isOutputFileInCart
-            ? removeFromCart(file, currentCart, dispatch)
-            : addToCart(file, currentCart, dispatch);
+          if (isOutputFileInCart) {
+            removeFromCart(file, currentCart, dispatch);
+          } else {
+            addToCart(file, currentCart, dispatch);
+          }
         }}
         data-testid="button-add-remove-cart"
       >

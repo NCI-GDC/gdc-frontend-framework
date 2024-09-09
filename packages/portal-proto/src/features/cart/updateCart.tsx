@@ -306,9 +306,11 @@ export const SingleItemAddToCartButton: React.FC<SingleItemCartButtonProps> = ({
       title={inCart ? "Remove From Cart" : "Add to Cart"}
       aria-label={inCart ? "Remove from cart" : "Add to Cart"}
       onClick={() => {
-        inCart
-          ? removeFromCart([file], currentCart, dispatch)
-          : addToCart([file], currentCart, dispatch);
+        if (inCart) {
+          removeFromCart([file], currentCart, dispatch);
+        } else {
+          addToCart([file], currentCart, dispatch);
+        }
       }}
       className={`mx-auto text-primary-content-darkest border-primary-darkest ${
         inCart ? "bg-primary-light" : ""

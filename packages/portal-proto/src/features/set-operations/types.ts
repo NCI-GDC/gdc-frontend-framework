@@ -1,5 +1,7 @@
-import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
-import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
+import {
+  useSetOperationsCasesTotalQuery,
+  useCaseSetCountsQuery,
+} from "@gff/core";
 
 export type SetOperationEntityType = "cohort" | "genes" | "mutations";
 export type SelectedEntity = {
@@ -23,18 +25,14 @@ export interface SetOperationsProps {
     readonly key: string;
     readonly value: number;
   }[];
-  readonly queryHook: UseQuery<QueryDefinition<any, any, any, number, string>>;
-  readonly countHook: UseQuery<
-    QueryDefinition<any, any, any, Record<string, number>, string>
-  >;
+  readonly queryHook: typeof useSetOperationsCasesTotalQuery;
+  readonly countHook: typeof useCaseSetCountsQuery;
   readonly isLoading: boolean;
 }
 
 export interface SetOperationsExternalProps {
   readonly sets: SelectedEntities;
   readonly entityType: SetOperationEntityType;
-  readonly queryHook: UseQuery<QueryDefinition<any, any, any, any, string>>;
-  readonly countHook: UseQuery<
-    QueryDefinition<any, any, any, Record<string, number>, string>
-  >;
+  readonly queryHook: typeof useSetOperationsCasesTotalQuery;
+  readonly countHook: typeof useCaseSetCountsQuery;
 }

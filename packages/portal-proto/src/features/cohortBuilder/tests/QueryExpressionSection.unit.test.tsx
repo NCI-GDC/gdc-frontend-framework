@@ -4,6 +4,16 @@ import QueryExpressionSection from "../QueryExpressionSection";
 
 jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
 jest.spyOn(core, "useCoreSelector").mockImplementation(jest.fn());
+jest.spyOn(core, "useGeneSymbol").mockImplementation(jest.fn());
+jest
+  .spyOn(core, "useGeneSetCountQuery")
+  .mockReturnValue({ data: 0, isSuccess: true } as any);
+jest
+  .spyOn(core, "useSsmSetCountQuery")
+  .mockReturnValue({ data: 0, isSuccess: true } as any);
+jest
+  .spyOn(core, "useCaseSetCountQuery")
+  .mockReturnValue({ data: 0, isSuccess: true } as any);
 
 describe("<QueryExpressionSection />", () => {
   it("Cohort with no filters shows empty message", () => {

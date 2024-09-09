@@ -32,10 +32,13 @@ const LoginButtonOrUserDropdown = () => {
 
   useDeepCompareEffect(() => {
     if (userInfo?.data?.username) {
-      cohortIsLoggedIn !== true && dispatch(setIsLoggedIn(true));
+      if (cohortIsLoggedIn !== true) {
+        dispatch(setIsLoggedIn(true));
+      }
     } else {
-      (cohortIsLoggedIn !== false || cohortIsLoggedIn !== undefined) &&
+      if (cohortIsLoggedIn !== false || cohortIsLoggedIn !== undefined) {
         dispatch(setIsLoggedIn(false));
+      }
     }
   }, [cohortIsLoggedIn, userInfo?.data?.username, dispatch]);
 

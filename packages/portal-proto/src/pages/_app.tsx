@@ -20,7 +20,7 @@ import "@nci-gdc/sapien/dist/bodyplot.css";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 // ReactModal needs the app element set for a11y reasons.
 // It hides the main application from screen readers while modals are open.
 import ReactModal from "react-modal";
@@ -35,6 +35,15 @@ import { Notifications } from "@mantine/notifications";
 import "@mantine/notifications/styles.css";
 
 if (process.env.NODE_ENV !== "test") ReactModal.setAppElement("#__next");
+
+// Adds axe accessibility plugin in development/testing environments
+if (typeof window !== "undefined" && process.env.NODE_ENV !== "production") {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const ReactDOM = require("react-dom");
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const axe = require("@axe-core/react");
+  axe(React, ReactDOM, 1000);
+}
 
 if (process.env.NEXT_PUBLIC_DD_ENABLED) {
   datadogRum.init({

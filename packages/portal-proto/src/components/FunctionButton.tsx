@@ -4,8 +4,10 @@ import { Button, ButtonProps } from "@mantine/core";
 export type FunctionButtonVariants = "filled" | "subtle" | "header" | "icon";
 
 interface FunctionButtonProps extends ButtonProps {
-  disabled: boolean;
-  $variant: FunctionButtonVariants;
+  disabled?: boolean;
+  $variant?: FunctionButtonVariants;
+  ref?: any;
+  onClick?: () => void;
 }
 
 /**

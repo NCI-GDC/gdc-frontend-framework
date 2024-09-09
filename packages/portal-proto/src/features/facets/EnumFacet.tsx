@@ -1,32 +1,17 @@
 import React, { useEffect, useState, useRef } from "react";
 import { fieldNameToTitle } from "@gff/core";
 import { DEFAULT_VISIBLE_ITEMS, updateFacetEnum } from "./utils";
-import {
-  MdFlip as FlipIcon,
-  MdSearch as SearchIcon,
-  MdClose as CloseIcon,
-} from "react-icons/md";
-import { FaUndo as UndoIcon } from "react-icons/fa";
+import { MdClose as CloseIcon } from "react-icons/md";
 import { EnumFacetHooks, FacetCardProps } from "@/features/facets/types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
-import {
-  ActionIcon,
-  Checkbox,
-  LoadingOverlay,
-  TextInput,
-  Tooltip,
-} from "@mantine/core";
-import {
-  FacetIconButton,
-  controlsIconStyle,
-  FacetText,
-  FacetHeader,
-} from "./components";
+import { ActionIcon, Checkbox, LoadingOverlay, TextInput } from "@mantine/core";
+import { controlsIconStyle, FacetText, FacetHeader } from "./components";
 import FacetExpander from "@/features/facets/FacetExpander";
 import FacetSortPanel from "@/features/facets/FacetSortPanel";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { SortType } from "./types";
 import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
+import FacetControlsHeader from "./FacetControlsHeader";
 import { BAD_DATA_MESSAGE } from "./constants";
 
 /**
@@ -76,14 +61,18 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   const [sortedData, setSortedData] = useState(undefined);
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const cardRef = useRef<HTMLDivElement>(null);
-  const { data, enumFilters, isSuccess, error } = hooks.useGetFacetData(field);
+  const { data, enumFilters, isSuccess, error } =
+    hooks.useGetEnumFacetData(field);
 
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
   const searchInputRef = useRef(null);
 
-  const totalCount = hooks.useTotalCounts();
+  const totalCount = hooks.useTotalCounts(field);
   const clearFilters = hooks.useClearFilter();
   const updateFacetFilters = hooks.useUpdateFacetFilters();
+  const isFilterExpanded =
+    hooks?.useFilterExpanded && hooks.useFilterExpanded(field);
+  const showFilters = isFilterExpanded === undefined || isFilterExpanded;
 
   useEffect(() => {
     if (isSearching) {
@@ -262,6 +251,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   if (facetChartData.filteredData.length == 0 && hideIfEmpty) {
     return null; // nothing to render if visibleItems == 0
   }
+
   return (
     <div
       className={`flex flex-col ${
@@ -270,79 +260,24 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
       id={field}
     >
       <div>
-        <header.Panel>
-          <Tooltip
-            label={description}
-            position="bottom-start"
-            multiline
-            w={220}
-            withArrow
-            transitionProps={{ duration: 200, transition: "fade" }}
-            disabled={!description}
-          >
-            <header.Label>
-              {facetName ? facetName : fieldNameToTitle(field)}
-            </header.Label>
-          </Tooltip>
-          <div className="flex flex-row">
-            {showSearch ? (
-              <Tooltip label="Search values">
-                <FacetIconButton onClick={toggleSearch} aria-label="Search">
-                  <SearchIcon
-                    size="1.45em"
-                    className={header.iconStyle}
-                    aria-hidden="true"
-                  />
-                </FacetIconButton>
-              </Tooltip>
-            ) : null}
-            {showFlip ? (
-              <Tooltip label={isFacetView ? "Chart view" : "Selection view"}>
-                <FacetIconButton
-                  onClick={toggleFlip}
-                  aria-pressed={!isFacetView}
-                  aria-label={isFacetView ? "Chart view" : "Selection view"}
-                >
-                  <FlipIcon
-                    size="1.45em"
-                    className={header.iconStyle}
-                    aria-hidden="true"
-                  />
-                </FacetIconButton>
-              </Tooltip>
-            ) : null}
-            <Tooltip label="Clear selection">
-              <FacetIconButton
-                onClick={() => clearFilters(field)}
-                aria-label="clear selection"
-              >
-                <UndoIcon
-                  size="1.25em"
-                  className={header.iconStyle}
-                  aria-hidden="true"
-                />
-              </FacetIconButton>
-            </Tooltip>
-            {dismissCallback ? (
-              <Tooltip label="Remove the facet">
-                <FacetIconButton
-                  onClick={() => {
-                    dismissCallback(field);
-                  }}
-                  aria-label="Remove the facet"
-                >
-                  <CloseIcon
-                    size="1.25em"
-                    className={header.iconStyle}
-                    aria-hidden="true"
-                  />
-                </FacetIconButton>
-              </Tooltip>
-            ) : null}
-          </div>
-        </header.Panel>
+        <FacetControlsHeader
+          field={field}
+          description={description}
+          hooks={hooks}
+          facetName={facetName}
+          showSearch={showSearch}
+          showFlip={showFlip}
+          isFacetView={isFacetView}
+          toggleFlip={toggleFlip}
+          toggleSearch={toggleSearch}
+          dismissCallback={dismissCallback}
+          header={header}
+        />
       </div>
-      <div className="h-full">
+      <div
+        className={showFilters ? "h-full" : "h-0 invisible"}
+        aria-hidden={!showFilters}
+      >
         {isSuccess && error ? (
           <div className="m-4 font-content pb-2">{BAD_DATA_MESSAGE}</div>
         ) : (

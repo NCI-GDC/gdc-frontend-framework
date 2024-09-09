@@ -26,6 +26,7 @@ const openAuthWindow = (): Promise<unknown> => {
             }
             resolve("success");
           }
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (err) {
           // We just want to catch it and not reject it. Rejecting the promise leads to unexpected behavior
           // where the logged-in status isn't reflected immediately as the program moves ahead w/o users

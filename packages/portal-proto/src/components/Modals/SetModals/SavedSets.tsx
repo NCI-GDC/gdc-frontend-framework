@@ -1,6 +1,4 @@
 import React, { useState, useMemo, useEffect, useContext } from "react";
-import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
-import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
 import { upperFirst } from "lodash";
 import { Checkbox, Tooltip } from "@mantine/core";
 import { AiOutlineFileAdd as FileAddIcon } from "react-icons/ai";
@@ -13,6 +11,7 @@ import {
   Operation,
   FilterSet,
   isIncludes,
+  useGeneSetCountsQuery,
 } from "@gff/core";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import ButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
@@ -29,9 +28,7 @@ interface SavedSetsProps {
   readonly setTypeLabel: string;
   readonly createSetsInstructions: React.ReactNode;
   readonly selectSetInstructions: string;
-  readonly countHook: UseQuery<
-    QueryDefinition<any, any, any, Record<string, number>, string>
-  >;
+  readonly countHook: typeof useGeneSetCountsQuery;
   readonly updateFilters: (field: string, op: Operation) => void;
   readonly facetField: string;
   readonly existingFiltersHook: () => FilterSet;

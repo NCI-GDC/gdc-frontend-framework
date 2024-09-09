@@ -114,7 +114,7 @@ const FileVersions = ({ file_id }: { file_id: string }): JSX.Element => {
   return (
     <>
       {fileHistory && (
-        <div className="mt-14 mb-16">
+        <div className="mt-8 mb-16">
           <HeaderTitle>File Versions</HeaderTitle>
           <VerticalTable
             customDataTestID="table-file-versions-file-summary"

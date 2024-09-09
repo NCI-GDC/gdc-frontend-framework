@@ -66,12 +66,15 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
       : [Selector, "1rem"];
 
   return (
-    <div className="flex flex-row items-center justify-between flex-wrap py-1 px-2 mb-1 border-b-2">
+    <div className="flex items-center justify-between py-1 px-2 mb-1 border-b-2">
       <Button
         className="pl-0 ml-0 text-sm"
         variant="subtle"
         size="compact-xs"
         color="primary.9"
+        classNames={{
+          section: "ml-1",
+        }}
         onClick={() => {
           const direction =
             sortType.type === "alpha" && sortType.direction === "asc"
@@ -91,6 +94,9 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
       </Button>
       <Button
         className="pr-0 mr-0 text-sm"
+        classNames={{
+          section: "ml-1",
+        }}
         variant="subtle"
         size="compact-xs"
         color="primary.9"

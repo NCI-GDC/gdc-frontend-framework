@@ -336,18 +336,20 @@ export const parseNestedQQResponseData = (
   data.forEach((caseEntry) => {
     if (Array.isArray(caseEntry[clinicalType])) {
       caseEntry[clinicalType].forEach((nestedVal) => {
-        Array.isArray(nestedVal[clinicalField])
-          ? (parsedValues = [
-              ...parsedValues,
-              ...nestedVal[clinicalField].map((valArr) => ({
-                id: caseEntry.id,
-                value: valArr[clinicalNestedField],
-              })),
-            ])
-          : parsedValues.push({
+        if (Array.isArray(nestedVal[clinicalField])) {
+          parsedValues = [
+            ...parsedValues,
+            ...nestedVal[clinicalField].map((valArr) => ({
               id: caseEntry.id,
-              value: nestedVal[clinicalField],
-            });
+              value: valArr[clinicalNestedField],
+            })),
+          ];
+        } else {
+          parsedValues.push({
+            id: caseEntry.id,
+            value: nestedVal[clinicalField],
+          });
+        }
       });
     } else {
       parsedValues.push({

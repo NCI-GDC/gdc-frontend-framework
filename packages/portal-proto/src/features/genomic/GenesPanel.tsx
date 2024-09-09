@@ -1,4 +1,4 @@
-import { Grid, LoadingOverlay } from "@mantine/core";
+import { LoadingOverlay } from "@mantine/core";
 import { GeneFrequencyChart } from "@/features/charts/GeneFrequencyChart";
 import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot/types";
 import React, { useCallback } from "react";
@@ -70,15 +70,15 @@ export const GenesPanel = ({
 
   return (
     <div className="flex flex-col">
-      <Grid className="mx-2 bg-base-max mb-4">
-        <Grid.Col span={6}>
+      <div className="flex flex-col gap-6 xl:gap-8 xl:flex-row bg-base-max mb-4">
+        <div className="w-full xl:w-1/2 border border-base-lighter p-4">
           <GeneFrequencyChart
             marginBottom={95}
             genomicFilters={genomicFilters}
             cohortFilters={isDemoMode ? overwritingDemoFilter : cohortFilters}
           />
-        </Grid.Col>
-        <Grid.Col span={6} className="relative">
+        </div>
+        <div className="w-full xl:w-1/2 relative border border-base-lighter p-4">
           <LoadingOverlay
             zIndex={0}
             data-testid="loading-spinner"
@@ -102,8 +102,8 @@ export const GenesPanel = ({
             field="gene.symbol"
             tableTooltip
           />
-        </Grid.Col>
-      </Grid>
+        </div>
+      </div>
       <GTableContainer
         selectedSurvivalPlot={comparativeSurvival}
         handleSurvivalPlotToggled={handleSurvivalPlotToggled}

@@ -53,7 +53,7 @@ export const QuickSearch = (): JSX.Element => {
       setLoading(false);
       setMatchedSearchList([]);
     } else if (query === debounced) {
-      if (fileHistory !== undefined && fileHistory.length > 0) {
+      if (fileHistory !== undefined && fileHistory.length > 1) {
         const latestVersion = fileHistory.find(
           (f) => f.file_change === "released",
         )?.uuid;

@@ -14,6 +14,7 @@
     "test:all": "jest"
   },
   "dependencies": {
+    "@axe-core/react": "^4.10.0",
     "@datadog/browser-rum": "^5.23.3",
     "@dnd-kit/core": "^6.0.8",
     "@dnd-kit/modifiers": "^6.0.1",
@@ -57,7 +58,7 @@
     "@tailwindcss/line-clamp": "^0.3.1",
     "@tailwindcss/typography": "^0.5.2",
     "@testing-library/jest-dom": "^5.0.0",
-    "@testing-library/react": "^14.0.0",
+    "@testing-library/react": "^14.3.1",
     "@testing-library/user-event": "^14.0.0",
     "@types/jest": "^27.0.6",
     "@types/node": "^20.11.16",
@@ -81,7 +82,7 @@
     "ts-jest": "^27.0.3",
     "ts-node": "^9.1.1",
     "typescript": "~4.6.4",
-    "victory": "^36.4.0"
+    "victory": "^36.8.1"
   },
   "engines": {
     "node": ">=20.11.0"

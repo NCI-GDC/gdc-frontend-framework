@@ -52,7 +52,7 @@ describe("CasesCohortButton", () => {
       />,
     );
 
-    const targetButton = getByTestId("menu-elem");
+    const targetButton = getByTestId("button-save-new-cohort-cases-table");
     expect(targetButton).toBeDisabled();
   });
 });
