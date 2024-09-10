@@ -615,6 +615,26 @@ tags: gdc-data-portal-v2, case-summary
   |file_size                                |
 * Verify that the "JSON from Case Summary Files Table" has <field_name> for each object
 
+## Files Table - Click Link
+* Search "8c239c32-d03a-41fa-9806-2f336cbc6e36" in the files table on the case summary page
+* Wait for table "Files Case Summary" body text to appear
+    |expected_text                                        |row  |column |
+    |-----------------------------------------------------|-----|-------|
+    |nationwidechildrens.org_biospecimen.TCGA-GV-A3QI.xml |1    |2      |
+* Select value from table "Files Case Summary" by row and column
+    |row   |column|
+    |------|------|
+    |1     |2     |
+* Verify the table "File Properties File Summary" is displaying this information
+    |text_to_validate                       |
+    |---------------------------------------|
+    |8c239c32-d03a-41fa-9806-2f336cbc6e36   |
+    |nationwidechildrens.org_biospecimen.TCGA-GV-A3QI.xml|
+    |3641639dd55ff5eebd20d1ba9286163c       |
+
+## Navigate back again to Case Summary Page: TCGA-GV-A3QI
+* Quick search for "06f936e9-5a90-40d3-b91a-713f2b4e6e11" and go to its page
+
 ## Most Frequent Somatic Mutations Table - Download TSV
 A follow-up will occur in QA-2288 to test filtered download of TSV.
 * Download "TSV" from "Mutation Frequency"
@@ -628,7 +648,7 @@ A follow-up will occur in QA-2288 to test filtered download of TSV.
   |Substitution                         |
   |THAP12 D449H                         |
 
-## Most Frequent Somatic Mutations Table - Create Set and Cohort
+## Most Frequent Somatic Mutations Table - Create Set/Cohort, and Click Link
 * In table "Most Frequent Somatic Mutations", search the table for "TTN"
 * Select value from table "Most Frequent Somatic Mutations" by row and column
   |row   |column|
@@ -663,6 +683,16 @@ A follow-up will occur in QA-2288 to test filtered download of TSV.
   |Action to Perform|Text to validate in modal                                          |Keep or Remove Modal|
   |-----------------|-------------------------------------------------------------------|--------------------|
   |Save             |chr2:g.119882146C>G Affected Cases in TCGA-BLCA has been saved     |Remove Modal        |
+* Select value from table "Most Frequent Somatic Mutations" by row and column
+  |row   |column|
+  |------|------|
+  |1     |2     |
+* Verify the table "Summary Mutation Summary" is displaying this information
+  |text_to_validate                     |
+  |------------------------------------ |
+  |4ecb8159-bcbf-5900-a1d5-7c94252f6a5a |
+  |chr2:g.119882146C>G                  |
+  |Single base substitution             |
 * Navigate to "Analysis" from "Header" "section"
 * Switch cohort to "chr2:g.119882146C>G Affected Cases in TCGA-BLCA" from the Cohort Bar dropdown list
 * "chr2:g.119882146C>G Affected Cases in TCGA-BLCA" should be the active cohort
