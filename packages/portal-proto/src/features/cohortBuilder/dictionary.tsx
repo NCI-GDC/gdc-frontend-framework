@@ -59,6 +59,11 @@ export interface FacetSearchDocument {
 export const miniSearch = new MiniSearch<FacetSearchDocument>({
   fields: ["name", "description", "enum"], // fields to index for full-text search
   storeFields: ["name", "category", "categoryKey", "description", "enum", "id"], // fields to return with search results
+  searchOptions: {
+    boost: {
+      name: 1.5,
+    },
+  },
 });
 
 export const useFacetSearch = (): MiniSearch<FacetSearchDocument> => {
