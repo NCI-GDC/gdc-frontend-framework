@@ -1,6 +1,7 @@
 import RangeInputWithPrefixedRanges from "./RangeInputWithPrefixedRanges";
 import { NumericFacetData } from "./types";
 
+// Calendar Year
 const Year: React.FC<NumericFacetData> = ({
   field,
   hooks,
