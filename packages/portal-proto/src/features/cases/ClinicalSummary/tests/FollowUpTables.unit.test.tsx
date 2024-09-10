@@ -22,7 +22,7 @@ describe("<FollowUpTables />", () => {
         TableElement={FollowUpTables}
       />,
     );
-    expect(getByTestId("molecular-test-header").textContent).toBe(
+    expect(getByTestId("molecular-test-table-header").textContent).toBe(
       "Molecular Tests2",
     );
     expect(queryByText("No Molecular Tests Found.")).toBe(null);
@@ -39,7 +39,7 @@ describe("<FollowUpTables />", () => {
         TableElement={FollowUpTables}
       />,
     );
-    expect(getByTestId("molecular-test-header").textContent).toBe(
+    expect(getByTestId("molecular-test-table-header").textContent).toBe(
       "Molecular Tests0",
     );
     expect(getByText("No Molecular Tests Found.")).toBeInTheDocument();
@@ -53,7 +53,7 @@ describe("<FollowUpTables />", () => {
       />,
     );
     expect(getByTestId("verticalTabs")).toBeInTheDocument();
-    expect(getAllByTestId("molecular-test-header")[0].textContent).toBe(
+    expect(getAllByTestId("molecular-test-table-header")[0].textContent).toBe(
       "Molecular Tests0",
     );
     expect(queryByText("No Molecular Tests Found.")).not.toBe(null);
@@ -69,13 +69,17 @@ describe("<FollowUpTables />", () => {
 
     expect(getByTestId("verticalTabs")).toBeInTheDocument();
     expect(getByText("follow-up-test")).toBeInTheDocument();
-    expect(getAllByTestId("molecular-test-header")[0].textContent).toBe(
+    expect(getAllByTestId("molecular-test-table-header")[0].textContent).toBe(
       "Molecular Tests0",
     );
+    expect(getAllByTestId("oca-table-header")[0].textContent).toBe(
+      "Other Clinical Attributes1",
+    );
+
     const tab = getAllByTestId("tab");
     await userEvent.click(tab[1]);
     expect(getByText("follow-up-test-1")).toBeInTheDocument();
-    expect(getAllByTestId("molecular-test-header")[1].textContent).toBe(
+    expect(getAllByTestId("molecular-test-table-header")[1].textContent).toBe(
       "Molecular Tests2",
     );
   });

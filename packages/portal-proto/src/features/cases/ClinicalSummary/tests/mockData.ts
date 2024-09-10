@@ -1,4 +1,6 @@
-export const mockSingleDiagnoses = [
+import { Diagnoses, FollowUps } from "@gff/core";
+
+export const mockSingleDiagnoses: Diagnoses[] = [
   {
     days_to_recurrence: null,
     synchronous_malignancy: "No",
@@ -51,7 +53,7 @@ export const mockSingleDiagnoses = [
   },
 ];
 
-export const mockMultipleDiagnoses = [
+export const mockMultipleDiagnoses: Diagnoses[] = [
   {
     days_to_recurrence: null,
     synchronous_malignancy: "No",
@@ -146,23 +148,26 @@ export const mockMultipleDiagnoses = [
   },
 ];
 
-export const mockMultipleFollowUps = [
+export const mockMultipleFollowUps: FollowUps[] = [
   {
     karnofsky_performance_status: null,
     follow_up_id: "21fa2463-9e93-4f42-9624-18a7e82953f0",
     progression_or_recurrence_anatomic_site: null,
     progression_or_recurrence_type: null,
-    weight: null,
-    risk_factor: null,
     submitter_id: "follow-up-test",
     disease_response: null,
     days_to_follow_up: 186,
-    comorbidity: null,
-    reflux_treatment_type: null,
     ecog_performance_status: null,
     progression_or_recurrence: null,
-    height: null,
-    bmi: null,
+    other_clinical_attributes: [
+      {
+        submitter_id: "HTMCP-01-16-00783_follow_up_oca",
+        other_clinical_attribute_id: "ae2e4ee2-a878-438c-bf27-46006b2b0c90",
+        weight: 60.3,
+        height: 170,
+        bmi: 20.9,
+      },
+    ],
   },
   {
     karnofsky_performance_status: null,
@@ -205,21 +210,15 @@ export const mockMultipleFollowUps = [
         molecular_test_id: "1e1149f3-208f-4128-939e-1cd5816d2af1",
       },
     ],
-    weight: 61.2,
-    risk_factor: null,
     submitter_id: "follow-up-test-1",
     disease_response: null,
     days_to_follow_up: 0,
-    comorbidity: null,
-    reflux_treatment_type: null,
     ecog_performance_status: null,
     progression_or_recurrence: null,
-    height: 162.5,
-    bmi: 23,
   },
 ];
 
-export const mockSingleFollowUps = [
+export const mockSingleFollowUps: FollowUps[] = [
   {
     karnofsky_performance_status: null,
     follow_up_id: "2650764a-22df-4e21-a792-c60bb61cda92",
@@ -261,16 +260,10 @@ export const mockSingleFollowUps = [
         molecular_test_id: "1e1149f3-208f-4128-939e-1cd5816d2af1",
       },
     ],
-    weight: 61.2,
-    risk_factor: null,
     submitter_id: "follow-up-test-1",
     disease_response: null,
     days_to_follow_up: 0,
-    comorbidity: null,
-    reflux_treatment_type: null,
     ecog_performance_status: null,
     progression_or_recurrence: null,
-    height: 162.5,
-    bmi: 23,
   },
 ];

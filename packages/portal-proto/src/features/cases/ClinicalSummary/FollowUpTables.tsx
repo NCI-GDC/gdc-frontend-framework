@@ -191,7 +191,7 @@ const FollowUpTables = ({ data }: { data: FollowUps }): JSX.Element => {
       <HorizontalTable tableData={formatDataForDiagnosesorFollowUps(data)} />
       <div
         className="w-full flex flex-row items-center gap-1 bg-nci-violet-lightest p-2 border-base-lighter border-1 border-t-0"
-        data-testid="molecular-test-header"
+        data-testid="molecular-test-table-header"
       >
         <h3 className="mx-2 font-montserrat text-xl text-primary-content-darkest">
           Molecular Tests
@@ -209,7 +209,10 @@ const FollowUpTables = ({ data }: { data: FollowUps }): JSX.Element => {
         <VerticalTable {...formatMolecularTestsData(data)} />
       )}
 
-      <div className="w-full flex flex-row items-center gap-1 bg-nci-violet-lightest p-2 border-base-lighter border-1 border-t-0">
+      <div
+        className="w-full flex flex-row items-center gap-1 bg-nci-violet-lightest p-2 border-base-lighter border-1 border-t-0"
+        data-testid="oca-table-header"
+      >
         <h3 className="mx-2 font-montserrat text-xl text-primary-content-darkest">
           Other Clinical Attributes
         </h3>
