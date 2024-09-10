@@ -30,13 +30,13 @@ function CategoryTableSummary<TData>({
             withArrow
             withinPortal={false}
           >
-            <ActionIcon variant="subtle">
+            <span className="flex items-center px-1.5">
               <InfoIcon
                 data-testid="button-category-table-tooltip"
                 size={16}
                 className="text-accent"
               />
-            </ActionIcon>
+            </span>
           </Tooltip>
         )}
       </div>

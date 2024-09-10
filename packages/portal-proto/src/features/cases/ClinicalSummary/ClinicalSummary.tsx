@@ -14,9 +14,11 @@ import { Divider, Loader, Tabs, Text } from "@mantine/core";
 import { useState } from "react";
 import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { humanify, ageDisplay } from "src/utils";
-import { DiagnosesOrFollowUps } from "./DiagnosesOrFollowUps";
 import { FamilyHistoryOrExposure } from "./FamilyHistoryOrExposure";
 import download from "@/utils/download";
+import { TabbedTables } from "./TabbedTables";
+import DiagnosesTables from "./DiagnosesTables";
+import FollowUpTables from "./FollowUpTables";
 
 export const ClinicalSummary = ({
   demographic,
@@ -79,6 +81,11 @@ export const ClinicalSummary = ({
 
   const totalMolecularTestNodes = follow_ups.reduce(
     (prev, curr) => prev + (curr.molecular_tests || []).length,
+    0,
+  );
+
+  const totalOtherClinicalAttributesNodes = follow_ups.reduce(
+    (prev, curr) => prev + (curr.other_clinical_attributes || []).length,
     0,
   );
 
@@ -173,7 +180,7 @@ export const ClinicalSummary = ({
         classNames={{
           root: "w-full",
           list: "mt-2 border-1 border-base-lighter border-b-3 p-2",
-          panel: "max-w-full overflow-x-auto pt-0",
+          panel: "max-w-full overflow-x-auto pt-0 pb-2",
           tab: "text-secondary-contrast-lighter font-bold font-heading text-sm px-4 py-1 mr-2 data-active:bg-nci-cyan-lightest data-active:border-2 data-active:border-primary data-active:text-primary",
         }}
         styles={(theme) => ({
@@ -228,6 +235,11 @@ export const ClinicalSummary = ({
                 Molecular Tests
                 <CountComponent count={totalMolecularTestNodes} />
               </span>
+              <Divider orientation="vertical" />
+              <span>
+                Other Clinical Attributes
+                <CountComponent count={totalOtherClinicalAttributesNodes} />
+              </span>
             </span>
           </Tabs.Tab>
         </Tabs.List>
@@ -248,7 +260,7 @@ export const ClinicalSummary = ({
               No Diagnoses Found.
             </Text>
           ) : (
-            <DiagnosesOrFollowUps dataInfo={diagnoses} />
+            <TabbedTables dataInfo={diagnoses} TableElement={DiagnosesTables} />
           )}
         </Tabs.Panel>
 
@@ -278,7 +290,7 @@ export const ClinicalSummary = ({
               No Follow Ups Found.
             </Text>
           ) : (
-            <DiagnosesOrFollowUps
+            <TabbedTables
               dataInfo={
                 follow_ups.length > 1
                   ? follow_ups
@@ -286,6 +298,7 @@ export const ClinicalSummary = ({
                       .sort((a, b) => a.days_to_follow_up - b.days_to_follow_up)
                   : follow_ups
               }
+              TableElement={FollowUpTables}
             />
           )}
         </Tabs.Panel>

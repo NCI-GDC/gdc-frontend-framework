@@ -1,8 +1,3 @@
-import { render } from "test-utils";
-import { DiagnosesOrFollowUps } from "../DiagnosesOrFollowUps";
-import userEvent from "@testing-library/user-event";
-
-/* diagnoses */
 export const mockSingleDiagnoses = [
   {
     days_to_recurrence: null,
@@ -56,7 +51,7 @@ export const mockSingleDiagnoses = [
   },
 ];
 
-const mockMultipleDiagnoses = [
+export const mockMultipleDiagnoses = [
   {
     days_to_recurrence: null,
     synchronous_malignancy: "No",
@@ -151,8 +146,7 @@ const mockMultipleDiagnoses = [
   },
 ];
 
-// FollowUps
-const mockMultipleFollowUps = [
+export const mockMultipleFollowUps = [
   {
     karnofsky_performance_status: null,
     follow_up_id: "21fa2463-9e93-4f42-9624-18a7e82953f0",
@@ -280,110 +274,3 @@ export const mockSingleFollowUps = [
     bmi: 23,
   },
 ];
-
-describe("<DiagnosesOrFollowUps /> for dianoses", () => {
-  it("should not render vertical tabs when only 1 node is present", () => {
-    const { queryByTestId } = render(
-      <DiagnosesOrFollowUps dataInfo={mockSingleDiagnoses} />,
-    );
-    expect(queryByTestId("verticalTabs")).toBe(null);
-  });
-
-  it("should render treatments table when data is present", () => {
-    const { queryByText, getByText } = render(
-      <DiagnosesOrFollowUps dataInfo={mockSingleDiagnoses} />,
-    );
-    expect(getByText("Total of 4 Treatments")).toBeInTheDocument();
-    expect(queryByText("No Treatments Found.")).toBe(null);
-  });
-
-  it("should not render treatment table when treatment array is emtpy", () => {
-    const { getByText } = render(
-      <DiagnosesOrFollowUps
-        dataInfo={[
-          Object.assign({}, mockSingleDiagnoses[0], { treatments: undefined }),
-        ]}
-      />,
-    );
-    expect(getByText("Total of 0 Treatments")).toBeInTheDocument();
-    expect(getByText("No Treatments Found.")).toBeInTheDocument();
-  });
-
-  it("should render vertical tabs when more than 1 node is present", () => {
-    const { getByTestId, getByText, queryByText } = render(
-      <DiagnosesOrFollowUps dataInfo={mockMultipleDiagnoses} />,
-    );
-    expect(getByTestId("verticalTabs")).toBeInTheDocument();
-    expect(getByText("Total of 3 Treatments")).toBeInTheDocument();
-    expect(queryByText("No Treatments Found.")).toBe(null);
-  });
-
-  it("vertical tabs should be clickable and render appropriate data", async () => {
-    const { getByTestId, getAllByTestId, getByText } = render(
-      <DiagnosesOrFollowUps dataInfo={mockMultipleDiagnoses} />,
-    );
-
-    expect(getByTestId("verticalTabs")).toBeInTheDocument();
-    expect(getByText("diag-test")).toBeInTheDocument();
-    expect(getByText("Total of 3 Treatments")).toBeInTheDocument();
-    const tab = getAllByTestId("tab");
-    await userEvent.click(tab[1]);
-    expect(getByText("diag-test-1")).toBeInTheDocument();
-    expect(getByText("Total of 4 Treatments")).toBeInTheDocument();
-  });
-});
-
-/*Follw Ups */
-describe("<DiagnosesOrFollowUps /> for Followups", () => {
-  it("should not render vertical tabs when only 1 node is present", () => {
-    const { queryByTestId } = render(
-      <DiagnosesOrFollowUps dataInfo={mockSingleDiagnoses} />,
-    );
-    expect(queryByTestId("verticalTabs")).toBe(null);
-  });
-
-  it("should render molecular_tests table when data is present", () => {
-    const { queryByText, getByText } = render(
-      <DiagnosesOrFollowUps dataInfo={mockSingleFollowUps} />,
-    );
-    expect(getByText("Total of 2 Molecular Tests")).toBeInTheDocument();
-    expect(queryByText("No Molecular Tests Found.")).toBe(null);
-  });
-
-  it("should not render treatment table when molecular_tests array is emtpy", () => {
-    const { getByText } = render(
-      <DiagnosesOrFollowUps
-        dataInfo={[
-          Object.assign({}, mockSingleFollowUps[0], {
-            molecular_tests: undefined,
-          }),
-        ]}
-      />,
-    );
-    expect(getByText("Total of 0 Molecular Tests")).toBeInTheDocument();
-    expect(getByText("No Molecular Tests Found.")).toBeInTheDocument();
-  });
-
-  it("should render vertical tabs when more than 1 node is present", () => {
-    const { getByTestId, getByText, queryByText } = render(
-      <DiagnosesOrFollowUps dataInfo={mockMultipleFollowUps} />,
-    );
-    expect(getByTestId("verticalTabs")).toBeInTheDocument();
-    expect(getByText("Total of 0 Molecular Tests")).toBeInTheDocument();
-    expect(queryByText("No Molecular Tests Found.")).not.toBe(null);
-  });
-
-  it("vertical tabs should be clickable and render appropriate data", async () => {
-    const { getByTestId, getAllByTestId, getByText } = render(
-      <DiagnosesOrFollowUps dataInfo={mockMultipleFollowUps} />,
-    );
-
-    expect(getByTestId("verticalTabs")).toBeInTheDocument();
-    expect(getByText("follow-up-test")).toBeInTheDocument();
-    expect(getByText("Total of 0 Molecular Tests")).toBeInTheDocument();
-    const tab = getAllByTestId("tab");
-    await userEvent.click(tab[1]);
-    expect(getByText("follow-up-test-1")).toBeInTheDocument();
-    expect(getByText("Total of 2 Molecular Tests")).toBeInTheDocument();
-  });
-});
