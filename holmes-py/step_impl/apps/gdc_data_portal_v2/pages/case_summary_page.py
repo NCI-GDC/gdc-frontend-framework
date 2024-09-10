@@ -25,6 +25,7 @@ class CaseSummaryLocators:
     SEARCH_BAR_FILES_TABLE = '[data-testid="table-files-case-summary"] >> [data-testid="textbox-table-search-bar"]'
     BUTTON_DOWNLOAD_FILE_FILES_TABLE = '[data-testid="table-files-case-summary"] >> [data-testid="button-download-file"]'
     BUTTON_FILES_TABLE_JSON_TSV_DOWNLOAD = lambda json_or_tsv: f'[data-testid="button-{json_or_tsv}-files-case-summary"]'
+    BUTTON_ANNOTATIONS_TABLE_JSON_TSV_DOWNLOAD = lambda json_or_tsv: f'[data-testid="table-annotations-case-summary"] >> span:text-is("{json_or_tsv}")'
 
 
 class CaseSummaryPage(BasePage):
@@ -92,4 +93,9 @@ class CaseSummaryPage(BasePage):
     def click_files_table_download_file_button(self):
         """Clicks download file in files table"""
         locator = CaseSummaryLocators.BUTTON_DOWNLOAD_FILE_FILES_TABLE
+        self.click(locator)
+
+    def click_annotations_table_download_json_or_tsv_button(self,json_or_tsv):
+        """Clicks download button for either JSON or TSV in files table"""
+        locator = CaseSummaryLocators.BUTTON_ANNOTATIONS_TABLE_JSON_TSV_DOWNLOAD(json_or_tsv)
         self.click(locator)

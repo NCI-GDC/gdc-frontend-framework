@@ -614,3 +614,173 @@ tags: gdc-data-portal-v2, case-summary
   |platform                                 |
   |file_size                                |
 * Verify that the "JSON from Case Summary Files Table" has <field_name> for each object
+
+## Most Frequent Somatic Mutations Table - Download TSV
+A follow-up will occur in QA-2288 to test filtered download of TSV.
+* Download "TSV" from "Mutation Frequency"
+* Read from "TSV from Mutation Frequency"
+* Verify that "TSV from Mutation Frequency" has expected information
+  |required_info                        |
+  |-------------------------------------|
+  |chr11:g.89047408G>T                  |
+  |Non Coding Transcript Exon           |
+  |deleterious                          |
+  |Substitution                         |
+  |THAP12 D449H                         |
+
+## Most Frequent Somatic Mutations Table - Create Set and Cohort
+* In table "Most Frequent Somatic Mutations", search the table for "TTN"
+* Select value from table "Most Frequent Somatic Mutations" by row and column
+  |row   |column|
+  |------|------|
+  |1     |1     |
+  |2     |1     |
+  |3     |1     |
+  |4     |1     |
+  |5     |1     |
+  |6     |1     |
+* Select "Save/Edit Mutation Set"
+* Select "Save as new mutation set" from dropdown menu
+* Enter "Case Summary TTN Mutation Set" in the text box "Set Name"
+* Select button "Save"
+* Is text "Set has been saved." present on the page
+* Pause "3" seconds
+* In table "Most Frequent Somatic Mutations", search the table for "chr2:g.119882146C>G"
+* Wait for table "Most Frequent Somatic Mutations" body text to appear
+  |expected_text        |row  |column |
+  |---------------------|-----|-------|
+  |chr2:g.119882146C>G  |1    |2      |
+* Collect button labels in table "Most Frequent Somatic Mutations" for comparison
+  |button_label                                     |row  |column |
+  |-------------------------------------------------|-----|-------|
+  |chr2:g.119882146C>G Affected Cases in TCGA-BLCA  |1    |6      |
+* Select value from table "Most Frequent Somatic Mutations" by row and column
+  |row   |column|
+  |------|------|
+  |1     |6     |
+* Name the cohort "chr2:g.119882146C>G Affected Cases in TCGA-BLCA" in the Cohort Bar section
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal                                          |Keep or Remove Modal|
+  |-----------------|-------------------------------------------------------------------|--------------------|
+  |Save             |chr2:g.119882146C>G Affected Cases in TCGA-BLCA has been saved     |Remove Modal        |
+* Navigate to "Analysis" from "Header" "section"
+* Switch cohort to "chr2:g.119882146C>G Affected Cases in TCGA-BLCA" from the Cohort Bar dropdown list
+* "chr2:g.119882146C>G Affected Cases in TCGA-BLCA" should be the active cohort
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "chr2:g.119882146C>G Affected Cases in TCGA-BLCA" are "Equal"
+* Navigate to "Manage Sets" from "Header" "section"
+* Select item list for set "Case Summary TTN Mutation Set" on Manage Sets page
+* Verify the table "Set Information" is displaying this information
+  |text_in_table_to_check               |
+  |-------------------------------------|
+  |10101b20-6578-548d-8b2b-56d311a9fe3b |
+  |2e539afe-524a-53fb-92a2-a286357ae3de |
+  |0d12a60f-37d8-5721-940d-f78ffff8a8de |
+  |5c10528b-51d9-559c-81af-5b0f2097ad82 |
+  |0dc64877-8bfa-5000-adc6-fa60cee382c5 |
+  |d3a4d7c4-148a-5fc3-95e6-7645271b5281 |
+* Close set panel
+
+
+## Navigate to Case Summary Page: TCGA-EO-A3KX
+* Quick search for "fe2e89f7-8f4d-420a-a551-4877cf0fd1d3" and go to its page
+
+## Annotations Table
+* In table "Annotations Case Summary", search the table for "064a8d49-9a7a-4667-a757-be5b6d53076d"
+* Verify the table "Annotations Case Summary" is displaying this information
+    |text_to_validate                       |
+    |---------------------------------------|
+    |UUID                                   |
+    |Entity Type                            |
+    |Entity ID                              |
+    |Category                               |
+    |Classification                         |
+    |Created Datetime                       |
+    |064a8d49-9a7a-4667-a757-be5b6d53076d   |
+    |masked_somatic_mutation                |
+    |a4946bbc-5a04-4613-a151-ef9f834b02c0	|
+    |General                                |
+    |Redaction                              |
+    |2023-03-03T10:25:36.534006-06:00       |
+
+## Annotations Table - Download TSV
+* Download "TSV" from "Case Summary Annotations Table"
+* Read from "TSV from Case Summary Annotations Table"
+* Verify that "TSV from Case Summary Annotations Table" has expected information
+    |text_to_validate                       |
+    |---------------------------------------|
+    |UUID                                   |
+    |Entity Type                            |
+    |Entity ID                              |
+    |Category                               |
+    |Classification                         |
+    |Created Datetime                       |
+    |064a8d49-9a7a-4667-a757-be5b6d53076d   |
+    |masked_somatic_mutation                |
+    |a4946bbc-5a04-4613-a151-ef9f834b02c0	|
+    |General                                |
+    |Redaction                              |
+    |2023-03-03T10:25:36.534006-06:00       |
+* Verify that "TSV from Case Summary Annotations Table" does not contain specified information
+    |text_to_validate                       |
+    |---------------------------------------|
+    |12dde7d2-fa6c-425b-8f31-1de00f545607   |
+    |aggregated_somatic_mutation            |
+    |09dc29c3-0541-4563-9861-16ce01f3fd23   |
+    |7c54d12d-76f4-4d65-a822-06c67ca6b352   |
+
+## Annotations Table - Download JSON
+* Download "JSON" from "Case Summary Annotations Table"
+* Read from "JSON from Case Summary Annotations Table"
+* Verify that "JSON from Case Summary Annotations Table" has expected information
+    |text_to_validate                       |
+    |---------------------------------------|
+    |064a8d49-9a7a-4667-a757-be5b6d53076d   |
+    |a4946bbc-5a04-4613-a151-ef9f834b02c0   |
+    |DEV-1606, redaction on parent node did not get applied to this node|
+    |Redaction                              |
+    |General                                |
+    |2023-03-03T10:25:36.534006-06:00       |
+    |TCGA-UCEC                              |
+    |TCGA-EO-A3KX                           |
+    |0d4b1931-94ff-4dd3-8646-b97eaed63d6d   |
+* Verify that "JSON from Case Summary Annotations Table" does not contain specified information
+    |text_to_validate                       |
+    |---------------------------------------|
+    |12dde7d2-fa6c-425b-8f31-1de00f545607   |
+    |aggregated_somatic_mutation            |
+    |09dc29c3-0541-4563-9861-16ce01f3fd23   |
+    |7c54d12d-76f4-4d65-a822-06c67ca6b352   |
+
+## Annotations Table - Validate JSON File Fields
+  |field_name                               |
+  |-----------------------------------------|
+  |annotation_id	                        |
+  |entity_submitter_id	                    |
+  |notes	                                |
+  |entity_type	                            |
+  |case_id	                                |
+  |project.project_id                       |
+  |project.program.name                     |
+  |classification	                        |
+  |entity_id	                            |
+  |category	                                |
+  |created_datetime                         |
+  |status                                   |
+  |case_submitter_id	                    |
+* Verify that the "JSON from Case Summary Annotations Table" has <field_name> for each object
+
+## Annotations Table - Click Link
+* Select value from table "Annotations Case Summary" by row and column
+    |row   |column|
+    |------|------|
+    |1     |1     |
+* Verify the table "Summary Annotation Summary" is displaying this information
+    |text_to_validate                       |
+    |---------------------------------------|
+    |Annotation UUID                        |
+    |064a8d49-9a7a-4667-a757-be5b6d53076d   |
+* Verify the table "Notes Annotation Summary" is displaying this information
+    |text_to_validate                       |
+    |---------------------------------------|
+    |DEV-1606, redaction on parent node did not get applied to this node|

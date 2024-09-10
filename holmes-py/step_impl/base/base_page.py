@@ -88,11 +88,20 @@ class GenericLocators:
     TABLE_AREA_TO_SELECT = (
         lambda row, column: f"tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0"
     )
+    TABLE_AREA_TO_SELECT_IN_SPECIFIED_TABLE = (
+        lambda table_name, row, column: f"[data-testid='table-{table_name}'] >> tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0"
+    )
     TABLE_AREA_TO_CLICK = (
         lambda row, column: f"tr:nth-child({row}) > td:nth-child({column}) > * > * >> nth=0"
     )
+    TABLE_AREA_TO_CLICK_IN_SPECIFIED_TABLE = (
+        lambda table_name, row, column: f"[data-testid='table-{table_name}'] >> tr:nth-child({row}) > td:nth-child({column}) > * > * >> nth=0"
+    )
     TABLE_TEXT_TO_WAIT_FOR = (
         lambda text, row, column: f'tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0 >> text="{text}"'
+    )
+    TABLE_TEXT_TO_WAIT_FOR_IN_SPECIFIED_TABLE = (
+        lambda table_name, text, row, column: f'[data-testid="table-{table_name}"] >> tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0 >> text="{text}"'
     )
     TEXT_TABLE_HEADER = lambda column: f"tr > th:nth-child({column}) >> nth=0"
     TEXT_DROPDOWN_MENU_OPTION = (
@@ -277,6 +286,15 @@ class BasePage:
         table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT(row, column)
         return self.get_text(table_locator_to_select)
 
+    def get_specified_table_body_text_by_row_column(self, table_name, row, column):
+        """
+        In specified table, gets text from table body by giving a row and column.
+        Row and Column indexing begins at '1'
+        """
+        table_name = self.normalize_button_identifier(table_name)
+        table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT_IN_SPECIFIED_TABLE(table_name, row, column)
+        return self.get_text(table_locator_to_select)
+
     def hover_table_body_by_row_column(self, row, column):
         """
         Hovers over specified cell in table by giving a row and column.
@@ -362,6 +380,17 @@ class BasePage:
         """
         table_locator_to_select = GenericLocators.TABLE_TEXT_TO_WAIT_FOR(
             text, row, column
+        )
+        self.wait_until_locator_is_visible(table_locator_to_select)
+
+    def wait_for_specified_table_body_text_by_row_column(self, table_name, text, row, column):
+        """
+        In specified table, waits for text from table body by giving a row and column.
+        Row and Column indexing begins at '1'
+        """
+        table_name = self.normalize_button_identifier(table_name)
+        table_locator_to_select = GenericLocators.TABLE_TEXT_TO_WAIT_FOR_IN_SPECIFIED_TABLE(
+            table_name, text, row, column
         )
         self.wait_until_locator_is_visible(table_locator_to_select)
 
@@ -605,6 +634,23 @@ class BasePage:
         table_locator_to_select = GenericLocators.TABLE_AREA_TO_CLICK(row, column)
         self.hover(table_locator_to_select)
         self.click(table_locator_to_select, True)
+
+    def select_specified_table_by_row_column(self, table_name, row, column):
+        """
+        In specified table, selects values from tables by giving a row and column
+        Row and Column indexing begins at '1'
+        """
+        table_name = self.normalize_button_identifier(table_name)
+        table_locator_to_select = GenericLocators.TABLE_AREA_TO_CLICK_IN_SPECIFIED_TABLE(table_name, row, column)
+        # Try to click drilled down locator.
+        if self.is_visible(table_locator_to_select):
+            self.hover(table_locator_to_select)
+            self.click(table_locator_to_select, True)
+        # If that is not available, click a higher level locator.
+        else:
+            table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT_IN_SPECIFIED_TABLE(table_name, row, column)
+            self.hover(table_locator_to_select)
+            self.click(table_locator_to_select, True)
 
     def send_text_into_search_bar(self, text_to_send, aria_label):
         """Sends text into search bar based on its aria_label"""
