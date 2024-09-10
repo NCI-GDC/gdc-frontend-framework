@@ -11,6 +11,12 @@ export interface GraphQLFetchError {
   readonly variables?: Record<string, any>;
 }
 
+const errorIsGraphQLError = (
+  e: Error | GraphQLFetchError,
+): e is GraphQLFetchError => {
+  return (e as GraphQLFetchError)?.variables !== undefined;
+};
+
 type UnknownJson = Record<string, any>;
 
 export interface GraphQLApiResponse<H = UnknownJson> {
@@ -84,7 +90,11 @@ export const graphqlAPISlice = coreCreateApi({
     try {
       results = await graphqlAPI(request.graphQLQuery, request.graphQLFilters);
     } catch (e) {
-      return { error: e as GraphQLFetchError };
+      return {
+        error: errorIsGraphQLError(e as Error | GraphQLFetchError)
+          ? (e as GraphQLFetchError)
+          : (e as Error)?.message,
+      };
     }
 
     return { data: results };

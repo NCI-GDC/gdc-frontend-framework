@@ -138,6 +138,11 @@ const SaveCohortModal = ({
               },
             },
           } as FilterSet;
+        })
+        .catch(() => {
+          onClose();
+          coreDispatch(showModal({ modal: Modals.SaveCohortErrorModal }));
+          return;
         });
     }
     const filteredCohortFilters = omit(cohortFilters, "isLoggedIn");

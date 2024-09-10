@@ -5,6 +5,9 @@ import {
   useCreateCaseSetFromFiltersMutation,
   GqlOperation,
   useGetCasesQuery,
+  useCoreDispatch,
+  showModal,
+  Modals,
 } from "@gff/core";
 import {
   SelectCohortsModal,
@@ -17,7 +20,7 @@ import { Tooltip } from "@mantine/core";
 
 interface CasesCohortButtonProps {
   readonly onCreateSet: () => void;
-  readonly response: { isSuccess: boolean; data?: string };
+  readonly response: { isSuccess: boolean; isError: boolean; data?: string };
   readonly cases: readonly string[];
   readonly numCases: number;
   readonly fetchingCases?: boolean;
@@ -34,12 +37,16 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
   const [showSaveCohort, setShowSaveCohort] = useState(false);
   const [withOrWithoutCohort, setWithOrWithoutCohort] =
     useState<WithOrWithoutCohortType>(undefined);
+  const dispatch = useCoreDispatch();
 
   useEffect(() => {
     if (response.isSuccess) {
       setShowSaveCohort(true);
+    } else if (response.isError) {
+      dispatch(showModal({ modal: Modals.SaveCohortErrorModal }));
     }
-  }, [response.isSuccess]);
+  }, [response.isSuccess, response.isError, dispatch]);
+
   const dropDownIcon = (
     <DropdownWithIcon
       customDataTestId="button-save-new-cohort-cases-table"

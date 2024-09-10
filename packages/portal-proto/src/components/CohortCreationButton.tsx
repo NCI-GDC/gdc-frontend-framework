@@ -2,7 +2,7 @@ import React, { ReactNode, useState } from "react";
 import { Tooltip, ButtonProps } from "@mantine/core";
 import { FaPlus as PlusIcon } from "react-icons/fa";
 import tw from "tailwind-styled-components";
-import { FilterSet } from "@gff/core";
+import { FilterSet, useCoreDispatch, Modals, showModal } from "@gff/core";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 
 interface CohortCreationStyledButtonProps extends ButtonProps {
@@ -85,6 +85,7 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
   const [cohortFilters, setCohortFilters] = useState<FilterSet>(filters);
   const [loading, setLoading] = useState(false);
   const disabled = numCases === undefined || numCases === 0;
+  const dispatch = useCoreDispatch();
   const tooltipText = disabled
     ? "No cases available"
     : `Save a new cohort of ${
@@ -121,11 +122,19 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
 
             if (filtersCallback) {
               setLoading(true);
-              const createdFilters = await filtersCallback();
-              setCohortFilters(createdFilters);
-              setLoading(false);
+              await filtersCallback()
+                .then((createdFilters) => {
+                  setCohortFilters(createdFilters);
+                  setLoading(false);
+                  setShowSaveCohort(true);
+                })
+                .catch(() => {
+                  dispatch(showModal({ modal: Modals.SaveCohortErrorModal }));
+                  setLoading(false);
+                });
+            } else {
+              setShowSaveCohort(true);
             }
-            setShowSaveCohort(true);
           }}
           disabled={disabled}
           $fullWidth={React.isValidElement(label)} // if label is JSX.Element take the full width

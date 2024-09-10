@@ -64,8 +64,17 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
     return <div>Fetching chart...</div>;
   }
 
-  if (isError && "text" in error) {
-    return <div>Failed to fetch chart: {error?.text}</div>;
+  if (isError) {
+    return (
+      <div>
+        Failed to fetch chart:{" "}
+        {typeof error === "string"
+          ? error
+          : "text" in error
+          ? error?.text
+          : "error"}
+      </div>
+    );
   }
 
   const caseData = data?.cases.filter(

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { TextInput, NumberInput, Modal, Loader } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
@@ -51,6 +51,7 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
   const dispatch = useCoreDispatch();
   const sets = useCoreSelector((state) => selectSetsByType(state, setType));
   const [createSet, response] = createSetHook();
+  const [showErrorModal, setShowErrorModal] = useState(false);
 
   const max = saveCount > SET_COUNT_LIMIT ? SET_COUNT_LIMIT : saveCount;
   const form = useForm({
@@ -163,11 +164,7 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
                 form.reset();
               })
               .catch(() => {
-                showNotification({
-                  message: "Problem saving set.",
-                  color: "red",
-                  closeButtonProps: { "aria-label": "Close notification" },
-                });
+                setShowErrorModal(true);
               });
           }}
           disabled={!form.isValid()}
@@ -178,6 +175,18 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
           Save
         </DarkFunctionButton>
       </ModalButtonContainer>
+      <Modal
+        opened={showErrorModal}
+        onClose={() => setShowErrorModal(false)}
+        title="Save Set Error"
+      >
+        <p className="py-2 px-4">There was a problem saving the set.</p>
+        <ModalButtonContainer data-testid="modal-button-container">
+          <DarkFunctionButton onClick={() => setShowErrorModal(false)}>
+            OK
+          </DarkFunctionButton>
+        </ModalButtonContainer>
+      </Modal>
     </Modal>
   );
 };

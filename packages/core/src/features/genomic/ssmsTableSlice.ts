@@ -307,9 +307,6 @@ export const smtableslice = graphqlAPISlice.injectEndpoints({
           consequence_type,
         };
       },
-      transformErrorResponse: (response: { status: string | number }) => {
-        return response.status;
-      },
     }),
     getSssmTableData: builder.query({
       query: (request: SsmsTableRequestParameters) => ({
