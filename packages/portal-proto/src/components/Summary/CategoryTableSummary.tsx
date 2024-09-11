@@ -1,6 +1,6 @@
 import { MdInfo as InfoIcon } from "react-icons/md";
 import { ColumnDef } from "@tanstack/react-table";
-import { ActionIcon, Tooltip } from "@mantine/core";
+import { Tooltip } from "@mantine/core";
 import { HeaderTitleTable } from "@/components/tailwindComponents";
 import VerticalTable from "../Table/VerticalTable";
 
