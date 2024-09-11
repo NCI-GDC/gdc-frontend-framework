@@ -2,6 +2,7 @@ import React from "react";
 import { render } from "test-utils";
 import { CasesCohortButton } from "../CasesCohortButton";
 import userEvent from "@testing-library/user-event";
+import { waitFor } from "@testing-library/react";
 import * as core from "@gff/core";
 
 const mockMutation = jest.fn().mockReturnValue({
@@ -39,6 +40,9 @@ describe("CasesCohortButton", () => {
     );
 
     await userEvent.click(getByText("Save New Cohort"));
+    await waitFor(() => expect(getByText("Loading...")).toBeDefined(), {
+      timeout: 2000,
+    });
     expect(getByText("Loading...")).toBeInTheDocument();
   });
 
