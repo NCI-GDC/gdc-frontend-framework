@@ -13,12 +13,15 @@ import {
   useToggleExpandFilter,
   useFilterExpandedState,
   useTotalGenomicCounts,
+  useClearAllGenomicFilters,
 } from "@/features/genomic/hooks";
 import { FacetDocTypeToLabelsMap } from "@/features/facets/hooks";
 import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
 import MutationSetModal from "@/components/Modals/SetModals/MutationSetModal";
 import FilterPanel from "@/features/facets/FilterPanel";
 import { FacetCardDefinition } from "@/features/facets/types";
+import { useAppSelector } from "./appApi";
+import { selectFiltersAppliedCount } from "./geneAndSSMFiltersSlice";
 
 const GeneAndSSMFilterPanel = ({
   isDemoMode,
@@ -43,6 +46,8 @@ const GeneAndSSMFilterPanel = ({
 
   const allFiltersCollapsed = useAllFiltersCollapsed();
   const toggleAllFiltersExpanded = useToggleAllFilters();
+  const filtersAppliedCount = useAppSelector(selectFiltersAppliedCount);
+  const clearAllFilters = useClearAllGenomicFilters();
 
   const GenomicFilterHooks = {
     useGetEnumFacetData: useGenesFacetValues,
@@ -84,6 +89,8 @@ const GeneAndSSMFilterPanel = ({
         allFiltersCollapsed={allFiltersCollapsed}
         hideIfEmpty={false}
         showPercent={false}
+        filtersAppliedCount={filtersAppliedCount}
+        handleClearAll={clearAllFilters}
       />
     </>
   );

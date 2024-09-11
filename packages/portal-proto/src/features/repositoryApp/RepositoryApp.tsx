@@ -136,11 +136,11 @@ export const RepositoryApp = (): JSX.Element => {
         <div className="flex m-4 gap-0.5">
           <FileFacetPanel />
           <div
-            className="w-2/3 xl:w-3/4 overflow-hidden h-full"
+            className="overflow-hidden h-full w-full"
             data-testid="table-repository"
           >
             <div className="flex xl:justify-end align-center">
-              <div className="flex flex-wrap xl:justify-end gap-2 mt-9 mb-4">
+              <div className="flex flex-wrap xl:justify-end gap-2 mt-8 mb-4">
                 <Menu width="target">
                   <Menu.Target>
                     <Button

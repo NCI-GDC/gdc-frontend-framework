@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { Text, Button, Modal } from "@mantine/core";
+import { isEqual } from "lodash";
+import { Text, Modal, LoadingOverlay, Badge, Tooltip } from "@mantine/core";
 import { MdAdd as AddAdditionalIcon } from "react-icons/md";
+import { FaUndo as UndoIcon } from "react-icons/fa";
 import { fieldNameToTitle } from "@gff/core";
 import { createFacetCard } from "@/features/facets/CreateFacetCard";
 import {
@@ -16,15 +18,17 @@ interface FilterPanelProps {
   readonly app: string;
   readonly toggleAllFiltersExpanded: (expanded: boolean) => void;
   readonly allFiltersCollapsed: boolean;
-  readonly hasCustomFilters?: boolean;
-  readonly handleRemoveFilter?: (filter: string) => void;
-  readonly handleCustomFilterSelected?: (filter: string) => void;
-  readonly getDefaultFacets?: () => string[];
-  readonly customFacetsConfig?: readonly string[];
-  readonly showReset?: boolean;
-  readonly handleClearAll?: () => void;
+  readonly customConfig?: {
+    readonly handleRemoveFilter: (filter: string) => void;
+    readonly handleCustomFilterSelected: (filter: string) => void;
+    readonly handleResetCustomFilters: () => void;
+    readonly defaultFilters: string[];
+  };
+  readonly filtersAppliedCount?: number;
+  readonly handleClearAll: () => void;
   readonly hideIfEmpty?: boolean;
   readonly showPercent?: boolean;
+  readonly isLoading?: boolean;
 }
 
 /**
@@ -34,16 +38,13 @@ interface FilterPanelProps {
  * @param valueLabel - label for the values column (e.g. "Cases" "Projects")
  * @param app - app name
  * @param toggleAllFiltersExpanded - function to expand/collapse all filters
- * @param allFiltersCollapsed - whether all filters are collapse
- * @param hasCustomFilters - whether the user can add custom filter options
- * @param handleRemoveFilter - callback to remove filter from filter state
- * @param handleCustomFilterSelected - callback for when a custom filter is selected
- * @param getDefaultFilters - function to retreive which filters are default vs custom
- * @param customFacetsConfig - which custom facets have been selected
- * @param showReset - whether to show the reset filters to default option
+ * @param allFiltersCollapsed - whether all filters are collapsed
+ * @param customConfig - props needed for a filter panel where a user can add custom filters
+ * @param filtersAppliedCount - the count of filters that have been applied, up to the app to determine
  * @param handleClearAll - callback to remove custom filters
  * @param hideIfEmpty - hide facets if they do not have data
  * @param showPercent - whether to show the count percent of whole
+ * @param isLoading - whether the filter defintions are loading
  */
 
 const FilterPanel = ({
@@ -53,47 +54,74 @@ const FilterPanel = ({
   app,
   toggleAllFiltersExpanded,
   allFiltersCollapsed,
-  hasCustomFilters = false,
-  handleRemoveFilter = undefined,
-  handleCustomFilterSelected = undefined,
-  getDefaultFacets = undefined,
-  customFacetsConfig = undefined,
-  showReset = false,
+  customConfig = undefined,
+  filtersAppliedCount = 0,
   handleClearAll = undefined,
   hideIfEmpty = false,
   showPercent = true,
+  isLoading = false,
 }: FilterPanelProps) => {
   const [opened, setOpened] = useState(false);
 
+  const facetFields = facetDefinitions.map((x) => x.full);
+
   return (
-    <div className="w-1/3 xl:w-1/4 pl-[calc(100vw - 100%)]">
-      <div className="flex flex-col gap-y-3 mr-3 mb-4">
+    <div>
+      <div className="flex flex-col gap-y-4 mr-3 mb-4">
         <div>
           <Text size="lg" className="text-primary-content-darker font-bold">
             Filters
           </Text>
         </div>
-        <div className="flex justify-between">
-          <button onClick={() => toggleAllFiltersExpanded(allFiltersCollapsed)}>
-            {allFiltersCollapsed ? "Expand All" : "Collapse All"}
-          </button>
-          {showReset && (
-            <button onClick={() => handleClearAll()}>Reset Filters</button>
-          )}
-        </div>
-        {hasCustomFilters && (
-          <>
-            <Button
-              variant="outline"
-              aria-label="Add a custom filter"
-              data-testid="button-add-a-file-filter"
-              className="flex justify-center items-center border-primary-darker text-primary hover:text-base-max hover:bg-primary rounded-md"
-              onClick={() => setOpened(true)}
+        <div className="flex flex-col flex-wrap">
+          <div className="flex flex-wrap justify-between text-primary-content-darker">
+            <button
+              onClick={() => toggleAllFiltersExpanded(allFiltersCollapsed)}
             >
-              <AddAdditionalIcon className="text-2xl xl:text-xl" />
-              <Text className="text-sm font-bold">Add a Custom Filter</Text>
-            </Button>
-            <div className="flex flex-col gap-y-4" data-testid="filters-facets">
+              {allFiltersCollapsed ? "Expand All" : "Collapse All"}
+            </button>
+            {filtersAppliedCount > 0 && (
+              <div className="flex flex-row items-center gap-1">
+                <Badge className="bg-accent-vivid px-1.5" radius="xs">
+                  {filtersAppliedCount}
+                </Badge>
+                <button
+                  onClick={() => {
+                    handleClearAll();
+                  }}
+                >
+                  Reset Filters
+                </button>
+              </div>
+            )}
+          </div>
+          {customConfig !== undefined && (
+            <>
+              <div className="flex min-h-[36px] mt-3.5 w-48 md:w-64 lg:w-80 2xl:w-96">
+                <Tooltip
+                  label="Reset custom filters"
+                  disabled={isEqual(customConfig.defaultFilters, facetFields)}
+                >
+                  <button
+                    className="flex justify-center items-center w-12 border-1 rounded-l-md border-primary-darker text-primary disabled:opacity-50 disabled:bg-base-max disabled:text-primary disabled:cursor-not-allowed"
+                    onClick={() => customConfig.handleResetCustomFilters()}
+                    disabled={isEqual(customConfig.defaultFilters, facetFields)}
+                    aria-label="Reset custom filters"
+                  >
+                    <UndoIcon />
+                  </button>
+                </Tooltip>
+                <button
+                  aria-label="Add a custom filter"
+                  data-testid="button-add-a-file-filter"
+                  className="flex justify-center items-center border-1 border-l-0 border-primary-darker rounded-r-md text-primary hover:text-base-max hover:bg-primary w-full"
+                  onClick={() => setOpened(true)}
+                >
+                  <AddAdditionalIcon className="text-2xl xl:text-xl" />
+                  <Text className="text-sm font-bold">Add a Custom Filter</Text>
+                </button>
+              </div>
+
               <Modal
                 data-testid="modal-repository-add-custom-filter"
                 size="xl"
@@ -105,34 +133,36 @@ const FilterPanel = ({
                   <FacetSelection
                     facetType="files"
                     handleFilterSelected={(filter: string) => {
-                      handleCustomFilterSelected(filter);
+                      customConfig.handleCustomFilterSelected(filter);
                       setOpened(false);
                     }}
-                    usedFacets={customFacetsConfig}
+                    usedFacets={facetFields}
                   />
                 </div>
               </Modal>
-            </div>
-          </>
-        )}
+            </>
+          )}
+        </div>
+        <LoadingOverlay data-testid="loading-spinner" visible={isLoading} />
         <div
           data-testid="filters-facets"
           className="flex flex-col gap-y-4 max-h-screen overflow-y-auto border-t-1 border-b-1 rounded-md w-48 md:w-64 lg:w-80 2xl:w-96"
         >
           {facetDefinitions.map((facet) => {
             const isDefault =
-              getDefaultFacets !== undefined
-                ? getDefaultFacets().includes(facet.full)
+              customConfig?.defaultFilters !== undefined
+                ? customConfig.defaultFilters.includes(facet.full)
                 : true;
-            const facetName =
-              facet.title || fieldNameToTitle(facet.full, isDefault ? 1 : 2);
+            const facetName = facet.title || fieldNameToTitle(facet.full);
             return createFacetCard({
               facet,
               valueLabel:
                 typeof valueLabel === "string" ? valueLabel : valueLabel(facet),
               dataFunctions: facetHooks,
               idPrefix: app,
-              dismissCallback: !isDefault ? handleRemoveFilter : undefined,
+              dismissCallback: !isDefault
+                ? customConfig.handleRemoveFilter
+                : undefined,
               hideIfEmpty,
               showPercent,
               facetName,
