@@ -120,6 +120,7 @@ export const UserFlowVariedPages = ({
                 description: "flex flex-col content-center text-center",
               },
               autoClose: 5000,
+              closeButtonProps: { "aria-label": "Close notification" },
             });
           }
           if (cmdAndParam[0] === "error") {
