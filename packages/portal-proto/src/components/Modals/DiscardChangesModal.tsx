@@ -30,8 +30,11 @@ const DiscardChangesModal: React.FC<DiscardChangesModalProps> = ({
       <p className="text-sm">You cannot undo this action.</p>
     </div>
     <ModalButtonContainer data-testid="modal-button-container">
-      <FunctionButton onClick={onClose}>Cancel</FunctionButton>
+      <FunctionButton data-testid="button-cancel-discard" onClick={onClose}>
+        Cancel
+      </FunctionButton>
       <DarkFunctionButton
+        data-testid="button-discard"
         onClick={() => {
           action();
           onClose();

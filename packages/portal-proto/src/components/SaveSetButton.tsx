@@ -84,6 +84,7 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
         additionalDuplicateMessage="This will overwrite it."
       />
       <DarkFunctionButton
+        data-testid="button-save-set"
         disabled={disabled}
         onClick={() => setShowSaveModal(true)}
         leftSection={
@@ -98,6 +99,13 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
 
 export const SubmitSaveSetButton: React.FC<SaveSetButttonProps> = (
   props: SaveSetButttonProps,
-) => <SaveSetButton {...props} buttonText="Submit" dismissModal />;
+) => (
+  <SaveSetButton
+    {...props}
+    data-testid="button-submit"
+    buttonText="Submit"
+    dismissModal
+  />
+);
 
 export default SaveSetButton;
