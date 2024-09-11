@@ -8,9 +8,6 @@ class GenericLocators:
     TEXT_IDENT = lambda text: f"text={text} >> nth=0"
     TEXT_IN_PARAGRAPH = lambda text: f'p:has-text("{text}") >> nth=0'
 
-    X_BUTTON_IN_TEMP_MESSAGE = (
-        '>> .. >> .. >> .. >> svg[xmlns="http://www.w3.org/2000/svg"]'
-    )
     UNDO_BUTTON_IN_TEMP_MESSAGE = 'span:text("Undo")'
     SET_AS_CURRENT_COHORT_IN_TEMP_MESSAGE = (
         'span:text("Set this as your current cohort.")'
@@ -82,17 +79,29 @@ class GenericLocators:
         lambda button_text_name: f'footer >> a:has-text("{button_text_name}") >> nth=0'
     )
 
+    TABLE_ITEM_COUNT_IDENT = (
+        lambda table_name: f'[data-testid="table-{table_name}"] >> [data-testid="text-total-item-count"]'
+    )
     TABLE_TEXT_IDENT = (
         lambda table_name, table_text: f'[data-testid="table-{table_name}"] >> text={table_text} >> nth=0'
     )
     TABLE_AREA_TO_SELECT = (
         lambda row, column: f"tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0"
     )
+    TABLE_AREA_TO_SELECT_IN_SPECIFIED_TABLE = (
+        lambda table_name, row, column: f"[data-testid='table-{table_name}'] >> tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0"
+    )
     TABLE_AREA_TO_CLICK = (
         lambda row, column: f"tr:nth-child({row}) > td:nth-child({column}) > * > * >> nth=0"
     )
+    TABLE_AREA_TO_CLICK_IN_SPECIFIED_TABLE = (
+        lambda table_name, row, column: f"[data-testid='table-{table_name}'] >> tr:nth-child({row}) > td:nth-child({column}) > * > * >> nth=0"
+    )
     TABLE_TEXT_TO_WAIT_FOR = (
         lambda text, row, column: f'tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0 >> text="{text}"'
+    )
+    TABLE_TEXT_TO_WAIT_FOR_IN_SPECIFIED_TABLE = (
+        lambda table_name, text, row, column: f'[data-testid="table-{table_name}"] >> tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0 >> text="{text}"'
     )
     TEXT_TABLE_HEADER = lambda column: f"tr > th:nth-child({column}) >> nth=0"
     TEXT_DROPDOWN_MENU_OPTION = (
@@ -248,6 +257,12 @@ class BasePage:
         locator = GenericLocators.SHOWING_NUMBER_OF_ITEMS_IN_TABLE(table_name)
         return self.get_text(locator)
 
+    def get_table_item_count_text(self, table_name):
+        """Returns how many items are in the table by retrieving the number in the 'Total Of xx Object' string"""
+        table_name = self.normalize_button_identifier(table_name)
+        locator = GenericLocators.TABLE_ITEM_COUNT_IDENT(table_name)
+        return self.get_text(locator)
+
     def get_filter_selection_count(self, filter_group_name, selection):
         """Returns the count of how many items are associated with that filter in the current cohort"""
         locator = GenericLocators.FILTER_GROUP_SELECTION_COUNT_IDENT(
@@ -269,6 +284,15 @@ class BasePage:
         Row and Column indexing begins at '1'
         """
         table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT(row, column)
+        return self.get_text(table_locator_to_select)
+
+    def get_specified_table_body_text_by_row_column(self, table_name, row, column):
+        """
+        In specified table, gets text from table body by giving a row and column.
+        Row and Column indexing begins at '1'
+        """
+        table_name = self.normalize_button_identifier(table_name)
+        table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT_IN_SPECIFIED_TABLE(table_name, row, column)
         return self.get_text(table_locator_to_select)
 
     def hover_table_body_by_row_column(self, row, column):
@@ -309,9 +333,7 @@ class BasePage:
                 # it changes what the active cohort is. I cannot reproduce it manually, and it stops
                 # when I put this sleep here.
                 time.sleep(1)
-                x_button_locator = (
-                    text_locator + GenericLocators.X_BUTTON_IN_TEMP_MESSAGE
-                )
+                x_button_locator = GenericLocators.BUTTON_CLOSE_NOTIFICATION
                 # Remove the message after locating it.
                 # The messages can pile up, so removing them is sometimes necessary for subsequent scenarios
                 self.click(x_button_locator)
@@ -358,6 +380,17 @@ class BasePage:
         """
         table_locator_to_select = GenericLocators.TABLE_TEXT_TO_WAIT_FOR(
             text, row, column
+        )
+        self.wait_until_locator_is_visible(table_locator_to_select)
+
+    def wait_for_specified_table_body_text_by_row_column(self, table_name, text, row, column):
+        """
+        In specified table, waits for text from table body by giving a row and column.
+        Row and Column indexing begins at '1'
+        """
+        table_name = self.normalize_button_identifier(table_name)
+        table_locator_to_select = GenericLocators.TABLE_TEXT_TO_WAIT_FOR_IN_SPECIFIED_TABLE(
+            table_name, text, row, column
         )
         self.wait_until_locator_is_visible(table_locator_to_select)
 
@@ -455,6 +488,13 @@ class BasePage:
         except:
             return False
         return True
+
+    def is_table_displaying_text_no_wait(self, table_id, table_text):
+        """Returns if the given table is displaying specified text. This does not wait
+        for text to appear, it returns immediately if is displayed or not."""
+        table_id = self.normalize_button_identifier(table_id)
+        table_text_locator = GenericLocators.TABLE_TEXT_IDENT(table_id, table_text)
+        return self.is_visible(table_text_locator)
 
     def click_data_testid(self, data_testid):
         locator = GenericLocators.DATA_TEST_ID_IDENT(data_testid)
@@ -594,6 +634,23 @@ class BasePage:
         table_locator_to_select = GenericLocators.TABLE_AREA_TO_CLICK(row, column)
         self.hover(table_locator_to_select)
         self.click(table_locator_to_select, True)
+
+    def select_specified_table_by_row_column(self, table_name, row, column):
+        """
+        In specified table, selects values from tables by giving a row and column
+        Row and Column indexing begins at '1'
+        """
+        table_name = self.normalize_button_identifier(table_name)
+        table_locator_to_select = GenericLocators.TABLE_AREA_TO_CLICK_IN_SPECIFIED_TABLE(table_name, row, column)
+        # Try to click drilled down locator.
+        if self.is_visible(table_locator_to_select):
+            self.hover(table_locator_to_select)
+            self.click(table_locator_to_select, True)
+        # If that is not available, click a higher level locator.
+        else:
+            table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT_IN_SPECIFIED_TABLE(table_name, row, column)
+            self.hover(table_locator_to_select)
+            self.click(table_locator_to_select, True)
 
     def send_text_into_search_bar(self, text_to_send, aria_label):
         """Sends text into search bar based on its aria_label"""
