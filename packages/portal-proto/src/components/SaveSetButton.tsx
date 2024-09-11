@@ -9,6 +9,8 @@ import {
   SetTypes,
   hideModal,
   CreateSetValueArgs,
+  showModal,
+  Modals,
 } from "@gff/core";
 import { showNotification } from "@mantine/notifications";
 import { SaveOrCreateEntityModal } from "@/components/Modals/SaveOrCreateEntityModal";
@@ -53,11 +55,7 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
       }
       setSetName(null);
     } else if (response.isError) {
-      showNotification({
-        message: "Problem saving set.",
-        color: "red",
-        closeButtonProps: { "aria-label": "Close notification" },
-      });
+      dispatch(showModal({ modal: Modals.SaveSetErrorModal }));
     }
   }, [
     response.isSuccess,
