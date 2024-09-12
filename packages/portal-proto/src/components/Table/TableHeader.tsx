@@ -192,43 +192,69 @@ function TableHeader<TData>({
     </div>
   );
 
+  const renderHeaderWhenNeeded = () => {
+    if (additionalControls) {
+      if (tableTitle) return <TitleWrapper title={tableTitle} />;
+      if (shouldShowControls && tableTotalDetail) {
+        return <TotalDetailWrapper detail={tableTotalDetail} />;
+      }
+    } else if (tableTitle && shouldShowControls) {
+      return <TitleWrapper title={tableTitle} />;
+    }
+    return null;
+  };
+
+  const renderLeftSection = () => {
+    if (additionalControls) {
+      return additionalControls;
+    }
+
+    return (
+      <>
+        {tableTitle && (
+          <div
+            className={`${
+              shouldShowControls && tableTotalDetail ? "hidden xl:block" : ""
+            }`}
+          >
+            <TitleWrapper title={tableTitle} />
+          </div>
+        )}
+
+        {!tableTitle && tableTotalDetail && (
+          <div className="hidden xl:block">
+            <TotalDetailWrapper detail={tableTotalDetail} />
+          </div>
+        )}
+
+        {tableTitle && tableTotalDetail && shouldShowControls && (
+          <div className="block xl:hidden">
+            <TotalDetailWrapper detail={tableTotalDetail} />
+          </div>
+        )}
+      </>
+    );
+  };
+
+  const extraHeader = renderHeaderWhenNeeded();
+
   return (
     <>
-      {additionalControls && (
-        <div className="xl:hidden mb-2">
-          {tableTitle ? (
-            <TitleWrapper title={tableTitle} />
-          ) : shouldShowControls ? (
-            tableTotalDetail && <TotalDetailWrapper detail={tableTotalDetail} />
-          ) : null}
-        </div>
-      )}
+      {extraHeader && <div className="xl:hidden mb-2">{extraHeader}</div>}
 
       <div
         className={`flex flex-wrap gap-y-4 mb-2 items-center ${
           !additionalControls && !tableTitle ? "justify-end" : "justify-between"
         }`}
       >
-        <div>
-          {additionalControls ? (
-            additionalControls
-          ) : tableTitle ? (
-            <TitleWrapper title={tableTitle} />
-          ) : !shouldShowControls && tableTotalDetail ? (
-            <TotalDetailWrapper detail={tableTotalDetail} />
-          ) : null}
-        </div>
+        <div className="flex items-center">{renderLeftSection()}</div>
 
         {(shouldShowControls || tableTotalDetail) && (
           <div className="flex flex-wrap gap-y-2 gap-x-4 items-center">
             {tableTotalDetail && (
               <TotalDetailWrapper
                 detail={tableTotalDetail}
-                className={`${
-                  additionalControls && shouldShowControls
-                    ? "hidden xl:block"
-                    : ""
-                }`}
+                className={shouldShowControls ? "hidden xl:block" : ""}
               />
             )}
             {shouldShowControls && renderSearchAndControls()}
