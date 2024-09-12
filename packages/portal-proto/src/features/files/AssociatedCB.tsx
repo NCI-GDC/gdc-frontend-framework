@@ -4,7 +4,7 @@ import useStandardPagination from "@/hooks/useStandardPagination";
 import { GdcFile } from "@gff/core";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
-import { HeaderTitleTable } from "@/components/tailwindComponents";
+import { HeaderTitle } from "@/components/tailwindComponents";
 import VerticalTable from "@/components/Table/VerticalTable";
 import TotalItems from "@/components/Table/TotalItem";
 
@@ -168,9 +168,7 @@ const AssociatedCB = ({
           pluralName="cases/biospecimens"
         />
       }
-      tableTitle={
-        <HeaderTitleTable>Associated Cases/Biospecimens</HeaderTitleTable>
-      }
+      tableTitle={<HeaderTitle>Associated Cases/Biospecimens</HeaderTitle>}
       handleChange={handleChange}
       baseZIndex={300}
     />

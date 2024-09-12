@@ -92,6 +92,7 @@ const ManageSetActions: React.FC<ManageSetActionsProps> = ({
           dispatch(removeSets([{ setId, setType }]));
           showNotification({
             message: <DeleteSetsNotification sets={[set]} />,
+            closeButtonProps: { "aria-label": "Close notification" },
           });
         }}
         variant="transparent"

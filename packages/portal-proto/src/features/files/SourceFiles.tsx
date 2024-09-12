@@ -7,7 +7,7 @@ import fileSize from "filesize";
 import { mapGdcFileToCartFile } from "./utils";
 import { fileInCart } from "@/utils/index";
 import VerticalTable from "@/components/Table/VerticalTable";
-import { HeaderTitleTable } from "@/components/tailwindComponents";
+import { HeaderTitle } from "@/components/tailwindComponents";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
 import TotalItems from "@/components/Table/TotalItem";
 import { useDeepCompareMemo } from "use-deep-compare";
@@ -97,7 +97,7 @@ const SourceFiles = ({
       data={data}
       columns={columns}
       tableTotalDetail={<TotalItems total={data?.length} itemName="file" />}
-      tableTitle={<HeaderTitleTable>Source Files</HeaderTitleTable>}
+      tableTitle={<HeaderTitle>Source Files</HeaderTitle>}
     />
   );
 };
