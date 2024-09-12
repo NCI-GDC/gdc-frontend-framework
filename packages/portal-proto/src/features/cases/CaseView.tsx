@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import {
   useCoreDispatch,
@@ -39,6 +39,7 @@ import FilesTable from "./FilesTable";
 import UsersIcon from "public/user-flow/icons/summary/users.svg";
 import AnnotationsTable from "./AnnotationsTable";
 import useScrollToHash from "@/hooks/useScrollToHash";
+import { useSynchronizedRowHeights } from "@/components/HorizontalTable/useSynchronizedRowHeights";
 
 export interface CaseViewProps {
   readonly data: CaseDefaults;
@@ -69,6 +70,10 @@ export const CaseView: React.FC<CaseViewProps> = ({
     : false;
   const { width } = useViewportSize();
   useScrollToHash(["files", "annotations"]);
+  const leftSummaryTableRef = useRef<HTMLTableElement>(null);
+  const rightSummaryTableRef = useRef<HTMLTableElement>(null);
+
+  useSynchronizedRowHeights([leftSummaryTableRef, rightSummaryTableRef]);
 
   const {
     diagnoses = [],
@@ -312,11 +317,18 @@ export const CaseView: React.FC<CaseViewProps> = ({
           <div className="basis-full lg:basis-1/2">
             <SummaryCard
               tableData={width >= LG_BREAKPOINT ? leftColumnData : summaryData}
+              ref={leftSummaryTableRef}
+              enableSync={true}
             />
           </div>
           {width >= LG_BREAKPOINT && (
             <div className="basis-1/2 h-full">
-              <SummaryCard tableData={rightColumnData} title="" />
+              <SummaryCard
+                tableData={rightColumnData}
+                title=""
+                ref={rightSummaryTableRef}
+                enableSync={true}
+              />
             </div>
           )}
         </div>

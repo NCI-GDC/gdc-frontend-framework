@@ -1,7 +1,7 @@
 import { MdInfo as InfoIcon } from "react-icons/md";
 import { ColumnDef } from "@tanstack/react-table";
 import { ActionIcon, Tooltip } from "@mantine/core";
-import { HeaderTitleTable } from "@/components/tailwindComponents";
+import { HeaderTitle } from "@/components/tailwindComponents";
 import VerticalTable from "../Table/VerticalTable";
 
 interface CategoryTableSummaryProps<TData> {
@@ -22,7 +22,7 @@ function CategoryTableSummary<TData>({
   return (
     <div className="flex flex-col gap-2 flex-1">
       <div className="text-base-contrast-lighter flex">
-        <HeaderTitleTable>{title}</HeaderTitleTable>
+        <HeaderTitle>{title}</HeaderTitle>
         {tooltip && (
           <Tooltip
             label={tooltip}
