@@ -164,6 +164,7 @@ const download = async ({
   const fields = reduce(
     {
       ...params,
+      filters: params.filter ?? {},
       downloadCookieKey: cookieKey,
       downloadCookiePath: "/",
       attachment: params?.attachment ?? true,
