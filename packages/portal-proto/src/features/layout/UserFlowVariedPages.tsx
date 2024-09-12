@@ -9,9 +9,12 @@ import {
   selectCohortMessage,
   clearCohortMessage,
   useGetBannerNotificationsQuery,
+  selectCurrentModal,
+  Modals,
+  hideModal,
 } from "@gff/core";
 import Banner from "@/components/Banner";
-import { Button } from "@mantine/core";
+import { Button, Modal } from "@mantine/core";
 import {
   DeleteCohortNotification,
   DiscardChangesCohortNotification,
@@ -26,6 +29,8 @@ import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { useElementSize } from "@mantine/hooks";
 import ClearStoreErrorBoundary from "@/components/ClearStoreErrorBoundary";
+import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
+import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
@@ -44,6 +49,7 @@ export const UserFlowVariedPages = ({
   isContextBarSticky = false,
 }: PropsWithChildren<UserFlowVariedPagesProps>) => {
   const dispatch = useCoreDispatch();
+  const modal = useCoreSelector((state) => selectCurrentModal(state));
 
   useGetBannerNotificationsQuery();
   const banners = useCoreSelector((state) => selectBanners(state));
@@ -203,6 +209,19 @@ export const UserFlowVariedPages = ({
           >
             {children}
           </main>
+          <Modal
+            opened={modal === Modals.SaveSetErrorModal}
+            onClose={() => dispatch(hideModal())}
+            title="Save Set Error"
+            zIndex={500}
+          >
+            <p className="py-2 px-4">There was a problem saving the set.</p>
+            <ModalButtonContainer data-testid="modal-button-container">
+              <DarkFunctionButton onClick={() => dispatch(hideModal())}>
+                OK
+              </DarkFunctionButton>
+            </ModalButtonContainer>
+          </Modal>
         </>
       </ClearStoreErrorBoundary>
       <Footer />
