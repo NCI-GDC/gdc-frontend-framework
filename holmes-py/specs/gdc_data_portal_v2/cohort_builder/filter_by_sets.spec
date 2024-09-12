@@ -102,3 +102,17 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
   |-------------------|
   |Mutation Frequency |
 * Verify "Cohort Bar Case Count" and "Mutation Frequency Tool Card Case Count" are "Equal"
+
+## Validate Created Set's Contents
+* Navigate to "Manage Sets" from "Header" "section"
+* Change number of entries shown in the table "Manage Sets" to "100"
+* Select item list for set "CB-New Gene Set" on Manage Sets page
+* Verify the table "Set Information" is displaying this information
+  |text_in_table_to_check |
+  |-----------------------|
+  |CSMD3                  |
+  |LRP1B                  |
+  |PIK3CA                 |
+  |FAT4                   |
+  |FAT3                   |
+* Close set panel

@@ -10,6 +10,7 @@ tags: gdc-data-portal-v2, manage-sets, regression
 ## Navigate to Manage Sets
 * On GDC Data Portal V2 app
 * Navigate to "Manage Sets" from "Header" "section"
+* Change number of entries shown in the table "Manage Sets" to "100"
 
 ## Create Mutation Set
 * Select Create Set and from the dropdown choose "Mutations"
