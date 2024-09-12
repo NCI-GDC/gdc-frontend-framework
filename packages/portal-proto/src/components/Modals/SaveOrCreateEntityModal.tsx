@@ -165,6 +165,7 @@ export const SaveOrCreateEntityBody = ({
       >
         <Group justify="flex-end">
           <Button
+            data-testid="button-cancel-save"
             variant="outline"
             classNames={{ root: "bg-base-max" }}
             color="secondary"
@@ -176,7 +177,7 @@ export const SaveOrCreateEntityBody = ({
             variant="filled"
             color="secondary"
             onClick={handleActionClick}
-            data-testid="action-button"
+            data-testid="button-save-name"
             leftSection={
               loading ? <Loader size={15} color="white" /> : undefined
             }

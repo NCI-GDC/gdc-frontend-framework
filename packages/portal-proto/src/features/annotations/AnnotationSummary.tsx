@@ -163,7 +163,7 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
         headerTitleLeft="Annotation"
         headerTitle={annotationId}
       />
-      <div className="mx-4 mt-6 mb-4">
+      <div className="flex flex-col gap-2 mx-4 mt-6 mb-4">
         <HeaderTitle>Summary</HeaderTitle>
         <div
           data-testid="table-summary-annotation-summary"

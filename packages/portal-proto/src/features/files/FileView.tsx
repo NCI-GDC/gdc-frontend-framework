@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useDeepCompareMemo } from "use-deep-compare";
 import {
   GdcFile,
@@ -36,6 +36,7 @@ import ReadGroups from "./ReadGroups";
 import FileVersions from "./FileVersions";
 import AnnnotationsTable from "./AnnotationsTable";
 import FilesIcon from "public/user-flow/icons/summary/files.svg";
+import { useSynchronizedRowHeights } from "@/components/HorizontalTable/useSynchronizedRowHeights";
 
 interface LeftSideElementForHeaderProps {
   readonly isFileInCart: boolean;
@@ -85,7 +86,7 @@ export interface FileViewProps {
   readonly isModal?: boolean;
 }
 
-const DivWithMargin = tw.div`mt-8`;
+const DivWithMargin = tw.div`mt-8 flex flex-col gap-2`;
 
 export const FileView: React.FC<FileViewProps> = ({
   file,
@@ -97,6 +98,9 @@ export const FileView: React.FC<FileViewProps> = ({
   const [fileToDownload, setFileToDownload] = useState(file);
   const isFileInCart = fileInCart(currentCart, file.file_id);
   const shouldDisplayRefGenome = shouldDisplayReferenceGenome(file);
+  const leftAnalysisTableRef = useRef<HTMLTableElement>(null);
+  const rightAnalysisTableRef = useRef<HTMLTableElement>(null);
+  useSynchronizedRowHeights([leftAnalysisTableRef, rightAnalysisTableRef]);
 
   const formattedDataForFileProperties = useDeepCompareMemo(
     () =>
@@ -249,6 +253,8 @@ export const FileView: React.FC<FileViewProps> = ({
                         ? formattedDataForAnalysis
                         : [formattedDataForAnalysis[0]]
                     }
+                    ref={leftAnalysisTableRef}
+                    enableSync={!shouldDisplayRefGenome}
                   />
                 </div>
                 {!shouldDisplayRefGenome && (
@@ -257,6 +263,8 @@ export const FileView: React.FC<FileViewProps> = ({
                       customDataTestID="table-analysis-file-summary"
                       title="" // should be empty
                       tableData={[formattedDataForAnalysis[1]]}
+                      ref={rightAnalysisTableRef}
+                      enableSync={true}
                     />
                   </div>
                 )}

@@ -9,6 +9,8 @@ import {
   addSet,
   useGeneSetCountsQuery,
   useRemoveFromGeneSetMutation,
+  showModal,
+  Modals,
 } from "@gff/core";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
@@ -86,11 +88,7 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
               .then((response) => {
                 const newSetId = response;
                 if (newSetId === undefined) {
-                  showNotification({
-                    message: "Problem modifiying set.",
-                    color: "red",
-                    closeButtonProps: { "aria-label": "Close notification" },
-                  });
+                  dispatch(showModal({ modal: Modals.SaveSetErrorModal }));
                 } else {
                   dispatch(
                     addSet({
@@ -107,11 +105,7 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
                 }
               })
               .catch(() => {
-                showNotification({
-                  message: "Problem modifiying set.",
-                  color: "red",
-                  closeButtonProps: { "aria-label": "Close notification" },
-                });
+                dispatch(showModal({ modal: Modals.SaveSetErrorModal }));
               })
           }
           disabled={selectedSets.length === 0}
