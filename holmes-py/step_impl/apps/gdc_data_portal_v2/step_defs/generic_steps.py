@@ -27,7 +27,7 @@ def start_app():
 @before_suite
 def navigate_to_app():
     APP.navigate()
-    APP.warning_modal.accept_warning()
+    APP.modal.accept_warning()
 
 
 @before_suite
@@ -76,7 +76,7 @@ def setup_next_spec_run():
 @step("On GDC Data Portal V2 app")
 def navigate_to_app():
     APP.navigate()
-    APP.warning_modal.accept_warning()
+    APP.modal.accept_warning()
 
 
 @step("Go to <page_name> page")
@@ -230,6 +230,7 @@ def upload_file(
         "Cohort Builder Import": APP.cohort_bar.click_import_cohort_browse,
         "Mutation Frequency Custom Filter": APP.mutation_frequency_page.click_custom_filter_import_browse,
         "Manage Sets Import": APP.manage_sets_page.click_browse_import_set,
+        "Modal Import": APP.shared.click_button_data_testid,
     }
     driver = WebDriver.page
     with driver.expect_file_chooser(timeout=60000) as file_chooser_info:
@@ -725,13 +726,17 @@ def click_link_data_testid(link_data_testid: str):
     """Clicks a link with a data-testid"""
     APP.shared.click_link_data_testid(link_data_testid)
 
+@step("Select the following checkboxes <table>")
+def click_checkboxes(table):
+    for k, v in enumerate(table):
+        APP.shared.click_checkbox(v[0])
+        time.sleep(0.1)
 
 @step("Select the following radio buttons <table>")
 def click_radio_buttons(table):
     for k, v in enumerate(table):
         APP.shared.click_radio_button(v[0])
         time.sleep(0.1)
-
 
 @step("Select create or save in cohort modal")
 def click_create_or_save_in_cohort_modal():
@@ -764,6 +769,13 @@ def change_number_of_entries_shown(change_number_of_entries_shown: str):
     """
     APP.shared.change_number_of_entries_shown(change_number_of_entries_shown)
 
+@step("Change number of entries shown in the table <table_name> to <number_of_entries>")
+def change_number_of_entries_shown_in_specified_table(table_name:str, change_number_of_entries_shown: str):
+    """
+    In specified table, changes number of entries shown in the table using the show entries button,
+    and selecting an option from the dropdown list.
+    """
+    APP.shared.change_number_of_entries_shown_in_specified_table(table_name, change_number_of_entries_shown)
 
 @step("Perform action and validate modal text <table>")
 def click_named_button_in_modal_and_wait_for_temp_message_text(table):

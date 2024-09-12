@@ -18,6 +18,9 @@ class AnalysisCenterLocators:
     TEXT_DESCRIPTION_TOOL = (
         lambda tool_name: f'[data-testid="{tool_name}-tool"] >> [data-testid="text-description-tool"]'
     )
+    TEXT_CASES_COUNT_ON_TOOL_CARD = (
+        lambda tool_name: f'[data-testid="{tool_name}-tool"] >> [data-testid="text-case-count-tool"]'
+    )
     TOOLTIP_ZERO_CASES_ON_TOOL_CARD = (
         lambda tool_name: f'[data-testid="{tool_name}-tool"] [data-testid="text-case-count-tool"] svg'
     )
@@ -58,6 +61,16 @@ class AnalysisCenterPage(BasePage):
         """After an analysis tool description is made visible, this returns the description"""
         locator = AnalysisCenterLocators.TEXT_DESCRIPTION_TOOL(tool_name)
         return self.get_text(locator)
+
+    def get_analysis_tool_cases_count(self, tool_name):
+        """Returns case count on given analysis tool"""
+        self.wait_for_loading_spinner_to_detatch()
+        locator = AnalysisCenterLocators.TEXT_CASES_COUNT_ON_TOOL_CARD(tool_name)
+        cases_count = self.get_text(locator)
+        # Remove the "Cases" part of the string. We do not need that for comparison.
+        cases_count = cases_count.replace("Cases", "")
+        cases_count = cases_count.replace(" ", "")
+        return cases_count
 
     def get_analysis_tool_tooltip_text(self, tool_name, tooltip_text):
         """
