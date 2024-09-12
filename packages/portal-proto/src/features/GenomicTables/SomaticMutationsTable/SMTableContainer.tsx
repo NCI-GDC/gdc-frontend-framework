@@ -543,7 +543,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               defaultSearchTerm: searchTerm,
               tooltip: "e.g. TP53, ENSG00000141510, chr17:g.7675088C>T, R175H",
             }}
-            tableTitle={
+            tableTotalDetail={
               <TotalItems total={data?.ssmsTotal} itemName="somatic mutation" />
             }
             pagination={pagination}

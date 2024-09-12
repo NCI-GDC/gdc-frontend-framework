@@ -443,7 +443,7 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             </FunctionButton>
           </div>
         }
-        tableTitle={
+        tableTotalDetail={
           <TotalItems total={data?.genes?.genes_total} itemName="gene" />
         }
         pagination={pagination}

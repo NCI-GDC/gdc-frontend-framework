@@ -66,10 +66,10 @@ const ReadGroups = ({
     <VerticalTable
       data={data}
       columns={readGroupsColumns}
-      tableTitle={
+      tableTotalDetail={
         <TotalItems total={readGroups?.length} itemName="read group" />
       }
-      additionalControls={<HeaderTitleTable>Read Groups</HeaderTitleTable>}
+      tableTitle={<HeaderTitleTable>Read Groups</HeaderTitleTable>}
     />
   );
 };

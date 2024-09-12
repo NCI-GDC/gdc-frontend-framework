@@ -161,14 +161,14 @@ const AssociatedCB = ({
         enabled: true,
         tooltip: "e.g. TCGA-AR-A24Z, TCGA-AR-A24Z-10A-01D-A167-09",
       }}
-      tableTitle={
+      tableTotalDetail={
         <TotalItems
           total={data?.length}
           itemName="case/biospecimen"
           pluralName="cases/biospecimens"
         />
       }
-      additionalControls={
+      tableTitle={
         <HeaderTitleTable>Associated Cases/Biospecimens</HeaderTitleTable>
       }
       handleChange={handleChange}

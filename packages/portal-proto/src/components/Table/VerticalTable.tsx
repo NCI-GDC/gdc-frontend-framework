@@ -36,6 +36,7 @@ import TablePagination from "./TablePagination";
  * @param enableRowSelection  - A boolean value indicating whether row selection is enabled.
  * @param status  - The status of the data.
  * @param tableTitle  - The title of the table.
+ * @param tableTotalDetail  - caption including total items in the table.
  * @param additionalControls  - Additional controls to be displayed in the table.
  * @param search  - The search options for the table.
  * @param showControls  - A boolean value indicating whether the controls should be displayed.
@@ -71,6 +72,7 @@ function VerticalTable<TData>({
   enableRowSelection = false,
   status,
   tableTitle,
+  tableTotalDetail,
   additionalControls,
   search,
   showControls = false,
@@ -182,12 +184,13 @@ function VerticalTable<TData>({
   return (
     <div data-testid={customDataTestID} className="grow overflow-hidden">
       {(additionalControls ||
-        tableTitle ||
+        tableTotalDetail ||
         search?.enabled ||
         showControls) && (
         <TableHeader
           additionalControls={additionalControls}
           tableTitle={tableTitle}
+          tableTotalDetail={tableTotalDetail}
           search={search}
           showControls={showControls}
           handleChange={handleChange}

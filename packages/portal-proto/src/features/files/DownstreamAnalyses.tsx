@@ -122,10 +122,10 @@ const DownstreamAnalyses = ({
     <VerticalTable
       data={downstreamTableData}
       columns={downstremAnalysesDefaultColumns}
-      tableTitle={
+      tableTotalDetail={
         <TotalItems total={downstreamTableData?.length} itemName="file" />
       }
-      additionalControls={
+      tableTitle={
         <HeaderTitleTable>Downstream Analyses Files</HeaderTitleTable>
       }
     />

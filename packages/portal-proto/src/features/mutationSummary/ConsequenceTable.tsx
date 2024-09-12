@@ -349,7 +349,7 @@ export const ConsequenceTable = ({
     <VerticalTable
       customDataTestID="table-consequences-mutation-summary"
       data={displayedData}
-      tableTitle={
+      tableTotalDetail={
         <TotalItems total={tableData?.length} itemName="consequence" />
       }
       columns={consequenceTableDefaultColumns}

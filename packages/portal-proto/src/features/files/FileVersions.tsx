@@ -141,7 +141,7 @@ const FileVersions = ({ file_id }: { file_id: string }): JSX.Element => {
               </div>
             }
             data={tableData}
-            tableTitle={
+            tableTotalDetail={
               <TotalItems total={tableData?.length} itemName="version" />
             }
             columns={readGroupsColumns}
