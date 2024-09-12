@@ -230,7 +230,6 @@ def upload_file(
         "Cohort Builder Import": APP.cohort_bar.click_import_cohort_browse,
         "Mutation Frequency Custom Filter": APP.mutation_frequency_page.click_custom_filter_import_browse,
         "Manage Sets Import": APP.manage_sets_page.click_browse_import_set,
-        "Modal Import": APP.shared.click_button_data_testid,
     }
     driver = WebDriver.page
     with driver.expect_file_chooser(timeout=60000) as file_chooser_info:
