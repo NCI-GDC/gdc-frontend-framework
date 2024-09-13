@@ -179,14 +179,14 @@ export const SetOperationTable = ({
         <tr data-testid="row-union-of-selected-sets">
           <td className="p-2 font-bold">Union of selected sets:</td>
           <td />
-          <td className="w-52">
+          <td className="w-52 px-2.5">
             <CountButtonWrapperForSetsAndCases
               count={isFetching ? 0 : totalCount}
               filters={unionFilter}
               entityType={entityType}
             />
           </td>
-          <td className="p-2">
+          <td className="p-2.5">
             <DownloadButtonTotal
               setKey="union-of"
               filters={unionFilter}

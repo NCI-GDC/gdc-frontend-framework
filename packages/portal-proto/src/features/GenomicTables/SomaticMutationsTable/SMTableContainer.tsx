@@ -15,6 +15,8 @@ import {
   useCoreDispatch,
   GDCSsmsTable,
   buildSSMSTableSearchFilters,
+  filterSetToOperation,
+  convertFilterToGqlFilter,
 } from "@gff/core";
 import { useEffect, useState, useContext, useMemo, useCallback } from "react";
 import { useDeepCompareCallback } from "use-deep-compare";
@@ -385,6 +387,10 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     () => setShowRemoveModal(false),
     [],
   );
+
+  const operationCohortFilters = filterSetToOperation(cohortFilters);
+  const operationSetFilters = filterSetToOperation(setFilters);
+
   return (
     <>
       {caseFilter && searchTerm.length === 0 && data?.ssmsTotal === 0 ? null : (
@@ -403,9 +409,15 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               <SaveSelectionAsSetModal
                 opened={showSaveModal}
                 cohortFilters={
-                  selectedMutations.length === 0 ? cohortFilters : undefined
+                  selectedMutations.length === 0 && operationCohortFilters
+                    ? convertFilterToGqlFilter(operationCohortFilters)
+                    : undefined
                 }
-                filters={setFilters}
+                filters={
+                  operationSetFilters
+                    ? convertFilterToGqlFilter(operationSetFilters)
+                    : undefined
+                }
                 sort="occurrence.case.project.project_id"
                 initialSetName={
                   selectedMutations.length === 0

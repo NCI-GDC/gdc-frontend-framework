@@ -16,6 +16,9 @@ import {
   extractFiltersWithPrefixFromFilterSet,
   GDCGenesTable,
   buildGeneTableSearchFilters,
+  filterSetToOperation,
+  convertFilterToGqlFilter,
+  Operation,
 } from "@gff/core";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useDeepCompareCallback } from "use-deep-compare";
@@ -333,6 +336,9 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
     [],
   );
 
+  const operationCohortFilters = filterSetToOperation(cohortFilters);
+  const operationSetFilters = filterSetToOperation(setFilters);
+
   return (
     <>
       {isUninitialized || isFetching ? null : (
@@ -341,9 +347,15 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
             opened={showSaveModal}
             closeModal={handleSaveSelectionAsSetModalClose}
             cohortFilters={
-              selectedGenes.length === 0 ? cohortFilters : undefined
+              selectedGenes.length === 0 && operationCohortFilters
+                ? convertFilterToGqlFilter(operationCohortFilters)
+                : undefined
             }
-            filters={setFilters}
+            filters={
+              operationSetFilters
+                ? convertFilterToGqlFilter(operationSetFilters)
+                : undefined
+            }
             initialSetName={
               selectedGenes.length === 0
                 ? filtersToName(setFilters)
