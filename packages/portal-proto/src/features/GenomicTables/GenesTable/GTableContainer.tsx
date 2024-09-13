@@ -18,7 +18,6 @@ import {
   buildGeneTableSearchFilters,
   filterSetToOperation,
   convertFilterToGqlFilter,
-  Operation,
 } from "@gff/core";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useDeepCompareCallback } from "use-deep-compare";
