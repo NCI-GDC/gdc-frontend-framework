@@ -277,29 +277,19 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
         </div>
       </div>
       <div className="flex flex-col">
-        <div
-          className={
-            [
-              SurvivalPlotTypes.categorical,
-              SurvivalPlotTypes.continuous,
-            ].includes(plotType)
-              ? "flex flex-row flex-wrap justify-center"
-              : undefined
-          }
-        >
-          {!hideLegend &&
-            legend?.map((x, idx) => {
-              return (
-                <div
-                  data-testid="text-cases-with-survival-data"
-                  key={`${x.key}-${idx}`}
-                  className="text-sm"
-                >
-                  {x.value}
-                </div>
-              );
-            })}
-        </div>
+        {!hideLegend &&
+          legend?.map((x, idx) => {
+            return (
+              <div
+                data-testid="text-cases-with-survival-data"
+                key={`${x.key}-${idx}`}
+                className="text-sm"
+              >
+                {x.value}
+              </div>
+            );
+          })}
+
         <div className="mt-2">
           <Tooltip
             label={
