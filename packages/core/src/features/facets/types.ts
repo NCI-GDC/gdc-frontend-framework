@@ -23,8 +23,8 @@ export type GQLDocType =
 export type GQLIndexType = "explore" | "repository";
 
 export interface AllowableRange {
-  readonly minimum?: number;
-  readonly maximum?: number;
+  readonly minimum: number;
+  readonly maximum: number;
 }
 
 export interface FacetDefinition {
