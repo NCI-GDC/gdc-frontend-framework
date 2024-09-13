@@ -363,6 +363,30 @@ def make_cohort_builder_selections(table):
         is_filter_visible = APP.shared.is_filter_card_present(v[0])
         assert is_filter_visible, f"The filter card '{v[0]}' is NOT visible"
 
+@step("Verify expected custom filters <are_or_are_not> present in filter card <table>")
+def validate_custom_filter_text_on_facet_card(are_or_are_not:str, table):
+    """
+    validate_custom_filter_text_on_facet_card validates given text should be present
+    or not present on filter card. Used with cards that allow entry of text as a filter
+    e.g. Case ID, Mutated Gene, Cases Submitter Id, etc.
+
+    :param are_or_are_not: Check if text should be present or should not be present. Acceptable inputs: "are", "are not"
+    :param v[0]: The facet card name to check
+    :param v[1]: Custom filter text to check on the facet card
+    """
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    APP.shared.wait_for_loading_spinner_to_detatch()
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    for k, v in enumerate(table):
+        is_custom_filter_visible = APP.shared.is_filter_card_custom_filter_text_present(v[0], v[1])
+        if are_or_are_not.lower() == "are":
+            assert is_custom_filter_visible, f"In filter card '{v[0]}', the custom filter text '{v[1]}' is NOT visible"
+        elif are_or_are_not.lower() == "are not":
+            assert is_custom_filter_visible == False, f"In filter card '{v[0]}', the custom filter text '{v[1]}' is present when it should NOT be"
+        time.sleep(0.1)
+
+
 
 @step("Verify the page is showing <number_of_items_text>")
 def verify_showing_item_text(number_of_items_text):

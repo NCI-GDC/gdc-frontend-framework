@@ -7,7 +7,7 @@ Test-case       : PEAR-792
 
 tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
 
-## Navigate to Cohort Builder
+## Navigate to Manage Sets
 * On GDC Data Portal V2 app
 * Navigate to "Manage Sets" from "Header" "section"
 
@@ -20,7 +20,7 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
 * Select "Save"
 * Is temporary modal with text "Set has been saved." present on the page and "Remove Modal"
 
-## Filter by Existing Mutation Set
+## Filter Cohort by Existing Mutation Set
 * Navigate to "Cohort" from "Header" "section"
 * Select "Add" from the Cohort Bar
 * Is temporary modal with text "Unsaved_Cohort has been created" present on the page and "Remove Modal"
@@ -59,7 +59,7 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
   |Save             |Cohort has been saved                      |Remove Modal        |
 * "CB-Mutation Set" should be the active cohort
 
-## Filter by Created Mutation Set in Modal
+## Filter Cohort by Created Mutation Set in Modal
 * Navigate to "Cohort" from "Header" "section"
 * Select the following labels from "Molecular Filters" tab on the Cohort Builder page
   |facet_name       |selection                |

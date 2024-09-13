@@ -119,6 +119,9 @@ class GenericLocators:
     FILTER_GROUP_IDENT = (
         lambda group_name: f'[data-testid="filters-facets"] >> div >> div:text-is("{group_name}")'
     )
+    FILTER_GROUP_CUSTOM_FILTER_TEXT_IDENT = (
+        lambda group_name, filter_text: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> text="{filter_text}"'
+    )
     FILTER_GROUP_SELECTION_IDENT = (
         lambda group_name, selection: f'[data-testid="filters-facets"] >> div >> div:has-text("{group_name}") >> [data-testid="checkbox-{selection}"]'
     )
@@ -477,6 +480,12 @@ class BasePage:
         except:
             return False
         return True
+
+    def is_filter_card_custom_filter_text_present(self, facet_card, text):
+        """Returns if filter text is present on given facet card"""
+        locator = GenericLocators.FILTER_GROUP_CUSTOM_FILTER_TEXT_IDENT(facet_card, text)
+        result = self.is_visible(locator)
+        return result
 
     def is_no_active_cohort_filter_text_present(self):
         """
