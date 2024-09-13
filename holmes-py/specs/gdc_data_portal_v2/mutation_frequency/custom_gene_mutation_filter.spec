@@ -1,6 +1,6 @@
 # Mutation Frequency - Custom Gene and Mutation Filters
 Date Created  : 07/14/2023
-Version			  : 1.0
+Version			  : 1.1
 Owner		      : GDC QA
 Description		: Custom Filtering on the Mutation Frequency App
 Test-Case     : PEAR-732
