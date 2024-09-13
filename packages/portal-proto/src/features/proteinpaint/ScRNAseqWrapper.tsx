@@ -1,6 +1,7 @@
-import { useRef, FC } from "react";
+import { useRef, FC, useState } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
 import { runproteinpaint } from "@sjcrh/proteinpaint-client";
+import { LoadingOverlay } from "@mantine/core";
 import {
   useCoreSelector,
   selectCurrentCohortFilters,
@@ -8,7 +9,8 @@ import {
   useFetchUserDetailsQuery,
   buildCohortGqlOperator,
 } from "@gff/core";
-import { isEqual, cloneDeep } from "lodash";
+
+import { RxComponentCallbacks } from "./sjpp-types";
 
 const basepath = PROTEINPAINT_API;
 
@@ -23,6 +25,18 @@ export const ScRNAseqWrapper: FC<PpProps> = (props: PpProps) => {
   const currentCohort = useCoreSelector(selectCurrentCohortFilters);
   const filter0 = buildCohortGqlOperator(currentCohort);
   const userDetails = useFetchUserDetailsQuery();
+  const [isLoading, setIsLoading] = useState(false);
+  const showLoadingOverlay = () => setIsLoading(true);
+  const hideLoadingOverlay = () => setIsLoading(false);
+  const matrixCallbacks: RxComponentCallbacks = {
+    "postRender.gdcScRNAseq": hideLoadingOverlay,
+    "error.gdcScRNAseq": hideLoadingOverlay,
+  };
+  const appCallbacks: RxComponentCallbacks = {
+    "preDispatch.gdcPlotApp": showLoadingOverlay,
+    "error.gdcPlotApp": hideLoadingOverlay,
+    "postRender.gdcPlotApp": hideLoadingOverlay,
+  };
 
   useDeepCompareEffect(
     () => {
@@ -65,6 +79,11 @@ export const ScRNAseqWrapper: FC<PpProps> = (props: PpProps) => {
         style={{ margin: "2em" }}
         className="sjpp-wrapper-root-div"
         //userDetails={userDetails}
+      />
+      <LoadingOverlay
+        data-testid="loading-spinner"
+        visible={isLoading}
+        zIndex={0}
       />
     </div>
   );
