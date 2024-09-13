@@ -79,7 +79,7 @@ const UserInputModal: React.FC<UserInputModalProps> = ({
                 keepMounted={false}
                 onChange={onTabChange}
               >
-                <Tabs.List>
+                <Tabs.List data-testid="modal-tab-list">
                   {tabs.map((tab) => (
                     <StyledTab value={tab.value} key={tab.value}>
                       {tab.label}

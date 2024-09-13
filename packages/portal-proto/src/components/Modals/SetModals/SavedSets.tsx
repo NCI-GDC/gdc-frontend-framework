@@ -89,6 +89,7 @@ const SavedSets: React.FC<SavedSetsProps> = ({
             position="right"
           >
             <Checkbox
+              data-testid={`checkbox-${row.original.name}`}
               size="xs"
               classNames={{
                 input: "checked:bg-accent checked:border-accent",
@@ -106,12 +107,19 @@ const SavedSets: React.FC<SavedSetsProps> = ({
       savedSetsTableColumnHelper.accessor("name", {
         id: "name",
         header: "Name",
+        cell: ({ row }) => (
+          <div data-testid={`text-${row.original.name}-set-name`}>
+            {row.original.name}
+          </div>
+        ),
       }),
       savedSetsTableColumnHelper.accessor("count", {
         id: "count",
         header: `# ${upperFirst(setTypeLabel)}s`,
         cell: ({ row }) => (
-          <>{isSuccess ? row.original.count.toLocaleString() : "..."}</>
+          <div data-testid={`text-${row.original.name}-set-count`}>
+            {isSuccess ? row.original.count.toLocaleString() : "..."}
+          </div>
         ),
       }),
     ],
@@ -164,6 +172,7 @@ const SavedSets: React.FC<SavedSetsProps> = ({
           <>
             <p className="text-sm mb-2">{selectSetInstructions}</p>
             <VerticalTable
+              customDataTestID="table-sets"
               data={displayedData}
               columns={savedSetsColumns}
               handleChange={handleTableChange}
@@ -178,20 +187,27 @@ const SavedSets: React.FC<SavedSetsProps> = ({
         )}
       </div>
       <ButtonContainer data-testid="modal-button-container">
-        <DarkFunctionButton className="mr-auto" disabled>
+        <DarkFunctionButton
+          data-testid="button-save-set"
+          className="mr-auto"
+          disabled
+        >
           Save Set
         </DarkFunctionButton>
         <DiscardChangesButton
+          customDataTestID="button-cancel"
           action={() => dispatch(hideModal())}
           label="Cancel"
           dark={false}
         />
         <DiscardChangesButton
+          customDataTestID="button-clear"
           disabled={selectedSets.length === 0}
           action={() => setRowSelection({})}
           label="Clear"
         />
         <DarkFunctionButton
+          data-testid="button-submit"
           disabled={selectedSets.length === 0}
           onClick={() => {
             updateFilters(facetField, {

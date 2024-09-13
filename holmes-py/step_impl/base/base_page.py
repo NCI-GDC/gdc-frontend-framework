@@ -37,7 +37,7 @@ class GenericLocators:
     )
     TEXT_NO_ACTIVE_COHORT_FILTERS = '[data-testid="text-no-active-cohort-filter"]'
 
-    CREATE_OR_SAVE_COHORT_MODAL_BUTTON = '[data-testid="action-button"]'
+    BUTTON_CREATE_OR_SAVE_COHORT_IN_MODAL = '[data-testid="button-save-name"]'
 
     TEXT_BOX_IDENT = lambda text_box: f'[data-testid="textbox-{text_box}"]'
     SEARCH_BAR_ARIA_IDENT = lambda aria_label: f'[aria-label="{aria_label}"]'
@@ -558,7 +558,7 @@ class BasePage:
 
     def click_create_or_save_button_in_cohort_modal(self):
         """Clicks 'Create' or 'Save' in cohort modal"""
-        locator = GenericLocators.CREATE_OR_SAVE_COHORT_MODAL_BUTTON
+        locator = GenericLocators.BUTTON_CREATE_OR_SAVE_COHORT_IN_MODAL
         self.click(locator)
 
     def click_text_option_from_dropdown_menu(self, dropdown_option):

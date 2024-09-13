@@ -407,7 +407,7 @@ const ContextBar = ({
             )}
           </div>
           <Tabs
-            data-testid="filters-facets"
+            data-testid="filters-facets-summary-view"
             variant="pills"
             classNames={{
               tab: SecondaryTabStyle,

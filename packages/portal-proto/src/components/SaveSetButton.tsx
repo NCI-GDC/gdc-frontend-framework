@@ -9,6 +9,8 @@ import {
   SetTypes,
   hideModal,
   CreateSetValueArgs,
+  showModal,
+  Modals,
 } from "@gff/core";
 import { showNotification } from "@mantine/notifications";
 import { SaveOrCreateEntityModal } from "@/components/Modals/SaveOrCreateEntityModal";
@@ -53,11 +55,7 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
       }
       setSetName(null);
     } else if (response.isError) {
-      showNotification({
-        message: "Problem saving set.",
-        color: "red",
-        closeButtonProps: { "aria-label": "Close notification" },
-      });
+      dispatch(showModal({ modal: Modals.SaveSetErrorModal }));
     }
   }, [
     response.isSuccess,
@@ -84,6 +82,7 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
         additionalDuplicateMessage="This will overwrite it."
       />
       <DarkFunctionButton
+        data-testid="button-save-set"
         disabled={disabled}
         onClick={() => setShowSaveModal(true)}
         leftSection={
@@ -98,6 +97,13 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
 
 export const SubmitSaveSetButton: React.FC<SaveSetButttonProps> = (
   props: SaveSetButttonProps,
-) => <SaveSetButton {...props} buttonText="Submit" dismissModal />;
+) => (
+  <SaveSetButton
+    {...props}
+    data-testid="button-submit"
+    buttonText="Submit"
+    dismissModal
+  />
+);
 
 export default SaveSetButton;

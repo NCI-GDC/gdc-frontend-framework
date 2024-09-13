@@ -9,6 +9,7 @@ interface DiscardChangesButtonProps {
   readonly label: string;
   readonly disabled?: boolean;
   readonly dark?: boolean;
+  readonly customDataTestID?: string;
 }
 
 const DiscardChangesButton: React.FC<DiscardChangesButtonProps> = ({
@@ -16,6 +17,7 @@ const DiscardChangesButton: React.FC<DiscardChangesButtonProps> = ({
   label,
   disabled = false,
   dark = true,
+  customDataTestID,
 }: DiscardChangesButtonProps) => {
   const [showModal, setShowModal] = useState(false);
   const [userEnteredInput] = useContext(UserInputContext);
@@ -29,6 +31,7 @@ const DiscardChangesButton: React.FC<DiscardChangesButtonProps> = ({
       />
       {dark ? (
         <DarkFunctionButton
+          data-testid={customDataTestID}
           disabled={disabled}
           onClick={() => (userEnteredInput ? setShowModal(true) : action())}
         >
@@ -36,6 +39,7 @@ const DiscardChangesButton: React.FC<DiscardChangesButtonProps> = ({
         </DarkFunctionButton>
       ) : (
         <FunctionButton
+          data-testid={customDataTestID}
           disabled={disabled}
           onClick={() => (userEnteredInput ? setShowModal(true) : action())}
         >
