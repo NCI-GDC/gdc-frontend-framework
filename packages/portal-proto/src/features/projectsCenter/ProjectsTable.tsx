@@ -324,7 +324,7 @@ const ProjectsTable: React.FC = () => {
       endpoint: "projects",
       method: "POST",
       params: {
-        filters: tableFilters,
+        filters: tableFilters ?? {},
         size: 10000,
         attachment: true,
         format: "JSON",
