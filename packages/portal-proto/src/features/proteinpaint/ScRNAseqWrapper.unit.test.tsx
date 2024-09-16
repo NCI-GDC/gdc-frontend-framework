@@ -3,9 +3,8 @@ import { ScRNAseqWrapper } from "./ScRNAseqWrapper";
 import { MantineProvider } from "@mantine/core";
 
 const filter = {};
-let runpparg,
-  userDetails,
-  isDemoMode = false;
+let runpparg, userDetails;
+const isDemoMode = false;
 
 const nullFunction = () => null;
 
@@ -32,7 +31,7 @@ jest.mock("@sjcrh/proteinpaint-client", () => ({
 
 test("single cell RNAseq arguments", () => {
   userDetails = { data: { username: "test" } };
-  const { unmount, rerender } = render(
+  const { unmount } = render(
     <MantineProvider
       theme={{
         colors: {
