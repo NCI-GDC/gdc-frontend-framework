@@ -362,9 +362,9 @@ tags: gdc-data-portal-v2, case-summary
     |---------------------------------------|
     |Sample ID                              |
     |Sample UUID                            |
-    |Sample Type                            |
-    |Sample Type ID                         |
     |Tissue Type                            |
+    |Tumor Descriptor                       |
+    |Preservation Method                    |
     |Tumor Code                             |
     |Tumor Code ID                          |
     |Oct Embedded                           |
@@ -373,25 +373,20 @@ tags: gdc-data-portal-v2, case-summary
     |Longest Dimension                      |
     |Is Ffpe                                |
     |Pathology Report UUID                  |
-    |Tumor Descriptor                       |
     |Current Weight                         |
     |Initial Weight                         |
-    |Composition                            |
     |Time Between Clamping And Freezing     |
     |Time Between Excision And Freezing     |
     |Days To Sample Procurement             |
     |Freezing Method                        |
-    |Preservation Method                    |
     |Days To Collection                     |
     |Portions                               |
     |TCGA-GV-A3QI-10A                       |
     |074df1cb-b6b7-4d3f-9c0a-fe523b1854e0   |
-    |Blood Derived Normal                   |
-    |10                                     |
+    |Peripheral Blood NOS                   |
     |Normal                                 |
     |false                                  |
     |Not Applicable                         |
-    |Not Reported                           |
     |105 days                               |
 
 ## Biospecimen Table - Portions

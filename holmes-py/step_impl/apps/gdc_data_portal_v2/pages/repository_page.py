@@ -17,13 +17,13 @@ class RepositoryPageLocators:
     FILE_FILTER_SEARCH_BOX = '[data-testid="textbox-search-for-a-property"]'
 
     FILTER_GROUP_SELECTION_IDENT = (
-        lambda group_name, selection: f'[data-testid="filters-facets"] >> div >> div:has-text("{group_name}") >> [data-testid="checkbox-{selection}"]'
+        lambda group_name, selection: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> [data-testid="checkbox-{selection}"]'
     )
     FILTER_GROUP_ACTION_IDENT = (
-        lambda group_name, action: f'[data-testid="filters-facets"] >> div >> div:has-text("{group_name}") >> button[aria-label="{action}"]'
+        lambda group_name, action: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> button[aria-label="{action}"]'
     )
     FILTER_GROUP_SHOW_MORE_LESS_IDENT = (
-        lambda group_name, more_or_less: f'[data-testid="filters-facets"] >> div >> div:has-text("{group_name}") >> button[data-testid="{more_or_less}"]'
+        lambda group_name, more_or_less: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> button[data-testid="{more_or_less}"]'
     )
     FACET_GROUP_FILTER_TEXT_CASE_COUNT = (
         lambda group_name, selection: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> [data-testid="text-{selection}"]'

@@ -15,10 +15,10 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
 * Create and save a cohort named "CC_Compare_1" with these filters
   |tab_name               |facet_name           |selection                      |
   |-----------------------|---------------------|-------------------------------|
-  |Biospecimen            |Composition          |solid tissue                   |
-  |Biospecimen            |Composition          |peripheral whole blood         |
-  |Biospecimen            |Composition          |whole bone marrow              |
-  |Biospecimen            |Composition          |peripheral blood components nos|
+  |Biospecimen            |Specimen Type        |solid tissue                   |
+  |Biospecimen            |Specimen Type        |peripheral whole blood         |
+  |Biospecimen            |Specimen Type        |whole bone marrow              |
+  |Biospecimen            |Specimen Type        |peripheral blood components nos|
 * Collect case counts for the following filters on the Cohort Builder page for cohort "CC_Compare_1"
   |tab_name               |facet_name           |selection                      |
   |-----------------------|---------------------|-------------------------------|
