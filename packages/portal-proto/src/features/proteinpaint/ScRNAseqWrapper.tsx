@@ -2,6 +2,7 @@ import { useRef, FC, useState } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
 import { runproteinpaint } from "@sjcrh/proteinpaint-client";
 import { LoadingOverlay } from "@mantine/core";
+import { isEqual } from "lodash";
 import {
   useCoreSelector,
   selectCurrentCohortFilters,
@@ -28,7 +29,7 @@ export const ScRNAseqWrapper: FC<PpProps> = (props: PpProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const showLoadingOverlay = () => setIsLoading(true);
   const hideLoadingOverlay = () => setIsLoading(false);
-  const matrixCallbacks: RxComponentCallbacks = {
+  const scRNAseqCallbacks: RxComponentCallbacks = {
     "postRender.gdcScRNAseq": hideLoadingOverlay,
     "error.gdcScRNAseq": hideLoadingOverlay,
   };
@@ -41,21 +42,21 @@ export const ScRNAseqWrapper: FC<PpProps> = (props: PpProps) => {
   useDeepCompareEffect(
     () => {
       const rootElem = divRef.current as HTMLElement;
-      const holder = rootElem.querySelector(".sja_root_holder");
-      const arg = getScRNAseqArg(props, filter0, rootElem);
+      const arg = getScRNAseqArg(
+        props,
+        filter0,
+        rootElem,
+        scRNAseqCallbacks,
+        appCallbacks,
+      );
       if (!arg) return;
       // compare the argument to runpp to avoid unnecessary render
-      //   if ((data || prevArg.current) && isEqual(prevArg.current, data)) return;
-      //   prevArg.current = data;
+      if ((arg || prevArg.current) && isEqual(prevArg.current, arg)) return;
+      prevArg.current = arg;
 
       const toolContainer = rootElem.parentNode.parentNode
         .parentNode as HTMLElement;
       toolContainer.style.backgroundColor = "#fff";
-
-      //   const arg = Object.assign(
-      //     { holder: rootElem, noheader: true, nobox: true, hide_dsHandles: true },
-      //     cloneDeep(data),
-      //   );
 
       if (ppRef.current) {
         ppRef.current.update(arg);
@@ -98,13 +99,28 @@ interface ScRNAseqArg {
   noheader: true;
   nobox: true;
   hide_dsHandles: true;
+  opts: ScRNAseqArgOpts;
+}
+interface ScRNAseqArgOpts {
+  app: ScRNAseqArgOptsApp;
+  singleCellPlot: ScRNAseqArgOptsApp;
+}
+
+interface ScRNAseqArgOptsApp {
+  callbacks?: RxComponentCallbacks;
 }
 
 interface PpApi {
   update(arg: any): null;
 }
 
-function getScRNAseqArg(props: PpProps, filter0: any, holder: Element) {
+function getScRNAseqArg(
+  props: PpProps,
+  filter0: any,
+  holder: Element,
+  scRNAseqCallbacks?: RxComponentCallbacks,
+  appCallbacks?: RxComponentCallbacks,
+) {
   const arg: ScRNAseqArg = {
     // host in gdc is just a relative url path,
     // using the same domain as the GDC portal where PP is embedded
@@ -115,6 +131,14 @@ function getScRNAseqArg(props: PpProps, filter0: any, holder: Element) {
     noheader: true,
     nobox: true,
     hide_dsHandles: true,
+    opts: {
+      app: {
+        callbacks: appCallbacks,
+      },
+      singleCellPlot: {
+        callbacks: scRNAseqCallbacks,
+      },
+    },
   };
   return arg;
 }
