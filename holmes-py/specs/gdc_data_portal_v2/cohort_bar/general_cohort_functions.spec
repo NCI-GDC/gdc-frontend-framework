@@ -37,7 +37,6 @@ tags: gdc-data-portal-v2, regression, cohort-bar,smoke-test
 * Is text "Changes not saved" present on the page
 * Select "Save" from the Cohort Bar
 * Is text "You cannot undo this action." present on the page
-Message when saving second cohort will be fixed in PEAR-1651
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
   |-----------------|-------------------------------------------|--------------------|
