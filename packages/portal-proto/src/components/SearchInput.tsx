@@ -338,10 +338,10 @@ export const SearchInput: React.FC = () => {
                   .slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
                   .map((result, index) => {
                     const matchingEnums = result?.enum
-                      .slice(0, MAX_MATCHED_VALUES)
                       .filter((e) =>
                         result.terms.some((t) => e.toLowerCase().includes(t)),
-                      );
+                      )
+                      .slice(0, MAX_MATCHED_VALUES);
                     const showTooltip =
                       result.description !== "" || matchingEnums.length > 0;
                     const extraAttributes =

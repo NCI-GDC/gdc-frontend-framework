@@ -170,6 +170,7 @@ const ManageSets: React.FC = () => {
                 dispatch(removeSets(selectedSets));
                 showNotification({
                   message: <DeleteSetsNotification sets={selectedSets} />,
+                  closeButtonProps: { "aria-label": "Close notification" },
                 });
                 setSelectedSets([]);
               }}

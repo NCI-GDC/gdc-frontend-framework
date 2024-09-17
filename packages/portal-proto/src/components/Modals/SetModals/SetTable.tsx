@@ -11,6 +11,7 @@ import useStandardPagination from "@/hooks/useStandardPagination";
 import { createColumnHelper } from "@tanstack/react-table";
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
+import { statusBooleansToDataStatus } from "src/utils";
 
 interface SelectCellProps {
   readonly count: number;
@@ -91,7 +92,12 @@ const SetTable: React.FC<SetTableProps> = ({
 }: SetTableProps) => {
   const componentId = useId();
   const sets = useCoreSelector((state) => selectSetsByType(state, setType));
-  const { data: counts, isSuccess } = countHook({
+  const {
+    data: counts,
+    isSuccess,
+    isFetching,
+    isError,
+  } = countHook({
     setIds: Object.keys(sets),
   });
 
@@ -174,7 +180,7 @@ const SetTable: React.FC<SetTableProps> = ({
       data={displayedData}
       columns={setTableColumns}
       handleChange={handleTableChange}
-      status={isSuccess ? "fulfilled" : "pending"}
+      status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
       pagination={{ ...paginationProps, label: `${setTypeLabel} set` }}
     />
   );

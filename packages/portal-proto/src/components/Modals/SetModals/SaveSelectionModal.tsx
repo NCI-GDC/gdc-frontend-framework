@@ -12,6 +12,8 @@ import {
   buildCohortGqlOperator,
   useCreateTopNGeneSetFromFiltersMutation,
   useCreateGeneSetFromFiltersMutation,
+  showModal,
+  Modals,
 } from "@gff/core";
 import FunctionButton from "@/components/FunctionButton";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
@@ -163,11 +165,7 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
                 form.reset();
               })
               .catch(() => {
-                showNotification({
-                  message: "Problem saving set.",
-                  color: "red",
-                  closeButtonProps: { "aria-label": "Close notification" },
-                });
+                dispatch(showModal({ modal: Modals.SaveSetErrorModal }));
               });
           }}
           disabled={!form.isValid()}

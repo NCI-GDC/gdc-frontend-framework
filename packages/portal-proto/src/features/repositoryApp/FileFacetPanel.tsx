@@ -11,13 +11,13 @@ import {
   useAppDispatch,
 } from "@/features/repositoryApp/appApi";
 import {
-  selectCustomFacets,
   addFilter,
   removeFilter,
   resetToDefault,
   getDefaultFacets,
   selectRepositoryConfigFacets,
 } from "@/features/repositoryApp/repositoryConfigSlice";
+import { selectAppliedFilterCount } from "./repositoryFiltersSlice";
 import partial from "lodash/partial";
 
 import {
@@ -32,6 +32,7 @@ import {
   useFilterExpandedState,
   useToggleAllProjectFilters,
   useToggleExpandFilter,
+  useClearAllRepositoryFilters,
 } from "@/features/repositoryApp/hooks";
 import {
   FacetDocTypeToCountsIndexMap,
@@ -44,12 +45,14 @@ const useRepositoryEnumData = (field: string) =>
   useLocalFilters(field, useRepositoryEnumValues, useRepositoryFilters);
 
 export const FileFacetPanel = (): JSX.Element => {
-  const customFacets = useAppSelector(selectCustomFacets);
   const facetsConfig = useAppSelector(selectRepositoryConfigFacets);
   const { isSuccess: isDictionaryReady } = useFacetDictionary();
   const facets = useCoreSelector((state) =>
     selectFacetDefinitionsByName(state, facetsConfig),
   );
+  const appliedFilterCount = useAppSelector(selectAppliedFilterCount);
+  const defaultFilters = getDefaultFacets();
+  const clearAllFilters = useClearAllRepositoryFilters();
 
   const [facetDefinitions, setFacetDefinitions] = useState<
     Array<FacetDefinition>
@@ -72,7 +75,7 @@ export const FileFacetPanel = (): JSX.Element => {
   );
 
   // clears all added custom facets
-  const handleClearAll = useCallback(() => {
+  const handleResetCustomFilters = useCallback(() => {
     dispatch(resetToDefault());
   }, [dispatch]);
 
@@ -82,8 +85,6 @@ export const FileFacetPanel = (): JSX.Element => {
       setFacetDefinitions([...facets]);
     }
   }, [facets, isDictionaryReady]);
-
-  const showReset = customFacets?.length > 0;
 
   const FileFacetHooks: FacetRequiredHooks = {
     useGetEnumFacetData: useRepositoryEnumData,
@@ -110,13 +111,15 @@ export const FileFacetPanel = (): JSX.Element => {
       valueLabel="Files"
       toggleAllFiltersExpanded={toggleAllFiltersExpanded}
       allFiltersCollapsed={allFiltersCollapsed}
-      showReset={showReset}
-      handleClearAll={handleClearAll}
-      hasCustomFilters
-      handleRemoveFilter={handleRemoveFilter}
-      handleCustomFilterSelected={handleFilterSelected}
-      getDefaultFacets={getDefaultFacets}
-      customFacetsConfig={facetsConfig}
+      handleClearAll={clearAllFilters}
+      filtersAppliedCount={appliedFilterCount}
+      customConfig={{
+        handleResetCustomFilters,
+        handleRemoveFilter,
+        handleCustomFilterSelected: handleFilterSelected,
+        defaultFilters,
+      }}
+      isLoading={!isDictionaryReady}
     />
   );
 };

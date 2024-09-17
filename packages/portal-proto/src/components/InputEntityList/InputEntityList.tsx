@@ -192,7 +192,12 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
     <>
       <div className="max-h-96 overflow-y-auto">
         <div className="px-4">
-          <p className="mb-2 text-sm font-content">{inputInstructions}</p>
+          <p
+            data-testid="text-input-instructions"
+            className="mb-2 text-sm font-content"
+          >
+            {inputInstructions}
+          </p>
           <div className="flex items-center justify-between w-full">
             <label className="font-bold text-sm" htmlFor="identifier-input">
               Type or copy-and-paste a list of {entityLabel} identifiers
@@ -204,6 +209,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
               withinPortal={false}
             >
               <ActionIcon
+                data-testid="tooltip-accepted-identifier-info"
                 variant="subtle"
                 aria-label="accepted identifier info"
               >
@@ -212,6 +218,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
             </Tooltip>
           </div>
           <Textarea
+            data-testid="textbox-enter-identifiers"
             ref={inputRef}
             value={input}
             onChange={(event) => {
@@ -262,7 +269,9 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
             }}
             accept=".tsv,.txt,.csv"
             rightSection={
-              <DarkFunctionButton size="xs">Browse</DarkFunctionButton>
+              <DarkFunctionButton data-testid="button-browse" size="xs">
+                Browse
+              </DarkFunctionButton>
             }
             rightSectionWidth={80}
             aria-describedby="file-upload-screen-reader-msg"
@@ -300,11 +309,13 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
           </div>
         )}
         <DiscardChangesButton
+          customDataTestID="button-cancel"
           action={() => dispatch(hideModal())}
           label="Cancel"
           dark={false}
         />
         <DiscardChangesButton
+          customDataTestID="button-clear"
           disabled={input === ""}
           action={resetState}
           label={"Clear"}

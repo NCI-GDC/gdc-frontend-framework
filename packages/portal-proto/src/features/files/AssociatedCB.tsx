@@ -4,7 +4,7 @@ import useStandardPagination from "@/hooks/useStandardPagination";
 import { GdcFile } from "@gff/core";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
-import { HeaderTitleTable } from "@/components/tailwindComponents";
+import { HeaderTitle } from "@/components/tailwindComponents";
 import VerticalTable from "@/components/Table/VerticalTable";
 import TotalItems from "@/components/Table/TotalItem";
 
@@ -20,7 +20,8 @@ const AssociatedCB = ({
   type AssociatedCBType = {
     entity_id: JSX.Element;
     entity_type: string;
-    sample_type: string;
+    tissue_type: string;
+    tumor_descriptor: string;
     case_id: string;
     annotations: JSX.Element | 0;
   };
@@ -33,23 +34,22 @@ const AssociatedCB = ({
         (caseObj) => caseObj.case_id === entity.case_id,
       );
 
-      // get sample_type from casedata through matching its submitter_id
-      const sample_type =
-        caseData?.samples?.find((sample) => {
-          // match entity_submitter_id
+      // get tissue_type and tumor_descriptor from casedata through matching its submitter_id
+      const matched_entity = caseData?.samples?.find((sample) => {
+        // match entity_submitter_id
 
-          // get submitter_id from diferent paths
-          const portion = sample.portions?.[0];
-          let entity_id = sample.submitter_id;
-          if (portion?.analytes?.[0]?.aliquots?.[0]?.submitter_id) {
-            entity_id = portion.analytes?.[0]?.aliquots?.[0]?.submitter_id;
-          } else if (portion?.slides?.[0]?.submitter_id) {
-            entity_id = portion.slides?.[0]?.submitter_id;
-          } else if (portion?.submitter_id) {
-            entity_id = portion.submitter_id;
-          }
-          return entity_id === entity.entity_submitter_id;
-        })?.sample_type || "--";
+        // get submitter_id from diferent paths
+        const portion = sample.portions?.[0];
+        let entity_id = sample.submitter_id;
+        if (portion?.analytes?.[0]?.aliquots?.[0]?.submitter_id) {
+          entity_id = portion.analytes?.[0]?.aliquots?.[0]?.submitter_id;
+        } else if (portion?.slides?.[0]?.submitter_id) {
+          entity_id = portion.slides?.[0]?.submitter_id;
+        } else if (portion?.submitter_id) {
+          entity_id = portion.submitter_id;
+        }
+        return entity_id === entity.entity_submitter_id;
+      });
 
       let entityQuery;
       if (entity.entity_type !== "case") {
@@ -75,7 +75,8 @@ const AssociatedCB = ({
             />
           ),
           entity_type: entity.entity_type,
-          sample_type: sample_type,
+          tissue_type: matched_entity?.tissue_type ?? "--",
+          tumor_descriptor: matched_entity?.tumor_descriptor ?? "--",
           case_id: (
             <GenericLink
               path={`/cases/${entity.case_id}`}
@@ -125,8 +126,11 @@ const AssociatedCB = ({
       columnHelper.accessor("entity_type", {
         header: "Entity Type",
       }),
-      columnHelper.accessor("sample_type", {
-        header: "Sample Type",
+      columnHelper.accessor("tissue_type", {
+        header: "Tissue Type",
+      }),
+      columnHelper.accessor("tumor_descriptor", {
+        header: "Tumor Descriptor",
       }),
       columnHelper.accessor("case_id", {
         header: "Case ID",
@@ -165,7 +169,7 @@ const AssociatedCB = ({
         />
       }
       additionalControls={
-        <HeaderTitleTable>Associated Cases/Biospecimens</HeaderTitleTable>
+        <HeaderTitle>Associated Cases/Biospecimens</HeaderTitle>
       }
       handleChange={handleChange}
       baseZIndex={300}

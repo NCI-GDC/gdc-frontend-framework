@@ -27,7 +27,7 @@ def start_app():
 @before_suite
 def navigate_to_app():
     APP.navigate()
-    APP.warning_modal.accept_warning()
+    APP.modal.accept_warning()
 
 
 @before_suite
@@ -76,7 +76,7 @@ def setup_next_spec_run():
 @step("On GDC Data Portal V2 app")
 def navigate_to_app():
     APP.navigate()
-    APP.warning_modal.accept_warning()
+    APP.modal.accept_warning()
 
 
 @step("Go to <page_name> page")
@@ -164,7 +164,11 @@ def download_file_at_file_table(file: str, source: str):
         "File Summary": APP.file_summary_page.click_download_button,
         "File Summary File Versions": APP.file_summary_page.click_file_version_download_option,
         "File Summary Annotation Table": APP.file_summary_page.click_annotation_table_download_option,
-        "Case Summary Files Table": APP.case_summary_page.click_files_table_download_file_button,
+        "Case Summary Clinical Table": APP.case_summary_page.click_clinical_table_download_button,
+        "Case Summary Biospecimen Table": APP.case_summary_page.click_biospecimen_table_download_button,
+        "Case Summary Files Table": APP.case_summary_page.click_files_table_download_json_or_tsv_button,
+        "Case Summary Files Table File": APP.case_summary_page.click_files_table_download_file_button,
+        "Case Summary Annotations Table": APP.case_summary_page.click_annotations_table_download_json_or_tsv_button,
         "Cohort Bar": APP.cohort_bar.click_cohort_bar_button,
         "Manage Sets": APP.manage_sets_page.click_on_download_for_set,
         "Cohort Comparison": APP.cohort_comparison_page.click_download_tsv_button_on_analysis_card_cohort_comparison,
@@ -359,6 +363,30 @@ def make_cohort_builder_selections(table):
         is_filter_visible = APP.shared.is_filter_card_present(v[0])
         assert is_filter_visible, f"The filter card '{v[0]}' is NOT visible"
 
+@step("Verify expected custom filters <are_or_are_not> present in filter card <table>")
+def validate_custom_filter_text_on_facet_card(are_or_are_not:str, table):
+    """
+    validate_custom_filter_text_on_facet_card validates given text should be present
+    or not present on filter card. Used with cards that allow entry of text as a filter
+    e.g. Case ID, Mutated Gene, Cases Submitter Id, etc.
+
+    :param are_or_are_not: Check if text should be present or should not be present. Acceptable inputs: "are", "are not"
+    :param v[0]: The facet card name to check
+    :param v[1]: Custom filter text to check on the facet card
+    """
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    APP.shared.wait_for_loading_spinner_to_detatch()
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    for k, v in enumerate(table):
+        is_custom_filter_visible = APP.shared.is_filter_card_custom_filter_text_present(v[0], v[1])
+        if are_or_are_not.lower() == "are":
+            assert is_custom_filter_visible, f"In filter card '{v[0]}', the custom filter text '{v[1]}' is NOT visible"
+        elif are_or_are_not.lower() == "are not":
+            assert is_custom_filter_visible == False, f"In filter card '{v[0]}', the custom filter text '{v[1]}' is present when it should NOT be"
+        time.sleep(0.1)
+
+
 
 @step("Verify the page is showing <number_of_items_text>")
 def verify_showing_item_text(number_of_items_text):
@@ -432,6 +460,14 @@ def verify_table_is_displaying_text(table_name, table):
             is_table_text_present
         ), f"The table '{table_name}' is NOT displaying '{v[0]}'"
 
+@step("Verify the table <table_name> is not displaying this information <table>")
+def verify_table_is_not_displaying_text(table_name, table):
+    """Verifies the table is not displaying given text"""
+    for k, v in enumerate(table):
+        is_table_text_present = APP.shared.is_table_displaying_text_no_wait(table_name, v[0])
+        assert (
+            is_table_text_present == False
+        ), f"The table '{table_name}' is displaying '{v[0]}' when it should NOT"
 
 @step("Verify the button <button_name> is disabled")
 def verify_button_is_disabled(button_name: str):
@@ -504,6 +540,29 @@ def wait_for_table_body_text_to_appear(table):
     APP.shared.wait_for_loading_spinner_table_to_detatch()
     APP.shared.wait_for_loading_spinner_to_detatch()
 
+@step("Wait for table <table_name> body text to appear <table>")
+def wait_for_table_body_text_to_appear(table_name:str, table):
+    """In specified table, waits for given table body text to appear"""
+    # Wait for all possible loading spinners to detach before checking text
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    APP.shared.wait_for_loading_spinner_to_detatch()
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    for k, v in enumerate(table):
+        """
+        v[0] - Text
+        v[1] - Row
+        v[2] - Column
+        """
+        APP.shared.wait_for_specified_table_body_text_by_row_column(table_name, v[0], v[1], v[2])
+        time.sleep(2)
+        # Occasionally, the screen flickers where it shows the text we
+        # are waiting for then it disappears for a moment. Checking for the
+        # text twice should account for that.
+        APP.shared.wait_for_specified_table_body_text_by_row_column(table_name, v[0], v[1], v[2])
+        time.sleep(2)
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_to_detatch()
 
 @step("Is text <expected_text> present on the page")
 def is_text_present_on_the_page(expected_text: str):
@@ -570,6 +629,22 @@ def store_button_labels_in_tables_for_comparison(table):
         )
         data_store.spec[f"{v[0]}"] = table_body_text_by_row_column
 
+@step("Collect button labels in table <table_name> for comparison <table>")
+def store_button_labels_in_tables_for_comparison(table_name:str, table):
+    """
+    In specified table, stores button label text for comparison in future tests.
+    Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'
+
+    table_name - Table to collect label from
+    v[0] - The name of how the label will be stored
+    v[1] - The row of the table
+    v[2] - The column of the table
+    """
+    for k, v in enumerate(table):
+        table_body_text_by_row_column = APP.shared.get_specified_table_body_text_by_row_column(
+            table_name, v[1], v[2]
+        )
+        data_store.spec[f"{v[0]}"] = table_body_text_by_row_column
 
 @step("Collect Cohort Bar Case Count for comparison")
 def store_cohort_bar_case_count_for_comparison():
@@ -592,6 +667,13 @@ def store_cohort_bar_case_count_for_comparison(cohort_name: str):
         f"{cohort_name} Case Count"
     ] = APP.shared.get_cohort_bar_case_count()
 
+@step("Collect table <table_name> Item Count for comparison")
+def store_item_count_in_table_for_comparison(table_name:str):
+    """
+    Stores the total number of items in the given table for comparison in future tests.
+    Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'
+    """
+    data_store.spec[f"{table_name} Item Count"] = APP.shared.get_table_item_count_text(table_name)
 
 @step("The cohort bar case count should be <case_count>")
 def is_cohort_bar_case_count_present_on_the_page(case_count: str):
@@ -667,13 +749,17 @@ def click_link_data_testid(link_data_testid: str):
     """Clicks a link with a data-testid"""
     APP.shared.click_link_data_testid(link_data_testid)
 
+@step("Select the following checkboxes <table>")
+def click_checkboxes(table):
+    for k, v in enumerate(table):
+        APP.shared.click_checkbox(v[0])
+        time.sleep(0.1)
 
 @step("Select the following radio buttons <table>")
 def click_radio_buttons(table):
     for k, v in enumerate(table):
         APP.shared.click_radio_button(v[0])
         time.sleep(0.1)
-
 
 @step("Select create or save in cohort modal")
 def click_create_or_save_in_cohort_modal():
@@ -692,6 +778,11 @@ def click_create_or_save_in_cohort_modal(table):
         APP.shared.click_switch_for_column_selector(v[0])
     APP.shared.click_column_selector_button()
 
+@step("Select <text> from dropdown menu")
+def click_dropdown_text_option(text:str):
+    """Selects text option from dropdown menu with data-testid dropdown-menu-options"""
+    APP.shared.click_text_option_from_dropdown_menu(text)
+
 
 @step("Change number of entries shown in the table to <number_of_entries>")
 def change_number_of_entries_shown(change_number_of_entries_shown: str):
@@ -701,6 +792,13 @@ def change_number_of_entries_shown(change_number_of_entries_shown: str):
     """
     APP.shared.change_number_of_entries_shown(change_number_of_entries_shown)
 
+@step("Change number of entries shown in the table <table_name> to <number_of_entries>")
+def change_number_of_entries_shown_in_specified_table(table_name:str, change_number_of_entries_shown: str):
+    """
+    In specified table, changes number of entries shown in the table using the show entries button,
+    and selecting an option from the dropdown list.
+    """
+    APP.shared.change_number_of_entries_shown_in_specified_table(table_name, change_number_of_entries_shown)
 
 @step("Perform action and validate modal text <table>")
 def click_named_button_in_modal_and_wait_for_temp_message_text(table):
@@ -794,6 +892,24 @@ def select_table_value_by_row_column(table):
         APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
         APP.shared.wait_for_loading_spinner_to_detatch()
 
+@step("Select value from table <table_name> by row and column <table>")
+def select_table_value_by_row_column(table_name:str, table):
+    """
+    In specified table, selects values from tables by giving a row and column
+    Row and Column indexing begins at '1'
+    """
+    for k, v in enumerate(table):
+        APP.shared.select_specified_table_by_row_column(table_name, v[0], v[1])
+        time.sleep(1)
+        # In Mutation Frequency, selecting items in the table can take a
+        # long time to load. They can also load and spin at different times
+        # in different places (e.g the cohort case count, table, graphs, etc.)
+        # So we have an abundance of waits.
+        APP.shared.wait_for_loading_spinner_table_to_detatch()
+        APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        APP.shared.wait_for_loading_spinner_table_to_detatch()
+        APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        APP.shared.wait_for_loading_spinner_to_detatch()
 
 @step("Enter text <text> in the <aria_label> search bar")
 def send_text_into_search_bar(text: str, aria_label: str):

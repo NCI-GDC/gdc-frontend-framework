@@ -196,7 +196,7 @@ describe("cohortConfig reducer", () => {
       "cases.exposures.tobacco_smoking_onset_year",
       "cases.samples.tissue_type",
       "cases.samples.biospecimen_anatomic_site",
-      "cases.samples.composition",
+      "cases.samples.specimen_type",
       "cases.samples.preservation_method",
       "cases.samples.tumor_code",
       "cases.samples.tumor_descriptor",

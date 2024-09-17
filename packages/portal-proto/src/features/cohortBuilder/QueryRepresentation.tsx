@@ -23,9 +23,10 @@ import {
   useCoreSelector,
   selectCurrentCohortId,
   useGeneSymbol,
+  useCurrentCohortFilters,
   updateActiveCohortFilter,
 } from "@gff/core";
-import { ActionIcon, Divider, Group } from "@mantine/core";
+import { ActionIcon, Divider, Group, Tooltip } from "@mantine/core";
 import {
   MdClose as ClearIcon,
   MdOutlineArrowBack as LeftArrow,
@@ -81,7 +82,6 @@ type RangeOperation =
   | GreaterThanOrEquals
   | GreaterThan;
 
-type ValueOperation = Exclude<Operation, Intersection | Union>;
 type ComparisonOperation = RangeOperation | Equals | NotEquals;
 
 export const isRangeOperation = (x?: Operation): x is RangeOperation => {
@@ -90,10 +90,6 @@ export const isRangeOperation = (x?: Operation): x is RangeOperation => {
     "operator" in x &&
     [">=", ">", "<", "<="].includes(x.operator)
   );
-};
-
-export const isValueOperation = (x: Operation): x is ValueOperation => {
-  return "field" in x;
 };
 
 const IncludeExcludeQueryElement: React.FC<
@@ -206,10 +202,36 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
   showLabel = true,
 }: ComparisonElementProps) => {
   const coreDispatch = useCoreDispatch();
-  const handleKeepMember = (keep: ValueOperation) => {
-    coreDispatch(
-      updateActiveCohortFilter({ field: keep.field, operation: keep }),
-    );
+  const filters = useCurrentCohortFilters();
+
+  const handleRemove = (remove: ComparisonOperation) => {
+    const fieldDetail = filters.root[remove.field];
+
+    if (!fieldDetail) return;
+
+    if ("operands" in fieldDetail) {
+      const remainingOperands = (
+        fieldDetail.operands as readonly ComparisonOperation[]
+      ).filter(
+        (operand) =>
+          operand.operand !== remove.operand &&
+          operand.operator !== remove.operator,
+      );
+
+      if (remainingOperands.length > 0) {
+        const [firstOperand] = remainingOperands;
+        coreDispatch(
+          updateActiveCohortFilter({
+            field: firstOperand.field,
+            operation: firstOperand,
+          }),
+        );
+      } else {
+        coreDispatch(removeCohortFilter(remove.field));
+      }
+    } else {
+      coreDispatch(removeCohortFilter(remove.field));
+    }
   };
 
   const { data: geneSymbolDict, isSuccess } = useGeneSymbol([
@@ -229,12 +251,14 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
         <QueryFieldLabel>{fieldNameToTitle(operation.field)}</QueryFieldLabel>
       ) : null}
       <div className="flex flex-row items-center">
-        <button
-          className="h-[25px] w-[25px] mx-2 rounded-[50%] bg-accent-cool-content-lightest text-base pb-1"
-          onClick={() => handleKeepMember(operation)}
-        >
-          {operation.operator}
-        </button>
+        <Tooltip label="Click to remove">
+          <button
+            className="h-[25px] w-[25px] mx-2 rounded-[50%] bg-accent-cool-content-lightest text-base pb-1"
+            onClick={() => handleRemove(operation)}
+          >
+            {operation.operator}
+          </button>
+        </Tooltip>
         <QueryRepresentationText>{value}</QueryRepresentationText>
       </div>
     </>

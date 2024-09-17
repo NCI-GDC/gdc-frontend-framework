@@ -9,7 +9,7 @@ from step_impl.apps.gdc_data_portal_v2.pages.analysis_center_page import (
 from step_impl.apps.gdc_data_portal_v2.pages.clinical_data_analysis import (
     ClinicalDataAnalysisPage,
 )
-from step_impl.apps.gdc_data_portal_v2.pages.warning_modal import WarningModal
+from step_impl.apps.gdc_data_portal_v2.pages.modal import Modal
 from ..gdc_data_portal_v2.pages.repository_page import RepositoryPage
 from ..gdc_data_portal_v2.pages.cohort_builder_page import CohortBuilderPage
 from ..gdc_data_portal_v2.pages.file_summary_page import FileSummaryPage
@@ -41,7 +41,7 @@ class GDCDataPortalV2App:
         # It uses the code contained in base_page.py
         self.shared = Shared(self.driver)
         self.header_section = HeaderSection(self.driver, self.URL)
-        self.warning_modal = WarningModal(self.driver, self.URL)
+        self.modal = Modal(self.driver, self.URL)
         self.home_page = HomePage(self.driver, self.URL)
         self.repository_page = RepositoryPage(self.driver, self.URL)
         self.cohort_builder_page = CohortBuilderPage(self.driver, self.URL)

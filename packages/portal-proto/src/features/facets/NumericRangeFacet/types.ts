@@ -2,8 +2,8 @@ import { FacetCardProps, RangeFacetHooks } from "../types";
 
 export interface NumericFacetProps extends FacetCardProps<RangeFacetHooks> {
   readonly rangeDatatype: string;
-  readonly minimum?: number;
-  readonly maximum?: number;
+  readonly minimum: number | undefined;
+  readonly maximum: number | undefined;
   readonly clearValues?: boolean;
 }
 

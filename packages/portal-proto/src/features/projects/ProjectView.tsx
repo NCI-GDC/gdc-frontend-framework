@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useRef } from "react";
 import { AnnotationDefaults, GdcApiData, ProjectDefaults } from "@gff/core";
 import { FaUser, FaFile, FaEdit } from "react-icons/fa";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import CategoryTableSummary from "@/components/Summary/CategoryTableSummary";
-import { HeaderTitleTable } from "@/components/tailwindComponents";
+import { HeaderTitle } from "@/components/tailwindComponents";
 import { HorizontalTable } from "@/components/HorizontalTable";
 import { SingularOrPluralSpan } from "@/components/SingularOrPluralSpan/SingularOrPluralSpan";
 import PrimarySiteTable from "./PrimarySiteTable";
@@ -18,6 +18,7 @@ import useScrollToHash from "@/hooks/useScrollToHash";
 import { useViewportSize } from "@mantine/hooks";
 import { LG_BREAKPOINT } from "src/utils";
 import SummaryHeaderControls from "./SummaryHeaderControls";
+import { useSynchronizedRowHeights } from "@/components/HorizontalTable/useSynchronizedRowHeights";
 
 export interface ProjectViewProps extends ProjectDefaults {
   readonly annotation: GdcApiData<AnnotationDefaults>;
@@ -30,6 +31,9 @@ export const ProjectView: React.FC<ProjectViewProps> = (
 ) => {
   const { width } = useViewportSize();
   useScrollToHash(["annotations"]);
+  const leftSummaryTableRef = useRef<HTMLTableElement>(null);
+  const rightSummaryTableRef = useRef<HTMLTableElement>(null);
+  useSynchronizedRowHeights([leftSummaryTableRef, rightSummaryTableRef]);
 
   const Cases = (
     <span className="flex items-center gap-1">
@@ -119,18 +123,24 @@ export const ProjectView: React.FC<ProjectViewProps> = (
 
       <div className={`${!projectData?.isModal ? "mt-6" : "mt-4"} mx-4`}>
         <div className="flex flex-col lg:flex-row lg:justify-between">
-          <HeaderTitleTable>Summary</HeaderTitleTable>
+          <HeaderTitle>Summary</HeaderTitle>
           {message && <div className="text-sm lg:text-right">{message}</div>}
         </div>
         <div data-testid="table-summary-project-summary" className="flex mt-2">
           <div className="basis-full lg:basis-1/2">
             <HorizontalTable
               tableData={width >= LG_BREAKPOINT ? leftColumnData : summaryData}
+              ref={leftSummaryTableRef}
+              enableSync={true}
             />
           </div>
           {width >= LG_BREAKPOINT && (
             <div className="basis-1/2 h-full">
-              <HorizontalTable tableData={rightColumnData} />
+              <HorizontalTable
+                tableData={rightColumnData}
+                ref={rightSummaryTableRef}
+                enableSync={true}
+              />
             </div>
           )}
         </div>

@@ -2,6 +2,7 @@ import React from "react";
 import { render } from "test-utils";
 import { CasesCohortButton } from "../CasesCohortButton";
 import userEvent from "@testing-library/user-event";
+import { waitFor } from "@testing-library/react";
 import * as core from "@gff/core";
 
 const mockMutation = jest.fn().mockReturnValue({
@@ -31,7 +32,7 @@ describe("CasesCohortButton", () => {
     const { getByText } = render(
       <CasesCohortButton
         onCreateSet={() => {}}
-        response={{ isSuccess: false }}
+        response={{ isSuccess: false, isError: false }}
         cases={["case 1"]}
         numCases={1}
         fetchingCases={true}
@@ -39,6 +40,9 @@ describe("CasesCohortButton", () => {
     );
 
     await userEvent.click(getByText("Save New Cohort"));
+    await waitFor(() => expect(getByText("Loading...")).toBeDefined(), {
+      timeout: 2000,
+    });
     expect(getByText("Loading...")).toBeInTheDocument();
   });
 
@@ -46,7 +50,7 @@ describe("CasesCohortButton", () => {
     const { getByTestId } = render(
       <CasesCohortButton
         onCreateSet={() => {}}
-        response={{ isSuccess: false }}
+        response={{ isSuccess: false, isError: false }}
         cases={[]}
         numCases={0}
       />,

@@ -305,7 +305,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
   };
 
   return (
-    <>
+    <div className="flex flex-col gap-2">
       <HeaderTitle>Annotations</HeaderTitle>
       <VerticalTable
         customDataTestID="table-annotations-file-summary"
@@ -350,7 +350,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
         setSorting={setSorting}
         status="fulfilled"
       />
-    </>
+    </div>
   );
 };
 

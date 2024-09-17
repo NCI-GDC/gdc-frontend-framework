@@ -14,11 +14,14 @@ import {
   useFilterExpandedState,
   useToggleExpandProjectFilter,
   useAllFiltersCollapsed,
+  useClearAllProjectFilters,
 } from "@/features/projectsCenter/hooks";
 import { useTotalCounts, useLocalFilters } from "@/features/facets/hooks";
 import FilterFacets from "./filters.json";
 import partial from "lodash/partial";
 import FilterPanel from "@/features/facets/FilterPanel";
+import { useAppSelector } from "./appApi";
+import { selectFiltersAppliedCount } from "./projectCenterFiltersSlice";
 
 const useProjectEnumData = (docType: GQLDocType, field: string) =>
   useLocalFilters(
@@ -42,6 +45,8 @@ export const ProjectFacetPanel = (): JSX.Element => {
 
   const allFiltersCollapsed = useAllFiltersCollapsed();
   const toggleAllFiltersExpanded = useToggleAllProjectFilters();
+  const clearAllFilters = useClearAllProjectFilters();
+  const filtersAppliedCount = useAppSelector(selectFiltersAppliedCount);
 
   return (
     <FilterPanel
@@ -51,6 +56,8 @@ export const ProjectFacetPanel = (): JSX.Element => {
       app="projects-center"
       toggleAllFiltersExpanded={toggleAllFiltersExpanded}
       allFiltersCollapsed={allFiltersCollapsed}
+      handleClearAll={clearAllFilters}
+      filtersAppliedCount={filtersAppliedCount}
     />
   );
 };

@@ -342,7 +342,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
   };
 
   return (
-    <>
+    <div className="flex flex-col gap-2">
       <HeaderTitle>Files</HeaderTitle>
       <VerticalTable
         customDataTestID="table-files-case-summary"
@@ -401,7 +401,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
       />
 
       <GeneralErrorModal openModal={modal === Modals.GeneralErrorModal} />
-    </>
+    </div>
   );
 };
 
