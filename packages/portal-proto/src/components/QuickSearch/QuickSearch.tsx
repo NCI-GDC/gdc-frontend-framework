@@ -31,6 +31,7 @@ export const QuickSearch = (): JSX.Element => {
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [debounced] = useDebouncedValue(searchText, 250);
+  const [supersededFile, setSupersededFile] = useState<string>("");
   const [matchedSearchList, setMatchedSearchList] = useState([]);
 
   const router = useRouter();
@@ -47,6 +48,11 @@ export const QuickSearch = (): JSX.Element => {
       !uuidValidate(debounced.trim()),
   });
 
+  // We need to check that the superseded file exists too
+  const { data: supersededFileCheck } = useQuickSearchQuery(supersededFile, {
+    skip: supersededFile === "",
+  });
+
   // Checks search results returned against current search to make sure it matches
   useDeepCompareEffect(() => {
     if (debounced === "") {
@@ -57,15 +63,7 @@ export const QuickSearch = (): JSX.Element => {
         const latestVersion = fileHistory.find(
           (f) => f.file_change === "released",
         )?.uuid;
-        setMatchedSearchList([
-          {
-            value: latestVersion,
-            label: latestVersion,
-            obj: fileHistory,
-            superseded: true,
-            entity: "File",
-          },
-        ]);
+        setSupersededFile(latestVersion);
       } else {
         setMatchedSearchList(
           searchList.map((obj, i) => ({
@@ -76,10 +74,30 @@ export const QuickSearch = (): JSX.Element => {
             last: searchList.length === i + 1, // for styling
           })),
         );
+        setLoading(false);
       }
-      setLoading(false);
     }
   }, [debounced, searchList, query, fileHistory]);
+
+  useDeepCompareEffect(() => {
+    if (
+      supersededFileCheck?.searchList.length > 0 &&
+      fileHistory !== undefined
+    ) {
+      setMatchedSearchList([
+        {
+          value: supersededFile,
+          label: supersededFile,
+          obj: fileHistory,
+          superseded: true,
+          last: true,
+          entity: "File",
+        },
+      ]);
+    }
+
+    setLoading(false);
+  }, [supersededFileCheck, supersededFile, fileHistory]);
 
   const renderItem: SelectProps["renderOption"] = ({
     option: { value, label, symbol, obj, superseded, entity, last, ...others },
@@ -88,7 +106,7 @@ export const QuickSearch = (): JSX.Element => {
   }) => {
     let badgeText: string;
     if (superseded) {
-      badgeText = (obj as HistoryDefaults[]).find(
+      badgeText = (obj as HistoryDefaults[])?.find(
         (f) => f.file_change === "released",
       )?.uuid;
     } else {
