@@ -41,6 +41,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
       <span>
         {multiselect ? (
           <Checkbox
+            data-testid={`checkbox-${set[1]}`}
             aria-label={setId}
             value={setId}
             checked={selected}
@@ -56,7 +57,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
           />
         ) : (
           <Radio
-            data-testid="radio-select-set"
+            data-testid={`radio-${set[1]}`}
             value={setId}
             checked={selected}
             disabled={disabledMessage !== undefined}
@@ -134,7 +135,10 @@ const SetTable: React.FC<SetTableProps> = ({
         id: "Name",
         header: "Name",
         cell: ({ getValue, row }) => (
-          <span id={`${componentId}-set-table-${row.original.set[0]}`}>
+          <span
+            data-testid={`text-${row.original.name}-set-name`}
+            id={`${componentId}-set-table-${row.original.set[0]}`}
+          >
             {getValue()}
           </span>
         ),
@@ -142,6 +146,11 @@ const SetTable: React.FC<SetTableProps> = ({
       setTableColumnHelper.accessor("count", {
         id: "count",
         header: `# ${upperFirst(setTypeLabel)}s`,
+        cell: ({ row }) => (
+          <div data-testid={`text-${row.original.name}-set-count`}>
+            {isSuccess ? row.original.count.toLocaleString() : "..."}
+          </div>
+        ),
       }),
     ],
     [
