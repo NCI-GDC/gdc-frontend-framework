@@ -12,7 +12,7 @@ tags: gdc-data-portal-v2, end-to-end, regression
 * Navigate to "Downloads" from "Header" "section"
 
 ## ABSOLUTE LiftOver Workflow Type
-* Make the following selections on a filter card on the Repository page
+* Make the following selections on a filter card
   |facet_name           |selection            |
   |---------------------|---------------------|
   |Workflow Type        |ABSOLUTE LiftOver    |
@@ -24,11 +24,11 @@ tags: gdc-data-portal-v2, end-to-end, regression
 * Verify "Data Category_copy number variation Repository Count" and "Files Count Repository Page" are "Equal"
 
 ## ASCAT3 Workflow Type
-* Perform the following actions on a filter card on the Repository page
+* Perform the following actions on a filter card
   |filter_name          |action               |
   |---------------------|---------------------|
   |Data Type            |clear selection      |
-* Make the following selections on a filter card on the Repository page
+* Make the following selections on a filter card
   |facet_name           |selection            |
   |---------------------|---------------------|
   |Workflow Type        |ASCAT3               |
@@ -40,11 +40,11 @@ tags: gdc-data-portal-v2, end-to-end, regression
 * Verify "Data Category_copy number variation Repository Count" and "Files Count Repository Page" are "Equal"
 
 ## ASCAT2 Workflow Type
-* Perform the following actions on a filter card on the Repository page
+* Perform the following actions on a filter card
   |filter_name          |action               |
   |---------------------|---------------------|
   |Data Type            |clear selection      |
-* Make the following selections on a filter card on the Repository page
+* Make the following selections on a filter card
   |facet_name           |selection            |
   |---------------------|---------------------|
   |Workflow Type        |ASCAT2               |
@@ -56,11 +56,11 @@ tags: gdc-data-portal-v2, end-to-end, regression
 * Verify "Data Category_copy number variation Repository Count" and "Files Count Repository Page" are "Equal"
 
 ## AscatNGS Workflow Type
-* Perform the following actions on a filter card on the Repository page
+* Perform the following actions on a filter card
   |filter_name          |action               |
   |---------------------|---------------------|
   |Data Type            |clear selection      |
-* Make the following selections on a filter card on the Repository page
+* Make the following selections on a filter card
   |facet_name           |selection            |
   |---------------------|---------------------|
   |Workflow Type        |AscatNGS             |

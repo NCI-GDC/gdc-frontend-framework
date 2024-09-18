@@ -472,6 +472,15 @@ class BasePage:
             return False
         return True
 
+    # Returns if the show more or show less button is visible on a facet card
+    def is_show_more_or_show_less_button_visible_within_filter_card(
+        self, facet_group_name, label
+    ):
+        locator = GenericLocators.FILTER_GROUP_SHOW_MORE_LESS_IDENT(
+            facet_group_name, label
+        )
+        return self.is_visible(locator)
+
     def is_no_active_cohort_filter_text_present(self):
         """
         Returns if the text 'No filters currently applied.' is displayed
@@ -633,6 +642,8 @@ class BasePage:
         """
         table_locator_to_select = GenericLocators.TABLE_AREA_TO_CLICK(row, column)
         self.hover(table_locator_to_select)
+        self.hover(table_locator_to_select)
+        time.sleep(0.1)
         self.click(table_locator_to_select, True)
 
     def select_specified_table_by_row_column(self, table_name, row, column):

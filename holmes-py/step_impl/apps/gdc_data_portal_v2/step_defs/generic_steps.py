@@ -815,6 +815,11 @@ def click_undo_in_message():
 def filter_card_selections(table):
     """Trio of actions for the filter cards and filters on the projects page"""
     for k, v in enumerate(table):
+        # Expands list of filters to select if possible
+        if APP.shared.is_show_more_or_show_less_button_visible_within_filter_card(
+            v[0], "plus-icon"
+        ):
+            APP.shared.click_show_more_less_within_filter_card(v[0], "plus-icon")
         APP.shared.make_selection_within_filter_group(v[0], v[1])
         APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
         APP.shared.wait_for_loading_spinner_table_to_detatch()
