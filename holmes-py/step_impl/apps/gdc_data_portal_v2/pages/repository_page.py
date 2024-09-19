@@ -15,12 +15,6 @@ class RepositoryPageLocators:
     LIST_IDENT = lambda list_name: f"//div[@data-testid='list-{list_name}']"
     FILE_FILTER_SEARCH_BOX = '[data-testid="textbox-search-for-a-property"]'
 
-    FILTER_GROUP_SELECTION_IDENT = (
-        lambda group_name, selection: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> [data-testid="checkbox-{selection}"]'
-    )
-    FILTER_GROUP_ACTION_IDENT = (
-        lambda group_name, action: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> button[aria-label="{action}"]'
-    )
     FILTER_GROUP_SHOW_MORE_LESS_IDENT = (
         lambda group_name, more_or_less: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> button[data-testid="{more_or_less}"]'
     )
@@ -115,22 +109,6 @@ class RepositoryPage(BasePage):
             nth_inner_element = nth_inner_element[0].split("\n")[0]
             filter_names.append(nth_inner_element)
         return filter_names
-
-    def make_selection_within_filter_group_repository(
-        self, filter_group_name, selection
-    ):
-        """Clicks a checkbox within a filter group"""
-        locator = RepositoryPageLocators.FILTER_GROUP_SELECTION_IDENT(
-            filter_group_name, selection
-        )
-        self.click(locator)
-
-    def perform_action_within_filter_card_repository(self, filter_group_name, action):
-        """Performs an action in a filter group e.g sorting, resetting, flipping the chart, etc."""
-        locator = RepositoryPageLocators.FILTER_GROUP_ACTION_IDENT(
-            filter_group_name, action
-        )
-        self.click(locator)
 
     # Returns if the show more or show less button is visible on a facet card
     def is_show_more_or_show_less_button_visible_within_filter_card_repository(
