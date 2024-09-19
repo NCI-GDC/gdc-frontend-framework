@@ -277,29 +277,19 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
         </div>
       </div>
       <div className="flex flex-col">
-        <div
-          className={
-            [
-              SurvivalPlotTypes.categorical,
-              SurvivalPlotTypes.continuous,
-            ].includes(plotType)
-              ? "flex flex-row flex-wrap justify-center"
-              : undefined
-          }
-        >
-          {!hideLegend &&
-            legend?.map((x, idx) => {
-              return (
-                <div
-                  data-testid="text-cases-with-survival-data"
-                  key={`${x.key}-${idx}`}
-                  className="text-sm"
-                >
-                  {x.value}
-                </div>
-              );
-            })}
-        </div>
+        {!hideLegend &&
+          legend?.map((x, idx) => {
+            return (
+              <div
+                data-testid="text-cases-with-survival-data"
+                key={`${x.key}-${idx}`}
+                className="text-sm"
+              >
+                {x.value}
+              </div>
+            );
+          })}
+
         <div className="mt-2">
           <Tooltip
             label={
@@ -344,31 +334,20 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
         <div className="survival-plot" ref={container} />
       </div>
       <OffscreenWrapper>
-        <div className="w-[700px] h-[500px] pt-2" ref={downloadRef}>
+        <div className="w-[700px] h-[500px] m-4" ref={downloadRef}>
           <h2 className="font-montserrat text-center text-lg text-primary-content-dark">
             {title}
           </h2>
-          <div className="flex flex-col items-center font-montserrat">
-            <div
-              className={
-                [
-                  SurvivalPlotTypes.categorical,
-                  SurvivalPlotTypes.continuous,
-                ].includes(plotType)
-                  ? "flex flex-row flex-wrap justify-center"
-                  : undefined
-              }
-            >
-              {!hideLegend &&
-                legend?.map((x, idx) => {
-                  return (
-                    <div key={`${x.key}-${idx}`} className="px-2">
-                      {x.value}
-                    </div>
-                  );
-                })}
-            </div>
-            <div className="text-xs">
+          <div className="flex flex-col">
+            {!hideLegend &&
+              legend?.map((x, idx) => {
+                return (
+                  <div key={`${x.key}-${idx}`} className="px-2">
+                    {x.value}
+                  </div>
+                );
+              })}
+            <div className="text-xs pl-2 mb-2">
               {isNumber(pValue) &&
                 `Log-Rank Test P-Value = ${pValue.toExponential(2)}`}
             </div>
