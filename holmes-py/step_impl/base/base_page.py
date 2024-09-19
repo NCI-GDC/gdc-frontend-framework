@@ -642,8 +642,6 @@ class BasePage:
         """
         table_locator_to_select = GenericLocators.TABLE_AREA_TO_CLICK(row, column)
         self.hover(table_locator_to_select)
-        self.hover(table_locator_to_select)
-        time.sleep(0.1)
         self.click(table_locator_to_select, True)
 
     def select_specified_table_by_row_column(self, table_name, row, column):

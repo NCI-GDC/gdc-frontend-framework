@@ -120,28 +120,28 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 ## Genes - CNV Loss
 * Switch cohort to "Blank - Mutation Frequency" from the Cohort Bar dropdown list
 * "Blank - Mutation Frequency" should be the active cohort
-* Search the table for "ZFHX3"
+* Search the table for "PTCH1"
 * Wait for table body text to appear
   |expected_text|row  |column |
   |-------------|-----|-------|
-  |ZFHX3        |1    |4      |
+  |PTCH1        |1    |4      |
 * Collect button labels in table for comparison
   |button_label                         |row  |column |
   |-------------------------------------|-----|-------|
-  |ZFHX3 CNV Loss                       |1    |9      |
+  |PTCH1 CNV Loss                       |1    |9      |
 * Select value from table by row and column
   |row   |column|
   |------|------|
   |1     |9     |
-* Name the cohort "ZFHX3 CNV Loss" in the Cohort Bar section
+* Name the cohort "PTCH1 CNV Loss" in the Cohort Bar section
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                            |Keep or Remove Modal|
   |-----------------|-----------------------------------------------------|--------------------|
-  |Save             |ZFHX3 CNV Loss has been saved                        |Remove Modal        |
-* Switch cohort to "ZFHX3 CNV Loss" from the Cohort Bar dropdown list
-* "ZFHX3 CNV Loss" should be the active cohort
+  |Save             |PTCH1 CNV Loss has been saved                        |Remove Modal        |
+* Switch cohort to "PTCH1 CNV Loss" from the Cohort Bar dropdown list
+* "PTCH1 CNV Loss" should be the active cohort
 * Collect Cohort Bar Case Count for comparison
-* Verify "Cohort Bar Case Count" and "ZFHX3 CNV Loss" are "Equal"
+* Verify "Cohort Bar Case Count" and "PTCH1 CNV Loss" are "Equal"
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
 * Search the table for ""
 
