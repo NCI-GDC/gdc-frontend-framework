@@ -110,7 +110,7 @@ const DiagnosesTables = ({ data }: { data: Diagnoses }): JSX.Element => {
         className="w-full flex flex-row items-center gap-1 bg-nci-violet-lightest p-2 border-base-lighter border-1 border-t-0"
         data-testid="treatment-table-header"
       >
-        <h3 className="mx-2 font-montserrat text-xl text-primary-content-darkest">
+        <h3 className="font-montserrat text-xl text-primary-content-darkest">
           Treatments
         </h3>
         <Badge className="bg-accent-vivid px-1" radius="xs">
@@ -120,7 +120,9 @@ const DiagnosesTables = ({ data }: { data: Diagnoses }): JSX.Element => {
 
       {!data.treatments ? (
         <div className="border-base-lighter border-1 border-t-0 p-4">
-          <Text>No Treatments Found.</Text>
+          <Text className="font-content text-secondary-contrast-lighter">
+            No Treatments Found.
+          </Text>
         </div>
       ) : (
         <VerticalTable {...formatTreatmentData(data)} />

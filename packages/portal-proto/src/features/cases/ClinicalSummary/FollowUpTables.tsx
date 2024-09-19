@@ -193,7 +193,7 @@ const FollowUpTables = ({ data }: { data: FollowUps }): JSX.Element => {
         className="w-full flex flex-row items-center gap-1 bg-nci-violet-lightest p-2 border-base-lighter border-1 border-t-0"
         data-testid="molecular-test-table-header"
       >
-        <h3 className="mx-2 font-montserrat text-xl text-primary-content-darkest">
+        <h3 className="font-montserrat text-xl text-primary-content-darkest">
           Molecular Tests
         </h3>
         <Badge className="bg-accent-vivid px-1" radius="xs">
@@ -203,7 +203,9 @@ const FollowUpTables = ({ data }: { data: FollowUps }): JSX.Element => {
 
       {!data.molecular_tests ? (
         <div className="border-base-lighter border-1 border-t-0 p-4">
-          <Text>No Molecular Tests Found.</Text>
+          <Text className="font-content text-secondary-contrast-lighter">
+            No Molecular Tests Found.
+          </Text>
         </div>
       ) : (
         <VerticalTable {...formatMolecularTestsData(data)} />
@@ -213,7 +215,7 @@ const FollowUpTables = ({ data }: { data: FollowUps }): JSX.Element => {
         className="w-full flex flex-row items-center gap-1 bg-nci-violet-lightest p-2 border-base-lighter border-1 border-t-0"
         data-testid="oca-table-header"
       >
-        <h3 className="mx-2 font-montserrat text-xl text-primary-content-darkest">
+        <h3 className="font-montserrat text-xl text-primary-content-darkest">
           Other Clinical Attributes
         </h3>
         <Badge className="bg-accent-vivid px-1" radius="xs">
@@ -223,7 +225,9 @@ const FollowUpTables = ({ data }: { data: FollowUps }): JSX.Element => {
 
       {!data.other_clinical_attributes ? (
         <div className="border-base-lighter border-1 border-t-0 p-4">
-          <Text>No Other Clinical Attributes Found.</Text>
+          <Text className="font-content text-secondary-contrast-lighter">
+            No Other Clinical Attributes Found.
+          </Text>
         </div>
       ) : (
         <VerticalTable {...formatOtherClinicalAttributes(data)} />

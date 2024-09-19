@@ -248,7 +248,7 @@ export const ClinicalSummary = ({
           {Object.keys(demographic).length > 0 ? (
             <HorizontalTable tableData={formatDataForDemographics()} />
           ) : (
-            <Text className="p-5 bg-base-contrast font-bold">
+            <Text className="p-5 font-content text-secondary-contrast-lighter">
               No Demographic Found.
             </Text>
           )}
@@ -256,7 +256,7 @@ export const ClinicalSummary = ({
 
         <Tabs.Panel value="diagnoses" pt="xs">
           {diagnoses.length === 0 ? (
-            <Text className="p-5 bg-base-contrast font-bold">
+            <Text className="p-5 font-content text-secondary-contrast-lighter">
               No Diagnoses Found.
             </Text>
           ) : (
@@ -266,7 +266,7 @@ export const ClinicalSummary = ({
 
         <Tabs.Panel value="family" pt="xs">
           {family_histories.length === 0 ? (
-            <Text className="p-5 bg-base-contrast font-bold">
+            <Text className="p-5 font-content text-secondary-contrast-lighter">
               No Family Histories Found.
             </Text>
           ) : (
@@ -276,9 +276,7 @@ export const ClinicalSummary = ({
 
         <Tabs.Panel value="exposures" pt="xs">
           {exposures.length === 0 ? (
-            <Text className="p-5 bg-base-contrast font-bold">
-              No Exposures Found.
-            </Text>
+            <Text className="p-5 font-content">No Exposures Found.</Text>
           ) : (
             <FamilyHistoryOrExposure dataInfo={exposures} />
           )}
@@ -286,7 +284,7 @@ export const ClinicalSummary = ({
 
         <Tabs.Panel value="followups" pt="xs">
           {follow_ups.length === 0 ? (
-            <Text className="p-5 bg-base-contrast font-bold">
+            <Text className="p-5 font-content text-secondary-contrast-lighter">
               No Follow Ups Found.
             </Text>
           ) : (
