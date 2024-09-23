@@ -32,7 +32,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
   shouldDisable,
   componentId,
 }: SelectCellProps) => {
-  const [setId] = set;
+  const [setId, setName] = set;
   const disabledMessage = shouldDisable(count);
   const selected = selectedSets.map((s) => s[0]).includes(set[0]);
 
@@ -41,7 +41,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
       <span>
         {multiselect ? (
           <Checkbox
-            data-testid={`checkbox-${set[1]}`}
+            data-testid={`checkbox-${setName}`}
             aria-label={setId}
             value={setId}
             checked={selected}
@@ -57,7 +57,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
           />
         ) : (
           <Radio
-            data-testid={`radio-${set[1]}`}
+            data-testid={`radio-${setName}`}
             value={setId}
             checked={selected}
             disabled={disabledMessage !== undefined}

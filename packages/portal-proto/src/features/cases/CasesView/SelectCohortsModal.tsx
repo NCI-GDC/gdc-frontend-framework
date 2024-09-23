@@ -64,6 +64,7 @@ export const SelectCohortsModal = ({
         header: "Select",
         cell: ({ row }) => (
           <Radio
+            data-testid={`radio-${row.original.name}`}
             value={row.original.cohort_id}
             checked={checkedValue === row.original.cohort_id}
             onChange={(event) => {
@@ -75,10 +76,20 @@ export const SelectCohortsModal = ({
       cohortListTableColumnHelper.accessor("name", {
         id: "name",
         header: "Name",
+        cell: ({ getValue, row }) => (
+          <span data-testid={`text-${row.original.name}-cohort-name`}>
+            {getValue()}
+          </span>
+        ),
       }),
       cohortListTableColumnHelper.accessor("num_cases", {
         id: "num_cases",
         header: "# Cases",
+        cell: ({ getValue, row }) => (
+          <span data-testid={`text-${row.original.name}-cohort-count`}>
+            {getValue()}
+          </span>
+        ),
       }),
     ],
     [cohortListTableColumnHelper, checkedValue],
