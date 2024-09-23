@@ -34,7 +34,9 @@ const SelectCell: React.FC<SelectCellProps> = ({
 }: SelectCellProps) => {
   const [setId, setName] = set;
   const disabledMessage = shouldDisable(count);
-  const selected = selectedSets.map((s) => s[0]).includes(set[0]);
+  const selected = selectedSets
+    .map((selectedSet) => selectedSet[0])
+    .includes(setId);
 
   return (
     <Tooltip label={disabledMessage} disabled={!disabledMessage} zIndex={400}>
@@ -49,11 +51,13 @@ const SelectCell: React.FC<SelectCellProps> = ({
             onChange={() =>
               selected
                 ? setSelectedSets(
-                    selectedSets.filter((set) => set[0] !== setId),
+                    selectedSets.filter(
+                      (selectedSet) => selectedSet[0] !== setId,
+                    ),
                   )
                 : setSelectedSets([...selectedSets, set])
             }
-            aria-labelledby={`${componentId}-set-table-${set[0]}`}
+            aria-labelledby={`${componentId}-set-table-${setId}`}
           />
         ) : (
           <Radio
@@ -62,7 +66,7 @@ const SelectCell: React.FC<SelectCellProps> = ({
             checked={selected}
             disabled={disabledMessage !== undefined}
             onChange={() => setSelectedSets([set])}
-            aria-labelledby={`${componentId}-set-table-${set[0]}`}
+            aria-labelledby={`${componentId}-set-table-${setId}`}
           />
         )}
       </span>
