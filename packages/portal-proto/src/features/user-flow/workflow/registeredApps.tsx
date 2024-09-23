@@ -209,6 +209,26 @@ export const REGISTERED_APPS = [
       "Current cohort does not have SSM or CNV data available for visualization.",
   },
   {
+    name: "Single Cell RNA-seq",
+    // icon: (
+    //   <OncoMatrixIcon
+    //     className="m-auto"
+    //     height={48}
+    //     width={80}
+    //     aria-hidden="true"
+    //   />
+    // ),
+    tags: ["variantAnalysis", "cnv", "ssm"],
+    //hasDemo: true,
+    description: "scRNAseq Visualization tool",
+    id: "scRNAseq",
+    countsField: "caseCount",
+    caseCounts: 0.25,
+    optimizeRules: ["available data = ssm or cnv"],
+    noDataTooltip:
+      "Current cohort does not have scRNAseq data available for visualization.",
+  },
+  {
     name: "Gene Expression Clustering",
     icon: (
       <GeneExpressionIcon

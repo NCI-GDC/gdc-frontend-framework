@@ -13,13 +13,12 @@ import {
   joinFilters,
   buildCohortGqlOperator,
   useCoreDispatch,
-  GDCSsmsTable,
   buildSSMSTableSearchFilters,
   filterSetToOperation,
   convertFilterToGqlFilter,
 } from "@gff/core";
 import { useEffect, useState, useContext, useMemo, useCallback } from "react";
-import { useDeepCompareCallback } from "use-deep-compare";
+import { useDeepCompareCallback, useDeepCompareMemo } from "use-deep-compare";
 import { Loader } from "@mantine/core";
 import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
@@ -206,22 +205,19 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       setPage(1);
   }, [cohortFilters, genomicFilters, prevCohortFilters, prevGenomicFilters]);
 
-  const useSomaticMutationsTableFormat = (
-    initialData: Omit<GDCSsmsTable, "pageSize" | "offset">,
-  ) => {
-    return initialData?.ssms?.map((sm) =>
+  const formattedTableData = useDeepCompareMemo(() => {
+    if (!data?.ssms) return [];
+
+    return data.ssms.map((sm) =>
       getMutation(
         sm,
         selectedSurvivalPlot,
-        initialData?.filteredCases,
-        initialData?.cases,
-        initialData?.ssmsTotal,
+        data.filteredCases,
+        data.cases,
+        data.ssmsTotal,
       ),
     );
-  };
-
-  const formattedTableData: SomaticMutation[] =
-    useSomaticMutationsTableFormat(data);
+  }, [data, selectedSurvivalPlot]);
 
   const pagination = useMemo(() => {
     return isSuccess

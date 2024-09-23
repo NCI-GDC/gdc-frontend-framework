@@ -14,13 +14,12 @@ import {
   buildCohortGqlOperator,
   useCoreDispatch,
   extractFiltersWithPrefixFromFilterSet,
-  GDCGenesTable,
   buildGeneTableSearchFilters,
   filterSetToOperation,
   convertFilterToGqlFilter,
 } from "@gff/core";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { useDeepCompareCallback } from "use-deep-compare";
+import { useDeepCompareCallback, useDeepCompareMemo } from "use-deep-compare";
 import FunctionButton from "@/components/FunctionButton";
 import { Loader } from "@mantine/core";
 import isEqual from "lodash/isEqual";
@@ -63,7 +62,7 @@ export interface GTableContainerProps {
   isDemoMode?: boolean;
 }
 
-export const GTableContainer: React.FC<GTableContainerProps> = ({
+export const GenesTableContainer: React.FC<GTableContainerProps> = ({
   selectedSurvivalPlot,
   handleSurvivalPlotToggled,
   handleGeneToggled,
@@ -186,23 +185,23 @@ export const GTableContainer: React.FC<GTableContainerProps> = ({
       setPage(1);
   }, [cohortFilters, genomicFilters, prevCohortFilters, prevGenomicFilters]);
 
-  const useGeneTableFormat = (initialData: GDCGenesTable): Gene[] => {
-    const { cases, cnvCases, mutationCounts, filteredCases, genes } =
-      initialData;
+  const formattedTableData = useDeepCompareMemo(() => {
+    if (!data?.genes) return [];
 
-    return genes.map((gene) => {
-      return getGene(
+    const { cases, cnvCases, mutationCounts, filteredCases, genes } =
+      data.genes;
+
+    return genes.map((gene) =>
+      getGene(
         gene,
         selectedSurvivalPlot,
         mutationCounts,
         filteredCases,
         cases,
         cnvCases,
-      );
-    });
-  };
-
-  const formattedTableData: Gene[] = useGeneTableFormat(data?.genes);
+      ),
+    );
+  }, [data?.genes, selectedSurvivalPlot]);
 
   const pagination = useMemo(() => {
     return isSuccess
