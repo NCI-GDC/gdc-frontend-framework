@@ -1,9 +1,6 @@
-import { render } from "test-utils";
-import { DiagnosesOrFollowUps } from "../DiagnosesOrFollowUps";
-import userEvent from "@testing-library/user-event";
+import { Diagnoses, FollowUps } from "@gff/core";
 
-/* diagnoses */
-export const mockSingleDiagnoses = [
+export const mockSingleDiagnoses: Diagnoses[] = [
   {
     days_to_recurrence: null,
     synchronous_malignancy: "No",
@@ -56,7 +53,7 @@ export const mockSingleDiagnoses = [
   },
 ];
 
-const mockMultipleDiagnoses = [
+export const mockMultipleDiagnoses: Diagnoses[] = [
   {
     days_to_recurrence: null,
     synchronous_malignancy: "No",
@@ -151,24 +148,26 @@ const mockMultipleDiagnoses = [
   },
 ];
 
-// FollowUps
-const mockMultipleFollowUps = [
+export const mockMultipleFollowUps: FollowUps[] = [
   {
     karnofsky_performance_status: null,
     follow_up_id: "21fa2463-9e93-4f42-9624-18a7e82953f0",
     progression_or_recurrence_anatomic_site: null,
     progression_or_recurrence_type: null,
-    weight: null,
-    risk_factor: null,
     submitter_id: "follow-up-test",
     disease_response: null,
     days_to_follow_up: 186,
-    comorbidity: null,
-    reflux_treatment_type: null,
     ecog_performance_status: null,
     progression_or_recurrence: null,
-    height: null,
-    bmi: null,
+    other_clinical_attributes: [
+      {
+        submitter_id: "HTMCP-01-16-00783_follow_up_oca",
+        other_clinical_attribute_id: "ae2e4ee2-a878-438c-bf27-46006b2b0c90",
+        weight: 60.3,
+        height: 170,
+        bmi: 20.9,
+      },
+    ],
   },
   {
     karnofsky_performance_status: null,
@@ -211,21 +210,15 @@ const mockMultipleFollowUps = [
         molecular_test_id: "1e1149f3-208f-4128-939e-1cd5816d2af1",
       },
     ],
-    weight: 61.2,
-    risk_factor: null,
     submitter_id: "follow-up-test-1",
     disease_response: null,
     days_to_follow_up: 0,
-    comorbidity: null,
-    reflux_treatment_type: null,
     ecog_performance_status: null,
     progression_or_recurrence: null,
-    height: 162.5,
-    bmi: 23,
   },
 ];
 
-export const mockSingleFollowUps = [
+export const mockSingleFollowUps: FollowUps[] = [
   {
     karnofsky_performance_status: null,
     follow_up_id: "2650764a-22df-4e21-a792-c60bb61cda92",
@@ -267,123 +260,10 @@ export const mockSingleFollowUps = [
         molecular_test_id: "1e1149f3-208f-4128-939e-1cd5816d2af1",
       },
     ],
-    weight: 61.2,
-    risk_factor: null,
     submitter_id: "follow-up-test-1",
     disease_response: null,
     days_to_follow_up: 0,
-    comorbidity: null,
-    reflux_treatment_type: null,
     ecog_performance_status: null,
     progression_or_recurrence: null,
-    height: 162.5,
-    bmi: 23,
   },
 ];
-
-describe("<DiagnosesOrFollowUps /> for dianoses", () => {
-  it("should not render vertical tabs when only 1 node is present", () => {
-    const { queryByTestId } = render(
-      <DiagnosesOrFollowUps dataInfo={mockSingleDiagnoses} />,
-    );
-    expect(queryByTestId("verticalTabs")).toBe(null);
-  });
-
-  it("should render treatments table when data is present", () => {
-    const { queryByText, getByText } = render(
-      <DiagnosesOrFollowUps dataInfo={mockSingleDiagnoses} />,
-    );
-    expect(getByText("Total of 4 Treatments")).toBeInTheDocument();
-    expect(queryByText("No Treatments Found.")).toBe(null);
-  });
-
-  it("should not render treatment table when treatment array is emtpy", () => {
-    const { getByText } = render(
-      <DiagnosesOrFollowUps
-        dataInfo={[
-          Object.assign({}, mockSingleDiagnoses[0], { treatments: undefined }),
-        ]}
-      />,
-    );
-    expect(getByText("Total of 0 Treatments")).toBeInTheDocument();
-    expect(getByText("No Treatments Found.")).toBeInTheDocument();
-  });
-
-  it("should render vertical tabs when more than 1 node is present", () => {
-    const { getByTestId, getByText, queryByText } = render(
-      <DiagnosesOrFollowUps dataInfo={mockMultipleDiagnoses} />,
-    );
-    expect(getByTestId("verticalTabs")).toBeInTheDocument();
-    expect(getByText("Total of 3 Treatments")).toBeInTheDocument();
-    expect(queryByText("No Treatments Found.")).toBe(null);
-  });
-
-  it("vertical tabs should be clickable and render appropriate data", async () => {
-    const { getByTestId, getAllByTestId, getByText } = render(
-      <DiagnosesOrFollowUps dataInfo={mockMultipleDiagnoses} />,
-    );
-
-    expect(getByTestId("verticalTabs")).toBeInTheDocument();
-    expect(getByText("diag-test")).toBeInTheDocument();
-    expect(getByText("Total of 3 Treatments")).toBeInTheDocument();
-    const tab = getAllByTestId("tab");
-    await userEvent.click(tab[1]);
-    expect(getByText("diag-test-1")).toBeInTheDocument();
-    expect(getByText("Total of 4 Treatments")).toBeInTheDocument();
-  });
-});
-
-/*Follw Ups */
-describe("<DiagnosesOrFollowUps /> for Followups", () => {
-  it("should not render vertical tabs when only 1 node is present", () => {
-    const { queryByTestId } = render(
-      <DiagnosesOrFollowUps dataInfo={mockSingleDiagnoses} />,
-    );
-    expect(queryByTestId("verticalTabs")).toBe(null);
-  });
-
-  it("should render molecular_tests table when data is present", () => {
-    const { queryByText, getByText } = render(
-      <DiagnosesOrFollowUps dataInfo={mockSingleFollowUps} />,
-    );
-    expect(getByText("Total of 2 Molecular Tests")).toBeInTheDocument();
-    expect(queryByText("No Molecular Tests Found.")).toBe(null);
-  });
-
-  it("should not render treatment table when molecular_tests array is emtpy", () => {
-    const { getByText } = render(
-      <DiagnosesOrFollowUps
-        dataInfo={[
-          Object.assign({}, mockSingleFollowUps[0], {
-            molecular_tests: undefined,
-          }),
-        ]}
-      />,
-    );
-    expect(getByText("Total of 0 Molecular Tests")).toBeInTheDocument();
-    expect(getByText("No Molecular Tests Found.")).toBeInTheDocument();
-  });
-
-  it("should render vertical tabs when more than 1 node is present", () => {
-    const { getByTestId, getByText, queryByText } = render(
-      <DiagnosesOrFollowUps dataInfo={mockMultipleFollowUps} />,
-    );
-    expect(getByTestId("verticalTabs")).toBeInTheDocument();
-    expect(getByText("Total of 0 Molecular Tests")).toBeInTheDocument();
-    expect(queryByText("No Molecular Tests Found.")).not.toBe(null);
-  });
-
-  it("vertical tabs should be clickable and render appropriate data", async () => {
-    const { getByTestId, getAllByTestId, getByText } = render(
-      <DiagnosesOrFollowUps dataInfo={mockMultipleFollowUps} />,
-    );
-
-    expect(getByTestId("verticalTabs")).toBeInTheDocument();
-    expect(getByText("follow-up-test")).toBeInTheDocument();
-    expect(getByText("Total of 0 Molecular Tests")).toBeInTheDocument();
-    const tab = getAllByTestId("tab");
-    await userEvent.click(tab[1]);
-    expect(getByText("follow-up-test-1")).toBeInTheDocument();
-    expect(getByText("Total of 2 Molecular Tests")).toBeInTheDocument();
-  });
-});

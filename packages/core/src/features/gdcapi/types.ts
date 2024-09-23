@@ -65,13 +65,10 @@ export interface FamilyHistories {
 }
 
 export interface FollowUps {
-  readonly bmi: number | null;
-  readonly comorbidity: number | null;
   readonly days_to_follow_up: number | null;
   readonly disease_response: string | null;
   readonly ecog_performance_status: string | null;
   readonly follow_up_id: string | null;
-  readonly height: number | null;
   readonly karnofsky_performance_status: number | null;
   readonly molecular_tests?: ReadonlyArray<{
     readonly aa_change: string | null;
@@ -90,13 +87,20 @@ export interface FollowUps {
     readonly test_value: number | null;
     readonly variant_type: string | null;
   }>;
+  readonly other_clinical_attributes?: ReadonlyArray<{
+    readonly submitter_id: string;
+    readonly other_clinical_attribute_id: string;
+    readonly timepoint_category?: string;
+    readonly nononcologic_therapeutic_agents?: string;
+    readonly treatment_frequency?: number;
+    readonly weight?: number;
+    readonly height?: number;
+    readonly bmi?: number;
+  }>;
   readonly progression_or_recurrence: number | null;
   readonly progression_or_recurrence_anatomic_site: number | null;
   readonly progression_or_recurrence_type: number | null;
-  readonly reflux_treatment_type: number | null;
-  readonly risk_factor: number | null;
   readonly submitter_id: string | null;
-  readonly weight: number | null;
 }
 
 export interface Exposures {

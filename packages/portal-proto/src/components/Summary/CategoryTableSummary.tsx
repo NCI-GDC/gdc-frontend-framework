@@ -1,6 +1,6 @@
 import { MdInfo as InfoIcon } from "react-icons/md";
 import { ColumnDef } from "@tanstack/react-table";
-import { ActionIcon, Tooltip } from "@mantine/core";
+import { Tooltip } from "@mantine/core";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import VerticalTable from "../Table/VerticalTable";
 
@@ -30,13 +30,13 @@ function CategoryTableSummary<TData>({
             withArrow
             withinPortal={false}
           >
-            <ActionIcon variant="subtle">
+            <span className="flex items-center px-1.5">
               <InfoIcon
                 data-testid="button-category-table-tooltip"
                 size={16}
                 className="text-accent"
               />
-            </ActionIcon>
+            </span>
           </Tooltip>
         )}
       </div>
