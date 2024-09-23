@@ -16,10 +16,9 @@ import {
   useState,
   useMemo,
 } from "react";
-import { useDeepCompareMemo } from "use-deep-compare";
+import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
 import { BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
 import { LoadingOverlay } from "@mantine/core";
-import { useDeepCompareEffect } from "use-deep-compare";
 import { getDefaultRowId } from "./utils";
 import TableHeader from "./TableHeader";
 import TablePagination from "./TablePagination";
@@ -107,13 +106,9 @@ function VerticalTable<TData>({
     }
   }, [sortingStatus, announcementTimestamp]);
 
-  // TODO: status fufilled is to be sent for all the tables (even without api calls)
-  // also need in pagination (do sth about it)
   useDeepCompareEffect(() => {
-    if (status === "fulfilled") {
-      setTableData(data);
-    }
-  }, [data, status]);
+    setTableData(data);
+  }, [data]);
 
   const initialState = useDeepCompareMemo(
     () => ({

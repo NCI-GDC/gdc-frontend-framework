@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { ColumnDef, SortingState } from "@tanstack/react-table";
 import { PaginationOptions } from "@/components/Table/types";
-import { useDeepCompareEffect } from "use-deep-compare";
+import { useDeepCompareCallback, useDeepCompareMemo } from "use-deep-compare";
 
 /**
  * For use with the VerticalTable component or other paginated tables,
@@ -31,23 +31,20 @@ function useStandardPagination<TData>(
 } {
   const [pageSize, setPageSize] = useState(10);
   const [activePage, setActivePage] = useState(1);
-  const [displayedData, setDisplayedData] = useState([]);
-  const [updatedFullData, setUpdatedFullData] = useState([]);
   const [activeSort, setActiveSort] = useState<SortingState>([]);
-  const [columnSortingFns, setColumnSortingFns] = useState({});
 
-  const handlePageSizeChange = (x: string) => {
-    setPageSize(parseInt(x));
+  const handlePageSizeChange = useCallback((pageSize: string) => {
+    setPageSize(parseInt(pageSize));
     setActivePage(1);
-  };
+  }, []);
 
-  const handlePageChange = (x: number) => {
-    setActivePage(x);
-  };
+  const handlePageChange = useCallback((pageNum: number) => {
+    setActivePage(pageNum);
+  }, []);
 
-  const handleSortByChange = (x: SortingState) => {
-    setActiveSort(x);
-  };
+  const handleSortByChange = useCallback((sortBy: SortingState) => {
+    setActiveSort(sortBy);
+  }, []);
 
   const recursivelyExtractSortingFns = useCallback(
     (columns: ColumnDef<TData, any>[]) => {
@@ -60,85 +57,68 @@ function useStandardPagination<TData>(
           Object.assign(output, nestedFns);
         }
         return output;
-      }, {});
+      }, {} as Record<string, (a: TData, b: TData) => number>);
     },
     [],
   );
 
-  useDeepCompareEffect(() => {
-    if (!columns) {
-      return;
-    }
+  const columnSortingFns = useDeepCompareMemo(
+    () => (columns ? recursivelyExtractSortingFns(columns) : {}),
+    [columns, recursivelyExtractSortingFns],
+  );
 
-    const sortingFns = recursivelyExtractSortingFns(columns);
-    setColumnSortingFns(sortingFns);
-  }, [columns, recursivelyExtractSortingFns]);
+  const sortData = useDeepCompareCallback(
+    (data: TData[], sortState: SortingState) => {
+      if (sortState.length === 0) return data;
 
-  useDeepCompareEffect(() => {
-    const tempData = [...fullData];
-    if (activeSort.length > 0) {
-      // If multiple filters
-      activeSort.forEach((obj) => {
-        // check if special instructions
-        if (columnSortingFns[obj.id]) {
-          // sort by sortingFn
-          tempData.sort(columnSortingFns[obj.id]);
-          if (obj.desc) {
-            tempData.reverse();
-          }
-        } else {
-          switch (typeof tempData[0]?.[obj.id]) {
-            case "number":
-            case "string":
-              tempData.sort((a, b) => {
-                // sort strings and numbers
-                if (a[obj.id] < b[obj.id]) {
-                  return obj.desc ? 1 : -1;
-                }
-                if (a[obj.id] > b[obj.id]) {
-                  return obj.desc ? -1 : 1;
-                }
-                return 0;
-              });
-              break;
-            case "object":
-              // check if array
-              if (Array.isArray(tempData[0][obj.id])) {
-                //if array sort by length
-                tempData.sort((a, b) => {
-                  if (a[obj.id].length < b[obj.id].length) {
-                    return obj.desc ? 1 : -1;
-                  }
-                  if (a[obj.id].length > b[obj.id].length) {
-                    return obj.desc ? -1 : 1;
-                  }
-                  //If same length sort by first item
-                  try {
-                    if (a[obj.id][0] < b[obj.id][0]) {
-                      return obj.desc ? 1 : -1;
-                    }
-                    if (a[obj.id][0] > b[obj.id][0]) {
-                      return obj.desc ? -1 : 1;
-                    }
-                  } catch {
-                    return 0;
-                  }
-                  return 0;
-                });
-                break;
-              }
-            // fallsthrough non array object needs sortingFn
-            default:
-              console.error(`cannot sort by ${obj.id} no sortingFn given`);
+      return [...data].sort((a, b) => {
+        for (const sort of sortState) {
+          const { id, desc } = sort;
+          const customSortFn = columnSortingFns[id];
+
+          if (customSortFn) {
+            const result = customSortFn(a, b);
+            if (result !== 0) return desc ? -result : result;
+          } else {
+            const valueA = a[id as keyof TData];
+            const valueB = b[id as keyof TData];
+
+            if (typeof valueA === "number" && typeof valueB === "number") {
+              if (valueA !== valueB)
+                return desc ? valueB - valueA : valueA - valueB;
+            } else if (
+              typeof valueA === "string" &&
+              typeof valueB === "string"
+            ) {
+              const comparison = valueA.localeCompare(valueB);
+              if (comparison !== 0) return desc ? -comparison : comparison;
+            } else if (Array.isArray(valueA) && Array.isArray(valueB)) {
+              const lenDiff = valueA.length - valueB.length;
+              if (lenDiff !== 0) return desc ? -lenDiff : lenDiff;
+              // If lengths are equal, compare first elements
+              if (valueA[0] < valueB[0]) return desc ? 1 : -1;
+              if (valueA[0] > valueB[0]) return desc ? -1 : 1;
+            } else {
+              console.warn(`Unable to sort by ${id}. Unsupported data type.`);
+            }
           }
         }
+        return 0;
       });
-    }
-    setUpdatedFullData(tempData);
-    setDisplayedData(
-      tempData.slice((activePage - 1) * pageSize, activePage * pageSize),
-    );
-  }, [fullData, activePage, pageSize, columnSortingFns, activeSort]);
+    },
+    [columnSortingFns],
+  );
+
+  const { updatedFullData, displayedData } = useDeepCompareMemo(() => {
+    const sortedData = sortData(fullData, activeSort);
+    return {
+      updatedFullData: sortedData,
+      displayedData: sortedData.slice(
+        (activePage - 1) * pageSize,
+        activePage * pageSize,
+      ),
+    };
+  }, [fullData, activePage, pageSize, activeSort, sortData]);
 
   return {
     handlePageSizeChange,

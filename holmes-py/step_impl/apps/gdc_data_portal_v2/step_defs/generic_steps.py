@@ -27,7 +27,7 @@ def start_app():
 @before_suite
 def navigate_to_app():
     APP.navigate()
-    APP.warning_modal.accept_warning()
+    APP.modal.accept_warning()
 
 
 @before_suite
@@ -76,7 +76,7 @@ def setup_next_spec_run():
 @step("On GDC Data Portal V2 app")
 def navigate_to_app():
     APP.navigate()
-    APP.warning_modal.accept_warning()
+    APP.modal.accept_warning()
 
 
 @step("Go to <page_name> page")
@@ -362,6 +362,30 @@ def make_cohort_builder_selections(table):
     for k, v in enumerate(table):
         is_filter_visible = APP.shared.is_filter_card_present(v[0])
         assert is_filter_visible, f"The filter card '{v[0]}' is NOT visible"
+
+@step("Verify expected custom filters <are_or_are_not> present in filter card <table>")
+def validate_custom_filter_text_on_facet_card(are_or_are_not:str, table):
+    """
+    validate_custom_filter_text_on_facet_card validates given text should be present
+    or not present on filter card. Used with cards that allow entry of text as a filter
+    e.g. Case ID, Mutated Gene, Cases Submitter Id, etc.
+
+    :param are_or_are_not: Check if text should be present or should not be present. Acceptable inputs: "are", "are not"
+    :param v[0]: The facet card name to check
+    :param v[1]: Custom filter text to check on the facet card
+    """
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    APP.shared.wait_for_loading_spinner_to_detatch()
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    for k, v in enumerate(table):
+        is_custom_filter_visible = APP.shared.is_filter_card_custom_filter_text_present(v[0], v[1])
+        if are_or_are_not.lower() == "are":
+            assert is_custom_filter_visible, f"In filter card '{v[0]}', the custom filter text '{v[1]}' is NOT visible"
+        elif are_or_are_not.lower() == "are not":
+            assert is_custom_filter_visible == False, f"In filter card '{v[0]}', the custom filter text '{v[1]}' is present when it should NOT be"
+        time.sleep(0.1)
+
 
 
 @step("Verify the page is showing <number_of_items_text>")
@@ -725,13 +749,17 @@ def click_link_data_testid(link_data_testid: str):
     """Clicks a link with a data-testid"""
     APP.shared.click_link_data_testid(link_data_testid)
 
+@step("Select the following checkboxes <table>")
+def click_checkboxes(table):
+    for k, v in enumerate(table):
+        APP.shared.click_checkbox(v[0])
+        time.sleep(0.1)
 
 @step("Select the following radio buttons <table>")
 def click_radio_buttons(table):
     for k, v in enumerate(table):
         APP.shared.click_radio_button(v[0])
         time.sleep(0.1)
-
 
 @step("Select create or save in cohort modal")
 def click_create_or_save_in_cohort_modal():
@@ -764,6 +792,13 @@ def change_number_of_entries_shown(change_number_of_entries_shown: str):
     """
     APP.shared.change_number_of_entries_shown(change_number_of_entries_shown)
 
+@step("Change number of entries shown in the table <table_name> to <number_of_entries>")
+def change_number_of_entries_shown_in_specified_table(table_name:str, change_number_of_entries_shown: str):
+    """
+    In specified table, changes number of entries shown in the table using the show entries button,
+    and selecting an option from the dropdown list.
+    """
+    APP.shared.change_number_of_entries_shown_in_specified_table(table_name, change_number_of_entries_shown)
 
 @step("Perform action and validate modal text <table>")
 def click_named_button_in_modal_and_wait_for_temp_message_text(table):
