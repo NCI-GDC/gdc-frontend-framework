@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { isArray, isEmpty } from "lodash";
+import { isEmpty } from "lodash";
 import {
   Operation,
   GqlOperation,
@@ -305,14 +305,27 @@ export const buildGqlOperationToFilterSet = (
   if (isEmpty(fs)) return { mode: "and", root: {} };
 
   const obj = (fs as GqlIntersection | GqlUnion).content.reduce((acc, item) => {
-    const key = isArray(item.content)
-      ? item.content?.at(0).field
-      : (item.content as any).field;
+    let key;
+    if (Array.isArray(item.content)) {
+      // If item.content is an array, find the first object with a 'field' property
+      const fieldObj = item.content.find(
+        (content) =>
+          content &&
+          typeof content.content === "object" &&
+          "field" in content.content,
+      );
+      key = fieldObj && fieldObj.content ? fieldObj.content.field : undefined;
+    } else {
+      key = (item.content as any).field;
+    }
 
-    return {
-      ...acc,
-      [key]: convertGqlFilterToFilter(item),
-    };
+    if (key) {
+      return {
+        ...acc,
+        [key]: convertGqlFilterToFilter(item),
+      };
+    }
+    return acc;
   }, {});
 
   return {
