@@ -371,7 +371,7 @@ const ProjectsTable: React.FC = () => {
 
   return (
     <VerticalTable
-      tableTitle={
+      tableTotalDetail={
         <TotalItems total={data?.pagination?.total} itemName="project" />
       }
       additionalControls={

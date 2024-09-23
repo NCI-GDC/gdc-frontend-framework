@@ -389,7 +389,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
     <VerticalTable
       data={tableData}
       columns={cartFilesTableDefaultColumns}
-      tableTitle={
+      tableTotalDetail={
         <TotalItems total={data?.pagination?.total} itemName="file" />
       }
       additionalControls={

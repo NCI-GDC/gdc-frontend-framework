@@ -426,21 +426,16 @@ const FilesTables: React.FC = () => {
   }
 
   const Stats = () => (
-    <div className="flex gap-1 text-xl items-center uppercase">
+    <div className="flex gap-1 text-xl items-center uppercase flex-wrap">
       <div>
         Total of{" "}
         <strong>{tempPagination?.total?.toLocaleString() || "--"}</strong>{" "}
-        {tempPagination?.total > 1 || tempPagination?.total === 0
-          ? "Files"
-          : "File"}
+        {tempPagination?.total !== 1 ? "Files" : "File"}
       </div>
       <div>
         <MdPerson className="ml-2 mr-1 mb-1 inline-block" aria-hidden="true" />
         <strong className="mr-1">{totalCaseCount}</strong>
-        {fileSizeSliceData?.data?.total_case_count > 1 ||
-        fileSizeSliceData?.data?.total_case_count === 0
-          ? "Cases"
-          : "Case"}
+        {fileSizeSliceData?.data?.total_case_count !== 1 ? "Cases" : "Case"}
       </div>
       <div>
         <MdSave className="ml-2 mr-1 mb-1 inline-block" aria-hidden="true" />
@@ -451,60 +446,58 @@ const FilesTables: React.FC = () => {
 
   return (
     <>
-      <div className="flex xl:justify-end Custom-Repo-Width:hidden">
+      <div className="flex mb-2 Custom-Repo-Width:hidden">
         <Stats />
       </div>
-      <div className="">
-        <VerticalTable
-          additionalControls={
-            <div className="flex gap-2 items-center justify-between">
-              <FunctionButton
-                onClick={handleDownloadJSON}
-                data-testid="button-json-files-table"
-                disabled={isFetching}
-              >
-                JSON
-              </FunctionButton>
-              <FunctionButton
-                onClick={handleDownloadTSV}
-                data-testid="button-tsv-files-table"
-                disabled={isFetching}
-              >
-                TSV
-              </FunctionButton>
-            </div>
-          }
-          tableTitle={
-            <div
-              data-testid="text-counts-files-table"
-              className="hidden Custom-Repo-Width:block"
+      <VerticalTable
+        additionalControls={
+          <div className="flex gap-2 items-center justify-between">
+            <FunctionButton
+              onClick={handleDownloadJSON}
+              data-testid="button-json-files-table"
+              disabled={isFetching}
             >
-              <Stats />
-            </div>
-          }
-          data={formattedTableData}
-          columns={filesTableDefaultColumns}
-          pagination={{
-            ...tempPagination,
-            label: "file",
-          }}
-          status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
-          handleChange={handleChange}
-          search={{
-            enabled: true,
-            tooltip:
-              "e.g. HCM-CSHL-0062-C18.json, 4b5f5ba0-3010-4449-99d4-7bd7a6d73422, HCM-CSHL-0062-C18",
-          }}
-          showControls={true}
-          setColumnVisibility={setColumnVisibility}
-          columnVisibility={columnVisibility}
-          columnOrder={columnOrder}
-          columnSorting="manual"
-          sorting={sorting}
-          setSorting={setSorting}
-          setColumnOrder={setColumnOrder}
-        />
-      </div>
+              JSON
+            </FunctionButton>
+            <FunctionButton
+              onClick={handleDownloadTSV}
+              data-testid="button-tsv-files-table"
+              disabled={isFetching}
+            >
+              TSV
+            </FunctionButton>
+          </div>
+        }
+        tableTotalDetail={
+          <div
+            data-testid="text-counts-files-table"
+            className="hidden Custom-Repo-Width:block"
+          >
+            <Stats />
+          </div>
+        }
+        data={formattedTableData}
+        columns={filesTableDefaultColumns}
+        pagination={{
+          ...tempPagination,
+          label: "file",
+        }}
+        status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
+        handleChange={handleChange}
+        search={{
+          enabled: true,
+          tooltip:
+            "e.g. HCM-CSHL-0062-C18.json, 4b5f5ba0-3010-4449-99d4-7bd7a6d73422, HCM-CSHL-0062-C18",
+        }}
+        showControls={true}
+        setColumnVisibility={setColumnVisibility}
+        columnVisibility={columnVisibility}
+        columnOrder={columnOrder}
+        columnSorting="manual"
+        sorting={sorting}
+        setSorting={setSorting}
+        setColumnOrder={setColumnOrder}
+      />
     </>
   );
 };

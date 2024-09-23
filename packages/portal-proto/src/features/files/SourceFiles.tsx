@@ -96,8 +96,8 @@ const SourceFiles = ({
       customDataTestID="table-source-files-file-summary"
       data={data}
       columns={columns}
-      tableTitle={<TotalItems total={data?.length} itemName="file" />}
-      additionalControls={<HeaderTitle>Source Files</HeaderTitle>}
+      tableTotalDetail={<TotalItems total={data?.length} itemName="file" />}
+      tableTitle={<HeaderTitle>Source Files</HeaderTitle>}
     />
   );
 };

@@ -151,9 +151,13 @@ export interface TableProps<TData> {
    */
   status?: DataStatus;
   /**
-   * caption to display at top of table
+   * Title of the table (optional) pass when additional control is undefined
    */
   tableTitle?: ReactNode;
+  /**
+   * caption to display at top of table (specially total items in the table)
+   */
+  tableTotalDetail?: ReactNode;
   /**
    * html block left of column sorting controls
    */

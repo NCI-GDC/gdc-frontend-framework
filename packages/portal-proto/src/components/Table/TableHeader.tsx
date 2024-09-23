@@ -1,11 +1,12 @@
-import { Tooltip, Text, TextInput, ActionIcon } from "@mantine/core";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
-import ColumnOrdering from "./ColumnOrdering";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import { Tooltip, TextInput, ActionIcon } from "@mantine/core";
 import { MdClose, MdSearch } from "react-icons/md";
 import { Table } from "@tanstack/react-table";
+import ColumnOrdering from "./ColumnOrdering";
 
 interface TableHeaderProps<TData> {
   additionalControls?: React.ReactNode;
+  tableTotalDetail?: React.ReactNode;
   tableTitle?: React.ReactNode;
   search?: {
     enabled: boolean;
@@ -25,8 +26,105 @@ interface TableHeaderProps<TData> {
   baseZIndex?: number;
 }
 
+const TitleWrapper: React.FC<{ title: React.ReactNode }> = ({ title }) => (
+  <div className="uppercase text-lg text-left ml-0 lg:ml-auto gap-x-2">
+    {title}
+  </div>
+);
+
+const TotalDetailWrapper: React.FC<{
+  detail: React.ReactNode;
+  className?: string;
+}> = ({ detail, className = "" }) => (
+  <div
+    className={`self-center uppercase text-lg text-left ml-0 lg:ml-auto ${className}`}
+  >
+    {detail}
+  </div>
+);
+
+const TooltipWrapper: React.FC<{
+  children: React.ReactNode;
+  tooltip: string;
+  searchFocused: boolean;
+  baseZIndex: number;
+}> = ({ children, tooltip, searchFocused, baseZIndex }) => (
+  <Tooltip
+    multiline
+    label={tooltip}
+    position="bottom-start"
+    offset={0}
+    opened={searchFocused}
+    zIndex={baseZIndex + 1} // needs to be higher z-index when in a modal
+    classNames={{
+      tooltip:
+        "w-72 border border-base-lighter absolute bg-white p-2 text-nci-gray text-sm overflow-wrap break-all rounded-b rounded-t-none font-content",
+    }}
+  >
+    {children}
+  </Tooltip>
+);
+
+const SearchInput: React.FC<{
+  searchTerm: string;
+  searchFocused: boolean;
+  onClear: () => void;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onFocus: () => void;
+  onBlur: () => void;
+  placeholder?: string;
+  tooltip?: string;
+  baseZIndex?: number;
+}> = ({
+  searchTerm,
+  placeholder,
+  tooltip,
+  searchFocused,
+  baseZIndex,
+  onClear,
+  onChange,
+  onFocus,
+  onBlur,
+}) => {
+  const TooltipContainer = tooltip ? TooltipWrapper : React.Fragment;
+
+  return (
+    <TooltipContainer
+      tooltip={tooltip}
+      baseZIndex={baseZIndex}
+      searchFocused={searchFocused}
+    >
+      <TextInput
+        leftSection={<MdSearch size={24} aria-hidden="true" />}
+        data-testid="textbox-table-search-bar"
+        placeholder={placeholder ?? "Search"}
+        aria-label="Table Search Input"
+        size="sm"
+        rightSection={
+          searchTerm.length > 0 && (
+            <ActionIcon onClick={onClear} className="border-0">
+              <MdClose aria-label="clear search" />
+            </ActionIcon>
+          )
+        }
+        value={searchTerm}
+        onChange={onChange}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        classNames={{
+          input: `border-base-lighter focus:border-2 focus:border-primary${
+            tooltip ? " focus:rounded-b-none" : ""
+          }`,
+          wrapper: "xl:w-72",
+        }}
+      />
+    </TooltipContainer>
+  );
+};
+
 function TableHeader<TData>({
   additionalControls,
+  tableTotalDetail,
   tableTitle,
   search,
   showControls,
@@ -40,10 +138,11 @@ function TableHeader<TData>({
   const [searchFocused, setSearchFocused] = useState(false);
   const inputRef = useRef(null);
   const timeoutRef = useRef(null);
+  const shouldShowControls = search?.enabled || showControls;
 
   useEffect(() => {
     if (search?.defaultSearchTerm) {
-      inputRef?.current?.focus();
+      inputRef.current?.focus();
     }
   }, [search?.defaultSearchTerm]);
 
@@ -51,7 +150,7 @@ function TableHeader<TData>({
     const newSearchTerm = e.target.value;
     setSearchTerm(newSearchTerm);
 
-    clearTimeout(timeoutRef.current);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
     timeoutRef.current = setTimeout(() => {
       handleChange({ newSearch: newSearchTerm.trim() });
@@ -60,96 +159,109 @@ function TableHeader<TData>({
 
   const handleClearClick = () => {
     setSearchTerm("");
-    clearTimeout(timeoutRef.current);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
     handleChange({ newSearch: "" });
   };
 
-  const TooltipContainer = search?.tooltip
-    ? (children) => (
-        <Tooltip
-          multiline
-          label={search.tooltip}
-          position="bottom-start"
-          opened={searchFocused}
-          zIndex={baseZIndex + 1} // needs to be higher z-index when in a modal
-          offset={0}
-          classNames={{
-            tooltip:
-              "w-72 border border-base-lighter absolute bg-white p-2 text-nci-gray text-sm  overflow-wrap break-all rounded-b rounded-t-none font-content",
+  const renderSearchAndControls = () => (
+    <div className="flex items-center gap-2" data-testid="table-options-menu">
+      {search?.enabled && (
+        <SearchInput
+          searchTerm={searchTerm}
+          placeholder={search?.placeholder}
+          tooltip={search?.tooltip}
+          searchFocused={searchFocused}
+          baseZIndex={baseZIndex}
+          onClear={handleClearClick}
+          onChange={handleInputChange}
+          onFocus={() => setSearchFocused(true)}
+          onBlur={() => setSearchFocused(false)}
+        />
+      )}
+      {showControls && (
+        <ColumnOrdering
+          table={table}
+          handleColumnOrderingReset={() => {
+            table.resetColumnVisibility();
+            table.resetColumnOrder();
           }}
-        >
-          {children}
-        </Tooltip>
-      )
-    : undefined;
+          columnOrder={columnOrder}
+          setColumnOrder={setColumnOrder}
+        />
+      )}
+    </div>
+  );
 
-  return (
-    <div
-      className={`flex flex-wrap gap-y-4 mb-2 items-center ${
-        !additionalControls ? "justify-end" : "justify-between"
-      }`}
-    >
-      {additionalControls && <>{additionalControls}</>}
-      <div className="flex flex-wrap gap-y-2 gap-x-4 items-center">
+  const renderHeaderWhenNeeded = () => {
+    if (additionalControls) {
+      if (tableTitle) return <TitleWrapper title={tableTitle} />;
+      if (shouldShowControls && tableTotalDetail) {
+        return <TotalDetailWrapper detail={tableTotalDetail} />;
+      }
+    } else if (tableTitle && shouldShowControls) {
+      return <TitleWrapper title={tableTitle} />;
+    }
+    return null;
+  };
+
+  const renderLeftSection = () => {
+    if (additionalControls) {
+      return additionalControls;
+    }
+
+    return (
+      <>
         {tableTitle && (
-          <Text className="self-center uppercase text-lg text-left ml-0 lg:ml-auto">
-            {tableTitle}
-          </Text>
+          <div
+            className={`${
+              shouldShowControls && tableTotalDetail ? "hidden xl:block" : ""
+            }`}
+          >
+            <TitleWrapper title={tableTitle} />
+          </div>
         )}
 
-        {(search?.enabled || showControls) && (
-          <div
-            className="flex items-center gap-2"
-            data-testid="table-options-menu"
-          >
-            <div className="flex gap-2">
-              {search?.enabled && (
-                <TextInput
-                  leftSection={<MdSearch size={24} aria-hidden="true" />}
-                  data-testid="textbox-table-search-bar"
-                  placeholder={search.placeholder ?? "Search"}
-                  aria-label="Table Search Input"
-                  classNames={{
-                    input: `border-base-lighter focus:border-2 focus:border-primary${
-                      TooltipContainer ? " focus:rounded-b-none" : ""
-                    }`,
-                    wrapper: "xl:w-72",
-                  }}
-                  size="sm"
-                  rightSection={
-                    searchTerm.length > 0 && (
-                      <ActionIcon
-                        onClick={handleClearClick}
-                        className="border-0"
-                      >
-                        <MdClose aria-label="clear search" />
-                      </ActionIcon>
-                    )
-                  }
-                  value={searchTerm}
-                  onChange={handleInputChange}
-                  ref={inputRef}
-                  onFocus={() => setSearchFocused(true)}
-                  onBlur={() => setSearchFocused(false)}
-                  inputContainer={TooltipContainer}
-                />
-              )}
-              {showControls && (
-                <ColumnOrdering
-                  table={table}
-                  handleColumnOrderingReset={() => {
-                    table.resetColumnVisibility();
-                    table.resetColumnOrder();
-                  }}
-                  columnOrder={columnOrder}
-                  setColumnOrder={setColumnOrder}
-                />
-              )}
-            </div>
+        {!tableTitle && tableTotalDetail && (
+          <div className="hidden xl:block">
+            <TotalDetailWrapper detail={tableTotalDetail} />
+          </div>
+        )}
+
+        {tableTitle && tableTotalDetail && shouldShowControls && (
+          <div className="block xl:hidden">
+            <TotalDetailWrapper detail={tableTotalDetail} />
+          </div>
+        )}
+      </>
+    );
+  };
+
+  const extraHeader = renderHeaderWhenNeeded();
+
+  return (
+    <>
+      {extraHeader && <div className="xl:hidden mb-2">{extraHeader}</div>}
+
+      <div
+        className={`flex flex-wrap gap-y-4 mb-2 items-center ${
+          !additionalControls && !tableTitle ? "justify-end" : "justify-between"
+        }`}
+      >
+        <div className="flex items-center">{renderLeftSection()}</div>
+
+        {(shouldShowControls || tableTotalDetail) && (
+          <div className="flex flex-wrap gap-y-2 gap-x-4 items-center">
+            {tableTotalDetail && (
+              <TotalDetailWrapper
+                detail={tableTotalDetail}
+                className={shouldShowControls ? "hidden xl:block" : ""}
+              />
+            )}
+            {shouldShowControls && renderSearchAndControls()}
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 }
 

@@ -271,7 +271,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
       <HeaderTitle>Annotations</HeaderTitle>
       <VerticalTable
         customDataTestID="table-annotations-case-summary"
-        tableTitle={
+        tableTotalDetail={
           <TotalItems total={data?.pagination?.total} itemName="annotation" />
         }
         additionalControls={
