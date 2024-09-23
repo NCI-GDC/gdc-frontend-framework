@@ -20,13 +20,6 @@ import {
   isFeatureEnabled,
 } from "@/features/featureFlags";
 
-console.log(
-  "RA: DISPLAY_SC_RNA_SEQ_APP",
-  DISPLAY_SC_RNA_SEQ_APP,
-  DISPLAY_SC_RNA_SEQ_APP == true,
-  DISPLAY_SC_RNA_SEQ_APP == "true",
-);
-
 export const COHORTS = [
   { name: "New Custom Cohort", facets: [] },
   {
