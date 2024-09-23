@@ -12,7 +12,7 @@ import {
   useGeneAndSSMPanelData,
 } from "@/features/genomic/hooks";
 import dynamic from "next/dynamic";
-import { GTableContainer } from "../GenomicTables/GenesTable/GTableContainer";
+import { GenesTableContainer } from "../GenomicTables/GenesTable/GenesTableContainer";
 
 const SurvivalPlot = dynamic(
   () => import("../charts/SurvivalPlot/SurvivalPlot"),
@@ -104,7 +104,7 @@ export const GenesPanel = ({
           />
         </div>
       </div>
-      <GTableContainer
+      <GenesTableContainer
         selectedSurvivalPlot={comparativeSurvival}
         handleSurvivalPlotToggled={handleSurvivalPlotToggled}
         handleGeneToggled={handleGeneToggled}

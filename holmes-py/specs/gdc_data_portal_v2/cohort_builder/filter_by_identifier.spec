@@ -31,7 +31,7 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
   |Filter to Remove             |
   |-----------------------------|
   |Case Id                      |
-* Validate expected custom filters "not are" present in facet cards on the "General" tab on the Cohort Builder page
+* Validate expected custom filters "are not" present in facet cards on the "General" tab on the Cohort Builder page
   |facet_name           |custom_filter_text                     |
   |---------------------|---------------------------------------|
   |Case Id              |a757f96a-a173-45e2-a292-62ea007efd9d   |
@@ -80,7 +80,7 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
   |Filter to Remove             |
   |-----------------------------|
   |Gene Id                      |
-* Validate expected custom filters "not are" present in facet cards on the "Molecular Filters" tab on the Cohort Builder page
+* Validate expected custom filters "are not" present in facet cards on the "Molecular Filters" tab on the Cohort Builder page
   |facet_name           |custom_filter_text                     |
   |---------------------|---------------------------------------|
   |Mutated Gene         |USH2A                                  |
@@ -129,7 +129,7 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
   |Filter to Remove             |
   |-----------------------------|
   |Ssm Id                       |
-* Validate expected custom filters "not are" present in facet cards on the "Molecular Filters" tab on the Cohort Builder page
+* Validate expected custom filters "are not" present in facet cards on the "Molecular Filters" tab on the Cohort Builder page
   |facet_name           |custom_filter_text                     |
   |---------------------|---------------------------------------|
   |Somatic Mutation     |99eb3457-6125-5255-8322-88d0b55578ea   |

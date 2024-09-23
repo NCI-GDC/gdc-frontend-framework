@@ -56,7 +56,7 @@ class GenericLocators:
 
     RADIO_BUTTON_IDENT = lambda radio_name: f'//input[@id="{radio_name}"]'
     CHECKBOX_IDENT = (
-        lambda checkbox_id: f'//input[@data-testid="checkbox-{checkbox_id}"]'
+        lambda checkbox_id: f'[data-testid="checkbox-{checkbox_id}"]'
     )
 
     DATA_TEST_ID_IDENT = lambda id: f'[data-testid="{id}"]'
@@ -119,6 +119,9 @@ class GenericLocators:
     FILTER_GROUP_IDENT = (
         lambda group_name: f'[data-testid="filters-facets"] >> div:text-is("{group_name}")'
     )
+    FILTER_GROUP_CUSTOM_FILTER_TEXT_IDENT = (
+        lambda group_name, filter_text: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> text="{filter_text}"'
+    )
     FILTER_GROUP_SELECTION_IDENT = (
         lambda group_name, selection: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> [data-testid="checkbox-{selection}"]'
     )
@@ -136,9 +139,15 @@ class GenericLocators:
     SHOWING_NUMBER_OF_ITEMS = '[data-testid="text-showing-count"]'
 
     BUTTON_ENTRIES_SHOWN = '[data-testid="button-show-entries"]'
+    BUTTON_ENTRIES_SHOWN_IN_SPECIFIED_TABLE = lambda table_name: f'[data-testid="table-{table_name}"] >> [data-testid="button-show-entries"]'
+
     DROPDOWN_LIST_CHANGE_NUMBER_OF_ENTRIES_SHOWN = (
         lambda number_of_entries: f'[data-testid="area-show-number-of-entries"] >> text="{number_of_entries}"'
     )
+    DROPDOWN_LIST_CHANGE_NUMBER_OF_ENTRIES_SHOWN_IN_SPECIFIED_TABLE = (
+        lambda table_name, number_of_entries: f'[data-testid="table-{table_name}"] >> [data-testid="area-show-number-of-entries"] >> text="{number_of_entries}"'
+    )
+
 
 
 class BasePage:
@@ -472,14 +481,18 @@ class BasePage:
             return False
         return True
 
-    # Returns if the show more or show less button is visible on a facet card
-    def is_show_more_or_show_less_button_visible_within_filter_card(
-        self, facet_group_name, label
-    ):
+    def is_show_more_or_show_less_button_visible_within_filter_card(self, facet_group_name, label):
+        """Returns if the 'show more or show less' button is visible on a facet card"""
         locator = GenericLocators.FILTER_GROUP_SHOW_MORE_LESS_IDENT(
             facet_group_name, label
         )
         return self.is_visible(locator)
+
+    def is_filter_card_custom_filter_text_present(self, facet_card, text):
+        """Returns if filter text is present on given facet card"""
+        locator = GenericLocators.FILTER_GROUP_CUSTOM_FILTER_TEXT_IDENT(facet_card, text)
+        result = self.is_visible(locator)
+        return result
 
     def is_no_active_cohort_filter_text_present(self):
         """
@@ -537,6 +550,11 @@ class BasePage:
         """Clicks a link with a data-testid"""
         link_data_testid = self.normalize_button_identifier(link_data_testid)
         locator = GenericLocators.DATA_TESTID_LINK_IDENT(link_data_testid)
+        self.click(locator)
+
+    def click_checkbox(self, checkbox_name):
+        """Clicks a checkbox with given, unmodified name"""
+        locator = GenericLocators.CHECKBOX_IDENT(checkbox_name)
         self.click(locator)
 
     def click_radio_button(self, radio_name):
@@ -612,6 +630,22 @@ class BasePage:
         dropdown_entries_to_show_locator = (
             GenericLocators.DROPDOWN_LIST_CHANGE_NUMBER_OF_ENTRIES_SHOWN(
                 entries_to_show
+            )
+        )
+        self.click(dropdown_entries_to_show_locator)
+
+    def change_number_of_entries_shown_in_specified_table(self, table_name, entries_to_show):
+        """
+        Changes number of entries shown in the table using the show entries button,
+        and selecting an option from the dropdown list.
+        """
+        table_name = self.normalize_button_identifier(table_name)
+        entries_button_locator = GenericLocators.BUTTON_ENTRIES_SHOWN_IN_SPECIFIED_TABLE(table_name)
+        self.click(entries_button_locator)
+
+        dropdown_entries_to_show_locator = (
+            GenericLocators.DROPDOWN_LIST_CHANGE_NUMBER_OF_ENTRIES_SHOWN_IN_SPECIFIED_TABLE(
+                table_name, entries_to_show
             )
         )
         self.click(dropdown_entries_to_show_locator)
