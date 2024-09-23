@@ -96,7 +96,7 @@ pip install -r requirements.txt
 
 Playwright
 ````bash
-playwright install 
+playwright install
 ````
 
 ### Properties
