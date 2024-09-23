@@ -150,7 +150,8 @@ const FilterPanel = ({
               customConfig?.defaultFilters !== undefined
                 ? customConfig.defaultFilters.includes(facet.full)
                 : true;
-            const facetName = facet.title || fieldNameToTitle(facet.full);
+            const facetName =
+              facet.title || fieldNameToTitle(facet.full, isDefault ? 1 : 2);
             return createFacetCard({
               facet,
               valueLabel:
