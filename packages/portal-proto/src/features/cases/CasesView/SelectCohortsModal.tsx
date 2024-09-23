@@ -217,6 +217,7 @@ export const SelectCohortsModal = ({
           <Text className="text-xs mb-4 block">{description}</Text>
 
           <VerticalTable
+            customDataTestID="table-select-cohort"
             data={displayedData}
             columns={cohortListTableColumn}
             status="fulfilled"
