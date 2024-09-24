@@ -139,18 +139,25 @@ const Cart: React.FC = () => {
           <div className="flex-1">
             <HeaderTitle>File counts by authorization level</HeaderTitle>
             <AuthorizationTable
+              customDataTestID="table-authorization"
               filesByCanAccess={filesByCanAccess}
               loading={userDetailsFetching}
             />
           </div>
           <div className="flex-1">
             <HeaderTitle>File counts by project</HeaderTitle>
-            <ProjectTable projectData={summaryData?.byProject} />
+            <ProjectTable
+              customDataTestID="table-count-by-project"
+              projectData={summaryData?.byProject}
+            />
           </div>
         </div>
         <div className="mt-6">
           <HeaderTitle>Cart Items</HeaderTitle>
-          <FilesTable filesByCanAccess={filesByCanAccess} />
+          <FilesTable
+            customDataTestID="table-cart-items"
+            filesByCanAccess={filesByCanAccess}
+          />
         </div>
       </div>
     </>

@@ -10,12 +10,14 @@ interface ScrollableTableWithFixedHeaderProps {
   };
   readonly maxRowsBeforeScroll: number;
   readonly tableMinWidth?: number | string;
+  readonly customDataTestID?: string;
 }
 
 export const ScrollableTableWithFixedHeader = ({
   tableData,
   tableMinWidth = undefined,
   maxRowsBeforeScroll,
+  customDataTestID,
 }: ScrollableTableWithFixedHeaderProps): JSX.Element => {
   const [scrolled, setScrolled] = useState(false);
   const [tableMaxHeight, setTableMaxHeight] = useState(0);
@@ -76,6 +78,7 @@ export const ScrollableTableWithFixedHeader = ({
       ref={scrollAreaRef}
     >
       <Table
+        data-testid={customDataTestID}
         style={{
           minWidth: tableMinWidth,
         }}

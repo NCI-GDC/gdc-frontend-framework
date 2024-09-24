@@ -36,11 +36,14 @@ import TotalItems from "@/components/Table/TotalItem";
 
 interface FilesTableProps {
   readonly filesByCanAccess: Record<string, CartFile[]>;
+  readonly customDataTestID?: string;
 }
 
 const cartFilesTableColumnHelper = createColumnHelper<FilesTableDataType>();
 
-const FilesTable: React.FC<FilesTableProps> = () => {
+const FilesTable: React.FC<FilesTableProps> = ({
+  customDataTestID,
+}: FilesTableProps) => {
   const { setEntityMetadata } = useContext(SummaryModalContext);
   const cart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
@@ -387,6 +390,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
 
   return (
     <VerticalTable
+      customDataTestID={customDataTestID}
       data={tableData}
       columns={cartFilesTableDefaultColumns}
       tableTotalDetail={
