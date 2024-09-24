@@ -15,6 +15,8 @@ import {
   useCoreDispatch,
   extractFiltersWithPrefixFromFilterSet,
   buildGeneTableSearchFilters,
+  filterSetToOperation,
+  convertFilterToGqlFilter,
 } from "@gff/core";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useDeepCompareCallback, useDeepCompareMemo } from "use-deep-compare";
@@ -332,6 +334,9 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
     [],
   );
 
+  const operationCohortFilters = filterSetToOperation(cohortFilters);
+  const operationSetFilters = filterSetToOperation(setFilters);
+
   return (
     <>
       {isUninitialized || isFetching ? null : (
@@ -340,9 +345,15 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
             opened={showSaveModal}
             closeModal={handleSaveSelectionAsSetModalClose}
             cohortFilters={
-              selectedGenes.length === 0 ? cohortFilters : undefined
+              selectedGenes.length === 0 && operationCohortFilters
+                ? convertFilterToGqlFilter(operationCohortFilters)
+                : undefined
             }
-            filters={setFilters}
+            filters={
+              operationSetFilters
+                ? convertFilterToGqlFilter(operationSetFilters)
+                : undefined
+            }
             initialSetName={
               selectedGenes.length === 0
                 ? filtersToName(setFilters)
@@ -442,7 +453,7 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
             </FunctionButton>
           </div>
         }
-        tableTitle={
+        tableTotalDetail={
           <TotalItems total={data?.genes?.genes_total} itemName="gene" />
         }
         pagination={pagination}

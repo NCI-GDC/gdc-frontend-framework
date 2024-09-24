@@ -489,7 +489,7 @@ const CancerDistributionTable: React.FC<CancerDistributionTableProps> = ({
       <VerticalTable
         data={displayedData}
         columns={cancerDistributionTableColumns}
-        tableTitle={
+        tableTotalDetail={
           <TotalItems total={formattedData?.length} itemName="project" />
         }
         columnSorting="manual"

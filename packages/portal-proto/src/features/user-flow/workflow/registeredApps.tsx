@@ -15,6 +15,7 @@ import CohortLevelMAFIcon from "public/user-flow/icons/apps/CohortLevelMAF.svg";
 import ProteinPaintIcon from "public/user-flow/icons/apps/ProteinPaint.svg";
 import OncoMatrixIcon from "public/user-flow/icons/apps/OncoMatrix.svg";
 import GeneExpressionIcon from "public/user-flow/icons/apps/GeneExpression.svg";
+import ScRNASeqIcon from "public/user-flow/icons/apps/scRNASeq.svg";
 import {
   DISPLAY_SC_RNA_SEQ_APP,
   isFeatureEnabled,
@@ -217,14 +218,14 @@ export const REGISTERED_APPS = [
     ? [
         {
           name: "Single Cell RNA-seq",
-          // icon: (
-          //   <OncoMatrixIcon
-          //     className="m-auto"
-          //     height={48}
-          //     width={80}
-          //     aria-hidden="true"
-          //   />
-          // ),
+          icon: (
+            <ScRNASeqIcon
+              className="m-auto"
+              height={48}
+              width={80}
+              aria-hidden="true"
+            />
+          ),
           tags: ["variantAnalysis", "cnv", "ssm"],
           //hasDemo: true,
           description: "scRNAseq Visualization tool",
@@ -236,7 +237,6 @@ export const REGISTERED_APPS = [
         },
       ]
     : []),
-
   {
     name: "Gene Expression Clustering",
     icon: (

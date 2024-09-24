@@ -716,7 +716,7 @@ module.exports = {
   theme: {
     extend: {
       screens: {
-        "Custom-Repo-Width": "1370px",
+        "Custom-Repo-Width": "1420px",
         sm: "640px",
         md: "768px",
         lg: "1024px",

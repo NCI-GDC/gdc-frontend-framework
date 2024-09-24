@@ -14,6 +14,8 @@ import {
   buildCohortGqlOperator,
   useCoreDispatch,
   buildSSMSTableSearchFilters,
+  filterSetToOperation,
+  convertFilterToGqlFilter,
 } from "@gff/core";
 import { useEffect, useState, useContext, useMemo, useCallback } from "react";
 import { useDeepCompareCallback, useDeepCompareMemo } from "use-deep-compare";
@@ -381,6 +383,10 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     () => setShowRemoveModal(false),
     [],
   );
+
+  const operationCohortFilters = filterSetToOperation(cohortFilters);
+  const operationSetFilters = filterSetToOperation(setFilters);
+
   return (
     <>
       {caseFilter && searchTerm.length === 0 && data?.ssmsTotal === 0 ? null : (
@@ -399,9 +405,15 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               <SaveSelectionAsSetModal
                 opened={showSaveModal}
                 cohortFilters={
-                  selectedMutations.length === 0 ? cohortFilters : undefined
+                  selectedMutations.length === 0 && operationCohortFilters
+                    ? convertFilterToGqlFilter(operationCohortFilters)
+                    : undefined
                 }
-                filters={setFilters}
+                filters={
+                  operationSetFilters
+                    ? convertFilterToGqlFilter(operationSetFilters)
+                    : undefined
+                }
                 sort="occurrence.case.project.project_id"
                 initialSetName={
                   selectedMutations.length === 0
@@ -539,7 +551,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
               defaultSearchTerm: searchTerm,
               tooltip: "e.g. TP53, ENSG00000141510, chr17:g.7675088C>T, R175H",
             }}
-            tableTitle={
+            tableTotalDetail={
               <TotalItems total={data?.ssmsTotal} itemName="somatic mutation" />
             }
             pagination={pagination}

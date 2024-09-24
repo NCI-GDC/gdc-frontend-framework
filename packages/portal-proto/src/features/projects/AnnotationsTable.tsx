@@ -340,7 +340,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
         }
         data={formattedTableData}
         columns={columns}
-        tableTitle={
+        tableTotalDetail={
           <TotalItems total={data?.pagination?.total} itemName="annotation" />
         }
         showControls

@@ -338,7 +338,7 @@ const AnnnotationTable: React.FC = () => {
 
   return (
     <VerticalTable
-      tableTitle={
+      tableTotalDetail={
         <TotalItems total={data?.pagination?.total} itemName="annotation" />
       }
       additionalControls={

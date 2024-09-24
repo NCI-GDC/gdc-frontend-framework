@@ -194,7 +194,7 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
   return (
     <VerticalTable
       customDataTestID="table-primary-sites-project-summary"
-      tableTitle={
+      tableTotalDetail={
         <TotalItems total={paginationProps?.total} itemName="primary site" />
       }
       data={displayedData}

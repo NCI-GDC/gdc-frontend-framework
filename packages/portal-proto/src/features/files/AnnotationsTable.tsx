@@ -309,7 +309,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
       <HeaderTitle>Annotations</HeaderTitle>
       <VerticalTable
         customDataTestID="table-annotations-file-summary"
-        tableTitle={
+        tableTotalDetail={
           <TotalItems total={annotations?.length} itemName="annotation" />
         }
         additionalControls={
