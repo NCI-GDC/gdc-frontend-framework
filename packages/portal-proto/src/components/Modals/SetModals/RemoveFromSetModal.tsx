@@ -71,8 +71,11 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
         />
       </div>
       <ModalButtonContainer data-testid="modal-button-container">
-        <FunctionButton onClick={closeModal}>Cancel</FunctionButton>
+        <FunctionButton data-testid="button-cancel" onClick={closeModal}>
+          Cancel
+        </FunctionButton>
         <DarkFunctionButton
+          data-testid="button-save"
           onClick={() =>
             removeFromSet({
               filters: buildCohortGqlOperator(filters)

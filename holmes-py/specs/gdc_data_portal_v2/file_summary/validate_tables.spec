@@ -130,7 +130,8 @@ tags: gdc-data-portal-v2, regression, file-summary
     |---------------------------------------|
     |Entity ID                              |
     |Entity Type                            |
-    |Sample Type                            |
+    |Tissue Type                            |
+    |Tumor Descriptor                       |
     |Case ID                                |
     |Annotations                            |
 * In table "Associated Cases Biospecimens File Summary", search the table for "tcga-72-4237"
@@ -261,7 +262,8 @@ tags: gdc-data-portal-v2, regression, file-summary
 * Verify the table "Annotations File Summary" is displaying this information
     |text_to_validate                       |
     |---------------------------------------|
-    |Case UUID                              |
+    |UUID                                   |
+    |Case ID                                |
     |Entity Type                            |
     |Entity ID                              |
     |Category                               |
@@ -272,7 +274,7 @@ tags: gdc-data-portal-v2, regression, file-summary
 * Verify the table "Annotations File Summary" is displaying this information
     |text_to_validate                       |
     |---------------------------------------|
-    |49f975ea-a1cf-4a9b-bf13-030c68cc99e4   |
+    |2d3a860d-81e6-5ae7-8cee-a8bcf5f07621   |
     |TCGA-33-4589                           |
     |Prior malignancy                       |
     |Notification                           |
@@ -294,14 +296,13 @@ tags: gdc-data-portal-v2, regression, file-summary
     |required_info                          |
     |---------------------------------------|
     |UUID                                   |
-    |Case UUID                              |
+    |Case ID                                |
     |Entity Type                            |
     |Entity ID                              |
     |Category                               |
     |Classification                         |
     |Created Datetime                       |
     |9f1ee78d-f022-5495-b6ad-fa6aa56bafdb   |
-    |972476b7-d7f3-4865-b978-0c13f29457cb   |
     |History of acceptable prior treatment related to a prior/other malignancy|
     |case                                   |
     |TCGA-22-1000                           |
@@ -315,12 +316,18 @@ tags: gdc-data-portal-v2, regression, file-summary
     |required_info                          |
     |---------------------------------------|
     |9f1ee78d-f022-5495-b6ad-fa6aa56bafdb   |
-    |TCGA-22-1000                           |
-    |Prior malignancy prostate cancer treated w/ radation|
-    |972476b7-d7f3-4865-b978-0c13f29457cb   |
     |History of acceptable prior treatment related to a prior/other malignancy|
+    |case                                   |
+    |TCGA-22-1000                           |
     |Notification                           |
     |2012-11-10T00:00:00                    |
+* Verify that "JSON from File Summary Annotation Table" does not contain specified information
+    |required_info                          |
+    |---------------------------------------|
+    |0dff7825-9afc-56a7-8732-4a8a3fec73d6   |
+    |138ee9d9-fe15-5530-ac8a-aa9d51b43d57   |
+    |c481e0b7-8a68-5742-a569-dd923ea9ad57   |
+    |92a4d84a-7457-501c-b95b-2fa0a04e6297   |
 
 ## Annotations Table - Validate JSON File Fields
   |field_name                               |

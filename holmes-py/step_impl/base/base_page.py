@@ -117,22 +117,22 @@ class GenericLocators:
     )
 
     FILTER_GROUP_IDENT = (
-        lambda group_name: f'[data-testid="filters-facets"] >> div >> div:text-is("{group_name}")'
+        lambda group_name: f'[data-testid="filters-facets"] >> div:text-is("{group_name}")'
     )
     FILTER_GROUP_CUSTOM_FILTER_TEXT_IDENT = (
         lambda group_name, filter_text: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> text="{filter_text}"'
     )
     FILTER_GROUP_SELECTION_IDENT = (
-        lambda group_name, selection: f'[data-testid="filters-facets"] >> div >> div:has-text("{group_name}") >> [data-testid="checkbox-{selection}"]'
+        lambda group_name, selection: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> [data-testid="checkbox-{selection}"]'
     )
     FILTER_GROUP_SELECTION_COUNT_IDENT = (
-        lambda group_name, selection: f'[data-testid="filters-facets"] >> div >> div:has-text("{group_name}") >> [data-testid="text-{selection}"]'
+        lambda group_name, selection: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> [data-testid="text-{selection}"]'
     )
     FILTER_GROUP_ACTION_IDENT = (
-        lambda group_name, action: f'[data-testid="filters-facets"] >> div >> div:has-text("{group_name}") >> button[aria-label="{action}"]'
+        lambda group_name, action: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> button[aria-label="{action}"]'
     )
     FILTER_GROUP_SHOW_MORE_LESS_IDENT = (
-        lambda group_name, more_or_less: f'[data-testid="filters-facets"] >> div >> div:has-text("{group_name}") >> button[data-testid="{more_or_less}"]'
+        lambda group_name, more_or_less: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> button[data-testid="{more_or_less}"]'
     )
 
     SHOWING_NUMBER_OF_ITEMS_IN_TABLE = lambda table_specified: f'[data-testid="table-{table_specified}"] >> [data-testid="text-showing-count"]'
@@ -480,6 +480,13 @@ class BasePage:
         except:
             return False
         return True
+
+    def is_show_more_or_show_less_button_visible_within_filter_card(self, facet_group_name, label):
+        """Returns if the 'show more or show less' button is visible on a facet card"""
+        locator = GenericLocators.FILTER_GROUP_SHOW_MORE_LESS_IDENT(
+            facet_group_name, label
+        )
+        return self.is_visible(locator)
 
     def is_filter_card_custom_filter_text_present(self, facet_card, text):
         """Returns if filter text is present on given facet card"""
