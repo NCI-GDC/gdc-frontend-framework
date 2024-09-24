@@ -24,9 +24,11 @@ describe("<QuickSearch />", () => {
         query: "th",
       },
     } as any);
-    jest
-      .spyOn(core, "useGetHistoryQuery")
-      .mockReturnValue({ data: undefined } as any);
+    jest.spyOn(core, "useGetHistoryQuery").mockReturnValue({
+      data: undefined,
+      isSuccess: true,
+      isUninitialized: false,
+    } as any);
 
     const { getAllByTestId, getByTestId } = render(<QuickSearch />);
     userEvent.click(getByTestId("textbox-quick-search-bar"));
@@ -67,6 +69,8 @@ describe("<QuickSearch />", () => {
         },
         { uuid: "111-222", file_change: "superseded" },
       ],
+      isSuccess: true,
+      isUninitialized: false,
     } as any);
 
     const { getAllByTestId, getByTestId } = render(<QuickSearch />);
@@ -93,6 +97,8 @@ describe("<QuickSearch />", () => {
     } as any);
     jest.spyOn(core, "useGetHistoryQuery").mockReturnValue({
       data: [],
+      isSuccess: true,
+      isUninitialized: false,
     } as any);
 
     const { getByTestId } = render(<QuickSearch />);
@@ -123,6 +129,8 @@ describe("<QuickSearch />", () => {
           version: "1",
         },
       ],
+      isSuccess: true,
+      isUninitialized: false,
     } as any);
 
     const { getByTestId } = render(<QuickSearch />);
@@ -153,6 +161,7 @@ describe("<QuickSearch />", () => {
                 searchList: [],
                 query: "444-555",
               },
+              isSuccess: true,
             }) as any,
     );
     jest.spyOn(core, "useGetHistoryQuery").mockReturnValue({
@@ -163,6 +172,8 @@ describe("<QuickSearch />", () => {
         },
         { uuid: "111-222", file_change: "superseded" },
       ],
+      isSuccess: true,
+      isUninitialized: false,
     } as any);
 
     const { getByTestId } = render(<QuickSearch />);
