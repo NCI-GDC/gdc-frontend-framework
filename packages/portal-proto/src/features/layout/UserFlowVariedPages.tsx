@@ -222,6 +222,19 @@ export const UserFlowVariedPages = ({
               </DarkFunctionButton>
             </ModalButtonContainer>
           </Modal>
+
+          <Modal
+            opened={modal === Modals.SaveCohortErrorModal}
+            onClose={() => dispatch(hideModal())}
+            title="Save Cohort Error"
+          >
+            <p className="py-2 px-4">There was a problem saving the cohort.</p>
+            <ModalButtonContainer data-testid="modal-button-container">
+              <DarkFunctionButton onClick={() => dispatch(hideModal())}>
+                OK
+              </DarkFunctionButton>
+            </ModalButtonContainer>
+          </Modal>
         </>
       </ClearStoreErrorBoundary>
       <Footer />

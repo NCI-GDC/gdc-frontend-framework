@@ -256,19 +256,6 @@ export const CohortModals: React.FC<CohortModalsProps> = ({
         saveAs
       />
 
-      <Modal
-        opened={modal === Modals.SaveCohortErrorModal}
-        onClose={() => coreDispatch(hideModal())}
-        title="Save Cohort Error"
-      >
-        <p className="py-2 px-4">There was a problem saving the cohort.</p>
-        <ModalButtonContainer data-testid="modal-button-container">
-          <DarkFunctionButton onClick={() => coreDispatch(hideModal())}>
-            OK
-          </DarkFunctionButton>
-        </ModalButtonContainer>
-      </Modal>
-
       <ImportCohortModal opened={modal === Modals.ImportCohortModal} />
 
       <CaseSetModal
