@@ -12,8 +12,8 @@ if (typeof window !== "undefined") localStorage = window.localStorage;
  * Feature flag for Single Cell RNA-seq
  */
 export const DISPLAY_SC_RNA_SEQ_APP =
-  localStorage.GDC_PORTAL_DISPLAY_SC_RNA_SEQ_APP ||
-  process.env.NEXT_PUBLIC_GDC_PORTAL_DISPLAY_SC_RNA_SEQ_APP ||
+  localStorage?.GDC_PORTAL_DISPLAY_SC_RNA_SEQ_APP ||
+  process?.env?.NEXT_PUBLIC_GDC_PORTAL_DISPLAY_SC_RNA_SEQ_APP ||
   false;
 
 /**
