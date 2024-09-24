@@ -191,103 +191,105 @@ export const FacetCard: React.FC<FacetCardProps> = ({
       p="md"
       shadow="xs"
     >
-      <h2 className="font-heading text-lg font-semibold">{fieldLabel}</h2>
-      <div className="h-[400px]">
-        <BarChart
-          data={{
-            yAxisTitle: "% Cases",
-            datasets: barChartData,
-          }}
-          divId={divId}
-        />
-      </div>
-      <div className="mb-3 float-right">
-        <FunctionButton
-          data-testid="button-tsv-cohort-comparison"
-          onClick={downloadTSVFile}
-          aria-label="Download TSV File"
+      <div className="flex flex-col">
+        <h2 className="font-heading text-lg font-semibold">{fieldLabel}</h2>
+        <div className="h-[400px]">
+          <BarChart
+            data={{
+              yAxisTitle: "% Cases",
+              datasets: barChartData,
+            }}
+            divId={divId}
+          />
+        </div>
+        <div className="mb-3 self-end">
+          <FunctionButton
+            data-testid="button-tsv-cohort-comparison"
+            onClick={downloadTSVFile}
+            aria-label="Download TSV File"
+          >
+            TSV
+          </FunctionButton>
+        </div>
+        <table
+          data-testid="table-analysis-cohort-comparison"
+          className="bg-base-max w-full text-left text-base-contrast-max border-base-light border-1"
         >
-          TSV
-        </FunctionButton>
-      </div>
-      <table
-        data-testid="table-analysis-cohort-comparison"
-        className="bg-base-max w-full text-left text-base-contrast-max border-base-light border-1"
-      >
-        <thead>
-          <tr className="bg-base-max border-b-base-light border-b-2 font-heading text-bold">
-            <th className="pl-2">{fieldLabel}</th>
-            <th>
-              # Cases S<sub>1</sub>
-            </th>
-            <th>
-              % Cases S<sub>1</sub>
-            </th>
-            <th>
-              # Cases S<sub>2</sub>
-            </th>
-            <th>
-              % Cases S<sub>2</sub>
-            </th>
-          </tr>
-        </thead>
-        <tbody className="font-content text-sm text-semibold">
-          {uniqueValues.map((value, idx) => {
-            const cohort1Value = formattedData[0][idx].count;
-            const cohort2Value = formattedData[1][idx].count;
-            return (
-              <tr
-                className={idx % 2 ? null : "bg-base-lightest"}
-                key={`${field}_${value}`}
-              >
-                <td data-testid={`text-analysis-${value}`} className="pl-2">
-                  {value}
-                </td>
-                <td>
-                  <CohortCreationButton
-                    numCases={cohort1Value}
-                    label={cohort1Value?.toLocaleString() || "--"}
-                    filters={
-                      formattedData[0][idx].filter === undefined ||
-                      cohorts.primary_cohort.filter === undefined
-                        ? undefined
-                        : joinFilters(
-                            cohorts.primary_cohort.filter,
-                            formattedData[0][idx].filter,
-                          )
-                    }
-                    createStaticCohort
-                  />
-                </td>
-                <td>
-                  {(((cohort1Value || 0) / counts[0]) * 100).toFixed(2)} %
-                </td>
-                <td>
-                  <CohortCreationButton
-                    numCases={cohort2Value}
-                    label={cohort2Value?.toLocaleString() || "--"}
-                    filters={
-                      formattedData[1][idx].filter === undefined ||
-                      cohorts.comparison_cohort.filter === undefined
-                        ? undefined
-                        : joinFilters(
-                            cohorts.comparison_cohort.filter,
-                            formattedData[1][idx].filter,
-                          )
-                    }
-                    createStaticCohort
-                  />
-                </td>
-                <td>
-                  {(((cohort2Value || 0) / counts[1]) * 100).toFixed(2)} %
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-      <div className="float-right p-1 cursor-default">
-        {formattedData.length > 0 && <PValue data={formattedData} />}
+          <thead>
+            <tr className="bg-base-max border-b-base-light border-b-2 font-heading text-bold">
+              <th className="pl-2">{fieldLabel}</th>
+              <th>
+                # Cases S<sub>1</sub>
+              </th>
+              <th>
+                % Cases S<sub>1</sub>
+              </th>
+              <th>
+                # Cases S<sub>2</sub>
+              </th>
+              <th>
+                % Cases S<sub>2</sub>
+              </th>
+            </tr>
+          </thead>
+          <tbody className="font-content text-sm text-semibold">
+            {uniqueValues.map((value, idx) => {
+              const cohort1Value = formattedData[0][idx].count;
+              const cohort2Value = formattedData[1][idx].count;
+              return (
+                <tr
+                  className={idx % 2 ? null : "bg-base-lightest"}
+                  key={`${field}_${value}`}
+                >
+                  <td data-testid={`text-analysis-${value}`} className="pl-2">
+                    {value}
+                  </td>
+                  <td>
+                    <CohortCreationButton
+                      numCases={cohort1Value}
+                      label={cohort1Value?.toLocaleString() || "--"}
+                      filters={
+                        formattedData[0][idx].filter === undefined ||
+                        cohorts.primary_cohort.filter === undefined
+                          ? undefined
+                          : joinFilters(
+                              cohorts.primary_cohort.filter,
+                              formattedData[0][idx].filter,
+                            )
+                      }
+                      createStaticCohort
+                    />
+                  </td>
+                  <td>
+                    {(((cohort1Value || 0) / counts[0]) * 100).toFixed(2)} %
+                  </td>
+                  <td>
+                    <CohortCreationButton
+                      numCases={cohort2Value}
+                      label={cohort2Value?.toLocaleString() || "--"}
+                      filters={
+                        formattedData[1][idx].filter === undefined ||
+                        cohorts.comparison_cohort.filter === undefined
+                          ? undefined
+                          : joinFilters(
+                              cohorts.comparison_cohort.filter,
+                              formattedData[1][idx].filter,
+                            )
+                      }
+                      createStaticCohort
+                    />
+                  </td>
+                  <td>
+                    {(((cohort2Value || 0) / counts[1]) * 100).toFixed(2)} %
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+        <div className="mt-2 cursor-default self-end">
+          {formattedData.length > 0 && <PValue data={formattedData} />}
+        </div>
       </div>
     </Paper>
   );
