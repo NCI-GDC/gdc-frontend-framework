@@ -1,12 +1,10 @@
-import { LoadingOverlay, Modal } from "@mantine/core";
+import { LoadingOverlay } from "@mantine/core";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 import { GenericCohortModal } from "../Modals/GenericCohortModal";
 import ImportCohortModal from "../Modals/ImportCohortModal";
 import CaseSetModal from "@/components/Modals/SetModals/CaseSetModal";
 import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
 import MutationSetModal from "@/components/Modals/SetModals/MutationSetModal";
-import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
-import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import {
   addNewSavedCohort,
   buildCohortGqlOperator,
@@ -14,7 +12,6 @@ import {
   DataStatus,
   discardCohortChanges,
   FilterSet,
-  hideModal,
   Modals,
   Operation,
   removeCohort,
