@@ -506,7 +506,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
           </b>{" "}
           {summaryData?.total_case_count === 1 ? "Case" : "Cases"}{" "}
           <SaveIcon size={25} className="ml-2 mr-1" aria-hidden="true" />{" "}
-          <span data-testid="text-size-count" className="mr-1">
+          <span data-testid="text-size-count">
             {fileSize(summaryData?.total_file_size || 0)}
           </span>{" "}
         </h1>
