@@ -10,8 +10,6 @@ tags: gdc-data-portal-v2, manage-sets, regression
 ## Navigate to Manage Sets
 * On GDC Data Portal V2 app
 * Navigate to "Manage Sets" from "Header" "section"
-* Change number of entries shown in the table "Manage Sets" to "100"
-
 ## Attempt to Create Gene Set with Mutations Identifiers
 * Select Create Set and from the dropdown choose "Genes"
 * Upload "Most Frequent Mutations" "tsv" from "Manage Sets" in "Manage Sets Import" through "Browse"
@@ -41,6 +39,7 @@ tags: gdc-data-portal-v2, manage-sets, regression
 * Select "Save"
 * Is text "Set has been saved." present on the page
 * Pause "3" seconds
+* Change number of entries shown in the table "Manage Sets" to "100"
 
 ## Validate Buttons Are Disabled
 * Verify the button "Export Selected Set" is disabled
