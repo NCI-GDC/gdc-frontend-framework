@@ -1,12 +1,10 @@
-import { LoadingOverlay, Modal } from "@mantine/core";
+import { LoadingOverlay } from "@mantine/core";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 import { GenericCohortModal } from "../Modals/GenericCohortModal";
 import ImportCohortModal from "../Modals/ImportCohortModal";
 import CaseSetModal from "@/components/Modals/SetModals/CaseSetModal";
 import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
 import MutationSetModal from "@/components/Modals/SetModals/MutationSetModal";
-import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
-import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import {
   addNewSavedCohort,
   buildCohortGqlOperator,
@@ -14,7 +12,6 @@ import {
   DataStatus,
   discardCohortChanges,
   FilterSet,
-  hideModal,
   Modals,
   Operation,
   removeCohort,
@@ -255,19 +252,6 @@ export const CohortModals: React.FC<CohortModalsProps> = ({
         filters={filters}
         saveAs
       />
-
-      <Modal
-        opened={modal === Modals.SaveCohortErrorModal}
-        onClose={() => coreDispatch(hideModal())}
-        title="Save Cohort Error"
-      >
-        <p className="py-2 px-4">There was a problem saving the cohort.</p>
-        <ModalButtonContainer data-testid="modal-button-container">
-          <DarkFunctionButton onClick={() => coreDispatch(hideModal())}>
-            OK
-          </DarkFunctionButton>
-        </ModalButtonContainer>
-      </Modal>
 
       <ImportCohortModal opened={modal === Modals.ImportCohortModal} />
 
