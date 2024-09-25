@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useRef, useMemo } from "react";
 import { isEqual } from "lodash";
 import { Text, Modal, LoadingOverlay, Badge, Tooltip } from "@mantine/core";
 import { MdAdd as AddAdditionalIcon } from "react-icons/md";
@@ -10,6 +10,7 @@ import {
   FacetRequiredHooks,
 } from "@/features/facets/types";
 import FacetSelection from "@/components/FacetSelection";
+import { TableXPositionContext } from "@/components/Table/VerticalTable";
 
 interface FilterPanelProps {
   readonly facetDefinitions: FacetCardDefinition[];
@@ -62,8 +63,19 @@ const FilterPanel = ({
   isLoading = false,
 }: FilterPanelProps) => {
   const [opened, setOpened] = useState(false);
+  const ref = useRef<HTMLDivElement>();
 
   const facetFields = facetDefinitions.map((x) => x.full);
+  const { xPosition } = useContext(TableXPositionContext);
+  const maxHeight = useMemo(
+    () => xPosition - ref?.current?.getBoundingClientRect().top,
+    [xPosition],
+  );
+  console.log({
+    xPosition,
+    maxHeight,
+    table: ref.current?.getBoundingClientRect(),
+  });
 
   return (
     <div>
@@ -143,7 +155,11 @@ const FilterPanel = ({
         <LoadingOverlay data-testid="loading-spinner" visible={isLoading} />
         <div
           data-testid="filters-facets"
-          className="flex flex-col gap-y-4 max-h-screen overflow-y-auto border-t-1 border-b-1 rounded-md w-48 md:w-64 lg:w-80 2xl:w-96"
+          className="flex flex-col gap-y-4 overflow-y-auto border-t-1 border-b-1 rounded-md w-48 md:w-64 lg:w-80 2xl:w-96"
+          style={{
+            maxHeight,
+          }}
+          ref={ref}
         >
           {facetDefinitions.map((facet) => {
             const isDefault =

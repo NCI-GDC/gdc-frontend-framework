@@ -15,6 +15,8 @@ import {
   useRef,
   useState,
   useMemo,
+  createContext,
+  useContext,
 } from "react";
 import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
 import { BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
@@ -22,6 +24,11 @@ import { LoadingOverlay } from "@mantine/core";
 import { getDefaultRowId } from "./utils";
 import TableHeader from "./TableHeader";
 import TablePagination from "./TablePagination";
+
+export const TableXPositionContext = createContext<{
+  xPosition: number;
+  setXPosition: (xPosition: number) => void;
+}>({ xPosition: undefined, setXPosition: undefined });
 
 /**
  * VerticalTable is a table component that displays data in a vertical format.
@@ -100,6 +107,33 @@ function VerticalTable<TData>({
     Date.now(),
   );
 
+  const ref = useRef<HTMLDivElement>();
+  const { xPosition, setXPosition } = useContext(TableXPositionContext);
+  const bottomXCoor = ref?.current?.getBoundingClientRect()?.bottom;
+
+  // Only update xPosition on initial load or resize, not when table options change
+  useEffect(() => {
+    //const adjustSize = throttle(() => {
+    //  if (setHeight) {
+    //    setHeight(currentTableHeight);
+    //  }
+    //}, 100);
+
+    if (
+      setXPosition //&&
+      //xPosition === undefined &&
+      //status === "fulfilled" &&
+      //table.getRowModel().rows.length > 0
+    ) {
+      setXPosition(bottomXCoor);
+    }
+
+    //window.addEventListener("resize", adjustSize);
+    //() => window.removeEventListener("resize", adjustSize);
+  }, [setXPosition, bottomXCoor, xPosition, status]);
+
+  console.log({ xPosition, table: ref?.current?.getBoundingClientRect() });
+
   useEffect(() => {
     if (sortingStatus && announcementTimestamp) {
       liveRegionRef.current.textContent = sortingStatus;
@@ -177,7 +211,11 @@ function VerticalTable<TData>({
   };
 
   return (
-    <div data-testid={customDataTestID} className="grow overflow-hidden">
+    <div
+      data-testid={customDataTestID}
+      className="grow overflow-hidden"
+      ref={ref}
+    >
       {(additionalControls ||
         tableTotalDetail ||
         search?.enabled ||
