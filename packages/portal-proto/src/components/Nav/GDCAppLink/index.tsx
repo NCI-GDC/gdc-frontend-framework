@@ -7,6 +7,7 @@ interface GDCAppLinkProps {
   icon: string;
   text: string;
   isexternal?: boolean;
+  customDataTestID?: string;
 }
 
 const GDCAppLink = ({
@@ -14,6 +15,7 @@ const GDCAppLink = ({
   icon,
   text,
   isexternal = true,
+  customDataTestID,
 }: GDCAppLinkProps) => {
   const linkProps = isexternal
     ? { href, target: "_blank", rel: "noopener noreferrer" }
@@ -22,6 +24,7 @@ const GDCAppLink = ({
   return (
     <Link
       {...linkProps}
+      data-testid={customDataTestID}
       className="flex py-2 px-4 hover:bg-primary-lightest hover:rounded-md text-primary-darkest text-sm"
     >
       <Center className="gap-2">

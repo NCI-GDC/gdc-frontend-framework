@@ -20,6 +20,7 @@ export const LoginButton = ({
   const [fetchNotifications] = useLazyGetBannerNotificationsQuery();
   return (
     <Button
+      data-testid="button-header-login"
       className={`p-1 ${
         fromHeader
           ? "font-medium text-primary-darkest hover:bg-primary-lightest"
@@ -45,7 +46,6 @@ export const LoginButton = ({
       }
       variant={fromHeader ? "subtle" : "filled"}
       size={fromHeader ? "compact-sm" : undefined}
-      data-testid="loginButton"
     >
       Login
     </Button>
