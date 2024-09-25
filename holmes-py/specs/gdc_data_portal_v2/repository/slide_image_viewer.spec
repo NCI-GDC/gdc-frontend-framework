@@ -17,6 +17,8 @@ tags: gdc-data-portal-v2, repository, regression, slide-image-viewer
 * Verify the slide image viewer is showing "10" cases
 * Select "Show More" on the Image Viewer page
 * Verify the slide image viewer is showing "20" cases
+* Is text "Slide Image Viewer" present on the page
+* Pause "2" seconds
 
 ## Search for a Slide and Validate its contents
 * Select "Search Icon" on the Image Viewer page

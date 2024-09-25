@@ -40,43 +40,6 @@ def select_file_filter_and_validate(filter_name: str, nth: int):
     except:
         repository.select_nth_file_filters_result(int(nth) - 1)
 
-
-# These 3 functions are for filter cards on the repository page.
-@step("Make the following selections on a filter card on the Repository page <table>")
-def filter_card_selections(table):
-    """Trio of actions for the filter cards and filters on the repository page"""
-    for k, v in enumerate(table):
-        # Expands list of filters to select if possible
-        if APP.repository_page.is_show_more_or_show_less_button_visible_within_filter_card_repository(
-            v[0], "plus-icon"
-        ):
-            APP.repository_page.click_show_more_less_within_filter_card_repository(
-                v[0], "plus-icon"
-            )
-        APP.repository_page.make_selection_within_filter_group_repository(v[0], v[1])
-        APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
-        APP.shared.wait_for_loading_spinner_table_to_detatch()
-        APP.shared.wait_for_loading_spinner_to_detatch()
-        time.sleep(0.1)
-
-
-@step("Perform the following actions on a filter card on the Repository page <table>")
-def perform_filter_card_action(table):
-    for k, v in enumerate(table):
-        APP.repository_page.perform_action_within_filter_card_repository(v[0], v[1])
-        APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
-        APP.shared.wait_for_loading_spinner_table_to_detatch()
-        APP.shared.wait_for_loading_spinner_to_detatch()
-        time.sleep(0.1)
-
-
-@step("Expand or contract a filter on the Repository page <table>")
-def click_show_more_or_show_less(table):
-    for k, v in enumerate(table):
-        APP.repository_page.click_show_more_less_within_filter_card_repository(
-            v[0], v[1]
-        )
-
 @step("Collect file counts for the following filters on the Repository page <table>")
 def collect_file_counts_on_filters(table):
     """

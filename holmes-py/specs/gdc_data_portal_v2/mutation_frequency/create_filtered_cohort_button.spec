@@ -92,28 +92,28 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 ## Genes - CNV Gain
 * Switch cohort to "Blank - Mutation Frequency" from the Cohort Bar dropdown list
 * "Blank - Mutation Frequency" should be the active cohort
-* Search the table for "CSMD3"
+* Search the table for "PTCH1"
 * Wait for table body text to appear
   |expected_text|row  |column |
   |-------------|-----|-------|
-  |CSMD3        |1    |4      |
+  |PTCH1        |1    |4      |
 * Collect button labels in table for comparison
   |button_label                         |row  |column |
   |-------------------------------------|-----|-------|
-  |CSMD3 CNV Gain                       |1    |8      |
+  |PTCH1 CNV Gain                       |1    |8      |
 * Select value from table by row and column
   |row   |column|
   |------|------|
   |1     |8     |
-* Name the cohort "CSMD3 CNV Gain" in the Cohort Bar section
+* Name the cohort "PTCH1 CNV Gain" in the Cohort Bar section
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                            |Keep or Remove Modal|
   |-----------------|-----------------------------------------------------|--------------------|
-  |Save             |CSMD3 CNV Gain has been saved                        |Remove Modal        |
-* Switch cohort to "CSMD3 CNV Gain" from the Cohort Bar dropdown list
-* "CSMD3 CNV Gain" should be the active cohort
+  |Save             |PTCH1 CNV Gain has been saved                        |Remove Modal        |
+* Switch cohort to "PTCH1 CNV Gain" from the Cohort Bar dropdown list
+* "PTCH1 CNV Gain" should be the active cohort
 * Collect Cohort Bar Case Count for comparison
-* Verify "Cohort Bar Case Count" and "CSMD3 CNV Gain" are "Equal"
+* Verify "Cohort Bar Case Count" and "PTCH1 CNV Gain" are "Equal"
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
 * Search the table for ""
 

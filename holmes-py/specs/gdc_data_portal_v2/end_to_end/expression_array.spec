@@ -102,7 +102,7 @@ When the filters are fixed add tests for them - PEAR-1350
 * Wait for table loading spinner
 * Collect "Cases" Count on the Repository page
 * Verify "Cohort Bar Case Count" and "Cases Count Repository Page" are "Equal"
-* Make the following selections on a filter card on the Repository page
+* Make the following selections on a filter card
   |facet_name           |selection            |
   |---------------------|---------------------|
   |Experimental Strategy|Expression Array     |

@@ -32,15 +32,18 @@ const SelectCell: React.FC<SelectCellProps> = ({
   shouldDisable,
   componentId,
 }: SelectCellProps) => {
-  const [setId] = set;
+  const [setId, setName] = set;
   const disabledMessage = shouldDisable(count);
-  const selected = selectedSets.map((s) => s[0]).includes(set[0]);
+  const selected = selectedSets
+    .map((selectedSet) => selectedSet[0])
+    .includes(setId);
 
   return (
     <Tooltip label={disabledMessage} disabled={!disabledMessage} zIndex={400}>
       <span>
         {multiselect ? (
           <Checkbox
+            data-testid={`checkbox-${setName}`}
             aria-label={setId}
             value={setId}
             checked={selected}
@@ -48,20 +51,22 @@ const SelectCell: React.FC<SelectCellProps> = ({
             onChange={() =>
               selected
                 ? setSelectedSets(
-                    selectedSets.filter((set) => set[0] !== setId),
+                    selectedSets.filter(
+                      (selectedSet) => selectedSet[0] !== setId,
+                    ),
                   )
                 : setSelectedSets([...selectedSets, set])
             }
-            aria-labelledby={`${componentId}-set-table-${set[0]}`}
+            aria-labelledby={`${componentId}-set-table-${setId}`}
           />
         ) : (
           <Radio
-            data-testid="radio-select-set"
+            data-testid={`radio-${setName}`}
             value={setId}
             checked={selected}
             disabled={disabledMessage !== undefined}
             onChange={() => setSelectedSets([set])}
-            aria-labelledby={`${componentId}-set-table-${set[0]}`}
+            aria-labelledby={`${componentId}-set-table-${setId}`}
           />
         )}
       </span>
@@ -134,7 +139,10 @@ const SetTable: React.FC<SetTableProps> = ({
         id: "Name",
         header: "Name",
         cell: ({ getValue, row }) => (
-          <span id={`${componentId}-set-table-${row.original.set[0]}`}>
+          <span
+            data-testid={`text-${row.original.name}-set-name`}
+            id={`${componentId}-set-table-${row.original.set[0]}`}
+          >
             {getValue()}
           </span>
         ),
@@ -142,6 +150,11 @@ const SetTable: React.FC<SetTableProps> = ({
       setTableColumnHelper.accessor("count", {
         id: "count",
         header: `# ${upperFirst(setTypeLabel)}s`,
+        cell: ({ row }) => (
+          <div data-testid={`text-${row.original.name}-set-count`}>
+            {isSuccess ? row.original.count.toLocaleString() : "..."}
+          </div>
+        ),
       }),
     ],
     [

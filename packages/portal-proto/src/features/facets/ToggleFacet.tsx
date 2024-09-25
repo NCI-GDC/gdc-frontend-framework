@@ -95,6 +95,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                 body: "flex justify-between items-center",
                 label: "text-sm font-content",
               }}
+              wrapperProps={{ "data-testid": "toggle-area" }}
             />
           </div>
         </div>
