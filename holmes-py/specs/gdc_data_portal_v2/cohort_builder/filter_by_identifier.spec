@@ -143,6 +143,7 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
 * Upload "Multiple Mutations" "txt" from "Cohort Builder" in "Cohort Builder Import" through "Browse"
 * Is text "5 submitted mutation identifiers mapped to 5 unique GDC mutations" present on the page
 * Select "Submit"
+* Pause "2" seconds
 * Validate expected custom filters "are" present in facet cards on the "Molecular Filters" tab on the Cohort Builder page
   |facet_name           |custom_filter_text                     |
   |---------------------|---------------------------------------|

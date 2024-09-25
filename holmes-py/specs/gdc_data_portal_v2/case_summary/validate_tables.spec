@@ -89,13 +89,12 @@ tags: gdc-data-portal-v2, case-summary
 
 ## Navigate to Case Summary Page: C3N-03018
 * Quick search for "5fd8d17e-57d2-4270-8728-de259ff6b2fe" and go to its page
-## Clinical Table - No Molecular Tests, No Treatments
+## Clinical Table - No Molecular Tests, No Other Clinical Attributes, No Treatments
 * Select tab "Followups Molecular Tests" on Case Summary page
-* Is text "Total of 0 Molecular Tests" present on the page
 * Is text "No Molecular Tests Found." present on the page
+* Is text "No Other Clinical Attributes Found." present on the page
 
 * Select tab "Diagnoses Treatments" on Case Summary page
-* Is text "Total of 0 Treatments" present on the page
 * Is text "No Treatments Found." present on the page
 
 ## Clinical Table - Exposure Tab
@@ -235,22 +234,14 @@ tags: gdc-data-portal-v2, case-summary
     |Follow Up ID                           |
     |Follow Up UUID                         |
     |Days To Follow Up                      |
-    |Comorbidity                            |
-    |Risk Factor                            |
     |Progression Or Recurrence Type         |
     |Disease Response                       |
-    |BMI                                    |
-    |Height                                 |
-    |Weight                                 |
     |ECOG Performance Status                |
     |Karnofsky Performance Status           |
     |Progression Or Recurrence Anatomic Site|
-    |Reflux Treatment Type                  |
     |MMRF_2081_followup1                    |
     |b2bcc701-7758-44fa-a118-6730b14dd542   |
     |-4 days                                |
-    |150                                    |
-    |8                                      |
     |0                                      |
     |Gene Symbol                            |
     |Second Gene Symbol                     |
