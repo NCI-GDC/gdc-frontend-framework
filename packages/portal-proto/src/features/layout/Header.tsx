@@ -182,7 +182,7 @@ export const Header: React.FC<HeaderProps> = ({
                 href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Video_Tutorials/"
                 icon={<PlayIcon />}
                 text="Video Guides"
-                data-testid="button-header-video-guides"
+                customDataTestID="button-header-video-guides"
                 isExternal
               />
             </li>
@@ -341,7 +341,7 @@ export const Header: React.FC<HeaderProps> = ({
           aria-label=""
         >
           <NavLinkWithIcon
-            data-testid="button-header-video-guides"
+            customDataTestID="button-header-video-guides"
             href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Video_Tutorials/"
             icon={<PlayIcon />}
             text="Video Guides"

@@ -38,12 +38,16 @@ const NavLinkWithIcon: React.FC<NavLinkWithIconProps> = ({
       {...linkProps}
       className={`flex items-center py-4 px-1 my-1 gap-1 rounded-md hover:bg-primary-lightest text-primary-darkest text-sm ${overwriteClassName}`}
     >
-      <IconWrapper icon={icon} text={text} iconStyle={iconStyle} />
+      <IconWrapper
+        customDataTestID={customDataTestID}
+        icon={icon}
+        text={text}
+        iconStyle={iconStyle}
+      />
       {children}
     </a>
   ) : (
     <Link
-      data-testid={customDataTestID}
       {...linkProps}
       className={`flex items-center py-4 px-1 my-1 gap-1 rounded-md text-sm ${
         isActive
