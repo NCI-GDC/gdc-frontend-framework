@@ -110,30 +110,6 @@ function VerticalTable<TData>({
   const ref = useRef<HTMLDivElement>();
   const { xPosition, setXPosition } = useContext(TableXPositionContext);
   const bottomXCoor = ref?.current?.getBoundingClientRect()?.bottom;
-
-  // Only update xPosition on initial load or resize, not when table options change
-  useEffect(() => {
-    //const adjustSize = throttle(() => {
-    //  if (setHeight) {
-    //    setHeight(currentTableHeight);
-    //  }
-    //}, 100);
-
-    if (
-      setXPosition //&&
-      //xPosition === undefined &&
-      //status === "fulfilled" &&
-      //table.getRowModel().rows.length > 0
-    ) {
-      setXPosition(bottomXCoor);
-    }
-
-    //window.addEventListener("resize", adjustSize);
-    //() => window.removeEventListener("resize", adjustSize);
-  }, [setXPosition, bottomXCoor, xPosition, status]);
-
-  console.log({ xPosition, table: ref?.current?.getBoundingClientRect() });
-
   useEffect(() => {
     if (sortingStatus && announcementTimestamp) {
       liveRegionRef.current.textContent = sortingStatus;
@@ -188,6 +164,18 @@ function VerticalTable<TData>({
     getRowId: getRowId,
     enableSorting: columnSorting === "manual" || columnSorting === "enable",
   });
+
+  // Only set xPosition on initial load, not when table options change
+  useEffect(() => {
+    if (
+      setXPosition &&
+      xPosition === undefined &&
+      status === "fulfilled" &&
+      table.getRowModel().rows.length > 0
+    ) {
+      setXPosition(bottomXCoor);
+    }
+  }, [setXPosition, bottomXCoor, xPosition, status, table]);
 
   const handleSorting = (
     header: Header<TData, unknown>,

@@ -155,7 +155,7 @@ const FilterPanel = ({
         <LoadingOverlay data-testid="loading-spinner" visible={isLoading} />
         <div
           data-testid="filters-facets"
-          className="flex flex-col gap-y-4 overflow-y-auto border-t-1 border-b-1 rounded-md w-48 md:w-64 lg:w-80 2xl:w-96"
+          className="flex flex-col gap-y-4 max-h-screen overflow-y-auto border-t-1 border-b-1 rounded-md w-48 md:w-64 lg:w-80 2xl:w-96"
           style={{
             maxHeight,
           }}

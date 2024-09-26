@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useCoreSelector, selectCurrentCohortId, usePrevious } from "@gff/core";
 import { useClearAllProjectFilters } from "./hooks";
 import ProjectFacetPanel from "./ProjectFacetPanel";
@@ -6,6 +6,7 @@ import ProjectsTable from "./ProjectsTable";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
 import { AppStore } from "./appApi";
+import { TableXPositionContext } from "@/components/Table/VerticalTable";
 
 const persistor = persistStore(AppStore);
 
@@ -24,17 +25,23 @@ export const ProjectsCenter = (): JSX.Element => {
     }
   }, [cohortId, prevId, clearAllFilters]);
 
+  const [tableXPosition, setTableXPosition] = useState<number>(undefined);
+
   return (
     <>
       <PersistGate persistor={persistor}>
-        <div className="flex flex-col m-4">
-          <div className="flex flex-row" data-testid="table-projects">
-            <ProjectFacetPanel />
-            <div className="grow overflow-hidden mt-8">
-              <ProjectsTable />
+        <TableXPositionContext.Provider
+          value={{ xPosition: tableXPosition, setXPosition: setTableXPosition }}
+        >
+          <div className="flex flex-col m-4">
+            <div className="flex flex-row" data-testid="table-projects">
+              <ProjectFacetPanel />
+              <div className="grow overflow-hidden mt-8">
+                <ProjectsTable />
+              </div>
             </div>
           </div>
-        </div>
+        </TableXPositionContext.Provider>
       </PersistGate>
     </>
   );
