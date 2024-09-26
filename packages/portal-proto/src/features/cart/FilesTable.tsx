@@ -36,7 +36,7 @@ import TotalItems from "@/components/Table/TotalItem";
 
 interface FilesTableProps {
   readonly filesByCanAccess: Record<string, CartFile[]>;
-  readonly customDataTestID?: string;
+  readonly customDataTestID: string;
 }
 
 const cartFilesTableColumnHelper = createColumnHelper<FilesTableDataType>();

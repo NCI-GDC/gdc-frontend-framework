@@ -6,8 +6,8 @@ interface GDCAppLinkProps {
   href: string;
   icon: string;
   text: string;
+  customDataTestID: string;
   isexternal?: boolean;
-  customDataTestID?: string;
 }
 
 const GDCAppLink = ({

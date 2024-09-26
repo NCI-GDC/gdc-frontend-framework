@@ -7,7 +7,7 @@ import VerticalTable from "@/components/Table/VerticalTable";
 interface AuthorizationTableProps {
   readonly filesByCanAccess: Record<string, CartFile[]>;
   readonly loading: boolean;
-  readonly customDataTestID?: string;
+  readonly customDataTestID: string;
 }
 
 const AuthorizationTable: React.FC<AuthorizationTableProps> = ({

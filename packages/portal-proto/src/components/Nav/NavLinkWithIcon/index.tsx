@@ -6,12 +6,12 @@ interface NavLinkWithIconProps {
   href: string;
   icon: React.ReactElement;
   text: string;
+  customDataTestID: string;
   isExternal?: boolean;
   activeStyle?: string;
   overwriteClassName?: string;
   iconStyle?: string;
   children?: React.ReactNode;
-  customDataTestID?: string;
 }
 
 const NavLinkWithIcon: React.FC<NavLinkWithIconProps> = ({
@@ -56,7 +56,12 @@ const NavLinkWithIcon: React.FC<NavLinkWithIconProps> = ({
       } ${overwriteClassName}`}
       {...props}
     >
-      <IconWrapper icon={icon} text={text} iconStyle={iconStyle} />
+      <IconWrapper
+        icon={icon}
+        text={text}
+        iconStyle={iconStyle}
+        customDataTestID={customDataTestID}
+      />
       {children}
     </Link>
   );

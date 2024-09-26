@@ -9,8 +9,8 @@ interface ScrollableTableWithFixedHeaderProps {
     readonly tableRows: any[];
   };
   readonly maxRowsBeforeScroll: number;
+  readonly customDataTestID: string;
   readonly tableMinWidth?: number | string;
-  readonly customDataTestID?: string;
 }
 
 export const ScrollableTableWithFixedHeader = ({

@@ -18,9 +18,9 @@ const Icon: React.FC<IconProps> = ({ children, size = 24, className = "" }) => {
 interface IconWrapperProps {
   icon: React.ReactElement;
   text: string;
+  customDataTestID?: string;
   iconSize?: number;
   iconStyle?: string;
-  customDataTestID?: string;
 }
 
 const IconWrapper: React.FC<IconWrapperProps> = ({

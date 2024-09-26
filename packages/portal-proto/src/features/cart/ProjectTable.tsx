@@ -6,7 +6,7 @@ const columnListOrder = ["Project", "Cases", "Files", "File Size"];
 
 interface ProjectTableProps {
   readonly projectData: CartAggregation[];
-  readonly customDataTestID?: string;
+  readonly customDataTestID: string;
 }
 
 const ProjectTable: React.FC<ProjectTableProps> = ({

@@ -196,7 +196,7 @@ export const Header: React.FC<HeaderProps> = ({
                   setOpenFeedbackModal(true);
                   closeDrawer();
                 }}
-                data-testid="button-header-send-feedback"
+                customDataTestID="button-header-send-feedback"
               />
             </li>
 
@@ -206,7 +206,7 @@ export const Header: React.FC<HeaderProps> = ({
                 icon={<PencilIcon />}
                 activeStyle="bg-secondary text-base-max"
                 text="Browse Annotations"
-                data-testid="button-header-browse-annotations"
+                customDataTestID="button-header-browse-annotations"
               />
             </li>
 
@@ -217,7 +217,7 @@ export const Header: React.FC<HeaderProps> = ({
                 iconStyle="rotate-90"
                 text="Manage Sets"
                 activeStyle="bg-secondary text-base-max"
-                data-testid="button-header-manage-sets"
+                customDataTestID="button-header-manage-sets"
               />
             </li>
 
@@ -227,7 +227,7 @@ export const Header: React.FC<HeaderProps> = ({
                 icon={<CartIcon />}
                 text="Cart"
                 activeStyle="bg-secondary text-base-max"
-                data-testid="button-header-cart"
+                customDataTestID="button-header-cart"
               >
                 <Badge
                   variant="filled"
@@ -267,7 +267,7 @@ export const Header: React.FC<HeaderProps> = ({
             <ul>
               <li>
                 <NavLinkWithIcon
-                  data-testid="button-header-data-portal"
+                  customDataTestID="button-header-data-portal"
                   href={indexPath}
                   icon={
                     <Image
@@ -353,7 +353,7 @@ export const Header: React.FC<HeaderProps> = ({
             text="Send Feedback"
             onClick={() => setOpenFeedbackModal(true)}
             className="!p-1"
-            data-testid="button-header-send-feedback"
+            customDataTestID="button-header-send-feedback"
           />
           <NavLinkWithIcon
             href="/annotations"
@@ -361,14 +361,14 @@ export const Header: React.FC<HeaderProps> = ({
             text="Browse Annotations"
             activeStyle="bg-secondary text-base-max"
             overwriteClassName="!p-1"
-            data-testid="button-header-browse-annotations"
+            customDataTestID="button-header-browse-annotations"
           />
           <NavLinkWithIcon
             href="/manage_sets"
             icon={<OptionsIcon />}
             iconStyle="rotate-90"
             text="Manage Sets"
-            data-testid="button-header-manage-sets"
+            customDataTestID="button-header-manage-sets"
             activeStyle="bg-secondary text-base-max"
             overwriteClassName="!p-1"
           />
@@ -376,7 +376,7 @@ export const Header: React.FC<HeaderProps> = ({
             href="/cart"
             icon={<CartIcon />}
             text="Cart"
-            data-testid="button-header-cart"
+            customDataTestID="button-header-cart"
             activeStyle="bg-secondary text-base-max"
             overwriteClassName="!p-1"
           >
@@ -423,7 +423,7 @@ export const Header: React.FC<HeaderProps> = ({
               <div className="grid grid-cols-2 p-1 gap-2 font-medium">
                 <AppMenuItem>
                   <NavLinkWithIcon
-                    data-testid="button-header-data-portal"
+                    customDataTestID="button-header-data-portal"
                     href={indexPath}
                     icon={
                       <Image
