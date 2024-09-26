@@ -71,11 +71,6 @@ const FilterPanel = ({
     () => xPosition - ref?.current?.getBoundingClientRect().top,
     [xPosition],
   );
-  console.log({
-    xPosition,
-    maxHeight,
-    table: ref.current?.getBoundingClientRect(),
-  });
 
   return (
     <div>

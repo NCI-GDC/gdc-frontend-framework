@@ -25,6 +25,7 @@ import { getDefaultRowId } from "./utils";
 import TableHeader from "./TableHeader";
 import TablePagination from "./TablePagination";
 
+// Provides the bottom X position so components can align themselves with the table
 export const TableXPositionContext = createContext<{
   xPosition: number;
   setXPosition: (xPosition: number) => void;
