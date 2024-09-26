@@ -77,6 +77,7 @@ export const UserProfileModal = ({
       <div className={`${!data ? "py-4" : "py-2"}`}>
         {data?.length > 0 ? (
           <ScrollableTableWithFixedHeader
+            customDataTestID="user-profile-table"
             tableData={{
               headers: headings,
               tableRows: data,

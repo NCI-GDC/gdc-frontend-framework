@@ -7,13 +7,14 @@ interface NavButtonProps {
   onClick: () => void;
   className?: string;
   needFullWidth?: boolean;
-  [key: string]: any;
+  customDataTestID: string;
 }
 
 const NavButton = ({
   icon,
   text,
   onClick,
+  customDataTestID,
   className = "",
   needFullWidth = false,
   ...props
@@ -23,6 +24,7 @@ const NavButton = ({
     className={`rounded-md hover:bg-primary-lightest text-primary-darkest text-sm font-heading ${
       needFullWidth && "w-full"
     } flex py-4 px-1 ${className}`}
+    data-testid={customDataTestID}
     {...props}
   >
     <IconWrapper icon={icon} text={text} />

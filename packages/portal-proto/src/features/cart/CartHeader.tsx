@@ -132,6 +132,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
         <Menu width="target">
           <Menu.Target>
             <Button
+              data-testid="button-download-cart"
               classNames={{
                 root: `${buttonStyle} ml-4 ${focusStyles}`,
               }}
@@ -147,7 +148,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
               Download Cart
             </Button>
           </Menu.Target>
-          <Menu.Dropdown>
+          <Menu.Dropdown data-testid="dropdown-menu-options">
             <Menu.Item
               onClick={() => {
                 setManifestDownloadActive(true);
@@ -188,6 +189,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
         <Menu width="target">
           <Menu.Target>
             <Button
+              data-testid="button-download-associated-data"
               classNames={{
                 root: `${buttonStyle} ${focusStyles}`,
               }}
@@ -203,7 +205,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
               Download Associated Data
             </Button>
           </Menu.Target>
-          <Menu.Dropdown>
+          <Menu.Dropdown data-testid="dropdown-menu-options">
             <Menu.Item
               component={DownloadButton}
               classNames={{ item: "font-normal" }}
@@ -461,6 +463,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
         <Menu>
           <Menu.Target>
             <Button
+              data-testid="button-remove-from-cart"
               leftSection={<TrashIcon aria-hidden="true" />}
               rightSection={
                 <DropdownIcon
@@ -476,7 +479,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
               Remove From Cart
             </Button>
           </Menu.Target>
-          <Menu.Dropdown>
+          <Menu.Dropdown data-testid="dropdown-menu-options">
             <Menu.Item onClick={() => removeFromCart(cart, cart, dispatch)}>
               All Files ({cart.length})
             </Menu.Item>
@@ -493,17 +496,19 @@ const CartHeader: React.FC<CartHeaderProps> = ({
         <h1 className="uppercase ml-auto mr-4 flex items-center truncate text-2xl">
           Total of{" "}
           <FileIcon size={25} className="ml-2 mr-1" aria-hidden="true" />{" "}
-          <b className="mr-1">
+          <b data-testid="text-file-count" className="mr-1">
             {summaryData?.total_doc_count?.toLocaleString() || "--"}
           </b>{" "}
           {summaryData?.total_doc_count === 1 ? "File" : "Files"}
           <PersonIcon size={25} className="ml-2 mr-1" aria-hidden="true" />{" "}
-          <b className="mr-1">
+          <b data-testid="text-case-count" className="mr-1">
             {summaryData?.total_case_count?.toLocaleString() || "--"}
           </b>{" "}
           {summaryData?.total_case_count === 1 ? "Case" : "Cases"}{" "}
           <SaveIcon size={25} className="ml-2 mr-1" aria-hidden="true" />{" "}
-          {fileSize(summaryData?.total_file_size || 0)}
+          <span data-testid="text-size-count">
+            {fileSize(summaryData?.total_file_size || 0)}
+          </span>{" "}
         </h1>
       </div>
     </>

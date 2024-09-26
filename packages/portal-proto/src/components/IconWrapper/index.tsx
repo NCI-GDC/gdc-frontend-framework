@@ -18,6 +18,7 @@ const Icon: React.FC<IconProps> = ({ children, size = 24, className = "" }) => {
 interface IconWrapperProps {
   icon: React.ReactElement;
   text: string;
+  customDataTestID?: string;
   iconSize?: number;
   iconStyle?: string;
 }
@@ -25,10 +26,11 @@ interface IconWrapperProps {
 const IconWrapper: React.FC<IconWrapperProps> = ({
   icon,
   text,
+  customDataTestID,
   iconSize = 24,
   iconStyle = "",
 }) => (
-  <Center className="gap-1">
+  <Center data-testid={customDataTestID} className="gap-1">
     <Icon size={iconSize} className={`${iconStyle} text-inherit`}>
       {icon}
     </Icon>

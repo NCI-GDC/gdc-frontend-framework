@@ -182,6 +182,7 @@ export const Header: React.FC<HeaderProps> = ({
                 href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Video_Tutorials/"
                 icon={<PlayIcon />}
                 text="Video Guides"
+                customDataTestID="button-header-video-guides"
                 isExternal
               />
             </li>
@@ -195,6 +196,7 @@ export const Header: React.FC<HeaderProps> = ({
                   setOpenFeedbackModal(true);
                   closeDrawer();
                 }}
+                customDataTestID="button-header-send-feedback"
               />
             </li>
 
@@ -204,6 +206,7 @@ export const Header: React.FC<HeaderProps> = ({
                 icon={<PencilIcon />}
                 activeStyle="bg-secondary text-base-max"
                 text="Browse Annotations"
+                customDataTestID="button-header-browse-annotations"
               />
             </li>
 
@@ -214,7 +217,7 @@ export const Header: React.FC<HeaderProps> = ({
                 iconStyle="rotate-90"
                 text="Manage Sets"
                 activeStyle="bg-secondary text-base-max"
-                data-testid="button-header-manage-sets"
+                customDataTestID="button-header-manage-sets"
               />
             </li>
 
@@ -224,7 +227,7 @@ export const Header: React.FC<HeaderProps> = ({
                 icon={<CartIcon />}
                 text="Cart"
                 activeStyle="bg-secondary text-base-max"
-                data-testid="cartLink"
+                customDataTestID="button-header-cart"
               >
                 <Badge
                   variant="filled"
@@ -264,6 +267,7 @@ export const Header: React.FC<HeaderProps> = ({
             <ul>
               <li>
                 <NavLinkWithIcon
+                  customDataTestID="button-header-data-portal"
                   href={indexPath}
                   icon={
                     <Image
@@ -280,6 +284,7 @@ export const Header: React.FC<HeaderProps> = ({
 
               <li>
                 <GDCAppLink
+                  customDataTestID="button-header-website"
                   href="https://gdc.cancer.gov"
                   icon="gdc-app-website-blue.svg"
                   text="Website"
@@ -287,6 +292,7 @@ export const Header: React.FC<HeaderProps> = ({
               </li>
               <li>
                 <GDCAppLink
+                  customDataTestID="button-header-api"
                   href="https://gdc.cancer.gov/developers/gdc-application-programming-interface-api"
                   icon="gdc-app-portal-api.svg"
                   text="API"
@@ -294,6 +300,7 @@ export const Header: React.FC<HeaderProps> = ({
               </li>
               <li>
                 <GDCAppLink
+                  customDataTestID="button-header-data-transfer-tool"
                   href="https://docs.gdc.cancer.gov/Data_Transfer_Tool/Users_Guide/Getting_Started/"
                   icon="gdc-app-data-transfer-tool.svg"
                   text="Data Transfer Tool"
@@ -301,6 +308,7 @@ export const Header: React.FC<HeaderProps> = ({
               </li>
               <li>
                 <GDCAppLink
+                  customDataTestID="button-header-documentation"
                   href="https://docs.gdc.cancer.gov"
                   icon="gdc-app-docs.svg"
                   text="Documentation"
@@ -308,6 +316,7 @@ export const Header: React.FC<HeaderProps> = ({
               </li>
               <li>
                 <GDCAppLink
+                  customDataTestID="button-header-data-submission-portal"
                   href="https://portal.gdc.cancer.gov/submission"
                   icon="gdc-app-submission-portal.svg"
                   text="Data Submission Portal"
@@ -315,6 +324,7 @@ export const Header: React.FC<HeaderProps> = ({
               </li>
               <li>
                 <GDCAppLink
+                  customDataTestID="button-header-publications"
                   href="https://gdc.cancer.gov/about-data/publications"
                   icon="gdc-app-publications.svg"
                   text="Publications"
@@ -331,6 +341,7 @@ export const Header: React.FC<HeaderProps> = ({
           aria-label=""
         >
           <NavLinkWithIcon
+            customDataTestID="button-header-video-guides"
             href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Video_Tutorials/"
             icon={<PlayIcon />}
             text="Video Guides"
@@ -342,6 +353,7 @@ export const Header: React.FC<HeaderProps> = ({
             text="Send Feedback"
             onClick={() => setOpenFeedbackModal(true)}
             className="!p-1"
+            customDataTestID="button-header-send-feedback"
           />
           <NavLinkWithIcon
             href="/annotations"
@@ -349,13 +361,14 @@ export const Header: React.FC<HeaderProps> = ({
             text="Browse Annotations"
             activeStyle="bg-secondary text-base-max"
             overwriteClassName="!p-1"
+            customDataTestID="button-header-browse-annotations"
           />
           <NavLinkWithIcon
             href="/manage_sets"
             icon={<OptionsIcon />}
             iconStyle="rotate-90"
             text="Manage Sets"
-            data-testid="button-header-manage-sets"
+            customDataTestID="button-header-manage-sets"
             activeStyle="bg-secondary text-base-max"
             overwriteClassName="!p-1"
           />
@@ -363,7 +376,7 @@ export const Header: React.FC<HeaderProps> = ({
             href="/cart"
             icon={<CartIcon />}
             text="Cart"
-            data-testid="cartLink"
+            customDataTestID="button-header-cart"
             activeStyle="bg-secondary text-base-max"
             overwriteClassName="!p-1"
           >
@@ -390,7 +403,7 @@ export const Header: React.FC<HeaderProps> = ({
           >
             <Menu.Target>
               <button
-                data-testid="extraButton"
+                data-testid="button-header-gdc-apps"
                 className="flex items-center gap-1 p-1 rounded-md hover:bg-primary-lightest"
               >
                 <AppsIcon
@@ -410,6 +423,7 @@ export const Header: React.FC<HeaderProps> = ({
               <div className="grid grid-cols-2 p-1 gap-2 font-medium">
                 <AppMenuItem>
                   <NavLinkWithIcon
+                    customDataTestID="button-header-data-portal"
                     href={indexPath}
                     icon={
                       <Image
@@ -425,6 +439,7 @@ export const Header: React.FC<HeaderProps> = ({
                 </AppMenuItem>
                 <AppMenuItem>
                   <GDCAppLink
+                    customDataTestID="button-header-website"
                     href="https://gdc.cancer.gov"
                     icon="gdc-app-website-blue.svg"
                     text="Website"
@@ -433,6 +448,7 @@ export const Header: React.FC<HeaderProps> = ({
 
                 <AppMenuItem>
                   <GDCAppLink
+                    customDataTestID="button-header-api"
                     href="https://gdc.cancer.gov/developers/gdc-application-programming-interface-api"
                     icon="gdc-app-portal-api.svg"
                     text="API"
@@ -440,6 +456,7 @@ export const Header: React.FC<HeaderProps> = ({
                 </AppMenuItem>
                 <AppMenuItem>
                   <GDCAppLink
+                    customDataTestID="button-header-data-transfer-tool"
                     href="https://docs.gdc.cancer.gov/Data_Transfer_Tool/Users_Guide/Getting_Started/"
                     icon="gdc-app-data-transfer-tool.svg"
                     text="Data Transfer Tool"
@@ -447,6 +464,7 @@ export const Header: React.FC<HeaderProps> = ({
                 </AppMenuItem>
                 <AppMenuItem>
                   <GDCAppLink
+                    customDataTestID="button-header-documentation"
                     href="https://docs.gdc.cancer.gov"
                     icon="gdc-app-docs.svg"
                     text="Documentation"
@@ -454,6 +472,7 @@ export const Header: React.FC<HeaderProps> = ({
                 </AppMenuItem>
                 <AppMenuItem>
                   <GDCAppLink
+                    customDataTestID="button-header-data-submission-portal"
                     href="https://portal.gdc.cancer.gov/submission"
                     icon="gdc-app-submission-portal.svg"
                     text="Data Submission Portal"
@@ -461,6 +480,7 @@ export const Header: React.FC<HeaderProps> = ({
                 </AppMenuItem>
                 <AppMenuItem>
                   <GDCAppLink
+                    customDataTestID="button-header-publications"
                     href="https://gdc.cancer.gov/about-data/publications"
                     icon="gdc-app-publications.svg"
                     text="Publications"

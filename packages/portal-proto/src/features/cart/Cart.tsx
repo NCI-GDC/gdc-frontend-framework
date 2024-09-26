@@ -79,7 +79,7 @@ const Cart: React.FC = () => {
           >
             <Accordion.Control
               className="hover:bg-[#FFFFFF50] pl-0 relative"
-              data-testid="expand-collapse-button"
+              data-testid="button-how-to-download-files"
             >
               <FaExclamationCircle
                 color="white"
@@ -89,12 +89,13 @@ const Cart: React.FC = () => {
               How to download files in my cart?
             </Accordion.Control>
             <Accordion.Panel>
-              <div data-testid="download-info">
+              <div data-testid="text-download-information">
                 <div className="mb-2">
                   <H2>Download Manifest:</H2>
                   <P>
                     Download a manifest for use with the{" "}
                     <a
+                      data-testid="link-gdc-data-transfer-tool"
                       href="https://gdc.cancer.gov/access-data/gdc-data-transfer-tool"
                       target="_blank"
                       rel="noopener noreferrer"
@@ -120,6 +121,7 @@ const Cart: React.FC = () => {
                   <P>
                     Download{" "}
                     <a
+                      data-testid="link-gdc-reference-files"
                       href="https://gdc.cancer.gov/about-data/gdc-data-processing/gdc-reference-files"
                       target="_blank"
                       rel="noopener noreferrer"
@@ -139,18 +141,25 @@ const Cart: React.FC = () => {
           <div className="flex-1">
             <HeaderTitle>File counts by authorization level</HeaderTitle>
             <AuthorizationTable
+              customDataTestID="table-file-counts-by-authorization-level"
               filesByCanAccess={filesByCanAccess}
               loading={userDetailsFetching}
             />
           </div>
           <div className="flex-1">
             <HeaderTitle>File counts by project</HeaderTitle>
-            <ProjectTable projectData={summaryData?.byProject} />
+            <ProjectTable
+              customDataTestID="table-file-counts-by-project"
+              projectData={summaryData?.byProject}
+            />
           </div>
         </div>
         <div className="mt-6">
           <HeaderTitle>Cart Items</HeaderTitle>
-          <FilesTable filesByCanAccess={filesByCanAccess} />
+          <FilesTable
+            customDataTestID="table-cart-items"
+            filesByCanAccess={filesByCanAccess}
+          />
         </div>
       </div>
     </>
