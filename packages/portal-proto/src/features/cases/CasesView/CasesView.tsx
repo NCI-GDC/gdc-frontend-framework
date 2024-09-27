@@ -6,10 +6,14 @@ import {
   useAllCases,
   SortBy,
   selectCurrentCohortFilters,
-  buildCohortGqlOperator,
   GqlOperation,
   useCurrentCohortCounts,
   selectCurrentCohortId,
+  convertFilterToGqlFilter,
+  appendFilterToOperation,
+  filterSetToOperation,
+  Union,
+  Intersection,
 } from "@gff/core";
 import { Divider, Loader } from "@mantine/core";
 import FunctionButton from "@/components/FunctionButton";
@@ -20,7 +24,11 @@ import {
   statusBooleansToDataStatus,
 } from "src/utils";
 import { CasesCohortButtonFromValues } from "./CasesCohortButton";
-import { casesTableDataType, useGenerateCasesTableColumns } from "./utils";
+import {
+  buildCasesTableSearchFilters,
+  casesTableDataType,
+  useGenerateCasesTableColumns,
+} from "./utils";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { MdDownload as DownloadIcon } from "react-icons/md";
 import { CountsIcon } from "@/components/tailwindComponents";
@@ -82,6 +90,14 @@ export const ContextualCasesView: React.FC = () => {
     setCohortTableTSVDownloadActive(false);
   }, [currentCohortId]);
 
+  const searchFilters = buildCasesTableSearchFilters(searchTerm);
+  const combinedFilters = convertFilterToGqlFilter(
+    appendFilterToOperation(
+      filterSetToOperation(cohortFilters) as Union | Intersection | undefined,
+      searchFilters,
+    ),
+  );
+
   const { data, isFetching, isSuccess, isError, pagination } = useAllCases({
     fields: [
       "case_id",
@@ -111,10 +127,9 @@ export const ContextualCasesView: React.FC = () => {
       "files.data_type",
     ],
     size: pageSize,
-    filters: cohortFilters,
+    filters: combinedFilters,
     from: offset * pageSize,
     sortBy: sortBy,
-    searchTerm,
   });
 
   useDeepCompareEffect(() => {
@@ -243,7 +258,7 @@ export const ContextualCasesView: React.FC = () => {
             value: pickedCases,
           },
         }
-      : buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation);
+      : combinedFilters;
 
   // TODO - restore attachment option, PEAR-1947
   const handleTSVDownload = async () => {
@@ -255,8 +270,7 @@ export const ContextualCasesView: React.FC = () => {
         attachment: false,
         size: cohortCounts?.data?.caseCount,
         //filename: `cohort.${convertDateToString(new Date())}.tsv`,
-        case_filters:
-          buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation),
+        case_filters: combinedFilters, // should this be affected by pickedCases?
         fields: [
           "case_id",
           "submitter_id",
@@ -289,8 +303,7 @@ export const ContextualCasesView: React.FC = () => {
       dispatch,
       params: {
         filename: `cohort.${convertDateToString(new Date())}.json`,
-        case_filters:
-          buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation),
+        case_filters: combinedFilters, // should this be affected by pickedCases?
         attachment: true,
         pretty: true,
         format: "JSON",

@@ -1,4 +1,9 @@
-import { AnnotationDefaults, CartFile, useCoreDispatch } from "@gff/core";
+import {
+  AnnotationDefaults,
+  CartFile,
+  Union,
+  useCoreDispatch,
+} from "@gff/core";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Dispatch, SetStateAction, useMemo } from "react";
 import { Button, Checkbox, Menu } from "@mantine/core";
@@ -299,6 +304,29 @@ export const useGenerateCasesTableColumns = ({
   );
 
   return CasesTableDefaultColumns;
+};
+
+export const buildCasesTableSearchFilters = (
+  term?: string,
+): Union | undefined => {
+  if (term !== undefined && term.length > 0) {
+    return {
+      operator: "or",
+      operands: [
+        {
+          operator: "includes",
+          field: "cases.case_id", // case insensitive
+          operands: [`*${term}*`],
+        },
+        {
+          operator: "includes",
+          field: "cases.submitter_id", // case sensitive
+          operands: [`*${term}*`],
+        },
+      ],
+    };
+  }
+  return undefined;
 };
 
 export const MAX_CASE_IDS = 100000;
