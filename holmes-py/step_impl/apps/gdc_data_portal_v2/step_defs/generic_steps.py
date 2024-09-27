@@ -174,6 +174,7 @@ def download_file_at_file_table(file: str, source: str):
         "Cohort Comparison": APP.cohort_comparison_page.click_download_tsv_button_on_analysis_card_cohort_comparison,
         "Mutation Frequency": APP.mutation_frequency_page.click_table_download_button,
         "Project Summary": APP.project_summary_page.click_button,
+        "Project Summary Annotations": APP.project_summary_page.click_annotation_download_button,
         "Set Operations": APP.set_operations_page.click_download_tsv_button_set_operations,
         "Set Operations Union Row": APP.set_operations_page.click_union_row_download_tsv_button_set_operations,
 
@@ -777,6 +778,17 @@ def click_create_or_save_in_cohort_modal(table):
     for k, v in enumerate(table):
         APP.shared.click_switch_for_column_selector(v[0])
     APP.shared.click_column_selector_button()
+
+@step("In table <table_name> select or deselect these options from the table column selector <table>")
+def click_create_or_save_in_cohort_modal(table_name:str, table):
+    """
+    In specified table, clicks table column selector button.
+    In the column selector pop-up modal that appears, it clicks the specified switch.
+    """
+    APP.shared.click_column_selector_button_in_specified_table(table_name)
+    for k, v in enumerate(table):
+        APP.shared.click_switch_for_column_selector(v[0])
+    APP.shared.click_column_selector_button_in_specified_table(table_name)
 
 @step("Select <text> from dropdown menu")
 def click_dropdown_text_option(text:str):

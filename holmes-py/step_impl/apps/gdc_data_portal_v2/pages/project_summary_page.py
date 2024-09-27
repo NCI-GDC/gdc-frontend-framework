@@ -11,6 +11,9 @@ class ProjectSummaryLocators:
         lambda text_identifier: f"[data-testid='text-{text_identifier}-project-summary']"
     )
 
+    BUTTON_ANNOTATION_DOWNLOAD = (
+        lambda button_name: f"[data-testid='table-annotations-project-summary'] >> [data-testid='button-{button_name}-projects-table']"
+    )
 
 class ProjectSummaryPage(BasePage):
     def __init__(self, driver: Page, url):
@@ -20,6 +23,12 @@ class ProjectSummaryPage(BasePage):
         """Clicks specified button on Project Summary page"""
         button_name = self.normalize_button_identifier(button_name)
         locator = ProjectSummaryLocators.BUTTON_PROJECT_SUMMARY_PAGE(button_name)
+        self.click(locator)
+
+    def click_annotation_download_button(self, button_name):
+        """Clicks either 'JSON' or 'TSV' download button"""
+        button_name = self.normalize_button_identifier(button_name)
+        locator = ProjectSummaryLocators.BUTTON_ANNOTATION_DOWNLOAD(button_name)
         self.click(locator)
 
     def get_text_project_summary(self, text_identifier):

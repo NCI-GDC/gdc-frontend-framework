@@ -1,4 +1,5 @@
 import time
+import re
 
 from typing import List
 from step_impl.base.webdriver import WebDriver
@@ -79,14 +80,18 @@ class GenericLocators:
         lambda button_text_name: f'footer >> a:has-text("{button_text_name}") >> nth=0'
     )
 
+    # Remove >> nth=1 when PEAR-2201 is completed
     TABLE_ITEM_COUNT_IDENT = (
-        lambda table_name: f'[data-testid="table-{table_name}"] >> [data-testid="text-total-item-count"]'
+        lambda table_name: f'[data-testid="table-{table_name}"] >> [data-testid="text-total-item-count"] >> nth=1'
     )
     TABLE_TEXT_IDENT = (
         lambda table_name, table_text: f'[data-testid="table-{table_name}"] >> text={table_text} >> nth=0'
     )
     TABLE_AREA_TO_SELECT = (
         lambda row, column: f"tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0"
+    )
+    TABLE_AREA_TO_COLLECT_IN_SPECIFIED_TABLE = (
+        lambda table_name, row, column: f"[data-testid='table-{table_name}'] >> tr:nth-child({row}) > td:nth-child({column}) >> nth=0"
     )
     TABLE_AREA_TO_SELECT_IN_SPECIFIED_TABLE = (
         lambda table_name, row, column: f"[data-testid='table-{table_name}'] >> tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0"
@@ -112,6 +117,7 @@ class GenericLocators:
     )
 
     BUTTON_COLUMN_SELECTOR = '[data-testid="button-column-selector-box"]'
+    BUTTON_COLUMN_SELECTOR_IN_TABLE = lambda table_name: f'[data-testid="table-{table_name}"] >> [data-testid="button-column-selector-box"]'
     SWITCH_COLUMN_SELECTOR = (
         lambda switch_name: f'[data-testid="column-selector-popover-modal"] >> [data-testid="column-selector-row-{switch_name}"] label div >> nth=0'
     )
@@ -245,6 +251,9 @@ class BasePage:
         # and we are only interested in the numerator for comparison.
         string_to_strip = string_to_strip.split("/")[0]
         string_to_strip = string_to_strip.replace(",", "")
+        string_to_strip = string_to_strip.replace(" ", "")
+        # Removes any non-numeral character
+        string_to_strip = re.sub(r'\D', '', string_to_strip)
         return string_to_strip
 
     def get_cohort_bar_case_count(self):
@@ -270,6 +279,20 @@ class BasePage:
         """Returns how many items are in the table by retrieving the number in the 'Total Of xx Object' string"""
         table_name = self.normalize_button_identifier(table_name)
         locator = GenericLocators.TABLE_ITEM_COUNT_IDENT(table_name)
+
+        # When this number loads, it will display 0 before showing the actual count.
+        # So, we check to see if the text displays '0' or '--' which means it's still loading.
+        # We check for the text to display an actual number for approximately 5 seconds.
+        # If no number appears, we return the '0' as is. In rare scenarios, the count
+        # really is 0, so this does not necessarily mean failure.
+        item_count = self.get_text(locator)
+        retry_counter = 0
+        while (item_count == "0" or item_count =="--"):
+            time.sleep(1)
+            item_count = self.get_text(locator)
+            retry_counter = retry_counter+1
+            if retry_counter >= 5:
+                break
         return self.get_text(locator)
 
     def get_filter_selection_count(self, filter_group_name, selection):
@@ -302,7 +325,13 @@ class BasePage:
         """
         table_name = self.normalize_button_identifier(table_name)
         table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT_IN_SPECIFIED_TABLE(table_name, row, column)
-        return self.get_text(table_locator_to_select)
+        # Try to return drilled down locator.
+        if self.is_visible(table_locator_to_select):
+            return self.get_text(table_locator_to_select)
+        # If that is not available, return a higher level locator.
+        else:
+            table_locator_to_select = GenericLocators.TABLE_AREA_TO_COLLECT_IN_SPECIFIED_TABLE(table_name, row, column)
+            return self.get_text(table_locator_to_select)
 
     def hover_table_body_by_row_column(self, row, column):
         """
@@ -611,6 +640,12 @@ class BasePage:
     def click_column_selector_button(self):
         """Clicks table column selector button"""
         locator = GenericLocators.BUTTON_COLUMN_SELECTOR
+        self.click(locator)
+
+    def click_column_selector_button_in_specified_table(self, table_name):
+        """In specified table, clicks table column selector button"""
+        table_name = self.normalize_button_identifier(table_name)
+        locator = GenericLocators.BUTTON_COLUMN_SELECTOR_IN_TABLE(table_name)
         self.click(locator)
 
     def click_switch_for_column_selector(self, switch_name):
