@@ -20,7 +20,7 @@ import { formatEntityInfo, searchForStringInNode } from "./utils";
 import { trimEnd, find, flatten, escapeRegExp } from "lodash";
 import { useRouter } from "next/router";
 import { entityTypes, overrideMessage } from "@/components/BioTree/types";
-import { FiDownload as DownloadIcon } from "react-icons/fi";
+import { MdDownload as DownloadIcon } from "react-icons/md";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import download from "@/utils/download";
 import { HeaderTitle } from "@/components/tailwindComponents";

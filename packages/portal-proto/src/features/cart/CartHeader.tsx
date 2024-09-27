@@ -19,7 +19,7 @@ import {
   MdSave as SaveIcon,
 } from "react-icons/md";
 import { RiFile3Fill as FileIcon } from "react-icons/ri";
-import { FiDownload as DownloadIcon } from "react-icons/fi";
+import { MdDownload as DownloadIcon } from "react-icons/md";
 import CartSizeLimitModal from "@/components/Modals/CartSizeLimitModal";
 import CartDownloadModal from "@/components/Modals/CartDownloadModal";
 import { DownloadButton } from "@/components/DownloadButtons";

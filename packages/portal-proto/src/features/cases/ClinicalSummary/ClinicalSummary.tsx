@@ -12,7 +12,7 @@ import {
 } from "@gff/core";
 import { Divider, Loader, Tabs, Text } from "@mantine/core";
 import { useState } from "react";
-import { FiDownload as DownloadIcon } from "react-icons/fi";
+import { MdDownload as DownloadIcon } from "react-icons/md";
 import { humanify, ageDisplay } from "src/utils";
 import { FamilyHistoryOrExposure } from "./FamilyHistoryOrExposure";
 import download from "@/utils/download";
