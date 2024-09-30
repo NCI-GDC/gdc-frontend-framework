@@ -39,7 +39,7 @@ const slice = createSlice({
         root: updated,
       };
     },
-    removeAllNonGenomicFilters: (state) => {
+    removeAllNonGeneAndSSMFilters: (state) => {
       return {
         mode: "and",
         root: {
@@ -62,7 +62,7 @@ export const {
   updateGeneAndSSMFilter,
   removeGeneAndSSMFilter,
   clearGeneAndSSMFilters,
-  removeAllNonGenomicFilters,
+  removeAllNonGeneAndSSMFilters,
 } = slice.actions;
 
 export const selectGeneAndSSMFilters = (
