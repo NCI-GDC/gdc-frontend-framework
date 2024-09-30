@@ -51,9 +51,9 @@ class ClearStoreErrorBoundary extends Component<
                     await repositoryPersistor.purge();
                   } else if (this.props.router?.query?.app === "Projects") {
                     await projectsPersistor.purge();
-                  } else {
-                    await corePersistor.purge();
                   }
+
+                  await corePersistor.purge();
 
                   this.props.router
                     .replace({
