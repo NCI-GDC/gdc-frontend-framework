@@ -174,6 +174,8 @@ def download_file_at_file_table(file: str, source: str):
         "Cohort Comparison": APP.cohort_comparison_page.click_download_tsv_button_on_analysis_card_cohort_comparison,
         "Mutation Frequency": APP.mutation_frequency_page.click_table_download_button,
         "Project Summary": APP.project_summary_page.click_button,
+        "Project Summary Biospecimen": APP.project_summary_page.click_biospecimen_download_button,
+        "Project Summary Clinical": APP.project_summary_page.click_clinical_download_button,
         "Project Summary Annotations": APP.project_summary_page.click_annotation_download_button,
         "Set Operations": APP.set_operations_page.click_download_tsv_button_set_operations,
         "Set Operations Union Row": APP.set_operations_page.click_union_row_download_tsv_button_set_operations,
@@ -256,8 +258,7 @@ def read_file_content_from_compressed_file(file_type):
     """Used for tar.gz files. Typically seen with file or multiple file downloads"""
     tar = tarfile.open(data_store.spec[file_type], "r:gz")
     all_files_content = ""
-    # Skips reading the metadata file
-    for member in tar.getmembers()[1:]:
+    for member in tar.getmembers():
         f = tar.extractfile(member)
         single_file_content = f.read()
         all_files_content += str(single_file_content)
@@ -321,7 +322,7 @@ def verify_file_has_expected_field_names(file_type, field_name):
         json_arr = json.loads(data_store.spec[f"{file_type} contents"])
         field_names = field_name.split(".")
         for json_obj in json_arr:
-            if len(field_names) > 1:
+            if len(field_names) >= 1:
                 Utility.validate_json_key_exists(
                     Utility.flatten_json(json_obj), field_name, fails
                 )
