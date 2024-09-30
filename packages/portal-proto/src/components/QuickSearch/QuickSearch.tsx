@@ -31,6 +31,7 @@ export const QuickSearch = (): JSX.Element => {
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [debounced] = useDebouncedValue(searchText, 250);
+  const [supersededFile, setSupersededFile] = useState<string>("");
   const [matchedSearchList, setMatchedSearchList] = useState([]);
 
   const router = useRouter();
@@ -39,7 +40,11 @@ export const QuickSearch = (): JSX.Element => {
 
   const { searchList, query } = data || {};
 
-  const { data: fileHistory } = useGetHistoryQuery(searchText.trim(), {
+  const {
+    data: fileHistory,
+    isSuccess: isHistorySuccess,
+    isUninitialized: isHistoryUninit,
+  } = useGetHistoryQuery(searchText.trim(), {
     skip:
       searchText === "" ||
       debounced === "" ||
@@ -47,26 +52,18 @@ export const QuickSearch = (): JSX.Element => {
       !uuidValidate(debounced.trim()),
   });
 
+  const { data: supersededFileCheck, isSuccess: isSupersededFileCheckSuccess } =
+    useQuickSearchQuery(supersededFile, {
+      skip: supersededFile === "" && fileHistory !== undefined,
+    });
+
   // Checks search results returned against current search to make sure it matches
   useDeepCompareEffect(() => {
     if (debounced === "") {
       setLoading(false);
       setMatchedSearchList([]);
     } else if (query === debounced) {
-      if (fileHistory !== undefined && fileHistory.length > 1) {
-        const latestVersion = fileHistory.find(
-          (f) => f.file_change === "released",
-        )?.uuid;
-        setMatchedSearchList([
-          {
-            value: latestVersion,
-            label: latestVersion,
-            obj: fileHistory,
-            superseded: true,
-            entity: "File",
-          },
-        ]);
-      } else {
+      if (searchList.length > 0) {
         setMatchedSearchList(
           searchList.map((obj, i) => ({
             value: obj.id, // required by plugin
@@ -76,10 +73,63 @@ export const QuickSearch = (): JSX.Element => {
             last: searchList.length === i + 1, // for styling
           })),
         );
+
+        setLoading(false);
+        // We didn't find any results so check if there is a newer version of the file
+      } else {
+        // We checked history and there isn't a superseded file
+        if (
+          isHistoryUninit ||
+          (isHistorySuccess &&
+            (fileHistory === undefined || fileHistory.length < 2))
+        ) {
+          setLoading(false);
+        } else if (isHistorySuccess) {
+          // We need to check that the superseded file exists too so use QuickSearch to verify
+          const latestVersion = fileHistory.find(
+            (f) => f.file_change === "released",
+          )?.uuid;
+          setSupersededFile(latestVersion);
+        }
       }
+    }
+  }, [
+    debounced,
+    searchList,
+    query,
+    fileHistory,
+    isHistorySuccess,
+    isHistoryUninit,
+  ]);
+
+  useDeepCompareEffect(() => {
+    if (
+      isSupersededFileCheckSuccess &&
+      supersededFileCheck?.searchList.length === 0
+    ) {
+      setLoading(false);
+    } else if (
+      supersededFileCheck?.searchList.length > 0 &&
+      fileHistory !== undefined
+    ) {
+      setMatchedSearchList([
+        {
+          value: supersededFile,
+          label: supersededFile,
+          obj: fileHistory,
+          superseded: true,
+          last: true,
+          entity: "File",
+        },
+      ]);
       setLoading(false);
     }
-  }, [debounced, searchList, query, fileHistory]);
+  }, [
+    supersededFileCheck,
+    supersededFile,
+    fileHistory,
+    isSupersededFileCheckSuccess,
+  ]);
 
   const renderItem: SelectProps["renderOption"] = ({
     option: { value, label, symbol, obj, superseded, entity, last, ...others },
@@ -88,7 +138,7 @@ export const QuickSearch = (): JSX.Element => {
   }) => {
     let badgeText: string;
     if (superseded) {
-      badgeText = (obj as HistoryDefaults[]).find(
+      badgeText = (obj as HistoryDefaults[])?.find(
         (f) => f.file_change === "released",
       )?.uuid;
     } else {
