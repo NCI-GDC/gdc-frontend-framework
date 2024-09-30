@@ -13,14 +13,7 @@ import {
 import { AnnotationDefaults, CaseDefaults } from "../gdcapi/types";
 import { CoreDispatch } from "../../store";
 import { groupBy } from "lodash";
-import {
-  convertFilterToGqlFilter,
-  Intersection,
-  Union,
-} from "../gdcapi/filters";
-import { FilterSet, filterSetToOperation } from "../cohort";
-import { appendFilterToOperation } from "../genomic/utils";
-
+import { GqlOperation } from "../gdcapi/filters";
 interface CaseSliceResponseData {
   case_id: string;
   case_uuid: string;
@@ -66,29 +59,6 @@ interface CasesResponse {
   readonly data: readonly CaseResponseData[];
 }
 
-export const buildCasesTableSearchFilters = (
-  term?: string,
-): Union | undefined => {
-  if (term !== undefined && term.length > 0) {
-    return {
-      operator: "or",
-      operands: [
-        {
-          operator: "includes",
-          field: "cases.case_id", // case insensitive
-          operands: [`*${term}*`],
-        },
-        {
-          operator: "includes",
-          field: "cases.submitter_id", // case sensitive
-          operands: [`*${term}*`],
-        },
-      ],
-    };
-  }
-  return undefined;
-};
-
 /**
  * The request for fetching all cases from the GDC API
  * @property filters - A FilterSet object
@@ -100,12 +70,11 @@ export const buildCasesTableSearchFilters = (
  * @category Cases
  */
 interface FetchAllCasesRequestProps {
-  filters?: FilterSet;
+  filters?: GqlOperation;
   fields?: ReadonlyArray<string>;
   readonly size?: number;
   readonly from?: number;
   readonly sortBy?: ReadonlyArray<SortBy>;
-  searchTerm?: string;
 }
 
 export const fetchAllCases = createAsyncThunk<
@@ -120,20 +89,11 @@ export const fetchAllCases = createAsyncThunk<
     filters,
     from,
     sortBy,
-    searchTerm,
   }: FetchAllCasesRequestProps): Promise<CasesResponse> => {
-    const searchFilters = buildCasesTableSearchFilters(searchTerm);
-    const combinedFilters = convertFilterToGqlFilter(
-      appendFilterToOperation(
-        filterSetToOperation(filters) as Union | Intersection | undefined,
-        searchFilters,
-      ),
-    );
-
     const casesResponse = await fetchGdcCases({
       fields,
       size,
-      case_filters: combinedFilters,
+      case_filters: filters,
       from,
       sortBy,
     });
