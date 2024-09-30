@@ -7,7 +7,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
 import { AppStore } from "./appApi";
 
-const persistor = persistStore(AppStore);
+export const persistor = persistStore(AppStore);
 
 export const ProjectsCenter = (): JSX.Element => {
   const clearAllFilters = useClearAllProjectFilters();

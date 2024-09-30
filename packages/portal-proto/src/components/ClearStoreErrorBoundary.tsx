@@ -1,7 +1,9 @@
 import React, { Component, ReactNode } from "react";
 import { NextRouter, withRouter } from "next/router";
 import { Modal } from "@mantine/core";
-import { persistor } from "@gff/core";
+import { persistor as corePersistor, persistor } from "@gff/core";
+import { persistor as repositoryPersistor } from "@/features/repositoryApp/RepositoryApp";
+import { persistor as projectsPersistor } from "@/features/projectsCenter/ProjectsCenter";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 // Done this way because There is currently no way to write an error boundary as a function component.
@@ -45,7 +47,14 @@ class ClearStoreErrorBoundary extends Component<
             <ModalButtonContainer data-testid="modal-button-container">
               <DarkFunctionButton
                 onClick={async () => {
-                  await persistor.purge();
+                  if (this.props.router?.query?.app === "Downloads") {
+                    await repositoryPersistor.purge();
+                  } else if (this.props.router?.query?.app === "Projects") {
+                    await projectsPersistor.purge();
+                  } else {
+                    await persistor.purge();
+                  }
+
                   this.props.router
                     .replace({
                       query: {

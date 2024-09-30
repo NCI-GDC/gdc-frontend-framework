@@ -40,7 +40,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import { useRouter } from "next/router";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
 
-const persistor = persistStore(AppStore);
+export const persistor = persistStore(AppStore);
 
 const useCohortCentricFiles = () => {
   const repositoryFilters = useAppSelector((state) =>
@@ -101,6 +101,7 @@ export const RepositoryApp = (): JSX.Element => {
         callback(cartFiles, currentCart, dispatch);
       });
   };
+
   const buildCohortGqlOperatorWithCart = (): GqlOperation => {
     // create filter with current cart file ids
     const cartFilterSet: FilterSet = {
