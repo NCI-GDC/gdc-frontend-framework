@@ -1,7 +1,7 @@
 import React, { Component, ReactNode } from "react";
 import { NextRouter, withRouter } from "next/router";
 import { Modal } from "@mantine/core";
-import { persistor as corePersistor, persistor } from "@gff/core";
+import { persistor as corePersistor } from "@gff/core";
 import { persistor as repositoryPersistor } from "@/features/repositoryApp/RepositoryApp";
 import { persistor as projectsPersistor } from "@/features/projectsCenter/ProjectsCenter";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
@@ -52,7 +52,7 @@ class ClearStoreErrorBoundary extends Component<
                   } else if (this.props.router?.query?.app === "Projects") {
                     await projectsPersistor.purge();
                   } else {
-                    await persistor.purge();
+                    await corePersistor.purge();
                   }
 
                   this.props.router
