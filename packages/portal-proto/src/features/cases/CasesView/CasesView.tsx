@@ -270,7 +270,7 @@ export const ContextualCasesView: React.FC = () => {
         attachment: false,
         size: cohortCounts?.data?.caseCount,
         //filename: `cohort.${convertDateToString(new Date())}.tsv`,
-        case_filters: combinedFilters, // should this be affected by pickedCases?
+        case_filters: combinedFilters,
         fields: [
           "case_id",
           "submitter_id",
@@ -303,7 +303,7 @@ export const ContextualCasesView: React.FC = () => {
       dispatch,
       params: {
         filename: `cohort.${convertDateToString(new Date())}.json`,
-        case_filters: combinedFilters, // should this be affected by pickedCases?
+        case_filters: combinedFilters,
         attachment: true,
         pretty: true,
         format: "JSON",
