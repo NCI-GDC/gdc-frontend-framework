@@ -101,7 +101,6 @@ export const RepositoryApp = (): JSX.Element => {
         callback(cartFiles, currentCart, dispatch);
       });
   };
-
   const buildCohortGqlOperatorWithCart = (): GqlOperation => {
     // create filter with current cart file ids
     const cartFilterSet: FilterSet = {
