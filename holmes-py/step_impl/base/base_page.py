@@ -372,6 +372,19 @@ class BasePage:
         locator = GenericLocators.LOADING_SPINNER_TABLE
         self.wait_until_locator_is_detached(locator)
 
+    def wait_for_loading_spinners_to_detach(self):
+        """
+        We often have to wait for many possible loading spinners to detach.
+        This function is a convenient way to do that at once.
+        """
+        time.sleep(0.5)
+        self.wait_for_loading_spinner_to_detatch()
+        self.wait_for_loading_spinner_table_to_detatch()
+        self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        self.wait_for_loading_spinner_to_detatch()
+        self.wait_for_loading_spinner_table_to_detatch()
+        self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+
     def wait_for_data_testid_to_be_visible(self, locator):
         """Normalizes a data-testid and waits for it to be visible"""
         normalized_locator = self.normalize_button_identifier(locator)
