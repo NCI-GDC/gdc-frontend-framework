@@ -92,5 +92,5 @@ tags: gdc-data-portal-v2, regression, cohort-bar,smoke-test
   |tab_name               |facet_name           |selection            |
   |-----------------------|---------------------|---------------------|
   |Demographic            |Gender               |female               |
-  |Stage Classification   |Ajcc Clinical Stage  |stage ivc            |
+  |General Diagnosis      |Ajcc Clinical Stage  |stage ivc            |
   |General                |Program              |TCGA                 |

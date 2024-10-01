@@ -31,7 +31,7 @@ class GenericLocators:
     TEXT_COHORT_BAR_CASE_COUNT = (
         f'[data-testid="expandcollapseButton"] >> span[class="pr-1 font-bold"]'
     )
-    CART_IDENT = '[data-testid="cartLink"]'
+    CART_IDENT = '[data-testid="button-header-cart"] >> ..'
 
     BUTTON_CLEAR_ACTIVE_COHORT_FILTERS = (
         '[data-testid="button-clear-all-cohort-filters"]'

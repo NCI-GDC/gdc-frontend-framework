@@ -771,19 +771,19 @@ A follow-up will occur in QA-2288 to test filtered download of TSV.
 ## Annotations Table - Validate JSON File Fields
   |field_name                               |
   |-----------------------------------------|
-  |annotation_id	                        |
+  |annotation_id	                          |
   |entity_submitter_id	                    |
-  |notes	                                |
+  |notes	                                  |
   |entity_type	                            |
   |case_id	                                |
   |project.project_id                       |
   |project.program.name                     |
-  |classification	                        |
-  |entity_id	                            |
+  |classification	                          |
+  |entity_id	                              |
   |category	                                |
   |created_datetime                         |
   |status                                   |
-  |case_submitter_id	                    |
+  |case_submitter_id	                      |
 * Verify that the "JSON from Case Summary Annotations Table" has <field_name> for each object
 
 ## Annotations Table - Click Link

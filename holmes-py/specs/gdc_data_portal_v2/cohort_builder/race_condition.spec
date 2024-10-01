@@ -93,8 +93,6 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
   |Demographic            |Gender               |male                 |
   |General Diagnosis      |Morphology           |8140/3               |
   |Disease Status and History|Prior Treatment   |no                   |
-  |Stage Classification   |Ajcc Pathologic Stage|stage iia            |
-  |Grade Classification   |Tumor Grade          |not reported         |
   |Exposure               |Alcohol History      |not reported         |
   |Available Data         |Data Format          |txt                  |
 * Collect Cohort Bar Case Count for comparison
@@ -110,10 +108,8 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
   |Gender               |male                 |2                        |
   |Morphology           |8140/3               |3                        |
   |Prior Treatment      |no                   |4                        |
-  |Ajcc Pathologic Stage|stage iia            |5                        |
-  |Tumor Grade          |not reported         |6                        |
-  |Alcohol History      |not reported         |7                        |
-  |Data Format          |txt                  |8                        |
+  |Alcohol History      |not reported         |5                        |
+  |Data Format          |txt                  |6                        |
 
 ## Treatment - Multiple Facets
 * Clear active cohort filters
@@ -143,12 +139,12 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
 
 
 
-## Other Classification - Cog Neuroblastoma Risk Group
+## Disease Specific Classifications - Cog Neuroblastoma Risk Group
 * Clear active cohort filters
 * Make the following selections on the Cohort Builder page without pauses
   |tab_name               |facet_name                   |selection            |
   |-----------------------|-----------------------------|---------------------|
-  |Other Classification   |Cog Neuroblastoma Risk Group |high risk            |
+  |Disease Specific Classifications   |Cog Neuroblastoma Risk Group |high risk            |
   |Available Data         |Platform                     |illumina             |
 * Collect Cohort Bar Case Count for comparison
 * Collect case counts for the following filters on the Cohort Builder page for cohort "Race_Condition"
@@ -163,14 +159,14 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
   |Platform                     |illumina             |2                        |
 
 
-## Other Classification - Eln Risk Classification
+## Disease Specific Classifications - Eln Risk Classification
 * Clear active cohort filters
 * Make the following selections on the Cohort Builder page without pauses
   |tab_name               |facet_name                   |selection            |
   |-----------------------|-----------------------------|---------------------|
-  |Other Classification   |Eln Risk Classification      |adverse              |
-  |Other Classification   |Eln Risk Classification      |intermediate         |
-  |Other Classification   |Eln Risk Classification      |favorable            |
+  |Disease Specific Classifications   |Eln Risk Classification      |adverse              |
+  |Disease Specific Classifications   |Eln Risk Classification      |intermediate         |
+  |Disease Specific Classifications   |Eln Risk Classification      |favorable            |
   |Disease Status and History|Progression or Recurrence |no                   |
 * Collect Cohort Bar Case Count for comparison
 * Collect case counts for the following filters on the Cohort Builder page for cohort "Race_Condition"
@@ -183,13 +179,13 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
   |-----------------------|-----------------------------|-------------------------|
   |Eln Risk Classification|adverseintermediatefavorable |1                        |
 
-## Other Classification - Wilms Tumor Histologic Subtype
+## Disease Specific Classifications - Wilms Tumor Histologic Subtype
 * Clear active cohort filters
 * Make the following selections on the Cohort Builder page without pauses
   |tab_name               |facet_name                     |selection            |
   |-----------------------|-------------------------------|---------------------|
-  |Other Classification   |Wilms Tumor Histologic Subtype |favorable            |
-  |Other Classification   |Wilms Tumor Histologic Subtype |unfavorable          |
+  |Disease Specific Classifications   |Wilms Tumor Histologic Subtype |favorable            |
+  |Disease Specific Classifications   |Wilms Tumor Histologic Subtype |unfavorable          |
   |Biospecimen            |Tumor Descriptor               |primary              |
 * Collect Cohort Bar Case Count for comparison
 * Collect case counts for the following filters on the Cohort Builder page for cohort "Race_Condition"

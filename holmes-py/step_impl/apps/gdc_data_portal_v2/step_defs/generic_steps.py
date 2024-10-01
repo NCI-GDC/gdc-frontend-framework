@@ -322,7 +322,7 @@ def verify_file_has_expected_field_names(file_type, field_name):
         json_arr = json.loads(data_store.spec[f"{file_type} contents"])
         field_names = field_name.split(".")
         for json_obj in json_arr:
-            if len(field_names) >= 1:
+            if len(field_names) > 1:
                 Utility.validate_json_key_exists(
                     Utility.flatten_json(json_obj), field_name, fails
                 )
