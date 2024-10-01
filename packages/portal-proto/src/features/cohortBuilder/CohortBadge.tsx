@@ -9,16 +9,17 @@ import {
   useSsmSetCountQuery,
 } from "@gff/core";
 import { ActionIcon, Badge } from "@mantine/core";
+import { useState } from "react";
 import { MdClose as ClearIcon } from "react-icons/md";
 import QueryRepresentationLabel from "../facets/QueryRepresentationLabel";
 
-const RemoveButton = ({ value }: { value: string }) => (
+const RemoveButton = ({ label }: { label: string }) => (
   <ActionIcon
     size="xs"
     color="white"
     radius="xl"
     variant="transparent"
-    aria-label={`remove ${value}`}
+    aria-label={`remove ${label}`}
   >
     <ClearIcon size={10} aria-hidden="true" />
   </ActionIcon>
@@ -45,6 +46,7 @@ const CohortBadge = ({
   isSuccess,
 }: CohortBadgeProps) => {
   const dispatch = useCoreDispatch();
+  const [label, setLabel] = useState("");
 
   const handleOnClick = () => {
     const newOperands = operands.filter((o) => o !== value);
@@ -81,7 +83,7 @@ const CohortBadge = ({
       color="accent-cool"
       size="md"
       className="normal-case items-center max-w-[162px] cursor-pointer pl-1.5 pr-0 hover:bg-accent-cool-darker"
-      rightSection={<RemoveButton value={value} />}
+      rightSection={<RemoveButton label={label} />}
       onClick={handleOnClick}
     >
       <OverflowTooltippedLabel
@@ -100,6 +102,7 @@ const CohortBadge = ({
               ? useSsmSetCountQuery
               : useCaseSetCountQuery
           }
+          setLabel={setLabel}
         />
       </OverflowTooltippedLabel>
     </Badge>
