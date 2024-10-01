@@ -46,7 +46,8 @@ def collect_case_counts_on_filters(cohort_name: str, table):
         # Switch to Selection view if possible
         if APP.cohort_case_view_page.is_aria_label_present_within_filter_card(v[0], "Selection view"):
             APP.cohort_builder_page.perform_action_within_filter_card(v[0], "Selection view")
-
+            # There is an animation after clicking this button
+            time.sleep(1.5)
         # Expands list of filters to select if possible
         if APP.cohort_case_view_page.is_show_more_or_show_less_button_visible_within_filter_card(
             v[0], "plus-icon"
@@ -54,6 +55,7 @@ def collect_case_counts_on_filters(cohort_name: str, table):
             APP.cohort_case_view_page.click_show_more_less_within_filter_card(
                 v[0], "plus-icon"
             )
+            time.sleep(0.5)
 
         case_count = (
             APP.cohort_case_view_page.get_filter_selection_count(
@@ -70,12 +72,14 @@ def filter_card_selections(table):
         # Switch to Selection view if possible
         if APP.cohort_case_view_page.is_aria_label_present_within_filter_card(v[0], "Selection view"):
             APP.cohort_case_view_page.perform_action_within_filter_card(v[0], "Selection view")
-
+            # There is an animation after clicking this button
+            time.sleep(1.5)
         # Expands list of filters to select if possible
         if APP.cohort_case_view_page.is_show_more_or_show_less_button_visible_within_filter_card(
             v[0], "plus-icon"
         ):
             APP.cohort_case_view_page.click_show_more_less_within_filter_card(v[0], "plus-icon")
+            time.sleep(0.5)
         APP.cohort_case_view_page.make_selection_within_filter_group(v[0], v[1])
         APP.shared.wait_for_loading_spinners_to_detach()
         time.sleep(0.1)

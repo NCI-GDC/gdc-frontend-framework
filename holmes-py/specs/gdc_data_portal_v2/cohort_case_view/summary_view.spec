@@ -63,6 +63,10 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
   |-----------------------|---------------------|-------------------------------|
   |General                |Disease Type         |plasma cell tumors             |
   |General                |Disease Type         |gliomas                        |
+  |General                |Project              |FM-AD                          |
+  |General                |Program              |FM                             |
+  |General                |Primary Site         |spinal cord, cranial nerves, and other parts of central nervous system|
+  |Demographic            |Gender               |female                         |
 
 ## Collapse Cohort Case View
 * Expand or collapse the cohort bar

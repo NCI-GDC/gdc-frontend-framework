@@ -201,9 +201,9 @@ def is_checkbox_checked(checked_or_not_checked:str, table):
         APP.shared.wait_for_loading_spinners_to_detach()
         is_checkbox_enabled = APP.cohort_builder_page.is_facet_card_enum_checkbox_checked(v[1],v[2])
         if checked_or_not_checked == "checked":
-            assert is_checkbox_enabled, f"The checkbox '{v[0]}' is NOT checked"
+            assert is_checkbox_enabled, f"The checkbox '{v[2]}' is NOT checked"
         elif checked_or_not_checked == "not checked":
-            assert is_checkbox_enabled==False, f"The checkbox '{v[0]}' is checked when it should Not be"
+            assert is_checkbox_enabled==False, f"The checkbox '{v[2]}' is checked when it should Not be"
         time.sleep(0.1)
 
 @step("Remove the following custom filters in facet cards on the <tab_name> tab on the Cohort Builder page <table>")
