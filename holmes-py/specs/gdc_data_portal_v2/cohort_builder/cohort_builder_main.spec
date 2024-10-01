@@ -20,18 +20,18 @@ tags: cohort-selections
   |facet_name       |selection            |
   |-----------------|---------------------|
   |Morphology       |8010/3               |
-* Is checkbox checked
-  |checkbox_id          |
-  |---------------------|
-  |8010/3               |
+* Validate checkboxes are "Checked" on the Cohort Builder page
+  |tab_name               |facet_name           |selection                      |
+  |-----------------------|---------------------|-------------------------------|
+  |General Diagnosis      |Morphology           |8010/3                         |
 * Make the following selections from "General Diagnosis" tab on the Cohort Builder page
   |facet_name       |selection            |
   |-----------------|---------------------|
   |Morphology       |8010/3               |
-* Is checkbox not checked
-  |checkbox_id          |
-  |---------------------|
-  |8010/3               |
+* Validate checkboxes are "Not Checked" on the Cohort Builder page
+  |tab_name               |facet_name           |selection                      |
+  |-----------------------|---------------------|-------------------------------|
+  |General Diagnosis      |Morphology           |8010/3                        |
 * Perform the following actions from "General Diagnosis" tab on the Cohort Builder page
   |facet_name       |action                 |
   |-----------------|-----------------------|

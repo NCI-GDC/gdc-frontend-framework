@@ -472,12 +472,6 @@ class BasePage:
         is_button_disabled = self.is_disabled(locator)
         return is_button_disabled
 
-    def is_facet_card_enum_checkbox_checked(self, checkbox_id):
-        """Returns if a filter card enum checkbox is checked"""
-        locator = GenericLocators.CHECKBOX_IDENT(checkbox_id)
-        result = self.is_checked(locator)
-        return result
-
     def is_cart_count_correct(self, correct_file_count):
         """Returns if cart count is correct"""
         locator = GenericLocators.CART_IDENT
