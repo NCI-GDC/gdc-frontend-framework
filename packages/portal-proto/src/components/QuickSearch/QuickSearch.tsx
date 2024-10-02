@@ -102,6 +102,7 @@ export const QuickSearch = (): JSX.Element => {
     fileHistory,
     isHistorySuccess,
     isHistoryUninit,
+    isHistoryError,
   ]);
 
   useDeepCompareEffect(() => {
