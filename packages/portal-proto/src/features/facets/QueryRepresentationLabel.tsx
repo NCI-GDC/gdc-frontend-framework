@@ -43,14 +43,14 @@ const QueryRepresentationLabel: React.FC<QueryRepresentationLabelProps> = ({
             field === "genes.gene_id" ? "gene" : fieldNameToTitle(field)
           }s`.toLowerCase()
         : "...";
-    setLabel(label);
+    setLabel && setLabel(label);
   } else {
     if (field === "genes.gene_id") {
       label = geneSymbolSuccess ? geneSymbolDict[value] ?? "..." : "...";
-      setLabel(label);
+      setLabel && setLabel(label);
     } else {
       label = value;
-      setLabel(label);
+      setLabel && setLabel(label);
     }
   }
 
