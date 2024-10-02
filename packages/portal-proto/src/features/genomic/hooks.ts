@@ -44,7 +44,7 @@ import {
   removeGeneAndSSMFilter,
   selectGeneAndSSMFiltersByNames,
   clearGeneAndSSMFilters,
-  removeAllNonGeneAndSSMFilters,
+  removeAllNonSetFilters,
 } from "@/features/genomic/geneAndSSMFiltersSlice";
 import {
   toggleFilter,
@@ -73,7 +73,7 @@ export const useUpdateGenomicEnumFacetFilter =
     return (field: string, operation: Operation) => {
       dispatch(updateGeneAndSSMFilter({ field: field, operation: operation }));
       if (GENE_AND_MUTATION_FIELDS.includes(field)) {
-        dispatch(removeAllNonGeneAndSSMFilters());
+        dispatch(removeAllNonSetFilters());
       }
     };
   };
