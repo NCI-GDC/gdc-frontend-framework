@@ -22,7 +22,9 @@ tags: gdc-data-portal-v2, repository, regression, slide-image-viewer
 
 ## Search for a Slide and Validate its contents
 * Select "Search Icon" on the Image Viewer page
+* Pause "1" seconds
 * Search for "TCGA-E2-A14N*" on the Image Viewer page
+* Pause "1" seconds
 * Select "Go" on the Image Viewer page
 * Select case or slide "TCGA-E2-A14N-01Z-00-DX1" on the Image Viewer page
 * Select "Details" on the Image Viewer page

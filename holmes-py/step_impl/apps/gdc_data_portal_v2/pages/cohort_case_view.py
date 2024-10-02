@@ -59,6 +59,10 @@ class CohortCaseViewPage(BasePage):
         self.click(locator)
         self.click_text_option_from_dropdown_menu(dropdown_option)
 
+    def click_clinical_summary_view(self, dropdown_option):
+        locator = CohortCaseViewLocators.BUTTON_CLINICAL_SUMMARY_VIEW
+        self.click(locator)
+        self.click_text_option_from_dropdown_menu(dropdown_option)
 
 
     def get_filter_selection_count(self, filter_group_name, selection):
