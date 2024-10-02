@@ -76,6 +76,7 @@ function TablePagination<TData>({
               ]}
               classNames={{
                 root: "w-16 font-heading",
+                dropdown: "p-0",
               }}
               data-testid="button-show-entries"
               aria-label="select page size"
