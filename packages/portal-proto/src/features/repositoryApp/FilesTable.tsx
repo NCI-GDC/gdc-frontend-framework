@@ -446,7 +446,7 @@ const FilesTables: React.FC = () => {
 
   return (
     <>
-      <div className="flex mb-2 Custom-Repo-Width:hidden">
+      <div className="flex Custom-Repo-Width:hidden">
         <Stats />
       </div>
       <VerticalTable
