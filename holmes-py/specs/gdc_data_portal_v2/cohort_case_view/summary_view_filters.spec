@@ -1,8 +1,8 @@
 # Cohort Case View - Summary View Filters
 Date Created    : 10/01/2024
-Version			: 1.0
-Owner		    : GDC QA
-Description		: Summary View Filters
+Version			    : 1.0
+Owner		        : GDC QA
+Description		  : Summary View Filters
 Test-Case       : PEAR-2207
 
 tags: gdc-data-portal-v2, regression, cohort-bar, case-view
@@ -67,6 +67,16 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
   |General                |Program              |FM                             |
   |General                |Primary Site         |spinal cord, cranial nerves, and other parts of central nervous system|
   |Demographic            |Gender               |female                         |
+
+## Flip Filters
+* Perform the following actions on a filter card in Cohort Case View
+  |filter_name          |action               |
+  |---------------------|---------------------|
+  |Primary Site         |Chart view           |
+  |Disease Type         |Chart view           |
+  |Project              |Chart view           |
+  |Program              |Chart view           |
+  |Gender               |Chart view           |
 
 ## Collapse Cohort Case View
 * Expand or collapse the cohort bar
