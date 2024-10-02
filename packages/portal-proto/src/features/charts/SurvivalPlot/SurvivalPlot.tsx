@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import { MdRestartAlt as ResetIcon } from "react-icons/md";
-import { FiDownload as DownloadIcon } from "react-icons/fi";
+import { MdDownload as DownloadIcon } from "react-icons/md";
 import { Box, Menu, Tooltip, Loader } from "@mantine/core";
 import { IoMdTrendingDown as SurvivalIcon } from "react-icons/io";
 import isNumber from "lodash/isNumber";

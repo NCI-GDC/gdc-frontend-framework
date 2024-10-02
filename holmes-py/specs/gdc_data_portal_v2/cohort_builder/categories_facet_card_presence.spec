@@ -37,6 +37,9 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards, regression
 * Validate presence of facet cards on the "General Diagnosis" tab on the Cohort Builder page
   |facet_name                 |
   |---------------------------|
+  |Ajcc Clinical Stage        |
+  |Ajcc Pathologic Stage      |
+  |Tumor Grade                |
   |Morphology                 |
   |Year of Diagnosis          |
   |Site of Resection or Biopsy|
@@ -52,11 +55,9 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards, regression
   |Progression or Recurrence  |
   |Residual Disease           |
 
-* Validate presence of facet cards on the "Stage Classification" tab on the Cohort Builder page
+* Validate presence of facet cards on the "Disease Specific Classifications" tab on the Cohort Builder page
   |facet_name                 |
   |---------------------------|
-  |Ajcc Clinical Stage        |
-  |Ajcc Pathologic Stage      |
   |Ann Arbor Clinical Stage   |
   |Ann Arbor Pathologic Stage |
   |Cog Renal Stage            |
@@ -66,17 +67,8 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards, regression
   |Inss Stage                 |
   |Iss Stage                  |
   |Masaoka Stage              |
-
-* Validate presence of facet cards on the "Grade Classification" tab on the Cohort Builder page
-  |facet_name                 |
-  |---------------------------|
   |Inpc Grade                 |
-  |Tumor Grade                |
   |Who Cns Grade              |
-
-* Validate presence of facet cards on the "Other Classification" tab on the Cohort Builder page
-  |facet_name                     |
-  |-------------------------------|
   |Cog Neuroblastoma Risk Group   |
   |Cog Rhabdomyosarcoma Risk Group|
   |International Prognostic Index |

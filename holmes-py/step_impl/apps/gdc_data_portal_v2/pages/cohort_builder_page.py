@@ -3,6 +3,7 @@ from playwright.sync_api import Page
 from ....base.base_page import BasePage
 from ....base.base_page import GenericLocators
 
+import time
 
 class CohortBuilderPageLocators:
     BUTTON_IDENT = (
@@ -209,6 +210,16 @@ class CohortBuilderPage(BasePage):
 
     def is_facet_card_custom_filter_text_present(self, facet_card, text):
         """Returns if filter text is present on given facet card"""
+        loading_locator = CohortBuilderPageLocators.FACET_GROUP_CUSTOM_FILTER_TEXT_IDENT(facet_card, "...")
+        # If the text "..." is visible, that means the card is still loading information. We wait until
+        # it disappears or 10 seconds elapses before checking the card for actual text
+        retry_counter = 0
+        while self.is_visible(loading_locator):
+            time.sleep(1)
+            loading_locator = CohortBuilderPageLocators.FACET_GROUP_CUSTOM_FILTER_TEXT_IDENT(facet_card, "...")
+            retry_counter = retry_counter+1
+            if retry_counter >= 10:
+                break
         locator = CohortBuilderPageLocators.FACET_GROUP_CUSTOM_FILTER_TEXT_IDENT(facet_card, text)
         return self.is_visible(locator)
 

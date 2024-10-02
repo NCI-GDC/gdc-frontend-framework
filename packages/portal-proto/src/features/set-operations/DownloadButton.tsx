@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ActionIcon, Loader, Tooltip, Modal } from "@mantine/core";
-import { FiDownload as DownloadIcon } from "react-icons/fi";
+import { MdDownload as DownloadIcon } from "react-icons/md";
 import { SetOperationEntityType } from "@/features/set-operations/types";
 import {
   useCreateCaseSetFromFiltersMutation,

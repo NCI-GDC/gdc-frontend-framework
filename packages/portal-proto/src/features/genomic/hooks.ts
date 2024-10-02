@@ -388,6 +388,12 @@ export const useTopGeneSsms = ({
       ) {
         return;
       }
+
+      if (name === undefined) {
+        setComparativeSurvival(undefined);
+        return;
+      }
+
       const { consequence_type, aa_change } = ssms;
       setComparativeSurvival({
         symbol: symbol,

@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useGetHistoryQuery } from "@gff/core";
 import saveAs from "file-saver";
-import { FiDownload as DownloadIcon } from "react-icons/fi";
+import { MdDownload as DownloadIcon } from "react-icons/md";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { HeaderTitle } from "@/components/tailwindComponents";

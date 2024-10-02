@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { FiDownload as DownloadIcon } from "react-icons/fi";
+import { MdDownload as DownloadIcon } from "react-icons/md";
 import { handleDownloadPNG, handleDownloadSVG } from "@/features/charts/utils";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { DashboardDownloadContext } from "@/utils/contexts";

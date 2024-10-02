@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
 import {
   fieldNameToTitle,
@@ -13,6 +13,7 @@ interface QueryRepresentationLabelProps {
   readonly geneSymbolDict: Record<string, string>;
   readonly geneSymbolSuccess: boolean;
   readonly useCountHook: UseQuery<any>;
+  readonly setLabel?: Dispatch<SetStateAction<string>>;
 }
 
 const QueryRepresentationLabel: React.FC<QueryRepresentationLabelProps> = ({
@@ -21,6 +22,7 @@ const QueryRepresentationLabel: React.FC<QueryRepresentationLabelProps> = ({
   geneSymbolDict,
   geneSymbolSuccess,
   useCountHook,
+  setLabel,
 }: QueryRepresentationLabelProps) => {
   let label: string;
   const [docType] = field.split(".");
@@ -41,11 +43,14 @@ const QueryRepresentationLabel: React.FC<QueryRepresentationLabelProps> = ({
             field === "genes.gene_id" ? "gene" : fieldNameToTitle(field)
           }s`.toLowerCase()
         : "...";
+    setLabel && setLabel(label);
   } else {
     if (field === "genes.gene_id") {
       label = geneSymbolSuccess ? geneSymbolDict[value] ?? "..." : "...";
+      setLabel && setLabel(label);
     } else {
       label = value;
+      setLabel && setLabel(label);
     }
   }
 
