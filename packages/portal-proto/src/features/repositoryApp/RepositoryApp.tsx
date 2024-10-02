@@ -15,7 +15,10 @@ import {
 } from "@gff/core";
 import { useEffect, useState } from "react";
 import { AppStore, useAppSelector } from "./appApi";
-import { MdShoppingCart as CartIcon } from "react-icons/md";
+import {
+  MdShoppingCart as CartIcon,
+  MdDownload as DownloadIcon,
+} from "react-icons/md";
 import { VscTrash } from "react-icons/vsc";
 import {
   addToCart,
@@ -149,11 +152,16 @@ export const RepositoryApp = (): JSX.Element => {
                         size="1.25em"
                         aria-hidden="true"
                         data-testid="dropdown-icon"
+                        className="border-l pl-1 -mr-2"
                       />
                     }
-                    classNames={{
-                      section: "border-l pl-1 -mr-2",
-                    }}
+                    leftSection={
+                      <DownloadIcon
+                        aria-hidden="true"
+                        size="1rem"
+                        className="hidden xl:block"
+                      />
+                    }
                     variant="outline"
                   >
                     Download Associated Data

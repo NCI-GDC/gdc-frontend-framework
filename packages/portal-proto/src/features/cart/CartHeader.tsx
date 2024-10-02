@@ -193,7 +193,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
               classNames={{
                 root: `${buttonStyle} ${focusStyles}`,
               }}
-              leftSection={<DownloadIcon aria-hidden="true" />}
+              leftSection={<DownloadIcon aria-hidden="true" size="1rem" />}
               rightSection={
                 <DropdownIcon
                   size={20}
