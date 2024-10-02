@@ -5,7 +5,7 @@ import download from "@/utils/download";
 import { useCoreDispatch } from "@gff/core";
 import { Button, Loader, Tooltip } from "@mantine/core";
 import { useState } from "react";
-import { FiDownload as DownloadIcon } from "react-icons/fi";
+import { MdDownload as DownloadIcon } from "react-icons/md";
 import { ProjectViewProps } from "./ProjectView";
 
 function SummaryHeaderControls({

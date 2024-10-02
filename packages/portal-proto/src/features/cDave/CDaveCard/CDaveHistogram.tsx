@@ -1,6 +1,6 @@
 import { useState, useRef, useContext, useEffect } from "react";
 import { ActionIcon, Radio, Group, Loader, Menu, Tooltip } from "@mantine/core";
-import { FiDownload as DownloadIcon } from "react-icons/fi";
+import { MdDownload as DownloadIcon } from "react-icons/md";
 import tailwindConfig from "tailwind.config";
 import OffscreenWrapper from "@/components/OffscreenWrapper";
 import { handleDownloadPNG, handleDownloadSVG } from "@/features/charts/utils";

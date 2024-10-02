@@ -1,5 +1,5 @@
 import { ButtonProps, Loader, Tooltip } from "@mantine/core";
-import { FiDownload } from "react-icons/fi";
+import { MdDownload as DownloadIcon } from "react-icons/md";
 import download from "src/utils/download";
 import { hideModal, Modals, useCoreDispatch } from "@gff/core";
 import { Dispatch, SetStateAction, forwardRef } from "react";
@@ -127,7 +127,7 @@ export const DownloadButton = forwardRef<
     const Icon = active ? (
       <Loader size="sm" className="p-1" />
     ) : (
-      <FiDownload title="download" size={16} />
+      <DownloadIcon title="download" size={16} />
     );
 
     return (
@@ -143,7 +143,7 @@ export const DownloadButton = forwardRef<
           leftSection={
             showIcon &&
             inactiveText && (
-              <FiDownload aria-label="download" className="hidden xl:block" />
+              <DownloadIcon aria-label="download" className="hidden xl:block" />
             )
           }
           classNames={{ section: "mr-0 xl:mr-3" }}
