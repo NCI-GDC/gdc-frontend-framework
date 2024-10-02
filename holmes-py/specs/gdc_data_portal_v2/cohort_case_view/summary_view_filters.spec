@@ -15,7 +15,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
 * Go to tab "Summary View" in Cohort Case View
 
 ## Validate Filter Card Presence
-* Verify presence of filter cards in Cohort Case View
+* Verify presence of filter cards in Cohort Summary View
   |facet_name                 |
   |---------------------------|
   |Primary Site               |
@@ -25,7 +25,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
   |Gender                     |
 
 ## Apply Filters
-* Make the following selections on a filter card in Cohort Case View
+* Make the following selections on a filter card in Cohort Summary View
   |facet_name           |selection            |
   |---------------------|---------------------|
   |Disease Type         |plasma cell tumors   |
@@ -46,7 +46,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
 
 ## Validate Cohort
 * Collect Cohort Bar Case Count for comparison
-* Collect case counts for the following filters in Cohort Case View for cohort "CCV_SV_1"
+* Collect case counts for the following filters in Cohort Summary View for cohort "CCV_SV_1"
   |facet_name           |selection                      |
   |---------------------|-------------------------------|
   |Primary Site         |spinal cord, cranial nerves, and other parts of central nervous system|
@@ -69,7 +69,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
   |Demographic            |Gender               |female                         |
 
 ## Flip Filters
-* Perform the following actions on a filter card in Cohort Case View
+* Perform the following actions on a filter card in Cohort Summary View
   |filter_name          |action               |
   |---------------------|---------------------|
   |Primary Site         |Chart view           |

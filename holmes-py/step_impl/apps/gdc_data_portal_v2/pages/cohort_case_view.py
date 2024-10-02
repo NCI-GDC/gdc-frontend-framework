@@ -8,6 +8,8 @@ import time
 class CohortCaseViewLocators:
     BUTTON_EXPAND_COLLAPSE_COHORT_BAR = '[data-testid="button-cases-cohort-bar"]'
 
+    BUTTON_CASE_VIEW = lambda button_name: f'[data-testid="button-{button_name}-cases-summary"]'
+
     FILTER_GROUP_IDENT = (
         lambda group_name: f'[data-testid="filters-facets-summary-view"] >> div:nth-child(1) >> div:text-is("{group_name}")'
     )
@@ -41,6 +43,13 @@ class CohortCaseViewPage(BasePage):
         tab_name = self.normalize_button_identifier(tab_name)
         self.click_button_data_testid(tab_name)
         self.wait_for_loading_spinners_to_detach()
+
+    def click_summary_view_button(self, button_name):
+        button_name = self.normalize_button_identifier(button_name)
+        locator = CohortCaseViewLocators.BUTTON_CASE_VIEW(button_name)
+        self.click(locator)
+
+
 
 
     def get_filter_selection_count(self, filter_group_name, selection):

@@ -21,18 +21,23 @@ def click_tab_name(tab_name:str):
      """Clicks tab name"""
      APP.cohort_case_view_page.click_tab_name(tab_name)
 
+@step("Select custom filter <filter_name> in Cohort Summary View")
+def click_custom_filter_cohort_summary_view(filter_name:str):
+    APP.cohort_case_view_page.click_summary_view_button("Custom Filters")
+    APP.shared.click_text_option_from_dropdown_menu(filter_name)
 
-@step("Verify presence of filter cards in Cohort Case View <table>")
+
+@step("Verify presence of filter cards in Cohort Summary View <table>")
 def verify_filter_cards_presence(table):
     for k, v in enumerate(table):
         is_filter_visible = APP.cohort_case_view_page.is_filter_card_present(v[0])
         assert (
             is_filter_visible
-        ), f"In Cohort Case View, the filter card '{v[0]}' is NOT visible"
+        ), f"In Cohort Summary View, the filter card '{v[0]}' is NOT visible"
         time.sleep(0.1)
 
 @step(
-    "Collect case counts for the following filters in Cohort Case View for cohort <cohort_name> <table>"
+    "Collect case counts for the following filters in Cohort Summary View for cohort <cohort_name> <table>"
 )
 def collect_case_counts_on_filters(cohort_name: str, table):
     """
@@ -65,7 +70,7 @@ def collect_case_counts_on_filters(cohort_name: str, table):
         # Saves the case count under the filter, filter and cohort name
         data_store.spec[f"{v[0]}_{v[1]}_{cohort_name} Count"] = case_count
 
-@step("Make the following selections on a filter card in Cohort Case View <table>")
+@step("Make the following selections on a filter card in Cohort Summary View <table>")
 def filter_card_selections(table):
     """Trio of actions for the filter cards and filters on the projects page"""
     for k, v in enumerate(table):
@@ -84,14 +89,14 @@ def filter_card_selections(table):
         APP.shared.wait_for_loading_spinners_to_detach()
         time.sleep(0.1)
 
-@step("Perform the following actions on a filter card in Cohort Case View <table>")
+@step("Perform the following actions on a filter card in Cohort Summary View <table>")
 def perform_filter_card_action(table):
     for k, v in enumerate(table):
         APP.cohort_case_view_page.perform_action_within_filter_card(v[0], v[1])
         APP.shared.wait_for_loading_spinners_to_detach()
         time.sleep(0.1)
 
-@step("Expand or contract a filter in Cohort Case View <table>")
+@step("Expand or contract a filter in Cohort Summary View <table>")
 def click_show_more_or_show_less(table):
     for k, v in enumerate(table):
         APP.cohort_case_view_page.click_show_more_less_within_filter_card(v[0], v[1])
