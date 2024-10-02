@@ -170,6 +170,7 @@ def download_file_at_file_table(file: str, source: str):
         "Case Summary Files Table File": APP.case_summary_page.click_files_table_download_file_button,
         "Case Summary Annotations Table": APP.case_summary_page.click_annotations_table_download_json_or_tsv_button,
         "Cohort Bar": APP.cohort_bar.click_cohort_bar_button,
+        "Cohort Summary View Biospecimen": APP.cohort_case_view_page.click_biospecimen_summary_view,
         "Manage Sets": APP.manage_sets_page.click_on_download_for_set,
         "Cohort Comparison": APP.cohort_comparison_page.click_download_tsv_button_on_analysis_card_cohort_comparison,
         "Mutation Frequency": APP.mutation_frequency_page.click_table_download_button,
@@ -256,10 +257,11 @@ def read_file_content_from_compressed_file(file_type):
     tar = tarfile.open(data_store.spec[file_type], "r:gz")
     all_files_content = ""
     # Skips reading the metadata file
-    for member in tar.getmembers()[1:]:
+    for member in tar.getmembers():
         f = tar.extractfile(member)
         single_file_content = f.read()
         all_files_content += str(single_file_content)
+    print(all_files_content)
     data_store.spec[f"{file_type} contents"] = all_files_content
 
 

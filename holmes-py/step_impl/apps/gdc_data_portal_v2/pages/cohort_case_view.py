@@ -9,6 +9,11 @@ class CohortCaseViewLocators:
     BUTTON_EXPAND_COLLAPSE_COHORT_BAR = '[data-testid="button-cases-cohort-bar"]'
 
     BUTTON_CASE_VIEW = lambda button_name: f'[data-testid="button-{button_name}-cases-summary"]'
+    BUTTON_FILES_CASE_VIEW = '[data-testid="button-files-cases-summary"]'
+
+    BUTTON_BIOSPECIMEN_SUMMARY_VIEW = '[data-testid="button-biospecimen-cases-summary"]'
+    BUTTON_CLINICAL_SUMMARY_VIEW = '[data-testid="button-clinical-cases-summary"]'
+
 
     FILTER_GROUP_IDENT = (
         lambda group_name: f'[data-testid="filters-facets-summary-view"] >> div:nth-child(1) >> div:text-is("{group_name}")'
@@ -49,6 +54,10 @@ class CohortCaseViewPage(BasePage):
         locator = CohortCaseViewLocators.BUTTON_CASE_VIEW(button_name)
         self.click(locator)
 
+    def click_biospecimen_summary_view(self, dropdown_option):
+        locator = CohortCaseViewLocators.BUTTON_BIOSPECIMEN_SUMMARY_VIEW
+        self.click(locator)
+        self.click_text_option_from_dropdown_menu(dropdown_option)
 
 
 
