@@ -279,7 +279,10 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
             </SummaryModalContext.Provider>
           </URLContext.Provider>
           <Head>
-            <script src="https://assets.adobedtm.com/6a4249cd0a2c/073fd0859f8f/launch-39d47c17b228.min.js" />
+            <script
+              src="https://assets.adobedtm.com/6a4249cd0a2c/785de09de161/launch-70d67a6a40a8.min.js"
+              async
+            ></script>
           </Head>
 
           <script>{`_satellite.pageBottom()`}</script>
