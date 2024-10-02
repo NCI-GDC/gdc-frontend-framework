@@ -79,7 +79,7 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
 * Remove these filters from the cohort query area
   |Filter to Remove             |
   |-----------------------------|
-  |Gene Id                      |
+  |Mutated Gene                 |
 * Validate expected custom filters "are not" present in facet cards on the "Molecular Filters" tab on the Cohort Builder page
   |facet_name           |custom_filter_text                     |
   |---------------------|---------------------------------------|

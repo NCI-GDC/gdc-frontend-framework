@@ -6,10 +6,14 @@ import {
   useAllCases,
   SortBy,
   selectCurrentCohortFilters,
-  buildCohortGqlOperator,
   GqlOperation,
   useCurrentCohortCounts,
   selectCurrentCohortId,
+  convertFilterToGqlFilter,
+  appendFilterToOperation,
+  filterSetToOperation,
+  Union,
+  Intersection,
 } from "@gff/core";
 import { Divider, Loader } from "@mantine/core";
 import FunctionButton from "@/components/FunctionButton";
@@ -20,7 +24,11 @@ import {
   statusBooleansToDataStatus,
 } from "src/utils";
 import { CasesCohortButtonFromValues } from "./CasesCohortButton";
-import { casesTableDataType, useGenerateCasesTableColumns } from "./utils";
+import {
+  buildCasesTableSearchFilters,
+  casesTableDataType,
+  useGenerateCasesTableColumns,
+} from "./utils";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { MdDownload as DownloadIcon } from "react-icons/md";
 import { CountsIcon } from "@/components/tailwindComponents";
@@ -82,6 +90,14 @@ export const ContextualCasesView: React.FC = () => {
     setCohortTableTSVDownloadActive(false);
   }, [currentCohortId]);
 
+  const searchFilters = buildCasesTableSearchFilters(searchTerm);
+  const combinedFilters = convertFilterToGqlFilter(
+    appendFilterToOperation(
+      filterSetToOperation(cohortFilters) as Union | Intersection | undefined,
+      searchFilters,
+    ),
+  );
+
   const { data, isFetching, isSuccess, isError, pagination } = useAllCases({
     fields: [
       "case_id",
@@ -111,10 +127,9 @@ export const ContextualCasesView: React.FC = () => {
       "files.data_type",
     ],
     size: pageSize,
-    filters: cohortFilters,
+    filters: combinedFilters,
     from: offset * pageSize,
     sortBy: sortBy,
-    searchTerm,
   });
 
   useDeepCompareEffect(() => {
@@ -234,7 +249,7 @@ export const ContextualCasesView: React.FC = () => {
   const caseCounts =
     pickedCases.length > 0 ? pickedCases.length : cohortCounts?.data?.caseCount;
 
-  const downloadFilter: GqlOperation =
+  const clinicalBiodownloadFilter: GqlOperation =
     pickedCases.length > 0
       ? {
           op: "in",
@@ -243,7 +258,7 @@ export const ContextualCasesView: React.FC = () => {
             value: pickedCases,
           },
         }
-      : buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation);
+      : combinedFilters;
 
   // TODO - restore attachment option, PEAR-1947
   const handleTSVDownload = async () => {
@@ -255,8 +270,7 @@ export const ContextualCasesView: React.FC = () => {
         attachment: false,
         size: cohortCounts?.data?.caseCount,
         //filename: `cohort.${convertDateToString(new Date())}.tsv`,
-        case_filters:
-          buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation),
+        case_filters: combinedFilters,
         fields: [
           "case_id",
           "submitter_id",
@@ -289,8 +303,7 @@ export const ContextualCasesView: React.FC = () => {
       dispatch,
       params: {
         filename: `cohort.${convertDateToString(new Date())}.json`,
-        case_filters:
-          buildCohortGqlOperator(cohortFilters) ?? ({} as GqlOperation),
+        case_filters: combinedFilters,
         attachment: true,
         pretty: true,
         format: "JSON",
@@ -327,7 +340,7 @@ export const ContextualCasesView: React.FC = () => {
         filename: `clinical.${
           pickedCases.length > 0 ? "cases_selection" : "cohort"
         }.${new Date().toISOString().slice(0, 10)}.tar.gz`,
-        case_filters: downloadFilter, // NOTE: as downloadFilter is either a list of case_ids or the cohort's filters
+        case_filters: clinicalBiodownloadFilter, // NOTE: as clinicalBiodownloadFilter is either a list of case_ids or the cohort's filters
         // there are no local filters to be passed
         size: caseCounts,
       },
@@ -347,7 +360,7 @@ export const ContextualCasesView: React.FC = () => {
         filename: `clinical.${
           pickedCases.length > 0 ? "cases_selection" : "cohort"
         }.${new Date().toISOString().slice(0, 10)}.json`,
-        case_filters: downloadFilter,
+        case_filters: clinicalBiodownloadFilter,
         size: caseCounts,
       },
       done: () => setClinicalDownloadActive(false),
@@ -364,7 +377,7 @@ export const ContextualCasesView: React.FC = () => {
         filename: `biospecimen.${
           pickedCases.length > 0 ? "cases_selection" : "cohort"
         }.${new Date().toISOString().slice(0, 10)}.tar.gz`,
-        case_filters: downloadFilter,
+        case_filters: clinicalBiodownloadFilter,
         size: caseCounts,
       },
       done: () => setBiospecimenDownloadActive(false),
@@ -383,7 +396,7 @@ export const ContextualCasesView: React.FC = () => {
         filename: `biospecimen.${
           pickedCases.length > 0 ? "cases_selection" : "cohort"
         }.${new Date().toISOString().slice(0, 10)}.json`,
-        case_filters: downloadFilter,
+        case_filters: clinicalBiodownloadFilter,
         size: caseCounts,
       },
       done: () => setBiospecimenDownloadActive(false),

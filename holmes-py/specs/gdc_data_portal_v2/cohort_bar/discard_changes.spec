@@ -92,7 +92,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |facet_name         |selection            |
   |-------------------|---------------------|
   |Ethnicity          |not hispanic or latino|
-* Make the following selections from "Stage Classification" tab on the Cohort Builder page
+* Make the following selections from "Disease Specific Classifications" tab on the Cohort Builder page
   |facet_name         |selection            |
   |-------------------|---------------------|
   |Igcccg Stage       |good prognosis       |

@@ -29,6 +29,11 @@
     "general_diagnosis": {
       "label": "General Diagnosis",
       "facets": [
+        "cases.diagnoses.ajcc_clinical_stage",
+        "cases.diagnoses.ajcc_pathologic_stage",
+        "cases.diagnoses.uicc_clinical_stage",
+        "cases.diagnoses.uicc_pathologic_stage",
+        "cases.diagnoses.tumor_grade",
         "cases.diagnoses.morphology",
         "cases.diagnoses.year_of_diagnosis",
         "cases.diagnoses.site_of_resection_or_biopsy",
@@ -50,37 +55,19 @@
       "docType": "cases",
       "index": "explore"
     },
-    "stage_classification": {
-      "label": "Stage Classification",
+    "disease_specific_classifications": {
+      "label": "Disease Specific Classifications",
       "facets": [
-        "cases.diagnoses.ajcc_clinical_stage",
-        "cases.diagnoses.ajcc_pathologic_stage",
         "cases.diagnoses.ann_arbor_clinical_stage",
         "cases.diagnoses.ann_arbor_pathologic_stage",
         "cases.diagnoses.cog_renal_stage",
-        "cases.diagnoses.enneking_msts_stage",
         "cases.diagnoses.figo_stage",
         "cases.diagnoses.igcccg_stage",
         "cases.diagnoses.inss_stage",
         "cases.diagnoses.iss_stage",
-        "cases.diagnoses.masaoka_stage"
-      ],
-      "docType": "cases",
-      "index": "explore"
-    },
-    "grade_classification": {
-      "label": "Grade Classification",
-      "facets": [
+        "cases.diagnoses.masaoka_stage",
         "cases.diagnoses.inpc_grade",
-        "cases.diagnoses.tumor_grade",
-        "cases.diagnoses.who_cns_grade"
-      ],
-      "docType": "cases",
-      "index": "explore"
-    },
-    "other_classification": {
-      "label": "Other Classification",
-      "facets": [
+        "cases.diagnoses.who_cns_grade",
         "cases.diagnoses.cog_neuroblastoma_risk_group",
         "cases.diagnoses.cog_rhabdomyosarcoma_risk_group",
         "cases.diagnoses.eln_risk_classification",
