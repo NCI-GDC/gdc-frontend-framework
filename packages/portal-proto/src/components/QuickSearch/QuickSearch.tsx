@@ -44,6 +44,7 @@ export const QuickSearch = (): JSX.Element => {
     data: fileHistory,
     isSuccess: isHistorySuccess,
     isUninitialized: isHistoryUninit,
+    isError: isHistoryError,
   } = useGetHistoryQuery(searchText.trim(), {
     skip:
       searchText === "" ||
@@ -80,6 +81,7 @@ export const QuickSearch = (): JSX.Element => {
         // We checked history and there isn't a superseded file
         if (
           isHistoryUninit ||
+          isHistoryError ||
           (isHistorySuccess &&
             (fileHistory === undefined || fileHistory.length < 2))
         ) {
