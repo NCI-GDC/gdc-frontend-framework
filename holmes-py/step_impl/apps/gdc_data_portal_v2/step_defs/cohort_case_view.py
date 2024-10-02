@@ -23,6 +23,7 @@ def click_tab_name(tab_name:str):
 
 @step("Select <button_name> in Cohort Case View")
 def click_cohort_case_view_button(button_name):
+    """Ckicks button with data-testid ends in 'cases-summary"'"""
     APP.cohort_case_view_page.click_summary_view_button(button_name)
 
 @step("Select Custom Filter <filter_name> in Cohort Case View")
@@ -44,10 +45,10 @@ def verify_filter_cards_presence(table):
 )
 def collect_case_counts_on_filters(cohort_name: str, table):
     """
-    collect_case_counts_on_filters Collect case count on filters on the cohort builder page.
+    collect_case_counts_on_filters Collect case count on filters on the cohort case summary view.
     Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'.
     :param cohort_name: Cohort Name we are collecting the information under
-    :param v[0]: filter Card Name
+    :param v[0]: Filter Card Name
     :param v[1]: Filter we are collecting case count info on
     """
     for k, v in enumerate(table):
@@ -75,7 +76,6 @@ def collect_case_counts_on_filters(cohort_name: str, table):
 
 @step("Make the following selections on a filter card in Cohort Summary View <table>")
 def filter_card_selections(table):
-    """Trio of actions for the filter cards and filters on the projects page"""
     for k, v in enumerate(table):
         # Switch to Selection view if possible
         if APP.cohort_case_view_page.is_aria_label_present_within_filter_card(v[0], "Selection view"):

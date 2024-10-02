@@ -40,11 +40,13 @@ class CohortCaseViewPage(BasePage):
         self.driver.goto(self.URL)
 
     def click_expand_collapse_cohort_bar(self):
+        """Clicks expand/collapse cohort bar button"""
         locator = CohortCaseViewLocators.BUTTON_EXPAND_COLLAPSE_COHORT_BAR
         self.click(locator)
         self.wait_for_loading_spinners_to_detach()
 
     def click_tab_name(self, tab_name):
+        """Clicks tab in cohort case view area"""
         tab_name = self.normalize_button_identifier(tab_name)
         self.click_button_data_testid(tab_name)
         self.wait_for_loading_spinners_to_detach()
@@ -55,6 +57,7 @@ class CohortCaseViewPage(BasePage):
         self.click_text_option_from_dropdown_menu(dropdown_option)
 
     def click_summary_view_button(self, button_name):
+        """Clicks button that ends in 'cases-summary' """
         button_name = self.normalize_button_identifier(button_name)
         locator = CohortCaseViewLocators.BUTTON_CASE_VIEW(button_name)
         self.click(locator)
