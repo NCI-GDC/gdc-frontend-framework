@@ -166,7 +166,6 @@ export interface SsmsTableRequestParameters extends TablePageOffsetProps {
   readonly cohortFilters: FilterSet;
   readonly tableFilters: FilterSet;
   readonly _cohortFiltersNoSet?: FilterSet;
-  readonly caseFilter: FilterSet | undefined;
 }
 
 interface ssmtableResponse {
@@ -235,7 +234,6 @@ const generateFilter = ({
   geneSymbol,
   cohortFilters, // the cohort filters which used to filter the cases
   tableFilters,
-  caseFilter = undefined,
 }: SsmsTableRequestParameters) => {
   const cohortFiltersGQL = buildCohortGqlOperator(cohortFilters);
 
@@ -243,9 +241,7 @@ const generateFilter = ({
     ssmCaseFilter: getSSMTestedCases(geneSymbol),
     // for table filters use both cohort and genomic filter along with search filter
     // for case summary we need to not use case filter
-    caseFilters: caseFilter
-      ? buildCohortGqlOperator(caseFilter)
-      : cohortFiltersGQL,
+    caseFilters: cohortFiltersGQL,
     ssmsTable_filters: buildCohortGqlOperator(tableFilters) ?? {},
     consequenceFilters: {
       content: [
