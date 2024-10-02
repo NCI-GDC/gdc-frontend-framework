@@ -170,6 +170,7 @@ def download_file_at_file_table(file: str, source: str):
         "Case Summary Files Table File": APP.case_summary_page.click_files_table_download_file_button,
         "Case Summary Annotations Table": APP.case_summary_page.click_annotations_table_download_json_or_tsv_button,
         "Cohort Bar": APP.cohort_bar.click_cohort_bar_button,
+        "Cohort Case View Files": APP.cohort_case_view_page.click_files_and_dropdown_option_cases_view,
         "Cohort Summary View Biospecimen": APP.cohort_case_view_page.click_biospecimen_summary_view,
         "Cohort Summary View Clinical": APP.cohort_case_view_page.click_clinical_summary_view,
         "Manage Sets": APP.manage_sets_page.click_on_download_for_set,

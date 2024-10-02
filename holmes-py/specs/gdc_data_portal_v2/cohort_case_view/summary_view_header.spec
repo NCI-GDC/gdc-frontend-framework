@@ -127,9 +127,9 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
   |Project              |MMRF-COMMPASS        |
   |Gender               |female               |
 * Make the following selections from "Disease Specific Classifications" tab on the Cohort Builder page
-  |facet_name       |selection            |
-  |-----------------|---------------------|
-  |Iss Stage        |iii                  |
+  |facet_name           |selection            |
+  |---------------------|---------------------|
+  |Iss Stage            |iii                  |
 * Download "TSV" from "Cohort Summary View Clinical"
 * Read file content from compressed "TSV from Cohort Summary View Clinical"
 * Verify that "TSV from Cohort Summary View Clinical" has expected information
@@ -232,12 +232,116 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
   |demographic.created_datetime	                    |
 * Verify that the "JSON from Cohort Summary View Clinical" has <field_name> for each object
 
+## Download Manifest
+* Clear active cohort filters
+* Make the following selections on a filter card in Cohort Summary View
+  |facet_name           |selection            |
+  |---------------------|---------------------|
+  |Disease Type         |unknown              |
+* Download "Download Manifest" from "Cohort Case View Files"
+* Read from "Download Manifest from Cohort Case View Files"
+* Verify that "Download Manifest from Cohort Case View Files" has expected information
+    |required_info                        |
+    |-------------------------------------|
+    |id                                   |
+    |filename                             |
+    |md5                                  |
+    |size                                 |
+    |state                                |
+    |3da23217-5126-4ef2-9779-5d2bb7167604 |
+    |ORGANOID-PANCREATIC.644bf455-327b-4cb2-bff0-cf5b79d8c99d.star_fusion.rna_fusion.bedpe |
+    |86cf23a514d59a0e3c43a30045dc1b14     |
+    |3221442                              |
+    |released                             |
+    |8492c64e-6b0a-4d41-b302-b1b9819157ff |
+    |5ca312fa-9f86-448a-8702-acc7f93e1147 |
+* Verify that "Download Manifest from Cohort Case View Files" does not contain specified information
+    |required_info                        |
+    |-------------------------------------|
+    |7bd490bc-ff7e-4ab2-8845-3d452817fb52 |
+    |ebeb1b04-806d-4f89-97a9-65a788b26f8e |
+    |7e94600c-aaa0-4ab6-be83-fb5f45f4752c |
+    |bb6d304f-5b70-4307-889c-0fe15cb2ce84 |
+
+## Metadata
+* Download "Metadata" from "Cohort Case View Files"
+* Read from "Metadata from Cohort Case View Files"
+* Verify that "Metadata from Cohort Case View Files" has expected information
+    |required_info                        |
+    |-------------------------------------|
+    |aq-BA2448R                           |
+    |98c21e0b-1373-4785-8edf-345c55fd370c |
+    |a9838c1c-a436-4d93-83ae-e47b88a02264.rna_seq.star_splice_junctions.tsv.gz|
+    |3ed266f1-300a-427e-ac6f-1c59c01038ae |
+    |122a0dd1445b2664b1b40b7df7b0e2240183d712|
+    |a9838c1c-a436-4d93-83ae-e47b88a02264.rna_seq.genomic.gdc_realn.ba |
+    |73590352                             |
+    |9a5f3b97-3314-437c-87ca-fe418f97cd37 |
+    |931978fc-14e5-4c0f-a5d3-6ae00dbb1cda |
+    |2019-07-09T14:58:47.725829-05:00     |
+    |3d3cca54-94f8-4cd3-bad3-2fafd5052b87 |
+    |a9838c1c-a436-4d93-83ae-e47b88a02264_star_-_counts|
+    |560adf30c3a1436bbe5f241179d9c78c     |
+    |63d40319-65a9-434c-94ad-dc6ce083f556 |
+    |RNA-Seq                              |
+    |31dcae7e-c560-4737-a8b7-4c156c5cc070 |
+    |01dd3bd4-5ead-4a81-8c5c-3bf9f99a76fa |
+    |3da23217-5126-4ef2-9779-5d2bb7167604 |
+    |2023-07-12T10:17:15.931145-05:00
+* Verify that "Metadata from Cohort Case View Files" does not contain specified information
+    |required_info                        |
+    |-------------------------------------|
+    |MMRF-COMPASS                         |
+    |TCGA                                 |
+    |gliomas                              |
+    |FM-AD                                |
+
+## Sample Sheet
+* Download "Sample Sheet" from "Cohort Case View Files"
+* Read from "Sample Sheet from Cohort Case View Files"
+* Verify that "Sample Sheet from Cohort Case View Files" has expected information
+    |required_info                        |
+    |-------------------------------------|
+    |File ID                              |
+    |File Name                            |
+    |Data Category                        |
+    |Data Type                            |
+    |Project ID                           |
+    |Case ID                              |
+    |Sample ID                            |
+    |Sample Type                          |
+    |1e9ed236-3e94-454a-a822-90f8e9017a05 |
+    |d7e720b1-08b9-466d-9290-6976a53d9a0b |
+    |c764c4fb-f07c-4221-bbeb-2d0d60271205.rna_seq.chimeric.gdc_realn.bam|
+    |Aligned Reads                        |
+    |Transcriptome Profiling              |
+    |BEATAML1.0-COHORT                    |
+    |ORGANOID-PANCREATIC                  |
+    |S181                                 |
+    |Next Generation Cancer Model         |
+    |Blood Derived Normal                 |
+* Verify that "Sample Sheet from Cohort Case View Files" does not contain specified information
+    |required_info                        |
+    |-------------------------------------|
+    |MMRF-COMPASS                         |
+    |TCGA                                 |
+    |gliomas                              |
+    |FM-AD                                |
+
+## Add to Cart Button
+* Select "Files" in Cohort Case View
+* Select "Add to Cart" from dropdown menu
+* Is modal with text "Added" present on the page and "Keep Modal"
+* Undo Action
+* The cart should have "0" files
+
 ## Flip Filters
 * Perform the following actions on a filter card in Cohort Summary View
   |filter_name          |action               |
   |---------------------|---------------------|
   |Project              |Chart view           |
   |Gender               |Chart view           |
+  |Disease Type         |Chart view           |
 
 ## Collapse Cohort Case View
 * Expand or collapse the cohort bar

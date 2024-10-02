@@ -49,6 +49,11 @@ class CohortCaseViewPage(BasePage):
         self.click_button_data_testid(tab_name)
         self.wait_for_loading_spinners_to_detach()
 
+    def click_files_and_dropdown_option_cases_view(self, dropdown_option):
+        locator = CohortCaseViewLocators.BUTTON_FILES_CASE_VIEW
+        self.click(locator)
+        self.click_text_option_from_dropdown_menu(dropdown_option)
+
     def click_summary_view_button(self, button_name):
         button_name = self.normalize_button_identifier(button_name)
         locator = CohortCaseViewLocators.BUTTON_CASE_VIEW(button_name)
