@@ -68,6 +68,57 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
   |General                |Primary Site         |spinal cord, cranial nerves, and other parts of central nervous system|
   |Demographic            |Gender               |female                         |
 
+## Custom Filters - Cases
+* Clear active cohort filters
+* Select Custom Filter "Cases" in Cohort Case View
+* Upload "Myomatous Neoplasms" "txt" from "Cohort Case View" in "Cohort Filter Import" through "Browse"
+* Is text "113 submitted case identifiers mapped to 113 unique GDC cases" present on the page
+* Select "Submit"
+* Wait for loading spinners to disappear
+* Validate the cohort query filter area has these filters
+  |facet_name         |selections           |position in filter area  |
+  |-------------------|---------------------|-------------------------|
+  |Case Id            |113 input case ids   |1                        |
+* Collect case counts for the following filters in Cohort Summary View for cohort "CCV_CF_Cases"
+  |facet_name           |selection                      |
+  |---------------------|-------------------------------|
+  |Disease Type         |myomatous neoplasms            |
+* Collect Cohort Bar Case Count for comparison
+* Verify "Disease Type_myomatous neoplasms_CCV_CF_Cases Count" and "Cohort Bar Case Count" are "Equal"
+
+## Custom Filters - Genes
+* Clear active cohort filters
+* Navigate to "Cohort" from "Header" "section"
+* Select Custom Filter "Mutated Genes" in Cohort Case View
+* Upload "Gene List" "txt" from "Cohort Case View" in "Cohort Filter Import" through "Browse"
+* Is text "10 submitted gene identifiers mapped to 10 unique GDC genes" present on the page
+* Select "Submit"
+* Wait for loading spinners to disappear
+* Validate the cohort query filter area has these filters
+  |facet_name         |selections           |position in filter area  |
+  |-------------------|---------------------|-------------------------|
+  |Mutated Gene       |10 input genes       |1                        |
+* Validate expected custom filters "are" present in facet cards on the "Molecular Filters" tab on the Cohort Builder page
+  |facet_name           |custom_filter_text                     |
+  |---------------------|---------------------------------------|
+  |Mutated Gene         |10 input genes                         |
+
+## Custom Filters - Mutations
+* Clear active cohort filters
+* Select Custom Filter "Somatic Mutations" in Cohort Case View
+* Upload "Single Mutation" "txt" from "Cohort Case View" in "Cohort Filter Import" through "Browse"
+* Is text "1 submitted mutation identifier mapped to 1 unique GDC mutation" present on the page
+* Select "Submit"
+* Wait for loading spinners to disappear
+* Validate the cohort query filter area has these filters
+  |facet_name         |selections                           |position in filter area  |
+  |-------------------|-------------------------------------|-------------------------|
+  |Ssm Id             |fffffe32-4644-509e-8ff4-9ea2841c7094 |1                        |
+* Validate expected custom filters "are" present in facet cards on the "Molecular Filters" tab on the Cohort Builder page
+  |facet_name         |custom_filter_text                   |
+  |-------------------|-------------------------------------|
+  |Somatic Mutation   |fffffe32-4644-509e-8ff4-9ea2841c7094 |
+
 ## Flip Filters
 * Perform the following actions on a filter card in Cohort Summary View
   |filter_name          |action               |

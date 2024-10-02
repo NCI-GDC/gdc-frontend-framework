@@ -227,7 +227,7 @@ def upload_file(
     """
     sources = {
         "Cohort Bar Import": APP.cohort_bar.click_import_cohort_browse,
-        "Cohort Builder Import": APP.cohort_bar.click_import_cohort_browse,
+        "Cohort Filter Import": APP.cohort_bar.click_import_cohort_browse,
         "Mutation Frequency Custom Filter": APP.mutation_frequency_page.click_custom_filter_import_browse,
         "Manage Sets Import": APP.manage_sets_page.click_browse_import_set,
     }
@@ -515,6 +515,10 @@ def wait_for_loading_spinner_cohort_bar_case_count_to_disappear():
     """Waits for table loading spinner to disappear on the page"""
     APP.shared.wait_for_loading_spinner_table_to_detatch()
 
+@step("Wait for loading spinners to disappear")
+def wait_for_loading_spinners_to_disappear():
+    """Waits for all loading spinners to detach"""
+    APP.shared.wait_for_loading_spinners_to_detach()
 
 @step("Wait for table body text to appear <table>")
 def wait_for_table_body_text_to_appear(table):

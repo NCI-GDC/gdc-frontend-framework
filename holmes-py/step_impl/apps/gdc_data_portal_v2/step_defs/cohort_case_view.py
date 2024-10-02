@@ -21,7 +21,7 @@ def click_tab_name(tab_name:str):
      """Clicks tab name"""
      APP.cohort_case_view_page.click_tab_name(tab_name)
 
-@step("Select custom filter <filter_name> in Cohort Summary View")
+@step("Select Custom Filter <filter_name> in Cohort Case View")
 def click_custom_filter_cohort_summary_view(filter_name:str):
     APP.cohort_case_view_page.click_summary_view_button("Custom Filters")
     APP.shared.click_text_option_from_dropdown_menu(filter_name)
