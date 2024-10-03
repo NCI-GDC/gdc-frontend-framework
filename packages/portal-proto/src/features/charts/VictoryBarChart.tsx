@@ -118,7 +118,7 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
   chartRef = undefined,
   truncateLabels = false,
 }: VictoryBarChartProps) => {
-  const padding = chartPadding ?? { left: 80, right: 80, bottom: 80, top: 10 };
+  const padding = chartPadding ?? { left: 130, right: 80, bottom: 80, top: 10 };
 
   return (
     <VictoryChart
