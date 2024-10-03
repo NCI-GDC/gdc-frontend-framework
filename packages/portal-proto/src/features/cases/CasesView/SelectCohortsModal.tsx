@@ -95,13 +95,24 @@ export const SelectCohortsModal = ({
     [cohortListTableColumnHelper, checkedValue],
   );
 
-  const { handlePageChange, page, pages, size, from, total, displayedData } =
-    useStandardPagination(cohortListData);
+  const {
+    handlePageChange,
+    handlePageSizeChange,
+    page,
+    pages,
+    size,
+    from,
+    total,
+    displayedData,
+  } = useStandardPagination(cohortListData);
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
       case "newPageNumber":
         handlePageChange(obj.newPageNumber);
+        break;
+      case "newPageSize":
+        handlePageSizeChange(obj.newPageSize);
         break;
     }
   };
@@ -230,7 +241,6 @@ export const SelectCohortsModal = ({
               label: "cohort",
             }}
             handleChange={handleChange}
-            disablePageSize={true}
           />
         </div>
         <div
