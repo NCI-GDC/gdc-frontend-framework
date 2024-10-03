@@ -107,7 +107,7 @@ const ContextBar = ({
       method: "POST",
       dispatch: coreDispatch,
       params: {
-        filters: downloadFilter,
+        case_filters: downloadFilter,
         fields: METADATA_FIELDS.join(","),
         format: "JSON",
         pretty: "True",
