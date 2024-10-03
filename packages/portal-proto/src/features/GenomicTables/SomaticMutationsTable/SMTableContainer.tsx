@@ -165,7 +165,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       geneSymbol: geneSymbol,
       genomicFilters: genomicFilters,
       cohortFilters: cohortFilters,
-      caseFilter: caseFilter,
       tableFilters,
     });
 

@@ -440,7 +440,6 @@ export const useTopGeneSsms = ({
         geneSymbol: geneSymbol,
         genomicFilters: genomicFilters,
         cohortFilters: cohortFilters,
-        caseFilter: undefined,
         tableFilters,
       });
     }

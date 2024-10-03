@@ -258,7 +258,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
   const caseFilter: FilterSet = {
     mode: "and",
     root: {
-      "cases.project.project_id": {
+      "cases.case_id": {
         operator: "includes",
         field: "cases.case_id",
         operands: [data.case_id],
