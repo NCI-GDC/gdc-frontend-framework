@@ -65,7 +65,11 @@ const FacetList: React.FC<FacetListProps> = ({
                       {x.field}
                     </Highlight>
                     {x.description ? (
-                      <Highlight size="xs" highlight={searchString}>
+                      <Highlight
+                        size="xs"
+                        highlight={searchString}
+                        className="font-content"
+                      >
                         {x.description}
                       </Highlight>
                     ) : null}
