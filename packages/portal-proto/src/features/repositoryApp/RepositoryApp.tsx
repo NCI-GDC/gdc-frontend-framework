@@ -41,7 +41,7 @@ import { useRouter } from "next/router";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
 import { TableXPositionContext } from "@/components/Table/VerticalTable";
 
-const persistor = persistStore(AppStore);
+export const persistor = persistStore(AppStore);
 
 const useCohortCentricFiles = () => {
   const repositoryFilters = useAppSelector((state) =>

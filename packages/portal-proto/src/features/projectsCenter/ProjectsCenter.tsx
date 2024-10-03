@@ -8,7 +8,7 @@ import { persistStore } from "redux-persist";
 import { AppStore } from "./appApi";
 import { TableXPositionContext } from "@/components/Table/VerticalTable";
 
-const persistor = persistStore(AppStore);
+export const persistor = persistStore(AppStore);
 
 export const ProjectsCenter = (): JSX.Element => {
   const clearAllFilters = useClearAllProjectFilters();
