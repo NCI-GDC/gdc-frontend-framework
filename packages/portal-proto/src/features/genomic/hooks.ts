@@ -44,6 +44,7 @@ import {
   removeGeneAndSSMFilter,
   selectGeneAndSSMFiltersByNames,
   clearGeneAndSSMFilters,
+  removeAllNonSetFilters,
 } from "@/features/genomic/geneAndSSMFiltersSlice";
 import {
   toggleFilter,
@@ -59,6 +60,7 @@ import { humanify } from "@/utils/index";
 import { useDeepCompareMemo } from "use-deep-compare";
 import { appendSearchTermFilters } from "@/features/GenomicTables/utils";
 import FilterFacets from "@/features/genomic/filters.json";
+import { GENE_AND_MUTATION_FIELDS } from "./constants";
 
 /**
  * Update Genomic Enum Facets filters. These are app local updates and are not added
@@ -70,6 +72,9 @@ export const useUpdateGenomicEnumFacetFilter =
     // update the filter for this facet
     return (field: string, operation: Operation) => {
       dispatch(updateGeneAndSSMFilter({ field: field, operation: operation }));
+      if (GENE_AND_MUTATION_FIELDS.includes(field)) {
+        dispatch(removeAllNonSetFilters());
+      }
     };
   };
 
@@ -440,7 +445,6 @@ export const useTopGeneSsms = ({
         geneSymbol: geneSymbol,
         genomicFilters: genomicFilters,
         cohortFilters: cohortFilters,
-        caseFilter: undefined,
         tableFilters,
       });
     }

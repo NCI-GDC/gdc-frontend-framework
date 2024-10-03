@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { isEqual } from "lodash";
 import { Operation, FilterSet, isOperandsType } from "@gff/core";
 import { AppState } from "./appApi";
+import { GENE_AND_MUTATION_FIELDS } from "./constants";
 
 const initialState: FilterSet = {
   mode: "and",
@@ -38,6 +39,18 @@ const slice = createSlice({
         root: updated,
       };
     },
+    removeAllNonSetFilters: (state) => {
+      return {
+        mode: "and",
+        root: {
+          ...Object.fromEntries(
+            Object.entries(state.root).filter(([key]) =>
+              GENE_AND_MUTATION_FIELDS.includes(key),
+            ),
+          ),
+        },
+      };
+    },
     clearGeneAndSSMFilters: () => {
       return { mode: "and", root: initialState.root };
     },
@@ -49,6 +62,7 @@ export const {
   updateGeneAndSSMFilter,
   removeGeneAndSSMFilter,
   clearGeneAndSSMFilters,
+  removeAllNonSetFilters,
 } = slice.actions;
 
 export const selectGeneAndSSMFilters = (

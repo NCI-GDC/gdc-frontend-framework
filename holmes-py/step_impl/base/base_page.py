@@ -401,6 +401,19 @@ class BasePage:
         locator = GenericLocators.LOADING_SPINNER_TABLE
         self.wait_until_locator_is_detached(locator)
 
+    def wait_for_loading_spinners_to_detach(self):
+        """
+        We often have to wait for many possible loading spinners to detach.
+        This function is a convenient way to do that at once.
+        """
+        time.sleep(0.5)
+        self.wait_for_loading_spinner_to_detatch()
+        self.wait_for_loading_spinner_table_to_detatch()
+        self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        self.wait_for_loading_spinner_to_detatch()
+        self.wait_for_loading_spinner_table_to_detatch()
+        self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+
     def wait_for_data_testid_to_be_visible(self, locator):
         """Normalizes a data-testid and waits for it to be visible"""
         normalized_locator = self.normalize_button_identifier(locator)
@@ -487,12 +500,6 @@ class BasePage:
         locator = GenericLocators.BUTTON_TEXT_DROPDOWN_MENU_OPTION(dropdown_text_option)
         is_button_disabled = self.is_disabled(locator)
         return is_button_disabled
-
-    def is_facet_card_enum_checkbox_checked(self, checkbox_id):
-        """Returns if a filter card enum checkbox is checked"""
-        locator = GenericLocators.CHECKBOX_IDENT(checkbox_id)
-        result = self.is_checked(locator)
-        return result
 
     def is_cart_count_correct(self, correct_file_count):
         """Returns if cart count is correct"""
@@ -635,7 +642,7 @@ class BasePage:
                 GenericLocators.TEXT_NO_ACTIVE_COHORT_FILTERS
             )
             self.wait_for_data_testid_to_be_visible(text_no_active_filter_locator)
-            self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+            self.wait_for_loading_spinners_to_detach()
 
     def click_column_selector_button(self):
         """Clicks table column selector button"""

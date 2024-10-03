@@ -265,6 +265,7 @@ def validate_cohort_query_filters(table):
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
     APP.shared.wait_for_loading_spinner_to_detatch()
     APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinners_to_detach()
     for k, v in enumerate(table):
         is_cohort_filter_query_visible = APP.cohort_bar.is_cohort_query_filter_present(
             v[0], v[1], v[2]

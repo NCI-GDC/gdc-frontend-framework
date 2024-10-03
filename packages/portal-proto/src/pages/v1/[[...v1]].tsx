@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import { GetServerSidePropsContext, NextPage } from "next";
 import Head from "next/head";
 import { datadogRum } from "@datadog/browser-rum";
 import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
@@ -52,3 +52,13 @@ const V1RetiredPage: NextPage = () => {
 };
 
 export default V1RetiredPage;
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  if (context && context.res) {
+    context.res.statusCode = 410;
+  }
+
+  return {
+    props: {},
+  };
+}
