@@ -225,7 +225,7 @@ export const SelectCohortsModal = ({
         />
 
         <div className="px-4">
-          <Text className="text-xs mb-4 block">{description}</Text>
+          <Text className="text-sm mb-4 block font-content">{description}</Text>
 
           <VerticalTable
             customDataTestID="table-select-cohort"
