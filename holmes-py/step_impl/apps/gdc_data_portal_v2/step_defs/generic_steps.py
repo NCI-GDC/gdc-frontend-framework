@@ -170,6 +170,9 @@ def download_file_at_file_table(file: str, source: str):
         "Case Summary Files Table File": APP.case_summary_page.click_files_table_download_file_button,
         "Case Summary Annotations Table": APP.case_summary_page.click_annotations_table_download_json_or_tsv_button,
         "Cohort Bar": APP.cohort_bar.click_cohort_bar_button,
+        "Cohort Case View Files": APP.cohort_case_view_page.click_files_and_dropdown_option_cases_view,
+        "Cohort Summary View Biospecimen": APP.cohort_case_view_page.click_biospecimen_summary_view,
+        "Cohort Summary View Clinical": APP.cohort_case_view_page.click_clinical_summary_view,
         "Manage Sets": APP.manage_sets_page.click_on_download_for_set,
         "Cohort Comparison": APP.cohort_comparison_page.click_download_tsv_button_on_analysis_card_cohort_comparison,
         "Mutation Frequency": APP.mutation_frequency_page.click_table_download_button,
@@ -230,7 +233,7 @@ def upload_file(
     """
     sources = {
         "Cohort Bar Import": APP.cohort_bar.click_import_cohort_browse,
-        "Cohort Builder Import": APP.cohort_bar.click_import_cohort_browse,
+        "Cohort Filter Import": APP.cohort_bar.click_import_cohort_browse,
         "Mutation Frequency Custom Filter": APP.mutation_frequency_page.click_custom_filter_import_browse,
         "Manage Sets Import": APP.manage_sets_page.click_browse_import_set,
     }
@@ -517,6 +520,10 @@ def wait_for_loading_spinner_cohort_bar_case_count_to_disappear():
     """Waits for table loading spinner to disappear on the page"""
     APP.shared.wait_for_loading_spinner_table_to_detatch()
 
+@step("Wait for loading spinners to disappear")
+def wait_for_loading_spinners_to_disappear():
+    """Waits for all loading spinners to detach"""
+    APP.shared.wait_for_loading_spinners_to_detach()
 
 @step("Wait for table body text to appear <table>")
 def wait_for_table_body_text_to_appear(table):
@@ -701,24 +708,6 @@ def is_data_testid_not_present_on_the_page(data_testid: str):
     assert (
         is_data_testid_present == False
     ), f"The data-testid '{data_testid}' IS present"
-
-
-@step("Is checkbox checked <table>")
-def is_checkbox_checked(table):
-    for k, v in enumerate(table):
-        is_checkbox_enabeled = APP.shared.is_facet_card_enum_checkbox_checked(v[0])
-        assert is_checkbox_enabeled, f"The checkbox '{v[0]}' is NOT checked"
-        time.sleep(0.1)
-
-
-@step("Is checkbox not checked <table>")
-def is_checkbox_not_checked(table):
-    for k, v in enumerate(table):
-        is_checkbox_disabeled = APP.shared.is_facet_card_enum_checkbox_checked(v[0])
-        assert (
-            is_checkbox_disabeled == False
-        ), f"The checkbox '{v[0]}' IS checked when it is unexpected"
-        time.sleep(0.1)
 
 
 @step("Select <data_testid> on page")

@@ -21,6 +21,8 @@ from ..gdc_data_portal_v2.pages.manage_sets_page import ManageSetsPage
 from ..gdc_data_portal_v2.pages.cohort_comparison_page import CohortComparisonPage
 from ..gdc_data_portal_v2.pages.project_summary_page import ProjectSummaryPage
 from ..gdc_data_portal_v2.pages.set_operations_page import SetOperationsPage
+from ..gdc_data_portal_v2.pages.cohort_case_view import CohortCaseViewPage
+
 
 class GDCDataPortalV2App:
     def __init__(self, webdriver):  # webdriver is page now.
@@ -56,3 +58,4 @@ class GDCDataPortalV2App:
         self.cohort_comparison_page = CohortComparisonPage(self.driver, self.URL)
         self.project_summary_page = ProjectSummaryPage(self.driver, self.URL)
         self.set_operations_page = SetOperationsPage(self.driver, self.URL)
+        self.cohort_case_view_page = CohortCaseViewPage(self.driver, self.URL)

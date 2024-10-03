@@ -206,8 +206,7 @@ class CohortBuilderPage(BasePage):
     # Used to check the text displayed in the query expression area
     def is_query_expression_area_text_present(self, text):
         locator = CohortBuilderPageLocators.QUERY_EXPRESSION_TEXT(text)
-        result = self.is_visible(locator)
-        return result
+        return self.is_visible(locator)
 
     def is_facet_card_custom_filter_text_present(self, facet_card, text):
         """Returns if filter text is present on given facet card"""
@@ -222,8 +221,14 @@ class CohortBuilderPage(BasePage):
             if retry_counter >= 10:
                 break
         locator = CohortBuilderPageLocators.FACET_GROUP_CUSTOM_FILTER_TEXT_IDENT(facet_card, text)
-        result = self.is_visible(locator)
-        return result
+        return self.is_visible(locator)
+
+    def is_facet_card_enum_checkbox_checked(self, facet_group_name, selection):
+        """Returns if a filter card enum checkbox is checked"""
+        locator = CohortBuilderPageLocators.FACET_GROUP_SELECTION_IDENT(
+            facet_group_name, selection
+        )
+        return self.is_checked(locator)
 
     def remove_facet_card_custom_filter_text(self, facet_card, text):
         """Clicks the custom filter text to remove it on given facet card"""

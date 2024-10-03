@@ -16,7 +16,7 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
   |facet_name       |selection            |
   |-----------------|---------------------|
   |Case ID          |Upload Cases         |
-* Upload "One Case" "txt" from "Cohort Builder" in "Cohort Builder Import" through "Browse"
+* Upload "One Case" "txt" from "Cohort Builder" in "Cohort Filter Import" through "Browse"
 * Is text "1 submitted case identifier mapped to 1 unique GDC case" present on the page
 * Select "Submit"
 * Validate expected custom filters "are" present in facet cards on the "General" tab on the Cohort Builder page
@@ -42,7 +42,7 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
   |facet_name       |selection            |
   |-----------------|---------------------|
   |Case ID          |Upload Cases         |
-* Upload "All Case Identifiers" "txt" from "Cohort Builder" in "Cohort Builder Import" through "Browse"
+* Upload "All Case Identifiers" "txt" from "Cohort Builder" in "Cohort Filter Import" through "Browse"
 * Is text "12 submitted case identifiers mapped to 12 unique GDC cases" present on the page
 * Select "Submit"
 * Validate expected custom filters "are" present in facet cards on the "General" tab on the Cohort Builder page
@@ -65,7 +65,7 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
   |facet_name       |selection            |
   |-----------------|---------------------|
   |Mutated Gene     |Upload Genes         |
-* Upload "One Gene" "txt" from "Cohort Builder" in "Cohort Builder Import" through "Browse"
+* Upload "One Gene" "txt" from "Cohort Builder" in "Cohort Filter Import" through "Browse"
 * Is text "1 submitted gene identifier mapped to 1 unique GDC gene" present on the page
 * Select "Submit"
 * Validate expected custom filters "are" present in facet cards on the "Molecular Filters" tab on the Cohort Builder page
@@ -91,7 +91,7 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
   |facet_name       |selection            |
   |-----------------|---------------------|
   |Mutated Gene     |Upload Genes         |
-* Upload "Multiple Genes" "txt" from "Cohort Builder" in "Cohort Builder Import" through "Browse"
+* Upload "Multiple Genes" "txt" from "Cohort Builder" in "Cohort Filter Import" through "Browse"
 * Is text "5 submitted gene identifiers mapped to 5 unique GDC genes" present on the page
 * Select "Submit"
 * Validate expected custom filters "are" present in facet cards on the "Molecular Filters" tab on the Cohort Builder page
@@ -114,7 +114,7 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
   |facet_name       |selection                      |
   |-----------------|-------------------------------|
   |Somatic Mutation |Upload Somatic Mutations       |
-* Upload "One Mutation" "txt" from "Cohort Builder" in "Cohort Builder Import" through "Browse"
+* Upload "One Mutation" "txt" from "Cohort Builder" in "Cohort Filter Import" through "Browse"
 * Is text "1 submitted mutation identifier mapped to 1 unique GDC mutation" present on the page
 * Select "Submit"
 * Validate expected custom filters "are" present in facet cards on the "Molecular Filters" tab on the Cohort Builder page
@@ -140,7 +140,7 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
   |facet_name       |selection                      |
   |-----------------|-------------------------------|
   |Somatic Mutation |Upload Somatic Mutations       |
-* Upload "Multiple Mutations" "txt" from "Cohort Builder" in "Cohort Builder Import" through "Browse"
+* Upload "Multiple Mutations" "txt" from "Cohort Builder" in "Cohort Filter Import" through "Browse"
 * Is text "5 submitted mutation identifiers mapped to 5 unique GDC mutations" present on the page
 * Select "Submit"
 * Pause "2" seconds

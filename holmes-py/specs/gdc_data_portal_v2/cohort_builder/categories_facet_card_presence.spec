@@ -39,6 +39,8 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards, regression
   |---------------------------|
   |Ajcc Clinical Stage        |
   |Ajcc Pathologic Stage      |
+  |Uicc Clinical Stage        |
+  |Uicc Pathologic Stage      |
   |Tumor Grade                |
   |Morphology                 |
   |Year of Diagnosis          |
@@ -61,7 +63,6 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards, regression
   |Ann Arbor Clinical Stage   |
   |Ann Arbor Pathologic Stage |
   |Cog Renal Stage            |
-  |Enneking Msts Stage        |
   |Figo Stage                 |
   |Igcccg Stage               |
   |Inss Stage                 |
