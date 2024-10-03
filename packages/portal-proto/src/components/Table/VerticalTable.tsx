@@ -77,7 +77,7 @@ function VerticalTable<TData>({
   setRowSelection,
   rowSelection,
   enableRowSelection = false,
-  status,
+  status = "fulfilled",
   tableTitle,
   tableTotalDetail,
   additionalControls,

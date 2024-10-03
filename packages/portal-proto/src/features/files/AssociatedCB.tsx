@@ -8,6 +8,17 @@ import { HeaderTitle } from "@/components/tailwindComponents";
 import VerticalTable from "@/components/Table/VerticalTable";
 import TotalItems from "@/components/Table/TotalItem";
 
+type AssociatedCBType = {
+  entity_id: JSX.Element;
+  entity_type: string;
+  tissue_type: string;
+  tumor_descriptor: string;
+  case_id: string;
+  annotations: JSX.Element | 0;
+};
+
+const columnHelper = createColumnHelper<AssociatedCBType>();
+
 const AssociatedCB = ({
   cases,
   associated_entities,
@@ -17,14 +28,6 @@ const AssociatedCB = ({
 }): JSX.Element => {
   const [associatedCBSearchTerm, setAssociatedCBSearchTerm] = useState("");
 
-  type AssociatedCBType = {
-    entity_id: JSX.Element;
-    entity_type: string;
-    tissue_type: string;
-    tumor_descriptor: string;
-    case_id: string;
-    annotations: JSX.Element | 0;
-  };
   const data: AssociatedCBType[] = useMemo(() => {
     const tableRows = [];
 
@@ -115,7 +118,6 @@ const AssociatedCB = ({
         break;
     }
   };
-  const columnHelper = createColumnHelper<AssociatedCBType>();
 
   const columns = useMemo(
     () => [
@@ -156,7 +158,6 @@ const AssociatedCB = ({
         total,
         label: "associated cases/biospecimen",
       }}
-      status="fulfilled"
       search={{
         enabled: true,
         tooltip: "e.g. TCGA-AR-A24Z, TCGA-AR-A24Z-10A-01D-A167-09",
