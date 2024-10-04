@@ -14,6 +14,7 @@ class CohortCaseViewLocators:
     BUTTON_BIOSPECIMEN_SUMMARY_VIEW = '[data-testid="button-biospecimen-cases-summary"]'
     BUTTON_CLINICAL_SUMMARY_VIEW = '[data-testid="button-clinical-cases-summary"]'
 
+    BUTTON_TABLE_VIEW = lambda button_name: f'[data-testid="button-{button_name}-cases-table"]'
 
     FILTER_GROUP_IDENT = (
         lambda group_name: f'[data-testid="filters-facets-summary-view"] >> div:nth-child(1) >> div:text-is("{group_name}")'
@@ -72,6 +73,11 @@ class CohortCaseViewPage(BasePage):
         self.click(locator)
         self.click_text_option_from_dropdown_menu(dropdown_option)
 
+    def click_table_view_button(self, button_name):
+        """Clicks button that ends in 'cases-table' """
+        button_name = self.normalize_button_identifier(button_name)
+        locator = CohortCaseViewLocators.BUTTON_TABLE_VIEW(button_name)
+        self.click(locator)
 
     def get_filter_selection_count(self, filter_group_name, selection):
         """Returns the count of how many items are associated with that filter in the current cohort"""
