@@ -117,7 +117,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                   label="Download image or data"
                   withArrow
                   withinPortal
-                  position={"left"}
+                  position="left"
                 >
                   <ActionIcon
                     data-testid="button-histogram-download"
