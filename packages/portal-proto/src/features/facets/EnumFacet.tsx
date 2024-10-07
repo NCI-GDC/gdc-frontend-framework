@@ -61,8 +61,9 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   const [sortedData, setSortedData] = useState(undefined);
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const cardRef = useRef<HTMLDivElement>(null);
-  const { data, enumFilters, isSuccess, error } =
+  const { data, enumFilters, isSuccess, error, isUninitialized, isFetching } =
     hooks.useGetEnumFacetData(field);
+  const [dataProcessed, setDataProcessed] = useState(false);
 
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
   const searchInputRef = useRef(null);
@@ -240,6 +241,9 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
             .slice(0, !isGroupExpanded ? maxValuesToDisplay : undefined),
         ),
       );
+      setDataProcessed(true);
+    } else {
+      setDataProcessed(true);
     }
   }, [
     facetChartData.filteredData,
@@ -335,15 +339,38 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                   >
                     <LoadingOverlay
                       data-testid="loading-spinner"
-                      visible={!isSuccess}
+                      visible={isUninitialized || isFetching || !dataProcessed}
                     />
-                    {facetChartData.filteredData.length == 0 ? (
-                      <div className="mx-4 font-content text-sm">
-                        {BAD_DATA_MESSAGE}
+                    {isUninitialized || isFetching || !dataProcessed ? (
+                      <div>
+                        {
+                          // uninitialized, loading, error animated bars
+                          Array.from(Array(maxValuesToDisplay)).map(
+                            (_, index) => {
+                              return (
+                                <div
+                                  key={`${field}-${index}`}
+                                  className="flex items-center px-2 w-full"
+                                >
+                                  <div className="flex-none">
+                                    <Checkbox
+                                      size="xs"
+                                      className="bg-base-lightest text-primary-contrast-lightest hover:bg-base-darkest hover:text-base-contrast-darkest"
+                                    />
+                                  </div>
+                                  <div className="flex-grow h-3.5 align-center justify-center mt-1 ml-1 mr-8 bg-base-light rounded-b-sm animate-pulse" />
+                                  <div className="flex-none h-3.5 align-center justify-center mt-1 w-10 bg-base-light rounded-b-sm animate-pulse" />
+                                </div>
+                              );
+                            },
+                          )
+                        }
                       </div>
                     ) : isSuccess ? (
-                      !sortedData || Object.entries(sortedData).length === 0 ? (
-                        <div className="mx-4">No results found</div>
+                      facetChartData.filteredData.length == 0 ||
+                      !sortedData ||
+                      Object.entries(sortedData).length === 0 ? (
+                        <div className="mx-4">{BAD_DATA_MESSAGE}</div>
                       ) : (
                         Object.entries(sortedData).map(([value, count]) => {
                           return (
@@ -398,32 +425,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                           );
                         })
                       )
-                    ) : (
-                      <div>
-                        {
-                          // uninitialized, loading, error animated bars
-                          Array.from(Array(maxValuesToDisplay)).map(
-                            (_, index) => {
-                              return (
-                                <div
-                                  key={`${field}-${index}`}
-                                  className="flex items-center px-2 w-full"
-                                >
-                                  <div className="flex-none">
-                                    <Checkbox
-                                      size="xs"
-                                      className="bg-base-lightest text-primary-contrast-lightest hover:bg-base-darkest hover:text-base-contrast-darkest"
-                                    />
-                                  </div>
-                                  <div className="flex-grow h-3.5 align-center justify-center mt-1 ml-1 mr-8 bg-base-light rounded-b-sm animate-pulse" />
-                                  <div className="flex-none h-3.5 align-center justify-center mt-1 w-10 bg-base-light rounded-b-sm animate-pulse" />
-                                </div>
-                              );
-                            },
-                          )
-                        }
-                      </div>
-                    )}
+                    ) : null}
                   </div>
                 </div>
                 {
