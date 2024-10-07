@@ -26,6 +26,7 @@ interface TableHeaderProps<TData> {
   columnOrder: string[];
   setColumnOrder: (order: string[]) => void;
   baseZIndex?: number;
+  customBreakpoint?: number;
 }
 
 const TitleWrapper: React.FC<{ title: React.ReactNode }> = ({ title }) => (
@@ -135,6 +136,7 @@ function TableHeader<TData>({
   columnOrder,
   setColumnOrder,
   baseZIndex,
+  customBreakpoint,
 }: TableHeaderProps<TData>) {
   const [searchTerm, setSearchTerm] = useState(search?.defaultSearchTerm ?? "");
   const [searchFocused, setSearchFocused] = useState(false);
@@ -195,14 +197,15 @@ function TableHeader<TData>({
     </div>
   );
 
+  const breakpoint = customBreakpoint ?? XL_BREAKPOINT;
   let detailClass = "";
 
   if (tableTitle !== undefined) {
-    if (width >= XL_BREAKPOINT && shouldShowControls) {
+    if (width >= breakpoint && shouldShowControls) {
       detailClass = "ml-auto";
     }
   } else {
-    if (width >= XL_BREAKPOINT && additionalControls) {
+    if (width >= breakpoint && additionalControls) {
       detailClass = "ml-auto";
     } else {
       detailClass = "order-first basis-full grow-0 shrink-0 -mb-2";
@@ -218,7 +221,7 @@ function TableHeader<TData>({
       {tableTitle && (
         <div
           className={
-            additionalControls || (shouldShowControls && width < XL_BREAKPOINT)
+            additionalControls || (shouldShowControls && width < breakpoint)
               ? "basis-full grow-0 shrink-0 -mb-2"
               : ""
           }

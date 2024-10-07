@@ -58,6 +58,7 @@ import TablePagination from "./TablePagination";
  * @param getRowId  - A function that returns the row id.
  * @param baseZIndex  - The base z index.
  * @param customDataTestID - optional locator for test automation
+ * @param customBreakpoint - custom breakpoint for header responsive behavior
  * @category Table
  */
 function VerticalTable<TData>({
@@ -92,6 +93,7 @@ function VerticalTable<TData>({
   baseZIndex = 0,
   customDataTestID,
   customAriaLabel,
+  customBreakpoint,
 }: TableProps<TData>): JSX.Element {
   const [tableData, setTableData] = useState(data);
   const liveRegionRef = useRef(null);
@@ -193,6 +195,7 @@ function VerticalTable<TData>({
           columnOrder={columnOrder}
           setColumnOrder={setColumnOrder}
           baseZIndex={baseZIndex}
+          customBreakpoint={customBreakpoint}
         />
       )}
       <div className="overflow-y-auto w-full relative">

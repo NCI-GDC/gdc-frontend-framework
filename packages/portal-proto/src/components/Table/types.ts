@@ -91,6 +91,7 @@ export interface PaginationOptions {
  * @property getRowId - optional function is used to derive a unique ID for any given row
  * @property baseZIndex - optional used to properly set z-index of table elements (e.g. tooltips)
  * @property customDataTestID - optional locator for test automation
+ * @property customBreakpoint - custom breakpoint for header responsive behavior
  * @category Table
  */
 
@@ -256,6 +257,7 @@ export interface TableProps<TData> {
 
   customDataTestID?: string;
   customAriaLabel?: string;
+  customBreakpoint?: number;
 }
 
 export interface HandleChangeInput {

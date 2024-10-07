@@ -286,3 +286,6 @@ export const focusStyles =
 
 export const LG_BREAKPOINT = parseInt(tailwindConfig.theme.extend.screens.lg);
 export const XL_BREAKPOINT = parseInt(tailwindConfig.theme.extend.screens.xl);
+export const REPO_BREAKPOINT = parseInt(
+  tailwindConfig.theme.extend.screens["Custom-Repo-Width"],
+);
