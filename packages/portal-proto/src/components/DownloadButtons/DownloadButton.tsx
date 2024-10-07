@@ -143,10 +143,14 @@ export const DownloadButton = forwardRef<
           leftSection={
             showIcon &&
             inactiveText && (
-              <DownloadIcon aria-label="download" className="hidden xl:block" />
+              <DownloadIcon
+                aria-label="download"
+                className="hidden xl:block"
+                size="1rem"
+              />
             )
           }
-          classNames={{ section: "mr-0 xl:mr-3" }}
+          classNames={{ section: "mr-0 xl:mr-2" }}
           disabled={disabled}
           loading={showLoading && active}
           variant="outline"

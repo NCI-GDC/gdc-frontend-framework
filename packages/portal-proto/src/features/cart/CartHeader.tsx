@@ -136,7 +136,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
               classNames={{
                 root: `${buttonStyle} ml-4 ${focusStyles}`,
               }}
-              leftSection={<DownloadIcon aria-hidden="true" />}
+              leftSection={<DownloadIcon aria-hidden="true" size="1rem" />}
               rightSection={
                 <DropdownIcon
                   size={20}
@@ -193,7 +193,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
               classNames={{
                 root: `${buttonStyle} ${focusStyles}`,
               }}
-              leftSection={<DownloadIcon aria-hidden="true" />}
+              leftSection={<DownloadIcon aria-hidden="true" size="1rem" />}
               rightSection={
                 <DropdownIcon
                   size={20}
@@ -464,7 +464,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
           <Menu.Target>
             <Button
               data-testid="button-remove-from-cart"
-              leftSection={<TrashIcon aria-hidden="true" />}
+              leftSection={<TrashIcon aria-hidden="true" size="1rem" />}
               rightSection={
                 <DropdownIcon
                   size={20}
