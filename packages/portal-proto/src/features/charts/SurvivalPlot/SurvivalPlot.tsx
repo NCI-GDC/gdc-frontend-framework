@@ -334,20 +334,18 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
         <div className="survival-plot" ref={container} />
       </div>
       <OffscreenWrapper>
-        <div className="w-[700px] h-[500px] m-4" ref={downloadRef}>
-          <h2 className="font-montserrat text-center text-lg text-primary-content-dark">
-            {title}
-          </h2>
+        <div className="w-[700px] h-[500px] m-2" ref={downloadRef}>
+          <div className="font-content text-[1rem]">{title}</div>
           <div className="flex flex-col">
             {!hideLegend &&
               legend?.map((x, idx) => {
                 return (
-                  <div key={`${x.key}-${idx}`} className="px-2">
+                  <div key={`${x.key}-${idx}`} className="text-sm">
                     {x.value}
                   </div>
                 );
               })}
-            <div className="text-xs pl-2 mb-2">
+            <div className="text-xs font-content mt-2">
               {isNumber(pValue) &&
                 `Log-Rank Test P-Value = ${pValue.toExponential(2)}`}
             </div>
