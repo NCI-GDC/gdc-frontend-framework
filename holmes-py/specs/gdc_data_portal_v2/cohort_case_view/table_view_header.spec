@@ -61,7 +61,6 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
     |MATCH                                  |
     |TCGA                                   |
 
-
 ## Biospecimen - JSON
 * In table "Cases", search the table for "MMRF_1186"
 * Download "JSON" from "Cohort Table View Biospecimen"
@@ -102,6 +101,140 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
   |samples.portions.analytes.aliquots.aliquot_id	|
   |samples.portions.portion_id	                    |
 * Verify that the "JSON from Cohort Table View Biospecimen" has <field_name> for each object
+
+## Clinical - TSV
+* In table "Cases", search the table for "MMRF_28"
+* Download "TSV" from "Cohort Table View Clinical"
+* Read file content from compressed "TSV from Cohort Table View Clinical"
+* Verify that "TSV from Cohort Table View Clinical" has expected information
+    |required_info                          |
+    |---------------------------------------|
+    |days_to_follow_up                      |
+    |evidence_of_recurrence_type            |
+    |follow_up_submitter_id                 |
+    |pregnancy_outcome                      |
+    |laboratory_test                        |
+    |f7253ebc-424c-4506-a5f4-727c819d50fd   |
+    |d185b62d-3811-43c1-8b50-0823e06646fa   |
+    |MMRF_2838_molecular_test6              |
+    |Test Value Reported                    |
+    |30.79999                               |
+    |lymphatic_invasion_present             |
+    |pathology_detail_submitter_id          |
+    |size_extraocular_nodule                |
+    |zone_of_origin_prostate                |
+    |alcohol_drinks_per_day                 |
+    |occupation_duration_years              |
+    |marijuana_use_per_week                 |
+    |relationship_primary_diagnosis         |
+    |relatives_with_cancer_history_count    |
+    |weeks_gestation_at_birth               |
+    |child_pugh_classification              |
+    |first_symptom_longest_duration         |
+    |prescribed_dose_units                  |
+    |1d485291-469a-4d6e-950e-06b974f4445d   |
+    |MMRF_2832                              |
+    |9732/3                                 |
+    |First line of therapy                  |
+    |Stem Cell Transplantation, Autologous  |
+    |-16767                                 |
+    |MMRF-COMMPASS                          |
+
+* Verify that "TSV from Cohort Table View Clinical" does not contain specified information
+    |required_info                          |
+    |---------------------------------------|
+    |FM-AD                                  |
+    |TARGET-AML                             |
+    |MATCH                                  |
+    |TCGA                                   |
+    |MMRF_1108                              |
+
+
+## Clinical - JSON
+* In table "Cases", search the table for "MMRF_187"
+* Download "JSON" from "Cohort Table View Clinical"
+* Read from "JSON from Cohort Table View Clinical"
+* Verify that "JSON from Cohort Table View Clinical" has expected information
+    |required_info                          |
+    |---------------------------------------|
+    |cd63c5c4-308e-4d7b-bd41-22946218fcef   |
+    |Melanoma                               |
+    |8e39bdf0-044d-4e25-a7ac-14239117e580   |
+    |0a8eb97e-b621-4bae-97c1-832462fa7e32   |
+    |MMRF_1876_molecular_test78             |
+    |Platelets                              |
+    |MMRF_1876_followup5                    |
+    |2018-07-19T16:28:52.616328-05:00       |
+    |MMRF-COMMPASS                          |
+    |MMRF_1879                              |
+    |MMRF_1879_diagnosis1                   |
+    |5e7224a2-8639-45e8-b470-5d034d2483dc   |
+    |First line of therapy                  |
+    |Bortezomib                             |
+    |0b3b060b-122c-4a75-8c1d-2ac374e65aec   |
+    |black or african american              |
+    |c04a3091-378f-47a1-8150-a804519d0031   |
+    |323                                    |
+* Verify that "JSON from Cohort Table View Clinical" does not contain specified information
+    |required_info                          |
+    |---------------------------------------|
+    |FM-AD                                  |
+    |TARGET-AML                             |
+    |MATCH                                  |
+    |TCGA                                   |
+    |MMRF_1108                              |
+
+## Clinical - Validate JSON Fields
+  |field_name                                       |
+  |-------------------------------------------------|
+  |family_histories.submitter_id		            |
+  |case_id                                          |
+  |follow_ups.follow_up_id	                        |
+  |follow_ups.molecular_tests.molecular_analysis_method|
+  |project.project_id                               |
+  |submitter_id	                                    |
+  |diagnoses.morphology	                            |
+  |diagnoses.treatments.treatment_or_therapy		|
+  |diagnoses.site_of_resection_or_biopsy	        |
+  |demographic.days_to_birth		                |
+* Verify that the "JSON from Cohort Table View Clinical" has <field_name> for each object
+
+
+
+## Cohort Table - TSV
+* In table "Cases", search the table for "TCGA-EK"
+* Download "TSV" from "Cohort Table View"
+* Read from "TSV from Cohort Table View"
+* Verify that "TSV from Cohort Table View" has expected information
+    |required_info                          |
+    |---------------------------------------|
+    |demographic.days_to_death              |
+    |diagnoses.0.age_at_diagnosis           |
+    |disease_type                           |
+    |submitter_id                           |
+    |primary_site                           |
+    |summary.experimental_strategies.0.experimental_strategy|
+    |summary.file_count                     |
+    |16363ef7-899d-4927-a74b-e7c03b3d8af1   |
+    |d4510801-8ce4-4f10-8b31-25c0a39b5135   |
+    |Squamous cell carcinoma, large cell, nonkeratinizing, NOS|
+    |18630                                  |
+    |f92a994d-b080-42c9-966f-34c1000865e3   |
+    |TCGA-CESC                              |
+    |TCGA                                   |
+    |TCGA-EK-A3GN                           |
+    |Genotyping Array                       |
+    |Reverse Phase Protein Array            |
+    |Tissue Slide                           |
+    |63                                     |
+* Verify that "TSV from Cohort Table View" does not contain specified information
+    |required_info                          |
+    |---------------------------------------|
+    |FM-AD                                  |
+    |TARGET-AML                             |
+    |MATCH                                  |
+    |MMRF                                   |
+
 
 ## Cohort Table - JSON
 * In table "Cases", search the table for "MMRF_11"
