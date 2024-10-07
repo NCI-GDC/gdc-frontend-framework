@@ -32,7 +32,7 @@ def click_custom_filter_cohort_summary_view(filter_name:str):
     APP.shared.click_text_option_from_dropdown_menu(filter_name)
 
 @step("Select <button_name> in Cohort Table View")
-def click_cohort_case_view_button(button_name):
+def click_cohort_table_view_button(button_name):
     """Clicks button with data-testid ends in 'cases-table"'"""
     APP.cohort_case_view_page.click_table_view_button(button_name)
 

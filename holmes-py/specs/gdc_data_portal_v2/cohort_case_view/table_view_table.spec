@@ -1,9 +1,9 @@
 # Cohort Case View - Table View Table
-Date Created    : 10/01/2024
+Date Created        : 10/01/2024
 Version			    : 1.0
 Owner		        : GDC QA
-Description		  : Validate Cohort Table
-Test-Case       : PEAR-1052
+Description		    : Validate Cohort Table
+Test-Case           : PEAR-1052
 
 tags: gdc-data-portal-v2, regression, cohort-bar, case-view
 
