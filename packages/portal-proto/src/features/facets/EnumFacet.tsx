@@ -370,7 +370,9 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                       facetChartData.filteredData.length == 0 ||
                       !sortedData ||
                       Object.entries(sortedData).length === 0 ? (
-                        <div className="mx-4">{BAD_DATA_MESSAGE}</div>
+                        <div className="mx-4 font-content text-sm">
+                          {BAD_DATA_MESSAGE}
+                        </div>
                       ) : (
                         Object.entries(sortedData).map(([value, count]) => {
                           return (
