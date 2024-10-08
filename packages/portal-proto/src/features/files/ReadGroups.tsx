@@ -3,6 +3,8 @@ import { useMemo } from "react";
 import VerticalTable from "@/components/Table/VerticalTable";
 import TotalItems from "@/components/Table/TotalItem";
 import { HeaderTitle } from "@/components/tailwindComponents";
+import useStandardPagination from "@/hooks/useStandardPagination";
+import { HandleChangeInput } from "@/components/Table/types";
 
 type ReadGroupsDataType = {
   read_group_id: string;
@@ -12,6 +14,8 @@ type ReadGroupsDataType = {
   sequencing_center: string;
   sequencing_date: string;
 };
+
+const readGroupsColumnHelper = createColumnHelper<ReadGroupsDataType>();
 
 const ReadGroups = ({
   readGroups,
@@ -36,7 +40,27 @@ const ReadGroups = ({
     }));
   }, [readGroups]);
 
-  const readGroupsColumnHelper = createColumnHelper<ReadGroupsDataType>();
+  const {
+    handlePageChange,
+    handlePageSizeChange,
+    page,
+    pages,
+    size,
+    from,
+    total,
+    displayedData,
+  } = useStandardPagination(data);
+
+  const handleChange = (obj: HandleChangeInput) => {
+    switch (Object.keys(obj)?.[0]) {
+      case "newPageSize":
+        handlePageSizeChange(obj.newPageSize);
+        break;
+      case "newPageNumber":
+        handlePageChange(obj.newPageNumber);
+        break;
+    }
+  };
 
   const readGroupsColumns = useMemo(
     () => [
@@ -59,17 +83,26 @@ const ReadGroups = ({
         header: "Sequencing Date",
       }),
     ],
-    [readGroupsColumnHelper],
+    [],
   );
 
   return (
     <VerticalTable
-      data={data}
+      data={displayedData}
       columns={readGroupsColumns}
       tableTotalDetail={
         <TotalItems total={readGroups?.length} itemName="read group" />
       }
+      pagination={{
+        page,
+        pages,
+        size,
+        from,
+        total,
+        label: "read group",
+      }}
       tableTitle={<HeaderTitle>Read Groups</HeaderTitle>}
+      handleChange={handleChange}
     />
   );
 };

@@ -348,7 +348,6 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
         columnSorting="enable"
         sorting={sorting}
         setSorting={setSorting}
-        status="fulfilled"
       />
     </div>
   );
