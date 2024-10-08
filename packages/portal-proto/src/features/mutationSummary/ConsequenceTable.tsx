@@ -204,9 +204,7 @@ export const ConsequenceTable = ({
         id: "gene_strand",
         header: "Gene Strand",
         cell: ({ row }) => (
-          <span className="text-lg font-bold">
-            {row.original.gene_strand > 0 ? <HiPlus /> : <HiMinus />}
-          </span>
+          <span>{row.original.gene_strand > 0 ? <HiPlus /> : <HiMinus />}</span>
         ),
       }),
       consequenceTableColumnHelper.display({
