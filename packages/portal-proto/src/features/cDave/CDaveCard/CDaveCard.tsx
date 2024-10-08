@@ -163,7 +163,11 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
               className="border-primary text-primary-content"
               aria-label={`Remove ${fieldName} card`}
             >
-              <CloseIcon className="text-primary" aria-hidden="true" />
+              <CloseIcon
+                className="text-primary"
+                aria-hidden="true"
+                size="1rem"
+              />
             </ActionIcon>
           </Tooltip>
         </div>

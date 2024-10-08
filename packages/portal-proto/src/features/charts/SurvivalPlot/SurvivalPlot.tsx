@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import { MdRestartAlt as ResetIcon } from "react-icons/md";
 import { MdDownload as DownloadIcon } from "react-icons/md";
-import { Box, Menu, Tooltip, Loader } from "@mantine/core";
+import { Box, Menu, Tooltip, Loader, ActionIcon } from "@mantine/core";
 import { IoMdTrendingDown as SurvivalIcon } from "react-icons/io";
 import isNumber from "lodash/isNumber";
 import { useMouse } from "@mantine/hooks";
@@ -11,7 +11,6 @@ import {
   DownloadProgressContext,
 } from "src/utils/contexts";
 import { DashboardDownloadContext } from "@/utils/contexts";
-import { DownloadButton } from "@/components/tailwindComponents";
 import OffscreenWrapper from "@/components/OffscreenWrapper";
 import {
   MINIMUM_CASES,
@@ -224,16 +223,17 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
           >
             <Menu.Target>
               <Tooltip label="Download Survival Plot data or image">
-                <DownloadButton
+                <ActionIcon
                   data-testid="button-download-survival-plot"
                   aria-label="Download Survival Plot data or image"
+                  variant="outline"
                 >
                   {downloadInProgress ? (
                     <Loader size={16} />
                   ) : (
-                    <DownloadIcon size="1.25em" aria-hidden="true" />
+                    <DownloadIcon size="1rem" aria-hidden="true" />
                   )}
-                </DownloadButton>
+                </ActionIcon>
               </Tooltip>
             </Menu.Target>
             <Menu.Dropdown data-testid="list-download-survival-plot-dropdown">
@@ -266,13 +266,14 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
             </Menu.Dropdown>
           </Menu>
           <Tooltip label="Reset Survival Plot Zoom">
-            <DownloadButton
+            <ActionIcon
+              variant="outline"
               onClick={() => setXDomain(undefined)}
               data-testid="button-reset-survival-plot"
               aria-label="Reset Survival Plot Zoom"
             >
-              <ResetIcon size="1.15rem" aria-hidden="true"></ResetIcon>
-            </DownloadButton>
+              <ResetIcon size="1rem" aria-hidden="true" />
+            </ActionIcon>
           </Tooltip>
         </div>
       </div>
