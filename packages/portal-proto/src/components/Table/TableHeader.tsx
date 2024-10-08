@@ -3,6 +3,8 @@ import { Tooltip, TextInput, ActionIcon } from "@mantine/core";
 import { MdClose, MdSearch } from "react-icons/md";
 import { Table } from "@tanstack/react-table";
 import ColumnOrdering from "./ColumnOrdering";
+import { useViewportSize } from "@mantine/hooks";
+import { XL_BREAKPOINT } from "src/utils";
 
 interface TableHeaderProps<TData> {
   additionalControls?: React.ReactNode;
@@ -24,6 +26,7 @@ interface TableHeaderProps<TData> {
   columnOrder: string[];
   setColumnOrder: (order: string[]) => void;
   baseZIndex?: number;
+  customBreakpoint?: number;
 }
 
 const TitleWrapper: React.FC<{ title: React.ReactNode }> = ({ title }) => (
@@ -133,12 +136,14 @@ function TableHeader<TData>({
   columnOrder,
   setColumnOrder,
   baseZIndex,
+  customBreakpoint,
 }: TableHeaderProps<TData>) {
   const [searchTerm, setSearchTerm] = useState(search?.defaultSearchTerm ?? "");
   const [searchFocused, setSearchFocused] = useState(false);
   const inputRef = useRef(null);
   const timeoutRef = useRef(null);
   const shouldShowControls = search?.enabled || showControls;
+  const { width } = useViewportSize();
 
   useEffect(() => {
     if (search?.defaultSearchTerm) {
@@ -192,76 +197,46 @@ function TableHeader<TData>({
     </div>
   );
 
-  const renderHeaderWhenNeeded = () => {
-    if (additionalControls) {
-      if (tableTitle) return <TitleWrapper title={tableTitle} />;
-      if (shouldShowControls && tableTotalDetail) {
-        return <TotalDetailWrapper detail={tableTotalDetail} />;
-      }
-    } else if (tableTitle && shouldShowControls) {
-      return <TitleWrapper title={tableTitle} />;
+  const breakpoint = customBreakpoint ?? XL_BREAKPOINT;
+  let detailClass = "";
+
+  if (tableTitle !== undefined) {
+    if (width >= breakpoint && shouldShowControls) {
+      detailClass = "ml-auto";
     }
-    return null;
-  };
-
-  const renderLeftSection = () => {
-    if (additionalControls) {
-      return additionalControls;
+  } else {
+    if (width >= breakpoint && additionalControls) {
+      detailClass = "ml-auto";
+    } else {
+      detailClass = "order-first basis-full grow-0 shrink-0 -mb-2";
     }
-
-    return (
-      <>
-        {tableTitle && (
-          <div
-            className={`${
-              shouldShowControls && tableTotalDetail ? "hidden xl:block" : ""
-            }`}
-          >
-            <TitleWrapper title={tableTitle} />
-          </div>
-        )}
-
-        {!tableTitle && tableTotalDetail && (
-          <div className="hidden xl:block">
-            <TotalDetailWrapper detail={tableTotalDetail} />
-          </div>
-        )}
-
-        {tableTitle && tableTotalDetail && shouldShowControls && (
-          <div className="block xl:hidden">
-            <TotalDetailWrapper detail={tableTotalDetail} />
-          </div>
-        )}
-      </>
-    );
-  };
-
-  const extraHeader = renderHeaderWhenNeeded();
+  }
 
   return (
-    <>
-      {extraHeader && <div className="xl:hidden mb-2">{extraHeader}</div>}
-
-      <div
-        className={`flex flex-wrap gap-y-4 mb-2 items-center ${
-          !additionalControls && !tableTitle ? "justify-end" : "justify-between"
-        }`}
-      >
-        <div className="flex items-center">{renderLeftSection()}</div>
-
-        {(shouldShowControls || tableTotalDetail) && (
-          <div className="flex flex-wrap gap-y-2 gap-x-4 items-center">
-            {tableTotalDetail && (
-              <TotalDetailWrapper
-                detail={tableTotalDetail}
-                className={shouldShowControls ? "hidden xl:block" : ""}
-              />
-            )}
-            {shouldShowControls && renderSearchAndControls()}
-          </div>
-        )}
-      </div>
-    </>
+    <div
+      className={`flex flex-wrap gap-4 items-center mb-2 ${
+        !additionalControls && !tableTitle ? "justify-end" : "justify-between"
+      }`}
+    >
+      {tableTitle && (
+        <div
+          className={
+            additionalControls || (shouldShowControls && width < breakpoint)
+              ? "basis-full grow-0 shrink-0 -mb-2"
+              : ""
+          }
+        >
+          <TitleWrapper title={tableTitle} />
+        </div>
+      )}
+      {additionalControls && additionalControls}
+      {tableTotalDetail && (
+        <div className={detailClass}>
+          <TotalDetailWrapper detail={tableTotalDetail} />
+        </div>
+      )}
+      {shouldShowControls && renderSearchAndControls()}
+    </div>
   );
 }
 

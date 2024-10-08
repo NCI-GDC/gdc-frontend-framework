@@ -115,8 +115,8 @@ const FileVersions = ({ file_id }: { file_id: string }): JSX.Element => {
     <>
       {fileHistory && (
         <div className="flex flex-col gap-2 my-8">
-          <HeaderTitle>File Versions</HeaderTitle>
           <VerticalTable
+            tableTitle={<HeaderTitle>File Versions</HeaderTitle>}
             customDataTestID="table-file-versions-file-summary"
             additionalControls={
               <div className="mb-2">

@@ -39,7 +39,7 @@ import {
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { downloadTSV } from "@/components/Table/utils";
-import { statusBooleansToDataStatus } from "src/utils";
+import { REPO_BREAKPOINT, statusBooleansToDataStatus } from "src/utils";
 import { useDeepCompareEffect } from "use-deep-compare";
 
 export type FilesTableDataType = {
@@ -446,9 +446,6 @@ const FilesTables: React.FC = () => {
 
   return (
     <>
-      <div className="flex mb-2 Custom-Repo-Width:hidden">
-        <Stats />
-      </div>
       <VerticalTable
         additionalControls={
           <div className="flex gap-2 items-center justify-between">
@@ -469,10 +466,7 @@ const FilesTables: React.FC = () => {
           </div>
         }
         tableTotalDetail={
-          <div
-            data-testid="text-counts-files-table"
-            className="hidden Custom-Repo-Width:block"
-          >
+          <div data-testid="text-counts-files-table">
             <Stats />
           </div>
         }
@@ -497,6 +491,7 @@ const FilesTables: React.FC = () => {
         sorting={sorting}
         setSorting={setSorting}
         setColumnOrder={setColumnOrder}
+        customBreakpoint={REPO_BREAKPOINT}
       />
     </>
   );
