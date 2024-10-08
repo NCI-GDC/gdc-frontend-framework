@@ -3,7 +3,8 @@ import { humanify } from "@/utils/index";
 import { SSMSData, FilterSet } from "@gff/core";
 import { SomaticMutation, SsmToggledHandler } from "./types";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
-import { Dispatch, SetStateAction, useMemo, useId } from "react";
+import { Dispatch, SetStateAction, useId } from "react";
+import { useDeepCompareMemo } from "use-deep-compare";
 import { Checkbox } from "@mantine/core";
 import { HeaderTooltip } from "@/components/Table/HeaderTooltip";
 import {
@@ -37,6 +38,8 @@ export const filterMutationType = (mutationSubType: string): string => {
   return operation.charAt(0).toUpperCase() + operation.slice(1);
 };
 
+const SMTableColumnHelper = createColumnHelper<SomaticMutation>();
+
 export const useGenerateSMTableColumns = ({
   toggledSsms,
   isDemoMode,
@@ -69,12 +72,10 @@ export const useGenerateSMTableColumns = ({
   cohortFilters: FilterSet;
 }): ColumnDef<SomaticMutation>[] => {
   const componentId = useId();
-  const SMTableColumnHelper = useMemo(
-    () => createColumnHelper<SomaticMutation>(),
-    [],
-  );
 
-  const SMTableDefaultColumns = useMemo<ColumnDef<SomaticMutation>[]>(
+  const SMTableDefaultColumns = useDeepCompareMemo<
+    ColumnDef<SomaticMutation>[]
+  >(
     () => [
       SMTableColumnHelper.display({
         id: "select",
