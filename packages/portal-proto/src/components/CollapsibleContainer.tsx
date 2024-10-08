@@ -42,11 +42,7 @@ export const CollapsibleContainer = (
   const { ref: descRef, height: descHeight } = useElementSize();
 
   return (
-    <div
-      className={`flex flex-col ${
-        isContextBar && "overflow-y-auto max-h-screen-100vh"
-      }`}
-    >
+    <div className={`flex flex-col ${isContextBar && "max-h-screen-100vh"}`}>
       <div className="flex flex-wrap">
         <div className="flex-grow">{Top}</div>
         <div className="flex items-center bg-primary pr-4 gap-4 flex-wrap w-full py-5 pl-5 lg:flex-no-wrap lg:w-auto lg:py-0 lg:pl-0">
@@ -90,7 +86,7 @@ export const CollapsibleContainer = (
       <div
         aria-hidden={isCollapsed}
         style={{ height: !isCollapsed ? descHeight : 0 }}
-        className="transition-[height] duration-300 overflow-hidden"
+        className="transition-[height] duration-300"
       >
         <div
           className={`${
