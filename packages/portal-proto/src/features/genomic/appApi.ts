@@ -12,7 +12,7 @@ const persistConfig = {
   whitelist: ["filters", "filtersExpanded"],
 };
 
-const reducers = combineReducers({
+export const reducers = combineReducers({
   filters: geneFrequencyFiltersReducer,
   filtersExpanded: geneFrequencyExpandedReducer,
 });
