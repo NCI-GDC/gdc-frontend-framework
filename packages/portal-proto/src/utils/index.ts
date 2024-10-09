@@ -289,3 +289,18 @@ export const XL_BREAKPOINT = parseInt(tailwindConfig.theme.extend.screens.xl);
 export const REPO_BREAKPOINT = parseInt(
   tailwindConfig.theme.extend.screens["Custom-Repo-Width"],
 );
+
+// https://stackoverflow.com/questions/2388115/get-locale-short-date-format-using-javascript
+/**
+ * Returns the current local time as a formatted timestamp string.
+ *
+ * @returns A timestamp in the format 'YYYY-MM-DD.HHMMSS'.
+ *
+ * Uses the Swedish ("sv-SE") locale to get a base format of "YYYY-MM-DD HH:MM:SS".
+ */
+export function getFormattedTimestamp() {
+  return new Date()
+    .toLocaleString("sv-SE")
+    .replace(" ", ".")
+    .replace(/[:]/g, "");
+}

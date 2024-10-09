@@ -25,7 +25,7 @@ import CartDownloadModal from "@/components/Modals/CartDownloadModal";
 import { DownloadButton } from "@/components/DownloadButtons";
 import download from "src/utils/download";
 import { removeFromCart } from "./updateCart";
-import { focusStyles } from "@/utils/index";
+import { focusStyles, getFormattedTimestamp } from "@/utils/index";
 import { cartAboveLimit } from "./utils";
 
 const buttonStyle =
@@ -78,6 +78,7 @@ const downloadManifest = (
       },
       return_type: "manifest",
       size: 10000,
+      filename: `gdc_manifest.${getFormattedTimestamp()}.txt`,
     },
     done: () => setActive(false),
   });

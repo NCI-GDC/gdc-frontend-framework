@@ -1,6 +1,6 @@
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
-import { focusStyles } from "@/utils/index";
+import { focusStyles, getFormattedTimestamp } from "@/utils/index";
 import download from "@/utils/download";
 import { useCoreDispatch } from "@gff/core";
 import { Button, Loader, Tooltip } from "@mantine/core";
@@ -132,6 +132,7 @@ function SummaryHeaderControls({
         },
         return_type: "manifest",
         size: 10000,
+        filename: `gdc_manifest.${getFormattedTimestamp()}.txt`,
       },
       done: () => setManifestDownloadActive(false),
     });

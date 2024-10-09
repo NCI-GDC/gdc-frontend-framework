@@ -3,6 +3,7 @@ import {
   capitalize,
   calculatePercentageAsString,
   filtersToName,
+  getFormattedTimestamp,
 } from "../index";
 
 describe("capitalize", () => {
@@ -213,5 +214,55 @@ describe("filtersToName", () => {
         },
       }),
     ).toEqual("one / two, one, one / two, one...");
+  });
+});
+
+describe("getFormattedTimestamp", () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  const mockDateAndTest = (
+    dateString: string,
+    expectedOutput: string,
+    description: string,
+  ) => {
+    test(description, () => {
+      const mockDate = new Date(dateString);
+      jest
+        .spyOn(global, "Date")
+        .mockImplementation(() => mockDate as unknown as string);
+      const result = getFormattedTimestamp();
+      expect(result).toBe(expectedOutput);
+    });
+  };
+
+  mockDateAndTest(
+    "Tue Oct 08 2024 16:14:11 GMT-0500 (Central Daylight Time)",
+    "2024-10-08.161411",
+    "formats regular datetime correctly",
+  );
+
+  mockDateAndTest(
+    "Tue Sep 08 2024 04:05:06 GMT-0500 (Central Daylight Time)",
+    "2024-09-08.040506",
+    "handles single-digit hours/minutes/seconds",
+  );
+
+  mockDateAndTest(
+    "Tue Dec 31 2024 23:59:59 GMT-0600 (Central Standard Time)",
+    "2024-12-31.235959",
+    "handles end of year in CST",
+  );
+
+  test("verifies format pattern", () => {
+    const mockDate = new Date(
+      "Tue Jan 01 2024 12:00:00 GMT-0600 (Central Standard Time)",
+    );
+    jest
+      .spyOn(global, "Date")
+      .mockImplementation(() => mockDate as unknown as string);
+    const result = getFormattedTimestamp();
+    expect(result).toMatch(/^\d{4}-\d{2}-\d{2}\.\d{6}$/);
   });
 });

@@ -143,7 +143,7 @@ const AssociatedCB = ({
         cell: ({ getValue }) => getValue(),
       }),
     ],
-    [columnHelper],
+    [],
   );
 
   return (
