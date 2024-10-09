@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { isEqual } from "lodash";
-import { Operation, FilterSet, isOperandsType } from "@gff/core";
+import { Operation, FilterSet, isOperandsType, Includes } from "@gff/core";
 import { AppState } from "./appApi";
 import { GENE_AND_MUTATION_FIELDS } from "./constants";
 
@@ -23,11 +23,36 @@ const slice = createSlice({
       state,
       action: PayloadAction<{ field: string; operation: Operation }>,
     ) => {
+      const { field, operation } = action.payload;
+      let removeNonSetFilters = false;
+
+      if (GENE_AND_MUTATION_FIELDS.includes(field)) {
+        // we are adding new gene/ssm set filters, clear filters
+        if (state.root?.[field] === undefined) {
+          removeNonSetFilters = true;
+        } else {
+          const diffOperands = (operation as Includes).operands.filter((o) =>
+            (state.root?.[field] as Includes).operands.includes(o),
+          );
+          // we are adding a new value, clear filters
+          removeNonSetFilters =
+            (operation as Includes).operands.length > diffOperands.length;
+        }
+      }
+
+      const restOfFilters = removeNonSetFilters
+        ? Object.fromEntries(
+            Object.entries(state.root).filter(([key]) =>
+              GENE_AND_MUTATION_FIELDS.includes(key),
+            ),
+          )
+        : state.root;
+
       return {
         mode: "and",
         root: {
-          ...state.root,
-          [action.payload.field]: action.payload.operation,
+          ...restOfFilters,
+          [field]: action.payload.operation,
         },
       };
     },
@@ -37,18 +62,6 @@ const slice = createSlice({
       return {
         mode: "and",
         root: updated,
-      };
-    },
-    removeAllNonSetFilters: (state) => {
-      return {
-        mode: "and",
-        root: {
-          ...Object.fromEntries(
-            Object.entries(state.root).filter(([key]) =>
-              GENE_AND_MUTATION_FIELDS.includes(key),
-            ),
-          ),
-        },
       };
     },
     clearGeneAndSSMFilters: () => {
@@ -62,7 +75,6 @@ export const {
   updateGeneAndSSMFilter,
   removeGeneAndSSMFilter,
   clearGeneAndSSMFilters,
-  removeAllNonSetFilters,
 } = slice.actions;
 
 export const selectGeneAndSSMFilters = (
