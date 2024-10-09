@@ -811,6 +811,10 @@ def click_checkboxes(table):
         APP.shared.click_checkbox(v[0])
         time.sleep(0.1)
 
+@step("Select the radio button <button_name>")
+def click_radio_data_testid_button(button_name:str):
+    APP.shared.click_radio_data_testid_button(button_name)
+
 @step("Select the following radio buttons <table>")
 def click_radio_buttons(table):
     for k, v in enumerate(table):
@@ -864,6 +868,7 @@ def change_number_of_entries_shown(change_number_of_entries_shown: str):
     and selecting an option from the dropdown list.
     """
     APP.shared.change_number_of_entries_shown(change_number_of_entries_shown)
+    APP.shared.wait_for_loading_spinners_to_detach()
 
 @step("Change number of entries shown in the table <table_name> to <number_of_entries>")
 def change_number_of_entries_shown_in_specified_table(table_name:str, change_number_of_entries_shown: str):
@@ -872,6 +877,7 @@ def change_number_of_entries_shown_in_specified_table(table_name:str, change_num
     and selecting an option from the dropdown list.
     """
     APP.shared.change_number_of_entries_shown_in_specified_table(table_name, change_number_of_entries_shown)
+    APP.shared.wait_for_loading_spinners_to_detach()
 
 @step("Perform action and validate modal text <table>")
 def click_named_button_in_modal_and_wait_for_temp_message_text(table):
@@ -913,7 +919,7 @@ def click_undo_in_message():
 def click_undo_in_message():
     """Clicks 'Set this as your current cohort' in a modal message"""
     APP.shared.click_set_as_current_cohort_in_message()
-    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    APP.shared.wait_for_loading_spinners_to_detach()
 
 
 # These 3 functions are for filter cards (like on projects page).

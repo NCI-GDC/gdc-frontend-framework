@@ -56,6 +56,7 @@ class GenericLocators:
     )
 
     RADIO_BUTTON_IDENT = lambda radio_name: f'//input[@id="{radio_name}"]'
+    RADIO_DATA_TESTID_BUTTON_IDENT = lambda radio_name: f'[data-testid="radio-{radio_name}"]'
     CHECKBOX_IDENT = (
         lambda checkbox_id: f'[data-testid="checkbox-{checkbox_id}"]'
     )
@@ -80,9 +81,8 @@ class GenericLocators:
         lambda button_text_name: f'footer >> a:has-text("{button_text_name}") >> nth=0'
     )
 
-    # Remove >> nth=1 when PEAR-2201 is completed
     TABLE_ITEM_COUNT_IDENT = (
-        lambda table_name: f'[data-testid="table-{table_name}"] >> [data-testid="text-total-item-count"] >> nth=1'
+        lambda table_name: f'[data-testid="table-{table_name}"] >> [data-testid="text-total-item-count"]'
     )
     TABLE_TEXT_IDENT = (
         lambda table_name, table_text: f'[data-testid="table-{table_name}"] >> text={table_text} >> nth=0'
@@ -620,6 +620,11 @@ class BasePage:
     def click_radio_button(self, radio_name):
         """Clicks a radio button in a filter card"""
         locator = GenericLocators.RADIO_BUTTON_IDENT(radio_name)
+        self.click(locator)
+
+    def click_radio_data_testid_button(self, radio_name):
+        """Clicks a data-testid radio button"""
+        locator = GenericLocators.RADIO_DATA_TESTID_BUTTON_IDENT(radio_name)
         self.click(locator)
 
     def click_close_modal_button(self):

@@ -1,5 +1,5 @@
 # Cohort Case View - Table View Table
-Date Created        : 10/01/2024
+Date Created        : 10/04/2024
 Version			    : 1.0
 Owner		        : GDC QA
 Description		    : Validate Cohort Table
