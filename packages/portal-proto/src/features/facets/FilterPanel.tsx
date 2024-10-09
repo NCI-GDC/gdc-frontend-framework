@@ -67,10 +67,10 @@ const FilterPanel = ({
 
   const facetFields = facetDefinitions.map((x) => x.full);
   const { xPosition } = useContext(TableXPositionContext);
-  const maxHeight = useMemo(
-    () => xPosition - ref?.current?.getBoundingClientRect().top,
-    [xPosition],
-  );
+  const maxHeight = useMemo(() => {
+    const calcHeight = xPosition - ref?.current?.getBoundingClientRect().top;
+    return isNaN(calcHeight) ? undefined : calcHeight;
+  }, [xPosition]);
 
   return (
     <div>
