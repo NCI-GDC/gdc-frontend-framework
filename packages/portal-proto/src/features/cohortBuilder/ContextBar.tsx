@@ -41,7 +41,7 @@ import {
 } from "./utils";
 import StickyControl from "./StickyControl";
 import { useViewportSize } from "@mantine/hooks";
-import { getFormattedTimestamp } from "@/utils/index";
+import { getFormattedTimestamp } from "@/utils/date";
 
 const ContextBar = ({
   handleIsSticky,
@@ -132,7 +132,9 @@ const ContextBar = ({
         case_filters: downloadFilter,
         return_type: "manifest",
         size: 10000,
-        filename: `gdc_manifest.${getFormattedTimestamp()}.txt`,
+        filename: `gdc_manifest.${getFormattedTimestamp({
+          includeTimes: true,
+        })}.txt`,
       },
       done: () => setDownloadManifestActive(false),
     });

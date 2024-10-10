@@ -9,7 +9,7 @@ import {
 } from "@gff/core";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { SurvivalPlotTypes } from "@/features/charts/SurvivalPlot/types";
-import { convertDateToString } from "@/utils/date";
+import { getFormattedTimestamp } from "@/utils/date";
 import { isInterval, parseContinuousBucket } from "../utils";
 import { CategoricalBins, CustomInterval, NamedFromTo } from "../types";
 import { DEMO_COHORT_FILTERS } from "../constants";
@@ -130,7 +130,7 @@ const ClinicalSurvivalPlot: React.FC<ClinicalSurvivalPlotProps> = ({
         plotType={plotType}
         downloadFileName={`${field
           .split(".")
-          .at(-1)}-survival-plot.${convertDateToString(new Date())}`}
+          .at(-1)}-survival-plot.${getFormattedTimestamp()}`}
         tableTooltip
       />
     </div>

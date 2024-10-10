@@ -20,7 +20,7 @@ import { MdSave, MdPerson } from "react-icons/md";
 import { useAppSelector } from "@/features/repositoryApp/appApi";
 import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
-import { convertDateToString } from "src/utils/date";
+import { getFormattedTimestamp } from "src/utils/date";
 import download from "src/utils/download";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
 import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
@@ -387,7 +387,7 @@ const FilesTables: React.FC = () => {
       columnOrder,
       columnVisibility,
       columns: filesTableDefaultColumns,
-      fileName: `files-table.${convertDateToString(new Date())}.tsv`,
+      fileName: `files-table.${getFormattedTimestamp()}.tsv`,
       option: {
         blacklist: ["cart"],
         overwrite: {
