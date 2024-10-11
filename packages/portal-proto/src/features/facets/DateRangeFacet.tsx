@@ -10,22 +10,12 @@ import { FaMinus as MinusIcon, FaPlus as PlusIcon } from "react-icons/fa";
 import { ImCalendar as CalendarIcon } from "react-icons/im";
 import { StringRange } from "./types";
 import FacetControlsHeader from "./FacetControlsHeader";
+import { getFormattedTimestamp } from "@/utils/date";
 
 type DateRangeFacetProps = Omit<
   FacetCardProps<ValueFacetHooks>,
   "showSearch" | "showFlip" | "showPercent" | "valueLabel"
 >;
-
-/**
- * Converts a date into a string of YYYY/MM/DD padding 0 for months and days \< 10.
- * @param d - date to convert
- */
-const convertDateToString = (d: Date | null): string | undefined => {
-  if (d === null) return undefined;
-  return `${d.getFullYear()}-${(d.getMonth() + 1) //Months start at 0
-    .toString()
-    .padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")}`;
-};
 
 /**
  * converts a string of the form YYYY/MM/DD to a Date object
@@ -75,12 +65,14 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
   const [opened, setOpened] = useState(false);
 
   const setDateRangeValue = (d: [Date | null, Date | null]) => {
+    console.log({ d });
     const data: StringRange = {
-      from: convertDateToString(d[0]),
-      to: convertDateToString(d[1]),
+      from: getFormattedTimestamp({ date: d[0] }),
+      to: getFormattedTimestamp({ date: d[1] }),
       fromOp: ">=",
       toOp: "<=",
     };
+    console.log({ data });
     const rangeFilters = buildRangeOperator(field, data);
     if (rangeFilters !== undefined) updateFacetFilters(field, rangeFilters);
     // clear filters as range is empty

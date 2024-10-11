@@ -1,4 +1,4 @@
-import { convertDateToString } from "src/utils/date";
+import { getFormattedTimestamp } from "src/utils/date";
 import saveAs from "file-saver";
 import { NextRouter } from "next/router";
 
@@ -8,12 +8,12 @@ export const exportCohort = (
 ) => {
   const tsv = `id\n${caseIds.map((c) => c.case_id).join("\n")}`;
   const blob = new Blob([tsv], { type: "text/tsv" });
-  const today = new Date();
   saveAs(
     blob,
-    `cohort_${cohortName.replace(/[^A-Za-z0-9_.]/g, "_")}.${convertDateToString(
-      today,
-    )}.tsv`,
+    `cohort_${cohortName.replace(
+      /[^A-Za-z0-9_.]/g,
+      "_",
+    )}.${getFormattedTimestamp()}.tsv`,
   );
 };
 

@@ -1,5 +1,5 @@
 import { downloadTSV } from "@/components/Table/utils";
-import { convertDateToString } from "@/utils/date";
+import { getFormattedTimestamp } from "@/utils/date";
 import { CancerDistributionTableData, FilterSet } from "@gff/core";
 import { ColumnDef } from "@tanstack/react-table";
 import saveAs from "file-saver";
@@ -64,9 +64,7 @@ export const handleTSVDownload = (
   isGene: boolean,
 ): void => {
   downloadTSV({
-    fileName: `cancer-distribution-table.${convertDateToString(
-      new Date(),
-    )}.tsv`,
+    fileName: `cancer-distribution-table.${getFormattedTimestamp()}.tsv`,
     tableData: cancerDistributionTableDownloadData,
     columns: columns,
     option: {

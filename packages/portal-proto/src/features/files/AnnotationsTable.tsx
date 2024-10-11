@@ -17,7 +17,7 @@ import {
   GqlIncludes,
 } from "@gff/core";
 import { createColumnHelper, SortingState } from "@tanstack/react-table";
-import { convertDateToString } from "src/utils/date";
+import { getFormattedTimestamp } from "src/utils/date";
 import download from "src/utils/download";
 import FunctionButton from "@/components/FunctionButton";
 import VerticalTable from "@/components/Table/VerticalTable";
@@ -300,7 +300,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
       columnOrder,
       columnVisibility,
       columns,
-      fileName: `annotations-table.${convertDateToString(new Date())}.tsv`,
+      fileName: `annotations-table.${getFormattedTimestamp()}.tsv`,
     });
   };
 

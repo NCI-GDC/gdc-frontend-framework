@@ -28,7 +28,7 @@ import { filtersToName, statusBooleansToDataStatus } from "src/utils";
 import FunctionButton from "@/components/FunctionButton";
 import { CountsIcon, HeaderTitle } from "@/components/tailwindComponents";
 import download from "@/utils/download";
-import { convertDateToString } from "@/utils/date";
+import { getFormattedTimestamp } from "@/utils/date";
 import { SomaticMutation, SsmToggledHandler } from "./types";
 import { SummaryModalContext } from "@/utils/contexts";
 import { HandleChangeInput } from "@/components/Table/types";
@@ -294,7 +294,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         case_filters: buildCohortGqlOperator(cohortFilters) ?? {},
         gene_id,
         attachment: true,
-        filename: `frequent-mutations.${convertDateToString(new Date())}.tsv`,
+        filename: `frequent-mutations.${getFormattedTimestamp()}.tsv`,
       },
       dispatch,
       done: () => setDownloadMutationsFrequencyTSVActive(false),
@@ -310,7 +310,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         case_id,
         filters: buildCohortGqlOperator(tableFilters) ?? {},
         attachment: true,
-        filename: `frequent-mutations.${convertDateToString(new Date())}.tsv`,
+        filename: `frequent-mutations.${getFormattedTimestamp()}.tsv`,
       },
       dispatch,
       done: () => setDownloadMutationsFrequencyTSVActive(false),
@@ -327,7 +327,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
         filters: buildCohortGqlOperator(tableFilters) ?? {},
         case_filters: buildCohortGqlOperator(cohortFilters) ?? {},
         attachment: true,
-        filename: `frequent-mutations.${convertDateToString(new Date())}.tsv`,
+        filename: `frequent-mutations.${getFormattedTimestamp()}.tsv`,
       },
       dispatch,
       done: () => setDownloadMutationsFrequencyTSVActive(false),
