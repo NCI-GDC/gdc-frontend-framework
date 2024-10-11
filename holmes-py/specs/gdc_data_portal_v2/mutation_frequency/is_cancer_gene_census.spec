@@ -155,10 +155,42 @@ tags: gdc-data-portal-v2, regression, mutation-frequency
   |Polyphen Impact  |clear selection      |
   |VEP Impact       |clear selection      |
 
+## Create Mutation Set
+* Search the table for "chr3:g.2670991"
+* Wait for table body text to appear
+  |expected_text        |row  |column |
+  |---------------------|-----|-------|
+  |chr3:g.26709910C>T   |1    |4      |
+* Select value from table by row and column
+  |row   |column|
+  |------|------|
+  |1     |1     |
+  |2     |1     |
+  |3     |1     |
+  |4     |1     |
+* Select button "Save Edit Mutation Set"
+* Select "Save as new mutation set" from dropdown menu
+* Enter "ICGC Off Mutation Set" in the text box "Set Name"
+* Select button "Save"
+* Is temporary modal with text "Set has been saved." present on the page and "Remove Modal"
+* Navigate to "Manage Sets" from "Header" "section"
+* Change number of entries shown in the table "Manage Sets" to "100"
+* Select item list for set "ICGC Off Mutation Set" on Manage Sets page
+* Verify the table "Set Information" is displaying this information
+  |text_in_table_to_check               |
+  |-------------------------------------|
+  |122779a1-4c63-555a-8734-f2414ff9af10 |
+  |04590200-7de9-5088-ad9d-c0718120f064 |
+  |24d80d1e-a5ca-5456-a470-f86a4c746c0d |
+  |329a3a09-e607-54aa-9d85-2bb747a03d0b |
+* Close set panel
+
 ## Gene Filtering Check
+* Navigate to "Analysis" from "Header" "section"
+* Navigate to "Mutation Frequency" from "Analysis" "app"
 * Switch to "Genes" tab in the Mutation Frequency app
 * Is text "Distribution of Most Frequently Mutated Genes" present on the page
-
+* Flip the switch on filter card "Is Cancer Gene Census"
 * Make the following selections on a filter card
   |facet_name       |selection                            |
   |-----------------|-------------------------------------|
