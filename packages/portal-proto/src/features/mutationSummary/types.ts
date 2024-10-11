@@ -6,7 +6,7 @@ export interface ConsequenceTableData {
   consequences: string;
   transcript: string;
   is_canonical: boolean;
-  gene_strand: string;
+  gene_strand: number;
   impact: {
     polyphen_impact: string;
     polyphen_score: number;
