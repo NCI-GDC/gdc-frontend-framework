@@ -1,0 +1,21 @@
+{
+  "name": "enclave-portal",
+  "version": "1.0.0",
+  "dependencies": {
+    "next": "^14.2.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "clean": "rimraf .next",
+    "dev": "next dev -p 3050",
+    "build": "next build",
+    "build:clean": "npm run clean && npm run build",
+    "start": "next start",
+    "compile": "tsc",
+    "test": "jest unit",
+    "test:watch": "jest unit --watch",
+    "test:int": "echo No integrations tests yet",
+    "test:all": "jest"
+  },
+  "license": "Apache-2"
+}
