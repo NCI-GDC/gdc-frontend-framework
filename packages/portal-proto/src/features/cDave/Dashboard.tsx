@@ -88,7 +88,6 @@ const Dashboard: React.FC<DashboardProps> = ({
       {activeFields.map((field, index) => {
         const isLastRow = index >= activeFields.length - colCountInLastRow;
         const colSpan = isLastRow ? colSpanInLastRow : controlsExpanded ? 6 : 4;
-
         return (
           <Grid.Col span={colSpan} key={field}>
             <CDaveCard

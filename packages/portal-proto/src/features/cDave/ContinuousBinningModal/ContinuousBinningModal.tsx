@@ -250,14 +250,14 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
         className="flex h-10 items-center border-base-lightest border-solid border-1 p-2 mb-4 mt-2 font-content"
       >
         <p>
-          Available values from <b>{formattedStats.min}</b> to{" "}
+          Available values from <b>{formattedStats.min?.toLocaleString()}</b> to{" "}
           <b>
-            {"<"} {formattedStats.max}
+            {"<"} {formattedStats.max?.toLocaleString()}
           </b>
         </p>
         <Divider orientation="vertical" className="mx-4 my-auto h-3/4" />
         <p>
-          Bin size in quarters: <b>{binSize}</b>
+          Bin size in quarters: <b>{binSize?.toLocaleString()}</b>
         </p>
       </div>
       <div className="bg-base-lightest p-4 flex flex-col">
@@ -299,6 +299,9 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
               </label>
               <TextInput
                 {...intervalForm.getInputProps("setIntervalSize")}
+                value={Number(
+                  intervalForm.values.setIntervalSize,
+                )?.toLocaleString()}
                 id={"continuous-bin-modal-interval-size"}
                 classNames={{
                   wrapper: `px-2`,
@@ -315,6 +318,9 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
               </label>
               <TextInput
                 {...intervalForm.getInputProps("setIntervalMin")}
+                value={Number(
+                  intervalForm.values.setIntervalMin,
+                )?.toLocaleString()}
                 id={"continuous-bin-modal-interval-min"}
                 classNames={{
                   wrapper: `px-2`,
@@ -331,6 +337,9 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
               </label>
               <TextInput
                 {...intervalForm.getInputProps("setIntervalMax")}
+                value={Number(
+                  intervalForm.values.setIntervalMax,
+                )?.toLocaleString()}
                 id={"continuous-bin-modal-interval-max"}
                 classNames={{
                   wrapper: `px-2`,
