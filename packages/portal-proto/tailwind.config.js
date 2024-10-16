@@ -717,6 +717,7 @@ module.exports = {
     extend: {
       screens: {
         "Custom-Repo-Width": "1420px",
+        "Custom-Cart-Width": "1340px",
         sm: "640px",
         md: "768px",
         lg: "1024px",
@@ -794,6 +795,7 @@ module.exports = {
         cartLighterOrange: "#C7501A33",
         linkDarkerColor: "#1D6796",
         emptyIconLighterColor: "#e0e9f0",
+        removeButtonHover: "#5D091D",
       },
       minHeight: {
         "screen-60vh": "60vh",

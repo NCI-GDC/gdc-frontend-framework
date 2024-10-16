@@ -12,11 +12,11 @@ import {
 } from "@gff/core";
 import fileSize from "filesize";
 import { Button, Loader, Menu } from "@mantine/core";
-import { VscTrash as TrashIcon } from "react-icons/vsc";
 import {
   MdArrowDropDown as DropdownIcon,
   MdPerson as PersonIcon,
   MdSave as SaveIcon,
+  MdShoppingCart as CartIcon,
 } from "react-icons/md";
 import { RiFile3Fill as FileIcon } from "react-icons/ri";
 import { MdDownload as DownloadIcon } from "react-icons/md";
@@ -464,7 +464,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
           <Menu.Target>
             <Button
               data-testid="button-remove-from-cart"
-              leftSection={<TrashIcon aria-hidden="true" size="1rem" />}
+              leftSection={<CartIcon aria-hidden="true" size="1rem" />}
               rightSection={
                 <DropdownIcon
                   size={20}
@@ -473,7 +473,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 />
               }
               classNames={{
-                root: `bg-nci-red-darker font-medium text-base-max ${focusStyles}`, //TODO: find good color theme for this
+                root: `bg-nci-red-darker text-base-max hover:bg-removeButtonHover ${focusStyles}`,
               }}
             >
               Remove From Cart
@@ -493,7 +493,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
           </Menu.Dropdown>
         </Menu>
 
-        <h1 className="uppercase xl:ml-auto flex items-center truncate text-2xl">
+        <h1 className="uppercase Custom-Cart-Width:ml-auto flex items-center truncate text-2xl">
           Total of{" "}
           <FileIcon size={25} className="ml-2 mr-1" aria-hidden="true" />{" "}
           <b data-testid="text-file-count" className="mr-1">
