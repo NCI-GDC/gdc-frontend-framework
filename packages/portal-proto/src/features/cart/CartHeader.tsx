@@ -29,7 +29,7 @@ import { focusStyles } from "@/utils/index";
 import { cartAboveLimit } from "./utils";
 
 const buttonStyle =
-  "bg-base-max text-primary border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary text-sm font-normal";
+  "bg-base-max text-primary border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary";
 
 const downloadCart = (
   filesByCanAccess: Record<string, CartFile[]>,
@@ -126,7 +126,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
         />
       )}
       <div
-        className="bg-primary text-primary-contrast-darkest flex items-center gap-x-4 w-full h-16"
+        className="bg-primary text-primary-contrast-darkest flex flex-wrap items-center gap-4 w-full p-4"
         data-testid="cart-header"
       >
         <Menu width="target">
@@ -134,7 +134,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             <Button
               data-testid="button-download-cart"
               classNames={{
-                root: `${buttonStyle} ml-4 ${focusStyles}`,
+                root: `${buttonStyle} ${focusStyles}`,
               }}
               leftSection={<DownloadIcon aria-hidden="true" size="1rem" />}
               rightSection={
@@ -493,7 +493,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
           </Menu.Dropdown>
         </Menu>
 
-        <h1 className="uppercase ml-auto mr-4 flex items-center truncate text-2xl">
+        <h1 className="uppercase xl:ml-auto flex items-center truncate text-2xl">
           Total of{" "}
           <FileIcon size={25} className="ml-2 mr-1" aria-hidden="true" />{" "}
           <b data-testid="text-file-count" className="mr-1">
