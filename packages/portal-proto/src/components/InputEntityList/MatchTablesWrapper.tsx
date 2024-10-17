@@ -61,7 +61,7 @@ const MatchTablesWrapper: React.FC<MatchTablesProps> = ({
                 size="xs"
                 className="ml-1"
               >
-                {numMatched}
+                {numMatched?.toLocaleString()}
               </Badge>
             </StyledTab>
             <StyledTab value="unmatched">
@@ -73,7 +73,7 @@ const MatchTablesWrapper: React.FC<MatchTablesProps> = ({
                 size="xs"
                 className="ml-1"
               >
-                {unmatched.length}
+                {unmatched.length?.toLocaleString()}
               </Badge>
             </StyledTab>
           </Tabs.List>

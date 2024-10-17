@@ -202,9 +202,9 @@ const MatchedTable = ({
     <div className="m-4">
       <div className="flex justify-between items-center mb-2">
         <p className="text-sm">
-          {numMatched} submitted {entityLabel} identifier
-          {numMatched !== 1 && "s"} mapped to {matched.length} unique GDC{" "}
-          {entityLabel}
+          {numMatched?.toLocaleString()} submitted {entityLabel} identifier
+          {numMatched !== 1 && "s"} mapped to {matched.length?.toLocaleString()}{" "}
+          unique GDC {entityLabel}
           {matched.length !== 1 && "s"}{" "}
         </p>
         <FunctionButton onClick={downloadTSV}>TSV</FunctionButton>

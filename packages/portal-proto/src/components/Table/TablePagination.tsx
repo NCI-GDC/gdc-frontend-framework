@@ -1,5 +1,5 @@
 import { DataStatus } from "@gff/core";
-import { Pagination, Select } from "@mantine/core";
+import { NumberFormatter, Pagination, Select } from "@mantine/core";
 import { useEffect, useState } from "react";
 import ShowingCount from "./ShowingCount";
 import { HandleChangeInput, PaginationOptions } from "./types";
@@ -130,6 +130,11 @@ function TablePagination<TData>({
             default:
               return { "aria-label": `${control} page button` };
           }
+        }}
+        getItemProps={(page: number) => {
+          return {
+            children: page?.toLocaleString(),
+          };
         }}
       />
     </div>

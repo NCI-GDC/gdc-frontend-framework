@@ -271,7 +271,7 @@ const FromTo: React.FC<FromToProps> = ({
           />
           <NumberInput
             {...form.getInputProps("fromValue")}
-            value={form.values.fromValue ?? ""}
+            value={form.values.fromValue?.toLocaleString() ?? ""}
             data-testid="textbox-input-from-value"
             className="text-sm flex-1"
             placeholder={`Min: ${lowerUnitRange}${unitsLabel} `}
@@ -307,7 +307,7 @@ const FromTo: React.FC<FromToProps> = ({
           />
           <NumberInput
             {...form.getInputProps("toValue")}
-            value={form.values.toValue ?? ""}
+            value={form.values.toValue?.toLocaleString() ?? ""}
             data-testid="textbox-input-to-value"
             className="flex-1 text-sm"
             placeholder={`Max: ${upperUnitRange}${unitsLabel} `}
