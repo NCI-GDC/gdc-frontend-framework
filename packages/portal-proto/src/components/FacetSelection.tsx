@@ -120,6 +120,7 @@ const FacetSelectionPanel = ({
   return (
     <div className="flex flex-col" data-testid="section-file-filter-search">
       <TextInput
+        data-autofocus
         label="Search for a property"
         data-testid="textbox-search-for-a-property"
         placeholder="search"
