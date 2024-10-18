@@ -12,7 +12,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Navigate to "Analysis" from "Header" "section"
 * Navigate to "Mutation Frequency" from "Analysis" "app"
 
-## Validate Custom Gene Filters
+## Validate Gene Table TSV
 * Is text "Overall Survival Plot" present on the page
 * Select "Genes" in the Mutation Frequency app
 * Upload "Gene FAT4" "txt" from "Mutation Frequency" in "Mutation Frequency Custom Filter" through "Browse"
@@ -64,7 +64,7 @@ but it usually requires a wait. So I've put 5 seconds.
   |---------------------|---------------------|
   |Mutated Gene         |clear selection      |
 
-## Validate Custom Mutation Filters
+## Validate Mutation Table TSV
 * Switch to "Mutations" tab in the Mutation Frequency app
 * Wait for table loading spinner
 * Select "Somatic Mutations" in the Mutation Frequency app

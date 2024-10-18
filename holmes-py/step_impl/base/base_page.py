@@ -80,9 +80,8 @@ class GenericLocators:
         lambda button_text_name: f'footer >> a:has-text("{button_text_name}") >> nth=0'
     )
 
-    # Remove >> nth=1 when PEAR-2201 is completed
     TABLE_ITEM_COUNT_IDENT = (
-        lambda table_name: f'[data-testid="table-{table_name}"] >> [data-testid="text-total-item-count"] >> nth=1'
+        lambda table_name: f'[data-testid="table-{table_name}"] >> [data-testid="text-total-item-count"]'
     )
     TABLE_TEXT_IDENT = (
         lambda table_name, table_text: f'[data-testid="table-{table_name}"] >> text={table_text} >> nth=0'
@@ -136,6 +135,9 @@ class GenericLocators:
     )
     FILTER_GROUP_ACTION_IDENT = (
         lambda group_name, action: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> button[aria-label="{action}"]'
+    )
+    FILTER_GROUP_FLIP_SWITCH_IDENT = (
+        lambda group_name: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> [data-testid="toggle-area"] >> div >> nth=0'
     )
     FILTER_GROUP_SHOW_MORE_LESS_IDENT = (
         lambda group_name, more_or_less: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> button[data-testid="{more_or_less}"]'
@@ -702,6 +704,11 @@ class BasePage:
     def perform_action_within_filter_card(self, filter_group_name, action):
         """Performs an action in a filter group e.g sorting, resetting, flipping the chart, etc."""
         locator = GenericLocators.FILTER_GROUP_ACTION_IDENT(filter_group_name, action)
+        self.click(locator)
+
+    def flip_switch_in_filter_card(self, filter_group_name):
+        """Flips the switch in specified filter card"""
+        locator = GenericLocators.FILTER_GROUP_FLIP_SWITCH_IDENT(filter_group_name)
         self.click(locator)
 
     def click_show_more_less_within_filter_card(self, filter_group_name, label):
