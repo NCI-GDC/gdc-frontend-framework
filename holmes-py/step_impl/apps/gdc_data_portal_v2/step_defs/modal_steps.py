@@ -30,3 +30,10 @@ def validate_set_count(set_name:str, number_of_items:str):
     assert (
         displayed_set_count == number_of_items
     ), f"The modal displays set '{set_name}' has count of '{displayed_set_count}' instead of expected '{number_of_items}'"
+
+@step("Verify the cohort <cohort_name> displays a count of <number_of_items> in Modal")
+def validate_set_count(set_name:str, number_of_items:str):
+    displayed_set_count = APP.modal.get_cohort_count(set_name)
+    assert (
+        displayed_set_count == number_of_items
+    ), f"The modal displays set '{set_name}' has count of '{displayed_set_count}' instead of expected '{number_of_items}'"
