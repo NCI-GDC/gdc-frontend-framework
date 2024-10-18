@@ -1,6 +1,6 @@
 {
   "name": "portal-proto",
-  "version": "2.15.3",
+  "version": "2.15.4",
   "scripts": {
     "clean": "rimraf .next",
     "dev": "next",
