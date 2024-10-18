@@ -5,7 +5,7 @@ Owner		       : GDC QA
 Description		 : Turn Off Is Cancer Gene Census
 Test-Case      : PEAR-898, PEAR-916
 
-tags: gdc-data-portal-v2, regression, mutation-frequency
+tags: gdc-data-portal-v2, regression, mutation-frequency, is-cancer-census-off
 
 ## Navigate to Mutation Frequency App
 * On GDC Data Portal V2 app
