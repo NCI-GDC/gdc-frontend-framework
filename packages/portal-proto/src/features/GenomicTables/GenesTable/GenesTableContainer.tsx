@@ -409,6 +409,7 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
         </>
       )}
       <VerticalTable
+        customDataTestID="table-genes"
         data={formattedTableData}
         columns={genesTableDefaultColumns}
         additionalControls={
