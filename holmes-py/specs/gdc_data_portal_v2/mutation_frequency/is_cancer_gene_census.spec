@@ -199,5 +199,5 @@ tags: gdc-data-portal-v2, regression, mutation-frequency
   |facet_name       |selection                            |
   |-----------------|-------------------------------------|
   |Biotype          |miRNA                                |
-* Collect table "Most Frequent Somatic Mutations" Item Count for comparison
-* Verify "Most Frequent Somatic Mutations Item Count" and "Biotype_miRNA_MF_M_ICGC Count" are "Equal"
+* Collect table "Genes" Item Count for comparison
+* Verify "Genes Item Count" and "Biotype_miRNA_MF_M_ICGC Count" are "Equal"
