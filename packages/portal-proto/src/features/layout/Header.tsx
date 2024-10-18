@@ -238,7 +238,7 @@ export const Header: React.FC<HeaderProps> = ({
                   }`}
                   radius="xs"
                 >
-                  {currentCart?.length || 0}
+                  {currentCart?.length?.toLocaleString() || 0}
                 </Badge>
               </NavLinkWithIcon>
             </li>
@@ -389,7 +389,7 @@ export const Header: React.FC<HeaderProps> = ({
               }`}
               radius="xs"
             >
-              {currentCart?.length || 0}
+              {currentCart?.length?.toLocaleString() || 0}
             </Badge>
           </NavLinkWithIcon>
           <LoginButtonOrUserDropdown />

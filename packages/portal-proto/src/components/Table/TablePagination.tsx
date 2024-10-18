@@ -131,6 +131,11 @@ function TablePagination<TData>({
               return { "aria-label": `${control} page button` };
           }
         }}
+        getItemProps={(page: number) => {
+          return {
+            children: page?.toLocaleString(),
+          };
+        }}
       />
     </div>
   );

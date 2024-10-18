@@ -243,8 +243,10 @@ describe("CDaveCard", () => {
 
     await userEvent.click(getByLabelText("Days"));
 
-    expect(getByRole("cell", { name: "7201 to <12256" })).toBeInTheDocument();
-    expect(getByRole("cell", { name: "12256 to <17311" })).toBeInTheDocument();
+    expect(getByRole("cell", { name: "7,201 to <12,256" })).toBeInTheDocument();
+    expect(
+      getByRole("cell", { name: "12,256 to <17,311" }),
+    ).toBeInTheDocument();
   });
 
   it("continuous result with no data", () => {
