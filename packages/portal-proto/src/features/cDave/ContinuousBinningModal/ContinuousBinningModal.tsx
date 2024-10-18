@@ -299,9 +299,6 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
               </label>
               <TextInput
                 {...intervalForm.getInputProps("setIntervalSize")}
-                value={Number(
-                  intervalForm.values.setIntervalSize,
-                )?.toLocaleString()}
                 id={"continuous-bin-modal-interval-size"}
                 classNames={{
                   wrapper: `px-2`,
@@ -318,9 +315,6 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
               </label>
               <TextInput
                 {...intervalForm.getInputProps("setIntervalMin")}
-                value={Number(
-                  intervalForm.values.setIntervalMin,
-                )?.toLocaleString()}
                 id={"continuous-bin-modal-interval-min"}
                 classNames={{
                   wrapper: `px-2`,
@@ -337,9 +331,6 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
               </label>
               <TextInput
                 {...intervalForm.getInputProps("setIntervalMax")}
-                value={Number(
-                  intervalForm.values.setIntervalMax,
-                )?.toLocaleString()}
                 id={"continuous-bin-modal-interval-max"}
                 classNames={{
                   wrapper: `px-2`,

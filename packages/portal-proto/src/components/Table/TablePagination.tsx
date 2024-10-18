@@ -1,5 +1,5 @@
 import { DataStatus } from "@gff/core";
-import { NumberFormatter, Pagination, Select } from "@mantine/core";
+import { Pagination, Select } from "@mantine/core";
 import { useEffect, useState } from "react";
 import ShowingCount from "./ShowingCount";
 import { HandleChangeInput, PaginationOptions } from "./types";
