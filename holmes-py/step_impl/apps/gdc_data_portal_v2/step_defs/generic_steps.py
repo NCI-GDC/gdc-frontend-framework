@@ -684,6 +684,33 @@ def store_item_count_in_table_for_comparison(table_name:str):
     """
     data_store.spec[f"{table_name} Item Count"] = APP.shared.get_table_item_count_text(table_name)
 
+@step("Collect case counts for the following filters for cohort <cohort_name> <table>")
+def collect_case_counts_on_filters(cohort_name: str, table):
+    """
+    collect_case_counts_on_filters - Collect case count on filters.
+    Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'.
+    :param cohort_name: Cohort Name we are collecting the information under
+    :param v[0]: Filter Card Name
+    :param v[1]: Filter we are collecting case count info on
+    """
+    for k, v in enumerate(table):
+        # Expands list of filters to select if possible
+        if APP.shared.is_show_more_or_show_less_button_visible_within_filter_card(
+            v[0], "plus-icon"
+        ):
+            APP.shared.click_show_more_less_within_filter_card(
+                v[0], "plus-icon"
+            )
+            time.sleep(0.5)
+
+        case_count = (
+            APP.shared.get_filter_selection_count(
+                v[0], v[1]
+            )
+        )
+        # Saves the case count under the filter, filter and cohort name
+        data_store.spec[f"{v[0]}_{v[1]}_{cohort_name} Count"] = case_count
+
 @step("The cohort bar case count should be <case_count>")
 def is_cohort_bar_case_count_present_on_the_page(case_count: str):
     """Checks the cohort bar case count"""
@@ -873,6 +900,11 @@ def perform_filter_card_action(table):
         APP.shared.wait_for_loading_spinner_to_detatch()
         time.sleep(0.1)
 
+@step("Flip the switch on filter card <filter_card_name>")
+def flip_switch_filter_card(filter_card_name:str):
+    APP.shared.flip_switch_in_filter_card(filter_card_name)
+    time.sleep(1)
+    APP.shared.wait_for_loading_spinners_to_detach()
 
 @step("Expand or contract a filter <table>")
 def click_show_more_or_show_less(table):
