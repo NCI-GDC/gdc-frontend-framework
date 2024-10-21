@@ -281,7 +281,7 @@ export const RemoveFromCartButton: React.FC<CartButtonProps> = ({
     <Button
       data-testid="button-remove-from-cart"
       onClick={() => removeFromCart(files, currentCart, dispatch)}
-      className={`font-medium text-sm text-primary bg-base-max hover:bg-primary-darkest hover:text-primary-contrast-darker ${focusStyles}`}
+      className={`font-medium text-sm text-base-max bg-nci-red-darker hover:bg-removeButtonHover ${focusStyles}`}
       variant="outline"
     >
       <CartIcon className="mr-2" />

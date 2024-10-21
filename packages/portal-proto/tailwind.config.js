@@ -794,6 +794,7 @@ module.exports = {
         cartLighterOrange: "#C7501A33",
         linkDarkerColor: "#1D6796",
         emptyIconLighterColor: "#e0e9f0",
+        removeButtonHover: "#5D091D",
       },
       minHeight: {
         "screen-60vh": "60vh",
