@@ -150,6 +150,7 @@ def verify_compared_statistics_are_equal_or_not_equal(
 @step("Close the modal")
 def close_the_modal():
     APP.shared.click_close_modal_button()
+    time.sleep(0.5)
 
 @step("Close the message")
 def close_the_modal():
@@ -173,6 +174,9 @@ def download_file_at_file_table(file: str, source: str):
         "Cohort Case View Files": APP.cohort_case_view_page.click_files_and_dropdown_option_cases_view,
         "Cohort Summary View Biospecimen": APP.cohort_case_view_page.click_biospecimen_summary_view,
         "Cohort Summary View Clinical": APP.cohort_case_view_page.click_clinical_summary_view,
+        "Cohort Table View Biospecimen": APP.cohort_case_view_page.click_biospecimen_table_view,
+        "Cohort Table View Clinical": APP.cohort_case_view_page.click_clinical_table_view,
+        "Cohort Table View": APP.cohort_case_view_page.click_table_view_button,
         "Manage Sets": APP.manage_sets_page.click_on_download_for_set,
         "Cohort Comparison": APP.cohort_comparison_page.click_download_tsv_button_on_analysis_card_cohort_comparison,
         "Mutation Frequency": APP.mutation_frequency_page.click_table_download_button,
@@ -424,6 +428,21 @@ def verify_table_header_text(table):
             f"{table_header_text_by_column}" == v[0]
         ), f"The table header column '{v[1]}' is showing text '{table_header_text_by_column}' when we expected text '{v[0]}'"
 
+@step("Verify the table <table_name> header text is correct <table>")
+def verify_table_header_text(table_name:str, table):
+    """Verifies the table header has the correct text"""
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    for k, v in enumerate(table):
+        table_header_text_by_column = APP.shared.get_table_header_text_by_column_in_specified_table(table_name, v[1])
+        # Remove new lines from input
+        table_header_text_by_column = table_header_text_by_column.replace("\n", "")
+        # Remove unwanted additional spaces between words from input
+        table_header_text_by_column = re.sub(" +", " ", table_header_text_by_column)
+        assert (
+            f"{table_header_text_by_column}" == v[0]
+        ), f"The table header column '{v[1]}' is showing text '{table_header_text_by_column}' when we expected text '{v[0]}'"
+
 
 @step("Verify the table body text is correct <table>")
 def verify_table_body_text(table):
@@ -442,6 +461,31 @@ def verify_table_body_text(table):
             f"{table_body_text_by_row_column}" == v[0]
         ), f"The table body row '{v[1]}' and column '{v[2]}' is showing text '{table_body_text_by_row_column}' when we expected text '{v[0]}'"
 
+@step("Verify the table <table_name> body text is correct <table>")
+def verify_table_body_text_in_specified_table(table_name:str, table):
+    """
+    In specified table, verifies the table body has the correct text.
+
+    table_name - Table to verify
+    v[0] - The expected text to appear
+    v[1] - The row of the table
+    v[2] - The column of the table
+    """
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    for k, v in enumerate(table):
+        """Verifies the table body has the correct text"""
+        table_body_text_by_row_column = APP.shared.get_specified_table_body_text_by_row_column(
+            table_name, v[1], v[2]
+        )
+        # Remove new lines from input
+        table_body_text_by_row_column = table_body_text_by_row_column.replace("\n", "")
+        # Remove unwanted additional spaces between words from input
+        table_body_text_by_row_column = re.sub(" +", " ", table_body_text_by_row_column)
+        assert (
+            f"{table_body_text_by_row_column}" == v[0]
+        ), f"The table body row '{v[1]}' and column '{v[2]}' is showing text '{table_body_text_by_row_column}' when we expected text '{v[0]}'"
+
 
 @step("Verify the table body tooltips are correct <table>")
 def verify_table_body_tooltips_text(table):
@@ -450,6 +494,27 @@ def verify_table_body_tooltips_text(table):
     """Verifies the table body has correct tooltips"""
     for k, v in enumerate(table):
         APP.shared.hover_table_body_by_row_column(v[1], v[2])
+        is_tooltip_text_present = APP.shared.is_text_present(v[0])
+        assert (
+            is_tooltip_text_present
+        ), f"Hovering over table body row '{v[1]}' and column '{v[2]}' does NOT produce the tooltip '{v[0]}' as we expect"
+
+@step("Verify the table <table_name> body tooltips are correct <table>")
+def verify_table_body_tooltips_text(table_name:str, table):
+    """
+    In specified table, verifies correct tooltip appears.
+
+    table_name - Table to validate
+    v[0] - The expected text to appear
+    v[1] - The row of the table
+    v[2] - The column of the table
+    """
+
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    """Verifies the table body has correct tooltips"""
+    for k, v in enumerate(table):
+        APP.shared.hover_table_body_by_row_column_in_specified_table(table_name, v[1], v[2])
         is_tooltip_text_present = APP.shared.is_text_present(v[0])
         assert (
             is_tooltip_text_present
@@ -773,6 +838,10 @@ def click_checkboxes(table):
         APP.shared.click_checkbox(v[0])
         time.sleep(0.1)
 
+@step("Select the radio button <button_name>")
+def click_radio_data_testid_button(button_name:str):
+    APP.shared.click_radio_data_testid_button(button_name)
+
 @step("Select the following radio buttons <table>")
 def click_radio_buttons(table):
     for k, v in enumerate(table):
@@ -807,11 +876,17 @@ def click_create_or_save_in_cohort_modal(table_name:str, table):
         APP.shared.click_switch_for_column_selector(v[0])
     APP.shared.click_column_selector_button_in_specified_table(table_name)
 
+@step("In table <table_name> restore default column selector options")
+def click_restore_column_selector_options(table_name:str):
+    """In specified table, clicks reset column selector button"""
+    APP.shared.click_column_selector_button_in_specified_table(table_name)
+    APP.shared.click_reset_column_select_options()
+    APP.shared.click_column_selector_button_in_specified_table(table_name)
+
 @step("Select <text> from dropdown menu")
 def click_dropdown_text_option(text:str):
     """Selects text option from dropdown menu with data-testid dropdown-menu-options"""
     APP.shared.click_text_option_from_dropdown_menu(text)
-
 
 @step("Change number of entries shown in the table to <number_of_entries>")
 def change_number_of_entries_shown(change_number_of_entries_shown: str):
@@ -820,6 +895,7 @@ def change_number_of_entries_shown(change_number_of_entries_shown: str):
     and selecting an option from the dropdown list.
     """
     APP.shared.change_number_of_entries_shown(change_number_of_entries_shown)
+    APP.shared.wait_for_loading_spinners_to_detach()
 
 @step("Change number of entries shown in the table <table_name> to <number_of_entries>")
 def change_number_of_entries_shown_in_specified_table(table_name:str, change_number_of_entries_shown: str):
@@ -828,6 +904,7 @@ def change_number_of_entries_shown_in_specified_table(table_name:str, change_num
     and selecting an option from the dropdown list.
     """
     APP.shared.change_number_of_entries_shown_in_specified_table(table_name, change_number_of_entries_shown)
+    APP.shared.wait_for_loading_spinners_to_detach()
 
 @step("Perform action and validate modal text <table>")
 def click_named_button_in_modal_and_wait_for_temp_message_text(table):
@@ -869,7 +946,7 @@ def click_undo_in_message():
 def click_undo_in_message():
     """Clicks 'Set this as your current cohort' in a modal message"""
     APP.shared.click_set_as_current_cohort_in_message()
-    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    APP.shared.wait_for_loading_spinners_to_detach()
 
 
 # These 3 functions are for filter cards (like on projects page).

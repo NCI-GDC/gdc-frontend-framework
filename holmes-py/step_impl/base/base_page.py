@@ -56,6 +56,7 @@ class GenericLocators:
     )
 
     RADIO_BUTTON_IDENT = lambda radio_name: f'//input[@id="{radio_name}"]'
+    RADIO_DATA_TESTID_BUTTON_IDENT = lambda radio_name: f'[data-testid="radio-{radio_name}"]'
     CHECKBOX_IDENT = (
         lambda checkbox_id: f'[data-testid="checkbox-{checkbox_id}"]'
     )
@@ -107,6 +108,7 @@ class GenericLocators:
     TABLE_TEXT_TO_WAIT_FOR_IN_SPECIFIED_TABLE = (
         lambda table_name, text, row, column: f'[data-testid="table-{table_name}"] >> tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0 >> text="{text}"'
     )
+    TEXT_SPECIFIED_TABLE_HEADER = lambda table_name, column: f'[data-testid="table-{table_name}"] >> tr > th:nth-child({column}) >> nth=0'
     TEXT_TABLE_HEADER = lambda column: f"tr > th:nth-child({column}) >> nth=0"
     TEXT_DROPDOWN_MENU_OPTION = (
         lambda dropdown_option: f'[data-testid="dropdown-menu-options"] >> text="{dropdown_option}"'
@@ -120,6 +122,7 @@ class GenericLocators:
     SWITCH_COLUMN_SELECTOR = (
         lambda switch_name: f'[data-testid="column-selector-popover-modal"] >> [data-testid="column-selector-row-{switch_name}"] label div >> nth=0'
     )
+    BUTTON_RESET_COLUMN_SELECTIONS = '[data-testid="restore-default-icon"]'
 
     FILTER_GROUP_IDENT = (
         lambda group_name: f'[data-testid="filters-facets"] >> div:text-is("{group_name}")'
@@ -312,6 +315,15 @@ class BasePage:
         table_header_text_locator = GenericLocators.TEXT_TABLE_HEADER(column)
         return self.get_text(table_header_text_locator)
 
+    def get_table_header_text_by_column_in_specified_table(self, table_name, column):
+        """
+        Gets text of specified table header by column.
+        Column indexing begins at '1'
+        """
+        table_name = self.normalize_button_identifier(table_name)
+        table_header_text_locator = GenericLocators.TEXT_SPECIFIED_TABLE_HEADER(table_name,column)
+        return self.get_text(table_header_text_locator)
+
     def get_table_body_text_by_row_column(self, row, column):
         """
         Gets text from table body by giving a row and column.
@@ -341,6 +353,19 @@ class BasePage:
         Row and Column indexing begins at '1'
         """
         table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT(row, column)
+        # The hover function is finicky. Calling it twice, and then bypassing
+        # actionability checks seem to make the hover more consistent.
+
+        self.hover(table_locator_to_select)
+        self.hover(table_locator_to_select, force=True)
+
+    def hover_table_body_by_row_column_in_specified_table(self, table_name, row, column):
+        """
+        In specified table, hovers over specified cell in table by giving a row and column.
+        Row and Column indexing begins at '1'
+        """
+        table_name = self.normalize_button_identifier(table_name)
+        table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT_IN_SPECIFIED_TABLE(table_name, row, column)
         # The hover function is finicky. Calling it twice, and then bypassing
         # actionability checks seem to make the hover more consistent.
 
@@ -600,6 +625,11 @@ class BasePage:
         locator = GenericLocators.RADIO_BUTTON_IDENT(radio_name)
         self.click(locator)
 
+    def click_radio_data_testid_button(self, radio_name):
+        """Clicks a data-testid radio button"""
+        locator = GenericLocators.RADIO_DATA_TESTID_BUTTON_IDENT(radio_name)
+        self.click(locator)
+
     def click_close_modal_button(self):
         """Clicks 'X' to close a modal"""
         locator = GenericLocators.BUTTON_CLOSE_MODAL
@@ -661,6 +691,10 @@ class BasePage:
         """In the column selector pop-up modal, clicks specified switch"""
         switch_name = self.normalize_identifier_underscore(switch_name)
         locator = GenericLocators.SWITCH_COLUMN_SELECTOR(switch_name)
+        self.click(locator)
+
+    def click_reset_column_select_options(self):
+        locator = GenericLocators.BUTTON_RESET_COLUMN_SELECTIONS
         self.click(locator)
 
     def change_number_of_entries_shown(self, entries_to_show):

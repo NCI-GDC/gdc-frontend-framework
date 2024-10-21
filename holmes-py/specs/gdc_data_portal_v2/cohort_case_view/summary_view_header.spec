@@ -3,7 +3,7 @@ Date Created    : 10/01/2024
 Version			    : 1.0
 Owner		        : GDC QA
 Description		  : Summary View Header
-Test-Case       : PEAR-2207
+Test-Case       : PEAR-2207, PEAR-1048
 
 tags: gdc-data-portal-v2, regression, cohort-bar, case-view
 
