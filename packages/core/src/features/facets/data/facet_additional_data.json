@@ -3345,6 +3345,18 @@
     "label": "Proportion Base Mismatch",
     "property_type": "number"
   },
+  "aligned_reads.proportion_coverage_10x": {
+    "facet_filter": "aligned_reads.proportion_coverage_10x",
+    "facet_type": "number",
+    "label": "Proportion Coverage 10X",
+    "property_type": "number"
+  },
+  "aligned_reads.proportion_coverage_30x": {
+    "facet_filter": "aligned_reads.proportion_coverage_30x",
+    "facet_type": "number",
+    "label": "Proportion Coverage 30X",
+    "property_type": "number"
+  },
   "aligned_reads.proportion_reads_duplicated": {
     "facet_filter": "aligned_reads.proportion_reads_duplicated",
     "facet_type": "number",

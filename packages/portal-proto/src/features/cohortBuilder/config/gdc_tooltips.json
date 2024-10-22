@@ -28948,6 +28948,18 @@
           "description": "Proportion of mismatched bases collected from samtools.",
           "property_type": "number"
         },
+        "Proportion Coverage 10X": {
+          "facet_filter": "aligned_reads.proportion_coverage_10x",
+          "facet_type": "number",
+          "description": "Proportion of all reference bases for whole genome sequencing, or targeted bases for whole exome and targeted sequencing, that achieves 10X or greater coverage from Picard Tools.",
+          "property_type": "number"
+        },
+        "Proportion Coverage 30X": {
+          "facet_filter": "aligned_reads.proportion_coverage_30x",
+          "facet_type": "number",
+          "description": "Proportion of all reference bases for whole genome sequencing, or targeted bases for whole exome and targeted sequencing, that achieves 30X or greater coverage from Picard Tools.",
+          "property_type": "number"
+        },
         "Proportion Reads Duplicated": {
           "facet_filter": "aligned_reads.proportion_reads_duplicated",
           "facet_type": "number",
