@@ -131,6 +131,8 @@ function TablePagination<TData>({
               return { "aria-label": `${control} page button` };
           }
         }}
+        // TODO: This will work after we update mantine to >= 7.13.2
+        // https://github.com/mantinedev/mantine/issues/6789
         getItemProps={(page: number) => {
           return {
             children: page?.toLocaleString(),
