@@ -2091,27 +2091,12 @@
     "minimum": 0,
     "property_type": "integer"
   },
-  "exposures.marijuana_use_per_week": {
-    "facet_filter": "exposures.marijuana_use_per_week",
-    "facet_type": "number",
-    "label": "Marijuana Use Per Week",
-    "minimum": 0,
-    "property_type": "number"
-  },
   "exposures.pack_years_smoked": {
     "facet_filter": "exposures.pack_years_smoked",
     "facet_type": "number",
     "label": "Pack Years Smoked",
     "minimum": 0,
     "property_type": "number"
-  },
-  "exposures.smokeless_tobacco_quit_age": {
-    "facet_filter": "exposures.smokeless_tobacco_quit_age",
-    "facet_type": "age",
-    "label": "Smokeless Tobacco Quit Age",
-    "minimum": 0,
-    "maximum": 89,
-    "property_type": "integer"
   },
   "exposures.tobacco_smoking_onset_year": {
     "facet_filter": "exposures.tobacco_smoking_onset_year",
@@ -2128,13 +2113,6 @@
     "minimum": 1900,
     "maximum": 2050,
     "property_type": "integer"
-  },
-  "exposures.tobacco_use_per_day": {
-    "facet_filter": "exposures.tobacco_use_per_day",
-    "facet_type": "number",
-    "label": "Tobacco Use Per Day",
-    "minimum": 0,
-    "property_type": "number"
   },
   "exposures.years_smoked": {
     "facet_filter": "exposures.years_smoked",
@@ -3365,18 +3343,6 @@
     "facet_filter": "aligned_reads.proportion_base_mismatch",
     "facet_type": "number",
     "label": "Proportion Base Mismatch",
-    "property_type": "number"
-  },
-  "aligned_reads.proportion_coverage_10x": {
-    "facet_filter": "aligned_reads.proportion_coverage_10x",
-    "facet_type": "number",
-    "label": "Proportion Coverage 10X",
-    "property_type": "number"
-  },
-  "aligned_reads.proportion_coverage_30x": {
-    "facet_filter": "aligned_reads.proportion_coverage_30x",
-    "facet_type": "number",
-    "label": "Proportion Coverage 30X",
     "property_type": "number"
   },
   "aligned_reads.proportion_reads_duplicated": {

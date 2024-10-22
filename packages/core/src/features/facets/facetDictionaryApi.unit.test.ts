@@ -187,11 +187,6 @@ describe("test facet types", () => {
         expected_type: "exact",
       },
       {
-        field: "cases.diagnoses.lymph_nodes_tested",
-        type: "long",
-        expected_type: "range",
-      },
-      {
         field: "cases.diagnoses.figo_staging_edition_year",
         type: "keyword",
         expected_type: "enum",
