@@ -1,7 +1,8 @@
 // This table can be found at /analysis_page?app=MutationFrequencyApp
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Gene, GeneToggledHandler, columnFilterType } from "./types";
-import { Dispatch, SetStateAction, useMemo, useId } from "react";
+import { Dispatch, SetStateAction, useId } from "react";
+import { useDeepCompareMemo } from "use-deep-compare";
 import { Checkbox, Tooltip } from "@mantine/core";
 import {
   IoIosArrowDropdownCircle as DownIcon,
@@ -18,6 +19,8 @@ import NumeratorDenominator from "@/components/NumeratorDenominator";
 import AnnotationsIcon from "./AnnotationsIcon";
 import RatioWithSpring from "@/components/RatioWithSpring";
 import { ComparativeSurvival } from "@/features/genomic/types";
+
+const genesTableColumnHelper = createColumnHelper<Gene>();
 
 export const useGenerateGenesTableColumns = ({
   handleSurvivalPlotToggled,
@@ -49,9 +52,8 @@ export const useGenerateGenesTableColumns = ({
   totalPages: number;
 }): ColumnDef<Gene>[] => {
   const componentId = useId();
-  const genesTableColumnHelper = useMemo(() => createColumnHelper<Gene>(), []);
 
-  const genesTableDefaultColumns = useMemo<ColumnDef<Gene>[]>(
+  const genesTableDefaultColumns = useDeepCompareMemo<ColumnDef<Gene>[]>(
     () => [
       genesTableColumnHelper.display({
         id: "select",

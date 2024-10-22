@@ -12,7 +12,7 @@ import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { ActionIcon, Button, Tooltip } from "@mantine/core";
 import { useScrollIntoView, useViewportSize } from "@mantine/hooks";
-import { FaFile, FaShoppingCart, FaEdit } from "react-icons/fa";
+import { FaFile, FaEdit } from "react-icons/fa";
 import { Biospecimen } from "../biospecimen/Biospecimen";
 import { addToCart, removeFromCart } from "../cart/updateCart";
 import {
@@ -25,6 +25,7 @@ import {
   humanify,
   LG_BREAKPOINT,
 } from "src/utils";
+import { MdShoppingCart as CartIcon } from "react-icons/md";
 import CategoryTableSummary from "@/components/Summary/CategoryTableSummary";
 import { ClinicalSummary } from "./ClinicalSummary/ClinicalSummary";
 import { ImageSlideCount } from "@/components/ImageSlideCount";
@@ -184,7 +185,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
                 }
               }}
             >
-              <FaShoppingCart size={12} aria-label="Cart" />
+              <CartIcon size={12} aria-label="Cart" />
             </ActionIcon>
           </Tooltip>
         </div>
@@ -281,8 +282,12 @@ export const CaseView: React.FC<CaseViewProps> = ({
         leftElement={
           <Button
             data-testid="button-add-all-remove-all-files-case-summary"
-            leftSection={<FaShoppingCart />}
-            className={`text-primary bg-base-max hover:bg-primary-darkest hover:text-base-max ${focusStyles}`}
+            leftSection={<CartIcon />}
+            className={`${
+              isAllFilesInCart
+                ? "bg-nci-red-darker text-base-max hover:bg-removeButtonHover"
+                : "text-primary bg-base-max hover:bg-primary-darkest hover:text-base-max"
+            } ${focusStyles}`}
             onClick={() =>
               isAllFilesInCart
                 ? removeFromCart(

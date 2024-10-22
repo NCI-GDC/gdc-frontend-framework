@@ -397,7 +397,7 @@ const FilesTable: React.FC<FilesTableProps> = ({
         <TotalItems total={data?.pagination?.total} itemName="file" />
       }
       additionalControls={
-        <div className="flex gap-2 mb-2">
+        <div className="flex gap-2">
           <Tooltip label="Download JSON">
             <FunctionButton
               data-testid="button-json"

@@ -1,6 +1,6 @@
 {
   "name": "@gff/lighthouse",
-  "version": "2.14.4",
+  "version": "2.15.1",
   "description": "Use lighthouse to audit Portal v2",
   "main": "index.js",
   "scripts": {

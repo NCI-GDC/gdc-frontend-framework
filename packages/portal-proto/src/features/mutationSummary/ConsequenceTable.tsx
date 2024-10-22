@@ -29,6 +29,7 @@ import { getFormattedTimestamp } from "@/utils/date";
 import { downloadTSV } from "@/components/Table/utils";
 import ImpactHeaderWithTooltip from "../GenomicTables/SharedComponent/ImpactHeaderWithTooltip";
 import TotalItems from "@/components/Table/TotalItem";
+import { HiPlus, HiMinus } from "react-icons/hi";
 
 const consequenceTableColumnHelper = createColumnHelper<ConsequenceTableData>();
 
@@ -132,7 +133,7 @@ export const ConsequenceTable = ({
             consequences: consequence_type,
             transcript: transcript_id,
             is_canonical: is_canonical,
-            gene_strand: gene_strand > 0 ? "+" : "-",
+            gene_strand: gene_strand,
             impact: {
               polyphen_impact: polyphen_impact,
               polyphen_score: polyphen_score,
@@ -203,7 +204,7 @@ export const ConsequenceTable = ({
         id: "gene_strand",
         header: "Gene Strand",
         cell: ({ row }) => (
-          <span className="text-lg font-bold">{row.original.gene_strand}</span>
+          <span>{row.original.gene_strand > 0 ? <HiPlus /> : <HiMinus />}</span>
         ),
       }),
       consequenceTableColumnHelper.display({
@@ -280,6 +281,11 @@ export const ConsequenceTable = ({
                 .filter(({ length }) => length)
                 .join(", ")}`;
               return impactString;
+            },
+          },
+          gene_strand: {
+            composer: (consequenceData) => {
+              return consequenceData.gene_strand > 0 ? "+" : "-";
             },
           },
           transcript: {
