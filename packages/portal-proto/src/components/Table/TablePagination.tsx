@@ -132,6 +132,7 @@ function TablePagination<TData>({
           }
         }}
         // TODO: This will work after we update mantine to >= 7.13.2
+        // https://gdc-ctds.atlassian.net/browse/PEAR-2240
         // https://github.com/mantinedev/mantine/issues/6789
         getItemProps={(page: number) => {
           return {
