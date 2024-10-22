@@ -2,7 +2,8 @@
   "name": "enclave-portal",
   "version": "1.0.0",
   "dependencies": {
-    "next": "^14.2.5"
+    "next": "^14.2.5",
+    "@gff/portal-components": "1.0.0"
   },
   "devDependencies": {},
   "scripts": {
