@@ -3,11 +3,9 @@ import React, { useMemo, useState } from "react";
 import { useDeepCompareMemo, useDeepCompareEffect } from "use-deep-compare";
 import { Checkbox, ActionIcon, Badge, Tooltip } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import {
-  FaTrash as TrashIcon,
-  FaExclamationCircle as WarningIcon,
-} from "react-icons/fa";
-import { BiSolidDownload as DownloadIcon } from "react-icons/bi";
+import { FaExclamationCircle as WarningIcon } from "react-icons/fa";
+import { BsTrashFill as TrashIcon } from "react-icons/bs";
+import { MdDownload as DownloadIcon } from "react-icons/md";
 import { useCoreDispatch, removeSets, SetTypes } from "@gff/core";
 import { createKeyboardAccessibleFunction } from "src/utils";
 import download from "@/utils/download";
@@ -95,7 +93,7 @@ const ManageSetActions: React.FC<ManageSetActionsProps> = ({
             closeButtonProps: { "aria-label": "Close notification" },
           });
         }}
-        variant="transparent"
+        variant="outline"
       >
         <TrashIcon aria-hidden="true" />
       </ActionIcon>
@@ -104,8 +102,8 @@ const ManageSetActions: React.FC<ManageSetActionsProps> = ({
           size={20}
           data-testid="button-download-set"
           aria-label="Download set"
-          className={"text-primary"}
-          variant="transparent"
+          className="text-primary"
+          variant="outline"
           onClick={() => {
             download({
               endpoint: "tar_sets",
@@ -317,7 +315,7 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
   );
 
   return (
-    <div data-testid="table-manage-sets" className="w-3/4 pb-6">
+    <div data-testid="table-manage-sets" className="w-full xl:w-3/4 pb-6">
       <VerticalTable
         data={displayedData}
         columns={manageSetsColumn}
