@@ -317,7 +317,7 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
   );
 
   return (
-    <div data-testid="table-manage-sets" className="w-3/4 pb-6">
+    <div data-testid="table-manage-sets" className="w-full xl:w-3/4 pb-6">
       <VerticalTable
         data={displayedData}
         columns={manageSetsColumn}
