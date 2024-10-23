@@ -35,10 +35,10 @@
       "facet_type": "enum",
       "label": "Access"
     },
-    "demographic.age_at_index": {
-      "facet_filter": "demographic.age_at_index",
+    "demographic.age_at_nonsense": {
+      "facet_filter": "demographic.age_at_nonsense",
       "facet_type": "years",
-      "label": "Age at Index",
+      "label": "Age at Nonsense",
       "oneOf": {
         "type": "integer",
         "maximum": 89,

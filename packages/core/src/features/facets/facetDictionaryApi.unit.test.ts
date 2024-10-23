@@ -22,12 +22,12 @@ const TestFacetDictionary = {
     full: "cases.created_datetime",
     type: "keyword",
   },
-  "cases.demographic.age_at_index": {
+  "cases.demographic.age_at_nonsense": {
     description:
       "The patient's age (in years) on the reference or anchor date date used during date obfuscation.",
     doc_type: "cases",
-    field: "demographic.age_at_index",
-    full: "cases.demographic.age_at_index",
+    field: "demographic.age_at_nonsense",
+    full: "cases.demographic.age_at_nonsense",
     type: "long",
   },
   "cases.demographic.age_is_obfuscated": {
@@ -74,12 +74,12 @@ describe("test facet dictionary api functions", () => {
         type: "keyword",
         facet_type: "datetime",
       },
-      "cases.demographic.age_at_index": {
+      "cases.demographic.age_at_nonsense": {
         description:
           "The patient's age (in years) on the reference or anchor date date used during date obfuscation.",
         doc_type: "cases",
-        field: "demographic.age_at_index",
-        full: "cases.demographic.age_at_index",
+        field: "demographic.age_at_nonsense",
+        full: "cases.demographic.age_at_nonsense",
         type: "long",
         facet_type: "age_in_years",
         range: {
@@ -169,7 +169,7 @@ describe("test facet types", () => {
     // TODO: add additional tests for all types
     const TO_TEST = [
       { field: "cases.project.project_id", type: "", expected_type: "enum" },
-      { field: "demographic.age_at_index", type: "", expected_type: "age" },
+      { field: "demographic.age_at_nonsense", type: "", expected_type: "age" },
       { field: "cases.demographic.race", type: "", expected_type: "enum" },
       {
         field: "cases.diagnoses.treatments.therapeutic_agents",

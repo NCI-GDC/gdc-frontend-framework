@@ -3151,8 +3151,8 @@
             "unknown"
           ]
         },
-        "Age at Index": {
-          "facet_filter": "demographic.age_at_index",
+        "Age at Nonsense": {
+          "facet_filter": "demographic.age_at_nonsense",
           "facet_type": "years",
           "description": "The patient's age (in years) on the reference or anchor date date used during date obfuscation.",
           "oneOf": {
@@ -5663,8 +5663,8 @@
         }
       },
       "Demographic": {
-        "Age at Index": {
-          "facet_filter": "demographic.age_at_index",
+        "Age at Nonsense": {
+          "facet_filter": "demographic.age_at_nonsense",
           "facet_type": "years",
           "description": "The patient's age (in years) on the reference or anchor date date used during date obfuscation.",
           "oneOf": {
