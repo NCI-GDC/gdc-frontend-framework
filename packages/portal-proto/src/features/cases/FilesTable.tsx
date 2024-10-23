@@ -35,7 +35,7 @@ import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
 import { mapGdcFileToCartFile } from "../files/utils";
 import download from "@/utils/download";
 import { downloadTSV } from "@/components/Table/utils";
-import { convertDateToString } from "@/utils/date";
+import { getFormattedTimestamp } from "@/utils/date";
 import { AgreementModal } from "@/components/Modals/AgreementModal";
 import { NoAccessToProjectModal } from "@/components/Modals/NoAccessToProjectModal";
 import { GeneralErrorModal } from "@/components/Modals/GeneraErrorModal";
@@ -320,7 +320,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
     downloadTSV({
       tableData,
       columnOrder,
-      fileName: `files-table.${convertDateToString(new Date())}.tsv`,
+      fileName: `files-table.${getFormattedTimestamp()}.tsv`,
       columnVisibility,
       columns: caseFilesTableDefaultColumns,
       option: {

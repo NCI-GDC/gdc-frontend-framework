@@ -27,6 +27,7 @@ import download from "src/utils/download";
 import { removeFromCart } from "./updateCart";
 import { focusStyles } from "@/utils/index";
 import { cartAboveLimit } from "./utils";
+import { getFormattedTimestamp } from "@/utils/date";
 
 const buttonStyle =
   "bg-base-max text-primary border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary";
@@ -78,6 +79,9 @@ const downloadManifest = (
       },
       return_type: "manifest",
       size: 10000,
+      filename: `gdc_manifest.${getFormattedTimestamp({
+        includeTimes: true,
+      })}.txt`,
     },
     done: () => setActive(false),
   });

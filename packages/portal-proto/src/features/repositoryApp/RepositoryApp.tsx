@@ -44,6 +44,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import { useRouter } from "next/router";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
 import { TableXPositionContext } from "@/components/Table/VerticalTable";
+import { getFormattedTimestamp } from "@/utils/date";
 import { focusStyles } from "@/utils/index";
 
 export const persistor = persistStore(AppStore);
@@ -310,6 +311,9 @@ export const RepositoryApp = (): JSX.Element => {
                   filters={buildCohortGqlOperator(localFilters)}
                   setActive={setActive}
                   active={active}
+                  filename={`gdc_manifest.${getFormattedTimestamp({
+                    includeTimes: true,
+                  })}.txt`}
                 />
                 <Tooltip
                   label={"No images available to be viewed"}
