@@ -68,6 +68,7 @@ import {
   imageDetailsApiReducerPath,
   imageDetailsApiReducer,
 } from "./features/imageDetails/imageDetailsSlice";
+import { DEPRECATED_FIELDS } from "./deprecatedFields";
 
 const migrations = {
   2: (state: any) => {
@@ -78,12 +79,22 @@ const migrations = {
       },
     };
   },
+  3: (state: any) => {
+    return {
+      ...state,
+      builderConfig: {
+        customFacets: state.builderConfig.customFacets.filter(
+          (facet: string) => !DEPRECATED_FIELDS.includes(facet),
+        ),
+      },
+    };
+  },
 };
 
 // We want unsaved cohorts to be persisted through a refresh but not through a user ending their session
 const cohortPersistConfig = {
   key: "cohort",
-  version: 2,
+  version: 3,
   storage: sessionStorage,
   migrate: createMigrate(migrations),
 };
