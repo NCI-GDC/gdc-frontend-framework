@@ -158,6 +158,7 @@ const SetTable: React.FC<SetTableProps> = ({
       }),
     ],
     [
+      isSuccess,
       setTableColumnHelper,
       setTypeLabel,
       selectedSets,
