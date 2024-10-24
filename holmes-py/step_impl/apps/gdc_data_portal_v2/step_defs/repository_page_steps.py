@@ -40,13 +40,28 @@ def select_file_filter_and_validate(filter_name: str, nth: int):
     except:
         repository.select_nth_file_filters_result(int(nth) - 1)
 
+@step("Add the following files to the cart on the Repository page <table>")
+def add_files_to_cart(table):
+    """
+    add_files_to_cart Searches the repository table for a File UUID and adds
+    that file to the cart.
+    :param v[0]: File UUID to add
+    """
+    APP.shared.click_column_selector_button_in_specified_table("repository")
+    APP.shared.click_switch_for_column_selector("file_uuid")
+    APP.shared.click_column_selector_button_in_specified_table("repository")
+    for k, v in enumerate(table):
+        APP.shared.send_text_into_specified_table_search_bar("repository",v[0])
+        APP.shared.wait_for_specified_table_body_text_by_row_column("repository", v[0], 1, 2)
+        APP.shared.select_specified_table_by_row_column("repository", 1, 1)
+
 @step("Collect file counts for the following filters on the Repository page <table>")
 def collect_file_counts_on_filters(table):
     """
     collect_file_counts_on_filters Collect file count on filters on the repository page.
     Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'.
-    :param v[1]: Facet Card Name
-    :param v[2]: Filter we are collecting file count info on
+    :param v[0]: Facet Card Name
+    :param v[1]: Filter we are collecting file count info on
     """
     for k, v in enumerate(table):
         # Expands list of filters to select if possible

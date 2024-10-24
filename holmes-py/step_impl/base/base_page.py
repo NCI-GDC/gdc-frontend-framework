@@ -589,6 +589,11 @@ class BasePage:
         locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(data_testid)
         self.click(locator)
 
+    def click_button_data_testid_normalize(self, data_testid):
+        data_testid = self.normalize_button_identifier(data_testid)
+        locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(data_testid)
+        self.click(locator)
+
     def click_button_with_displayed_text_name(self, button_text_name):
         """Clicks a button based on its displayed text"""
         locator = GenericLocators.BUTTON_BY_DISPLAYED_TEXT(button_text_name)

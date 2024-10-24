@@ -160,6 +160,7 @@ def close_the_modal():
 @step("Download <file> from <source>")
 def download_file_at_file_table(file: str, source: str):
     sources = {
+        "Cart Items": APP.shared.click_button_data_testid_normalize,
         "Projects": APP.projects_page.click_button,
         "Repository": APP.repository_page.click_button,
         "File Summary": APP.file_summary_page.click_download_button,
@@ -413,6 +414,15 @@ def verify_table_showing_item_text(table_name, number_of_items_text):
         f"{showing_items_text}" in showing_items_text
     ), f"The table '{table_name}' is NOT showing expected number of items - {number_of_items_text}"
 
+@step("Verify the table <table_name> has a total of <number_of_items_text> items")
+def verify_table_total_of_text(table_name, number_of_items_text):
+    """Verifies the specified table's 'Total Of' text is correct"""
+    total_of_items_text = APP.shared.get_table_item_count_text(table_name)
+    assert (
+        total_of_items_text == number_of_items_text
+    ), f"The table '{table_name}' is NOT showing expected total of items - {number_of_items_text}"
+
+
 @step("Verify the table header text is correct <table>")
 def verify_table_header_text(table):
     """Verifies the table header has the correct text"""
@@ -441,7 +451,7 @@ def verify_table_header_text(table_name:str, table):
         table_header_text_by_column = re.sub(" +", " ", table_header_text_by_column)
         assert (
             f"{table_header_text_by_column}" == v[0]
-        ), f"The table header column '{v[1]}' is showing text '{table_header_text_by_column}' when we expected text '{v[0]}'"
+        ), f"In table '{table_name}': The table header column '{v[1]}' is showing text '{table_header_text_by_column}' when we expected text '{v[0]}'"
 
 
 @step("Verify the table body text is correct <table>")
@@ -484,7 +494,7 @@ def verify_table_body_text_in_specified_table(table_name:str, table):
         table_body_text_by_row_column = re.sub(" +", " ", table_body_text_by_row_column)
         assert (
             f"{table_body_text_by_row_column}" == v[0]
-        ), f"The table body row '{v[1]}' and column '{v[2]}' is showing text '{table_body_text_by_row_column}' when we expected text '{v[0]}'"
+        ), f"In table '{table_name}': The table body row '{v[1]}' and column '{v[2]}' is showing text '{table_body_text_by_row_column}' when we expected text '{v[0]}'"
 
 
 @step("Verify the table body tooltips are correct <table>")
