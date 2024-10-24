@@ -1,6 +1,6 @@
 import React, { ReactNode, useState } from "react";
 import { Tooltip, ButtonProps } from "@mantine/core";
-import { FaPlus as PlusIcon } from "react-icons/fa";
+import { PlusIcon } from "@/utils/icons";
 import tw from "tailwind-styled-components";
 import { FilterSet, useCoreDispatch, Modals, showModal } from "@gff/core";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";

@@ -1,10 +1,7 @@
 import { PropsWithChildren, ReactNode } from "react";
 import { Tooltip } from "@mantine/core";
 import { useElementSize } from "@mantine/hooks";
-import {
-  MdExpandLess as ExpandLessIcon,
-  MdExpandMore as ExpandMoreIcon,
-} from "react-icons/md";
+import { ExpandLessIcon, ExpandMoreIcon } from "@/utils/icons";
 import { FloatingPosition } from "@mantine/core/lib/components/Floating/types";
 import { focusStyles } from "../utils";
 

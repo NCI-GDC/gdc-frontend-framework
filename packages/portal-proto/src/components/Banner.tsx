@@ -1,11 +1,7 @@
-import {
-  FaQuestion as InfoIcon,
-  FaExclamation as WarningIcon,
-  FaExclamationTriangle as ErrorIcon,
-} from "react-icons/fa";
+import { InfoIcon, WarningIcon, ErrorIcon } from "@/utils/icons";
 import Markdown from "react-markdown";
 import { Button } from "@mantine/core";
-import { MdClose } from "react-icons/md";
+import { CloseIcon } from "@/utils/icons";
 import { dismissNotification, useCoreDispatch } from "@gff/core";
 
 interface BannerProps {
@@ -74,7 +70,7 @@ const Banner: React.FC<BannerProps> = ({
           <Button
             onClick={() => dispatch(dismissNotification(id))}
             rightSection={
-              <MdClose className={`${textColor[level]}`} aria-hidden="true" />
+              <CloseIcon className={`${textColor[level]}`} aria-hidden="true" />
             }
             styles={{
               root: {
