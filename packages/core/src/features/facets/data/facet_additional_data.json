@@ -467,8 +467,6 @@
     "facet_filter": "family_histories.relationship_age_at_diagnosis",
     "facet_type": "age",
     "label": "Relationship Age at Diagnosis",
-    "minimum": 0,
-    "maximum": 89,
     "property_type": "number"
   },
   "family_histories.relatives_with_cancer_history_count": {
