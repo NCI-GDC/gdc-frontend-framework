@@ -113,6 +113,9 @@ class GenericLocators:
     TEXT_DROPDOWN_MENU_OPTION = (
         lambda dropdown_option: f'[data-testid="dropdown-menu-options"] >> text="{dropdown_option}"'
     )
+    TEXT_HAS_DROPDOWN_MENU_OPTION = (
+        lambda dropdown_option: f'[data-testid="dropdown-menu-options"] >> button:has-text("{dropdown_option}")'
+    )
     BUTTON_TEXT_DROPDOWN_MENU_OPTION = (
         lambda dropdown_option: f'[data-testid="dropdown-menu-options"] >> text="{dropdown_option}" >> ..'
     )
@@ -666,6 +669,11 @@ class BasePage:
         locator = GenericLocators.TEXT_DROPDOWN_MENU_OPTION(dropdown_option)
         self.click(locator)
 
+    def click_has_text_option_from_dropdown_menu(self, dropdown_option):
+        """Clicks a text option from a dropdown menu based off given partial text"""
+        dropdown_approximate_locator = GenericLocators.TEXT_HAS_DROPDOWN_MENU_OPTION(dropdown_option)
+        self.click(dropdown_approximate_locator)
+
     def clear_active_cohort_filters(self):
         """
         Clears the active cohort filters by clicking the "Clear All" button
@@ -852,6 +860,7 @@ class BasePage:
         sources = {
             "Home Page": self.click_button_ident_a_with_displayed_text_name,
             "Footer": self.click_footer_button_ident_with_displayed_text_name,
+            "Cart": self.click_link_data_testid,
         }
         driver = WebDriver.page
         with driver.context.expect_page() as tab:

@@ -898,6 +898,11 @@ def click_dropdown_text_option(text:str):
     """Selects text option from dropdown menu with data-testid dropdown-menu-options"""
     APP.shared.click_text_option_from_dropdown_menu(text)
 
+@step("Select partial text <text> from dropdown menu")
+def click_dropdown_text_option(text:str):
+    """Selects text option from dropdown menu with data-testid dropdown-menu-options"""
+    APP.shared.click_has_text_option_from_dropdown_menu(text)
+
 @step("Change number of entries shown in the table to <number_of_entries>")
 def change_number_of_entries_shown(change_number_of_entries_shown: str):
     """
