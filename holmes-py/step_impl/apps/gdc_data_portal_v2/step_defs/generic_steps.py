@@ -161,6 +161,7 @@ def close_the_modal():
 def download_file_at_file_table(file: str, source: str):
     sources = {
         "Cart Items": APP.shared.click_button_data_testid_normalize,
+        "Cart Header": APP.shared.click_button_with_displayed_text_name,
         "Projects": APP.projects_page.click_button,
         "Repository": APP.repository_page.click_button,
         "File Summary": APP.file_summary_page.click_download_button,
