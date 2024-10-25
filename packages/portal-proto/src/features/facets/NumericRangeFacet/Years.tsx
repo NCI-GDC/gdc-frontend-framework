@@ -13,7 +13,6 @@ const Years: React.FC<NumericFacetData> = ({
   isFacetView,
 }: NumericFacetData) => {
   // minimum and maximum values if not undefined are in days so need to convert it to years
-  const queryInYears = rangeDatatype === "age_in_years";
   const adjMinimum = minimum != undefined ? getLowerAgeYears(minimum) : 0;
   const adjMaximum = maximum != undefined ? getLowerAgeYears(maximum) : 89;
   const numBuckets = Math.round((adjMaximum - adjMinimum) / 10);
