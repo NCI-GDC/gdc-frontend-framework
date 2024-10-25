@@ -44,6 +44,11 @@ const migrations = {
           (facet) => !DEPRECATED_FIELDS.includes(facet),
         ),
       },
+      filtersExpanded: Object.fromEntries(
+        Object.entries(state.filtersExpanded).filter(
+          ([k]) => !DEPRECATED_FIELDS.includes(k),
+        ),
+      ),
     };
   },
 };
