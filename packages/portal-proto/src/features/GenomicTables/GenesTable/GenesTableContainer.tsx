@@ -42,7 +42,7 @@ import { Gene, GeneToggledHandler, columnFilterType } from "./types";
 import { useGenerateGenesTableColumns, getGene } from "./utils";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import GenesTableSubcomponent from "./GenesTableSubcomponent";
-import { convertDateToString } from "@/utils/date";
+import { getFormattedTimestamp } from "@/utils/date";
 import { ComparativeSurvival } from "@/features/genomic/types";
 import { appendSearchTermFilters } from "../utils";
 import TotalItems from "@/components/Table/TotalItem";
@@ -279,9 +279,7 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
         filters: buildCohortGqlOperator(genesTableFilters) ?? {},
         case_filters: buildCohortGqlOperator(cohortFilters) ?? {},
         attachment: true,
-        filename: `frequently-mutated-genes.${convertDateToString(
-          new Date(),
-        )}.tsv`,
+        filename: `frequently-mutated-genes.${getFormattedTimestamp()}.tsv`,
       },
       dispatch,
       done: () => setDownloadMutatedGenesTSVActive(false),

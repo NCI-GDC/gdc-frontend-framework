@@ -15,7 +15,7 @@ import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
 import ProjectsCohortButton from "./ProjectsCohortButton";
 import download from "src/utils/download";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
-import { convertDateToString } from "src/utils/date";
+import { getFormattedTimestamp } from "src/utils/date";
 import { extractToArray, statusBooleansToDataStatus } from "src/utils";
 import { ArraySeparatedSpan } from "@/components/ArraySeparatedSpan/ArraySeparatedSpan";
 import { SummaryModalContext } from "src/utils/contexts";
@@ -350,7 +350,7 @@ const ProjectsTable: React.FC = () => {
       columnOrder,
       columnVisibility,
       columns: projectsTableDefaultColumns,
-      fileName: `projects-table.${convertDateToString(new Date())}.tsv`,
+      fileName: `projects-table.${getFormattedTimestamp()}.tsv`,
       option: { blacklist: ["select"] },
     });
   };

@@ -31,7 +31,7 @@ import {
 } from "./utils";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { CountsIcon } from "@/components/tailwindComponents";
-import { convertDateToString } from "@/utils/date";
+import { getFormattedTimestamp } from "@/utils/date";
 import download from "@/utils/download";
 import {
   ColumnOrderState,
@@ -269,7 +269,7 @@ export const ContextualCasesView: React.FC = () => {
       params: {
         attachment: false,
         size: cohortCounts?.data?.caseCount,
-        //filename: `cohort.${convertDateToString(new Date())}.tsv`,
+        // filename: `cohort.${getFormattedTimestamp()}.tsv`,
         case_filters: combinedFilters,
         fields: [
           "case_id",
@@ -302,7 +302,7 @@ export const ContextualCasesView: React.FC = () => {
       method: "POST",
       dispatch,
       params: {
-        filename: `cohort.${convertDateToString(new Date())}.json`,
+        filename: `cohort.${getFormattedTimestamp()}.json`,
         case_filters: combinedFilters,
         attachment: true,
         pretty: true,

@@ -8,7 +8,7 @@ import {
   useFacetDictionary,
   useGetSurvivalPlotQuery,
 } from "@gff/core";
-import { convertDateToString } from "@/utils/date";
+import { getFormattedTimestamp } from "@/utils/date";
 import SurvivalPlot from "../charts/SurvivalPlot/SurvivalPlot";
 import CDaveCard from "./CDaveCard/CDaveCard";
 import { useDeepCompareMemo } from "use-deep-compare";
@@ -78,9 +78,7 @@ const Dashboard: React.FC<DashboardProps> = ({
               data={survivalData}
               title=""
               plotType={SurvivalPlotTypes.overall}
-              downloadFileName={`overall-survival-plot.${convertDateToString(
-                new Date(),
-              )}`}
+              downloadFileName={`overall-survival-plot.${getFormattedTimestamp()}`}
             />
           )}
         </div>

@@ -14,7 +14,7 @@ import {
 import { RemoveFromCartButton } from "./updateCart";
 import FunctionButton from "@/components/FunctionButton";
 import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
-import { convertDateToString } from "src/utils/date";
+import { getFormattedTimestamp } from "src/utils/date";
 import download from "src/utils/download";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
 import { statusBooleansToDataStatus } from "src/utils";
@@ -368,7 +368,7 @@ const FilesTable: React.FC<FilesTableProps> = ({
     downloadTSV({
       tableData,
       columnOrder,
-      fileName: `files-table.${convertDateToString(new Date())}.tsv`,
+      fileName: `files-table.${getFormattedTimestamp()}.tsv`,
       columnVisibility,
       columns: cartFilesTableDefaultColumns,
       option: {
