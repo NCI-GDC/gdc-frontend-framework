@@ -14,10 +14,9 @@ import {
   buildRangeOperator,
   getLowerAgeYears,
 } from "../utils";
-import { RiErrorWarningFill as ErrorWarningIcon } from "react-icons/ri";
-import { MdWarning as WarningIcon } from "react-icons/md";
 import { useDeepCompareEffect } from "use-deep-compare";
 import { useForm } from "@mantine/form";
+import { WarningIconMessage, WarningTriangleIcon } from "@/utils/icons";
 
 interface FromToProps {
   readonly minimum: number;
@@ -70,7 +69,7 @@ const WarningOrError: React.FC<WarningOrErrorProps> = ({
     {hasErrors ? (
       <div className="text-utility-error flex gap-2">
         <div>
-          <ErrorWarningIcon size="1rem" />
+          <WarningIconMessage size="1rem" />
         </div>
         <span>
           Please enter a number between {lowerUnitRange} and {upperUnitRange}.
@@ -80,7 +79,7 @@ const WarningOrError: React.FC<WarningOrErrorProps> = ({
     {isWarning ? (
       <div className="bg-utility-warning border-utility-warning flex gap-2 p-1">
         <div>
-          <WarningIcon size="1rem" />
+          <WarningTriangleIcon size="1rem" />
         </div>
         <span>
           {`For health information privacy concerns, individuals over 89 will all appear as 90 years old. For more information, `}

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { BioTree } from "@/components/BioTree/BioTree";
-import { MdOutlineSearch, MdOutlineClear } from "react-icons/md";
 import {
   Button,
   Input,
@@ -20,11 +19,11 @@ import { formatEntityInfo, searchForStringInNode } from "./utils";
 import { trimEnd, find, flatten, escapeRegExp } from "lodash";
 import { useRouter } from "next/router";
 import { entityTypes, overrideMessage } from "@/components/BioTree/types";
-import { MdDownload as DownloadIcon } from "react-icons/md";
-import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import download from "@/utils/download";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import { useDeepCompareEffect } from "use-deep-compare";
+import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
+import { ClearIcon, DownloadIcon, SearchIcon } from "@/utils/icons";
 
 interface BiospecimenProps {
   readonly caseId: string;
@@ -217,7 +216,7 @@ export const Biospecimen = ({
               <div className="flex flex-col lg:flex-row gap-2 mb-4 ">
                 <Input
                   data-testid="textbox-biospecimen-search-bar"
-                  leftSection={<MdOutlineSearch size={24} aria-hidden="true" />}
+                  leftSection={<SearchIcon size={24} aria-hidden="true" />}
                   placeholder="Search"
                   classNames={{
                     wrapper: "basis-5/6",
@@ -254,7 +253,7 @@ export const Biospecimen = ({
                           });
                         }}
                       >
-                        <MdOutlineClear aria-label="clear search" />
+                        <ClearIcon aria-label="clear search" />
                       </ActionIcon>
                     )
                   }

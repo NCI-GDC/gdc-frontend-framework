@@ -1,8 +1,5 @@
+import { LessIcon, MoreIcon } from "@/utils/icons";
 import React from "react";
-import {
-  MdAddCircle as MoreIcon,
-  MdRemoveCircle as LessIcon,
-} from "react-icons/md";
 import tw from "tailwind-styled-components";
 
 export const ExpanderLabel = tw.div`

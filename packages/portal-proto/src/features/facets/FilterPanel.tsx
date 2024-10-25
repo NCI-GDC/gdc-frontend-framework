@@ -1,8 +1,6 @@
 import React, { useState, useContext, useRef, useMemo } from "react";
 import { isEqual } from "lodash";
 import { Text, Modal, LoadingOverlay, Badge, Tooltip } from "@mantine/core";
-import { MdAdd as AddAdditionalIcon } from "react-icons/md";
-import { FaUndo as UndoIcon } from "react-icons/fa";
 import { fieldNameToTitle } from "@gff/core";
 import { createFacetCard } from "@/features/facets/CreateFacetCard";
 import {
@@ -11,6 +9,7 @@ import {
 } from "@/features/facets/types";
 import FacetSelection from "@/components/FacetSelection";
 import { TableXPositionContext } from "@/components/Table/VerticalTable";
+import { AddIcon, UndoIcon } from "@/utils/icons";
 
 interface FilterPanelProps {
   readonly facetDefinitions: FacetCardDefinition[];
@@ -121,7 +120,7 @@ const FilterPanel = ({
                   className="flex justify-center items-center border-1 border-l-0 border-primary-darker rounded-r-md text-primary hover:text-base-max hover:bg-primary w-full"
                   onClick={() => setOpened(true)}
                 >
-                  <AddAdditionalIcon className="text-2xl xl:text-xl" />
+                  <AddIcon className="text-2xl xl:text-xl" />
                   <Text className="text-sm font-bold">Add a Custom Filter</Text>
                 </button>
               </div>

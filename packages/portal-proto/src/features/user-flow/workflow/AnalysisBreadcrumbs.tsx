@@ -1,8 +1,8 @@
 import { focusStyles } from "src/utils";
 import React, { useContext } from "react";
-import { MdClose, MdCircle } from "react-icons/md";
 import { SelectionScreenContext } from "./AnalysisWorkspace";
 import { REGISTERED_APPS } from "./registeredApps";
+import { CircleIcon, CloseIcon } from "@/utils/icons";
 
 interface AnalysisBreadcrumbsProps {
   readonly rightComponent: React.ReactElement;
@@ -29,7 +29,7 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
         className={`bg-base-max text-primary-content-darkest px-2 hover:bg-primary-darkest hover:text-primary-content-lightest rounded-md w-auto h-9 ${focusStyles}`}
         aria-label="Close app"
       >
-        <MdClose size={20} aria-hidden="true" />
+        <CloseIcon size={20} aria-hidden="true" />
       </button>
       <span
         className={`p-2 mx-2 uppercase text-white ${
@@ -42,7 +42,7 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
         <>
           {appInfo?.selectionScreen !== undefined && (
             <>
-              <MdCircle size={8} color="white" role="separator" />
+              <CircleIcon size={8} color="white" role="separator" />
               <span
                 className={`p-2 mx-2 uppercase cursor-pointer text-white ${
                   selectionScreenOpen ? "font-bold" : ""
@@ -60,7 +60,7 @@ const AnalysisBreadcrumbs: React.FC<AnalysisBreadcrumbsProps> = ({
           )}
           {!selectionScreenOpen && (
             <>
-              <MdCircle size={8} color="white" role="separator" />
+              <CircleIcon size={8} color="white" role="separator" />
               <span className="p-2 mx-2 uppercase font-bold text-white">
                 Results
               </span>

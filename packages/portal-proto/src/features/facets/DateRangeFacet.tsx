@@ -6,10 +6,9 @@ import {
   buildRangeOperator,
   extractRangeValues,
 } from "@/features/facets/utils";
-import { FaMinus as MinusIcon, FaPlus as PlusIcon } from "react-icons/fa";
-import { ImCalendar as CalendarIcon } from "react-icons/im";
 import { StringRange } from "./types";
 import FacetControlsHeader from "./FacetControlsHeader";
+import { CalendarIcon, MinusIcon, PlusIcon } from "@/utils/icons";
 
 type DateRangeFacetProps = Omit<
   FacetCardProps<ValueFacetHooks>,

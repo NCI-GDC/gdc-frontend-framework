@@ -1,11 +1,11 @@
 import { ButtonProps, Loader, Tooltip } from "@mantine/core";
-import { MdDownload as DownloadIcon } from "react-icons/md";
 import download from "src/utils/download";
 import { hideModal, Modals, useCoreDispatch } from "@gff/core";
 import { Dispatch, SetStateAction, forwardRef } from "react";
 import FunctionButton, {
   FunctionButtonVariants,
 } from "@/components/FunctionButton";
+import { DownloadIcon } from "@/utils/icons";
 
 /**
  * Properties for the DownloadButton component.

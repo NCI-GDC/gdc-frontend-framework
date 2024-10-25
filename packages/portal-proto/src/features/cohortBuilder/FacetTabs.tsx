@@ -31,10 +31,6 @@ import {
   Text,
 } from "@mantine/core";
 import { getFacetInfo, upload_facets } from "@/features/cohortBuilder/utils";
-import {
-  MdAdd as AddAdditionalIcon,
-  MdLibraryAdd as AddFacetIcon,
-} from "react-icons/md";
 import isEqual from "lodash/isEqual";
 import FacetSelection from "@/components/FacetSelection";
 import { createFacetCardsFromList } from "@/features/facets/CreateFacetCard";
@@ -51,6 +47,7 @@ import {
 } from "@/features/facets/hooks";
 import { partial } from "lodash";
 import { FacetCardDefinition } from "@/features/facets/types";
+import { AddFacetIcon, AddIcon } from "@/utils/icons";
 
 const CustomFacetWhenEmptyGroup = tw(Stack)<StackProps>`
 h-64
@@ -204,10 +201,7 @@ const CustomFacetGroup = (): JSX.Element => {
         {customFacetDefinitions.length == 0 ? (
           <Flex justify="center" align="center" className="h-full">
             <CustomFacetWhenEmptyGroup align="center" justify="center">
-              <AddFacetIcon
-                className="text-primary-content"
-                size="3em"
-              ></AddFacetIcon>
+              <AddFacetIcon className="text-primary-content" size="3em" />
               <Text size="md" className="text-primary-content-darker font-bold">
                 No custom filters added
               </Text>
@@ -234,10 +228,7 @@ const CustomFacetGroup = (): JSX.Element => {
               className="h-48 bg-base-max flex justify-center align-middle items-center border-base-darker b-2 border-dotted"
               onClick={() => setOpened(true)}
             >
-              <AddAdditionalIcon
-                className="text-primary-contrast-lightest"
-                size="2em"
-              />
+              <AddIcon className="text-primary-contrast-lightest" size="2em" />
               <Text
                 size="md"
                 className="text-primary-contrast-lightest font-bold"

@@ -4,7 +4,6 @@ import saveAs from "file-saver";
 import tw from "tailwind-styled-components";
 import { Menu, Tooltip, ActionIcon, Button } from "@mantine/core";
 import { useResizeObserver } from "@mantine/hooks";
-import { MdDownload as DownloadIcon } from "react-icons/md";
 import {
   useGetCaseSsmsQuery,
   joinFilters,
@@ -30,6 +29,7 @@ import {
 import QQPlot from "./QQPlot";
 import BoxPlot from "./BoxPlot";
 import { DataDimension } from "../types";
+import { DownloadIcon } from "@/utils/icons";
 
 const LightTableRow = tw.tr`text-content text-sm font-content bg-base-max text-base-contrast-max`;
 const DarkTableRow = tw.tr`text-content text-sm font-content bg-base-lightest text-base-contrast-lightest`;

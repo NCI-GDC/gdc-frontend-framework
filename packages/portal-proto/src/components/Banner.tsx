@@ -1,4 +1,4 @@
-import { InfoIcon, WarningIcon, ErrorIcon } from "@/utils/icons";
+import { QuestionIcon, WarningIcon, ErrorIcon } from "@/utils/icons";
 import Markdown from "react-markdown";
 import { Button } from "@mantine/core";
 import { CloseIcon } from "@/utils/icons";
@@ -24,7 +24,9 @@ const textColor = {
 };
 
 const icon = {
-  INFO: <InfoIcon className="text-utility-contrast-info" title="Info icon." />,
+  INFO: (
+    <QuestionIcon className="text-utility-contrast-info" title="Info icon." />
+  ),
   WARNING: (
     <WarningIcon
       className="text-utility-contrast-warning"

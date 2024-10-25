@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { ActionIcon, Loader, Tooltip, Modal } from "@mantine/core";
-import { MdDownload as DownloadIcon } from "react-icons/md";
 import { SetOperationEntityType } from "@/features/set-operations/types";
 import {
   useCreateCaseSetFromFiltersMutation,
@@ -13,6 +12,7 @@ import download from "@/utils/download";
 import { convertDateToString } from "@/utils/date";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
+import { DownloadIcon } from "@/utils/icons";
 
 const ENTITY_TYPE_TO_TAR = {
   mutations: "ssm",

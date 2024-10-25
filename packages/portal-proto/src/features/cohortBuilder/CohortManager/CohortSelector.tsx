@@ -9,8 +9,8 @@ import {
 } from "@gff/core";
 import { Select } from "@mantine/core";
 import { CustomCohortSelectItem, UnsavedIcon } from "./CustomCohortSelectItem";
-import { FaCaretDown as DownArrowIcon } from "react-icons/fa";
 import { useDeepCompareCallback, useDeepCompareMemo } from "use-deep-compare";
+import { DropdownIcon } from "@/utils/icons";
 
 const CohortSelector = () => {
   const coreDispatch = useCoreDispatch();
@@ -70,7 +70,7 @@ const CohortSelector = () => {
         rightSection={
           <div className="flex gap-1 items-center">
             {!isSavedUnchanged && <UnsavedIcon label={cohortStatusMessage} />}
-            <DownArrowIcon size={20} className="text-primary" />
+            <DropdownIcon size={20} className="text-primary" />
           </div>
         }
         rightSectionWidth={!isSavedUnchanged ? 45 : 30}

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { Grid, Button } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import { AiOutlineFileAdd as FileAddIcon } from "react-icons/ai";
 import {
   useCoreSelector,
   selectAllSets,
@@ -20,6 +19,7 @@ import SetDetailPanel from "./SetDetailPanel";
 import CreateSetButton from "./CreateSetButton";
 import ManageSetsTable from "./ManageSetsTable";
 import DeleteSetsNotification from "./DeleteSetsNotification";
+import { FileAddIcon } from "@/utils/icons";
 
 const CreateSetInstructions = () => (
   <p data-testid="text-manage-sets-description" className="py-2 text-sm">

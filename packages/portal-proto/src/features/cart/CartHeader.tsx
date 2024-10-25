@@ -12,14 +12,6 @@ import {
 } from "@gff/core";
 import fileSize from "filesize";
 import { Button, Loader, Menu } from "@mantine/core";
-import {
-  MdArrowDropDown as DropdownIcon,
-  MdPerson as PersonIcon,
-  MdSave as SaveIcon,
-  MdShoppingCart as CartIcon,
-} from "react-icons/md";
-import { RiFile3Fill as FileIcon } from "react-icons/ri";
-import { MdDownload as DownloadIcon } from "react-icons/md";
 import CartSizeLimitModal from "@/components/Modals/CartSizeLimitModal";
 import CartDownloadModal from "@/components/Modals/CartDownloadModal";
 import { DownloadButton } from "@/components/DownloadButtons";
@@ -27,6 +19,14 @@ import download from "src/utils/download";
 import { removeFromCart } from "./updateCart";
 import { focusStyles } from "@/utils/index";
 import { cartAboveLimit } from "./utils";
+import {
+  ArrowDropDownIcon,
+  CartIcon,
+  DownloadIcon,
+  FileIcon,
+  PersonIcon,
+  SaveIcon,
+} from "@/utils/icons";
 
 const buttonStyle =
   "bg-base-max text-primary border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary";
@@ -140,7 +140,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 leftSection={<DownloadIcon aria-hidden="true" size="1rem" />}
                 rightSection={
                   <div className="border-l pl-1 -mr-2">
-                    <DropdownIcon size="1.5em" aria-hidden="true" />
+                    <ArrowDropDownIcon size="1.5em" aria-hidden="true" />
                   </div>
                 }
               >
@@ -195,7 +195,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 leftSection={<DownloadIcon aria-hidden="true" size="1rem" />}
                 rightSection={
                   <div className="border-l pl-1 -mr-2">
-                    <DropdownIcon size="1.5em" aria-hidden="true" />
+                    <ArrowDropDownIcon size="1.5em" aria-hidden="true" />
                   </div>
                 }
               >
@@ -464,7 +464,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 leftSection={<CartIcon aria-hidden="true" size="1rem" />}
                 rightSection={
                   <div className="border-l pl-1 -mr-2">
-                    <DropdownIcon size="1.5em" aria-hidden="true" />
+                    <ArrowDropDownIcon size="1.5em" aria-hidden="true" />
                   </div>
                 }
                 classNames={{
