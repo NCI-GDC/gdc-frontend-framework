@@ -6296,13 +6296,6 @@
       "label": "Exposure Type",
       "enum": ["Marijuana", "Radiation", "Smoke", "Tobacco", "Wood Dust"]
     },
-    "exposures.marijuana_use_per_week": {
-      "facet_filter": "exposures.marijuana_use_per_week",
-      "facet_type": "number",
-      "label": "Marijuana Use Per Week",
-      "minimum": 0,
-      "property_type": "number"
-    },
     "exposures.pack_years_smoked": {
       "facet_filter": "exposures.pack_years_smoked",
       "facet_type": "number",
@@ -6327,14 +6320,6 @@
       "facet_type": "enum",
       "label": "Secondhand Smoke As Child",
       "enum": ["Yes", "No", "Unknown", "Not Reported"]
-    },
-    "exposures.smokeless_tobacco_quit_age": {
-      "facet_filter": "exposures.smokeless_tobacco_quit_age",
-      "facet_type": "age",
-      "label": "Smokeless Tobacco Quit Age",
-      "minimum": 0,
-      "maximum": 89,
-      "property_type": "integer"
     },
     "exposures.smoking_frequency": {
       "facet_filter": "exposures.smoking_frequency",
@@ -6386,13 +6371,6 @@
         "Not Reported",
         "Not Allowed To Collect"
       ]
-    },
-    "exposures.tobacco_use_per_day": {
-      "facet_filter": "exposures.tobacco_use_per_day",
-      "facet_type": "number",
-      "label": "Tobacco Use Per Day",
-      "minimum": 0,
-      "property_type": "number"
     },
     "exposures.type_of_smoke_exposure": {
       "facet_filter": "exposures.type_of_smoke_exposure",
