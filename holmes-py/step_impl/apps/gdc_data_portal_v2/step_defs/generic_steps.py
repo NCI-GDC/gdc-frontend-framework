@@ -162,6 +162,7 @@ def download_file_at_file_table(file: str, source: str):
     sources = {
         "Cart Items": APP.shared.click_button_data_testid_normalize,
         "Cart Header": APP.shared.click_button_with_displayed_text_name,
+        "Cart Header Dropdown": APP.shared.click_text_option_from_dropdown_menu,
         "Projects": APP.projects_page.click_button,
         "Repository": APP.repository_page.click_button,
         "File Summary": APP.file_summary_page.click_download_button,
@@ -563,6 +564,13 @@ def verify_button_is_disabled(button_name: str):
     is_button_disabled = APP.shared.is_button_disabled(button_name)
     assert (
         is_button_disabled == False
+    ), f"The button '{button_name}' is disabled when it should NOT be"
+
+@step("Verify the button with displayed text <button_name> is disabled")
+def verify_named_button_is_disabled(button_name: str):
+    is_button_disabled = APP.shared.is_named_button_disabled(button_name)
+    assert (
+        is_button_disabled
     ), f"The button '{button_name}' is disabled when it should NOT be"
 
 

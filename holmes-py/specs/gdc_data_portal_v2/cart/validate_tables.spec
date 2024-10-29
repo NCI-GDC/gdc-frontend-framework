@@ -264,3 +264,7 @@ tags: gdc-data-portal-v2, regression, cart
     |1                                      |5    |2      |
     |1                                      |5    |3      |
     |240.14 kB                              |5    |4      |
+
+## Remove Files from Cart
+* Remove "All Files" from cart on the Cart page
+* Is text "Your cart is empty." present on the page

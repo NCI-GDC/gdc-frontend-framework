@@ -521,8 +521,15 @@ class BasePage:
         return is_data_testid_present
 
     def is_button_disabled(self, button_name):
+        """Returns if the data-testid button is disabled"""
         button_name = self.normalize_button_identifier(button_name)
         locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(button_name)
+        is_button_disabled = self.is_disabled(locator)
+        return is_button_disabled
+
+    def is_named_button_disabled(self, button_name):
+        """Returns if the specified named button is disabled"""
+        locator = GenericLocators.BUTTON_BY_DISPLAYED_TEXT(button_name)
         is_button_disabled = self.is_disabled(locator)
         return is_button_disabled
 
