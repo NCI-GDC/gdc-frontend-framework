@@ -739,6 +739,14 @@ def store_button_labels_in_tables_for_comparison(table_name:str, table):
         )
         data_store.spec[f"{v[0]}"] = table_body_text_by_row_column
 
+@step("Collect <text_id_to_collect> Item Count for comparison")
+def store_text_item_count_for_comparison(text_id_to_collect:str):
+    """
+    Stores the given text data-testid item count for comparison in future tests.
+    Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'
+    """
+    data_store.spec[f"{text_id_to_collect} Item Count"] = APP.shared.get_text_by_data_testid(text_id_to_collect)
+
 @step("Collect Cohort Bar Case Count for comparison")
 def store_cohort_bar_case_count_for_comparison():
     """

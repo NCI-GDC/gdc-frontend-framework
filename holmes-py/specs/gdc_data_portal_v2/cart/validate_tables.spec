@@ -79,6 +79,11 @@ tags: gdc-data-portal-v2, regression, cart
     |1                                      |5    |3      |
     |240.14 kB                              |5    |4      |
 
+## Cart Items - File Count
+* Collect table "Cart Items" Item Count for comparison
+* Collect "File Count" Item Count for comparison
+* Verify "Cart Items Item Count" and "File Count Item Count" are "Equal"
+
 ## Validate Table: Cart Items
 * Verify the table "Cart Items" has a total of "15" items
 * Verify the table "Cart Items" header text is correct

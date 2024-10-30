@@ -264,6 +264,12 @@ class BasePage:
         string_to_strip = re.sub(r'\D', '', string_to_strip)
         return string_to_strip
 
+    def get_text_by_data_testid(self, text_id_to_collect):
+        """Returns text from given data-testid"""
+        text_id_to_collect = self.normalize_button_identifier(text_id_to_collect)
+        locator = GenericLocators.DATA_TESTID_TEXT_IDENT(text_id_to_collect)
+        return self.get_text(locator)
+
     def get_cohort_bar_case_count(self):
         """Returns the count of cases in the current cohort"""
         self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
