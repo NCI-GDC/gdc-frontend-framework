@@ -110,6 +110,227 @@ tags: gdc-data-portal-v2, regression, cart
     |TCGA-LUAD                            |
     |APOLLO                               |
 
+## Biospecimen TSV
+* Select "Download Associated Data" on the Cart page
+* Download "Biospecimen: TSV" from "Cart Header Dropdown"
+* Read file content from compressed "Biospecimen: TSV from Cart Header Dropdown"
+* Verify that "Biospecimen: TSV from Cart Header Dropdown" has expected information
+    |required_info                        |
+    |-------------------------------------|
+    |portion_id                           |
+    |no_matched_normal_targeted_sequencing|
+    |selected_normal_targeted_sequencing  |
+    |selected_normal_wxs                  |
+    |a2a2dbda-d10c-49c4-86a8-61baf6160cda |
+    |9873fb3a-2db4-5127-857a-9c4d43fe52f3 |
+    |a0c9eb15-1a55-5310-8f10-3709713d1536 |
+    |HCM-CSHL-0182-C25-01A-11R-A78N-41    |
+    |HCMI-CMDC                            |
+    |TCGA-BG-A0M0-01A                     |
+    |sample_id                            |
+    |analyte_id                           |
+    |a260_a280_ratio                      |
+    |experimental_protocol_type           |
+    |rna_integrity_number                 |
+    |fca75565-3783-4251-8bc8-4917a416e21c |
+    |71e5c3c0-8fd8-438b-915c-6e75eaaeaae2 |
+    |HCM-BROD-0231-C25-06A-01D            |
+    |Repli-G (Qiagen) DNA                 |
+    |Repli-G X                            |
+    |UV Spec                              |
+    |creation_datetime                    |
+    |portion_number                       |
+    |8360d471-e5eb-4deb-b63f-eddb88daae24 |
+    |8617ab21-718f-4914-9a3b-70e9bfe084cf |
+    |HCM-BROD-0231-C25-06A-01             |
+    |1305158400                           |
+    |biospecimen_anatomic_site            |
+    |initial_weight                       |
+    |oct_embedded                         |
+    |preservation_method                  |
+    |time_between_clamping_and_freezing   |
+    |tumor_code_id                        |
+    |5fc14815-00f9-4cb5-b158-a294f0fd48f2 |
+    |7A76BDC7-62D9-4A8D-AAEF-CECF9F819D58 |
+    |Expanded Next Generation Cancer Model|
+    |Peripheral Blood Components NOS      |
+    |Tumor                                |
+    |Metastatic                           |
+    |slide_id                             |
+    |slide_submitter_id                   |
+    |percent_follicular_component         |
+    |percent_necrosis                     |
+    |percent_tumor_cells                  |
+    |prostatic_involvement_percent        |
+    |tissue_microarray_coordinates        |
+    |2ca2cf14-9a01-408d-be23-73dffb093ead |
+    |TCGA-BG-A0M0-01Z-00-DX1              |
+    |98.0                                 |
+    |BOTTOM                               |
+* Verify that "Biospecimen: TSV from Cart Header Dropdown" does not contain specified information
+    |required_info                        |
+    |-------------------------------------|
+    |FM-AD                                |
+    |TCGA-LUAD                            |
+    |APOLLO                               |
+
+## Biospecimen JSON
+* Select "Download Associated Data" on the Cart page
+* Download "Biospecimen: JSON" from "Cart Header Dropdown"
+* Read from "Biospecimen: JSON from Cart Header Dropdown"
+* Verify that "Biospecimen: JSON from Cart Header Dropdown" has expected information
+    |required_info                        |
+    |-------------------------------------|
+    |1ae8657f-477f-4e1a-aef2-dd1c1ab5f26a |
+    |project	                            |
+    |project_id                           |
+    |HCMI-CMDC                            |
+    |submitter_id	                        |
+    |MMRF_1540                            |
+    |samples	                            |
+    |tumor_descriptor	                    |
+    |Recurrence                           |
+    |specimen_type	                      |
+    |Bone Marrow NOS                      |
+    |days_to_sample_procurement	          |
+    |updated_datetime	                    |
+    |2023-11-08T11:51:28.153805-06:00     |
+    |sample_id	                          |
+    |1b91e02e-9d83-4785-b94d-a13db72a4564 |
+    |MMRF_2017_1_BM_CD138pos              |
+    |state	                              |
+    |preservation_method	                |
+    |sample_type	                        |
+    |Primary Blood Derived Cancer - Bone Marrow|
+    |tissue_type	                        |
+    |Normal                               |
+    |created_datetime	                    |
+    |2018-01-01T11:33:50.360407-06:00     |
+    |portion_id	                          |
+    |e737adb3-5810-5cd2-9750-3a9e39ee4d16 |
+    |slide_id	                            |
+    |1f4c3265-eee0-4752-afb4-4446dbd521ee |
+    |sample_type_id	                      |
+    |is_ffpe	                            |
+    |analyte_id	                          |
+    |56524bc-4a40-4f58-b157-59490275578b  |
+    |aliquot_id	                          |
+    |5c7f192d-a02e-4208-ade8-c64fdf87be1a |
+    |center_id	                          |
+    |61d634b8-e8dd-58bf-9a65-1233dc7c8c6a |
+    |concentration                        |
+    |analyte_type_id	                    |
+    |5341a8a5-acac-5a24-a963-d27dbecc5db2 |
+    |3df88b48-da53-4014-9507-de070223d1dd |
+    |91e73c21-abd7-4c20-ac1e-81f4dabc7511 |
+* Verify that "Biospecimen: JSON from Cart Header Dropdown" does not contain specified information
+    |required_info                        |
+    |-------------------------------------|
+    |FM-AD                                |
+    |TCGA-LUAD                            |
+    |APOLLO                               |
+
+## Sample Sheet
+* Select "Download Associated Data" on the Cart page
+* Download "Sample Sheet" from "Cart Header Dropdown"
+* Read from "Sample Sheet from Cart Header Dropdown"
+* Verify that "Sample Sheet from Cart Header Dropdown" has expected information
+    |required_info                        |
+    |-------------------------------------|
+    |File ID                              |
+    |File Name                            |
+    |Data Category                        |
+    |Data Type                            |
+    |Project ID                           |
+    |Case ID                              |
+    |Sample ID                            |
+    |Sample Type                          |
+    |945aee28-3188-41ad-9999-33c36a566a50 |
+    |TCGA-OV.f9ef779b-0228-4ef1-a6c4-824dff5460d2.ascat3.gene_level_copy_number.v36.tsv|
+    |Transcriptome Profiling              |
+    |Masked Somatic Mutation              |
+    |MMRF-COMMPASS                        |
+    |MMRF_2579, MMRF_2579                 |
+    |MMRF_2167_1_PB_Whole, MMRF_2167_1_BM_CD138pos|
+    |Next Generation Cancer Model, Blood Derived Normal|
+    |c137b9d3-ed18-49bc-879b-73cd90450c6a |
+    |d342f285-b9ba-4737-b668-09bfc761e74f |
+    |93d6d769-17fe-4bc9-bf94-bc9f92f1c747 |
+    |TCGA-BG-A0M0-10A, TCGA-BG-A0M0-01A   |
+* Verify that "Sample Sheet from Cart Header Dropdown" does not contain specified information
+    |required_info                        |
+    |-------------------------------------|
+    |FM-AD                                |
+    |TCGA-LUAD                            |
+    |APOLLO                               |
+
+## Metadata
+* Select "Download Associated Data" on the Cart page
+* Download "Metadata" from "Cart Header Dropdown"
+* Read from "Metadata from Cart Header Dropdown"
+* Verify that "Metadata from Cart Header Dropdown" has expected information
+    |required_info                        |
+    |-------------------------------------|
+    |data_format	                        |
+    |access	                              |
+    |associated_entities	                |
+    |entity_submitter_id	                |
+    |entity_type	                        |
+    |case_id	                            |
+    |entity_id	                          |
+    |file_name	                          |
+    |submitter_id	                        |
+    |data_category	                      |
+    |entity_submitter_id	                |
+    |submitter_id	                        |
+    |annotation_id	                      |
+    |category	                            |
+    |status	                              |
+    |case_submitter_id	                  |
+    |downstream_analyses	                |
+    |output_files	                        |
+    |file_name	                          |
+    |file_id                              |
+    |data_type	                          |
+    |workflow_type	                      |
+    |workflow_version	                    |
+    |proportion_reads_mapped              |
+    |md5sum	                              |
+    |contamination                        |
+    |experimental_strategy	              |
+    |proportion_reads_duplicated          |
+    |workflow_link	                      |
+    |index_files	                        |
+    |TCGA-61-1727-11A-01W-0639-09         |
+    |TCGA-OV.f9ef779b-0228-4ef1-a6c4-824dff5460d2.ascat3.gene_level_copy_number.v36.tsv|
+    |Copy Number Variation                |
+    |1b06f3bd-6129-4805-be76-5e0965e4889f |
+    |3dd621a8745ee2b91716911604bf3f096337a9b7|
+    |4b7ba483550f3fc70b8f23b280e9b912     |
+    |Aliquot Ensemble Somatic Variant Merging and Masking|
+    |8ecf1343-3f59-4a18-99e0-c783825b82ae |
+    |21640f1a-d199-499b-bb08-5e778cfa830c |
+    |79d5f99d-84b7-44c8-aac6-8ffb9d79c8ea |
+    |2019-01-28T11:04:05.783741-06:00     |
+    |Illumina                             |
+    |Masked Somatic Mutation              |
+    |WGS                                  |
+    |SeSAMe Methylation Beta Estimation   |
+    |3431594                              |
+    |https://gdc.cancer.gov/about-data/publications/pancanatlas|
+    |VCF                                  |
+    |f58edce0a21b29b810508a11599ad447     |
+    |148.81047                            |
+    |0.00013948633598826976               |
+    |0.022844                             |
+    |8cd9cd506d600cbeb4abbe6470babf6f     |
+* Verify that "Metadata from Cart Header Dropdown" does not contain specified information
+    |required_info                        |
+    |-------------------------------------|
+    |FM-AD                                |
+    |TCGA-LUAD                            |
+    |APOLLO                               |
+
 ## Remove Files from Cart
 * Remove "All Files" from cart on the Cart page
 * Is text "Your cart is empty." present on the page
