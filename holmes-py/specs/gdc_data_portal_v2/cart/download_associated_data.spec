@@ -182,36 +182,36 @@ tags: gdc-data-portal-v2, regression, cart
     |required_info                        |
     |-------------------------------------|
     |1ae8657f-477f-4e1a-aef2-dd1c1ab5f26a |
-    |project	                            |
+    |project	                          |
     |project_id                           |
     |HCMI-CMDC                            |
-    |submitter_id	                        |
+    |submitter_id	                      |
     |MMRF_1540                            |
-    |samples	                            |
-    |tumor_descriptor	                    |
+    |samples	                          |
+    |tumor_descriptor	                  |
     |Recurrence                           |
     |specimen_type	                      |
     |Bone Marrow NOS                      |
     |days_to_sample_procurement	          |
-    |updated_datetime	                    |
+    |updated_datetime	                  |
     |2023-11-08T11:51:28.153805-06:00     |
     |sample_id	                          |
     |1b91e02e-9d83-4785-b94d-a13db72a4564 |
     |MMRF_2017_1_BM_CD138pos              |
     |state	                              |
-    |preservation_method	                |
-    |sample_type	                        |
+    |preservation_method	              |
+    |sample_type	                      |
     |Primary Blood Derived Cancer - Bone Marrow|
-    |tissue_type	                        |
+    |tissue_type	                      |
     |Normal                               |
-    |created_datetime	                    |
+    |created_datetime	                  |
     |2018-01-01T11:33:50.360407-06:00     |
     |portion_id	                          |
     |e737adb3-5810-5cd2-9750-3a9e39ee4d16 |
-    |slide_id	                            |
+    |slide_id	                          |
     |1f4c3265-eee0-4752-afb4-4446dbd521ee |
     |sample_type_id	                      |
-    |is_ffpe	                            |
+    |is_ffpe	                          |
     |analyte_id	                          |
     |56524bc-4a40-4f58-b157-59490275578b  |
     |aliquot_id	                          |
@@ -219,7 +219,7 @@ tags: gdc-data-portal-v2, regression, cart
     |center_id	                          |
     |61d634b8-e8dd-58bf-9a65-1233dc7c8c6a |
     |concentration                        |
-    |analyte_type_id	                    |
+    |analyte_type_id	                  |
     |5341a8a5-acac-5a24-a963-d27dbecc5db2 |
     |3df88b48-da53-4014-9507-de070223d1dd |
     |91e73c21-abd7-4c20-ac1e-81f4dabc7511 |
@@ -271,36 +271,36 @@ tags: gdc-data-portal-v2, regression, cart
 * Verify that "Metadata from Cart Header Dropdown" has expected information
     |required_info                        |
     |-------------------------------------|
-    |data_format	                        |
+    |data_format	                      |
     |access	                              |
-    |associated_entities	                |
-    |entity_submitter_id	                |
-    |entity_type	                        |
-    |case_id	                            |
+    |associated_entities	              |
+    |entity_submitter_id	              |
+    |entity_type	                      |
+    |case_id	                          |
     |entity_id	                          |
     |file_name	                          |
-    |submitter_id	                        |
+    |submitter_id	                      |
     |data_category	                      |
-    |entity_submitter_id	                |
-    |submitter_id	                        |
+    |entity_submitter_id	              |
+    |submitter_id	                      |
     |annotation_id	                      |
-    |category	                            |
+    |category	                          |
     |status	                              |
     |case_submitter_id	                  |
-    |downstream_analyses	                |
-    |output_files	                        |
+    |downstream_analyses	              |
+    |output_files	                      |
     |file_name	                          |
     |file_id                              |
     |data_type	                          |
     |workflow_type	                      |
-    |workflow_version	                    |
+    |workflow_version	                  |
     |proportion_reads_mapped              |
     |md5sum	                              |
     |contamination                        |
     |experimental_strategy	              |
     |proportion_reads_duplicated          |
     |workflow_link	                      |
-    |index_files	                        |
+    |index_files	                      |
     |TCGA-61-1727-11A-01W-0639-09         |
     |TCGA-OV.f9ef779b-0228-4ef1-a6c4-824dff5460d2.ascat3.gene_level_copy_number.v36.tsv|
     |Copy Number Variation                |
