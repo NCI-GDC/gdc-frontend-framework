@@ -1,8 +1,15 @@
-import "@gff/portal-components/dist/styles.css";
+import "../styles/globals.css";
 import { Footer } from "@gff/portal-components";
 
 const EnclavePortalApp = () => {
-  return <Footer text="hello, footer" />;
+  return (
+    <Footer
+      useVersionInfoDetailsHook={() => ({ data: {}, isSuccess: true })}
+      linkColData={[]}
+      linkCloud={[]}
+      appInfo={{}}
+    />
+  );
 };
 
 export default EnclavePortalApp;
