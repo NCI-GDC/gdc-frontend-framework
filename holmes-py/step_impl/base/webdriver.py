@@ -56,6 +56,9 @@ class WebDriver:
         if not getenv("IS_DOCKER"):
             screen_size = Utility.get_screen_size()
             if screen_size:
+                # Based on screen of a 13-inch laptop.
+                # Standardizing the screen size so results are the same no
+                # matter what machine holmes-py is ran on.
                 WebDriver.page.set_viewport_size(
                     {"width": 1440, "height": 900}
                 )
