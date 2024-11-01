@@ -52,9 +52,9 @@ Prettier Checks:
   variables:
     NODE_ENV: test
     NODE_VER: v20.15.1
+    npm_config_tarball: /tmp/node-headers.tgz
   before_script:
     - curl -sSL https://nodejs.org/download/release/${NODE_VER}/node-${NODE_VER}-headers.tar.gz -o /tmp/node-headers.tgz
-    - npm config set tarball /tmp/node-headers.tgz
     - npm ci --cache .npm
   script:
     - npm run format:check
