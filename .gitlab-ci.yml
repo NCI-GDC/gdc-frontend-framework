@@ -43,7 +43,7 @@ Linting:
     NODE_ENV: test
     npm_config_tarball: /tmp/node-headers.tgz
   before_script:
-    - curl -sSL https://nodejs.org/download/release/${NODE_VER}/node-${NODE_VER}-headers.tar.gz -o /tmp/node-headers.tgz
+    - curl -sSL https://nexus.osdc.io/repository/misc/nodejs/node-${NODE_VER}-headers.tar.gz -o /tmp/node-headers.tgz
     - dnf install gcc-c++ make -y
     - npm ci
   script:
@@ -56,7 +56,7 @@ Prettier Checks:
     NODE_ENV: test
     npm_config_tarball: /tmp/node-headers.tgz
   before_script:
-    - curl -sSL https://nodejs.org/download/release/${NODE_VER}/node-${NODE_VER}-headers.tar.gz -o /tmp/node-headers.tgz
+    - curl -sSL https://nexus.osdc.io/repository/misc/nodejs/node-${NODE_VER}-headers.tar.gz -o /tmp/node-headers.tgz
     - dnf install gcc-c++ make -y
     - npm ci
   script:
@@ -69,7 +69,7 @@ Build and test core and portal:
     NODE_ENV: test
     npm_config_tarball: /tmp/node-headers.tgz
   before_script:
-    - curl -sSL https://nodejs.org/download/release/${NODE_VER}/node-${NODE_VER}-headers.tar.gz -o /tmp/node-headers.tgz
+    - curl -sSL https://nexus.osdc.io/repository/misc/nodejs/node-${NODE_VER}-headers.tar.gz -o /tmp/node-headers.tgz
     - dnf install gcc-c++ make -y
     - npm ci
   script:
