@@ -44,6 +44,7 @@ Linting:
     npm_config_tarball: /tmp/node-headers.tgz
   before_script:
     - curl -sSL https://nodejs.org/download/release/${NODE_VER}/node-${NODE_VER}-headers.tar.gz -o /tmp/node-headers.tgz
+    - dnf install gcc-c++ make -y
     - npm ci --cache .npm
   script:
     - npm run lint
@@ -57,6 +58,7 @@ Prettier Checks:
     npm_config_tarball: /tmp/node-headers.tgz
   before_script:
     - curl -sSL https://nodejs.org/download/release/${NODE_VER}/node-${NODE_VER}-headers.tar.gz -o /tmp/node-headers.tgz
+    - dnf install gcc-c++ make -y
     - npm ci --cache .npm
   script:
     - npm run format:check
@@ -69,6 +71,7 @@ Build and test core and portal:
     npm_config_tarball: /tmp/node-headers.tgz
   before_script:
     - curl -sSL https://nodejs.org/download/release/${NODE_VER}/node-${NODE_VER}-headers.tar.gz -o /tmp/node-headers.tgz
+    - dnf install gcc-c++ make -y
     - npm ci --cache .npm
   script:
     - cd ${CI_PROJECT_DIR}/packages/core
