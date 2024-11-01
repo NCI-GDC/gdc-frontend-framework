@@ -10,9 +10,9 @@ include:
     file:
       - templates/deployments/salt-service.yaml
 
-pre-commit:
-  except:
-    - tags
+default:
+  tags:
+    - kubernetes
 
 stages:
   - .pre
