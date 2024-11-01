@@ -51,9 +51,11 @@ Prettier Checks:
   stage: test
   variables:
     NODE_ENV: test
+    NODE_VER: v20.15.1
   before_script:
     - npm ci --cache .npm
-    - npm config set proxy ${npm_config_https_proxy}
+    - curl -sSL https://nodejs.org/download/release/${NODE_VER}/node-${NODE_VER}-headers.tar.gz -o /tmp/node-headers.tgz
+    - npm config set tarball /tmp/node-headers.tgz
   script:
     - npm run format:check
   <<: *default_rules
