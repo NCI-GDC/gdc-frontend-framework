@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Button, Divider, Modal, Radio, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { MdReplay as ResetIcon } from "react-icons/md";
-import { FaPlusCircle as PlusIcon, FaTrash as TrashIcon } from "react-icons/fa";
+import { FaPlusCircle as PlusIcon } from "react-icons/fa";
+import { BsTrashFill as TrashIcon } from "react-icons/bs";
 import { Statistics } from "@gff/core";
 import { validateIntervalInput, validateRangeInput } from "./validateInputs";
 import { CustomInterval, DataDimension, NamedFromTo } from "../types";
@@ -497,7 +498,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                         }}
                         aria-label="delete row"
                       >
-                        <TrashIcon />
+                        <TrashIcon size={16} />
                       </FunctionButton>
                     )}
                   </td>

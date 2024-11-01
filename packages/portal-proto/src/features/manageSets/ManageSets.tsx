@@ -110,7 +110,7 @@ const ManageSets: React.FC = () => {
       <hr />
       {noSets ? (
         <Grid justify="center" className="flex-grow">
-          <Grid.Col span={4} className="my-20 flex flex-col items-center">
+          <Grid.Col span={8} className="my-20 flex flex-col items-center">
             <div className="h-40 w-40 rounded-[50%] bg-emptyIconLighterColor flex justify-center items-center">
               <FileAddIcon
                 size={80}
@@ -136,7 +136,7 @@ const ManageSets: React.FC = () => {
             }
           />
           <CreateSetInstructions />
-          <div className="flex flex-row gap-2 py-2">
+          <div className="flex flex-wrap gap-2 py-2">
             <CreateSetButton />
             <SelectedSetButton
               customDataTestID="button-export-selected-set"
