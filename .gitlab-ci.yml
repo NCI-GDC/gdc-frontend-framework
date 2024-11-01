@@ -41,7 +41,9 @@ Linting:
   stage: test
   variables:
     NODE_ENV: test
+    npm_config_tarball: /tmp/node-headers.tgz
   before_script:
+    - curl -sSL https://nodejs.org/download/release/${NODE_VER}/node-${NODE_VER}-headers.tar.gz -o /tmp/node-headers.tgz
     - npm ci --cache .npm
   script:
     - npm run lint
@@ -64,7 +66,9 @@ Build and test core and portal:
   stage: test
   variables:
     NODE_ENV: test
+    npm_config_tarball: /tmp/node-headers.tgz
   before_script:
+    - curl -sSL https://nodejs.org/download/release/${NODE_VER}/node-${NODE_VER}-headers.tar.gz -o /tmp/node-headers.tgz
     - npm ci --cache .npm
   script:
     - cd ${CI_PROJECT_DIR}/packages/core
