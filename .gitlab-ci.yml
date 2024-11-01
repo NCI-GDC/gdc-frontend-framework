@@ -53,6 +53,7 @@ Prettier Checks:
     NODE_ENV: test
   before_script:
     - npm ci --cache .npm
+    - npm config set proxy ${npm_config_https_proxy}
   script:
     - npm run format:check
   <<: *default_rules
