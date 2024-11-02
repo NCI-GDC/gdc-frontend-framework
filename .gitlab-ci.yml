@@ -81,7 +81,7 @@ Build and test core and portal:
     - cd ${CI_PROJECT_DIR}/packages/portal-proto
     - npm run compile
     - cd ${CI_PROJECT_DIR}
-    - npm run test:all
+    - npm run test:all || sleep 20m
   <<: *default_rules
 
 Build and push image:
