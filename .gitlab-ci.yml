@@ -72,6 +72,7 @@ Build and test core and portal:
     - curl -sSL https://nexus.osdc.io/repository/misc/nodejs/node-${NODE_VER}-headers.tar.gz -o /tmp/node-headers.tgz
     - dnf install gcc-c++ make -y
     - npm ci
+    - npm config set noproxy "*.gdc.cancer.gov"
   script:
     - cd ${CI_PROJECT_DIR}/packages/core
     - npm run build:clean
