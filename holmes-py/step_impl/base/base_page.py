@@ -102,6 +102,9 @@ class GenericLocators:
     TABLE_AREA_TO_CLICK_IN_SPECIFIED_TABLE = (
         lambda table_name, row, column: f"[data-testid='table-{table_name}'] >> tr:nth-child({row}) > td:nth-child({column}) > * > * >> nth=0"
     )
+    TABLE_CHECKBOX_TO_CLICK_IN_SPECIFIED_TABLE = (
+        lambda table_name, row, column: f"[data-testid='table-{table_name}'] >> tr:nth-child({row}) > td:nth-child({column}) >> [type='checkbox']"
+    )
     TABLE_TEXT_TO_WAIT_FOR = (
         lambda text, row, column: f'tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0 >> text="{text}"'
     )
@@ -793,9 +796,14 @@ class BasePage:
         Row and Column indexing begins at '1'
         """
         table_name = self.normalize_button_identifier(table_name)
+        table_checkbox_to_click = GenericLocators.TABLE_CHECKBOX_TO_CLICK_IN_SPECIFIED_TABLE(table_name, row, column)
         table_locator_to_select = GenericLocators.TABLE_AREA_TO_CLICK_IN_SPECIFIED_TABLE(table_name, row, column)
+        # Try to click potential checkbox first.
+        if self.is_visible(table_checkbox_to_click):
+            self.hover(table_checkbox_to_click)
+            self.click(table_checkbox_to_click, True)
         # Try to click drilled down locator.
-        if self.is_visible(table_locator_to_select):
+        elif self.is_visible(table_locator_to_select):
             self.hover(table_locator_to_select)
             self.click(table_locator_to_select, True)
         # If that is not available, click a higher level locator.

@@ -56,9 +56,20 @@ class WebDriver:
         if not getenv("IS_DOCKER"):
             screen_size = Utility.get_screen_size()
             if screen_size:
-                WebDriver.page.set_viewport_size(
-                    {"width": screen_size["width"], "height": screen_size["height"]}
-                )
+                screen_width = screen_size["width"]
+                screen_height = screen_size["height"]
+                if ((screen_width >= 2000) and (screen_height >= 1300)):
+                    # This is the maximum size of a test automation window
+                    # to ensure consistent test results.
+                    WebDriver.page.set_viewport_size({"width": 2000, "height": 1300})
+                elif ((screen_width >= 2000) and (screen_height <= 1300)):
+                    WebDriver.page.set_viewport_size({"width": 2000, "height": screen_height})
+                elif ((screen_width <= 2000) and (screen_height >= 1300)):
+                    WebDriver.page.set_viewport_size({"width": screen_width, "height": 1300})
+                else:
+                    # If both width and height of the user's screen is smaller than the max, we
+                    # set the automation window to the user's screen.
+                    WebDriver.page.set_viewport_size({"width": screen_width, "height": screen_height})
             else:
                 WebDriver.context.add_init_script(
                     """

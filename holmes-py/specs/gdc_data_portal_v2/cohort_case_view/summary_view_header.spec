@@ -232,12 +232,20 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
   |demographic.created_datetime	                    |
 * Verify that the "JSON from Cohort Summary View Clinical" has <field_name> for each object
 
-## Download Manifest
+## Add to Cart Button
 * Clear active cohort filters
 * Make the following selections on a filter card in Cohort Summary View
   |facet_name           |selection            |
   |---------------------|---------------------|
   |Disease Type         |unknown              |
+* Select "Files" in Cohort Case View
+* Select "Add to Cart" from dropdown menu
+* Is modal with text "Added" present on the page and "Keep Modal"
+* Pause "2" seconds
+* Undo Action
+* The cart should have "0" files
+
+## Download Manifest
 * Download "Download Manifest" from "Cohort Case View Files"
 * Read from "Download Manifest from Cohort Case View Files"
 * Verify that "Download Manifest from Cohort Case View Files" has expected information
@@ -327,13 +335,6 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
     |TCGA                                 |
     |gliomas                              |
     |FM-AD                                |
-
-## Add to Cart Button
-* Select "Files" in Cohort Case View
-* Select "Add to Cart" from dropdown menu
-* Is modal with text "Added" present on the page and "Keep Modal"
-* Undo Action
-* The cart should have "0" files
 
 ## Flip Filters
 * Perform the following actions on a filter card in Cohort Summary View
