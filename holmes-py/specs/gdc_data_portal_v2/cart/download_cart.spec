@@ -1,10 +1,10 @@
 # Cart - Download Cart Options
 Date Created    : 10/25/2024
-Version			: 1.0
-Owner		    : GDC QA
-Description		: Manifest and Download Cart
+Version			    : 1.0
+Owner		        : GDC QA
+Description		  : Manifest and Download Cart
 Test-Case       : PEAR-2246
-tags: gdc-data-portal-v2, regression, cart
+tags            : gdc-data-portal-v2, regression, cart
 
 ## Add Files to Cart
 * On GDC Data Portal V2 app

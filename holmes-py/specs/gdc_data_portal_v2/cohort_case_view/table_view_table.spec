@@ -12,6 +12,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
 * Navigate to "Analysis" from "Header" "section"
 * Expand or collapse the cohort bar
 * Go to tab "Table View" in Cohort Case View
+* Unpin the Cohort Bar
 
 ## Validate Table Headers
 * Verify the table "Cases" header text is correct
