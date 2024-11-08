@@ -6,8 +6,14 @@ Description		  : Manifest and Download Cart
 Test-Case       : PEAR-2246
 tags            : gdc-data-portal-v2, regression, cart
 
-## Add Files to Cart
+
+## Remove Any Files From Cart
 * On GDC Data Portal V2 app
+* Navigate to "Cart" from "Header" "section"
+* Remove "All Files" from cart on the Cart page
+* Is text "Your cart is empty." present on the page
+
+## Add Files to Cart
 * Navigate to "Downloads" from "Header" "section"
 * Add the following files to the cart on the Repository page
   |file_uuid_to_add                     |
