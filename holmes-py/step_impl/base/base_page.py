@@ -14,7 +14,7 @@ class GenericLocators:
         'span:text("Set this as your current cohort.")'
     )
 
-    BUTTON_CLOSE_NOTIFICATION = '[aria-label="Close notification"]'
+    BUTTON_CLOSE_NOTIFICATION = '[aria-label="Close notification"] >> nth=0'
     BUTTON_CLOSE_MODAL = 'button[aria-label="Close Modal"]'
 
     LOADING_SPINNER_GENERIC = '[data-testid="loading-spinner"] >> nth=0'
