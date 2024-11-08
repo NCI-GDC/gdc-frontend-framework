@@ -89,6 +89,7 @@ tags            : gdc-data-portal-v2, regression, cart
 
 ## Only Open Access Cart Download
 * Remove "Unauthorized Files" from cart on the Cart page
+* Pause "1" seconds
 * Is temporary modal with text "Removed 6 files from the cart." present on the page and "Keep Modal"
 * Select "Download Cart" on the Cart page
 * Download "Cart" from "Cart Header Dropdown"
