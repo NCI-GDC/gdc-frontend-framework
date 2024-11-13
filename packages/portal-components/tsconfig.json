@@ -1,6 +1,6 @@
 {
   "include": ["src/**/*", "tailwind.config.js"],
-  "exclude": ["node_modules", "../../node_modules/type-fest/*"],
+  "exclude": ["node_modules"],
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist/dts",
@@ -16,7 +16,7 @@
     "noImplicitReturns": true,
     "strict": true,
     "resolveJsonModule": true,
-    "target": "es2015",
+    "target": "esnext",
     "lib": ["dom", "esnext"],
     "baseUrl": ".",
     "paths": {
@@ -24,7 +24,6 @@
       "@/modals/*": ["src/modals/*"]
     },
 
-    "skipLibCheck": true,
-    "types": ["node"]
+    "skipLibCheck": true
   }
 }
