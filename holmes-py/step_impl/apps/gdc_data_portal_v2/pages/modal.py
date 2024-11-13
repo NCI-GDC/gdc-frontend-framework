@@ -11,6 +11,7 @@ class ModalLocators:
 
     TAB_LIST = lambda tab_name: f'[data-testid="modal-tab-list"] >> text="{tab_name}"'
     TEXT_SET_COUNT = lambda set_name: f'[data-testid="text-{set_name}-set-count"]'
+    TEXT_COHORT_COUNT = lambda set_name: f'[data-testid="text-{set_name}-cohort-count"]'
 
 class Modal(BasePage):
     def __init__(self, driver: Page, url):
@@ -19,6 +20,18 @@ class Modal(BasePage):
 
     def get_set_count(self, set_name):
         set_count = ModalLocators.TEXT_SET_COUNT(set_name)
+        # If the text "..." is visible, that means the modal is still loading information. We wait until
+        # it disappears or 10 seconds elapses before checking the card for actual text
+        retry_counter = 0
+        while self.get_text(set_count) == "...":
+            time.sleep(1)
+            retry_counter = retry_counter+1
+            if retry_counter >= 10:
+                break
+        return self.get_text(set_count)
+
+    def get_cohort_count(self, set_name):
+        set_count = ModalLocators.TEXT_COHORT_COUNT(set_name)
         # If the text "..." is visible, that means the modal is still loading information. We wait until
         # it disappears or 10 seconds elapses before checking the card for actual text
         retry_counter = 0

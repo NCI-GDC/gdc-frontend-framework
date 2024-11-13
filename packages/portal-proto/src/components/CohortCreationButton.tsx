@@ -1,5 +1,5 @@
 import React, { ReactNode, useState } from "react";
-import { Tooltip, ButtonProps } from "@mantine/core";
+import { Tooltip, ButtonProps, Loader } from "@mantine/core";
 import { FaPlus as PlusIcon } from "react-icons/fa";
 import tw from "tailwind-styled-components";
 import { FilterSet, useCoreDispatch, Modals, showModal } from "@gff/core";
@@ -141,7 +141,11 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
           aria-label={tooltipText}
         >
           <IconWrapperTW $disabled={disabled} aria-hidden="true">
-            <PlusIcon color="white" size={12} />
+            {loading ? (
+              <Loader size={12} color="white" />
+            ) : (
+              <PlusIcon color="white" size={12} />
+            )}
           </IconWrapperTW>
           <span className="pr-2 self-center">{label ?? "--"}</span>
         </CohortCreationStyledButton>

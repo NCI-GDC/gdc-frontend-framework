@@ -4,7 +4,7 @@ import { MdDownload as DownloadIcon } from "react-icons/md";
 import tailwindConfig from "tailwind.config";
 import OffscreenWrapper from "@/components/OffscreenWrapper";
 import { handleDownloadPNG, handleDownloadSVG } from "@/features/charts/utils";
-import { convertDateToString } from "@/utils/date";
+import { getFormattedTimestamp } from "@/utils/date";
 import {
   DashboardDownloadContext,
   DownloadProgressContext,
@@ -67,7 +67,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
   const fieldName = toDisplayName(field);
   const downloadFileName = `${field
     .split(".")
-    .at(-1)}-bar-chart.${convertDateToString(new Date())}`;
+    .at(-1)}-bar-chart.${getFormattedTimestamp()}`;
   const jsonData = barChartData.map((b) => ({ label: b.fullName, value: b.y }));
 
   const { dispatch } = useContext(DashboardDownloadContext);

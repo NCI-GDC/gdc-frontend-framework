@@ -56,6 +56,7 @@ class GenericLocators:
     )
 
     RADIO_BUTTON_IDENT = lambda radio_name: f'//input[@id="{radio_name}"]'
+    RADIO_DATA_TESTID_BUTTON_IDENT = lambda radio_name: f'[data-testid="radio-{radio_name}"]'
     CHECKBOX_IDENT = (
         lambda checkbox_id: f'[data-testid="checkbox-{checkbox_id}"]'
     )
@@ -80,9 +81,8 @@ class GenericLocators:
         lambda button_text_name: f'footer >> a:has-text("{button_text_name}") >> nth=0'
     )
 
-    # Remove >> nth=1 when PEAR-2201 is completed
     TABLE_ITEM_COUNT_IDENT = (
-        lambda table_name: f'[data-testid="table-{table_name}"] >> [data-testid="text-total-item-count"] >> nth=1'
+        lambda table_name: f'[data-testid="table-{table_name}"] >> [data-testid="text-total-item-count"]'
     )
     TABLE_TEXT_IDENT = (
         lambda table_name, table_text: f'[data-testid="table-{table_name}"] >> text={table_text} >> nth=0'
@@ -102,15 +102,22 @@ class GenericLocators:
     TABLE_AREA_TO_CLICK_IN_SPECIFIED_TABLE = (
         lambda table_name, row, column: f"[data-testid='table-{table_name}'] >> tr:nth-child({row}) > td:nth-child({column}) > * > * >> nth=0"
     )
+    TABLE_CHECKBOX_TO_CLICK_IN_SPECIFIED_TABLE = (
+        lambda table_name, row, column: f"[data-testid='table-{table_name}'] >> tr:nth-child({row}) > td:nth-child({column}) >> [type='checkbox']"
+    )
     TABLE_TEXT_TO_WAIT_FOR = (
         lambda text, row, column: f'tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0 >> text="{text}"'
     )
     TABLE_TEXT_TO_WAIT_FOR_IN_SPECIFIED_TABLE = (
         lambda table_name, text, row, column: f'[data-testid="table-{table_name}"] >> tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0 >> text="{text}"'
     )
+    TEXT_SPECIFIED_TABLE_HEADER = lambda table_name, column: f'[data-testid="table-{table_name}"] >> tr > th:nth-child({column}) >> nth=0'
     TEXT_TABLE_HEADER = lambda column: f"tr > th:nth-child({column}) >> nth=0"
     TEXT_DROPDOWN_MENU_OPTION = (
         lambda dropdown_option: f'[data-testid="dropdown-menu-options"] >> text="{dropdown_option}"'
+    )
+    TEXT_HAS_DROPDOWN_MENU_OPTION = (
+        lambda dropdown_option: f'[data-testid="dropdown-menu-options"] >> button:has-text("{dropdown_option}")'
     )
     BUTTON_TEXT_DROPDOWN_MENU_OPTION = (
         lambda dropdown_option: f'[data-testid="dropdown-menu-options"] >> text="{dropdown_option}" >> ..'
@@ -121,6 +128,7 @@ class GenericLocators:
     SWITCH_COLUMN_SELECTOR = (
         lambda switch_name: f'[data-testid="column-selector-popover-modal"] >> [data-testid="column-selector-row-{switch_name}"] label div >> nth=0'
     )
+    BUTTON_RESET_COLUMN_SELECTIONS = '[data-testid="restore-default-icon"]'
 
     FILTER_GROUP_IDENT = (
         lambda group_name: f'[data-testid="filters-facets"] >> div:text-is("{group_name}")'
@@ -136,6 +144,9 @@ class GenericLocators:
     )
     FILTER_GROUP_ACTION_IDENT = (
         lambda group_name, action: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> button[aria-label="{action}"]'
+    )
+    FILTER_GROUP_FLIP_SWITCH_IDENT = (
+        lambda group_name: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> [data-testid="toggle-area"] >> div >> nth=0'
     )
     FILTER_GROUP_SHOW_MORE_LESS_IDENT = (
         lambda group_name, more_or_less: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> button[data-testid="{more_or_less}"]'
@@ -256,6 +267,12 @@ class BasePage:
         string_to_strip = re.sub(r'\D', '', string_to_strip)
         return string_to_strip
 
+    def get_text_by_data_testid(self, text_id_to_collect):
+        """Returns text from given data-testid"""
+        text_id_to_collect = self.normalize_button_identifier(text_id_to_collect)
+        locator = GenericLocators.DATA_TESTID_TEXT_IDENT(text_id_to_collect)
+        return self.get_text(locator)
+
     def get_cohort_bar_case_count(self):
         """Returns the count of cases in the current cohort"""
         self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
@@ -310,6 +327,15 @@ class BasePage:
         table_header_text_locator = GenericLocators.TEXT_TABLE_HEADER(column)
         return self.get_text(table_header_text_locator)
 
+    def get_table_header_text_by_column_in_specified_table(self, table_name, column):
+        """
+        Gets text of specified table header by column.
+        Column indexing begins at '1'
+        """
+        table_name = self.normalize_button_identifier(table_name)
+        table_header_text_locator = GenericLocators.TEXT_SPECIFIED_TABLE_HEADER(table_name,column)
+        return self.get_text(table_header_text_locator)
+
     def get_table_body_text_by_row_column(self, row, column):
         """
         Gets text from table body by giving a row and column.
@@ -339,6 +365,19 @@ class BasePage:
         Row and Column indexing begins at '1'
         """
         table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT(row, column)
+        # The hover function is finicky. Calling it twice, and then bypassing
+        # actionability checks seem to make the hover more consistent.
+
+        self.hover(table_locator_to_select)
+        self.hover(table_locator_to_select, force=True)
+
+    def hover_table_body_by_row_column_in_specified_table(self, table_name, row, column):
+        """
+        In specified table, hovers over specified cell in table by giving a row and column.
+        Row and Column indexing begins at '1'
+        """
+        table_name = self.normalize_button_identifier(table_name)
+        table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT_IN_SPECIFIED_TABLE(table_name, row, column)
         # The hover function is finicky. Calling it twice, and then bypassing
         # actionability checks seem to make the hover more consistent.
 
@@ -491,8 +530,15 @@ class BasePage:
         return is_data_testid_present
 
     def is_button_disabled(self, button_name):
+        """Returns if the data-testid button is disabled"""
         button_name = self.normalize_button_identifier(button_name)
         locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(button_name)
+        is_button_disabled = self.is_disabled(locator)
+        return is_button_disabled
+
+    def is_named_button_disabled(self, button_name):
+        """Returns if the specified named button is disabled"""
+        locator = GenericLocators.BUTTON_BY_DISPLAYED_TEXT(button_name)
         is_button_disabled = self.is_disabled(locator)
         return is_button_disabled
 
@@ -562,6 +608,11 @@ class BasePage:
         locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(data_testid)
         self.click(locator)
 
+    def click_button_data_testid_normalize(self, data_testid):
+        data_testid = self.normalize_button_identifier(data_testid)
+        locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(data_testid)
+        self.click(locator)
+
     def click_button_with_displayed_text_name(self, button_text_name):
         """Clicks a button based on its displayed text"""
         locator = GenericLocators.BUTTON_BY_DISPLAYED_TEXT(button_text_name)
@@ -598,6 +649,11 @@ class BasePage:
         locator = GenericLocators.RADIO_BUTTON_IDENT(radio_name)
         self.click(locator)
 
+    def click_radio_data_testid_button(self, radio_name):
+        """Clicks a data-testid radio button"""
+        locator = GenericLocators.RADIO_DATA_TESTID_BUTTON_IDENT(radio_name)
+        self.click(locator)
+
     def click_close_modal_button(self):
         """Clicks 'X' to close a modal"""
         locator = GenericLocators.BUTTON_CLOSE_MODAL
@@ -629,6 +685,11 @@ class BasePage:
         locator = GenericLocators.TEXT_DROPDOWN_MENU_OPTION(dropdown_option)
         self.click(locator)
 
+    def click_has_text_option_from_dropdown_menu(self, dropdown_option):
+        """Clicks a text option from a dropdown menu based off given partial text"""
+        dropdown_approximate_locator = GenericLocators.TEXT_HAS_DROPDOWN_MENU_OPTION(dropdown_option)
+        self.click(dropdown_approximate_locator)
+
     def clear_active_cohort_filters(self):
         """
         Clears the active cohort filters by clicking the "Clear All" button
@@ -659,6 +720,10 @@ class BasePage:
         """In the column selector pop-up modal, clicks specified switch"""
         switch_name = self.normalize_identifier_underscore(switch_name)
         locator = GenericLocators.SWITCH_COLUMN_SELECTOR(switch_name)
+        self.click(locator)
+
+    def click_reset_column_select_options(self):
+        locator = GenericLocators.BUTTON_RESET_COLUMN_SELECTIONS
         self.click(locator)
 
     def change_number_of_entries_shown(self, entries_to_show):
@@ -704,6 +769,11 @@ class BasePage:
         locator = GenericLocators.FILTER_GROUP_ACTION_IDENT(filter_group_name, action)
         self.click(locator)
 
+    def flip_switch_in_filter_card(self, filter_group_name):
+        """Flips the switch in specified filter card"""
+        locator = GenericLocators.FILTER_GROUP_FLIP_SWITCH_IDENT(filter_group_name)
+        self.click(locator)
+
     def click_show_more_less_within_filter_card(self, filter_group_name, label):
         """Clicks the show more or show less object"""
         locator = GenericLocators.FILTER_GROUP_SHOW_MORE_LESS_IDENT(
@@ -726,9 +796,14 @@ class BasePage:
         Row and Column indexing begins at '1'
         """
         table_name = self.normalize_button_identifier(table_name)
+        table_checkbox_to_click = GenericLocators.TABLE_CHECKBOX_TO_CLICK_IN_SPECIFIED_TABLE(table_name, row, column)
         table_locator_to_select = GenericLocators.TABLE_AREA_TO_CLICK_IN_SPECIFIED_TABLE(table_name, row, column)
+        # Try to click potential checkbox first.
+        if self.is_visible(table_checkbox_to_click):
+            self.hover(table_checkbox_to_click)
+            self.click(table_checkbox_to_click, True)
         # Try to click drilled down locator.
-        if self.is_visible(table_locator_to_select):
+        elif self.is_visible(table_locator_to_select):
             self.hover(table_locator_to_select)
             self.click(table_locator_to_select, True)
         # If that is not available, click a higher level locator.
@@ -806,6 +881,7 @@ class BasePage:
         sources = {
             "Home Page": self.click_button_ident_a_with_displayed_text_name,
             "Footer": self.click_footer_button_ident_with_displayed_text_name,
+            "Cart": self.click_link_data_testid,
         }
         driver = WebDriver.page
         with driver.context.expect_page() as tab:

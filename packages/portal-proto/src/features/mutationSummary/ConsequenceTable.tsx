@@ -25,7 +25,7 @@ import {
 } from "../GenomicTables/SomaticMutationsTable/TableComponents";
 import saveAs from "file-saver";
 import { Loader } from "@mantine/core";
-import { convertDateToString } from "@/utils/date";
+import { getFormattedTimestamp } from "@/utils/date";
 import { downloadTSV } from "@/components/Table/utils";
 import ImpactHeaderWithTooltip from "../GenomicTables/SharedComponent/ImpactHeaderWithTooltip";
 import TotalItems from "@/components/Table/TotalItem";
@@ -234,9 +234,7 @@ export const ConsequenceTable = ({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   const handleTSVDownload = () => {
-    const fileName = `consequences-table.${convertDateToString(
-      new Date(),
-    )}.tsv`;
+    const fileName = `consequences-table.${getFormattedTimestamp()}.tsv`;
     downloadTSV({
       tableData,
       columns: consequenceTableDefaultColumns,
@@ -347,7 +345,7 @@ export const ConsequenceTable = ({
     const blob = new Blob([JSON.stringify(json, null, 2)], {
       type: "application/json",
     });
-    saveAs(blob, `consequences-data.${convertDateToString(new Date())}.json`);
+    saveAs(blob, `consequences-data.${getFormattedTimestamp()}.json`);
     setConsequenceTableJSONDownloadActive(false);
   };
 

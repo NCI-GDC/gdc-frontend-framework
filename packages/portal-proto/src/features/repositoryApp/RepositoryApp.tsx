@@ -1,6 +1,8 @@
 import {
   buildCohortGqlOperator,
+  CartFile,
   CART_LIMIT,
+  CoreDispatch,
   FilterSet,
   GdcFile,
   GqlOperation,
@@ -19,7 +21,6 @@ import {
   MdShoppingCart as CartIcon,
   MdDownload as DownloadIcon,
 } from "react-icons/md";
-import { VscTrash } from "react-icons/vsc";
 import {
   addToCart,
   removeFromCart,
@@ -43,6 +44,8 @@ import { PersistGate } from "redux-persist/integration/react";
 import { useRouter } from "next/router";
 import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
 import { TableXPositionContext } from "@/components/Table/VerticalTable";
+import { getFormattedTimestamp } from "@/utils/date";
+import { focusStyles } from "@/utils/index";
 
 export const persistor = persistStore(AppStore);
 
@@ -95,7 +98,15 @@ export const RepositoryApp = (): JSX.Element => {
     { isLoading: allFilesLoading }, // This is the destructured mutation result
   ] = useGetAllFilesMutation();
 
-  const getAllSelectedFiles = (callback, caseFilters, localFilters) => {
+  const getAllSelectedFiles = (
+    callback: (
+      files: readonly CartFile[],
+      currentCart: CartFile[],
+      dispatch: CoreDispatch,
+    ) => void,
+    caseFilters: GqlOperation,
+    localFilters: GqlOperation,
+  ) => {
     getFileSizeSliceData({ caseFilters: caseFilters, filters: localFilters })
       .unwrap()
       .then((data: GdcFile[]) => {
@@ -300,6 +311,9 @@ export const RepositoryApp = (): JSX.Element => {
                   filters={buildCohortGqlOperator(localFilters)}
                   setActive={setActive}
                   active={active}
+                  filename={`gdc_manifest.${getFormattedTimestamp({
+                    includeTimes: true,
+                  })}.txt`}
                 />
                 <Tooltip
                   label={"No images available to be viewed"}
@@ -349,12 +363,16 @@ export const RepositoryApp = (): JSX.Element => {
                 >
                   Add All Files to Cart
                 </FunctionButton>
+
                 <FunctionButtonRemove
                   data-testid="button-remove-all-files-table"
                   leftSection={
-                    <VscTrash aria-hidden="true" className="hidden xl:block" />
+                    <CartIcon aria-hidden="true" className="hidden xl:block" />
                   }
-                  classNames={{ section: "mr-0 xl:mr-2" }}
+                  classNames={{
+                    root: `bg-nci-red-darker text-base-max hover:bg-removeButtonHover border-0 ${focusStyles}`,
+                    section: "mr-0 xl:mr-2",
+                  }}
                   loading={allFilesLoading}
                   onClick={() => {
                     getAllSelectedFiles(

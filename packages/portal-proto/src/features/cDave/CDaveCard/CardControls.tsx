@@ -10,7 +10,7 @@ import {
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { CasesCohortButtonFromFilters } from "@/features/cases/CasesView/CasesCohortButton";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
-import { convertDateToString } from "@/utils/date";
+import { getFormattedTimestamp } from "@/utils/date";
 import {
   CategoricalBins,
   CustomInterval,
@@ -70,7 +70,7 @@ const CardControls: React.FC<CardControlsProps> = ({
       new Blob([tsv], {
         type: "text/tsv",
       }),
-      `${field.split(".").at(-1)}-table.${convertDateToString(new Date())}.tsv`,
+      `${field.split(".").at(-1)}-table.${getFormattedTimestamp()}.tsv`,
     );
   };
 
