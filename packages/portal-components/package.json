@@ -15,7 +15,7 @@
     "test": "jest unit",
     "test:watch": "jest unit --watch",
     "test:int": "jest int",
-    "test:all": "jest -passWithNoTests",
+    "test:all": "jest --passWithNoTests",
     "dev": "npm run build:watch"
   },
   "author": "",
