@@ -46,3 +46,6 @@ tags: gdc-data-portal-v2, cohort-builder, regression
   |exposures.smokeless_tobacco_quit_age         |
   |exposures.tobacco_use_per_day                |
   |exposures.weight                             |
+
+## Close Modal
+* Close the modal
