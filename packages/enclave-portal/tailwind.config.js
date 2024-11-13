@@ -98,19 +98,6 @@ const nciRed = {
   min: "#3D000E",
 };
 
-const nciRedContrast = {
-  min: "#FFFFFF",
-  darkest: "#f1f1f1",
-  darker: "#f1f1f1",
-  dark: "#f1f1f1",
-  DEFAULT: "#f1f1f1",
-  vivid: "#f1f1f1",
-  light: "#1b1b1b",
-  lighter: "#1b1b1b",
-  lightest: "#1b1b1b",
-  max: "#000000",
-};
-
 const nciBlumine = {
   max: "#ffffff",
   lightest: "#e9eff3",
@@ -122,19 +109,6 @@ const nciBlumine = {
   darker: "#0c4564",
   darkest: "#00314c",
   min: "#001926",
-};
-
-const nciBlumineContrast = {
-  min: "#FFFFFF",
-  darkest: "#f1f1f1",
-  darker: "#f1f1f1",
-  dark: "#f1f1f1",
-  DEFAULT: "#f1f1f1",
-  vivid: "#000000",
-  light: "#1b1b1b",
-  lighter: "#1b1b1b",
-  lightest: "#1b1b1b",
-  max: "#000000",
 };
 
 const nciTeal = {
@@ -446,137 +420,6 @@ const utilityContrast = {
   category4: "#1b1b1b",
 };
 
-const pastelBase = {
-  colors: {
-    max: "#ffe1cb",
-    lightest: "#ffc7b1",
-    lighter: "#f0ae98",
-    light: "#d6947e",
-    DEFAULT: "#bd7b65",
-    vivid: "#c8755a",
-    dark: "#a76048",
-    darker: "#844b38",
-    darkest: "#603729",
-    min: "#3c221a",
-  },
-  contrast: {
-    max: "#111111",
-    lightest: "#111111",
-    lighter: "#111111",
-    light: "#111111",
-    DEFAULT: "#111111",
-    vivid: "#111111",
-    dark: "#fefefe",
-    darker: "#fefefe",
-    darkest: "#fefefe",
-    min: "#fefefe",
-  },
-};
-const pastelPrimary = {
-  colors: {
-    max: "#ededff",
-    lightest: "#d3d3ff",
-    lighter: "#babaf5",
-    light: "#a0a0db",
-    DEFAULT: "#8787c2",
-    vivid: "#7e7ecb",
-    dark: "#6565b1",
-    darker: "#4c4c96",
-    darkest: "#3b3b75",
-    min: "#2a2a53",
-  },
-  contrast: {
-    max: "#111111",
-    lightest: "#111111",
-    lighter: "#111111",
-    light: "#111111",
-    DEFAULT: "#111111",
-    vivid: "#111111",
-    dark: "#fefefe",
-    darker: "#fefefe",
-    darkest: "#fefefe",
-    min: "#fefefe",
-  },
-};
-const pastelSecondary = {
-  colors: {
-    max: "#ffc1b3",
-    lightest: "#f9a799",
-    lighter: "#e08e80",
-    light: "#c67466",
-    DEFAULT: "#ad5b4d",
-    vivid: "#b95240",
-    dark: "#8a483d",
-    darker: "#66362e",
-    darkest: "#43231e",
-    min: "#20110e",
-  },
-  contrast: {
-    max: "#111111",
-    lightest: "#111111",
-    lighter: "#111111",
-    light: "#111111",
-    DEFAULT: "#fefefe",
-    vivid: "#fefefe",
-    dark: "#fefefe",
-    darker: "#fefefe",
-    darkest: "#fefefe",
-    min: "#fefefe",
-  },
-};
-const pastelAccent = {
-  colors: {
-    max: "#c3efff",
-    lightest: "#a9d5ff",
-    lighter: "#90bcee",
-    light: "#76a2d4",
-    DEFAULT: "#5d89bb",
-    vivid: "#5288c6",
-    dark: "#4470a1",
-    darker: "#35577d",
-    darkest: "#263e59",
-    min: "#162536",
-  },
-  contrast: {
-    max: "#111111",
-    lightest: "#111111",
-    lighter: "#111111",
-    light: "#111111",
-    DEFAULT: "#111111",
-    vivid: "#111111",
-    dark: "#fefefe",
-    darker: "#fefefe",
-    darkest: "#fefefe",
-    min: "#fefefe",
-  },
-};
-const pastelChart = {
-  colors: {
-    max: "#8c8dba",
-    lightest: "#7273a0",
-    lighter: "#595a87",
-    light: "#3f406d",
-    DEFAULT: "#262754",
-    vivid: "#20215a",
-    dark: "#161731",
-    darker: "#06060e",
-    darkest: "#000000",
-    min: "#000000",
-  },
-  contrast: {
-    max: "#111111",
-    lightest: "#000000",
-    lighter: "#fefefe",
-    light: "#fefefe",
-    DEFAULT: "#fefefe",
-    vivid: "#fefefe",
-    dark: "#fefefe",
-    darker: "#fefefe",
-    darkest: "#fefefe",
-    min: "#fefefe",
-  },
-};
-
 const V2Secondary = {
   max: "#E8F3F6",
   lightest: "#C0DDE5",
@@ -655,62 +498,12 @@ const v2AccentCoolContent = {
   min: "#061215",
 };
 
-// got these from v1 (portal-ui)
-// https://github.com/NCI-GDC/portal-ui/blob/develop/src/packages/%40ncigdc/theme/versions/active.ts#L88
-const vep = {
-  high: "rgb(185, 36, 36)",
-  moderate: "#634d0c",
-  modifier: "#634d0c",
-  low: "#015c0a",
-};
-
-const sift = {
-  deleterious: "rgb(185, 36, 36)",
-  deleterious_low_confidence: "#634d0c",
-  tolerated: "#634d0c",
-  tolerated_low_confidence: "#015c0a",
-};
-
-const polyphen = {
-  benign: "#015c0a",
-  possibly_damaging: "#634d0c",
-  probably_damaging: "rgb(185, 36, 36)",
-  unknown: "rgb(107,98,98)",
-};
-
-const impact = {
-  vep,
-  sift,
-  polyphen,
-};
-
 module.exports = {
-  important: "#__next",
+  //important: "#__next",
   content: [
     "./src/pages/*.{js,ts,jsx,tsx}",
+    "./src/components/*.{js,ts,jsx,tsx}",
     "../../node_modules/@gff/portal-components/dist/index.js",
-  ],
-  safelist: [
-    "bg-gdc-survival-0",
-    "bg-gdc-survival-1",
-    "bg-gdc-survival-2",
-    "bg-gdc-survival-3",
-    "bg-gdc-survival-4",
-    "bg-gdc-survival-5",
-    "bg-gdc-survival-6",
-    "bg-gdc-survival-7",
-    "bg-gdc-survival-8",
-    "bg-gdc-survival-9",
-    "text-gdc-survival-0",
-    "text-gdc-survival-1",
-    "text-gdc-survival-2",
-    "text-gdc-survival-3",
-    "text-gdc-survival-4",
-    "text-gdc-survival-5",
-    "text-gdc-survival-6",
-    "text-gdc-survival-7",
-    "text-gdc-survival-8",
-    "text-gdc-survival-9",
   ],
   theme: {
     extend: {
@@ -760,39 +553,6 @@ module.exports = {
         "gdc-violet": gdcViolet,
         "gdc-orange": gdcOrange,
         "gdc-yellow": gdcYellow,
-        "gdc-survival": {
-          0: "#1F77B4",
-          1: "#BD5800",
-          2: "#258825",
-          3: "#D62728",
-          4: "#8E5FB9",
-          5: "#8C564B",
-          6: "#D42BA1",
-          7: "#757575",
-          8: "#7A7A15",
-          9: "#10828E",
-        },
-        focusColor: "rgb(34, 121, 145)",
-        hoverColor: "#E8F0E2",
-        activeColor: "#204461",
-        "percentage-bar": {
-          base: "#d5e8e1",
-          complete: "#249c4f",
-          label: "#111111",
-        },
-        summarybar: {
-          text: "#42346F",
-          "icon-background": "#FBD5C7",
-          border: "#C5E3DF",
-          borderAlt: "#F0E4CB",
-          "link-text": "#863787",
-        },
-        warningColor: "#FFAD0D", //orangish
-        warningColorText: "#8A661E", //lighter orangish
-        cartDarkerOrange: "#C7501A",
-        cartLighterOrange: "#C7501A33",
-        linkDarkerColor: "#1D6796",
-        emptyIconLighterColor: "#e0e9f0",
       },
       minHeight: {
         "screen-60vh": "60vh",
@@ -950,70 +710,9 @@ module.exports = {
             "chart-contrast": nciTealContrast,
             utility: utility,
             "utility-contrast": utilityContrast,
-            impact: impact,
           },
         },
       },
-      themes: [
-        {
-          name: "invert-primary",
-          extend: {
-            colors: {
-              base: nciGray,
-              "base-content": nciGrayContent,
-              "base-contrast": nciGrayContrast,
-              primary: nciRed,
-              "primary-content": nciGrayContent,
-              "primary-contrast": nciRedContrast,
-              secondary: nciBlue,
-              "secondary-content": nciGrayContent,
-              "secondary-contrast": nciBlueContrast,
-              accent: nciBlumine,
-              "accent-content": nciGrayContent,
-              "accent-contrast": nciBlumineContrast,
-              "accent-warm": nciYellow,
-              "accent-warm-content": nciGrayContent,
-              "accent-warm-contrast": nciYellowContrast,
-              "accent-cool": nciCyan,
-              "accent-cool-content": nciGrayContent,
-              "accent-cool-contrast": nciCyanContrast,
-              chart: nciTeal,
-              "chart-contrast": nciTealContrast,
-              utility: utility,
-              "utility-contrast": utilityContrast,
-            },
-          },
-        },
-        {
-          name: "pastel",
-          extend: {
-            colors: {
-              base: pastelBase.colors,
-              "base-content": nciGrayContent,
-              "base-contrast": pastelBase.contrast,
-              primary: pastelPrimary.colors,
-              "primary-content": nciGrayContent,
-              "primary-contrast": pastelPrimary.contrast,
-              secondary: pastelSecondary.colors,
-              "secondary-content": nciGrayContent,
-              "secondary-contrast": pastelSecondary.contrast,
-              accent: pastelAccent.colors,
-              "accent-content": nciGrayContent,
-              "accent-contrast": pastelAccent.contrast,
-              "accent-warm": nciYellow,
-              "accent-warm-content": nciGrayContent,
-              "accent-warm-contrast": nciYellowContrast,
-              "accent-cool": nciCyan,
-              "accent-cool-content": nciGrayContent,
-              "accent-cool-contrast": nciCyanContrast,
-              chart: pastelChart.colors,
-              "chart-contrast": pastelChart.contrast,
-              utility: utility,
-              "utility-contrast": utilityContrast,
-            },
-          },
-        },
-      ],
     }),
   ],
 };

@@ -4,7 +4,6 @@
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
-  "unpkg": "dist/index.umd.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "clean": "rimraf dist",
@@ -20,23 +19,27 @@
   },
   "author": "",
   "license": "Apache-2.0",
-  "peerDependencies": {
+  "dependencies": {
     "@mantine/core": "^7.8.1",
-    "react": "^18.2.0"
+    "react-icons": "^4.12.0",
+    "typescript": "5.6.3"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@babel/preset-typescript": "^7.14.5",
+    "@swc/core": "^1.9.2",
     "@rollup/plugin-babel": "^5.3.0",
+    "@rollup/plugin-commonjs": "^28.0.1",
     "@rollup/plugin-node-resolve": "^15.3.0",
-    "@rollup/plugin-typescript": "^8.2.1",
+    "@rollup/plugin-typescript": "12.1.1",
+    "@types/node": "^7.0.7",
     "@types/react": "^18.3.3",
-    "rollup": "^2.52.7",
-    "rollup-plugin-dts": "^3.0.2",
-    "rollup-plugin-peer-deps-external": "^2.2.4",
-    "rollup-plugin-terser": "^7.0.2",
-    "typescript": "~4.6.4"
-  },
-  "dependencies": {
-    "rollup-plugin-postcss": "^4.0.2"
+    "rollup": "4.24.4",
+    "rollup-plugin-dts": "6.1.1",
+    "rollup-plugin-swc3": "^0.12.1",
+    "rollup-swc-preserve-directives": "^0.7.0",
+    "rollup-plugin-peer-deps-external": "^2.2.4"
   }
 }

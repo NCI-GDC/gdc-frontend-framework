@@ -5,3 +5,10 @@ export interface DataFetchingResult<T> {
 }
 
 export type DataFetchingHook<T> = () => DataFetchingResult<T>;
+
+export type ImageComponentType = React.ComponentType<
+  React.HTMLProps<HTMLImageElement>
+>;
+export type LinkComponentType = React.ComponentType<
+  React.HTMLProps<HTMLAnchorElement>
+>;

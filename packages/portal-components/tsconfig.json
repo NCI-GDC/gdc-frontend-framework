@@ -1,22 +1,30 @@
 {
   "include": ["src/**/*", "tailwind.config.js"],
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules", "../../node_modules/type-fest/*"],
   "compilerOptions": {
+    "rootDir": "src",
     "outDir": "dist/dts",
-    "jsx": "react",
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
+    "declarationMap": true,
     "declaration": true,
-    "emitDeclarationOnly": true,
+    "jsx": "react",
+    "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "node",
+    "allowJs": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "strict": true,
     "resolveJsonModule": true,
-    "target": "esnext",
+    "target": "es2015",
     "lib": ["dom", "esnext"],
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "@/layout/*": ["src/layout/*"],
+      "@/modals/*": ["src/modals/*"]
+    },
+
+    "skipLibCheck": true,
+    "types": ["node"]
   }
 }

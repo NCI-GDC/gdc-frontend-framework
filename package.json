@@ -22,6 +22,7 @@
     "prepare": "husky install",
     "build": "lerna run build",
     "build:clean": "lerna run build:clean",
+    "build:components": "lerna run build:clean --scope @gff/portal-components",
     "start": "lerna run --parallel start",
     "build-docs": "typedoc",
     "version": "npm version --workspaces --git-tag-version=false"
