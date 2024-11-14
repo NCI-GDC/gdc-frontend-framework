@@ -17,6 +17,8 @@
     "test:all": "npm run test:all --workspaces --if-present",
     "compile": "lerna run compile",
     "dev": "lerna run --parallel dev",
+    "dev:gdc": "lerna run dev --scope portal-proto",
+    "dev:enclave": "lerna run dev --scope enclave-portal",
     "prepare": "husky install",
     "build": "lerna run build",
     "build:clean": "lerna run build:clean",

@@ -125,7 +125,7 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
       },
       fetchAll: false,
     },
-    { skip: !customGeneSetParam },
+    { skip: !customGeneSetParam?.length },
   );
   const {
     data: geneDetailData,
@@ -246,7 +246,7 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
 
   const updateFilters = (field: string, operation: Operation) => {
     dispatch(hideModal());
-    setCustomGeneSetParam((operation as Includes).operands[0]);
+    setCustomGeneSetParam((operation as Includes).operands);
   };
   const existingFiltersHook = () => null;
   return (

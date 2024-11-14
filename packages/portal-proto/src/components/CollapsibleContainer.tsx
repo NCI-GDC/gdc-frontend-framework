@@ -83,7 +83,9 @@ export const CollapsibleContainer = (
       <div
         aria-hidden={isCollapsed}
         style={{ height: !isCollapsed ? descHeight : 0 }}
-        className="transition-[height] duration-300"
+        className={`transition-[height] duration-300 ${
+          isCollapsed ? "overflow-hidden" : ""
+        }`}
       >
         <div
           className={`${

@@ -160,6 +160,9 @@ def close_the_modal():
 @step("Download <file> from <source>")
 def download_file_at_file_table(file: str, source: str):
     sources = {
+        "Cart Items": APP.shared.click_button_data_testid_normalize,
+        "Cart Header": APP.shared.click_button_with_displayed_text_name,
+        "Cart Header Dropdown": APP.shared.click_text_option_from_dropdown_menu,
         "Projects": APP.projects_page.click_button,
         "Repository": APP.repository_page.click_button,
         "File Summary": APP.file_summary_page.click_download_button,
@@ -413,6 +416,15 @@ def verify_table_showing_item_text(table_name, number_of_items_text):
         f"{showing_items_text}" in showing_items_text
     ), f"The table '{table_name}' is NOT showing expected number of items - {number_of_items_text}"
 
+@step("Verify the table <table_name> has a total of <number_of_items_text> items")
+def verify_table_total_of_text(table_name, number_of_items_text):
+    """Verifies the specified table's 'Total Of' text is correct"""
+    total_of_items_text = APP.shared.get_table_item_count_text(table_name)
+    assert (
+        total_of_items_text == number_of_items_text
+    ), f"The table '{table_name}' is NOT showing expected total of items - {number_of_items_text}"
+
+
 @step("Verify the table header text is correct <table>")
 def verify_table_header_text(table):
     """Verifies the table header has the correct text"""
@@ -441,7 +453,7 @@ def verify_table_header_text(table_name:str, table):
         table_header_text_by_column = re.sub(" +", " ", table_header_text_by_column)
         assert (
             f"{table_header_text_by_column}" == v[0]
-        ), f"The table header column '{v[1]}' is showing text '{table_header_text_by_column}' when we expected text '{v[0]}'"
+        ), f"In table '{table_name}': The table header column '{v[1]}' is showing text '{table_header_text_by_column}' when we expected text '{v[0]}'"
 
 
 @step("Verify the table body text is correct <table>")
@@ -484,7 +496,7 @@ def verify_table_body_text_in_specified_table(table_name:str, table):
         table_body_text_by_row_column = re.sub(" +", " ", table_body_text_by_row_column)
         assert (
             f"{table_body_text_by_row_column}" == v[0]
-        ), f"The table body row '{v[1]}' and column '{v[2]}' is showing text '{table_body_text_by_row_column}' when we expected text '{v[0]}'"
+        ), f"In table '{table_name}': The table body row '{v[1]}' and column '{v[2]}' is showing text '{table_body_text_by_row_column}' when we expected text '{v[0]}'"
 
 
 @step("Verify the table body tooltips are correct <table>")
@@ -552,6 +564,13 @@ def verify_button_is_disabled(button_name: str):
     is_button_disabled = APP.shared.is_button_disabled(button_name)
     assert (
         is_button_disabled == False
+    ), f"The button '{button_name}' is disabled when it should NOT be"
+
+@step("Verify the button with displayed text <button_name> is disabled")
+def verify_named_button_is_disabled(button_name: str):
+    is_button_disabled = APP.shared.is_named_button_disabled(button_name)
+    assert (
+        is_button_disabled
     ), f"The button '{button_name}' is disabled when it should NOT be"
 
 
@@ -720,6 +739,14 @@ def store_button_labels_in_tables_for_comparison(table_name:str, table):
         )
         data_store.spec[f"{v[0]}"] = table_body_text_by_row_column
 
+@step("Collect <text_id_to_collect> Item Count for comparison")
+def store_text_item_count_for_comparison(text_id_to_collect:str):
+    """
+    Stores the given text data-testid item count for comparison in future tests.
+    Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'
+    """
+    data_store.spec[f"{text_id_to_collect} Item Count"] = APP.shared.get_text_by_data_testid(text_id_to_collect)
+
 @step("Collect Cohort Bar Case Count for comparison")
 def store_cohort_bar_case_count_for_comparison():
     """
@@ -887,6 +914,11 @@ def click_restore_column_selector_options(table_name:str):
 def click_dropdown_text_option(text:str):
     """Selects text option from dropdown menu with data-testid dropdown-menu-options"""
     APP.shared.click_text_option_from_dropdown_menu(text)
+
+@step("Select partial text <text> from dropdown menu")
+def click_dropdown_text_option(text:str):
+    """Selects text option from dropdown menu with data-testid dropdown-menu-options"""
+    APP.shared.click_has_text_option_from_dropdown_menu(text)
 
 @step("Change number of entries shown in the table to <number_of_entries>")
 def change_number_of_entries_shown(change_number_of_entries_shown: str):

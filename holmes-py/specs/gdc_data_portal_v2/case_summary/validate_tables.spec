@@ -1,8 +1,8 @@
 # Case Summary - Validate Tables
 Date Created        : 09/05/2024
-Version			    : 1.0
-Owner		        : GDC QA
-Description		    : Validate All Tables and Sections in Case Summary Page
+Version			        : 1.0
+Owner		            : GDC QA
+Description		      : Validate All Tables and Sections in Case Summary Page
 Test-Case           : PEAR-2139, PEAR-464
 
 tags: gdc-data-portal-v2, case-summary
@@ -733,7 +733,7 @@ A follow-up will occur in QA-2288 to test filtered download of TSV.
     |Created Datetime                       |
     |064a8d49-9a7a-4667-a757-be5b6d53076d   |
     |masked_somatic_mutation                |
-    |a4946bbc-5a04-4613-a151-ef9f834b02c0	|
+    |a4946bbc-5a04-4613-a151-ef9f834b02c0	  |
     |General                                |
     |Redaction                              |
     |2023-03-03T10:25:36.534006-06:00       |

@@ -496,7 +496,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                         }}
                         aria-label="delete row"
                       >
-                        <TrashIcon />
+                        <TrashIcon size={16} />
                       </FunctionButton>
                     )}
                   </td>

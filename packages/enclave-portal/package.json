@@ -1,0 +1,26 @@
+{
+  "name": "enclave-portal",
+  "version": "1.0.0",
+  "dependencies": {
+    "next": "^14.2.5",
+    "react": "^18.3.1"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.0.0",
+    "@testing-library/react": "^16.0.1",
+    "@testing-library/user-event": "^14.0.0"
+  },
+  "scripts": {
+    "clean": "rimraf .next",
+    "dev": "next dev -p 3050",
+    "build": "next build",
+    "build:clean": "npm run clean && npm run build",
+    "start": "next start",
+    "compile": "tsc",
+    "test": "jest unit",
+    "test:watch": "jest unit --watch",
+    "test:int": "echo No integrations tests yet",
+    "test:all": "jest"
+  },
+  "license": "Apache-2"
+}

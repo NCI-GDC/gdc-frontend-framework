@@ -102,6 +102,9 @@ class GenericLocators:
     TABLE_AREA_TO_CLICK_IN_SPECIFIED_TABLE = (
         lambda table_name, row, column: f"[data-testid='table-{table_name}'] >> tr:nth-child({row}) > td:nth-child({column}) > * > * >> nth=0"
     )
+    TABLE_CHECKBOX_TO_CLICK_IN_SPECIFIED_TABLE = (
+        lambda table_name, row, column: f"[data-testid='table-{table_name}'] >> tr:nth-child({row}) > td:nth-child({column}) >> [type='checkbox']"
+    )
     TABLE_TEXT_TO_WAIT_FOR = (
         lambda text, row, column: f'tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0 >> text="{text}"'
     )
@@ -112,6 +115,9 @@ class GenericLocators:
     TEXT_TABLE_HEADER = lambda column: f"tr > th:nth-child({column}) >> nth=0"
     TEXT_DROPDOWN_MENU_OPTION = (
         lambda dropdown_option: f'[data-testid="dropdown-menu-options"] >> text="{dropdown_option}"'
+    )
+    TEXT_HAS_DROPDOWN_MENU_OPTION = (
+        lambda dropdown_option: f'[data-testid="dropdown-menu-options"] >> button:has-text("{dropdown_option}")'
     )
     BUTTON_TEXT_DROPDOWN_MENU_OPTION = (
         lambda dropdown_option: f'[data-testid="dropdown-menu-options"] >> text="{dropdown_option}" >> ..'
@@ -260,6 +266,12 @@ class BasePage:
         # Removes any non-numeral character
         string_to_strip = re.sub(r'\D', '', string_to_strip)
         return string_to_strip
+
+    def get_text_by_data_testid(self, text_id_to_collect):
+        """Returns text from given data-testid"""
+        text_id_to_collect = self.normalize_button_identifier(text_id_to_collect)
+        locator = GenericLocators.DATA_TESTID_TEXT_IDENT(text_id_to_collect)
+        return self.get_text(locator)
 
     def get_cohort_bar_case_count(self):
         """Returns the count of cases in the current cohort"""
@@ -518,8 +530,15 @@ class BasePage:
         return is_data_testid_present
 
     def is_button_disabled(self, button_name):
+        """Returns if the data-testid button is disabled"""
         button_name = self.normalize_button_identifier(button_name)
         locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(button_name)
+        is_button_disabled = self.is_disabled(locator)
+        return is_button_disabled
+
+    def is_named_button_disabled(self, button_name):
+        """Returns if the specified named button is disabled"""
+        locator = GenericLocators.BUTTON_BY_DISPLAYED_TEXT(button_name)
         is_button_disabled = self.is_disabled(locator)
         return is_button_disabled
 
@@ -586,6 +605,11 @@ class BasePage:
         self.click(locator)
 
     def click_button_data_testid(self, data_testid):
+        locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(data_testid)
+        self.click(locator)
+
+    def click_button_data_testid_normalize(self, data_testid):
+        data_testid = self.normalize_button_identifier(data_testid)
         locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(data_testid)
         self.click(locator)
 
@@ -660,6 +684,11 @@ class BasePage:
         """Clicks a text option from a dropdown menu"""
         locator = GenericLocators.TEXT_DROPDOWN_MENU_OPTION(dropdown_option)
         self.click(locator)
+
+    def click_has_text_option_from_dropdown_menu(self, dropdown_option):
+        """Clicks a text option from a dropdown menu based off given partial text"""
+        dropdown_approximate_locator = GenericLocators.TEXT_HAS_DROPDOWN_MENU_OPTION(dropdown_option)
+        self.click(dropdown_approximate_locator)
 
     def clear_active_cohort_filters(self):
         """
@@ -767,9 +796,14 @@ class BasePage:
         Row and Column indexing begins at '1'
         """
         table_name = self.normalize_button_identifier(table_name)
+        table_checkbox_to_click = GenericLocators.TABLE_CHECKBOX_TO_CLICK_IN_SPECIFIED_TABLE(table_name, row, column)
         table_locator_to_select = GenericLocators.TABLE_AREA_TO_CLICK_IN_SPECIFIED_TABLE(table_name, row, column)
+        # Try to click potential checkbox first.
+        if self.is_visible(table_checkbox_to_click):
+            self.hover(table_checkbox_to_click)
+            self.click(table_checkbox_to_click, True)
         # Try to click drilled down locator.
-        if self.is_visible(table_locator_to_select):
+        elif self.is_visible(table_locator_to_select):
             self.hover(table_locator_to_select)
             self.click(table_locator_to_select, True)
         # If that is not available, click a higher level locator.
@@ -847,6 +881,7 @@ class BasePage:
         sources = {
             "Home Page": self.click_button_ident_a_with_displayed_text_name,
             "Footer": self.click_footer_button_ident_with_displayed_text_name,
+            "Cart": self.click_link_data_testid,
         }
         driver = WebDriver.page
         with driver.context.expect_page() as tab:

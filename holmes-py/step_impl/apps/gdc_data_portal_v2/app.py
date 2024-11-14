@@ -22,6 +22,7 @@ from ..gdc_data_portal_v2.pages.cohort_comparison_page import CohortComparisonPa
 from ..gdc_data_portal_v2.pages.project_summary_page import ProjectSummaryPage
 from ..gdc_data_portal_v2.pages.set_operations_page import SetOperationsPage
 from ..gdc_data_portal_v2.pages.cohort_case_view import CohortCaseViewPage
+from ..gdc_data_portal_v2.pages.cart_page import CartPage
 
 
 class GDCDataPortalV2App:
@@ -59,3 +60,4 @@ class GDCDataPortalV2App:
         self.project_summary_page = ProjectSummaryPage(self.driver, self.URL)
         self.set_operations_page = SetOperationsPage(self.driver, self.URL)
         self.cohort_case_view_page = CohortCaseViewPage(self.driver, self.URL)
+        self.cart_page = CartPage(self.driver, self.URL)
