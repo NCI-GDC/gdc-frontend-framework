@@ -81,7 +81,7 @@
     "tailwindcss-themer": "^2.0.2",
     "ts-jest": "^27.0.3",
     "ts-node": "^9.1.1",
-    "typescript": "~5.6.3",
+    "typescript": "^5.6.3",
     "victory": "^36.8.1"
   },
   "engines": {
