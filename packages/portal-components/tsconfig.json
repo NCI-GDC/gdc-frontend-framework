@@ -21,9 +21,9 @@
     "baseUrl": ".",
     "paths": {
       "@/layout/*": ["src/layout/*"],
-      "@/modals/*": ["src/modals/*"]
+      "@/modals/*": ["src/modals/*"],
+      "@/analysis/*": ["src/analysis/*"]
     },
-
     "skipLibCheck": true
   }
 }

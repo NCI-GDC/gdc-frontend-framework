@@ -1,0 +1,8 @@
+<svg id="SequenceReads" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <rect id="Rectangle_183" data-name="Rectangle 183" width="48" height="48" rx="3" fill="#fff"/>
+  <path id="Path_57" data-name="Path 57" d="M8.47,16.96H38.92c-7.62,0-10.08-7.05-14.11-7.05s-7.45,7.05-16.34,7.05Z" fill="#ee5251"/>
+  <path id="Path_251" data-name="Path 251" d="M0,0H40.52V12.85H0Z" transform="translate(3.6 3.83)" fill="rgba(0,0,0,0)" stroke="#00334d" stroke-width="0.75"/>
+  <path id="Path_58" data-name="Path 58" d="M40.12,19.42c-.42-.49-.85-.98-1.29-1.46H29.61c1.27.83,4.96,5.1,6.77,9.38h8.77a39.434,39.434,0,0,0-5.02-7.91Z" fill="#00ba8b" opacity="0.4"/>
+  <path id="Path_59" data-name="Path 59" d="M34.97,27.38a40.894,40.894,0,0,0-6.42-9.42H19.33c2.67,2.46,5.75,4.95,8.04,9.91,1.93,4.16,4.05,11.26,5.13,14.75h8.01a114.361,114.361,0,0,0-5.54-15.23Z" fill="#00ba8b" opacity="0.7"/>
+  <path id="Path_60" data-name="Path 60" d="M22.74,44.43h8.37c-.77-3.71-2.8-12.2-6.3-18.69-1.64-3.03-5.36-5.66-7.4-7.79H7.45c1.93,1.42,6.98,5.46,9.93,10.92,2.72,5.03,4.49,11.75,5.35,15.56Z" fill="#00ba8b"/>
+</svg>

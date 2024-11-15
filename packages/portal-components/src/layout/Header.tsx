@@ -47,7 +47,7 @@ const Header: React.FC<HeaderProps> = ({
     }
   }, [width, drawerOpened, closeDrawer]);
 
-  const { LinkComponent, path, theme } = useContext(AppContext);
+  const { Link, path, theme } = useContext(AppContext);
 
   return (
     <MantineProvider theme={theme}>
@@ -61,13 +61,13 @@ const Header: React.FC<HeaderProps> = ({
         <div className="flex flex-row justify-between">
           {/* Left Side Header logos */}
           <div className="flex-none w-64 h-nci-logo relative">
-            <LinkComponent
+            <Link
               href={indexPath}
               data-testid="NIHLogoButton"
               className="block w-full h-full mt-2"
             >
               {AppLogo}
-            </LinkComponent>
+            </Link>
           </div>
 
           <div className="flex xl:hidden justify-center align-center gap-4 ">

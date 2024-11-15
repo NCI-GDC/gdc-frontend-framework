@@ -1,16 +1,16 @@
+import React from "react";
+import type { AppProps } from "next/app";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { createTheme, MantineProvider, Modal } from "@mantine/core";
-import {
-  Footer,
-  AppContext,
-  LinkComponent,
-  ImageComponent,
+import { AppContext } from "@gff/portal-components";
+import type {
+  LinkComponentType,
+  ImageComponentType,
 } from "@gff/portal-components";
 import "@mantine/core/styles.css";
 import "../styles/globals.css";
-import Header from "@/components/Header";
 import tailwindConfig from "tailwind.config";
 
 const defaultTailwindColorTheme =
@@ -18,7 +18,10 @@ const defaultTailwindColorTheme =
   // @ts-ignore
   tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme.extend.colors;
 
-const EnclavePortalApp = () => {
+const EnclavePortalApp: React.FC<AppProps> = ({
+  Component,
+  pageProps,
+}: AppProps) => {
   const theme = createTheme({
     fontFamily: "Montserrat, Noto Sans, sans-serif",
     components: {
@@ -94,19 +97,13 @@ const EnclavePortalApp = () => {
     <MantineProvider theme={theme}>
       <AppContext.Provider
         value={{
-          LinkComponent: Link as LinkComponent,
-          ImageComponent: Image as ImageComponent,
+          Link: Link as LinkComponentType,
+          ImageComponent: Image as ImageComponentType,
           path: router.pathname,
           theme,
         }}
       >
-        <Header />
-        <Footer
-          useVersionInfoDetailsHook={() => ({ data: {}, isSuccess: true })}
-          linkColData={[]}
-          linkCloud={[]}
-          appInfo={{}}
-        />
+        <Component {...pageProps} />
       </AppContext.Provider>
     </MantineProvider>
   );

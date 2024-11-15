@@ -22,13 +22,13 @@ const HeaderLink = ({
     ? { href, target: "_blank", rel: "noopener noreferrer" }
     : { href };
 
-  const { LinkComponent, path } = useContext(AppContext);
+  const { Link, path } = useContext(AppContext);
 
   const activeStyle =
     !isExternal && path === href ? "bg-secondary text-base-max" : "";
 
   return (
-    <LinkComponent
+    <Link
       {...linkProps}
       data-testid={customDataTestID}
       className={`flex items-center gap-1 ${
@@ -44,7 +44,7 @@ const HeaderLink = ({
         {image}
         {text}
       </>
-    </LinkComponent>
+    </Link>
   );
 };
 

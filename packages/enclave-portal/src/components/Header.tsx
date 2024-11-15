@@ -5,7 +5,7 @@ import { Header as CommonHeader } from "@gff/portal-components";
 import NIHLogo from "public/NIH_GDC_DataPortal-logo.svg";
 import AnalysisCenterIcon from "public/layout/icons/dna.svg";
 import ProjectsIcon from "public/layout/icons/crowd-of-users.svg";
-import CohortBuilderIcon from "public/apps/icons/apps/CohortBuilder.svg";
+import CohortBuilderIcon from "public/apps/icons/CohortBuilder.svg";
 import DownloadIcon from "public/layout/icons/database.svg";
 
 const commonLinkClasses =

@@ -7,12 +7,12 @@ interface AppContextType {
   readonly path?: string;
   readonly theme?: MantineThemeOverride;
   readonly ImageComponent: ImageComponentType;
-  readonly LinkComponent: LinkComponentType;
+  readonly Link: LinkComponentType;
 }
 
 export const AppContext = createContext<AppContextType>({
   path: undefined,
   theme: undefined,
   ImageComponent: (props) => <img {...props} />,
-  LinkComponent: (props) => <a {...props} />,
+  Link: (props) => <a {...props} />,
 });
