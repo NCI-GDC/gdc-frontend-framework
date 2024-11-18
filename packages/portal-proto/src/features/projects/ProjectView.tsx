@@ -37,7 +37,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
 
   const Cases = (
     <span className="flex items-center gap-1">
-      <PersonIcon />
+      <PersonIcon size="1.2em" />
 
       <SingularOrPluralSpan
         customDataTestID="text-case-count-project-summary"
