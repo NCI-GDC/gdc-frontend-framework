@@ -292,6 +292,22 @@ export interface FileDefaults {
   readonly type: string;
   readonly version?: string;
   readonly experimental_strategy?: string;
+  readonly total_reads?: number;
+  readonly average_base_quality?: number;
+  readonly average_insert_size?: number;
+  readonly average_read_length?: number;
+  readonly mean_coverage?: any;
+  readonly pairs_on_diff_chr?: number;
+  readonly contamination?: any;
+  readonly contamination_error?: any;
+  readonly proportion_reads_mapped?: number;
+  readonly proportion_reads_duplicated?: number;
+  readonly proportion_base_mismatch?: number;
+  readonly proportion_targets_no_coverage?: number;
+  readonly proportion_coverage_10X?: number;
+  readonly proportion_coverage_30X?: number;
+  readonly msi_score?: number;
+  readonly msi_status?: number;
   readonly annotations?: ReadonlyArray<{
     readonly annotation_id: string;
     readonly category: string;

@@ -100,7 +100,10 @@ export const FileView: React.FC<FileViewProps> = ({
   const shouldDisplayRefGenome = shouldDisplayReferenceGenome(file);
   const leftAnalysisTableRef = useRef<HTMLTableElement>(null);
   const rightAnalysisTableRef = useRef<HTMLTableElement>(null);
+  const leftBAMMetricsTableRef = useRef<HTMLTableElement>(null);
+  const rightBAMMetricsTableRef = useRef<HTMLTableElement>(null);
   useSynchronizedRowHeights([leftAnalysisTableRef, rightAnalysisTableRef]);
+  useSynchronizedRowHeights([leftBAMMetricsTableRef, rightBAMMetricsTableRef]);
 
   const formattedDataForFileProperties = useDeepCompareMemo(
     () =>
@@ -179,6 +182,78 @@ export const FileView: React.FC<FileViewProps> = ({
     [file],
   );
 
+  const formattedDataForQCMetrics = useDeepCompareMemo(
+    () =>
+      formatDataForHorizontalTable(file, [
+        {
+          field: "total_reads",
+          name: "Total Reads",
+        },
+        {
+          field: "average_insert_size",
+          name: "Average Insert Size",
+        },
+        {
+          field: "average_read_length",
+          name: "Average Read Length",
+        },
+        {
+          field: "average_base_quality",
+          name: "Average Base Quality",
+        },
+        {
+          field: "mean_coverage",
+          name: "Mean Coverage",
+        },
+        {
+          field: "pairs_on_diff_chr",
+          name: "Pairs On Diff Chr",
+        },
+        {
+          field: "contamination",
+          name: "Contamination",
+        },
+        {
+          field: "contamination_error",
+          name: "Contamination Error",
+        },
+
+        {
+          field: "proportion_reads_mapped",
+          name: "Proportion Reads Mapped",
+        },
+        {
+          field: "proportion_reads_duplicated",
+          name: "Proportion Reads Duplicated",
+        },
+        {
+          field: "proportion_base_mismatch",
+          name: "Proportion Base Mismatch",
+        },
+        {
+          field: "proportion_targets_no_coverage",
+          name: "Proportion Targets No Coverage",
+        },
+        {
+          field: "proportion_coverage_10X",
+          name: "Proportion Coverage 10X",
+        },
+        {
+          field: "proportion_coverage_30X",
+          name: "Proportion Coverage 30X",
+        },
+        {
+          field: "msi_score",
+          name: "MSI Score",
+        },
+        {
+          field: "msi_status",
+          name: "MSI Status",
+        },
+      ]),
+    [file],
+  );
+
   return (
     <div className="relative">
       <SummaryHeader
@@ -237,6 +312,30 @@ export const FileView: React.FC<FileViewProps> = ({
             </>
           )}
         </DivWithMargin>
+
+        {file.data_format === "BAM" && file.data_type === "Aligned Reads" && (
+          <div className="flex mt-8">
+            <div className="basis-1/2">
+              <SummaryCard
+                customDataTestID="bam-metrics-file-summary"
+                title="BAM Metrics"
+                tableData={formattedDataForQCMetrics.slice(0, 8)}
+                ref={leftBAMMetricsTableRef}
+                enableSync={true}
+              />
+            </div>
+
+            <div className="basis-1/2">
+              <SummaryCard
+                customDataTestID="bam-metrics-file-summary"
+                title="" // should be empty
+                tableData={formattedDataForQCMetrics.slice(8, 16)}
+                ref={rightBAMMetricsTableRef}
+                enableSync={true}
+              />
+            </div>
+          </div>
+        )}
 
         {file?.analysis && (
           <>
