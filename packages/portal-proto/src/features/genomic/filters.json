@@ -1,7 +1,7 @@
 [
   {
     "full": "genes.gene_id",
-    "title": "Mutated Gene",
+    "title": "Mutated Genes",
     "name": "Genes",
     "facet_type": "set",
     "doc_type": "genes",
