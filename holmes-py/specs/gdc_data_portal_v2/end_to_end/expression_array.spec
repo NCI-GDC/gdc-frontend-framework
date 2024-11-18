@@ -112,3 +112,9 @@ When the filters are fixed add tests for them - PEAR-1350
   |-----------------------------|---------------------|
   |Experimental Strategy        |Expression Array     |
 * Verify "Experimental Strategy_Expression Array Repository Count" and "Files Count Repository Page" are "Equal"
+
+## Reset Filter
+* Perform the following actions on a filter card
+  |filter_name          |action               |
+  |---------------------|---------------------|
+  |Experimental Strategy|clear selection      |

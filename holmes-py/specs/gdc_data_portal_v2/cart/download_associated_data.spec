@@ -1,10 +1,10 @@
-# Cart - Download Cart Options
+# Cart - Download Associated Data Options
 Date Created    : 10/25/2024
-Version			    : 1.0
-Owner		        : GDC QA
-Description		  : Manifest and Download Cart
+Version			: 1.0
+Owner		    : GDC QA
+Description		: Download Associated Data Dropdown Options
 Test-Case       : PEAR-2246
-tags: gdc-data-portal-v2, regression, cart
+tags            : gdc-data-portal-v2, regression, cart
 
 ## Add Files to Cart
 * On GDC Data Portal V2 app
@@ -42,14 +42,12 @@ tags: gdc-data-portal-v2, regression, cart
     |Blood                                |
     |Serum Free Immunoglobulin Light Chain, Lambda |
     |additional_pathology_findings        |
-    |lymphatic_invasion_present           |
     |percent_tumor_nuclei                 |
     |vascular_invasion_present            |
     |97886d69-8daa-4a6e-b275-fa3853cf1702 |
     |f35b48fa-eae8-4b66-bb90-0f86a55d3552 |
     |chemical_exposure_type               |
     |secondhand_smoke_as_child            |
-    |marijuana_use_per_week               |
     |a2a2dbda-d10c-49c4-86a8-61baf6160cda |
     |Current Reformed Smoker for > 15 yrs |
     |relationship_primary_diagnosis       |
@@ -73,6 +71,10 @@ tags: gdc-data-portal-v2, regression, cart
     |FM-AD                                |
     |TCGA-LUAD                            |
     |APOLLO                               |
+    |tumor_stage                          |
+    |marijuana_use_per_week               |
+    |smokeless_tobacco_quit_age           |
+    |tobacco_use_per_day                  |
 
 
 ## Clinical JSON

@@ -7,7 +7,7 @@ Test-case           :
 
 tags: gdc-data-portal-v2, end-to-end, regression
 
-## Navigate to Cohort Builder=
+## Navigate to Cohort Builder
 * On GDC Data Portal V2 app
 * Navigate to "Cohort" from "Header" "section"
 
