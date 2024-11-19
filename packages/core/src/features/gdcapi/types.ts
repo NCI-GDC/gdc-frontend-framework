@@ -296,10 +296,10 @@ export interface FileDefaults {
   readonly average_base_quality?: number;
   readonly average_insert_size?: number;
   readonly average_read_length?: number;
-  readonly mean_coverage?: any;
+  readonly mean_coverage?: number;
   readonly pairs_on_diff_chr?: number;
-  readonly contamination?: any;
-  readonly contamination_error?: any;
+  readonly contamination?: number;
+  readonly contamination_error?: number;
   readonly proportion_reads_mapped?: number;
   readonly proportion_reads_duplicated?: number;
   readonly proportion_base_mismatch?: number;
