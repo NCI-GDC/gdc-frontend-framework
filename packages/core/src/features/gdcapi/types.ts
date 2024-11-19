@@ -304,8 +304,8 @@ export interface FileDefaults {
   readonly proportion_reads_duplicated?: number;
   readonly proportion_base_mismatch?: number;
   readonly proportion_targets_no_coverage?: number;
-  readonly proportion_coverage_10X?: number;
-  readonly proportion_coverage_30X?: number;
+  readonly proportion_coverage_10x?: number;
+  readonly proportion_coverage_30x?: number;
   readonly msi_score?: number;
   readonly msi_status?: number;
   readonly annotations?: ReadonlyArray<{

@@ -235,11 +235,11 @@ export const FileView: React.FC<FileViewProps> = ({
           name: "Proportion Targets No Coverage",
         },
         {
-          field: "proportion_coverage_10X",
+          field: "proportion_coverage_10x",
           name: "Proportion Coverage 10X",
         },
         {
-          field: "proportion_coverage_30X",
+          field: "proportion_coverage_30x",
           name: "Proportion Coverage 30X",
         },
         {
@@ -252,6 +252,10 @@ export const FileView: React.FC<FileViewProps> = ({
         },
       ]),
     [file],
+  );
+
+  const isAllMetricsValUndefined = formattedDataForQCMetrics.every((metric) =>
+    metric.values.includes("--"),
   );
 
   return (
@@ -313,29 +317,31 @@ export const FileView: React.FC<FileViewProps> = ({
           )}
         </DivWithMargin>
 
-        {file.data_format === "BAM" && file.data_type === "Aligned Reads" && (
-          <div className="flex mt-8">
-            <div className="basis-1/2">
-              <SummaryCard
-                customDataTestID="bam-metrics-file-summary"
-                title="BAM Metrics"
-                tableData={formattedDataForQCMetrics.slice(0, 8)}
-                ref={leftBAMMetricsTableRef}
-                enableSync={true}
-              />
-            </div>
+        {file.data_format === "BAM" &&
+          file.data_type === "Aligned Reads" &&
+          !isAllMetricsValUndefined && (
+            <div className="flex mt-8">
+              <div className="basis-1/2">
+                <SummaryCard
+                  customDataTestID="bam-metrics-file-summary"
+                  title="BAM Metrics"
+                  tableData={formattedDataForQCMetrics.slice(0, 8)}
+                  ref={leftBAMMetricsTableRef}
+                  enableSync={true}
+                />
+              </div>
 
-            <div className="basis-1/2">
-              <SummaryCard
-                customDataTestID="bam-metrics-file-summary"
-                title="" // should be empty
-                tableData={formattedDataForQCMetrics.slice(8, 16)}
-                ref={rightBAMMetricsTableRef}
-                enableSync={true}
-              />
+              <div className="basis-1/2">
+                <SummaryCard
+                  customDataTestID="bam-metrics-file-summary"
+                  title="" // should be empty
+                  tableData={formattedDataForQCMetrics.slice(8, 16)}
+                  ref={rightBAMMetricsTableRef}
+                  enableSync={true}
+                />
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
         {file?.analysis && (
           <>
