@@ -254,8 +254,8 @@ export const FileView: React.FC<FileViewProps> = ({
     [file],
   );
 
-  const isAllMetricsValUndefined = formattedDataForQCMetrics.every((metric) =>
-    metric.values.includes("--"),
+  const isAllMetricsValUndefined = formattedDataForQCMetrics.every(
+    (metric) => metric.values.length === 1 && metric.values.includes("--"),
   );
 
   return (
