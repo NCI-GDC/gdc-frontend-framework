@@ -76,7 +76,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
       value: "histogram",
       label: (
         <Tooltip
-          label={"Histogram"}
+          label="Histogram"
           position="bottom-end"
           withArrow
           arrowSize={7}
@@ -97,7 +97,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
         <Tooltip label={"Survival Plot"} withArrow arrowSize={7}>
           <div
             data-testid="button-survival-plot"
-            role={"button"}
+            role="button"
             aria-label={`Select ${fieldName} survival plot`}
           >
             <SurvivalChartIcon size={20} aria-hidden="true" />

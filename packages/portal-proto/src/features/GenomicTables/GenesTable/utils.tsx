@@ -344,7 +344,6 @@ export const useGenerateGenesTableColumns = ({
       }),
     ],
     [
-      genesTableColumnHelper,
       setEntityMetadata,
       genomicFilters,
       handleGeneToggled,

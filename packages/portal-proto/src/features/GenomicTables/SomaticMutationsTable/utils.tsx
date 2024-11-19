@@ -293,7 +293,6 @@ export const useGenerateSMTableColumns = ({
       }),
     ],
     [
-      SMTableColumnHelper,
       geneSymbol,
       handleSsmToggled,
       handleSurvivalPlotToggled,
