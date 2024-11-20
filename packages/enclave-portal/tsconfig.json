@@ -15,7 +15,8 @@
     "baseUrl": ".",
     "paths": {
       "@/components/*": ["src/components/*"]
-    }
+    },
+    "module": "esnext"
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]

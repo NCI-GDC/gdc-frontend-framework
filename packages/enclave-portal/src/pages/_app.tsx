@@ -5,8 +5,8 @@ import { createTheme, MantineProvider, Modal } from "@mantine/core";
 import {
   Footer,
   AppContext,
-  LinkComponent,
-  ImageComponent,
+  LinkComponentType,
+  ImageComponentType,
 } from "@gff/portal-components";
 import "@mantine/core/styles.css";
 import "../styles/globals.css";
@@ -94,8 +94,8 @@ const EnclavePortalApp = () => {
     <MantineProvider theme={theme}>
       <AppContext.Provider
         value={{
-          LinkComponent: Link as LinkComponent,
-          ImageComponent: Image as ImageComponent,
+          LinkComponent: Link as LinkComponentType,
+          ImageComponent: Image as ImageComponentType,
           path: router.pathname,
           theme,
         }}
