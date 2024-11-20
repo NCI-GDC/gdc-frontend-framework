@@ -35,9 +35,6 @@ class CohortBarLocators:
     TEXT_COHORT_QUERY_FILTER_ALTERNATIVE_CHECK_WHOLE_AREA = (
         lambda full_query_filter: f'[data-testid="text-cohort-filters"] >> text={full_query_filter} >> nth=0'
     )
-    TEXT_COHORT_QUERY_FILTER_CHECK_HIDDEN_OR_NOT = (
-        lambda filter_name: f'[data-testid="text-cohort-filters"] >> text="{filter_name}"'
-    )
     BUTTON_REMOVE_COHORT_QUERY_FILTER = (
         lambda query_name_to_remove: f'[aria-label="remove {query_name_to_remove}"]'
     )
