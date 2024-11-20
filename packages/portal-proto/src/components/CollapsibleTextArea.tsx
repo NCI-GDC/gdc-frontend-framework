@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
+import { CaretDownIcon, CaretUpIcon } from "@/utils/icons";
 
 export const CollapsibleTextArea = ({
   text,
@@ -24,12 +24,12 @@ export const CollapsibleTextArea = ({
             >
               {expanded ? (
                 <div className="flex">
-                  <AiFillCaretUp className="mr-1 self-center" aria-hidden />
+                  <CaretUpIcon className="mr-1 self-center" aria-hidden />
                   <span>less</span>
                 </div>
               ) : (
                 <div className="flex">
-                  <AiFillCaretDown className="mr-1 self-center" aria-hidden />
+                  <CaretDownIcon className="mr-1 self-center" aria-hidden />
                   <span>more</span>
                 </div>
               )}

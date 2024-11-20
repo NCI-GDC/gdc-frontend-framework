@@ -24,19 +24,6 @@ import { ReactNode, useContext, useEffect, useState } from "react";
 import tw from "tailwind-styled-components";
 import { Image } from "@/components/Image";
 import { useCookies } from "react-cookie";
-import {
-  MdShoppingCart as CartIcon,
-  MdOutlineApps as AppsIcon,
-  MdArrowDropDown as ArrowDropDownIcon,
-  MdKeyboardBackspace as LeftArrowIcon,
-} from "react-icons/md";
-import {
-  FiPlayCircle as PlayIcon,
-  FiChevronDown as DownArrowCollapseIcon,
-} from "react-icons/fi";
-import { VscFeedback as FeebackIcon } from "react-icons/vsc";
-import { HiOutlinePencilSquare as PencilIcon } from "react-icons/hi2";
-import { IoOptions as OptionsIcon } from "react-icons/io5";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { theme } from "tailwind.config";
@@ -54,6 +41,17 @@ import { useDisclosure, useViewportSize } from "@mantine/hooks";
 import React from "react";
 import { GDCAppLink, NavButton, NavLinkWithIcon } from "@/components/Nav";
 import LoginButtonOrUserDropdown from "./LoginButtonOrUserDropdown";
+import {
+  AppsIcon,
+  ArrowDropDownIcon,
+  CartIcon,
+  DownArrowCollapseIcon,
+  FeebackIcon,
+  LeftLongArrowIcon,
+  OptionsIcon,
+  PencilSquareIcon,
+  PlayVideoIcon,
+} from "@/utils/icons";
 
 const MAX_WIDTH_FOR_HAMBURGER = 1280;
 
@@ -168,7 +166,7 @@ export const Header: React.FC<HeaderProps> = ({
               data-testid="button-close-navigation-panel"
               className="border-0"
             >
-              <LeftArrowIcon
+              <LeftLongArrowIcon
                 size={30}
                 className="text-primary-darker"
                 aria-hidden="true"
@@ -180,7 +178,7 @@ export const Header: React.FC<HeaderProps> = ({
             <li>
               <NavLinkWithIcon
                 href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Video_Tutorials/"
-                icon={<PlayIcon />}
+                icon={<PlayVideoIcon />}
                 text="Video Guides"
                 customDataTestID="button-header-video-guides"
                 isExternal
@@ -203,7 +201,7 @@ export const Header: React.FC<HeaderProps> = ({
             <li>
               <NavLinkWithIcon
                 href="/annotations"
-                icon={<PencilIcon />}
+                icon={<PencilSquareIcon />}
                 activeStyle="bg-secondary text-base-max"
                 text="Browse Annotations"
                 customDataTestID="button-header-browse-annotations"
@@ -343,7 +341,7 @@ export const Header: React.FC<HeaderProps> = ({
           <NavLinkWithIcon
             customDataTestID="button-header-video-guides"
             href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Video_Tutorials/"
-            icon={<PlayIcon />}
+            icon={<PlayVideoIcon />}
             text="Video Guides"
             isExternal
             overwriteClassName="!p-1"
@@ -357,7 +355,7 @@ export const Header: React.FC<HeaderProps> = ({
           />
           <NavLinkWithIcon
             href="/annotations"
-            icon={<PencilIcon />}
+            icon={<PencilSquareIcon />}
             text="Browse Annotations"
             activeStyle="bg-secondary text-base-max"
             overwriteClassName="!p-1"

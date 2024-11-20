@@ -1,6 +1,5 @@
 import React from "react";
 import { Badge, Group, Tooltip, Button, ActionIcon } from "@mantine/core";
-import { MdClose as CloseIcon } from "react-icons/md";
 import {
   trimFirstFieldNameToTitle,
   useCoreDispatch,
@@ -15,6 +14,7 @@ import {
 import { FacetCardProps, SetFacetHooks } from "./types";
 import QueryRepresentationLabel from "./QueryRepresentationLabel";
 import FacetControlsHeader from "./FacetControlsHeader";
+import { CloseIcon } from "@/utils/icons";
 
 const FACET_TO_MODAL = {
   "genes.gene_id": Modals.LocalGeneSetModal,

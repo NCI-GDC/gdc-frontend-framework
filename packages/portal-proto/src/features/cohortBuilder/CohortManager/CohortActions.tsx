@@ -15,16 +15,16 @@ import {
 } from "@gff/core";
 import { Loader, Tooltip } from "@mantine/core";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-import {
-  MdAdd as AddIcon,
-  MdDelete as DeleteIcon,
-  MdFileDownload as DownloadIcon,
-  MdFileUpload as UploadIcon,
-  MdSave as SaveIcon,
-} from "react-icons/md";
 import { CohortGroupButton } from "../style";
 import { exportCohort } from "./cohortUtils";
 import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
+import {
+  AddIcon,
+  DeleteIcon,
+  DownloadIcon,
+  SaveIcon,
+  UploadIcon,
+} from "@/utils/icons";
 
 interface CohortActionsProps {
   onSave: () => void;

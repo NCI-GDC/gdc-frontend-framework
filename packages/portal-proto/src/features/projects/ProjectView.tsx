@@ -1,6 +1,5 @@
 import React, { useRef } from "react";
 import { AnnotationDefaults, GdcApiData, ProjectDefaults } from "@gff/core";
-import { FaUser, FaFile, FaEdit } from "react-icons/fa";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import CategoryTableSummary from "@/components/Summary/CategoryTableSummary";
 import { HeaderTitle } from "@/components/tailwindComponents";
@@ -19,6 +18,7 @@ import { useViewportSize } from "@mantine/hooks";
 import { LG_BREAKPOINT } from "src/utils";
 import SummaryHeaderControls from "./SummaryHeaderControls";
 import { useSynchronizedRowHeights } from "@/components/HorizontalTable/useSynchronizedRowHeights";
+import { EditIcon, FileIcon, PersonIcon } from "@/utils/icons";
 
 export interface ProjectViewProps extends ProjectDefaults {
   readonly annotation: GdcApiData<AnnotationDefaults>;
@@ -37,7 +37,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
 
   const Cases = (
     <span className="flex items-center gap-1">
-      <FaUser />
+      <PersonIcon size="1.2em" />
 
       <SingularOrPluralSpan
         customDataTestID="text-case-count-project-summary"
@@ -49,7 +49,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
 
   const Files = (
     <span className="flex items-center gap-1">
-      <FaFile />
+      <FileIcon />
 
       <SingularOrPluralSpan
         customDataTestID="text-file-count-project-summary"
@@ -61,7 +61,7 @@ export const ProjectView: React.FC<ProjectViewProps> = (
 
   const Annotations = (
     <span className="flex items-center gap-1">
-      <FaEdit />
+      <EditIcon />
       {projectData.annotation.pagination.total > 0 ? (
         <a
           data-testid="text-annotation-count-project-summary"

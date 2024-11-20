@@ -1,5 +1,5 @@
+import { SurvivalChartIcon } from "@/utils/icons";
 import { ActionIcon, Tooltip, Checkbox } from "@mantine/core";
-import { MdTrendingDown as SurvivalChartIcon } from "react-icons/md";
 import { useDeepCompareMemo } from "use-deep-compare";
 import { MISSING_KEY, SURVIVAL_PLOT_MIN_COUNT } from "../constants";
 import { DataDimension, DisplayData, SelectedFacet } from "../types";

@@ -1,4 +1,5 @@
 import openAuthWindow from "@/features/layout/auth/openAuthWindow";
+import { LoginIcon } from "@/utils/icons";
 import {
   hideModal,
   useCoreDispatch,
@@ -6,7 +7,6 @@ import {
   useLazyGetBannerNotificationsQuery,
 } from "@gff/core";
 import { Button } from "@mantine/core";
-import { MdOutlineLogin as LoginIcon } from "react-icons/md";
 import { theme } from "tailwind.config";
 export const LoginButton = ({
   fromSession,

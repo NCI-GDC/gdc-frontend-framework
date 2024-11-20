@@ -3,7 +3,6 @@ import { useDeepCompareEffect } from "use-deep-compare";
 import { useRouter } from "next/router";
 import { Loader, Highlight, Select, SelectProps } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
-import { MdSearch as SearchIcon, MdClose as CloseIcon } from "react-icons/md";
 import { validate as uuidValidate } from "uuid";
 import {
   useGetHistoryQuery,
@@ -15,6 +14,7 @@ import {
   QuickSearchEntities,
 } from "./entityShortNameMapping";
 import { extractEntityPath, findMatchingToken } from "./utils";
+import { CloseIcon, SearchIcon } from "@/utils/icons";
 
 interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
   value: string;

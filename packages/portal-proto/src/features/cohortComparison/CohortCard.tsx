@@ -1,5 +1,5 @@
 import { Paper } from "@mantine/core";
-import { FIELD_LABELS } from "src/fields";
+import { FIELD_LABELS } from "@/utils/fields";
 import CohortVennDiagram from "./CohortVennDiagram";
 import Link from "next/link";
 import { CohortComparisonType } from "./CohortComparison";

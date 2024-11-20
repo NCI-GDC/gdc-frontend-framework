@@ -1,10 +1,4 @@
 import React, { useState, useReducer, useRef } from "react";
-import {
-  MdOutlineArrowBackIos as LeftArrowIcon,
-  MdOutlineArrowForwardIos as RightArrowIcon,
-  MdKeyboardArrowDown as DownArrowIcon,
-  MdKeyboardArrowUp as UpArrowIcon,
-} from "react-icons/md";
 import tw from "tailwind-styled-components";
 import { omit } from "lodash";
 import { useCoreDispatch, clearCohortFilters, FilterSet } from "@gff/core";
@@ -16,6 +10,12 @@ import {
   getCombinedClassesForRowCollapse,
 } from "./style";
 import { useDeepCompareEffect } from "use-deep-compare";
+import {
+  BackArrowIcon,
+  DownArrowIcon,
+  ForwardArrowIcon,
+  UpArrowIcon,
+} from "@/utils/icons";
 
 const QueryExpressionContainer = tw.div`
   flex
@@ -191,13 +191,13 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                   >
                     {allQueryExpressionsCollapsed ? (
                       <>
-                        <LeftArrowIcon size={16} aria-hidden="true" />
-                        <RightArrowIcon size={16} aria-hidden="true" />
+                        <BackArrowIcon size={16} aria-hidden="true" />
+                        <ForwardArrowIcon size={16} aria-hidden="true" />
                       </>
                     ) : (
                       <>
-                        <RightArrowIcon size={16} aria-hidden="true" />
-                        <LeftArrowIcon size={16} aria-hidden="true" />
+                        <ForwardArrowIcon size={16} aria-hidden="true" />
+                        <BackArrowIcon size={16} aria-hidden="true" />
                       </>
                     )}
                   </button>

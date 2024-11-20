@@ -1,4 +1,5 @@
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
+import { CloseIcon } from "@/utils/icons";
 import {
   removeCohortFilter,
   removeCohortSet,
@@ -10,7 +11,6 @@ import {
 } from "@gff/core";
 import { ActionIcon, Badge } from "@mantine/core";
 import { useState } from "react";
-import { MdClose as ClearIcon } from "react-icons/md";
 import QueryRepresentationLabel from "../facets/QueryRepresentationLabel";
 
 const RemoveButton = ({ label }: { label: string }) => (
@@ -21,7 +21,7 @@ const RemoveButton = ({ label }: { label: string }) => (
     variant="transparent"
     aria-label={`remove ${label}`}
   >
-    <ClearIcon size={10} aria-hidden="true" />
+    <CloseIcon size={10} aria-hidden="true" />
   </ActionIcon>
 );
 

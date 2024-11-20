@@ -2,12 +2,6 @@ import { useState, useEffect } from "react";
 import { Card, ActionIcon, Tooltip, SegmentedControlItem } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
 import {
-  MdBarChart as BarChartIcon,
-  MdTrendingDown as SurvivalChartIcon,
-  MdOutlineClose as CloseIcon,
-} from "react-icons/md";
-import { AiTwotoneBoxPlot as BoxPlotIcon } from "react-icons/ai";
-import {
   useCoreSelector,
   selectFacetDefinitionByName,
   Buckets,
@@ -26,6 +20,12 @@ import {
   MISSING_KEY,
 } from "../constants";
 import { toDisplayName, useDataDimension } from "../utils";
+import {
+  BarChartIcon,
+  BoxPlotIcon,
+  CloseIcon,
+  SurvivalChartIcon,
+} from "@/utils/icons";
 
 interface CDaveCardProps {
   readonly field: string;

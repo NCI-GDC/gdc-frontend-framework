@@ -3,7 +3,7 @@ import UsersIcon from "public/user-flow/icons/summary/users.svg";
 import FilesIcon from "public/user-flow/icons/summary/files.svg";
 import GenesIcon from "public/user-flow/icons/summary/genes.svg";
 import MutationsIcon from "public/user-flow/icons/summary/gene-mutation.svg";
-import { HiOutlinePencilSquare } from "react-icons/hi2";
+import { PencilSquareIcon } from "@/utils/icons";
 
 export type QuickSearchEntities =
   | "case"
@@ -26,14 +26,14 @@ export const entityIconMapping: Record<
   case: { icon: UsersIcon },
   file: { icon: FilesIcon },
   project: { icon: ProjectsIcon },
-  annotation: { icon: HiOutlinePencilSquare },
+  annotation: { icon: PencilSquareIcon },
   gene_centric: { icon: GenesIcon, category: "Gene" },
   ssm_centric: { icon: MutationsIcon, category: "Mutation" },
 
   Case: { icon: UsersIcon },
   File: { icon: FilesIcon },
   Project: { icon: ProjectsIcon },
-  Annotation: { icon: HiOutlinePencilSquare },
+  Annotation: { icon: PencilSquareIcon },
   Gene: { icon: GenesIcon },
   Ssm: { icon: MutationsIcon, category: "Mutation" },
 };

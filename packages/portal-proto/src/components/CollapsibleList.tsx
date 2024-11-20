@@ -1,5 +1,6 @@
+import { CaretDownIcon, CaretUpIcon } from "@/utils/icons";
 import { useState } from "react";
-import { AiFillCaretDown, AiFillCaretUp } from "react-icons/ai";
+
 import { v4 as uuidv4 } from "uuid";
 
 export const CollapsibleList = ({
@@ -38,12 +39,12 @@ export const CollapsibleList = ({
           >
             {expanded ? (
               <div className="flex">
-                <AiFillCaretUp className="mr-1" title="show less icon" />
+                <CaretUpIcon className="mr-1" title="show less icon" />
                 <span>{collapseText}</span>
               </div>
             ) : (
               <div className="flex">
-                <AiFillCaretDown className="mr-1" title="show more icon" />
+                <CaretDownIcon className="mr-1" title="show more icon" />
                 <span>{expandText}</span>
               </div>
             )}

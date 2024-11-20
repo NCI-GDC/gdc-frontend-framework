@@ -1,12 +1,8 @@
 import React, { useEffect, useRef } from "react";
-import {
-  AiOutlinePlusCircle as ExpandMoreIcon,
-  AiFillMinusCircle as ExpandLessIcon,
-} from "react-icons/ai";
-import { BsArrowRight as ArrowRight } from "react-icons/bs";
 import Highlight from "../Highlight";
 import { BioTreeProps, NodeProps, overrideMessage } from "./types";
 import { UnstyledButton } from "@mantine/core";
+import { ArrowRight, CollapsedNodeIcon, ExpandNodeIcon } from "@/utils/icons";
 
 const Node = ({
   entity,
@@ -168,12 +164,12 @@ export const BioTree = ({
           aria-expanded={isExpanded.current}
         >
           {isExpanded.current ? (
-            <ExpandLessIcon
+            <ExpandNodeIcon
               className="cursor-pointer text-accent-vivid self-center"
               size={18}
             />
           ) : (
-            <ExpandMoreIcon
+            <CollapsedNodeIcon
               className="cursor-pointer text-accent-vivid self-center"
               size={18}
             />

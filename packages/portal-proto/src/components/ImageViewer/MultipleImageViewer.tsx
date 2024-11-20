@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useRouter } from "next/router";
 import { useDeepCompareEffect } from "use-deep-compare";
 import dynamic from "next/dynamic";
 import {
@@ -22,10 +23,9 @@ import {
   parseJSONParam,
 } from "@gff/core";
 import { formatImageDetailsInfo } from "@/features/files/utils";
-import { MdOutlineSearch } from "react-icons/md";
-import { useRouter } from "next/router";
 import { Slides } from "../Slides";
 import { HeaderTitle } from "@/components/tailwindComponents";
+import { SearchIcon } from "@/utils/icons";
 
 const ImageViewer = dynamic(() => import("./ImageViewer"), {
   ssr: false,
@@ -178,7 +178,7 @@ export const MultipleImageViewer = ({
                           className="mr-5"
                           aria-label="click search icon to show search bar"
                         >
-                          <MdOutlineSearch
+                          <SearchIcon
                             size={30}
                             color="black"
                             data-testid="search-icon-image-viewer"

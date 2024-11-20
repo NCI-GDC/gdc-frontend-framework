@@ -30,7 +30,6 @@ import {
   useGenerateCasesTableColumns,
 } from "./utils";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-import { MdDownload as DownloadIcon } from "react-icons/md";
 import { CountsIcon } from "@/components/tailwindComponents";
 import { getFormattedTimestamp } from "@/utils/date";
 import download from "@/utils/download";
@@ -43,6 +42,7 @@ import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { useDeepCompareEffect } from "use-deep-compare";
 import TotalItems from "@/components/Table/TotalItem";
+import { DownloadIcon } from "@/utils/icons";
 
 const getSlideCountFromCaseSummary = (
   experimental_strategies: Array<{

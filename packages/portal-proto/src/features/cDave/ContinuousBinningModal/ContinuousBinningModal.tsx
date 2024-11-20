@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { Button, Divider, Modal, Radio, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { MdReplay as ResetIcon } from "react-icons/md";
-import { FaPlusCircle as PlusIcon } from "react-icons/fa";
-import { BsTrashFill as TrashIcon } from "react-icons/bs";
 import { Statistics } from "@gff/core";
 import { validateIntervalInput, validateRangeInput } from "./validateInputs";
 import { CustomInterval, DataDimension, NamedFromTo } from "../types";
@@ -17,6 +14,7 @@ import {
 import FunctionButton from "@/components/FunctionButton";
 import { DATA_DIMENSIONS } from "../constants";
 import { useDeepCompareEffect } from "use-deep-compare";
+import { CirclePlusIcon, ReplayIcon, TrashIcon } from "@/utils/icons";
 
 interface ContinuousBinningModalProps {
   readonly setModalOpen: (open: boolean) => void;
@@ -361,7 +359,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
             }}
             disabled={intervalFormAtDefault && rangeFormAtDefault}
           >
-            <ResetIcon size={20} />
+            <ReplayIcon size={20} />
           </FunctionButton>
         </div>
         {/* This switches the bin method when a user clicks on the "area", no keyboard equivalent is needed to accessibly navigate the form */}
@@ -462,7 +460,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                     {idx === rangeForm.getValues().ranges.length - 1 ? (
                       <FunctionButton
                         data-testid="button-range-add"
-                        leftSection={<PlusIcon aria-hidden="true" />}
+                        leftSection={<CirclePlusIcon aria-hidden="true" />}
                         onClick={() => {
                           const result = rangeForm.validate();
                           if (!result.hasErrors) {

@@ -1,8 +1,8 @@
 import React from "react";
 import { Button } from "@mantine/core";
-import { FaUndo as UndoIcon } from "react-icons/fa";
 import { useCoreDispatch, addSet } from "@gff/core";
 import { SetData } from "./types";
+import { UndoIcon } from "@/utils/icons";
 
 interface DeleteSetsNotificationProps {
   readonly sets: SetData[];

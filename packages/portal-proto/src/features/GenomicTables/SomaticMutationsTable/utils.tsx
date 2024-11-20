@@ -16,15 +16,12 @@ import {
   SMTableSurvival,
 } from "./TableComponents";
 import CohortCreationButton from "@/components/CohortCreationButton";
-import {
-  IoIosArrowDropdownCircle as DownIcon,
-  IoIosArrowDropupCircle as UpIcon,
-} from "react-icons/io";
 import { entityMetadataType } from "@/utils/contexts";
 import NumeratorDenominator from "@/components/NumeratorDenominator";
 import ImpactHeaderWithTooltip from "../SharedComponent/ImpactHeaderWithTooltip";
 import RatioWithSpring from "@/components/RatioWithSpring";
 import { ComparativeSurvival } from "@/features/genomic/types";
+import { CollapseCircleIcon, ExpandCircleIcon } from "@/utils/icons";
 
 export const filterMutationType = (mutationSubType: string): string => {
   if (
@@ -273,9 +270,9 @@ export const useGenerateSMTableColumns = ({
               {numerator !== 0 && row.getCanExpand() && (
                 <div className="flex items-center">
                   {!row.getIsExpanded() ? (
-                    <DownIcon size="1.25em" className="text-accent" />
+                    <ExpandCircleIcon size="1.25em" className="text-accent" />
                   ) : (
-                    <UpIcon size="1.25em" className="text-accent" />
+                    <CollapseCircleIcon size="1.25em" className="text-accent" />
                   )}
                 </div>
               )}
