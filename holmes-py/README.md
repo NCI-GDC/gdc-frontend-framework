@@ -151,9 +151,9 @@ OR, choose number of streams:
 ````bash
 gauge run --parallel -n=number_here specs
 ````
-I found there was no difference in test success rate if you let gauge choose the number of
-execution streams, or if you specified a smaller amount. So, the best course of action is to let
-gauge choose the number of streams and finish the regression tests faster.
+
+Note: On my local machine, I found that 6 streams strikes the balance between execution time and
+consistency of test results. Anymore than 6, and there would be some flakey test results.
 
 If a test does fail, rerun them individually before reporting results.
 

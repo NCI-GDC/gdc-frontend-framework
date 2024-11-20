@@ -14,7 +14,7 @@ import {
 import { RemoveFromCartButton } from "./updateCart";
 import FunctionButton from "@/components/FunctionButton";
 import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
-import { convertDateToString } from "src/utils/date";
+import { getFormattedTimestamp } from "src/utils/date";
 import download from "src/utils/download";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
 import { statusBooleansToDataStatus } from "src/utils";
@@ -368,7 +368,7 @@ const FilesTable: React.FC<FilesTableProps> = ({
     downloadTSV({
       tableData,
       columnOrder,
-      fileName: `files-table.${convertDateToString(new Date())}.tsv`,
+      fileName: `files-table.${getFormattedTimestamp()}.tsv`,
       columnVisibility,
       columns: cartFilesTableDefaultColumns,
       option: {
@@ -397,7 +397,7 @@ const FilesTable: React.FC<FilesTableProps> = ({
         <TotalItems total={data?.pagination?.total} itemName="file" />
       }
       additionalControls={
-        <div className="flex gap-2 mb-2">
+        <div className="flex gap-2">
           <Tooltip label="Download JSON">
             <FunctionButton
               data-testid="button-json"

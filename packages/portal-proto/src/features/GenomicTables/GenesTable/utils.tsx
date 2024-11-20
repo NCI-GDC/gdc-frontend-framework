@@ -1,12 +1,9 @@
 // This table can be found at /analysis_page?app=MutationFrequencyApp
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Gene, GeneToggledHandler, columnFilterType } from "./types";
-import { Dispatch, SetStateAction, useMemo, useId } from "react";
+import { Dispatch, SetStateAction, useId } from "react";
+import { useDeepCompareMemo } from "use-deep-compare";
 import { Checkbox, Tooltip } from "@mantine/core";
-import {
-  IoIosArrowDropdownCircle as DownIcon,
-  IoIosArrowDropupCircle as UpIcon,
-} from "react-icons/io";
 import { entityMetadataType } from "@/utils/contexts";
 import { FilterSet, GeneRowInfo } from "@gff/core";
 import { CountButton } from "@/components/CountButton/CountButton";
@@ -18,6 +15,9 @@ import NumeratorDenominator from "@/components/NumeratorDenominator";
 import AnnotationsIcon from "./AnnotationsIcon";
 import RatioWithSpring from "@/components/RatioWithSpring";
 import { ComparativeSurvival } from "@/features/genomic/types";
+import { CollapseCircleIcon, ExpandCircleIcon } from "@/utils/icons";
+
+const genesTableColumnHelper = createColumnHelper<Gene>();
 
 export const useGenerateGenesTableColumns = ({
   handleSurvivalPlotToggled,
@@ -49,9 +49,8 @@ export const useGenerateGenesTableColumns = ({
   totalPages: number;
 }): ColumnDef<Gene>[] => {
   const componentId = useId();
-  const genesTableColumnHelper = useMemo(() => createColumnHelper<Gene>(), []);
 
-  const genesTableDefaultColumns = useMemo<ColumnDef<Gene>[]>(
+  const genesTableDefaultColumns = useDeepCompareMemo<ColumnDef<Gene>[]>(
     () => [
       genesTableColumnHelper.display({
         id: "select",
@@ -220,9 +219,9 @@ export const useGenerateGenesTableColumns = ({
               {numerator !== 0 && row.getCanExpand() && (
                 <div className="flex items-center">
                   {!row.getIsExpanded() ? (
-                    <DownIcon size="1.25em" className="text-accent" />
+                    <ExpandCircleIcon size="1.25em" className="text-accent" />
                   ) : (
-                    <UpIcon size="1.25em" className="text-accent" />
+                    <CollapseCircleIcon size="1.25em" className="text-accent" />
                   )}
                 </div>
               )}
@@ -342,7 +341,6 @@ export const useGenerateGenesTableColumns = ({
       }),
     ],
     [
-      genesTableColumnHelper,
       setEntityMetadata,
       genomicFilters,
       handleGeneToggled,

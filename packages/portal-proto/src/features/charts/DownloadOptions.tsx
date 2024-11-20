@@ -1,8 +1,8 @@
-import { MdDownload as DownloadIcon } from "react-icons/md";
 import { Menu, Tooltip } from "@mantine/core";
 import Plotly from "plotly.js";
 import { DownloadButton } from "@/components/tailwindComponents";
 import { JSONArray } from "@/features/types";
+import { DownloadIcon } from "@/utils/icons";
 
 interface ChartDownloadProps {
   readonly chartDivId: string;

@@ -3,7 +3,7 @@ Date Created    : 10/01/2024
 Version			    : 1.0
 Owner		        : GDC QA
 Description		  : Summary View Header
-Test-Case       : PEAR-2207
+Test-Case       : PEAR-2207, PEAR-1048
 
 tags: gdc-data-portal-v2, regression, cohort-bar, case-view
 
@@ -12,6 +12,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
 * Navigate to "Analysis" from "Header" "section"
 * Expand or collapse the cohort bar
 * Go to tab "Summary View" in Cohort Case View
+* Unpin the Cohort Bar
 
 ## Biospecimen - TSV
 * Make the following selections on a filter card in Cohort Summary View
@@ -157,7 +158,6 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
     |age_at_last_exposure                 |
     |parent_with_radiation_exposure       |
     |years_smoked                         |
-    |tobacco_use_per_day                  |
     |relationship_age_at_diagnosis        |
     |relationship_primary_diagnosis       |
     |relative_with_cancer_history         |
@@ -170,7 +170,6 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
     |burkitt_lymphoma_clinical_variant    |
     |goblet_cells_columnar_mucosa_present |
     |uicc_staging_system_edition          |
-    |non_nodal_tumor_deposits             |
     |therapeutic_agents                   |
     |treatment_type                       |
     |Stem Cell Transplantation, Autologous|
@@ -188,6 +187,11 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
     |FM-AD                                |
     |TARGET-AML                           |
     |MATCH                                |
+    |tumor_stage                          |
+    |marijuana_use_per_week               |
+    |smokeless_tobacco_quit_age           |
+    |tobacco_use_per_day                  |
+
 
 ## Clinical - JSON
 * Download "JSON" from "Cohort Summary View Clinical"
@@ -232,12 +236,20 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
   |demographic.created_datetime	                    |
 * Verify that the "JSON from Cohort Summary View Clinical" has <field_name> for each object
 
-## Download Manifest
+## Add to Cart Button
 * Clear active cohort filters
 * Make the following selections on a filter card in Cohort Summary View
   |facet_name           |selection            |
   |---------------------|---------------------|
   |Disease Type         |unknown              |
+* Select "Files" in Cohort Case View
+* Select "Add to Cart" from dropdown menu
+* Is modal with text "Added" present on the page and "Keep Modal"
+* Pause "2" seconds
+* Undo Action
+* The cart should have "0" files
+
+## Download Manifest
 * Download "Download Manifest" from "Cohort Case View Files"
 * Read from "Download Manifest from Cohort Case View Files"
 * Verify that "Download Manifest from Cohort Case View Files" has expected information
@@ -327,13 +339,6 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
     |TCGA                                 |
     |gliomas                              |
     |FM-AD                                |
-
-## Add to Cart Button
-* Select "Files" in Cohort Case View
-* Select "Add to Cart" from dropdown menu
-* Is modal with text "Added" present on the page and "Keep Modal"
-* Undo Action
-* The cart should have "0" files
 
 ## Flip Filters
 * Perform the following actions on a filter card in Cohort Summary View

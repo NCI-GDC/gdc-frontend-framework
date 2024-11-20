@@ -1,9 +1,5 @@
+import { SelectorIcon, SortAscIcon, SortDesIcon } from "@/utils/icons";
 import { Button } from "@mantine/core";
-import {
-  PiCaretUpDownFill as Selector,
-  PiCaretDownFill as SortDesIcon,
-  PiCaretUpFill as SortAscIcon,
-} from "react-icons/pi";
 import React, { useEffect, useRef, useState } from "react";
 import { SortType } from "./types";
 
@@ -56,14 +52,14 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
       ? sortType.direction === "asc"
         ? [SortAscIcon, "0.75rem"]
         : [SortDesIcon, "0.75rem"]
-      : [Selector, "1rem"];
+      : [SelectorIcon, "1rem"];
 
   const [ValueSortIcon, valueIconSize] =
     sortType.type === "value"
       ? sortType.direction === "asc"
         ? [SortAscIcon, "0.75rem"]
         : [SortDesIcon, "0.75rem"]
-      : [Selector, "1rem"];
+      : [SelectorIcon, "1rem"];
 
   return (
     <div className="flex items-center justify-between py-1 px-2 mb-1 border-b-2">

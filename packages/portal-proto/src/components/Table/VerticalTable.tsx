@@ -19,11 +19,11 @@ import {
   useContext,
 } from "react";
 import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
-import { BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
 import { LoadingOverlay } from "@mantine/core";
 import { getDefaultRowId } from "./utils";
 import TableHeader from "./TableHeader";
 import TablePagination from "./TablePagination";
+import { RowCollapseIcon, RowExpandIcon } from "@/utils/icons";
 
 // Provides the bottom X position so components can align themselves with the table
 export const TableXPositionContext = createContext<{
@@ -308,12 +308,12 @@ function VerticalTable<TData>({
                               className="inline-block text-xs pl-3 align-middle text-base-light"
                               aria-hidden="true"
                             >
-                              <BsCaretUpFill
+                              <RowCollapseIcon
                                 className={
                                   isColumnSorted === "asc" ? "text-primary" : ""
                                 }
                               />
-                              <BsCaretDownFill
+                              <RowExpandIcon
                                 className={`${
                                   isColumnSorted === "desc"
                                     ? "text-primary"

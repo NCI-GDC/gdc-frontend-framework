@@ -75,9 +75,9 @@ const RangeInputWithPrefixedRanges: React.FC<
   const {
     data: rangeData,
     isSuccess,
+    isFetching,
     error,
   } = hooks.useGetRangeFacetData(field, ranges);
-
   const rangeLabelsAndValues = buildRangeLabelsAndValues(
     bucketRanges,
     totalCount,
@@ -145,7 +145,7 @@ const RangeInputWithPrefixedRanges: React.FC<
 
   return (
     <>
-      <LoadingOverlay data-testid="loading-spinner" visible={!isSuccess} />
+      <LoadingOverlay data-testid="loading-spinner" visible={isFetching} />
       <div className="flex flex-col space-y-2 mt-1">
         <div className="flex justify-items-stretch items-center">
           <div>

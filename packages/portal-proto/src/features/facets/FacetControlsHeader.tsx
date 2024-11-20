@@ -1,13 +1,5 @@
 import React, { useEffect } from "react";
 import { ActionIcon, Tooltip } from "@mantine/core";
-import {
-  MdFlip as FlipIcon,
-  MdSearch as SearchIcon,
-  MdClose as CloseIcon,
-  MdExpandLess as ExpandLessIcon,
-  MdExpandMore as ExpandMoreIcon,
-} from "react-icons/md";
-import { FaUndo as UndoIcon } from "react-icons/fa";
 import { fieldNameToTitle } from "@gff/core";
 import {
   FacetIconButton,
@@ -16,6 +8,14 @@ import {
   FacetHeader,
 } from "./components";
 import { FacetCardProps, FacetRequiredHooks } from "./types";
+import {
+  CloseIcon,
+  ExpandLessIcon,
+  ExpandMoreIcon,
+  FlipIcon,
+  SearchIcon,
+  UndoIcon,
+} from "@/utils/icons";
 
 type FacetHeaderProps = Pick<
   FacetCardProps<FacetRequiredHooks>,

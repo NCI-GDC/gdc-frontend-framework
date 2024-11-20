@@ -1,7 +1,5 @@
 import { ActionIcon, Button } from "@mantine/core";
 import { showNotification, cleanNotifications } from "@mantine/notifications";
-import { VscTrash as TrashIcon } from "react-icons/vsc";
-import { FaUndo as UndoIcon, FaShoppingCart as CartIcon } from "react-icons/fa";
 import { fileInCart, focusStyles } from "src/utils";
 import {
   CART_LIMIT,
@@ -14,6 +12,7 @@ import {
   CartFile,
 } from "@gff/core";
 import { useEffect } from "react";
+import { CartIcon, TrashIcon, UndoIcon } from "@/utils/icons";
 
 interface OverLimitNotificationProps {
   readonly numFilesInCart: number;
@@ -268,20 +267,20 @@ export const RemoveFromCartButton: React.FC<CartButtonProps> = ({
 
   return iconOnly ? (
     <ActionIcon
-      size={20}
+      size={24}
       title="Remove From Cart"
       aria-label="Remove from cart"
       variant="outline"
       onClick={() => removeFromCart(files, currentCart, dispatch)}
       className="ml-4 text-primary border-primary"
     >
-      <TrashIcon size={15} />
+      <TrashIcon />
     </ActionIcon>
   ) : (
     <Button
       data-testid="button-remove-from-cart"
       onClick={() => removeFromCart(files, currentCart, dispatch)}
-      className={`font-medium text-sm text-primary bg-base-max hover:bg-primary-darkest hover:text-primary-contrast-darker ${focusStyles}`}
+      className={`font-medium text-sm text-base-max bg-nci-red-darker hover:bg-removeButtonHover ${focusStyles}`}
       variant="outline"
     >
       <CartIcon className="mr-2" />

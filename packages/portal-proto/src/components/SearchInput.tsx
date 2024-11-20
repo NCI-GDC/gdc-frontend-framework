@@ -18,8 +18,6 @@ import {
   ActionIcon,
 } from "@mantine/core";
 import { useFocusWithin, useViewportSize } from "@mantine/hooks";
-import { MdSearch as SearchIcon, MdClose as CloseIcon } from "react-icons/md";
-import { FaCheck as CheckIcon } from "react-icons/fa";
 import { SearchResult } from "minisearch";
 import {
   FacetSearchDocument,
@@ -29,6 +27,7 @@ import {
   BtnWithHoverCalloutTopArrow,
   BtnWithHoverCalloutLeftArrow,
 } from "./BtnWithHoverCallout";
+import { CheckIcon, CloseIcon, SearchIcon } from "@/utils/icons";
 
 const PAGE_SIZE = 5;
 const MAX_MATCHED_VALUES = 30;

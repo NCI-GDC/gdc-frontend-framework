@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { fieldNameToTitle } from "@gff/core";
 import { DEFAULT_VISIBLE_ITEMS, updateFacetEnum } from "./utils";
-import { MdClose as CloseIcon } from "react-icons/md";
 import { EnumFacetHooks, FacetCardProps } from "@/features/facets/types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
 import { ActionIcon, Checkbox, LoadingOverlay, TextInput } from "@mantine/core";
@@ -13,6 +12,7 @@ import { SortType } from "./types";
 import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
 import FacetControlsHeader from "./FacetControlsHeader";
 import { BAD_DATA_MESSAGE } from "./constants";
+import { CloseIcon } from "@/utils/icons";
 
 /**
  *  Enumeration facet filters handle display and selection of

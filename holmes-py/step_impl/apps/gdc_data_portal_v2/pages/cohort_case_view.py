@@ -14,6 +14,9 @@ class CohortCaseViewLocators:
     BUTTON_BIOSPECIMEN_SUMMARY_VIEW = '[data-testid="button-biospecimen-cases-summary"]'
     BUTTON_CLINICAL_SUMMARY_VIEW = '[data-testid="button-clinical-cases-summary"]'
 
+    BUTTON_TABLE_VIEW = lambda button_name: f'[data-testid="button-{button_name}-cases-table"]'
+    BUTTON_BIOSPECIMEN_TABLE_VIEW = '[data-testid="button-biospecimen-cases-table"]'
+    BUTTON_CLINICAL_TABLE_VIEW = '[data-testid="button-clinical-cases-table"]'
 
     FILTER_GROUP_IDENT = (
         lambda group_name: f'[data-testid="filters-facets-summary-view"] >> div:nth-child(1) >> div:text-is("{group_name}")'
@@ -69,6 +72,22 @@ class CohortCaseViewPage(BasePage):
 
     def click_clinical_summary_view(self, dropdown_option):
         locator = CohortCaseViewLocators.BUTTON_CLINICAL_SUMMARY_VIEW
+        self.click(locator)
+        self.click_text_option_from_dropdown_menu(dropdown_option)
+
+    def click_table_view_button(self, button_name):
+        """Clicks button that ends in 'cases-table' """
+        button_name = self.normalize_button_identifier(button_name)
+        locator = CohortCaseViewLocators.BUTTON_TABLE_VIEW(button_name)
+        self.click(locator)
+
+    def click_biospecimen_table_view(self, dropdown_option):
+        locator = CohortCaseViewLocators.BUTTON_BIOSPECIMEN_TABLE_VIEW
+        self.click(locator)
+        self.click_text_option_from_dropdown_menu(dropdown_option)
+
+    def click_clinical_table_view(self, dropdown_option):
+        locator = CohortCaseViewLocators.BUTTON_CLINICAL_TABLE_VIEW
         self.click(locator)
         self.click_text_option_from_dropdown_menu(dropdown_option)
 

@@ -147,7 +147,9 @@ const buildDayYearRangeBucket = (
     key: `${(queryInYears ? from : fromDays).toFixed(
       RANGE_DECIMAL_PRECISION,
     )}-${(queryInYears ? to : toDays).toFixed(RANGE_DECIMAL_PRECISION)}`,
-    label: `\u2265 ${fromLabel} to < ${toLabel} ${units}`,
+    label: `\u2265 ${Number(fromLabel)?.toLocaleString()} to < ${Number(
+      toLabel,
+    )?.toLocaleString()} ${units}`,
   };
 };
 

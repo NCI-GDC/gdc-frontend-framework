@@ -1,6 +1,6 @@
 {
   "name": "@gff/portal-components",
-  "version": "1.0.0",
+  "version": "2.15.5",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -14,7 +14,7 @@
     "test": "jest unit",
     "test:watch": "jest unit --watch",
     "test:int": "jest int",
-    "test:all": "jest",
+    "test:all": "jest --passWithNoTests",
     "dev": "npm run build:watch"
   },
   "author": "",

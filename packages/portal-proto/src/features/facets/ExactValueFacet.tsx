@@ -1,8 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { FacetCardProps, ValueFacetHooks } from "./types";
 import { ActionIcon, Badge, Group, TextInput } from "@mantine/core";
-import { MdClose as CloseIcon } from "react-icons/md";
-import { FaPlus as PlusIcon } from "react-icons/fa";
 import {
   Operation,
   Excludes,
@@ -11,6 +9,7 @@ import {
   EnumOperandValue,
 } from "@gff/core";
 import FacetControlsHeader from "./FacetControlsHeader";
+import { CloseIcon, PlusIcon } from "@/utils/icons";
 
 type ExactValueProps = Omit<
   FacetCardProps<ValueFacetHooks>,

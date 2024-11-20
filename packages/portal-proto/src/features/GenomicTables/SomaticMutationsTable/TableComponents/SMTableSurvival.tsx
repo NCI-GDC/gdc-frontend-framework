@@ -1,4 +1,4 @@
-import { IoMdTrendingDown as SurvivalIcon } from "react-icons/io";
+import { SurvivalChartIcon } from "@/utils/icons";
 import ToggledCheck from "../../SharedComponent/ToggledCheck";
 import { Survival } from "../types";
 
@@ -40,7 +40,7 @@ const SMTableSurvival = ({
       ariaText={`Toggle survival plot for ${proteinChange.symbol} ${proteinChange.aaChange} mutation`}
       margin="ml-0.5"
       isActive={survival?.checked}
-      icon={<SurvivalIcon size={24} aria-hidden="true" />}
+      icon={<SurvivalChartIcon size={24} aria-hidden="true" />}
       survivalProps={{ plot: "gene.ssm.ssm_id" }}
       selected={survival as unknown as Record<string, string>} // need to fix this
       disabled={disabled}

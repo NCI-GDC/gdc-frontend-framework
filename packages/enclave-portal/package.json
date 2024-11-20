@@ -1,13 +1,17 @@
 {
   "name": "enclave-portal",
-  "version": "1.0.0",
+  "version": "2.15.5",
   "dependencies": {
+    "@gff/portal-components": "^2.15.4",
     "next": "^14.2.5",
-    "@gff/portal-components": "1.0.0"
+    "react": "^18.3.1"
   },
   "devDependencies": {
     "tailwindcss": "^3.4.14",
-    "tailwindcss-themer": "^2.0.2"
+    "tailwindcss-themer": "^2.0.2",
+    "@testing-library/jest-dom": "^5.0.0",
+    "@testing-library/react": "^16.0.1",
+    "@testing-library/user-event": "^14.0.0"
   },
   "scripts": {
     "clean": "rimraf .next",
@@ -19,7 +23,7 @@
     "test": "jest unit",
     "test:watch": "jest unit --watch",
     "test:int": "echo No integrations tests yet",
-    "test:all": "jest"
+    "test:all": "jest --passWithNoTests"
   },
   "license": "Apache-2"
 }

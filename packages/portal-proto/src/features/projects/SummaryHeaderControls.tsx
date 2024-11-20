@@ -5,8 +5,9 @@ import download from "@/utils/download";
 import { useCoreDispatch } from "@gff/core";
 import { Button, Loader, Tooltip } from "@mantine/core";
 import { useState } from "react";
-import { MdDownload as DownloadIcon } from "react-icons/md";
 import { ProjectViewProps } from "./ProjectView";
+import { getFormattedTimestamp } from "@/utils/date";
+import { DownloadIcon } from "@/utils/icons";
 
 function SummaryHeaderControls({
   projectData,
@@ -132,6 +133,9 @@ function SummaryHeaderControls({
         },
         return_type: "manifest",
         size: 10000,
+        filename: `gdc_manifest.${getFormattedTimestamp({
+          includeTimes: true,
+        })}.txt`,
       },
       done: () => setManifestDownloadActive(false),
     });

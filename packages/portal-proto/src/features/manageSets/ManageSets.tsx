@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { Grid, Button } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import { AiOutlineFileAdd as FileAddIcon } from "react-icons/ai";
 import {
   useCoreSelector,
   selectAllSets,
@@ -13,13 +12,14 @@ import {
 } from "@gff/core";
 import { WarningBanner } from "@/components/WarningBanner";
 import { CountsIcon } from "@/components/tailwindComponents";
-import { convertDateToString } from "src/utils/date";
+import { getFormattedTimestamp } from "src/utils/date";
 import download from "@/utils/download";
 import { SetData } from "./types";
 import SetDetailPanel from "./SetDetailPanel";
 import CreateSetButton from "./CreateSetButton";
 import ManageSetsTable from "./ManageSetsTable";
 import DeleteSetsNotification from "./DeleteSetsNotification";
+import { FileAddIcon } from "@/utils/icons";
 
 const CreateSetInstructions = () => (
   <p data-testid="text-manage-sets-description" className="py-2 text-sm">
@@ -110,7 +110,7 @@ const ManageSets: React.FC = () => {
       <hr />
       {noSets ? (
         <Grid justify="center" className="flex-grow">
-          <Grid.Col span={4} className="my-20 flex flex-col items-center">
+          <Grid.Col span={8} className="my-20 flex flex-col items-center">
             <div className="h-40 w-40 rounded-[50%] bg-emptyIconLighterColor flex justify-center items-center">
               <FileAddIcon
                 size={80}
@@ -136,19 +136,18 @@ const ManageSets: React.FC = () => {
             }
           />
           <CreateSetInstructions />
-          <div className="flex flex-row gap-2 py-2">
+          <div className="flex flex-wrap gap-2 py-2">
             <CreateSetButton />
             <SelectedSetButton
               customDataTestID="button-export-selected-set"
               selection={selectedSets}
               text={"Export Selected"}
               onClick={() => {
-                const today = new Date();
                 download({
                   endpoint: "tar_sets",
                   params: {
                     attachment: true,
-                    filename: `gdc_sets.${convertDateToString(today)}.tar.gz`,
+                    filename: `gdc_sets.${getFormattedTimestamp()}.tar.gz`,
                     sets: selectedSets.map(({ setId, setType, setName }) => ({
                       id: setId,
                       type: setType === "genes" ? "gene" : "ssm",

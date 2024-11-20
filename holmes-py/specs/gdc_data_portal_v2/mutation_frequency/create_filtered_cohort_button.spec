@@ -37,6 +37,13 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |expected_text|row  |column |
   |-------------|-----|-------|
   |PTEN         |1    |4      |
+Note: This is to resolve flaky test
+* Select value from table "Genes" by row and column
+  |row   |column|
+  |------|------|
+  |1     |1     |
+  |1     |1     |
+* Pause "1" seconds
 * Collect button labels in table for comparison
   |button_label                         |row  |column |
   |-------------------------------------|-----|-------|
@@ -69,6 +76,13 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |expected_text|row  |column |
   |-------------|-----|-------|
   |APC          |1    |4      |
+Note: This is to resolve flaky test
+* Select value from table "Genes" by row and column
+  |row   |column|
+  |------|------|
+  |1     |1     |
+  |1     |1     |
+* Pause "1" seconds
 * Collect button labels in table for comparison
   |button_label                         |row  |column |
   |-------------------------------------|-----|-------|
@@ -97,6 +111,13 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |expected_text|row  |column |
   |-------------|-----|-------|
   |PTCH1        |1    |4      |
+Note: This is to resolve flaky test
+* Select value from table "Genes" by row and column
+  |row   |column|
+  |------|------|
+  |1     |1     |
+  |1     |1     |
+* Pause "1" seconds
 * Collect button labels in table for comparison
   |button_label                         |row  |column |
   |-------------------------------------|-----|-------|
@@ -125,6 +146,13 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |expected_text|row  |column |
   |-------------|-----|-------|
   |ZFHX3        |1    |4      |
+Note: This is to resolve flaky test
+* Select value from table "Genes" by row and column
+  |row   |column|
+  |------|------|
+  |1     |1     |
+  |1     |1     |
+* Pause "1" seconds
 * Collect button labels in table for comparison
   |button_label                         |row  |column |
   |-------------------------------------|-----|-------|
@@ -155,6 +183,13 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |expected_text      |row  |column |
   |-------------------|-----|-------|
   |chr1:g.6197725delT |1    |4      |
+Note: This is to resolve flaky test
+* Select value from table "Most Frequent Somatic Mutations" by row and column
+  |row   |column|
+  |------|------|
+  |1     |1     |
+  |1     |1     |
+* Pause "1" seconds
 * Collect button labels in table for comparison
   |button_label                                 |row  |column |
   |---------------------------------------------|-----|-------|

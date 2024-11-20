@@ -1,8 +1,8 @@
 # Case Summary - Validate Tables
 Date Created        : 09/05/2024
-Version			    : 1.0
-Owner		        : GDC QA
-Description		    : Validate All Tables and Sections in Case Summary Page
+Version			        : 1.0
+Owner		            : GDC QA
+Description		      : Validate All Tables and Sections in Case Summary Page
 Test-Case           : PEAR-2139, PEAR-464
 
 tags: gdc-data-portal-v2, case-summary
@@ -131,8 +131,14 @@ tags: gdc-data-portal-v2, case-summary
     |extracapsular_extension_present        |
     |margin_status                          |
     |pathology_detail_submitter_id          |
-    |tumor_largest_dimension_diameter       |
     |3.5                                    |
+* Verify that "TSV from Case Summary Clinical Table" does not contain specified information
+    |required_info                          |
+    |---------------------------------------|
+    |tumor_stage                            |
+    |marijuana_use_per_week                 |
+    |smokeless_tobacco_quit_age             |
+    |tobacco_use_per_day                    |
 
 ## Clinical Table - Download JSON: Exposure, Pathological Detail
 * Download "JSON" from "Case Summary Clinical Table"
@@ -276,7 +282,6 @@ tags: gdc-data-portal-v2, case-summary
     |Lactate Dehydrogenase                  |
     |molecular_analysis_method              |
     |bone_marrow_malignant_cells            |
-    |non_nodal_tumor_deposits               |
     |rhabdoid_present                       |
     |zone_of_origin_prostate                |
     |relative_smoker                        |
@@ -287,6 +292,13 @@ tags: gdc-data-portal-v2, case-summary
     |additional_pathology_findings          |
     |treatment_type                         |
     |MMRF-COMMPASS                          |
+* Verify that "TSV from Case Summary Clinical Table" does not contain specified information
+    |required_info                          |
+    |---------------------------------------|
+    |tumor_stage                            |
+    |marijuana_use_per_week                 |
+    |smokeless_tobacco_quit_age             |
+    |tobacco_use_per_day                    |
 
 ## Clinical Table - Download JSON: Follow Up, Family History, Clinical
 * Download "JSON" from "Case Summary Clinical Table"
@@ -714,7 +726,7 @@ A follow-up will occur in QA-2288 to test filtered download of TSV.
     |Created Datetime                       |
     |064a8d49-9a7a-4667-a757-be5b6d53076d   |
     |masked_somatic_mutation                |
-    |a4946bbc-5a04-4613-a151-ef9f834b02c0	|
+    |a4946bbc-5a04-4613-a151-ef9f834b02c0	  |
     |General                                |
     |Redaction                              |
     |2023-03-03T10:25:36.534006-06:00       |
@@ -733,7 +745,7 @@ A follow-up will occur in QA-2288 to test filtered download of TSV.
     |Created Datetime                       |
     |064a8d49-9a7a-4667-a757-be5b6d53076d   |
     |masked_somatic_mutation                |
-    |a4946bbc-5a04-4613-a151-ef9f834b02c0	|
+    |a4946bbc-5a04-4613-a151-ef9f834b02c0	  |
     |General                                |
     |Redaction                              |
     |2023-03-03T10:25:36.534006-06:00       |

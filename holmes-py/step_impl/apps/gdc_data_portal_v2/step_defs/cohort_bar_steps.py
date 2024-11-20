@@ -25,6 +25,9 @@ def click_button_on_cohort_bar(button_name: str):
         APP.cohort_bar.click_cohort_bar_button(button_name)
     time.sleep(0.5)
 
+@step("Unpin the Cohort Bar")
+def unpin_cohort_bar():
+    APP.cohort_bar.unpin_cohort_bar()
 
 @step("Name the cohort <cohort_name> in the Cohort Bar section")
 def name_cohort(cohort_name: str):

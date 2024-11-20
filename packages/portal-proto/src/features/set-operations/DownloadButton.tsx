@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { ActionIcon, Loader, Tooltip, Modal } from "@mantine/core";
-import { MdDownload as DownloadIcon } from "react-icons/md";
 import { SetOperationEntityType } from "@/features/set-operations/types";
 import {
   useCreateCaseSetFromFiltersMutation,
@@ -10,9 +9,10 @@ import {
   useCoreDispatch,
 } from "@gff/core";
 import download from "@/utils/download";
-import { convertDateToString } from "@/utils/date";
+import { getFormattedTimestamp } from "@/utils/date";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
+import { DownloadIcon } from "@/utils/icons";
 
 const ENTITY_TYPE_TO_TAR = {
   mutations: "ssm",
@@ -63,9 +63,10 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
               type: ENTITY_TYPE_TO_TAR[entityType],
               filename: `${setKey
                 .replace(/∩/g, "intersection")
-                .replace(/∪/g, "union")}-set-ids.${convertDateToString(
-                new Date(),
-              )}.tsv`,
+                .replace(
+                  /∪/g,
+                  "union",
+                )}-set-ids.${getFormattedTimestamp()}.tsv`,
             },
           ],
         },

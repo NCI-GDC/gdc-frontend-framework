@@ -44,8 +44,8 @@ const processChartData = (
         },
         hovertemplate: hovertemplate,
         customdata: chartData.geneCounts.map((d) => [
-          d.numCases,
-          chartData.casesTotal,
+          d.numCases?.toLocaleString(),
+          chartData.casesTotal?.toLocaleString(),
         ]),
       },
     ],

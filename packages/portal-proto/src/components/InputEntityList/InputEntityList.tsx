@@ -7,8 +7,6 @@ import {
   Loader,
 } from "@mantine/core";
 import { flatten, debounce, uniq } from "lodash";
-import { RiFile3Fill as FileIcon } from "react-icons/ri";
-import { MdInfo as InfoIcon } from "react-icons/md";
 import {
   SetTypes,
   useCoreDispatch,
@@ -25,6 +23,7 @@ import ButtonContainer from "@/components/StyledComponents/ModalButtonContainer"
 import { getMatchedIdentifiers, MatchResults } from "./utils";
 import MatchTablesWrapper from "./MatchTablesWrapper";
 import fieldConfig from "./fieldConfig";
+import { FileIcon, InfoIcon } from "@/utils/icons";
 
 export const MATCH_LIMIT = 50000;
 const parseTokens = (input: string) => input.trim().split(/[\s,]+/);

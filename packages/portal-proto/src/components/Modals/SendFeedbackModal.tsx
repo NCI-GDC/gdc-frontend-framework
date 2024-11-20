@@ -1,5 +1,5 @@
+import { CopyIcon } from "@/utils/icons";
 import { ActionIcon, CopyButton, Modal, Tooltip } from "@mantine/core";
-import { LuCopy as CopyIcon } from "react-icons/lu";
 
 const SendFeedbackModal = ({
   opened,

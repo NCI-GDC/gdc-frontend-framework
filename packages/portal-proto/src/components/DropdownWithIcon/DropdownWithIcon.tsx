@@ -1,9 +1,8 @@
-import { Button, Menu } from "@mantine/core";
-import { FloatingPosition } from "@mantine/core/lib/components/Floating/types";
 import { ReactNode, useRef } from "react";
-import { Tooltip } from "@mantine/core";
-import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
+import { Button, Menu, Tooltip } from "@mantine/core";
+import { FloatingPosition } from "@mantine/core/lib/components/Floating/types";
 import { focusStyles } from "src/utils";
+import { DropdownIcon } from "@/utils/icons";
 
 interface DropdownWithIconProps {
   /**
@@ -72,7 +71,11 @@ export const DropdownWithIcon = ({
   LeftSection,
   RightSection = (
     <div className="border-l pl-1 -mr-2">
-      <Dropdown size="1.25em" aria-hidden="true" data-testid="dropdown-icon" />
+      <DropdownIcon
+        size="1.25em"
+        aria-hidden="true"
+        data-testid="dropdown-icon"
+      />
     </div>
   ),
   TargetButtonChildren,

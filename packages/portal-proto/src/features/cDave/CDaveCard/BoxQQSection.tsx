@@ -4,7 +4,6 @@ import saveAs from "file-saver";
 import tw from "tailwind-styled-components";
 import { Menu, Tooltip, ActionIcon, Button } from "@mantine/core";
 import { useResizeObserver } from "@mantine/hooks";
-import { MdDownload as DownloadIcon } from "react-icons/md";
 import {
   useGetCaseSsmsQuery,
   joinFilters,
@@ -19,7 +18,7 @@ import OffscreenWrapper from "@/components/OffscreenWrapper";
 import { handleDownloadPNG, handleDownloadSVG } from "@/features/charts/utils";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { DashboardDownloadContext } from "@/utils/contexts";
-import { convertDateToString } from "@/utils/date";
+import { getFormattedTimestamp } from "@/utils/date";
 import { COLOR_MAP, DEMO_COHORT_FILTERS, DATA_DIMENSIONS } from "../constants";
 import {
   parseNestedQQResponseData,
@@ -30,6 +29,7 @@ import {
 import QQPlot from "./QQPlot";
 import BoxPlot from "./BoxPlot";
 import { DataDimension } from "../types";
+import { DownloadIcon } from "@/utils/icons";
 
 const LightTableRow = tw.tr`text-content text-sm font-content bg-base-max text-base-contrast-max`;
 const DarkTableRow = tw.tr`text-content text-sm font-content bg-base-lightest text-base-contrast-lightest`;
@@ -58,7 +58,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
   const boxDownloadChartRef = useRef<HTMLElement>();
   const qqDownloadChartRef = useRef<HTMLElement>();
   const fieldName = clinicalNestedField ?? clinicalField;
-  const date = convertDateToString(new Date());
+  const date = getFormattedTimestamp();
   const boxPlotDownloadName = `${fieldName}-box-plot-${date}`;
   const qqPlotDownloadName = `${fieldName}-qq-plot-${date}`;
 

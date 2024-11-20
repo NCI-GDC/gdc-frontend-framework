@@ -8617,13 +8617,6 @@
           "description": "The text term used to describe the type of environmental exposure.",
           "enum": ["Marijuana", "Radiation", "Smoke", "Tobacco", "Wood Dust"]
         },
-        "Marijuana Use Per Week": {
-          "facet_filter": "exposures.marijuana_use_per_week",
-          "facet_type": "number",
-          "description": "Numeric value that represents the number of times the patient uses marijuana each day.",
-          "minimum": 0,
-          "property_type": "number"
-        },
         "Pack Years Smoked": {
           "facet_filter": "exposures.pack_years_smoked",
           "facet_type": "number",
@@ -8648,14 +8641,6 @@
           "facet_type": "enum",
           "description": "The text term used to indicate whether the patient was exposed to secondhand smoke as a child.",
           "enum": ["Yes", "No", "Unknown", "Not Reported"]
-        },
-        "Smokeless Tobacco Quit Age": {
-          "facet_filter": "exposures.smokeless_tobacco_quit_age",
-          "facet_type": "age",
-          "description": "The age the subject quit smoking tobacco.",
-          "minimum": 0,
-          "maximum": 89,
-          "property_type": "integer"
         },
         "Smoking Frequency": {
           "facet_filter": "exposures.smoking_frequency",
@@ -8707,13 +8692,6 @@
             "Not Reported",
             "Not Allowed To Collect"
           ]
-        },
-        "Tobacco Use Per Day": {
-          "facet_filter": "exposures.tobacco_use_per_day",
-          "facet_type": "number",
-          "description": "Numeric value that represents the number of times the patient uses tobacco each day.",
-          "minimum": 0,
-          "property_type": "number"
         },
         "Type of Smoke Exposure": {
           "facet_filter": "exposures.type_of_smoke_exposure",
@@ -26146,18 +26124,6 @@
           "facet_filter": "aligned_reads.proportion_base_mismatch",
           "facet_type": "number",
           "description": "Proportion of mismatched bases collected from samtools.",
-          "property_type": "number"
-        },
-        "Proportion Coverage 10X": {
-          "facet_filter": "aligned_reads.proportion_coverage_10x",
-          "facet_type": "number",
-          "description": "Proportion of all reference bases for whole genome sequencing, or targeted bases for whole exome and targeted sequencing, that achieves 10X or greater coverage from Picard Tools.",
-          "property_type": "number"
-        },
-        "Proportion Coverage 30X": {
-          "facet_filter": "aligned_reads.proportion_coverage_30x",
-          "facet_type": "number",
-          "description": "Proportion of all reference bases for whole genome sequencing, or targeted bases for whole exome and targeted sequencing, that achieves 30X or greater coverage from Picard Tools.",
           "property_type": "number"
         },
         "Proportion Reads Duplicated": {

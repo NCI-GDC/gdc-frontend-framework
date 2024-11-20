@@ -3,7 +3,8 @@ import { humanify } from "@/utils/index";
 import { SSMSData, FilterSet } from "@gff/core";
 import { SomaticMutation, SsmToggledHandler } from "./types";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
-import { Dispatch, SetStateAction, useMemo, useId } from "react";
+import { Dispatch, SetStateAction, useId } from "react";
+import { useDeepCompareMemo } from "use-deep-compare";
 import { Checkbox } from "@mantine/core";
 import { HeaderTooltip } from "@/components/Table/HeaderTooltip";
 import {
@@ -15,15 +16,12 @@ import {
   SMTableSurvival,
 } from "./TableComponents";
 import CohortCreationButton from "@/components/CohortCreationButton";
-import {
-  IoIosArrowDropdownCircle as DownIcon,
-  IoIosArrowDropupCircle as UpIcon,
-} from "react-icons/io";
 import { entityMetadataType } from "@/utils/contexts";
 import NumeratorDenominator from "@/components/NumeratorDenominator";
 import ImpactHeaderWithTooltip from "../SharedComponent/ImpactHeaderWithTooltip";
 import RatioWithSpring from "@/components/RatioWithSpring";
 import { ComparativeSurvival } from "@/features/genomic/types";
+import { CollapseCircleIcon, ExpandCircleIcon } from "@/utils/icons";
 
 export const filterMutationType = (mutationSubType: string): string => {
   if (
@@ -36,6 +34,8 @@ export const filterMutationType = (mutationSubType: string): string => {
   const operation = split[split.length - 1];
   return operation.charAt(0).toUpperCase() + operation.slice(1);
 };
+
+const SMTableColumnHelper = createColumnHelper<SomaticMutation>();
 
 export const useGenerateSMTableColumns = ({
   toggledSsms,
@@ -69,12 +69,10 @@ export const useGenerateSMTableColumns = ({
   cohortFilters: FilterSet;
 }): ColumnDef<SomaticMutation>[] => {
   const componentId = useId();
-  const SMTableColumnHelper = useMemo(
-    () => createColumnHelper<SomaticMutation>(),
-    [],
-  );
 
-  const SMTableDefaultColumns = useMemo<ColumnDef<SomaticMutation>[]>(
+  const SMTableDefaultColumns = useDeepCompareMemo<
+    ColumnDef<SomaticMutation>[]
+  >(
     () => [
       SMTableColumnHelper.display({
         id: "select",
@@ -272,9 +270,9 @@ export const useGenerateSMTableColumns = ({
               {numerator !== 0 && row.getCanExpand() && (
                 <div className="flex items-center">
                   {!row.getIsExpanded() ? (
-                    <DownIcon size="1.25em" className="text-accent" />
+                    <ExpandCircleIcon size="1.25em" className="text-accent" />
                   ) : (
-                    <UpIcon size="1.25em" className="text-accent" />
+                    <CollapseCircleIcon size="1.25em" className="text-accent" />
                   )}
                 </div>
               )}
@@ -292,7 +290,6 @@ export const useGenerateSMTableColumns = ({
       }),
     ],
     [
-      SMTableColumnHelper,
       geneSymbol,
       handleSsmToggled,
       handleSurvivalPlotToggled,

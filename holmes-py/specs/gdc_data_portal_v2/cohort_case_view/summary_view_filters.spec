@@ -13,6 +13,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
 * Select "Add" from the Cohort Bar
 * Expand or collapse the cohort bar
 * Go to tab "Summary View" in Cohort Case View
+* Unpin the Cohort Bar
 
 ## Validate Filter Card Presence
 * Verify presence of filter cards in Cohort Summary View

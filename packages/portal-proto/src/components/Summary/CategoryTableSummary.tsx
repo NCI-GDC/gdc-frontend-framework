@@ -1,8 +1,8 @@
-import { MdInfo as InfoIcon } from "react-icons/md";
 import { ColumnDef } from "@tanstack/react-table";
 import { Tooltip } from "@mantine/core";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import VerticalTable from "../Table/VerticalTable";
+import { InfoIcon } from "@/utils/icons";
 
 interface CategoryTableSummaryProps<TData> {
   title: string;

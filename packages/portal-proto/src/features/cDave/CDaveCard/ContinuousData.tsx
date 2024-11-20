@@ -75,11 +75,11 @@ const toBucketDisplayName = (
     ),
     field,
     hasCustomBins,
-  )} to <${roundContinuousValue(
+  )?.toLocaleString()} to <${roundContinuousValue(
     convertDataDimension(Number(toValue), originalDataDimension, dataDimension),
     field,
     hasCustomBins,
-  )}`;
+  )?.toLocaleString()}`;
 };
 
 interface ContinuousDataProps {

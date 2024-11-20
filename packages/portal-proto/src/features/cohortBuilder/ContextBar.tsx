@@ -21,12 +21,6 @@ import {
   GqlOperation,
   useCurrentCohortCounts,
 } from "@gff/core";
-import { MdFilterAlt as CohortFilterIcon } from "react-icons/md";
-import {
-  MdDownload as DownloadIcon,
-  MdInsertChartOutlined as SummaryChartIcon,
-  MdOutlineViewComfy as TableIcon,
-} from "react-icons/md";
 import download from "src/utils/download";
 import SummaryFacets from "./SummaryFacets";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
@@ -41,6 +35,13 @@ import {
 } from "./utils";
 import StickyControl from "./StickyControl";
 import { useViewportSize } from "@mantine/hooks";
+import {
+  SummaryChartIcon,
+  TableIcon,
+  CohortFilterIcon,
+  DownloadIcon,
+} from "@/utils/icons";
+import { getFormattedTimestamp } from "@/utils/date";
 
 const ContextBar = ({
   handleIsSticky,
@@ -131,6 +132,9 @@ const ContextBar = ({
         case_filters: downloadFilter,
         return_type: "manifest",
         size: 10000,
+        filename: `gdc_manifest.${getFormattedTimestamp({
+          includeTimes: true,
+        })}.txt`,
       },
       done: () => setDownloadManifestActive(false),
     });
