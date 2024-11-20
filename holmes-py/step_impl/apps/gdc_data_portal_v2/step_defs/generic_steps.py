@@ -573,6 +573,13 @@ def verify_named_button_is_disabled(button_name: str):
         is_button_disabled
     ), f"The button '{button_name}' is disabled when it should NOT be"
 
+@step("Verify the button <button_name> area is <expanded_or_collapsed>")
+def verify_named_button_is_disabled(button_name: str, expanded_or_collapsed:str):
+    is_button_expanded = APP.shared.is_button_area_expanded(button_name)
+    if expanded_or_collapsed.lower() == "expanded":
+        assert is_button_expanded == 'true', f"The button '{button_name}' is NOT expanded when it should be"
+    elif expanded_or_collapsed.lower() == "collapsed":
+        assert is_button_expanded == 'false', f"The button '{button_name}' is NOT collapsed when it should be"
 
 @step("Wait for <data_testid> to be present on the page")
 def wait_for_data_testid_to_be_visible_on_the_page(data_testid: str):
