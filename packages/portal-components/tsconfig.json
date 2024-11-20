@@ -1,0 +1,22 @@
+{
+  "include": ["src/**/*", "tailwind.config.js"],
+  "exclude": ["node_modules"],
+  "compilerOptions": {
+    "outDir": "dist/dts",
+    "jsx": "react",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "strict": true,
+    "resolveJsonModule": true,
+    "target": "esnext",
+    "lib": ["dom", "esnext"],
+    "baseUrl": "."
+  }
+}
