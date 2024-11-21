@@ -18,6 +18,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
 ## Navigate to Table View
 * Expand or collapse the cohort bar
 * Go to tab "Table View" in Cohort Case View
+* Unpin the Cohort Bar
 
 ## Only Selected Cases
 * In table "Cases", search the table for "MP2PRT-PAR"

@@ -1,13 +1,19 @@
 # Cart - Download Cart Options
 Date Created    : 10/25/2024
-Version			: 1.0
-Owner		    : GDC QA
-Description		: Manifest and Download Cart
+Version			    : 1.0
+Owner		        : GDC QA
+Description		  : Manifest and Download Cart
 Test-Case       : PEAR-2246
-tags: gdc-data-portal-v2, regression, cart
+tags            : gdc-data-portal-v2, regression, cart
+
+
+## Remove Any Files From Cart
+* On GDC Data Portal V2 app
+* Navigate to "Cart" from "Header" "section"
+* Remove "All Files" from cart on the Cart page
+* Is text "Your cart is empty." present on the page
 
 ## Add Files to Cart
-* On GDC Data Portal V2 app
 * Navigate to "Downloads" from "Header" "section"
 * Add the following files to the cart on the Repository page
   |file_uuid_to_add                     |
@@ -82,6 +88,8 @@ tags: gdc-data-portal-v2, regression, cart
     |9c0e3c5c-fae2-46e6-9fa3-f50f38459e33   |
 
 ## Only Open Access Cart Download
+Messages can pile up here. Wait for everything to go away before continuing the test.
+* Pause "5" seconds
 * Remove "Unauthorized Files" from cart on the Cart page
 * Is temporary modal with text "Removed 6 files from the cart." present on the page and "Keep Modal"
 * Select "Download Cart" on the Cart page

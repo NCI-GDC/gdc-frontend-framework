@@ -1,10 +1,10 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { Tooltip, TextInput, ActionIcon } from "@mantine/core";
-import { MdClose, MdSearch } from "react-icons/md";
 import { Table } from "@tanstack/react-table";
 import ColumnOrdering from "./ColumnOrdering";
 import { useViewportSize } from "@mantine/hooks";
 import { XL_BREAKPOINT } from "src/utils";
+import { CloseIcon, SearchIcon } from "@/utils/icons";
 
 interface TableHeaderProps<TData> {
   additionalControls?: React.ReactNode;
@@ -98,7 +98,7 @@ const SearchInput: React.FC<{
       searchFocused={searchFocused}
     >
       <TextInput
-        leftSection={<MdSearch size={24} aria-hidden="true" />}
+        leftSection={<SearchIcon size={24} aria-hidden="true" />}
         data-testid="textbox-table-search-bar"
         placeholder={placeholder ?? "Search"}
         aria-label="Table Search Input"
@@ -106,7 +106,7 @@ const SearchInput: React.FC<{
         rightSection={
           searchTerm.length > 0 && (
             <ActionIcon onClick={onClear} className="border-0">
-              <MdClose aria-label="clear search" />
+              <CloseIcon aria-label="clear search" />
             </ActionIcon>
           )
         }

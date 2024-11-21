@@ -9,12 +9,12 @@ import {
   addNewUnsavedCohort,
   FilterSet,
 } from "@gff/core";
-import { FaUndo as DiscardIcon } from "react-icons/fa";
 import { removeQueryParamsFromRouter } from "./cohortUtils";
 import CohortActions from "./CohortActions";
 import CohortSelector from "./CohortSelector";
 import { CohortModals } from "./CohortModals";
 import { CohortGroupButton } from "../style";
+import { UndoIcon } from "@/utils/icons";
 
 const CohortManager: React.FC = () => {
   const coreDispatch = useCoreDispatch();
@@ -72,7 +72,7 @@ const CohortManager: React.FC = () => {
                   $isDiscard={true}
                   aria-label="Discard cohort changes"
                 >
-                  <DiscardIcon aria-hidden="true" />
+                  <UndoIcon aria-hidden="true" />
                 </CohortGroupButton>
               </span>
             </Tooltip>

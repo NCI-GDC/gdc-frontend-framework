@@ -1,5 +1,4 @@
 import { Grid } from "@mantine/core";
-import { MdShoppingCart as CartIcon } from "react-icons/md";
 import {
   useCartSummaryQuery,
   useCoreSelector,
@@ -13,6 +12,7 @@ import AuthorizationTable from "./AuthorizationTable";
 import { groupByAccess } from "./utils";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import DownloadInfo from "./DownloadInfo";
+import { CartIcon } from "@/utils/icons";
 
 const Cart: React.FC = () => {
   const cart = useCoreSelector((state) => selectCart(state));

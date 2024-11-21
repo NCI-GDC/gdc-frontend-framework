@@ -16,12 +16,12 @@ import {
   FacetIconButton,
   FacetText,
 } from "./components";
-import { FaUndo as UndoIcon } from "react-icons/fa";
 import { useCohortFacetFilters } from "../cohortBuilder/utils";
 import CohortBadge from "../cohortBuilder/CohortBadge";
 import { humanify } from "@/utils/index";
 import { FacetRequiredHooks } from "./types";
 import { useDeepCompareMemo } from "use-deep-compare";
+import { UndoIcon } from "@/utils/icons";
 
 interface UploadFacetProps {
   field: string;

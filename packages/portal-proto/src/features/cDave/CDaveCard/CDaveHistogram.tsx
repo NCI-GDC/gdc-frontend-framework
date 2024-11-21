@@ -1,6 +1,5 @@
 import { useState, useRef, useContext, useEffect } from "react";
 import { ActionIcon, Radio, Group, Loader, Menu, Tooltip } from "@mantine/core";
-import { MdDownload as DownloadIcon } from "react-icons/md";
 import tailwindConfig from "tailwind.config";
 import OffscreenWrapper from "@/components/OffscreenWrapper";
 import { handleDownloadPNG, handleDownloadSVG } from "@/features/charts/utils";
@@ -14,6 +13,7 @@ import { COLOR_MAP } from "../constants";
 import { toDisplayName } from "../utils";
 import { DisplayData } from "../types";
 import { useDeepCompareMemo } from "use-deep-compare";
+import { DownloadIcon } from "@/utils/icons";
 
 const formatBarChartData = (
   data: DisplayData,

@@ -369,6 +369,16 @@ def verify_item_does_not_appear_on_page(table):
         is_filter_visible = APP.shared.is_data_testid_present(v[0])
         assert is_filter_visible == False, f"The item '{v[0]}' is visible when it should NOT be"
 
+@step("Verify these custom filters <are_or_are_not> present in the properties table <table>")
+def verify_custom_filters_presence(are_or_are_not:str, table):
+    """Verifies if the given custom filter is present or not"""
+    for k, v in enumerate(table):
+        is_custom_filter_visible = APP.shared.is_custom_filter_in_properties_table_present(v[0])
+        if are_or_are_not.lower() == "are":
+            assert is_custom_filter_visible, f"In properties table, the custom filter '{v[0]}' is NOT visible"
+        elif are_or_are_not.lower() == "are not":
+            assert is_custom_filter_visible == False, f"In properties table, the custom filter '{v[0]}' is present when it should NOT be"
+
 @step("Verify presence of filter card <table>")
 def make_cohort_builder_selections(table):
     for k, v in enumerate(table):

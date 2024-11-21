@@ -44,7 +44,7 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
             disease_type: datum.disease_types,
             cases: datum.casesTotal,
             experimental_strategy: datum.files__experimental_strategy,
-            files: datum.filesTotal,
+            files: datum.filesTotal?.toLocaleString(),
           }))
         : [],
     [isFetching, data],

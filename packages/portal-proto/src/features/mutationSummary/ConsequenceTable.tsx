@@ -29,7 +29,7 @@ import { getFormattedTimestamp } from "@/utils/date";
 import { downloadTSV } from "@/components/Table/utils";
 import ImpactHeaderWithTooltip from "../GenomicTables/SharedComponent/ImpactHeaderWithTooltip";
 import TotalItems from "@/components/Table/TotalItem";
-import { HiPlus, HiMinus } from "react-icons/hi";
+import { StrandMinusIcon, StrandPlusIcon } from "@/utils/icons";
 
 const consequenceTableColumnHelper = createColumnHelper<ConsequenceTableData>();
 
@@ -204,7 +204,13 @@ export const ConsequenceTable = ({
         id: "gene_strand",
         header: "Gene Strand",
         cell: ({ row }) => (
-          <span>{row.original.gene_strand > 0 ? <HiPlus /> : <HiMinus />}</span>
+          <span>
+            {row.original.gene_strand > 0 ? (
+              <StrandPlusIcon />
+            ) : (
+              <StrandMinusIcon />
+            )}
+          </span>
         ),
       }),
       consequenceTableColumnHelper.display({

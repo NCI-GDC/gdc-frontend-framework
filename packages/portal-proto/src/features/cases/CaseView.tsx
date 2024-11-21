@@ -12,7 +12,6 @@ import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { ActionIcon, Button, Tooltip } from "@mantine/core";
 import { useScrollIntoView, useViewportSize } from "@mantine/hooks";
-import { FaFile, FaEdit } from "react-icons/fa";
 import { Biospecimen } from "../biospecimen/Biospecimen";
 import { addToCart, removeFromCart } from "../cart/updateCart";
 import {
@@ -25,7 +24,6 @@ import {
   humanify,
   LG_BREAKPOINT,
 } from "src/utils";
-import { MdShoppingCart as CartIcon } from "react-icons/md";
 import CategoryTableSummary from "@/components/Summary/CategoryTableSummary";
 import { ClinicalSummary } from "./ClinicalSummary/ClinicalSummary";
 import { ImageSlideCount } from "@/components/ImageSlideCount";
@@ -41,6 +39,7 @@ import UsersIcon from "public/user-flow/icons/summary/users.svg";
 import AnnotationsTable from "./AnnotationsTable";
 import useScrollToHash from "@/hooks/useScrollToHash";
 import { useSynchronizedRowHeights } from "@/components/HorizontalTable/useSynchronizedRowHeights";
+import { CartIcon, EditIcon, FileIcon } from "@/utils/icons";
 
 export interface CaseViewProps {
   readonly data: CaseDefaults;
@@ -206,7 +205,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
 
   const Files = (
     <span className="flex items-center gap-1">
-      <FaFile />
+      <FileIcon />
       {filesCountTotal > 0 ? (
         <a
           data-testid="text-file-count-case-summary"
@@ -224,7 +223,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
 
   const Annotations = (
     <span className="flex items-center gap-1">
-      <FaEdit />
+      <EditIcon />
       {annotationCountData > 0 ? (
         <a
           data-testid="text-annotation-count-case-summary"

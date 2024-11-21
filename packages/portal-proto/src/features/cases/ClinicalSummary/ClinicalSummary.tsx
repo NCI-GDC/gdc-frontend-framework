@@ -12,13 +12,13 @@ import {
 } from "@gff/core";
 import { Divider, Loader, Tabs, Text } from "@mantine/core";
 import { useState } from "react";
-import { MdDownload as DownloadIcon } from "react-icons/md";
 import { humanify, ageDisplay } from "src/utils";
 import { FamilyHistoryOrExposure } from "./FamilyHistoryOrExposure";
 import download from "@/utils/download";
 import { TabbedTables } from "./TabbedTables";
 import DiagnosesTables from "./DiagnosesTables";
 import FollowUpTables from "./FollowUpTables";
+import { DownloadIcon } from "@/utils/icons";
 
 export const ClinicalSummary = ({
   demographic,

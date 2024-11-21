@@ -1,8 +1,8 @@
 import { upperFirst } from "lodash";
 import { Box, Button, Group, Modal, TextInput, Loader } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { RiErrorWarningFill as WarningIcon } from "react-icons/ri";
 import ErrorMessage from "../ErrorMessage";
+import { WarningIconMessage } from "@/utils/icons";
 
 interface SaveOrCreateEntityModalProps {
   entity: string;
@@ -112,8 +112,8 @@ export const SaveOrCreateEntityBody = ({
     Object.keys(form.errors).length === 0 &&
     (onNameChange && !onNameChange((form?.values?.name || "").trim()) ? (
       <span className="text-warningColorText">
-        <WarningIcon className="text-warningColor inline mr-0.5" />A {entity}{" "}
-        with the same name already exists.{" "}
+        <WarningIconMessage className="text-warningColor inline mr-0.5" />A{" "}
+        {entity} with the same name already exists.{" "}
         {additionalDuplicateMessage && additionalDuplicateMessage}
       </span>
     ) : (

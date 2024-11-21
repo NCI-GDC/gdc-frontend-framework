@@ -1,10 +1,5 @@
 import React, { useCallback, useRef } from "react";
 import { Button, Menu } from "@mantine/core";
-import {
-  MdLogout as LogoutIcon,
-  MdArrowDropDown as ArrowDropDownIcon,
-} from "react-icons/md";
-import { FaDownload, FaUserCheck } from "react-icons/fa";
 import saveAs from "file-saver";
 import urlJoin from "url-join";
 import {
@@ -20,6 +15,12 @@ import {
 } from "@gff/core";
 import { LoginButton } from "@/components/LoginButton";
 import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
+import {
+  ArrowDropDownIcon,
+  DownloadIcon,
+  LogoutIcon,
+  PersonIcon,
+} from "@/utils/icons";
 
 const LoginButtonOrUserDropdown = () => {
   const dispatch = useCoreDispatch();
@@ -104,14 +105,14 @@ const LoginButtonOrUserDropdown = () => {
           </Menu.Target>
           <Menu.Dropdown>
             <Menu.Item
-              leftSection={<FaUserCheck size="1.25em" />}
+              leftSection={<PersonIcon size="1.25em" />}
               onClick={handleUserProfileClick}
               data-testid="userprofilemenu"
             >
               User Profile
             </Menu.Item>
             <Menu.Item
-              leftSection={<FaDownload size="1.25em" />}
+              leftSection={<DownloadIcon size="1.25em" />}
               data-testid="downloadTokenMenuItem"
               onClick={handleDownloadTokenClick}
             >

@@ -12,6 +12,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
 * Navigate to "Analysis" from "Header" "section"
 * Expand or collapse the cohort bar
 * Go to tab "Table View" in Cohort Case View
+* Unpin the Cohort Bar
 
 ## Biospecimen - TSV
 * In table "Cases", search the table for "MMRF_11"
@@ -125,7 +126,6 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
     |zone_of_origin_prostate                |
     |alcohol_drinks_per_day                 |
     |occupation_duration_years              |
-    |marijuana_use_per_week                 |
     |relationship_primary_diagnosis         |
     |relatives_with_cancer_history_count    |
     |weeks_gestation_at_birth               |
@@ -148,7 +148,10 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
     |MATCH                                  |
     |TCGA                                   |
     |MMRF_1108                              |
-
+    |tumor_stage                            |
+    |marijuana_use_per_week                 |
+    |smokeless_tobacco_quit_age             |
+    |tobacco_use_per_day                    |
 
 ## Clinical - JSON
 * In table "Cases", search the table for "MMRF_187"

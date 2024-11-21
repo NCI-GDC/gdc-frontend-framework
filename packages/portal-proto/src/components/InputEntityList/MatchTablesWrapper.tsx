@@ -1,14 +1,11 @@
 import React, { useState } from "react";
 import { Tabs, Badge, Collapse } from "@mantine/core";
-import {
-  IoIosArrowDropdownCircle as ExpandIcon,
-  IoIosArrowDropupCircle as CollapseIcon,
-} from "react-icons/io";
 import { createKeyboardAccessibleFunction } from "src/utils";
 import { StyledTab } from "@/components/StyledComponents/Tabs";
 import { MatchResults } from "./utils";
 import MatchedTable from "./MatchedTable";
 import UnmatchedTable from "./UnmatchedTable";
+import { CollapseCircleIcon, ExpandCircleIcon } from "@/utils/icons";
 
 interface MatchTablesProps {
   readonly matched: MatchResults[];
@@ -43,9 +40,9 @@ const MatchTablesWrapper: React.FC<MatchTablesProps> = ({
         aria-expanded={showTable}
       >
         {showTable ? (
-          <CollapseIcon size={18} className="text-secondary" />
+          <CollapseCircleIcon size={18} className="text-secondary" />
         ) : (
-          <ExpandIcon size={18} className="text-secondary" />
+          <ExpandCircleIcon size={18} className="text-secondary" />
         )}
         Summary Table
       </span>
@@ -61,7 +58,7 @@ const MatchTablesWrapper: React.FC<MatchTablesProps> = ({
                 size="xs"
                 className="ml-1"
               >
-                {numMatched}
+                {numMatched?.toLocaleString()}
               </Badge>
             </StyledTab>
             <StyledTab value="unmatched">
@@ -73,7 +70,7 @@ const MatchTablesWrapper: React.FC<MatchTablesProps> = ({
                 size="xs"
                 className="ml-1"
               >
-                {unmatched.length}
+                {unmatched.length?.toLocaleString()}
               </Badge>
             </StyledTab>
           </Tabs.List>

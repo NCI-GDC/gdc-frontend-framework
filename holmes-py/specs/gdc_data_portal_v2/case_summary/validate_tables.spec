@@ -131,8 +131,14 @@ tags: gdc-data-portal-v2, case-summary
     |extracapsular_extension_present        |
     |margin_status                          |
     |pathology_detail_submitter_id          |
-    |tumor_largest_dimension_diameter       |
     |3.5                                    |
+* Verify that "TSV from Case Summary Clinical Table" does not contain specified information
+    |required_info                          |
+    |---------------------------------------|
+    |tumor_stage                            |
+    |marijuana_use_per_week                 |
+    |smokeless_tobacco_quit_age             |
+    |tobacco_use_per_day                    |
 
 ## Clinical Table - Download JSON: Exposure, Pathological Detail
 * Download "JSON" from "Case Summary Clinical Table"
@@ -276,7 +282,6 @@ tags: gdc-data-portal-v2, case-summary
     |Lactate Dehydrogenase                  |
     |molecular_analysis_method              |
     |bone_marrow_malignant_cells            |
-    |non_nodal_tumor_deposits               |
     |rhabdoid_present                       |
     |zone_of_origin_prostate                |
     |relative_smoker                        |
@@ -287,6 +292,13 @@ tags: gdc-data-portal-v2, case-summary
     |additional_pathology_findings          |
     |treatment_type                         |
     |MMRF-COMMPASS                          |
+* Verify that "TSV from Case Summary Clinical Table" does not contain specified information
+    |required_info                          |
+    |---------------------------------------|
+    |tumor_stage                            |
+    |marijuana_use_per_week                 |
+    |smokeless_tobacco_quit_age             |
+    |tobacco_use_per_day                    |
 
 ## Clinical Table - Download JSON: Follow Up, Family History, Clinical
 * Download "JSON" from "Case Summary Clinical Table"

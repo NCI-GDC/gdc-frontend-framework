@@ -14,7 +14,7 @@ class GenericLocators:
         'span:text("Set this as your current cohort.")'
     )
 
-    BUTTON_CLOSE_NOTIFICATION = '[aria-label="Close notification"]'
+    BUTTON_CLOSE_NOTIFICATION = '[aria-label="Close notification"] >> nth=0'
     BUTTON_CLOSE_MODAL = 'button[aria-label="Close Modal"]'
 
     LOADING_SPINNER_GENERIC = '[data-testid="loading-spinner"] >> nth=0'
@@ -130,6 +130,7 @@ class GenericLocators:
     )
     BUTTON_RESET_COLUMN_SELECTIONS = '[data-testid="restore-default-icon"]'
 
+    BUTTON_CUSTOM_FILTER_IN_PROPERTIES_TABLE = lambda button_name: f'[data-testid="list-file-filters"] >> text="{button_name}"'
     FILTER_GROUP_IDENT = (
         lambda group_name: f'[data-testid="filters-facets"] >> div:text-is("{group_name}")'
     )
@@ -574,6 +575,11 @@ class BasePage:
         locator = GenericLocators.FILTER_GROUP_SHOW_MORE_LESS_IDENT(
             facet_group_name, label
         )
+        return self.is_visible(locator)
+
+    def is_custom_filter_in_properties_table_present(self, button_name):
+        """Returns if custom filter is present in properties table"""
+        locator = GenericLocators.BUTTON_CUSTOM_FILTER_IN_PROPERTIES_TABLE(button_name)
         return self.is_visible(locator)
 
     def is_filter_card_custom_filter_text_present(self, facet_card, text):

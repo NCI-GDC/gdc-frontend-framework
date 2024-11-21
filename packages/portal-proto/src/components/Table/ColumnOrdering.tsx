@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction, useState } from "react";
 import {
   Switch,
   ActionIcon,
@@ -7,12 +8,7 @@ import {
   Menu,
 } from "@mantine/core";
 import { Column, ColumnOrderState, Table } from "@tanstack/react-table";
-import { Dispatch, SetStateAction, useState } from "react";
-import { MdDragIndicator as DragIcon } from "react-icons/md";
-import { BsList, BsX } from "react-icons/bs";
-import { MdSearch as SearchIcon } from "react-icons/md";
 import { isEqual } from "lodash";
-import { FaUndo as RevertIcon } from "react-icons/fa";
 import { humanify } from "@/utils/index";
 import { NO_COLUMN_ORDERING_IDS } from "./utils";
 import {
@@ -37,6 +33,7 @@ import {
   restrictToVerticalAxis,
   restrictToWindowEdges,
 } from "@dnd-kit/modifiers";
+import { DragIcon, ListIcon, SearchIcon, UndoIcon, XIcon } from "@/utils/icons";
 
 function ColumnOrdering<TData>({
   table,
@@ -107,9 +104,9 @@ function ColumnOrdering<TData>({
             } hover:bg-primary hover:text-base-max`}
           >
             {!showColumnMenu ? (
-              <BsList size="1.5rem" aria-hidden="true" />
+              <ListIcon size="1.5rem" aria-hidden="true" />
             ) : (
-              <BsX size="2rem" aria-hidden="true" />
+              <XIcon size="2rem" aria-hidden="true" />
             )}
           </ActionIcon>
         </Menu.Target>
@@ -136,7 +133,7 @@ function ColumnOrdering<TData>({
                 data-testid="restore-default-icon"
                 aria-label="restore default column ordering"
               >
-                <RevertIcon className="text-primary" size="1rem" />
+                <UndoIcon className="text-primary" size="1rem" />
               </ActionIcon>
             </span>
           </Tooltip>
