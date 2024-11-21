@@ -1,4 +1,4 @@
-import { IoMdTrendingDown as SurvivalIcon } from "react-icons/io";
+import { SurvivalChartIcon } from "@/utils/icons";
 import ToggledCheck from "../../SharedComponent/ToggledCheck";
 import { Survival } from "../types";
 
@@ -38,7 +38,7 @@ const GenesTableSurvival = ({
       margin="ml-0.5"
       ariaText={`Toggle survival plot for ${symbol} gene`}
       isActive={survival.checked}
-      icon={<SurvivalIcon size={24} aria-hidden="true" />}
+      icon={<SurvivalChartIcon size={24} aria-hidden="true" />}
       selected={survival as unknown as Record<string, string>} // need to fix this
       handleSwitch={handleSurvivalPlotToggled}
       survivalProps={{ plot: "gene.symbol" }}

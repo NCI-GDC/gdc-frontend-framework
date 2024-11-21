@@ -1,5 +1,4 @@
 import { Button } from "@mantine/core";
-import { MdArrowDropDown as DownIcon } from "react-icons/md";
 import { saveAs } from "file-saver";
 import {
   FilterSet,
@@ -25,6 +24,7 @@ import {
   useDataDimension,
 } from "../utils";
 import { useMemo } from "react";
+import { DropdownIcon } from "@/utils/icons";
 
 interface CardControlsProps {
   readonly continuous: boolean;
@@ -125,7 +125,7 @@ const CardControls: React.FC<CardControlsProps> = ({
             customDataTestId="button-customize-bins"
             RightSection={
               <div className="border-l pl-1 -mr-2">
-                <DownIcon size={20} aria-hidden="true" />
+                <DropdownIcon size={20} aria-hidden="true" />
               </div>
             }
             TargetButtonChildren={"Customize Bins"}

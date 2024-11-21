@@ -141,7 +141,6 @@ tags: gdc-data-portal-v2, regression, project-summary
     |ajcc_pathologic_m                      |
     |double_hit_lymphoma                    |
     |sites_of_involvement_count             |
-    |largest_extrapelvic_peritoneal_focus   |
     |therapeutic_levels_achieved            |
     |Radiation Therapy, NOS                 |
     |Invasive mucinous adenocarcinoma       |
@@ -153,7 +152,10 @@ tags: gdc-data-portal-v2, regression, project-summary
     |FM-AD                                  |
     |TARGET                                 |
     |TCGA-READ                              |
-
+    |tumor_stage                            |
+    |marijuana_use_per_week                 |
+    |smokeless_tobacco_quit_age             |
+    |tobacco_use_per_day                    |
 
 ## Clinical Download - JSON
 * Download "JSON" from "Project Summary Clinical"

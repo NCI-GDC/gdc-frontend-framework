@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   AnnotationDefaults,
   CartFile,
@@ -7,18 +8,19 @@ import {
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Dispatch, SetStateAction, useMemo } from "react";
 import { Button, Checkbox, Menu } from "@mantine/core";
-import { FaShoppingCart as CartIcon } from "react-icons/fa";
-import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
-import { BiAddToQueue } from "react-icons/bi";
-import { BsTrash } from "react-icons/bs";
 import { allFilesInCart } from "@/utils/index";
 import { addToCart, removeFromCart } from "@/features/cart/updateCart";
-import Link from "next/link";
 import { ImageSlideCount } from "@/components/ImageSlideCount";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
 import { entityMetadataType } from "@/utils/contexts";
 import { ArraySeparatedSpan } from "@/components/ArraySeparatedSpan/ArraySeparatedSpan";
+import {
+  CartIcon,
+  DropdownIcon,
+  TrashIcon,
+  AddToQueueIcon,
+} from "@/utils/icons";
 
 export type casesTableDataType = {
   case_uuid: string;
@@ -132,7 +134,7 @@ export const useGenerateCasesTableColumns = ({
                   }
                   rightSection={
                     <div className="border-l">
-                      <Dropdown
+                      <DropdownIcon
                         className={
                           isAllFilesInCart && "text-primary-contrast-darkest"
                         }
@@ -154,7 +156,7 @@ export const useGenerateCasesTableColumns = ({
                 {numberOfFilesToRemove < row.original.files_count && (
                   <Menu.Item
                     data-testid="button-add-files-to-cart-cases-table"
-                    leftSection={<BiAddToQueue />}
+                    leftSection={<AddToQueueIcon />}
                     onClick={() => {
                       addToCart(row.original.files, currentCart, dispatch);
                     }}
@@ -167,7 +169,7 @@ export const useGenerateCasesTableColumns = ({
                 {numberOfFilesToRemove > 0 && (
                   <Menu.Item
                     data-testid="button-remove-files-from-cart-cases-table"
-                    leftSection={<BsTrash />}
+                    leftSection={<TrashIcon />}
                     onClick={() => {
                       removeFromCart(row.original.files, currentCart, dispatch);
                     }}

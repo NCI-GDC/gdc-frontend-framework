@@ -1,8 +1,5 @@
+import { StickyOffIcon, StickyOnIcon } from "@/utils/icons";
 import { Tooltip, Checkbox, CheckboxProps } from "@mantine/core";
-import {
-  BsPin as StickyOffIcon,
-  BsPinFill as StickyOnIcon,
-} from "react-icons/bs";
 
 const StickyControl = ({
   handleIsSticky,

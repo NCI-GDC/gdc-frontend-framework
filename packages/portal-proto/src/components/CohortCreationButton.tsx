@@ -1,9 +1,9 @@
 import React, { ReactNode, useState } from "react";
 import { Tooltip, ButtonProps, Loader } from "@mantine/core";
-import { FaPlus as PlusIcon } from "react-icons/fa";
 import tw from "tailwind-styled-components";
 import { FilterSet, useCoreDispatch, Modals, showModal } from "@gff/core";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
+import { PlusIcon } from "@/utils/icons";
 
 interface CohortCreationStyledButtonProps extends ButtonProps {
   $fullWidth?: boolean;

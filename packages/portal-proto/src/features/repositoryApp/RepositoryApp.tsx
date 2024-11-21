@@ -18,10 +18,6 @@ import {
 import { useEffect, useState } from "react";
 import { AppStore, useAppSelector } from "./appApi";
 import {
-  MdShoppingCart as CartIcon,
-  MdDownload as DownloadIcon,
-} from "react-icons/md";
-import {
   addToCart,
   removeFromCart,
   showCartOverLimitNotification,
@@ -42,10 +38,10 @@ import FilesTables from "../repositoryApp/FilesTable";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 import { useRouter } from "next/router";
-import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
 import { TableXPositionContext } from "@/components/Table/VerticalTable";
 import { getFormattedTimestamp } from "@/utils/date";
 import { focusStyles } from "@/utils/index";
+import { CartIcon, DownloadIcon, DropdownIcon } from "@/utils/icons";
 
 export const persistor = persistStore(AppStore);
 
@@ -164,7 +160,7 @@ export const RepositoryApp = (): JSX.Element => {
                     <Button
                       data-testid="button-download-associated-data-files-table"
                       rightSection={
-                        <Dropdown
+                        <DropdownIcon
                           size="1.25em"
                           aria-hidden="true"
                           data-testid="dropdown-icon"

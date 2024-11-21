@@ -78,7 +78,6 @@ const RangeInputWithPrefixedRanges: React.FC<
     isFetching,
     error,
   } = hooks.useGetRangeFacetData(field, ranges);
-
   const rangeLabelsAndValues = buildRangeLabelsAndValues(
     bucketRanges,
     totalCount,

@@ -1,7 +1,4 @@
-import {
-  IoIosArrowDropdownCircle as DownIcon,
-  IoIosArrowDropupCircle as UpIcon,
-} from "react-icons/io";
+import { CollapseCircleIcon, ExpandCircleIcon } from "@/utils/icons";
 
 const ExpandRowComponent = ({
   isRowExpanded,
@@ -22,14 +19,14 @@ const ExpandRowComponent = ({
     ) : (
       <div className="flex items-center text-primary cursor-pointer gap-2">
         {isRowExpanded && isColumnExpanded ? (
-          <UpIcon
+          <CollapseCircleIcon
             size="1.25em"
             className="text-accent"
             data-testid="up-icon"
             aria-hidden="true"
           />
         ) : (
-          <DownIcon
+          <ExpandCircleIcon
             size="1.25em"
             className="text-accent"
             data-testid="down-icon"

@@ -1,7 +1,5 @@
+import { ExpandMoreIcon, LinkIcon, AlertIcon } from "@/utils/icons";
 import { Accordion } from "@mantine/core";
-import { MdExpandMore as ExpandMoreIcon } from "react-icons/md";
-import { FaExclamationCircle } from "react-icons/fa";
-import { FiExternalLink } from "react-icons/fi";
 import tw from "tailwind-styled-components";
 
 const H2 = tw.h2`
@@ -36,7 +34,7 @@ function DownloadInfo() {
           className="hover:bg-[#FFFFFF50] pl-0 relative"
           data-testid="button-how-to-download-files"
         >
-          <FaExclamationCircle
+          <AlertIcon
             color="white"
             className="h-6 w-6 absolute left-[-2.2rem] top-[0.4rem]"
             aria-label="Warning"
@@ -56,7 +54,7 @@ function DownloadInfo() {
                   rel="noopener noreferrer"
                   className="text-linkDarkerColor font-bold underline"
                 >
-                  <FiExternalLink className="inline" /> GDC Data Transfer Tool
+                  <LinkIcon className="inline" /> GDC Data Transfer Tool
                 </a>
                 . The GDC Data Transfer Tool is recommended for transferring
                 large volumes of data.
@@ -79,7 +77,7 @@ function DownloadInfo() {
                   rel="noopener noreferrer"
                   className="underline text-linkDarkerColor font-bold"
                 >
-                  <FiExternalLink className="inline" /> GDC Reference Files
+                  <LinkIcon className="inline" /> GDC Reference Files
                 </a>{" "}
                 for use in your genomic data analysis.
               </P>

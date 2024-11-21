@@ -6,6 +6,8 @@ from ....base.base_page import GenericLocators
 
 class CohortBarLocators:
     COHORT_BAR_BUTTON = lambda button_name: f'[data-testid="{button_name}Button"]'
+    BUTTON_PIN_UNPIN_COHORT_BAR = '[data-testid="button-pin-unpin-cohort-bar"]'
+    BUTTON_PIN_UNPIN_COHORT_BAR_IS_UNPINNED =  '[data-testid="button-pin-unpin-cohort-bar"][data-indeterminate="true"]'
 
     COHORT_FROM_DROPDOWN_LIST = (
         lambda cohort_name: f'[data-testid="cohort-list-dropdown"] >> text="{cohort_name}"'
@@ -55,6 +57,14 @@ class CohortBar(BasePage):
             self.normalize_button_identifier(button_name)
         )
         self.click(locator)
+
+    def unpin_cohort_bar(self):
+        is_cohort_bar_unpinned = CohortBarLocators.BUTTON_PIN_UNPIN_COHORT_BAR_IS_UNPINNED
+        # Check if cohort bar is already unpinned
+        if not self.is_visible(is_cohort_bar_unpinned):
+            # If it is not already then we unpin
+            button_cohort_bar_pin_unpin = CohortBarLocators.BUTTON_PIN_UNPIN_COHORT_BAR
+            self.click(button_cohort_bar_pin_unpin)
 
     # Clicks the 'x' to remove a specified filter in the cohort query area
     def click_remove_filter_from_cohort_query_area(self, filter_name_to_remove: str):

@@ -3,20 +3,18 @@ import { pickBy, mapKeys, isEqual, isEmpty } from "lodash";
 import { Button, Group, Modal, Text, TextInput } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
-import {
-  FaPencilAlt as PencilIcon,
-  FaEyeSlash as HideIcon,
-  FaEye as ShowIcon,
-  FaExclamationCircle as AlertIcon,
-} from "react-icons/fa";
-import {
-  MdReplay as ResetIcon,
-  MdHorizontalSplit as GroupIcon,
-  MdOutlineHorizontalSplit as UngroupIcon,
-} from "react-icons/md";
 import { createKeyboardAccessibleFunction } from "src/utils";
 import { CategoricalBins } from "./types";
 import FunctionButton from "@/components/FunctionButton";
+import {
+  AlertIcon,
+  GroupIcon,
+  HideIcon,
+  PencilIcon,
+  ReplayIcon,
+  ShowIcon,
+  UngroupIcon,
+} from "@/utils/icons";
 
 const DEFAULT_GROUP_NAME_PREFIX = "selected value ";
 
@@ -208,7 +206,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
               disabled={isEqual(results, values)}
               aria-label="reset groups"
             >
-              <ResetIcon size={20} />
+              <ReplayIcon size={20} />
             </FunctionButton>
             <FunctionButton
               data-testid="button-custom-bins-group-values"

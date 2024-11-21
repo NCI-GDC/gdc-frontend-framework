@@ -1,10 +1,8 @@
 // Credits to https://github.com/NCI-GDC/portal-ui/blob/develop/src/packages/%40ncigdc/modern_components/BiospecimenCard/utils.js for useful utilities functions
-
 import {
   formatDataForHorizontalTable,
   mapGdcFileToCartFile,
 } from "../files/utils";
-import { FaShoppingCart } from "react-icons/fa";
 import { ActionIcon, Tooltip } from "@mantine/core";
 import Link from "next/link";
 import {
@@ -19,7 +17,7 @@ import { get } from "lodash";
 import { entityTypes } from "@/components/BioTree/types";
 import { humanify, fileInCart, ageDisplay } from "src/utils";
 import { DownloadFile } from "@/components/DownloadButtons";
-import { GiMicroscope } from "react-icons/gi";
+import { CartIcon, MicroscopeIcon } from "@/utils/icons";
 
 export const match = (query: string, entity: Record<string, any>): boolean =>
   Object.keys(entity).some((k) => {
@@ -127,7 +125,7 @@ export const formatEntityInfo = (
             <Link
               href={`/image-viewer/MultipleImageViewerPage?caseId=${caseId}&selectedId=${selectedSlide[0]?.file_id}`}
             >
-              <GiMicroscope size={17} />
+              <MicroscopeIcon size={17} />
             </Link>
           </ActionIcon>
         </Tooltip>
@@ -162,7 +160,7 @@ export const formatEntityInfo = (
               }
             }}
           >
-            <FaShoppingCart size={16} />
+            <CartIcon size={16} />
           </ActionIcon>
         </Tooltip>
 

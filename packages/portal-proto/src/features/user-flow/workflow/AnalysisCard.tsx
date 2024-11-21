@@ -1,15 +1,14 @@
 import React from "react";
-import { Divider } from "@mantine/core";
-import {
-  MdPlayArrow,
-  MdArrowDropDown,
-  MdArrowDropUp,
-  MdInfo,
-} from "react-icons/md";
-import { Button, Card, Loader, Tooltip } from "@mantine/core";
+import Link from "next/link";
+import { Divider, Button, Card, Loader, Tooltip } from "@mantine/core";
 import { useElementSize } from "@mantine/hooks";
 import { AppRegistrationEntry } from "./utils";
-import Link from "next/link";
+import {
+  ArrowDropDownIcon,
+  ArrowDropUpIcon,
+  InfoIcon,
+  PlayIcon,
+} from "@/utils/icons";
 
 export interface AnalysisCardProps {
   entry: AppRegistrationEntry;
@@ -69,7 +68,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             aria-disabled={inactive}
             aria-label={entry.name}
           >
-            <MdPlayArrow size={16} color="white" />
+            <PlayIcon size={16} color="white" />
           </Link>
 
           {entry.hasDemo ? (
@@ -118,9 +117,9 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
           size="xs"
           rightSection={
             descriptionVisible ? (
-              <MdArrowDropUp size={16} aria-hidden="true" />
+              <ArrowDropUpIcon size={16} aria-hidden="true" />
             ) : (
-              <MdArrowDropDown size={16} aria-hidden="true" />
+              <ArrowDropDownIcon size={16} aria-hidden="true" />
             )
           }
           classNames={{
@@ -167,7 +166,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             {caseCounts === 0 && (
               <Tooltip label={entry?.noDataTooltip} withArrow w={200} multiline>
                 <div>
-                  <MdInfo className="inline-block ml-1" />
+                  <InfoIcon className="inline-block ml-1" />
                 </div>
               </Tooltip>
             )}

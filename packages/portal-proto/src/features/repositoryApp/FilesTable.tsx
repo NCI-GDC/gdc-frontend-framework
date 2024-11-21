@@ -16,7 +16,6 @@ import {
   FileCaseType,
   FileAnnotationsType,
 } from "@gff/core";
-import { MdSave, MdPerson } from "react-icons/md";
 import { useAppSelector } from "@/features/repositoryApp/appApi";
 import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
@@ -41,6 +40,7 @@ import VerticalTable from "@/components/Table/VerticalTable";
 import { downloadTSV } from "@/components/Table/utils";
 import { REPO_BREAKPOINT, statusBooleansToDataStatus } from "src/utils";
 import { useDeepCompareEffect } from "use-deep-compare";
+import { PersonIcon, SaveIcon } from "@/utils/icons";
 
 export type FilesTableDataType = {
   file: GdcFile;
@@ -433,12 +433,15 @@ const FilesTables: React.FC = () => {
         {tempPagination?.total !== 1 ? "Files" : "File"}
       </div>
       <div>
-        <MdPerson className="ml-2 mr-1 mb-1 inline-block" aria-hidden="true" />
+        <PersonIcon
+          className="ml-2 mr-1 mb-1 inline-block"
+          aria-hidden="true"
+        />
         <strong className="mr-1">{totalCaseCount}</strong>
         {fileSizeSliceData?.data?.total_case_count !== 1 ? "Cases" : "Case"}
       </div>
       <div>
-        <MdSave className="ml-2 mr-1 mb-1 inline-block" aria-hidden="true" />
+        <SaveIcon className="ml-2 mr-1 mb-1 inline-block" aria-hidden="true" />
         {totalFileSize}
       </div>
     </div>

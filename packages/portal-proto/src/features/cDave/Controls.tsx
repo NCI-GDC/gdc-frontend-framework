@@ -9,15 +9,6 @@ import {
   Highlight,
 } from "@mantine/core";
 import { groupBy, sortBy } from "lodash";
-import {
-  MdKeyboardArrowDown as DownIcon,
-  MdKeyboardArrowRight as RightIcon,
-  MdClose as CloseIcon,
-} from "react-icons/md";
-import {
-  FaAngleDoubleLeft as DoubleLeftIcon,
-  FaAngleDoubleRight as DoubleRightIcon,
-} from "react-icons/fa";
 import { Stats, Buckets } from "@gff/core";
 import { createKeyboardAccessibleFunction } from "src/utils";
 import {
@@ -35,6 +26,13 @@ import {
   useDeepCompareEffect,
   useDeepCompareMemo,
 } from "use-deep-compare";
+import {
+  CloseIcon,
+  DoubleLeftIcon,
+  DoubleRightIcon,
+  DownIcon,
+  RightIcon,
+} from "@/utils/icons";
 
 interface CDaveField {
   readonly field_type: string;
