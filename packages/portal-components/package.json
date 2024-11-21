@@ -31,7 +31,7 @@
     "@types/react": "^18.3.3",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
-    "rollup": "^4.24.4",
+    "rollup": "^4.27.3",
     "@swc/core": "^1.9.2",
     "@rollup/plugin-commonjs": "^28.0.1",
     "@rollup/plugin-node-resolve": "^15.3.0",
