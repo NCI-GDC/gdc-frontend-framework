@@ -1,7 +1,7 @@
-import babel from "@rollup/plugin-babel";
-import typescript from "@rollup/plugin-typescript";
+import { swc } from "rollup-plugin-swc3";
+import swcPreserveDirectives from "rollup-swc-preserve-directives";
 import json from "@rollup/plugin-json";
-import { terser } from "rollup-plugin-terser";
+import babel from "@rollup/plugin-babel";
 import dts from "rollup-plugin-dts";
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
 import postcss from "rollup-plugin-postcss";
@@ -17,18 +17,23 @@ const config = [
       {
         file: "dist/index.es.js",
         format: "es",
-        exports: "named",
       },
     ],
     plugins: [
       peerDepsExternal(),
-      typescript(),
       json(),
+      swc({
+        sourceMaps: true,
+        include: /\.[mc]?[jt]sx?$/,
+        exclude: /node_modules/,
+        tsconfig: "tsconfig.json",
+        jsc: {},
+      }),
+      swcPreserveDirectives(),
       babel({
         presets: ["@babel/preset-react", { runtime: "automatic" }],
         babelHelpers: "bundled",
       }),
-      terser(),
     ],
   },
   {
@@ -40,7 +45,7 @@ const config = [
     plugins: [
       postcss({
         modules: false,
-        extract: true,
+        extract: "dist/style.css",
       }),
     ],
   },

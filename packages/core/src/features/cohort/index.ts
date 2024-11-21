@@ -1,9 +1,9 @@
 import {
-  FilterSet,
-  EnumOperandValue,
-  RangeOperandValue,
-  SetOperandValue,
-  OperandValue,
+  type FilterSet,
+  type EnumOperandValue,
+  type RangeOperandValue,
+  type SetOperandValue,
+  type OperandValue,
   EnumValueExtractorHandler,
   joinFilters,
   buildCohortGqlOperator,
@@ -13,7 +13,7 @@ import {
 } from "./filters";
 
 import {
-  Cohort,
+  type Cohort,
   addNewDefaultUnsavedCohort,
   addNewUnsavedCohort,
   removeCohort,
@@ -63,10 +63,11 @@ import {
   selectUnsavedCohortName,
   UNSAVED_COHORT_NAME,
   selectMultipleCohortsById,
+  fetchCohortCaseCounts,
 } from "./availableCohortsSlice";
 
 import {
-  CohortBuilderCategoryConfig,
+  type CohortBuilderCategoryConfig,
   addFilterToCohortBuilder,
   removeFilterFromCohortBuilder,
   resetCohortBuilderToDefault,
@@ -75,11 +76,7 @@ import {
   selectCohortBuilderConfigCategory,
 } from "./cohortBuilderConfigSlice";
 
-import {
-  CountsData,
-  NullCountsData,
-  fetchCohortCaseCounts,
-} from "./cohortCountsQuery";
+import { type CountsData, NullCountsData } from "./type";
 
 import {
   defaultCohortNameGenerator,
