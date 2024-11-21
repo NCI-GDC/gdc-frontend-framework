@@ -606,6 +606,11 @@ class BasePage:
         table_text_locator = GenericLocators.TABLE_TEXT_IDENT(table_id, table_text)
         return self.is_visible(table_text_locator)
 
+    def is_temporary_message_present(self):
+        """Returns if temporary message modal is present"""
+        locator = GenericLocators.BUTTON_CLOSE_NOTIFICATION
+        return self.is_visible(locator)
+
     def click_data_testid(self, data_testid):
         locator = GenericLocators.DATA_TEST_ID_IDENT(data_testid)
         self.click(locator)

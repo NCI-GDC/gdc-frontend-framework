@@ -968,6 +968,10 @@ def click_named_button_in_modal_and_wait_for_temp_message_text(table):
         time.sleep(1)
         APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
 
+@step("Remove message if one is present")
+def remove_message_if_one_is_present():
+    if APP.shared.is_temporary_message_present():
+        APP.shared.click_close_temporary_message()
 
 @step("Clear active cohort filters")
 def clear_active_cohort_filters():

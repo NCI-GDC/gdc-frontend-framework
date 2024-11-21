@@ -113,6 +113,8 @@ tags: gdc-data-portal-v2, regression, cart
 
 ## Only Controlled Access Download
 * Remove "All Files" from cart on the Cart page
+* Pause "2" seconds
+* Remove message if one is present
 * Navigate to "Downloads" from "Header" "section"
 * Add the following files to the cart on the Repository page
   |file_uuid_to_add                     |
