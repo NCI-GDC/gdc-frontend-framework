@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Tooltip } from "@mantine/core";
 import { Header as CommonHeader } from "@gff/portal-components";
+import { FiPlayCircle as PlayIcon } from "react-icons/fi";
 import NIHLogo from "public/NIH_GDC_DataPortal-logo.svg";
 import AnalysisCenterIcon from "public/layout/icons/dna.svg";
 import ProjectsIcon from "public/layout/icons/crowd-of-users.svg";
@@ -11,7 +12,7 @@ import DownloadIcon from "public/layout/icons/database.svg";
 const commonLinkClasses =
   "flex items-center gap-1 font-heading text-sm font-medium text-base-darker p-1 mr-2 hover:rounded-md hover:bg-primary-lightest";
 
-export const headerElements = [
+export const headerApps = [
   <Tooltip
     key="Analysis"
     label="Explore and analyze harmonized high-quality clinical and genomics data from cancer genomic studies with the tools in the Analysis Center."
@@ -130,6 +131,16 @@ export const headerElements = [
   </Tooltip>,
 ];
 
+const headerLinks = [
+  {
+    customDataTestID: "button-header-video-guides",
+    href: "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Video_Tutorials/",
+    image: <PlayIcon size={24} />,
+    text: "Video Guides",
+    isExternal: true,
+  },
+];
+
 const externalAppLinks = [
   {
     customDataTestID: "button-header-data-portal",
@@ -238,7 +249,8 @@ const AppLogo = (
 const Header = () => {
   return (
     <CommonHeader
-      headerElements={headerElements}
+      headerApps={headerApps}
+      headerLinks={headerLinks}
       externalAppLinks={externalAppLinks}
       indexPath={"/"}
       AppLogo={AppLogo}

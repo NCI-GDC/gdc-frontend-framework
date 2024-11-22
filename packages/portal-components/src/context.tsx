@@ -13,6 +13,8 @@ interface AppContextType {
 export const AppContext = createContext<AppContextType>({
   path: undefined,
   theme: undefined,
+  // eslint-disable-next-line
   ImageComponent: (props) => <img {...props} />,
+  // eslint-disable-next-line
   Link: (props) => <a {...props} />,
 });

@@ -16,6 +16,10 @@ export const REGISTERED_APPS = [
         aria-hidden="true"
       />
     ),
+    href: {
+      pathname: "/analysis_page",
+      query: { app: "Projects" },
+    },
     tags: [],
     hasDemo: false,
     id: "Projects",

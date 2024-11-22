@@ -35,7 +35,7 @@ const ExternalAppMenu: React.FC<ExternalAppMenuProps> = ({
             className="text-primary-darkest"
             aria-hidden="true"
           />
-          <p className="font-heading">GDC Apps</p>
+          <p className="font-heading">Apps</p>
           <ArrowDropDownIcon size="24px" className="-ml-1" aria-hidden="true" />
         </button>
       </Menu.Target>

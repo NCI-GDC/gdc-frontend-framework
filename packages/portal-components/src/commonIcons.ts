@@ -2,8 +2,10 @@ import {
   MdShoppingCart as CartIcon,
   MdOutlineApps as AppsIcon,
   MdArrowDropDown as ArrowDropDownIcon,
+  MdKeyboardArrowUp as UpArrowIcon,
   MdKeyboardBackspace as LeftArrowIcon,
   MdOutlineLogin as LoginIcon,
+  MdInfo as InfoIcon,
 } from "react-icons/md";
 import {
   FiPlayCircle as PlayIcon,
@@ -17,7 +19,9 @@ export {
   CartIcon,
   AppsIcon,
   ArrowDropDownIcon,
+  UpArrowIcon,
   LeftArrowIcon,
+  InfoIcon,
   PlayIcon,
   DownArrowCollapseIcon,
   FeedbackIcon,

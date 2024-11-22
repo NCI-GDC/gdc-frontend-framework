@@ -1,16 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Divider } from "@mantine/core";
-import Link from "next/link";
-import {
-  MdPlayArrow,
-  MdArrowDropDown,
-  MdArrowDropUp,
-  MdInfo,
-} from "react-icons/md";
 import { Button, Card, Loader, Tooltip } from "@mantine/core";
 import { useElementSize } from "@mantine/hooks";
-import { AppRegistrationEntry } from "./types";
 import { DataFetchingHook } from "src/types";
+import {
+  ArrowDropDownIcon,
+  PlayIcon,
+  UpArrowIcon,
+  InfoIcon,
+} from "src/commonIcons";
+import { AppContext } from "src/context";
+import { AppRegistrationEntry } from "./types";
 
 export interface AnalysisCardProps {
   entry: AppRegistrationEntry;
@@ -31,6 +31,8 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
   const inactive = caseCounts === 0 || cohortCounts.isFetching;
   const { ref: descRef, height: descHeight } = useElementSize();
 
+  const { Link } = useContext(AppContext);
+
   return (
     <Card
       data-testid={`${entry.name}-tool`}
@@ -47,10 +49,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
         {entry.icon}
         <div className="flex flex-col">
           <Link
-            href={{
-              pathname: "/analysis_page",
-              query: { app: entry.id },
-            }}
+            href={entry.href}
             data-testid={`button-${entry.name}`}
             className={`
               flex
@@ -70,44 +69,8 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             aria-disabled={inactive}
             aria-label={entry.name}
           >
-            <MdPlayArrow size={16} color="white" />
+            <PlayIcon size={16} color="white" />
           </Link>
-
-          {entry.hasDemo ? (
-            <Link
-              href={{
-                pathname: "/analysis_page",
-                query: {
-                  app: entry.id,
-                  demoMode: true,
-                },
-              }}
-              data-testid={`button-${entry.name} Demo`}
-              className={`
-                flex
-                justify-center
-                items-center
-                hover:bg-secondary-dark
-                hover:border-secondary-dark
-                hover:text-primary-content-max
-                focus:bg-secondary-dark
-                focus:border-secondary-dark
-                focus:text-primary-content-max
-                mb-1
-                w-[50px]
-                rounded
-                h-5
-                text-xs
-                text-secondary
-                p-0
-                border
-                border-secondary
-                font-semibold
-              `}
-            >
-              Demo
-            </Link>
-          ) : null}
         </div>
       </div>
       <Divider variant="dotted" aria-hidden="true" />
@@ -119,9 +82,9 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
           size="xs"
           rightSection={
             descriptionVisible ? (
-              <MdArrowDropUp size={16} aria-hidden="true" />
+              <UpArrowIcon size={16} aria-hidden="true" />
             ) : (
-              <MdArrowDropDown size={16} aria-hidden="true" />
+              <ArrowDropDownIcon size={16} aria-hidden="true" />
             )
           }
           classNames={{
@@ -168,7 +131,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             {caseCounts === 0 && (
               <Tooltip label={entry?.noDataTooltip} withArrow w={200} multiline>
                 <div>
-                  <MdInfo className="inline-block ml-1" />
+                  <InfoIcon className="inline-block ml-1" />
                 </div>
               </Tooltip>
             )}

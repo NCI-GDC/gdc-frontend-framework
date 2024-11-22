@@ -7,6 +7,10 @@ export interface AppRegistrationEntry {
   readonly id: string;
   readonly name: string;
   readonly tags: ReadonlyArray<string>;
+  readonly href: {
+    pathname: string;
+    query: Record<string, string>;
+  };
   readonly icon?: React.ReactNode;
   readonly hasDemo?: boolean;
   readonly demoMode?: boolean;

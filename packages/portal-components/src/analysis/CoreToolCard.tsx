@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Grid, Text } from "@mantine/core";
-import Link from "next/link";
-import { MdPlayArrow } from "react-icons/md";
 import { AppRegistrationEntry } from "./types";
+import { PlayIcon } from "src/commonIcons";
+import { AppContext } from "src/context";
 
 export interface CoreToolCardProps {
   entry: AppRegistrationEntry;
@@ -11,14 +11,10 @@ export interface CoreToolCardProps {
 const CoreToolCard: React.FC<CoreToolCardProps> = ({
   entry,
 }: CoreToolCardProps) => {
+  const { Link } = useContext(AppContext);
+
   return (
-    <Link
-      href={{
-        pathname: "/analysis_page",
-        query: { app: entry.id },
-      }}
-      className="group"
-    >
+    <Link href={entry.href} className="group">
       <Grid
         classNames={{
           root: "h-full",
@@ -39,7 +35,7 @@ const CoreToolCard: React.FC<CoreToolCardProps> = ({
         </Grid.Col>
         <Grid.Col span={2} className="flex justify-end p-0 m-0">
           <div className="bg-secondary w-12 h-full p-0 group-hover:bg-secondary-darker group-focus:bg-secondary-darker rounded-none rounded-r flex justify-center items-center">
-            <MdPlayArrow size={30} color="white" />
+            <PlayIcon size={30} color="white" />
           </div>
         </Grid.Col>
       </Grid>
