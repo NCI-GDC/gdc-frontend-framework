@@ -1,9 +1,9 @@
 import React from "react";
-import { Menu, MenuItem } from "@mantine/core";
 import {
   MdOutlineApps as AppsIcon,
   MdArrowDropDown as ArrowDropDownIcon,
 } from "react-icons/md";
+import { Menu, MenuItem } from "@mantine/core";
 import HeaderLink, { HeaderLinkProps } from "./HeaderLink";
 
 const appMenuClass = "data-hovered:bg-primary-lightest p-0 m-0";

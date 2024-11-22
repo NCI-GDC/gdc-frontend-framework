@@ -1,6 +1,6 @@
-import { MantineThemeOverride } from "@mantine/core";
 import React from "react";
 import { createContext } from "react";
+import { MantineThemeOverride } from "@mantine/core";
 import { ImageComponentType, LinkComponentType } from "./types";
 
 interface AppContextType {

@@ -2,14 +2,14 @@ import React, { useContext } from "react";
 import { Divider } from "@mantine/core";
 import { Button, Card, Loader, Tooltip } from "@mantine/core";
 import { useElementSize } from "@mantine/hooks";
-import { DataFetchingHook } from "src/types";
 import {
   ArrowDropDownIcon,
+  InfoIcon,
   PlayIcon,
   UpArrowIcon,
-  InfoIcon,
 } from "src/commonIcons";
 import { AppContext } from "src/context";
+import { DataFetchingHook } from "src/types";
 import { AppRegistrationEntry } from "./types";
 
 export interface AnalysisCardProps {

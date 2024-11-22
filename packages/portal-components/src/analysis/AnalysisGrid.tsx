@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import CoreToolCard from "./CoreToolCard";
-
-import AnalysisCard from "./AnalysisCard";
-import { AppRegistrationEntry } from "./types";
 import { MantineProvider } from "@mantine/core";
+import AnalysisCard from "./AnalysisCard";
+import CoreToolCard from "./CoreToolCard";
+import { AppRegistrationEntry } from "./types";
 
 interface AnalysisGridProps {
   readonly registeredApps: AppRegistrationEntry[];

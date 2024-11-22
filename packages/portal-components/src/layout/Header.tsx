@@ -1,11 +1,10 @@
-import React, { useEffect, useState, ReactNode, useContext } from "react";
+import React, { ReactNode, useContext, useEffect } from "react";
 import { Burger, MantineProvider } from "@mantine/core";
 import { useDisclosure, useViewportSize } from "@mantine/hooks";
 import { AppContext } from "src/context";
-import HeaderLink, { HeaderLinkProps } from "./HeaderLink";
-import HeaderDrawer from "./HeaderDrawer";
 import ExternalAppMenu from "./ExternalAppMenu";
-import SendFeedbackModal from "src/modals/SendFeedbackModal";
+import HeaderDrawer from "./HeaderDrawer";
+import HeaderLink, { HeaderLinkProps } from "./HeaderLink";
 
 const MAX_WIDTH_FOR_HAMBURGER = 1280;
 
@@ -28,7 +27,6 @@ const Header: React.FC<HeaderProps> = ({
   LoginButton = undefined,
   cartSize = 0,
 }: HeaderProps) => {
-  const [openFeedbackModal, setOpenFeedbackModal] = useState(false);
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
   const label = drawerOpened ? "Close navigation" : "Open navigation";
@@ -85,7 +83,6 @@ const Header: React.FC<HeaderProps> = ({
             closeDrawer={closeDrawer}
             externalAppLinks={externalAppLinks}
             cartSize={cartSize}
-            setOpenFeedbackModal={setOpenFeedbackModal}
           />
 
           {/* Right Side Nav Bar */}
@@ -121,12 +118,6 @@ const Header: React.FC<HeaderProps> = ({
           </div>
           <div className="xl:w-1/3">{/* <QuickSearch /> */}</div>
         </div>
-        {
-          <SendFeedbackModal
-            opened={openFeedbackModal}
-            onClose={() => setOpenFeedbackModal(false)}
-          />
-        }
       </div>
     </MantineProvider>
   );

@@ -1,7 +1,7 @@
-import dts from "rollup-plugin-dts";
-import external from "rollup-plugin-peer-deps-external";
 import commonjs from "@rollup/plugin-commonjs";
 import resolve from "@rollup/plugin-node-resolve";
+import dts from "rollup-plugin-dts";
+import external from "rollup-plugin-peer-deps-external";
 import { swc } from "rollup-plugin-swc3";
 import swcPreserveDirectives from "rollup-swc-preserve-directives";
 

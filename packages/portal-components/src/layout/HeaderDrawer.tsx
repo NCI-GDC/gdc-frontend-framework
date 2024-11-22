@@ -1,10 +1,10 @@
 import React from "react";
-import { Drawer, ActionIcon, Collapse, UnstyledButton } from "@mantine/core";
+import { ActionIcon, Collapse, Drawer, UnstyledButton } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import {
-  LeftArrowIcon,
   AppsIcon,
   DownArrowCollapseIcon,
+  LeftArrowIcon,
 } from "src/commonIcons";
 import HeaderLink, { HeaderLinkProps } from "./HeaderLink";
 
@@ -12,7 +12,6 @@ interface HeaderDrawerProps {
   readonly headerLinks: ReadonlyArray<HeaderLinkProps>;
   readonly drawerOpened: boolean;
   readonly closeDrawer: () => void;
-  readonly setOpenFeedbackModal: (open: boolean) => void;
   readonly externalAppLinks: ReadonlyArray<HeaderLinkProps>;
   readonly cartSize: number;
 }

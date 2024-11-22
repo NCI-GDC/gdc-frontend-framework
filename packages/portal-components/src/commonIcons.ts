@@ -1,19 +1,19 @@
 import {
-  MdShoppingCart as CartIcon,
-  MdOutlineApps as AppsIcon,
-  MdArrowDropDown as ArrowDropDownIcon,
-  MdKeyboardArrowUp as UpArrowIcon,
-  MdKeyboardBackspace as LeftArrowIcon,
-  MdOutlineLogin as LoginIcon,
-  MdInfo as InfoIcon,
-} from "react-icons/md";
-import {
-  FiPlayCircle as PlayIcon,
   FiChevronDown as DownArrowCollapseIcon,
+  FiPlayCircle as PlayIcon,
 } from "react-icons/fi";
-import { VscFeedback as FeedbackIcon } from "react-icons/vsc";
 import { HiOutlinePencilSquare as PencilIcon } from "react-icons/hi2";
 import { IoOptions as OptionsIcon } from "react-icons/io5";
+import {
+  MdOutlineApps as AppsIcon,
+  MdArrowDropDown as ArrowDropDownIcon,
+  MdShoppingCart as CartIcon,
+  MdInfo as InfoIcon,
+  MdKeyboardBackspace as LeftArrowIcon,
+  MdOutlineLogin as LoginIcon,
+  MdKeyboardArrowUp as UpArrowIcon,
+} from "react-icons/md";
+import { VscFeedback as FeedbackIcon } from "react-icons/vsc";
 
 export {
   CartIcon,

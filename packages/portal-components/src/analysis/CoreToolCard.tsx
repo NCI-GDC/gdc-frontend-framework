@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
 import { Grid, Text } from "@mantine/core";
-import { AppRegistrationEntry } from "./types";
 import { PlayIcon } from "src/commonIcons";
 import { AppContext } from "src/context";
+import { AppRegistrationEntry } from "./types";
 
 export interface CoreToolCardProps {
   entry: AppRegistrationEntry;
