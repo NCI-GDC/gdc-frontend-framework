@@ -548,6 +548,12 @@ class BasePage:
         is_button_disabled = self.is_disabled(locator)
         return is_button_disabled
 
+    def is_button_area_expanded(self, button_name):
+        """Returns if the data-testid button is expanded"""
+        button_name = self.normalize_button_identifier(button_name)
+        locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(button_name)
+        return self.get_attribute(locator,"aria-expanded")
+
     def is_cart_count_correct(self, correct_file_count):
         """Returns if cart count is correct"""
         locator = GenericLocators.CART_IDENT
@@ -605,6 +611,11 @@ class BasePage:
         table_id = self.normalize_button_identifier(table_id)
         table_text_locator = GenericLocators.TABLE_TEXT_IDENT(table_id, table_text)
         return self.is_visible(table_text_locator)
+
+    def is_temporary_message_present(self):
+        """Returns if temporary message modal is present"""
+        locator = GenericLocators.BUTTON_CLOSE_NOTIFICATION
+        return self.is_visible(locator)
 
     def click_data_testid(self, data_testid):
         locator = GenericLocators.DATA_TEST_ID_IDENT(data_testid)
