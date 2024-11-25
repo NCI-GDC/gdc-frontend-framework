@@ -1,13 +1,13 @@
+import { FiPlayCircle as PlayIcon } from "react-icons/fi";
+import { Header as CommonHeader } from "@gff/portal-components";
+import { Tooltip } from "@mantine/core";
 import Image from "next/image";
 import Link from "next/link";
-import { Tooltip } from "@mantine/core";
-import { Header as CommonHeader } from "@gff/portal-components";
-import { FiPlayCircle as PlayIcon } from "react-icons/fi";
-import NIHLogo from "public/NIH_GDC_DataPortal-logo.svg";
-import AnalysisCenterIcon from "public/layout/icons/dna.svg";
-import ProjectsIcon from "public/layout/icons/crowd-of-users.svg";
 import CohortBuilderIcon from "public/apps/icons/CohortBuilder.svg";
+import ProjectsIcon from "public/layout/icons/crowd-of-users.svg";
 import DownloadIcon from "public/layout/icons/database.svg";
+import AnalysisCenterIcon from "public/layout/icons/dna.svg";
+import NIHLogo from "public/NIH_GDC_DataPortal-logo.svg";
 
 const commonLinkClasses =
   "flex items-center gap-1 font-heading text-sm font-medium text-base-darker p-1 mr-2 hover:rounded-md hover:bg-primary-lightest";

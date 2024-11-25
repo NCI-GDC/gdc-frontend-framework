@@ -1,9 +1,9 @@
+import { AnalysisGrid } from "@gff/portal-components";
 import { NextPage } from "next";
 import Head from "next/head";
-import { AnalysisGrid } from "@gff/portal-components";
-import PageLayout from "@/components/PageLayout";
-import ProjectsIcon from "public/layout/icons/crowd-of-users.svg";
 import SequenceReadsIcon from "public/apps/icons/SequenceReads.svg";
+import ProjectsIcon from "public/layout/icons/crowd-of-users.svg";
+import PageLayout from "@/components/PageLayout";
 
 export const REGISTERED_APPS = [
   {

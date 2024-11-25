@@ -1,17 +1,17 @@
 import React from "react";
-import type { AppProps } from "next/app";
-import Link from "next/link";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import { createTheme, MantineProvider, Modal } from "@mantine/core";
 import { AppContext } from "@gff/portal-components";
 import type {
-  LinkComponentType,
   ImageComponentType,
+  LinkComponentType,
 } from "@gff/portal-components";
+import { createTheme, MantineProvider, Modal } from "@mantine/core";
 import "@mantine/core/styles.css";
-import "../styles/globals.css";
+import type { AppProps } from "next/app";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import tailwindConfig from "tailwind.config";
+import "../styles/globals.css";
 
 const defaultTailwindColorTheme =
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
