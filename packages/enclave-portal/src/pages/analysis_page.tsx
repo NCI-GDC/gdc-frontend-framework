@@ -30,6 +30,10 @@ export const REGISTERED_APPS = [
   {
     name: "Sequence Reads",
     icon: <SequenceReadsIcon aria-hidden="true" />,
+    href: {
+      pathname: "/analysis_page",
+      query: { app: "SequenceReadApp" },
+    },
     tags: ["sequenceAnalysis"],
     hasDemo: false,
     countsField: "sequenceReadCaseCount",

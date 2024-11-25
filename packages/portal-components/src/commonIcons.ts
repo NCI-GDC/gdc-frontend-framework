@@ -1,7 +1,4 @@
-import {
-  FiChevronDown as DownArrowCollapseIcon,
-  FiPlayCircle as PlayIcon,
-} from "react-icons/fi";
+import { FiChevronDown as DownArrowCollapseIcon } from "react-icons/fi";
 import { HiOutlinePencilSquare as PencilIcon } from "react-icons/hi2";
 import { IoOptions as OptionsIcon } from "react-icons/io5";
 import {
@@ -12,6 +9,7 @@ import {
   MdKeyboardBackspace as LeftArrowIcon,
   MdOutlineLogin as LoginIcon,
   MdKeyboardArrowUp as UpArrowIcon,
+  MdPlayArrow as PlayIcon,
 } from "react-icons/md";
 import { VscFeedback as FeedbackIcon } from "react-icons/vsc";
 
