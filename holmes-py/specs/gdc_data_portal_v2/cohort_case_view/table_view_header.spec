@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		    : Validate Cohort Header
 Test-Case           : PEAR-1052
 
-tags: gdc-data-portal-v2, regression, cohort-bar, case-view
+tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecimen-download
 
 ## Navigate to Table View
 * On GDC Data Portal V2 app
@@ -22,9 +22,9 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
     |required_info                          |
     |---------------------------------------|
     |aliquot_id                             |
-    |aliquot_volume                         |
+    |aliquots.aliquot_volume                         |
     |no_matched_normal_wxs                  |
-    |selected_normal_targeted_sequencing    |
+    |aliquots.selected_normal_targeted_sequencing    |
     |7c0feb4c-3ce1-529a-98a6-3e48e1d06a8a   |
     |ba678f26-a87d-4da0-bcee-d3a6caffae53   |
     |MMRF_1152_1_BM_CD138pos_T2_TSE61_K03194|
@@ -39,16 +39,16 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
     |prostatic_chips_total_count            |
     |portion_id                             |
     |portion_submitter_id                   |
-    |portion_number                         |
+    |portions.portion_number                         |
     |8742f2f2-fe95-5f62-9ef1-8241488cd623   |
     |331d5f27-bfe8-58f6-98b9-f54376f15c96   |
     |sample_id                              |
     |sample_submitter_id                    |
     |days_to_sample_procurement             |
     |intermediate_dimension                 |
-    |preservation_method                    |
-    |time_between_clamping_and_freezing     |
-    |tumor_code_id                          |
+    |samples.preservation_method                    |
+    |samples.time_between_clamping_and_freezing     |
+    |samples.tumor_code_id                          |
     |ccff20ac-6979-4602-ae3e-bb8fb3968a61   |
     |-27                                    |
     |Primary Blood Derived Cancer - Bone Marrow|
@@ -111,7 +111,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
     |required_info                          |
     |---------------------------------------|
     |days_to_follow_up                      |
-    |evidence_of_recurrence_type            |
+    |follow_ups.evidence_of_recurrence_type            |
     |follow_up_submitter_id                 |
     |pregnancy_outcome                      |
     |laboratory_test                        |
@@ -123,11 +123,11 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
     |lymphatic_invasion_present             |
     |pathology_detail_submitter_id          |
     |size_extraocular_nodule                |
-    |zone_of_origin_prostate                |
+    |pathology_details.zone_of_origin_prostate                |
     |alcohol_drinks_per_day                 |
-    |occupation_duration_years              |
-    |relationship_primary_diagnosis         |
-    |relatives_with_cancer_history_count    |
+    |demographic.occupation_duration_years              |
+    |family_histories.relationship_primary_diagnosis         |
+    |family_histories.relatives_with_cancer_history_count    |
     |weeks_gestation_at_birth               |
     |child_pugh_classification              |
     |first_symptom_longest_duration         |

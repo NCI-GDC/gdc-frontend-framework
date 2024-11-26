@@ -5,7 +5,7 @@ Owner		            : GDC QA
 Description		      : Validate All Tables and Sections in Case Summary Page
 Test-Case           : PEAR-2139, PEAR-464
 
-tags: gdc-data-portal-v2, case-summary
+tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download
 
 ## Navigate to Case Summary Page: TCGA-13-0920
 * On GDC Data Portal V2 app
@@ -120,16 +120,16 @@ tags: gdc-data-portal-v2, case-summary
     |required_info                          |
     |---------------------------------------|
     |5fd8d17e-57d2-4270-8728-de259ff6b2fe   |
-    |cigarettes_per_day                     |
-    |exposure_type                          |
+    |exposures.cigarettes_per_day                     |
+    |exposures.exposure_type                          |
     |Tobacco                                |
-    |respirable_crystalline_silica_exposure |
-    |tobacco_smoking_status                 |
+    |exposures.respirable_crystalline_silica_exposure |
+    |exposures.tobacco_smoking_status                 |
     |Current Reformed Smoker for > 15 yrs   |
     |diagnosis_id                           |
     |26a5ccaa-d86d-4283-9a00-39ed229586f9   |
     |extracapsular_extension_present        |
-    |margin_status                          |
+    |pathology_details.margin_status                          |
     |pathology_detail_submitter_id          |
     |3.5                                    |
 * Verify that "TSV from Case Summary Clinical Table" does not contain specified information
@@ -275,22 +275,22 @@ tags: gdc-data-portal-v2, case-summary
     |required_info                          |
     |---------------------------------------|
     |case_id                                |
-    |cause_of_response                      |
-    |barretts_esophagus_goblet_cells_present|
-    |hysterectomy_margins_involved          |
-    |recist_targeted_regions_number         |
+    |follow_ups.cause_of_response                      |
+    |follow_ups.barretts_esophagus_goblet_cells_present|
+    |follow_ups.hysterectomy_margins_involved          |
+    |follow_ups.recist_targeted_regions_number         |
     |Lactate Dehydrogenase                  |
-    |molecular_analysis_method              |
-    |bone_marrow_malignant_cells            |
-    |rhabdoid_present                       |
-    |zone_of_origin_prostate                |
-    |relative_smoker                        |
-    |relatives_with_cancer_history_count    |
-    |relationship_gender                    |
+    |molecular_tests.molecular_analysis_method              |
+    |pathology_details.bone_marrow_malignant_cells            |
+    |pathology_details.rhabdoid_present                       |
+    |pathology_details.zone_of_origin_prostate                |
+    |family_histories.relative_smoker                        |
+    |family_histories.relatives_with_cancer_history_count    |
+    |family_histories.relationship_gender                    |
     |3d5ebf3f-0cbd-458a-820d-65652e9682d7   |
     |MMRF_2081                              |
-    |additional_pathology_findings          |
-    |treatment_type                         |
+    |pathology_details.additional_pathology_findings          |
+    |treatments.treatment_type                         |
     |MMRF-COMMPASS                          |
 * Verify that "TSV from Case Summary Clinical Table" does not contain specified information
     |required_info                          |
@@ -502,16 +502,16 @@ tags: gdc-data-portal-v2, case-summary
     |TCGA-GV-A3QI-01A-11                    |
     |ffc59e86-1afb-4cdb-8651-191b21ee7876   |
     |TCGA-GV-A3QI-01A-11D-A21Z-08           |
-    |experimental_protocol_type             |
-    |spectrophotometer_method               |
+    |analytes.experimental_protocol_type             |
+    |analytes.spectrophotometer_method               |
     |mirVana (Allprep DNA) RNA              |
-    |analyte_type_id                        |
+    |analytes.analyte_type_id                        |
     |slide_id                               |
     |88217dc9-06a0-4839-8269-85ce0798ef89   |
-    |percent_inflam_infiltration            |
-    |percent_tumor_nuclei                   |
+    |slides.percent_inflam_infiltration            |
+    |slides.percent_tumor_nuclei                   |
     |portion_submitter_id                   |
-    |creation_datetime                      |
+    |portions.creation_datetime                      |
 
 ## Biospecimen Table - Download JSON
 * Download "JSON" from "Case Summary Biospecimen Table"
