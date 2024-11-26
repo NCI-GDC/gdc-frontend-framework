@@ -120,16 +120,16 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download
     |required_info                          |
     |---------------------------------------|
     |5fd8d17e-57d2-4270-8728-de259ff6b2fe   |
-    |exposures.cigarettes_per_day                     |
-    |exposures.exposure_type                          |
+    |exposures.cigarettes_per_day           |
+    |exposures.exposure_type                |
     |Tobacco                                |
     |exposures.respirable_crystalline_silica_exposure |
-    |exposures.tobacco_smoking_status                 |
+    |exposures.tobacco_smoking_status       |
     |Current Reformed Smoker for > 15 yrs   |
     |diagnosis_id                           |
     |26a5ccaa-d86d-4283-9a00-39ed229586f9   |
     |extracapsular_extension_present        |
-    |pathology_details.margin_status                          |
+    |pathology_details.margin_status        |
     |pathology_detail_submitter_id          |
     |3.5                                    |
 * Verify that "TSV from Case Summary Clinical Table" does not contain specified information
@@ -272,26 +272,26 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download
 * Download "TSV" from "Case Summary Clinical Table"
 * Read file content from compressed "TSV from Case Summary Clinical Table"
 * Verify that "TSV from Case Summary Clinical Table" has expected information
-    |required_info                          |
-    |---------------------------------------|
-    |case_id                                |
-    |follow_ups.cause_of_response                      |
+    |required_info                                    |
+    |-------------------------------------------------|
+    |case_id                                          |
+    |follow_ups.cause_of_response                     |
     |follow_ups.barretts_esophagus_goblet_cells_present|
-    |follow_ups.hysterectomy_margins_involved          |
-    |follow_ups.recist_targeted_regions_number         |
-    |Lactate Dehydrogenase                  |
-    |molecular_tests.molecular_analysis_method              |
-    |pathology_details.bone_marrow_malignant_cells            |
-    |pathology_details.rhabdoid_present                       |
-    |pathology_details.zone_of_origin_prostate                |
-    |family_histories.relative_smoker                        |
-    |family_histories.relatives_with_cancer_history_count    |
-    |family_histories.relationship_gender                    |
-    |3d5ebf3f-0cbd-458a-820d-65652e9682d7   |
-    |MMRF_2081                              |
-    |pathology_details.additional_pathology_findings          |
-    |treatments.treatment_type                         |
-    |MMRF-COMMPASS                          |
+    |follow_ups.hysterectomy_margins_involved         |
+    |follow_ups.recist_targeted_regions_number        |
+    |Lactate Dehydrogenase                            |
+    |molecular_tests.molecular_analysis_method        |
+    |pathology_details.bone_marrow_malignant_cells    |
+    |pathology_details.rhabdoid_present               |
+    |pathology_details.zone_of_origin_prostate        |
+    |family_histories.relative_smoker                 |
+    |family_histories.relatives_with_cancer_history_count|
+    |family_histories.relationship_gender             |
+    |3d5ebf3f-0cbd-458a-820d-65652e9682d7             |
+    |MMRF_2081                                        |
+    |pathology_details.additional_pathology_findings  |
+    |treatments.treatment_type                        |
+    |MMRF-COMMPASS                                    |
 * Verify that "TSV from Case Summary Clinical Table" does not contain specified information
     |required_info                          |
     |---------------------------------------|
@@ -401,7 +401,7 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download
     |Portion UUID                           |
     |Portion Number                         |
     |Weight                                 |
-    |Is Ffpe	                            |
+    |Is Ffpe	                              |
     |Analytes                               |
     |Slides                                 |
     |TCGA-GV-A3QI-01A-11                    |
@@ -502,16 +502,16 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download
     |TCGA-GV-A3QI-01A-11                    |
     |ffc59e86-1afb-4cdb-8651-191b21ee7876   |
     |TCGA-GV-A3QI-01A-11D-A21Z-08           |
-    |analytes.experimental_protocol_type             |
-    |analytes.spectrophotometer_method               |
+    |analytes.experimental_protocol_type    |
+    |analytes.spectrophotometer_method      |
     |mirVana (Allprep DNA) RNA              |
-    |analytes.analyte_type_id                        |
+    |analytes.analyte_type_id               |
     |slide_id                               |
     |88217dc9-06a0-4839-8269-85ce0798ef89   |
-    |slides.percent_inflam_infiltration            |
-    |slides.percent_tumor_nuclei                   |
+    |slides.percent_inflam_infiltration     |
+    |slides.percent_tumor_nuclei            |
     |portion_submitter_id                   |
-    |portions.creation_datetime                      |
+    |portions.creation_datetime             |
 
 ## Biospecimen Table - Download JSON
 * Download "JSON" from "Case Summary Biospecimen Table"
@@ -537,10 +537,10 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download
   |case_id	                                |
   |project.project_id                       |
   |submitter_id	                            |
-  |samples.sample_type_id	                |
+  |samples.sample_type_id	                  |
   |samples.portions.portion_id              |
   |samples.portions.analytes.analyte_id     |
-  |samples.pathology_report_uuid	        |
+  |samples.pathology_report_uuid	          |
   |samples.portions.slides.slide_id         |
   |samples.portions.analytes.aliquots.aliquot_quantity|
 * Verify that the "JSON from Case Summary Biospecimen Table" has <field_name> for each object
@@ -603,7 +603,7 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download
   |data_format                              |
   |cases.case_id                            |
   |cases.project.project_id                 |
-  |access	                                |
+  |access	                                  |
   |file_name                                |
   |file_id                                  |
   |data_type                                |

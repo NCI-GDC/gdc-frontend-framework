@@ -42,24 +42,24 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |SD-Stable Disease                    |
     |Blood                                |
     |Serum Free Immunoglobulin Light Chain, Lambda |
-    |pathology_details.additional_pathology_findings        |
-    |pathology_details.percent_tumor_nuclei                 |
-    |pathology_details.vascular_invasion_present            |
+    |pathology_details.additional_pathology_findings|
+    |pathology_details.percent_tumor_nuclei|
+    |pathology_details.vascular_invasion_present|
     |97886d69-8daa-4a6e-b275-fa3853cf1702 |
     |f35b48fa-eae8-4b66-bb90-0f86a55d3552 |
-    |exposures.chemical_exposure_type               |
-    |exposures.secondhand_smoke_as_child            |
+    |exposures.chemical_exposure_type     |
+    |exposures.secondhand_smoke_as_child  |
     |a2a2dbda-d10c-49c4-86a8-61baf6160cda |
     |Current Reformed Smoker for > 15 yrs |
-    |family_histories.relationship_primary_diagnosis       |
-    |family_histories.relative_smoker                      |
+    |family_histories.relationship_primary_diagnosis|
+    |family_histories.relative_smoker     |
     |HCM-BROD-0231-C25                    |
     |Prostate Cancer                      |
     |First Degree Relative, NOS           |
-    |demographic.cause_of_death_source                |
-    |diagnoses.primary_gleason_grade                |
-    |pathology_details.perineural_invasion_present          |
-    |treatments.treatment_outcome                    |
+    |demographic.cause_of_death_source    |
+    |diagnoses.primary_gleason_grade      |
+    |pathology_details.perineural_invasion_present|
+    |treatments.treatment_outcome         |
     |Not Cancer Related                   |
     |Unknown tumor status                 |
     |Metastasis, NOS                      |
@@ -123,7 +123,7 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |portion_id                           |
     |aliquots.no_matched_normal_targeted_sequencing|
     |aliquots.selected_normal_targeted_sequencing  |
-    |aliquots.selected_normal_wxs                  |
+    |aliquots.selected_normal_wxs         |
     |a2a2dbda-d10c-49c4-86a8-61baf6160cda |
     |9873fb3a-2db4-5127-857a-9c4d43fe52f3 |
     |a0c9eb15-1a55-5310-8f10-3709713d1536 |
@@ -133,26 +133,26 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |sample_id                            |
     |analyte_id                           |
     |a260_a280_ratio                      |
-    |analytes.experimental_protocol_type           |
-    |analytes.rna_integrity_number                 |
+    |analytes.experimental_protocol_type  |
+    |analytes.rna_integrity_number        |
     |fca75565-3783-4251-8bc8-4917a416e21c |
     |71e5c3c0-8fd8-438b-915c-6e75eaaeaae2 |
     |HCM-BROD-0231-C25-06A-01D            |
     |Repli-G (Qiagen) DNA                 |
     |Repli-G X                            |
     |UV Spec                              |
-    |portions.creation_datetime                    |
-    |portions.portion_number                       |
+    |portions.creation_datetime           |
+    |portions.portion_number              |
     |8360d471-e5eb-4deb-b63f-eddb88daae24 |
     |8617ab21-718f-4914-9a3b-70e9bfe084cf |
     |HCM-BROD-0231-C25-06A-01             |
     |1305158400                           |
-    |samples.biospecimen_anatomic_site            |
-    |samples.initial_weight                       |
-    |samples.oct_embedded                         |
-    |samples.preservation_method                  |
-    |samples.time_between_clamping_and_freezing   |
-    |samples.tumor_code_id                        |
+    |samples.biospecimen_anatomic_site    |
+    |samples.initial_weight               |
+    |samples.oct_embedded                 |
+    |samples.preservation_method          |
+    |samples.time_between_clamping_and_freezing|
+    |samples.tumor_code_id                |
     |5fc14815-00f9-4cb5-b158-a294f0fd48f2 |
     |7A76BDC7-62D9-4A8D-AAEF-CECF9F819D58 |
     |Expanded Next Generation Cancer Model|
@@ -161,11 +161,11 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |Metastatic                           |
     |slide_id                             |
     |slide_submitter_id                   |
-    |slides.percent_follicular_component         |
-    |slides.percent_necrosis                     |
-    |slides.percent_tumor_cells                  |
-    |slides.prostatic_involvement_percent        |
-    |slides.tissue_microarray_coordinates        |
+    |slides.percent_follicular_component  |
+    |slides.percent_necrosis              |
+    |slides.percent_tumor_cells           |
+    |slides.prostatic_involvement_percent |
+    |slides.tissue_microarray_coordinates |
     |2ca2cf14-9a01-408d-be23-73dffb093ead |
     |TCGA-BG-A0M0-01Z-00-DX1              |
     |98.0                                 |
