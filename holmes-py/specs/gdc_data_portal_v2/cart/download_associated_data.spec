@@ -106,6 +106,25 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |bb1eaf24-d667-5608-976c-f745b2da50f5 |
     |HCM-CSHL-0182-C25_other_clinical_attribute |
     |HCM-CSHL-0182-C25_pathology_detail   |
+    |other_clinical_attributes	          |
+    |timepoint_category	                  |
+    |updated_datetime	                  |
+    |other_clinical_attribute_id	      |
+    |weight                               |
+    |bmi                                  |
+    |height                               |
+    |Initial Diagnosis                    |
+    |3a0f6160-ac66-44d8-a689-2a7226ef4a17 |
+    |30.4                                 |
+    |80ae7467-6489-4c87-af68-5a64c444b3d2 |
+    |a48d46ee-ca42-4f83-a458-a4200b11def1 |
+    |2024-07-09T13:46:04.511308-05:00     |
+    |2024-07-08T14:59:53.534123-05:00     |
+    |8d7378be-91a1-49f2-b20b-f6d531525dd2 |
+    |MMRF_2579_oca1                       |
+    |a242040c-f78a-4fa8-8960-8e2f1020f0d5 |
+    |HCM-CSHL-0182-C25_other_clinical_attribute|
+
 * Verify that "Clinical: JSON from Cart Header Dropdown" does not contain specified information
     |required_info                        |
     |-------------------------------------|

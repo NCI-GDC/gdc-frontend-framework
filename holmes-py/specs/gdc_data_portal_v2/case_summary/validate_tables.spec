@@ -232,7 +232,7 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download
     |Unknown                                |
     |Father                                 |
 
-## Clinical Table - Followups Molecular Tests
+## Clinical Table - Followups, Molecular Tests, Other Clinical Attributes
 * Select tab "Followups Molecular Tests" on Case Summary page
 * Verify the table "Clinical Case Summary" is displaying this information
     |text_to_validate                       |
@@ -313,6 +313,16 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download
     |MMRF-COMMPASS                          |
     |0ad0643b-8364-4ea3-a600-d03c0be2e6fd   |
     |not hispanic or latino                 |
+    |other_clinical_attributes              |
+    |other_clinical_attribute_id	          |
+    |a5de9cbc-4033-4d39-b543-e3ad87ef0d78   |
+    |MMRF_2081_oca1                         |
+    |58                                     |
+    |2024-07-08T14:50:58.508358-05:00       |
+    |150                                    |
+    |height                                 |
+    |weight                                 |
+
 
 ## Clinical Table - Validate JSON File Fields
   |field_name                               |
