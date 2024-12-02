@@ -130,7 +130,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
         />
       )}
       <div
-        className="bg-primary text-primary-contrast-darkest flex flex-col xl:flex-row xl:items-center gap-4 w-full p-4"
+        className="bg-primary text-primary-contrast-darkest flex flex-col-reverse 2xl:flex-row 2xl:items-center gap-4 w-full p-4"
         data-testid="cart-header"
       >
         <div className="flex flex-wrap gap-4">
@@ -203,7 +203,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                   </div>
                 }
               >
-                Download Associated Data
+                Biospecimen
               </Button>
             </Menu.Target>
             <Menu.Dropdown data-testid="dropdown-menu-options">
@@ -212,7 +212,87 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 classNames={{ item: "font-normal" }}
                 displayVariant="subtle"
                 activeText="Processing"
-                inactiveText="Clinical: TSV"
+                inactiveText="TSV"
+                preventClickEvent
+                showIcon={true}
+                endpoint="biospecimen_tar"
+                setActive={setBiospecimenTSVDownloadActive}
+                active={biospecimenTSVDownloadActive}
+                filename={`biospecimen.cart.${new Date()
+                  .toISOString()
+                  .slice(0, 10)}.tar.gz`}
+                format="tsv"
+                method="POST"
+                downloadSize={summaryData?.total_case_count}
+                filters={{
+                  content: [
+                    {
+                      content: {
+                        field: "files.file_id",
+                        value: cart.map((file) => file.file_id),
+                      },
+                      op: "in",
+                    },
+                  ],
+                  op: "and",
+                }}
+              />
+              <Menu.Item
+                component={DownloadButton}
+                classNames={{ item: "font-normal" }}
+                displayVariant="subtle"
+                activeText="Processing"
+                inactiveText="JSON"
+                preventClickEvent
+                showIcon={true}
+                endpoint="biospecimen_tar"
+                setActive={setBiospecimenJSONDownloadActive}
+                active={biospecimenJSONDownloadActive}
+                filename={`biospecimen.cart.${new Date()
+                  .toISOString()
+                  .slice(0, 10)}.json`}
+                format="json"
+                method="POST"
+                downloadSize={summaryData?.total_case_count}
+                filters={{
+                  content: [
+                    {
+                      content: {
+                        field: "files.file_id",
+                        value: cart.map((file) => file.file_id),
+                      },
+                      op: "in",
+                    },
+                  ],
+                  op: "and",
+                }}
+              />
+            </Menu.Dropdown>
+          </Menu>
+          <Menu width="target">
+            <Menu.Target>
+              <Button
+                data-testid="button-download-associated-data"
+                classNames={{
+                  root: `${buttonStyle} ${focusStyles}`,
+                }}
+                leftSection={<DownloadIcon aria-hidden="true" size="1rem" />}
+                rightSection={
+                  <div className="border-l pl-1 -mr-2">
+                    <ArrowDropDownIcon size="1.5em" aria-hidden="true" />
+                  </div>
+                }
+              >
+                Clinical
+              </Button>
+            </Menu.Target>
+            <Menu.Dropdown data-testid="dropdown-menu-options">
+              <Menu.Item
+                component={DownloadButton}
+                classNames={{ item: "font-normal" }}
+                displayVariant="subtle"
+                activeText="Processing"
+                inactiveText="TSV"
                 preventClickEvent
                 showIcon={true}
                 endpoint="clinical_tar"
@@ -243,7 +323,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 classNames={{ item: "font-normal" }}
                 displayVariant="subtle"
                 activeText="Processing"
-                inactiveText="Clinical: JSON"
+                inactiveText="JSON"
                 preventClickEvent
                 showIcon={true}
                 endpoint="clinical_tar"
@@ -268,199 +348,135 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                   op: "and",
                 }}
               />
-
-              <Menu.Item
-                component={DownloadButton}
-                classNames={{ item: "font-normal" }}
-                displayVariant="subtle"
-                activeText="Processing"
-                inactiveText="Biospecimen: TSV"
-                preventClickEvent
-                showIcon={true}
-                endpoint="biospecimen_tar"
-                setActive={setBiospecimenTSVDownloadActive}
-                active={biospecimenTSVDownloadActive}
-                filename={`biospecimen.cart.${new Date()
-                  .toISOString()
-                  .slice(0, 10)}.tar.gz`}
-                format="tsv"
-                method="POST"
-                downloadSize={summaryData?.total_case_count}
-                filters={{
-                  content: [
-                    {
-                      content: {
-                        field: "files.file_id",
-                        value: cart.map((file) => file.file_id),
-                      },
-                      op: "in",
-                    },
-                  ],
-                  op: "and",
-                }}
-              />
-              <Menu.Item
-                component={DownloadButton}
-                classNames={{ item: "font-normal" }}
-                displayVariant="subtle"
-                activeText="Processing"
-                inactiveText="Biospecimen: JSON"
-                preventClickEvent
-                showIcon={true}
-                endpoint="biospecimen_tar"
-                setActive={setBiospecimenJSONDownloadActive}
-                active={biospecimenJSONDownloadActive}
-                filename={`biospecimen.cart.${new Date()
-                  .toISOString()
-                  .slice(0, 10)}.json`}
-                format="json"
-                method="POST"
-                downloadSize={summaryData?.total_case_count}
-                filters={{
-                  content: [
-                    {
-                      content: {
-                        field: "files.file_id",
-                        value: cart.map((file) => file.file_id),
-                      },
-                      op: "in",
-                    },
-                  ],
-                  op: "and",
-                }}
-              />
-              <Menu.Item
-                component={DownloadButton}
-                classNames={{ item: "font-normal" }}
-                displayVariant="subtle"
-                activeText="Processing"
-                inactiveText="Sample Sheet"
-                preventClickEvent
-                showIcon={true}
-                endpoint="files"
-                setActive={setSampleSheetDownloadActive}
-                active={sampleSheetDownloadActive}
-                filename={`gdc_sample_sheet.${new Date()
-                  .toISOString()
-                  .slice(0, 10)}.tsv`}
-                format="tsv"
-                method="POST"
-                fields={[
-                  "file_id",
-                  "file_name",
-                  "data_category",
-                  "data_type",
-                  "cases.project.project_id",
-                  "cases.submitter_id",
-                  "cases.samples.submitter_id",
-                  "cases.samples.sample_type",
-                ]}
-                filters={{
-                  content: [
-                    {
-                      content: {
-                        field: "files.file_id",
-                        value: cart.map((file) => file.file_id),
-                      },
-                      op: "in",
-                    },
-                  ],
-                  op: "and",
-                }}
-                extraParams={{
-                  tsv_format: "sample-sheet",
-                }}
-              />
-              <Menu.Item
-                component={DownloadButton}
-                classNames={{ item: "font-normal" }}
-                activeText="Processing"
-                inactiveText="Metadata"
-                showIcon={true}
-                displayVariant="subtle"
-                preventClickEvent
-                endpoint="files"
-                setActive={setMetadataDownloadActive}
-                active={metadataDownloadActive}
-                filename={`metadata.cart.${new Date()
-                  .toISOString()
-                  .slice(0, 10)}.json`}
-                method="POST"
-                filters={{
-                  content: [
-                    {
-                      content: {
-                        field: "files.file_id",
-                        value: cart.map((file) => file.file_id),
-                      },
-                      op: "in",
-                    },
-                  ],
-                  op: "and",
-                }}
-                fields={[
-                  "state",
-                  "access",
-                  "md5sum",
-                  "data_format",
-                  "data_type",
-                  "data_category",
-                  "file_name",
-                  "file_size",
-                  "file_id",
-                  "platform",
-                  "experimental_strategy",
-                  "center.short_name",
-                  "annotations.annotation_id",
-                  "annotations.entity_id",
-                  "tags",
-                  "submitter_id",
-                  "archive.archive_id",
-                  "archive.submitter_id",
-                  "archive.revision",
-                  "associated_entities.entity_id",
-                  "associated_entities.entity_type",
-                  "associated_entities.case_id",
-                  "analysis.analysis_id",
-                  "analysis.workflow_type",
-                  "analysis.updated_datetime",
-                  "analysis.input_files.file_id",
-                  "analysis.metadata.read_groups.read_group_id",
-                  "analysis.metadata.read_groups.is_paired_end",
-                  "analysis.metadata.read_groups.read_length",
-                  "analysis.metadata.read_groups.library_name",
-                  "analysis.metadata.read_groups.sequencing_center",
-                  "analysis.metadata.read_groups.sequencing_date",
-                  "downstream_analyses.output_files.access",
-                  "downstream_analyses.output_files.file_id",
-                  "downstream_analyses.output_files.file_name",
-                  "downstream_analyses.output_files.data_category",
-                  "downstream_analyses.output_files.data_type",
-                  "downstream_analyses.output_files.data_format",
-                  "downstream_analyses.workflow_type",
-                  "downstream_analyses.output_files.file_size",
-                  "index_files.file_id",
-                ]}
-                extraParams={{
-                  expand: [
-                    "metadata_files",
-                    "annotations",
-                    "archive",
-                    "associated_entities",
-                    "center",
-                    "analysis",
-                    "analysis.input_files",
-                    "analysis.metadata",
-                    "analysis.metadata_files",
-                    "analysis.downstream_analyses",
-                    "analysis.downstream_analyses.output_files",
-                    "reference_genome",
-                    "index_file",
-                  ].join(","),
-                }}
-              />
             </Menu.Dropdown>
           </Menu>
+
+          <DownloadButton
+            displayVariant="header"
+            activeText="Processing"
+            inactiveText="Sample Sheet"
+            preventClickEvent
+            showIcon={true}
+            endpoint="files"
+            setActive={setSampleSheetDownloadActive}
+            active={sampleSheetDownloadActive}
+            filename={`gdc_sample_sheet.${new Date()
+              .toISOString()
+              .slice(0, 10)}.tsv`}
+            format="tsv"
+            method="POST"
+            fields={[
+              "file_id",
+              "file_name",
+              "data_category",
+              "data_type",
+              "cases.project.project_id",
+              "cases.submitter_id",
+              "cases.samples.submitter_id",
+              "cases.samples.sample_type",
+            ]}
+            filters={{
+              content: [
+                {
+                  content: {
+                    field: "files.file_id",
+                    value: cart.map((file) => file.file_id),
+                  },
+                  op: "in",
+                },
+              ],
+              op: "and",
+            }}
+            extraParams={{
+              tsv_format: "sample-sheet",
+            }}
+          />
+          <DownloadButton
+            activeText="Processing"
+            inactiveText="Metadata"
+            showIcon={true}
+            displayVariant="header"
+            preventClickEvent
+            endpoint="files"
+            setActive={setMetadataDownloadActive}
+            active={metadataDownloadActive}
+            filename={`metadata.cart.${new Date()
+              .toISOString()
+              .slice(0, 10)}.json`}
+            method="POST"
+            filters={{
+              content: [
+                {
+                  content: {
+                    field: "files.file_id",
+                    value: cart.map((file) => file.file_id),
+                  },
+                  op: "in",
+                },
+              ],
+              op: "and",
+            }}
+            fields={[
+              "state",
+              "access",
+              "md5sum",
+              "data_format",
+              "data_type",
+              "data_category",
+              "file_name",
+              "file_size",
+              "file_id",
+              "platform",
+              "experimental_strategy",
+              "center.short_name",
+              "annotations.annotation_id",
+              "annotations.entity_id",
+              "tags",
+              "submitter_id",
+              "archive.archive_id",
+              "archive.submitter_id",
+              "archive.revision",
+              "associated_entities.entity_id",
+              "associated_entities.entity_type",
+              "associated_entities.case_id",
+              "analysis.analysis_id",
+              "analysis.workflow_type",
+              "analysis.updated_datetime",
+              "analysis.input_files.file_id",
+              "analysis.metadata.read_groups.read_group_id",
+              "analysis.metadata.read_groups.is_paired_end",
+              "analysis.metadata.read_groups.read_length",
+              "analysis.metadata.read_groups.library_name",
+              "analysis.metadata.read_groups.sequencing_center",
+              "analysis.metadata.read_groups.sequencing_date",
+              "downstream_analyses.output_files.access",
+              "downstream_analyses.output_files.file_id",
+              "downstream_analyses.output_files.file_name",
+              "downstream_analyses.output_files.data_category",
+              "downstream_analyses.output_files.data_type",
+              "downstream_analyses.output_files.data_format",
+              "downstream_analyses.workflow_type",
+              "downstream_analyses.output_files.file_size",
+              "index_files.file_id",
+            ]}
+            extraParams={{
+              expand: [
+                "metadata_files",
+                "annotations",
+                "archive",
+                "associated_entities",
+                "center",
+                "analysis",
+                "analysis.input_files",
+                "analysis.metadata",
+                "analysis.metadata_files",
+                "analysis.downstream_analyses",
+                "analysis.downstream_analyses.output_files",
+                "reference_genome",
+                "index_file",
+              ].join(","),
+            }}
+          />
           <Menu>
             <Menu.Target>
               <Button
@@ -493,7 +509,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
           </Menu>
         </div>
 
-        <h1 className="uppercase flex xl:ml-auto items-center truncate text-xl">
+        <h1 className="uppercase flex 2xl:ml-auto items-center truncate text-xl">
           Total of{" "}
           <FileIcon size={25} className="ml-2 mr-1" aria-hidden="true" />{" "}
           <b data-testid="text-file-count" className="mr-1">

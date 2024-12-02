@@ -68,7 +68,7 @@ const LeftSideElementForHeader: React.FC<LeftSideElementForHeaderProps> = ({
       inactiveText="Download"
       activeText="Processing"
       file={file}
-      displayVariant="header"
+      displayVariant="header-subtle"
       setfileToDownload={setFileToDownload}
     />
   </div>
