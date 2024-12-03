@@ -21,7 +21,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
 * Verify that "TSV from Cohort Table View Biospecimen" has expected information
     |required_info                          |
     |---------------------------------------|
-    |aliquot_id                             |
+    |aliquots.aliquot_id                    |
     |aliquots.aliquot_volume                |
     |no_matched_normal_wxs                  |
     |aliquots.selected_normal_targeted_sequencing|
@@ -34,16 +34,16 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
     |172f1884-c9d3-529b-a885-b5a37442a7e3   |
     |de08e2be-078b-58b3-90a6-7546145af589   |
     |slide_id                               |
-    |slide_submitter_id                     |
+    |slides.submitter_id                    |
     |percent_neutrophil_infiltration        |
     |prostatic_chips_total_count            |
     |portion_id                             |
-    |portion_submitter_id                   |
+    |portions.submitter_id                  |
     |portions.portion_number                |
     |8742f2f2-fe95-5f62-9ef1-8241488cd623   |
     |331d5f27-bfe8-58f6-98b9-f54376f15c96   |
     |sample_id                              |
-    |sample_submitter_id                    |
+    |samples.submitter_id                   |
     |days_to_sample_procurement             |
     |intermediate_dimension                 |
     |samples.preservation_method            |
@@ -112,7 +112,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
     |---------------------------------------|
     |follow_ups.days_to_follow_up           |
     |follow_ups.evidence_of_recurrence_type |
-    |follow_up_submitter_id                 |
+    |follow_ups.submitter_id                |
     |follow_ups.pregnancy_outcome           |
     |molecular_tests.laboratory_test        |
     |f7253ebc-424c-4506-a5f4-727c819d50fd   |
@@ -121,7 +121,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
     |Test Value Reported                    |
     |30.79999                               |
     |pathology_details.lymphatic_invasion_present|
-    |pathology_detail_submitter_id          |
+    |pathology_details.submitter_id         |
     |pathology_details.size_extraocular_nodule|
     |pathology_details.zone_of_origin_prostate|
     |exposures.alcohol_drinks_per_day       |

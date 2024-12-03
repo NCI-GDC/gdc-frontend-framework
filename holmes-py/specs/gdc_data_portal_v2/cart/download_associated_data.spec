@@ -34,31 +34,31 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
 * Verify that "Clinical: TSV from Cart Header Dropdown" has expected information
     |required_info                        |
     |-------------------------------------|
-    |follow_ups.barretts_esophagus_goblet_cells_present|
+    |follow_ups.barretts_esophagus_goblet_cells_present     |
     |follow_ups.dlco_ref_predictive_percent|
     |follow_ups.recist_targeted_regions_sum|
     |molecular_tests.biospecimen_volume   |
     |molecular_tests.test_analyte_type    |
     |SD-Stable Disease                    |
     |Blood                                |
-    |Serum Free Immunoglobulin Light Chain, Lambda |
-    |pathology_details.additional_pathology_findings|
+    |Serum Free Immunoglobulin Light Chain, Lambda          |
+    |pathology_details.additional_pathology_findings        |
     |pathology_details.percent_tumor_nuclei|
-    |pathology_details.vascular_invasion_present|
+    |pathology_details.vascular_invasion_present            |
     |97886d69-8daa-4a6e-b275-fa3853cf1702 |
     |f35b48fa-eae8-4b66-bb90-0f86a55d3552 |
     |exposures.chemical_exposure_type     |
     |exposures.secondhand_smoke_as_child  |
     |a2a2dbda-d10c-49c4-86a8-61baf6160cda |
     |Current Reformed Smoker for > 15 yrs |
-    |family_histories.relationship_primary_diagnosis|
+    |family_histories.relationship_primary_diagnosis        |
     |family_histories.relative_smoker     |
     |HCM-BROD-0231-C25                    |
     |Prostate Cancer                      |
     |First Degree Relative, NOS           |
     |demographic.cause_of_death_source    |
     |diagnoses.primary_gleason_grade      |
-    |pathology_details.perineural_invasion_present|
+    |pathology_details.perineural_invasion_present          |
     |treatments.treatment_outcome         |
     |Not Cancer Related                   |
     |Unknown tumor status                 |
@@ -66,6 +66,25 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |No Metastasis                        |
     |Endometrioid adenocarcinoma, NOS     |
     |Initial Diagnosis                    |
+    |other_clinical_attributes.bmi        |
+    |other_clinical_attributes.comorbidity_method_of_diagnosis  |
+    |other_clinical_attributes.exercise_frequency_weekly        |
+    |other_clinical_attributes.hormonal_contraceptive_type      |
+    |other_clinical_attributes.hysterectomy_type                |
+    |other_clinical_attributes.other_clinical_attribute_id      |
+    |other_clinical_attributes.submitter_id                     |
+    |other_clinical_attributes.viral_hepatitis_serology_tests   |
+    |other_clinical_attributes.weeks_gestation_at_birth         |
+    |3a0f6160-ac66-44d8-a689-2a7226ef4a17 |
+    |a48d46ee-ca42-4f83-a458-a4200b11def1 |
+    |191a027d-eca3-4626-a54c-1c702fcdd13d |
+    |8d7378be-91a1-49f2-b20b-f6d531525dd2 |
+    |7347ae42-87a7-4a93-acc6-0553cf06d39a |
+    |89d5050c-3e95-4e5e-83c6-c073b9bb53cd |
+    |a242040c-f78a-4fa8-8960-8e2f1020f0d5 |
+    |HCM-CSHL-0182-C25_other_clinical_attribute|
+    |Initial Diagnosis                    |
+
 * Verify that "Clinical: TSV from Cart Header Dropdown" does not contain specified information
     |required_info                        |
     |-------------------------------------|
@@ -179,7 +198,7 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |Tumor                                |
     |Metastatic                           |
     |slide_id                             |
-    |slide_submitter_id                   |
+    |slides.submitter_id                  |
     |slides.percent_follicular_component  |
     |slides.percent_necrosis              |
     |slides.percent_tumor_cells           |

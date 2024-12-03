@@ -24,7 +24,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
 * Verify that "TSV from Cohort Summary View Biospecimen" has expected information
     |required_info                        |
     |-------------------------------------|
-    |portion_submitter_id                 |
+    |portions.submitter_id                |
     |aliquots.aliquot_volume              |
     |aliquots.no_matched_normal_wgs       |
     |aliquots.source_center               |
@@ -136,12 +136,12 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
 * Verify that "TSV from Cohort Summary View Clinical" has expected information
     |required_info                        |
     |-------------------------------------|
-    |case_submitter_id                    |
+    |cases.submitter_id                   |
     |follow_ups.evidence_of_recurrence_type|
     |follow_ups.immunosuppressive_treatment_type|
     |follow_ups.progression_or_recurrence_type|
     |molecular_tests.gene_symbol          |
-    |molecular_test_submitter_id          |
+    |molecular_tests.submitter_id         |
     |molecular_tests.test_result          |
     |9e3ee1c3-3376-489e-97f6-c5d13ab3a2de |
     |fded9873-4c4b-45f5-8381-1cfe2cff4cbf |
@@ -152,7 +152,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
     |14.994                               |
     |pathology_details.additional_pathology_findings|
     |pathology_details.lymph_node_involvement|
-    |pathology_detail_submitter_id        |
+    |pathology_details.submitter_id       |
     |pathology_details.tumor_basal_diameter|
     |pathology_details.zone_of_origin_prostate|
     |exposures.age_at_last_exposure       |

@@ -130,7 +130,7 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download
     |26a5ccaa-d86d-4283-9a00-39ed229586f9   |
     |extracapsular_extension_present        |
     |pathology_details.margin_status        |
-    |pathology_detail_submitter_id          |
+    |pathology_details.submitter_id         |
     |3.5                                    |
 * Verify that "TSV from Case Summary Clinical Table" does not contain specified information
     |required_info                          |
@@ -267,6 +267,16 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download
     |Absolute Neutrophil                    |
     |2.8                                    |
     |ukat/L                                 |
+    |Timepoint Category                     |
+    |Nononcologic Therapeutic Agents        |
+    |Treatment Frequency                    |
+    |Weight                                 |
+    |Height                                 |
+    |BMI                                    |
+    |58                                     |
+    |150                                    |
+    |a5de9cbc-4033-4d39-b543-e3ad87ef0d78   |
+    |MMRF_2081_oca1                         |
 
 ## Clinical Table - TSV Download: Follow Up, Family History, Clinical
 * Download "TSV" from "Case Summary Clinical Table"
@@ -292,6 +302,15 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download
     |pathology_details.additional_pathology_findings  |
     |treatments.treatment_type                        |
     |MMRF-COMMPASS                                    |
+    |other_clinical_attributes.aids_risk_factors      |
+    |other_clinical_attributes.days_to_risk_factor    |
+    |other_clinical_attributes.hysterectomy_margins_involved|
+    |other_clinical_attributes.timepoint_category     |
+    |other_clinical_attributes.undescended_testis_corrected_laterality|
+    |other_clinical_attributes.weight                 |
+    |MMRF_2081_oca1                                   |
+    |a5de9cbc-4033-4d39-b543-e3ad87ef0d78             |
+
 * Verify that "TSV from Case Summary Clinical Table" does not contain specified information
     |required_info                          |
     |---------------------------------------|
@@ -504,8 +523,8 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download
     |project_id                             |
     |sample_id                              |
     |portion_id                             |
-    |analyte_submitter_id                   |
-    |aliquot_id                             |
+    |analytes.submitter_id                  |
+    |aliquots.aliquot_id                    |
     |TCGA-GV-A3QI-10A-01W-A226-08           |
     |06f936e9-5a90-40d3-b91a-713f2b4e6e11   |
     |45f1a50a-8d05-48c5-8f82-ba4955117d1b   |
@@ -520,7 +539,7 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download
     |88217dc9-06a0-4839-8269-85ce0798ef89   |
     |slides.percent_inflam_infiltration     |
     |slides.percent_tumor_nuclei            |
-    |portion_submitter_id                   |
+    |portions.submitter_id                  |
     |portions.creation_datetime             |
 
 ## Biospecimen Table - Download JSON

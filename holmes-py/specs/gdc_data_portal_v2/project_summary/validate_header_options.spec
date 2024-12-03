@@ -40,21 +40,21 @@ tags: gdc-data-portal-v2, regression, project-summary, clinical-biospecimen-down
     |required_info                          |
     |---------------------------------------|
     |project_id                             |
-    |analyte_submitter_id                   |
+    |analytes.submitter_id                  |
     |analytes.concentration                 |
     |aliquots.selected_normal_wxs           |
     |3f2ca278-c74a-4aa7-b029-189d9d0b510c   |
     |050ea84e-f0ab-453f-b2af-d0dbfca313ba   |
     |a41a13f9-bc5d-49de-99a2-8365bf1840dc   |
     |released                               |
-    |portion_submitter_id                   |
+    |portions.submitter_id                  |
     |analyte_quantity                       |
     |analytes.experimental_protocol_type    |
     |analytes.spectrophotometer_method      |
     |Repli-G (Qiagen) DNA                   |
     |Allprep RNA Extraction                 |
     |UV Spec                                |
-    |slide_submitter_id                     |
+    |slides.submitter_id                    |
     |slides.percent_neutrophil_infiltration |
     |slides.section_location                |
     |c8b01ca9-20f7-4858-80ed-372526539069   |
@@ -126,7 +126,7 @@ tags: gdc-data-portal-v2, regression, project-summary, clinical-biospecimen-down
     |follow_ups.undescended_testis_corrected_laterality|
     |molecular_tests.blood_test_normal_range_upper|
     |molecular_tests.test_result            |
-    |diagnosis_submitter_id                 |
+    |diagnoses.submitter_id                 |
     |pathology_details.lymphatic_invasion_present|
     |pathology_details.tumor_depth_descriptor|
     |exposures.age_at_last_exposure         |
