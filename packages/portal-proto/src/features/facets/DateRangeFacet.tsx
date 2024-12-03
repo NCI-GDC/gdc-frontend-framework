@@ -71,7 +71,6 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
       fromOp: ">=",
       toOp: "<=",
     };
-    // console.log({ data }); //TODO: confirm this should be removed
     const rangeFilters = buildRangeOperator(field, data);
     if (rangeFilters !== undefined) updateFacetFilters(field, rangeFilters);
     // clear filters as range is empty
