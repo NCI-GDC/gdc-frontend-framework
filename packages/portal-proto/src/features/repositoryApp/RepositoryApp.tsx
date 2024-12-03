@@ -33,7 +33,7 @@ import {
   useClearAllRepositoryFilters,
 } from "@/features/repositoryApp/hooks";
 import { useImageCounts } from "@/features/repositoryApp/slideCountSlice";
-import { Tooltip, Menu, Button } from "@mantine/core";
+import { Tooltip } from "@mantine/core";
 import FilesTables from "../repositoryApp/FilesTable";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
@@ -41,7 +41,7 @@ import { useRouter } from "next/router";
 import { TableXPositionContext } from "@/components/Table/VerticalTable";
 import { getFormattedTimestamp } from "@/utils/date";
 import { focusStyles } from "@/utils/index";
-import { CartIcon, DownloadIcon, DropdownIcon } from "@/utils/icons";
+import { CartIcon } from "@/utils/icons";
 
 export const persistor = persistStore(AppStore);
 
