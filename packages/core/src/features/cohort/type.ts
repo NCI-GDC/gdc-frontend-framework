@@ -1,4 +1,4 @@
-import { DataStatus } from "src/dataAccess";
+import { DataStatus } from "../../dataAccess";
 
 /**
  *  CountsData holds all the case counts for a cohort
