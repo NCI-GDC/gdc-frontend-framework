@@ -4,16 +4,32 @@ const config: InitialOptionsTsJest = {
   preset: "ts-jest",
   setupFilesAfterEnv: ["<rootDir>/setupTests.ts"],
   transform: {
-    "@sjcrh": "ts-jest",
-    "node_modules/(react-dnd|dnd-core|@react-dnd|react-dnd-html5-backend)/.+\\.(j|t)sx?$":
+    "^.+\\.(ts|tsx)?$": [
       "ts-jest",
+      {
+        tsconfig: "tsconfig.test.json",
+        isolatedModules: true,
+      },
+    ],
+    "@sjcrh": [
+      "ts-jest",
+      {
+        "ts-jest": {
+          tsconfig: "tsconfig.test.json",
+        },
+      },
+    ],
+    "node_modules/(react-dnd|dnd-core|@react-dnd|react-dnd-html5-backend|uuid)/.+\\.(j|t)sx?$":
+      [
+        "ts-jest",
+        {
+          "ts-jest": {
+            tsconfig: "tsconfig.test.json",
+          },
+        },
+      ],
     // uncomment when testing with npm linked sjpp client package code
     // "proteinpaint/client": "ts-jest"
-  },
-  globals: {
-    "ts-jest": {
-      tsconfig: "tsconfig.test.json",
-    },
   },
   testEnvironment: "jsdom",
   moduleNameMapper: {
@@ -24,11 +40,13 @@ const config: InitialOptionsTsJest = {
     "^@/hooks/(.*)$": "<rootDir>/src/hooks/$1",
     "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",
     "\\.svg$": "<rootDir>/__mocks__/svg.ts",
+    "^redux-persist/lib/storage/createWebStorage$":
+      "<rootDir>/__mocks__/createWebStorageMock.js",
   },
   modulePaths: ["<rootDir>"],
   setupFiles: ["jest-canvas-mock"],
   transformIgnorePatterns: [
-    "node_modules/(?!@sjcrh|react-dnd|dnd-core|@react-dnd|react-dnd-html5-backend)/",
+    "node_modules/(?!@sjcrh|react-dnd|dnd-core|@react-dnd|react-dnd-html5-backend|uuid)/",
     "!proteinpaint",
   ],
   testTimeout: 50000,

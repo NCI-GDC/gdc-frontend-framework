@@ -1,16 +1,21 @@
 import { render } from "test-utils";
-import * as core from "@gff/core";
 import QueryRepresentationLabel from "../QueryRepresentationLabel";
 
-jest.spyOn(core, "useCoreDispatch").mockReturnValue(jest.fn());
-jest.spyOn(core, "useGeneSymbol").mockReturnValue({
-  isSuccess: true,
-  data: { E10: "TCGA", E40: "FAT3", E60: "FAT4" },
-  isError: false,
-  isFetching: false,
-  isUninitialized: false,
-  error: "",
-});
+jest.mock("@gff/core", () => ({
+  ...jest.requireActual("@gff/core"),
+  useCoreDispatch: jest.fn(),
+  useGeneSymbol: jest.fn().mockReturnValue({
+    isSuccess: true,
+    data: { E10: "TCGA", E40: "FAT3", E60: "FAT4" },
+    isError: false,
+    isFetching: false,
+    isUninitialized: false,
+    error: "",
+  }),
+  selectSetsByType: jest.fn().mockImplementation(() => ({
+    123: "my gene set",
+  })),
+}));
 
 describe("<QueryRepresentationLabel />", () => {
   it("handles display of groups", () => {
@@ -29,10 +34,6 @@ describe("<QueryRepresentationLabel />", () => {
   });
 
   it("handles display of sets", () => {
-    jest.spyOn(core, "selectSetsByType").mockImplementation(() => ({
-      123: "my gene set",
-    }));
-
     const { getByText } = render(
       <QueryRepresentationLabel
         field={"genes.gene_id"}

@@ -2,6 +2,15 @@ import { render } from "test-utils";
 import { CaseSummary } from "./CaseSummary";
 import * as func from "@gff/core";
 
+// Mock the entire module
+jest.mock("@gff/core", () => ({
+  ...jest.requireActual("@gff/core"),
+  useCoreSelector: jest.fn(),
+  useCoreDispatch: jest.fn(),
+  useGetCasesQuery: jest.fn(),
+  useGetAnnotationsQuery: jest.fn(),
+}));
+
 jest.mock("src/pages/_app", () => ({
   URLContext: {},
 }));
@@ -9,8 +18,6 @@ jest.mock("src/pages/_app", () => ({
 describe("<CaseSummary />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(func, "useCoreSelector").mockImplementation(jest.fn());
-    jest.spyOn(func, "useCoreDispatch").mockImplementation(jest.fn());
   });
 
   it("should show Loading Overlay when fetching", () => {

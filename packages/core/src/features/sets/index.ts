@@ -7,8 +7,8 @@ import {
   useCreateCaseSetFromFiltersMutation,
   useCreateTopNGeneSetFromFiltersMutation,
   useCreateTopNSsmsSetFromFiltersMutation,
-  CreateSetFilterArgs,
-  CreateSetValueArgs,
+  type CreateSetFilterArgs,
+  type CreateSetValueArgs,
 } from "./createSetSlice";
 import {
   setsReducer,
@@ -17,7 +17,7 @@ import {
   renameSet,
   selectSetsByType,
   selectAllSets,
-  SetTypes,
+  type SetTypes,
 } from "./setsSlice";
 import {
   useGeneSetCountQuery,

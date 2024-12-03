@@ -40,6 +40,7 @@ const DownloadAccessAgreement: React.FC<DownloadAccessAgreementProps> = ({
               size="sm"
               href="https://gdc.cancer.gov/about-data/data-analysis-policies"
               target="_blank"
+              rel="noreferrer"
               className="underline"
             >
               GDC Data Use Agreement
@@ -49,6 +50,7 @@ const DownloadAccessAgreement: React.FC<DownloadAccessAgreementProps> = ({
               size="sm"
               href={dbGapLink}
               target="_blank"
+              rel="noreferrer"
               className="underline"
             >
               dbGaP

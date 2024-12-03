@@ -1,5 +1,6 @@
 import {
   AnyAction,
+  createAsyncThunk,
   createEntityAdapter,
   createSlice,
   Dictionary,
@@ -17,12 +18,9 @@ import { CoreDispatch } from "../../store";
 import { useCoreSelector } from "../../hooks";
 import { SetTypes } from "../sets";
 import { defaultCohortNameGenerator } from "./utils";
-import {
-  CountsData,
-  CountsDataAndStatus,
-  fetchCohortCaseCounts,
-  NullCountsData,
-} from "./cohortCountsQuery";
+import { CountsData, CountsDataAndStatus, NullCountsData } from "./type";
+import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
+import { UnknownJson } from "../gdcapi/gdcapi";
 
 export const UNSAVED_COHORT_NAME = "Unsaved_Cohort";
 
@@ -1033,3 +1031,65 @@ export const divideCurrentCohortFilterSetFilterByPrefix = (
 
   return divideFilterSetByPrefix(cohort?.filters, prefixes);
 };
+
+const CountsGraphQLQuery = `
+  query countsQuery($filters: FiltersArgument) {
+  viewer {
+    repository {
+      files {
+        hits(case_filters: $filters, first: 0) {
+          total
+        }
+      }
+    },
+    explore {
+      cases {
+        hits(case_filters: $filters, first: 0) {
+          total
+        }
+      },
+      genes {
+        hits(case_filters: $filters, first: 0) {
+          total
+        }
+      },
+      ssms {
+        hits(case_filters: $filters, first: 0) {
+          total
+        }
+      }
+    }
+  }
+}`;
+
+interface CohortCountsResponse extends GraphQLApiResponse {
+  cohortFilters?: FilterSet;
+}
+
+export const fetchCohortCaseCounts = createAsyncThunk<
+  CohortCountsResponse,
+  string,
+  { dispatch: CoreDispatch; state: CoreState }
+>(
+  "cohort/CohortCounts",
+  async (cohortId, thunkAPI): Promise<CohortCountsResponse> => {
+    const cohortFilters = selectCohortFilterSetById(
+      thunkAPI.getState(),
+      cohortId,
+    );
+
+    const cohortFiltersGQL = buildCohortGqlOperator(cohortFilters);
+    const graphQlFilters = {
+      filters: cohortFiltersGQL ?? {}, // the cohort filters
+    };
+    // get the data from the graphql endpoint
+    const data = await graphqlAPI<UnknownJson>(
+      CountsGraphQLQuery,
+      graphQlFilters,
+    );
+    return {
+      ...data,
+      cohortFilters, // add the cohort filters to the response to ensure we did not receive stale data
+    };
+  },
+);

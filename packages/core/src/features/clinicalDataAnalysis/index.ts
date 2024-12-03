@@ -6,7 +6,7 @@ import {
 import { useClinicalFieldsQuery } from "./clinicalFieldsSlice";
 import {
   useGetContinuousDataStatsQuery,
-  ClinicalContinuousStatsData,
+  type ClinicalContinuousStatsData,
 } from "./clinicalContinuousStatsSlice";
 
 export {

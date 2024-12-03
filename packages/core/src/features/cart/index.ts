@@ -4,12 +4,12 @@ import {
   addFilesToCart,
   removeFilesFromCart,
   updateCartReducer,
-  CartFile,
+  type CartFile,
 } from "./updateCartSlice";
 import {
   useCartSummaryQuery,
-  CartSummaryData,
-  CartAggregation,
+  type CartSummaryData,
+  type CartAggregation,
 } from "./cartSummarySlice";
 export {
   selectCart,

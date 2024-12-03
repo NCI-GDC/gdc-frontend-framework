@@ -583,6 +583,13 @@ def verify_named_button_is_disabled(button_name: str):
         is_button_disabled
     ), f"The button '{button_name}' is disabled when it should NOT be"
 
+@step("Verify the button <button_name> area is <expanded_or_collapsed>")
+def verify_named_button_is_disabled(button_name: str, expanded_or_collapsed:str):
+    is_button_expanded = APP.shared.is_button_area_expanded(button_name)
+    if expanded_or_collapsed.lower() == "expanded":
+        assert is_button_expanded == 'true', f"The button '{button_name}' is NOT expanded when it should be"
+    elif expanded_or_collapsed.lower() == "collapsed":
+        assert is_button_expanded == 'false', f"The button '{button_name}' is NOT collapsed when it should be"
 
 @step("Wait for <data_testid> to be present on the page")
 def wait_for_data_testid_to_be_visible_on_the_page(data_testid: str):
@@ -971,6 +978,10 @@ def click_named_button_in_modal_and_wait_for_temp_message_text(table):
         time.sleep(1)
         APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
 
+@step("Remove message if one is present")
+def remove_message_if_one_is_present():
+    if APP.shared.is_temporary_message_present():
+        APP.shared.click_close_temporary_message()
 
 @step("Clear active cohort filters")
 def clear_active_cohort_filters():

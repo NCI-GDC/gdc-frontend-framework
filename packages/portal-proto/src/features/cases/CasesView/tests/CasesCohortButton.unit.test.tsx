@@ -3,29 +3,27 @@ import { render } from "test-utils";
 import { CasesCohortButton } from "../CasesCohortButton";
 import userEvent from "@testing-library/user-event";
 import { waitFor } from "@testing-library/react";
-import * as core from "@gff/core";
 
-const mockMutation = jest.fn().mockReturnValue({
-  unwrap: jest.fn().mockResolvedValue({
-    id: "2",
-  }),
-});
-beforeEach(() => {
-  jest.spyOn(core, "useCoreSelector").mockReturnValue([]);
-  jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
-  jest
-    .spyOn(core, "useAddCohortMutation")
-    .mockReturnValue([mockMutation, { isLoading: false } as any]);
-  jest
-    .spyOn(core, "useGetCohortsByContextIdQuery")
-    .mockReturnValue({ data: {}, refetch: jest.fn() });
-  jest
-    .spyOn(core, "useLazyGetCohortByIdQuery")
-    .mockReturnValue([jest.fn()] as any);
-  jest
-    .spyOn(core, "useCreateCaseSetFromFiltersMutation")
-    .mockReturnValue([jest.fn()] as any);
-});
+jest.mock("@gff/core", () => ({
+  ...jest.requireActual("@gff/core"),
+  useCoreSelector: jest.fn().mockReturnValue([]),
+  useCoreDispatch: jest.fn().mockImplementation(jest.fn()),
+  useAddCohortMutation: jest.fn().mockReturnValue([
+    jest.fn().mockReturnValue({
+      unwrap: jest.fn().mockResolvedValue({
+        id: "2",
+      }),
+    }),
+    { isLoading: false } as any,
+  ]),
+  useGetCohortsByContextIdQuery: jest
+    .fn()
+    .mockReturnValue({ data: {}, refetch: jest.fn() }),
+  useLazyGetCohortByIdQuery: jest.fn().mockReturnValue([jest.fn()] as any),
+  useCreateCaseSetFromFiltersMutation: jest
+    .fn()
+    .mockReturnValue([jest.fn()] as any),
+}));
 
 describe("CasesCohortButton", () => {
   it("displays loading message when cases are fetching", async () => {
