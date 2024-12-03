@@ -133,7 +133,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
         className="bg-primary text-primary-contrast-darkest flex flex-col-reverse 2xl:flex-row 2xl:items-center gap-4 w-full p-4"
         data-testid="cart-header"
       >
-        <div className="flex flex-wrap gap-4">
+        <div className="flex flex-wrap gap-2">
           <Menu width="target">
             <Menu.Target>
               <Button
@@ -141,7 +141,13 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 classNames={{
                   root: `${buttonStyle} ${focusStyles}`,
                 }}
-                leftSection={<DownloadIcon aria-hidden="true" size="1rem" />}
+                leftSection={
+                  <DownloadIcon
+                    aria-hidden="true"
+                    size="1rem"
+                    className="hidden xl:block"
+                  />
+                }
                 rightSection={
                   <div className="border-l pl-1 -mr-2">
                     <ArrowDropDownIcon size="1.5em" aria-hidden="true" />
@@ -196,7 +202,13 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 classNames={{
                   root: `${buttonStyle} ${focusStyles}`,
                 }}
-                leftSection={<DownloadIcon aria-hidden="true" size="1rem" />}
+                leftSection={
+                  <DownloadIcon
+                    aria-hidden="true"
+                    size="1rem"
+                    className="hidden xl:block"
+                  />
+                }
                 rightSection={
                   <div className="border-l pl-1 -mr-2">
                     <ArrowDropDownIcon size="1.5em" aria-hidden="true" />
@@ -276,7 +288,13 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 classNames={{
                   root: `${buttonStyle} ${focusStyles}`,
                 }}
-                leftSection={<DownloadIcon aria-hidden="true" size="1rem" />}
+                leftSection={
+                  <DownloadIcon
+                    aria-hidden="true"
+                    size="1rem"
+                    className="hidden xl:block"
+                  />
+                }
                 rightSection={
                   <div className="border-l pl-1 -mr-2">
                     <ArrowDropDownIcon size="1.5em" aria-hidden="true" />
@@ -481,7 +499,13 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             <Menu.Target>
               <Button
                 data-testid="button-remove-from-cart"
-                leftSection={<CartIcon aria-hidden="true" size="1rem" />}
+                leftSection={
+                  <CartIcon
+                    aria-hidden="true"
+                    size="1rem"
+                    className="hidden xl:block"
+                  />
+                }
                 rightSection={
                   <div className="border-l pl-1 -mr-2">
                     <ArrowDropDownIcon size="1.5em" aria-hidden="true" />
