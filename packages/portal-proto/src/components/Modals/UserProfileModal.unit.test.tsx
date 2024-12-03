@@ -1,18 +1,26 @@
 import { render } from "test-utils";
 import { UserProfileModal } from "./UserProfileModal";
-import * as core from "@gff/core";
+import {
+  useFetchUserDetailsQuery,
+  useLazyFetchUserDetailsQuery,
+} from "@gff/core";
+jest.mock("@gff/core", () => ({
+  ...jest.requireActual("@gff/core"),
+  useCoreDispatch: jest.fn(),
+  useGetBannerNotificationsQuery: jest
+    .fn()
+    .mockImplementation(jest.fn().mockReturnValue([jest.fn()])),
+  useFetchUserDetailsQuery: jest.fn(),
+  useLazyFetchUserDetailsQuery: jest.fn(),
+}));
 
 describe("<UserProfileModal />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
-    jest
-      .spyOn(core, "useGetBannerNotificationsQuery")
-      .mockImplementation(jest.fn().mockReturnValue([jest.fn()]));
   });
 
   it("should show no access message when there are not projets assigned to the user. ", () => {
-    jest.spyOn(core, "useFetchUserDetailsQuery").mockReturnValue({
+    jest.mocked(useFetchUserDetailsQuery).mockReturnValue({
       data: {
         data: {
           username: "test",
@@ -32,7 +40,7 @@ describe("<UserProfileModal />", () => {
   });
 
   it("should show no access message when there are not projets assigned to the user. ", () => {
-    jest.spyOn(core, "useFetchUserDetailsQuery").mockReturnValue({
+    jest.mocked(useFetchUserDetailsQuery).mockReturnValue({
       data: {
         data: {
           username: "test",
@@ -53,9 +61,9 @@ describe("<UserProfileModal />", () => {
 
   test("should show Session Expire modal when user details returns 401", async () => {
     jest
-      .spyOn(core, "useLazyFetchUserDetailsQuery")
+      .mocked(useLazyFetchUserDetailsQuery)
       .mockImplementation(jest.fn().mockReturnValue([jest.fn()]));
-    jest.spyOn(core, "useFetchUserDetailsQuery").mockReturnValue({
+    jest.mocked(useFetchUserDetailsQuery).mockReturnValue({
       data: {
         data: null,
         status: 401,

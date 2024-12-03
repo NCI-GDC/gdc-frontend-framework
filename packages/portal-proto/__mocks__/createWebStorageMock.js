@@ -1,8 +1,10 @@
+/* global jest */
+
 const mockStorage = {
-  getItem: jest.fn((key) => Promise.resolve(null)),
-  setItem: jest.fn((key, item) => Promise.resolve(item)),
-  removeItem: jest.fn((key) => Promise.resolve()),
+  getItem: jest.fn((_key) => Promise.resolve(null)),
+  setItem: jest.fn((_key, item) => Promise.resolve(item)),
+  removeItem: jest.fn((_key) => Promise.resolve()),
 };
 
-const createWebStorage = (arg) => mockStorage;
+const createWebStorage = (_arg) => mockStorage;
 module.exports = createWebStorage;

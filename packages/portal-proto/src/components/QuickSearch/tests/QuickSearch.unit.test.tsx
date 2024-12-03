@@ -2,8 +2,14 @@ import { waitFor } from "@testing-library/react";
 import { render } from "test-utils";
 import userEvent from "@testing-library/user-event";
 import * as router from "next/router";
-import * as core from "@gff/core";
 import { QuickSearch } from "../QuickSearch";
+import { useGetHistoryQuery, useQuickSearchQuery } from "@gff/core";
+
+jest.mock("@gff/core", () => ({
+  ...jest.requireActual("@gff/core"),
+  useQuickSearchQuery: jest.fn(),
+  useGetHistoryQuery: jest.fn(),
+}));
 
 jest.spyOn(router, "useRouter").mockImplementation(
   () =>
@@ -15,7 +21,7 @@ jest.spyOn(router, "useRouter").mockImplementation(
 
 describe("<QuickSearch />", () => {
   test("displays results", async () => {
-    jest.spyOn(core, "useQuickSearchQuery").mockReturnValue({
+    jest.mocked(useQuickSearchQuery).mockReturnValue({
       data: {
         searchList: [
           { id: btoa("Gene:111"), symbol: "TH" },
@@ -24,7 +30,7 @@ describe("<QuickSearch />", () => {
         query: "th",
       },
     } as any);
-    jest.spyOn(core, "useGetHistoryQuery").mockReturnValue({
+    jest.mocked(useGetHistoryQuery).mockReturnValue({
       data: undefined,
       isSuccess: true,
       isUninitialized: false,
@@ -45,7 +51,7 @@ describe("<QuickSearch />", () => {
   });
 
   test("displays superseded file", async () => {
-    jest.spyOn(core, "useQuickSearchQuery").mockImplementation(
+    jest.mocked(useQuickSearchQuery).mockImplementation(
       (search_str) =>
         (search_str === "111-222"
           ? {
@@ -61,7 +67,7 @@ describe("<QuickSearch />", () => {
               },
             }) as any,
     );
-    jest.spyOn(core, "useGetHistoryQuery").mockReturnValue({
+    jest.mocked(useGetHistoryQuery).mockReturnValue({
       data: [
         {
           uuid: "444-555",
@@ -89,13 +95,13 @@ describe("<QuickSearch />", () => {
   });
 
   test("displays no results found if history is empty", async () => {
-    jest.spyOn(core, "useQuickSearchQuery").mockReturnValue({
+    jest.mocked(useQuickSearchQuery).mockReturnValue({
       data: {
         searchList: [],
         query: "111-222",
       },
     } as any);
-    jest.spyOn(core, "useGetHistoryQuery").mockReturnValue({
+    jest.mocked(useGetHistoryQuery).mockReturnValue({
       data: [],
       isSuccess: true,
       isUninitialized: false,
@@ -115,13 +121,13 @@ describe("<QuickSearch />", () => {
   });
 
   test("displays no results found if file doesn't have a newer version", async () => {
-    jest.spyOn(core, "useQuickSearchQuery").mockReturnValue({
+    jest.mocked(useQuickSearchQuery).mockReturnValue({
       data: {
         searchList: [],
         query: "111-222",
       },
     } as any);
-    jest.spyOn(core, "useGetHistoryQuery").mockReturnValue({
+    jest.mocked(useGetHistoryQuery).mockReturnValue({
       data: [
         {
           file_change: "released",
@@ -147,7 +153,7 @@ describe("<QuickSearch />", () => {
   });
 
   test("displays no results in superseded file does not exist", async () => {
-    jest.spyOn(core, "useQuickSearchQuery").mockImplementation(
+    jest.mocked(useQuickSearchQuery).mockImplementation(
       (search_str) =>
         (search_str === "111-222"
           ? {
@@ -164,7 +170,7 @@ describe("<QuickSearch />", () => {
               isSuccess: true,
             }) as any,
     );
-    jest.spyOn(core, "useGetHistoryQuery").mockReturnValue({
+    jest.mocked(useGetHistoryQuery).mockReturnValue({
       data: [
         {
           uuid: "444-555",

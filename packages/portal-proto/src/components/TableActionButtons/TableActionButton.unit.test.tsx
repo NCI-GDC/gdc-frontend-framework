@@ -3,17 +3,17 @@ import { render } from "test-utils";
 import { TableActionButtons } from ".";
 import userEvent from "@testing-library/user-event";
 import * as cartFunctions from "@/features/cart/updateCart";
-import * as core from "@gff/core";
+
+jest.mock("@gff/core", () => ({
+  ...jest.requireActual("@gff/core"),
+  useCoreDispatch: jest.fn().mockReturnValue(jest.fn()),
+  useCoreSelector: jest.fn().mockReturnValue([] as CartFile[]),
+  useLazyFetchUserDetailsQuery: jest
+    .fn()
+    .mockImplementation(jest.fn().mockReturnValue([jest.fn()])),
+}));
 
 describe("<TableActionButtons />", () => {
-  beforeEach(() => {
-    jest.spyOn(core, "useCoreSelector").mockReturnValue([] as CartFile[]);
-    jest.spyOn(core, "useCoreDispatch").mockReturnValue(jest.fn());
-    jest
-      .spyOn(core, "useLazyFetchUserDetailsQuery")
-      .mockImplementation(jest.fn().mockReturnValue([jest.fn()]));
-  });
-
   it("should remove already present file from the cart", async () => {
     const { getByTestId } = render(
       <TableActionButtons

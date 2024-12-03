@@ -2,18 +2,21 @@ import { render } from "test-utils";
 import * as core from "@gff/core";
 import QueryExpressionSection from "../QueryExpressionSection";
 
-jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
-jest.spyOn(core, "useCoreSelector").mockImplementation(jest.fn());
-jest.spyOn(core, "useGeneSymbol").mockImplementation(jest.fn());
-jest
-  .spyOn(core, "useGeneSetCountQuery")
-  .mockReturnValue({ data: 0, isSuccess: true } as any);
-jest
-  .spyOn(core, "useSsmSetCountQuery")
-  .mockReturnValue({ data: 0, isSuccess: true } as any);
-jest
-  .spyOn(core, "useCaseSetCountQuery")
-  .mockReturnValue({ data: 0, isSuccess: true } as any);
+jest.mock("@gff/core", () => ({
+  ...jest.requireActual("@gff/core"),
+  useCoreDispatch: jest.fn().mockReturnValue(jest.fn()),
+  useCoreSelector: jest.fn().mockReturnValue(jest.fn()),
+  useGeneSymbol: jest.fn().mockReturnValue(jest.fn()),
+  useGeneSetCountQuery: jest
+    .fn()
+    .mockReturnValue({ data: 0, isSuccess: true } as any),
+  useSsmSetCountQuery: jest
+    .fn()
+    .mockReturnValue({ data: 0, isSuccess: true } as any),
+  useCaseSetCountQuery: jest
+    .fn()
+    .mockReturnValue({ data: 0, isSuccess: true } as any),
+}));
 
 describe("<QueryExpressionSection />", () => {
   it("Cohort with no filters shows empty message", () => {

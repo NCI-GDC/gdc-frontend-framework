@@ -1,6 +1,5 @@
 import { waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import * as core from "@gff/core";
 import InputEntityList from "./InputEntityList";
 import { UserInputContext } from "@/components/Modals/UserInputModal";
 import UpdateCohortButton from "@/components/Modals/SetModals/UpdateFiltersButton";
