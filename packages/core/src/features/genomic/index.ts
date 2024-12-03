@@ -1,10 +1,10 @@
 import {
   useGeneSummaryQuery,
-  GeneSummaryData,
+  type GeneSummaryData,
 } from "./geneSummary/geneSummarySlice";
 import {
   useGeneFrequencyChartQuery,
-  GenesFrequencyChart,
+  type GenesFrequencyChart,
 } from "./genesFrequencyChartSlice";
 import { useSsmsConsequenceTableQuery } from "./ssmsConsequenceTableSlice";
 

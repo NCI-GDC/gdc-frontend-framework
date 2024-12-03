@@ -1,16 +1,18 @@
 import { render } from "test-utils";
 import UserEvent from "@testing-library/user-event";
-import { CartFile } from "@gff/core";
-import * as core from "@gff/core";
 import CartDownloadModal from "./CartDownloadModal";
+import { CartFile } from "@gff/core";
 
-jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
-jest
-  .spyOn(core, "useLazyFetchUserDetailsQuery")
-  .mockImplementation(jest.fn().mockReturnValue([jest.fn()]));
-jest
-  .spyOn(core, "useGetBannerNotificationsQuery")
-  .mockImplementation(jest.fn().mockReturnValue([jest.fn()]));
+jest.mock("@gff/core", () => ({
+  ...jest.requireActual("@gff/core"),
+  useCoreDispatch: jest.fn().mockReturnValue(jest.fn()),
+  useLazyFetchUserDetailsQuery: jest
+    .fn()
+    .mockImplementation(jest.fn().mockReturnValue([jest.fn()])),
+  useGetBannerNotificationsQuery: jest
+    .fn()
+    .mockImplementation(jest.fn().mockReturnValue([jest.fn()])),
+}));
 
 describe("<CartDownloadModal />", () => {
   it("shows number of auth and unauth files", () => {

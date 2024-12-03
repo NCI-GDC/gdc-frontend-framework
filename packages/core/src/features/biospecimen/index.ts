@@ -1,4 +1,4 @@
 import { useBiospecimenDataQuery } from "./biospecimenSlice";
-import { BiospecimenEntityType } from "./types";
+import { type BiospecimenEntityType } from "./types";
 
 export { useBiospecimenDataQuery, BiospecimenEntityType };

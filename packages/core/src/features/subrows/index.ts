@@ -1,7 +1,7 @@
 import {
   useGetGeneTableSubrowQuery,
   useGetSomaticMutationTableSubrowQuery,
-  TableSubrowData,
+  type TableSubrowData,
 } from "./tableSubrow";
 
 export {

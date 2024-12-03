@@ -1,30 +1,37 @@
-import * as core from "@gff/core";
 import { render } from "test-utils";
 import Cart from "./Cart";
+import {
+  useCartSummaryQuery,
+  useCoreSelector,
+  useFetchUserDetailsQuery,
+  useGetFilesQuery,
+} from "@gff/core";
+
+jest.mock("@gff/core", () => ({
+  ...jest.requireActual("@gff/core"),
+  useCoreDispatch: jest.fn(),
+  useCoreSelector: jest.fn(),
+  useCartSummaryQuery: jest.fn(),
+  useFetchUserDetailsQuery: jest.fn(),
+  useGetFilesQuery: jest.fn(),
+}));
 
 describe("<Cart />", () => {
   beforeEach(() => {
-    jest.spyOn(core, "useFetchUserDetailsQuery").mockReturnValue({} as any);
+    jest.clearAllMocks();
   });
 
   it("Displays empty state", () => {
-    jest.spyOn(core, "useCartSummaryQuery").mockReturnValue({} as any);
-    jest.spyOn(core, "useCoreSelector").mockReturnValue([]);
+    jest.mocked(useCoreSelector).mockImplementation(() => []);
+    jest.mocked(useCartSummaryQuery).mockImplementation(() => ({} as any));
+    jest.mocked(useFetchUserDetailsQuery).mockImplementation(() => ({} as any));
 
     const { getByText } = render(<Cart />);
     expect(getByText("Your cart is empty.")).toBeInTheDocument();
   });
 
   it("Displays cart summary", () => {
-    jest.spyOn(core, "useCartSummaryQuery").mockReturnValue({
-      data: {
-        total_doc_count: 1,
-        total_case_count: 30,
-        total_file_size: 400,
-        byProject: [],
-      },
-    } as any);
-    jest.spyOn(core, "useCoreSelector").mockReturnValue([
+    jest.mocked(useCoreSelector).mockImplementation(() => [
       {
         access: "open",
         acl: [],
@@ -35,8 +42,19 @@ describe("<Cart />", () => {
         file_name: "filo",
       },
     ]);
-    jest.spyOn(core, "useCoreDispatch").mockReturnValue(jest.fn());
-    jest.spyOn(core, "useGetFilesQuery").mockReturnValue({} as any);
+    jest.mocked(useCartSummaryQuery).mockImplementation(
+      () =>
+        ({
+          data: {
+            total_doc_count: 1,
+            total_case_count: 30,
+            total_file_size: 400,
+            byProject: [],
+          },
+        } as any),
+    );
+    jest.mocked(useFetchUserDetailsQuery).mockImplementation(() => ({} as any));
+    jest.mocked(useGetFilesQuery).mockImplementation(() => ({} as any));
 
     const { getByTestId } = render(<Cart />);
     expect(getByTestId("cart-header").textContent).toContain("1 File");

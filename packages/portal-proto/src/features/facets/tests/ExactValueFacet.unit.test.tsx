@@ -1,13 +1,16 @@
 import { render } from "test-utils";
 import userEvent from "@testing-library/user-event";
 import ExactValueFacet from "../ExactValueFacet";
-import * as core from "@gff/core";
 import { Operation } from "@gff/core";
+
+jest.mock("@gff/core", () => ({
+  ...jest.requireActual("@gff/core"),
+  useCoreDispatch: jest.fn(),
+}));
 
 describe("<ExactValueFacet />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
   });
 
   it("test if ExactValueFacet control has expected components", async () => {

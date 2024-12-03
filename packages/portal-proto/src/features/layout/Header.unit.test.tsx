@@ -1,14 +1,38 @@
 import { headerElements } from "../user-flow/workflow/navigation-utils";
 import { Header } from "./Header";
 import * as router from "next/router";
-import * as core from "@gff/core";
 import * as tour from "@reactour/tour";
 import { render } from "test-utils";
+import { useFetchUserDetailsQuery } from "@gff/core";
+
+jest.mock("@gff/core", () => ({
+  ...jest.requireActual("@gff/core"),
+  useCoreDispatch: jest.fn().mockReturnValue(jest.fn()),
+  useCoreSelector: jest.fn(),
+  useTotalCounts: jest.fn().mockReturnValue({
+    isError: false,
+    isFetching: true,
+    isSuccess: true,
+    isUninitialized: false,
+  }),
+  useFetchUserDetailsQuery: jest.fn(),
+  useFacetDictionary: jest.fn().mockReturnValue({
+    isError: false,
+    isFetching: true,
+    isSuccess: true,
+    isUninitialized: false,
+  }),
+  useQuickSearchQuery: jest.fn().mockReturnValue({
+    data: { searchList: [], query: "" },
+  } as any),
+  useGetBannerNotificationsQuery: jest
+    .fn()
+    .mockImplementation(jest.fn().mockReturnValue([jest.fn()])),
+}));
 
 describe("<Header />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(core, "useCoreDispatch").mockReturnValue(jest.fn());
     jest.spyOn(tour, "useTour").mockReturnValue({
       setIsOpen: jest.fn(),
       steps: [{ selector: "div", content: "string" }],
@@ -20,38 +44,16 @@ describe("<Header />", () => {
       disabledActions: false,
     });
 
-    jest.spyOn(core, "useTotalCounts").mockReturnValue({
-      isError: false,
-      isFetching: true,
-      isSuccess: true,
-      isUninitialized: false,
-    });
-
-    jest.spyOn(core, "useFacetDictionary").mockReturnValue({
-      isError: false,
-      isFetching: true,
-      isSuccess: true,
-      isUninitialized: false,
-    });
-
-    jest.spyOn(core, "useQuickSearchQuery").mockReturnValue({
-      data: { searchList: [], query: "" },
-    } as any);
-
     jest.spyOn(router, "useRouter").mockImplementation(
       () =>
         ({
           pathname: "",
         } as any),
     );
-    jest
-      .spyOn(core, "useGetBannerNotificationsQuery")
-      .mockImplementation(jest.fn().mockReturnValue([jest.fn()]));
   });
 
   test("should show login button when the username is null initially", () => {
-    jest.spyOn(core, "useCoreSelector").mockImplementation(jest.fn());
-    jest.spyOn(core, "useFetchUserDetailsQuery").mockReturnValue({
+    jest.mocked(useFetchUserDetailsQuery).mockReturnValue({
       data: {
         data: {
           username: null,
@@ -68,8 +70,7 @@ describe("<Header />", () => {
   });
 
   test("should not show login button when the username is present", () => {
-    jest.spyOn(core, "useCoreSelector").mockImplementation(jest.fn());
-    jest.spyOn(core, "useFetchUserDetailsQuery").mockReturnValue({
+    jest.mocked(useFetchUserDetailsQuery).mockReturnValue({
       data: {
         data: {
           username: "testName",
