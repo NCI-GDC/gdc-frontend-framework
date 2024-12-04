@@ -27,6 +27,8 @@ RUN lerna run --scope @gff/core compile
 RUN lerna run --scope @gff/core build
 RUN lerna run --scope @nci-gdc/sapien compile
 RUN lerna run --scope @nci-gdc/sapien build
+RUN lerna run --scope @gff/portal-components compile
+RUN lerna run --scope @gff/portal-components build
 RUN lerna run --scope portal-proto build
 # ==================================================================
 
