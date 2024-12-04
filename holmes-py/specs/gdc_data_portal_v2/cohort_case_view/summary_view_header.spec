@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Summary View Header
 Test-Case       : PEAR-2207, PEAR-1048
 
-tags: gdc-data-portal-v2, regression, cohort-bar, case-view
+tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecimen-download
 
 ## Navigate to Summary View
 * On GDC Data Portal V2 app
@@ -24,37 +24,37 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
 * Verify that "TSV from Cohort Summary View Biospecimen" has expected information
     |required_info                        |
     |-------------------------------------|
-    |portion_submitter_id                 |
-    |aliquot_volume                       |
-    |no_matched_normal_wgs                |
-    |source_center                        |
+    |portions.submitter_id                |
+    |aliquots.aliquot_volume              |
+    |aliquots.no_matched_normal_wgs       |
+    |aliquots.source_center               |
     |a007b49b-297c-48c7-9f0a-12bdb470df4b |
     |TCGA-IZ-8195-01A-31                  |
     |f040bf1b-7514-42e5-aec5-a51376c6571f |
     |c0d8ee00-9547-474d-bcc1-1d658abd36ec |
     |TCGA-UZ-A9PZ-01A-11D-A42J-10         |
-    |analyte_type                         |
-    |experimental_protocol_type           |
-    |spectrophotometer_method             |
+    |analytes.analyte_type                |
+    |analytes.experimental_protocol_type  |
+    |analytes.spectrophotometer_method    |
     |a2f4f06b-7e8e-4a0d-992e-df5060789137 |
     |TCGA-B9-4117-01A-02W                 |
     |aDNA Preparation Type                |
     |Repli-G X (Qiagen) DNA               |
-    |percent_eosinophil_infiltration      |
-    |percent_normal_cells                 |
-    |prostatic_involvement_percent        |
+    |slides.percent_eosinophil_infiltration|
+    |slides.percent_normal_cells          |
+    |slides.prostatic_involvement_percent |
     |4779d72f-9a3a-4237-8867-70a993f0ab77 |
     |TCGA-BQ-5883-11A-01-TS1              |
     |BOTTOM                               |
-    |creation_datetime                    |
-    |is_ffpe                              |
+    |portions.creation_datetime           |
+    |portions.is_ffpe                     |
     |edd45612-8d50-446c-8817-04634c6723bb |
     |TCGA-KV-A74V-11A-11                  |
     |1399420800                           |
-    |freezing_method                      |
-    |pathology_report_uuid                |
-    |shortest_dimension                   |
-    |tumor_descriptor                     |
+    |samples.freezing_method              |
+    |samples.pathology_report_uuid        |
+    |samples.shortest_dimension           |
+    |samples.tumor_descriptor             |
     |A2194453-658D-441C-AEE5-3C05DAADC243 |
     |Blood Derived Normal                 |
     |Peripheral Blood NOS                 |
@@ -136,13 +136,13 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
 * Verify that "TSV from Cohort Summary View Clinical" has expected information
     |required_info                        |
     |-------------------------------------|
-    |case_submitter_id                    |
-    |evidence_of_recurrence_type          |
-    |immunosuppressive_treatment_type     |
-    |progression_or_recurrence_type       |
-    |gene_symbol                          |
-    |molecular_test_submitter_id          |
-    |test_result                          |
+    |cases.submitter_id                   |
+    |follow_ups.evidence_of_recurrence_type|
+    |follow_ups.immunosuppressive_treatment_type|
+    |follow_ups.progression_or_recurrence_type|
+    |molecular_tests.gene_symbol          |
+    |molecular_tests.submitter_id         |
+    |molecular_tests.test_result          |
     |9e3ee1c3-3376-489e-97f6-c5d13ab3a2de |
     |fded9873-4c4b-45f5-8381-1cfe2cff4cbf |
     |Serum Free Immunoglobulin Light Chain, Lambda|
@@ -150,28 +150,28 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
     |MMRF_1889_molecular_test95           |
     |Test Value Reported                  |
     |14.994                               |
-    |additional_pathology_findings        |
-    |lymph_node_involvement               |
-    |pathology_detail_submitter_id        |
-    |tumor_basal_diameter                 |
-    |zone_of_origin_prostate              |
-    |age_at_last_exposure                 |
-    |parent_with_radiation_exposure       |
-    |years_smoked                         |
-    |relationship_age_at_diagnosis        |
-    |relationship_primary_diagnosis       |
-    |relative_with_cancer_history         |
+    |pathology_details.additional_pathology_findings|
+    |pathology_details.lymph_node_involvement|
+    |pathology_details.submitter_id       |
+    |pathology_details.tumor_basal_diameter|
+    |pathology_details.zone_of_origin_prostate|
+    |exposures.age_at_last_exposure       |
+    |exposures.parent_with_radiation_exposure|
+    |exposures.years_smoked               |
+    |family_histories.relationship_age_at_diagnosis|
+    |family_histories.relationship_primary_diagnosis|
+    |family_histories.relative_with_cancer_history|
     |MMRF-COMMPASS                        |
     |Paternal Grandmother                 |
     |yes                                  |
     |Breast Cancer                        |
     |Multiple Myeloma                     |
-    |occupation_duration_years            |
-    |burkitt_lymphoma_clinical_variant    |
-    |goblet_cells_columnar_mucosa_present |
-    |uicc_staging_system_edition          |
-    |therapeutic_agents                   |
-    |treatment_type                       |
+    |demographic.occupation_duration_years|
+    |diagnoses.burkitt_lymphoma_clinical_variant|
+    |diagnoses.goblet_cells_columnar_mucosa_present|
+    |diagnoses.uicc_staging_system_edition|
+    |treatments.therapeutic_agents        |
+    |treatments.treatment_type            |
     |Stem Cell Transplantation, Autologous|
     |-19237                               |
     |Unknown tumor status                 |

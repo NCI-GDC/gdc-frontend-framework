@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		    : Validate All Buttons in Project Summary Header
 Test-Case           : PEAR-2202
 
-tags: gdc-data-portal-v2, regression, project-summary
+tags: gdc-data-portal-v2, regression, project-summary, clinical-biospecimen-download
 
 ## Navigate to Projects Page
 * On GDC Data Portal V2 app
@@ -40,30 +40,30 @@ tags: gdc-data-portal-v2, regression, project-summary
     |required_info                          |
     |---------------------------------------|
     |project_id                             |
-    |analyte_submitter_id                   |
-    |concentration                          |
-    |selected_normal_wxs                    |
+    |analytes.submitter_id                  |
+    |analytes.concentration                 |
+    |aliquots.selected_normal_wxs           |
     |3f2ca278-c74a-4aa7-b029-189d9d0b510c   |
     |050ea84e-f0ab-453f-b2af-d0dbfca313ba   |
     |a41a13f9-bc5d-49de-99a2-8365bf1840dc   |
     |released                               |
-    |portion_submitter_id                   |
+    |portions.submitter_id                  |
     |analyte_quantity                       |
-    |experimental_protocol_type             |
-    |spectrophotometer_method               |
+    |analytes.experimental_protocol_type    |
+    |analytes.spectrophotometer_method      |
     |Repli-G (Qiagen) DNA                   |
     |Allprep RNA Extraction                 |
     |UV Spec                                |
-    |slide_submitter_id                     |
-    |percent_neutrophil_infiltration        |
-    |section_location                       |
+    |slides.submitter_id                    |
+    |slides.percent_neutrophil_infiltration |
+    |slides.section_location                |
     |c8b01ca9-20f7-4858-80ed-372526539069   |
     |BOTTOM                                 |
-    |creation_datetime                      |
-    |portion_number                         |
+    |portions.creation_datetime             |
+    |portions.portion_number                |
     |0011a67b-1ba9-4a32-a6b8-7850759a38cf   |
     |Not Reported                           |
-    |tumor_descriptor                       |
+    |samples.tumor_descriptor               |
 * Verify that "TSV from Project Summary Biospecimen" does not contain specified information
     |required_info                          |
     |---------------------------------------|
@@ -119,29 +119,29 @@ tags: gdc-data-portal-v2, regression, project-summary
     |---------------------------------------|
     |27a90230-ad95-43f9-8cc2-ed56d1b05136   |
     |APOLLO-LUAD                            |
-    |barretts_esophagus_goblet_cells_present|
+    |follow_ups.barretts_esophagus_goblet_cells_present|
     |follow_up_id                           |
     |0eb870af-e683-48ea-a3fb-b6bfcd99356d   |
-    |progression_or_recurrence_anatomic_site|
-    |undescended_testis_corrected_laterality|
-    |blood_test_normal_range_upper          |
-    |test_result                            |
-    |diagnosis_submitter_id                 |
-    |lymphatic_invasion_present             |
-    |tumor_depth_descriptor                 |
-    |age_at_last_exposure                   |
-    |occupation_type                        |
-    |tobacco_smoking_status                 |
+    |follow_ups.progression_or_recurrence_anatomic_site|
+    |follow_ups.undescended_testis_corrected_laterality|
+    |molecular_tests.blood_test_normal_range_upper|
+    |molecular_tests.test_result            |
+    |diagnoses.submitter_id                 |
+    |pathology_details.lymphatic_invasion_present|
+    |pathology_details.tumor_depth_descriptor|
+    |exposures.age_at_last_exposure         |
+    |exposures.occupation_type              |
+    |exposures.tobacco_smoking_status       |
     |120.0                                  |
     |Current Reformed Smoker, Duration Not Specified|
     |AP-UG7J                                |
-    |relationship_gender                    |
-    |relative_with_cancer_history           |
-    |relative_deceased                      |
-    |ajcc_pathologic_m                      |
-    |double_hit_lymphoma                    |
-    |sites_of_involvement_count             |
-    |therapeutic_levels_achieved            |
+    |family_histories.relationship_gender   |
+    |family_histories.relative_with_cancer_history|
+    |family_histories.relative_deceased     |
+    |diagnoses.ajcc_pathologic_m            |
+    |diagnoses.double_hit_lymphoma          |
+    |diagnoses.sites_of_involvement_count   |
+    |treatments.therapeutic_levels_achieved |
     |Radiation Therapy, NOS                 |
     |Invasive mucinous adenocarcinoma       |
     |8230/3                                 |
@@ -217,4 +217,4 @@ tags: gdc-data-portal-v2, regression, project-summary
     |APOLLO-LUAD.08a6b063-8c56-4b2f-9845-aaf3df34b8a9.star_fusion.rna_fusion.tsv|
     |2a3b77df-87c9-415e-aec4-60efb5d2fc47   |
     |c2b36e17-c9f0-4ed9-9ada-51f8d3010717   |
-    |128de9ce-2852-4583-bf86-f1e69d03f603
+    |128de9ce-2852-4583-bf86-f1e69d03f603   |
