@@ -22,6 +22,7 @@ export const AnchorLink = ({
       <Link
         href={href}
         target="_blank"
+        rel="noreferrer"
         className="flex gap-1 underline font-content"
         data-testid={customDataTestID}
       >
