@@ -1,10 +1,9 @@
 {
   "name": "@gff/portal-components",
-  "version": "2.15.4",
+  "version": "2.15.5",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
-  "unpkg": "dist/index.umd.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "clean": "rimraf dist",
@@ -20,17 +19,19 @@
   },
   "author": "",
   "license": "Apache-2.0",
-  "peerDependencies": {
+  "dependencies": {
     "@mantine/core": "^7.8.1",
+    "react-icons": "^4.12.0"
+  },
+  "peerDependencies": {
     "react": "^18.2.0",
-    "tailwindcss": "^3.2.4"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@types/lodash": "4.17.13",
     "@types/node": "22.9.1",
     "@types/react": "^18.3.3",
     "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.47",
     "rollup": "^4.27.3",
     "@swc/core": "^1.9.2",
     "@rollup/plugin-commonjs": "^28.0.1",
@@ -41,8 +42,5 @@
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "tailwindcss": "^3.4.14",
     "typescript": "^5.6.3"
-  },
-  "dependencies": {
-    "rollup-plugin-postcss": "^4.0.2"
   }
 }
