@@ -224,16 +224,16 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 classNames={{ item: "font-normal" }}
                 displayVariant="subtle"
                 activeText="Processing"
-                inactiveText="TSV"
+                inactiveText="JSON"
                 preventClickEvent
                 showIcon={true}
                 endpoint="biospecimen_tar"
-                setActive={setBiospecimenTSVDownloadActive}
-                active={biospecimenTSVDownloadActive}
+                setActive={setBiospecimenJSONDownloadActive}
+                active={biospecimenJSONDownloadActive}
                 filename={`biospecimen.cart.${new Date()
                   .toISOString()
-                  .slice(0, 10)}.tar.gz`}
-                format="tsv"
+                  .slice(0, 10)}.json`}
+                format="json"
                 method="POST"
                 downloadSize={summaryData?.total_case_count}
                 filters={{
@@ -254,16 +254,16 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 classNames={{ item: "font-normal" }}
                 displayVariant="subtle"
                 activeText="Processing"
-                inactiveText="JSON"
+                inactiveText="TSV"
                 preventClickEvent
                 showIcon={true}
                 endpoint="biospecimen_tar"
-                setActive={setBiospecimenJSONDownloadActive}
-                active={biospecimenJSONDownloadActive}
+                setActive={setBiospecimenTSVDownloadActive}
+                active={biospecimenTSVDownloadActive}
                 filename={`biospecimen.cart.${new Date()
                   .toISOString()
-                  .slice(0, 10)}.json`}
-                format="json"
+                  .slice(0, 10)}.tar.gz`}
+                format="tsv"
                 method="POST"
                 downloadSize={summaryData?.total_case_count}
                 filters={{
@@ -310,16 +310,16 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 classNames={{ item: "font-normal" }}
                 displayVariant="subtle"
                 activeText="Processing"
-                inactiveText="TSV"
+                inactiveText="JSON"
                 preventClickEvent
                 showIcon={true}
                 endpoint="clinical_tar"
-                setActive={setClinicalTSVDownloadActive}
-                active={clinicalTSVDownloadActive}
+                setActive={setClinicalJSONDownloadActive}
+                active={clinicalJSONDownloadActive}
                 filename={`clinical.cart.${new Date()
                   .toISOString()
-                  .slice(0, 10)}.tar.gz`}
-                format="tsv"
+                  .slice(0, 10)}.json`}
+                format="json"
                 method="POST"
                 downloadSize={summaryData?.total_case_count}
                 filters={{
@@ -335,22 +335,21 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                   op: "and",
                 }}
               />
-
               <Menu.Item
                 component={DownloadButton}
                 classNames={{ item: "font-normal" }}
                 displayVariant="subtle"
                 activeText="Processing"
-                inactiveText="JSON"
+                inactiveText="TSV"
                 preventClickEvent
                 showIcon={true}
                 endpoint="clinical_tar"
-                setActive={setClinicalJSONDownloadActive}
-                active={clinicalJSONDownloadActive}
+                setActive={setClinicalTSVDownloadActive}
+                active={clinicalTSVDownloadActive}
                 filename={`clinical.cart.${new Date()
                   .toISOString()
-                  .slice(0, 10)}.json`}
-                format="json"
+                  .slice(0, 10)}.tar.gz`}
+                format="tsv"
                 method="POST"
                 downloadSize={summaryData?.total_case_count}
                 filters={{
