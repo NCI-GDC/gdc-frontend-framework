@@ -1,12 +1,15 @@
 import { render } from "test-utils";
-import * as core from "@gff/core";
 import NumericRangeFacet from "../NumericRangeFacet";
 import { EnumFacetResponse } from "@/features/facets/types";
+
+jest.mock("@gff/core", () => ({
+  ...jest.requireActual("@gff/core"),
+  useCoreDispatch: jest.fn(),
+}));
 
 describe("<NumericRangeFacet />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
   });
 
   it("test if NumericRangeFacet control has expected components", async () => {

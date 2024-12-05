@@ -1,7 +1,6 @@
 import React, { useState, useMemo, useEffect, useContext } from "react";
 import { upperFirst } from "lodash";
 import { Checkbox, Tooltip } from "@mantine/core";
-import { AiOutlineFileAdd as FileAddIcon } from "react-icons/ai";
 import {
   useCoreSelector,
   selectSetsByType,
@@ -22,6 +21,7 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { useDeepCompareMemo } from "use-deep-compare";
+import { FileAddIcon } from "@/utils/icons";
 
 interface SavedSetsProps {
   readonly setType: SetTypes;

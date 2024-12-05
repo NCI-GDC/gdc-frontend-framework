@@ -1,6 +1,5 @@
 import { render } from "test-utils";
 import DateRangeFacet from "../DateRangeFacet";
-import * as core from "@gff/core";
 
 window.ResizeObserver =
   window.ResizeObserver ||
@@ -10,10 +9,18 @@ window.ResizeObserver =
     unobserve: jest.fn(),
   }));
 
+jest.mock("@gff/core", () => ({
+  ...jest.requireActual("@gff/core"),
+  useCoreDispatch: jest.fn(),
+  useCoreSelector: jest.fn(),
+  useCartSummaryQuery: jest.fn(),
+  useFetchUserDetailsQuery: jest.fn(),
+  useGetFilesQuery: jest.fn(),
+}));
+
 describe("<DateRangeFacet />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
   });
 
   it("render DataRangeFacet control", async () => {

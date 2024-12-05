@@ -11,7 +11,6 @@ import {
   useCoreSelector,
   selectCurrentCohortFilters,
 } from "@gff/core";
-import { HiPlus, HiMinus } from "react-icons/hi";
 import { externalLinkNames, externalLinks, humanify } from "src/utils";
 import CNVPlot from "../charts/CNVPlot";
 import SSMPlot from "../charts/SSMPlot";
@@ -25,6 +24,7 @@ import { CollapsibleList } from "@/components/CollapsibleList";
 import SMTableContainer from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
 import GeneCancerDistributionTable from "../cancerDistributionTable/GeneCancerDistributionTable";
 import GenesIcon from "public/user-flow/icons/summary/genes.svg";
+import { StrandMinusIcon, StrandPlusIcon } from "@/utils/icons";
 
 interface GeneViewProps {
   data: GeneSummaryData;
@@ -112,7 +112,12 @@ const GeneView = ({
     } = data;
 
     const location = `chr${gene_chromosome}:${gene_start}-${gene_end} (GRCh38)`;
-    const Strand = gene_strand && gene_strand === 1 ? <HiPlus /> : <HiMinus />;
+    const Strand =
+      gene_strand && gene_strand === 1 ? (
+        <StrandPlusIcon />
+      ) : (
+        <StrandMinusIcon />
+      );
     const annotation = is_cancer_gene_census ? (
       <AnchorLink
         href="https://cancer.sanger.ac.uk/census"

@@ -1,5 +1,5 @@
 {
-  "include": ["src/**/*", "tailwind.config.js"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules"],
   "compilerOptions": {
     "rootDir": "src",
@@ -21,9 +21,9 @@
     "baseUrl": ".",
     "paths": {
       "@/layout/*": ["src/layout/*"],
-      "@/modals/*": ["src/modals/*"],
-      "@/analysis/*": ["src/analysis/*"]
+      "@/modals/*": ["src/modals/*"]
     },
+
     "skipLibCheck": true
   }
 }

@@ -1,8 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ActionIcon, TextInput } from "@mantine/core";
-import { FaCheck as CheckIcon } from "react-icons/fa";
-import { PiPencilSimpleLineBold as EditIcon } from "react-icons/pi";
-import { MdClose as CloseIcon } from "react-icons/md";
 import {
   useCoreDispatch,
   SetTypes,
@@ -12,6 +9,7 @@ import {
 } from "@gff/core";
 import ErrorMessage from "@/components/ErrorMessage";
 import WarningMessage from "@/components/WarningMessage";
+import { CheckIcon, CloseIcon, PencilEditIcon } from "@/utils/icons";
 
 interface SetNameInputProps {
   readonly setName: string;
@@ -115,7 +113,7 @@ const SetNameInput: React.FC<SetNameInputProps> = ({
               aria-label="Edit set name"
               data-testid="button-edit-set-name"
             >
-              <EditIcon className="text-accent" aria-hidden="true" />
+              <PencilEditIcon className="text-accent" aria-hidden="true" />
             </ActionIcon>
           </>
         )}

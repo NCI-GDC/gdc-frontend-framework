@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { Button, Divider, Modal, Radio, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { MdReplay as ResetIcon } from "react-icons/md";
-import { FaPlusCircle as PlusIcon, FaTrash as TrashIcon } from "react-icons/fa";
 import { Statistics } from "@gff/core";
 import { validateIntervalInput, validateRangeInput } from "./validateInputs";
 import { CustomInterval, DataDimension, NamedFromTo } from "../types";
@@ -16,6 +14,7 @@ import {
 import FunctionButton from "@/components/FunctionButton";
 import { DATA_DIMENSIONS } from "../constants";
 import { useDeepCompareEffect } from "use-deep-compare";
+import { CirclePlusIcon, ReplayIcon, TrashIcon } from "@/utils/icons";
 
 interface ContinuousBinningModalProps {
   readonly setModalOpen: (open: boolean) => void;
@@ -250,14 +249,14 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
         className="flex h-10 items-center border-base-lightest border-solid border-1 p-2 mb-4 mt-2 font-content"
       >
         <p>
-          Available values from <b>{formattedStats.min}</b> to{" "}
+          Available values from <b>{formattedStats.min?.toLocaleString()}</b> to{" "}
           <b>
-            {"<"} {formattedStats.max}
+            {"<"} {formattedStats.max?.toLocaleString()}
           </b>
         </p>
         <Divider orientation="vertical" className="mx-4 my-auto h-3/4" />
         <p>
-          Bin size in quarters: <b>{binSize}</b>
+          Bin size in quarters: <b>{binSize?.toLocaleString()}</b>
         </p>
       </div>
       <div className="bg-base-lightest p-4 flex flex-col">
@@ -360,7 +359,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
             }}
             disabled={intervalFormAtDefault && rangeFormAtDefault}
           >
-            <ResetIcon size={20} />
+            <ReplayIcon size={20} />
           </FunctionButton>
         </div>
         {/* This switches the bin method when a user clicks on the "area", no keyboard equivalent is needed to accessibly navigate the form */}
@@ -461,7 +460,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                     {idx === rangeForm.getValues().ranges.length - 1 ? (
                       <FunctionButton
                         data-testid="button-range-add"
-                        leftSection={<PlusIcon aria-hidden="true" />}
+                        leftSection={<CirclePlusIcon aria-hidden="true" />}
                         onClick={() => {
                           const result = rangeForm.validate();
                           if (!result.hasErrors) {
@@ -497,7 +496,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                         }}
                         aria-label="delete row"
                       >
-                        <TrashIcon />
+                        <TrashIcon size={16} />
                       </FunctionButton>
                     )}
                   </td>

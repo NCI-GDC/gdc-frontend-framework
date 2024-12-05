@@ -1,22 +1,26 @@
 import { render } from "test-utils";
 import userEvent from "@testing-library/user-event";
-import * as core from "@gff/core";
 import AdditionalCohortSelection from "./AdditionalCohortSelection";
+import { selectCurrentCohort } from "@gff/core";
 
-jest.spyOn(core, "selectAvailableCohorts").mockImplementation(
-  () =>
-    [
-      { id: "1", name: "Lung", counts: { caseCount: 100 } },
-      { id: "2", name: "Brain", counts: { caseCount: 0 } },
-      { id: "3", name: "Lung", counts: { caseCount: 100 } },
-      { id: "4", name: "Skin", counts: { caseCount: 1000 } },
-    ] as any,
-);
+jest.mock("@gff/core", () => ({
+  ...jest.requireActual("@gff/core"),
+  selectAvailableCohorts: jest.fn().mockImplementation(
+    () =>
+      [
+        { id: "1", name: "Lung", counts: { caseCount: 100 } },
+        { id: "2", name: "Brain", counts: { caseCount: 0 } },
+        { id: "3", name: "Lung", counts: { caseCount: 100 } },
+        { id: "4", name: "Skin", counts: { caseCount: 1000 } },
+      ] as any,
+  ),
+  selectCurrentCohort: jest.fn(),
+}));
 
 describe("<AdditionalCohortSelection />", () => {
   it("Correctly excludes current cohort from list", () => {
     jest
-      .spyOn(core, "selectCurrentCohort")
+      .mocked(selectCurrentCohort)
       .mockImplementation(() => ({ id: "3", name: "Lung" } as any));
 
     const { getByLabelText } = render(
@@ -35,7 +39,7 @@ describe("<AdditionalCohortSelection />", () => {
 
   it("Correctly selects cohort when multiple of the same name", async () => {
     jest
-      .spyOn(core, "selectCurrentCohort")
+      .mocked(selectCurrentCohort)
       .mockImplementation(() => ({ id: "2", name: "Brain" } as any));
 
     const { getAllByLabelText } = render(
@@ -53,7 +57,7 @@ describe("<AdditionalCohortSelection />", () => {
 
   it("Disables 0 count cohort input", () => {
     jest
-      .spyOn(core, "selectCurrentCohort")
+      .mocked(selectCurrentCohort)
       .mockImplementation(() => ({ id: "3", name: "Lung" } as any));
 
     const { getByLabelText } = render(

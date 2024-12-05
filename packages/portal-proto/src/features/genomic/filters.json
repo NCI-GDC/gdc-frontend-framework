@@ -9,7 +9,7 @@
   },
   {
     "full": "ssms.ssm_id",
-    "title": "Somatic Mutations",
+    "title": "Somatic Mutation",
     "name": "Somatic Mutations",
     "facet_type": "set",
     "doc_type": "ssms",

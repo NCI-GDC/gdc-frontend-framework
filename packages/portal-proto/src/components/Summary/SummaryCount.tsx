@@ -26,6 +26,7 @@ const SummaryCount = ({
           href={href}
           className="text-utility-link underline"
           target={shouldOpenInNewTab && "_blank"}
+          rel="noreferrer"
         >
           {count}
         </Link>

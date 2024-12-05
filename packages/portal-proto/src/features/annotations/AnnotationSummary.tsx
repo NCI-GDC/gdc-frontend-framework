@@ -7,7 +7,7 @@ import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import { HorizontalTable } from "@/components/HorizontalTable";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
-import { HiOutlinePencilSquare } from "react-icons/hi2";
+import { PencilSquareIcon } from "@/utils/icons";
 
 interface AnnotationSummaryProps {
   readonly annotationId: string;
@@ -159,7 +159,7 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
   ) : (
     <>
       <SummaryHeader
-        Icon={HiOutlinePencilSquare}
+        Icon={PencilSquareIcon}
         headerTitleLeft="Annotation"
         headerTitle={annotationId}
       />

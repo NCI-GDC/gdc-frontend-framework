@@ -16,8 +16,8 @@ import {
   removeCohort,
   selectCurrentCohort,
   setIsLoggedIn,
+  fetchCohortCaseCounts,
 } from "./features/cohort/availableCohortsSlice";
-import { fetchCohortCaseCounts } from "./features/cohort/cohortCountsQuery";
 import { cohortApiSlice } from "./features/api/cohortApiSlice";
 
 /**

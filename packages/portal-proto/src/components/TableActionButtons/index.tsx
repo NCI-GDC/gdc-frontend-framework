@@ -1,4 +1,5 @@
 import { addToCart, removeFromCart } from "@/features/cart/updateCart";
+import { CartIcon } from "@/utils/icons";
 import {
   useCoreSelector,
   selectCart,
@@ -7,7 +8,6 @@ import {
   GdcFile,
 } from "@gff/core";
 import { Button } from "@mantine/core";
-import { FaShoppingCart as CartIcon } from "react-icons/fa";
 import { DownloadFile } from "../DownloadButtons";
 
 export const TableActionButtons = ({

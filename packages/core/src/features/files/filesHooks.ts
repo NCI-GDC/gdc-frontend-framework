@@ -1,3 +1,3 @@
-import { useGetAllFilesMutation, GdcFileIds } from "./allFilesMutation";
+import { useGetAllFilesMutation, type GdcFileIds } from "./allFilesMutation";
 
 export { useGetAllFilesMutation, GdcFileIds };

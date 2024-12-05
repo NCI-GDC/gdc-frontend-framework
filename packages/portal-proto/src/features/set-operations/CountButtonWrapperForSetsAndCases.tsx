@@ -10,11 +10,11 @@ import {
 import { SetOperationEntityType } from "@/features/set-operations/types";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import { Loader, Tooltip } from "@mantine/core";
-import { FaPlus as PlusIcon } from "react-icons/fa";
 import CohortCreationButton, {
   CohortCreationStyledButton,
   IconWrapperTW,
 } from "@/components/CohortCreationButton";
+import { PlusIcon } from "@/utils/icons";
 
 export const CreateFromCountButton = ({
   tooltipLabel,
@@ -138,8 +138,8 @@ const CountButtonWrapperForSetsAndCases: React.FC<
   const createCohort = async () => {
     return await createSet({
       filters: filters,
-      intent: entityType == "cohort" ? "portal" : "user",
-      set_type: entityType == "cohort" ? "frozen" : "mutable",
+      intent: "portal",
+      set_type: "frozen",
     })
       .unwrap()
       .then((setId) => {

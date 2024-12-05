@@ -1,5 +1,4 @@
 import { Button } from "@mantine/core";
-import { MdArrowDropDown as DownIcon } from "react-icons/md";
 import { saveAs } from "file-saver";
 import {
   FilterSet,
@@ -10,7 +9,7 @@ import {
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { CasesCohortButtonFromFilters } from "@/features/cases/CasesView/CasesCohortButton";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
-import { convertDateToString } from "@/utils/date";
+import { getFormattedTimestamp } from "@/utils/date";
 import {
   CategoricalBins,
   CustomInterval,
@@ -25,6 +24,7 @@ import {
   useDataDimension,
 } from "../utils";
 import { useMemo } from "react";
+import { DropdownIcon } from "@/utils/icons";
 
 interface CardControlsProps {
   readonly continuous: boolean;
@@ -70,7 +70,7 @@ const CardControls: React.FC<CardControlsProps> = ({
       new Blob([tsv], {
         type: "text/tsv",
       }),
-      `${field.split(".").at(-1)}-table.${convertDateToString(new Date())}.tsv`,
+      `${field.split(".").at(-1)}-table.${getFormattedTimestamp()}.tsv`,
     );
   };
 
@@ -125,7 +125,7 @@ const CardControls: React.FC<CardControlsProps> = ({
             customDataTestId="button-customize-bins"
             RightSection={
               <div className="border-l pl-1 -mr-2">
-                <DownIcon size={20} aria-hidden="true" />
+                <DropdownIcon size={20} aria-hidden="true" />
               </div>
             }
             TargetButtonChildren={"Customize Bins"}

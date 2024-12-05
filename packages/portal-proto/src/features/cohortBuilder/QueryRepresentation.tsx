@@ -27,14 +27,10 @@ import {
   updateActiveCohortFilter,
 } from "@gff/core";
 import { ActionIcon, Divider, Group, Tooltip } from "@mantine/core";
-import {
-  MdClose as ClearIcon,
-  MdOutlineArrowBack as LeftArrow,
-  MdOutlineArrowForward as RightArrow,
-} from "react-icons/md";
 import tw from "tailwind-styled-components";
 import { QueryExpressionsExpandedContext } from "./QueryExpressionSection";
 import CohortBadge from "./CohortBadge";
+import { CloseIcon, RightArrowIcon, LeftArrowIcon } from "@/utils/icons";
 
 const QueryRepresentationText = tw.div`
 flex truncate ... px-2 py-1 bg-base-max h-full
@@ -151,9 +147,9 @@ const IncludeExcludeQueryElement: React.FC<
         aria-expanded={expanded}
       >
         {expanded ? (
-          <LeftArrow aria-hidden="true" />
+          <LeftArrowIcon aria-hidden="true" />
         ) : (
-          <RightArrow aria-hidden="true" />
+          <RightArrowIcon aria-hidden="true" />
         )}
       </ActionIcon>
       <Divider
@@ -353,7 +349,7 @@ export const QueryElement = ({
         onClick={handleRemoveFilter}
         aria-label={`remove ${fieldNameToTitle(field)}`}
       >
-        <ClearIcon size="1.5em" className="px-1" aria-hidden="true" />
+        <CloseIcon size="1.5em" className="px-1" aria-hidden="true" />
       </button>
     </QueryItemContainer>
   );

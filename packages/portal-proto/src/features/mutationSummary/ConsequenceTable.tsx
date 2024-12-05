@@ -25,11 +25,11 @@ import {
 } from "../GenomicTables/SomaticMutationsTable/TableComponents";
 import saveAs from "file-saver";
 import { Loader } from "@mantine/core";
-import { convertDateToString } from "@/utils/date";
+import { getFormattedTimestamp } from "@/utils/date";
 import { downloadTSV } from "@/components/Table/utils";
 import ImpactHeaderWithTooltip from "../GenomicTables/SharedComponent/ImpactHeaderWithTooltip";
 import TotalItems from "@/components/Table/TotalItem";
-import { HiPlus, HiMinus } from "react-icons/hi";
+import { StrandMinusIcon, StrandPlusIcon } from "@/utils/icons";
 
 const consequenceTableColumnHelper = createColumnHelper<ConsequenceTableData>();
 
@@ -204,7 +204,13 @@ export const ConsequenceTable = ({
         id: "gene_strand",
         header: "Gene Strand",
         cell: ({ row }) => (
-          <span>{row.original.gene_strand > 0 ? <HiPlus /> : <HiMinus />}</span>
+          <span>
+            {row.original.gene_strand > 0 ? (
+              <StrandPlusIcon />
+            ) : (
+              <StrandMinusIcon />
+            )}
+          </span>
         ),
       }),
       consequenceTableColumnHelper.display({
@@ -234,9 +240,7 @@ export const ConsequenceTable = ({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   const handleTSVDownload = () => {
-    const fileName = `consequences-table.${convertDateToString(
-      new Date(),
-    )}.tsv`;
+    const fileName = `consequences-table.${getFormattedTimestamp()}.tsv`;
     downloadTSV({
       tableData,
       columns: consequenceTableDefaultColumns,
@@ -347,7 +351,7 @@ export const ConsequenceTable = ({
     const blob = new Blob([JSON.stringify(json, null, 2)], {
       type: "application/json",
     });
-    saveAs(blob, `consequences-data.${convertDateToString(new Date())}.json`);
+    saveAs(blob, `consequences-data.${getFormattedTimestamp()}.json`);
     setConsequenceTableJSONDownloadActive(false);
   };
 

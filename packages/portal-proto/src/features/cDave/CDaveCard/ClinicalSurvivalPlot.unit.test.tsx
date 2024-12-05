@@ -1,7 +1,16 @@
 import { render } from "test-utils";
 import * as router from "next/router";
-import * as core from "@gff/core";
 import ClinicalSurvivalPlot from "./ClinicalSurvivalPlot";
+import { selectCurrentCohortFilters, useGetSurvivalPlotQuery } from "@gff/core";
+
+jest.mock("@gff/core", () => ({
+  ...jest.requireActual("@gff/core"),
+  useGetSurvivalPlotQuery: jest.fn(),
+  selectCurrentCohortFilters: jest.fn(),
+  useCartSummaryQuery: jest.fn(),
+  useFetchUserDetailsQuery: jest.fn(),
+  useGetFilesQuery: jest.fn(),
+}));
 
 const mockSurvivalValue = {
   data: {
@@ -13,6 +22,7 @@ const mockSurvivalValue = {
   isLoading: false,
   isError: false,
 } as any;
+let survivalQuerySpy;
 
 describe("ClinicalSurvivalPlot", () => {
   beforeEach(() => {
@@ -23,13 +33,12 @@ describe("ClinicalSurvivalPlot", () => {
           query: {},
         } as any),
     );
+    survivalQuerySpy = jest
+      .mocked(useGetSurvivalPlotQuery)
+      .mockReturnValue(mockSurvivalValue);
   });
 
   it("creates filters for categorical data", () => {
-    const survivalQuerySpy = jest
-      .spyOn(core, "useGetSurvivalPlotQuery")
-      .mockReturnValue(mockSurvivalValue);
-
     render(
       <ClinicalSurvivalPlot
         field={"demographic.gender"}
@@ -70,20 +79,19 @@ describe("ClinicalSurvivalPlot", () => {
   });
 
   it("adds cohort filters", () => {
-    jest
-      .spyOn(core, "selectCurrentCohortFilters")
-      .mockImplementationOnce(() => ({
-        mode: "and",
-        root: {
-          "cases.project.project_id": {
-            operator: "includes",
-            field: "cases.project.project_id",
-            operands: ["FM-AD"],
-          },
+    jest.mocked(selectCurrentCohortFilters).mockImplementationOnce(() => ({
+      mode: "and",
+      root: {
+        "cases.project.project_id": {
+          operator: "includes",
+          field: "cases.project.project_id",
+          operands: ["FM-AD"],
         },
-      }));
+      },
+    }));
+
     const survivalQuerySpy = jest
-      .spyOn(core, "useGetSurvivalPlotQuery")
+      .mocked(useGetSurvivalPlotQuery)
       .mockReturnValue(mockSurvivalValue);
 
     render(
@@ -158,10 +166,6 @@ describe("ClinicalSurvivalPlot", () => {
         } as any),
     );
 
-    const survivalQuerySpy = jest
-      .spyOn(core, "useGetSurvivalPlotQuery")
-      .mockReturnValue(mockSurvivalValue);
-
     render(
       <ClinicalSurvivalPlot
         field={"demographic.gender"}
@@ -226,10 +230,6 @@ describe("ClinicalSurvivalPlot", () => {
   });
 
   it("creates filters for custom binned data", () => {
-    const survivalQuerySpy = jest
-      .spyOn(core, "useGetSurvivalPlotQuery")
-      .mockReturnValue(mockSurvivalValue);
-
     render(
       <ClinicalSurvivalPlot
         field={"demographic.gender"}
@@ -270,10 +270,6 @@ describe("ClinicalSurvivalPlot", () => {
   });
 
   it("creates filters for named from to", () => {
-    const survivalQuerySpy = jest
-      .spyOn(core, "useGetSurvivalPlotQuery")
-      .mockReturnValue(mockSurvivalValue);
-
     render(
       <ClinicalSurvivalPlot
         field={"demographic.days_to_death"}
@@ -332,10 +328,6 @@ describe("ClinicalSurvivalPlot", () => {
   });
 
   it("parses selected negative values", () => {
-    const survivalQuerySpy = jest
-      .spyOn(core, "useGetSurvivalPlotQuery")
-      .mockReturnValue(mockSurvivalValue);
-
     render(
       <ClinicalSurvivalPlot
         field={"demographic.days_to_death"}

@@ -150,6 +150,7 @@ def verify_compared_statistics_are_equal_or_not_equal(
 @step("Close the modal")
 def close_the_modal():
     APP.shared.click_close_modal_button()
+    time.sleep(0.5)
 
 @step("Close the message")
 def close_the_modal():
@@ -159,6 +160,9 @@ def close_the_modal():
 @step("Download <file> from <source>")
 def download_file_at_file_table(file: str, source: str):
     sources = {
+        "Cart Items": APP.shared.click_button_data_testid_normalize,
+        "Cart Header": APP.shared.click_button_with_displayed_text_name,
+        "Cart Header Dropdown": APP.shared.click_text_option_from_dropdown_menu,
         "Projects": APP.projects_page.click_button,
         "Repository": APP.repository_page.click_button,
         "File Summary": APP.file_summary_page.click_download_button,
@@ -173,6 +177,9 @@ def download_file_at_file_table(file: str, source: str):
         "Cohort Case View Files": APP.cohort_case_view_page.click_files_and_dropdown_option_cases_view,
         "Cohort Summary View Biospecimen": APP.cohort_case_view_page.click_biospecimen_summary_view,
         "Cohort Summary View Clinical": APP.cohort_case_view_page.click_clinical_summary_view,
+        "Cohort Table View Biospecimen": APP.cohort_case_view_page.click_biospecimen_table_view,
+        "Cohort Table View Clinical": APP.cohort_case_view_page.click_clinical_table_view,
+        "Cohort Table View": APP.cohort_case_view_page.click_table_view_button,
         "Manage Sets": APP.manage_sets_page.click_on_download_for_set,
         "Cohort Comparison": APP.cohort_comparison_page.click_download_tsv_button_on_analysis_card_cohort_comparison,
         "Mutation Frequency": APP.mutation_frequency_page.click_table_download_button,
@@ -362,6 +369,16 @@ def verify_item_does_not_appear_on_page(table):
         is_filter_visible = APP.shared.is_data_testid_present(v[0])
         assert is_filter_visible == False, f"The item '{v[0]}' is visible when it should NOT be"
 
+@step("Verify these custom filters <are_or_are_not> present in the properties table <table>")
+def verify_custom_filters_presence(are_or_are_not:str, table):
+    """Verifies if the given custom filter is present or not"""
+    for k, v in enumerate(table):
+        is_custom_filter_visible = APP.shared.is_custom_filter_in_properties_table_present(v[0])
+        if are_or_are_not.lower() == "are":
+            assert is_custom_filter_visible, f"In properties table, the custom filter '{v[0]}' is NOT visible"
+        elif are_or_are_not.lower() == "are not":
+            assert is_custom_filter_visible == False, f"In properties table, the custom filter '{v[0]}' is present when it should NOT be"
+
 @step("Verify presence of filter card <table>")
 def make_cohort_builder_selections(table):
     for k, v in enumerate(table):
@@ -409,6 +426,15 @@ def verify_table_showing_item_text(table_name, number_of_items_text):
         f"{showing_items_text}" in showing_items_text
     ), f"The table '{table_name}' is NOT showing expected number of items - {number_of_items_text}"
 
+@step("Verify the table <table_name> has a total of <number_of_items_text> items")
+def verify_table_total_of_text(table_name, number_of_items_text):
+    """Verifies the specified table's 'Total Of' text is correct"""
+    total_of_items_text = APP.shared.get_table_item_count_text(table_name)
+    assert (
+        total_of_items_text == number_of_items_text
+    ), f"The table '{table_name}' is NOT showing expected total of items - {number_of_items_text}"
+
+
 @step("Verify the table header text is correct <table>")
 def verify_table_header_text(table):
     """Verifies the table header has the correct text"""
@@ -423,6 +449,21 @@ def verify_table_header_text(table):
         assert (
             f"{table_header_text_by_column}" == v[0]
         ), f"The table header column '{v[1]}' is showing text '{table_header_text_by_column}' when we expected text '{v[0]}'"
+
+@step("Verify the table <table_name> header text is correct <table>")
+def verify_table_header_text(table_name:str, table):
+    """Verifies the table header has the correct text"""
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    for k, v in enumerate(table):
+        table_header_text_by_column = APP.shared.get_table_header_text_by_column_in_specified_table(table_name, v[1])
+        # Remove new lines from input
+        table_header_text_by_column = table_header_text_by_column.replace("\n", "")
+        # Remove unwanted additional spaces between words from input
+        table_header_text_by_column = re.sub(" +", " ", table_header_text_by_column)
+        assert (
+            f"{table_header_text_by_column}" == v[0]
+        ), f"In table '{table_name}': The table header column '{v[1]}' is showing text '{table_header_text_by_column}' when we expected text '{v[0]}'"
 
 
 @step("Verify the table body text is correct <table>")
@@ -442,6 +483,31 @@ def verify_table_body_text(table):
             f"{table_body_text_by_row_column}" == v[0]
         ), f"The table body row '{v[1]}' and column '{v[2]}' is showing text '{table_body_text_by_row_column}' when we expected text '{v[0]}'"
 
+@step("Verify the table <table_name> body text is correct <table>")
+def verify_table_body_text_in_specified_table(table_name:str, table):
+    """
+    In specified table, verifies the table body has the correct text.
+
+    table_name - Table to verify
+    v[0] - The expected text to appear
+    v[1] - The row of the table
+    v[2] - The column of the table
+    """
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    for k, v in enumerate(table):
+        """Verifies the table body has the correct text"""
+        table_body_text_by_row_column = APP.shared.get_specified_table_body_text_by_row_column(
+            table_name, v[1], v[2]
+        )
+        # Remove new lines from input
+        table_body_text_by_row_column = table_body_text_by_row_column.replace("\n", "")
+        # Remove unwanted additional spaces between words from input
+        table_body_text_by_row_column = re.sub(" +", " ", table_body_text_by_row_column)
+        assert (
+            f"{table_body_text_by_row_column}" == v[0]
+        ), f"In table '{table_name}': The table body row '{v[1]}' and column '{v[2]}' is showing text '{table_body_text_by_row_column}' when we expected text '{v[0]}'"
+
 
 @step("Verify the table body tooltips are correct <table>")
 def verify_table_body_tooltips_text(table):
@@ -450,6 +516,27 @@ def verify_table_body_tooltips_text(table):
     """Verifies the table body has correct tooltips"""
     for k, v in enumerate(table):
         APP.shared.hover_table_body_by_row_column(v[1], v[2])
+        is_tooltip_text_present = APP.shared.is_text_present(v[0])
+        assert (
+            is_tooltip_text_present
+        ), f"Hovering over table body row '{v[1]}' and column '{v[2]}' does NOT produce the tooltip '{v[0]}' as we expect"
+
+@step("Verify the table <table_name> body tooltips are correct <table>")
+def verify_table_body_tooltips_text(table_name:str, table):
+    """
+    In specified table, verifies correct tooltip appears.
+
+    table_name - Table to validate
+    v[0] - The expected text to appear
+    v[1] - The row of the table
+    v[2] - The column of the table
+    """
+
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    """Verifies the table body has correct tooltips"""
+    for k, v in enumerate(table):
+        APP.shared.hover_table_body_by_row_column_in_specified_table(table_name, v[1], v[2])
         is_tooltip_text_present = APP.shared.is_text_present(v[0])
         assert (
             is_tooltip_text_present
@@ -489,6 +576,20 @@ def verify_button_is_disabled(button_name: str):
         is_button_disabled == False
     ), f"The button '{button_name}' is disabled when it should NOT be"
 
+@step("Verify the button with displayed text <button_name> is disabled")
+def verify_named_button_is_disabled(button_name: str):
+    is_button_disabled = APP.shared.is_named_button_disabled(button_name)
+    assert (
+        is_button_disabled
+    ), f"The button '{button_name}' is disabled when it should NOT be"
+
+@step("Verify the button <button_name> area is <expanded_or_collapsed>")
+def verify_named_button_is_disabled(button_name: str, expanded_or_collapsed:str):
+    is_button_expanded = APP.shared.is_button_area_expanded(button_name)
+    if expanded_or_collapsed.lower() == "expanded":
+        assert is_button_expanded == 'true', f"The button '{button_name}' is NOT expanded when it should be"
+    elif expanded_or_collapsed.lower() == "collapsed":
+        assert is_button_expanded == 'false', f"The button '{button_name}' is NOT collapsed when it should be"
 
 @step("Wait for <data_testid> to be present on the page")
 def wait_for_data_testid_to_be_visible_on_the_page(data_testid: str):
@@ -655,6 +756,14 @@ def store_button_labels_in_tables_for_comparison(table_name:str, table):
         )
         data_store.spec[f"{v[0]}"] = table_body_text_by_row_column
 
+@step("Collect <text_id_to_collect> Item Count for comparison")
+def store_text_item_count_for_comparison(text_id_to_collect:str):
+    """
+    Stores the given text data-testid item count for comparison in future tests.
+    Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'
+    """
+    data_store.spec[f"{text_id_to_collect} Item Count"] = APP.shared.get_text_by_data_testid(text_id_to_collect)
+
 @step("Collect Cohort Bar Case Count for comparison")
 def store_cohort_bar_case_count_for_comparison():
     """
@@ -683,6 +792,33 @@ def store_item_count_in_table_for_comparison(table_name:str):
     Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'
     """
     data_store.spec[f"{table_name} Item Count"] = APP.shared.get_table_item_count_text(table_name)
+
+@step("Collect case counts for the following filters for cohort <cohort_name> <table>")
+def collect_case_counts_on_filters(cohort_name: str, table):
+    """
+    collect_case_counts_on_filters - Collect case count on filters.
+    Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'.
+    :param cohort_name: Cohort Name we are collecting the information under
+    :param v[0]: Filter Card Name
+    :param v[1]: Filter we are collecting case count info on
+    """
+    for k, v in enumerate(table):
+        # Expands list of filters to select if possible
+        if APP.shared.is_show_more_or_show_less_button_visible_within_filter_card(
+            v[0], "plus-icon"
+        ):
+            APP.shared.click_show_more_less_within_filter_card(
+                v[0], "plus-icon"
+            )
+            time.sleep(0.5)
+
+        case_count = (
+            APP.shared.get_filter_selection_count(
+                v[0], v[1]
+            )
+        )
+        # Saves the case count under the filter, filter and cohort name
+        data_store.spec[f"{v[0]}_{v[1]}_{cohort_name} Count"] = case_count
 
 @step("The cohort bar case count should be <case_count>")
 def is_cohort_bar_case_count_present_on_the_page(case_count: str):
@@ -746,6 +882,10 @@ def click_checkboxes(table):
         APP.shared.click_checkbox(v[0])
         time.sleep(0.1)
 
+@step("Select the radio button <button_name>")
+def click_radio_data_testid_button(button_name:str):
+    APP.shared.click_radio_data_testid_button(button_name)
+
 @step("Select the following radio buttons <table>")
 def click_radio_buttons(table):
     for k, v in enumerate(table):
@@ -780,11 +920,22 @@ def click_create_or_save_in_cohort_modal(table_name:str, table):
         APP.shared.click_switch_for_column_selector(v[0])
     APP.shared.click_column_selector_button_in_specified_table(table_name)
 
+@step("In table <table_name> restore default column selector options")
+def click_restore_column_selector_options(table_name:str):
+    """In specified table, clicks reset column selector button"""
+    APP.shared.click_column_selector_button_in_specified_table(table_name)
+    APP.shared.click_reset_column_select_options()
+    APP.shared.click_column_selector_button_in_specified_table(table_name)
+
 @step("Select <text> from dropdown menu")
 def click_dropdown_text_option(text:str):
     """Selects text option from dropdown menu with data-testid dropdown-menu-options"""
     APP.shared.click_text_option_from_dropdown_menu(text)
 
+@step("Select partial text <text> from dropdown menu")
+def click_dropdown_text_option(text:str):
+    """Selects text option from dropdown menu with data-testid dropdown-menu-options"""
+    APP.shared.click_has_text_option_from_dropdown_menu(text)
 
 @step("Change number of entries shown in the table to <number_of_entries>")
 def change_number_of_entries_shown(change_number_of_entries_shown: str):
@@ -793,6 +944,7 @@ def change_number_of_entries_shown(change_number_of_entries_shown: str):
     and selecting an option from the dropdown list.
     """
     APP.shared.change_number_of_entries_shown(change_number_of_entries_shown)
+    APP.shared.wait_for_loading_spinners_to_detach()
 
 @step("Change number of entries shown in the table <table_name> to <number_of_entries>")
 def change_number_of_entries_shown_in_specified_table(table_name:str, change_number_of_entries_shown: str):
@@ -801,6 +953,7 @@ def change_number_of_entries_shown_in_specified_table(table_name:str, change_num
     and selecting an option from the dropdown list.
     """
     APP.shared.change_number_of_entries_shown_in_specified_table(table_name, change_number_of_entries_shown)
+    APP.shared.wait_for_loading_spinners_to_detach()
 
 @step("Perform action and validate modal text <table>")
 def click_named_button_in_modal_and_wait_for_temp_message_text(table):
@@ -825,6 +978,10 @@ def click_named_button_in_modal_and_wait_for_temp_message_text(table):
         time.sleep(1)
         APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
 
+@step("Remove message if one is present")
+def remove_message_if_one_is_present():
+    if APP.shared.is_temporary_message_present():
+        APP.shared.click_close_temporary_message()
 
 @step("Clear active cohort filters")
 def clear_active_cohort_filters():
@@ -842,7 +999,7 @@ def click_undo_in_message():
 def click_undo_in_message():
     """Clicks 'Set this as your current cohort' in a modal message"""
     APP.shared.click_set_as_current_cohort_in_message()
-    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    APP.shared.wait_for_loading_spinners_to_detach()
 
 
 # These 3 functions are for filter cards (like on projects page).
@@ -873,6 +1030,11 @@ def perform_filter_card_action(table):
         APP.shared.wait_for_loading_spinner_to_detatch()
         time.sleep(0.1)
 
+@step("Flip the switch on filter card <filter_card_name>")
+def flip_switch_filter_card(filter_card_name:str):
+    APP.shared.flip_switch_in_filter_card(filter_card_name)
+    time.sleep(1)
+    APP.shared.wait_for_loading_spinners_to_detach()
 
 @step("Expand or contract a filter <table>")
 def click_show_more_or_show_less(table):

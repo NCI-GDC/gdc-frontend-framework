@@ -1,11 +1,11 @@
 # Case Summary - Validate Tables
 Date Created        : 09/05/2024
-Version			    : 1.0
-Owner		        : GDC QA
-Description		    : Validate All Tables and Sections in Case Summary Page
+Version			        : 1.0
+Owner		            : GDC QA
+Description		      : Validate All Tables and Sections in Case Summary Page
 Test-Case           : PEAR-2139, PEAR-464
 
-tags: gdc-data-portal-v2, case-summary
+tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download
 
 ## Navigate to Case Summary Page: TCGA-13-0920
 * On GDC Data Portal V2 app
@@ -120,19 +120,25 @@ tags: gdc-data-portal-v2, case-summary
     |required_info                          |
     |---------------------------------------|
     |5fd8d17e-57d2-4270-8728-de259ff6b2fe   |
-    |cigarettes_per_day                     |
-    |exposure_type                          |
+    |exposures.cigarettes_per_day           |
+    |exposures.exposure_type                |
     |Tobacco                                |
-    |respirable_crystalline_silica_exposure |
-    |tobacco_smoking_status                 |
+    |exposures.respirable_crystalline_silica_exposure |
+    |exposures.tobacco_smoking_status       |
     |Current Reformed Smoker for > 15 yrs   |
     |diagnosis_id                           |
     |26a5ccaa-d86d-4283-9a00-39ed229586f9   |
     |extracapsular_extension_present        |
-    |margin_status                          |
-    |pathology_detail_submitter_id          |
-    |tumor_largest_dimension_diameter       |
+    |pathology_details.margin_status        |
+    |pathology_details.submitter_id         |
     |3.5                                    |
+* Verify that "TSV from Case Summary Clinical Table" does not contain specified information
+    |required_info                          |
+    |---------------------------------------|
+    |tumor_stage                            |
+    |marijuana_use_per_week                 |
+    |smokeless_tobacco_quit_age             |
+    |tobacco_use_per_day                    |
 
 ## Clinical Table - Download JSON: Exposure, Pathological Detail
 * Download "JSON" from "Case Summary Clinical Table"
@@ -226,7 +232,7 @@ tags: gdc-data-portal-v2, case-summary
     |Unknown                                |
     |Father                                 |
 
-## Clinical Table - Followups Molecular Tests
+## Clinical Table - Followups, Molecular Tests, Other Clinical Attributes
 * Select tab "Followups Molecular Tests" on Case Summary page
 * Verify the table "Clinical Case Summary" is displaying this information
     |text_to_validate                       |
@@ -261,32 +267,57 @@ tags: gdc-data-portal-v2, case-summary
     |Absolute Neutrophil                    |
     |2.8                                    |
     |ukat/L                                 |
+    |Timepoint Category                     |
+    |Nononcologic Therapeutic Agents        |
+    |Treatment Frequency                    |
+    |Weight                                 |
+    |Height                                 |
+    |BMI                                    |
+    |58                                     |
+    |150                                    |
+    |a5de9cbc-4033-4d39-b543-e3ad87ef0d78   |
+    |MMRF_2081_oca1                         |
 
 ## Clinical Table - TSV Download: Follow Up, Family History, Clinical
 * Download "TSV" from "Case Summary Clinical Table"
 * Read file content from compressed "TSV from Case Summary Clinical Table"
 * Verify that "TSV from Case Summary Clinical Table" has expected information
+    |required_info                                    |
+    |-------------------------------------------------|
+    |case_id                                          |
+    |follow_ups.cause_of_response                     |
+    |follow_ups.barretts_esophagus_goblet_cells_present|
+    |follow_ups.hysterectomy_margins_involved         |
+    |follow_ups.recist_targeted_regions_number        |
+    |Lactate Dehydrogenase                            |
+    |molecular_tests.molecular_analysis_method        |
+    |pathology_details.bone_marrow_malignant_cells    |
+    |pathology_details.rhabdoid_present               |
+    |pathology_details.zone_of_origin_prostate        |
+    |family_histories.relative_smoker                 |
+    |family_histories.relatives_with_cancer_history_count|
+    |family_histories.relationship_gender             |
+    |3d5ebf3f-0cbd-458a-820d-65652e9682d7             |
+    |MMRF_2081                                        |
+    |pathology_details.additional_pathology_findings  |
+    |treatments.treatment_type                        |
+    |MMRF-COMMPASS                                    |
+    |other_clinical_attributes.aids_risk_factors      |
+    |other_clinical_attributes.days_to_risk_factor    |
+    |other_clinical_attributes.hysterectomy_margins_involved|
+    |other_clinical_attributes.timepoint_category     |
+    |other_clinical_attributes.undescended_testis_corrected_laterality|
+    |other_clinical_attributes.weight                 |
+    |MMRF_2081_oca1                                   |
+    |a5de9cbc-4033-4d39-b543-e3ad87ef0d78             |
+
+* Verify that "TSV from Case Summary Clinical Table" does not contain specified information
     |required_info                          |
     |---------------------------------------|
-    |case_id                                |
-    |cause_of_response                      |
-    |barretts_esophagus_goblet_cells_present|
-    |hysterectomy_margins_involved          |
-    |recist_targeted_regions_number         |
-    |Lactate Dehydrogenase                  |
-    |molecular_analysis_method              |
-    |bone_marrow_malignant_cells            |
-    |non_nodal_tumor_deposits               |
-    |rhabdoid_present                       |
-    |zone_of_origin_prostate                |
-    |relative_smoker                        |
-    |relatives_with_cancer_history_count    |
-    |relationship_gender                    |
-    |3d5ebf3f-0cbd-458a-820d-65652e9682d7   |
-    |MMRF_2081                              |
-    |additional_pathology_findings          |
-    |treatment_type                         |
-    |MMRF-COMMPASS                          |
+    |tumor_stage                            |
+    |marijuana_use_per_week                 |
+    |smokeless_tobacco_quit_age             |
+    |tobacco_use_per_day                    |
 
 ## Clinical Table - Download JSON: Follow Up, Family History, Clinical
 * Download "JSON" from "Case Summary Clinical Table"
@@ -301,6 +332,16 @@ tags: gdc-data-portal-v2, case-summary
     |MMRF-COMMPASS                          |
     |0ad0643b-8364-4ea3-a600-d03c0be2e6fd   |
     |not hispanic or latino                 |
+    |other_clinical_attributes              |
+    |other_clinical_attribute_id	          |
+    |a5de9cbc-4033-4d39-b543-e3ad87ef0d78   |
+    |MMRF_2081_oca1                         |
+    |58                                     |
+    |2024-07-08T14:50:58.508358-05:00       |
+    |150                                    |
+    |height                                 |
+    |weight                                 |
+
 
 ## Clinical Table - Validate JSON File Fields
   |field_name                               |
@@ -389,7 +430,7 @@ tags: gdc-data-portal-v2, case-summary
     |Portion UUID                           |
     |Portion Number                         |
     |Weight                                 |
-    |Is Ffpe	                            |
+    |Is Ffpe	                              |
     |Analytes                               |
     |Slides                                 |
     |TCGA-GV-A3QI-01A-11                    |
@@ -482,24 +523,24 @@ tags: gdc-data-portal-v2, case-summary
     |project_id                             |
     |sample_id                              |
     |portion_id                             |
-    |analyte_submitter_id                   |
-    |aliquot_id                             |
+    |analytes.submitter_id                  |
+    |aliquots.aliquot_id                    |
     |TCGA-GV-A3QI-10A-01W-A226-08           |
     |06f936e9-5a90-40d3-b91a-713f2b4e6e11   |
     |45f1a50a-8d05-48c5-8f82-ba4955117d1b   |
     |TCGA-GV-A3QI-01A-11                    |
     |ffc59e86-1afb-4cdb-8651-191b21ee7876   |
     |TCGA-GV-A3QI-01A-11D-A21Z-08           |
-    |experimental_protocol_type             |
-    |spectrophotometer_method               |
+    |analytes.experimental_protocol_type    |
+    |analytes.spectrophotometer_method      |
     |mirVana (Allprep DNA) RNA              |
-    |analyte_type_id                        |
+    |analytes.analyte_type_id               |
     |slide_id                               |
     |88217dc9-06a0-4839-8269-85ce0798ef89   |
-    |percent_inflam_infiltration            |
-    |percent_tumor_nuclei                   |
-    |portion_submitter_id                   |
-    |creation_datetime                      |
+    |slides.percent_inflam_infiltration     |
+    |slides.percent_tumor_nuclei            |
+    |portions.submitter_id                  |
+    |portions.creation_datetime             |
 
 ## Biospecimen Table - Download JSON
 * Download "JSON" from "Case Summary Biospecimen Table"
@@ -525,10 +566,10 @@ tags: gdc-data-portal-v2, case-summary
   |case_id	                                |
   |project.project_id                       |
   |submitter_id	                            |
-  |samples.sample_type_id	                |
+  |samples.sample_type_id	                  |
   |samples.portions.portion_id              |
   |samples.portions.analytes.analyte_id     |
-  |samples.pathology_report_uuid	        |
+  |samples.pathology_report_uuid	          |
   |samples.portions.slides.slide_id         |
   |samples.portions.analytes.aliquots.aliquot_quantity|
 * Verify that the "JSON from Case Summary Biospecimen Table" has <field_name> for each object
@@ -591,7 +632,7 @@ tags: gdc-data-portal-v2, case-summary
   |data_format                              |
   |cases.case_id                            |
   |cases.project.project_id                 |
-  |access	                                |
+  |access	                                  |
   |file_name                                |
   |file_id                                  |
   |data_type                                |
@@ -714,7 +755,7 @@ A follow-up will occur in QA-2288 to test filtered download of TSV.
     |Created Datetime                       |
     |064a8d49-9a7a-4667-a757-be5b6d53076d   |
     |masked_somatic_mutation                |
-    |a4946bbc-5a04-4613-a151-ef9f834b02c0	|
+    |a4946bbc-5a04-4613-a151-ef9f834b02c0	  |
     |General                                |
     |Redaction                              |
     |2023-03-03T10:25:36.534006-06:00       |
@@ -733,7 +774,7 @@ A follow-up will occur in QA-2288 to test filtered download of TSV.
     |Created Datetime                       |
     |064a8d49-9a7a-4667-a757-be5b6d53076d   |
     |masked_somatic_mutation                |
-    |a4946bbc-5a04-4613-a151-ef9f834b02c0	|
+    |a4946bbc-5a04-4613-a151-ef9f834b02c0	  |
     |General                                |
     |Redaction                              |
     |2023-03-03T10:25:36.534006-06:00       |

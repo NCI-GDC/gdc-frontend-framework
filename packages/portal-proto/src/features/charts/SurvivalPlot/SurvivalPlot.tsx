@@ -1,8 +1,5 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
-import { MdRestartAlt as ResetIcon } from "react-icons/md";
-import { MdDownload as DownloadIcon } from "react-icons/md";
 import { Box, Menu, Tooltip, Loader, ActionIcon } from "@mantine/core";
-import { IoMdTrendingDown as SurvivalIcon } from "react-icons/io";
 import isNumber from "lodash/isNumber";
 import { useMouse } from "@mantine/hooks";
 import saveAs from "file-saver";
@@ -29,6 +26,7 @@ import {
 } from "./utils";
 import { handleDownloadPNG, handleDownloadSVG } from "../utils";
 import { DAYS_IN_YEAR } from "@gff/core";
+import { DownloadIcon, ResetIcon, SurvivalChartIcon } from "@/utils/icons";
 
 const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
   data,
@@ -312,8 +310,9 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
         </div>
         {tableTooltip && (
           <div className="text-xs font-content">
-            Use the Survival buttons <SurvivalIcon className="inline-block" />{" "}
-            in the table below to change the survival plot
+            Use the Survival buttons{" "}
+            <SurvivalChartIcon className="inline-block" /> in the table below to
+            change the survival plot
           </div>
         )}
         <div className="flex justify-end text-xs text-primary-content font-content">

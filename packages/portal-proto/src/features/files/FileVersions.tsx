@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { useGetHistoryQuery } from "@gff/core";
 import saveAs from "file-saver";
-import { MdDownload as DownloadIcon } from "react-icons/md";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { HeaderTitle } from "@/components/tailwindComponents";
@@ -9,6 +8,7 @@ import { createColumnHelper } from "@tanstack/react-table";
 import TotalItems from "@/components/Table/TotalItem";
 import { statusBooleansToDataStatus } from "@/utils/index";
 import { useDeepCompareMemo } from "use-deep-compare";
+import { DownloadIcon } from "@/utils/icons";
 
 type FileVersionsDataType = {
   version: string;
