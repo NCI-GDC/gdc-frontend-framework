@@ -83,6 +83,10 @@
     "ts-jest": "^29.2.5",
     "typedoc-plugin-missing-exports": "^2.1.0"
   },
+  "overrides": {
+    "minimatch": "^10.0.1",
+    "glob": "^11.0.0"
+  },
   "engines": {
     "npm": ">=10.2.4"
   }
