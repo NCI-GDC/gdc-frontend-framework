@@ -37,7 +37,7 @@ const AuthorizationTable: React.FC<AuthorizationTableProps> = ({
   ];
 
   const authorizationTableColumnHelper =
-    createColumnHelper<typeof authorizationTableData[0]>();
+    createColumnHelper<(typeof authorizationTableData)[0]>();
 
   const authorizationTableColumns = useMemo(
     () => [

@@ -30,7 +30,7 @@ const UnmatchedTable = ({
   } = useStandardPagination(unmatchedTableData);
 
   const unmatchedTableColumnHelper =
-    createColumnHelper<typeof unmatchedTableData[0]>();
+    createColumnHelper<(typeof unmatchedTableData)[0]>();
 
   const unmatchedTableColumns = useMemo(
     () => [

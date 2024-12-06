@@ -104,7 +104,7 @@ export const formatDataForDataCategoryTable = (
   );
 
   const dataCategoryTableColumnHelper =
-    createColumnHelper<typeof sortedDataCategories[0]>();
+    createColumnHelper<(typeof sortedDataCategories)[0]>();
 
   const dataCategoryTableColumns = [
     dataCategoryTableColumnHelper.display({
@@ -191,7 +191,7 @@ export const formatDataForExpCategoryTable = (
   );
 
   const expStrategiesTableColumnHelper =
-    createColumnHelper<typeof sortedExpStrategies[0]>();
+    createColumnHelper<(typeof sortedExpStrategies)[0]>();
 
   const expCategoryTableColumns = [
     expStrategiesTableColumnHelper.display({
