@@ -163,33 +163,33 @@ def download_file_at_file_table(file: str, source: str):
         "Cart Items": APP.shared.click_button_data_testid_normalize,
         "Cart Header": APP.shared.click_button_with_displayed_text_name,
         "Cart Header Dropdown": APP.shared.click_text_option_from_dropdown_menu,
-        "Projects": APP.projects_page.click_button,
-        "Repository": APP.repository_page.click_button,
-        "File Summary": APP.file_summary_page.click_download_button,
-        "File Summary File Versions": APP.file_summary_page.click_file_version_download_option,
-        "File Summary Annotation Table": APP.file_summary_page.click_annotation_table_download_option,
-        "Case Summary Clinical Table": APP.case_summary_page.click_clinical_table_download_button,
+        "Case Summary Annotations Table": APP.case_summary_page.click_annotations_table_download_json_or_tsv_button,
         "Case Summary Biospecimen Table": APP.case_summary_page.click_biospecimen_table_download_button,
+        "Case Summary Clinical Table": APP.case_summary_page.click_clinical_table_download_button,
         "Case Summary Files Table": APP.case_summary_page.click_files_table_download_json_or_tsv_button,
         "Case Summary Files Table File": APP.case_summary_page.click_files_table_download_file_button,
-        "Case Summary Annotations Table": APP.case_summary_page.click_annotations_table_download_json_or_tsv_button,
+        "CDAVE Analysis Card TSV": APP.clinical_data_analysis.click_tsv_button_on_analysis_card,
         "Cohort Bar": APP.cohort_bar.click_cohort_bar_button,
         "Cohort Case View Files": APP.cohort_case_view_page.click_files_and_dropdown_option_cases_view,
+        "Cohort Comparison": APP.cohort_comparison_page.click_download_tsv_button_on_analysis_card_cohort_comparison,
+        "Cohort Table View": APP.cohort_case_view_page.click_table_view_button,
         "Cohort Summary View Biospecimen": APP.cohort_case_view_page.click_biospecimen_summary_view,
         "Cohort Summary View Clinical": APP.cohort_case_view_page.click_clinical_summary_view,
         "Cohort Table View Biospecimen": APP.cohort_case_view_page.click_biospecimen_table_view,
         "Cohort Table View Clinical": APP.cohort_case_view_page.click_clinical_table_view,
-        "Cohort Table View": APP.cohort_case_view_page.click_table_view_button,
+        "File Summary": APP.file_summary_page.click_download_button,
+        "File Summary Annotation Table": APP.file_summary_page.click_annotation_table_download_option,
+        "File Summary File Versions": APP.file_summary_page.click_file_version_download_option,
         "Manage Sets": APP.manage_sets_page.click_on_download_for_set,
-        "Cohort Comparison": APP.cohort_comparison_page.click_download_tsv_button_on_analysis_card_cohort_comparison,
         "Mutation Frequency": APP.mutation_frequency_page.click_table_download_button,
+        "Projects": APP.projects_page.click_button,
         "Project Summary": APP.project_summary_page.click_button,
         "Project Summary Biospecimen": APP.project_summary_page.click_biospecimen_download_button,
         "Project Summary Clinical": APP.project_summary_page.click_clinical_download_button,
         "Project Summary Annotations": APP.project_summary_page.click_annotation_download_button,
+        "Repository": APP.repository_page.click_button,
         "Set Operations": APP.set_operations_page.click_download_tsv_button_set_operations,
         "Set Operations Union Row": APP.set_operations_page.click_union_row_download_tsv_button_set_operations,
-
     }
     driver = WebDriver.page
     with driver.expect_download(timeout=90000) as download_info:
@@ -313,6 +313,20 @@ def verify_file_content(file_type, table):
                 collected_data_string in data_store.spec[f"{file_type} contents"]
             ), f"Collected info '{v[0]}' with value '{collected_data_string}' is NOT found in the file"
 
+@step("Verify that <file_type> has exact expected information from collected data <table>")
+def verify_file_content(file_type, table):
+    """Checks if collected information is inside content from read-in files. Does not strip string for comparison."""
+    for k, v in enumerate(table):
+        # Get first statistic to compare
+        collected_data_string = data_store.spec[f"{v[0]}"]
+        if collected_data_string == "--":
+            assert (
+                "0" in data_store.spec[f"{file_type} contents"]
+            ), f"Collected info '{v[0]}' with value '0' is NOT found in the file"
+        else:
+            assert (
+                collected_data_string in data_store.spec[f"{file_type} contents"]
+            ), f"Collected info '{v[0]}' with value '{collected_data_string}' is NOT found in the file"
 
 @step("Verify that <file_type> does not contain specified information <table>")
 def verify_content_is_not_in_file(file_type, table):

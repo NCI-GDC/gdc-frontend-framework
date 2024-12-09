@@ -20,8 +20,20 @@ class ClinicalDataAnalysisLocators:
     BUTTON_ON_ANALYSIS_CARD = (
         lambda card_name, button_name: f"[data-testid='{card_name}-card'] >> [data-testid='button-{button_name}']"
     )
+    BUTTON_UNIT_ON_ANALYSIS_CARD = (
+        lambda card_name, unit_type: f"[data-testid='{card_name}-card'] >> label:has-text('{unit_type}')"
+    )
+    BUTTON_TSV_ANALYSIS_CARD = (
+        lambda card_name: f"[data-testid='{card_name}-card'] >> [data-testid='button-tsv-cdave-card']"
+    )
+    BUTTON_TSV_ALT_ANALYSIS_CARD = (
+        lambda card_name: f"[data-testid='{card_name}-card'] >> [data-testid='button-stats-tsv-cdave-card']"
+    )
     TEXT_IN_TABLE_ON_ANALYSIS_CARD = (
         lambda card_name, table_value: f"[data-testid='{card_name}-card'] >> [data-testid='table-card'] >> text='{table_value}'"
+    )
+    TEXT_IN_TABLE_ON_ANALYSIS_CARD_ROW_COLUMN = (
+        lambda card_name, row, column: f"[data-testid='{card_name}-card'] >> [data-testid='table-card'] >> tr:nth-child({row}) > td:nth-child({column}) "
     )
 
     BUTTON_CATEGORICAL_MODAL = (
@@ -117,6 +129,10 @@ class ClinicalDataAnalysisPage(BasePage):
         self.click(ClinicalDataAnalysisLocators.GROUP_TABLE_PLUS_BUTTON("Treatment"))
         self.click(ClinicalDataAnalysisLocators.GROUP_TABLE_PLUS_BUTTON("Exposures"))
 
+    def get_analysis_card_table_data_by_row_column(self, analysis_card_name, row, column):
+        locator = ClinicalDataAnalysisLocators.TEXT_IN_TABLE_ON_ANALYSIS_CARD_ROW_COLUMN(analysis_card_name, row, column)
+        return self.get_text(locator)
+
     def validate_property_table(self, table):
         # Grab the group value
         for row, value in enumerate(table):
@@ -158,6 +174,19 @@ class ClinicalDataAnalysisPage(BasePage):
             analysis_card_name, button_name
         )
         self.click(button_locator)
+
+    def click_unit_on_analysis_card(self, analysis_card_name, unit_type):
+        locator = ClinicalDataAnalysisLocators.BUTTON_UNIT_ON_ANALYSIS_CARD(analysis_card_name, unit_type)
+        self.click(locator)
+
+    def click_tsv_button_on_analysis_card(self, analysis_card_name):
+        """Clicks tsv download button on given analysis card"""
+        button_locator = ClinicalDataAnalysisLocators.BUTTON_TSV_ANALYSIS_CARD(analysis_card_name)
+        if self.is_visible(button_locator):
+            self.click(button_locator)
+        else:
+            button_locator_alt = ClinicalDataAnalysisLocators.BUTTON_TSV_ALT_ANALYSIS_CARD(analysis_card_name)
+            self.click(button_locator_alt)
 
     def click_button_categorical_modal(self, button_name):
         """Clicks a button on a categorical value modal"""

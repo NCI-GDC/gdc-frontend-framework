@@ -1,6 +1,6 @@
 import time
 
-from getgauge.python import step, before_spec
+from getgauge.python import step, before_spec, data_store
 
 from step_impl.base.webdriver import WebDriver
 from step_impl.apps.gdc_data_portal_v2.app import GDCDataPortalV2App
@@ -11,23 +11,41 @@ def start_app():
     global APP
     APP = GDCDataPortalV2App(WebDriver.page)
 
-
 @step("Select the following fields on the Clinical Data Analysis page <table>")
 def click_field_select_switch(table):
     for k, v in enumerate(table):
         APP.clinical_data_analysis.click_field_select_switch(v[0])
 
-
 @step("Expand clinical property sections")
 def expand_clinical_property_sections():
     APP.clinical_data_analysis.expand_clinical_property_sections()
-
 
 @step("Check clinical properties <table>")
 def check_clinical_properties_in_pannel(table):
     is_property_table_valid = APP.clinical_data_analysis.validate_property_table(table)
     assert is_property_table_valid == True, is_property_table_valid
 
+@step("Collect analysis card table data for comparison on the Clinical Data Analysis page <table>")
+def store_analysis_card_table_data_for_comparison(table):
+    """
+    Stores analysis card table data for comparison in future tests.
+    Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'
+
+    v[0] - The name of how the label will be stored
+    v[1] - The name of the analysis card
+    v[2] - The row of the table
+    v[3] - The column of the table
+    """
+    for k, v in enumerate(table):
+        table_body_text_by_row_column = APP.clinical_data_analysis.get_analysis_card_table_data_by_row_column(
+            v[1], v[2], v[3]
+        )
+        data_store.spec[f"{v[0]}"] = table_body_text_by_row_column
+
+@step("Switch analysis card <analysis_card> to unit <unit_type> on the Clinical Data Analysis page")
+def switch_analysis_card_unit(analysis_card, unit_type):
+    APP.clinical_data_analysis.click_unit_on_analysis_card(analysis_card, unit_type)
+    time.sleep(1)
 
 @step(
     "Validate all expected analysis cards are present on the Clinical Data Analysis page <table>"
