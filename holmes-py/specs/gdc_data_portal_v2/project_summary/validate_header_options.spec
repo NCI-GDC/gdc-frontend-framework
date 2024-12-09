@@ -156,6 +156,34 @@ tags: gdc-data-portal-v2, regression, project-summary, clinical-biospecimen-down
     |marijuana_use_per_week                 |
     |smokeless_tobacco_quit_age             |
     |tobacco_use_per_day                    |
+    |diagnoses.anaplasia_present            |
+    |diagnoses.anaplasia_present_type       |
+    |diagnoses.breslow_thickness            |
+    |diagnoses.circumferential_resection_margin|
+    |diagnoses.greatest_tumor_dimension     |
+    |diagnoses.gross_tumor_weight           |
+    |diagnoses.largest_extrapelvic_peritoneal_focus|
+    |diagnoses.lymph_node_involved_site     |
+    |diagnoses.lymph_nodes_positive         |
+    |diagnoses.lymph_nodes_tested           |
+    |diagnoses.lymphatic_invasion_present   |
+    |diagnoses.non_nodal_regional_disease   |
+    |diagnoses.non_nodal_tumor_deposits     |
+    |diagnoses.percent_tumor_invasion       |
+    |diagnoses.perineural_invasion_present  |
+    |diagnoses.peripancreatic_lymph_nodes_positive|
+    |diagnoses.peripancreatic_lymph_nodes_tested|
+    |diagnoses.transglottic_extension       |
+    |diagnoses.tumor_largest_dimension_diameter|
+    |diagnoses.tumor_stage                  |
+    |diagnoses.vascular_invasion_present    |
+    |diagnoses.vascular_invasion_type       |
+    |exposures.bmi                          |
+    |exposures.height                       |
+    |exposures.marijuana_use_per_week       |
+    |exposures.smokeless_tobacco_quit_age   |
+    |exposures.tobacco_use_per_day          |
+    |exposures.weight                       |
 
 ## Clinical Download - JSON
 * Download "JSON" from "Project Summary Clinical"
