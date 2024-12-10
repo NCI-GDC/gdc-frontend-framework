@@ -20,7 +20,7 @@ const footerLinkColData = [
       },
       {
         title: "Data Transfer Tool",
-        url: "https://docs.gdc.cancer.gov/Data_Transfer_Tool/Users_Guide/Getting_Started/",
+        url: "https://gdc.cancer.gov/access-data/gdc-data-transfer-tool",
       },
       {
         title: "Documentation",
