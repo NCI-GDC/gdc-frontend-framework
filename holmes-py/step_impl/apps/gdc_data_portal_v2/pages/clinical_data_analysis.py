@@ -32,8 +32,8 @@ class ClinicalDataAnalysisLocators:
     TEXT_IN_TABLE_ON_ANALYSIS_CARD = (
         lambda card_name, table_value: f"[data-testid='{card_name}-card'] >> [data-testid='table-card'] >> text='{table_value}'"
     )
-    TEXT_IN_TABLE_ON_ANALYSIS_CARD_ROW_COLUMN = (
-        lambda card_name, row, column: f"[data-testid='{card_name}-card'] >> [data-testid='table-card'] >> tr:nth-child({row}) > td:nth-child({column}) "
+    TABLE_ON_ANALYSIS_CARD_ROW_COLUMN = (
+        lambda card_name, row, column: f"[data-testid='{card_name}-card'] >> [data-testid='table-card'] >> tr:nth-child({row}) > td:nth-child({column})"
     )
 
     BUTTON_CATEGORICAL_MODAL = (
@@ -130,7 +130,7 @@ class ClinicalDataAnalysisPage(BasePage):
         self.click(ClinicalDataAnalysisLocators.GROUP_TABLE_PLUS_BUTTON("Exposures"))
 
     def get_analysis_card_table_data_by_row_column(self, analysis_card_name, row, column):
-        locator = ClinicalDataAnalysisLocators.TEXT_IN_TABLE_ON_ANALYSIS_CARD_ROW_COLUMN(analysis_card_name, row, column)
+        locator = ClinicalDataAnalysisLocators.TABLE_ON_ANALYSIS_CARD_ROW_COLUMN(analysis_card_name, row, column)
         return self.get_text(locator)
 
     def validate_property_table(self, table):
@@ -174,6 +174,16 @@ class ClinicalDataAnalysisPage(BasePage):
             analysis_card_name, button_name
         )
         self.click(button_locator)
+
+    def click_analysis_card_table_data_by_row_column(self, analysis_card_name, row, column, what_to_click):
+        table_locator_to_select = ClinicalDataAnalysisLocators.TABLE_ON_ANALYSIS_CARD_ROW_COLUMN(analysis_card_name, row, column)
+        # Need to be specific on what to click on. The cell is too big to click the center for it to work.
+        if what_to_click.lower() == "button":
+            table_locator_to_select = table_locator_to_select + ">> button"
+        elif what_to_click.lower() == "checkbox":
+            table_locator_to_select = table_locator_to_select + ">> input"
+        self.hover(table_locator_to_select)
+        self.click(table_locator_to_select, True)
 
     def click_unit_on_analysis_card(self, analysis_card_name, unit_type):
         locator = ClinicalDataAnalysisLocators.BUTTON_UNIT_ON_ANALYSIS_CARD(analysis_card_name, unit_type)

@@ -35,11 +35,15 @@ def store_analysis_card_table_data_for_comparison(table):
     v[1] - The name of the analysis card
     v[2] - The row of the table
     v[3] - The column of the table
+    v[4] - Keep Parenthesis or Trim Them.
     """
     for k, v in enumerate(table):
         table_body_text_by_row_column = APP.clinical_data_analysis.get_analysis_card_table_data_by_row_column(
             v[1], v[2], v[3]
         )
+        if v[4].lower() == "false":
+            # Split the string at the first occurrence of '(' and take the part before it
+            table_body_text_by_row_column = table_body_text_by_row_column.split('(')[0]
         data_store.spec[f"{v[0]}"] = table_body_text_by_row_column
 
 @step("Switch analysis card <analysis_card> to unit <unit_type> on the Clinical Data Analysis page")
@@ -105,7 +109,24 @@ def validate_table_value_on_analysis_card_is_present(card_name, table):
 def click_button_on_analysis_card(card_name: str, button_name: str):
     """Selects a button on an analysis card"""
     APP.clinical_data_analysis.click_button_on_analysis_card(card_name, button_name)
+    APP.shared.wait_for_loading_spinners_to_detach()
 
+@step(
+    "On the <card_name> card's table, select value by row and column on the Clinical Data Analysis page <table>"
+)
+def select_table_value_by_row_column(card_name:str, table):
+    """
+    In specified analysis card's table, selects values from tables by giving a row and column.
+    Row and Column indexing begins at '1'
+
+    :param card_name: The card to click on.
+    :param v[0]: The Row
+    :param v[1]: The Column
+    :param v[2]: What to click on
+    """
+    for k, v in enumerate(table):
+        APP.clinical_data_analysis.click_analysis_card_table_data_by_row_column(card_name, v[0], v[1], v[2])
+        APP.shared.wait_for_loading_spinners_to_detach()
 
 @step(
     "Select <button_name> in a categorical custom bin modal on the Clinical Data Analysis page"
