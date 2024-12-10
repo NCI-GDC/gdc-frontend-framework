@@ -134,7 +134,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                 </Tooltip>
               </Menu.Target>
 
-              <Menu.Dropdown>
+              <Menu.Dropdown data-testid="dropdown-menu-options">
                 <Menu.Item
                   onClick={async () => {
                     setDownloadInProgress(true);
