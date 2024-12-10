@@ -26,9 +26,6 @@ class ClinicalDataAnalysisLocators:
     BUTTON_TSV_ANALYSIS_CARD = (
         lambda card_name: f"[data-testid='{card_name}-card'] >> [data-testid='button-tsv-cdave-card']"
     )
-    BUTTON_TSV_ALT_ANALYSIS_CARD = (
-        lambda card_name: f"[data-testid='{card_name}-card'] >> [data-testid='button-stats-tsv-cdave-card']"
-    )
     TEXT_IN_TABLE_ON_ANALYSIS_CARD = (
         lambda card_name, table_value: f"[data-testid='{card_name}-card'] >> [data-testid='table-card'] >> text='{table_value}'"
     )
@@ -192,11 +189,7 @@ class ClinicalDataAnalysisPage(BasePage):
     def click_tsv_button_on_analysis_card(self, analysis_card_name):
         """Clicks tsv download button on given analysis card"""
         button_locator = ClinicalDataAnalysisLocators.BUTTON_TSV_ANALYSIS_CARD(analysis_card_name)
-        if self.is_visible(button_locator):
-            self.click(button_locator)
-        else:
-            button_locator_alt = ClinicalDataAnalysisLocators.BUTTON_TSV_ALT_ANALYSIS_CARD(analysis_card_name)
-            self.click(button_locator_alt)
+        self.click(button_locator)
 
     def click_button_categorical_modal(self, button_name):
         """Clicks a button on a categorical value modal"""

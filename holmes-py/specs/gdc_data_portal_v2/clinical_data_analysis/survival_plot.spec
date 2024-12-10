@@ -40,7 +40,7 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
   |-------------------------|
   |AJCC Pathologic Stage    |
 
-## Survival Plot TSV Download
+## Add to Plotted Chart
 * On the "AJCC Pathologic Stage" card, select "Survival Plot" button on the Clinical Data Analysis page
 * Is text "Use the Survival buttons" present on the page
 * On the "AJCC Pathologic Stage" card's table, select value by row and column on the Clinical Data Analysis page
