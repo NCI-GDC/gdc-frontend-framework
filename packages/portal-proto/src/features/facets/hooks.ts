@@ -27,6 +27,8 @@ import {
   selectCurrentCohortFilters,
   useCurrentCohortFilters,
   CoreState,
+  selectCohortBuilderConfig,
+  selectFacetDefinition,
 } from "@gff/core";
 import { useEffect, useMemo } from "react";
 import isEqual from "lodash/isEqual";
@@ -36,7 +38,9 @@ import {
   FacetResponse,
   UpdateFacetFilterFunction,
 } from "@/features/facets/types";
+import { getFacetInfo } from "@/features/cohortBuilder/utils";
 import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
+import { useDeepCompareEffect } from "use-deep-compare";
 
 /**
  * Filter selector for all the facet filters
@@ -183,6 +187,37 @@ export const useEnumFacets = (
     currentCohortFilters,
     prevFilterLength,
   ]);
+};
+
+export const useAllEnumFacets = () => {
+  const tabsConfig = useCoreSelector((state) =>
+    selectCohortBuilderConfig(state),
+  );
+  const facets = useCoreSelector((state) => selectFacetDefinition(state));
+
+  const coreDispatch = useCoreDispatch();
+  const currentCohortFilters = useCurrentCohortFilters();
+
+  useDeepCompareEffect(() => {
+    Object.entries(tabsConfig).map(([, tabEntry]) => {
+      const facetList = getFacetInfo(tabEntry.facets, {
+        ...(facets.data || {}),
+      });
+
+      const enumFacets = facetList
+        .filter((x) => x.facet_type === "enum")
+        .map((x) => x.field);
+
+      coreDispatch(
+        fetchFacetByNameGQL({
+          field: enumFacets,
+          docType: tabEntry.docType as GQLDocType,
+          index: tabEntry.index as GQLIndexType,
+          caseFilterSelector: selectCurrentCohortFilters,
+        }),
+      );
+    });
+  }, [tabsConfig, facets, currentCohortFilters, coreDispatch]);
 };
 
 type UpdateEnumFiltersFunc = (

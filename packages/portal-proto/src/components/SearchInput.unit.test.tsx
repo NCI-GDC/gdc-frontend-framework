@@ -31,10 +31,18 @@ jest.mock("@/features/cohortBuilder/dictionary", () => ({
           ],
     ),
   }),
+  useFacetTabLoaded: jest.fn().mockReturnValue(true),
 }));
 
 jest.mock("next/router", () => ({
-  useRouter: jest.fn(),
+  useRouter: jest.fn().mockImplementation(
+    () =>
+      ({
+        query: {
+          tab: "general",
+        },
+      } as any),
+  ),
 }));
 
 describe("<SearchInput />", () => {

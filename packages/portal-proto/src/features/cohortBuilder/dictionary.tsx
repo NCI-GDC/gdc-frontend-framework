@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useDeepCompareEffect } from "use-deep-compare";
 import GDC_Dictionary from "./config/gdc_tooltips.json";
 import GDC_Dictionary_Flattened from "./config/gdc_facet_dictionary_flat.json";
 import MiniSearch from "minisearch";
@@ -10,6 +10,7 @@ import {
   fieldNameToTitle,
 } from "@gff/core";
 import { getFacetInfo } from "@/features/cohortBuilder/utils";
+import { useAllEnumFacets } from "../facets/hooks";
 // TODO: Remove the above JSON config file and replace with the dictionary slice.
 
 export const get_facet_list = (
@@ -70,18 +71,20 @@ export const useFacetSearch = (): MiniSearch<FacetSearchDocument> => {
   const tabsConfig = useCoreSelector((state) =>
     selectCohortBuilderConfig(state),
   );
-  const facets =
-    useCoreSelector((state) => selectFacetDefinition(state)).data || {};
+  const facets = useCoreSelector((state) => selectFacetDefinition(state));
+
+  useAllEnumFacets();
+
   const facetResults = useCoreSelector((state) => selectCaseFacets(state));
 
-  useMemo(() => {
+  useDeepCompareEffect(() => {
     miniSearch.removeAll();
 
     const searchDocuments = [];
 
     Object.entries(tabsConfig).forEach(([categoryKey, category]) => {
-      getFacetInfo(category.facets, facets).forEach((facet) => {
-        const result = facetResults[facet.full];
+      getFacetInfo(category.facets, facets.data || {}).forEach((facet) => {
+        const result = facetResults[facet.field];
         searchDocuments.push({
           name: fieldNameToTitle(facet.full),
           enum: Object.keys(result?.buckets || {}),
@@ -94,13 +97,34 @@ export const useFacetSearch = (): MiniSearch<FacetSearchDocument> => {
     });
 
     miniSearch.addAll(searchDocuments);
-    /* eslint-disable react-hooks/exhaustive-deps */
-  }, [
-    JSON.stringify(tabsConfig),
-    JSON.stringify(facetResults),
-    JSON.stringify(facets),
-  ]);
-  /* eslint-enable */
+  }, [tabsConfig, facetResults, facets]);
 
   return miniSearch;
+};
+
+export const useFacetTabLoaded = (tab: string) => {
+  const tabsConfig = useCoreSelector((state) =>
+    selectCohortBuilderConfig(state),
+  );
+  const facets =
+    useCoreSelector((state) => selectFacetDefinition(state)).data || {};
+  const facetResults = useCoreSelector((state) => selectCaseFacets(state));
+  const facetTab = tabsConfig[tab];
+  const facetList = getFacetInfo(facetTab.facets, {
+    ...facets,
+  });
+
+  const facetNames = facetList
+    .filter((x) => x.facet_type === "enum")
+    .map((x) => x.full);
+
+  const filteredFacets = Object.entries(facetResults).filter(([facetName]) =>
+    facetNames.includes(facetName),
+  );
+
+  const facetTabLoaded =
+    filteredFacets.length > 0 &&
+    filteredFacets.every(([_, facetInfo]) => facetInfo.status === "fulfilled");
+
+  return facetTabLoaded;
 };
