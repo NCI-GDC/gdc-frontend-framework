@@ -906,6 +906,22 @@ class BasePage:
         new_tab = tab.value
         return new_tab
 
+    def click_in_table_handle_new_tab(self, table_name, row, column):
+        """
+        click_in_table_handle_new_tab clicks in a table to open a new tab,
+        and then returns a page object for that new tab.
+
+        :param table_name: Specifies what table to click on
+        :param row: Row number to click
+        :param column: Column number to click
+        :return: a page object for the new tab that has been opened
+        """
+        driver = WebDriver.page
+        with driver.context.expect_page() as tab:
+            self.select_specified_table_by_row_column(table_name, row, column)
+        new_tab = tab.value
+        return new_tab
+
     def is_text_visible_on_new_tab(self, new_tab, text_to_check):
         """
         is_text_visible_on_new_tab checks for text on a given tab page.

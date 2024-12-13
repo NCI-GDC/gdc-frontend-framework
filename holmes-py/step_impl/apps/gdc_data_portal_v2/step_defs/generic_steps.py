@@ -1196,6 +1196,26 @@ def click_nav_item_check_text_in_new_tab(page_name: str, table):
         ), f"After click on '{v[0]}', the expected text '{v[1]}' in NOT present"
         new_tab.close()
 
+@step(
+    "In table <table_name> these selections should take the user to correct page in a new tab <table>"
+)
+def click_table_by_row_column_check_text_in_new_tab(table_name: str, table):
+    """
+    click_table_by_row_column_check_text_in_new_tab clicks in a table to open a new tab,
+    and validates the text present in the new tab.
+
+    :param table_name: Specifies what table to click on.
+    :param v[0]: Row number to click.
+    :param v[1]: Column number to click.
+    :param v[2]: Text to check.
+    """
+    for k, v in enumerate(table):
+        new_tab = APP.shared.click_in_table_handle_new_tab(table_name, v[0], v[1])
+        is_text_visible = APP.shared.is_text_visible_on_new_tab(new_tab, v[2])
+        assert (
+            is_text_visible
+        ), f"After click in table '{table_name}', row: '{v[0]}' and column: '{v[1]}' the expected text '{v[2]}' in NOT present"
+        new_tab.close()
 
 @step(
     "Check that <var_to_check> cookie is accessible using Javascript and that it's generated using uuid version <ver>"
