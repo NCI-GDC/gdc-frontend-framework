@@ -133,7 +133,8 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
     }
   }, [set]);
 
-  const setDetailPanelColumnHelper = createColumnHelper<typeof tableData[0]>();
+  const setDetailPanelColumnHelper =
+    createColumnHelper<(typeof tableData)[0]>();
 
   const setDetailPanelColumns = useMemo(
     () =>

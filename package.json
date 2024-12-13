@@ -60,8 +60,8 @@
     "@svgr/webpack": "^8.0.1",
     "@types/file-saver": "^2.0.5",
     "@types/isomorphic-fetch": "^0.0.35",
-    "@types/lodash": "^4.14.178",
     "@types/jest": "^29.5.14",
+    "@types/lodash": "^4.14.178",
     "@types/plotly.js": "^1.54.14",
     "@types/react-table": "^7.7.12",
     "@typescript-eslint/eslint-plugin": "^6.7.5",
@@ -79,9 +79,13 @@
     "lerna": "^6.6.1",
     "lint-staged": "^12.3.7",
     "prettier": "^2.3.2",
-    "typedoc": "^0.25.4",
     "ts-jest": "^29.2.5",
+    "typedoc": "^0.25.4",
     "typedoc-plugin-missing-exports": "^2.1.0"
+  },
+  "overrides": {
+    "glob": "^11.0.0",
+    "globby": "^11.0.4"
   },
   "engines": {
     "npm": ">=10.2.4"
