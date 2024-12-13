@@ -173,11 +173,6 @@ export const FileView: React.FC<FileViewProps> = ({
           field: "analysis.workflow_type",
           name: "Workflow Type",
         },
-        {
-          field: "analysis.updated_datetime",
-          name: "Workflow Completion Date",
-          modifier: (v) => v?.split("T")[0],
-        },
       ]),
     [file],
   );

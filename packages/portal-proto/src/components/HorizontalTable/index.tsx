@@ -88,7 +88,7 @@ export const HorizontalTable = forwardRef<
                   key={`head-${obj.headerName}`}
                   scope="row"
                 >
-                  {obj.headerName}
+                  {obj?.headerName}
                 </th>
                 <td className="w-3/5 border-1 border-base-lighter px-2 font-content-noto font-normal">
                   <div className="flex flex-wrap gap-2">
