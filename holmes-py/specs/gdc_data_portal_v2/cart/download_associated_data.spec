@@ -4,7 +4,8 @@ Version			: 1.0
 Owner		    : GDC QA
 Description		: Download Associated Data Dropdown Options
 Test-Case       : PEAR-2246
-tags            : gdc-data-portal-v2, regression, cart
+
+tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
 
 ## Add Files to Cart
 * On GDC Data Portal V2 app
@@ -33,49 +34,95 @@ tags            : gdc-data-portal-v2, regression, cart
 * Verify that "Clinical: TSV from Cart Header Dropdown" has expected information
     |required_info                        |
     |-------------------------------------|
-    |barretts_esophagus_goblet_cells_present|
-    |dlco_ref_predictive_percent          |
-    |recist_targeted_regions_sum          |
-    |biospecimen_volume                   |
-    |test_analyte_type                    |
+    |follow_ups.barretts_esophagus_goblet_cells_present     |
+    |follow_ups.dlco_ref_predictive_percent|
+    |follow_ups.recist_targeted_regions_sum|
+    |molecular_tests.biospecimen_volume   |
+    |molecular_tests.test_analyte_type    |
     |SD-Stable Disease                    |
     |Blood                                |
-    |Serum Free Immunoglobulin Light Chain, Lambda |
-    |additional_pathology_findings        |
-    |percent_tumor_nuclei                 |
-    |vascular_invasion_present            |
+    |Serum Free Immunoglobulin Light Chain, Lambda          |
+    |pathology_details.additional_pathology_findings        |
+    |pathology_details.percent_tumor_nuclei|
+    |pathology_details.vascular_invasion_present            |
     |97886d69-8daa-4a6e-b275-fa3853cf1702 |
     |f35b48fa-eae8-4b66-bb90-0f86a55d3552 |
-    |chemical_exposure_type               |
-    |secondhand_smoke_as_child            |
+    |exposures.chemical_exposure_type     |
+    |exposures.secondhand_smoke_as_child  |
     |a2a2dbda-d10c-49c4-86a8-61baf6160cda |
     |Current Reformed Smoker for > 15 yrs |
-    |relationship_primary_diagnosis       |
-    |relative_smoker                      |
+    |family_histories.relationship_primary_diagnosis        |
+    |family_histories.relative_smoker     |
     |HCM-BROD-0231-C25                    |
     |Prostate Cancer                      |
     |First Degree Relative, NOS           |
-    |cause_of_death_source                |
-    |primary_gleason_grade                |
-    |perineural_invasion_present          |
-    |treatment_outcome                    |
+    |demographic.cause_of_death_source    |
+    |diagnoses.primary_gleason_grade      |
+    |pathology_details.perineural_invasion_present          |
+    |treatments.treatment_outcome         |
     |Not Cancer Related                   |
     |Unknown tumor status                 |
     |Metastasis, NOS                      |
     |No Metastasis                        |
     |Endometrioid adenocarcinoma, NOS     |
     |Initial Diagnosis                    |
-* Verify that "Clinical: TSV from Cart Header Dropdown" does not contain specified information
-    |required_info                        |
-    |-------------------------------------|
-    |FM-AD                                |
-    |TCGA-LUAD                            |
-    |APOLLO                               |
-    |tumor_stage                          |
-    |marijuana_use_per_week               |
-    |smokeless_tobacco_quit_age           |
-    |tobacco_use_per_day                  |
+    |other_clinical_attributes.bmi        |
+    |other_clinical_attributes.comorbidity_method_of_diagnosis  |
+    |other_clinical_attributes.exercise_frequency_weekly        |
+    |other_clinical_attributes.hormonal_contraceptive_type      |
+    |other_clinical_attributes.hysterectomy_type                |
+    |other_clinical_attributes.other_clinical_attribute_id      |
+    |other_clinical_attributes.submitter_id                     |
+    |other_clinical_attributes.viral_hepatitis_serology_tests   |
+    |other_clinical_attributes.weeks_gestation_at_birth         |
+    |3a0f6160-ac66-44d8-a689-2a7226ef4a17 |
+    |a48d46ee-ca42-4f83-a458-a4200b11def1 |
+    |191a027d-eca3-4626-a54c-1c702fcdd13d |
+    |8d7378be-91a1-49f2-b20b-f6d531525dd2 |
+    |7347ae42-87a7-4a93-acc6-0553cf06d39a |
+    |89d5050c-3e95-4e5e-83c6-c073b9bb53cd |
+    |a242040c-f78a-4fa8-8960-8e2f1020f0d5 |
+    |HCM-CSHL-0182-C25_other_clinical_attribute|
+    |Initial Diagnosis                    |
 
+* Verify that "Clinical: TSV from Cart Header Dropdown" does not contain specified information
+    |required_info                          |
+    |---------------------------------------|
+    |FM-AD                                  |
+    |TCGA-LUAD                              |
+    |APOLLO                                 |
+    |tumor_stage                            |
+    |marijuana_use_per_week                 |
+    |smokeless_tobacco_quit_age             |
+    |tobacco_use_per_day                    |
+    |diagnoses.anaplasia_present            |
+    |diagnoses.anaplasia_present_type       |
+    |diagnoses.breslow_thickness            |
+    |diagnoses.circumferential_resection_margin|
+    |diagnoses.greatest_tumor_dimension     |
+    |diagnoses.gross_tumor_weight           |
+    |diagnoses.largest_extrapelvic_peritoneal_focus|
+    |diagnoses.lymph_node_involved_site     |
+    |diagnoses.lymph_nodes_positive         |
+    |diagnoses.lymph_nodes_tested           |
+    |diagnoses.lymphatic_invasion_present   |
+    |diagnoses.non_nodal_regional_disease   |
+    |diagnoses.non_nodal_tumor_deposits     |
+    |diagnoses.percent_tumor_invasion       |
+    |diagnoses.perineural_invasion_present  |
+    |diagnoses.peripancreatic_lymph_nodes_positive|
+    |diagnoses.peripancreatic_lymph_nodes_tested|
+    |diagnoses.transglottic_extension       |
+    |diagnoses.tumor_largest_dimension_diameter|
+    |diagnoses.tumor_stage                  |
+    |diagnoses.vascular_invasion_present    |
+    |diagnoses.vascular_invasion_type       |
+    |exposures.bmi                          |
+    |exposures.height                       |
+    |exposures.marijuana_use_per_week       |
+    |exposures.smokeless_tobacco_quit_age   |
+    |exposures.tobacco_use_per_day          |
+    |exposures.weight                       |
 
 ## Clinical JSON
 * Select "Download Associated Data" on the Cart page
@@ -105,6 +152,25 @@ tags            : gdc-data-portal-v2, regression, cart
     |bb1eaf24-d667-5608-976c-f745b2da50f5 |
     |HCM-CSHL-0182-C25_other_clinical_attribute |
     |HCM-CSHL-0182-C25_pathology_detail   |
+    |other_clinical_attributes	          |
+    |timepoint_category	                  |
+    |updated_datetime	                  |
+    |other_clinical_attribute_id	      |
+    |weight                               |
+    |bmi                                  |
+    |height                               |
+    |Initial Diagnosis                    |
+    |3a0f6160-ac66-44d8-a689-2a7226ef4a17 |
+    |30.4                                 |
+    |80ae7467-6489-4c87-af68-5a64c444b3d2 |
+    |a48d46ee-ca42-4f83-a458-a4200b11def1 |
+    |2024-07-09T13:46:04.511308-05:00     |
+    |2024-07-08T14:59:53.534123-05:00     |
+    |8d7378be-91a1-49f2-b20b-f6d531525dd2 |
+    |MMRF_2579_oca1                       |
+    |a242040c-f78a-4fa8-8960-8e2f1020f0d5 |
+    |HCM-CSHL-0182-C25_other_clinical_attribute|
+
 * Verify that "Clinical: JSON from Cart Header Dropdown" does not contain specified information
     |required_info                        |
     |-------------------------------------|
@@ -120,9 +186,9 @@ tags            : gdc-data-portal-v2, regression, cart
     |required_info                        |
     |-------------------------------------|
     |portion_id                           |
-    |no_matched_normal_targeted_sequencing|
-    |selected_normal_targeted_sequencing  |
-    |selected_normal_wxs                  |
+    |aliquots.no_matched_normal_targeted_sequencing|
+    |aliquots.selected_normal_targeted_sequencing  |
+    |aliquots.selected_normal_wxs         |
     |a2a2dbda-d10c-49c4-86a8-61baf6160cda |
     |9873fb3a-2db4-5127-857a-9c4d43fe52f3 |
     |a0c9eb15-1a55-5310-8f10-3709713d1536 |
@@ -132,26 +198,26 @@ tags            : gdc-data-portal-v2, regression, cart
     |sample_id                            |
     |analyte_id                           |
     |a260_a280_ratio                      |
-    |experimental_protocol_type           |
-    |rna_integrity_number                 |
+    |analytes.experimental_protocol_type  |
+    |analytes.rna_integrity_number        |
     |fca75565-3783-4251-8bc8-4917a416e21c |
     |71e5c3c0-8fd8-438b-915c-6e75eaaeaae2 |
     |HCM-BROD-0231-C25-06A-01D            |
     |Repli-G (Qiagen) DNA                 |
     |Repli-G X                            |
     |UV Spec                              |
-    |creation_datetime                    |
-    |portion_number                       |
+    |portions.creation_datetime           |
+    |portions.portion_number              |
     |8360d471-e5eb-4deb-b63f-eddb88daae24 |
     |8617ab21-718f-4914-9a3b-70e9bfe084cf |
     |HCM-BROD-0231-C25-06A-01             |
     |1305158400                           |
-    |biospecimen_anatomic_site            |
-    |initial_weight                       |
-    |oct_embedded                         |
-    |preservation_method                  |
-    |time_between_clamping_and_freezing   |
-    |tumor_code_id                        |
+    |samples.biospecimen_anatomic_site    |
+    |samples.initial_weight               |
+    |samples.oct_embedded                 |
+    |samples.preservation_method          |
+    |samples.time_between_clamping_and_freezing|
+    |samples.tumor_code_id                |
     |5fc14815-00f9-4cb5-b158-a294f0fd48f2 |
     |7A76BDC7-62D9-4A8D-AAEF-CECF9F819D58 |
     |Expanded Next Generation Cancer Model|
@@ -159,12 +225,12 @@ tags            : gdc-data-portal-v2, regression, cart
     |Tumor                                |
     |Metastatic                           |
     |slide_id                             |
-    |slide_submitter_id                   |
-    |percent_follicular_component         |
-    |percent_necrosis                     |
-    |percent_tumor_cells                  |
-    |prostatic_involvement_percent        |
-    |tissue_microarray_coordinates        |
+    |slides.submitter_id                  |
+    |slides.percent_follicular_component  |
+    |slides.percent_necrosis              |
+    |slides.percent_tumor_cells           |
+    |slides.prostatic_involvement_percent |
+    |slides.tissue_microarray_coordinates |
     |2ca2cf14-9a01-408d-be23-73dffb093ead |
     |TCGA-BG-A0M0-01Z-00-DX1              |
     |98.0                                 |

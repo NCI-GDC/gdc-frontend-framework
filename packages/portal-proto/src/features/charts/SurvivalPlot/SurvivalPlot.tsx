@@ -222,7 +222,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
             <Menu.Target>
               <Tooltip label="Download Survival Plot data or image">
                 <ActionIcon
-                  data-testid="button-download-survival-plot"
+                  data-testid="button-survival-plot-download"
                   aria-label="Download Survival Plot data or image"
                   variant="outline"
                 >
@@ -234,7 +234,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
                 </ActionIcon>
               </Tooltip>
             </Menu.Target>
-            <Menu.Dropdown data-testid="list-download-survival-plot-dropdown">
+            <Menu.Dropdown data-testid="dropdown-menu-options">
               <Menu.Item
                 onClick={async () => {
                   setDownloadInProgress(true);

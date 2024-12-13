@@ -19,7 +19,7 @@ const config = [
         exports: "named",
       },
     ],
-    external: ["react"],
+    external: ["react", "@mantine/core", "@mantine/hooks"],
     plugins: [
       external(),
       resolve(),

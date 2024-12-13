@@ -241,7 +241,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
             </Tooltip>
           </Menu.Target>
 
-          <Menu.Dropdown>
+          <Menu.Dropdown data-testid="dropdown-menu-options">
             <Menu.Item
               onClick={async () => {
                 Promise.all([
@@ -333,7 +333,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
         </OffscreenWrapper>
       </div>
       <Button
-        data-testid="button-stats-tsv-cdave-card"
+        data-testid="button-tsv-cdave-card"
         className="bg-base-max text-primary border-primary mb-2 w-fit"
         onClick={downloadTableTSVFile}
       >

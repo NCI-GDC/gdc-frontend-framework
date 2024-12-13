@@ -22,12 +22,12 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
 * Validate the "Age At Diagnosis" analysis card's table contains these values
    |value                                   |
    |----------------------------------------|
-   |10 to <5010                             |
-   |5010 to <10010                          |
-   |10010 to <15010                         |
-   |15010 to <20010                         |
-   |20010 to <25010                         |
-   |25010 to <30010                         |
+   |10 to <5,010                            |
+   |5,010 to <10,010                        |
+   |10,010 to <15,010                       |
+   |15,010 to <20,010                       |
+   |20,010 to <25,010                       |
+   |25,010 to <30,010                       |
 
 ## Test Custom Ranges
 * On the "Age At Diagnosis" card, select "Customize Bins" button on the Clinical Data Analysis page
