@@ -59,7 +59,7 @@ const FollowUpTables = ({ data }: { data: FollowUps }): JSX.Element => {
     }));
 
     const molecularTableColumnHelper =
-      createColumnHelper<typeof molecularTableData[0]>();
+      createColumnHelper<(typeof molecularTableData)[0]>();
 
     const molecularTableColumns = [
       molecularTableColumnHelper.accessor("id", {
@@ -143,7 +143,7 @@ const FollowUpTables = ({ data }: { data: FollowUps }): JSX.Element => {
       bmi: oca.bmi ?? "--",
     }));
 
-    const columnHelper = createColumnHelper<typeof data[0]>();
+    const columnHelper = createColumnHelper<(typeof data)[0]>();
 
     const columns = [
       columnHelper.accessor("id", {

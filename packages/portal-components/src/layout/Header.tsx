@@ -1,25 +1,18 @@
-import React, { useEffect, useState, ReactNode, useContext } from "react";
-import { Badge, Burger, MantineProvider, UnstyledButton } from "@mantine/core";
+import React, { ReactNode, useContext, useEffect } from "react";
+import { Burger, MantineProvider } from "@mantine/core";
 import { useDisclosure, useViewportSize } from "@mantine/hooks";
 import { AppContext } from "src/context";
-import {
-  CartIcon,
-  PencilIcon,
-  PlayIcon,
-  OptionsIcon,
-  FeedbackIcon,
-} from "src/commonIcons";
-import HeaderLink, { HeaderLinkProps } from "./HeaderLink";
-import HeaderDrawer from "./HeaderDrawer";
 import ExternalAppMenu from "./ExternalAppMenu";
-import SendFeedbackModal from "src/modals/SendFeedbackModal";
+import HeaderDrawer from "./HeaderDrawer";
+import HeaderLink, { HeaderLinkProps } from "./HeaderLink";
 
 const MAX_WIDTH_FOR_HAMBURGER = 1280;
 
 interface HeaderProps {
   readonly AppLogo: React.ReactNode;
+  readonly headerApps: ReadonlyArray<ReactNode>;
+  readonly headerLinks: ReadonlyArray<HeaderLinkProps>;
   readonly externalAppLinks: ReadonlyArray<HeaderLinkProps>;
-  readonly headerElements: ReadonlyArray<ReactNode>;
   readonly indexPath: string;
   readonly LoginButton?: React.ReactNode;
   readonly cartSize?: number;
@@ -27,13 +20,13 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({
   AppLogo,
+  headerApps,
+  headerLinks,
   externalAppLinks,
-  headerElements,
   indexPath,
   LoginButton = undefined,
   cartSize = 0,
 }: HeaderProps) => {
-  const [openFeedbackModal, setOpenFeedbackModal] = useState(false);
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
   const label = drawerOpened ? "Close navigation" : "Open navigation";
@@ -47,7 +40,7 @@ const Header: React.FC<HeaderProps> = ({
     }
   }, [width, drawerOpened, closeDrawer]);
 
-  const { LinkComponent, path, theme } = useContext(AppContext);
+  const { Link, theme } = useContext(AppContext);
 
   return (
     <MantineProvider theme={theme}>
@@ -61,13 +54,13 @@ const Header: React.FC<HeaderProps> = ({
         <div className="flex flex-row justify-between">
           {/* Left Side Header logos */}
           <div className="flex-none w-64 h-nci-logo relative">
-            <LinkComponent
+            <Link
               href={indexPath}
               data-testid="NIHLogoButton"
               className="block w-full h-full mt-2"
             >
               {AppLogo}
-            </LinkComponent>
+            </Link>
           </div>
 
           <div className="flex xl:hidden justify-center align-center gap-4 ">
@@ -85,11 +78,11 @@ const Header: React.FC<HeaderProps> = ({
           </div>
 
           <HeaderDrawer
+            headerLinks={headerLinks}
             drawerOpened={drawerOpened}
             closeDrawer={closeDrawer}
             externalAppLinks={externalAppLinks}
             cartSize={cartSize}
-            setOpenFeedbackModal={setOpenFeedbackModal}
           />
 
           {/* Right Side Nav Bar */}
@@ -98,61 +91,9 @@ const Header: React.FC<HeaderProps> = ({
             role="navigation"
             aria-label=""
           >
-            <HeaderLink
-              customDataTestID="button-header-video-guides"
-              href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Video_Tutorials/"
-              image={<PlayIcon size={24} />}
-              text="Video Guides"
-              isExternal
-            />
-            <UnstyledButton
-              className={`rounded-md hover:bg-primary-lightest text-primary-darkest text-sm font-heading flex py-1 px-1 `}
-              onClick={() => {
-                setOpenFeedbackModal(true);
-                closeDrawer();
-              }}
-              data-testid="button-header-send-feedback"
-            >
-              <div className="flex items-center gap-1">
-                <FeedbackIcon aria-hidden="true" size={24} />
-                Send Feedback
-              </div>
-            </UnstyledButton>
-
-            <HeaderLink
-              href="/annotations"
-              image={<PencilIcon size={24} />}
-              text="Browse Annotations"
-              customDataTestID="button-header-browse-annotations"
-            />
-            <HeaderLink
-              href="/manage_sets"
-              image={<OptionsIcon size={24} className="rotate-90" />}
-              text="Manage Sets"
-              customDataTestID="button-header-manage-sets"
-            />
-            <HeaderLink
-              href="/cart"
-              image={<CartIcon size={24} />}
-              text={
-                <>
-                  {"Cart"}
-                  <Badge
-                    variant="filled"
-                    className={`px-1 ml-1 ${
-                      path === "/cart"
-                        ? "bg-white text-secondary"
-                        : "bg-accent-vivid"
-                    }`}
-                    radius="xs"
-                  >
-                    {cartSize}
-                  </Badge>
-                </>
-              }
-              customDataTestID="button-header-cart"
-              isExternal={false}
-            />
+            {headerLinks.map((linkProps) => (
+              <HeaderLink {...linkProps} key={linkProps.customDataTestID} />
+            ))}
             {LoginButton && LoginButton}
             <ExternalAppMenu externalAppLinks={externalAppLinks} />
           </div>
@@ -165,7 +106,7 @@ const Header: React.FC<HeaderProps> = ({
             role="navigation"
             aria-label=""
           >
-            {headerElements.map((element, i) => (
+            {headerApps.map((element, i) => (
               <div key={i} className={`${i === 0 ? "pr-2" : "pl-4"}`}>
                 {typeof element === "string" ? (
                   <span className="font-semibold">{element}</span>
@@ -177,12 +118,6 @@ const Header: React.FC<HeaderProps> = ({
           </div>
           <div className="xl:w-1/3">{/* <QuickSearch /> */}</div>
         </div>
-        {
-          <SendFeedbackModal
-            opened={openFeedbackModal}
-            onClose={() => setOpenFeedbackModal(false)}
-          />
-        }
       </div>
     </MantineProvider>
   );

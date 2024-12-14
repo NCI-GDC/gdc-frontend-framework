@@ -1,5 +1,5 @@
-import { MantineProvider } from "@mantine/core";
 import React from "react";
+import { MantineProvider } from "@mantine/core";
 import { DataFetchingHook } from "src/types";
 
 interface FooterLink {

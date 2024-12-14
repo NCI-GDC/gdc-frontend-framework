@@ -55,7 +55,7 @@ export const SelectCohortsModal = ({
   );
 
   const cohortListTableColumnHelper =
-    createColumnHelper<typeof cohortListData[0]>();
+    createColumnHelper<(typeof cohortListData)[0]>();
 
   const cohortListTableColumn = useMemo(
     () => [

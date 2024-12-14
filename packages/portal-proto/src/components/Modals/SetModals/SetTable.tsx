@@ -116,7 +116,7 @@ const SetTable: React.FC<SetTableProps> = ({
       }));
   }, [sets, sortByName, counts, isSuccess]);
 
-  const setTableColumnHelper = createColumnHelper<typeof tableData[0]>();
+  const setTableColumnHelper = createColumnHelper<(typeof tableData)[0]>();
 
   const setTableColumns = useMemo(
     () => [

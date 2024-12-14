@@ -38,7 +38,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
 
   const [selectedCohort, setSelectedCohort] = useState<Cohort>(null);
 
-  const cohortListTableColumnHelper = createColumnHelper<typeof cohorts[0]>();
+  const cohortListTableColumnHelper = createColumnHelper<(typeof cohorts)[0]>();
 
   const cohortListTableColumns = useMemo(
     () => [
