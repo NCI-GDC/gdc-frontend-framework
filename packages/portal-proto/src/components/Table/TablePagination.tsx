@@ -106,6 +106,7 @@ function TablePagination<TData>({
           pageSize={pageSize}
         />
       </div>
+
       <Pagination
         data-testid="pagination"
         color="accent.5"
