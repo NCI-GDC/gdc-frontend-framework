@@ -348,26 +348,11 @@ export const FileView: React.FC<FileViewProps> = ({
                   <SummaryCard
                     customDataTestID="table-analysis-file-summary"
                     title="Analysis"
-                    tableData={
-                      shouldDisplayRefGenome
-                        ? formattedDataForAnalysis
-                        : [formattedDataForAnalysis[0]]
-                    }
+                    tableData={formattedDataForAnalysis}
                     ref={leftAnalysisTableRef}
                     enableSync={!shouldDisplayRefGenome}
                   />
                 </div>
-                {!shouldDisplayRefGenome && (
-                  <div className="basis-1/2">
-                    <SummaryCard
-                      customDataTestID="table-analysis-file-summary"
-                      title="" // should be empty
-                      tableData={[formattedDataForAnalysis[1]]}
-                      ref={rightAnalysisTableRef}
-                      enableSync={true}
-                    />
-                  </div>
-                )}
               </div>
 
               {shouldDisplayRefGenome && (
