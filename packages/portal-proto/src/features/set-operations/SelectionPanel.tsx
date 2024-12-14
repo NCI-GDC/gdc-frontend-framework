@@ -250,7 +250,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
   ]);
 
   const setSelectionPanelColumnHelper =
-    createColumnHelper<typeof tableData[0]>();
+    createColumnHelper<(typeof tableData)[0]>();
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const setSelectionPanelColumns = useMemo(

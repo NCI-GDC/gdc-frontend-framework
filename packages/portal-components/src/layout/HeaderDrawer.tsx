@@ -1,42 +1,28 @@
-import React, { useContext } from "react";
-import {
-  Drawer,
-  ActionIcon,
-  Collapse,
-  Badge,
-  UnstyledButton,
-} from "@mantine/core";
+import React from "react";
+import { ActionIcon, Collapse, Drawer, UnstyledButton } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import {
-  LeftArrowIcon,
-  CartIcon,
   AppsIcon,
-  PencilIcon,
-  PlayIcon,
   DownArrowCollapseIcon,
-  OptionsIcon,
-  FeedbackIcon,
+  LeftArrowIcon,
 } from "src/commonIcons";
 import HeaderLink, { HeaderLinkProps } from "./HeaderLink";
-import { AppContext } from "src/context";
 
 interface HeaderDrawerProps {
+  readonly headerLinks: ReadonlyArray<HeaderLinkProps>;
   readonly drawerOpened: boolean;
   readonly closeDrawer: () => void;
-  readonly setOpenFeedbackModal: (open: boolean) => void;
   readonly externalAppLinks: ReadonlyArray<HeaderLinkProps>;
   readonly cartSize: number;
 }
 
 const HeaderDrawer: React.FC<HeaderDrawerProps> = ({
+  headerLinks,
   externalAppLinks,
   drawerOpened,
   closeDrawer,
-  setOpenFeedbackModal,
-  cartSize,
 }: HeaderDrawerProps) => {
   const [gdcAppsOpened, { toggle: toggleGdcApps }] = useDisclosure(false);
-  const { path } = useContext(AppContext);
 
   return (
     <Drawer
@@ -70,74 +56,12 @@ const HeaderDrawer: React.FC<HeaderDrawerProps> = ({
         Navigation
       </div>
       <ul>
-        <li>
-          <HeaderLink
-            href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Video_Tutorials/"
-            image={<PlayIcon size={24} />}
-            text="Video Guides"
-            customDataTestID="button-header-video-guides"
-            isExternal
-            variant="drawer"
-          />
-        </li>
-        <li>
-          <UnstyledButton
-            className={`rounded-md hover:bg-primary-lightest text-primary-darkest text-sm font-heading w-full flex py-4 px-1 gap-1`}
-            onClick={() => {
-              setOpenFeedbackModal(true);
-              closeDrawer();
-            }}
-            data-testid="button-header-send-feedback"
-          >
-            <div className="flex items center">
-              <FeedbackIcon aria-hidden="true" size={24} />
-            </div>
-            Send Feedback
-          </UnstyledButton>
-        </li>
-        <li>
-          <HeaderLink
-            href="/annotations"
-            image={<PencilIcon size={24} />}
-            text="Browse Annotations"
-            customDataTestID="button-header-browse-annotations"
-            variant="drawer"
-          />
-        </li>
+        {headerLinks.map((linkProps) => (
+          <li key={linkProps.customDataTestID}>
+            <HeaderLink {...linkProps} variant="drawer" />
+          </li>
+        ))}
 
-        <li>
-          <HeaderLink
-            href="/manage_sets"
-            image={<OptionsIcon size={24} className="rotate-90" />}
-            text="Manage Sets"
-            customDataTestID="button-header-manage-sets"
-            variant="drawer"
-          />
-        </li>
-        <li>
-          <HeaderLink
-            href="/cart"
-            image={<CartIcon size={24} />}
-            text={
-              <>
-                {"Cart"}
-                <Badge
-                  variant="filled"
-                  className={`px-1 ml-1 ${
-                    path === "/cart"
-                      ? "bg-white text-secondary"
-                      : "bg-accent-vivid"
-                  }`}
-                  radius="xs"
-                >
-                  {cartSize}
-                </Badge>
-              </>
-            }
-            customDataTestID="button-header-cart"
-            variant="drawer"
-          />
-        </li>
         <li>
           <UnstyledButton
             onClick={toggleGdcApps}

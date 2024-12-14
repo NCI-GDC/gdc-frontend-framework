@@ -38,7 +38,7 @@ const MatchedTable = ({
   const [matchTableSorting, setMatchTableSorting] = useState<SortingState>([]);
 
   const matchedTableColumnHelper = useMemo(
-    () => createColumnHelper<typeof formattedMatchData[0]>(),
+    () => createColumnHelper<(typeof formattedMatchData)[0]>(),
     [],
   );
 

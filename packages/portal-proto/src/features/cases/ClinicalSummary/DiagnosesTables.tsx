@@ -69,7 +69,7 @@ const DiagnosesTables = ({ data }: { data: Diagnoses }): JSX.Element => {
       }));
 
     const treatmentTableColumnHelper =
-      createColumnHelper<typeof treatmentTableData[0]>();
+      createColumnHelper<(typeof treatmentTableData)[0]>();
 
     const treatmentTableColumns = [
       treatmentTableColumnHelper.accessor("id", {

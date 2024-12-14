@@ -5,7 +5,7 @@ import { FileDefaults } from "../gdcapi/types";
 
 const accessTypes = ["open", "controlled"] as const;
 
-export type AccessType = typeof accessTypes[number];
+export type AccessType = (typeof accessTypes)[number];
 
 const isAccessType = (x: unknown): x is AccessType => {
   return accessTypes.some((t) => t === x);
