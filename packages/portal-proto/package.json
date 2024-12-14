@@ -38,7 +38,7 @@
     "minisearch": "^3.0.4",
     "next": "^14.2.5",
     "openseadragon": "^3.0.0",
-    "plotly.js": "2.35.0",
+    "plotly.js": "2.35.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-icons": "^4.12.0",
