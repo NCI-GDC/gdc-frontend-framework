@@ -22,17 +22,14 @@ tags: gdc-data-portal-v2, regression, gene-summary
     |# CNV Gains                            |5      |
     |# CNV Losses                           |6      |
     |# Mutations                            |7      |
-
 * Verify the table "Cancer Distribution Gene Summary" body text is correct
     |expected_text                          |row  |column |
     |---------------------------------------|-----|-------|
     |TCGA-UCEC                              |1    |1      |
-
 * Select value from table "Cancer Distribution Gene Summary" by row and column
     |row   |column|
     |------|------|
     |1     |2     |
-
 * Verify the table "Cancer Distribution Gene Summary" is displaying this information
     |text_to_validate                       |
     |---------------------------------------|
@@ -40,12 +37,10 @@ tags: gdc-data-portal-v2, regression, gene-summary
     |Cystic, Mucinous and Serous Neoplasms  |
     |Epithelial Neoplasms, NOS              |
     |Not Reported                           |
-
 * Select value from table "Cancer Distribution Gene Summary" by row and column
     |row   |column|
     |------|------|
     |1     |3     |
-
 * Verify the table "Cancer Distribution Gene Summary" is displaying this information
     |text_to_validate                       |
     |---------------------------------------|
