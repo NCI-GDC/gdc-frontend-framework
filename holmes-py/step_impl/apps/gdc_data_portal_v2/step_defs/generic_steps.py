@@ -180,6 +180,7 @@ def download_file_at_file_table(file: str, source: str):
         "File Summary": APP.file_summary_page.click_download_button,
         "File Summary Annotation Table": APP.file_summary_page.click_annotation_table_download_option,
         "File Summary File Versions": APP.file_summary_page.click_file_version_download_option,
+        "Gene Summary Cancer Distribution": APP.gene_summary_page.click_cancer_distribution_button,
         "Manage Sets": APP.manage_sets_page.click_on_download_for_set,
         "Mutation Frequency": APP.mutation_frequency_page.click_table_download_button,
         "Projects": APP.projects_page.click_button,
