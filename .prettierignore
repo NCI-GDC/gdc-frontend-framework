@@ -3,4 +3,3 @@ dist
 holmes-py
 .gitlab-ci.yml
 docs
-package-lock.json
