@@ -181,6 +181,7 @@ def download_file_at_file_table(file: str, source: str):
         "File Summary Annotation Table": APP.file_summary_page.click_annotation_table_download_option,
         "File Summary File Versions": APP.file_summary_page.click_file_version_download_option,
         "Gene Summary Cancer Distribution": APP.gene_summary_page.click_cancer_distribution_button,
+        "Graph Dropdown": APP.shared.click_text_option_from_dropdown_data_image,
         "Manage Sets": APP.manage_sets_page.click_on_download_for_set,
         "Mutation Frequency": APP.mutation_frequency_page.click_table_download_button,
         "Projects": APP.projects_page.click_button,
@@ -885,7 +886,6 @@ def click_button_with_displayed_text_name(button_text_name: str):
     """Selects a button based on displayed text"""
     APP.shared.click_button_with_displayed_text_name(button_text_name)
 
-
 @step("Select the link <link_data_testid>")
 def click_link_data_testid(link_data_testid: str):
     """Clicks a link with a data-testid"""
@@ -1056,6 +1056,10 @@ def click_show_more_or_show_less(table):
     for k, v in enumerate(table):
         APP.shared.click_show_more_less_within_filter_card(v[0], v[1])
 
+@step("Expand dropdown in graph <graph_id>")
+def click_dropdown_button_in_graph(graph_id):
+    APP.shared.click_button_dropdown_in_graph(graph_id)
+    time.sleep(0.5)
 
 @step("Select value from table by row and column <table>")
 def select_table_value_by_row_column(table):

@@ -46,6 +46,10 @@ tags: gdc-data-portal-v2, regression, gene-summary
     |---------------------------------------|
     |Corpus uteri                           |
     |Uterus, NOS                            |
+* Select value from table "Cancer Distribution Gene Summary" by row and column
+    |row   |column|
+    |------|------|
+    |1     |3     |
 
 ## Cancer Distribution: JSON
 * Download "JSON" from "Gene Summary Cancer Distribution"
@@ -126,3 +130,99 @@ tags: gdc-data-portal-v2, regression, gene-summary
     |PTEN                                   |
     |TP53                                   |
     |FAT3                                   |
+
+## Cancer Distribution Mutations Graph: JSON
+* Expand dropdown in graph "Cancer Distribution Mutations"
+* Download "JSON" from "Graph Dropdown"
+* Read from "JSON from Graph Dropdown"
+* Verify that "JSON from Graph Dropdown" has expected information
+    |required_info                          |
+    |---------------------------------------|
+    |TCGA-UCEC                              |
+    |6.0546875                              |
+    |CDDP_EAGLE-1                           |
+    |TCGA-ACC                               |
+
+## Cancer Distribution CNV Graph: JSON
+* Expand dropdown in graph "Cancer Distribution CNV"
+* Download "JSON" from "Graph Dropdown"
+* Read from "JSON from Graph Dropdown"
+* Verify that "JSON from Graph Dropdown" has expected information
+    |required_info                          |
+    |---------------------------------------|
+    |TARGET-OS                              |
+    |64.19753086419753                      |
+    |8.641975308641975                      |
+    |81                                     |
+
+## Cancer Distribution CNV Graph - Validate JSON File Fields
+  |field_name                               |
+  |-----------------------------------------|
+  |symbol			                        |
+  |gain                                     |
+  |loss	                                    |
+  |total                                    |
+* Verify that the "JSON from Graph Dropdown" has <field_name> for each object
+
+## Save New Cohort: SSM Affected Cases
+* Collect button labels in table for comparison
+  |button_label                                     |row  |column |
+  |-------------------------------------------------|-----|-------|
+  |TCGA-UCEC: RBM15 SSM Affected Cases in Cohort    |1    |4      |
+* Select value from table by row and column
+  |row   |column|
+  |------|------|
+  |1     |4     |
+* Name the cohort "TCGA-UCEC: RBM15 SSM Affected Cases in Cohort" in the Cohort Bar section
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal                                      |Keep or Remove Modal|
+  |-----------------|---------------------------------------------------------------|--------------------|
+  |Save             |TCGA-UCEC: RBM15 SSM Affected Cases in Cohort has been saved   |Remove Modal        |
+
+## Save New Cohort: CNV Gain
+* Collect button labels in table for comparison
+  |button_label                         |row  |column |
+  |-------------------------------------|-----|-------|
+  |TCGA-COAD: RBM15 CNV Gain            |2    |5      |
+* Select value from table by row and column
+  |row   |column|
+  |------|------|
+  |2     |5     |
+* Name the cohort "TCGA-COAD: RBM15 CNV Gain" in the Cohort Bar section
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal                            |Keep or Remove Modal|
+  |-----------------|-----------------------------------------------------|--------------------|
+  |Save             |TCGA-COAD: RBM15 CNV Gain has been saved             |Remove Modal        |
+
+## Save New Cohort: CNV Loss
+* Collect button labels in table for comparison
+  |button_label                         |row  |column |
+  |-------------------------------------|-----|-------|
+  |TCGA-READ: RBM15 CNV Loss            |3    |6      |
+* Select value from table by row and column
+  |row   |column|
+  |------|------|
+  |3     |6     |
+* Name the cohort "TCGA-READ: RBM15 CNV Loss" in the Cohort Bar section
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal                            |Keep or Remove Modal|
+  |-----------------|-----------------------------------------------------|--------------------|
+  |Save             |TCGA-READ: RBM15 CNV Loss has been saved             |Remove Modal        |
+
+## Validate Cohorts
+* Navigate to "Analysis" from "Header" "section"
+
+* Switch cohort to "TCGA-UCEC: RBM15 SSM Affected Cases in Cohort" from the Cohort Bar dropdown list
+* "TCGA-UCEC: RBM15 SSM Affected Cases in Cohort" should be the active cohort
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "TCGA-UCEC: RBM15 SSM Affected Cases in Cohort" are "Equal"
+
+* Switch cohort to "TCGA-COAD: RBM15 CNV Gain" from the Cohort Bar dropdown list
+* "TCGA-COAD: RBM15 CNV Gain" should be the active cohort
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "TCGA-COAD: RBM15 CNV Gain" are "Equal"
+
+* Switch cohort to "TCGA-READ: RBM15 CNV Loss" from the Cohort Bar dropdown list
+* "TCGA-READ: RBM15 CNV Loss" should be the active cohort
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "TCGA-READ: RBM15 CNV Loss" are "Equal"
