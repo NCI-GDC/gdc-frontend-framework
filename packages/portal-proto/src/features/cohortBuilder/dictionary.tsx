@@ -110,6 +110,10 @@ export const useFacetTabLoaded = (tab: string) => {
     useCoreSelector((state) => selectFacetDefinition(state)).data || {};
   const facetResults = useCoreSelector((state) => selectCaseFacets(state));
   const facetTab = tabsConfig[tab];
+  if (tab === "custom") {
+    return true;
+  }
+
   if (facetTab?.facets === undefined) {
     return false;
   }

@@ -32,7 +32,6 @@ import {
   Text,
 } from "@mantine/core";
 import { getFacetInfo, upload_facets } from "@/features/cohortBuilder/utils";
-import isEqual from "lodash/isEqual";
 import FacetSelection from "@/components/FacetSelection";
 import { createFacetCardsFromList } from "@/features/facets/CreateFacetCard";
 import {
@@ -269,9 +268,8 @@ const CustomFacetGroup = (): JSX.Element => {
 };
 
 export const FacetTabs = (): JSX.Element => {
-  const tabsConfig = useCoreSelector(
-    (state) => selectCohortBuilderConfig(state),
-    isEqual,
+  const tabsConfig = useCoreSelector((state) =>
+    selectCohortBuilderConfig(state),
   );
   const router = useRouter();
   const routerTab = router?.query?.tab;
@@ -302,7 +300,7 @@ export const FacetTabs = (): JSX.Element => {
   const availableFields = useMemo(
     () =>
       Object.values(tabsConfig)
-        .map((t) => Object.keys(t))
+        .map((t) => t.facets)
         .flat(),
     [tabsConfig],
   );
