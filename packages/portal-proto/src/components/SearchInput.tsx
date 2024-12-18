@@ -110,13 +110,18 @@ export const SearchInput: React.FC = () => {
   );
 
   const clickResult = (result: FullResult) => {
-    router.push({
-      query: {
-        ...router?.query,
-        tab: result.categoryKey,
+    router.push(
+      {
+        query: {
+          ...router?.query,
+          tab: result.categoryKey,
+          searchTerm,
+        },
+        hash: result.id,
       },
-      hash: result.id,
-    });
+      undefined,
+      { scroll: false },
+    );
     setDropdownOpen(false);
     setActivedescendant(undefined);
   };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
 import { useRouter } from "next/router";
 import tw from "tailwind-styled-components";
@@ -18,6 +18,7 @@ import {
   useFacetDictionary,
   usePrevious,
   selectFacetDefinition,
+  fieldNameToTitle,
 } from "@gff/core";
 import {
   Button,
@@ -48,6 +49,7 @@ import {
 import { partial } from "lodash";
 import { FacetCardDefinition } from "@/features/facets/types";
 import { AddFacetIcon, AddIcon } from "@/utils/icons";
+import useScrollToHash from "@/hooks/useScrollToHash";
 
 const CustomFacetWhenEmptyGroup = tw(Stack)<StackProps>`
 h-64
@@ -279,6 +281,33 @@ export const FacetTabs = (): JSX.Element => {
   const [activeTab, setActiveTab] = useState(
     routerTab ? (routerTab as string) : Object.keys(tabsConfig)[0],
   );
+  const [ready, setReady] = useState(false);
+  const liveRegionRef = useRef(null);
+  const hash = window?.location?.hash.split("#")?.[1];
+  const searchTermParam = router?.query?.searchTerm as string;
+
+  useEffect(() => {
+    if (router.isReady) {
+      setReady(true);
+    }
+  }, [router]);
+
+  useEffect(() => {
+    if (hash && searchTermParam) {
+      const facetName = fieldNameToTitle(hash);
+      liveRegionRef.current.textContent = `Search applied. Focused on ${facetName}`;
+    }
+  }, [hash, searchTermParam]);
+
+  const availableFields = useMemo(
+    () =>
+      Object.values(tabsConfig)
+        .map((t) => Object.keys(t))
+        .flat(),
+    [tabsConfig],
+  );
+
+  useScrollToHash(availableFields, ready);
 
   useEffect(() => {
     // Check if the change was initiated by the router
@@ -298,6 +327,12 @@ export const FacetTabs = (): JSX.Element => {
 
   return (
     <div className="w-100">
+      <span
+        id={`facetTab-liveRegion`}
+        aria-live="assertive"
+        ref={liveRegionRef}
+        className="sr-only"
+      />
       <StyledFacetTabs
         orientation="vertical"
         value={activeTab}
