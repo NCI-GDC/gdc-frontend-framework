@@ -83,7 +83,7 @@ tags: gdc-data-portal-v2, regression, gene-summary
 ## Cancer Distribution - Validate JSON File Fields
   |field_name                               |
   |-----------------------------------------|
-  |project_id		                        |
+  |project_id		                            |
   |disease_type                             |
   |site	                                    |
   |num_affected_cases                       |
