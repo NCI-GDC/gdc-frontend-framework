@@ -183,6 +183,7 @@ def download_file_at_file_table(file: str, source: str):
         "Gene Summary Cancer Distribution": APP.gene_summary_page.click_cancer_distribution_button,
         "Graph Dropdown": APP.shared.click_text_option_from_dropdown_data_image,
         "Manage Sets": APP.manage_sets_page.click_on_download_for_set,
+        "Most Frequent Somatic Mutations": APP.shared.click_button_in_most_frequent_somatic_mutations,
         "Mutation Frequency": APP.mutation_frequency_page.click_table_download_button,
         "Projects": APP.projects_page.click_button,
         "Project Summary": APP.project_summary_page.click_button,

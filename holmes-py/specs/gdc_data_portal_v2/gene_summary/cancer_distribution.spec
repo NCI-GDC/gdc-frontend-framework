@@ -158,7 +158,7 @@ tags: gdc-data-portal-v2, regression, gene-summary
 ## Cancer Distribution CNV Graph - Validate JSON File Fields
   |field_name                               |
   |-----------------------------------------|
-  |symbol			                        |
+  |symbol			                              |
   |gain                                     |
   |loss	                                    |
   |total                                    |

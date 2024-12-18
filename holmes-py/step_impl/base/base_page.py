@@ -163,6 +163,7 @@ class GenericLocators:
     BUTTON_ENTRIES_SHOWN_IN_SPECIFIED_TABLE = lambda table_name: f'[data-testid="table-{table_name}"] >> [data-testid="button-show-entries"]'
 
     BUTTON_IN_GRAPH = lambda graph_name: f'[data-testid="graph-{graph_name}"] >> [data-testid="button-download-image-or-data"]'
+    BUTTON_IN_MOST_FREQUENT_SOMATIC_MUTATIONS_TABLE = lambda button_name: f'[data-testid="table-most-frequent-somatic-mutations"] >> text="{button_name}"'
 
     DROPDOWN_LIST_CHANGE_NUMBER_OF_ENTRIES_SHOWN = (
         lambda number_of_entries: f'[data-testid="area-show-number-of-entries"] >> text="{number_of_entries}"'
@@ -715,6 +716,11 @@ class BasePage:
         """Clicks dropdown button in specified graph"""
         graph_name = self.normalize_button_identifier(graph_name)
         locator = GenericLocators.BUTTON_IN_GRAPH(graph_name)
+        self.click(locator)
+
+    def click_button_in_most_frequent_somatic_mutations(self, button_name):
+        """Clicks download button in most frequent somatic mutations table"""
+        locator = GenericLocators.BUTTON_IN_MOST_FREQUENT_SOMATIC_MUTATIONS_TABLE(button_name)
         self.click(locator)
 
     def click_text_option_from_dropdown_data_image(self, dropdown_option):
