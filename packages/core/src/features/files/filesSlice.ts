@@ -152,7 +152,6 @@ export interface GdcFile {
   }>;
   readonly analysis?: {
     readonly workflow_type: string;
-    readonly updated_datetime: string;
     readonly input_files?: GdcCartFile[];
     readonly metadata?: {
       readonly read_groups: Array<{
@@ -309,7 +308,6 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
     analysis: hit.analysis
       ? {
           workflow_type: hit.analysis.workflow_type,
-          updated_datetime: hit.analysis.updated_datetime,
           input_files: hit.analysis.input_files?.map((file) => {
             return {
               file_name: file.file_name,

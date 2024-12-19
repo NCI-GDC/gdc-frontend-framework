@@ -6,15 +6,18 @@
  *
  */
 let localStorage: Storage = {} as Storage;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 if (typeof window !== "undefined") localStorage = window.localStorage;
 
 /**
  * Feature flag for Single Cell RNA-seq
+ * default to true, to show in qa-* as scRNAseq will be included in next release,
+ * may change back to false if not ready for release
  */
-export const DISPLAY_SC_RNA_SEQ_APP =
-  localStorage?.GDC_PORTAL_DISPLAY_SC_RNA_SEQ_APP ||
-  process?.env?.NEXT_PUBLIC_GDC_PORTAL_DISPLAY_SC_RNA_SEQ_APP ||
-  false;
+export const DISPLAY_SC_RNA_SEQ_APP = true;
+// localStorage?.GDC_PORTAL_DISPLAY_SC_RNA_SEQ_APP ||
+// process?.env?.NEXT_PUBLIC_GDC_PORTAL_DISPLAY_SC_RNA_SEQ_APP ||
+// false;
 
 /**
  * Determines whether a feature is enabled based on the provided value.
