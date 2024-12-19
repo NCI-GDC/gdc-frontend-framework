@@ -119,8 +119,8 @@ describe("<SearchInput />", () => {
       getByRole("button", { name: "Biopsy Category: Very General" }),
     );
 
-    expect(routerSpy).toBeCalledWith({
-      query: { tab: "very-general" },
+    expect(routerSpy.mock.lastCall[0]).toEqual({
+      query: { tab: "very-general", searchTerm: "bio" },
       hash: "2",
     });
   });

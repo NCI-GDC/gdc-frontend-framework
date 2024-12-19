@@ -25,6 +25,10 @@ jest.mock("@gff/core", () => ({
   useTopGeneQuery: jest.fn().mockReturnValue({}),
 }));
 
+jest.mock("next/router", () => ({
+  useRouter: jest.fn(),
+}));
+
 beforeEach(() => {
   jest.spyOn(genomicHook, "useGenesFacets").mockImplementation(jest.fn());
   jest.spyOn(genomicReducer, "useAppDispatch").mockReturnValue(jest.fn());
