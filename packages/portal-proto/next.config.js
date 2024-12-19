@@ -22,7 +22,7 @@ const cspHeader = `
     default-src 'self';
     script-src 'self' 'unsafe-eval' 'unsafe-inline' https://assets.adobedtm.com https://dap.digitalgov.gov https://www.googletagmanager.com;
     style-src 'self' 'unsafe-inline';
-    connect-src 'self' https://portal.gdc.cancer.gov https://rum.browser-intake-datadoghq.com https://api.gdc.cancer.gov https://www.google-analytics.com;
+    connect-src 'self' https://portal.gdc.cancer.gov https://browser-intake-datadoghq.com https://api.gdc.cancer.gov https://www.google-analytics.com;
     frame-src https://portal.gdc.cancer.gov;
     form-action https://portal.gdc.cancer.gov;
     img-src 'self' blob: data:;
