@@ -18,6 +18,21 @@ const buildHash = () => {
   }
 };
 
+const cspHeader = `
+    default-src 'self';
+    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://assets.adobedtm.com https://dap.digitalgov.gov https://www.googletagmanager.com;
+    style-src 'self' 'unsafe-inline';
+    connect-src 'self' https://portal.gdc.cancer.gov https://rum.browser-intake-datadoghq.com https://api.gdc.cancer.gov https://www.google-analytics.com;
+    frame-src https://portal.gdc.cancer.gov;
+    form-action https://portal.gdc.cancer.gov;
+    img-src 'self' blob: data:;
+    font-src 'self';
+    object-src 'none';
+    base-uri 'self';
+    frame-ancestors 'none';
+    upgrade-insecure-requests;
+`;
+
 // @ts-check
 /**
  * @type {import('next').NextConfig}
@@ -81,6 +96,10 @@ module.exports = {
           {
             key: "X-Frame-Options",
             value: "SAMEORIGIN",
+          },
+          {
+            key: "Content-Security-Policy",
+            value: cspHeader.replace(/\n/g, ""),
           },
         ],
       },
