@@ -6,6 +6,7 @@
  *
  */
 let localStorage: Storage = {} as Storage;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 if (typeof window !== "undefined") localStorage = window.localStorage;
 
 /**
