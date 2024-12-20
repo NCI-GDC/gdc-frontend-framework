@@ -4,6 +4,17 @@
  * means that the application will be available at "https://<host>/v2"
  */
 const basePath = process.env.NEXT_PUBLIC_BASEPATH;
+const PROTEINPAINT_API =
+  process.env.PROTEINPAINT_API || process.env.NEXT_PUBLIC_PROTEINPAINT_API;
+const connectSrc = [
+  "https://portal.gdc.cancer.gov",
+  "https://browser-intake-datadoghq.com",
+  "https://api.gdc.cancer.gov",
+  "https://www.google-analytics.com",
+];
+const PROTEINPAINT_HOST = PROTEINPAINT_API.split("://")[1]?.split("/")[0] || "";
+// in dev of SJ developer, this would point to a local PP server instance
+if (!connectSrc.includes(PROTEINPAINT_HOST)) connectSrc.push(PROTEINPAINT_HOST);
 
 // Fallback if Docker is not run: This calls git directly
 const buildHash = () => {
@@ -22,7 +33,7 @@ const cspHeader = `
     default-src 'self';
     script-src 'self' 'unsafe-eval' 'unsafe-inline' https://assets.adobedtm.com https://dap.digitalgov.gov https://www.googletagmanager.com;
     style-src 'self' 'unsafe-inline';
-    connect-src 'self' https://portal.gdc.cancer.gov https://browser-intake-datadoghq.com https://api.gdc.cancer.gov https://www.google-analytics.com;
+    connect-src 'self' ${connectSrc.join(" ")};
     frame-src https://portal.gdc.cancer.gov;
     form-action https://portal.gdc.cancer.gov;
     img-src 'self' blob: data:;
