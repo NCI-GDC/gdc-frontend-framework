@@ -22,9 +22,11 @@ import { humanify } from "@/utils/index";
 import { FacetRequiredHooks } from "./types";
 import { useDeepCompareMemo } from "use-deep-compare";
 import { UndoIcon } from "@/utils/icons";
+import { calculateStickyHeaderHeight } from "src/utils/";
 
 interface UploadFacetProps {
   field: string;
+  fullField: string;
   description?: string;
   facetButtonName?: string;
   width?: string;
@@ -34,6 +36,7 @@ interface UploadFacetProps {
 
 const UploadFacet: React.FC<UploadFacetProps> = ({
   field,
+  fullField,
   description,
   facetButtonName,
   width,
@@ -90,11 +93,17 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
     }
   };
 
+  const stickyHeaderHeight = calculateStickyHeaderHeight();
+
   return (
     <div
       className={`flex flex-col ${
         width || "mx-0"
       } bg-base-max border-base-lighter border-1 rounded-b-md text-xs transition`}
+      style={{
+        scrollMarginTop: stickyHeaderHeight + 10,
+      }}
+      id={fullField}
     >
       <FacetHeader>
         <FacetText>{facetTitle}</FacetText>
