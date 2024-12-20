@@ -6,6 +6,7 @@ import Years from "./Years";
 import PercentRange from "./PercentRange";
 import NumericRangePanel from "./NumericRangePanel";
 import FacetControlsHeader from "../FacetControlsHeader";
+import { calculateStickyHeaderHeight } from "src/utils/";
 
 /**
  * A component which manages a numeric range facet
@@ -50,12 +51,18 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
       setClearValues(false);
     }
   }, [clearValues]);
+
+  const stickyHeaderHeight = calculateStickyHeaderHeight();
+
   return (
     <div
       className={`flex flex-col ${
         width ? width : "mx-0"
       } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition h-fit`}
       id={field}
+      style={{
+        scrollMarginTop: stickyHeaderHeight + 10,
+      }}
     >
       <FacetControlsHeader
         field={field}
