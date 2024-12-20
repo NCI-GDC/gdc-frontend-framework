@@ -182,6 +182,7 @@ def download_file_at_file_table(file: str, source: str):
         "File Summary File Versions": APP.file_summary_page.click_file_version_download_option,
         "Manage Sets": APP.manage_sets_page.click_on_download_for_set,
         "Mutation Frequency": APP.mutation_frequency_page.click_table_download_button,
+        "Page": APP.shared.click_button_with_displayed_text_name,
         "Projects": APP.projects_page.click_button,
         "Project Summary": APP.project_summary_page.click_button,
         "Project Summary Biospecimen": APP.project_summary_page.click_biospecimen_download_button,
