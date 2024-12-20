@@ -294,7 +294,7 @@ export const calculateStickyHeaderHeight = (): number => {
   const globalHeader = document.querySelector("#global-header");
   const contextBar = document.querySelector("#context-bar");
   return (
-    globalHeader?.getBoundingClientRect()?.height +
-    contextBar?.getBoundingClientRect()?.height
+    (globalHeader?.getBoundingClientRect()?.height || 0) +
+    (contextBar?.getBoundingClientRect()?.height || 0)
   );
 };

@@ -110,12 +110,19 @@ export const SearchInput: React.FC = () => {
   );
 
   const clickResult = (result: FullResult) => {
+    const enumSearchResult = Object.values(result?.match || {}).some((m) =>
+      m.includes("enum"),
+    );
+
+    const additionalQuery = enumSearchResult
+      ? { tab: result.categoryKey, searchTerm }
+      : { tab: result.categoryKey };
+
     router.push(
       {
         query: {
           ...router?.query,
-          tab: result.categoryKey,
-          searchTerm,
+          ...additionalQuery,
         },
         hash: result.id,
       },
