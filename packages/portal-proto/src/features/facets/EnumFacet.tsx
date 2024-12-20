@@ -72,15 +72,14 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   const router = useRouter();
   const hash = window?.location?.hash.split("#")?.[1];
   const searchTermParam = router?.query?.searchTerm as string;
-  const applySearchParam =
-    hash !== undefined && hash === field && searchTermParam !== undefined;
+  const cardSelected = hash !== undefined && hash === field;
 
   useEffect(() => {
-    if (applySearchParam) {
+    if (cardSelected && searchTermParam !== undefined) {
       setIsSearching(true);
       setSearchTerm(searchTermParam);
     }
-  }, [applySearchParam, searchTermParam]);
+  }, [cardSelected, searchTermParam]);
 
   const totalCount = hooks.useTotalCounts(field);
   const clearFilters = hooks.useClearFilter();
@@ -277,7 +276,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
       className={`flex flex-col ${
         width ? width : "mx-0"
       } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition ${
-        applySearchParam ? "animate-border-highlight " : undefined
+        cardSelected ? "animate-border-highlight " : undefined
       }`}
       style={{
         scrollMarginTop: stickyHeaderHeight + 10,
