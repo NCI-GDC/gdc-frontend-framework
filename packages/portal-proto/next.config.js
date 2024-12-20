@@ -25,7 +25,7 @@ const cspHeader = `
     connect-src 'self' https://portal.gdc.cancer.gov https://browser-intake-datadoghq.com https://api.gdc.cancer.gov https://www.google-analytics.com;
     frame-src https://portal.gdc.cancer.gov;
     form-action https://portal.gdc.cancer.gov;
-    img-src 'self' blob: data:;
+    img-src 'self' 'unsafe-inline' blob: data:;
     font-src 'self';
     object-src 'none';
     base-uri 'self';
