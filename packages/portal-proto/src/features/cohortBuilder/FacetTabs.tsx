@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
 import { useRouter } from "next/router";
 import tw from "tailwind-styled-components";
@@ -114,6 +114,9 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
   children,
 }: FacetGroupProps) => {
   const enumFacets = facets.filter((x) => x.facet_type === "enum");
+
+  const availableFields = enumFacets.map((f) => f.full);
+  useScrollToHash(availableFields, false);
 
   useEnumFacets(
     docType,
@@ -279,16 +282,9 @@ export const FacetTabs = (): JSX.Element => {
   const [activeTab, setActiveTab] = useState(
     routerTab ? (routerTab as string) : Object.keys(tabsConfig)[0],
   );
-  const [ready, setReady] = useState(false);
   const liveRegionRef = useRef(null);
   const hash = window?.location?.hash.split("#")?.[1];
   const searchTermParam = router?.query?.searchTerm as string;
-
-  useEffect(() => {
-    if (router.isReady) {
-      setReady(true);
-    }
-  }, [router]);
 
   useEffect(() => {
     if (hash && searchTermParam) {
@@ -296,16 +292,6 @@ export const FacetTabs = (): JSX.Element => {
       liveRegionRef.current.textContent = `Search applied. Focused on ${facetName}`;
     }
   }, [hash, searchTermParam]);
-
-  const availableFields = useMemo(
-    () =>
-      Object.values(tabsConfig)
-        .map((t) => t.facets)
-        .flat(),
-    [tabsConfig],
-  );
-
-  useScrollToHash(availableFields, ready);
 
   useEffect(() => {
     // Check if the change was initiated by the router

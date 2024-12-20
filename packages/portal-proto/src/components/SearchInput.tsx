@@ -121,7 +121,8 @@ export const SearchInput: React.FC = () => {
     router.push(
       {
         query: {
-          ...router?.query,
+          app: router?.query?.app,
+          tab: router?.query?.tab,
           ...additionalQuery,
         },
         hash: result.id,

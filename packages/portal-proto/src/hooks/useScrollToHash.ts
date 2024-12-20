@@ -4,10 +4,13 @@ import { useEffect } from "react";
  * Scrolls to hash in url when component mounts and removes hash from url when component unmounts
  * @param valid_hashes - what hashes in url should trigger scroll
  */
-const useScrollToHash = (valid_hashes: string[], ready: boolean = true) => {
+const useScrollToHash = (
+  valid_hashes: string[],
+  removeHash: boolean = true,
+) => {
   useEffect(() => {
     const hash = window?.location?.hash.split("#")?.[1];
-    if (hash && valid_hashes.includes(hash) && ready) {
+    if (hash && valid_hashes.includes(hash)) {
       const hashElement = document.getElementById(hash);
       if (hashElement) {
         setTimeout(
@@ -18,10 +21,10 @@ const useScrollToHash = (valid_hashes: string[], ready: boolean = true) => {
       }
     }
     // Remove hash when component unmounts
-    return () => history.replaceState(null, null, " ");
-
+    return () =>
+      removeHash ? history.replaceState(null, null, " ") : undefined;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ready]);
+  }, []);
 };
 
 export default useScrollToHash;

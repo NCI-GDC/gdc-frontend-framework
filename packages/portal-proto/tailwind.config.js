@@ -882,7 +882,7 @@ module.exports = {
         highlight: {
           from: {
             "border-color": nciBlue.darker,
-            outline: `${nciBlue.darker} solid 1px`,
+            outline: `${nciBlue.darker} solid 2px`,
             "box-shadow":
               "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
           },
