@@ -122,6 +122,9 @@ class GenericLocators:
     BUTTON_TEXT_DROPDOWN_MENU_OPTION = (
         lambda dropdown_option: f'[data-testid="dropdown-menu-options"] >> text="{dropdown_option}" >> ..'
     )
+    BUTTON_TEXT_DROPDOWN_IMAGE_DATA = (
+        lambda dropdown_option: f'[data-testid="list-download-image-or-data-dropdown"] >> text="{dropdown_option}"'
+    )
 
     BUTTON_COLUMN_SELECTOR = '[data-testid="button-column-selector-box"]'
     BUTTON_COLUMN_SELECTOR_IN_TABLE = lambda table_name: f'[data-testid="table-{table_name}"] >> [data-testid="button-column-selector-box"]'
@@ -159,13 +162,15 @@ class GenericLocators:
     BUTTON_ENTRIES_SHOWN = '[data-testid="button-show-entries"]'
     BUTTON_ENTRIES_SHOWN_IN_SPECIFIED_TABLE = lambda table_name: f'[data-testid="table-{table_name}"] >> [data-testid="button-show-entries"]'
 
+    BUTTON_IN_GRAPH = lambda graph_name: f'[data-testid="graph-{graph_name}"] >> [data-testid="button-download-image-or-data"]'
+    BUTTON_IN_MOST_FREQUENT_SOMATIC_MUTATIONS_TABLE = lambda button_name: f'[data-testid="table-most-frequent-somatic-mutations"] >> text="{button_name}"'
+
     DROPDOWN_LIST_CHANGE_NUMBER_OF_ENTRIES_SHOWN = (
         lambda number_of_entries: f'[data-testid="area-show-number-of-entries"] >> text="{number_of_entries}"'
     )
     DROPDOWN_LIST_CHANGE_NUMBER_OF_ENTRIES_SHOWN_IN_SPECIFIED_TABLE = (
         lambda table_name, number_of_entries: f'[data-testid="table-{table_name}"] >> [data-testid="area-show-number-of-entries"] >> text="{number_of_entries}"'
     )
-
 
 
 class BasePage:
@@ -707,6 +712,22 @@ class BasePage:
         dropdown_approximate_locator = GenericLocators.TEXT_HAS_DROPDOWN_MENU_OPTION(dropdown_option)
         self.click(dropdown_approximate_locator)
 
+    def click_button_dropdown_in_graph(self, graph_name):
+        """Clicks dropdown button in specified graph"""
+        graph_name = self.normalize_button_identifier(graph_name)
+        locator = GenericLocators.BUTTON_IN_GRAPH(graph_name)
+        self.click(locator)
+
+    def click_button_in_most_frequent_somatic_mutations(self, button_name):
+        """Clicks download button in most frequent somatic mutations table"""
+        locator = GenericLocators.BUTTON_IN_MOST_FREQUENT_SOMATIC_MUTATIONS_TABLE(button_name)
+        self.click(locator)
+
+    def click_text_option_from_dropdown_data_image(self, dropdown_option):
+        """Clicks a text option from a graph dropdown menu"""
+        locator = GenericLocators.BUTTON_TEXT_DROPDOWN_IMAGE_DATA(dropdown_option)
+        self.click(locator)
+
     def clear_active_cohort_filters(self):
         """
         Clears the active cohort filters by clicking the "Clear All" button
@@ -903,6 +924,22 @@ class BasePage:
         driver = WebDriver.page
         with driver.context.expect_page() as tab:
             sources.get(source)(button)
+        new_tab = tab.value
+        return new_tab
+
+    def click_in_table_handle_new_tab(self, table_name, row, column):
+        """
+        click_in_table_handle_new_tab clicks in a table to open a new tab,
+        and then returns a page object for that new tab.
+
+        :param table_name: Specifies what table to click on
+        :param row: Row number to click
+        :param column: Column number to click
+        :return: a page object for the new tab that has been opened
+        """
+        driver = WebDriver.page
+        with driver.context.expect_page() as tab:
+            self.select_specified_table_by_row_column(table_name, row, column)
         new_tab = tab.value
         return new_tab
 
