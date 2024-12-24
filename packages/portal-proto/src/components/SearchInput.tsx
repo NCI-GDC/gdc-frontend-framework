@@ -16,18 +16,22 @@ import {
   TextInput,
   Tooltip,
   ActionIcon,
+  Loader,
 } from "@mantine/core";
 import { useFocusWithin, useViewportSize } from "@mantine/hooks";
 import { SearchResult } from "minisearch";
+import { useCurrentCohortFilters } from "@gff/core";
 import {
   FacetSearchDocument,
   useFacetSearch,
+  useFacetTabLoaded,
 } from "@/features/cohortBuilder/dictionary";
 import {
   BtnWithHoverCalloutTopArrow,
   BtnWithHoverCalloutLeftArrow,
 } from "./BtnWithHoverCallout";
 import { CheckIcon, CloseIcon, SearchIcon } from "@/utils/icons";
+import { useDeepCompareEffect } from "use-deep-compare";
 
 const PAGE_SIZE = 5;
 const MAX_MATCHED_VALUES = 30;
@@ -54,6 +58,9 @@ export const SearchInput: React.FC = () => {
   });
   const { width } = useViewportSize();
   const miniSearch = useFacetSearch();
+  const currentTab = router?.query?.tab;
+  const facetsLoaded = useFacetTabLoaded(currentTab as string);
+  const currentCohortFilters = useCurrentCohortFilters();
 
   const searchFacets = (s: string) => {
     return miniSearch.search(s, {
@@ -79,6 +86,10 @@ export const SearchInput: React.FC = () => {
       setSearchResults(results);
     }
   };
+
+  useDeepCompareEffect(() => {
+    setSearchTerm("");
+  }, [currentCohortFilters]);
 
   useEffect(() => {
     setPage(1);
@@ -276,7 +287,9 @@ export const SearchInput: React.FC = () => {
           role="grid"
           tabIndex={-1}
         >
-          {searchResults.length === 0 ? (
+          {!facetsLoaded ? (
+            <Loader size={20} />
+          ) : searchResults.length === 0 ? (
             <p
               className="text-base text-sm"
               data-testid="cohort-builder-search-no-results"
