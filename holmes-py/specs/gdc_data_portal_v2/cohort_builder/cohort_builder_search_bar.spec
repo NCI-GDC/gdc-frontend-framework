@@ -42,7 +42,7 @@ tags: gdc-data-portal-v2, cohort-builder, search-bar, regression
   |Project                |Project                |
 
 * Enter "age at index" in the text box "Cohort Builder Search Bar"
-
+* Pause "1" seconds
 * Expected result "cohort-builder-search-no-results" in the search bar on the Cohort Builder page
 
 * Add a custom filter from "Custom Filters" tab on the Cohort Builder page
@@ -55,9 +55,10 @@ and come back so it loads in and becomes searchable. This is only
 with automation, performing it manually works as expected.
 * Navigate to "Analysis" from "Header" "section"
 * Navigate to "Cohort" from "Header" "section"
+* Pause "2" seconds
 
 * Enter "age at index" in the text box "Cohort Builder Search Bar"
-
+* Pause "1" seconds
 * Expected result "age at index" in the search bar on the Cohort Builder page
 
 * Select search bar result and validate the presence of correct facet card
