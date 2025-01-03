@@ -22,12 +22,14 @@ function ShowingCount({
   if (!isNaN(from) && status === "fulfilled") {
     const paginationFrom = from >= 0 && dataLength > 0 ? from + 1 : 0;
     const paginationTo = Math.min(from + pageSize, total);
-    const totalValue = total.toLocaleString();
+    const fromValue = paginationFrom?.toLocaleString();
+    const toValue = paginationTo?.toLocaleString();
+    const totalValue = total?.toLocaleString();
     const updatedLabel = label && total > 1 ? `${label}s` : label;
 
     outputString = (
       <span>
-        <b>{paginationFrom}</b> - <b>{paginationTo}</b> of <b>{totalValue}</b>
+        <b>{fromValue}</b> - <b>{toValue}</b> of <b>{totalValue}</b>
         {label && ` ${updatedLabel}`}
       </span>
     );
