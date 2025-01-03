@@ -119,6 +119,15 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
       primarySitesTableColumnHelper.accessor("files", {
         id: "files",
         header: "Files",
+        meta: {
+          sortingFn: (rowA, rowB) => {
+            const a = Number(rowA.files.replace(/,/g, ""));
+            const b = Number(rowB.files.replace(/,/g, ""));
+            if (a > b) return 1;
+            if (a < b) return -1;
+            return 0;
+          },
+        },
       }),
     ],
     [primarySitesTableColumnHelper, projectId],
