@@ -208,14 +208,16 @@ export const useAllEnumFacets = () => {
         .filter((x) => x.facet_type === "enum")
         .map((x) => x.field);
 
-      coreDispatch(
-        fetchFacetByNameGQL({
-          field: enumFacets,
-          docType: tabEntry.docType as GQLDocType,
-          index: tabEntry.index as GQLIndexType,
-          caseFilterSelector: selectCurrentCohortFilters,
-        }),
-      );
+      if (enumFacets.length > 0) {
+        coreDispatch(
+          fetchFacetByNameGQL({
+            field: enumFacets,
+            docType: tabEntry.docType as GQLDocType,
+            index: tabEntry.index as GQLIndexType,
+            caseFilterSelector: selectCurrentCohortFilters,
+          }),
+        );
+      }
     });
   }, [tabsConfig, facets, currentCohortFilters, coreDispatch]);
 };

@@ -1,13 +1,13 @@
-import { MantineThemeOverride } from "@mantine/core";
 import React from "react";
 import { createContext } from "react";
+import { MantineThemeOverride } from "@mantine/core";
 import { ImageComponentType, LinkComponentType } from "./types";
 
 interface AppContextType {
   readonly path?: string;
   readonly theme?: MantineThemeOverride;
   readonly ImageComponent: ImageComponentType;
-  readonly LinkComponent: LinkComponentType;
+  readonly Link: LinkComponentType;
 }
 
 export const AppContext = createContext<AppContextType>({
@@ -16,5 +16,5 @@ export const AppContext = createContext<AppContextType>({
   // eslint-disable-next-line
   ImageComponent: (props) => <img {...props} />,
   // eslint-disable-next-line
-  LinkComponent: (props) => <a {...props} />,
+  Link: (props) => <a {...props} />,
 });

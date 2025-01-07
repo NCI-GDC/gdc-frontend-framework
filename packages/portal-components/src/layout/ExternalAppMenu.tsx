@@ -1,9 +1,9 @@
 import React from "react";
-import { Menu, MenuItem } from "@mantine/core";
 import {
   MdOutlineApps as AppsIcon,
   MdArrowDropDown as ArrowDropDownIcon,
 } from "react-icons/md";
+import { Menu, MenuItem } from "@mantine/core";
 import HeaderLink, { HeaderLinkProps } from "./HeaderLink";
 
 const appMenuClass = "data-hovered:bg-primary-lightest p-0 m-0";
@@ -35,7 +35,7 @@ const ExternalAppMenu: React.FC<ExternalAppMenuProps> = ({
             className="text-primary-darkest"
             aria-hidden="true"
           />
-          <p className="font-heading">GDC Apps</p>
+          <p className="font-heading">Apps</p>
           <ArrowDropDownIcon size="24px" className="-ml-1" aria-hidden="true" />
         </button>
       </Menu.Target>
