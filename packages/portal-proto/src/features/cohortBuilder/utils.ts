@@ -4,7 +4,7 @@ import {
   selectCurrentCohortFilters,
   useCoreSelector,
 } from "@gff/core";
-import { FacetCardDefinition } from "../facets/types";
+import { FacetCardDefinition } from "@/features/facets/types";
 import { SummaryFacetInfo } from "./SummaryFacets";
 
 // These new upload facets will not be returned by the mapping API call, hence they are manually defined as upload_facets
