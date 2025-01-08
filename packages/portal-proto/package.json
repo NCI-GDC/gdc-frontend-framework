@@ -30,7 +30,7 @@
     "@mantine/hooks": "^7.14.3",
     "@mantine/notifications": "^7.14.3",
     "@react-spring/web": "^9.5.5",
-    "@reduxjs/toolkit": "^1.8.5",
+    "@reduxjs/toolkit": "^2.5.0",
     "@sjcrh/proteinpaint-client": "2.94.1",
     "@tanstack/react-table": "^8.9.3",
     "dayjs": "^1.11.13",

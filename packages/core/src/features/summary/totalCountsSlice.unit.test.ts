@@ -38,7 +38,7 @@ describe("totalCounts reducer", () => {
         requestId: "test",
       },
       {
-        type: fetchTotalCounts.fulfilled,
+        type: fetchTotalCounts.fulfilled.type,
         meta: { requestId: "test" },
         payload: {
           data: {

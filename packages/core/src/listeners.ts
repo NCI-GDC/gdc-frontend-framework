@@ -1,4 +1,4 @@
-import { createListenerMiddleware, isAnyOf } from "@reduxjs/toolkit";
+import { AnyAction, createListenerMiddleware, isAnyOf } from "@reduxjs/toolkit";
 import type { TypedStartListening } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
 import { CoreDispatch } from "./store";
@@ -103,8 +103,9 @@ startCoreListening({
   ),
   effect: async (action, listenerApi) => {
     // the last cohort added is the one we want to get the case count for
-
-    const cohortId = action?.payload?.id;
+    console.log("startCoreListening", action);
+    const anyAction = action as AnyAction;
+    const cohortId = anyAction?.payload?.id;
     if (cohortId === undefined) {
       console.error("Listener: cohortId is undefined");
     }

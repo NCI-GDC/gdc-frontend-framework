@@ -25,7 +25,7 @@ describe("select version info", () => {
     };
 
     const state = versionInfoReducer(initialState, {
-      type: fetchVersionInfo.fulfilled,
+      type: fetchVersionInfo.fulfilled.type,
       payload: { ...mockData },
     });
     expect(state).toEqual({ data: mockData, status: "fulfilled" });
@@ -35,7 +35,7 @@ describe("select version info", () => {
     const state = versionInfoReducer(
       { status: "uninitialized" },
       {
-        type: fetchVersionInfo.rejected,
+        type: fetchVersionInfo.rejected.type,
       },
     );
     expect(state).toEqual({ status: "rejected" });
@@ -45,7 +45,7 @@ describe("select version info", () => {
     const state = versionInfoReducer(
       { status: "uninitialized" },
       {
-        type: fetchVersionInfo.pending,
+        type: fetchVersionInfo.pending.type,
       },
     );
     expect(state).toEqual({ status: "pending" });

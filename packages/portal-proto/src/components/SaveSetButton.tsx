@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { UseMutation } from "@reduxjs/toolkit/dist/query/react/buildHooks";
+import { TypedUseMutation } from "@reduxjs/toolkit/query/react";
 import { MutationDefinition } from "@reduxjs/toolkit/dist/query";
 import {
   selectSetsByType,
@@ -20,9 +20,7 @@ interface SaveSetButttonProps {
   readonly disabled: boolean;
   readonly ids: string[];
   readonly hooks: {
-    createSet: UseMutation<
-      MutationDefinition<CreateSetValueArgs, any, any, any>
-    >;
+    createSet: TypedUseMutation<any, CreateSetValueArgs, any>;
   };
   readonly setType: SetTypes;
   readonly buttonText?: string;
