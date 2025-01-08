@@ -84,7 +84,7 @@ export const useFacetSearch = (): MiniSearch<FacetSearchDocument> => {
 
     Object.entries(tabsConfig).forEach(([categoryKey, category]) => {
       getFacetInfo(category.facets, facets.data || {}).forEach((facet) => {
-        const result = facetResults[facet.full];
+        const result = facetResults[facet.field];
         searchDocuments.push({
           name: fieldNameToTitle(facet.full),
           enum: Object.keys(result?.buckets || {}),
@@ -110,6 +110,11 @@ export const useFacetTabLoaded = (tab: string) => {
     useCoreSelector((state) => selectFacetDefinition(state)).data || {};
   const facetResults = useCoreSelector((state) => selectCaseFacets(state));
   const facetTab = tabsConfig[tab];
+
+  if (tab === "custom" || tab === "molecular_filters") {
+    return true;
+  }
+
   if (facetTab?.facets === undefined) {
     return false;
   }

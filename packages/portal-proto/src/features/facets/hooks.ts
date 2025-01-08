@@ -206,7 +206,7 @@ export const useAllEnumFacets = () => {
 
       const enumFacets = facetList
         .filter((x) => x.facet_type === "enum")
-        .map((x) => x.full);
+        .map((x) => x.field);
 
       if (enumFacets.length > 0) {
         coreDispatch(

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { useRouter } from "next/router";
 import { fieldNameToTitle } from "@gff/core";
 import { DEFAULT_VISIBLE_ITEMS, updateFacetEnum } from "./utils";
 import { EnumFacetHooks, FacetCardProps } from "@/features/facets/types";
@@ -13,6 +14,7 @@ import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
 import FacetControlsHeader from "./FacetControlsHeader";
 import { BAD_DATA_MESSAGE } from "./constants";
 import { CloseIcon } from "@/utils/icons";
+import { calculateStickyHeaderHeight } from "src/utils/";
 
 /**
  *  Enumeration facet filters handle display and selection of
@@ -67,6 +69,17 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
 
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
   const searchInputRef = useRef(null);
+  const router = useRouter();
+  const hash = window?.location?.hash.split("#")?.[1];
+  const searchTermParam = router?.query?.searchTerm as string;
+  const cardSelected = hash !== undefined && hash === field;
+
+  useEffect(() => {
+    if (cardSelected && searchTermParam !== undefined) {
+      setIsSearching(true);
+      setSearchTerm(searchTermParam);
+    }
+  }, [cardSelected, searchTermParam]);
 
   const totalCount = hooks.useTotalCounts(field);
   const clearFilters = hooks.useClearFilter();
@@ -256,11 +269,18 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     return null; // nothing to render if visibleItems == 0
   }
 
+  const stickyHeaderHeight = calculateStickyHeaderHeight();
+
   return (
     <div
       className={`flex flex-col ${
         width ? width : "mx-0"
-      } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition`}
+      } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition ${
+        cardSelected ? "animate-border-highlight " : undefined
+      }`}
+      style={{
+        scrollMarginTop: stickyHeaderHeight + 10,
+      }}
       id={field}
     >
       <div>

@@ -289,3 +289,12 @@ export const XL_BREAKPOINT = parseInt(tailwindConfig.theme.extend.screens.xl);
 export const REPO_BREAKPOINT = parseInt(
   tailwindConfig.theme.extend.screens["Custom-Repo-Width"],
 );
+
+export const calculateStickyHeaderHeight = (): number => {
+  const globalHeader = document.querySelector("#global-header");
+  const contextBar = document.querySelector("#context-bar");
+  return (
+    (globalHeader?.getBoundingClientRect()?.height || 0) +
+    (contextBar?.getBoundingClientRect()?.height || 0)
+  );
+};

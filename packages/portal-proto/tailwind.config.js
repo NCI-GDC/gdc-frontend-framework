@@ -879,10 +879,19 @@ module.exports = {
           from: { transform: "translate(0, 0)" },
           to: { transform: "translate(0, 100%)" },
         },
+        highlight: {
+          from: {
+            "border-color": nciBlue.darker,
+            outline: `${nciBlue.darker} solid 2px`,
+            "box-shadow":
+              "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+          },
+        },
       },
       animation: {
         "slide-up": "slide-up 500ms ease-in-out ",
         "slide-down": "slide-down 500ms ease-in-out ",
+        "border-highlight": "highlight 7s ease-in-out",
       },
       lineHeight: {
         0: "0px",

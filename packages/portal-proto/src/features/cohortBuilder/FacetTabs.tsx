@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
 import { useRouter } from "next/router";
 import tw from "tailwind-styled-components";
@@ -18,6 +18,7 @@ import {
   useFacetDictionary,
   usePrevious,
   selectFacetDefinition,
+  fieldNameToTitle,
 } from "@gff/core";
 import {
   Button,
@@ -31,7 +32,6 @@ import {
   Text,
 } from "@mantine/core";
 import { getFacetInfo, upload_facets } from "@/features/cohortBuilder/utils";
-import isEqual from "lodash/isEqual";
 import FacetSelection from "@/components/FacetSelection";
 import { createFacetCardsFromList } from "@/features/facets/CreateFacetCard";
 import {
@@ -48,6 +48,7 @@ import {
 import { partial } from "lodash";
 import { FacetCardDefinition } from "@/features/facets/types";
 import { AddFacetIcon, AddIcon } from "@/utils/icons";
+import useScrollToHash from "@/hooks/useScrollToHash";
 
 const CustomFacetWhenEmptyGroup = tw(Stack)<StackProps>`
 h-64
@@ -113,6 +114,9 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
   children,
 }: FacetGroupProps) => {
   const enumFacets = facets.filter((x) => x.facet_type === "enum");
+
+  const availableFields = enumFacets.map((f) => f.full);
+  useScrollToHash(availableFields, false);
 
   useEnumFacets(
     docType,
@@ -267,9 +271,8 @@ const CustomFacetGroup = (): JSX.Element => {
 };
 
 export const FacetTabs = (): JSX.Element => {
-  const tabsConfig = useCoreSelector(
-    (state) => selectCohortBuilderConfig(state),
-    isEqual,
+  const tabsConfig = useCoreSelector((state) =>
+    selectCohortBuilderConfig(state),
   );
   const router = useRouter();
   const routerTab = router?.query?.tab;
@@ -279,6 +282,16 @@ export const FacetTabs = (): JSX.Element => {
   const [activeTab, setActiveTab] = useState(
     routerTab ? (routerTab as string) : Object.keys(tabsConfig)[0],
   );
+  const liveRegionRef = useRef(null);
+  const hash = window?.location?.hash.split("#")?.[1];
+  const searchTermParam = router?.query?.searchTerm as string;
+
+  useEffect(() => {
+    if (hash && searchTermParam) {
+      const facetName = fieldNameToTitle(hash);
+      liveRegionRef.current.textContent = `Search applied. Focused on ${facetName}`;
+    }
+  }, [hash, searchTermParam]);
 
   useEffect(() => {
     // Check if the change was initiated by the router
@@ -298,6 +311,12 @@ export const FacetTabs = (): JSX.Element => {
 
   return (
     <div className="w-100">
+      <span
+        id="facetTab-liveRegion"
+        aria-live="assertive"
+        ref={liveRegionRef}
+        className="sr-only"
+      />
       <StyledFacetTabs
         orientation="vertical"
         value={activeTab}

@@ -15,6 +15,7 @@ jest.mock("@/features/cohortBuilder/dictionary", () => ({
               description: "blah blah",
               enum: ["biobio", "not anything"],
               terms: ["bio"],
+              match: { bio: ["enum"] },
               category: "General",
               categoryKey: "general",
               id: "1",
@@ -116,12 +117,12 @@ describe("<SearchInput />", () => {
     const { getByPlaceholderText, getByRole } = render(<SearchInput />);
     await userEvent.type(getByPlaceholderText("Search"), "bio");
     await userEvent.click(
-      getByRole("button", { name: "Biopsy Category: Very General" }),
+      getByRole("button", { name: "BioThing Category: General" }),
     );
 
-    expect(routerSpy).toBeCalledWith({
-      query: { tab: "very-general" },
-      hash: "2",
+    expect(routerSpy.mock.lastCall[0]).toEqual({
+      query: { tab: "general", searchTerm: "bio" },
+      hash: "1",
     });
   });
 

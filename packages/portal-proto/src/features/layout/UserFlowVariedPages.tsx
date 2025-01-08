@@ -199,6 +199,7 @@ export const UserFlowVariedPages = ({
             style={{
               top: `${isContextBarSticky && `${Math.round(headerHeight)}px`}`, // switching this to tailwind does not work
             }}
+            id="context-bar"
           >
             {ContextBar ? ContextBar : null}
           </aside>
