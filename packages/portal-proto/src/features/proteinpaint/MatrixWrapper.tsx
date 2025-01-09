@@ -1,6 +1,6 @@
 import { useRef, useCallback, useState, FC } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
-import { runproteinpaint } from "@sjcrh/proteinpaint-client";
+import { usePpToolInstance, PpApi } from "./PpToolInstance";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import {
   useCoreSelector,
@@ -30,7 +30,7 @@ import {
 } from "./sjpp-types";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
-
+console.clear = () => {};
 const basepath = PROTEINPAINT_API;
 
 interface PpProps {
@@ -161,82 +161,38 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
 
       const rootElem = divRef.current as HTMLElement;
       const data = { filter0, userData: userDetails?.data, geneDetailData };
+
       // TODO: ignore the cohort filter changes in demo mode, or combine with demo filter ???
       // data.filter0 = defaultFilter
-      if (isEqual(prevData.current, data)) return;
-
-      if (ppRef.current) {
-        if (!isEqual(data, prevData.current)) {
-          if (lastGeneSetRequestId != genesRequestId) {
-            setLastGeneSetRequestId(genesRequestId);
-            ppRef.current.update({
-              genes: geneDetailData.hits.map((h) => ({ gene: h.symbol })),
-            });
+      usePpToolInstance({
+        rootElem,
+        data,
+        prevData,
+        ppRef,
+        ppPromise,
+        debouncedInitialUpdatesTimeout,
+        initialFilter0Ref,
+        getInitArgs: () => {
+          return getMatrixTrack(
+            props,
+            data.filter0,
+            callback,
+            matrixCallbacks,
+            appCallbacks,
+            genesetCallback,
+          ) satisfies MatrixArg;
+        },
+        getUpdateArgs: () => {
+          if (lastGeneSetRequestId == genesRequestId) {
+            return { filter0: data.filter0 };
           } else {
-            ppRef.current.update({ filter0: data.filter0 });
+            setLastGeneSetRequestId(genesRequestId);
+            return {
+              genes: geneDetailData.hits.map((h) => ({ gene: h.symbol })),
+            };
           }
-        }
-      } else if (ppPromise.current) {
-        // in case another state update comes in when there is already
-        // an instance that is being created, debounce to the last update
-        // Except: during startup in demo mode, the filter0 is not expecect to change,
-        // so don't trigger a non-user reactive update right after the initial rendering
-        if (debouncedInitialUpdatesTimeout.current)
-          clearTimeout(debouncedInitialUpdatesTimeout.current);
-
-        if (!isEqual(data, initialFilter0Ref.current)) {
-          debouncedInitialUpdatesTimeout.current = setTimeout(() => {
-            ppPromise.current.then(() => {
-              // if the filter0 has not changed, the PP matrix app (the engine for gene expression app)
-              // will not update unnecessarily
-              if (ppRef.current) {
-                if (!isEqual(data, initialFilter0Ref.current))
-                  ppRef.current.update({ filter0: data.filter0 });
-              } else console.error("missing ppRef.current");
-            });
-          }, 20);
-        }
-      } else {
-        // TODO:
-        // showing and hiding the overlay should be triggered by components that may take a while to load/render,
-        // this wrapper code can show the overlay here since it has supplied postRender callbacks above,
-        // but ideally it is the PP-app that triggers both the showing and hiding of the overlay for reliable behavior
-        initialFilter0Ref.current = data;
-        const toolContainer = rootElem.parentNode.parentNode
-          .parentNode as HTMLElement;
-        toolContainer.style.backgroundColor = "#fff";
-
-        const pp_holder = rootElem.querySelector(".sja_root_holder");
-        if (pp_holder) pp_holder.remove();
-
-        const matrixArgs = getMatrixTrack(
-          props,
-          data.filter0,
-          callback,
-          matrixCallbacks,
-          appCallbacks,
-          genesetCallback,
-        );
-        if (!data) return;
-
-        const arg = Object.assign(
-          {
-            holder: rootElem,
-            noheader: true,
-            nobox: true,
-            hide_dsHandles: true,
-          },
-          matrixArgs,
-        ) as MatrixArg;
-
-        ppPromise.current = runproteinpaint(arg).then((pp) => {
-          // the ppRef.current is set after the tool fully renders
-          ppRef.current = pp;
-          return pp;
-        });
-      }
-
-      prevData.current = data;
+        },
+      });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [filter0, userDetails, geneDetailData],
@@ -282,10 +238,6 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
     </div>
   );
 };
-
-interface PpApi {
-  update(arg: any): null;
-}
 
 interface MatrixArg {
   holder?: HTMLElement;
