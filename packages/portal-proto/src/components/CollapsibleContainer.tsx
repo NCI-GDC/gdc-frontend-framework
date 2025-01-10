@@ -87,16 +87,14 @@ export const CollapsibleContainer = (
           isCollapsed ? "overflow-hidden" : ""
         }`}
       >
-        {!isCollapsed && (
-          <div
-            className={`${
-              !isCollapsed ? "opacity-100" : "opacity-0"
-            } transition-opacity`}
-            ref={descRef}
-          >
-            {children}
-          </div>
-        )}
+        <div
+          className={`${
+            !isCollapsed ? "opacity-100" : "opacity-0"
+          } transition-opacity`}
+          ref={descRef}
+        >
+          {children}
+        </div>
       </div>
     </div>
   );
