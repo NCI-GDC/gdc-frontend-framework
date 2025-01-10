@@ -237,7 +237,7 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
     cytoband: false,
     type: false,
     "#_cnv_gain": false,
-    "#_cnv_loss": false,
+    "#_cnv_heterozygous_deletion": false,
   });
 
   const setFilters =

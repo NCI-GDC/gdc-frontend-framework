@@ -328,7 +328,7 @@ export const fetchGenesTable = createAsyncThunk<
             : []),
         ],
       },
-      cnvAmplicationFilters: {
+      cnvAmplificationFilters: {
         op: "and",
         content: [
           ...[
