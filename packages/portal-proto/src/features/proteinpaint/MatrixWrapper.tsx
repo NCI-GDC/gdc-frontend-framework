@@ -1,6 +1,6 @@
 import { useRef, useCallback, useState, FC } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
-import { usePpToolInstance, PpApi } from "./PpToolInstance";
+import { advancedRunPp } from "@sjcrh/proteinpaint-client";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import {
   useCoreSelector,
@@ -19,7 +19,6 @@ import {
   Modals,
   selectCurrentModal,
 } from "@gff/core";
-import { isEqual } from "lodash";
 import { DemoText } from "@/components/tailwindComponents";
 import { LoadingOverlay } from "@mantine/core";
 import {
@@ -30,7 +29,8 @@ import {
 } from "./sjpp-types";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
-console.clear = () => {};
+import { isEqual } from "lodash";
+
 const basepath = PROTEINPAINT_API;
 
 interface PpProps {
@@ -49,12 +49,6 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
     ? defaultFilter
     : buildCohortGqlOperator(currentCohort);
   const userDetails = useFetchUserDetailsQuery();
-
-  const ppRef = useRef<PpApi>();
-  const ppPromise = useRef<Promise<PpApi>>();
-  const initialFilter0Ref = useRef<any>();
-  const debouncedInitialUpdatesTimeout =
-    useRef<ReturnType<typeof setTimeout>>();
   const prevData = useRef<any>();
   const coreDispatch = useCoreDispatch();
   const [showSaveCohortModal, setShowSaveCohortModal] = useState(false);
@@ -162,16 +156,27 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
       const rootElem = divRef.current as HTMLElement;
       const data = { filter0, userData: userDetails?.data, geneDetailData };
 
+      // TODO:
+      // showing and hiding the overlay should be triggered by components that may take a while to load/render,
+      // this wrapper code can show the overlay here since it has supplied postRender callbacks above,
+      // but ideally it is the PP-app that triggers both the showing and hiding of the overlay for reliable behavior
+      // initialFilter0Ref.current = data;
+      const toolContainer = rootElem.parentNode.parentNode
+        .parentNode as HTMLElement;
+      toolContainer.style.backgroundColor = "#fff";
+
+      const hasNewData = !isEqual(prevData.current, data);
+
       // TODO: ignore the cohort filter changes in demo mode, or combine with demo filter ???
       // data.filter0 = defaultFilter
-      usePpToolInstance({
+      advancedRunPp({
         rootElem,
         data,
-        prevData,
-        ppRef,
-        ppPromise,
-        debouncedInitialUpdatesTimeout,
-        initialFilter0Ref,
+        hasUpdatedData: (data) => {
+          const updated = !isEqual(prevData.current, data);
+          if (updated) prevData.current = data;
+          return updated;
+        },
         getInitArgs: () => {
           return getMatrixTrack(
             props,
@@ -249,6 +254,7 @@ interface MatrixArg {
   launchGdcHierCluster: boolean;
   filter0: FilterSet;
   opts: MatrixArgOpts;
+  state?: any;
 }
 
 interface MatrixArgOpts {
