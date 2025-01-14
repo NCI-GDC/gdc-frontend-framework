@@ -10,8 +10,8 @@ import { SummaryFacetInfo } from "./SummaryFacets";
 // These new upload facets will not be returned by the mapping API call, hence they are manually defined as upload_facets
 export const upload_facets: Record<string, FacetCardDefinition> = {
   "cases.upload.case_id": {
-    description:
-      "Filter the current cohort by entering/uploading specific cases",
+    description: "",
+    toolTip: "Filter the current cohort by entering/uploading specific cases",
     doc_type: "cases",
     facet_type: "upload",
     field: "cases.case_id",
@@ -21,7 +21,8 @@ export const upload_facets: Record<string, FacetCardDefinition> = {
     type: "keyword",
   },
   "genes.upload.gene_id": {
-    description:
+    description: "",
+    toolTip:
       "Filter the current cohort by entering/uploading specific genes or selecting gene sets",
     doc_type: "cases",
     facet_type: "upload",
@@ -33,7 +34,8 @@ export const upload_facets: Record<string, FacetCardDefinition> = {
     title: "Mutated Gene",
   },
   "ssms.upload.ssm_id": {
-    description:
+    description: "",
+    toolTip:
       "Filter the current cohort by entering/uploading specific Simple Somatic Mutations (SSMs) or selecting mutation sets",
     doc_type: "cases",
     facet_type: "upload",

@@ -162,7 +162,7 @@ export const createFacetCard = ({
         useClearFilter={dataFunctions.useClearFilter}
         facetButtonName={facet.uploadLabel}
         width={width}
-        description={facet.description}
+        toolTip={facet.toolTip}
       />
     );
   } else if (facet.facet_type === "set") {

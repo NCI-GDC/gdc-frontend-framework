@@ -27,7 +27,7 @@ import { calculateStickyHeaderHeight } from "src/utils/";
 interface UploadFacetProps {
   field: string;
   fullField: string;
-  description?: string;
+  toolTip?: string;
   facetButtonName?: string;
   width?: string;
   useClearFilter: FacetRequiredHooks["useClearFilter"];
@@ -37,7 +37,7 @@ interface UploadFacetProps {
 const UploadFacet: React.FC<UploadFacetProps> = ({
   field,
   fullField,
-  description,
+  toolTip,
   facetButtonName,
   width,
   useClearFilter,
@@ -121,8 +121,8 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
       <div className="p-4">
         <div className="flex justify-center">
           <Tooltip
-            disabled={!description}
-            label={description}
+            disabled={!toolTip}
+            label={toolTip}
             multiline
             w={220}
             withArrow
