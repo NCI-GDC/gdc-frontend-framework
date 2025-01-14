@@ -15,19 +15,19 @@ export interface Gene {
   };
   symbol: string;
   survival: Survival;
-  "#_cnv_amplification": {
+  "#_cnv_amplifications": {
     numerator: number;
     denominator: number;
   };
-  "#_cnv_gain": {
+  "#_cnv_gains": {
     numerator: number;
     denominator: number;
   };
-  "#_cnv_heterozygous_deletion": {
+  "#_cnv_heterozygous_deletions": {
     numerator: number;
     denominator: number;
   };
-  "#_cnv_homozygous_deletion": {
+  "#_cnv_homozygous_deletions": {
     numerator: number;
     denominator: number;
   };

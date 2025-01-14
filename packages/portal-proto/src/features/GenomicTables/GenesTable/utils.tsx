@@ -233,7 +233,7 @@ export const useGenerateGenesTableColumns = ({
         },
       }),
       genesTableColumnHelper.display({
-        id: "#_cnv_amplification",
+        id: "#_cnv_amplifications",
         header: () => (
           <HeaderTooltip
             title="# CNV Amplifications"
@@ -244,7 +244,7 @@ export const useGenerateGenesTableColumns = ({
         ),
         cell: ({ row }) => {
           const { numerator, denominator } = row.original[
-            "#_cnv_amplification"
+            "#_cnv_amplifications"
           ] ?? {
             numerator: 0,
             denominator: 1,
@@ -267,7 +267,7 @@ export const useGenerateGenesTableColumns = ({
         },
       }),
       genesTableColumnHelper.display({
-        id: "#_cnv_gain",
+        id: "#_cnv_gains",
         header: () => (
           <HeaderTooltip
             title="# CNV Gains"
@@ -277,7 +277,7 @@ export const useGenerateGenesTableColumns = ({
           />
         ),
         cell: ({ row }) => {
-          const { numerator, denominator } = row.original["#_cnv_gain"] ?? {
+          const { numerator, denominator } = row.original["#_cnv_gains"] ?? {
             numerator: 0,
             denominator: 1,
           };
@@ -299,7 +299,7 @@ export const useGenerateGenesTableColumns = ({
         },
       }),
       genesTableColumnHelper.display({
-        id: "#_cnv_heterozygous_deletion",
+        id: "#_cnv_heterozygous_deletions",
         header: () => (
           <HeaderTooltip
             title="# CNV Heterozygous Deletions"
@@ -310,7 +310,7 @@ export const useGenerateGenesTableColumns = ({
         ),
         cell: ({ row }) => {
           const { numerator, denominator } = row.original[
-            "#_cnv_heterozygous_deletion"
+            "#_cnv_heterozygous_deletions"
           ] ?? {
             numerator: 0,
             denominator: 1,
@@ -333,7 +333,7 @@ export const useGenerateGenesTableColumns = ({
         },
       }),
       genesTableColumnHelper.display({
-        id: "#_cnv_homozygous_deletion",
+        id: "#_cnv_homozygous_deletions",
         header: () => (
           <HeaderTooltip
             title="# CNV Homozygous Deletions"
@@ -344,7 +344,7 @@ export const useGenerateGenesTableColumns = ({
         ),
         cell: ({ row }) => {
           const { numerator, denominator } = row.original[
-            "#_cnv_homozygous_deletion"
+            "#_cnv_homozygous_deletions"
           ] ?? {
             numerator: 0,
             denominator: 1,
@@ -463,19 +463,19 @@ export const getGene = (
       numerator: g.ssm_case,
       denominator: cases,
     },
-    "#_cnv_amplification": {
+    "#_cnv_amplifications": {
       numerator: g.case_cnv_amplification,
       denominator: cnvCases,
     },
-    "#_cnv_gain": {
+    "#_cnv_gains": {
       numerator: g.case_cnv_gain,
       denominator: cnvCases,
     },
-    "#_cnv_heterozygous_deletion": {
+    "#_cnv_heterozygous_deletions": {
       numerator: g.case_cnv_loss,
       denominator: cnvCases,
     },
-    "#_cnv_homozygous_deletion": {
+    "#_cnv_homozygous_deletions": {
       numerator: g.case_cnv_homozygous_deletion,
       denominator: cnvCases,
     },
