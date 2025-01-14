@@ -46,6 +46,8 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
   const coreDispatch = useCoreDispatch();
   const currentCohortId = useCoreSelector(selectCurrentCohortId);
   const clearFilters = useClearFilter();
+  const hash = window?.location?.hash.split("#")?.[1];
+  const cardSelected = hash !== undefined && hash === fullField;
 
   const facetTitle = humanify({
     term: customFaceTitle
@@ -99,7 +101,9 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
     <div
       className={`flex flex-col ${
         width || "mx-0"
-      } bg-base-max border-base-lighter border-1 rounded-b-md text-xs transition`}
+      } bg-base-max border-base-lighter border-1 rounded-b-md text-xs transition ${
+        cardSelected ? "animate-border-highlight " : undefined
+      }`}
       style={{
         scrollMarginTop: stickyHeaderHeight + 10,
       }}
