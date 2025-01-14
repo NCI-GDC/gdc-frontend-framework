@@ -36,7 +36,7 @@
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@types/uuid": "^8.3.1",
-    "rimraf": "^3.0.2",
+    "rimraf": "^6.0.1",
     "rollup": "^4.27.3",
     "rollup-plugin-dts": "^6.1.1",
     "rollup-plugin-peer-deps-external": "^2.2.4",
@@ -48,5 +48,9 @@
     "blueimp-md5": "^2.19.0",
     "queue": "^6.0.2",
     "uuid": "^8.3.2"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.28.1",
+    "@swc/core-linux-x64-gnu": "^1.10.0"
   }
 }

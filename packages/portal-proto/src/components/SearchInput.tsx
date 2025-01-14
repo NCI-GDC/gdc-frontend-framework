@@ -109,7 +109,12 @@ export const SearchInput: React.FC = () => {
     [filteredCategories, searchResults],
   );
 
-  const clickResult = (result: FullResult) => {
+  const clickResult = async (result: FullResult) => {
+    await router.push({
+      query: router.query,
+      hash: undefined,
+    });
+
     const enumSearchResult = Object.values(result?.match || {}).some((m) =>
       m.includes("enum"),
     );
@@ -118,18 +123,14 @@ export const SearchInput: React.FC = () => {
       ? { tab: result.categoryKey, searchTerm }
       : { tab: result.categoryKey };
 
-    router.push(
-      {
-        query: {
-          app: router?.query?.app,
-          tab: router?.query?.tab,
-          ...additionalQuery,
-        },
-        hash: result.id,
+    router.push({
+      query: {
+        app: router?.query?.app,
+        tab: router?.query?.tab,
+        ...additionalQuery,
       },
-      undefined,
-      { scroll: false },
-    );
+      hash: result.id,
+    });
     setDropdownOpen(false);
     setActivedescendant(undefined);
   };

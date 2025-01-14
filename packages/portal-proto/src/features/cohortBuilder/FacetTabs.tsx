@@ -312,7 +312,7 @@ export const FacetTabs = (): JSX.Element => {
   return (
     <div className="w-100">
       <span
-        id={`facetTab-liveRegion`}
+        id="facetTab-liveRegion"
         aria-live="assertive"
         ref={liveRegionRef}
         className="sr-only"

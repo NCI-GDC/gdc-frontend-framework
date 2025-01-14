@@ -51,7 +51,7 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
   );
 
   const primarySitesTableColumnHelper = useMemo(
-    () => createColumnHelper<typeof formattedData[0]>(),
+    () => createColumnHelper<(typeof formattedData)[0]>(),
     [],
   );
 
@@ -119,6 +119,15 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
       primarySitesTableColumnHelper.accessor("files", {
         id: "files",
         header: "Files",
+        meta: {
+          sortingFn: (rowA, rowB) => {
+            const a = Number(rowA.files.replace(/,/g, ""));
+            const b = Number(rowB.files.replace(/,/g, ""));
+            if (a > b) return 1;
+            if (a < b) return -1;
+            return 0;
+          },
+        },
       }),
     ],
     [primarySitesTableColumnHelper, projectId],
@@ -141,7 +150,7 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
   );
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [expanded, setExpanded] = useState<ExpandedState>({});
-  const getRowId = (originalRow: typeof formattedData[0]) => {
+  const getRowId = (originalRow: (typeof formattedData)[0]) => {
     return originalRow.primary_site;
   };
   const [expandedRowId, setExpandedRowId] = useState(null);
@@ -177,7 +186,7 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
   };
 
   const handleExpand = (
-    row: Row<typeof formattedData[0]>,
+    row: Row<(typeof formattedData)[0]>,
     columnId: string,
   ) => {
     if (

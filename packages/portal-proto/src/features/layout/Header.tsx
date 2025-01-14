@@ -299,7 +299,7 @@ export const Header: React.FC<HeaderProps> = ({
               <li>
                 <GDCAppLink
                   customDataTestID="button-header-data-transfer-tool"
-                  href="https://docs.gdc.cancer.gov/Data_Transfer_Tool/Users_Guide/Getting_Started/"
+                  href="https://gdc.cancer.gov/access-data/gdc-data-transfer-tool"
                   icon="gdc-app-data-transfer-tool.svg"
                   text="Data Transfer Tool"
                 />
@@ -455,7 +455,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <AppMenuItem>
                   <GDCAppLink
                     customDataTestID="button-header-data-transfer-tool"
-                    href="https://docs.gdc.cancer.gov/Data_Transfer_Tool/Users_Guide/Getting_Started/"
+                    href="https://gdc.cancer.gov/access-data/gdc-data-transfer-tool"
                     icon="gdc-app-data-transfer-tool.svg"
                     text="Data Transfer Tool"
                   />
