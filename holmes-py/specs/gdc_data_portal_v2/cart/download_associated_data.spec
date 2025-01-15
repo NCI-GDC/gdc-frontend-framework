@@ -28,10 +28,10 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
 
 ## Clinical TSV
 * Navigate to "Cart" from "Header" "section"
-* Select "Download Associated Data" on the Cart page
-* Download "Clinical: TSV" from "Cart Header Dropdown"
-* Read file content from compressed "Clinical: TSV from Cart Header Dropdown"
-* Verify that "Clinical: TSV from Cart Header Dropdown" has expected information
+* Select "Clinical"
+* Download "TSV" from "Cart Header Dropdown"
+* Read file content from compressed "TSV from Cart Header Dropdown"
+* Verify that "TSV from Cart Header Dropdown" has expected information
     |required_info                        |
     |-------------------------------------|
     |follow_ups.barretts_esophagus_goblet_cells_present     |
@@ -85,7 +85,7 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |HCM-CSHL-0182-C25_other_clinical_attribute|
     |Initial Diagnosis                    |
 
-* Verify that "Clinical: TSV from Cart Header Dropdown" does not contain specified information
+* Verify that "TSV from Cart Header Dropdown" does not contain specified information
     |required_info                          |
     |---------------------------------------|
     |FM-AD                                  |
@@ -125,10 +125,10 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |exposures.weight                       |
 
 ## Clinical JSON
-* Select "Download Associated Data" on the Cart page
-* Download "Clinical: JSON" from "Cart Header Dropdown"
-* Read from "Clinical: JSON from Cart Header Dropdown"
-* Verify that "Clinical: JSON from Cart Header Dropdown" has expected information
+* Select "Clinical"
+* Download "JSON" from "Cart Header Dropdown"
+* Read from "JSON from Cart Header Dropdown"
+* Verify that "JSON from Cart Header Dropdown" has expected information
     |required_info                        |
     |-------------------------------------|
     |Current Reformed Smoker, Duration Not Specified |
@@ -171,7 +171,7 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |a242040c-f78a-4fa8-8960-8e2f1020f0d5 |
     |HCM-CSHL-0182-C25_other_clinical_attribute|
 
-* Verify that "Clinical: JSON from Cart Header Dropdown" does not contain specified information
+* Verify that "JSON from Cart Header Dropdown" does not contain specified information
     |required_info                        |
     |-------------------------------------|
     |FM-AD                                |
@@ -179,10 +179,10 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |APOLLO                               |
 
 ## Biospecimen TSV
-* Select "Download Associated Data" on the Cart page
-* Download "Biospecimen: TSV" from "Cart Header Dropdown"
-* Read file content from compressed "Biospecimen: TSV from Cart Header Dropdown"
-* Verify that "Biospecimen: TSV from Cart Header Dropdown" has expected information
+* Select "Biospecimen"
+* Download "TSV" from "Cart Header Dropdown"
+* Read file content from compressed "TSV from Cart Header Dropdown"
+* Verify that "TSV from Cart Header Dropdown" has expected information
     |required_info                        |
     |-------------------------------------|
     |portion_id                           |
@@ -235,7 +235,7 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |TCGA-BG-A0M0-01Z-00-DX1              |
     |98.0                                 |
     |BOTTOM                               |
-* Verify that "Biospecimen: TSV from Cart Header Dropdown" does not contain specified information
+* Verify that "TSV from Cart Header Dropdown" does not contain specified information
     |required_info                        |
     |-------------------------------------|
     |FM-AD                                |
@@ -243,10 +243,10 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |APOLLO                               |
 
 ## Biospecimen JSON
-* Select "Download Associated Data" on the Cart page
-* Download "Biospecimen: JSON" from "Cart Header Dropdown"
-* Read from "Biospecimen: JSON from Cart Header Dropdown"
-* Verify that "Biospecimen: JSON from Cart Header Dropdown" has expected information
+* Select "Biospecimen"
+* Download "JSON" from "Cart Header Dropdown"
+* Read from "JSON from Cart Header Dropdown"
+* Verify that "JSON from Cart Header Dropdown" has expected information
     |required_info                        |
     |-------------------------------------|
     |1ae8657f-477f-4e1a-aef2-dd1c1ab5f26a |
@@ -291,7 +291,7 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |5341a8a5-acac-5a24-a963-d27dbecc5db2 |
     |3df88b48-da53-4014-9507-de070223d1dd |
     |91e73c21-abd7-4c20-ac1e-81f4dabc7511 |
-* Verify that "Biospecimen: JSON from Cart Header Dropdown" does not contain specified information
+* Verify that "JSON from Cart Header Dropdown" does not contain specified information
     |required_info                        |
     |-------------------------------------|
     |FM-AD                                |
@@ -299,10 +299,9 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |APOLLO                               |
 
 ## Sample Sheet
-* Select "Download Associated Data" on the Cart page
-* Download "Sample Sheet" from "Cart Header Dropdown"
-* Read from "Sample Sheet from Cart Header Dropdown"
-* Verify that "Sample Sheet from Cart Header Dropdown" has expected information
+* Download "Sample Sheet" from "Page"
+* Read from "Sample Sheet from Page"
+* Verify that "Sample Sheet from Page" has expected information
     |required_info                        |
     |-------------------------------------|
     |File ID                              |
@@ -325,7 +324,7 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |d342f285-b9ba-4737-b668-09bfc761e74f |
     |93d6d769-17fe-4bc9-bf94-bc9f92f1c747 |
     |TCGA-BG-A0M0-10A, TCGA-BG-A0M0-01A   |
-* Verify that "Sample Sheet from Cart Header Dropdown" does not contain specified information
+* Verify that "Sample Sheet from Page" does not contain specified information
     |required_info                        |
     |-------------------------------------|
     |FM-AD                                |
@@ -333,10 +332,9 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |APOLLO                               |
 
 ## Metadata
-* Select "Download Associated Data" on the Cart page
-* Download "Metadata" from "Cart Header Dropdown"
-* Read from "Metadata from Cart Header Dropdown"
-* Verify that "Metadata from Cart Header Dropdown" has expected information
+* Download "Metadata" from "Page"
+* Read from "Metadata from Page"
+* Verify that "Metadata from Page" has expected information
     |required_info                        |
     |-------------------------------------|
     |data_format	                      |
@@ -392,7 +390,7 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |0.00013948633598826976               |
     |0.022844                             |
     |8cd9cd506d600cbeb4abbe6470babf6f     |
-* Verify that "Metadata from Cart Header Dropdown" does not contain specified information
+* Verify that "Metadata from Page" does not contain specified information
     |required_info                        |
     |-------------------------------------|
     |FM-AD                                |
