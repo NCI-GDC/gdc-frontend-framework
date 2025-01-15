@@ -17,7 +17,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |filter_name            |
   |-----------------------|
   |Mutated Gene           |
-  |Somatic Mutations      |
+  |Somatic Mutation       |
   |Biotype                |
   |VEP Impact             |
   |SIFT Impact            |
@@ -25,12 +25,12 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |Consequence Type       |
   |Type                   |
 * Switch to "Mutations" tab in the Mutation Frequency app
-* Is text "somatic mutations" present on the page
+* Is text "Not Mutated Cases" present on the page
 * Verify presence of filter card
   |filter_name            |
   |-----------------------|
   |Mutated Gene           |
-  |Somatic Mutations      |
+  |Somatic Mutation       |
   |Biotype                |
   |VEP Impact             |
   |SIFT Impact            |
