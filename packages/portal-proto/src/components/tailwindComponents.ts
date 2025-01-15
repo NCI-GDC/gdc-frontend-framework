@@ -41,19 +41,6 @@ h-full
 bg-accent-cool-lighter
 rounded-sm`;
 
-export const DownloadButton = tw.button`
-    px-1.5
-    min-h-[28px]
-    min-w-10
-    border-primary
-    text-primary
-    border
-    rounded-[4px]
-    transition-colors
-    hover:bg-primary
-    hover:text-base-max
-`;
-
 export const CountSpan = tw.span`font-bold p-0 m-0`;
 
 interface CountsIconProps {
