@@ -103,7 +103,6 @@ startCoreListening({
   ),
   effect: async (action, listenerApi) => {
     // the last cohort added is the one we want to get the case count for
-    console.log("startCoreListening", action);
     const anyAction = action as AnyAction;
     const cohortId = anyAction?.payload?.id;
     if (cohortId === undefined) {
