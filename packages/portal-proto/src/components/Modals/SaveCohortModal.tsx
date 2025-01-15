@@ -17,7 +17,7 @@ import {
   NullCountsData,
   useCoreSelector,
   selectAvailableCohorts,
-  useGetCohortsByContextIdQuery,
+  useLazyGetCohortsByContextIdQuery,
   useLazyGetCohortByIdQuery,
   discardCohortChanges,
   showModal,
@@ -72,11 +72,11 @@ const SaveCohortModal = ({
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
   const [createSet] = useCreateCaseSetFromFiltersMutation();
 
-  const {
-    data: cohortsListData,
-    isSuccess: cohortListSuccess,
-    isLoading: cohortListLoading,
-  } = useGetCohortsByContextIdQuery(null, { skip: !cohortReplaced });
+  const [
+    fetchCohorts,
+    { isSuccess: isCohortListSuccess, isLoading: isCohortListLoading },
+  ] = useLazyGetCohortsByContextIdQuery();
+  const [fetchSavedFilters] = useLazyGetCohortByIdQuery();
 
   const closeModal = useCallback(() => {
     onClose();
@@ -88,32 +88,41 @@ const SaveCohortModal = ({
   }, [onClose]);
 
   useDeepCompareEffect(() => {
-    if (opened && cohortListSuccess && cohortReplaced) {
-      // Remove replaced cohort
-      const updatedCohortIds = (cohortsListData || []).map(
-        (cohort) => cohort.id,
-      );
-      const outdatedCohortsIds = cohorts
-        .filter((c) => c.saved && !updatedCohortIds.includes(c.id))
-        .map((c) => c.id);
-      for (const id of outdatedCohortsIds) {
-        coreDispatch(removeCohort({ id }));
-      }
+    const fetchCohortsList = async () => {
+      if (!opened || !cohortReplaced) return;
 
-      coreDispatch(setCohortMessage(cohortSavedMessage));
-      closeModal();
-    }
+      try {
+        const payload = await fetchCohorts(null).unwrap();
+        const updatedCohortIds = (payload || []).map((cohort) => cohort.id);
+
+        // Find outdated cohorts
+        const outdatedCohortsIds = cohorts
+          .filter((c) => c.saved && !updatedCohortIds.includes(c.id))
+          .map((c) => c.id);
+
+        // Remove outdated cohorts
+        outdatedCohortsIds.forEach((id) => {
+          coreDispatch(removeCohort({ id }));
+        });
+
+        coreDispatch(setCohortMessage(cohortSavedMessage));
+        closeModal();
+      } catch (error) {
+        console.error("Error fetching cohorts:", error);
+      }
+    };
+
+    fetchCohortsList();
   }, [
-    cohortListSuccess,
+    fetchCohorts,
+    isCohortListSuccess,
     cohortReplaced,
-    cohortsListData,
     cohorts,
     coreDispatch,
     opened,
     closeModal,
     cohortSavedMessage,
   ]);
-  const [fetchSavedFilters] = useLazyGetCohortByIdQuery();
 
   const saveAction = async (newName: string, replace: boolean) => {
     const prevCohort = cohortId;
@@ -295,7 +304,7 @@ const SaveCohortModal = ({
             saveAction(enteredName, true);
           }}
           data-testid="replace-cohort-button"
-          loading={isLoading || cohortListLoading}
+          loading={isLoading || isCohortListLoading}
         >
           Replace
         </Button>

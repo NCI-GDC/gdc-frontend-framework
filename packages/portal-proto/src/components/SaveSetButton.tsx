@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { TypedUseMutation } from "@reduxjs/toolkit/query/react";
-import { MutationDefinition } from "@reduxjs/toolkit/dist/query";
 import {
   selectSetsByType,
   useCoreDispatch,
