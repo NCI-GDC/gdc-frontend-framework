@@ -177,7 +177,7 @@ export const CasesCohortButtonFromFilters: React.FC<
     [case_filters, createSet, filters],
   );
   const { data, isSuccess, isLoading } = useGetCasesQuery(
-    { request: { filters, fields: ["case_id"], size: 50000 } },
+    { request: { filters, case_filters, fields: ["case_id"], size: 50000 } },
     { skip: filters === undefined },
   );
 

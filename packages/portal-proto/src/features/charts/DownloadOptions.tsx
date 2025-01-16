@@ -1,6 +1,5 @@
-import { Menu, Tooltip } from "@mantine/core";
+import { ActionIcon, Menu, Tooltip } from "@mantine/core";
 import Plotly from "plotly.js";
-import { DownloadButton } from "@/components/tailwindComponents";
 import { JSONArray } from "@/features/types";
 import { DownloadIcon } from "@/utils/icons";
 
@@ -28,9 +27,12 @@ const DownloadOptions: React.FC<ChartDownloadProps> = ({
     <Menu width="auto">
       <Menu.Target>
         <Tooltip label="Download image or data">
-          <DownloadButton data-testid="button-download-image-or-data">
-            <DownloadIcon size="1.25em" aria-label="Download" />
-          </DownloadButton>
+          <ActionIcon
+            data-testid="button-download-image-or-data"
+            variant="outline"
+          >
+            <DownloadIcon size="1rem" aria-hidden="true" />
+          </ActionIcon>
         </Tooltip>
       </Menu.Target>
       <Menu.Dropdown data-testid="list-download-image-or-data-dropdown">

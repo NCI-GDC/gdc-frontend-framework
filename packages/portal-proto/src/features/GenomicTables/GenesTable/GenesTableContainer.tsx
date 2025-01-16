@@ -17,6 +17,7 @@ import {
   buildGeneTableSearchFilters,
   filterSetToOperation,
   convertFilterToGqlFilter,
+  CnvChange,
 } from "@gff/core";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useDeepCompareCallback, useDeepCompareMemo } from "use-deep-compare";
@@ -38,7 +39,7 @@ import {
 } from "@tanstack/react-table";
 import { HandleChangeInput } from "@/components/Table/types";
 import { CountsIcon } from "@/components/tailwindComponents";
-import { Gene, GeneToggledHandler, columnFilterType } from "./types";
+import { Gene, GeneToggledHandler } from "./types";
 import { useGenerateGenesTableColumns, getGene } from "./utils";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import GenesTableSubcomponent from "./GenesTableSubcomponent";
@@ -115,35 +116,16 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
   );
 
   const generateFilters = useDeepCompareCallback(
-    (type: columnFilterType, geneId: string) => {
-      if (type === null) return;
-
-      if (type === "cnvgain") {
+    (cnvType: CnvChange, geneId: string) => {
+      if (cnvType !== undefined) {
         // only genes filters
         return joinFilters(genesOnlyFilters, {
           mode: "and",
           root: {
             "genes.cnv.cnv_change": {
-              field: "genes.cnv.cnv_change",
+              field: "genes.cnv.cnv_change_5_category",
               operator: "=",
-              operand: "gain",
-            },
-            "genes.gene_id": {
-              field: "genes.gene_id",
-              operator: "=",
-              operand: geneId,
-            },
-          },
-        });
-      } else if (type === "cnvloss") {
-        // only genes filters
-        return joinFilters(genesOnlyFilters, {
-          mode: "and",
-          root: {
-            "genes.cnv.cnv_change": {
-              field: "genes.cnv.cnv_change",
-              operator: "=",
-              operand: "loss",
+              operand: cnvType,
             },
             "genes.gene_id": {
               field: "genes.gene_id",
@@ -254,6 +236,8 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
     gene_id: false,
     cytoband: false,
     type: false,
+    "#_cnv_gains": false,
+    "#_cnv_heterozygous_deletions": false,
   });
 
   const setFilters =

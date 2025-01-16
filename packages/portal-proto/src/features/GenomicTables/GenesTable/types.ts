@@ -15,11 +15,19 @@ export interface Gene {
   };
   symbol: string;
   survival: Survival;
-  "#_cnv_gain": {
+  "#_cnv_amplifications": {
     numerator: number;
     denominator: number;
   };
-  "#_cnv_loss": {
+  "#_cnv_gains": {
+    numerator: number;
+    denominator: number;
+  };
+  "#_cnv_heterozygous_deletions": {
+    numerator: number;
+    denominator: number;
+  };
+  "#_cnv_homozygous_deletions": {
     numerator: number;
     denominator: number;
   };
@@ -35,5 +43,3 @@ export interface Gene {
     denominator: number;
   };
 }
-
-export type columnFilterType = "cnvgain" | "cnvloss" | "ssmaffected" | null;

@@ -50,8 +50,11 @@ tags: gdc-data-portal-v2, regression, file-summary
     |text_to_validate                       |
     |---------------------------------------|
     |Workflow Type                          |
-    |Workflow Completion Date               |
     |Birdseed                               |
+* Verify the table "Analysis File Summary" is not displaying this information
+    |text_to_validate                       |
+    |---------------------------------------|
+    |Workflow Completion Date               |
     |2023-03-10                             |
 
 ## Verify Reference Genome Table is Not Present

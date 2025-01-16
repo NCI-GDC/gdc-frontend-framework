@@ -21,7 +21,7 @@ tags: gdc-data-portal-v2, regression, footer, navigation
   |Data Portal                                |A repository and computational platform for cancer researchers |
   |Website                                    |The NCI's Genomic Data Commons                                 |
   |API                                        |The GDC Application Programming Interface (API)                |
-  |Data Transfer Tool                         |The GDC Data Transfer Tool, a command-line driven application  |
+  |Data Transfer Tool                         |The GDC Data Transfer Tool provides an optimized method        |
   |Documentation                              |can find detailed information on GDC processes and tools       |
   |Data Submission Portal                     |The GDC Data Submission Portal is a web-based system           |
   |Publications                               |To request a publication page that meets the above criteria    |
