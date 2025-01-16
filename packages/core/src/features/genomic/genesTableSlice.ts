@@ -35,6 +35,8 @@ const GenesTableGraphQLQuery = `
             $cnvTested: FiltersArgument
             $cnvGainFilters: FiltersArgument
             $cnvLossFilters: FiltersArgument
+            $cnvAmplificationFilters: FiltersArgument
+            $cnvHomozygousDeletionFilters: FiltersArgument
             $sort: [Sort]
           ) {
             genesTableViewer: viewer {
@@ -94,6 +96,16 @@ const GenesTableGraphQLQuery = `
                             total
                           }
                         }
+                        case_cnv_amplification: case {
+                          hits(first: 0, case_filters: $caseFilters, filters: $cnvAmplificationFilters) {
+                            total
+                          }
+                        }
+                        case_cnv_homozygous_deletion: case {
+                          hits(first: 0, case_filters: $caseFilters, filters: $cnvHomozygousDeletionFilters) {
+                            total
+                          }
+                        }
                       }
                     }
                   }
@@ -105,8 +117,10 @@ const GenesTableGraphQLQuery = `
 
 export interface GeneRowInfo {
   readonly biotype: string;
+  readonly case_cnv_amplification: number;
   readonly case_cnv_gain: number;
   readonly case_cnv_loss: number;
+  readonly case_cnv_homozygous_deletion: number;
   readonly cnv_case: number;
   readonly cytoband: Array<string>;
   readonly gene_id: string;
@@ -126,6 +140,12 @@ export interface GDCGenesTable {
   readonly genes_total: number;
   readonly mutationCounts?: Record<string, string>;
 }
+
+export type CnvChange =
+  | "Amplification"
+  | "Gain"
+  | "Loss"
+  | "Homozygous Deletion";
 
 export const buildGeneTableSearchFilters = (
   term?: string,
@@ -273,7 +293,7 @@ export const fetchGenesTable = createAsyncThunk<
             },
             {
               content: {
-                field: "cnvs.cnv_change",
+                field: "cnvs.cnv_change_5_category",
                 value: ["Gain"],
               },
               op: "in",
@@ -297,8 +317,56 @@ export const fetchGenesTable = createAsyncThunk<
             },
             {
               content: {
-                field: "cnvs.cnv_change",
+                field: "cnvs.cnv_change_5_category",
                 value: ["Loss"],
+              },
+              op: "in",
+            },
+          ],
+          ...(onlyGenesFilters?.content
+            ? Object(onlyGenesFilters?.content)
+            : []),
+        ],
+      },
+      cnvAmplificationFilters: {
+        op: "and",
+        content: [
+          ...[
+            {
+              content: {
+                field: "cases.available_variation_data",
+                value: ["cnv"],
+              },
+              op: "in",
+            },
+            {
+              content: {
+                field: "cnvs.cnv_change_5_category",
+                value: ["Amplification"],
+              },
+              op: "in",
+            },
+          ],
+          ...(onlyGenesFilters?.content
+            ? Object(onlyGenesFilters?.content)
+            : []),
+        ],
+      },
+      cnvHomozygousDeletionFilters: {
+        op: "and",
+        content: [
+          ...[
+            {
+              content: {
+                field: "cases.available_variation_data",
+                value: ["cnv"],
+              },
+              op: "in",
+            },
+            {
+              content: {
+                field: "cnvs.cnv_change_5_category",
+                value: ["Homozygous Deletion"],
               },
               op: "in",
             },
@@ -412,8 +480,11 @@ const slice = createSlice({
               numCases,
               symbol,
               cnv_case: node.cnv_case.hits.total,
+              case_cnv_amplification: node.case_cnv_amplification.hits.total,
               case_cnv_loss: node.case_cnv_loss.hits.total,
               case_cnv_gain: node.case_cnv_gain.hits.total,
+              case_cnv_homozygous_deletion:
+                node.case_cnv_homozygous_deletion.hits.total,
               ssm_case: node.ssm_case.hits.total,
             };
           },
