@@ -1,6 +1,6 @@
 import { render } from "test-utils";
 import userEvent from "@testing-library/user-event";
-import SaveCohortModal from "./SaveCohortModal";
+import SaveCohortModal from ".";
 import {
   useAddCohortMutation,
   useGetCohortsByContextIdQuery,
