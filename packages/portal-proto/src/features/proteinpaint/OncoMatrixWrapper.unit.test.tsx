@@ -4,7 +4,6 @@ import { MantineProvider } from "@mantine/core";
 
 const filter = {};
 let runpparg,
-  bindPpArg,
   userDetails,
   isDemoMode = false;
 
@@ -47,7 +46,6 @@ jest.mock("@/hooks/useIsDemoApp", () => ({
 jest.mock("@sjcrh/proteinpaint-client", () => ({
   __esModule: true,
   bindProteinPaint: jest.fn(async (arg) => {
-    bindPpArg = arg;
     runpparg = Object.assign({}, arg.initArgs, arg.updateArgs || {});
     return {};
   }),

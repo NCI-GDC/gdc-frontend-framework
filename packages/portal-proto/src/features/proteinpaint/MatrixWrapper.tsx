@@ -203,6 +203,10 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
         filter0: data.filter0,
       });
 
+      // bindProteinPaint() handles rapid update requests/race condition,
+      // so no need to include debouncing and promise code in this wrapper
+      // TODO: will revert to using runproteinpaint() once these advanced capabilities
+      // are merged into it
       bindProteinPaint({
         rootElem,
         initArgs,

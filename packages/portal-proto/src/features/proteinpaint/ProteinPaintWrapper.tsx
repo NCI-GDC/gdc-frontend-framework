@@ -106,6 +106,10 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
         cloneDeep(data),
       ) as Mds3Arg;
 
+      // bindProteinPaint() handles rapid update requests/race condition,
+      // so no need to include debouncing and promise code in this wrapper
+      // TODO: will revert to using runproteinpaint() once these advanced capabilities
+      // are merged into it
       bindProteinPaint({
         rootElem,
         initArgs: arg,
