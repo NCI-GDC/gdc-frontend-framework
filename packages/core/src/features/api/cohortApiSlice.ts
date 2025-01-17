@@ -59,6 +59,7 @@ export const cohortApiSlice = coreCreateApi({
 
 export const {
   useGetCohortsByContextIdQuery,
+  useLazyGetCohortsByContextIdQuery,
   useGetCohortByIdQuery,
   useAddCohortMutation,
   useUpdateCohortMutation,
