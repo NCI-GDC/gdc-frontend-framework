@@ -88,7 +88,7 @@ const ClinicalDataAnalysis: React.FC = () => {
         </DemoText>
       )}
 
-      <div className="flex gap-4">
+      <div className="flex gap-4 pt-4 pb-16 pr-4">
         <Controls
           updateFields={updateFields}
           cDaveFields={cDaveFields}

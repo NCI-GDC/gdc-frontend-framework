@@ -62,21 +62,20 @@ const Dashboard: React.FC<DashboardProps> = ({
   }, [activeFields, controlsExpanded]);
 
   return (
-    <Grid className="w-full m-0">
+    <Grid className="w-full m-0" gutter={24}>
       <Grid.Col span={controlsExpanded ? 6 : 4}>
         <div
           data-testid="overall-survival-plot"
-          className="h-full shadow-md rounded-lg p-2"
+          className="h-full border-1 border-base-lighter p-4"
         >
-          <h2 className="font-heading font-medium">Overall Survival</h2>
           {isError ? (
-            <Alert>{"Something's gone wrong"}</Alert>
+            <Alert>Something's gone wrong</Alert>
           ) : isFetching || isUninitialized ? (
             <Loader />
           ) : (
             <SurvivalPlot
               data={survivalData}
-              title=""
+              title="Overall Survival"
               plotType={SurvivalPlotTypes.overall}
               downloadFileName={`overall-survival-plot.${getFormattedTimestamp()}`}
             />

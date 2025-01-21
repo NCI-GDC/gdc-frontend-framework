@@ -76,7 +76,7 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
   );
 
   return filteredFields.length > 0 ? (
-    <>
+    <div className="mb-4">
       <span
         onClick={() => setGroupOpen(!groupOpen)}
         onKeyDown={createKeyboardAccessibleFunction(() =>
@@ -95,7 +95,11 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
         )}{" "}
         {name}
       </span>
-      <Collapse in={groupOpen} id={`cdave-control-group-${name}`}>
+      <Collapse
+        in={groupOpen}
+        id={`cdave-control-group-${name}`}
+        className="border-1 rounded-b-md"
+      >
         <div className="flex flex-col">
           <ul className="bg-base-max text-md">
             {visibleFields.map((field) => (
@@ -117,7 +121,7 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
           </div>
         </div>
       </Collapse>
-    </>
+    </div>
   ) : null;
 };
 
@@ -175,7 +179,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
         classNames={{
           root: "py-2",
           body: "flex justify-between items-center",
-          label: "cursor-pointer text-base text-black font-content font-medium",
+          label: "cursor-pointer text-sm text-black font-content font-medium",
           track: `cursor-pointer ${COLOR_CLASS_HOVER_MAP[field.field_type]}`,
         }}
         checked={checked}
@@ -184,7 +188,6 @@ const FieldControl: React.FC<FieldControlProps> = ({
       {searchTerm && (
         <Highlight highlight={searchTerm}>{field?.description || ""}</Highlight>
       )}
-      <Divider />
     </li>
   );
 };
@@ -226,8 +229,8 @@ const Controls: React.FC<ControlPanelProps> = ({
   return (
     <div
       className={`${
-        controlsExpanded ? "w-80 bg-base-max shadow-md" : ""
-      } pl-4 pt-2 flex flex-col min-h-[560px] max-h-screen`}
+        controlsExpanded ? "bg-base-max shadow-md" : ""
+      } pl-4 pt-2 flex flex-col flex-shrink-0 min-h-[560px] max-h-screen`}
     >
       <Tooltip
         withArrow
@@ -237,11 +240,12 @@ const Controls: React.FC<ControlPanelProps> = ({
       >
         <ActionIcon
           onClick={() => setControlsExpanded(!controlsExpanded)}
-          aria-label={"Collapse/Expand controls"}
-          aria-controls={"cdave-control-panel"}
+          aria-label="Collapse/Expand controls"
+          aria-controls="cdave-control-panel"
           aria-expanded={controlsExpanded}
-          className="text-base"
+          className="text-accent"
           variant="subtle"
+          size={16}
         >
           {controlsExpanded ? (
             <DoubleLeftIcon aria-hidden="true" />
@@ -277,10 +281,10 @@ const Controls: React.FC<ControlPanelProps> = ({
         </div>
         <p
           data-testid="text-fields-with-values"
-          className="p-2 font-heading font-medium"
+          className="p-2 font-heading text-primary-darker"
         >
-          {Object.keys(fieldsWithData).length} of {cDaveFields.length} fields
-          with values
+          <strong>{Object.keys(fieldsWithData).length}</strong> of{" "}
+          <strong>{cDaveFields.length}</strong> fields with values
         </p>
         <div className="max-h-screen overflow-y-scroll">
           {Object.entries(TABS).map(([key, label]) => (

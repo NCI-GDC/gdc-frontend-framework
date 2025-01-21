@@ -212,7 +212,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-center flex-wrap">
-        <div className="text-montserrat text-[1rem]">{title}</div>
+        <div className="font-content text-[1rem]">{title}</div>
         <div className="flex items-center ml-auto gap-1">
           <Menu
             position="bottom-start"
@@ -319,6 +319,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
           drag to zoom
         </div>
       </div>
+
       <div ref={mouseRef} className="relative">
         <Box
           className="w-36"
