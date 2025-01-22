@@ -1,6 +1,6 @@
 import { useRef, useCallback, useState, FC } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
-import { runproteinpaint } from "@sjcrh/proteinpaint-client";
+import { bindProteinPaint } from "@sjcrh/proteinpaint-client";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import {
   useCoreSelector,
@@ -19,7 +19,6 @@ import {
   Modals,
   selectCurrentModal,
 } from "@gff/core";
-import { isEqual } from "lodash";
 import { DemoText } from "@/components/tailwindComponents";
 import { LoadingOverlay } from "@mantine/core";
 import {
@@ -30,6 +29,7 @@ import {
 } from "./sjpp-types";
 import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
+import { isEqual, cloneDeep } from "lodash";
 
 const basepath = PROTEINPAINT_API;
 
@@ -38,23 +38,25 @@ interface PpProps {
   basepath?: string;
 }
 
+export const demoFilter = Object.freeze({
+  op: "in",
+  content: Object.freeze({
+    field: "cases.disease_type",
+    value: Object.freeze(["Gliomas"]),
+  }),
+});
+
 export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
   const isDemoMode = useIsDemoApp();
-  const defaultFilter = {
-    op: "in",
-    content: { field: "cases.disease_type", value: ["Gliomas"] },
-  };
+  // const demoFilter = {
+  //   op: "in",
+  //   content: { field: "cases.disease_type", value: ["Gliomas"] },
+  // };
   const currentCohort = useCoreSelector(selectCurrentCohortFilters);
   const filter0 = isDemoMode
-    ? defaultFilter
+    ? cloneDeep(demoFilter)
     : buildCohortGqlOperator(currentCohort);
   const userDetails = useFetchUserDetailsQuery();
-
-  const ppRef = useRef<PpApi>();
-  const ppPromise = useRef<Promise<PpApi>>();
-  const initialFilter0Ref = useRef<any>();
-  const debouncedInitialUpdatesTimeout =
-    useRef<ReturnType<typeof setTimeout>>();
   const prevData = useRef<any>();
   const coreDispatch = useCoreDispatch();
   const [showSaveCohortModal, setShowSaveCohortModal] = useState(false);
@@ -132,7 +134,6 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
     isFetching: isGeneFetching,
     requestId: genesRequestId,
   } = genesResponse;
-  //console.log(130, 'geneDetailData', geneDetailData, 'isGeneSuccess', isGeneSuccess, genesResponse);
 
   const showLoadingOverlay = () => setIsLoading(true);
   const hideLoadingOverlay = () => setIsLoading(false);
@@ -149,6 +150,13 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
     dispatch(showModal({ modal: Modals.LocalGeneSetModal }));
     // TODO: pass the gene set to the callback
   };
+  const initArgs = getMatrixTrack(
+    props,
+    callback,
+    matrixCallbacks,
+    appCallbacks,
+    genesetCallback,
+  );
 
   useDeepCompareEffect(
     () => {
@@ -158,85 +166,57 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
       if (userDetails?.isSuccess === false && userDetails?.isError === false)
         return;
       if (isGeneFetching) return;
-
+      const data = {
+        filter0: filter0 || null,
+        userData: userDetails?.data,
+        geneDetailData,
+      };
+      const hasUpdates =
+        (data || prevData.current) && !isEqual(prevData.current, data);
+      if (hasUpdates) prevData.current = data;
       const rootElem = divRef.current as HTMLElement;
-      const data = { filter0, userData: userDetails?.data, geneDetailData };
-      // TODO: ignore the cohort filter changes in demo mode, or combine with demo filter ???
-      // data.filter0 = defaultFilter
-      if (isEqual(prevData.current, data)) return;
 
-      if (ppRef.current) {
-        if (!isEqual(data, prevData.current)) {
-          if (lastGeneSetRequestId != genesRequestId) {
-            setLastGeneSetRequestId(genesRequestId);
-            ppRef.current.update({
-              genes: geneDetailData.hits.map((h) => ({ gene: h.symbol })),
-            });
-          } else {
-            ppRef.current.update({ filter0: data.filter0 });
-          }
+      let updateArgs;
+      if (hasUpdates) {
+        updateArgs = { filter0: data.filter0 };
+        if (lastGeneSetRequestId != genesRequestId) {
+          setLastGeneSetRequestId(genesRequestId);
+          updateArgs.genes = geneDetailData.hits.map((h) => ({
+            gene: h.symbol,
+          }));
         }
-      } else if (ppPromise.current) {
-        // in case another state update comes in when there is already
-        // an instance that is being created, debounce to the last update
-        // Except: during startup in demo mode, the filter0 is not expecect to change,
-        // so don't trigger a non-user reactive update right after the initial rendering
-        if (debouncedInitialUpdatesTimeout.current)
-          clearTimeout(debouncedInitialUpdatesTimeout.current);
 
-        if (!isEqual(data, initialFilter0Ref.current)) {
-          debouncedInitialUpdatesTimeout.current = setTimeout(() => {
-            ppPromise.current.then(() => {
-              // if the filter0 has not changed, the PP matrix app (the engine for gene expression app)
-              // will not update unnecessarily
-              if (ppRef.current) {
-                if (!isEqual(data, initialFilter0Ref.current))
-                  ppRef.current.update({ filter0: data.filter0 });
-              } else console.error("missing ppRef.current");
-            });
-          }, 20);
-        }
-      } else {
         // TODO:
         // showing and hiding the overlay should be triggered by components that may take a while to load/render,
         // this wrapper code can show the overlay here since it has supplied postRender callbacks above,
         // but ideally it is the PP-app that triggers both the showing and hiding of the overlay for reliable behavior
-        initialFilter0Ref.current = data;
         const toolContainer = rootElem.parentNode.parentNode
           .parentNode as HTMLElement;
         toolContainer.style.backgroundColor = "#fff";
-
-        const pp_holder = rootElem.querySelector(".sja_root_holder");
-        if (pp_holder) pp_holder.remove();
-
-        const matrixArgs = getMatrixTrack(
-          props,
-          data.filter0,
-          callback,
-          matrixCallbacks,
-          appCallbacks,
-          genesetCallback,
-        );
-        if (!data) return;
-
-        const arg = Object.assign(
-          {
-            holder: rootElem,
-            noheader: true,
-            nobox: true,
-            hide_dsHandles: true,
-          },
-          matrixArgs,
-        ) as MatrixArg;
-
-        ppPromise.current = runproteinpaint(arg).then((pp) => {
-          // the ppRef.current is set after the tool fully renders
-          ppRef.current = pp;
-          return pp;
-        });
       }
 
-      prevData.current = data;
+      Object.assign(initArgs, {
+        holder: rootElem,
+        noheader: true,
+        nobox: true,
+        hide_dsHandles: true,
+        filter0: data.filter0,
+      });
+
+      // bindProteinPaint() handles rapid update requests/race condition,
+      // so no need to include debouncing and promise code in this wrapper
+      // TODO: will revert to using runproteinpaint() once these advanced capabilities
+      // are merged into it
+      bindProteinPaint({
+        rootElem,
+        initArgs,
+        updateArgs,
+        isStale() {
+          // new data has replaced this one, will prevent unnecessary render
+          // in case of race condition
+          return prevData.current != data;
+        },
+      });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [filter0, userDetails, geneDetailData],
@@ -283,10 +263,6 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
   );
 };
 
-interface PpApi {
-  update(arg: any): null;
-}
-
 interface MatrixArg {
   holder?: HTMLElement;
   noheader?: boolean;
@@ -295,8 +271,9 @@ interface MatrixArg {
   host: string;
   launchGdcMatrix: boolean;
   launchGdcHierCluster: boolean;
-  filter0: FilterSet;
+  filter0?: any; //FilterSet;
   opts: MatrixArgOpts;
+  state?: any;
 }
 
 interface MatrixArgOpts {
@@ -322,20 +299,17 @@ interface MatrixArgOptsMatrix {
 
 function getMatrixTrack(
   props: PpProps,
-  filter0: any,
   callback?: SelectSamplesCallback,
   matrixCallbacks?: RxComponentCallbacks,
   appCallbacks?: RxComponentCallbacks,
   genesetCallback?: () => void,
-) {
-  const defaultFilter = null;
+): MatrixArg {
   const arg: MatrixArg = {
     // host in gdc is just a relative url path,
     // using the same domain as the GDC portal where PP is embedded
     host: props.basepath || (basepath as string),
     launchGdcMatrix: props.chartType == "matrix",
     launchGdcHierCluster: props.chartType == "hierCluster",
-    filter0: filter0 || defaultFilter,
     opts: {
       app: {
         callbacks: appCallbacks,

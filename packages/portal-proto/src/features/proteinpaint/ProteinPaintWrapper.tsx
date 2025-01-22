@@ -1,6 +1,6 @@
 import { useRef, useCallback, useState, FC } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
-import { runproteinpaint } from "@sjcrh/proteinpaint-client";
+import { bindProteinPaint } from "@sjcrh/proteinpaint-client";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import {
   useCoreSelector,
@@ -39,7 +39,6 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   const userDetails = useFetchUserDetailsQuery();
 
   // to track reusable instance for mds3 skewer track
-  const ppRef = useRef<PpApi>();
   const prevArg = useRef<any>({});
   const coreDispatch = useCoreDispatch();
   const [showSaveCohort, setShowSaveCohort] = useState(false);
@@ -106,15 +105,20 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
         cloneDeep(data),
       ) as Mds3Arg;
 
-      if (ppRef.current) {
-        ppRef.current.update(arg);
-      } else {
-        const pp_holder = rootElem.querySelector(".sja_root_holder");
-        if (pp_holder) pp_holder.remove();
-        runproteinpaint(arg).then((pp) => {
-          ppRef.current = pp;
-        });
-      }
+      // bindProteinPaint() handles rapid update requests/race condition,
+      // so no need to include debouncing and promise code in this wrapper
+      // TODO: will revert to using runproteinpaint() once these advanced capabilities
+      // are merged into it
+      bindProteinPaint({
+        rootElem,
+        initArgs: arg,
+        updateArgs: arg,
+        isStale() {
+          // new data has replaced this one, will prevent unnecessary render
+          // in case of race condition
+          return prevArg.current != data;
+        },
+      });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
@@ -173,10 +177,6 @@ interface Track {
 interface mds3_isoform {
   ssm_id: string;
   dslabel: string;
-}
-
-interface PpApi {
-  update(arg: any): null;
 }
 
 function getLollipopTrack(
