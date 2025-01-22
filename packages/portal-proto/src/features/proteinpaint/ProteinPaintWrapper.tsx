@@ -179,10 +179,6 @@ interface mds3_isoform {
   dslabel: string;
 }
 
-interface PpApi {
-  update(arg: any): null;
-}
-
 function getLollipopTrack(
   props: PpProps,
   filter0: any,
