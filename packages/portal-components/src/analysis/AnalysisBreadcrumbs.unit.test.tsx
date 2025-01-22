@@ -1,6 +1,31 @@
-import { render } from "test-utils";
-import { SelectionScreenContext } from "./AnalysisWorkspace";
+import React from "react";
+import { render } from "@testing-library/react";
+import { SelectionScreenContext } from "./context";
 import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
+
+export const REGISTERED_APPS = [
+  {
+    name: "Projects",
+    href: {
+      pathname: "/analysis_page",
+      query: { app: "Projects" },
+    },
+    tags: [],
+    hasDemo: false,
+    id: "Projects",
+    countsField: "caseCount",
+  },
+  {
+    name: "My fake App",
+    href: {
+      pathname: "/analysis_page",
+      query: { app: "fakeApp" },
+    },
+    hasDemo: true,
+    id: "fakeApp",
+    tags: [],
+  },
+];
 
 describe("<AnalysisBreadcrumb />", () => {
   it("Apps without selection only displays name", () => {
@@ -17,6 +42,7 @@ describe("<AnalysisBreadcrumb />", () => {
           rightComponent={null}
           onDemoApp={false}
           skipSelectionScreen={true}
+          registeredApps={REGISTERED_APPS}
         />
       </SelectionScreenContext.Provider>,
     );
@@ -39,6 +65,7 @@ describe("<AnalysisBreadcrumb />", () => {
           onDemoApp={true}
           rightComponent={null}
           skipSelectionScreen={true}
+          registeredApps={REGISTERED_APPS}
         />
       </SelectionScreenContext.Provider>,
     );
@@ -61,6 +88,7 @@ describe("<AnalysisBreadcrumb />", () => {
           onDemoApp={false}
           rightComponent={null}
           skipSelectionScreen={false}
+          registeredApps={REGISTERED_APPS}
         />
       </SelectionScreenContext.Provider>,
     );
@@ -84,6 +112,7 @@ describe("<AnalysisBreadcrumb />", () => {
           onDemoApp={false}
           rightComponent={null}
           skipSelectionScreen={false}
+          registeredApps={REGISTERED_APPS}
         />
       </SelectionScreenContext.Provider>,
     );

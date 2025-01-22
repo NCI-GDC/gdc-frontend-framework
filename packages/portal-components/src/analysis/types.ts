@@ -21,4 +21,6 @@ export interface AppRegistrationEntry {
   readonly optimizeRules?: ReadonlyArray<string>;
   readonly selectAdditionalCohort?: boolean;
   readonly noDataTooltip?: string;
+  readonly rightComponent?: React.FC;
+  readonly selectionScreen?: React.FC;
 }
