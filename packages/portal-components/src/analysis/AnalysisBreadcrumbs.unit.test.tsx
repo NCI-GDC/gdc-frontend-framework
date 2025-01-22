@@ -5,25 +5,38 @@ import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
 
 export const REGISTERED_APPS = [
   {
-    name: "Projects",
+    name: "Mutation Frequency",
     href: {
       pathname: "/analysis_page",
-      query: { app: "Projects" },
+      query: { app: "MutationFrequencyApp" },
     },
-    tags: [],
-    hasDemo: false,
-    id: "Projects",
-    countsField: "caseCount",
+    icon: <></>,
+    tags: ["variantAnalysis", "ssm"],
+    hasDemo: true,
+    id: "MutationFrequencyApp",
+    countsField: "cnvOrSsmCaseCount",
+    description:
+      "Visualize most frequently mutated genes and somatic mutations.",
+    noDataTooltip:
+      "Current cohort does not have SSM or CNV data available for visualization.",
+    optimizeRules: ["something == something"],
   },
   {
-    name: "My fake App",
+    name: "Cohort Comparison",
     href: {
       pathname: "/analysis_page",
-      query: { app: "fakeApp" },
+      query: { app: "CohortComparisonApp" },
     },
+    icon: <></>,
+    tags: ["clinicalAnalysis"],
     hasDemo: true,
-    id: "fakeApp",
-    tags: [],
+    id: "CohortComparisonApp",
+    countsField: "caseCount",
+    description:
+      "Display the survival analysis of your cohorts and compare characteristics such as gender, vital status and age at diagnosis.",
+    noDataTooltip:
+      "Current cohort does not have cases available for visualization.",
+    selectionScreen: () => <></>,
   },
 ];
 

@@ -19,6 +19,19 @@ interface AnalysisWorkspaceProps {
   readonly ActiveAnalysisTool: React.ComponentType<{ appId: string }>;
 }
 
+/**
+ * Component to handle the navigation and selecting of apps from the Analysis Tools grid. Routing
+ * should be handled by the application.
+ * @param app - appId of the current app
+ * @param registeredApps - list of available apps
+ * @param recommendedApps - apps to display more prominently in the Core Tools section
+ * @param CountHookRegistry - collection of hooks used for fetching count data
+ * @param handleAppSelected - callback to handle routing when an app is selected from the tools grid
+ * @param isDemoMode - whether the app is in demo mode
+ * @param skipSelectionScreen - whether the selection screen component should be displayed on selecting the app
+ * @param ActiveAnalysisTool - component wrapper to handle displaying the active analysis tool
+ */
+
 const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   app,
   registeredApps,
