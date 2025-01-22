@@ -35,8 +35,8 @@ jest.mock("@/hooks/useIsDemoApp", () => ({
 
 jest.mock("@sjcrh/proteinpaint-client", () => ({
   __esModule: true,
-  runproteinpaint: jest.fn(async (arg) => {
-    runpparg = arg;
+  bindProteinPaint: jest.fn(async (arg) => {
+    runpparg = Object.assign({}, arg.initArgs, arg.updateArgs || {});
     return {};
   }),
 }));

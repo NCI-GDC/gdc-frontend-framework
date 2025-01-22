@@ -1,5 +1,11 @@
 import { FilterSet } from "@gff/core";
 
+export interface PpApi {
+  update(arg: any): null;
+  staleInstance?: boolean;
+  getState?: () => any;
+}
+
 export type SampleData = {
   "cases.case_id"?: string;
 };

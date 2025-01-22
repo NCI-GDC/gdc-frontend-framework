@@ -19,6 +19,7 @@ if (process.env.NODE_ENV == "development") {
     "";
   const PROTEINPAINT_HOST =
     PROTEINPAINT_API.split("://")[1]?.split("/")[0] || "";
+
   if (PROTEINPAINT_HOST && !connectSrc.includes(`https://${PROTEINPAINT_HOST}`))
     connectSrc.push(`https://${PROTEINPAINT_HOST}`);
 }
