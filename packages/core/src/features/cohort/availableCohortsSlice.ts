@@ -1,14 +1,12 @@
 import {
-  AnyAction,
-  createAsyncThunk,
   createEntityAdapter,
   createSlice,
-  Dictionary,
-  EntityId,
   EntityState,
   nanoid,
-  PayloadAction,
+  type PayloadAction,
+  createAsyncThunk,
   ThunkAction,
+  UnknownAction,
 } from "@reduxjs/toolkit";
 import { CoreState } from "../../reducers";
 import { buildCohortGqlOperator, FilterSet } from "./filters";
@@ -66,17 +64,18 @@ export interface Cohort {
   readonly unsavedCohortId?: string; // the id before cohort is saved, used for apps where the cohort can be saved while the user is operating the app
 }
 
-const cohortsAdapter = createEntityAdapter<Cohort>({
+const cohortsAdapter = createEntityAdapter<Cohort, CohortId>({
   sortComparer: (a, b) => {
     if (a.modified_datetime <= b.modified_datetime) return 1;
     else return -1;
   },
+  selectId: (cohort: Cohort): CohortId => cohort.id,
 });
 
 export interface CurrentCohortState {
-  readonly currentCohort: string | undefined;
-  readonly message: string[] | undefined;
-  readonly isLoggedIn?: boolean | undefined;
+  currentCohort: string | undefined;
+  message: string[] | undefined;
+  isLoggedIn?: boolean | undefined;
 }
 
 const emptyInitialState = cohortsAdapter.getInitialState<CurrentCohortState>({
@@ -94,7 +93,9 @@ export const createCohortName = (postfix: string): string => {
   return `Custom Cohort ${postfix}`;
 };
 
-export const createCohortId = (): string => nanoid();
+export type CohortId = string;
+
+export const createCohortId = (): CohortId => nanoid();
 
 const newCohort = ({
   filters = { mode: "and", root: {} },
@@ -125,8 +126,8 @@ const newCohort = ({
 };
 
 const getCurrentCohort = (
-  state: EntityState<Cohort> & CurrentCohortState,
-): EntityId => {
+  state: EntityState<Cohort, CohortId> & CurrentCohortState,
+): CohortId => {
   if (state.currentCohort) {
     return state.currentCohort;
   }
@@ -135,7 +136,7 @@ const getCurrentCohort = (
   return unsavedCohort.id;
 };
 
-const getCurrentCohortFromCoreState = (state: CoreState): EntityId => {
+const getCurrentCohortFromCoreState = (state: CoreState): CohortId => {
   if (state.cohort.availableCohorts.currentCohort) {
     return state.cohort.availableCohorts.currentCohort;
   }
@@ -144,7 +145,7 @@ const getCurrentCohortFromCoreState = (state: CoreState): EntityId => {
 };
 
 const checkForUnsavedCohorts = (
-  state: EntityState<Cohort> & CurrentCohortState,
+  state: EntityState<Cohort, CohortId> & CurrentCohortState,
   replace: boolean,
 ) => {
   const selector = cohortsAdapter.getSelectors();
@@ -852,12 +853,12 @@ export const selectMultipleCohortsById = (
  * @category Cohort
  * @category Selectors
  */
-export const selectAllCohorts = (state: CoreState): Dictionary<Cohort> =>
+export const selectAllCohorts = (state: CoreState): Record<CohortId, Cohort> =>
   cohortSelectors.selectEntities(state);
 
 export const selectCohortCountsResults = (
   state: CoreState,
-  cohortId: EntityId = getCurrentCohortFromCoreState(state),
+  cohortId: CohortId = getCurrentCohortFromCoreState(state),
 ): CoreDataSelectorResponse<CountsData> => {
   return {
     data: cohortSelectors.selectById(state, cohortId)?.counts ?? NullCountsData,
@@ -869,14 +870,14 @@ export const selectCohortCountsResults = (
 
 export const selectCohortCounts = (
   state: CoreState,
-  cohortId: EntityId = getCurrentCohortFromCoreState(state),
+  cohortId: CohortId = getCurrentCohortFromCoreState(state),
 ): CountsDataAndStatus =>
   cohortSelectors.selectById(state, cohortId)?.counts ?? NullCountsData;
 
 export const selectCohortCountsByName = (
   state: CoreState,
   name: keyof CountsData,
-  cohortId: EntityId = getCurrentCohortFromCoreState(state),
+  cohortId: CohortId = getCurrentCohortFromCoreState(state),
 ): number =>
   cohortSelectors.selectById(state, cohortId)?.counts[name] ??
   NullCountsData[name];
@@ -937,7 +938,12 @@ export const updateActiveCohortFilter =
   ({
     field,
     operation,
-  }: UpdateFilterParams): ThunkAction<void, CoreState, undefined, AnyAction> =>
+  }: UpdateFilterParams): ThunkAction<
+    void,
+    CoreState,
+    undefined,
+    UnknownAction
+  > =>
   async (dispatch: CoreDispatch /* getState */) => {
     dispatch(updateCohortFilter({ field, operation }));
   };
@@ -947,19 +953,21 @@ export const updateActiveCohortFilter =
  * Note the assumption if the caseset member has ids then the caseset has previously been created.
  */
 export const setActiveCohort =
-  (cohortId: string): ThunkAction<void, CoreState, undefined, AnyAction> =>
+  (cohortId: string): ThunkAction<void, CoreState, undefined, UnknownAction> =>
   async (dispatch: CoreDispatch /* getState */) => {
     dispatch(setCurrentCohortId(cohortId));
   };
 
 export const discardActiveCohortChanges =
-  (filters: FilterSet): ThunkAction<void, CoreState, undefined, AnyAction> =>
+  (
+    filters: FilterSet,
+  ): ThunkAction<void, CoreState, undefined, UnknownAction> =>
   async (dispatch: CoreDispatch /* getState */) => {
     dispatch(discardCohortChanges({ filters, showMessage: true }));
   };
 
 export const setActiveCohortList =
-  (cohorts: Cohort[]): ThunkAction<void, CoreState, undefined, AnyAction> =>
+  (cohorts: Cohort[]): ThunkAction<void, CoreState, undefined, UnknownAction> =>
   async (dispatch: CoreDispatch, getState) => {
     // set the list of all cohorts
     dispatch(setCohortList(cohorts));

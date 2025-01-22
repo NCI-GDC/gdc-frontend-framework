@@ -2,7 +2,7 @@ import React, { ComponentType, useEffect } from "react";
 import { coreStore } from "../../store";
 import { v5 as uuidv5 } from "uuid";
 import { addGdcAppMetadata, EntityType } from "./gdcAppsSlice";
-import { configureStore, AnyAction } from "@reduxjs/toolkit";
+import { configureStore, UnknownAction } from "@reduxjs/toolkit";
 import { Store, Action } from "redux";
 import {
   Provider,
@@ -140,7 +140,7 @@ export const createAppStore = (options: CreateGDCAppStore) => {
   });
   type AppState = ReturnType<typeof reducers>;
   const context = React.createContext(
-    undefined as unknown as ReactReduxContextValue<AppState, AnyAction>,
+    undefined as unknown as ReactReduxContextValue<AppState, UnknownAction>,
   );
 
   type AppDispatch = typeof store.dispatch;
@@ -160,7 +160,7 @@ export const createAppStore = (options: CreateGDCAppStore) => {
 };
 
 export interface CreateGdcAppWithOwnStoreOptions<
-  A extends Action = AnyAction,
+  A extends Action = UnknownAction,
   S = any,
 > {
   readonly App: ComponentType;
@@ -172,7 +172,10 @@ export interface CreateGdcAppWithOwnStoreOptions<
   readonly context: any;
 }
 
-export const createGdcAppWithOwnStore = <A extends Action = AnyAction, S = any>(
+export const createGdcAppWithOwnStore = <
+  A extends Action = UnknownAction,
+  S = any,
+>(
   options: CreateGdcAppWithOwnStoreOptions<A, S>,
 ): (() => React.JSX.Element) => {
   const { App, id, name, version, requiredEntityTypes, store, context } =

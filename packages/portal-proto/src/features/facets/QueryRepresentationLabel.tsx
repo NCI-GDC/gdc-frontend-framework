@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from "react";
-import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
+import { TypedUseQuery } from "@reduxjs/toolkit/query/react/";
 import {
   fieldNameToTitle,
   useCoreSelector,
@@ -12,7 +12,7 @@ interface QueryRepresentationLabelProps {
   readonly value: string;
   readonly geneSymbolDict: Record<string, string>;
   readonly geneSymbolSuccess: boolean;
-  readonly useCountHook: UseQuery<any>;
+  readonly useCountHook: TypedUseQuery<any, any, any>;
   readonly setLabel?: Dispatch<SetStateAction<string>>;
 }
 

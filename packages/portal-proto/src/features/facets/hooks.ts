@@ -39,7 +39,7 @@ import {
   UpdateFacetFilterFunction,
 } from "@/features/facets/types";
 import { getFacetInfo } from "@/features/cohortBuilder/utils";
-import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
+import { UnknownAction, ThunkDispatch } from "@reduxjs/toolkit";
 import { useDeepCompareEffect } from "use-deep-compare";
 
 /**
@@ -223,7 +223,7 @@ export const useAllEnumFacets = () => {
 };
 
 type UpdateEnumFiltersFunc = (
-  dispatch: ThunkDispatch<any, undefined, AnyAction>,
+  dispatch: ThunkDispatch<any, undefined, UnknownAction>,
   field: string,
   enumerationFilters: EnumOperandValue,
 ) => void;
@@ -235,7 +235,7 @@ type UpdateEnumFiltersFunc = (
  * @param field - field to update
  */
 export const updateEnumFilters: UpdateEnumFiltersFunc = (
-  dispatch: ThunkDispatch<any, undefined, AnyAction>,
+  dispatch: ThunkDispatch<any, undefined, UnknownAction>,
   field: string,
   enumerationFilters: EnumOperandValue,
 ) => {
