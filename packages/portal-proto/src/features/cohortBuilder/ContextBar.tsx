@@ -258,7 +258,10 @@ const ContextBar = ({
         <StickyControl isSticky={isSticky} handleIsSticky={handleIsSticky} />
       }
     >
-      <div className="bg-nci-violet-lightest">
+      <div
+        className={`bg-nci-violet-lightest ${isGroupCollapsed && "invisible"}`}
+        aria-hidden={isGroupCollapsed}
+      >
         <div className="relative p-4">
           <div className="flex gap-1 pb-4 relative lg:absolute lg:pb-0">
             <DropdownWithIcon

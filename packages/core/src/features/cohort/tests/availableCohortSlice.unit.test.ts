@@ -1,5 +1,6 @@
 import {
   Cohort,
+  type CohortId,
   addNewDefaultUnsavedCohort,
   updateCohortName,
   setCurrentCohortId,
@@ -16,7 +17,7 @@ import {
   selectMultipleCohortsById,
 } from "../availableCohortsSlice";
 import * as cohortSlice from "../availableCohortsSlice";
-import { Dictionary, EntityState } from "@reduxjs/toolkit";
+import { EntityState } from "@reduxjs/toolkit";
 import { MOCK_COHORTS } from "./mockData";
 import { FilterSet } from "../filters";
 import { getInitialCoreState } from "src/store.unit.test";
@@ -38,7 +39,7 @@ const INITIAL_STATE = {
   entities: INITIAL_ENTITIES,
   currentCohort: "ALL-GDC-COHORT",
   message: undefined,
-} as EntityState<Cohort> & {
+} as EntityState<Cohort, CohortId> & {
   currentCohort: string;
   message: string[] | undefined;
 };
@@ -119,7 +120,7 @@ describe("test setting/getting currentCohortId", () => {
   const INITIAL_STATE = {
     ids: INITIAL_IDS,
     entities: INITIAL_ENTITIES,
-  } as EntityState<Cohort>;
+  } as EntityState<Cohort, CohortId>;
   const cohortState = {
     availableCohorts: {
       ...INITIAL_STATE,
@@ -332,7 +333,7 @@ describe("filter by prefix", () => {
               modified: false,
               saved: false,
             },
-          } as Dictionary<Cohort>,
+          } as Record<CohortId, Cohort>,
         },
       },
     };

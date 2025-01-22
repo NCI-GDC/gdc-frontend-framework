@@ -24,7 +24,7 @@ import {
   FacetResponse,
   UpdateFacetFilterFunction,
 } from "@/features/facets/types";
-import { ActionCreatorWithPayload } from "@reduxjs/toolkit/dist/createAction";
+import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { extractValue } from "@/features/facets/hooks";
 import { AppDataSelector, AppState } from "@/features/repositoryApp/appApi";
 import {
