@@ -1,4 +1,13 @@
 import AnalysisWorkspace from "./AnalysisWorkspace";
-import { SelectionScreenContext } from "./context";
+import {
+  SelectionScreenContext,
+  DashboardDownloadContext,
+  DownloadProgressContext,
+} from "./context";
 
-export { AnalysisWorkspace, SelectionScreenContext };
+export {
+  AnalysisWorkspace,
+  SelectionScreenContext,
+  DashboardDownloadContext,
+  DownloadProgressContext,
+};

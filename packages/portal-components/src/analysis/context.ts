@@ -29,7 +29,10 @@ export const DashboardDownloadContext = createContext<{
   dispatch: Dispatch<{ type: "add" | "remove"; payload: ChartDownloadInfo[] }>;
 }>({ state: [], dispatch: () => {} });
 
-export const DownloadProgressContext = createContext({
+export const DownloadProgressContext = createContext<{
+  downloadInProgress: boolean;
+  setDownloadInProgress: ((inProgress: boolean) => void) | undefined;
+}>({
   downloadInProgress: false,
   setDownloadInProgress: undefined,
 });
