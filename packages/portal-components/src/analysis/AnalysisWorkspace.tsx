@@ -45,10 +45,6 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   const [cohortSelectionOpen, setCohortSelectionOpen] = useState(false);
   const appInfo = registeredApps.find((a) => a.id === app);
 
-  if (app !== undefined && appInfo === undefined) {
-    return undefined;
-  }
-
   useEffect(() => {
     setCohortSelectionOpen(
       !skipSelectionScreen && appInfo?.selectionScreen !== undefined,
@@ -56,6 +52,10 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   }, [app, appInfo, skipSelectionScreen]);
 
   const [chartDownloadState, dispatch] = useReducer(chartDownloadReducer, []);
+
+  if (app !== undefined && appInfo === undefined) {
+    return undefined;
+  }
 
   return (
     <div>

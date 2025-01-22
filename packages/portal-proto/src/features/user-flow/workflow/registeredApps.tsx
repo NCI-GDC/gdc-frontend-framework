@@ -20,6 +20,7 @@ import {
   DISPLAY_SC_RNA_SEQ_APP,
   isFeatureEnabled,
 } from "@/features/featureFlags";
+import { AppRegistrationEntry } from "@gff/portal-components";
 
 export const COHORTS = [
   { name: "New Custom Cohort", facets: [] },
@@ -35,13 +36,9 @@ export const COHORTS = [
   },
 ];
 
-export const REGISTERED_APPS = [
+export const REGISTERED_APPS: AppRegistrationEntry[] = [
   {
     name: "Clinical Data Analysis",
-    href: {
-      pathname: "/analysis_page",
-      query: { app: "CDave" },
-    },
     icon: <ClinicalDataIcon aria-hidden="true" />,
     tags: ["clinicalAnalysis"],
     hasDemo: true,
@@ -55,10 +52,6 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Cohort Builder",
-    href: {
-      pathname: "/analysis_page",
-      query: { app: "CohortBuilder" },
-    },
     icon: (
       <CohortBuilderIcon
         width={64}
@@ -77,10 +70,6 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Mutation Frequency",
-    href: {
-      pathname: "/analysis_page",
-      query: { app: "MutationFrequencyApp" },
-    },
     icon: <MutationFrequencyIcon />,
     tags: ["variantAnalysis", "ssm"],
     hasDemo: true,
@@ -94,10 +83,6 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Repository",
-    href: {
-      pathname: "/analysis_page",
-      query: { app: "Downloads" },
-    },
     icon: <RepositoryIcon aria-hidden="true" />,
     tags: ["files"],
     hasDemo: false,
@@ -108,10 +93,6 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Projects",
-    href: {
-      pathname: "/analysis_page",
-      query: { app: "Projects" },
-    },
     icon: (
       <ProjectsIcon
         width={64}
@@ -129,10 +110,6 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Cohort Comparison",
-    href: {
-      pathname: "/analysis_page",
-      query: { app: "CohortComparisonApp" },
-    },
     icon: <CohortComparisonIcon aria-hidden="true" />,
     tags: ["clinicalAnalysis"],
     hasDemo: true,
@@ -161,10 +138,6 @@ export const REGISTERED_APPS = [
   */
   {
     name: "Set Operations",
-    href: {
-      pathname: "/analysis_page",
-      query: { app: "SetOperations" },
-    },
     icon: <SetOperationsIcon aria-hidden="true" />,
     tags: ["generalUtility"],
     hasDemo: true,
@@ -177,10 +150,6 @@ export const REGISTERED_APPS = [
   },
   {
     name: "Sequence Reads",
-    href: {
-      pathname: "/analysis_page",
-      query: { app: "SequenceReadApp" },
-    },
     icon: <SequenceReadsIcon aria-hidden="true" />,
     tags: ["sequenceAnalysis"],
     hasDemo: false,
@@ -194,10 +163,6 @@ export const REGISTERED_APPS = [
   },
   {
     name: "BAM Slicing Download",
-    href: {
-      pathname: "/analysis_page",
-      query: { app: "BamDownloadApp" },
-    },
     icon: <BAMSlicingDownloadIcon aria-hidden="true" />,
     tags: ["sequenceAnalysis"],
     hasDemo: false,
@@ -209,10 +174,6 @@ export const REGISTERED_APPS = [
   },
   {
     name: "ProteinPaint",
-    href: {
-      pathname: "/analysis_page",
-      query: { app: "ProteinPaintApp" },
-    },
     icon: (
       <ProteinPaintIcon
         height={48}
@@ -227,17 +188,12 @@ export const REGISTERED_APPS = [
       "Visualize mutations in protein-coding genes by consequence type and protein domain.",
     id: "ProteinPaintApp",
     countsField: "ssmCaseCount",
-    caseCounts: 0.25,
     optimizeRules: ["available data = ssm"],
     noDataTooltip:
       "Current cohort does not have SSM data available for visualization.",
   },
   {
     name: "OncoMatrix",
-    href: {
-      pathname: "/analysis_page",
-      query: { app: "OncoMatrix" },
-    },
     icon: (
       <OncoMatrixIcon
         className="m-auto"
@@ -252,7 +208,6 @@ export const REGISTERED_APPS = [
       "Visualize the top most mutated cases and genes affected by high impact mutations in your cohort.",
     id: "OncoMatrix",
     countsField: "cnvOrSsmCaseCount",
-    caseCounts: 0.25,
     optimizeRules: ["available data = ssm or cnv"],
     noDataTooltip:
       "Current cohort does not have SSM or CNV data available for visualization.",
@@ -262,10 +217,6 @@ export const REGISTERED_APPS = [
     ? [
         {
           name: "Single Cell RNA-seq",
-          href: {
-            pathname: "/analysis_page",
-            query: { app: "scRNAseq" },
-          },
           icon: (
             <ScRNASeqIcon
               className="m-auto"
@@ -287,10 +238,6 @@ export const REGISTERED_APPS = [
     : []),
   {
     name: "Gene Expression Clustering",
-    href: {
-      pathname: "/analysis_page",
-      query: { app: "GeneExpression" },
-    },
     icon: (
       <GeneExpressionIcon
         className="m-auto"
@@ -305,17 +252,12 @@ export const REGISTERED_APPS = [
       "Visualize the top most variably expressed genes in your cohort.",
     id: "GeneExpression",
     countsField: "geneExpressionCaseCount",
-    caseCounts: 0.25,
     optimizeRules: ["available data = ssm or cnv"],
     noDataTooltip:
       "Current cohort does not have gene expression data available for visualization.",
   },
   {
     name: "Cohort Level MAF",
-    href: {
-      pathname: "/analysis_page",
-      query: { app: "CohortLevelMAF" },
-    },
     // TODO: replace with a MAF icon
     icon: <CohortLevelMAFIcon aria-hidden="true" />,
     tags: ["ssm"],

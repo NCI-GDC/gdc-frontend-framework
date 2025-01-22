@@ -1,4 +1,7 @@
-import { AnalysisWorkspace } from "@gff/portal-components";
+import {
+  AnalysisWorkspace,
+  AppRegistrationEntry,
+} from "@gff/portal-components";
 import { NextPage } from "next";
 import dynamic from "next/dynamic";
 import Head from "next/head";
@@ -14,7 +17,7 @@ const ActiveAnalysisToolNoSSR = dynamic(
   },
 );
 
-export const REGISTERED_APPS = [
+export const REGISTERED_APPS: AppRegistrationEntry[] = [
   {
     name: "Projects",
     icon: (
@@ -25,10 +28,6 @@ export const REGISTERED_APPS = [
         aria-hidden="true"
       />
     ),
-    href: {
-      pathname: "/analysis_page",
-      query: { app: "Projects" },
-    },
     tags: [],
     hasDemo: false,
     id: "Projects",
@@ -39,10 +38,6 @@ export const REGISTERED_APPS = [
   {
     name: "My test App",
     icon: <SequenceReadsIcon aria-hidden="true" />,
-    href: {
-      pathname: "/analysis_page",
-      query: { app: "TestApp" },
-    },
     hasDemo: true,
     description: "A test app for testing things",
     id: "TestApp",
