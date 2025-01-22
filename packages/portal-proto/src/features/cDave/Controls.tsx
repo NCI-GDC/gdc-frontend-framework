@@ -227,11 +227,7 @@ const Controls: React.FC<ControlPanelProps> = ({
   );
 
   return (
-    <div
-      className={`${
-        controlsExpanded ? "bg-base-max shadow-md" : ""
-      } pl-4 pt-2 flex flex-col flex-shrink-0 min-h-[560px] max-h-screen`}
-    >
+    <div className="flex flex-col min-h-[560px] max-h-screen">
       <Tooltip
         withArrow
         withinPortal
@@ -245,12 +241,11 @@ const Controls: React.FC<ControlPanelProps> = ({
           aria-expanded={controlsExpanded}
           className="text-accent"
           variant="subtle"
-          size={16}
         >
           {controlsExpanded ? (
-            <DoubleLeftIcon aria-hidden="true" />
+            <DoubleLeftIcon size="24" aria-hidden="true" />
           ) : (
-            <DoubleRightIcon aria-hidden="true" />
+            <DoubleRightIcon size="24" naria-hidden="true" />
           )}
         </ActionIcon>
       </Tooltip>

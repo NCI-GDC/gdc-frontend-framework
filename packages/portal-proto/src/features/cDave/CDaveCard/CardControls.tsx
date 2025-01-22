@@ -91,8 +91,8 @@ const CardControls: React.FC<CardControlsProps> = ({
 
   return (
     <>
-      <div className="flex justify-between gap-2 py-2">
-        <div className="flex flex-wrap-reverse gap-2">
+      <div className="flex justify-between gap-2 py-2 flex-wrap">
+        <div className="flex flex-wrap gap-2">
           <CasesCohortButtonFromFilters
             filters={
               selectedFacets.length === 0

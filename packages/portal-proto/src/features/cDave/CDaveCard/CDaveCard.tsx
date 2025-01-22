@@ -127,7 +127,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   return (
     <Card
       data-testid={`${fieldName}-card`}
-      p="md"
+      padding="md"
       radius={0}
       ref={targetRef}
       className="border-1 border-base-lighter h-full flex flex-col"
