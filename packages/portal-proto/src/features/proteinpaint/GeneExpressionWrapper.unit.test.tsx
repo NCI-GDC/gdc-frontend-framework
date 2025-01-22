@@ -1,5 +1,5 @@
 import { render } from "@testing-library/react";
-import { MatrixWrapper } from "./MatrixWrapper";
+import { MatrixWrapper, demoFilter } from "./MatrixWrapper";
 import { MantineProvider } from "@mantine/core";
 
 const filter = {};
@@ -49,8 +49,8 @@ jest.mock("@/hooks/useIsDemoApp", () => ({
 
 jest.mock("@sjcrh/proteinpaint-client", () => ({
   __esModule: true,
-  runproteinpaint: jest.fn(async (arg) => {
-    runpparg = arg;
+  bindProteinPaint: jest.fn(async (arg) => {
+    runpparg = Object.assign({}, arg.initArgs, arg.updateArgs || {});
     return {};
   }),
 }));
@@ -91,7 +91,7 @@ test("GeneExpression arguments", () => {
   );
   // there should be only one runpp instance when switching to this tool,
   // so the arg key-values should not change on rerender
-  expect(runpparg.filter0).toEqual(filter);
+  expect(runpparg.filter0).toEqual(demoFilter);
   unmount();
 });
 

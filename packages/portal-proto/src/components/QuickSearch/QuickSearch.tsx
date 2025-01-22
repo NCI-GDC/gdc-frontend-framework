@@ -205,9 +205,11 @@ export const QuickSearch = (): JSX.Element => {
     if (!id) {
       return;
     }
-    const selectedObj = fileHistory
+
+    const selectedObj = supersededFile
       ? fileHistory.find((h) => h.uuid === id)
       : matchedSearchList.find((obj) => obj.value == id).obj;
+
     const entityPath = extractEntityPath(selectedObj);
     router.push(entityPath);
     setSearchText("");
@@ -258,7 +260,9 @@ export const QuickSearch = (): JSX.Element => {
         ) : undefined
       }
       onSearchChange={(query) => {
-        setLoading(true);
+        if (query !== "") {
+          setLoading(true);
+        }
         setMatchedSearchList([]);
         setSearchText(query);
       }}
