@@ -39,7 +39,6 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   const userDetails = useFetchUserDetailsQuery();
 
   // to track reusable instance for mds3 skewer track
-  const ppRef = useRef<PpApi>();
   const prevArg = useRef<any>({});
   const coreDispatch = useCoreDispatch();
   const [showSaveCohort, setShowSaveCohort] = useState(false);
