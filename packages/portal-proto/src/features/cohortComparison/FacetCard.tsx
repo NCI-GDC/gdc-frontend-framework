@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { Paper } from "@mantine/core";
 import saveAs from "file-saver";
 import { Bucket, DAYS_IN_YEAR, FilterSet, joinFilters } from "@gff/core";
@@ -8,6 +7,7 @@ import FunctionButton from "@/components/FunctionButton";
 import PValue from "./PValue";
 import CohortCreationButton from "@/components/CohortCreationButton";
 import { CohortComparisonType } from "./CohortComparison";
+import { useDeepCompareMemo } from "use-deep-compare";
 
 interface FacetCardProps {
   readonly data: { buckets: Bucket[] }[];
@@ -83,45 +83,23 @@ export const FacetCard: React.FC<FacetCardProps> = ({
     };
   };
 
-  let formattedData = useMemo(
+  let formattedData = useDeepCompareMemo(
     () =>
-      data.map((cohort, idx) => {
-        const formattedCohort = cohort.buckets
-          .filter((facet) => facet.key !== "_missing")
-          .map((facet) => {
-            return {
-              key: formatBucket(facet.key, field),
-              count: facet.doc_count,
-              filter: createFilters(field, facet.key),
-            };
-          });
-        // Replace '_missing' key because 1) we don't get the value back for histograms 2) to rename the key
-        const totalInResults = formattedCohort.reduce(
-          (runningSum, a) => runningSum + a.count,
-          0,
-        );
-        const missingValue = counts[idx] - totalInResults;
-        if (missingValue === 0) {
-          return formattedCohort;
-        }
-        return [
-          ...formattedCohort,
-          {
-            count: missingValue,
-            key: "missing",
-            filter: {
-              mode: "and",
-              root: {
-                [field]: {
-                  field,
-                  operator: "missing",
-                },
-              },
-            } as FilterSet,
-          },
-        ];
+      data.map((cohort) => {
+        const formattedCohort = cohort.buckets.map((facet) => {
+          return {
+            key:
+              facet.key === "_missing"
+                ? "missing"
+                : formatBucket(facet.key, field),
+            count: facet.doc_count,
+            filter: createFilters(field, facet.key),
+          };
+        });
+
+        return formattedCohort;
       }),
-    [data, counts, field],
+    [data, field],
   );
 
   const uniqueValues = Array.from(
