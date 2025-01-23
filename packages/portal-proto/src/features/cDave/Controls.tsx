@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   Switch,
-  Divider,
   Tooltip,
   Collapse,
   ActionIcon,
@@ -32,6 +31,7 @@ import {
   DoubleRightIcon,
   DownIcon,
   RightIcon,
+  SearchIcon,
 } from "@/utils/icons";
 
 interface CDaveField {
@@ -84,21 +84,21 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
         )}
         tabIndex={0}
         role="button"
-        className="text-md text-primary-contrast cursor-pointer bg-primary font-heading font-semibold flex items-center p-2 sticky top-0 z-10"
+        className="text-md text-primary-contrast cursor-pointer bg-primary-darker font-heading font-semibold flex items-center p-2 sticky top-0 z-10"
         aria-controls={`cdave-control-group-${name}`}
         aria-expanded={groupOpen}
       >
         {groupOpen ? (
-          <DownIcon aria-hidden="true" />
+          <DownIcon aria-hidden="true" size={24} />
         ) : (
-          <RightIcon aria-hidden="true" />
+          <RightIcon aria-hidden="true" size={24} />
         )}{" "}
         {name}
       </span>
       <Collapse
         in={groupOpen}
         id={`cdave-control-group-${name}`}
-        className="border-1 rounded-b-md"
+        className="border-1 border-base-lighter rounded-b-md"
       >
         <div className="flex flex-col">
           <ul className="bg-base-max text-md">
@@ -177,7 +177,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
         labelPosition="left"
         color={fieldColor}
         classNames={{
-          root: "py-2",
+          root: "py-1",
           body: "flex justify-between items-center",
           label: "cursor-pointer text-sm text-black font-content font-medium",
           track: `cursor-pointer ${COLOR_CLASS_HOVER_MAP[field.field_type]}`,
@@ -227,76 +227,78 @@ const Controls: React.FC<ControlPanelProps> = ({
   );
 
   return (
-    <div className="min-w-[12rem] w-3/12 max-w-[23rem] flex-shrink-0">
-      <div className="flex flex-col min-h-[560px] max-h-screen">
-        <Tooltip
-          withArrow
-          withinPortal
-          offset={-2}
-          label={controlsExpanded ? "Hide Control Panel" : "Show Control Panel"}
+    <div
+      className={`${
+        controlsExpanded
+          ? "min-w-[12rem] w-3/12 max-w-[23rem] flex-shrink-0 flex flex-col min-h-[560px] max-h-screen"
+          : ""
+      }`}
+    >
+      <Tooltip
+        withArrow
+        withinPortal
+        offset={-2}
+        label={controlsExpanded ? "Hide Control Panel" : "Show Control Panel"}
+      >
+        <ActionIcon
+          onClick={() => setControlsExpanded(!controlsExpanded)}
+          aria-label="Collapse/Expand controls"
+          aria-controls="cdave-control-panel"
+          aria-expanded={controlsExpanded}
+          className="text-accent"
+          variant="subtle"
         >
-          <ActionIcon
-            onClick={() => setControlsExpanded(!controlsExpanded)}
-            aria-label="Collapse/Expand controls"
-            aria-controls="cdave-control-panel"
-            aria-expanded={controlsExpanded}
-            className="text-accent"
-            variant="subtle"
-          >
-            {controlsExpanded ? (
-              <DoubleLeftIcon size="24" aria-hidden="true" />
-            ) : (
-              <DoubleRightIcon size="24" naria-hidden="true" />
-            )}
-          </ActionIcon>
-        </Tooltip>
-        <div
-          className={controlsExpanded ? "block" : "hidden"}
-          id="cdave-control-panel"
-          data-testid="cdave-control-panel"
+          {controlsExpanded ? (
+            <DoubleLeftIcon size="24" aria-hidden="true" />
+          ) : (
+            <DoubleRightIcon size="24" naria-hidden="true" />
+          )}
+        </ActionIcon>
+      </Tooltip>
+      <div
+        className={controlsExpanded ? "block" : "hidden"}
+        id="cdave-control-panel"
+        data-testid="cdave-control-panel"
+      >
+        <div className="mr-4">
+          <Input
+            data-testid="textbox-cdave-search-bar"
+            placeholder="Search"
+            className="py-2"
+            value={searchTerm}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setSearchTerm(e.target.value)
+            }
+            rightSectionPointerEvents="all"
+            leftSection={<SearchIcon size={24} />}
+            rightSection={
+              searchTerm && (
+                <ActionIcon onClick={() => setSearchTerm("")} variant="subtle">
+                  <CloseIcon aria-label="clear search" />
+                </ActionIcon>
+              )
+            }
+            aria-label="Search fields"
+          />
+        </div>
+        <p
+          data-testid="text-fields-with-values"
+          className="p-2 font-heading text-primary-darker"
         >
-          <div className="mr-4">
-            <Input
-              data-testid="textbox-cdave-search-bar"
-              placeholder="Search"
-              className="py-2"
-              value={searchTerm}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setSearchTerm(e.target.value)
-              }
-              rightSectionPointerEvents="all"
-              rightSection={
-                searchTerm && (
-                  <ActionIcon
-                    onClick={() => setSearchTerm("")}
-                    variant="subtle"
-                  >
-                    <CloseIcon aria-label="clear search" />
-                  </ActionIcon>
-                )
-              }
-              aria-label="Search fields"
+          <strong>{Object.keys(fieldsWithData).length}</strong> of{" "}
+          <strong>{cDaveFields.length}</strong> fields with values
+        </p>
+        <div className="max-h-screen overflow-y-scroll">
+          {Object.entries(TABS).map(([key, label]) => (
+            <ControlGroup
+              name={label}
+              fields={sortFacetFields(groupedFields[key] || [], key)}
+              updateFields={updateFields}
+              activeFields={activeFields}
+              searchTerm={searchTerm}
+              key={key}
             />
-          </div>
-          <p
-            data-testid="text-fields-with-values"
-            className="p-2 font-heading text-primary-darker"
-          >
-            <strong>{Object.keys(fieldsWithData).length}</strong> of{" "}
-            <strong>{cDaveFields.length}</strong> fields with values
-          </p>
-          <div className="max-h-screen overflow-y-scroll">
-            {Object.entries(TABS).map(([key, label]) => (
-              <ControlGroup
-                name={label}
-                fields={sortFacetFields(groupedFields[key] || [], key)}
-                updateFields={updateFields}
-                activeFields={activeFields}
-                searchTerm={searchTerm}
-                key={key}
-              />
-            ))}
-          </div>
+          ))}
         </div>
       </div>
     </div>

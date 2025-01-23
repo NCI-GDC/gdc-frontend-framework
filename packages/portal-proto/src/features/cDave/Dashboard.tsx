@@ -57,7 +57,7 @@ const Dashboard: React.FC<DashboardProps> = ({
           className="h-full border-1 border-base-lighter p-4"
         >
           {isError ? (
-            <Alert>Something's gone wrong</Alert>
+            <Alert>Something&pos;s gone wrong</Alert>
           ) : isFetching || isUninitialized ? (
             <Loader />
           ) : (
