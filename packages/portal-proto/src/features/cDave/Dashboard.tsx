@@ -50,8 +50,8 @@ const Dashboard: React.FC<DashboardProps> = ({
   });
 
   return (
-    <Grid gutter={24} overflow="hidden">
-      <Grid.Col span={{ base: 12, md: 6, lg: 6 }}>
+    <Grid gutter={24} overflow="hidden" className="flex-grow">
+      <Grid.Col span={{ base: 12, lg: 6 }}>
         <div
           data-testid="overall-survival-plot"
           className="h-full border-1 border-base-lighter p-4"
@@ -72,7 +72,7 @@ const Dashboard: React.FC<DashboardProps> = ({
       </Grid.Col>
       {activeFields.map((field) => {
         return (
-          <Grid.Col span={{ base: 12, md: 6, lg: 6 }} key={field}>
+          <Grid.Col span={{ base: 12, lg: 6 }} key={field}>
             <CDaveCard
               field={field}
               data={results[field]}

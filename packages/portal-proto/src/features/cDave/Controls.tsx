@@ -157,7 +157,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
   );
 
   return (
-    <li data-testid={`row-field-${displayName}-cdave`} className="px-2 pt-2">
+    <li data-testid={`row-field-${displayName}-cdave`} className="px-2">
       <Switch
         label={
           searchTerm ? (
@@ -227,71 +227,76 @@ const Controls: React.FC<ControlPanelProps> = ({
   );
 
   return (
-    <div className="flex flex-col min-h-[560px] max-h-screen">
-      <Tooltip
-        withArrow
-        withinPortal
-        offset={-2}
-        label={controlsExpanded ? "Hide Control Panel" : "Show Control Panel"}
-      >
-        <ActionIcon
-          onClick={() => setControlsExpanded(!controlsExpanded)}
-          aria-label="Collapse/Expand controls"
-          aria-controls="cdave-control-panel"
-          aria-expanded={controlsExpanded}
-          className="text-accent"
-          variant="subtle"
+    <div className="min-w-[12rem] w-3/12 max-w-[23rem] flex-shrink-0">
+      <div className="flex flex-col min-h-[560px] max-h-screen">
+        <Tooltip
+          withArrow
+          withinPortal
+          offset={-2}
+          label={controlsExpanded ? "Hide Control Panel" : "Show Control Panel"}
         >
-          {controlsExpanded ? (
-            <DoubleLeftIcon size="24" aria-hidden="true" />
-          ) : (
-            <DoubleRightIcon size="24" naria-hidden="true" />
-          )}
-        </ActionIcon>
-      </Tooltip>
-      <div
-        className={controlsExpanded ? "block" : "hidden"}
-        id="cdave-control-panel"
-        data-testid="cdave-control-panel"
-      >
-        <div className="mr-4">
-          <Input
-            data-testid="textbox-cdave-search-bar"
-            placeholder="Search"
-            className="py-2"
-            value={searchTerm}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setSearchTerm(e.target.value)
-            }
-            rightSectionPointerEvents="all"
-            rightSection={
-              searchTerm && (
-                <ActionIcon onClick={() => setSearchTerm("")} variant="subtle">
-                  <CloseIcon aria-label="clear search" />
-                </ActionIcon>
-              )
-            }
-            aria-label="Search fields"
-          />
-        </div>
-        <p
-          data-testid="text-fields-with-values"
-          className="p-2 font-heading text-primary-darker"
+          <ActionIcon
+            onClick={() => setControlsExpanded(!controlsExpanded)}
+            aria-label="Collapse/Expand controls"
+            aria-controls="cdave-control-panel"
+            aria-expanded={controlsExpanded}
+            className="text-accent"
+            variant="subtle"
+          >
+            {controlsExpanded ? (
+              <DoubleLeftIcon size="24" aria-hidden="true" />
+            ) : (
+              <DoubleRightIcon size="24" naria-hidden="true" />
+            )}
+          </ActionIcon>
+        </Tooltip>
+        <div
+          className={controlsExpanded ? "block" : "hidden"}
+          id="cdave-control-panel"
+          data-testid="cdave-control-panel"
         >
-          <strong>{Object.keys(fieldsWithData).length}</strong> of{" "}
-          <strong>{cDaveFields.length}</strong> fields with values
-        </p>
-        <div className="max-h-screen overflow-y-scroll">
-          {Object.entries(TABS).map(([key, label]) => (
-            <ControlGroup
-              name={label}
-              fields={sortFacetFields(groupedFields[key] || [], key)}
-              updateFields={updateFields}
-              activeFields={activeFields}
-              searchTerm={searchTerm}
-              key={key}
+          <div className="mr-4">
+            <Input
+              data-testid="textbox-cdave-search-bar"
+              placeholder="Search"
+              className="py-2"
+              value={searchTerm}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setSearchTerm(e.target.value)
+              }
+              rightSectionPointerEvents="all"
+              rightSection={
+                searchTerm && (
+                  <ActionIcon
+                    onClick={() => setSearchTerm("")}
+                    variant="subtle"
+                  >
+                    <CloseIcon aria-label="clear search" />
+                  </ActionIcon>
+                )
+              }
+              aria-label="Search fields"
             />
-          ))}
+          </div>
+          <p
+            data-testid="text-fields-with-values"
+            className="p-2 font-heading text-primary-darker"
+          >
+            <strong>{Object.keys(fieldsWithData).length}</strong> of{" "}
+            <strong>{cDaveFields.length}</strong> fields with values
+          </p>
+          <div className="max-h-screen overflow-y-scroll">
+            {Object.entries(TABS).map(([key, label]) => (
+              <ControlGroup
+                name={label}
+                fields={sortFacetFields(groupedFields[key] || [], key)}
+                updateFields={updateFields}
+                activeFields={activeFields}
+                searchTerm={searchTerm}
+                key={key}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>
