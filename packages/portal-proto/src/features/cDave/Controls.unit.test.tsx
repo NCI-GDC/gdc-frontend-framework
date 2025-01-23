@@ -25,7 +25,7 @@ describe("<Controls />", () => {
   });
 
   it("displays amount of fields with data", () => {
-    const { getByText } = render(
+    const { getByTestId } = render(
       <Controls
         updateFields={jest.fn()}
         controlsExpanded
@@ -42,7 +42,8 @@ describe("<Controls />", () => {
       />,
     );
 
-    expect(getByText("2 of 3 fields with values")).toBeInTheDocument();
+    const fieldsWithValuesText = getByTestId("text-fields-with-values");
+    expect(fieldsWithValuesText).toHaveTextContent("2 of 3 fields with values");
   });
 
   it("active fields display as selected", () => {
