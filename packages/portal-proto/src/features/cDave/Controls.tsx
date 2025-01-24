@@ -29,9 +29,9 @@ import {
   CloseIcon,
   DoubleLeftIcon,
   DoubleRightIcon,
-  DownIcon,
-  RightIcon,
+  DownArrowIcon,
   SearchIcon,
+  UpArrowIcon,
 } from "@/utils/icons";
 
 interface CDaveField {
@@ -89,9 +89,9 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
         aria-expanded={groupOpen}
       >
         {groupOpen ? (
-          <DownIcon aria-hidden="true" size={24} />
+          <UpArrowIcon aria-hidden="true" size={24} />
         ) : (
-          <RightIcon aria-hidden="true" size={24} />
+          <DownArrowIcon aria-hidden="true" size={24} />
         )}{" "}
         {name}
       </span>
@@ -260,35 +260,31 @@ const Controls: React.FC<ControlPanelProps> = ({
         id="cdave-control-panel"
         data-testid="cdave-control-panel"
       >
-        <div className="mr-4">
-          <Input
-            data-testid="textbox-cdave-search-bar"
-            placeholder="Search"
-            className="py-2"
-            value={searchTerm}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setSearchTerm(e.target.value)
-            }
-            rightSectionPointerEvents="all"
-            leftSection={<SearchIcon size={24} />}
-            rightSection={
-              searchTerm && (
-                <ActionIcon onClick={() => setSearchTerm("")} variant="subtle">
-                  <CloseIcon aria-label="clear search" />
-                </ActionIcon>
-              )
-            }
-            aria-label="Search fields"
-          />
-        </div>
-        <p
-          data-testid="text-fields-with-values"
-          className="p-2 font-heading text-primary-darker"
-        >
+        <Input
+          data-testid="textbox-cdave-search-bar"
+          placeholder="Search"
+          className="py-2"
+          value={searchTerm}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setSearchTerm(e.target.value)
+          }
+          rightSectionPointerEvents="all"
+          leftSection={<SearchIcon size={24} />}
+          rightSection={
+            searchTerm && (
+              <ActionIcon onClick={() => setSearchTerm("")} variant="subtle">
+                <CloseIcon aria-label="clear search" />
+              </ActionIcon>
+            )
+          }
+          aria-label="Search fields"
+        />
+
+        <p data-testid="text-fields-with-values" className="p-2 font-heading">
           <strong>{Object.keys(fieldsWithData).length}</strong> of{" "}
           <strong>{cDaveFields.length}</strong> fields with values
         </p>
-        <div className="max-h-screen overflow-y-scroll">
+        <div className="max-h-screen overflow-y-auto">
           {Object.entries(TABS).map(([key, label]) => (
             <ControlGroup
               name={label}

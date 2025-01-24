@@ -212,7 +212,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-center flex-wrap">
-        <div className="font-content text-[1rem]">{title}</div>
+        <div className="font-heading text-[1rem]">{title}</div>
         <div className="flex items-center ml-auto gap-1">
           <Menu
             position="bottom-start"
@@ -275,7 +275,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
           </Tooltip>
         </div>
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col font-content-noto">
         {!hideLegend &&
           legend?.map((x, idx) => {
             return (
