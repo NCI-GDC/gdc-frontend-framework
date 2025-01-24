@@ -14,13 +14,32 @@ import {
   discardCohortChanges,
   showModal,
   Modals,
+  FilterSet,
 } from "@gff/core";
 import { SaveOrCreateEntityBody } from "../SaveOrCreateEntityModal";
 import { INVALID_COHORT_NAMES } from "@/features/cohortBuilder/utils";
 import { omit } from "lodash";
-import { CohortState, SaveCohortModalProps } from "./types";
 import useCohortOperations from "./useCohortOperations";
 import ReplaceCohortConfirmation from "./ReplaceCohortConfirmation";
+
+interface CohortState {
+  showReplaceCohort: boolean;
+  cohortReplaced: boolean;
+  enteredName?: string;
+  cohortSavedMessage?: string[];
+}
+
+interface SaveCohortModalProps {
+  opened: boolean;
+  initialName?: string;
+  onClose: () => void;
+  cohortId?: string;
+  filters: FilterSet;
+  caseFilters?: FilterSet;
+  createStaticCohort?: boolean;
+  setAsCurrent?: boolean;
+  saveAs?: boolean;
+}
 
 /**
  * SaveCohortModal handles saving a user's cohort
