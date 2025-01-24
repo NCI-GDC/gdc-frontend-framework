@@ -76,7 +76,7 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
   );
 
   return filteredFields.length > 0 ? (
-    <div className="mb-4">
+    <div className="mb-4 last:mb-0">
       <span
         onClick={() => setGroupOpen(!groupOpen)}
         onKeyDown={createKeyboardAccessibleFunction(() =>
@@ -284,7 +284,7 @@ const Controls: React.FC<ControlPanelProps> = ({
           <strong>{Object.keys(fieldsWithData).length}</strong> of{" "}
           <strong>{cDaveFields.length}</strong> fields with values
         </p>
-        <div className="max-h-screen overflow-y-auto">
+        <div className="max-h-screen overflow-y-auto border-t-1 border-b-1 border-base-lighter rounded-b-md rounded-t-md">
           {Object.entries(TABS).map(([key, label]) => (
             <ControlGroup
               name={label}
