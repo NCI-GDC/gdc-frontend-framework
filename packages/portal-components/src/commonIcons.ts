@@ -10,8 +10,17 @@ import {
   MdOutlineLogin as LoginIcon,
   MdKeyboardArrowUp as UpArrowIcon,
   MdPlayArrow as PlayIcon,
+  MdAdd as AddIcon,
+  MdDelete as DeleteIcon,
+  MdSave as SaveIcon,
+  MdFileUpload as UploadIcon,
+  MdDownload as DownloadIcon,
 } from "react-icons/md";
 import { VscFeedback as FeedbackIcon } from "react-icons/vsc";
+import {
+  FaCaretDown as DropdownIcon,
+  FaUndo as UndoIcon,
+} from "react-icons/fa";
 
 export {
   CartIcon,
@@ -26,4 +35,11 @@ export {
   PencilIcon,
   OptionsIcon,
   LoginIcon,
+  DropdownIcon,
+  UndoIcon,
+  AddIcon,
+  DeleteIcon,
+  UploadIcon,
+  SaveIcon,
+  DownloadIcon,
 };

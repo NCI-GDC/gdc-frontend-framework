@@ -1,6 +1,23 @@
 import React, { PropsWithChildren } from "react";
-import { Footer } from "@gff/portal-components";
+import { Footer, CohortManager } from "@gff/portal-components";
 import Header from "@/components/Header";
+
+const EXAMPLE_COHORT = {
+  name: "Baily's Cohort",
+  id: "0000-0000-1000-0000",
+  filters: {
+    mode: "and",
+    root: {
+      "cases.primary_site": {
+        operator: "includes",
+        field: "cases.primary_site",
+        operands: ["breast", "bronchus and lung"],
+      },
+    },
+  },
+  modified: false,
+  modified_datetime: new Date(2020, 1, 15).toISOString(),
+};
 
 interface PageLayoutProps extends PropsWithChildren {}
 
@@ -10,6 +27,11 @@ const PageLayout: React.FC<PageLayoutProps> = ({
   return (
     <>
       <Header />
+      <CohortManager
+        selectAvailableCohorts={() => [EXAMPLE_COHORT]}
+        selectCurrentCohort={() => EXAMPLE_COHORT}
+        setActiveCohort={() => {}}
+      />
       {children}
       <Footer
         useVersionInfoDetailsHook={() => ({ data: {}, isSuccess: true })}

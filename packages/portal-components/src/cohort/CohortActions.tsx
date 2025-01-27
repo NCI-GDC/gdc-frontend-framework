@@ -1,0 +1,134 @@
+import React, { useState } from "react";
+import { Loader, Tooltip, Button } from "@mantine/core";
+import DropdownMenu from "@/common/DropdownMenu";
+import {
+  AddIcon,
+  DeleteIcon,
+  DownloadIcon,
+  SaveIcon,
+  UploadIcon,
+} from "src/commonIcons";
+import { Cohort } from "./types";
+
+interface CohortActionsProps {
+  onSave: () => void;
+  onSaveAs: () => void;
+  onDelete: () => void;
+  selectCurrentCohort: () => Cohort;
+  selectAvailableCohorts: () => Cohort[];
+  addNewDefaultUnsavedCohort: () => void;
+  handleImport?: () => void;
+  handleExport?: () => void;
+}
+
+const CohortActions: React.FC<CohortActionsProps> = ({
+  onSave,
+  onSaveAs,
+  onDelete,
+  selectCurrentCohort,
+  selectAvailableCohorts,
+  addNewDefaultUnsavedCohort,
+  handleImport,
+  handleExport,
+}: CohortActionsProps) => {
+  const currentCohort = selectCurrentCohort();
+  const availableCohorts = selectAvailableCohorts();
+  const hasUnsavedCohorts =
+    availableCohorts.filter((c) => !c.saved).length >= 1;
+
+  const [exportCohortPending] = useState(false);
+
+  return (
+    <div className="flex justify-center items-center gap-2 md:gap-4">
+      <Tooltip label="Save Cohort" position="top" withArrow>
+        <span className="h-12">
+          <DropdownMenu
+            customDataTestId="saveButton"
+            dropdownElements={[
+              {
+                onClick: onSave,
+                title: "Save",
+                disabled: currentCohort.saved && !currentCohort.modified,
+              },
+              {
+                onClick: onSaveAs,
+                title: "Save As",
+                disabled: !currentCohort.saved,
+              },
+            ]}
+            LeftSection={
+              <SaveIcon size="1.5em" className="-mr-2.5" aria-hidden="true" />
+            }
+            TargetButtonChildren=""
+            fullHeight
+            disableTargetWidth
+            buttonAriaLabel="Save cohort"
+          />
+        </span>
+      </Tooltip>
+
+      <Tooltip
+        label={
+          hasUnsavedCohorts
+            ? "There is already an unsaved cohort"
+            : "Create New Unsaved Cohort"
+        }
+        position="bottom"
+        withArrow
+      >
+        <Button
+          onClick={addNewDefaultUnsavedCohort}
+          data-testid="addButton"
+          disabled={hasUnsavedCohorts}
+          aria-label="Add cohort"
+          variant="cohort"
+        >
+          <AddIcon size="1.5em" aria-hidden="true" />
+        </Button>
+      </Tooltip>
+
+      <Tooltip label="Delete Cohort" position="bottom" withArrow>
+        <Button
+          data-testid="deleteButton"
+          onClick={onDelete}
+          aria-label="Delete cohort"
+          variant="cohort"
+        >
+          <DeleteIcon size="1.5em" aria-hidden="true" />
+        </Button>
+      </Tooltip>
+      {handleImport && (
+        <Tooltip label="Import New Cohort" position="bottom" withArrow>
+          <Button
+            data-testid="uploadButton"
+            onClick={handleImport}
+            aria-label="Upload cohort"
+            variant="cohort"
+          >
+            <UploadIcon size="1.5em" aria-hidden="true" />
+          </Button>
+        </Tooltip>
+      )}
+      {handleExport && (
+        <Tooltip label="Export Cohort" position="bottom" withArrow>
+          <span>
+            <Button
+              data-testid="downloadButton"
+              onClick={handleExport}
+              aria-label="Download cohort"
+              variant="cohort"
+            >
+              {exportCohortPending ? (
+                <Loader />
+              ) : (
+                <DownloadIcon size="1.5em" aria-hidden="true" />
+              )}
+            </Button>
+          </span>
+        </Tooltip>
+      )}
+    </div>
+  );
+};
+
+export default CohortActions;

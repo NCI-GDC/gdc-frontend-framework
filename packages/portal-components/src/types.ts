@@ -7,7 +7,7 @@ export interface DataFetchingResult<T> {
 export type DataFetchingHook<T> = () => DataFetchingResult<T>;
 
 export type ImageComponentType = React.ComponentType<
-  React.HTMLProps<HTMLImageElement>
+  React.HTMLProps<HTMLImageElement> & { layout: string }
 >;
 
 export type LinkComponentType = React.ComponentType<
