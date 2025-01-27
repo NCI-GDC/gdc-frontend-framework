@@ -153,16 +153,16 @@ export const createFacetCard = ({
     );
   }
   if (facet.facet_type === "upload") {
-    const field = facet.field.replace("upload.", "");
     return (
       <UploadFacet
-        key={`${idPrefix}-exact-${field}`}
-        field={field}
+        key={`${idPrefix}-exact-${facet.field}`}
+        field={facet.field}
+        fullField={facet.full}
         customFaceTitle={facet.title}
         useClearFilter={dataFunctions.useClearFilter}
-        facetButtonName={facet.full}
+        facetButtonName={facet.uploadLabel}
         width={width}
-        description={facet.description}
+        toolTip={facet.toolTip}
       />
     );
   } else if (facet.facet_type === "set") {

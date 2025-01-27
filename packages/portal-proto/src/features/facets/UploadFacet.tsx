@@ -22,10 +22,12 @@ import { humanify } from "@/utils/index";
 import { FacetRequiredHooks } from "./types";
 import { useDeepCompareMemo } from "use-deep-compare";
 import { UndoIcon } from "@/utils/icons";
+import { calculateStickyHeaderHeight } from "src/utils/";
 
 interface UploadFacetProps {
   field: string;
-  description?: string;
+  fullField: string;
+  toolTip?: string;
   facetButtonName?: string;
   width?: string;
   useClearFilter: FacetRequiredHooks["useClearFilter"];
@@ -34,7 +36,8 @@ interface UploadFacetProps {
 
 const UploadFacet: React.FC<UploadFacetProps> = ({
   field,
-  description,
+  fullField,
+  toolTip,
   facetButtonName,
   width,
   useClearFilter,
@@ -43,6 +46,8 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
   const coreDispatch = useCoreDispatch();
   const currentCohortId = useCoreSelector(selectCurrentCohortId);
   const clearFilters = useClearFilter();
+  const hash = window?.location?.hash.split("#")?.[1];
+  const cardSelected = hash !== undefined && hash === fullField;
 
   const facetTitle = humanify({
     term: customFaceTitle
@@ -90,11 +95,19 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
     }
   };
 
+  const stickyHeaderHeight = calculateStickyHeaderHeight();
+
   return (
     <div
       className={`flex flex-col ${
         width || "mx-0"
-      } bg-base-max border-base-lighter border-1 rounded-b-md text-xs transition`}
+      } bg-base-max border-base-lighter border-1 rounded-b-md text-xs transition ${
+        cardSelected ? "animate-border-highlight " : undefined
+      }`}
+      style={{
+        scrollMarginTop: stickyHeaderHeight + 10,
+      }}
+      id={fullField}
     >
       <FacetHeader>
         <FacetText>{facetTitle}</FacetText>
@@ -112,8 +125,8 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
       <div className="p-4">
         <div className="flex justify-center">
           <Tooltip
-            disabled={!description}
-            label={description}
+            disabled={!toolTip}
+            label={toolTip}
             multiline
             w={220}
             withArrow
