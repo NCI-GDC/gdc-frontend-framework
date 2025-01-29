@@ -12,7 +12,7 @@ import { AnchorLink } from "@/components/AnchorLink";
 import SSMPlot from "../charts/SSMPlot";
 import { ConsequenceTable } from "@/features/mutationSummary/ConsequenceTable";
 import { HeaderTitle } from "@/components/tailwindComponents";
-import SSMSCancerDistributionTable from "../cancerDistributionTable/SSMSCancerDistributionTable";
+import SSMSCancerDistributionTable from "../CancerDistributionTable/SSMSCancerDistributionTable";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import MutationsIcon from "public/user-flow/icons/summary/gene-mutation.svg";
 
