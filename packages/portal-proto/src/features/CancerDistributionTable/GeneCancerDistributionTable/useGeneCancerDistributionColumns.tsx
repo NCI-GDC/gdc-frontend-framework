@@ -11,8 +11,8 @@ import { CancerDistributionGeneType } from "../types";
 const createSSMAffectedFilters = (
   project: string,
   gene_id: string,
-  cohortFilters: FilterSet = undefined,
-  genomicFilters: FilterSet = undefined,
+  cohortFilters: FilterSet,
+  genomicFilters: FilterSet,
 ): FilterSet => {
   return {
     mode: "and",
@@ -48,7 +48,7 @@ const createCNVFiltersForGene = ({
   genomicFilters: FilterSet;
   gene_id: string;
 }): FilterSet => {
-  return joinFilters(genomicFilters, {
+  const baseFilters: FilterSet = {
     mode: "and",
     root: {
       "cases.project.project_id": {
@@ -67,7 +67,11 @@ const createCNVFiltersForGene = ({
         operand: cnvType,
       },
     },
-  });
+  };
+
+  return genomicFilters
+    ? joinFilters(genomicFilters, baseFilters)
+    : baseFilters;
 };
 
 const cancerDistributionTableColumnHelper =
@@ -77,8 +81,8 @@ export const useGeneCancerDistributionColumns = ({
   symbol,
   expandedColumnId,
   gene_or_ssm_id,
-  cohortFilters = undefined,
-  genomicFilters = undefined,
+  cohortFilters,
+  genomicFilters,
 }: {
   isGene: boolean;
   symbol: string;
@@ -87,8 +91,8 @@ export const useGeneCancerDistributionColumns = ({
   cohortFilters?: FilterSet;
   genomicFilters?: FilterSet;
 }) => {
-  return useDeepCompareMemo(() => {
-    const baseColumns = [
+  return useDeepCompareMemo(
+    () => [
       cancerDistributionTableColumnHelper.accessor("project", {
         id: "project" as const,
         header: "Project",
@@ -401,8 +405,7 @@ export const useGeneCancerDistributionColumns = ({
           },
         },
       }),
-    ];
-
-    return baseColumns;
-  }, [symbol, expandedColumnId, gene_or_ssm_id, cohortFilters, genomicFilters]);
+    ],
+    [symbol, expandedColumnId, gene_or_ssm_id, cohortFilters, genomicFilters],
+  );
 };
