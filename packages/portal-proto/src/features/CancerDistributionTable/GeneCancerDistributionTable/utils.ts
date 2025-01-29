@@ -23,6 +23,15 @@ export const handleTSVDownloadGene = (
             )} %)`,
         },
 
+        "#_cnv_amplifications": {
+          composer: (cancerDistributionData: CancerDistributionGeneType) =>
+            `${cancerDistributionData.cnv_amplifications.numerator || 0} / ${
+              cancerDistributionData.cnv_amplifications.denominator || 0
+            } (${cancerDistributionData.cnv_amplifications_percent.toFixed(
+              2,
+            )} %)`,
+        },
+
         "#_cnv_gains": {
           composer: (cancerDistributionData: CancerDistributionGeneType) =>
             `${cancerDistributionData.cnv_gains.numerator || 0} / ${
@@ -30,13 +39,24 @@ export const handleTSVDownloadGene = (
             } (${cancerDistributionData.cnv_gains_percent.toFixed(2)} %)`,
         },
 
-        "#_cnv_heterozygous_deletion": {
+        "#_cnv_heterozygous_deletions": {
           composer: (cancerDistributionData: CancerDistributionGeneType) =>
             `${
               cancerDistributionData.cnv_heterozygous_deletions.numerator || 0
             } / ${
               cancerDistributionData.cnv_heterozygous_deletions.denominator || 0
             } (${cancerDistributionData.cnv_heterozygous_deletions_percent.toFixed(
+              2,
+            )} %)`,
+        },
+
+        "#_cnv_homozygous_deletions": {
+          composer: (cancerDistributionData: CancerDistributionGeneType) =>
+            `${
+              cancerDistributionData.cnv_homozygous_deletions.numerator || 0
+            } / ${
+              cancerDistributionData.cnv_homozygous_deletions.denominator || 0
+            } (${cancerDistributionData.cnv_homozygous_deletions_percent.toFixed(
               2,
             )} %)`,
         },
@@ -63,6 +83,10 @@ export const handleJSONDownloadGene = (
         ssm_affected_cases,
         cnv_gains,
         cnv_gains_percent,
+        cnv_amplifications,
+        cnv_amplifications_percent,
+        cnv_homozygous_deletions,
+        cnv_homozygous_deletions_percent,
         cnv_heterozygous_deletions,
         cnv_heterozygous_deletions_percent,
         num_mutations,
@@ -73,21 +97,27 @@ export const handleJSONDownloadGene = (
           site: primary_site,
           num_affected_cases: ssm_affected_cases.numerator,
           num_affected_cases_total: ssm_affected_cases.denominator,
-          num_affected_cases_percent: ssm_affected_cases_percent,
+          affected_cases_percent: ssm_affected_cases_percent,
+
+          num_cnv_amplification: cnv_amplifications.numerator,
+          cnv_amplification_percent: cnv_amplifications_percent,
 
           num_cnv_gain: cnv_gains.numerator,
-          num_cnv_gain_percent: cnv_gains_percent,
-          num_cnv_loss: cnv_heterozygous_deletions.numerator, // might need to change it here too
-          num_cnv_loss_percent: cnv_heterozygous_deletions_percent,
+          cnv_gain_percent: cnv_gains_percent,
+
+          num_cnv_heterozygous_deletion: cnv_heterozygous_deletions.numerator,
+          cnv_heterozygous_deletion_percent: cnv_heterozygous_deletions_percent,
+
+          num_cnv_homozygous_deletion: cnv_homozygous_deletions.numerator,
+          cnv_homozygous_deletion_percent: cnv_homozygous_deletions_percent,
+
           num_cnv_cases_total:
             cnv_gains.denominator || cnv_heterozygous_deletions.denominator,
           mutations_counts: num_mutations,
         };
       },
     )
-    .sort(
-      (a, b) => b.num_affected_cases_percent - a.num_affected_cases_percent,
-    );
+    .sort((a, b) => b.affected_cases_percent - a.affected_cases_percent);
   const blob = new Blob([JSON.stringify(json, null, 2)], {
     type: "text/json",
   });
