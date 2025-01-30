@@ -2,7 +2,7 @@ import {
   useGetSSMSCancerDistributionTableQuery,
   useGetProjectsQuery,
 } from "@gff/core";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ExpandedState, Row, SortingState } from "@tanstack/react-table";
 import { useDeepCompareMemo } from "use-deep-compare";
 import {
@@ -33,6 +33,7 @@ const SSMSCancerDistributionTable: React.FC<
     isError,
     isSuccess,
   } = useGetSSMSCancerDistributionTableQuery({ ssms });
+
   const projectKeys = useDeepCompareMemo(
     () => ssmCancerDistributionData?.projects.map((p) => p.key) || [],
     [ssmCancerDistributionData],
@@ -103,18 +104,17 @@ const SSMSCancerDistributionTable: React.FC<
     ssm_id: ssms,
   });
 
-  // can you make it type in a way that gets id from columns?
   const [sorting, setSorting] = useState<SortingState>([
     {
       id: "#_ssm_affected_cases",
       desc: true,
     },
   ]);
-  // can you make it type in a way that gets id from columns?
 
-  const getRowId = (originalRow: CancerDistributionSSMType) => {
-    return originalRow.project;
-  };
+  const getRowId = useCallback(
+    (row: CancerDistributionSSMType) => row.project,
+    [],
+  );
 
   const {
     handlePageChange,

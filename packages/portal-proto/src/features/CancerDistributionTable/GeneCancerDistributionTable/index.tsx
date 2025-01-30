@@ -3,7 +3,7 @@ import {
   useGetGeneCancerDistributionTableQuery,
   useGetProjectsQuery,
 } from "@gff/core";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   ColumnOrderState,
   ExpandedState,
@@ -161,31 +161,28 @@ const GeneCancerDistributionTable: React.FC<
     isGene: true,
     symbol,
     expandedColumnId,
-    gene_or_ssm_id: gene,
+    gene_id: gene,
     cohortFilters,
     genomicFilters,
   });
 
-  // can you make it type in a way that gets id from columns?
   const [sorting, setSorting] = useState<SortingState>([
     {
-      id: "#_ssm_affected_cases",
+      id: "#_ssm_affected_cases", // need to be column ids
       desc: true,
     },
   ]);
-  // can you make it type in a way that gets id from columns?
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     "#_cnv_heterozygous_deletions": false,
   });
-
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
-    cancerDistributionTableColumns.map((column) => column.id as string), //must start out with populated columnOrder so we can splice
+    cancerDistributionTableColumns.map((column) => column.id), //must start out with populated columnOrder so we can splice
   );
 
-  const getRowId = (originalRow: CancerDistributionGeneType) => {
-    return originalRow.project;
-  };
-
+  const getRowId = useCallback(
+    (row: CancerDistributionGeneType) => row.project,
+    [],
+  );
   const {
     handlePageChange,
     handlePageSizeChange,

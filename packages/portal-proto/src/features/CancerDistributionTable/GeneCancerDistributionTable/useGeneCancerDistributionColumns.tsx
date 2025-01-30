@@ -74,20 +74,28 @@ const createCNVFiltersForGene = ({
     : baseFilters;
 };
 
+const createSortingFn =
+  (key: keyof CancerDistributionGeneType) =>
+  (rowA: CancerDistributionGeneType, rowB: CancerDistributionGeneType) => {
+    if (rowA[key] > rowB[key]) return 1;
+    if (rowA[key] < rowB[key]) return -1;
+    return 0;
+  };
+
 const cancerDistributionTableColumnHelper =
   createColumnHelper<CancerDistributionGeneType>();
 
 export const useGeneCancerDistributionColumns = ({
   symbol,
   expandedColumnId,
-  gene_or_ssm_id,
+  gene_id,
   cohortFilters,
   genomicFilters,
 }: {
   isGene: boolean;
   symbol: string;
   expandedColumnId?: string;
-  gene_or_ssm_id: string;
+  gene_id: string;
   cohortFilters?: FilterSet;
   genomicFilters?: FilterSet;
 }) => {
@@ -146,7 +154,7 @@ export const useGeneCancerDistributionColumns = ({
               numCases={row.original.ssm_affected_cases.numerator || 0}
               filters={createSSMAffectedFilters(
                 row.original.project,
-                gene_or_ssm_id,
+                gene_id,
                 cohortFilters,
                 genomicFilters,
               )}
@@ -161,21 +169,7 @@ export const useGeneCancerDistributionColumns = ({
             />
           ),
           meta: {
-            sortingFn: (rowA, rowB) => {
-              if (
-                rowA.ssm_affected_cases_percent >
-                rowB.ssm_affected_cases_percent
-              ) {
-                return 1;
-              }
-              if (
-                rowA.ssm_affected_cases_percent <
-                rowB.ssm_affected_cases_percent
-              ) {
-                return -1;
-              }
-              return 0;
-            },
+            sortingFn: createSortingFn("ssm_affected_cases_percent"),
           },
           enableSorting: true,
         },
@@ -198,7 +192,7 @@ export const useGeneCancerDistributionColumns = ({
                 project: row.original.project,
                 cnvType: "Amplification",
                 genomicFilters,
-                gene_id: gene_or_ssm_id,
+                gene_id,
               })}
               caseFilters={cohortFilters}
               createStaticCohort
@@ -212,21 +206,7 @@ export const useGeneCancerDistributionColumns = ({
             />
           ),
           meta: {
-            sortingFn: (rowA, rowB) => {
-              if (
-                rowA.cnv_amplifications_percent >
-                rowB.cnv_amplifications_percent
-              ) {
-                return 1;
-              }
-              if (
-                rowA.cnv_amplifications_percent <
-                rowB.cnv_amplifications_percent
-              ) {
-                return -1;
-              }
-              return 0;
-            },
+            sortingFn: createSortingFn("cnv_amplifications_percent"),
           },
           enableSorting: true,
         },
@@ -247,7 +227,7 @@ export const useGeneCancerDistributionColumns = ({
               project: row.original.project,
               cnvType: "Gain",
               genomicFilters,
-              gene_id: gene_or_ssm_id,
+              gene_id,
             })}
             caseFilters={cohortFilters}
             createStaticCohort
@@ -261,15 +241,7 @@ export const useGeneCancerDistributionColumns = ({
           />
         ),
         meta: {
-          sortingFn: (rowA, rowB) => {
-            if (rowA.cnv_gains_percent > rowB.cnv_gains_percent) {
-              return 1;
-            }
-            if (rowA.cnv_gains_percent < rowB.cnv_gains_percent) {
-              return -1;
-            }
-            return 0;
-          },
+          sortingFn: createSortingFn("cnv_gains_percent"),
         },
         enableSorting: true,
       }),
@@ -291,7 +263,7 @@ export const useGeneCancerDistributionColumns = ({
                 project: row.original.project,
                 cnvType: "Loss",
                 genomicFilters,
-                gene_id: gene_or_ssm_id,
+                gene_id,
               })}
               caseFilters={cohortFilters}
               createStaticCohort
@@ -309,21 +281,7 @@ export const useGeneCancerDistributionColumns = ({
             />
           ),
           meta: {
-            sortingFn: (rowA, rowB) => {
-              if (
-                rowA.cnv_heterozygous_deletions_percent >
-                rowB.cnv_heterozygous_deletions_percent
-              ) {
-                return 1;
-              }
-              if (
-                rowA.cnv_heterozygous_deletions_percent <
-                rowB.cnv_heterozygous_deletions_percent
-              ) {
-                return -1;
-              }
-              return 0;
-            },
+            sortingFn: createSortingFn("cnv_heterozygous_deletions_percent"),
           },
           enableSorting: true,
         },
@@ -346,7 +304,7 @@ export const useGeneCancerDistributionColumns = ({
                 project: row.original.project,
                 cnvType: "Homozygous Deletion",
                 genomicFilters,
-                gene_id: gene_or_ssm_id,
+                gene_id,
               })}
               caseFilters={cohortFilters}
               createStaticCohort
@@ -364,21 +322,7 @@ export const useGeneCancerDistributionColumns = ({
             />
           ),
           meta: {
-            sortingFn: (rowA, rowB) => {
-              if (
-                rowA.cnv_homozygous_deletions_percent >
-                rowB.cnv_homozygous_deletions_percent
-              ) {
-                return 1;
-              }
-              if (
-                rowA.cnv_homozygous_deletions_percent <
-                rowB.cnv_homozygous_deletions_percent
-              ) {
-                return -1;
-              }
-              return 0;
-            },
+            sortingFn: createSortingFn("cnv_homozygous_deletions_percent"),
           },
           enableSorting: true,
         },
@@ -394,18 +338,10 @@ export const useGeneCancerDistributionColumns = ({
         enableSorting: true,
         cell: ({ row }) => row.original.num_mutations.toLocaleString(),
         meta: {
-          sortingFn: (rowA, rowB) => {
-            if (rowA.num_mutations > rowB.num_mutations) {
-              return 1;
-            }
-            if (rowA.num_mutations < rowB.num_mutations) {
-              return -1;
-            }
-            return 0;
-          },
+          sortingFn: createSortingFn("num_mutations"),
         },
       }),
     ],
-    [symbol, expandedColumnId, gene_or_ssm_id, cohortFilters, genomicFilters],
+    [symbol, expandedColumnId, gene_id, cohortFilters, genomicFilters],
   );
 };
