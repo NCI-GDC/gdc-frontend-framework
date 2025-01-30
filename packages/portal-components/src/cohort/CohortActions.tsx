@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Loader, Tooltip, Button } from "@mantine/core";
 import DropdownMenu from "@/common/DropdownMenu";
 import {
@@ -9,6 +9,7 @@ import {
   UploadIcon,
 } from "src/commonIcons";
 import { Cohort } from "./types";
+import { DataFetchingStatus } from "src/types";
 
 interface CohortActionsProps {
   onSave: () => void;
@@ -17,8 +18,10 @@ interface CohortActionsProps {
   selectCurrentCohort: () => Cohort;
   selectAvailableCohorts: () => Cohort[];
   addNewDefaultUnsavedCohort: () => void;
-  handleImport?: () => void;
-  handleExport?: () => void;
+  useExportCohort: () =>
+    | [() => void, DataFetchingStatus]
+    | [undefined, DataFetchingStatus];
+  useImportCohort: () => (() => void) | undefined;
 }
 
 const CohortActions: React.FC<CohortActionsProps> = ({
@@ -28,15 +31,17 @@ const CohortActions: React.FC<CohortActionsProps> = ({
   selectCurrentCohort,
   selectAvailableCohorts,
   addNewDefaultUnsavedCohort,
-  handleImport,
-  handleExport,
+  useExportCohort,
+  useImportCohort,
 }: CohortActionsProps) => {
   const currentCohort = selectCurrentCohort();
   const availableCohorts = selectAvailableCohorts();
   const hasUnsavedCohorts =
     availableCohorts.filter((c) => !c.saved).length >= 1;
 
-  const [exportCohortPending] = useState(false);
+  const [handleExport, status] = useExportCohort();
+  const { isFetching: exportCohortPending = false } = status;
+  const handleImport = useImportCohort();
 
   return (
     <div className="flex justify-center items-center gap-2 md:gap-4">
@@ -81,7 +86,7 @@ const CohortActions: React.FC<CohortActionsProps> = ({
           data-testid="addButton"
           disabled={hasUnsavedCohorts}
           aria-label="Add cohort"
-          variant="cohort"
+          variant="action"
         >
           <AddIcon size="1.5em" aria-hidden="true" />
         </Button>
@@ -92,7 +97,7 @@ const CohortActions: React.FC<CohortActionsProps> = ({
           data-testid="deleteButton"
           onClick={onDelete}
           aria-label="Delete cohort"
-          variant="cohort"
+          variant="action"
         >
           <DeleteIcon size="1.5em" aria-hidden="true" />
         </Button>
@@ -103,7 +108,7 @@ const CohortActions: React.FC<CohortActionsProps> = ({
             data-testid="uploadButton"
             onClick={handleImport}
             aria-label="Upload cohort"
-            variant="cohort"
+            variant="action"
           >
             <UploadIcon size="1.5em" aria-hidden="true" />
           </Button>
@@ -116,7 +121,7 @@ const CohortActions: React.FC<CohortActionsProps> = ({
               data-testid="downloadButton"
               onClick={handleExport}
               aria-label="Download cohort"
-              variant="cohort"
+              variant="action"
             >
               {exportCohortPending ? (
                 <Loader />

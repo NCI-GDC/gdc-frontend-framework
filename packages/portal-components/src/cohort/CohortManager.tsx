@@ -1,33 +1,55 @@
 import React, { useContext, useState } from "react";
-import { Tooltip, MantineProvider, Button } from "@mantine/core";
+import { Tooltip, MantineProvider, Button, Loader } from "@mantine/core";
+import { AppContext } from "src/context";
 import { UndoIcon } from "src/commonIcons";
+import { GenericCohortModal } from "@/modals/GenericCohortModal";
 import CohortActions from "./CohortActions";
 import CohortSelector from "./CohortSelector";
+import { actionButtonVariant } from "./style";
 import { Cohort } from "./types";
-import { AppContext } from "src/context";
 
 interface CohortManagerProps {
-  readonly selectCurrentCohort: () => Cohort;
-  readonly selectAvailableCohorts: () => Cohort[];
-  readonly setActiveCohort: (newCohort: string) => void;
-  readonly addNewDefaultUnsavedCohort: () => void;
+  readonly hooks: {
+    useSelectCurrentCohort: () => Cohort;
+    useSelectAvailableCohorts: () => Cohort[];
+    useDeleteCohort: () => () => void;
+    useDiscardChanges: () => () => void;
+    useUpdateFilters: () => () => void;
+    useSetActiveCohort: () => (cohortId: string) => void;
+    useAddUnsavedCohort: () => () => void;
+    useExportCohort?: () => [
+      () => void,
+      { isFetching: boolean; isError: boolean },
+    ];
+    useImportCohort?: () => () => void;
+  };
+  readonly invalidCohortNames: string[];
+  readonly useSetCohortMessage: () => (msg: string) => void;
 }
 
 const CohortManager: React.FC<CohortManagerProps> = ({
-  selectCurrentCohort,
-  selectAvailableCohorts,
-  setActiveCohort,
-  addNewDefaultUnsavedCohort,
+  hooks,
+  //invalidCohortNames,
 }) => {
-  const currentCohort = selectCurrentCohort();
+  const currentCohort = hooks.useSelectCurrentCohort();
+
+  const handleDelete = hooks.useDeleteCohort();
+  const handleDiscard = hooks.useDiscardChanges();
+  const handleUpdate = hooks.useUpdateFilters();
+  const setActiveCohort = hooks.useSetActiveCohort();
+  const addNewDefaultUnsavedCohort = hooks.useAddUnsavedCohort();
+  const {
+    useImportCohort = () => undefined,
+    useExportCohort = () => [undefined, {}],
+  } = hooks;
 
   const { theme } = useContext(AppContext);
 
-  const [, setShowDelete] = useState(false);
-  const [, setShowDiscard] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
+  const [showDiscard, setShowDiscard] = useState(false);
   const [, setShowSaveCohort] = useState(false);
   const [, setShowSaveAsCohort] = useState(false);
-  const [, setShowUpdateCohort] = useState(false);
+  const [showUpdateCohort, setShowUpdateCohort] = useState(false);
 
   return (
     <MantineProvider
@@ -37,11 +59,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           ...theme?.components,
           Button: Button.extend({
             classNames: {
-              root: `data-[variant="cohort"]:h-12 data-[variant="cohort"]:w-12 data-[variant="cohort"]:flex data-[variant="cohort"]:justify-center data-[variant="cohort"]:items-center
-              data-[variant="cohort"]:transition-colors data-[variant="cohort"]:focus-visible:outline-none data-[variant="cohort"]:focus-visible:ring-offset-2 data-[variant="cohort"]:focus-visible:ring-inset
-              data-[variant="cohort"]:focus-visible:ring-2 data-[variant="cohort"]:focus-visible:ring-focusColor data-[variant="cohort"]:disabled:opacity-50 data-[variant="cohort"]:disabled:bg-base-max data-[variant="cohort"]:disabled:text-primary
-              data-[variant="cohort"]:text-primary data-[variant="cohort"]:hover:bg-primary-darkest data-[variant="cohort"]:hover:text-primary-content-lightest data-[variant="cohort"]:bg-base-max
-            `,
+              root: actionButtonVariant,
             },
           }),
         },
@@ -51,59 +69,123 @@ const CohortManager: React.FC<CohortManagerProps> = ({
         data-tour="cohort_management_bar"
         className="flex flex-row items-center justify-start gap-6 px-4 h-18 shadow-lg bg-primary"
       >
-        <div className="border-opacity-0">
-          <div className="flex flex-wrap gap-2 lg:gap-4">
-            <div className="flex justify-center items-center">
-              <Tooltip label="Discard Changes" position="bottom" withArrow>
-                <span>
-                  <Button
-                    data-testid="discardButton"
-                    onClick={() => setShowDiscard(true)}
-                    disabled={!currentCohort.modified}
-                    //$isDiscard={true}
-                    aria-label="Discard cohort changes"
-                    variant="cohort"
-                  >
-                    <UndoIcon aria-hidden="true" />
-                  </Button>
-                </span>
-              </Tooltip>
+        {currentCohort === undefined ? (
+          <Loader />
+        ) : (
+          <>
+            <div className="border-opacity-0">
+              <div className="flex flex-wrap gap-2 lg:gap-4">
+                <div className="flex justify-center items-center">
+                  <Tooltip label="Discard Changes" position="bottom" withArrow>
+                    <span>
+                      <Button
+                        data-testid="discardButton"
+                        onClick={() => setShowDiscard(true)}
+                        disabled={!currentCohort.modified}
+                        aria-label="Discard cohort changes"
+                        variant="action"
+                      >
+                        <UndoIcon aria-hidden="true" />
+                      </Button>
+                    </span>
+                  </Tooltip>
 
-              <CohortSelector
-                selectAvailableCohorts={selectAvailableCohorts}
-                selectCurrentCohort={selectCurrentCohort}
-                setActiveCohort={setActiveCohort}
-              />
+                  <CohortSelector
+                    selectAvailableCohorts={hooks.useSelectAvailableCohorts}
+                    selectCurrentCohort={hooks.useSelectCurrentCohort}
+                    setActiveCohort={setActiveCohort}
+                  />
+                </div>
+                <CohortActions
+                  onSave={() =>
+                    currentCohort.saved
+                      ? setShowUpdateCohort(true)
+                      : setShowSaveCohort(true)
+                  }
+                  onSaveAs={() => setShowSaveAsCohort(true)}
+                  onDelete={() => setShowDelete(true)}
+                  selectCurrentCohort={hooks.useSelectCurrentCohort}
+                  selectAvailableCohorts={hooks.useSelectAvailableCohorts}
+                  addNewDefaultUnsavedCohort={addNewDefaultUnsavedCohort}
+                  useExportCohort={useExportCohort}
+                  useImportCohort={useImportCohort}
+                />
+              </div>
             </div>
-            <CohortActions
-              onSave={() =>
-                currentCohort.saved
-                  ? setShowUpdateCohort(true)
-                  : setShowSaveCohort(true)
+            <GenericCohortModal
+              title="Delete Cohort"
+              opened={showDelete}
+              onClose={() => setShowDelete(false)}
+              actionText="Delete"
+              mainText={
+                <>
+                  Are you sure you want to permanently delete{" "}
+                  <b>{currentCohort.name}</b>?
+                </>
               }
-              onSaveAs={() => setShowSaveAsCohort(true)}
-              onDelete={() => setShowDelete(true)}
-              selectCurrentCohort={selectCurrentCohort}
-              selectAvailableCohorts={selectAvailableCohorts}
-              addNewDefaultUnsavedCohort={addNewDefaultUnsavedCohort}
+              subText={<>You cannot undo this action.</>}
+              onActionClick={handleDelete}
             />
-          </div>
-        </div>
+
+            <GenericCohortModal
+              title="Discard Changes"
+              opened={showDiscard}
+              onClose={() => setShowDiscard(false)}
+              actionText="Discard"
+              mainText={
+                <>
+                  Are you sure you want to permanently discard the unsaved
+                  changes?
+                </>
+              }
+              subText={<>You cannot undo this action.</>}
+              onActionClick={handleDiscard}
+            />
+
+            <GenericCohortModal
+              title="Save Cohort"
+              opened={showUpdateCohort}
+              onClose={() => setShowUpdateCohort(false)}
+              actionText="Save"
+              mainText={
+                <>
+                  Are you sure you want to save <b>{currentCohort.name}</b>?
+                  This will overwrite your previously saved changes.
+                </>
+              }
+              subText={<>You cannot undo this action.</>}
+              onActionClick={() => {
+                setShowUpdateCohort(false);
+                handleUpdate();
+              }}
+            />
+          </>
+        )}
 
         {/*
-      <CohortModals
-        showDelete={showDelete}
-        showDiscard={showDiscard}
-        showSaveCohort={showSaveCohort}
-        showSaveAsCohort={showSaveAsCohort}
-        showUpdateCohort={showUpdateCohort}
-        onSetShowDelete={setShowDelete}
-        onSetShowDiscard={setShowDiscard}
-        onSetShowSaveCohort={setShowSaveCohort}
-        onSetShowSaveAsCohort={setShowSaveAsCohort}
-        onSetShowUpdateCohort={setShowUpdateCohort}
-      />
-      */}
+        <SaveCohortModal
+          initialName={
+            !invalidCohortNames.includes(currentCohort.name?.toLowerCase())
+              ? currentCohort.name
+              : undefined
+          }
+          opened={showSaveCohort}
+          onClose={() => setShowSaveCohort(false)}
+          cohortId={currentCohort.id}
+          filters={currentCohort.filters}
+          invalidCohortNames={invalidCohortNames}
+        />
+
+        <SaveCohortModal
+          opened={showSaveAsCohort}
+          initialName={currentCohort.name}
+          onClose={() => setShowSaveAsCohort(false)}
+          cohortId={currentCohort.id}
+          filters={currentCohort.filters}
+          saveAs
+          invalidCohortNames={invalidCohortNames}
+        />
+        */}
       </div>
     </MantineProvider>
   );

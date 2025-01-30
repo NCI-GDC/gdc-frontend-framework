@@ -1,33 +1,33 @@
-import React, { useEffect, useState } from "react";
-import { Tooltip } from "@mantine/core";
+import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import {
-  selectCurrentCohortModified,
   useCoreDispatch,
   useCoreSelector,
-  selectCurrentCohortSaved,
   addNewUnsavedCohort,
   FilterSet,
+  selectCurrentModal,
+  Modals,
 } from "@gff/core";
+import { CohortManager as CommonCohortManager } from "@gff/portal-components";
+import ImportCohortModal from "../Modals/ImportCohortModal";
 import { removeQueryParamsFromRouter } from "./cohortUtils";
-import CohortActions from "./CohortActions";
-import CohortSelector from "./CohortSelector";
-import { CohortModals } from "./CohortModals";
-import { CohortGroupButton } from "../style";
-import { UndoIcon } from "@/utils/icons";
+import {
+  useSelectCurrentCohort,
+  useSelectAvailableCohorts,
+  useAddUnsavedCohort,
+  useDeleteCohort,
+  useDiscardChanges,
+  useExportCohort,
+  useImportCohort,
+  useSetActiveCohort,
+  useUpdateFilters,
+} from "./cohortActionHooks";
+import { INVALID_COHORT_NAMES } from "../utils";
 
 const CohortManager: React.FC = () => {
   const coreDispatch = useCoreDispatch();
   const router = useRouter();
-
-  const currentCohortSaved = useCoreSelector(selectCurrentCohortSaved);
-  const currentCohortModified = useCoreSelector(selectCurrentCohortModified);
-
-  const [showDelete, setShowDelete] = useState(false);
-  const [showDiscard, setShowDiscard] = useState(false);
-  const [showSaveCohort, setShowSaveCohort] = useState(false);
-  const [showSaveAsCohort, setShowSaveAsCohort] = useState(false);
-  const [showUpdateCohort, setShowUpdateCohort] = useState(false);
+  const modal = useCoreSelector(selectCurrentModal);
 
   useEffect(() => {
     const {
@@ -56,54 +56,23 @@ const CohortManager: React.FC = () => {
   }, []);
 
   return (
-    <div
-      data-tour="cohort_management_bar"
-      className="flex flex-row items-center justify-start gap-6 px-4 h-18 shadow-lg bg-primary"
-    >
-      <div className="border-opacity-0">
-        <div className="flex flex-wrap gap-2 lg:gap-4">
-          <div className="flex justify-center items-center">
-            <Tooltip label="Discard Changes" position="bottom" withArrow>
-              <span>
-                <CohortGroupButton
-                  data-testid="discardButton"
-                  onClick={() => setShowDiscard(true)}
-                  disabled={!currentCohortModified}
-                  $isDiscard={true}
-                  aria-label="Discard cohort changes"
-                >
-                  <UndoIcon aria-hidden="true" />
-                </CohortGroupButton>
-              </span>
-            </Tooltip>
-
-            <CohortSelector />
-          </div>
-          <CohortActions
-            onSave={() =>
-              currentCohortSaved
-                ? setShowUpdateCohort(true)
-                : setShowSaveCohort(true)
-            }
-            onSaveAs={() => setShowSaveAsCohort(true)}
-            onDelete={() => setShowDelete(true)}
-          />
-        </div>
-      </div>
-
-      <CohortModals
-        showDelete={showDelete}
-        showDiscard={showDiscard}
-        showSaveCohort={showSaveCohort}
-        showSaveAsCohort={showSaveAsCohort}
-        showUpdateCohort={showUpdateCohort}
-        onSetShowDelete={setShowDelete}
-        onSetShowDiscard={setShowDiscard}
-        onSetShowSaveCohort={setShowSaveCohort}
-        onSetShowSaveAsCohort={setShowSaveAsCohort}
-        onSetShowUpdateCohort={setShowUpdateCohort}
+    <>
+      <CommonCohortManager
+        hooks={{
+          useSelectCurrentCohort,
+          useSelectAvailableCohorts,
+          useDeleteCohort,
+          useDiscardChanges,
+          useUpdateFilters,
+          useSetActiveCohort,
+          useAddUnsavedCohort,
+          useExportCohort,
+          useImportCohort,
+        }}
+        invalidCohortNames={INVALID_COHORT_NAMES}
       />
-    </div>
+      <ImportCohortModal opened={modal === Modals.ImportCohortModal} />
+    </>
   );
 };
 

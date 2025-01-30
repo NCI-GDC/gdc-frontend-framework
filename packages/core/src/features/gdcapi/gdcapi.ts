@@ -449,6 +449,7 @@ export const endpointSlice = coreCreateApi({
 export const {
   useGetGenesQuery,
   useGetCasesQuery,
+  useLazyGetCasesQuery,
   useGetSsmsQuery,
   useGetCaseSsmsQuery,
   useGetAnnotationsQuery,

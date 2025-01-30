@@ -1,7 +1,7 @@
 import React from "react";
 import { useDeepCompareMemo } from "use-deep-compare";
 import { Select } from "@mantine/core";
-//import { UnsavedIcon } from "./CustomCohortSelectItem";
+import { UnsavedIcon, CustomCohortSelectItem } from "./CustomCohortSelectItem";
 import { Cohort } from "./types";
 import { DropdownIcon } from "src/commonIcons";
 
@@ -51,7 +51,7 @@ const CohortSelector: React.FC<CohortSelectorProps> = ({
             setActiveCohort(id);
           }
         }}
-        //renderOption={CustomCohortSelectItem}
+        renderOption={CustomCohortSelectItem as any}
         classNames={{
           root: "border-secondary-darkest w-56 md:w-80 z-[290]",
           input:
@@ -63,7 +63,7 @@ const CohortSelector: React.FC<CohortSelectorProps> = ({
         data-testid="switchButton"
         rightSection={
           <div className="flex gap-1 items-center">
-            {/*{!isSavedUnchanged && <UnsavedIcon label={cohortStatusMessage} />}*/}
+            {!isSavedUnchanged && <UnsavedIcon label={cohortStatusMessage} />}
             <DropdownIcon size={20} className="text-primary" />
           </div>
         }

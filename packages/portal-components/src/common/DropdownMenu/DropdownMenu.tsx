@@ -65,7 +65,7 @@ interface DropdownWithIconProps {
   buttonAriaLabel?: string;
 }
 
-const DropdownMenu = ({
+const DropdownMenu: React.FC<DropdownWithIconProps> = ({
   disableTargetWidth,
   LeftSection,
   RightSection = (
@@ -87,9 +87,8 @@ const DropdownMenu = ({
   customDataTestId = undefined,
   tooltip = undefined,
   buttonAriaLabel = undefined,
-}: DropdownWithIconProps): JSX.Element => {
+}) => {
   const targetRef = useRef<HTMLButtonElement>(null);
-  // TODO - add back focus styles
 
   return (
     <Menu
@@ -100,7 +99,7 @@ const DropdownMenu = ({
     >
       <Menu.Target>
         <Button
-          variant="cohort"
+          variant="action"
           {...(LeftSection && { leftSection: LeftSection })}
           rightSection={RightSection}
           disabled={targetButtonDisabled}
