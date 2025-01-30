@@ -98,7 +98,7 @@ const EnclavePortalApp: React.FC<AppProps> = ({
       <AppContext.Provider
         value={{
           Link: Link as LinkComponentType,
-          ImageComponent: Image as ImageComponentType,
+          Image: Image as ImageComponentType,
           path: router.pathname,
           theme,
         }}

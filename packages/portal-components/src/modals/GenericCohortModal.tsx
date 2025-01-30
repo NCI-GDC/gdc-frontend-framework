@@ -28,48 +28,26 @@ export const GenericCohortModal: React.FC<GenericCohortModalProps> = ({
       radius="md"
       onClose={onClose}
     >
-      <div
-        style={{
-          fontFamily: '"Montserrat", "sans-serif"',
-          padding: "20px 25px 20px 10px",
-        }}
-      >
-        <p
-          style={{
-            fontFamily: '"Montserrat", "sans-serif"',
-            fontSize: "0.95em",
-            fontWeight: 500,
-            color: "var(--mantine-color-base-8)", //ink
-          }}
-        >
-          {mainText}
-        </p>
-        <p
-          style={{
-            fontFamily: '"Montserrat", "sans-serif"',
-            fontSize: "0.85em",
-            color: "var(--mantine-color-base-8)",
-            paddingTop: "1em",
-          }}
-        >
-          {subText}
-        </p>
+      <div className="font-montserrat py-5 pr-6 pl-2.5">
+        <p className="font-medium text-[0.95rem] text-base-ink">{mainText}</p>
+        <p className="text-sm pt-3 text-base-ink">{subText}</p>
       </div>
-      <div
-        style={{
-          backgroundColor: "var(--mantine-color-base-1)",
-          padding: "var(--mantine-spacing-md)",
-          borderRadius: "var(--mantine-radius-md)",
-          borderTopRightRadius: 0,
-          borderTopLeftRadius: 0,
-        }}
-      >
-        <div className="flex-end">
-          <Button variant="outline" color="secondary" onClick={onClose}>
+      <div className="bg-base-lightest p-4">
+        <div className="flex justify-end gap-3">
+          <Button
+            variant="outline"
+            styles={{
+              root: {
+                backgroundColor: "white",
+              },
+            }}
+            color="secondary"
+            onClick={onClose}
+          >
             Cancel
           </Button>
           <Button
-            variant={"filled"}
+            variant="filled"
             color="secondary"
             onClick={() => {
               onActionClick();
