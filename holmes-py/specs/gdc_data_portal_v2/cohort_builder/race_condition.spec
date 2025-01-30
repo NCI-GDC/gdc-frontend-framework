@@ -89,10 +89,10 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
 * Make the following selections on the Cohort Builder page without pauses
   |tab_name               |facet_name           |selection            |
   |-----------------------|---------------------|---------------------|
-  |General                |Program              |TCGA                 |
-  |Demographic            |Gender               |male                 |
-  |General Diagnosis      |Morphology           |8140/3               |
-  |Disease Status and History|Prior Treatment   |no                   |
+  |General                |Program              |CPTAC                |
+  |Demographic            |Gender               |female               |
+  |General Diagnosis      |Morphology           |8380/3               |
+  |Disease Status and History|Residual Disease  |r0                   |
   |Exposure               |Alcohol History      |not reported         |
   |Available Data         |Data Format          |txt                  |
 * Collect Cohort Bar Case Count for comparison
@@ -104,10 +104,10 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
 * Validate the cohort query filter area has these filters
   |facet_name           |selections           |position in filter area  |
   |---------------------|---------------------|-------------------------|
-  |Program              |TCGA                 |1                        |
-  |Gender               |male                 |2                        |
-  |Morphology           |8140/3               |3                        |
-  |Prior Treatment      |no                   |4                        |
+  |Program              |CPTAC                |1                        |
+  |Gender               |female               |2                        |
+  |Morphology           |8380/3               |3                        |
+  |Residual Disease     |r0                   |4                        |
   |Alcohol History      |not reported         |5                        |
   |Data Format          |txt                  |6                        |
 

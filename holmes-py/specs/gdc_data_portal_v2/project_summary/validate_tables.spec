@@ -168,7 +168,7 @@ tags: gdc-data-portal-v2, regression, project-summary
     |00615882-6e5a-46b4-891a-c058a28b3b60   |
     |C3N-00852                              |
     |masked_somatic_mutation                |
-    |CPT0024660012                          |
+    |CPT0024650009                          |
     |Variants from SomaticSniper are not included.|
 * Verify that "TSV from Project Summary Annotations" does not contain specified information
     |required_info                          |
