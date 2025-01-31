@@ -115,7 +115,7 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
 }: FacetGroupProps) => {
   const enumFacets = facets.filter((x) => x.facet_type === "enum");
 
-  const availableFields = enumFacets.map((f) => f.full);
+  const availableFields = facets.map((f) => f.full);
   useScrollToHash(availableFields, false);
 
   useEnumFacets(

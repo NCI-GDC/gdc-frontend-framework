@@ -9,7 +9,7 @@ import {
   selectFacetDefinition,
   fieldNameToTitle,
 } from "@gff/core";
-import { getFacetInfo } from "@/features/cohortBuilder/utils";
+import { getFacetInfo, upload_facets } from "@/features/cohortBuilder/utils";
 import { useAllEnumFacets } from "../facets/hooks";
 // TODO: Remove the above JSON config file and replace with the dictionary slice.
 
@@ -83,10 +83,13 @@ export const useFacetSearch = (): MiniSearch<FacetSearchDocument> => {
     const searchDocuments = [];
 
     Object.entries(tabsConfig).forEach(([categoryKey, category]) => {
-      getFacetInfo(category.facets, facets.data || {}).forEach((facet) => {
+      getFacetInfo(category.facets, {
+        ...(facets.data || {}),
+        ...upload_facets,
+      }).forEach((facet) => {
         const result = facetResults[facet.full];
         searchDocuments.push({
-          name: fieldNameToTitle(facet.full),
+          name: facet.title ?? fieldNameToTitle(facet.full),
           enum: Object.keys(result?.buckets || {}),
           category: category.label,
           categoryKey,
