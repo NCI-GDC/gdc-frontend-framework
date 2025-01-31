@@ -12,6 +12,10 @@ tags: gdc-data-portal-v2, regression, gene-summary
 * Quick search for "RBM15" and go to its page
 
 ## Validate Table: Cancer Distribution
+* Wait for table "Cancer Distribution Gene Summary" body text to appear
+    |expected_text                                        |row  |column |
+    |-----------------------------------------------------|-----|-------|
+    |TCGA-UCEC                                            |1    |1      |
 * Verify the table "Cancer Distribution Gene Summary" header text is correct
     |expected_text                          |column |
     |---------------------------------------|-------|
@@ -22,10 +26,6 @@ tags: gdc-data-portal-v2, regression, gene-summary
     |# CNV Gains                            |5      |
     |# CNV Losses                           |6      |
     |# Mutations                            |7      |
-* Verify the table "Cancer Distribution Gene Summary" body text is correct
-    |expected_text                          |row  |column |
-    |---------------------------------------|-----|-------|
-    |TCGA-UCEC                              |1    |1      |
 * Select value from table "Cancer Distribution Gene Summary" by row and column
     |row   |column|
     |------|------|
