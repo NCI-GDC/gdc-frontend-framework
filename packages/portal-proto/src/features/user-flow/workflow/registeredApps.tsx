@@ -16,7 +16,7 @@ import ProteinPaintIcon from "public/user-flow/icons/apps/ProteinPaint.svg";
 import OncoMatrixIcon from "public/user-flow/icons/apps/OncoMatrix.svg";
 import GeneExpressionIcon from "public/user-flow/icons/apps/GeneExpression.svg";
 import ScRNASeqIcon from "public/user-flow/icons/apps/scRNASeq.svg";
-import { useLazyScRNAseqFileCountQuery } from "../../proteinpaint/scRNAseqCounts";
+import { useLazyScRNAseqCaseCountQuery } from "../../proteinpaint/scRNAseqCaseCount";
 import { CountHookRegistry } from "@gff/core";
 import {
   DISPLAY_SC_RNA_SEQ_APP,
@@ -24,8 +24,8 @@ import {
 } from "@/features/featureFlags";
 
 CountHookRegistry.getInstance().registerHook(
-  "scRNAseqFileCount",
-  useLazyScRNAseqFileCountQuery,
+  "scRNAseqCaseCount",
+  useLazyScRNAseqCaseCountQuery,
 );
 
 export const COHORTS = [
@@ -237,7 +237,7 @@ export const REGISTERED_APPS = [
           //hasDemo: true,
           description: "scRNAseq Visualization tool",
           id: "scRNAseq",
-          countsField: "scRNAseqFileCount",
+          countsField: "scRNAseqCaseCount",
           optimizeRules: ["available data = ssm or cnv"],
           noDataTooltip:
             "Current cohort does not have scRNAseq data available for visualization.",

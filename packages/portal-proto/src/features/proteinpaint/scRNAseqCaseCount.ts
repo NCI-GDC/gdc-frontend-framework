@@ -1,12 +1,12 @@
 import { graphqlAPISlice, buildCohortGqlOperator, FilterSet } from "@gff/core";
 
 const graphQLQuery = `
-  query scRNAseqFileCountQuery($cohortFilters: FiltersArgument,
-  $scRNAseqFileFilter: FiltersArgument) {
+  query scRNAseqCaseCountQuery($cohortFilters: FiltersArgument,
+  $scRNAseqCaseFilter: FiltersArgument) {
   viewer {
     explore {
-      scRNAseqFileCount : cases {
-        hits(case_filters: $cohortFilters, filters: $scRNAseqFileFilter, first: 0) {
+      scRNAseqCaseCount : cases {
+        hits(case_filters: $cohortFilters, filters: $scRNAseqCaseFilter, first: 0) {
           total
         }
       }
@@ -17,13 +17,13 @@ const graphQLQuery = `
 /**
  * Injects endpoints for case counts for sequenceReads
  */
-const scRNAseqFileCountSlice = graphqlAPISlice.injectEndpoints({
+const scRNAseqCaseCountSlice = graphqlAPISlice.injectEndpoints({
   endpoints: (builder) => ({
-    scRNAseqFileCount: builder.query<number, FilterSet>({
+    scRNAseqCaseCount: builder.query<number, FilterSet>({
       query: (cohortFilters) => {
         const graphQLFilters = {
           cohortFilters: buildCohortGqlOperator(cohortFilters),
-          scRNAseqFileFilter: {
+          scRNAseqCaseFilter: {
             op: "and",
             content: [
               {
@@ -56,9 +56,9 @@ const scRNAseqFileCountSlice = graphqlAPISlice.injectEndpoints({
         };
       },
       transformResponse: (response) =>
-        response?.data?.viewer?.explore?.scRNAseqFileCount?.hits?.total ?? 0,
+        response?.data?.viewer?.explore?.scRNAseqCaseCount?.hits?.total ?? 0,
     }),
   }),
 });
 
-export const { useLazyScRNAseqFileCountQuery } = scRNAseqFileCountSlice;
+export const { useLazyScRNAseqCaseCountQuery } = scRNAseqCaseCountSlice;
