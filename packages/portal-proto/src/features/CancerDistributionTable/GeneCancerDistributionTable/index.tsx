@@ -173,6 +173,7 @@ const GeneCancerDistributionTable: React.FC<
     },
   ]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    "#_cnv_gains": false,
     "#_cnv_heterozygous_deletions": false,
   });
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
