@@ -87,7 +87,7 @@ export const useFacetSearch = (): MiniSearch<FacetSearchDocument> => {
         ...(facets.data || {}),
         ...upload_facets,
       }).forEach((facet) => {
-        const result = facetResults[facet.field];
+        const result = facetResults[facet.full];
         searchDocuments.push({
           name: facet.title ?? fieldNameToTitle(facet.full),
           enum: Object.keys(result?.buckets || {}),
