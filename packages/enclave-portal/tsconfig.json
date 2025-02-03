@@ -14,7 +14,8 @@
     "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
-      "@/components/*": ["src/components/*"]
+      "@/components/*": ["src/components/*"],
+      "@/features/*": ["src/features/*"]
     },
     "module": "esnext"
   },

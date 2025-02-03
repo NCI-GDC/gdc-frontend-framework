@@ -2,11 +2,8 @@ import React, { ComponentType, ReactElement } from "react";
 import { render, RenderOptions, RenderResult } from "@testing-library/react";
 import { CoreProvider } from "@gff/core";
 import { createTheme, MantineProvider } from "@mantine/core";
-import {
-  SummaryModalContext,
-  URLContext,
-  DashboardDownloadContext,
-} from "src/utils/contexts";
+import { SummaryModalContext, URLContext } from "src/utils/contexts";
+import { DashboardDownloadContext } from "@gff/portal-components";
 import tailwindConfig from "tailwind.config";
 
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => {

@@ -10,8 +10,10 @@ import {
   MdOutlineLogin as LoginIcon,
   MdKeyboardArrowUp as UpArrowIcon,
   MdPlayArrow as PlayIcon,
+  MdClose as CloseIcon,
 } from "react-icons/md";
 import { VscFeedback as FeedbackIcon } from "react-icons/vsc";
+import { FaCircle as CircleIcon } from "react-icons/fa";
 
 export {
   CartIcon,
@@ -26,4 +28,6 @@ export {
   PencilIcon,
   OptionsIcon,
   LoginIcon,
+  CloseIcon,
+  CircleIcon,
 };

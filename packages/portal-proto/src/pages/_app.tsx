@@ -20,6 +20,8 @@ import "@nci-gdc/sapien/dist/bodyplot.css";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import Image from "next/image";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 // ReactModal needs the app element set for a11y reasons.
 // It hides the main application from screen readers while modals are open.
@@ -33,6 +35,11 @@ import {
 } from "src/utils/contexts";
 import { Notifications } from "@mantine/notifications";
 import "@mantine/notifications/styles.css";
+import {
+  AppContext,
+  ImageComponentType,
+  LinkComponentType,
+} from "@gff/portal-components";
 
 if (process.env.NODE_ENV !== "test") ReactModal.setAppElement("#__next");
 
@@ -274,8 +281,17 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                 setEntityMetadata,
               }}
             >
-              <Notifications position="top-center" />
-              <Component {...pageProps} />
+              <AppContext.Provider
+                value={{
+                  Link: Link as LinkComponentType,
+                  Image: Image as ImageComponentType,
+                  path: router.pathname,
+                  theme,
+                }}
+              >
+                <Notifications position="top-center" />
+                <Component {...pageProps} />
+              </AppContext.Provider>
             </SummaryModalContext.Provider>
           </URLContext.Provider>
           <Head>

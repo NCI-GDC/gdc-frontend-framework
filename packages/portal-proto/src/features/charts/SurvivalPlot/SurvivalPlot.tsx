@@ -3,11 +3,11 @@ import { Box, Menu, Tooltip, Loader, ActionIcon } from "@mantine/core";
 import isNumber from "lodash/isNumber";
 import { useMouse } from "@mantine/hooks";
 import saveAs from "file-saver";
+import { SummaryModalContext } from "src/utils/contexts";
 import {
-  SummaryModalContext,
+  DashboardDownloadContext,
   DownloadProgressContext,
-} from "src/utils/contexts";
-import { DashboardDownloadContext } from "@/utils/contexts";
+} from "@gff/portal-components";
 import OffscreenWrapper from "@/components/OffscreenWrapper";
 import {
   MINIMUM_CASES,

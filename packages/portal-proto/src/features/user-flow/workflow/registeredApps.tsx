@@ -20,6 +20,7 @@ import {
   DISPLAY_SC_RNA_SEQ_APP,
   isFeatureEnabled,
 } from "@/features/featureFlags";
+import { AppRegistrationEntry } from "@gff/portal-components";
 
 export const COHORTS = [
   { name: "New Custom Cohort", facets: [] },
@@ -35,7 +36,7 @@ export const COHORTS = [
   },
 ];
 
-export const REGISTERED_APPS = [
+export const REGISTERED_APPS: AppRegistrationEntry[] = [
   {
     name: "Clinical Data Analysis",
     icon: <ClinicalDataIcon aria-hidden="true" />,
@@ -187,7 +188,6 @@ export const REGISTERED_APPS = [
       "Visualize mutations in protein-coding genes by consequence type and protein domain.",
     id: "ProteinPaintApp",
     countsField: "ssmCaseCount",
-    caseCounts: 0.25,
     optimizeRules: ["available data = ssm"],
     noDataTooltip:
       "Current cohort does not have SSM data available for visualization.",
@@ -208,7 +208,6 @@ export const REGISTERED_APPS = [
       "Visualize the top most mutated cases and genes affected by high impact mutations in your cohort.",
     id: "OncoMatrix",
     countsField: "cnvOrSsmCaseCount",
-    caseCounts: 0.25,
     optimizeRules: ["available data = ssm or cnv"],
     noDataTooltip:
       "Current cohort does not have SSM or CNV data available for visualization.",
@@ -253,7 +252,6 @@ export const REGISTERED_APPS = [
       "Visualize the top most variably expressed genes in your cohort.",
     id: "GeneExpression",
     countsField: "geneExpressionCaseCount",
-    caseCounts: 0.25,
     optimizeRules: ["available data = ssm or cnv"],
     noDataTooltip:
       "Current cohort does not have gene expression data available for visualization.",

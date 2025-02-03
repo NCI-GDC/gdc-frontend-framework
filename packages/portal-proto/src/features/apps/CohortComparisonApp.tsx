@@ -9,7 +9,7 @@ import {
   selectCohortFilterSetById,
   selectCurrentCohortId,
 } from "@gff/core";
-import { SelectionScreenContext } from "@/features/user-flow/workflow/AnalysisWorkspace";
+import { SelectionScreenContext } from "@gff/portal-components";
 import CohortComparison from "../cohortComparison/CohortComparison";
 import AdditionalCohortSelection from "@/features/cohortComparison/AdditionalCohortSelection";
 
