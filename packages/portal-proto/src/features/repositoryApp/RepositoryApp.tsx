@@ -176,7 +176,10 @@ export const RepositoryApp = (): JSX.Element => {
                     "cases.project.project_id",
                     "cases.submitter_id",
                     "cases.samples.submitter_id",
-                    "cases.samples.sample_type",
+                    "cases.samples.tissue_type",
+                    "cases.samples.tumor_descriptor",
+                    "cases.samples.specimen_type",
+                    "cases.samples.preservation_method",
                   ]}
                   caseFilters={buildCohortGqlOperator(caseFilters)}
                   filters={buildCohortGqlOperator(localFilters)}
