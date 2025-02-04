@@ -64,7 +64,6 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
   const [opened, setOpened] = useState(false);
 
   const setDateRangeValue = (d: [Date | null, Date | null]) => {
-    console.log({ d });
     const data: StringRange = {
       from: getFormattedTimestamp({ date: d[0] }),
       to: getFormattedTimestamp({ date: d[1] }),

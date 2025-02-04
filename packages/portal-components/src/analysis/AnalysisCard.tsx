@@ -40,7 +40,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
       className={`bg-base-max border-secondary-darkest overflow-visible border ${
         inactive ? "" : "border-t-6"
       }
-       `}
+     `}
       aria-label={`${entry.name} Tool`}
     >
       {/* Spacer so that the cards are the same height without setting an explicit height for the later transition */}
@@ -49,28 +49,69 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
         {entry.icon}
         <div className="flex flex-col">
           <Link
-            href={entry.href}
+            href={{
+              pathname: "/analysis_page",
+              query: {
+                app: entry.id,
+              },
+            }}
             data-testid={`button-${entry.name}`}
             className={`
-              flex
-              justify-center
-              items-center
-              bg-secondary
-              hover:bg-secondary-dark
-              hover:border-secondary-dark
-              focus:bg-secondary-dark
-              focus:border-secondary-dark
-              mb-1
-              w-[50px]
-              ${inactive ? "opacity-50 pointer-events-none" : ""}
-              rounded
-              h-5
-            `}
+            flex
+            justify-center
+            items-center
+            bg-secondary
+            hover:bg-secondary-dark
+            hover:border-secondary-dark
+            focus:bg-secondary-dark
+            focus:border-secondary-dark
+            mb-1
+            w-[50px]
+            ${inactive ? "opacity-50 pointer-events-none" : ""}
+            rounded
+            h-5
+          `}
             aria-disabled={inactive}
             aria-label={entry.name}
           >
             <PlayIcon size={16} color="white" />
           </Link>
+
+          {entry.hasDemo ? (
+            <Link
+              href={{
+                pathname: "/analysis_page",
+                query: {
+                  app: entry.id,
+                  demoMode: true,
+                },
+              }}
+              data-testid={`button-${entry.name} Demo`}
+              className={`
+              flex
+              justify-center
+              items-center
+              hover:bg-secondary-dark
+              hover:border-secondary-dark
+              hover:text-primary-content-max
+              focus:bg-secondary-dark
+              focus:border-secondary-dark
+              focus:text-primary-content-max
+              mb-1
+              w-[50px]
+              rounded
+              h-5
+              text-xs
+              text-secondary
+              p-0
+              border
+              border-secondary
+              font-semibold
+            `}
+            >
+              Demo
+            </Link>
+          ) : null}
         </div>
       </div>
       <Divider variant="dotted" aria-hidden="true" />

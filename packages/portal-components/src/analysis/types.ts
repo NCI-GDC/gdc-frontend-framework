@@ -7,10 +7,6 @@ export interface AppRegistrationEntry {
   readonly id: string;
   readonly name: string;
   readonly tags: ReadonlyArray<string>;
-  readonly href: {
-    pathname: string;
-    query: Record<string, string>;
-  };
   readonly icon?: React.ReactNode;
   readonly hasDemo?: boolean;
   readonly demoMode?: boolean;
@@ -21,4 +17,6 @@ export interface AppRegistrationEntry {
   readonly optimizeRules?: ReadonlyArray<string>;
   readonly selectAdditionalCohort?: boolean;
   readonly noDataTooltip?: string;
+  readonly rightComponent?: React.FC;
+  readonly selectionScreen?: React.FC;
 }

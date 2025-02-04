@@ -13,6 +13,7 @@ tags: gdc-data-portal-v2, regression, home-page, cohort-bar
 ## Create Cohort Using Label
 * Select the "Label" "Liver" on the Body Plot Graph
 * Is text "Explore this Liver cohort in the Analysis Center?" present on the page
+* Pause "2" seconds
 * Select "Yes"
 * Is modal with text "Liver has been created. This is now your current cohort." present on the page and "Remove Modal"
 * Wait for cohort bar case count loading spinner

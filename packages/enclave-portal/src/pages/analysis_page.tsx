@@ -1,11 +1,23 @@
-import { AnalysisGrid } from "@gff/portal-components";
+import {
+  AnalysisWorkspace,
+  AppRegistrationEntry,
+} from "@gff/portal-components";
 import { NextPage } from "next";
+import dynamic from "next/dynamic";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import SequenceReadsIcon from "public/apps/icons/SequenceReads.svg";
 import ProjectsIcon from "public/layout/icons/crowd-of-users.svg";
 import PageLayout from "@/components/PageLayout";
 
-export const REGISTERED_APPS = [
+const ActiveAnalysisToolNoSSR = dynamic(
+  () => import("@/features/analysis/ActiveAnalysisTool"),
+  {
+    ssr: false,
+  },
+);
+
+export const REGISTERED_APPS: AppRegistrationEntry[] = [
   {
     name: "Projects",
     icon: (
@@ -16,39 +28,40 @@ export const REGISTERED_APPS = [
         aria-hidden="true"
       />
     ),
-    href: {
-      pathname: "/analysis_page",
-      query: { app: "Projects" },
-    },
     tags: [],
     hasDemo: false,
     id: "Projects",
     countsField: "caseCount",
     description:
-      "View the Projects available within the GDC and select them for further exploration and analysis.",
+      "View the Projects available within the Enclave and select them for further exploration and analysis.",
   },
   {
-    name: "Sequence Reads",
+    name: "My test App",
     icon: <SequenceReadsIcon aria-hidden="true" />,
-    href: {
-      pathname: "/analysis_page",
-      query: { app: "SequenceReadApp" },
-    },
-    tags: ["sequenceAnalysis"],
-    hasDemo: false,
-    countsField: "sequenceReadCaseCount",
-    description:
-      "Visualize sequencing reads for a given gene, position, SNP, or variant.",
-    id: "SequenceReadApp",
-    noDataTooltip:
-      "Current cohort does not have available BAMs for visualization.",
-    optimizeRules: ["data format = BAM"],
+    hasDemo: true,
+    description: "A test app for testing things",
+    id: "TestApp",
+    countsField: "caseCount",
+    tags: [],
   },
 ];
 
 export const RECOMMENDED_APPS = ["Projects"];
 
 const AnalysisCenter: NextPage = () => {
+  const router = useRouter();
+  const {
+    query: { app, demoMode },
+  } = router;
+
+  const isDemoMode = demoMode === "true";
+  const skipSelectionScreen =
+    router?.query?.skipSelectionScreen === "true" || isDemoMode;
+
+  const handleAppSelected = (app?: string, demoMode?: boolean) => {
+    router.push({ query: { app, ...(demoMode && { demoMode }) } });
+  };
+
   return (
     <PageLayout>
       <Head>
@@ -59,12 +72,19 @@ const AnalysisCenter: NextPage = () => {
           key="analysis-center"
         />
       </Head>
-      <AnalysisGrid
+      <AnalysisWorkspace
         registeredApps={REGISTERED_APPS}
         recommendedApps={RECOMMENDED_APPS}
         CountHookRegistry={{
-          getInstance: () => ({ getHook: () => () => ({ isSuccess: true }) }),
+          getInstance: () => ({
+            getHook: () => () => ({ isSuccess: true, data: 100 }),
+          }),
         }}
+        app={app && app.length > 0 ? app.toString() : undefined}
+        isDemoMode={isDemoMode}
+        skipSelectionScreen={skipSelectionScreen}
+        handleAppSelected={handleAppSelected}
+        ActiveAnalysisTool={ActiveAnalysisToolNoSSR}
       />
     </PageLayout>
   );

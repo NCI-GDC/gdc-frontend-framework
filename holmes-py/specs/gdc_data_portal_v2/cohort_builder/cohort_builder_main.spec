@@ -102,7 +102,7 @@ tags: cohort-selections
 * Select the following radio buttons
   |radio_id                                           |
   |---------------------------------------------------|
-  |cases.diagnoses.age_at_diagnosis_21915.0-25568.0_1 |
+  |cases.diagnoses.age_at_diagnosis_21915.0-25568.0_0 |
 * Perform the following actions from "Demographic" tab on the Cohort Builder page
   |facet_name       |action               |
   |-----------------|---------------------|
