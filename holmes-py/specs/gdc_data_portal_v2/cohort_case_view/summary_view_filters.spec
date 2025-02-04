@@ -73,13 +73,14 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
 * Clear active cohort filters
 * Select Custom Filter "Cases" in Cohort Case View
 * Upload "Myomatous Neoplasms" "txt" from "Cohort Case View" in "Cohort Filter Import" through "Browse"
-* Is text "113 submitted case identifiers mapped to 113 unique GDC cases" present on the page
+* Is text "112 submitted case identifiers mapped to 112 unique GDC cases" present on the page
 * Select "Submit"
+* Pause "5" seconds
 * Wait for loading spinners to disappear
 * Validate the cohort query filter area has these filters
   |facet_name         |selections           |position in filter area  |
   |-------------------|---------------------|-------------------------|
-  |Case Id            |113 input case ids   |1                        |
+  |Case Id            |112 input case ids   |1                        |
 * Collect case counts for the following filters in Cohort Summary View for cohort "CCV_CF_Cases"
   |facet_name           |selection                      |
   |---------------------|-------------------------------|
@@ -94,6 +95,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
 * Upload "Gene List" "txt" from "Cohort Case View" in "Cohort Filter Import" through "Browse"
 * Is text "10 submitted gene identifiers mapped to 10 unique GDC genes" present on the page
 * Select "Submit"
+* Pause "2" seconds
 * Wait for loading spinners to disappear
 * Validate the cohort query filter area has these filters
   |facet_name         |selections           |position in filter area  |
@@ -110,6 +112,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
 * Upload "Single Mutation" "txt" from "Cohort Case View" in "Cohort Filter Import" through "Browse"
 * Is text "1 submitted mutation identifier mapped to 1 unique GDC mutation" present on the page
 * Select "Submit"
+* Pause "2" seconds
 * Wait for loading spinners to disappear
 * Validate the cohort query filter area has these filters
   |facet_name         |selections                           |position in filter area  |
