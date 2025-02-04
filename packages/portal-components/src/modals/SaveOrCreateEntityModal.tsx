@@ -1,6 +1,6 @@
 import React from "react";
 import { upperFirst } from "lodash";
-import { Box, Button, Group, Modal, TextInput, Loader } from "@mantine/core";
+import { Button, Modal, TextInput, Loader } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import ErrorMessage from "@/common/ErrorMessage";
 import { WarningMessageIcon } from "src/commonIcons";
@@ -131,7 +131,7 @@ export const SaveOrCreateEntityBody = ({
 
   return (
     <>
-      <Box className="font-content mt-1 mr-6 mb-5 ml-3">
+      <div className="font-content mt-1 mr-6 mb-5 ml-3">
         <p className="mb-2 text-sm font-content">
           {descriptionMessage && descriptionMessage}
         </p>
@@ -154,17 +154,9 @@ export const SaveOrCreateEntityBody = ({
           aria-required
           data-testid="textbox-name-input-field"
         />
-      </Box>
-      <Box
-        style={{
-          backgroundColor: "var(--mantine-color-base-1)",
-          padding: "var(--mantine-spacing-md)",
-          borderRadius: "var(--mantine-radius-md)",
-          borderTopRightRadius: 0,
-          borderTopLeftRadius: 0,
-        }}
-      >
-        <Group justify="flex-end">
+      </div>
+      <div className="bg-base-lightest p-4">
+        <div className="flex justify-end gap-3">
           <Button
             data-testid="button-cancel-save"
             variant="outline"
@@ -185,8 +177,8 @@ export const SaveOrCreateEntityBody = ({
           >
             {upperFirst(action)}
           </Button>
-        </Group>
-      </Box>
+        </div>
+      </div>
     </>
   );
 };

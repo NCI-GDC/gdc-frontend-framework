@@ -2,34 +2,22 @@ import React, { useContext, useState } from "react";
 import { Tooltip, MantineProvider, Button, Loader } from "@mantine/core";
 import { AppContext } from "src/context";
 import { UndoIcon } from "src/commonIcons";
-import { GenericCohortModal } from "@/modals/GenericCohortModal";
+import GenericCohortModal from "@/modals/GenericCohortModal";
+import SaveCohortModal from "@/modals/SaveCohortModal";
 import CohortActions from "./CohortActions";
 import CohortSelector from "./CohortSelector";
 import { actionButtonVariant } from "./style";
-import { Cohort } from "./types";
+import { CohortHooks } from "./types";
 
 interface CohortManagerProps {
-  readonly hooks: {
-    useSelectCurrentCohort: () => Cohort;
-    useSelectAvailableCohorts: () => Cohort[];
-    useDeleteCohort: () => () => void;
-    useDiscardChanges: () => () => void;
-    useUpdateFilters: () => () => void;
-    useSetActiveCohort: () => (cohortId: string) => void;
-    useAddUnsavedCohort: () => () => void;
-    useExportCohort?: () => [
-      () => void,
-      { isFetching: boolean; isError: boolean },
-    ];
-    useImportCohort?: () => () => void;
-  };
-  readonly invalidCohortNames: string[];
-  readonly useSetCohortMessage: () => (msg: string) => void;
+  readonly hooks: CohortHooks;
+  readonly invalidCohortNames?: string[];
+  //readonly useSetCohortMessage: () => (msg: string) => void;
 }
 
 const CohortManager: React.FC<CohortManagerProps> = ({
   hooks,
-  //invalidCohortNames,
+  invalidCohortNames = [],
 }) => {
   const currentCohort = hooks.useSelectCurrentCohort();
 
@@ -47,8 +35,8 @@ const CohortManager: React.FC<CohortManagerProps> = ({
 
   const [showDelete, setShowDelete] = useState(false);
   const [showDiscard, setShowDiscard] = useState(false);
-  const [, setShowSaveCohort] = useState(false);
-  const [, setShowSaveAsCohort] = useState(false);
+  const [showSaveCohort, setShowSaveCohort] = useState(false);
+  const [showSaveAsCohort, setShowSaveAsCohort] = useState(false);
   const [showUpdateCohort, setShowUpdateCohort] = useState(false);
 
   return (
@@ -159,33 +147,33 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 handleUpdate();
               }}
             />
+
+            <SaveCohortModal
+              initialName={
+                !invalidCohortNames.includes(currentCohort.name?.toLowerCase())
+                  ? currentCohort.name
+                  : undefined
+              }
+              opened={showSaveCohort}
+              onClose={() => setShowSaveCohort(false)}
+              cohortId={currentCohort.id}
+              filters={currentCohort.filters}
+              invalidCohortNames={invalidCohortNames}
+              hooks={hooks}
+            />
+
+            <SaveCohortModal
+              opened={showSaveAsCohort}
+              initialName={currentCohort.name}
+              onClose={() => setShowSaveAsCohort(false)}
+              cohortId={currentCohort.id}
+              filters={currentCohort.filters}
+              saveAs
+              invalidCohortNames={invalidCohortNames}
+              hooks={hooks}
+            />
           </>
         )}
-
-        {/*
-        <SaveCohortModal
-          initialName={
-            !invalidCohortNames.includes(currentCohort.name?.toLowerCase())
-              ? currentCohort.name
-              : undefined
-          }
-          opened={showSaveCohort}
-          onClose={() => setShowSaveCohort(false)}
-          cohortId={currentCohort.id}
-          filters={currentCohort.filters}
-          invalidCohortNames={invalidCohortNames}
-        />
-
-        <SaveCohortModal
-          opened={showSaveAsCohort}
-          initialName={currentCohort.name}
-          onClose={() => setShowSaveAsCohort(false)}
-          cohortId={currentCohort.id}
-          filters={currentCohort.filters}
-          saveAs
-          invalidCohortNames={invalidCohortNames}
-        />
-        */}
       </div>
     </MantineProvider>
   );

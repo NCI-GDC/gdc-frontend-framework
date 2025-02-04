@@ -21,6 +21,8 @@ import {
   useImportCohort,
   useSetActiveCohort,
   useUpdateFilters,
+  useSaveCohort,
+  useReplaceCohort,
 } from "./cohortActionHooks";
 import { INVALID_COHORT_NAMES } from "../utils";
 
@@ -68,6 +70,8 @@ const CohortManager: React.FC = () => {
           useAddUnsavedCohort,
           useExportCohort,
           useImportCohort,
+          useSaveCohort,
+          useReplaceCohort,
         }}
         invalidCohortNames={INVALID_COHORT_NAMES}
       />

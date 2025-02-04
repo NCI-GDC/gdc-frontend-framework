@@ -11,7 +11,7 @@ interface GenericCohortModalProps {
   onActionClick: () => void;
 }
 
-export const GenericCohortModal: React.FC<GenericCohortModalProps> = ({
+const GenericCohortModal: React.FC<GenericCohortModalProps> = ({
   opened,
   title,
   onClose,
@@ -61,3 +61,5 @@ export const GenericCohortModal: React.FC<GenericCohortModalProps> = ({
     </Modal>
   );
 };
+
+export default GenericCohortModal;

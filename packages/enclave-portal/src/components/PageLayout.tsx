@@ -28,9 +28,27 @@ const PageLayout: React.FC<PageLayoutProps> = ({
     <>
       <Header />
       <CohortManager
-        selectAvailableCohorts={() => [EXAMPLE_COHORT]}
-        selectCurrentCohort={() => EXAMPLE_COHORT}
-        setActiveCohort={() => {}}
+        hooks={{
+          useSelectAvailableCohorts: () => [EXAMPLE_COHORT],
+          useSelectCurrentCohort: () => EXAMPLE_COHORT,
+          useSetActiveCohort: () => (_) => {},
+          useDeleteCohort: () => () => {},
+          useDiscardChanges: () => () => {},
+          useUpdateFilters: () => () => {},
+          useAddUnsavedCohort: () => () => {},
+          useSaveCohort: () => [
+            async (_) => {
+              return Promise.resolve([true, "id"]);
+            },
+            {},
+          ],
+          useReplaceCohort: () => [
+            (_) => {
+              return ["Name"];
+            },
+            {},
+          ],
+        }}
       />
       {children}
       <Footer
