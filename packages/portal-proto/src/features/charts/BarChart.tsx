@@ -79,7 +79,7 @@ const BarChart: React.FC<BarChartProps> = ({
     marker: {
       color: dataset?.marker?.color,
       line: {
-        color: "#4f4b4b",
+        color: "#FFFFFF",
         width: 2,
       },
     },
