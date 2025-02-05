@@ -49,6 +49,8 @@ export const get_facets = (
     });
 };
 
+export const STOP_WORDS = new Set(["of", "or"]);
+
 export interface FacetSearchDocument {
   name: string;
   category: string;
@@ -60,6 +62,7 @@ export interface FacetSearchDocument {
 export const miniSearch = new MiniSearch<FacetSearchDocument>({
   fields: ["name", "description", "enum"], // fields to index for full-text search
   storeFields: ["name", "category", "categoryKey", "description", "enum", "id"], // fields to return with search results
+  processTerm: (term) => (STOP_WORDS.has(term) ? null : term.toLowerCase()), // index term processing
   searchOptions: {
     boost: {
       name: 1.5,
