@@ -110,7 +110,6 @@ tags: gdc-data-portal-v2, regression, cohort-comparison, cohort-comparison-downl
   |Age At Diagnosis       |60 to <70 years                  |1              |CC_Age_60_to_70_1 Count              |
   |Age At Diagnosis       |70 to <80 years                  |1              |CC_Age_70_to_80_1 Count              |
   |Age At Diagnosis       |80+ years                        |1              |CC_Age_80+_1 Count                   |
-  |Age At Diagnosis       |missing                          |1              |CC_Age_missing_1 Count               |
   |Age At Diagnosis       |0 to <10 years                   |2              |CC_Age_0_to_10_2 Count               |
   |Age At Diagnosis       |10 to <20 years                  |2              |CC_Age_10_to_20_2 Count              |
   |Age At Diagnosis       |20 to <30 years                  |2              |CC_Age_20_to_30_2 Count              |
@@ -120,7 +119,6 @@ tags: gdc-data-portal-v2, regression, cohort-comparison, cohort-comparison-downl
   |Age At Diagnosis       |60 to <70 years                  |2              |CC_Age_60_to_70_2 Count              |
   |Age At Diagnosis       |70 to <80 years                  |2              |CC_Age_70_to_80_2 Count              |
   |Age At Diagnosis       |80+ years                        |2              |CC_Age_80+_2 Count                   |
-  |Age At Diagnosis       |missing                          |2              |CC_Age_missing_2 Count               |
 * Download "Age At Diagnosis" from "Cohort Comparison"
 * Read from "Age At Diagnosis from Cohort Comparison"
 * Verify that "Age At Diagnosis from Cohort Comparison" has expected information
@@ -136,7 +134,6 @@ tags: gdc-data-portal-v2, regression, cohort-comparison, cohort-comparison-downl
   |60 to <70 years                        |
   |70 to <80 years                        |
   |80+ years                              |
-  |missing                                |
   |# Cases S1                             |
   |% Cases S1                             |
   |# Cases S2                             |
@@ -153,7 +150,6 @@ tags: gdc-data-portal-v2, regression, cohort-comparison, cohort-comparison-downl
   |CC_Age_60_to_70_1 Count                |
   |CC_Age_70_to_80_1 Count                |
   |CC_Age_80+_1 Count                     |
-  |CC_Age_missing_1 Count                 |
   |CC_Age_0_to_10_2 Count                 |
   |CC_Age_10_to_20_2 Count                |
   |CC_Age_20_to_30_2 Count                |
@@ -163,4 +159,3 @@ tags: gdc-data-portal-v2, regression, cohort-comparison, cohort-comparison-downl
   |CC_Age_60_to_70_2 Count                |
   |CC_Age_70_to_80_2 Count                |
   |CC_Age_80+_2 Count                     |
-  |CC_Age_missing_2 Count                 |

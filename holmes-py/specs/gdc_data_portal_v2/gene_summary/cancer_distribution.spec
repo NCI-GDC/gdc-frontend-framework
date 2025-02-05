@@ -151,9 +151,10 @@ tags: gdc-data-portal-v2, regression, gene-summary
     |required_info                          |
     |---------------------------------------|
     |TARGET-OS                              |
-    |64.19753086419753                      |
-    |8.641975308641975                      |
-    |81                                     |
+    |TCGA-PCPG                              |
+    |TCGA-KICH                              |
+    |CDDP_EAGLE-1                           |
+    |TCGA-MESO                              |
 
 ## Cancer Distribution CNV Graph - Validate JSON File Fields
   |field_name                               |

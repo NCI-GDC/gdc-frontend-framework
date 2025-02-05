@@ -44,11 +44,17 @@ but it usually requires a wait. So I've put 5 seconds.
   |num_gdc_ssm_cases                  |
   |gdc_ssm_affected_cases_percentage  |
   |num_cohort_cnv_cases               |
+  |num_cohort_cnv_amplification_cases |
+  |cohort_cnv_amplification_cases_percentage|
   |num_cohort_cnv_gain_cases          |
   |cohort_cnv_gain_cases_percentage   |
-  |num_cohort_cnv_loss_cases          |
-  |cohort_cnv_loss_cases_percentage   |
+  |num_cohort_cnv_heterozygous_deletion_cases|
+  |cohort_cnv_heterozygous_deletion_cases_percentage|
+  |num_cohort_cnv_homozygous_deletion_cases|
+  |cohort_cnv_homozygous_deletion_cases_percentage|
   |num_mutations                      |
+  |annotations                        |
+
 * Verify that "TSV from Mutation Frequency" does not contain specified information
   |required_info                          |
   |---------------------------------------|
