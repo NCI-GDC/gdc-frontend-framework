@@ -318,7 +318,7 @@ export const FileView: React.FC<FileViewProps> = ({
             <div className="flex mt-8">
               <div className="basis-1/2">
                 <SummaryCard
-                  customDataTestID="bam-metrics-file-summary"
+                  customDataTestID="table-left-bam-metrics-file-summary"
                   title="BAM Metrics"
                   tableData={formattedDataForQCMetrics.slice(0, 8)}
                   ref={leftBAMMetricsTableRef}
@@ -328,7 +328,7 @@ export const FileView: React.FC<FileViewProps> = ({
 
               <div className="basis-1/2">
                 <SummaryCard
-                  customDataTestID="bam-metrics-file-summary"
+                  customDataTestID="table-right-bam-metrics-file-summary"
                   title="" // should be empty
                   tableData={formattedDataForQCMetrics.slice(8, 16)}
                   ref={rightBAMMetricsTableRef}
