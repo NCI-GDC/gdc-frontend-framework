@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { orderBy } from "lodash";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import { FilterSet, useCnvPlotQuery } from "@gff/core";
+import { FilterSet, GraphQLFetchError, useCnvPlotQuery } from "@gff/core";
 import ChartTitleBar from "../ChartTitleBar";
 import { CountSpan } from "@/components/tailwindComponents";
 import { LoadingOverlay, Tooltip } from "@mantine/core";
@@ -29,9 +29,9 @@ interface CNVPlotProps {
 /**
  * CNV plot component
  * @param gene - gene to plot
- * @param {height} - height of the chart -
- * @param {genomicFilters} - genomic filters to apply
- * @param {cohortFilters} - cohort filters to apply
+ * @param height - height of the chart -
+ * @param genomicFilters - genomic filters to apply
+ * @param cohortFilters - cohort filters to apply
  * @category Charts
  */
 const CNVPlot: React.FC<CNVPlotProps> = ({
@@ -53,6 +53,7 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
     heterozygousDeletion: true,
     homozygousDeletion: true,
   });
+  const anyCheckboxSelected = Object.values(checkboxState).some((v) => v);
 
   const handleCheckboxChange = useCallback((key: keyof CheckboxState) => {
     setCheckboxState((prevState) => ({
@@ -60,28 +61,21 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
       [key]: !prevState[key],
     }));
   }, []);
-
   const onClickHandler = useCallback((mouseEvent: PlotMouseEvent) => {
-    router.push(`/projects/${mouseEvent.points[0].x}`);
+    const point = mouseEvent.points?.[0];
+    if (point && point.x) {
+      router.push(`/projects/${point.x}`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [isReady, setIsReady] = useState(false);
   const handleOnAfterPlot = useCallback(() => setIsReady(true), []);
 
-  // const errorMessage = useDeepCompareMemo(() => {
-  //   if (typeof error === "string") return error;
-  //   return "text" in error ? error.text : "An error occurred";
-  // }, [error]);
-
-  // if (isError) {
-  //   return <div>Failed to fetch chart: {errorMessage}</div>;
-  // }
-
   const projectKeys = useDeepCompareMemo(
     () => Object.keys(data?.cnvs ?? {}),
     [data],
   );
-  if (!isFetching && projectKeys.length < 5) return null;
 
   const caseTotalFormatted = data?.caseTotal.toLocaleString();
   const projectCountFormatted = projectKeys.length.toLocaleString();
@@ -104,26 +98,24 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
   const chartData = useDeepCompareMemo(() => {
     return projectKeys.map((project) => {
       const cnv = data.cnvs[project];
-      const valueSum = Object.keys(cnvMapping).reduce((sum, key) => {
-        return checkboxState[key] ? sum + cnv[cnvMapping[key].prop] : sum;
-      }, 0);
+      const valueSum = anyCheckboxSelected
+        ? Object.keys(cnvMapping).reduce((sum, key) => {
+            return checkboxState[key] ? sum + cnv[cnvMapping[key].prop] : sum;
+          }, 0)
+        : 0;
       return {
         ...cnv,
         project,
         percent: cnv.total ? (valueSum / cnv.total) * 100 : 0,
       };
     });
-  }, [data, projectKeys, checkboxState]);
+  }, [data, projectKeys, checkboxState, anyCheckboxSelected]);
 
   const top20ChartData = useDeepCompareMemo(() => {
-    return chartData
-      .sort((a, b) => b.percent - a.percent) // percent is 0 when nothing is selected
-      .slice(0, 20);
+    return chartData.sort((a, b) => b.percent - a.percent).slice(0, 20);
   }, [chartData]);
 
   const datasets = useDeepCompareMemo(() => {
-    const anyCheckboxSelected = Object.values(checkboxState).some((v) => v);
-
     if (!anyCheckboxSelected) {
       return [
         {
@@ -141,9 +133,7 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
         customdata: top20ChartData.map((d) => [d[prop], d.total]),
         marker: { color },
       }));
-  }, [checkboxState, top20ChartData]);
-
-  console.log({ datasets, top20ChartData });
+  }, [checkboxState, top20ChartData, anyCheckboxSelected]);
 
   const chartConfig = useDeepCompareMemo(
     () => ({
@@ -154,14 +144,14 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
   );
 
   const jsonData = useDeepCompareMemo(() => {
-    return top20ChartData.map(
+    const preparedData = top20ChartData.map(
       ({
         project: symbol,
+        amplification,
         gain,
         loss,
-        total,
-        amplification,
         homozygousDeletion,
+        total,
       }) => ({
         symbol,
         amplification: amplification ? amplification / total : 0,
@@ -173,7 +163,34 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
         total,
       }),
     );
-  }, [top20ChartData]);
+
+    // When no checkboxes are selected, sort the data by the listed keys descending.
+    if (!anyCheckboxSelected) {
+      return orderBy(
+        preparedData,
+        [
+          "amplification",
+          "gain",
+          "heterozygous deletion",
+          "homozygous deletion",
+        ],
+        ["desc", "desc", "desc", "desc"],
+      );
+    }
+
+    return preparedData;
+  }, [top20ChartData, anyCheckboxSelected]);
+
+  if (!isFetching && projectKeys.length < 5) return null;
+
+  const errorMessage =
+    typeof error === "string"
+      ? error
+      : (error as GraphQLFetchError)?.text ?? "An error occurred";
+
+  if (isError) {
+    return <div>Failed to fetch chart: {errorMessage}</div>;
+  }
 
   return (
     <div
@@ -193,8 +210,8 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
         <div>
           <BarChart
             divId={chartDivId}
-            data={chartConfig}
             onClickHandler={onClickHandler}
+            data={chartConfig}
             height={height}
             stacked
             onAfterPlot={handleOnAfterPlot}
