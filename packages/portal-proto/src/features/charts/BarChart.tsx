@@ -80,11 +80,12 @@ const BarChart: React.FC<BarChartProps> = ({
       color: dataset?.marker?.color,
       line: {
         color: "#4f4b4b",
-        width: 1,
+        width: 2,
       },
     },
     type: "bar",
     orientation: orientation,
+    bargap: 0.5,
   }));
 
   const layout: Partial<Layout> =
