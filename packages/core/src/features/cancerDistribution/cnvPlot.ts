@@ -261,13 +261,27 @@ const cnvPlotSlice = graphqlAPISlice.injectEndpoints({
         const cnvsByProject: GroupedCnvData = Object.keys(
           total,
         ).reduce<GroupedCnvData>((acc, projectId) => {
-          acc[projectId] = {
-            total: total[projectId] || 0,
-            amplification: amplification[projectId] || 0,
-            gain: gain[projectId] || 0,
-            loss: loss[projectId] || 0,
-            homozygousDeletion: homozygousDeletion[projectId] || 0,
-          };
+          const amplificationCount = amplification[projectId] || 0;
+          const gainCount = gain[projectId] || 0;
+          const lossCount = loss[projectId] || 0;
+          const homozygousDeletionCount = homozygousDeletion[projectId] || 0;
+
+          // Only add project if at least one CNV count is non-zero
+          if (
+            amplificationCount ||
+            gainCount ||
+            lossCount ||
+            homozygousDeletionCount
+          ) {
+            acc[projectId] = {
+              total: total[projectId] || 0,
+              amplification: amplificationCount,
+              gain: gainCount,
+              loss: lossCount,
+              homozygousDeletion: homozygousDeletionCount,
+            };
+          }
+
           return acc;
         }, {});
 
