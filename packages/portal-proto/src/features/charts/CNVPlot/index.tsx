@@ -117,12 +117,21 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
 
   const top20ChartData = useDeepCompareMemo(() => {
     return chartData
-      .slice()
-      .sort((a, b) => b.percent - a.percent)
+      .sort((a, b) => b.percent - a.percent) // percent is 0 when nothing is selected
       .slice(0, 20);
   }, [chartData]);
 
   const datasets = useDeepCompareMemo(() => {
+    const anyCheckboxSelected = Object.values(checkboxState).some((v) => v);
+
+    if (!anyCheckboxSelected) {
+      return [
+        {
+          y: top20ChartData.map(() => null),
+          x: top20ChartData.map((d) => d.project),
+        },
+      ];
+    }
     return Object.entries(cnvMapping)
       .filter(([key]) => checkboxState[key])
       .map(([_, { prop, color }]) => ({
