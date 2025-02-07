@@ -86,7 +86,7 @@ startCoreListening({
   effect: async (_, listenerApi) => {
     // the last cohort added is the one we want to get the case count for
     const cohorts = selectAvailableCohorts(listenerApi.getState()).sort(
-      (a, b) => (a.modified_datetime <= b.modified_datetime ? 1 : -1),
+      (a, b) => b.modified_datetime.localeCompare(a.modified_datetime),
     );
     const latestCohortId = cohorts[0]?.id;
     listenerApi.dispatch(fetchCohortCaseCounts(latestCohortId));
