@@ -349,7 +349,10 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
     |Project ID                           |
     |Case ID                              |
     |Sample ID                            |
-    |Sample Type                          |
+    |Tissue Type			                    |
+    |Tumor Descriptor                     |
+    |Specimen Type                        |
+    |Preservation Method                  |
     |1e9ed236-3e94-454a-a822-90f8e9017a05 |
     |d7e720b1-08b9-466d-9290-6976a53d9a0b |
     |c764c4fb-f07c-4221-bbeb-2d0d60271205.rna_seq.chimeric.gdc_realn.bam|
@@ -358,8 +361,6 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
     |BEATAML1.0-COHORT                    |
     |ORGANOID-PANCREATIC                  |
     |S181                                 |
-    |Next Generation Cancer Model         |
-    |Blood Derived Normal                 |
 * Verify that "Sample Sheet from Cohort Case View Files" does not contain specified information
     |required_info                        |
     |-------------------------------------|

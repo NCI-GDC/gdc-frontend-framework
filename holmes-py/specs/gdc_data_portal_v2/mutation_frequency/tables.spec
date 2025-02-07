@@ -22,8 +22,8 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |Name                                 |5      |
   |# SSM Affected Cases in Cohort       |6      |
   |# SSM Affected Cases Across the GDC  |7      |
-  |# CNV Gain                           |8      |
-  |# CNV Loss                           |9      |
+  |# CNV Amplifications                 |8      |
+  |# CNV Homozygous Deletions           |9      |
   |# Mutations                          |10     |
   |Annotations                          |11     |
 * Select or deselect these options from the table column selector
@@ -32,6 +32,8 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |Gene ID                              |
   |Cytoband                             |
   |Type                                 |
+  |# CNV Gains                          |
+  |# CNV Heterozygous Deletions         |
   |Annotations                          |
 * Verify the table header text is correct
   |expected_text                        |column |
@@ -39,6 +41,8 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |Gene ID                              |4      |
   |Cytoband                             |7      |
   |Type                                 |8      |
+  |# CNV Gains                          |12     |
+  |# CNV Heterozygous Deletions         |13     |
 
 ## Validate Mutation Table Headers Text
 * Switch to "Mutations" tab in the Mutation Frequency app
