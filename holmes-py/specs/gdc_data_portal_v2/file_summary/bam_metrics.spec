@@ -36,7 +36,6 @@ tags: gdc-data-portal-v2, regression, file-summary
     |0.000195635                            |7    |2      |
     |0.0000322                              |8    |2      |
 
-
 ## BAM Metrics Table - Right
 * Verify the vertical table "Right Bam Metrics File Summary" header text is correct
     |expected_text                          |row  |
