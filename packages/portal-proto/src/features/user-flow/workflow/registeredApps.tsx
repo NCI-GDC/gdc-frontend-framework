@@ -18,10 +18,6 @@ import GeneExpressionIcon from "public/user-flow/icons/apps/GeneExpression.svg";
 import ScRNASeqIcon from "public/user-flow/icons/apps/scRNASeq.svg";
 import { useLazyScRNAseqCaseCountQuery } from "../../proteinpaint/scRNAseqCaseCount";
 import { CountHookRegistry } from "@gff/core";
-import {
-  DISPLAY_SC_RNA_SEQ_APP,
-  isFeatureEnabled,
-} from "@/features/featureFlags";
 import { AppRegistrationEntry } from "@gff/portal-components";
 
 CountHookRegistry.getInstance().registerHook(
@@ -219,30 +215,26 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
     noDataTooltip:
       "Current cohort does not have SSM or CNV data available for visualization.",
   },
-
-  ...(isFeatureEnabled(DISPLAY_SC_RNA_SEQ_APP)
-    ? [
-        {
-          name: "Single Cell RNA-seq",
-          icon: (
-            <ScRNASeqIcon
-              className="m-auto"
-              height={48}
-              width={80}
-              aria-hidden="true"
-            />
-          ),
-          tags: ["variantAnalysis", "cnv", "ssm"],
-          //hasDemo: true,
-          description: "scRNAseq Visualization tool",
-          id: "scRNAseq",
-          countsField: "scRNAseqCaseCount",
-          optimizeRules: ["available data = ssm or cnv"],
-          noDataTooltip:
-            "Current cohort does not have scRNAseq data available for visualization.",
-        },
-      ]
-    : []),
+  {
+    name: "Single Cell RNA-seq",
+    icon: (
+      <ScRNASeqIcon
+        className="m-auto"
+        height={48}
+        width={80}
+        aria-hidden="true"
+      />
+    ),
+    tags: ["variantAnalysis", "cnv", "ssm"],
+    //hasDemo: true,
+    description:
+      "Visual single-cell RNA-Seq data with cluster plots and gene expression overlays.",
+    id: "scRNAseq",
+    countsField: "scRNAseqCaseCount",
+    optimizeRules: ["available data = ssm or cnv"],
+    noDataTooltip:
+      "Current cohort does not have scRNAseq data available for visualization.",
+  },
   {
     name: "Gene Expression Clustering",
     icon: (
