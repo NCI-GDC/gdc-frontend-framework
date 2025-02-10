@@ -133,7 +133,10 @@ export const SAMPLE_SHEET_FIELDS = [
   "cases.project.project_id",
   "cases.submitter_id",
   "cases.samples.submitter_id",
-  "cases.samples.sample_type",
+  "cases.samples.tissue_type",
+  "cases.samples.tumor_descriptor",
+  "cases.samples.specimen_type",
+  "cases.samples.preservation_method",
 ];
 
 export const INITIAL_SUMMARY_FIELDS = [
