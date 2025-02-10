@@ -112,6 +112,7 @@ class GenericLocators:
         lambda table_name, text, row, column: f'[data-testid="table-{table_name}"] >> tr:nth-child({row}) > td:nth-child({column}) > * >> nth=0 >> text="{text}"'
     )
     TEXT_SPECIFIED_TABLE_HEADER = lambda table_name, column: f'[data-testid="table-{table_name}"] >> tr > th:nth-child({column}) >> nth=0'
+    TEXT_SPECIFIED_VERTICAL_TABLE_HEADER = lambda table_name, row: f'[data-testid="table-{table_name}"] >> tr:nth-child({row}) > th >> nth=0'
     TEXT_TABLE_HEADER = lambda column: f"tr > th:nth-child({column}) >> nth=0"
     TEXT_DROPDOWN_MENU_OPTION = (
         lambda dropdown_option: f'[data-testid="dropdown-menu-options"] >> text="{dropdown_option}"'
@@ -340,6 +341,15 @@ class BasePage:
         """
         table_name = self.normalize_button_identifier(table_name)
         table_header_text_locator = GenericLocators.TEXT_SPECIFIED_TABLE_HEADER(table_name,column)
+        return self.get_text(table_header_text_locator)
+
+    def get_table_header_text_by_row_in_specified_vertical_table(self, table_name, column):
+        """
+        Gets text of specified table header by row. For tables that are vertically aligned.
+        Row indexing begins at '1'
+        """
+        table_name = self.normalize_button_identifier(table_name)
+        table_header_text_locator = GenericLocators.TEXT_SPECIFIED_VERTICAL_TABLE_HEADER(table_name,column)
         return self.get_text(table_header_text_locator)
 
     def get_table_body_text_by_row_column(self, row, column):
