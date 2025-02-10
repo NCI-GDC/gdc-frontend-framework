@@ -65,6 +65,8 @@ but it usually requires a wait. So I've put 5 seconds.
   |MUC16                                  |
   |FAT3                                   |
   |MUC16                                  |
+  |num_cohort_cnv_loss_cases              |
+  |cohort_cnv_loss_cases_percentage       |
 * Perform the following actions on a filter card
   |filter_name          |action               |
   |---------------------|---------------------|

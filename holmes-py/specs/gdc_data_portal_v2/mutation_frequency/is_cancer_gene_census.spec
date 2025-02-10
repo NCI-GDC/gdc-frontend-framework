@@ -95,6 +95,8 @@ tags: gdc-data-portal-v2, regression, mutation-frequency, is-cancer-census-off
   |FAT4                               |
   |ABCB                               |
   |ABCC                               |
+  |num_cohort_cnv_loss_cases          |
+  |cohort_cnv_loss_cases_percentage   |
 
 ## Gene Table - Select Mutations Filter Button
 * Search the table for ""
