@@ -56,6 +56,8 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards, regression
   |Synchronous Malignancy     |
   |Progression or Recurrence  |
   |Residual Disease           |
+  |Child Pugh Classification  |
+  |Ishak Fibrosis Score       |
 
 * Validate presence of facet cards on the "Disease Specific Classifications" tab on the Cohort Builder page
   |facet_name                 |
@@ -75,6 +77,7 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards, regression
   |International Prognostic Index |
   |Eln Risk Classification        |
   |Wilms Tumor Histologic Subtype |
+  |Weiss Assessment Score     |
 
 * Validate presence of facet cards on the "Treatment" tab on the Cohort Builder page
   |facet_name                 |
