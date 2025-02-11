@@ -236,7 +236,6 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
       {isDemoMode && <DemoText>Demo showing cases with Gliomas.</DemoText>}
       <div
         ref={divRef}
-        style={{ margin: "2em" }}
         className="sjpp-wrapper-root-div"
         //userDetails={userDetails}
       />

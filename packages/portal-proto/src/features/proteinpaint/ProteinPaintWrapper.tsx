@@ -141,7 +141,6 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
       )}
       <div
         ref={divRef}
-        style={{ margin: "2em" }}
         className="sjpp-wrapper-root-div"
         //userDetails={userDetails}
       />

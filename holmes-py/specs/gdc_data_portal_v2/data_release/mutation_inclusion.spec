@@ -9,7 +9,7 @@ tags: gdc-data-portal-v2, data-release
 
 table: resources/data_release/mutation_inclusion.csv
 
-## Mutation Affected in this Data Release: chr17:g.31327838C>T
+## Mutation Affected in this Data Release
 * On GDC Data Portal V2 app
 * Quick search for <DNA Change> and go to its page
 * Verify the table "Summary Mutation Summary" is displaying this information

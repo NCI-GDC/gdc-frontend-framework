@@ -4,38 +4,44 @@ import {
   selectCurrentCohortFilters,
   useCoreSelector,
 } from "@gff/core";
+import { FacetCardDefinition } from "@/features/facets/types";
 import { SummaryFacetInfo } from "./SummaryFacets";
 
 // These new upload facets will not be returned by the mapping API call, hence they are manually defined as upload_facets
-export const upload_facets: Record<string, FacetDefinition> = {
+export const upload_facets: Record<string, FacetCardDefinition> = {
   "cases.upload.case_id": {
-    description:
-      "Filter the current cohort by entering/uploading specific cases",
+    description: "",
+    toolTip: "Filter the current cohort by entering/uploading specific cases",
     doc_type: "cases",
     facet_type: "upload",
-    field: "cases.upload.case_id",
-    full: "Upload Cases",
+    field: "cases.case_id",
+    full: "cases.upload.case_id",
+    uploadLabel: "Upload Cases",
     range: undefined,
     type: "keyword",
   },
   "genes.upload.gene_id": {
-    description:
+    description: "",
+    toolTip:
       "Filter the current cohort by entering/uploading specific genes or selecting gene sets",
     doc_type: "cases",
     facet_type: "upload",
-    field: "genes.upload.gene_id",
-    full: "Upload Genes",
+    field: "genes.gene_id",
+    full: "genes.upload.gene_id",
+    uploadLabel: "Upload Genes",
     range: undefined,
     type: "keyword",
     title: "Mutated Gene",
   },
   "ssms.upload.ssm_id": {
-    description:
+    description: "",
+    toolTip:
       "Filter the current cohort by entering/uploading specific Simple Somatic Mutations (SSMs) or selecting mutation sets",
     doc_type: "cases",
     facet_type: "upload",
-    field: "ssms.upload.ssm_id",
-    full: "Upload Somatic Mutations",
+    field: "ssms.ssm_id",
+    full: "ssms.upload.ssm_id",
+    uploadLabel: "Upload Somatic Mutations",
     range: undefined,
     type: "keyword",
     title: "Somatic Mutation",
@@ -127,7 +133,10 @@ export const SAMPLE_SHEET_FIELDS = [
   "cases.project.project_id",
   "cases.submitter_id",
   "cases.samples.submitter_id",
-  "cases.samples.sample_type",
+  "cases.samples.tissue_type",
+  "cases.samples.tumor_descriptor",
+  "cases.samples.specimen_type",
+  "cases.samples.preservation_method",
 ];
 
 export const INITIAL_SUMMARY_FIELDS = [

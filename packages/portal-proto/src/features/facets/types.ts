@@ -132,4 +132,5 @@ export interface SortType {
 export type FacetCardDefinition = FacetDefinition & {
   name?: string;
   toolTip?: string;
+  uploadLabel?: string;
 };

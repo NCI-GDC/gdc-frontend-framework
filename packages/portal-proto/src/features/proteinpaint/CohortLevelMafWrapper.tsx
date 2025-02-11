@@ -61,7 +61,6 @@ export const CohortLevelMafWrapper: FC<PpProps> = (props: PpProps) => {
     <div>
       <div
         ref={divRef}
-        style={{ margin: "2em" }}
         className="sjpp-wrapper-root-div"
         //userDetails={userDetails}
       />

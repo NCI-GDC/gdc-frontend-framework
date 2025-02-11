@@ -27,6 +27,7 @@ import {
   FaUndo as UndoIcon,
 } from "react-icons/fa";
 import { RiErrorWarningFill as WarningMessageIcon } from "react-icons/ri";
+import { FaCircle as CircleIcon } from "react-icons/fa";
 
 export {
   CartIcon,
@@ -54,4 +55,5 @@ export {
   DownloadIcon,
   WarningMessageIcon,
   CloseIcon,
+  CircleIcon,
 };

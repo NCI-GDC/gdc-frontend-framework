@@ -9,7 +9,7 @@ import {
   GqlOperation,
 } from "@gff/core";
 import SegmentedControl from "@/components/SegmentedControl";
-import { DownloadProgressContext } from "@/utils/contexts";
+import { DownloadProgressContext } from "@gff/portal-components";
 import ContinuousData from "./ContinuousData";
 import CategoricalData from "./CategoricalData";
 import { ChartTypes, DataDimension } from "../types";

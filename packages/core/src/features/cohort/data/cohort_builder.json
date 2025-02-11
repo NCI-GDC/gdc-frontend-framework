@@ -50,7 +50,9 @@
         "cases.diagnoses.prior_treatment",
         "cases.diagnoses.synchronous_malignancy",
         "cases.diagnoses.progression_or_recurrence",
-        "cases.diagnoses.residual_disease"
+        "cases.diagnoses.residual_disease",
+        "cases.diagnoses.child_pugh_classification",
+        "cases.diagnoses.ishak_fibrosis_score"
       ],
       "docType": "cases",
       "index": "explore"
@@ -72,7 +74,8 @@
         "cases.diagnoses.cog_rhabdomyosarcoma_risk_group",
         "cases.diagnoses.eln_risk_classification",
         "cases.diagnoses.international_prognostic_index",
-        "cases.diagnoses.wilms_tumor_histologic_subtype"
+        "cases.diagnoses.wilms_tumor_histologic_subtype",
+        "cases.diagnoses.weiss_assessment_score"
       ],
       "docType": "cases",
       "index": "explore"

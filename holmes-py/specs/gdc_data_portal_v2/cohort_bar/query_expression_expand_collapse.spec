@@ -47,8 +47,8 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |General                |Project              |MMRF-COMMPASS                  |
   |General                |Project              |TARGET-NBL                     |
   |General                |Project              |TARGET-WT                      |
-  |General                |Project              |TCGA-GBM                       |
   |General                |Project              |TCGA-OV                        |
+  |General                |Project              |TCGA-KIRC                      |
   |General                |Program              |FM                             |
   |General                |Program              |TARGET                         |
   |General                |Program              |TCGA                           |
