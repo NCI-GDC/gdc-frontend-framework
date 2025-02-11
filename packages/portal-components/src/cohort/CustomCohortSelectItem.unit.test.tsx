@@ -1,6 +1,7 @@
-import { render } from "test-utils";
-import { Select } from "@mantine/core";
-import { CustomCohortSelectItem } from "../CohortManager/CustomCohortSelectItem";
+import React from "react";
+import { render } from "@testing-library/react";
+import { MantineProvider, Select } from "@mantine/core";
+import { CustomCohortSelectItem } from "./CustomCohortSelectItem";
 
 describe("<CustomCohortSelectItem />", () => {
   it("Unsaved Icon should be visible when the cohort has been modified", () => {
@@ -11,7 +12,12 @@ describe("<CustomCohortSelectItem />", () => {
       cohortStatusMessage: "Cohort not saved",
     };
     const { getByAltText, getByText } = render(
-      <Select data={[menu_items]} renderOption={CustomCohortSelectItem} />,
+      <MantineProvider>
+        <Select
+          data={[menu_items]}
+          renderOption={CustomCohortSelectItem as any}
+        />
+      </MantineProvider>,
     );
     expect(getByText("test")).toBeDefined();
     expect(getByAltText("Cohort not saved")).toBeDefined();
@@ -25,7 +31,12 @@ describe("<CustomCohortSelectItem />", () => {
       cohortStatusMessage: "Changes not saved",
     };
     const { queryByAltText, getByText } = render(
-      <Select data={[menu_items]} renderOption={CustomCohortSelectItem} />,
+      <MantineProvider>
+        <Select
+          data={[menu_items]}
+          renderOption={CustomCohortSelectItem as any}
+        />
+      </MantineProvider>,
     );
     expect(getByText("test")).toBeDefined();
     expect(queryByAltText("this cohort is not saved")).toBeNull();

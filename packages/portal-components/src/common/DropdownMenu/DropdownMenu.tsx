@@ -1,7 +1,8 @@
-import React, { ReactNode, useRef } from "react";
-import { Button, Menu, Tooltip } from "@mantine/core";
+import React, { ReactNode, useContext, useRef } from "react";
+import { Button, MantineProvider, Menu, Tooltip } from "@mantine/core";
 import { FloatingPosition } from "@mantine/core/lib/components/Floating/types";
 import { DropdownIcon } from "src/commonIcons";
+import { AppContext } from "src/context";
 
 interface DropdownWithIconProps {
   /**
@@ -89,76 +90,79 @@ const DropdownMenu: React.FC<DropdownWithIconProps> = ({
   buttonAriaLabel = undefined,
 }) => {
   const targetRef = useRef<HTMLButtonElement>(null);
+  const { theme } = useContext(AppContext);
 
   return (
-    <Menu
-      width={!disableTargetWidth ? "target" : undefined}
-      {...(customPosition && { position: customPosition })}
-      data-testid={customDataTestId ?? "menu-elem"}
-      zIndex={9000} //dropdown should be on top of everything when open
-    >
-      <Menu.Target>
-        <Button
-          variant="action"
-          {...(LeftSection && { leftSection: LeftSection })}
-          rightSection={RightSection}
-          disabled={targetButtonDisabled}
-          classNames={{
-            root: `${fullHeight ? "!h-full" : undefined} !w-full`,
-          }}
-          ref={targetRef}
-          aria-label={buttonAriaLabel}
-        >
-          <div>
-            {tooltip?.length && !targetButtonDisabled ? (
-              <div>
-                <Tooltip label={tooltip}>
-                  <div>{TargetButtonChildren}</div>
-                </Tooltip>
-              </div>
-            ) : (
-              <div>{TargetButtonChildren}</div>
-            )}
-          </div>
-        </Button>
-      </Menu.Target>
-      <Menu.Dropdown
-        data-testid="dropdown-menu-options"
-        className="border-1 border-secondary"
+    <MantineProvider theme={theme}>
+      <Menu
+        width={!disableTargetWidth ? "target" : undefined}
+        {...(customPosition && { position: customPosition })}
+        data-testid={customDataTestId ?? "menu-elem"}
+        zIndex={9000} //dropdown should be on top of everything when open
       >
-        {menuLabelText && (
-          <>
-            <Menu.Label
-              className={menuLabelCustomClass ?? "font-bold"}
-              data-testid="menu-label"
-            >
-              {menuLabelText}
-            </Menu.Label>
-            <Menu.Divider />
-          </>
-        )}
-        {dropdownElements.map(({ title, onClick, icon, disabled }, idx) => (
-          <Menu.Item
-            onClick={() => {
-              if (onClick) {
-                onClick();
-              }
-              // This is done inorder to set the last focused element as the menu target element
-              // This is done to return focus to the target element if the modal is closed with ESC
-              if (targetRef?.current) {
-                targetRef?.current?.focus();
-              }
+        <Menu.Target>
+          <Button
+            variant="action"
+            {...(LeftSection && { leftSection: LeftSection })}
+            rightSection={RightSection}
+            disabled={targetButtonDisabled}
+            classNames={{
+              root: `${fullHeight ? "!h-full" : undefined} !w-full`,
             }}
-            key={`${title}-${idx}`}
-            data-testid={`${title}-${idx}`}
-            leftSection={icon && icon}
-            disabled={disabled}
+            ref={targetRef}
+            aria-label={buttonAriaLabel}
           >
-            {title}
-          </Menu.Item>
-        ))}
-      </Menu.Dropdown>
-    </Menu>
+            <div>
+              {tooltip?.length && !targetButtonDisabled ? (
+                <div>
+                  <Tooltip label={tooltip}>
+                    <div>{TargetButtonChildren}</div>
+                  </Tooltip>
+                </div>
+              ) : (
+                <div>{TargetButtonChildren}</div>
+              )}
+            </div>
+          </Button>
+        </Menu.Target>
+        <Menu.Dropdown
+          data-testid="dropdown-menu-options"
+          className="border-1 border-secondary"
+        >
+          {menuLabelText && (
+            <>
+              <Menu.Label
+                className={menuLabelCustomClass ?? "font-bold"}
+                data-testid="menu-label"
+              >
+                {menuLabelText}
+              </Menu.Label>
+              <Menu.Divider />
+            </>
+          )}
+          {dropdownElements.map(({ title, onClick, icon, disabled }, idx) => (
+            <Menu.Item
+              onClick={() => {
+                if (onClick) {
+                  onClick();
+                }
+                // This is done inorder to set the last focused element as the menu target element
+                // This is done to return focus to the target element if the modal is closed with ESC
+                if (targetRef?.current) {
+                  targetRef?.current?.focus();
+                }
+              }}
+              key={`${title}-${idx}`}
+              data-testid={`${title}-${idx}`}
+              leftSection={icon && icon}
+              disabled={disabled}
+            >
+              {title}
+            </Menu.Item>
+          ))}
+        </Menu.Dropdown>
+      </Menu>
+    </MantineProvider>
   );
 };
 

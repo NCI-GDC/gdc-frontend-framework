@@ -1,9 +1,10 @@
 import React, { useState, useCallback, useContext } from "react";
-import { Modal, Button } from "@mantine/core";
+import { Modal, Button, MantineProvider } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { CohortNotificationContext } from "@/cohort/CohortNotificationProvider";
 import { CohortHooks } from "@/cohort/types";
 import { SaveOrCreateEntityBody } from "./SaveOrCreateEntityModal";
+import { AppContext } from "src/context";
 
 interface SaveCohortModalProps {
   readonly opened: boolean;
@@ -53,6 +54,7 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
   const [replaceCohort] = hooks.useReplaceCohort();
   const setActiveCohort = hooks.useSetActiveCohort();
   const setCohortMessage = useContext(CohortNotificationContext);
+  const { theme } = useContext(AppContext);
 
   const closeModal = useCallback(() => {
     onClose();
@@ -97,6 +99,7 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
         .then(({ cohortAlreadyExists, newCohortId }) => {
           if (cohortAlreadyExists) {
             setShowReplaceCohort(true);
+            setIsSaving(false);
           } else {
             if (setAsCurrent) {
               setActiveCohort(newCohortId);
@@ -162,45 +165,49 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
   );
 
   return (
-    <Modal
-      opened={opened}
-      onClose={showReplaceCohort ? () => setShowReplaceCohort(false) : onClose}
-      title={
-        showReplaceCohort
-          ? "Replace Existing Cohort"
-          : saveAs
-          ? "Save Cohort As"
-          : "Save Cohort"
-      }
-      size="md"
-      classNames={{
-        content: "p-0",
-        title: "text-xl",
-      }}
-    >
-      {showReplaceCohort ? (
-        <UpdateBody />
-      ) : (
-        <SaveOrCreateEntityBody
-          entity="cohort"
-          action="Save"
-          initialName={initialName}
-          onClose={onClose}
-          onActionClick={(name: string) => {
-            saveAction(name, false);
-            setEnteredName(name);
-          }}
-          descriptionMessage={
-            saveAs
-              ? "Provide a name to save your current cohort as a new cohort"
-              : "Provide a name to save the cohort."
-          }
-          closeOnAction={false}
-          loading={isSaving}
-          disallowedNames={invalidCohortNames}
-        />
-      )}
-    </Modal>
+    <MantineProvider theme={theme}>
+      <Modal
+        opened={opened}
+        onClose={
+          showReplaceCohort ? () => setShowReplaceCohort(false) : onClose
+        }
+        title={
+          showReplaceCohort
+            ? "Replace Existing Cohort"
+            : saveAs
+            ? "Save Cohort As"
+            : "Save Cohort"
+        }
+        size="md"
+        classNames={{
+          content: "p-0",
+          title: "text-xl",
+        }}
+      >
+        {showReplaceCohort ? (
+          <UpdateBody />
+        ) : (
+          <SaveOrCreateEntityBody
+            entity="cohort"
+            action="Save"
+            initialName={initialName}
+            onClose={onClose}
+            onActionClick={(name: string) => {
+              saveAction(name, false);
+              setEnteredName(name);
+            }}
+            descriptionMessage={
+              saveAs
+                ? "Provide a name to save your current cohort as a new cohort"
+                : "Provide a name to save the cohort."
+            }
+            closeOnAction={false}
+            loading={isSaving}
+            disallowedNames={invalidCohortNames}
+          />
+        )}
+      </Modal>
+    </MantineProvider>
   );
 };
 
