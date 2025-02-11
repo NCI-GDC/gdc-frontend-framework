@@ -202,6 +202,7 @@ describe("cohortConfig reducer", () => {
       "cases.samples.biospecimen_anatomic_site",
       "cases.samples.specimen_type",
       "cases.samples.preservation_method",
+      "cases.samples.tumor_code",
       "cases.samples.tumor_descriptor",
       "cases.samples.portions.analytes.aliquots.analyte_type",
       "genes.upload.gene_id",
