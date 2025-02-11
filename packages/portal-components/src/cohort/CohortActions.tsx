@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Loader, Tooltip, Button } from "@mantine/core";
 import DropdownMenu from "@/common/DropdownMenu";
 import {
@@ -9,6 +9,7 @@ import {
   UploadIcon,
 } from "src/commonIcons";
 import { Cohort } from "./types";
+import { CohortNotificationContext } from "./CohortNotificationProvider";
 import { DataFetchingStatus } from "src/types";
 
 interface CohortActionsProps {
@@ -42,6 +43,7 @@ const CohortActions: React.FC<CohortActionsProps> = ({
   const [handleExport, status] = useExportCohort();
   const { isFetching: exportCohortPending = false } = status;
   const handleImport = useImportCohort();
+  const setCohortMessage = useContext(CohortNotificationContext);
 
   return (
     <div className="flex justify-center items-center gap-2 md:gap-4">
@@ -82,7 +84,13 @@ const CohortActions: React.FC<CohortActionsProps> = ({
         withArrow
       >
         <Button
-          onClick={addNewDefaultUnsavedCohort}
+          onClick={() => {
+            addNewDefaultUnsavedCohort();
+            setCohortMessage &&
+              setCohortMessage([
+                { cmd: "newCohort", param1: currentCohort.name },
+              ]);
+          }}
           data-testid="addButton"
           disabled={hasUnsavedCohorts}
           aria-label="Add cohort"

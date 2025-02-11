@@ -76,14 +76,22 @@ export const useDeleteCohort = () => {
   }, [coreDispatch]);
 
   const handleDelete = useDeepCompareCallback(async () => {
-    // only delete cohort from BE if it's been saved before
-    if (currentCohort.saved) {
-      // don't delete it from the local adapter if not able to delete from the BE
-      await deleteCohortFromBE(currentCohort.id).unwrap();
-      deleteCohort();
-    } else {
-      deleteCohort();
-    }
+    return new Promise<void>((resolve, reject) => {
+      // only delete cohort from BE if it's been saved before
+      if (currentCohort.saved) {
+        // don't delete it from the local adapter if not able to delete from the BE
+        deleteCohortFromBE(currentCohort.id)
+          .unwrap()
+          .then(() => {
+            deleteCohort();
+            resolve();
+          })
+          .catch(reject);
+      } else {
+        deleteCohort();
+        resolve();
+      }
+    });
   }, [currentCohort, deleteCohortFromBE, deleteCohort]);
 
   return handleDelete;
@@ -94,26 +102,25 @@ export const useDiscardChanges = () => {
   const currentCohort = useCoreSelector(selectCurrentCohortFromStore);
   const [getCohort] = useLazyGetCohortByIdQuery();
 
-  const handleDiscard = useDeepCompareCallback(() => {
-    if (currentCohort.saved) {
-      getCohort(currentCohort.id)
-        .unwrap()
-        .then((payload) => {
-          coreDispatch(
-            discardCohortChanges({
-              filters: buildGqlOperationToFilterSet(payload.filters),
-              showMessage: true,
-            }),
-          );
-        });
-      //.catch(() => {
-      //  coreDispatch(setCohortMessage(["error|discarding|allId"]));
-      //});
-    } else {
-      coreDispatch(
-        discardCohortChanges({ filters: undefined, showMessage: true }),
-      );
-    }
+  const handleDiscard = useDeepCompareCallback(async () => {
+    return new Promise<void>((resolve, reject) => {
+      if (currentCohort.saved) {
+        getCohort(currentCohort.id)
+          .unwrap()
+          .then((payload) => {
+            coreDispatch(
+              discardCohortChanges({
+                filters: buildGqlOperationToFilterSet(payload.filters),
+              }),
+            );
+            resolve();
+          })
+          .catch(reject);
+      } else {
+        coreDispatch(discardCohortChanges({ filters: undefined }));
+        resolve();
+      }
+    });
   }, [getCohort, currentCohort, coreDispatch]);
 
   return handleDiscard;

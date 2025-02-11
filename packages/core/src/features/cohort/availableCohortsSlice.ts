@@ -74,13 +74,11 @@ const cohortsAdapter = createEntityAdapter<Cohort, CohortId>({
 
 export interface CurrentCohortState {
   currentCohort: string | undefined;
-  message: string[] | undefined;
   isLoggedIn?: boolean | undefined;
 }
 
 const emptyInitialState = cohortsAdapter.getInitialState<CurrentCohortState>({
   currentCohort: undefined,
-  message: undefined, // message is used to inform frontend components of changes to the cohort.
   isLoggedIn: undefined, // isLoggedIn is used to trigger an api call to fetch fresh data when user logs in or out of the app
 });
 
@@ -166,7 +164,6 @@ const checkForUnsavedCohorts = (
 
 interface NewUnsavedCohortParams {
   filters: FilterSet; // set the filters for the new cohort
-  message: string; // set message to show when cohort is created
   name: string; // set the name for the new cohort
   replace?: boolean; // Replace the current unsaved cohort if there is one
 }
@@ -182,16 +179,12 @@ interface CopyCohortParams {
  * Because it is an entity adapter, the state contains an array of id (string)
  * and a Dictionary of Cohort objects. There are two additional members:
  *  - currentCohortId: which is used to identify the "current" or active cohort
- *  - message: used to pass a state change message and parameter. NOTE: message is a
- *  - simple string consisting of message|parameter and can be replaced in the future with
- *  - something else like an object, but this keeps the additional member to EntityAdapter
- *  - more normalized.
  *
  * The slice exports the following actions:
  * - setCohortList() - set saved cohort to the adapter that comes from the server
  * - addNewDefaultUnsavedCohort - create a an instance of the default unsaved cohort
  * - addNewSavedCohort - add a saved cohort
- * - addNewUnsavedCohort - create a new unsaved cohort with the passed filters and message id
+ * - addNewUnsavedCohort - create a new unsaved cohort with the passed filters
  * - copyToSavedCohort - create a copy of the cohort with sourceId to a new cohort with destId
  * - updateCohortName(name:string): changes the current cohort's name
  * - updateCohortFilter(filters: FilterSet): update the filters for this cohort
@@ -226,7 +219,6 @@ const slice = createSlice({
       checkForUnsavedCohorts(state, false);
       cohortsAdapter.addOne(state, cohort);
       state.currentCohort = cohort.id;
-      state.message = [`newCohort|${cohort.name}|${cohort.id}`];
     },
     addNewSavedCohort: (state, action: PayloadAction<Cohort>) => {
       cohortsAdapter.setOne(state, {
@@ -246,7 +238,6 @@ const slice = createSlice({
       checkForUnsavedCohorts(state, action.payload?.replace || false);
       cohortsAdapter.addOne(state, cohort);
       state.currentCohort = cohort.id;
-      state.message = [`${action.payload.message}|${cohort.name}|${cohort.id}`];
     },
     copyToSavedCohort: (state, action: PayloadAction<CopyCohortParams>) => {
       const sourceCohort = state.entities[action.payload.sourceId];
@@ -274,23 +265,13 @@ const slice = createSlice({
     removeCohort: (
       state,
       action: PayloadAction<{
-        shouldShowMessage?: boolean;
         id?: string;
       }>,
     ) => {
-      const removedCohort =
-        state.entities[action?.payload?.id || getCurrentCohort(state)];
       cohortsAdapter.removeOne(
         state,
         action?.payload?.id || getCurrentCohort(state),
       );
-      // TODO: this will be removed after cohort id issue is fixed in the BE
-      // This is just a hack to remove cohort without triggering notification
-      if (action?.payload.shouldShowMessage) {
-        state.message = [
-          `deleteCohort|${removedCohort?.name}|${state.currentCohort}`,
-        ];
-      }
 
       // If we've removed the last cohort a user has, auto generate a default one for them
       const selector = cohortsAdapter.getSelectors();
@@ -302,10 +283,6 @@ const slice = createSlice({
         const selector = cohortsAdapter.getSelectors();
         const createdCohort = selector.selectAll(state)[0];
         state.currentCohort = createdCohort.id;
-        state.message = [
-          `deleteCohort|${removedCohort?.name}|${state.currentCohort}`,
-          `newCohort|${createdCohort.name}|${createdCohort.id}`,
-        ];
       } else if (action?.payload.id === undefined) {
         state.currentCohort = selector.selectAll(state)[0].id;
       }
@@ -373,7 +350,6 @@ const slice = createSlice({
       state,
       action: PayloadAction<{
         filters: FilterSet | undefined;
-        showMessage: boolean;
         id?: string;
       }>,
     ) => {
@@ -385,13 +361,6 @@ const slice = createSlice({
           modified_datetime: new Date().toISOString(),
         },
       });
-      if (action.payload.showMessage) {
-        state.message = [
-          `discardChanges|${state.entities[getCurrentCohort(state)]?.name}|${
-            state.currentCohort
-          }`,
-        ];
-      }
     },
     setCurrentCohortId: (state, action: PayloadAction<string>) => {
       state.currentCohort = action.payload;
@@ -945,7 +914,7 @@ export const discardActiveCohortChanges =
     filters: FilterSet,
   ): ThunkAction<void, CoreState, undefined, UnknownAction> =>
   async (dispatch: CoreDispatch /* getState */) => {
-    dispatch(discardCohortChanges({ filters, showMessage: true }));
+    dispatch(discardCohortChanges({ filters }));
   };
 
 export const setActiveCohortList =

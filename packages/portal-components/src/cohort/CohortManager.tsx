@@ -115,12 +115,19 @@ const CohortManager: React.FC<CohortManagerProps> = ({
               }
               subText={<>You cannot undo this action.</>}
               onActionClick={() => {
-                try {
-                  handleDelete();
-                } catch {
-                  setCohortMessage &&
-                    setCohortMessage([{ cmd: "error", param1: "deleting" }]);
-                }
+                handleDelete()
+                  .then(
+                    () =>
+                      setCohortMessage &&
+                      setCohortMessage([
+                        { cmd: "deleteCohort", param1: currentCohort.name },
+                      ]),
+                  )
+                  .catch(
+                    () =>
+                      setCohortMessage &&
+                      setCohortMessage([{ cmd: "error", param1: "deleting" }]),
+                  );
               }}
             />
 
@@ -136,13 +143,22 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 </>
               }
               subText={<>You cannot undo this action.</>}
-              onActionClick={() => {
-                try {
-                  handleDiscard();
-                } catch {
-                  setCohortMessage &&
-                    setCohortMessage([{ cmd: "error", param1: "discard" }]);
-                }
+              onActionClick={async () => {
+                handleDiscard()
+                  .then(
+                    () =>
+                      setCohortMessage &&
+                      setCohortMessage([
+                        { cmd: "discardChanges", param1: currentCohort.name },
+                      ]),
+                  )
+                  .catch(
+                    () =>
+                      setCohortMessage &&
+                      setCohortMessage([
+                        { cmd: "error", param1: "discarding" },
+                      ]),
+                  );
               }}
             />
 

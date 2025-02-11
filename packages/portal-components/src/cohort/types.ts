@@ -12,8 +12,8 @@ export interface Cohort {
 export interface CohortHooks {
   useSelectCurrentCohort: () => Cohort;
   useSelectAvailableCohorts: () => Cohort[];
-  useDeleteCohort: () => () => void;
-  useDiscardChanges: () => () => void;
+  useDeleteCohort: () => () => Promise<void>;
+  useDiscardChanges: () => () => Promise<void>;
   useUpdateFilters: () => () => void;
   useSetActiveCohort: () => (cohortId: string) => void;
   useAddUnsavedCohort: () => () => void;

@@ -33,7 +33,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({
           useSelectCurrentCohort: () => EXAMPLE_COHORT,
           useSetActiveCohort: () => (_) => {},
           useDeleteCohort: () => () => {},
-          useDiscardChanges: () => () => {},
+          useDiscardChanges: () => async () => {},
           useUpdateFilters: () => () => {},
           useAddUnsavedCohort: () => () => {},
           useSaveCohort: () => [

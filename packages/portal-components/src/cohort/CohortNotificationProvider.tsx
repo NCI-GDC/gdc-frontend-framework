@@ -3,6 +3,7 @@ import React, {
   useState,
   createContext,
   PropsWithChildren,
+  useContext,
 } from "react";
 import { Button } from "@mantine/core";
 import { Notifications, showNotification } from "@mantine/notifications";
@@ -17,6 +18,7 @@ import {
   SavedCohortNotificationWithSetAsCurrent,
 } from "./CohortNotifications";
 import { MantineProvider } from "@mantine/core";
+import { AppContext } from "src/context";
 
 const SaveCohortErrorModal = ({ context, id }: ContextModalProps) => (
   <>
@@ -53,6 +55,7 @@ const CohortNotificationProvider: React.FC<CohortNotificationWrapperProps> = ({
   const [cohortMessage, setCohortMessage] = useState<
     CohortNotificationCommand[]
   >([]);
+  const { theme } = useContext(AppContext);
 
   useEffect(() => {
     for (const message of cohortMessage) {
@@ -140,7 +143,7 @@ const CohortNotificationProvider: React.FC<CohortNotificationWrapperProps> = ({
   }, [cohortMessage, useSetActiveCohort]);
 
   return (
-    <MantineProvider>
+    <MantineProvider theme={theme}>
       <ModalsProvider modals={{ saveCohortError: SaveCohortErrorModal }}>
         <CohortNotificationContext.Provider value={setCohortMessage}>
           <Notifications position="top-center" />
