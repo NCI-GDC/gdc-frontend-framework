@@ -1,13 +1,9 @@
-import { PropsWithChildren, ReactNode, useEffect } from "react";
-import { showNotification } from "@mantine/notifications";
+import { PropsWithChildren, ReactNode } from "react";
 import {
   isString,
   useCoreSelector,
   useCoreDispatch,
   selectBanners,
-  selectCurrentCohortName,
-  selectCohortMessage,
-  clearCohortMessage,
   useGetBannerNotificationsQuery,
   selectCurrentModal,
   Modals,
@@ -15,16 +11,6 @@ import {
 } from "@gff/core";
 import Banner from "@/components/Banner";
 import { Button, Modal } from "@mantine/core";
-import {
-  DeleteCohortNotification,
-  DiscardChangesCohortNotification,
-  ErrorCohortNotification,
-  NewCohortNotification,
-  SavedCurrentCohortNotification,
-  NewCohortNotificationWithSetAsCurrent,
-  SavedCohortNotification,
-  SavedCohortNotificationWithSetAsCurrent,
-} from "@/features/cohortBuilder/CohortNotifications";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { useElementSize } from "@mantine/hooks";
@@ -54,6 +40,7 @@ export const UserFlowVariedPages = ({
   useGetBannerNotificationsQuery();
   const banners = useCoreSelector((state) => selectBanners(state));
 
+  /*
   const currentCohortName = useCoreSelector((state) =>
     selectCurrentCohortName(state),
   );
@@ -175,6 +162,7 @@ export const UserFlowVariedPages = ({
       dispatch(clearCohortMessage());
     }
   }, [cohortMessage, dispatch, currentCohortName]);
+  */
 
   const { ref: headerRef, height: headerHeight } = useElementSize();
 

@@ -37,14 +37,17 @@ const PageLayout: React.FC<PageLayoutProps> = ({
           useUpdateFilters: () => () => {},
           useAddUnsavedCohort: () => () => {},
           useSaveCohort: () => [
-            async (_) => {
-              return Promise.resolve([true, "id"]);
+            async (_: any) => {
+              return Promise.resolve({
+                cohortAlreadyExists: true,
+                newCohortId: "id",
+              });
             },
             {},
           ],
           useReplaceCohort: () => [
-            (_) => {
-              return ["Name"];
+            (_: any) => {
+              return Promise.resolve({ newCohortId: "id" });
             },
             {},
           ],

@@ -1,3 +1,4 @@
 import CohortManager from "./CohortManager";
+import CohortNotificationProvider from "./CohortNotificationProvider";
 
-export { CohortManager };
+export { CohortManager, CohortNotificationProvider };

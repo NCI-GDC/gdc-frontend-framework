@@ -1,15 +1,17 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useContext } from "react";
 import { Modal, Button } from "@mantine/core";
-import { SaveOrCreateEntityBody } from "./SaveOrCreateEntityModal";
+import { modals } from "@mantine/modals";
+import { CohortNotificationContext } from "@/cohort/CohortNotificationProvider";
 import { CohortHooks } from "@/cohort/types";
+import { SaveOrCreateEntityBody } from "./SaveOrCreateEntityModal";
 
 interface SaveCohortModalProps {
   readonly opened: boolean;
+  readonly hooks: CohortHooks;
   readonly initialName?: string;
   readonly onClose: () => void;
-  readonly invalidCohortNames: string[];
-  readonly hooks: CohortHooks;
   readonly cohortId?: string;
+  readonly invalidCohortNames: string[];
   readonly filters: any;
   readonly caseFilters?: any;
   readonly createStaticCohort?: boolean;
@@ -19,9 +21,12 @@ interface SaveCohortModalProps {
 
 /**
  * SaveCohortModal handles saving a user's cohort
+ * @param opened - Whether the modal is open or not
+ * @param hooks - Collection of hooks for performing saving, deleting, etc operations on cohorts
  * @param initialName - populates inital value of name field
  * @param onClose - callback triggered when modal closes
  * @param cohortId - id of existing cohort we are saving, if undefined we are not saving a cohort that already exists
+ * @param invalidCohortNames - list of cohort names that the user is barred from using
  * @param filters - the filters associated with the cohort
  * @param caseFilters - the case filters to use for the cohort
  * @param createStaticCohort - whether to create a case set from the filters so the cases in the cohort remain static
@@ -30,11 +35,11 @@ interface SaveCohortModalProps {
  */
 const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
   opened,
+  hooks,
   initialName = "",
   onClose,
   cohortId,
   invalidCohortNames,
-  hooks,
   filters,
   caseFilters,
   createStaticCohort = false,
@@ -47,22 +52,39 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
   const [saveCohort] = hooks.useSaveCohort();
   const [replaceCohort] = hooks.useReplaceCohort();
   const setActiveCohort = hooks.useSetActiveCohort();
+  const setCohortMessage = useContext(CohortNotificationContext);
 
   const closeModal = useCallback(() => {
     onClose();
     // Reset modal state on close
     setShowReplaceCohort(false);
     setEnteredName("");
-    //setCohortSavedMessage(undefined);
+    setIsSaving(false);
   }, [onClose]);
 
   const saveAction = async (newName: string, replace: boolean) => {
     setIsSaving(true);
 
     if (replace) {
-      replaceCohort({ newName, filters }).then(() => {
-        closeModal();
-      });
+      replaceCohort({ newName, filters })
+        .then(({ newCohortId }) => {
+          setCohortMessage &&
+            setCohortMessage([
+              {
+                cmd: setAsCurrent ? "savedCohort" : "savedCohortSetCurrent",
+                param1: newName,
+                param2: newCohortId,
+              },
+            ]);
+          closeModal();
+        })
+        .catch(() => {
+          modals.openContextModal({
+            modal: "cohortSaveError",
+            title: "Save Cohort Error",
+            innerProps: {},
+          });
+        });
     } else {
       saveCohort({
         newName,
@@ -71,18 +93,34 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
         caseFilters,
         createStaticCohort,
         saveAs,
-      }).then(({ cohortAlreadyExists, newCohortId }) => {
-        setIsSaving(false);
+      })
+        .then(({ cohortAlreadyExists, newCohortId }) => {
+          if (cohortAlreadyExists) {
+            setShowReplaceCohort(true);
+          } else {
+            if (setAsCurrent) {
+              setActiveCohort(newCohortId);
+            }
+            setCohortMessage &&
+              setCohortMessage([
+                {
+                  cmd:
+                    cohortId && !saveAs ? "savedCurrentCohort" : "savedCohort",
+                  param1: newName,
+                  param2: newCohortId,
+                },
+              ]);
 
-        if (cohortAlreadyExists) {
-          setShowReplaceCohort(true);
-        } else {
-          if (setAsCurrent) {
-            setActiveCohort(newCohortId);
+            closeModal();
           }
-          closeModal();
-        }
-      });
+        })
+        .catch(() => {
+          modals.openContextModal({
+            modal: "cohortSaveError",
+            title: "Save Cohort Error",
+            innerProps: {},
+          });
+        });
     }
   };
   const UpdateBody = () => (

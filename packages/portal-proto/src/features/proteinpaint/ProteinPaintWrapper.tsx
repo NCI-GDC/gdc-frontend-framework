@@ -14,12 +14,14 @@ import {
 } from "@gff/core";
 import { isEqual, cloneDeep } from "lodash";
 import { DemoText } from "@/components/tailwindComponents";
-import SaveCohortModal from "@/components/Modals/SaveCohortModal";
+import { SaveCohortModal } from "@gff/portal-components";
 import {
   SelectSamples,
   SelectSamplesCallBackArg,
   SelectSamplesCallback,
 } from "./sjpp-types";
+import { cohortActionsHooks } from "../cohortBuilder/CohortManager/cohortActionHooks";
+import { INVALID_COHORT_NAMES } from "../cohortBuilder/utils";
 
 const basepath = PROTEINPAINT_API;
 
@@ -148,6 +150,8 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
         opened={showSaveCohort}
         onClose={() => setShowSaveCohort(false)}
         filters={newCohortFilters}
+        hooks={cohortActionsHooks}
+        invalidCohortNames={INVALID_COHORT_NAMES}
       />
     </div>
   );

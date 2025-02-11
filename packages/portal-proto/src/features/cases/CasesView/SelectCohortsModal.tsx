@@ -1,5 +1,5 @@
 import FunctionButton from "@/components/FunctionButton";
-import SaveCohortModal from "@/components/Modals/SaveCohortModal";
+import { SaveCohortModal } from "@gff/portal-components";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import {
@@ -17,6 +17,8 @@ import { MAX_CASE_IDS } from "./utils";
 import { createColumnHelper } from "@tanstack/react-table";
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
+import { cohortActionsHooks } from "@/features/cohortBuilder/CohortManager/cohortActionHooks";
+import { INVALID_COHORT_NAMES } from "@/features/cohortBuilder/utils";
 
 export type WithOrWithoutCohortType = "with" | "without" | undefined;
 export const SelectCohortsModal = ({
@@ -222,6 +224,8 @@ export const SelectCohortsModal = ({
           }}
           opened={showSaveCohort}
           filters={saveCohortFilters}
+          hooks={cohortActionsHooks}
+          invalidCohortNames={INVALID_COHORT_NAMES}
         />
 
         <div className="px-4">

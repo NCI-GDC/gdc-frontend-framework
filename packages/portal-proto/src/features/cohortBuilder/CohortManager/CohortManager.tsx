@@ -11,19 +11,7 @@ import {
 import { CohortManager as CommonCohortManager } from "@gff/portal-components";
 import ImportCohortModal from "../Modals/ImportCohortModal";
 import { removeQueryParamsFromRouter } from "./cohortUtils";
-import {
-  useSelectCurrentCohort,
-  useSelectAvailableCohorts,
-  useAddUnsavedCohort,
-  useDeleteCohort,
-  useDiscardChanges,
-  useExportCohort,
-  useImportCohort,
-  useSetActiveCohort,
-  useUpdateFilters,
-  useSaveCohort,
-  useReplaceCohort,
-} from "./cohortActionHooks";
+import { cohortActionsHooks } from "./cohortActionHooks";
 import { INVALID_COHORT_NAMES } from "../utils";
 
 const CohortManager: React.FC = () => {
@@ -60,19 +48,7 @@ const CohortManager: React.FC = () => {
   return (
     <>
       <CommonCohortManager
-        hooks={{
-          useSelectCurrentCohort,
-          useSelectAvailableCohorts,
-          useDeleteCohort,
-          useDiscardChanges,
-          useUpdateFilters,
-          useSetActiveCohort,
-          useAddUnsavedCohort,
-          useExportCohort,
-          useImportCohort,
-          useSaveCohort,
-          useReplaceCohort,
-        }}
+        hooks={cohortActionsHooks}
         invalidCohortNames={INVALID_COHORT_NAMES}
       />
       <ImportCohortModal opened={modal === Modals.ImportCohortModal} />

@@ -35,7 +35,7 @@ import {
 } from "src/utils/contexts";
 import { Notifications } from "@mantine/notifications";
 import "@mantine/notifications/styles.css";
-import { AppContext } from "@gff/portal-components";
+import { AppContext, CohortNotificationProvider } from "@gff/portal-components";
 import type {
   ImageComponentType,
   LinkComponentType,
@@ -289,8 +289,10 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                   theme,
                 }}
               >
-                <Notifications position="top-center" />
-                <Component {...pageProps} />
+                <CohortNotificationProvider>
+                  <Notifications position="top-center" />
+                  <Component {...pageProps} />
+                </CohortNotificationProvider>
               </AppContext.Provider>
             </SummaryModalContext.Provider>
           </URLContext.Provider>

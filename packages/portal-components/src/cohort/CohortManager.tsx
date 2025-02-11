@@ -6,13 +6,13 @@ import GenericCohortModal from "@/modals/GenericCohortModal";
 import SaveCohortModal from "@/modals/SaveCohortModal";
 import CohortActions from "./CohortActions";
 import CohortSelector from "./CohortSelector";
-import { actionButtonVariant } from "./style";
+import { actionButtonVariant, darkFunctionVariant } from "./style";
 import { CohortHooks } from "./types";
+import { CohortNotificationContext } from "./CohortNotificationProvider";
 
 interface CohortManagerProps {
   readonly hooks: CohortHooks;
   readonly invalidCohortNames?: string[];
-  //readonly useSetCohortMessage: () => (msg: string) => void;
 }
 
 const CohortManager: React.FC<CohortManagerProps> = ({
@@ -39,6 +39,8 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   const [showSaveAsCohort, setShowSaveAsCohort] = useState(false);
   const [showUpdateCohort, setShowUpdateCohort] = useState(false);
 
+  const setCohortMessage = useContext(CohortNotificationContext);
+
   return (
     <MantineProvider
       theme={{
@@ -47,7 +49,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
           ...theme?.components,
           Button: Button.extend({
             classNames: {
-              root: actionButtonVariant,
+              root: `${actionButtonVariant} ${darkFunctionVariant}`,
             },
           }),
         },
@@ -112,7 +114,14 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 </>
               }
               subText={<>You cannot undo this action.</>}
-              onActionClick={handleDelete}
+              onActionClick={() => {
+                try {
+                  handleDelete();
+                } catch {
+                  setCohortMessage &&
+                    setCohortMessage([{ cmd: "error", param1: "deleting" }]);
+                }
+              }}
             />
 
             <GenericCohortModal
@@ -127,7 +136,14 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                 </>
               }
               subText={<>You cannot undo this action.</>}
-              onActionClick={handleDiscard}
+              onActionClick={() => {
+                try {
+                  handleDiscard();
+                } catch {
+                  setCohortMessage &&
+                    setCohortMessage([{ cmd: "error", param1: "discard" }]);
+                }
+              }}
             />
 
             <GenericCohortModal

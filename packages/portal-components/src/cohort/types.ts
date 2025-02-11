@@ -36,7 +36,13 @@ export interface CohortHooks {
     DataFetchingStatus,
   ];
   useReplaceCohort: () => [
-    ({ newName, filters }: { newName: string; filters: any }) => Promise<void>,
+    ({
+      newName,
+      filters,
+    }: {
+      newName: string;
+      filters: any;
+    }) => Promise<{ newCohortId: string }>,
     DataFetchingStatus,
   ];
   useExportCohort?: () => [

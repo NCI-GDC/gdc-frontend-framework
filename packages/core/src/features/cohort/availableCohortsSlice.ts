@@ -200,8 +200,6 @@ interface CopyCohortParams {
  * - setCurrentCohortId(id:string): set the id of the current cohort, used to switch between cohorts
  * - clearCaseSet(): resets the caseSet member to all GDC
  * - removeCohort(): removes the current cohort
- * - setCohortMessage(): sets the current cohort message
- * - clearCohortMessage(): clears the current message by setting it to undefined
  * - addNewCohortGroups(): adds groups of filters to the current cohort
  * - removeCohortGroup(): removes a group of filters from the current cohort
  * @category Cohort
@@ -398,12 +396,6 @@ const slice = createSlice({
     setCurrentCohortId: (state, action: PayloadAction<string>) => {
       state.currentCohort = action.payload;
     },
-    clearCohortMessage: (state) => {
-      state.message = undefined;
-    },
-    setCohortMessage: (state, action: PayloadAction<string[]>) => {
-      state.message = action.payload;
-    },
     setIsLoggedIn: (state, action: PayloadAction<boolean>) => {
       state.isLoggedIn = action.payload;
     },
@@ -531,11 +523,9 @@ export const {
   removeCohortFilter,
   clearCohortFilters,
   clearCaseSet,
-  clearCohortMessage,
   setCohortList,
   copyToSavedCohort,
   discardCohortChanges,
-  setCohortMessage,
   setIsLoggedIn,
   addNewCohortSet,
   removeCohortSet,
@@ -577,14 +567,6 @@ export const selectAvailableCohorts = (state: CoreState): Cohort[] =>
  */
 export const selectCurrentCohortId = (state: CoreState): string | undefined =>
   state.cohort?.availableCohorts?.currentCohort;
-
-/**
- * Returns the current cohort message
- * @param state - the CoreState
- * @hidden
- */
-export const selectCohortMessage = (state: CoreState): string[] | undefined =>
-  state.cohort.availableCohorts.message;
 
 /**
  * Returns the current cohort login status

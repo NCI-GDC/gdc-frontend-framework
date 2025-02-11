@@ -5,7 +5,6 @@ import {
   useCoreSelector,
   selectCurrentCohort as selectCurrentCohortFromStore,
   selectAvailableCohorts as selectCohortsFromStore,
-  setCohortMessage,
   useDeleteCohortMutation,
   removeCohort,
   useLazyGetCohortByIdQuery,
@@ -30,10 +29,10 @@ import {
   fetchCohortCaseCounts,
   setCurrentCohortId,
   updateCohortName,
+  CohortModel,
 } from "@gff/core";
 import { useCohortFacetFilters } from "../utils";
 import { exportCohort } from "./cohortUtils";
-import { saveAs } from "file-saver";
 
 export const useSelectAvailableCohorts = () => {
   return useCoreSelector((state) => selectCohortsFromStore(state));
@@ -79,17 +78,13 @@ export const useDeleteCohort = () => {
   const handleDelete = useDeepCompareCallback(async () => {
     // only delete cohort from BE if it's been saved before
     if (currentCohort.saved) {
-      try {
-        // don't delete it from the local adapter if not able to delete from the BE
-        await deleteCohortFromBE(currentCohort.id).unwrap();
-        deleteCohort();
-      } catch {
-        coreDispatch(setCohortMessage(["error|deleting|allId"]));
-      }
+      // don't delete it from the local adapter if not able to delete from the BE
+      await deleteCohortFromBE(currentCohort.id).unwrap();
+      deleteCohort();
     } else {
       deleteCohort();
     }
-  }, [currentCohort, deleteCohortFromBE, deleteCohort, coreDispatch]);
+  }, [currentCohort, deleteCohortFromBE, deleteCohort]);
 
   return handleDelete;
 };
@@ -110,10 +105,10 @@ export const useDiscardChanges = () => {
               showMessage: true,
             }),
           );
-        })
-        .catch(() => {
-          coreDispatch(setCohortMessage(["error|discarding|allId"]));
         });
+      //.catch(() => {
+      //  coreDispatch(setCohortMessage(["error|discarding|allId"]));
+      //});
     } else {
       coreDispatch(
         discardCohortChanges({ filters: undefined, showMessage: true }),
@@ -147,11 +142,6 @@ export const useUpdateFilters = () => {
 
     try {
       const response = await updateCohort(updateBody).unwrap();
-      coreDispatch(
-        setCohortMessage([
-          `savedCurrentCohort|${currentCohort.name}|${currentCohort.id}`,
-        ]),
-      );
       const cohort = {
         id: response.id,
         name: response.name,
@@ -212,72 +202,89 @@ export const useImportCohort = () => {
   return handleImport;
 };
 
-const handleSaveCohort = (payload, newName, cohortId, saveAs, coreDispatch) => {
-  if (cohortId) {
-    if (saveAs) {
-      coreDispatch(
-        addNewSavedCohort({
-          id: payload.id,
-          name: payload.name,
-          filters: buildGqlOperationToFilterSet(payload.filters),
-          caseSet: { status: "uninitialized" },
-          counts: {
-            ...NullCountsData,
-          },
-          modified_datetime: payload.modified_datetime,
-          saved: true,
-          modified: false,
-        }),
-      );
-    } else {
-      coreDispatch(
-        copyToSavedCohort({
-          sourceId: cohortId,
-          destId: payload.id,
-        }),
-      );
-      // NOTE: the current cohort can not be undefined. Setting the id to a cohort
-      // which does not exist will cause this
-      // Therefore, copy the unsaved cohort to the new cohort id received from
-      // the BE.
+const useSaveCohortToBE = () => {
+  const coreDispatch = useCoreDispatch();
 
-      // possible that the caseCount are undefined or pending so
-      // re-request counts.
-      coreDispatch(fetchCohortCaseCounts(payload.id)); // fetch counts for new cohort
+  const saveCohortToBE = useDeepCompareCallback(
+    ({
+      payload,
+      newName,
+      cohortId,
+      saveAs,
+    }: {
+      payload: CohortModel;
+      newName: string;
+      cohortId: string;
+      saveAs: boolean;
+    }) => {
+      if (cohortId) {
+        if (saveAs) {
+          coreDispatch(
+            addNewSavedCohort({
+              id: payload.id,
+              name: payload.name,
+              filters: buildGqlOperationToFilterSet(payload.filters),
+              caseSet: { status: "uninitialized" },
+              counts: {
+                ...NullCountsData,
+              },
+              modified_datetime: payload.modified_datetime,
+              saved: true,
+              modified: false,
+            }),
+          );
+        } else {
+          coreDispatch(
+            copyToSavedCohort({
+              sourceId: cohortId,
+              destId: payload.id,
+            }),
+          );
+          // NOTE: the current cohort can not be undefined. Setting the id to a cohort
+          // which does not exist will cause this
+          // Therefore, copy the unsaved cohort to the new cohort id received from
+          // the BE.
 
-      //tempCohortMsg = [`savedCurrentCohort|${newName}|${payload.id}`];
+          // possible that the caseCount are undefined or pending so
+          // re-request counts.
+          coreDispatch(fetchCohortCaseCounts(payload.id)); // fetch counts for new cohort
 
-      coreDispatch(
-        removeCohort({
-          shouldShowMessage: false,
-          id: cohortId,
-        }),
-      );
-      coreDispatch(setCurrentCohortId(payload.id));
-      coreDispatch(updateCohortName(newName));
-    }
-  } else {
-    coreDispatch(
-      addNewSavedCohort({
-        id: payload.id,
-        name: payload.name,
-        filters: buildGqlOperationToFilterSet(payload.filters),
-        caseSet: { status: "uninitialized" },
-        counts: {
-          ...NullCountsData,
-        },
-        modified_datetime: payload.modified_datetime,
-        saved: true,
-        modified: false,
-      }),
-    );
-  }
+          coreDispatch(
+            removeCohort({
+              shouldShowMessage: false,
+              id: cohortId,
+            }),
+          );
+          coreDispatch(setCurrentCohortId(payload.id));
+          coreDispatch(updateCohortName(newName));
+        }
+      } else {
+        coreDispatch(
+          addNewSavedCohort({
+            id: payload.id,
+            name: payload.name,
+            filters: buildGqlOperationToFilterSet(payload.filters),
+            caseSet: { status: "uninitialized" },
+            counts: {
+              ...NullCountsData,
+            },
+            modified_datetime: payload.modified_datetime,
+            saved: true,
+            modified: false,
+          }),
+        );
+      }
+    },
+    [coreDispatch],
+  );
+
+  return saveCohortToBE;
 };
 
 export const useSaveCohort = () => {
-  const coreDispatch = useCoreDispatch();
   const [addCohort] = useAddCohortMutation();
   const [createSet] = useCreateCaseSetFromFiltersMutation();
+  const saveCohortToBE = useSaveCohortToBE();
 
   const handleAddCohort = useDeepCompareCallback(
     async ({
@@ -335,7 +342,7 @@ export const useSaveCohort = () => {
       await addCohort({ cohort: addBody, delete_existing: false })
         .unwrap()
         .then(async (payload) => {
-          handleSaveCohort(payload, newName, cohortId, saveAs, coreDispatch);
+          saveCohortToBE({ payload, newName, cohortId, saveAs });
 
           result = { cohortAlreadyExists: false, newCohortId: payload.id };
         })
@@ -350,7 +357,7 @@ export const useSaveCohort = () => {
 
       return result;
     },
-    [addCohort, coreDispatch, createSet],
+    [addCohort, createSet, saveCohortToBE],
   );
 
   return [handleAddCohort];
@@ -361,16 +368,19 @@ export const useReplaceCohort = () => {
   const cohorts = useCoreSelector(selectCohortsFromStore);
   const [addCohort] = useAddCohortMutation();
   const [fetchCohortList] = useLazyGetCohortsByContextIdQuery();
+  const saveCohortToBE = useSaveCohortToBE();
 
   const handleReplaceCohort = useDeepCompareCallback(
     async ({
       newName,
       filters,
       cohortId,
+      saveAs,
     }: {
       newName: string;
       filters: FilterSet;
       cohortId: string;
+      saveAs: boolean;
     }) => {
       const filteredCohortFilters = omit(filters, "isLoggedIn");
 
@@ -383,10 +393,13 @@ export const useReplaceCohort = () => {
             : {},
       };
 
+      let result = {};
+
       await addCohort({ cohort: addBody, delete_existing: true })
         .unwrap()
         .then((payload) => {
-          handleSaveCohort(payload, newName, cohortId, saveAs, coreDispatch);
+          saveCohortToBE({ payload, newName, cohortId, saveAs });
+          result = { newCohortId: payload.id };
         });
 
       await fetchCohortList()
@@ -405,10 +418,24 @@ export const useReplaceCohort = () => {
           });
         });
 
-      return;
+      return result;
     },
-    [addCohort, cohorts, coreDispatch, fetchCohortList],
+    [addCohort, cohorts, coreDispatch, fetchCohortList, saveCohortToBE],
   );
 
   return [handleReplaceCohort];
+};
+
+export const cohortActionsHooks = {
+  useSelectCurrentCohort,
+  useSelectAvailableCohorts,
+  useDeleteCohort,
+  useDiscardChanges,
+  useUpdateFilters,
+  useSetActiveCohort,
+  useAddUnsavedCohort,
+  useExportCohort,
+  useImportCohort,
+  useSaveCohort,
+  useReplaceCohort,
 };
