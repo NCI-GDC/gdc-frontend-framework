@@ -1,4 +1,3 @@
-import { isArray, isObject } from "../../ts-utils";
 import {
   fetchGdcCases,
   fetchGdcCasesMapping,
