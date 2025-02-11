@@ -49,8 +49,8 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
 
   const [checkboxState, setCheckboxState] = useState<CheckboxState>({
     amplification: true,
-    gain: true,
-    heterozygousDeletion: true,
+    gain: false,
+    heterozygousDeletion: false,
     homozygousDeletion: true,
   });
   const anyCheckboxSelected = Object.values(checkboxState).some((v) => v);
@@ -154,7 +154,7 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
         total,
       }) => ({
         symbol,
-        amplification: amplification ? amplification / total : 0,
+        amplification: amplification ? (amplification / total) * 100 : 0,
         gain: gain ? (gain / total) * 100 : 0,
         "heterozygous deletion": loss ? (loss / total) * 100 : 0,
         "homozygous deletion": homozygousDeletion
