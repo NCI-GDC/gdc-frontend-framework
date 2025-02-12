@@ -40,6 +40,7 @@ import type {
   ImageComponentType,
   LinkComponentType,
 } from "@gff/portal-components";
+import { useSetActiveCohort } from "@/features/cohortBuilder/CohortManager/cohortActionHooks";
 
 if (process.env.NODE_ENV !== "test") ReactModal.setAppElement("#__next");
 
@@ -289,7 +290,9 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                   theme,
                 }}
               >
-                <CohortNotificationProvider>
+                <CohortNotificationProvider
+                  useSetActiveCohort={useSetActiveCohort}
+                >
                   <Notifications position="top-center" />
                   <Component {...pageProps} />
                 </CohortNotificationProvider>

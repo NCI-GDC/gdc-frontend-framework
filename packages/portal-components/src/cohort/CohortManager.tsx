@@ -28,7 +28,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   const addNewDefaultUnsavedCohort = hooks.useAddUnsavedCohort();
   const {
     useImportCohort = () => undefined,
-    useExportCohort = () => [undefined, {}],
+    useExportCohort = () => ({ handleExport: undefined, status: {} }),
   } = hooks;
 
   const { theme } = useContext(AppContext);

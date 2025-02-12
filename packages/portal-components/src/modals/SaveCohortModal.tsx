@@ -50,8 +50,8 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
   const [showReplaceCohort, setShowReplaceCohort] = useState(false);
   const [enteredName, setEnteredName] = useState<string>("");
   const [isSaving, setIsSaving] = useState(false);
-  const [saveCohort] = hooks.useSaveCohort();
-  const [replaceCohort] = hooks.useReplaceCohort();
+  const saveCohort = hooks.useSaveCohort();
+  const replaceCohort = hooks.useReplaceCohort();
   const setActiveCohort = hooks.useSetActiveCohort();
   const setCohortMessage = useContext(CohortNotificationContext);
   const { theme } = useContext(AppContext);
@@ -126,6 +126,7 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
         });
     }
   };
+
   const UpdateBody = () => (
     <>
       <div className="p-4">

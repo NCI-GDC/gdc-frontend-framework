@@ -35,7 +35,6 @@ const CohortManager: React.FC = () => {
           filters: cohortFilters,
           name: (createCohortName as string).replace(/-/g, " "),
           replace: true,
-          message: "newCohort",
         }),
       );
 

@@ -71,7 +71,7 @@ export const useDeleteCohort = () => {
 
   const [deleteCohortFromBE] = useDeleteCohortMutation();
   const deleteCohort = useDeepCompareCallback(() => {
-    coreDispatch(removeCohort({ shouldShowMessage: true }));
+    coreDispatch(removeCohort({}));
     // fetch case counts is now handled in listener
   }, [coreDispatch]);
 
@@ -193,10 +193,10 @@ export const useExportCohort = () => {
       });
   }, [currentCohort, getCases]);
 
-  return [
+  return {
     handleExport,
-    { isFetching: isFetching as boolean, isError: isError as boolean },
-  ];
+    status: { isFetching, isError },
+  };
 };
 
 export const useImportCohort = () => {
@@ -258,7 +258,6 @@ const useSaveCohortToBE = () => {
 
           coreDispatch(
             removeCohort({
-              shouldShowMessage: false,
               id: cohortId,
             }),
           );
@@ -344,7 +343,7 @@ export const useSaveCohort = () => {
             : {},
       };
 
-      let result = {};
+      let result = { cohortAlreadyExists: false, newCohortId: undefined };
 
       await addCohort({ cohort: addBody, delete_existing: false })
         .unwrap()
@@ -367,7 +366,7 @@ export const useSaveCohort = () => {
     [addCohort, createSet, saveCohortToBE],
   );
 
-  return [handleAddCohort];
+  return handleAddCohort;
 };
 
 export const useReplaceCohort = () => {
@@ -400,7 +399,7 @@ export const useReplaceCohort = () => {
             : {},
       };
 
-      let result = {};
+      let result = { newCohortId: undefined };
 
       await addCohort({ cohort: addBody, delete_existing: true })
         .unwrap()
@@ -430,7 +429,7 @@ export const useReplaceCohort = () => {
     [addCohort, cohorts, coreDispatch, fetchCohortList, saveCohortToBE],
   );
 
-  return [handleReplaceCohort];
+  return handleReplaceCohort;
 };
 
 export const cohortActionsHooks = {

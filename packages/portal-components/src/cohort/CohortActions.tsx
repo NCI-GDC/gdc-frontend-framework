@@ -19,9 +19,10 @@ interface CohortActionsProps {
   selectCurrentCohort: () => Cohort;
   selectAvailableCohorts: () => Cohort[];
   addNewDefaultUnsavedCohort: () => void;
-  useExportCohort: () =>
-    | [() => void, DataFetchingStatus]
-    | [undefined, DataFetchingStatus];
+  useExportCohort: () => {
+    handleExport: (() => void) | undefined;
+    status: DataFetchingStatus;
+  };
   useImportCohort: () => (() => void) | undefined;
 }
 
@@ -40,7 +41,7 @@ const CohortActions: React.FC<CohortActionsProps> = ({
   const hasUnsavedCohorts =
     availableCohorts.filter((c) => !c.saved).length >= 1;
 
-  const [handleExport, status] = useExportCohort();
+  const { handleExport, status } = useExportCohort();
   const { isFetching: exportCohortPending = false } = status;
   const handleImport = useImportCohort();
   const setCohortMessage = useContext(CohortNotificationContext);

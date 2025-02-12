@@ -32,25 +32,20 @@ const PageLayout: React.FC<PageLayoutProps> = ({
           useSelectAvailableCohorts: () => [EXAMPLE_COHORT],
           useSelectCurrentCohort: () => EXAMPLE_COHORT,
           useSetActiveCohort: () => (_) => {},
-          useDeleteCohort: () => () => {},
+          useDeleteCohort: () => async () => {},
           useDiscardChanges: () => async () => {},
           useUpdateFilters: () => () => {},
           useAddUnsavedCohort: () => () => {},
-          useSaveCohort: () => [
-            async (_: any) => {
-              return Promise.resolve({
-                cohortAlreadyExists: true,
-                newCohortId: "id",
-              });
-            },
-            {},
-          ],
-          useReplaceCohort: () => [
-            (_: any) => {
-              return Promise.resolve({ newCohortId: "id" });
-            },
-            {},
-          ],
+          useSaveCohort: () => async (_: any) => {
+            return Promise.resolve({
+              cohortAlreadyExists: true,
+              newCohortId: "id",
+            });
+          },
+
+          useReplaceCohort: () => (_: any) => {
+            return Promise.resolve({ newCohortId: "id" });
+          },
         }}
       />
       {children}
