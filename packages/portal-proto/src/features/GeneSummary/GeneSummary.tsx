@@ -22,7 +22,7 @@ import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { overwritingDemoFilterMutationFrequency } from "../genomic/GenesAndMutationFrequencyAnalysisTool";
 import { CollapsibleList } from "@/components/CollapsibleList";
 import SMTableContainer from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
-import GeneCancerDistributionTable from "../cancerDistributionTable/GeneCancerDistributionTable";
+import GeneCancerDistributionTable from "../CancerDistributionTable/GeneCancerDistributionTable";
 import GenesIcon from "public/user-flow/icons/summary/genes.svg";
 import { StrandMinusIcon, StrandPlusIcon } from "@/utils/icons";
 
