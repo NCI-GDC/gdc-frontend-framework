@@ -1,10 +1,11 @@
 import React from "react";
-import { AppContext } from "@gff/portal-components";
+import { AppContext, CohortNotificationProvider } from "@gff/portal-components";
 import type {
   ImageComponentType,
   LinkComponentType,
 } from "@gff/portal-components";
 import { createTheme, MantineProvider, Modal } from "@mantine/core";
+import { Notifications } from "@mantine/notifications";
 import "@mantine/core/styles.css";
 import type { AppProps } from "next/app";
 import Image from "next/image";
@@ -119,7 +120,10 @@ const EnclavePortalApp: React.FC<AppProps> = ({
           theme,
         }}
       >
-        <Component {...pageProps} />
+        <CohortNotificationProvider useSetActiveCohort={() => () => {}}>
+          <Notifications position="top-center" />
+          <Component {...pageProps} />
+        </CohortNotificationProvider>
       </AppContext.Provider>
     </MantineProvider>
   );
