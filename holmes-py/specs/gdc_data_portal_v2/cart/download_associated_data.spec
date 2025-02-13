@@ -148,7 +148,7 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |TCGA-61-1727_demographic             |
     |Stage IC                             |
     |ca7cd085-c216-51aa-b48b-5ade175dccfa |
-    |2019-07-31T16:35:47.082996-05:00     |
+    |2024-07-09T13:45:56.716690-05:00     |
     |bb1eaf24-d667-5608-976c-f745b2da50f5 |
     |HCM-CSHL-0182-C25_other_clinical_attribute |
     |HCM-CSHL-0182-C25_pathology_detail   |
@@ -311,7 +311,10 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |Project ID                           |
     |Case ID                              |
     |Sample ID                            |
-    |Sample Type                          |
+    |Tissue Type			              |
+    |Tumor Descriptor                     |
+    |Specimen Type                        |
+    |Preservation Method                  |
     |945aee28-3188-41ad-9999-33c36a566a50 |
     |TCGA-OV.f9ef779b-0228-4ef1-a6c4-824dff5460d2.ascat3.gene_level_copy_number.v36.tsv|
     |Transcriptome Profiling              |
@@ -319,7 +322,6 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |MMRF-COMMPASS                        |
     |MMRF_2579, MMRF_2579                 |
     |MMRF_2167_1_PB_Whole, MMRF_2167_1_BM_CD138pos|
-    |Next Generation Cancer Model, Blood Derived Normal|
     |c137b9d3-ed18-49bc-879b-73cd90450c6a |
     |d342f285-b9ba-4737-b668-09bfc761e74f |
     |93d6d769-17fe-4bc9-bf94-bc9f92f1c747 |

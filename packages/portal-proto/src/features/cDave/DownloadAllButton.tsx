@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { handleDownloadPNG, handleDownloadSVG } from "@/features/charts/utils";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-import { DashboardDownloadContext } from "@/utils/contexts";
+import { DashboardDownloadContext } from "@gff/portal-components";
 import { DownloadIcon } from "@/utils/icons";
 
 const DownloadAllButton: React.FC = () => {

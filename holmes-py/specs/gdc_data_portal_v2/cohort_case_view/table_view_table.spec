@@ -84,7 +84,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
     |male                                   |1    |14     |
     |asian                                  |1    |15     |
     |not hispanic or latino                 |1    |16     |
-    |27                                     |1    |17     |
+    |29                                     |1    |17     |
     |RNA-Seq, WGS, WXS                      |1    |18     |
     |0                                      |1    |19     |
 

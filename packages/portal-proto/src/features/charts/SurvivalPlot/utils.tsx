@@ -18,7 +18,12 @@ export const buildOnePlotLegend = (data, name) => {
     ? name && [
         {
           key: name,
-          value: `${data[0].donors.length.toLocaleString()} Cases with Survival Data`,
+          value: (
+            <>
+              <strong>{data[0].donors.length.toLocaleString()}</strong> Cases
+              with Survival Data
+            </>
+          ),
         },
       ]
     : [

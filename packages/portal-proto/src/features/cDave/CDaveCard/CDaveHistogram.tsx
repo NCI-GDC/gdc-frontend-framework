@@ -7,7 +7,7 @@ import { getFormattedTimestamp } from "@/utils/date";
 import {
   DashboardDownloadContext,
   DownloadProgressContext,
-} from "@/utils/contexts";
+} from "@gff/portal-components";
 import VictoryBarChart from "../../charts/VictoryBarChart";
 import { COLOR_MAP } from "../constants";
 import { toDisplayName } from "../utils";

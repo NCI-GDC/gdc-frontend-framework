@@ -1,13 +1,14 @@
-import { useMemo } from "react";
 import { Paper } from "@mantine/core";
 import saveAs from "file-saver";
-import { Bucket, DAYS_IN_YEAR, FilterSet, joinFilters } from "@gff/core";
+import { Bucket, joinFilters } from "@gff/core";
 import { calculatePercentageAsNumber, humanify } from "src/utils";
-import BarChart from "../charts/BarChart";
+import BarChart from "../../charts/BarChart";
 import FunctionButton from "@/components/FunctionButton";
-import PValue from "./PValue";
+import PValue from "../PValue";
 import CohortCreationButton from "@/components/CohortCreationButton";
-import { CohortComparisonType } from "./CohortComparison";
+import { CohortComparisonType } from "../CohortComparison";
+import { useDeepCompareMemo } from "use-deep-compare";
+import { createFilters, formatBucket } from "./utils";
 
 interface FacetCardProps {
   readonly data: { buckets: Bucket[] }[];
@@ -25,107 +26,28 @@ export const FacetCard: React.FC<FacetCardProps> = ({
   const divId = `cohort_comparison_bar_chart_${field}`;
   const fieldLabel = humanify({ term: field });
 
-  const formatBucket = (bucket: number | string, field: string): string => {
-    if (field === "diagnoses.age_at_diagnosis") {
-      const age = (bucket as number) / DAYS_IN_YEAR;
-      return age === 80 ? "80+ years" : `${age} to <${age + 10} years`;
-    }
-
-    return bucket as string;
-  };
-
-  const createFilters = (field: string, bucket: string): FilterSet => {
-    if (field == "diagnoses.age_at_diagnosis") {
-      if (Number(bucket) === 80 * DAYS_IN_YEAR) {
-        return {
-          mode: "and",
-          root: {
-            [field]: {
-              field,
-              operator: ">=",
-              operand: Number(bucket),
-            },
-          },
-        };
-      }
-
-      return {
-        mode: "and",
-        root: {
-          [field]: {
-            operator: "and",
-            operands: [
-              {
-                field,
-                operator: ">=",
-                operand: Number(bucket),
-              },
-              {
-                field,
-                operator: "<=",
-                operand: Number(bucket) + DAYS_IN_YEAR * 10 - 0.1,
-              },
-            ],
-          },
-        },
-      };
-    }
-
-    return {
-      mode: "and",
-      root: {
-        [`cases.${field}`]: {
-          field: `cases.${field}`,
-          operands: [bucket],
-          operator: "includes",
-        },
-      },
-    };
-  };
-
-  let formattedData = useMemo(
+  let formattedData = useDeepCompareMemo(
     () =>
-      data.map((cohort, idx) => {
-        const formattedCohort = cohort.buckets
-          .filter((facet) => facet.key !== "_missing")
-          .map((facet) => {
-            return {
-              key: formatBucket(facet.key, field),
-              count: facet.doc_count,
-              filter: createFilters(field, facet.key),
-            };
-          });
-        // Replace '_missing' key because 1) we don't get the value back for histograms 2) to rename the key
-        const totalInResults = formattedCohort.reduce(
-          (runningSum, a) => runningSum + a.count,
-          0,
-        );
-        const missingValue = counts[idx] - totalInResults;
-        if (missingValue === 0) {
-          return formattedCohort;
-        }
-        return [
-          ...formattedCohort,
-          {
-            count: missingValue,
-            key: "missing",
-            filter: {
-              mode: "and",
-              root: {
-                [field]: {
-                  field,
-                  operator: "missing",
-                },
-              },
-            } as FilterSet,
-          },
-        ];
+      data.map((cohort) => {
+        const formattedCohort = cohort.buckets.map((facet) => {
+          return {
+            key: formatBucket(facet.key, field),
+            count: facet.doc_count,
+            filter: createFilters(field, facet.key),
+          };
+        });
+
+        return formattedCohort;
       }),
-    [data, counts, field],
+    [data, field],
   );
 
-  const uniqueValues = Array.from(
-    new Set(formattedData.map((cohort) => cohort.map((b) => b.key)).flat()),
+  const uniqueValues = useDeepCompareMemo(
+    () =>
+      Array.from(
+        new Set(formattedData.flatMap((cohort) => cohort.map((b) => b.key))),
+      ),
+    [formattedData],
   );
 
   if (field === "diagnoses.age_at_diagnosis") {

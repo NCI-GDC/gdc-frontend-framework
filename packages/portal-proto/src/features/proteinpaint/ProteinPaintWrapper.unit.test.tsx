@@ -22,9 +22,13 @@ jest.mock("@gff/core", () => ({
     nullFunction,
     resultsCreateCaseSet,
   ],
-  useGetCohortsByContextIdQuery: jest
-    .fn()
-    .mockReturnValue({ data: [], isSuccess: true, isLoading: false }),
+  useLazyGetCohortsByContextIdQuery: jest.fn().mockReturnValue([
+    jest.fn().mockReturnValue({ unwrap: jest.fn() }),
+    {
+      isSuccess: true,
+      isLoading: false,
+    },
+  ] as any),
   useLazyGetCohortByIdQuery: jest.fn().mockReturnValue([jest.fn()]),
   useCreateCaseSetFromFiltersMutation: jest.fn().mockReturnValue([jest.fn()]),
 }));

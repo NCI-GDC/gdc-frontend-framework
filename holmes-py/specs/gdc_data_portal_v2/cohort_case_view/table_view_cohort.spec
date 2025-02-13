@@ -22,7 +22,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
 
 ## Only Selected Cases
 * In table "Cases", search the table for "MP2PRT-PAR"
-* Change number of entries shown in the table "Cases" to "100"
+* Change number of entries shown in the table "Cases" to "40"
 * Select value from table "Cases" by row and column
   |row   |column|
   |------|------|

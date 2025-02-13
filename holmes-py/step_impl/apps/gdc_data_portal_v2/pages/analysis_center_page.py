@@ -66,6 +66,14 @@ class AnalysisCenterPage(BasePage):
         """Returns case count on given analysis tool"""
         self.wait_for_loading_spinner_to_detatch()
         locator = AnalysisCenterLocators.TEXT_CASES_COUNT_ON_TOOL_CARD(tool_name)
+        # If we get " " or " Cases" on return, that means the analysis card is still loading information. We wait until
+        # it fully loads or 10 seconds elapses before returning text.
+        retry_counter = 0
+        while ((self.get_text(locator) == " ") or (self.get_text(locator) == " Cases")):
+            time.sleep(1)
+            retry_counter = retry_counter+1
+            if retry_counter >= 10:
+                break
         cases_count = self.get_text(locator)
         # Remove the "Cases" part of the string. We do not need that for comparison.
         cases_count = cases_count.replace("Cases", "")
