@@ -121,7 +121,6 @@ const EnclavePortalApp: React.FC<AppProps> = ({
         }}
       >
         <CohortNotificationProvider useSetActiveCohort={() => () => {}}>
-          <Notifications position="top-center" />
           <Component {...pageProps} />
         </CohortNotificationProvider>
       </AppContext.Provider>
