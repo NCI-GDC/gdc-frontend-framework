@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useContext } from "react";
-import { Modal, Button, MantineProvider } from "@mantine/core";
+import { Modal, Button, MantineProvider, Loader } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { CohortNotificationContext } from "@/cohort/CohortNotificationProvider";
 import { CohortHooks } from "@/cohort/types";
@@ -65,6 +65,8 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
   }, [onClose]);
 
   const saveAction = async (newName: string, replace: boolean) => {
+    if (isSaving) return;
+
     setIsSaving(true);
 
     if (replace) {
@@ -73,11 +75,14 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
           setCohortMessage &&
             setCohortMessage([
               {
-                cmd: setAsCurrent ? "savedCohort" : "savedCohortSetCurrent",
+                cmd: "savedCohort",
                 param1: newName,
                 param2: newCohortId,
               },
             ]);
+          if (setAsCurrent) {
+            setActiveCohort(newCohortId);
+          }
           closeModal();
         })
         .catch(() => {
@@ -104,11 +109,18 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
             if (setAsCurrent) {
               setActiveCohort(newCohortId);
             }
+
+            let cmd;
+            if (cohortId) {
+              cmd = saveAs ? "savedCohort" : "savedCurrentCohort";
+            } else {
+              cmd = setAsCurrent ? "savedCohort" : "savedCohortSetCurrent";
+            }
+
             setCohortMessage &&
               setCohortMessage([
                 {
-                  cmd:
-                    cohortId && !saveAs ? "savedCurrentCohort" : "savedCohort",
+                  cmd,
                   param1: newName,
                   param2: newCohortId,
                 },
@@ -151,13 +163,15 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
           Cancel
         </Button>
         <Button
-          variant={"filled"}
+          variant="filled"
           color="secondary"
           onClick={() => {
             saveAction(enteredName, true);
           }}
           data-testid="replace-cohort-button"
-          loading={isSaving}
+          leftSection={
+            isSaving ? <Loader size={15} color="white" /> : undefined
+          }
         >
           Replace
         </Button>

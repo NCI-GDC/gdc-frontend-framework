@@ -1,5 +1,6 @@
-import React, { useContext, useState } from "react";
-import { Tooltip, MantineProvider, Button, Loader } from "@mantine/core";
+import React, { useContext, useEffect, useState } from "react";
+import { useDeepCompareEffect } from "use-deep-compare";
+import { Tooltip, MantineProvider, Button } from "@mantine/core";
 import { AppContext } from "src/context";
 import { UndoIcon } from "src/commonIcons";
 import GenericCohortModal from "@/modals/GenericCohortModal";
@@ -20,6 +21,8 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   invalidCohortNames = [],
 }) => {
   const currentCohort = hooks.useSelectCurrentCohort();
+  const availableCohorts = hooks.useSelectAvailableCohorts();
+  const [createdDefaultCohort, setCreatedDefaultCohort] = useState(false);
 
   const handleDelete = hooks.useDeleteCohort();
   const handleDiscard = hooks.useDiscardChanges();
@@ -41,6 +44,28 @@ const CohortManager: React.FC<CohortManagerProps> = ({
 
   const setCohortMessage = useContext(CohortNotificationContext);
 
+  useDeepCompareEffect(() => {
+    if (availableCohorts.length === 0) {
+      addNewDefaultUnsavedCohort();
+      setCreatedDefaultCohort(true);
+    } else if (availableCohorts.length > 0 && currentCohort === undefined) {
+      setActiveCohort(availableCohorts[0].id);
+    }
+  }, [
+    addNewDefaultUnsavedCohort,
+    availableCohorts,
+    currentCohort,
+    setActiveCohort,
+  ]);
+
+  useEffect(() => {
+    if (createdDefaultCohort) {
+      setCohortMessage &&
+        setCohortMessage([{ cmd: "newCohort", param1: currentCohort.name }]);
+      setCreatedDefaultCohort(false);
+    }
+  }, [createdDefaultCohort, currentCohort, setCohortMessage]);
+
   return (
     <MantineProvider
       theme={{
@@ -59,9 +84,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
         data-tour="cohort_management_bar"
         className="flex flex-row items-center justify-start gap-6 px-4 h-18 shadow-lg bg-primary"
       >
-        {currentCohort === undefined ? (
-          <Loader />
-        ) : (
+        {currentCohort !== undefined && (
           <>
             <div className="border-opacity-0">
               <div className="flex flex-wrap gap-2 lg:gap-4">
