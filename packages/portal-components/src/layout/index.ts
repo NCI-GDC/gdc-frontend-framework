@@ -1,4 +1,4 @@
 import Footer from "./Footer";
 import Header from "./Header";
-
-export { Footer, Header };
+import { HeaderItem, HeaderLinkItem } from "./types";
+export { Footer, Header, HeaderItem, HeaderLinkItem };

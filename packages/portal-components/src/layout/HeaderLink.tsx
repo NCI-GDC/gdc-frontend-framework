@@ -1,14 +1,6 @@
 import React, { useContext } from "react";
 import { AppContext } from "src/context";
-
-export interface HeaderLinkProps {
-  readonly href: string;
-  readonly image: React.ReactNode;
-  readonly text: React.ReactNode;
-  readonly customDataTestID: string;
-  readonly isExternal?: boolean;
-  readonly variant?: "default" | "menu" | "drawer";
-}
+import { HeaderLinkItem } from "./types";
 
 const HeaderLink = ({
   customDataTestID,
@@ -17,7 +9,8 @@ const HeaderLink = ({
   text,
   isExternal = false,
   variant = "default",
-}: HeaderLinkProps) => {
+}: Omit<HeaderLinkItem, "type">) => {
+  // omit type
   const linkProps = isExternal
     ? { href, target: "_blank", rel: "noopener noreferrer" }
     : { href };
@@ -25,13 +18,13 @@ const HeaderLink = ({
   const { Link, path } = useContext(AppContext);
 
   const activeStyle =
-    !isExternal && path === href ? "bg-secondary text-base-max" : "";
+    !isExternal && path === href ? "bg-secondary !text-base-max" : "";
 
   return (
     <Link
       {...linkProps}
       data-testid={customDataTestID}
-      className={`flex items-center gap-1 ${
+      className={`flex items-center rounded-md gap-1 ${
         variant === "drawer"
           ? "px-1 py-4"
           : variant === "menu"

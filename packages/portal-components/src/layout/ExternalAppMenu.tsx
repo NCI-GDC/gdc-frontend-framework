@@ -4,12 +4,13 @@ import {
   MdArrowDropDown as ArrowDropDownIcon,
 } from "react-icons/md";
 import { Menu, MenuItem } from "@mantine/core";
-import HeaderLink, { HeaderLinkProps } from "./HeaderLink";
+import HeaderLink from "./HeaderLink";
+import { HeaderLinkItem } from "./types";
 
 const appMenuClass = "data-hovered:bg-primary-lightest p-0 m-0";
 
 interface ExternalAppMenuProps {
-  readonly externalAppLinks: ReadonlyArray<HeaderLinkProps>;
+  readonly externalAppLinks: ReadonlyArray<HeaderLinkItem>;
 }
 
 const ExternalAppMenu: React.FC<ExternalAppMenuProps> = ({

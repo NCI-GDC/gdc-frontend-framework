@@ -6,13 +6,14 @@ import {
   DownArrowCollapseIcon,
   LeftArrowIcon,
 } from "src/commonIcons";
-import HeaderLink, { HeaderLinkProps } from "./HeaderLink";
+import HeaderLink from "./HeaderLink";
+import { HeaderItem, HeaderLinkItem } from "./types";
 
 interface HeaderDrawerProps {
-  readonly headerLinks: ReadonlyArray<HeaderLinkProps>;
+  readonly headerLinks: ReadonlyArray<HeaderItem>;
   readonly drawerOpened: boolean;
   readonly closeDrawer: () => void;
-  readonly externalAppLinks: ReadonlyArray<HeaderLinkProps>;
+  readonly externalAppLinks: ReadonlyArray<HeaderLinkItem>;
   readonly cartSize: number;
 }
 
@@ -56,12 +57,38 @@ const HeaderDrawer: React.FC<HeaderDrawerProps> = ({
         Navigation
       </div>
       <ul>
-        {headerLinks.map((linkProps) => (
-          <li key={linkProps.customDataTestID}>
-            <HeaderLink {...linkProps} variant="drawer" />
-          </li>
-        ))}
-
+        {headerLinks.map((item) => {
+          switch (item.type) {
+            case "link":
+              return (
+                <li key={item.customDataTestID}>
+                  <HeaderLink
+                    customDataTestID={item.customDataTestID}
+                    href={item.href}
+                    image={item.image}
+                    text={item.text}
+                    isExternal={item.isExternal}
+                    variant="drawer"
+                  />
+                </li>
+              );
+            case "button":
+              return (
+                // <HeaderButton
+                //   key={item.customDataTestID}
+                //   onClick={item.onClick}
+                //   image={item.image}
+                //   text={item.text}
+                // />
+                <li key={item.customDataTestID}>
+                  <button>{item.text}</button>
+                </li>
+              );
+            default:
+              return null;
+          }
+        })}
+        {/* add cart here */}
         <li>
           <UnstyledButton
             onClick={toggleGdcApps}

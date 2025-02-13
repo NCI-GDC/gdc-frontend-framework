@@ -4,17 +4,20 @@ import { useDisclosure, useViewportSize } from "@mantine/hooks";
 import { AppContext } from "src/context";
 import ExternalAppMenu from "./ExternalAppMenu";
 import HeaderDrawer from "./HeaderDrawer";
-import HeaderLink, { HeaderLinkProps } from "./HeaderLink";
+import HeaderLink from "./HeaderLink";
+import { HeaderItem, HeaderLinkItem } from "./types";
 
 const MAX_WIDTH_FOR_HAMBURGER = 1280;
 
 interface HeaderProps {
   readonly AppLogo: React.ReactNode;
   readonly headerApps: ReadonlyArray<ReactNode>;
-  readonly headerLinks: ReadonlyArray<HeaderLinkProps>;
-  readonly externalAppLinks: ReadonlyArray<HeaderLinkProps>;
+  readonly headerLinks: ReadonlyArray<HeaderItem>;
+  readonly externalAppLinks: ReadonlyArray<HeaderLinkItem>;
   readonly indexPath: string;
-  readonly LoginButton?: React.ReactNode;
+  readonly LoginButton?: React.ComponentType;
+  readonly QuickSearch?: React.ComponentType;
+  readonly Cart?: React.ComponentType;
   readonly cartSize?: number;
 }
 
@@ -25,8 +28,11 @@ const Header: React.FC<HeaderProps> = ({
   externalAppLinks,
   indexPath,
   LoginButton = undefined,
+  QuickSearch = undefined,
+  Cart = undefined,
   cartSize = 0,
 }: HeaderProps) => {
+  console.log({ headerLinks });
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
   const label = drawerOpened ? "Close navigation" : "Open navigation";
@@ -64,7 +70,7 @@ const Header: React.FC<HeaderProps> = ({
           </div>
 
           <div className="flex xl:hidden justify-center align-center gap-4 ">
-            {LoginButton && LoginButton}
+            {LoginButton && <LoginButton />}
             <Burger
               opened={drawerOpened}
               onClick={toggleDrawer}
@@ -91,10 +97,34 @@ const Header: React.FC<HeaderProps> = ({
             role="navigation"
             aria-label=""
           >
-            {headerLinks.map((linkProps) => (
-              <HeaderLink {...linkProps} key={linkProps.customDataTestID} />
-            ))}
-            {LoginButton && LoginButton}
+            {headerLinks.map((item) => {
+              switch (item.type) {
+                case "link":
+                  return (
+                    <HeaderLink
+                      customDataTestID={item.customDataTestID}
+                      href={item.href}
+                      image={item.image}
+                      text={item.text}
+                      isExternal={item.isExternal}
+                    />
+                  );
+                case "button":
+                  return (
+                    // <HeaderButton
+                    //   key={item.customDataTestID}
+                    //   onClick={item.onClick}
+                    //   image={item.image}
+                    //   text={item.text}
+                    // />
+                    <button>{item.text}</button>
+                  );
+                default:
+                  return null;
+              }
+            })}
+            {Cart && <Cart />}
+            {LoginButton && <LoginButton />}
             <ExternalAppMenu externalAppLinks={externalAppLinks} />
           </div>
         </div>
@@ -116,7 +146,7 @@ const Header: React.FC<HeaderProps> = ({
               </div>
             ))}
           </div>
-          <div className="xl:w-1/3">{/* <QuickSearch /> */}</div>
+          <div className="xl:w-1/3">{QuickSearch && <QuickSearch />}</div>
         </div>
       </div>
     </MantineProvider>

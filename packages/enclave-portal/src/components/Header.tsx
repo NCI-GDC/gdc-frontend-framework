@@ -1,5 +1,9 @@
 import { FiPlayCircle as PlayIcon } from "react-icons/fi";
-import { Header as CommonHeader } from "@gff/portal-components";
+import {
+  Header as CommonHeader,
+  HeaderItem,
+  HeaderLinkItem,
+} from "@gff/portal-components";
 import { Tooltip } from "@mantine/core";
 import Image from "next/image";
 import Link from "next/link";
@@ -131,17 +135,18 @@ export const headerApps = [
   </Tooltip>,
 ];
 
-const headerLinks = [
+const headerLinks: HeaderItem[] = [
   {
     customDataTestID: "button-header-video-guides",
     href: "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Video_Tutorials/",
     image: <PlayIcon size={24} />,
     text: "Video Guides",
     isExternal: true,
+    type: "link",
   },
 ];
 
-const externalAppLinks = [
+const externalAppLinks: HeaderLinkItem[] = [
   {
     customDataTestID: "button-header-data-portal",
     href: "/",
@@ -210,7 +215,6 @@ const externalAppLinks = [
   {
     customDataTestID: "button-header-data-submission-portal",
     href: "https://portal.gdc.cancer.gov/submission",
-    icon: "gdc-app-submission-portal.svg",
     image: (
       <Image
         src={"layout/icons/gdc-app-submission-portal.svg"}
@@ -252,7 +256,7 @@ const Header = () => {
       headerApps={headerApps}
       headerLinks={headerLinks}
       externalAppLinks={externalAppLinks}
-      indexPath={"/"}
+      indexPath="/"
       AppLogo={AppLogo}
     />
   );
