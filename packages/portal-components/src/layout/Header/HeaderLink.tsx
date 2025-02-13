@@ -8,9 +8,7 @@ const VARIANT_STYLES = {
   default: "px-1 py-1",
 } as const;
 
-interface HeaderLinkProps extends Omit<HeaderLinkItem, "type"> {
-  children?: React.ReactNode;
-}
+type HeaderLinkProps = Omit<HeaderLinkItem, "type">;
 
 const HeaderLink = ({
   children,

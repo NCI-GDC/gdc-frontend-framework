@@ -142,7 +142,6 @@ const headerLinks: HeaderItem[] = [
     image: <PlayIcon size={24} />,
     text: "Video Guides",
     isExternal: true,
-    type: "link",
   },
 ];
 

@@ -15,7 +15,6 @@ interface HeaderDrawerProps {
   readonly drawerOpened: boolean;
   readonly closeDrawer: () => void;
   readonly externalAppLinks: ReadonlyArray<HeaderLinkItem>;
-  readonly Cart?: React.ComponentType;
 }
 
 const HeaderDrawer: React.FC<HeaderDrawerProps> = ({
@@ -23,7 +22,6 @@ const HeaderDrawer: React.FC<HeaderDrawerProps> = ({
   externalAppLinks,
   drawerOpened,
   closeDrawer,
-  Cart,
 }: HeaderDrawerProps) => {
   const [gdcAppsOpened, { toggle: toggleGdcApps }] = useDisclosure(false);
 
@@ -84,12 +82,6 @@ const HeaderDrawer: React.FC<HeaderDrawerProps> = ({
             </li>
           );
         })}
-
-        {Cart && (
-          <li>
-            <Cart />
-          </li>
-        )}
 
         <li>
           <UnstyledButton

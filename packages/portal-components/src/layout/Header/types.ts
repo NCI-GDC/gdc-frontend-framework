@@ -2,7 +2,8 @@ interface BaseHeaderItem {
   readonly customDataTestID: string;
   readonly text: React.ReactNode;
   readonly image: React.ReactNode;
-  readonly type: "link" | "button";
+  readonly type?: "link" | "button";
+  readonly children?: React.ReactNode;
 }
 
 export interface HeaderLinkItem extends BaseHeaderItem {
@@ -12,6 +13,7 @@ export interface HeaderLinkItem extends BaseHeaderItem {
 }
 
 export interface HeaderButtonItem extends BaseHeaderItem {
+  readonly type: "button";
   readonly onClick: () => void;
   readonly variant?: "default" | "drawer";
 }

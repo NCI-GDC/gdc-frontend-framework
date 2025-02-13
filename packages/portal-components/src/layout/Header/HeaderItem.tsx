@@ -6,7 +6,7 @@ import { HeaderButtonItem, HeaderItem } from "./types";
 export const isHeaderButtonItem = (
   item: HeaderItem,
 ): item is HeaderButtonItem => {
-  return item.type === "button";
+  return (item.type ?? "link") === "button";
 };
 
 export const createHeaderItem = (item: HeaderItem): React.ReactElement => {

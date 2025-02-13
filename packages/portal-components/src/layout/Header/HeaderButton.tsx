@@ -1,9 +1,7 @@
 import React from "react";
 import { HeaderButtonItem } from "./types";
 
-interface HeaderButtonProps extends Omit<HeaderButtonItem, "type"> {
-  children?: React.ReactNode;
-}
+type HeaderButtonProps = Omit<HeaderButtonItem, "type">;
 
 const HeaderButton: React.FC<HeaderButtonProps> = ({
   customDataTestID,

@@ -17,7 +17,6 @@ interface HeaderProps {
   readonly indexPath: string;
   readonly LoginButton?: React.ComponentType;
   readonly QuickSearch?: React.ComponentType;
-  readonly Cart?: React.ComponentType;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -28,7 +27,6 @@ const Header: React.FC<HeaderProps> = ({
   indexPath,
   LoginButton = undefined,
   QuickSearch = undefined,
-  Cart = undefined,
 }: HeaderProps) => {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
@@ -85,7 +83,6 @@ const Header: React.FC<HeaderProps> = ({
             drawerOpened={drawerOpened}
             closeDrawer={closeDrawer}
             externalAppLinks={externalAppLinks}
-            Cart={Cart}
           />
 
           {/* Right Side Nav Bar */}
@@ -95,7 +92,6 @@ const Header: React.FC<HeaderProps> = ({
             aria-label=""
           >
             {headerLinks.map((item) => createHeaderItem(item))}
-            {Cart && <Cart />}
             {LoginButton && <LoginButton />}
             <ExternalAppMenu externalAppLinks={externalAppLinks} />
           </div>

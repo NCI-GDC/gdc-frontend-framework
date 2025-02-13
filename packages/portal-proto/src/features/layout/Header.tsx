@@ -36,8 +36,8 @@ import {
   Header as CommonHeader,
   type HeaderItem,
   type HeaderLinkItem,
-  HeaderLink,
 } from "@gff/portal-components";
+import { useDeepCompareMemo } from "use-deep-compare";
 
 interface HeaderProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
@@ -60,7 +60,7 @@ const externalAppLinks: HeaderLinkItem[] = [
   },
   {
     customDataTestID: "button-header-website",
-    href: "https://gdc.cancer.gov?utm_source=website&utm_medium=apps",
+    href: "https://gdc.cancer.gov",
     text: "Website",
     image: (
       <Image
@@ -171,73 +171,61 @@ export const Header: React.FC<HeaderProps> = ({
 
   const { entityMetadata, setEntityMetadata } = useContext(SummaryModalContext);
 
-  const headerLinks: HeaderItem[] = [
-    {
-      customDataTestID: "button-header-video-guides",
-      href: "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Video_Tutorials/",
-      image: <PlayVideoIcon size={24} />,
-      text: "Video Guides",
-      isExternal: true,
-      type: "link",
-    },
-    {
-      customDataTestID: "button-header-send-feedback",
-      onClick: () => {
-        setOpenFeedbackModal(true);
+  const headerLinks: HeaderItem[] = useDeepCompareMemo(
+    () => [
+      {
+        customDataTestID: "button-header-video-guides",
+        href: "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Video_Tutorials/",
+        image: <PlayVideoIcon size={24} />,
+        text: "Video Guides",
+        isExternal: true,
       },
-      image: <FeebackIcon size={24} />,
-      text: "Send Feedback",
-      type: "button",
-    },
-    {
-      customDataTestID: "button-header-browse-annotations",
-      href: "/annotations",
-      image: <PencilSquareIcon size={24} />,
-      text: "Browse Annotations",
-      isExternal: false,
-      type: "link",
-    },
-    {
-      customDataTestID: "button-header-manage-sets",
-      href: "/manage_sets",
-      image: <OptionsIcon size={24} style={{ transform: "rotate(90deg)" }} />,
-      text: "Manage Sets",
-      isExternal: false,
-      type: "link",
-    },
-  ];
-
-  const Cart = () => (
-    <HeaderLink
-      href="/cart"
-      image={<CartIcon size={24} />}
-      text="Cart"
-      customDataTestID="button-header-cart"
-    >
-      <Badge
-        variant="filled"
-        className={`px-1 ml-1 ${
-          router.pathname === "/cart"
-            ? "bg-white text-secondary"
-            : "bg-accent-vivid"
-        }`}
-        radius="xs"
-      >
-        {currentCart?.length?.toLocaleString() || 0}
-      </Badge>
-    </HeaderLink>
+      {
+        customDataTestID: "button-header-send-feedback",
+        onClick: () => {
+          setOpenFeedbackModal(true);
+        },
+        image: <FeebackIcon size={24} />,
+        text: "Send Feedback",
+        type: "button",
+      },
+      {
+        customDataTestID: "button-header-browse-annotations",
+        href: "/annotations",
+        image: <PencilSquareIcon size={24} />,
+        text: "Browse Annotations",
+        isExternal: false,
+      },
+      {
+        customDataTestID: "button-header-manage-sets",
+        href: "/manage_sets",
+        image: <OptionsIcon size={24} style={{ transform: "rotate(90deg)" }} />,
+        text: "Manage Sets",
+        isExternal: false,
+      },
+      {
+        customDataTestID: "button-header-cart",
+        href: "/cart",
+        image: <CartIcon size={24} />,
+        text: "Cart",
+        isExternal: false,
+        children: (
+          <Badge
+            variant="filled"
+            className={`px-1 ml-1 ${
+              router.pathname === "/cart"
+                ? "bg-white text-secondary"
+                : "bg-accent-vivid"
+            }`}
+            radius="xs"
+          >
+            {currentCart?.length?.toLocaleString() || 0}
+          </Badge>
+        ),
+      },
+    ],
+    [currentCart, router.pathname],
   );
-
-  //           <NavButton
-  //             icon={<FeebackIcon aria-hidden="true" />}
-  //             text="Send Feedback"
-  //             needFullWidth
-  //             onClick={() => {
-  //               setOpenFeedbackModal(true);
-  //               closeDrawer();
-  //             }}
-  //             customDataTestID="button-header-send-feedback"
-  //           />
 
   return (
     <>
@@ -253,7 +241,6 @@ export const Header: React.FC<HeaderProps> = ({
         AppLogo={AppLogo}
         LoginButton={LoginButtonOrUserDropdown}
         QuickSearch={QuickSearch}
-        Cart={Cart}
       />
 
       {/* Modals Start */}
