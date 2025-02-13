@@ -9,7 +9,7 @@ import {
   GqlOperation,
 } from "@gff/core";
 import SegmentedControl from "@/components/SegmentedControl";
-import { DownloadProgressContext } from "@/utils/contexts";
+import { DownloadProgressContext } from "@gff/portal-components";
 import ContinuousData from "./ContinuousData";
 import CategoricalData from "./CategoricalData";
 import { ChartTypes, DataDimension } from "../types";
@@ -127,11 +127,10 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   return (
     <Card
       data-testid={`${fieldName}-card`}
-      shadow="sm"
-      radius="md"
-      p="xs"
+      padding="md"
+      radius={0}
       ref={targetRef}
-      className="border-1 border-base-lightest h-full flex flex-col"
+      className="border-1 border-base-lighter h-full flex flex-col"
     >
       <div className="flex justify-between mb-1">
         <h2 className="font-heading font-medium">{fieldName}</h2>

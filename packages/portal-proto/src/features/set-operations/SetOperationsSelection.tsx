@@ -5,7 +5,7 @@ import {
 } from "@/features/set-operations/types";
 import SetOperationChartsForCohorts from "@/features/set-operations/SetOperationChartsForCohorts";
 import SetOperationsChartsForGeneSSMS from "@/features/set-operations/SetOperationsChartsForGeneSSMS";
-import { SelectionScreenContext } from "@/features/user-flow/workflow/AnalysisWorkspace";
+import { SelectionScreenContext } from "@gff/portal-components";
 import SelectionPanel from "@/features/set-operations/SelectionPanel";
 import { useRouter } from "next/router";
 import { useCoreSelector, selectMultipleCohortsById } from "@gff/core";

@@ -61,11 +61,9 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
   |Ethnicity              |not hispanic or latino           |1              |CC_Ethnicity_Not_Hispanic_1 Count    |
   |Ethnicity              |hispanic or latino               |1              |CC_Ethnicity_Hispanic_1 Count        |
   |Ethnicity              |not reported                     |1              |CC_Ethnicity_Not_Reported_1 Count    |
-  |Ethnicity              |missing                          |1              |CC_Ethnicity_Missing_1 Count         |
   |Ethnicity              |not hispanic or latino           |2              |CC_Ethnicity_Not_Hispanic_2 Count    |
   |Ethnicity              |hispanic or latino               |2              |CC_Ethnicity_Hispanic_2 Count        |
   |Ethnicity              |not reported                     |2              |CC_Ethnicity_Not_Reported_2 Count    |
-  |Ethnicity              |missing                          |2              |CC_Ethnicity_Missing_2 Count         |
 
 * Download "Ethnicity" from "Cohort Comparison"
 * Read from "Ethnicity from Cohort Comparison"
@@ -76,7 +74,6 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
   |not hispanic or latino                 |
   |hispanic or latino                     |
   |not reported                           |
-  |missing                                |
   |# Cases S1                             |
   |% Cases S1                             |
   |# Cases S2                             |
@@ -87,11 +84,9 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
   |CC_Ethnicity_Not_Hispanic_1 Count      |
   |CC_Ethnicity_Hispanic_1 Count          |
   |CC_Ethnicity_Not_Reported_1 Count      |
-  |CC_Ethnicity_Missing_1 Count           |
   |CC_Ethnicity_Not_Hispanic_2 Count      |
   |CC_Ethnicity_Hispanic_2 Count          |
   |CC_Ethnicity_Not_Reported_2 Count      |
-  |CC_Ethnicity_Missing_2 Count           |
 
 ## Verify Demo Text
 * Is text "Demo showing cases with low grade gliomas with and without mutations in the genes IDH1 and IDH2." present on the page

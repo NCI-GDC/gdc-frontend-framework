@@ -293,6 +293,10 @@ tags: gdc-data-portal-v2, regression, file-summary
 
 ## Annotations Table - Download and Validate TSV
 * In table "Annotations File Summary", search the table for "9f1ee78d-f022-5495-b6ad-fa6aa56bafdb"
+* Wait for table "Annotations File Summary" body text to appear
+    |expected_text                          |row  |column |
+    |---------------------------------------|-----|-------|
+    |9f1ee78d-f022-5495-b6ad-fa6aa56bafdb   |1    |1      |
 * Download "TSV" from "File Summary Annotation Table"
 * Read from "TSV from File Summary Annotation Table"
 * Verify that "TSV from File Summary Annotation Table" has expected information

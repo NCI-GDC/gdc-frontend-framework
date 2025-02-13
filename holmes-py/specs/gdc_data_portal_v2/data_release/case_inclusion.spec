@@ -9,7 +9,7 @@ tags: gdc-data-portal-v2, data-release
 
 table: resources/data_release/case_inclusion.csv
 
-## Case Introduced in this Data Release: C3L-04090
+## Case Introduced in this Data Release
 * On GDC Data Portal V2 app
 * Quick search for <Case ID> and go to its page
 * Add all files to cart on the case summary page

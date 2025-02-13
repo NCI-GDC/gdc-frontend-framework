@@ -1,6 +1,44 @@
-import { render } from "test-utils";
-import { SelectionScreenContext } from "./AnalysisWorkspace";
+import React from "react";
+import { render } from "@testing-library/react";
+import { SelectionScreenContext } from "./context";
 import AnalysisBreadcrumbs from "./AnalysisBreadcrumbs";
+
+export const REGISTERED_APPS = [
+  {
+    name: "Mutation Frequency",
+    href: {
+      pathname: "/analysis_page",
+      query: { app: "MutationFrequencyApp" },
+    },
+    icon: <></>,
+    tags: ["variantAnalysis", "ssm"],
+    hasDemo: true,
+    id: "MutationFrequencyApp",
+    countsField: "cnvOrSsmCaseCount",
+    description:
+      "Visualize most frequently mutated genes and somatic mutations.",
+    noDataTooltip:
+      "Current cohort does not have SSM or CNV data available for visualization.",
+    optimizeRules: ["something == something"],
+  },
+  {
+    name: "Cohort Comparison",
+    href: {
+      pathname: "/analysis_page",
+      query: { app: "CohortComparisonApp" },
+    },
+    icon: <></>,
+    tags: ["clinicalAnalysis"],
+    hasDemo: true,
+    id: "CohortComparisonApp",
+    countsField: "caseCount",
+    description:
+      "Display the survival analysis of your cohorts and compare characteristics such as gender, vital status and age at diagnosis.",
+    noDataTooltip:
+      "Current cohort does not have cases available for visualization.",
+    selectionScreen: () => <></>,
+  },
+];
 
 describe("<AnalysisBreadcrumb />", () => {
   it("Apps without selection only displays name", () => {
@@ -17,6 +55,7 @@ describe("<AnalysisBreadcrumb />", () => {
           rightComponent={null}
           onDemoApp={false}
           skipSelectionScreen={true}
+          registeredApps={REGISTERED_APPS}
         />
       </SelectionScreenContext.Provider>,
     );
@@ -39,6 +78,7 @@ describe("<AnalysisBreadcrumb />", () => {
           onDemoApp={true}
           rightComponent={null}
           skipSelectionScreen={true}
+          registeredApps={REGISTERED_APPS}
         />
       </SelectionScreenContext.Provider>,
     );
@@ -61,6 +101,7 @@ describe("<AnalysisBreadcrumb />", () => {
           onDemoApp={false}
           rightComponent={null}
           skipSelectionScreen={false}
+          registeredApps={REGISTERED_APPS}
         />
       </SelectionScreenContext.Provider>,
     );
@@ -84,6 +125,7 @@ describe("<AnalysisBreadcrumb />", () => {
           onDemoApp={false}
           rightComponent={null}
           skipSelectionScreen={false}
+          registeredApps={REGISTERED_APPS}
         />
       </SelectionScreenContext.Provider>,
     );

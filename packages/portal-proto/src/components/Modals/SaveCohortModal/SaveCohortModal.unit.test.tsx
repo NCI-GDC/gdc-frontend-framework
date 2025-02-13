@@ -1,9 +1,9 @@
 import { render } from "test-utils";
 import userEvent from "@testing-library/user-event";
-import SaveCohortModal from "./SaveCohortModal";
+import SaveCohortModal from ".";
 import {
   useAddCohortMutation,
-  useGetCohortsByContextIdQuery,
+  useLazyGetCohortsByContextIdQuery,
   useLazyGetCohortByIdQuery,
   copyToSavedCohort,
   setCurrentCohortId,
@@ -20,7 +20,7 @@ jest.mock("@gff/core", () => ({
   addNewSavedCohort: jest.fn(),
   setCurrentCohortId: jest.fn(),
   discardCohortChanges: jest.fn(),
-  useGetCohortsByContextIdQuery: jest.fn(),
+  useLazyGetCohortsByContextIdQuery: jest.fn(),
 }));
 
 describe("SaveCohortModal", () => {
@@ -38,11 +38,16 @@ describe("SaveCohortModal", () => {
     jest
       .mocked(useAddCohortMutation)
       .mockReturnValue([mockMutation, { isLoading: false } as any]);
-    jest.mocked(useGetCohortsByContextIdQuery).mockReturnValue({
-      data: [],
-      isSuccess: true,
-      isLoading: false,
-    } as any);
+    const mockFetchCohortList = jest
+      .fn()
+      .mockReturnValue({ unwrap: jest.fn() });
+    jest.mocked(useLazyGetCohortsByContextIdQuery).mockReturnValue([
+      mockFetchCohortList,
+      {
+        isSuccess: true,
+        isLoading: false,
+      },
+    ] as any);
 
     const { getByRole } = render(
       <SaveCohortModal
@@ -85,11 +90,16 @@ describe("SaveCohortModal", () => {
     const setCurrentCohortMock = jest
       .mocked(setCurrentCohortId)
       .mockImplementation(jest.fn());
-    jest.mocked(useGetCohortsByContextIdQuery).mockReturnValue({
-      data: [],
-      isSuccess: true,
-      isLoading: false,
-    } as any);
+    const mockFetchCohortList = jest
+      .fn()
+      .mockReturnValue({ unwrap: jest.fn() });
+    jest.mocked(useLazyGetCohortsByContextIdQuery).mockReturnValue([
+      mockFetchCohortList,
+      {
+        isSuccess: true,
+        isLoading: false,
+      },
+    ] as any);
 
     const { getByText } = render(
       <SaveCohortModal
@@ -350,11 +360,16 @@ describe("SaveCohortModal", () => {
       .mocked(useAddCohortMutation)
       .mockReturnValue([mockMutation, { isLoading: false } as any]);
     jest.mocked(useLazyGetCohortByIdQuery).mockReturnValue([jest.fn()] as any);
-    jest.mocked(useGetCohortsByContextIdQuery).mockReturnValue({
-      data: [],
-      isSuccess: true,
-      isLoading: false,
-    } as any);
+    const mockFetchCohortList = jest
+      .fn()
+      .mockReturnValue({ unwrap: jest.fn() });
+    jest.mocked(useLazyGetCohortsByContextIdQuery).mockReturnValue([
+      mockFetchCohortList,
+      {
+        isSuccess: true,
+        isLoading: false,
+      },
+    ] as any);
 
     const { getByText, queryByText, rerender } = render(
       <SaveCohortModal

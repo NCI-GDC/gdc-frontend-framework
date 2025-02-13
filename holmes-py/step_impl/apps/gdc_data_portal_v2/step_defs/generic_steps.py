@@ -483,6 +483,20 @@ def verify_table_header_text(table_name:str, table):
             f"{table_header_text_by_column}" == v[0]
         ), f"In table '{table_name}': The table header column '{v[1]}' is showing text '{table_header_text_by_column}' when we expected text '{v[0]}'"
 
+@step("Verify the vertical table <table_name> header text is correct <table>")
+def verify_table_header_text(table_name:str, table):
+    """Verifies the vertical table header has the correct text"""
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    for k, v in enumerate(table):
+        table_header_text_by_row = APP.shared.get_table_header_text_by_row_in_specified_vertical_table(table_name, v[1])
+        # Remove new lines from input
+        table_header_text_by_row = table_header_text_by_row.replace("\n", "")
+        # Remove unwanted additional spaces between words from input
+        table_header_text_by_row = re.sub(" +", " ", table_header_text_by_row)
+        assert (
+            f"{table_header_text_by_row}" == v[0]
+        ), f"In table '{table_name}': The table header column '{v[1]}' is showing text '{table_header_text_by_row}' when we expected text '{v[0]}'"
 
 @step("Verify the table body text is correct <table>")
 def verify_table_body_text(table):

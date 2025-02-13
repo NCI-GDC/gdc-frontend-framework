@@ -17,7 +17,7 @@ import tailwindConfig from "tailwind.config";
 import OffscreenWrapper from "@/components/OffscreenWrapper";
 import { handleDownloadPNG, handleDownloadSVG } from "@/features/charts/utils";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
-import { DashboardDownloadContext } from "@/utils/contexts";
+import { DashboardDownloadContext } from "@gff/portal-components";
 import { getFormattedTimestamp } from "@/utils/date";
 import { COLOR_MAP, DEMO_COHORT_FILTERS, DATA_DIMENSIONS } from "../constants";
 import {

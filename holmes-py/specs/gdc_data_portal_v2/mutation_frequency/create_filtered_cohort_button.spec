@@ -103,7 +103,7 @@ Note: This is to resolve flaky test
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
 * Search the table for ""
 
-## Genes - CNV Gain
+## Genes - CNV Amplifications
 * Switch cohort to "Blank - Mutation Frequency" from the Cohort Bar dropdown list
 * "Blank - Mutation Frequency" should be the active cohort
 * Search the table for "PTCH1"
@@ -121,31 +121,31 @@ Note: This is to resolve flaky test
 * Collect button labels in table for comparison
   |button_label                         |row  |column |
   |-------------------------------------|-----|-------|
-  |PTCH1 CNV Gain                       |1    |8      |
+  |PTCH1 CNV Amplifications             |1    |8      |
 * Select value from table by row and column
   |row   |column|
   |------|------|
   |1     |8     |
-* Name the cohort "PTCH1 CNV Gain" in the Cohort Bar section
+* Name the cohort "PTCH1 CNV Amplifications" in the Cohort Bar section
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                            |Keep or Remove Modal|
   |-----------------|-----------------------------------------------------|--------------------|
-  |Save             |PTCH1 CNV Gain has been saved                        |Remove Modal        |
-* Switch cohort to "PTCH1 CNV Gain" from the Cohort Bar dropdown list
-* "PTCH1 CNV Gain" should be the active cohort
+  |Save             |PTCH1 CNV Amplifications has been saved              |Remove Modal        |
+* Switch cohort to "PTCH1 CNV Amplifications" from the Cohort Bar dropdown list
+* "PTCH1 CNV Amplifications" should be the active cohort
 * Collect Cohort Bar Case Count for comparison
-* Verify "Cohort Bar Case Count" and "PTCH1 CNV Gain" are "Equal"
+* Verify "Cohort Bar Case Count" and "PTCH1 CNV Amplifications" are "Equal"
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
 * Search the table for ""
 
-## Genes - CNV Loss
+## Genes - CNV Homozygous Deletions
 * Switch cohort to "Blank - Mutation Frequency" from the Cohort Bar dropdown list
 * "Blank - Mutation Frequency" should be the active cohort
-* Search the table for "ZFHX3"
+* Search the table for "NF1"
 * Wait for table body text to appear
   |expected_text|row  |column |
   |-------------|-----|-------|
-  |ZFHX3        |1    |4      |
+  |NF1          |1    |4      |
 Note: This is to resolve flaky test
 * Select value from table "Genes" by row and column
   |row   |column|
@@ -156,20 +156,20 @@ Note: This is to resolve flaky test
 * Collect button labels in table for comparison
   |button_label                         |row  |column |
   |-------------------------------------|-----|-------|
-  |ZFHX3 CNV Loss                       |1    |9      |
+  |NF1 CNV Homozygous Deletions         |1    |9      |
 * Select value from table by row and column
   |row   |column|
   |------|------|
   |1     |9     |
-* Name the cohort "ZFHX3 CNV Loss" in the Cohort Bar section
+* Name the cohort "NF1 CNV Homozygous Deletions" in the Cohort Bar section
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                            |Keep or Remove Modal|
   |-----------------|-----------------------------------------------------|--------------------|
-  |Save             |ZFHX3 CNV Loss has been saved                        |Remove Modal        |
-* Switch cohort to "ZFHX3 CNV Loss" from the Cohort Bar dropdown list
-* "ZFHX3 CNV Loss" should be the active cohort
+  |Save             |NF1 CNV Homozygous Deletions has been saved          |Remove Modal        |
+* Switch cohort to "NF1 CNV Homozygous Deletions" from the Cohort Bar dropdown list
+* "NF1 CNV Homozygous Deletions" should be the active cohort
 * Collect Cohort Bar Case Count for comparison
-* Verify "Cohort Bar Case Count" and "ZFHX3 CNV Loss" are "Equal"
+* Verify "Cohort Bar Case Count" and "NF1 CNV Homozygous Deletions" are "Equal"
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
 * Search the table for ""
 

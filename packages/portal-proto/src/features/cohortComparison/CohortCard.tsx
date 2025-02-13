@@ -119,7 +119,7 @@ const CohortCard: React.FC<CohortCardProps> = ({
             }
             checked={selectedCards[value]}
             disabled={value === "survival" && !survivalPlotSelectable}
-          ></input>
+          />
           <label
             className="font-heading pl-1"
             htmlFor={`cohort-comparison-${value}`}

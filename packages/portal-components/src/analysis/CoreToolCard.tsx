@@ -14,7 +14,15 @@ const CoreToolCard: React.FC<CoreToolCardProps> = ({
   const { Link } = useContext(AppContext);
 
   return (
-    <Link href={entry.href} className="group">
+    <Link
+      href={{
+        pathname: "/analysis_page",
+        query: {
+          app: entry.id,
+        },
+      }}
+      className="group"
+    >
       <Grid
         classNames={{
           root: "h-full",
