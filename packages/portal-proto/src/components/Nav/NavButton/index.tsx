@@ -6,7 +6,7 @@ interface NavButtonProps {
   text: string;
   onClick: () => void;
   className?: string;
-  needFullWidth?: boolean;
+  variant?: "default" | "drawer";
   customDataTestID: string;
 }
 
@@ -16,13 +16,13 @@ const NavButton = ({
   onClick,
   customDataTestID,
   className = "",
-  needFullWidth = false,
+  variant = "default",
   ...props
 }: NavButtonProps) => (
   <UnstyledButton
     onClick={onClick}
     className={`rounded-md hover:bg-primary-lightest text-primary-darkest text-sm font-heading ${
-      needFullWidth && "w-full"
+      variant === "drawer" && "w-full"
     } flex py-4 px-1 ${className}`}
     data-testid={customDataTestID}
     {...props}

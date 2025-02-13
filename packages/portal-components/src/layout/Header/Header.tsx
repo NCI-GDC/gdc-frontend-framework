@@ -2,10 +2,10 @@ import React, { ReactNode, useContext, useEffect } from "react";
 import { Burger, MantineProvider } from "@mantine/core";
 import { useDisclosure, useViewportSize } from "@mantine/hooks";
 import { AppContext } from "src/context";
-import ExternalAppMenu from "./ExternalAppMenu";
+import ExternalAppMenu from "../ExternalAppMenu";
 import HeaderDrawer from "./HeaderDrawer";
-import HeaderLink from "./HeaderLink";
-import { HeaderItem, HeaderLinkItem } from "./types";
+import { type HeaderItem, type HeaderLinkItem } from "./types";
+import { createHeaderItem } from "./HeaderItem";
 
 const MAX_WIDTH_FOR_HAMBURGER = 1280;
 
@@ -18,7 +18,6 @@ interface HeaderProps {
   readonly LoginButton?: React.ComponentType;
   readonly QuickSearch?: React.ComponentType;
   readonly Cart?: React.ComponentType;
-  readonly cartSize?: number;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -30,9 +29,7 @@ const Header: React.FC<HeaderProps> = ({
   LoginButton = undefined,
   QuickSearch = undefined,
   Cart = undefined,
-  cartSize = 0,
 }: HeaderProps) => {
-  console.log({ headerLinks });
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
   const label = drawerOpened ? "Close navigation" : "Open navigation";
@@ -88,7 +85,7 @@ const Header: React.FC<HeaderProps> = ({
             drawerOpened={drawerOpened}
             closeDrawer={closeDrawer}
             externalAppLinks={externalAppLinks}
-            cartSize={cartSize}
+            Cart={Cart}
           />
 
           {/* Right Side Nav Bar */}
@@ -97,32 +94,7 @@ const Header: React.FC<HeaderProps> = ({
             role="navigation"
             aria-label=""
           >
-            {headerLinks.map((item) => {
-              switch (item.type) {
-                case "link":
-                  return (
-                    <HeaderLink
-                      customDataTestID={item.customDataTestID}
-                      href={item.href}
-                      image={item.image}
-                      text={item.text}
-                      isExternal={item.isExternal}
-                    />
-                  );
-                case "button":
-                  return (
-                    // <HeaderButton
-                    //   key={item.customDataTestID}
-                    //   onClick={item.onClick}
-                    //   image={item.image}
-                    //   text={item.text}
-                    // />
-                    <button>{item.text}</button>
-                  );
-                default:
-                  return null;
-              }
-            })}
+            {headerLinks.map((item) => createHeaderItem(item))}
             {Cart && <Cart />}
             {LoginButton && <LoginButton />}
             <ExternalAppMenu externalAppLinks={externalAppLinks} />
@@ -146,7 +118,11 @@ const Header: React.FC<HeaderProps> = ({
               </div>
             ))}
           </div>
-          <div className="xl:w-1/3">{QuickSearch && <QuickSearch />}</div>
+          {QuickSearch && (
+            <div className="xl:w-1/3">
+              <QuickSearch />
+            </div>
+          )}
         </div>
       </div>
     </MantineProvider>

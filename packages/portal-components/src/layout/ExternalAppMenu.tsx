@@ -4,8 +4,8 @@ import {
   MdArrowDropDown as ArrowDropDownIcon,
 } from "react-icons/md";
 import { Menu, MenuItem } from "@mantine/core";
-import HeaderLink from "./HeaderLink";
-import { HeaderLinkItem } from "./types";
+import HeaderLink from "./Header/HeaderLink";
+import { HeaderLinkItem } from "./Header/types";
 
 const appMenuClass = "data-hovered:bg-primary-lightest p-0 m-0";
 

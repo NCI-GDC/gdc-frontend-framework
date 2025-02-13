@@ -8,13 +8,14 @@ import {
 } from "src/commonIcons";
 import HeaderLink from "./HeaderLink";
 import { HeaderItem, HeaderLinkItem } from "./types";
+import { createHeaderItem, isHeaderButtonItem } from "./HeaderItem";
 
 interface HeaderDrawerProps {
   readonly headerLinks: ReadonlyArray<HeaderItem>;
   readonly drawerOpened: boolean;
   readonly closeDrawer: () => void;
   readonly externalAppLinks: ReadonlyArray<HeaderLinkItem>;
-  readonly cartSize: number;
+  readonly Cart?: React.ComponentType;
 }
 
 const HeaderDrawer: React.FC<HeaderDrawerProps> = ({
@@ -22,6 +23,7 @@ const HeaderDrawer: React.FC<HeaderDrawerProps> = ({
   externalAppLinks,
   drawerOpened,
   closeDrawer,
+  Cart,
 }: HeaderDrawerProps) => {
   const [gdcAppsOpened, { toggle: toggleGdcApps }] = useDisclosure(false);
 
@@ -58,37 +60,37 @@ const HeaderDrawer: React.FC<HeaderDrawerProps> = ({
       </div>
       <ul>
         {headerLinks.map((item) => {
-          switch (item.type) {
-            case "link":
-              return (
-                <li key={item.customDataTestID}>
-                  <HeaderLink
-                    customDataTestID={item.customDataTestID}
-                    href={item.href}
-                    image={item.image}
-                    text={item.text}
-                    isExternal={item.isExternal}
-                    variant="drawer"
-                  />
-                </li>
-              );
-            case "button":
-              return (
-                // <HeaderButton
-                //   key={item.customDataTestID}
-                //   onClick={item.onClick}
-                //   image={item.image}
-                //   text={item.text}
-                // />
-                <li key={item.customDataTestID}>
-                  <button>{item.text}</button>
-                </li>
-              );
-            default:
-              return null;
+          if (isHeaderButtonItem(item)) {
+            const handleClick = () => {
+              if (item.onClick) {
+                item.onClick();
+              }
+              closeDrawer();
+            };
+            return (
+              <li key={item.customDataTestID}>
+                {createHeaderItem({
+                  ...item,
+                  onClick: handleClick,
+                  variant: "drawer",
+                })}
+              </li>
+            );
           }
+
+          return (
+            <li key={item.customDataTestID}>
+              {createHeaderItem({ ...item, variant: "drawer" })}
+            </li>
+          );
         })}
-        {/* add cart here */}
+
+        {Cart && (
+          <li>
+            <Cart />
+          </li>
+        )}
+
         <li>
           <UnstyledButton
             onClick={toggleGdcApps}

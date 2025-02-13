@@ -1,3 +1,4 @@
+import React from "react";
 import {
   useCoreSelector,
   selectCart,
@@ -23,8 +24,6 @@ import { SummaryModal } from "@/components/Modals/SummaryModal/SummaryModal";
 import { SummaryModalContext } from "src/utils/contexts";
 import NIHLogo from "public/NIH_GDC_DataPortal-logo.svg";
 import SendFeedbackModal from "@/components/Modals/SendFeedbackModal";
-import React from "react";
-import { NavLinkWithIcon } from "@/components/Nav";
 import LoginButtonOrUserDropdown from "./LoginButtonOrUserDropdown";
 import {
   CartIcon,
@@ -35,48 +34,15 @@ import {
 } from "@/utils/icons";
 import {
   Header as CommonHeader,
-  HeaderItem,
-  HeaderLinkItem,
+  type HeaderItem,
+  type HeaderLinkItem,
+  HeaderLink,
 } from "@gff/portal-components";
 
 interface HeaderProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
   readonly indexPath: string;
 }
-
-const headerLinks: HeaderItem[] = [
-  {
-    customDataTestID: "button-header-video-guides",
-    href: "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Video_Tutorials/",
-    image: <PlayVideoIcon size={24} />,
-    text: "Video Guides",
-    isExternal: true,
-    type: "link",
-  },
-  {
-    customDataTestID: "button-header-send-feedback",
-    onClick: () => {},
-    image: <FeebackIcon size={24} />,
-    text: "Send Feedback",
-    type: "button",
-  },
-  {
-    customDataTestID: "button-header-browse-annotations",
-    href: "/annotations",
-    image: <PencilSquareIcon size={24} />,
-    text: "Browse Annotations",
-    isExternal: false,
-    type: "link",
-  },
-  {
-    customDataTestID: "button-header-manage-sets",
-    href: "/manage_sets",
-    image: <OptionsIcon size={24} style={{ transform: "rotate(90deg)" }} />,
-    text: "Manage Sets",
-    isExternal: false,
-    type: "link",
-  },
-];
 
 const externalAppLinks: HeaderLinkItem[] = [
   {
@@ -205,14 +171,48 @@ export const Header: React.FC<HeaderProps> = ({
 
   const { entityMetadata, setEntityMetadata } = useContext(SummaryModalContext);
 
+  const headerLinks: HeaderItem[] = [
+    {
+      customDataTestID: "button-header-video-guides",
+      href: "https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Video_Tutorials/",
+      image: <PlayVideoIcon size={24} />,
+      text: "Video Guides",
+      isExternal: true,
+      type: "link",
+    },
+    {
+      customDataTestID: "button-header-send-feedback",
+      onClick: () => {
+        setOpenFeedbackModal(true);
+      },
+      image: <FeebackIcon size={24} />,
+      text: "Send Feedback",
+      type: "button",
+    },
+    {
+      customDataTestID: "button-header-browse-annotations",
+      href: "/annotations",
+      image: <PencilSquareIcon size={24} />,
+      text: "Browse Annotations",
+      isExternal: false,
+      type: "link",
+    },
+    {
+      customDataTestID: "button-header-manage-sets",
+      href: "/manage_sets",
+      image: <OptionsIcon size={24} style={{ transform: "rotate(90deg)" }} />,
+      text: "Manage Sets",
+      isExternal: false,
+      type: "link",
+    },
+  ];
+
   const Cart = () => (
-    <NavLinkWithIcon
+    <HeaderLink
       href="/cart"
-      icon={<CartIcon />}
+      image={<CartIcon size={24} />}
       text="Cart"
       customDataTestID="button-header-cart"
-      activeStyle="bg-secondary text-base-max"
-      overwriteClassName="!p-1"
     >
       <Badge
         variant="filled"
@@ -225,7 +225,7 @@ export const Header: React.FC<HeaderProps> = ({
       >
         {currentCart?.length?.toLocaleString() || 0}
       </Badge>
-    </NavLinkWithIcon>
+    </HeaderLink>
   );
 
   //           <NavButton
@@ -238,28 +238,6 @@ export const Header: React.FC<HeaderProps> = ({
   //             }}
   //             customDataTestID="button-header-send-feedback"
   //           />
-
-  //         <li>
-  //           <NavLinkWithIcon
-  //             href="/cart"
-  //             icon={<CartIcon />}
-  //             text="Cart"
-  //             activeStyle="bg-secondary text-base-max"
-  //             customDataTestID="button-header-cart"
-  //           >
-  //             <Badge
-  //               variant="filled"
-  //               className={`px-1 ml-1 ${
-  //                 router.pathname === "/cart"
-  //                   ? "bg-white text-secondary"
-  //                   : "bg-accent-vivid"
-  //               }`}
-  //               radius="xs"
-  //             >
-  //               {currentCart?.length?.toLocaleString() || 0}
-  //             </Badge>
-  //           </NavLinkWithIcon>
-  //         </li>
 
   return (
     <>
