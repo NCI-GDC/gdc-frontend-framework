@@ -24,6 +24,22 @@ const EnclavePortalApp: React.FC<AppProps> = ({
 }: AppProps) => {
   const theme = createTheme({
     fontFamily: "Montserrat, Noto Sans, sans-serif",
+    colors: {
+      blue: Object.values(
+        tailwindConfig.theme.extend.colors["nci-blue"],
+      ) as any,
+      gray: Object.values(
+        tailwindConfig.theme.extend.colors["nci-gray"],
+      ) as any,
+      ...Object.fromEntries(
+        Object.entries(defaultTailwindColorTheme).map(([key, values]) => [
+          key,
+          Object.values(values as any),
+        ]),
+      ),
+    },
+    primaryColor: "primary",
+    primaryShade: { light: 4, dark: 7 },
     components: {
       ActionIcon: {
         defaultProps: {
