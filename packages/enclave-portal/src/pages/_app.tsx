@@ -5,8 +5,8 @@ import type {
   LinkComponentType,
 } from "@gff/portal-components";
 import { createTheme, MantineProvider, Modal } from "@mantine/core";
-import { Notifications } from "@mantine/notifications";
 import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
 import type { AppProps } from "next/app";
 import Image from "next/image";
 import Link from "next/link";
