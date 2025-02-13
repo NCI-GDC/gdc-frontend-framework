@@ -116,9 +116,7 @@ export const SearchInput: React.FC = () => {
     });
 
     const matches = Object.values(result?.match || {});
-    const enumSearchResult =
-      matches.some((m) => m.includes("enum")) &&
-      !matches.some((m) => m.includes("name"));
+    const enumSearchResult = matches.some((m) => m.includes("enum"));
 
     const additionalQuery = enumSearchResult
       ? { tab: result.categoryKey, searchTerm }
