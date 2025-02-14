@@ -105,7 +105,6 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards, regression
   |Biospecimen Anatomic Site  |
   |Specimen Type              |
   |Preservation Method        |
-  |Tumor Code                 |
   |Tumor Descriptor           |
   |Analyte Type               |
 
