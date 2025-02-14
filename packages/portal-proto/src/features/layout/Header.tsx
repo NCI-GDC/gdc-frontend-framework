@@ -99,7 +99,7 @@ const externalAppLinks: HeaderLinkItem[] = [
   },
   {
     customDataTestID: "button-header-documentation",
-    href: "https://docs.gdc.cancer.gov?utm_source=docsite&utm_medium=apps",
+    href: "https://docs.gdc.cancer.gov?utm_source=dataportal&utm_medium=apps",
     image: (
       <Image
         src={"/user-flow/icons/gdc-app-docs.svg"}
@@ -112,7 +112,7 @@ const externalAppLinks: HeaderLinkItem[] = [
   },
   {
     customDataTestID: "button-header-data-submission-portal",
-    href: "https://portal.gdc.cancer.gov/submission?utm_source=submission&utm_medium=apps",
+    href: "https://portal.gdc.cancer.gov/submission?utm_source=dataportal&utm_medium=apps",
     image: (
       <Image
         src={"/user-flow/icons/gdc-app-submission-portal.svg"}
