@@ -141,8 +141,10 @@ const FieldControl: React.FC<FieldControlProps> = ({
   }, [activeFields, field.full]);
 
   const displayName = toDisplayName(field.field_name);
+  const variant =
+    field.field_type === "other_clinical_attributes" ? "darker" : "DEFAULT";
   const fieldColor =
-    tailwindConfig.theme.extend.colors[COLOR_MAP[field.field_type]]?.DEFAULT;
+    tailwindConfig.theme.extend.colors[COLOR_MAP[field.field_type]]?.[variant];
 
   const handleChange = useDeepCompareCallback(
     (e) => {

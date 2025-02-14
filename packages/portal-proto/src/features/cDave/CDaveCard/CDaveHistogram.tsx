@@ -60,9 +60,12 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
     [data, yTotal, displayPercent],
   );
 
+  const fieldType = field.split(".").at(-2);
+  const variant =
+    fieldType === "other_clinical_attributes" ? "darker" : "DEFAULT";
   const color =
-    tailwindConfig.theme.extend.colors[COLOR_MAP[field.split(".").at(-2)]]
-      ?.DEFAULT;
+    tailwindConfig.theme.extend.colors[COLOR_MAP[fieldType]]?.[variant];
+
   const hideXTicks = barChartData.length > 20;
   const fieldName = toDisplayName(field);
   const downloadFileName = `${field
