@@ -39,13 +39,13 @@ const buildHash = () => {
 
 const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://assets.adobedtm.com https://dap.digitalgov.gov https://www.googletagmanager.com;
+    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://assets.adobedtm.com https://dap.digitalgov.gov https://www.googletagmanager.com https://static-dev.cancer.gov;
     style-src 'self' 'unsafe-inline';
     connect-src 'self' ${connectSrc.join(" ")};
     frame-src https://portal.gdc.cancer.gov;
     form-action https://portal.gdc.cancer.gov;
-    img-src 'self' 'unsafe-inline' blob: data:;
-    font-src 'self';
+    img-src 'self' 'unsafe-inline' blob: data: https://metrics.cancer.gov;
+    font-src 'self' https://fonts.gstatic.com;
     object-src 'none';
     base-uri 'self';
     frame-ancestors 'none';
