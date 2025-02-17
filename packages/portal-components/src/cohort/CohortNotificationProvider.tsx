@@ -1,10 +1,10 @@
 import React, {
-  useEffect,
-  useState,
   createContext,
   PropsWithChildren,
   useContext,
+  useReducer,
 } from "react";
+import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
 import { Button } from "@mantine/core";
 import { Notifications, showNotification } from "@mantine/notifications";
 import { ContextModalProps, ModalsProvider } from "@mantine/modals";
@@ -19,6 +19,7 @@ import {
 } from "./CohortNotifications";
 import { MantineProvider } from "@mantine/core";
 import { AppContext } from "src/context";
+import { CohortNotificationCommand } from "./types";
 
 const SaveCohortErrorModal = ({ context, id }: ContextModalProps) => (
   <>
@@ -34,6 +35,20 @@ const SaveCohortErrorModal = ({ context, id }: ContextModalProps) => (
   </>
 );
 
+const cohortMessageReducer = (
+  state: CohortNotificationCommand[],
+  action: { type: "update" | "clear"; payload: CohortNotificationCommand[] },
+) => {
+  switch (action.type) {
+    case "update":
+      return [...state, ...action.payload];
+    case "clear":
+      return [];
+    default:
+      return state;
+  }
+};
+
 export const CohortNotificationContext = createContext<
   ((cohortMessage: CohortNotificationCommand[]) => void) | undefined
 >(undefined);
@@ -42,22 +57,14 @@ interface CohortNotificationWrapperProps extends PropsWithChildren {
   readonly useSetActiveCohort: () => (cohortId: string) => void;
 }
 
-interface CohortNotificationCommand {
-  cmd: string;
-  param1: string;
-  param2?: string;
-}
-
 const CohortNotificationProvider: React.FC<CohortNotificationWrapperProps> = ({
   useSetActiveCohort,
   children,
 }) => {
-  const [cohortMessage, setCohortMessage] = useState<
-    CohortNotificationCommand[]
-  >([]);
+  const [cohortMessage, dispatch] = useReducer(cohortMessageReducer, []);
   const { theme } = useContext(AppContext);
 
-  useEffect(() => {
+  useDeepCompareEffect(() => {
     for (const message of cohortMessage) {
       switch (message.cmd) {
         case "newCohort":
@@ -137,15 +144,22 @@ const CohortNotificationProvider: React.FC<CohortNotificationWrapperProps> = ({
           });
           break;
       }
-
-      setCohortMessage([]);
     }
+
+    dispatch({ type: "clear", payload: [] });
   }, [cohortMessage, useSetActiveCohort]);
+
+  const updateCohortMessage = useDeepCompareCallback(
+    (newMessages: CohortNotificationCommand[]) => {
+      dispatch({ type: "update", payload: newMessages });
+    },
+    [dispatch],
+  );
 
   return (
     <MantineProvider theme={theme}>
       <ModalsProvider modals={{ saveCohortError: SaveCohortErrorModal }}>
-        <CohortNotificationContext.Provider value={setCohortMessage}>
+        <CohortNotificationContext.Provider value={updateCohortMessage}>
           <Notifications position="top-center" />
           {children}
         </CohortNotificationContext.Provider>

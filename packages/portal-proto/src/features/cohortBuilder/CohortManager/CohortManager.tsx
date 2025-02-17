@@ -1,54 +1,24 @@
-import React, { useEffect } from "react";
-import { useRouter } from "next/router";
+import React from "react";
 import {
-  useCoreDispatch,
   useCoreSelector,
-  addNewUnsavedCohort,
-  FilterSet,
   selectCurrentModal,
   Modals,
+  UNSAVED_COHORT_NAME,
 } from "@gff/core";
 import { CohortManager as CommonCohortManager } from "@gff/portal-components";
 import ImportCohortModal from "../Modals/ImportCohortModal";
-import { removeQueryParamsFromRouter } from "./cohortUtils";
 import { cohortActionsHooks } from "./cohortActionHooks";
 import { INVALID_COHORT_NAMES } from "../utils";
 
 const CohortManager: React.FC = () => {
-  const coreDispatch = useCoreDispatch();
-  const router = useRouter();
   const modal = useCoreSelector(selectCurrentModal);
-
-  useEffect(() => {
-    const {
-      operation,
-      filters: createCohortFilters,
-      name: createCohortName,
-    } = router.query;
-
-    if (operation == "createCohort") {
-      const cohortFilters = JSON.parse(
-        createCohortFilters as string,
-      ) as FilterSet;
-      coreDispatch(
-        addNewUnsavedCohort({
-          filters: cohortFilters,
-          name: (createCohortName as string).replace(/-/g, " "),
-          replace: true,
-        }),
-      );
-
-      removeQueryParamsFromRouter(router, ["operation", "filters", "name"]);
-    }
-    // Only run on mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <>
       <CommonCohortManager
         hooks={cohortActionsHooks}
         invalidCohortNames={INVALID_COHORT_NAMES}
+        defaultCohortName={UNSAVED_COHORT_NAME}
       />
       <ImportCohortModal opened={modal === Modals.ImportCohortModal} />
     </>

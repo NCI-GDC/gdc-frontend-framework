@@ -13,17 +13,18 @@ import { CohortNotificationContext } from "./CohortNotificationProvider";
 import { DataFetchingStatus } from "src/types";
 
 interface CohortActionsProps {
-  onSave: () => void;
-  onSaveAs: () => void;
-  onDelete: () => void;
-  selectCurrentCohort: () => Cohort;
-  selectAvailableCohorts: () => Cohort[];
-  addNewDefaultUnsavedCohort: () => void;
-  useExportCohort: () => {
-    handleExport: (() => void) | undefined;
-    status: DataFetchingStatus;
+  readonly onSave: () => void;
+  readonly onSaveAs: () => void;
+  readonly onDelete: () => void;
+  readonly selectCurrentCohort: () => Cohort;
+  readonly selectAvailableCohorts: () => Cohort[];
+  readonly addNewDefaultUnsavedCohort: () => void;
+  readonly useExportCohort: () => {
+    readonly handleExport: (() => void) | undefined;
+    readonly status: DataFetchingStatus;
   };
-  useImportCohort: () => (() => void) | undefined;
+  readonly useImportCohort: () => (() => void) | undefined;
+  readonly defaultCohortName: string;
 }
 
 const CohortActions: React.FC<CohortActionsProps> = ({
@@ -35,6 +36,7 @@ const CohortActions: React.FC<CohortActionsProps> = ({
   addNewDefaultUnsavedCohort,
   useExportCohort,
   useImportCohort,
+  defaultCohortName,
 }: CohortActionsProps) => {
   const currentCohort = selectCurrentCohort();
   const availableCohorts = selectAvailableCohorts();
@@ -89,7 +91,7 @@ const CohortActions: React.FC<CohortActionsProps> = ({
             addNewDefaultUnsavedCohort();
             setCohortMessage &&
               setCohortMessage([
-                { cmd: "newCohort", param1: currentCohort.name },
+                { cmd: "newCohort", param1: defaultCohortName },
               ]);
           }}
           data-testid="addButton"

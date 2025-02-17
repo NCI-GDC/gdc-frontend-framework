@@ -2,7 +2,7 @@ import React, { useState, useCallback, useContext } from "react";
 import { Modal, Button, MantineProvider, Loader } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { CohortNotificationContext } from "@/cohort/CohortNotificationProvider";
-import { CohortHooks } from "@/cohort/types";
+import { CohortHooks, NotificationTypes } from "@/cohort/types";
 import { SaveOrCreateEntityBody } from "./SaveOrCreateEntityModal";
 import { AppContext } from "src/context";
 
@@ -80,9 +80,8 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
                 param2: newCohortId,
               },
             ]);
-          if (setAsCurrent) {
-            setActiveCohort(newCohortId);
-          }
+
+          setActiveCohort(newCohortId);
           closeModal();
         })
         .catch(() => {
@@ -110,7 +109,7 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
               setActiveCohort(newCohortId);
             }
 
-            let cmd;
+            let cmd: NotificationTypes;
             if (cohortId) {
               cmd = saveAs ? "savedCohort" : "savedCurrentCohort";
             } else {

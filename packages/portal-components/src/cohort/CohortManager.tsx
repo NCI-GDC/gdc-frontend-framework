@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
 import { Tooltip, MantineProvider, Button } from "@mantine/core";
 import { AppContext } from "src/context";
@@ -13,16 +13,22 @@ import { CohortNotificationContext } from "./CohortNotificationProvider";
 
 interface CohortManagerProps {
   readonly hooks: CohortHooks;
+  readonly defaultCohortName: string;
   readonly invalidCohortNames?: string[];
 }
 
+/**
+ * Component for the user to manage (save, delete, etc) cohorts
+ * @param hooks - Collection of hooks for performing saving, deleting, etc operations on cohorts
+ * @param invalidCohortNames - list of cohort names that the user is barred from using
+ */
 const CohortManager: React.FC<CohortManagerProps> = ({
   hooks,
+  defaultCohortName,
   invalidCohortNames = [],
 }) => {
   const currentCohort = hooks.useSelectCurrentCohort();
   const availableCohorts = hooks.useSelectAvailableCohorts();
-  const [createdDefaultCohort, setCreatedDefaultCohort] = useState(false);
 
   const handleDelete = hooks.useDeleteCohort();
   const handleDiscard = hooks.useDiscardChanges();
@@ -32,6 +38,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   const {
     useImportCohort = () => undefined,
     useExportCohort = () => ({ handleExport: undefined, status: {} }),
+    useCreateCohortExternally = () => {},
   } = hooks;
 
   const { theme } = useContext(AppContext);
@@ -47,7 +54,8 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   useDeepCompareEffect(() => {
     if (availableCohorts.length === 0) {
       addNewDefaultUnsavedCohort();
-      setCreatedDefaultCohort(true);
+      setCohortMessage &&
+        setCohortMessage([{ cmd: "newCohort", param1: defaultCohortName }]);
     } else if (availableCohorts.length > 0 && currentCohort === undefined) {
       setActiveCohort(availableCohorts[0].id);
     }
@@ -56,15 +64,11 @@ const CohortManager: React.FC<CohortManagerProps> = ({
     availableCohorts,
     currentCohort,
     setActiveCohort,
+    defaultCohortName,
+    setCohortMessage,
   ]);
 
-  useEffect(() => {
-    if (createdDefaultCohort) {
-      setCohortMessage &&
-        setCohortMessage([{ cmd: "newCohort", param1: currentCohort.name }]);
-      setCreatedDefaultCohort(false);
-    }
-  }, [createdDefaultCohort, currentCohort, setCohortMessage]);
+  useCreateCohortExternally(setCohortMessage);
 
   return (
     <MantineProvider
@@ -122,6 +126,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                   addNewDefaultUnsavedCohort={addNewDefaultUnsavedCohort}
                   useExportCohort={useExportCohort}
                   useImportCohort={useImportCohort}
+                  defaultCohortName={defaultCohortName}
                 />
               </div>
             </div>
@@ -139,13 +144,12 @@ const CohortManager: React.FC<CohortManagerProps> = ({
               subText={<>You cannot undo this action.</>}
               onActionClick={() => {
                 handleDelete()
-                  .then(
-                    () =>
-                      setCohortMessage &&
+                  .then(() => {
+                    setCohortMessage &&
                       setCohortMessage([
                         { cmd: "deleteCohort", param1: currentCohort.name },
-                      ]),
-                  )
+                      ]);
+                  })
                   .catch(
                     () =>
                       setCohortMessage &&

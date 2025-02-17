@@ -9,6 +9,23 @@ export interface Cohort {
   readonly saved?: boolean;
 }
 
+export type NotificationTypes =
+  | "newCohort"
+  | "deleteCohort"
+  | "savedCohort"
+  | "savedCohortSetCurrent"
+  | "savedCurrentCohort"
+  | "discardChanges"
+  | "error";
+
+export interface CohortNotificationCommand {
+  cmd: NotificationTypes;
+  param1: string;
+  param2?: string;
+}
+
+type SetCohortMessageFunc = (cmd: CohortNotificationCommand[]) => void;
+
 export interface CohortHooks {
   useSelectCurrentCohort: () => Cohort;
   useSelectAvailableCohorts: () => Cohort[];
@@ -44,4 +61,5 @@ export interface CohortHooks {
     status: DataFetchingStatus;
   };
   useImportCohort?: () => () => void;
+  useCreateCohortExternally?: (setCohortMessage?: SetCohortMessageFunc) => void;
 }

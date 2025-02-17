@@ -171,6 +171,7 @@ const CohortManager = () => {
           return Promise.resolve({ newCohortId: "id" });
         },
       }}
+      defaultCohortName={"Unsaved_Cohort"}
     />
   );
 };

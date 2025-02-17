@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 import { useDeepCompareCallback } from "use-deep-compare";
+import { useRouter } from "next/router";
 import { omit } from "lodash";
 import {
   useCoreDispatch,
@@ -30,9 +32,10 @@ import {
   setCurrentCohortId,
   updateCohortName,
   CohortModel,
+  addNewUnsavedCohort,
 } from "@gff/core";
 import { useCohortFacetFilters } from "../utils";
-import { exportCohort } from "./cohortUtils";
+import { exportCohort, removeQueryParamsFromRouter } from "./cohortUtils";
 
 export const useSelectAvailableCohorts = () => {
   return useCoreSelector((state) => selectCohortsFromStore(state));
@@ -45,9 +48,9 @@ export const useSelectCurrentCohort = () => {
 export const useAddUnsavedCohort = () => {
   const coreDispatch = useCoreDispatch();
 
-  const handleAdd = useDeepCompareCallback(() => {
+  const handleAdd = () => {
     coreDispatch(addNewDefaultUnsavedCohort());
-  }, [coreDispatch]);
+  };
 
   return handleAdd;
 };
@@ -432,6 +435,38 @@ export const useReplaceCohort = () => {
   return handleReplaceCohort;
 };
 
+const useCreateCohortExternally = (setCohortMessage) => {
+  const coreDispatch = useCoreDispatch();
+  const router = useRouter();
+
+  useEffect(() => {
+    const {
+      operation,
+      filters: createCohortFilters,
+      name: createCohortName,
+    } = router.query;
+
+    if (operation == "createCohort") {
+      const cohortFilters = JSON.parse(
+        createCohortFilters as string,
+      ) as FilterSet;
+      coreDispatch(
+        addNewUnsavedCohort({
+          filters: cohortFilters,
+          name: (createCohortName as string).replace(/-/g, " "),
+          replace: true,
+        }),
+      );
+
+      setCohortMessage([{ cmd: "newCohort", param1: createCohortName }]);
+
+      removeQueryParamsFromRouter(router, ["operation", "filters", "name"]);
+    }
+    // Only run on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+};
+
 export const cohortActionsHooks = {
   useSelectCurrentCohort,
   useSelectAvailableCohorts,
@@ -444,4 +479,5 @@ export const cohortActionsHooks = {
   useImportCohort,
   useSaveCohort,
   useReplaceCohort,
+  useCreateCohortExternally,
 };
