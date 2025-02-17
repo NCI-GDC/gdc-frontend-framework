@@ -45,13 +45,11 @@ export const handleJSONDownloadSSM = (
           site: primary_site,
           num_affected_cases: ssm_affected_cases.numerator,
           num_affected_cases_total: ssm_affected_cases.denominator,
-          num_affected_cases_percent: ssm_affected_cases_percent,
+          affected_cases_percent: ssm_affected_cases_percent,
         };
       },
     )
-    .sort(
-      (a, b) => b.num_affected_cases_percent - a.num_affected_cases_percent,
-    );
+    .sort((a, b) => b.affected_cases_percent - a.affected_cases_percent);
   const blob = new Blob([JSON.stringify(json, null, 2)], {
     type: "text/json",
   });
