@@ -326,12 +326,22 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |d342f285-b9ba-4737-b668-09bfc761e74f |
     |93d6d769-17fe-4bc9-bf94-bc9f92f1c747 |
     |TCGA-BG-A0M0-10A, TCGA-BG-A0M0-01A   |
+    |Normal, Tumor                        |
+    |Tumor, Normal                        |
+    |Primary, Not Applicable              |
+    |Metastatic                           |
+    |3D Organoid, Buffy Coat              |
+    |Solid Tissue, Unknown                |
+    |Unknown, OCT                         |
+    |Frozen, Frozen                       |
+
 * Verify that "Sample Sheet from Page" does not contain specified information
     |required_info                        |
     |-------------------------------------|
     |FM-AD                                |
     |TCGA-LUAD                            |
     |APOLLO                               |
+    |Sample Type                          |
 
 ## Metadata
 * Download "Metadata" from "Page"

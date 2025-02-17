@@ -361,6 +361,12 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
     |BEATAML1.0-COHORT                    |
     |ORGANOID-PANCREATIC                  |
     |S181                                 |
+    |Normal                               |
+    |Not Applicable                       |
+    |3D Organoid                          |
+    |Peripheral Blood NOS                 |
+    |Fresh                                |
+
 * Verify that "Sample Sheet from Cohort Case View Files" does not contain specified information
     |required_info                        |
     |-------------------------------------|
@@ -368,6 +374,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
     |TCGA                                 |
     |gliomas                              |
     |FM-AD                                |
+    |Sample Type                          |
 
 ## Flip Filters
 * Perform the following actions on a filter card in Cohort Summary View

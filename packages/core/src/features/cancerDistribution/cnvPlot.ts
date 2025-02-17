@@ -1,23 +1,49 @@
 import { buildCohortGqlOperator, FilterSet } from "../cohort";
 import { GqlIntersection, Includes } from "../gdcapi/filters";
-import { Bucket } from "../gdcapi/gdcapi";
-import { graphqlAPISlice } from "../gdcapi/gdcgraphql";
+import { Buckets } from "../gdcapi/gdcapi";
+import { GraphQLApiResponse, graphqlAPISlice } from "../gdcapi/gdcgraphql";
+
+interface CancerDistributionChartResponse {
+  viewer: {
+    explore: {
+      cases: {
+        amplification: {
+          project__project_id: Buckets;
+        };
+        gain: {
+          project__project_id: Buckets;
+        };
+        loss: {
+          project__project_id: Buckets;
+        };
+        homozygousDeletion: {
+          project__project_id: Buckets;
+        };
+        cnvTotal: {
+          project__project_id: Buckets;
+        };
+        cnvCases: {
+          total: number;
+        };
+      };
+    };
+  };
+}
 
 const graphQLQuery = `query CancerDistributionCNV(
   $caseFilters: FiltersArgument,
-  $cnvAll: FiltersArgument,
-  $cnvGain: FiltersArgument,
-  $cnvLoss: FiltersArgument,
-  $cnvTested: FiltersArgument,
-  $cnvTestedByGene: FiltersArgument
+  $cnvAmplificationFilter: FiltersArgument,
+  $cnvGainFilter: FiltersArgument,
+  $cnvLossFilter: FiltersArgument,
+  $cnvHomozygousDeletionFilter: FiltersArgument,
+  $cnvTotalFilter: FiltersArgument,
+  $cnvCasesFilter: FiltersArgument
   ) {
   viewer {
     explore {
       cases {
-        cnvAll: hits(case_filters: $caseFilters,  filters: $cnvAll) {
-          total
-        }
-        gain: aggregations(case_filters: $caseFilters, filters: $cnvGain) {
+
+        amplification: aggregations(case_filters: $caseFilters, filters: $cnvAmplificationFilter) {
           project__project_id {
             buckets {
               doc_count
@@ -25,7 +51,7 @@ const graphQLQuery = `query CancerDistributionCNV(
             }
           }
         }
-        loss: aggregations(case_filters: $caseFilters, filters: $cnvLoss) {
+        gain: aggregations(case_filters: $caseFilters, filters: $cnvGainFilter) {
           project__project_id {
             buckets {
               doc_count
@@ -33,7 +59,7 @@ const graphQLQuery = `query CancerDistributionCNV(
             }
           }
         }
-        cnvTotal: aggregations(filters: $cnvTested) {
+        loss: aggregations(case_filters: $caseFilters, filters: $cnvLossFilter) {
           project__project_id {
             buckets {
               doc_count
@@ -41,7 +67,23 @@ const graphQLQuery = `query CancerDistributionCNV(
             }
           }
         }
-        cnvTestedByGene: hits(case_filters: $caseFilters, filters: $cnvTestedByGene) {
+        homozygousDeletion: aggregations(case_filters: $caseFilters, filters: $cnvHomozygousDeletionFilter) {
+          project__project_id {
+            buckets {
+              doc_count
+              key
+            }
+          }
+        }
+        cnvTotal: aggregations(filters: $cnvTotalFilter) {
+          project__project_id {
+            buckets {
+              doc_count
+              key
+            }
+          }
+        }
+        cnvCases: hits(case_filters: $caseFilters, filters: $cnvCasesFilter) {
           total
         }
       }
@@ -50,23 +92,25 @@ const graphQLQuery = `query CancerDistributionCNV(
 }
 `;
 
-interface CNVPlotPoint {
-  readonly project: string;
-  readonly gain: number;
-  readonly loss: number;
-  readonly total: number;
-}
-
-interface CNVData {
-  readonly cases: CNVPlotPoint[];
-  readonly caseTotal: number;
-  readonly mutationTotal: number;
-}
-
 interface CNVPlotRequest {
   gene: string;
   cohortFilters?: FilterSet;
   genomicFilters?: FilterSet;
+}
+
+interface GroupedCnvData {
+  [projectId: string]: {
+    total: number;
+    amplification: number;
+    gain: number;
+    loss: number;
+    homozygousDeletion: number;
+  };
+}
+
+interface CNVData {
+  readonly cnvs: GroupedCnvData;
+  readonly caseTotal: number;
 }
 
 const cnvPlotSlice = graphqlAPISlice.injectEndpoints({
@@ -94,124 +138,156 @@ const cnvPlotSlice = graphqlAPISlice.injectEndpoints({
           gqlContextFilter && (gqlContextFilter as GqlIntersection).content
             ? (gqlContextFilter as GqlIntersection).content
             : [];
+
         const graphQLFilters = {
-          cnvAll: {
+          cnvAmplificationFilter: {
             op: "and",
             content: [
               {
                 op: "in",
                 content: {
-                  field: "cases.available_variation_data",
-                  value: ["cnv"],
-                },
-              },
-              {
-                op: "in",
-                content: {
-                  field: "cnvs.cnv_change",
-                  value: ["Gain", "Loss"],
+                  field: "cnvs.cnv_change_5_category",
+                  value: ["Amplification"],
                 },
               },
               ...gqlContextIntersection,
             ],
           },
-          cnvGain: {
+          cnvGainFilter: {
             op: "and",
             content: [
               {
                 op: "in",
                 content: {
-                  field: "cases.available_variation_data",
-                  value: ["cnv"],
-                },
-              },
-              {
-                op: "in",
-                content: {
-                  field: "cnvs.cnv_change",
+                  field: "cnvs.cnv_change_5_category",
                   value: ["Gain"],
                 },
               },
               ...gqlContextIntersection,
             ],
           },
-          cnvLoss: {
+          cnvLossFilter: {
             op: "and",
             content: [
               {
                 op: "in",
                 content: {
-                  field: "cases.available_variation_data",
-                  value: ["cnv"],
-                },
-              },
-              {
-                op: "in",
-                content: {
-                  field: "cnvs.cnv_change",
+                  field: "cnvs.cnv_change_5_category",
                   value: ["Loss"],
                 },
               },
               ...gqlContextIntersection,
             ],
           },
-          cnvTested: {
+          cnvHomozygousDeletionFilter: {
             op: "and",
             content: [
               {
                 op: "in",
                 content: {
-                  field: "cases.available_variation_data",
-                  value: ["cnv"],
-                },
-              },
-            ],
-          },
-          cnvTestedByGene: {
-            op: "and",
-            content: [
-              {
-                op: "in",
-                content: {
-                  field: "cases.available_variation_data",
-                  value: ["cnv"],
+                  field: "cnvs.cnv_change_5_category",
+                  value: ["Homozygous Deletion"],
                 },
               },
               ...gqlContextIntersection,
             ],
           },
-          caseFilters: caseFilters,
+          cnvTotalFilter: {
+            op: "and",
+            content: [
+              {
+                op: "in",
+                content: {
+                  field: "cases.available_variation_data",
+                  value: ["cnv"],
+                },
+              },
+            ],
+          },
+          cnvCasesFilter: {
+            op: "and",
+            content: [
+              {
+                op: "in",
+                content: {
+                  field: "cnvs.cnv_change_5_category",
+                  value: [
+                    "Amplification",
+                    "Gain",
+                    "Loss",
+                    "Homozygous Deletion",
+                  ],
+                },
+              },
+              ...gqlContextIntersection,
+            ],
+          },
+          caseFilters,
         };
-
         return {
           graphQLQuery,
           graphQLFilters,
         };
       },
-      transformResponse: (response) => {
-        const gain: CNVPlotPoint[] =
-          response?.data?.viewer?.explore?.cases?.gain?.project__project_id?.buckets.map(
-            (doc: Bucket) => ({ gain: doc.doc_count, project: doc.key }),
-          ) || [];
-        const loss: CNVPlotPoint[] =
-          response?.data?.viewer?.explore?.cases?.loss?.project__project_id?.buckets.map(
-            (doc: Bucket) => ({ loss: doc.doc_count, project: doc.key }),
-          ) || [];
-        const total: CNVPlotPoint[] =
-          response?.data?.viewer?.explore?.cases?.cnvTotal?.project__project_id?.buckets.map(
-            (doc: Bucket) => ({ total: doc.doc_count, project: doc.key }),
-          );
+      transformResponse: (
+        response: GraphQLApiResponse<CancerDistributionChartResponse>,
+      ): CNVData => {
+        const amplification = Object.fromEntries(
+          response?.data?.viewer?.explore?.cases?.amplification?.project__project_id?.buckets?.map(
+            (b) => [b.key, b.doc_count],
+          ),
+        );
+        const gain = Object.fromEntries(
+          response?.data?.viewer?.explore?.cases?.gain?.project__project_id?.buckets?.map(
+            (b) => [b.key, b.doc_count],
+          ),
+        );
+        const loss = Object.fromEntries(
+          response?.data?.viewer?.explore?.cases?.loss?.project__project_id?.buckets?.map(
+            (b) => [b.key, b.doc_count],
+          ),
+        );
+        const homozygousDeletion = Object.fromEntries(
+          response?.data?.viewer?.explore?.cases?.homozygousDeletion?.project__project_id?.buckets?.map(
+            (b) => [b.key, b.doc_count],
+          ),
+        );
+        const total = Object.fromEntries(
+          response?.data?.viewer?.explore?.cases?.cnvTotal?.project__project_id?.buckets?.map(
+            (b) => [b.key, b.doc_count],
+          ),
+        );
 
-        const merged = total.map((doc) => ({
-          ...doc,
-          ...gain.find((gain) => gain.project === doc.project),
-          ...loss.find((loss) => loss.project === doc.project),
-        }));
+        const cnvsByProject: GroupedCnvData = Object.keys(
+          total,
+        ).reduce<GroupedCnvData>((acc, projectId) => {
+          const amplificationCount = amplification[projectId] || 0;
+          const gainCount = gain[projectId] || 0;
+          const lossCount = loss[projectId] || 0;
+          const homozygousDeletionCount = homozygousDeletion[projectId] || 0;
+
+          // Only add project if at least one CNV count is non-zero
+          if (
+            amplificationCount ||
+            gainCount ||
+            lossCount ||
+            homozygousDeletionCount
+          ) {
+            acc[projectId] = {
+              total: total[projectId] || 0,
+              amplification: amplificationCount,
+              gain: gainCount,
+              loss: lossCount,
+              homozygousDeletion: homozygousDeletionCount,
+            };
+          }
+
+          return acc;
+        }, {});
+
         return {
-          cases: merged,
-          mutationTotal: response?.data?.viewer?.explore?.cases?.cnvAll?.total,
-          caseTotal:
-            response?.data?.viewer?.explore?.cases.cnvTestedByGene?.total,
+          cnvs: cnvsByProject,
+          caseTotal: response?.data?.viewer?.explore?.cases.cnvCases?.total,
         };
       },
     }),
