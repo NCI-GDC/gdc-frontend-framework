@@ -272,6 +272,19 @@ const slice = createSlice({
         state,
         action?.payload?.id || getCurrentCohort(state),
       );
+
+      const selector = cohortsAdapter.getSelectors();
+      if (selector.selectAll(state).length === 0) {
+        cohortsAdapter.addOne(
+          state,
+          newCohort({ customName: UNSAVED_COHORT_NAME }),
+        );
+        const selector = cohortsAdapter.getSelectors();
+        const createdCohort = selector.selectAll(state)[0];
+        state.currentCohort = createdCohort.id;
+      } else if (action?.payload.id === undefined) {
+        state.currentCohort = selector.selectAll(state)[0].id;
+      }
     },
     updateCohortFilter: (state, action: PayloadAction<UpdateFilterParams>) => {
       const filters = {

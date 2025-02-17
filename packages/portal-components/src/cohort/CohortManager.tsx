@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import { useDeepCompareEffect } from "use-deep-compare";
 import { Tooltip, MantineProvider, Button } from "@mantine/core";
 import { AppContext } from "src/context";
 import { UndoIcon } from "src/commonIcons";
@@ -28,7 +27,6 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   invalidCohortNames = [],
 }) => {
   const currentCohort = hooks.useSelectCurrentCohort();
-  const availableCohorts = hooks.useSelectAvailableCohorts();
 
   const handleDelete = hooks.useDeleteCohort();
   const handleDiscard = hooks.useDiscardChanges();
@@ -50,23 +48,6 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   const [showUpdateCohort, setShowUpdateCohort] = useState(false);
 
   const setCohortMessage = useContext(CohortNotificationContext);
-
-  useDeepCompareEffect(() => {
-    if (availableCohorts.length === 0) {
-      addNewDefaultUnsavedCohort();
-      setCohortMessage &&
-        setCohortMessage([{ cmd: "newCohort", param1: defaultCohortName }]);
-    } else if (availableCohorts.length > 0 && currentCohort === undefined) {
-      setActiveCohort(availableCohorts[0].id);
-    }
-  }, [
-    addNewDefaultUnsavedCohort,
-    availableCohorts,
-    currentCohort,
-    setActiveCohort,
-    defaultCohortName,
-    setCohortMessage,
-  ]);
 
   useCreateCohortExternally(setCohortMessage);
 
