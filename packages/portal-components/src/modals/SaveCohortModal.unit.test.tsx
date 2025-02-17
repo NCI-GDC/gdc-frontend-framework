@@ -9,19 +9,18 @@ const hooks = {
   useDeleteCohort: jest.fn(),
   useDiscardChanges: jest.fn(),
   useUpdateFilters: jest.fn(),
-  useSetActiveCohort: jest.fn(),
+  useSetActiveCohort: jest.fn().mockReturnValue(jest.fn()),
   useAddUnsavedCohort: jest.fn(),
   useExportCohort: jest.fn(),
   useImportCohort: jest.fn(),
   useSaveCohort: jest
     .fn()
-    .mockReturnValue([
+    .mockReturnValue(
       jest.fn().mockResolvedValue({ cohortAlreadyExists: true }),
-      {},
-    ]),
+    ),
   useReplaceCohort: jest
     .fn()
-    .mockReturnValue([jest.fn().mockResolvedValue({ newCohortId: "1" }), {}]),
+    .mockReturnValue(jest.fn().mockResolvedValue({ newCohortId: "1" })),
 };
 
 describe("SaveCohortModal", () => {

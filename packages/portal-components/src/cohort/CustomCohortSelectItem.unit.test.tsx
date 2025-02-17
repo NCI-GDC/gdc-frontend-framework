@@ -11,7 +11,7 @@ describe("<CustomCohortSelectItem />", () => {
       isSavedUnchanged: false,
       cohortStatusMessage: "Cohort not saved",
     };
-    const { getByAltText, getByText } = render(
+    const { getByTitle, getByText } = render(
       <MantineProvider>
         <Select
           data={[menu_items]}
@@ -20,7 +20,7 @@ describe("<CustomCohortSelectItem />", () => {
       </MantineProvider>,
     );
     expect(getByText("test")).toBeDefined();
-    expect(getByAltText("Cohort not saved")).toBeDefined();
+    expect(getByTitle("Cohort not saved")).toBeDefined();
   });
 
   it("Unsaved Icon should NOT be visible when the cohort has NOT been modified", () => {
@@ -30,7 +30,7 @@ describe("<CustomCohortSelectItem />", () => {
       isSavedUnchanged: true,
       cohortStatusMessage: "Changes not saved",
     };
-    const { queryByAltText, getByText } = render(
+    const { queryByTitle, getByText } = render(
       <MantineProvider>
         <Select
           data={[menu_items]}
@@ -39,6 +39,6 @@ describe("<CustomCohortSelectItem />", () => {
       </MantineProvider>,
     );
     expect(getByText("test")).toBeDefined();
-    expect(queryByAltText("this cohort is not saved")).toBeNull();
+    expect(queryByTitle("Cohort not saved")).toBeNull();
   });
 });

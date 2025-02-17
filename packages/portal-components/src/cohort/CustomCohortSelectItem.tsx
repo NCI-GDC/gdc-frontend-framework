@@ -18,7 +18,9 @@ export const UnsavedIcon: React.FC<UnsavedIconProps> = ({ label }) => {
           width="16"
           height="16"
           viewBox="0 0 16 16"
+          role="img"
         >
+          <title>{label}</title>
           <g
             id="Group_811"
             data-name="Group 811"
