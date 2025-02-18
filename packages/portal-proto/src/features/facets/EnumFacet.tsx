@@ -15,6 +15,21 @@ import FacetControlsHeader from "./FacetControlsHeader";
 import { BAD_DATA_MESSAGE } from "./constants";
 import { CloseIcon } from "@/utils/icons";
 import { calculateStickyHeaderHeight } from "src/utils/";
+import MiniSearch, { SearchResult } from "minisearch";
+import { STOP_WORDS } from "../cohortBuilder/dictionary";
+
+interface FacetResultDoc {
+  enum: string;
+  count: number;
+}
+
+type FullResults = FacetResultDoc & SearchResult;
+
+export const miniSearch = new MiniSearch<FacetResultDoc>({
+  fields: ["enum"],
+  storeFields: ["enum", "count"],
+  processTerm: (term) => (STOP_WORDS.has(term) ? null : term.toLowerCase()), // index term processing
+});
 
 /**
  *  Enumeration facet filters handle display and selection of
@@ -188,14 +203,32 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           }, [] as Array<[string, number]>)
         : [];
 
-      const filteredData = [
-        ...tempFilteredData,
-        ...selectedEnumNotInData,
-      ].filter((entry) =>
-        searchTerm === ""
-          ? entry
-          : entry[0].toLowerCase().includes(searchTerm.toLowerCase().trim()),
-      );
+      const enumData = [...tempFilteredData, ...selectedEnumNotInData];
+
+      let filteredData = enumData;
+
+      if (searchTerm) {
+        miniSearch.removeAll();
+
+        const searchDocuments = enumData.map((entry) => ({
+          id: entry[0],
+          enum: entry[0],
+          count: entry[1],
+        }));
+
+        miniSearch.addAll(searchDocuments);
+
+        const results = miniSearch.search(searchTerm, {
+          prefix: true,
+          combineWith: "OR",
+        });
+
+        const searchResults: [string, number][] = (
+          results as FullResults[]
+        ).map((result) => [result.enum, result.count]);
+
+        filteredData = searchResults;
+      }
 
       const remainingValues = filteredData.length - maxValuesToDisplay;
       const cardStyle = calcCardStyle(remainingValues);
