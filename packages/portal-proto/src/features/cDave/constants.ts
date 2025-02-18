@@ -44,6 +44,7 @@ export const COLOR_MAP = {
   diagnoses: "nci-orange",
   treatments: "nci-green",
   exposures: "nci-purple",
+  other_clinical_attributes: "nci-red",
 };
 
 // this is done so tailwind loads the classes properly
@@ -52,6 +53,7 @@ export const COLOR_CLASS_HOVER_MAP = {
   diagnoses: "hover:bg-nci-orange-darker",
   treatments: "hover:bg-nci-green-darker",
   exposures: "hover:bg-nci-purple-darker",
+  other_clinical_attributes: "hover:bg-nci-red-darkest",
 };
 
 export const CAPITALIZED_TERMS = [
@@ -76,7 +78,6 @@ export const FACET_SORT = {
     "ethnicity",
     "vital_status",
     "cause_of_death",
-    "premature_at_birth",
     "days_to_death",
     "days_to_birth",
     "year_of_birth",
@@ -122,7 +123,6 @@ export const FACET_SORT = {
     "inss_stage",
     "iss_stage",
     "metastasis_at_diagnosis",
-    "metastasis_at_diagnosis_site",
     "morphology",
     "tumor_grade",
     "tissue_or_organ_of_origin",
@@ -142,7 +142,6 @@ export const FACET_SORT = {
     "international_prognostic_index",
     "last_known_disease_status",
     "masaoka_stage",
-    "pregnant_at_diagnosis",
     "primary_gleason_grade",
     "secondary_gleason_grade",
   ],
@@ -151,7 +150,7 @@ export const FACET_SORT = {
     "days_to_treatment_end",
     "therapeutic_agents",
     "initial_disease_status",
-    "treatment_anatomic_site",
+    "treatment_anatomic_sites",
     "treatment_effect",
     "treatment_intent_type",
     "treatment_or_therapy",
@@ -173,6 +172,7 @@ export const FACET_SORT = {
     "tobacco_smoking_onset_year",
     "tobacco_smoking_quit_year",
   ],
+  other_clinical_attributes: ["premature_at_birth", "pregnant_at_diagnosis"],
 };
 
 export const DATA_DIMENSIONS: Record<
@@ -208,6 +208,7 @@ export const TABS = {
   diagnoses: "Diagnosis",
   treatments: "Treatment",
   exposures: "Exposures",
+  other_clinical_attributes: "Other Clinical Attribute",
 };
 
 export const SURVIVAL_PLOT_MIN_COUNT = 10;

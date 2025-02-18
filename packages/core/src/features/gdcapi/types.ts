@@ -339,7 +339,6 @@ export interface FileDefaults {
     };
     readonly samples?: ReadonlyArray<{
       readonly sample_id: string;
-      readonly sample_type: string;
       readonly tissue_type: string;
       readonly tumor_descriptor: string;
       readonly submitter_id: string;

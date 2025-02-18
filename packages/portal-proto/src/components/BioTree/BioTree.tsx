@@ -164,12 +164,12 @@ export const BioTree = ({
           aria-expanded={isExpanded.current}
         >
           {isExpanded.current ? (
-            <ExpandNodeIcon
+            <CollapsedNodeIcon
               className="cursor-pointer text-accent-vivid self-center"
               size={18}
             />
           ) : (
-            <CollapsedNodeIcon
+            <ExpandNodeIcon
               className="cursor-pointer text-accent-vivid self-center"
               size={18}
             />

@@ -55,9 +55,7 @@ describe("<Biospecimen />", () => {
         freezing_method: null,
         initial_weight: null,
         intermediate_dimension: null,
-        is_ffpe: "true",
         longest_dimension: null,
-        oct_embedded: "No",
         pathology_report_uuid: null,
         portions: {
           hits: {
@@ -72,7 +70,6 @@ describe("<Biospecimen />", () => {
         time_between_clamping_and_freezing: null,
         time_between_excision_and_freezing: null,
         tissue_type: "Not Reported",
-        tumor_code: null,
         tumor_code_id: null,
         tumor_descriptor: "Not Applicable",
         specimen_type: "Peripheral Blood NOS",
