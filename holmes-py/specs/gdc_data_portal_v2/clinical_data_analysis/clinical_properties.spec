@@ -60,7 +60,6 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
    |INSS Stage                             |         |
    |ISS Stage                              |         |
    |Metastasis At Diagnosis                |         |
-   |Metastasis At Diagnosis Site           |         |
    |Morphology                             |         |
    |Tumor Grade                            |         |
    |Tissue Or Organ Of Origin              |         |
@@ -80,7 +79,6 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
    |International Prognostic Index         |         |
    |Last Known Disease Status              |         |
    |Masaoka Stage                          |         |
-   |Pregnant At Diagnosis                  |         |
    |Primary Gleason Grade                  |         |
    |Secondary Gleason Grade                |         |
 
@@ -91,7 +89,7 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
    |Days To Treatment End        |         |
    |Therapeutic Agents           |         |
    |Initial Disease Status       |         |
-   |Treatment Anatomic Site      |         |
+   |Treatment Anatomic Sites     |         |
    |Treatment Intent Type        |         |
    |Treatment Or Therapy         |         |
    |Treatment Outcome            |         |
@@ -113,3 +111,9 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
    |Pack Years Smoked         |         |
    |Tobacco Smoking Onset Year|         |
    |Tobacco Smoking Quit Year |         |
+
+* Check clinical properties
+   |property                  |group                     |
+   |--------------------------|--------------------------|
+   |Premature At Birth        |Other Clinical Attribute  |
+   |Pregnant At Diagnosis     |Other Clinical Attribute  |

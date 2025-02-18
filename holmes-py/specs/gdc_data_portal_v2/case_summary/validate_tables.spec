@@ -424,14 +424,12 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download
     |Sample UUID                            |
     |Tissue Type                            |
     |Tumor Descriptor                       |
+    |Specimen Type                          |
     |Preservation Method                    |
-    |Tumor Code                             |
     |Tumor Code ID                          |
-    |Oct Embedded                           |
     |Shortest Dimension                     |
     |Intermediate Dimension                 |
     |Longest Dimension                      |
-    |Is Ffpe                                |
     |Pathology Report UUID                  |
     |Current Weight                         |
     |Initial Weight                         |
@@ -445,7 +443,6 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download
     |074df1cb-b6b7-4d3f-9c0a-fe523b1854e0   |
     |Peripheral Blood NOS                   |
     |Normal                                 |
-    |false                                  |
     |Not Applicable                         |
     |105 days                               |
 
@@ -514,7 +511,6 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download
     |Analyte ID                             |
     |Analyte UUID                           |
     |Analyte Type                           |
-    |Analyte Type ID                        |
     |Well Number                            |
     |Amount                                 |
     |A260 A280 Ratio                        |
@@ -535,8 +531,6 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download
     |Source Center                          |
     |Amount                                 |
     |Concentration                          |
-    |Analyte Type                           |
-    |Analyte Type ID                        |
     |TCGA-GV-A3QI-10A-01D-A21Z-08           |
     |59c24b21-b1e8-4752-bd0a-b48dd802643b   |
     |23                                     |
