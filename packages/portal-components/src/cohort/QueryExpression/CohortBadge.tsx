@@ -1,17 +1,7 @@
-import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
-import { CloseIcon } from "@/utils/icons";
-import {
-  removeCohortFilter,
-  removeCohortSet,
-  updateActiveCohortFilter,
-  useCaseSetCountQuery,
-  useCoreDispatch,
-  useGeneSetCountQuery,
-  useSsmSetCountQuery,
-} from "@gff/core";
+import React from "react";
 import { ActionIcon, Badge } from "@mantine/core";
-import { useState } from "react";
-import QueryRepresentationLabel from "../facets/QueryRepresentationLabel";
+import OverflowTooltippedLabel from "@/common/OverflowTooltippedLabel";
+import { CloseIcon } from "src/commonIcons";
 
 const RemoveButton = ({ label }: { label: string }) => (
   <ActionIcon
@@ -31,49 +21,56 @@ interface CohortBadgeProps {
   customTestid: string;
   operands: readonly (string | number)[];
   operator: "includes" | "excludes" | "excludeifany";
-  currentCohortId: string;
-  geneSymbolDict: Record<string, string>;
-  isSuccess: boolean;
+  hooks: {
+    useRemoveCohortFilter: () => (field: string) => void;
+    useUpdateCohortFilter: () => ({
+      field,
+      operation,
+    }: {
+      field: string;
+      operation: any;
+    }) => void;
+  };
 }
 const CohortBadge = ({
   field,
   value,
   customTestid,
+  hooks,
   operands,
   operator,
-  currentCohortId,
-  geneSymbolDict,
-  isSuccess,
 }: CohortBadgeProps) => {
-  const dispatch = useCoreDispatch();
-  const [label, setLabel] = useState("");
+  const updateActiveCohortFilter = hooks.useUpdateCohortFilter();
+  const removeCohortFilter = hooks.useRemoveCohortFilter();
 
   const handleOnClick = () => {
     const newOperands = operands.filter((o) => o !== value);
 
     if (newOperands.length === 0) {
+      /*
       dispatch({
         type: "clear",
         cohortId: currentCohortId,
         field,
       });
-      dispatch(removeCohortFilter(field));
+      */
+      removeCohortFilter(field);
     } else {
-      dispatch(
-        updateActiveCohortFilter({
+      updateActiveCohortFilter({
+        field,
+        operation: {
+          operator,
           field,
-          operation: {
-            operator,
-            field,
-            operands: newOperands,
-          },
-        }),
-      );
+          operands: newOperands,
+        },
+      });
     }
 
+    /*
     if (value.includes("set_id:")) {
       dispatch(removeCohortSet(value.split("set_id:")[1]));
     }
+      */
   };
 
   return (
@@ -83,27 +80,14 @@ const CohortBadge = ({
       color="accent-cool"
       size="md"
       className="normal-case items-center max-w-[162px] cursor-pointer pl-1.5 pr-0 hover:bg-accent-cool-darker"
-      rightSection={<RemoveButton label={label} />}
+      rightSection={<RemoveButton label={value} />}
       onClick={handleOnClick}
     >
       <OverflowTooltippedLabel
         label={value}
         className="flex-grow text-md font-content-noto"
       >
-        <QueryRepresentationLabel
-          value={value}
-          field={field}
-          geneSymbolDict={geneSymbolDict}
-          geneSymbolSuccess={isSuccess}
-          useCountHook={
-            field === "genes.gene_id"
-              ? useGeneSetCountQuery
-              : field === "ssms.ssm_id"
-              ? useSsmSetCountQuery
-              : useCaseSetCountQuery
-          }
-          setLabel={setLabel}
-        />
+        {value}
       </OverflowTooltippedLabel>
     </Badge>
   );
