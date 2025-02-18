@@ -148,13 +148,13 @@ export const RepositoryApp = (): JSX.Element => {
         <TableXPositionContext.Provider
           value={{ xPosition: tableXPosition, setXPosition: setTableXPosition }}
         >
-          <div className="flex m-4 gap-0.5">
+          <div className="flex pt-4 px-4 pb-16 gap-4">
             <FileFacetPanel />
             <div
-              className="overflow-hidden h-full w-full"
+              className="overflow-hidden w-full"
               data-testid="table-repository"
             >
-              <div className="flex flex-wrap Custom-Repo-Width:justify-end gap-2 mt-8 mb-4">
+              <div className="flex flex-wrap Custom-Repo-Width:justify-end gap-2 mb-4">
                 <DownloadButton
                   activeText="Processing"
                   inactiveText="Sample Sheet"

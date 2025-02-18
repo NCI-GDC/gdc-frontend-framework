@@ -33,12 +33,13 @@ export const ProjectsCenter = (): JSX.Element => {
         <TableXPositionContext.Provider
           value={{ xPosition: tableXPosition, setXPosition: setTableXPosition }}
         >
-          <div className="flex flex-col m-4">
-            <div className="flex flex-row" data-testid="table-projects">
-              <ProjectFacetPanel />
-              <div className="grow overflow-hidden mt-8">
-                <ProjectsTable />
-              </div>
+          <div
+            className="flex p-4 px-4 pb-16 gap-4 w-full"
+            data-testid="table-projects"
+          >
+            <ProjectFacetPanel />
+            <div className="grow overflow-hidden">
+              <ProjectsTable />
             </div>
           </div>
         </TableXPositionContext.Provider>
