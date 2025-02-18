@@ -184,17 +184,18 @@ tags: gdc-data-portal-v2, regression, gene-summary
     |required_info                          |
     |---------------------------------------|
     |TARGET-OS                              |
-    |TCGA-PCPG                              |
-    |TCGA-KICH                              |
-    |CDDP_EAGLE-1                           |
-    |TCGA-MESO                              |
+    |TCGA-SARC                              |
+    |CGCI-HTMCP-CC                          |
+    |TCGA-STAD                              |
 
 ## Cancer Distribution CNV Graph - Validate JSON File Fields
   |field_name                               |
   |-----------------------------------------|
   |symbol			                              |
+  |amplification                            |
   |gain                                     |
-  |loss	                                    |
+  |heterozygous deletion                    |
+  |homozygous deletion                      |
   |total                                    |
 * Verify that the "JSON from Graph Dropdown" has <field_name> for each object
 
