@@ -227,25 +227,50 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
     |TCGA                                   |
     |MMRF_1108                              |
 
+## Clinical - TSV - Verify Additional Case Properties
+* In table "Cases", search the table for "01b7ac35-49e3-48db-a081-2971b807445f"
+* Download "TSV" from "Cohort Table View Clinical"
+* Read file content from compressed "TSV from Cohort Table View Clinical"
+* Verify that "TSV from Cohort Table View Clinical" has expected information
+    |required_info                          |
+    |---------------------------------------|
+    |Informed Consent                       |
+    |-3                                     |
+    |702                                    |
+    |Ductal and Lobular Neoplasms           |
+    |Diagnosis                              |
+    |Yes                                    |
+    |Pancreas                               |
+    |C3N-02696                              |
+
+## Clinical - JSON - Verify Additional Case Properties
+* Download "JSON" from "Cohort Table View Clinical"
+* Read from "JSON from Cohort Table View Clinical"
+* Verify that "JSON from Cohort Table View Clinical" has expected information
+    |required_info                          |
+    |---------------------------------------|
+    |Informed Consent                       |
+    |-3                                     |
+    |702                                    |
+    |Ductal and Lobular Neoplasms           |
+    |Diagnosis                              |
+    |Yes                                    |
+    |Pancreas                               |
+    |C3N-02696                              |
+
 ## Clinical - Validate JSON Fields
   |field_name                                       |
   |-------------------------------------------------|
-  |family_histories.submitter_id		            |
+  |case_id                                          |
+  |consent_type                                     |
+  |days_to_consent                                  |
+  |days_to_lost_to_followup                         |
   |disease_type                                     |
   |index_date                                       |
+  |lost_to_followup                                 |
   |primary_site                                     |
-  |case_id	                                        |
-  |follow_ups.follow_up_id	                        |
-  |follow_ups.molecular_tests.molecular_analysis_method|
-  |project.project_id                               |
-  |submitter_id	                                    |
-  |diagnoses.morphology	                            |
-  |diagnoses.treatments.treatment_or_therapy		|
-  |diagnoses.site_of_resection_or_biopsy	        |
-  |demographic.days_to_birth		                |
+  |submitter_id                                     |
 * Verify that the "JSON from Cohort Table View Clinical" has <field_name> for each object
-
-
 
 ## Cohort Table - TSV
 * In table "Cases", search the table for "TCGA-EK"
