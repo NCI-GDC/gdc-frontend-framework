@@ -284,7 +284,6 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download
 * Verify that "TSV from Case Summary Clinical Table" has expected information
     |required_info                                    |
     |-------------------------------------------------|
-    |case_id                                          |
     |follow_ups.cause_of_response                     |
     |follow_ups.barretts_esophagus_goblet_cells_present|
     |follow_ups.hysterectomy_margins_involved         |
@@ -310,6 +309,16 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download
     |other_clinical_attributes.weight                 |
     |MMRF_2081_oca1                                   |
     |a5de9cbc-4033-4d39-b543-e3ad87ef0d78             |
+    |cases.case_id                                    |
+    |cases.consent_type                               |
+    |cases.days_to_consent                            |
+    |cases.days_to_lost_to_followup                   |
+    |cases.disease_type                               |
+    |cases.index_date                                 |
+    |cases.lost_to_followup                           |
+    |cases.primary_site                               |
+    |cases.submitter_id                               |
+
 
 * Verify that "TSV from Case Summary Clinical Table" does not contain specified information
     |required_info                          |
@@ -369,11 +378,15 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download
     |150                                    |
     |height                                 |
     |weight                                 |
+    |Plasma Cell Tumors                     |
 
 
 ## Clinical Table - Validate JSON File Fields
   |field_name                               |
   |-----------------------------------------|
+  |disease_type                             |
+  |index_date                               |
+  |primary_site                             |
   |case_id	                                |
   |submitter_id	                            |
   |family_histories.relative_with_cancer_history|

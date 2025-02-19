@@ -139,6 +139,15 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
     |Stem Cell Transplantation, Autologous  |
     |-16767                                 |
     |MMRF-COMMPASS                          |
+    |cases.case_id                          |
+    |cases.consent_type                     |
+    |cases.days_to_consent                  |
+    |cases.days_to_lost_to_followup         |
+    |cases.disease_type                     |
+    |cases.index_date                       |
+    |cases.lost_to_followup                 |
+    |cases.primary_site                     |
+    |cases.submitter_id                     |
 
 * Verify that "TSV from Cohort Table View Clinical" does not contain specified information
     |required_info                          |
@@ -188,6 +197,9 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
 * Verify that "JSON from Cohort Table View Clinical" has expected information
     |required_info                          |
     |---------------------------------------|
+    |Plasma Cell Tumors                     |
+    |Hematopoietic and reticuloendothelial systems|
+    |First Treatment                        |
     |cd63c5c4-308e-4d7b-bd41-22946218fcef   |
     |Melanoma                               |
     |8e39bdf0-044d-4e25-a7ac-14239117e580   |
@@ -219,7 +231,10 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
   |field_name                                       |
   |-------------------------------------------------|
   |family_histories.submitter_id		            |
-  |case_id                                          |
+  |disease_type                                     |
+  |index_date                                       |
+  |primary_site                                     |
+  |case_id	                                        |
   |follow_ups.follow_up_id	                        |
   |follow_ups.molecular_tests.molecular_analysis_method|
   |project.project_id                               |
