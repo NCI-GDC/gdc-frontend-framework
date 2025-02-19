@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import { ActionIcon, Badge } from "@mantine/core";
 import OverflowTooltippedLabel from "@/common/OverflowTooltippedLabel";
 import { CloseIcon } from "src/commonIcons";
+import { QueryExpressionsExpandedContext } from "./QueryExpressionSection";
+import { QueryExpressionHooks } from "./types";
 
 const RemoveButton = ({ label }: { label: string }) => (
   <ActionIcon
@@ -21,18 +23,9 @@ interface CohortBadgeProps {
   customTestid: string;
   operands: readonly (string | number)[];
   operator: "includes" | "excludes" | "excludeifany";
-  hooks: {
-    useRemoveCohortFilter: () => (field: string) => void;
-    useUpdateCohortFilter: () => ({
-      field,
-      operation,
-    }: {
-      field: string;
-      operation: any;
-    }) => void;
-  };
+  hooks: QueryExpressionHooks;
 }
-const CohortBadge = ({
+const CohortBadge: React.FC<CohortBadgeProps> = ({
   field,
   value,
   customTestid,
@@ -40,6 +33,10 @@ const CohortBadge = ({
   operands,
   operator,
 }: CohortBadgeProps) => {
+  const [, setQueryExpressionsExpanded] = useContext(
+    QueryExpressionsExpandedContext,
+  );
+  const currentCohort = hooks.useSelectCurrentCohort();
   const updateActiveCohortFilter = hooks.useUpdateCohortFilter();
   const removeCohortFilter = hooks.useRemoveCohortFilter();
 
@@ -47,13 +44,12 @@ const CohortBadge = ({
     const newOperands = operands.filter((o) => o !== value);
 
     if (newOperands.length === 0) {
-      /*
-      dispatch({
-        type: "clear",
-        cohortId: currentCohortId,
-        field,
-      });
-      */
+      setQueryExpressionsExpanded &&
+        setQueryExpressionsExpanded({
+          type: "clear",
+          cohortId: currentCohort.id,
+          field,
+        });
       removeCohortFilter(field);
     } else {
       updateActiveCohortFilter({

@@ -3,9 +3,6 @@ import {
   Modals,
   showModal,
   useCoreDispatch,
-  useCoreSelector,
-  useGeneSymbol,
-  selectCurrentCohortId,
   Includes,
   trimFirstFieldNameToTitle,
 } from "@gff/core";
@@ -17,12 +14,13 @@ import {
   FacetText,
 } from "./components";
 import { useCohortFacetFilters } from "../cohortBuilder/utils";
-import CohortBadge from "../cohortBuilder/CohortBadge";
+import { CohortBadge } from "@gff/portal-components";
 import { humanify } from "@/utils/index";
 import { FacetRequiredHooks } from "./types";
 import { useDeepCompareMemo } from "use-deep-compare";
 import { UndoIcon } from "@/utils/icons";
 import { calculateStickyHeaderHeight } from "src/utils/";
+import queryExpressionHooks from "../cohortBuilder/queryExpressionHooks";
 
 interface UploadFacetProps {
   field: string;
@@ -44,7 +42,6 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
   customFaceTitle,
 }) => {
   const coreDispatch = useCoreDispatch();
-  const currentCohortId = useCoreSelector(selectCurrentCohortId);
   const clearFilters = useClearFilter();
   const hash = window?.location?.hash.split("#")?.[1];
   const cardSelected = hash !== undefined && hash === fullField;
@@ -65,9 +62,11 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
     return includeFilters.find((f) => f.field === field)?.operands || [];
   }, [filters, field]);
 
+  /*
   const { data: geneSymbolDict, isSuccess } = useGeneSymbol(
     field === "genes.gene_id" ? items.map((x) => x.toString()) : [],
   );
+  */
 
   const renderBadges = (items: string[], itemField: string) => {
     return items.map((item, index) => (
@@ -78,9 +77,7 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
         customTestid={`query-rep-${itemField}-${item}-${index}`}
         operands={items}
         operator="includes"
-        currentCohortId={currentCohortId}
-        geneSymbolDict={geneSymbolDict}
-        isSuccess={isSuccess}
+        hooks={queryExpressionHooks}
       />
     ));
   };
