@@ -28,6 +28,7 @@ type FullResults = FacetResultDoc & SearchResult;
 export const miniSearch = new MiniSearch<FacetResultDoc>({
   fields: ["enum"],
   storeFields: ["enum", "count"],
+  tokenize: (string) => string.split(/[\n\r\s,]+/u), // indexing tokenizer
   processTerm: (term) => (STOP_WORDS.has(term) ? null : term.toLowerCase()), // index term processing
 });
 

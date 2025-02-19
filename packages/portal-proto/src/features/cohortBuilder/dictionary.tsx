@@ -62,6 +62,7 @@ export interface FacetSearchDocument {
 export const miniSearch = new MiniSearch<FacetSearchDocument>({
   fields: ["name", "description", "enum"], // fields to index for full-text search
   storeFields: ["name", "category", "categoryKey", "description", "enum", "id"], // fields to return with search results
+  tokenize: (string) => string.split(/[\n\r\s,]+/u), // indexing tokenizer
   processTerm: (term) => (STOP_WORDS.has(term) ? null : term.toLowerCase()), // index term processing
   searchOptions: {
     boost: {
