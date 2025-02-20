@@ -89,10 +89,6 @@ const IncludeExcludeQueryElement: React.FC<
   ]);
 
   const expanded = get(queryExpressionsExpanded, field, true);
-  /*
-  const fieldName =
-    field === "genes.gene_id" ? "Mutated Gene" : fieldNameToTitle(field);
-    */
 
   const fieldName = fieldNameToTitle(field);
   const operands =
@@ -297,7 +293,6 @@ export const QueryElement = ({
   const [, setQueryExpressionsExpanded] = useContext(
     QueryExpressionsExpandedContext,
   );
-  console.log({ hooks }, "3");
   const currentCohort = hooks.useSelectCurrentCohort();
   const removeCohortFilter = hooks.useRemoveCohortFilter();
   const fieldNameToTitle = hooks.useFieldNameToTitle();
@@ -315,12 +310,6 @@ export const QueryElement = ({
   return (
     <div className="flex flex-row items-center font-heading font-medium text-sm rounded-md border-[1.5px] mr-1 mb-2 border-secondary-darkest w-inherit">
       {children}
-      {/* ---
-        // TODO: enable facet dropdown
-         <button onClick={handlePopupFacet}>
-        <DropDownIcon size="1.5em" onClick={handlePopupFacet} />
-      </button>
-      -- */}
       <button
         className="bg-accent-vivid p-0 m-0 h-full rounded-r-sm text-white hover:bg-accent-darker"
         onClick={handleRemoveFilter}
@@ -411,7 +400,6 @@ class CohortFilterToComponent implements OperationHandler<React.ReactNode> {
     }
     return null;
   };
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   handleUnion = (_f: Union) => {
     return <div>Union</div>;
   };
@@ -421,9 +409,7 @@ export const convertFilterToComponent = (
   filter: Operation,
   hooks: QueryExpressionHooks,
 ): React.ReactNode => {
-  console.log({ hooks });
   const handler: OperationHandler<React.ReactNode> =
     new CohortFilterToComponent();
-  console.log({ hooks });
   return handleOperation(handler, filter, hooks);
 };

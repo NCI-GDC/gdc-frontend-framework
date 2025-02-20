@@ -147,7 +147,6 @@ export const handleOperation = <T>(
   op: Operation,
   hooks: QueryExpressionHooks,
 ): T => {
-  console.log({ hooks }, "2");
   switch (op.operator) {
     case "=":
       return handler.handleEquals({ ...op, hooks });

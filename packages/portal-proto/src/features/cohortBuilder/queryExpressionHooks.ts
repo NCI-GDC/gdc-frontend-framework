@@ -55,7 +55,11 @@ const useUpdateCohortFilter = () => {
 };
 
 const useFieldNameToTitle = () => {
-  return (field: string) => fieldNameToTitle(field);
+  const fieldToTitle = useCallback((field: string) => {
+    return field === "genes.gene_id" ? "Mutated Gene" : fieldNameToTitle(field);
+  }, []);
+
+  return fieldToTitle;
 };
 
 const queryExpressionHooks = {
