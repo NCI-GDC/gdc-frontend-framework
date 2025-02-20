@@ -16,15 +16,13 @@ import FacetControlsHeader from "./FacetControlsHeader";
 import { BAD_DATA_MESSAGE } from "./constants";
 import { CloseIcon } from "@/utils/icons";
 import { calculateStickyHeaderHeight } from "src/utils/";
-import MiniSearch, { SearchResult } from "minisearch";
+import MiniSearch from "minisearch";
 import { STOP_WORDS } from "../cohortBuilder/dictionary";
 
 interface FacetResultDoc {
   enum: string;
   count: number;
 }
-
-type FullResults = FacetResultDoc & SearchResult;
 
 export const miniSearch = new MiniSearch<FacetResultDoc>({
   fields: ["enum"],
