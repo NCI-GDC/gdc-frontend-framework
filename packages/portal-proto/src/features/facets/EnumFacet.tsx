@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
+import { flatten } from "lodash";
 import { fieldNameToTitle } from "@gff/core";
 import { DEFAULT_VISIBLE_ITEMS, updateFacetEnum } from "./utils";
 import { EnumFacetHooks, FacetCardProps } from "@/features/facets/types";
@@ -224,11 +225,10 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           combineWith: "OR",
         });
 
-        const searchResults: [string, number][] = (
-          results as FullResults[]
-        ).map((result) => [result.enum, result.count]);
-
-        filteredData = searchResults;
+        const terms = flatten(results.map((r) => r.terms));
+        filteredData = enumData.filter((d) =>
+          terms.some((t) => d[0].toLowerCase().includes(t)),
+        );
       }
 
       const remainingValues = filteredData.length - maxValuesToDisplay;
