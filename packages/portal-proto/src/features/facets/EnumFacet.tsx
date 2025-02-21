@@ -17,7 +17,7 @@ import { BAD_DATA_MESSAGE } from "./constants";
 import { CloseIcon } from "@/utils/icons";
 import { calculateStickyHeaderHeight } from "src/utils/";
 import MiniSearch from "minisearch";
-import { STOP_WORDS } from "../cohortBuilder/dictionary";
+import { STOP_WORDS, TOKENIZE_STRING } from "../cohortBuilder/dictionary";
 
 interface FacetResultDoc {
   enum: string;
@@ -27,7 +27,7 @@ interface FacetResultDoc {
 export const miniSearch = new MiniSearch<FacetResultDoc>({
   fields: ["enum"],
   storeFields: ["enum", "count"],
-  tokenize: (string) => string.split(/[\n\r\s,]+/u), // indexing tokenizer
+  tokenize: (string) => string.split(TOKENIZE_STRING), // indexing tokenizer
   processTerm: (term) => (STOP_WORDS.has(term) ? null : term.toLowerCase()), // index term processing
 });
 
