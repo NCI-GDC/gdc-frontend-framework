@@ -70,7 +70,7 @@ tags: gdc-data-portal-v2, repository, regression
   |Access               |controlled                                 |
 * Verify "Experimental Strategy_Genotyping Array_ALC_Validation Count" and "Access_controlled_ALC_Validation Count" are "Equal"
 
-## Verify No Match Data Types
+## Verify No MATCH Data Types
 * Navigate to "Cohort" from "Header" "section"
 
 * Create and save a cohort named "No_MATCH" with these filters
@@ -134,3 +134,20 @@ tags: gdc-data-portal-v2, repository, regression
   |Data Type            |Gene Expression Quantification       |
   |Access               |open                                 |
 * Verify "Data Type_Gene Expression Quantification_No_MATCH Count" and "Access_open_No_MATCH Count" are "Equal"
+
+## Masked Somatic Mutation with No MATCH
+* Perform the following actions on a filter card
+  |filter_name      |action               |
+  |-----------------|---------------------|
+  |Data Type        |clear selection      |
+* Make the following selections on a filter card
+  |facet_name           |selection                            |
+  |---------------------|-------------------------------------|
+  |Data Type            |Masked Somatic Mutation              |
+  |Workflow Type        |Tumor-Only Somatic Variant Merging and Masking|
+* Collect case counts for the following filters for cohort "No_MATCH"
+  |facet_name           |selection                            |
+  |---------------------|-------------------------------------|
+  |Workflow Type        |Tumor-Only Somatic Variant Merging and Masking|
+  |Access               |controlled                           |
+* Verify "Workflow Type_Tumor-Only Somatic Variant Merging and Masking_No_MATCH Count" and "Access_controlled_No_MATCH Count" are "Equal"
