@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
+import { flatten } from "lodash";
 import { fieldNameToTitle } from "@gff/core";
 import { DEFAULT_VISIBLE_ITEMS, updateFacetEnum } from "./utils";
 import { EnumFacetHooks, FacetCardProps } from "@/features/facets/types";
@@ -15,19 +16,18 @@ import FacetControlsHeader from "./FacetControlsHeader";
 import { BAD_DATA_MESSAGE } from "./constants";
 import { CloseIcon } from "@/utils/icons";
 import { calculateStickyHeaderHeight } from "src/utils/";
-import MiniSearch, { SearchResult } from "minisearch";
-import { STOP_WORDS } from "../cohortBuilder/dictionary";
+import MiniSearch from "minisearch";
+import { STOP_WORDS, TOKENIZE_STRING } from "../cohortBuilder/dictionary";
 
 interface FacetResultDoc {
   enum: string;
   count: number;
 }
 
-type FullResults = FacetResultDoc & SearchResult;
-
 export const miniSearch = new MiniSearch<FacetResultDoc>({
   fields: ["enum"],
   storeFields: ["enum", "count"],
+  tokenize: (string) => string.split(TOKENIZE_STRING), // indexing tokenizer
   processTerm: (term) => (STOP_WORDS.has(term) ? null : term.toLowerCase()), // index term processing
 });
 
@@ -223,11 +223,10 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           combineWith: "OR",
         });
 
-        const searchResults: [string, number][] = (
-          results as FullResults[]
-        ).map((result) => [result.enum, result.count]);
-
-        filteredData = searchResults;
+        const terms = flatten(results.map((r) => r.terms));
+        filteredData = enumData.filter((d) =>
+          terms.some((t) => d[0].toLowerCase().includes(t)),
+        );
       }
 
       const remainingValues = filteredData.length - maxValuesToDisplay;
