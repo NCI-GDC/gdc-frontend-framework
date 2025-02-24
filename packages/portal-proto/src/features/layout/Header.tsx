@@ -60,7 +60,7 @@ const externalAppLinks: HeaderLinkItem[] = [
   },
   {
     customDataTestID: "button-header-website",
-    href: "https://gdc.cancer.gov",
+    href: "https://gdc.cancer.gov?utm_source=dataportal&utm_medium=apps",
     text: "Website",
     image: (
       <Image
@@ -73,7 +73,7 @@ const externalAppLinks: HeaderLinkItem[] = [
   },
   {
     customDataTestID: "button-header-api",
-    href: "https://gdc.cancer.gov/developers/gdc-application-programming-interface-api",
+    href: "https://gdc.cancer.gov/developers/gdc-application-programming-interface-api?utm_source=dataportal&utm_medium=apps",
     image: (
       <Image
         src={"/user-flow/icons/gdc-app-portal-api.svg"}
@@ -86,7 +86,7 @@ const externalAppLinks: HeaderLinkItem[] = [
   },
   {
     customDataTestID: "button-header-data-transfer-tool",
-    href: "https://docs.gdc.cancer.gov/Data_Transfer_Tool/Users_Guide/Getting_Started/",
+    href: "https://docs.gdc.cancer.gov/Data_Transfer_Tool/Users_Guide/Getting_Started/?utm_source=dataportal&utm_medium=apps",
     image: (
       <Image
         src={"/user-flow/icons/gdc-app-data-transfer-tool.svg"}
@@ -125,7 +125,7 @@ const externalAppLinks: HeaderLinkItem[] = [
   },
   {
     customDataTestID: "button-header-publications",
-    href: "https://gdc.cancer.gov/about-data/publications",
+    href: "https://gdc.cancer.gov/about-data/publications?utm_source=dataportal&utm_medium=apps",
     image: (
       <Image
         src={"/user-flow/icons/gdc-app-publications.svg"}
