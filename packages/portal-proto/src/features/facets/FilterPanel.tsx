@@ -76,10 +76,12 @@ const FilterPanel = ({
       <Text size="lg" className="text-primary-content-darker font-bold">
         Filters
       </Text>
-
       <div className="flex flex-col flex-wrap">
         <div className="flex flex-wrap justify-between text-primary-content-darker">
-          <button onClick={() => toggleAllFiltersExpanded(allFiltersCollapsed)}>
+          <button
+            data-testid="button-expand-collapse-files-table"
+            onClick={() => toggleAllFiltersExpanded(allFiltersCollapsed)}
+          >
             {allFiltersCollapsed ? "Expand All" : "Collapse All"}
           </button>
           {filtersAppliedCount > 0 && (
@@ -102,6 +104,7 @@ const FilterPanel = ({
             <div className="flex min-h-[36px] mt-3.5 w-full">
               <Tooltip label="Reset custom filters">
                 <button
+                  data-testid="button-reset-custom-filters-files-table"
                   className="flex justify-center items-center w-12 border-1 rounded-l-md border-primary-darker text-primary disabled:opacity-50 disabled:bg-base-max disabled:text-primary disabled:cursor-not-allowed"
                   onClick={() => customConfig.handleResetCustomFilters()}
                   disabled={isEqual(customConfig.defaultFilters, facetFields)}

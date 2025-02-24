@@ -67,7 +67,6 @@ export type FileCaseType = ReadonlyArray<{
   };
   readonly samples?: ReadonlyArray<{
     readonly sample_id: string;
-    readonly sample_type: string;
     readonly submitter_id: string;
     readonly tissue_type: string;
     readonly tumor_descriptor: string;
@@ -244,7 +243,6 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
         samples: caseObj.samples?.map((sample) => {
           return {
             sample_id: sample.sample_id,
-            sample_type: sample.sample_type,
             submitter_id: sample.submitter_id,
             tissue_type: sample.tissue_type,
             tumor_descriptor: sample.tumor_descriptor,

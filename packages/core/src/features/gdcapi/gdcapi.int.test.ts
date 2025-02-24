@@ -1,4 +1,3 @@
-import { isArray, isObject } from "../../ts-utils";
 import {
   fetchGdcCases,
   fetchGdcCasesMapping,
@@ -27,50 +26,6 @@ describe("GDC API", () => {
       });
       expect(cases?.data?.hits?.length).toEqual(1);
       expect(cases?.data?.pagination?.count).toEqual(1);
-    });
-
-    test("can specify fields", async () => {
-      const cases = await fetchGdcCases({
-        fields: ["primary_site", "samples.sample_type"],
-      });
-      expect(cases?.data?.hits?.length).toEqual(10);
-      cases?.data?.hits?.forEach((gdcCase) => {
-        /**
-         * The following code is pretty nasty. It's trying to verify that
-         * the hit looks like:
-         * ```json
-         * {
-         *   "primary_site": "any_primary_site",
-         *   "samples": [
-         *     {
-         *       "sample_type": "any_sample_type"
-         *     }
-         *   ]
-         * }
-         * ```
-         *
-         * The issue is that the hit type is `unknown`. So, we need to
-         * use type guards to access each level of the object.
-         *
-         * We could get around this by generating an interface from each
-         * endpoint mapping.
-         */
-        if (isObject(gdcCase)) {
-          expect("primary_site" in gdcCase).toBeTruthy();
-          expect("samples" in gdcCase).toBeTruthy();
-          if (isArray(gdcCase["samples"])) {
-            if (isObject(gdcCase["samples"][0])) {
-              expect("sample_type" in gdcCase["samples"][0]).toBeTruthy();
-            } else {
-              fail(`first sample is not an object in ${gdcCase}`);
-            }
-          } else {
-            fail(`samples is not an array in ${gdcCase}`);
-          }
-        } else {
-          fail(`case is not an object ${gdcCase}`);
-        }
-      });
     });
 
     test("can specify filters", async () => {
@@ -108,7 +63,6 @@ describe("GDC API", () => {
         expect(gdcCase.project.program.dbgap_accession_number).toBeDefined();
         expect(gdcCase.samples[0].submitter_id).toBeDefined();
         expect(gdcCase.samples[0].sample_id).toBeDefined();
-        expect(gdcCase.samples[0].sample_type).toBeDefined();
         expect(gdcCase.samples[0].tissue_type).toBeDefined();
       });
     });

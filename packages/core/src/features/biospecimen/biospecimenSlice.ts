@@ -45,13 +45,10 @@ query Biospecimen(
                         submitter_id
                         sample_id
                         tissue_type
-                        tumor_code
                         tumor_code_id
-                        oct_embedded
                         shortest_dimension
                         intermediate_dimension
                         longest_dimension
-                        is_ffpe
                         pathology_report_uuid
                         tumor_descriptor
                         current_weight
@@ -81,7 +78,6 @@ query Biospecimen(
                                         submitter_id
                                         analyte_id
                                         analyte_type
-                                        analyte_type_id
                                         well_number
                                         amount
                                         a260_a280_ratio
@@ -98,7 +94,6 @@ query Biospecimen(
                                                 amount
                                                 concentration
                                                 analyte_type
-                                                analyte_type_id
                                               }
                                             }
                                           }
