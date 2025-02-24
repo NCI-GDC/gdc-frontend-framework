@@ -6,6 +6,9 @@ import {
   updateActiveCohortFilter,
   selectCurrentCohort,
   fieldNameToTitle,
+  clearCohortFilters,
+  useLazyGeneSymbolQuery,
+  selectAllSets,
 } from "@gff/core";
 
 export const useSelectCurrentCohort = () => {
@@ -15,12 +18,11 @@ export const useSelectCurrentCohort = () => {
 const useClearCohortFilters = () => {
   const coreDispatch = useCoreDispatch();
 
-  const clearCohortFilters = useCallback(
-    () => coreDispatch(clearCohortFilters()),
-    [coreDispatch],
-  );
+  const clearFilters = useCallback(() => {
+    coreDispatch(clearCohortFilters());
+  }, [coreDispatch]);
 
-  return clearCohortFilters;
+  return clearFilters;
 };
 
 const useRemoveCohortFilter = () => {
@@ -62,12 +64,54 @@ const useFieldNameToTitle = () => {
   return fieldToTitle;
 };
 
+const useFormatValue = () => {
+  const [getGeneSymbol] = useLazyGeneSymbolQuery();
+  const sets = useCoreSelector(selectAllSets);
+  //const [getGeneSetCount] = useLazyGeneSetCountQuery();
+
+  const formatValue = useCallback(
+    (value: string, field: string) => {
+      const setId = value.includes("set_id:") ? value.split(":")[1] : null;
+      const [docType] = field.split(".");
+
+      if (setId) {
+        const setName = sets?.[docType]?.[setId];
+        return Promise.resolve(setName);
+        /*
+      label =
+        setName !== undefined
+          ? setName
+          : isSuccess
+          ? `${data.toLocaleString()} input ${
+              field === "genes.gene_id" ? "gene" : fieldNameToTitle(field)
+            }s`.toLowerCase()
+          : "...";
+          */
+      } else {
+        if (field === "genes.gene_id") {
+          return new Promise((resolve) =>
+            getGeneSymbol(value)
+              .unwrap()
+              .then((data: string) => resolve(data)),
+          );
+        } else {
+          return Promise.resolve(value.toString());
+        }
+      }
+    },
+    [getGeneSymbol],
+  );
+
+  return formatValue;
+};
+
 const queryExpressionHooks = {
   useSelectCurrentCohort,
   useClearCohortFilters,
   useRemoveCohortFilter,
   useUpdateCohortFilter,
   useFieldNameToTitle,
+  useFormatValue,
 };
 
 export default queryExpressionHooks;

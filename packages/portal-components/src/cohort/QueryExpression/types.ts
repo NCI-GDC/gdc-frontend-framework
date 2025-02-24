@@ -12,6 +12,7 @@ export interface QueryExpressionHooks {
     operation: any;
   }) => void;
   useFieldNameToTitle: () => (field: string) => string;
+  useFormatValue: () => (value: string, field: string) => Promise<string>;
 }
 
 export type Operation =

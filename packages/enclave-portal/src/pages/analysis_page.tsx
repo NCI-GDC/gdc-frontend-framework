@@ -94,6 +94,7 @@ const AnalysisCenter: NextPage = () => {
           useRemoveCohortFilter: () => () => {},
           useUpdateCohortFilter: () => () => {},
           useFieldNameToTitle: () => (field) => field,
+          useFormatValue: () => (value) => Promise.resolve(value),
         }}
       />
       <AnalysisWorkspace
