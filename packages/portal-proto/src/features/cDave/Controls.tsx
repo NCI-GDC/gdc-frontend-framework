@@ -84,7 +84,7 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
         )}
         tabIndex={0}
         role="button"
-        className="text-md text-primary-contrast cursor-pointer bg-primary-darker font-heading font-semibold flex items-center p-2 sticky top-0 z-10"
+        className="text-sm xl:text-[1rem] text-primary-contrast cursor-pointer bg-primary-darker font-heading font-semibold flex items-center p-2 sticky top-0 z-10"
         aria-controls={`cdave-control-group-${name}`}
         aria-expanded={groupOpen}
       >
@@ -230,7 +230,7 @@ const Controls: React.FC<ControlPanelProps> = ({
     <div
       className={`${
         controlsExpanded
-          ? "min-w-[12rem] w-3/12 max-w-[23rem] flex-shrink-0 flex flex-col min-h-[560px] max-h-screen"
+          ? "min-w-[14rem] w-3/12 max-w-[23rem] flex-shrink-0 flex flex-col min-h-[560px] max-h-screen"
           : ""
       }`}
     >

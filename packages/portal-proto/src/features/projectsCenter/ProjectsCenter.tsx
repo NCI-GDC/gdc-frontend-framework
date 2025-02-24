@@ -38,7 +38,7 @@ export const ProjectsCenter = (): JSX.Element => {
             data-testid="table-projects"
           >
             <ProjectFacetPanel />
-            <div className="grow overflow-hidden">
+            <div className="grow overflow-hidden mt-8">
               <ProjectsTable />
             </div>
           </div>

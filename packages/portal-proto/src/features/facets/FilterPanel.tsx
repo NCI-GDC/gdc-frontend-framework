@@ -72,7 +72,7 @@ const FilterPanel = ({
   }, [xPosition]);
 
   return (
-    <div className="flex flex-col gap-y-4 min-w-[12rem] w-3/12 max-w-[23rem]">
+    <div className="flex flex-col gap-y-4 min-w-[14rem] w-3/12 max-w-[23rem]">
       <Text size="lg" className="text-primary-content-darker font-bold">
         Filters
       </Text>
