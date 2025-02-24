@@ -163,7 +163,7 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
         }}
         tickFormat={
           yAxisFormatAsInteger
-            ? (t) => (Number.isInteger(t) ? t : null)
+            ? (t) => (Number.isInteger(t) ? t.toLocaleString() : null)
             : undefined
         }
       />
