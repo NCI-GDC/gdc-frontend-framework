@@ -5,7 +5,7 @@ Owner		            : GDC QA
 Description		      : Validate All Tables and Sections in Case Summary Page
 Test-Case           : PEAR-2139, PEAR-464
 
-tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download
+tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download, regression
 
 ## Navigate to Case Summary Page: TCGA-13-0920
 * On GDC Data Portal V2 app

@@ -2,10 +2,10 @@
 Date Created    : 02/20/2025
 Version			    : 1.0
 Owner		        : GDC QA
-Description		  :
-Test-Case       :
+Description		  : Verify Filters Expected Access Level
+Test-Case       : PEAR-2347
 
-tags: gdc-data-portal-v2, repository, regression
+tags: gdc-data-portal-v2, repository, data-release
 
 ## Navigate to Repository Page
 * On GDC Data Portal V2 app
@@ -40,7 +40,7 @@ tags: gdc-data-portal-v2, repository, regression
   |Data Type            |Slide Image                        |open         |
   |Data Type            |Tissue Microarray Image            |open         |
 
-## Verify Raw Intensities
+## Raw Intensities
 * Perform the following actions on a filter card
   |filter_name      |action               |
   |-----------------|---------------------|
@@ -70,7 +70,7 @@ tags: gdc-data-portal-v2, repository, regression
   |Access               |controlled                                 |
 * Verify "Experimental Strategy_Genotyping Array_ALC_Validation Count" and "Access_controlled_ALC_Validation Count" are "Equal"
 
-## Verify No MATCH Data Types
+## Create No MATCH Cohort
 * Navigate to "Cohort" from "Header" "section"
 
 * Create and save a cohort named "No_MATCH" with these filters
@@ -98,6 +98,7 @@ tags: gdc-data-portal-v2, repository, regression
   |General                |Program              |VAREPOP                        |
   |General                |Program              |WCDT                           |
 
+## No MATCH Cohort - Biospecimen Supplement, Clinical Supplement, Gene Expression Quantification
 * Navigate to "Downloads" from "Header" "section"
 
 * Make the following selections on a filter card
@@ -135,7 +136,7 @@ tags: gdc-data-portal-v2, repository, regression
   |Access               |open                                 |
 * Verify "Data Type_Gene Expression Quantification_No_MATCH Count" and "Access_open_No_MATCH Count" are "Equal"
 
-## Masked Somatic Mutation with No MATCH
+## No MATCH Cohort - Masked Somatic Mutation (Tumor-Only)
 * Perform the following actions on a filter card
   |filter_name      |action               |
   |-----------------|---------------------|
@@ -151,3 +152,16 @@ tags: gdc-data-portal-v2, repository, regression
   |Workflow Type        |Tumor-Only Somatic Variant Merging and Masking|
   |Access               |controlled                           |
 * Verify "Workflow Type_Tumor-Only Somatic Variant Merging and Masking_No_MATCH Count" and "Access_controlled_No_MATCH Count" are "Equal"
+
+## Only MATCH Cohort
+* Navigate to "Cohort" from "Header" "section"
+* Create and save a cohort named "Only_MATCH" with these filters
+  |tab_name               |facet_name           |selection                      |
+  |-----------------------|---------------------|-------------------------------|
+  |General                |Program              |MATCH                          |
+* Collect case counts for the following filters on the Cohort Builder page for cohort "Only_MATCH"
+  |tab_name               |facet_name           |selection                      |
+  |-----------------------|---------------------|-------------------------------|
+  |Available Data         |Access               |controlled                     |
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "Access_controlled_Only_MATCH Count" are "Equal"
