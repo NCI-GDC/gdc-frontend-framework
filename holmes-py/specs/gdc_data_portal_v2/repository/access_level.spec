@@ -45,7 +45,7 @@ tags: gdc-data-portal-v2, repository, data-release, acl-validation
   |-----------------|---------------------|
   |Data Type        |clear selection      |
 
-* Make the following selections on a filter cardS
+* Make the following selections on a filter card
   |facet_name           |selection                            |
   |---------------------|-------------------------------------|
   |Data Type            |Raw Intensities                      |
