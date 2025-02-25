@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Verify Filters Expected Access Level
 Test-Case       : PEAR-2347
 
-tags: gdc-data-portal-v2, repository, data-release
+tags: gdc-data-portal-v2, repository, data-release, acl-validation
 
 ## Navigate to Repository Page
 * On GDC Data Portal V2 app
@@ -17,7 +17,6 @@ tags: gdc-data-portal-v2, repository, data-release
   |---------------------|-----------------------------------|-------------|
   |Data Type            |Aggregated Somatic Mutation        |controlled   |
   |Data Type            |Aligned Reads                      |controlled   |
-  |Data Type            |Annotated Somatic Mutation         |controlled   |
   |Data Type            |Annotated Somatic Mutation         |controlled   |
   |Data Type            |Raw CGI Variant                    |controlled   |
   |Data Type            |Raw Simple Somatic Mutation        |controlled   |
@@ -46,7 +45,7 @@ tags: gdc-data-portal-v2, repository, data-release
   |-----------------|---------------------|
   |Data Type        |clear selection      |
 
-* Make the following selections on a filter card
+* Make the following selections on a filter cardS
   |facet_name           |selection                            |
   |---------------------|-------------------------------------|
   |Data Type            |Raw Intensities                      |
