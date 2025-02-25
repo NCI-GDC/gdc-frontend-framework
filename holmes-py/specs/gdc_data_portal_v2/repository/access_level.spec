@@ -72,7 +72,6 @@ tags: gdc-data-portal-v2, repository, data-release
 
 ## Create No MATCH Cohort
 * Navigate to "Cohort" from "Header" "section"
-
 * Create and save a cohort named "No_MATCH" with these filters
   |tab_name               |facet_name           |selection                      |
   |-----------------------|---------------------|-------------------------------|
@@ -100,41 +99,12 @@ tags: gdc-data-portal-v2, repository, data-release
 
 ## No MATCH Cohort - Biospecimen Supplement, Clinical Supplement, Gene Expression Quantification
 * Navigate to "Downloads" from "Header" "section"
-
-* Make the following selections on a filter card
-  |facet_name           |selection                            |
-  |---------------------|-------------------------------------|
-  |Data Type            |Biospecimen Supplement               |
-* Collect case counts for the following filters for cohort "No_MATCH"
-  |facet_name           |selection                            |
-  |---------------------|-------------------------------------|
-  |Data Type            |Biospecimen Supplement               |
-  |Access               |open                                 |
-* Verify "Data Type_Biospecimen Supplement_No_MATCH Count" and "Access_open_No_MATCH Count" are "Equal"
-
-* Make the following selections on a filter card
-  |facet_name           |selection                            |
-  |---------------------|-------------------------------------|
-  |Data Type            |Biospecimen Supplement               |
-  |Data Type            |Clinical Supplement                  |
-* Collect case counts for the following filters for cohort "No_MATCH"
-  |facet_name           |selection                            |
-  |---------------------|-------------------------------------|
-  |Data Type            |Clinical Supplement                  |
-  |Access               |open                                 |
-* Verify "Data Type_Clinical Supplement_No_MATCH Count" and "Access_open_No_MATCH Count" are "Equal"
-
-* Make the following selections on a filter card
-  |facet_name           |selection                            |
-  |---------------------|-------------------------------------|
-  |Data Type            |Clinical Supplement                  |
-  |Data Type            |Gene Expression Quantification       |
-* Collect case counts for the following filters for cohort "No_MATCH"
-  |facet_name           |selection                            |
-  |---------------------|-------------------------------------|
-  |Data Type            |Gene Expression Quantification       |
-  |Access               |open                                 |
-* Verify "Data Type_Gene Expression Quantification_No_MATCH Count" and "Access_open_No_MATCH Count" are "Equal"
+* Verify filters have correct access level
+  |facet_name           |selection                          |access_level |
+  |---------------------|-----------------------------------|-------------|
+  |Data Type            |Biospecimen Supplement             |open         |
+  |Data Type            |Clinical Supplement                |open         |
+  |Data Type            |Gene Expression Quantification     |open         |
 
 ## No MATCH Cohort - Masked Somatic Mutation (Tumor-Only)
 * Perform the following actions on a filter card
