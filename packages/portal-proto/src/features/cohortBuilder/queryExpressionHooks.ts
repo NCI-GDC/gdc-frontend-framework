@@ -9,6 +9,9 @@ import {
   clearCohortFilters,
   useLazyGeneSymbolQuery,
   selectAllSets,
+  useLazyGeneSetCountQuery,
+  useLazySsmSetCountQuery,
+  useLazyCaseSetCountQuery,
 } from "@gff/core";
 
 export const useSelectCurrentCohort = () => {
@@ -67,26 +70,39 @@ const useFieldNameToTitle = () => {
 const useFormatValue = () => {
   const [getGeneSymbol] = useLazyGeneSymbolQuery();
   const sets = useCoreSelector(selectAllSets);
-  //const [getGeneSetCount] = useLazyGeneSetCountQuery();
+  const [getGeneSetCount] = useLazyGeneSetCountQuery();
+  const [getSsmSetCount] = useLazySsmSetCountQuery();
+  const [getCaseSetCount] = useLazyCaseSetCountQuery();
+
+  const docTypeToQuery = {
+    genes: getGeneSetCount,
+    ssms: getSsmSetCount,
+    cases: getCaseSetCount,
+  };
 
   const formatValue = useCallback(
     (value: string, field: string) => {
       const setId = value.includes("set_id:") ? value.split(":")[1] : null;
       const [docType] = field.split(".");
+      console.log({ docType, sets, docTypeToQuery });
 
       if (setId) {
         const setName = sets?.[docType]?.[setId];
-        return Promise.resolve(setName);
-        /*
-      label =
-        setName !== undefined
-          ? setName
-          : isSuccess
-          ? `${data.toLocaleString()} input ${
-              field === "genes.gene_id" ? "gene" : fieldNameToTitle(field)
-            }s`.toLowerCase()
-          : "...";
-          */
+        if (setName) {
+          return Promise.resolve(setName);
+        } else {
+          return new Promise((resolve) =>
+            docTypeToQuery[docType](setId)
+              .unwrap()
+              .then((data: number) =>
+                resolve(
+                  `${data.toLocaleString()} input ${
+                    field === "genes.gene_id" ? "gene" : fieldNameToTitle(field)
+                  }s`.toLowerCase(),
+                ),
+              ),
+          );
+        }
       } else {
         if (field === "genes.gene_id") {
           return new Promise((resolve) =>
