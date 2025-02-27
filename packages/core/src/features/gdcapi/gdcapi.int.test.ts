@@ -12,6 +12,7 @@ import {
   isStatsAggregation,
 } from "./gdcapi";
 
+// this file is making direct calls
 describe("GDC API", () => {
   describe("Fetch cases", () => {
     test("can retrieve defaults", async () => {
@@ -67,18 +68,18 @@ describe("GDC API", () => {
       });
     });
 
-    test.skip("can specify format", async () => {
-      // TODO the underlying fetch code will fail when it tries to return json.
-      // update the fetch to check the content type header to decide what to return.
-      const cases = await fetchGdcCases({
-        format: "TSV",
-      });
-      expect(cases).toBeDefined();
-    });
+    // test.skip("can specify format", async () => {
+    //   // TODO the underlying fetch code will fail when it tries to return json.
+    //   // update the fetch to check the content type header to decide what to return.
+    //   const cases = await fetchGdcCases({
+    //     format: "TSV",
+    //   });
+    //   expect(cases).toBeDefined();
+    // });
 
-    test.skip("can specify pretty", async () => {
-      fail("not implemented yet");
-    });
+    // test.skip("can specify pretty", async () => {
+    //   fail("not implemented yet");
+    // });
 
     test("can specify from", async () => {
       const cases = await fetchGdcCases({

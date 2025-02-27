@@ -1,10 +1,12 @@
 import { coreStore } from "../../store";
 import { fetchFacetByNameGQL } from "./facetSliceGQL";
 
+// this file is making direct calls
 describe("test enum facet bucket queries", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
+
   test("test single filter query", async () => {
     const spyFetch = jest
       .spyOn(global, "fetch")
@@ -20,7 +22,8 @@ describe("test enum facet bucket queries", () => {
         index: "explore",
       }),
     );
-    expect(spyFetch).toBeCalledWith(
+
+    expect(spyFetch).toHaveBeenCalledWith(
       "https://portal.gdc.cancer.gov/auth/api/v0/graphql",
       {
         body: '{"query":"query QueryBucketCounts($filters: FiltersArgument) {\\n      viewer {\\n          explore {\\n            cases {\\n              aggregations(\\n                \\n                filters:$filters,\\n                aggregations_filter_themselves: false\\n              ) {\\n                 cases__primary_site : primary_site{buckets { doc_count key }}\\n              }\\n            }\\n          }\\n        }\\n      }\\n  ","variables":{}}',
@@ -32,6 +35,7 @@ describe("test enum facet bucket queries", () => {
       },
     );
   });
+
   test("test multiple filter query", async () => {
     const spyFetch = jest
       .spyOn(global, "fetch")
@@ -47,7 +51,11 @@ describe("test enum facet bucket queries", () => {
         index: "explore",
       }),
     );
-    expect(spyFetch).toBeCalledWith(
+
+    // should we test buildGraphGLBucketsQuery and filtersGQL of fetchFacetByNameGQL thunk instead of this?
+    // what's the point of this?
+
+    expect(spyFetch).toHaveBeenCalledWith(
       "https://portal.gdc.cancer.gov/auth/api/v0/graphql",
       {
         body: '{"query":"query QueryBucketCounts($filters: FiltersArgument) {\\n      viewer {\\n          explore {\\n            cases {\\n              aggregations(\\n                \\n                filters:$filters,\\n                aggregations_filter_themselves: false\\n              ) {\\n                 cases__primary_site : primary_site{buckets { doc_count key }}, cases__disease_type : disease_type{buckets { doc_count key }}\\n              }\\n            }\\n          }\\n        }\\n      }\\n  ","variables":{}}',
