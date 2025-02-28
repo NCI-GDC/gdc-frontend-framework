@@ -1,6 +1,9 @@
 import { fetchGdcCases, fetchGdcEntities } from ".";
 
 global.fetch = jest.fn();
+jest.mock("src/constants", () => ({
+  GDC_APP_API_AUTH: "https://gdc.gov",
+}));
 
 jest.mock("queue", () => {
   return jest.fn().mockImplementation(() => {
@@ -210,7 +213,7 @@ describe("Batch processing tests", () => {
     expect(global.fetch).toHaveBeenCalledTimes(3);
 
     expect((global.fetch as jest.Mock).mock.calls[0][0]).toBe(
-      "https://portal.gdc.cancer.gov/auth/api/v0/cases",
+      "https://gdc.gov/cases",
     );
 
     const secondCallParams = JSON.parse(
