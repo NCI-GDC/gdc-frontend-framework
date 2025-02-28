@@ -1,4 +1,5 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
+import { useDeepCompareCallback } from "use-deep-compare";
 import {
   useCoreDispatch,
   useCoreSelector,
@@ -74,13 +75,16 @@ const useFormatValue = () => {
   const [getSsmSetCount] = useLazySsmSetCountQuery();
   const [getCaseSetCount] = useLazyCaseSetCountQuery();
 
-  const docTypeToQuery = {
-    genes: getGeneSetCount,
-    ssms: getSsmSetCount,
-    cases: getCaseSetCount,
-  };
+  const docTypeToQuery = useMemo(
+    () => ({
+      genes: getGeneSetCount,
+      ssms: getSsmSetCount,
+      cases: getCaseSetCount,
+    }),
+    [getCaseSetCount, getGeneSetCount, getSsmSetCount],
+  );
 
-  const formatValue = useCallback(
+  const formatValue = useDeepCompareCallback(
     (value: string, field: string) => {
       const setId = value.includes("set_id:") ? value.split(":")[1] : null;
       const [docType] = field.split(".");
@@ -114,7 +118,7 @@ const useFormatValue = () => {
         }
       }
     },
-    [getGeneSymbol],
+    [getGeneSymbol, docTypeToQuery, sets],
   );
 
   return formatValue;

@@ -20,6 +20,8 @@ const QueryRepresentationLabel: React.FC<QueryRepresentationLabelProps> = ({
     formatValue(value, field).then((v: string) => {
       setFormattedValue(v);
     });
+    // Run only on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return <>{formattedValue}</>;

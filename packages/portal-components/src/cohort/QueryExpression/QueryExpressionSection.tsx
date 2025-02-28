@@ -132,7 +132,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
     ) {
       setExpandedState({ type: "init", cohortId: currentCohort.id });
     }
-  }, [currentCohort?.id, expandedState]);
+  }, [currentCohort, expandedState]);
 
   return (
     <MantineProvider theme={theme}>

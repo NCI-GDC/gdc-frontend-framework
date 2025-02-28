@@ -41,7 +41,7 @@ describe("<QueryExpressionSection />", () => {
   });
 
   it("Cohort with filters shows cohort name and controls", async () => {
-    const { getByText, getByRole, debug } = render(
+    const { getByText, getByRole } = render(
       <QueryExpressionSection
         filters={{
           mode: "and",
