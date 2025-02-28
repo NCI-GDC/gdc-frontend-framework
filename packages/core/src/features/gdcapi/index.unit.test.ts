@@ -38,7 +38,7 @@ describe("Request Building Logic", () => {
       ],
     });
 
-    const [_, options] = (global.fetch as jest.Mock).mock.calls[0];
+    const [, options] = (global.fetch as jest.Mock).mock.calls[0];
     const requestBody = JSON.parse(options.body);
 
     expect(requestBody.sort).toBe("primary_site:asc,case_id:desc");
@@ -49,7 +49,7 @@ describe("Request Building Logic", () => {
       fields: ["case_id", "primary_site", "disease_type"],
     });
 
-    const [_, options] = (global.fetch as jest.Mock).mock.calls[0];
+    const [, options] = (global.fetch as jest.Mock).mock.calls[0];
     const requestBody = JSON.parse(options.body);
 
     expect(requestBody.fields).toBe("case_id,primary_site,disease_type");
@@ -60,7 +60,7 @@ describe("Request Building Logic", () => {
       expand: ["samples", "project.program"],
     });
 
-    const [_, options] = (global.fetch as jest.Mock).mock.calls[0];
+    const [, options] = (global.fetch as jest.Mock).mock.calls[0];
     const requestBody = JSON.parse(options.body);
 
     expect(requestBody.expand).toBe("samples,project.program");
@@ -71,7 +71,7 @@ describe("Request Building Logic", () => {
       facets: ["primary_site", "disease_type"],
     });
 
-    const [_, options] = (global.fetch as jest.Mock).mock.calls[0];
+    const [, options] = (global.fetch as jest.Mock).mock.calls[0];
     const requestBody = JSON.parse(options.body);
 
     expect(requestBody.facets).toBe("primary_site,disease_type");
@@ -83,7 +83,7 @@ describe("Request Building Logic", () => {
       size: 50,
     });
 
-    const [_, options] = (global.fetch as jest.Mock).mock.calls[0];
+    const [, options] = (global.fetch as jest.Mock).mock.calls[0];
     const requestBody = JSON.parse(options.body);
 
     expect(requestBody.from).toBe(20);
@@ -95,7 +95,7 @@ describe("Request Building Logic", () => {
       from: 20,
     });
 
-    const [_, options] = (global.fetch as jest.Mock).mock.calls[0];
+    const [, options] = (global.fetch as jest.Mock).mock.calls[0];
     const requestBody = JSON.parse(options.body);
 
     expect(requestBody.from).toBe(20);
