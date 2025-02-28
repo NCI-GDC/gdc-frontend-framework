@@ -283,8 +283,6 @@ describe("continuous range slice tests", () => {
       }),
     );
 
-    // should we test buildContinuousAggregationRangeOnlyQuery instead?
-    // should we test graphql api call separately? unit testing?
     expect(spyFetch).toHaveBeenCalledWith(
       "https://portal.gdc.cancer.gov/auth/api/v0/graphql",
       {

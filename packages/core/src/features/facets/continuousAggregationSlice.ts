@@ -5,7 +5,6 @@ import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { selectCurrentCohortGqlFilters } from "../cohort";
 import { convertFacetNameToGQL } from "./facetApiGQL";
 import { FacetBuckets, GQLIndexType, GQLDocType } from "./types";
-
 import { RangeBuckets, processRangeResults } from "./continuousAggregationApi";
 import { GqlOperation, NumericFromTo } from "../gdcapi/filters";
 

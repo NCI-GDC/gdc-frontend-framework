@@ -17,9 +17,9 @@ const errorIsGraphQLError = (
   return (e as GraphQLFetchError)?.variables !== undefined;
 };
 
-type UnknownJson = Record<string, any>;
+type AnyJson = Record<string, any>;
 
-export interface GraphQLApiResponse<H = UnknownJson> {
+export interface GraphQLApiResponse<H = AnyJson> {
   readonly data: H;
   readonly errors: Record<string, string>;
 }

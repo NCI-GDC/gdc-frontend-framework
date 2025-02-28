@@ -1,7 +1,6 @@
 import { coreStore } from "../../store";
 import { fetchFacetByNameGQL } from "./facetSliceGQL";
 
-// this file is making direct calls
 describe("test enum facet bucket queries", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -51,9 +50,6 @@ describe("test enum facet bucket queries", () => {
         index: "explore",
       }),
     );
-
-    // should we test buildGraphGLBucketsQuery and filtersGQL of fetchFacetByNameGQL thunk instead of this?
-    // what's the point of this?
 
     expect(spyFetch).toHaveBeenCalledWith(
       "https://portal.gdc.cancer.gov/auth/api/v0/graphql",

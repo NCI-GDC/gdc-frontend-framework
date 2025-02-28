@@ -8,11 +8,8 @@ import {
   createUseCoreDataHook,
   DataStatus,
 } from "../../dataAccess";
-import {
-  GdcApiResponse,
-  isBucketsAggregation,
-  isStatsAggregation,
-} from "../gdcapi/gdcapi";
+import { isBucketsAggregation, isStatsAggregation } from "../gdcapi/utils";
+import { GdcApiResponse } from "../gdcapi/types";
 import { selectFacetDefinition } from "./facetDictionarySlice";
 import { GDC_APP_API_AUTH } from "../../constants";
 export type FacetDefinitionType = "cases" | "files";

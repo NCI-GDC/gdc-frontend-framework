@@ -1,12 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
-import {
-  fetchGdcCases,
-  fetchGdcFiles,
-  GdcApiResponse,
-  isBucketsAggregation,
-} from "../gdcapi/gdcapi";
+import { fetchGdcCases, fetchGdcFiles } from "../gdcapi";
+import { GdcApiResponse } from "../gdcapi/types";
+import { isBucketsAggregation } from "../gdcapi/utils";
 import { FacetDefinitionType } from "./usefulFacetsSlice";
 import { GqlOperation } from "../gdcapi/filters";
 import {

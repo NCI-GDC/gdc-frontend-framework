@@ -18,7 +18,7 @@ import { SetTypes } from "../sets";
 import { defaultCohortNameGenerator } from "./utils";
 import { CountsData, CountsDataAndStatus, NullCountsData } from "./type";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
-import { UnknownJson } from "../gdcapi/gdcapi";
+import { UnknownJson } from "../gdcapi/types";
 
 export const UNSAVED_COHORT_NAME = "Unsaved_Cohort";
 

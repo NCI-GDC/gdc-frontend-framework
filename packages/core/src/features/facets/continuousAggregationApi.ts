@@ -2,10 +2,10 @@
  * Types and functions to support continuous Aggregations for numeric range data
  */
 
-import { Buckets, Stats } from "../gdcapi/gdcapi";
 import { normalizeGQLFacetName, ProcessBucketsFunction } from "./facetApiGQL";
-import { isObject } from "../../ts-utils";
 import { ERROR_UNHANDLED_AGGREGATION } from "../../constants";
+import { Buckets, Stats } from "../gdcapi/types";
+import { isObject } from "src/ts-utils";
 
 export interface RangeBuckets extends Stats {
   readonly range: Buckets;
