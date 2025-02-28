@@ -62,12 +62,6 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
     return includeFilters.find((f) => f.field === field)?.operands || [];
   }, [filters, field]);
 
-  /*
-  const { data: geneSymbolDict, isSuccess } = useGeneSymbol(
-    field === "genes.gene_id" ? items.map((x) => x.toString()) : [],
-  );
-  */
-
   const renderBadges = (items: string[], itemField: string) => {
     return items.map((item, index) => (
       <CohortBadge

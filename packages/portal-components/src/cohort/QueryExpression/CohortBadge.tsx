@@ -1,9 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { ActionIcon, Badge } from "@mantine/core";
 import OverflowTooltippedLabel from "@/common/OverflowTooltippedLabel";
 import { CloseIcon } from "src/commonIcons";
 import { QueryExpressionsExpandedContext } from "./QueryExpressionSection";
 import { QueryExpressionHooks } from "./types";
+import QueryRepresentationLabel from "./QueryRepresentationLabel";
 
 const RemoveButton = ({ label }: { label: string }) => (
   <ActionIcon
@@ -36,11 +37,9 @@ const CohortBadge: React.FC<CohortBadgeProps> = ({
   const [, setQueryExpressionsExpanded] = useContext(
     QueryExpressionsExpandedContext,
   );
-  const [formattedValue, setFormattedValue] = useState("...");
   const currentCohort = hooks.useSelectCurrentCohort();
   const updateActiveCohortFilter = hooks.useUpdateCohortFilter();
   const removeCohortFilter = hooks.useRemoveCohortFilter();
-  const formatValue = hooks.useFormatValue();
 
   const handleOnClick = () => {
     const newOperands = operands.filter((o) => o !== value);
@@ -63,19 +62,7 @@ const CohortBadge: React.FC<CohortBadgeProps> = ({
         },
       });
     }
-
-    /*
-    if (value.includes("set_id:")) {
-      dispatch(removeCohortSet(value.split("set_id:")[1]));
-    }
-      */
   };
-
-  useEffect(() => {
-    formatValue(value, field).then((v: string) => {
-      setFormattedValue(v);
-    });
-  }, []);
 
   return (
     <Badge
@@ -91,7 +78,7 @@ const CohortBadge: React.FC<CohortBadgeProps> = ({
         label={value}
         className="flex-grow text-md font-content-noto"
       >
-        {formattedValue}
+        <QueryRepresentationLabel field={field} value={value} hooks={hooks} />
       </OverflowTooltippedLabel>
     </Badge>
   );

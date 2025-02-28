@@ -69,7 +69,7 @@ const useFieldNameToTitle = () => {
 
 const useFormatValue = () => {
   const [getGeneSymbol] = useLazyGeneSymbolQuery();
-  const sets = useCoreSelector(selectAllSets);
+  const sets = useCoreSelector((state) => selectAllSets(state));
   const [getGeneSetCount] = useLazyGeneSetCountQuery();
   const [getSsmSetCount] = useLazySsmSetCountQuery();
   const [getCaseSetCount] = useLazyCaseSetCountQuery();
@@ -84,28 +84,27 @@ const useFormatValue = () => {
     (value: string, field: string) => {
       const setId = value.includes("set_id:") ? value.split(":")[1] : null;
       const [docType] = field.split(".");
-      console.log({ docType, sets, docTypeToQuery });
 
       if (setId) {
-        const setName = sets?.[docType]?.[setId];
+        const setName: string = sets?.[docType]?.[setId];
         if (setName) {
           return Promise.resolve(setName);
         } else {
-          return new Promise((resolve) =>
-            docTypeToQuery[docType](setId)
+          return new Promise<string>((resolve) =>
+            docTypeToQuery[docType]({ setId })
               .unwrap()
-              .then((data: number) =>
+              .then((data: number) => {
                 resolve(
                   `${data.toLocaleString()} input ${
                     field === "genes.gene_id" ? "gene" : fieldNameToTitle(field)
                   }s`.toLowerCase(),
-                ),
-              ),
+                );
+              }),
           );
         }
       } else {
         if (field === "genes.gene_id") {
-          return new Promise((resolve) =>
+          return new Promise<string>((resolve) =>
             getGeneSymbol(value)
               .unwrap()
               .then((data: string) => resolve(data)),

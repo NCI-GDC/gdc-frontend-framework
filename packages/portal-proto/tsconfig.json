@@ -34,7 +34,8 @@
     "**/*.ts",
     "**/*.tsx",
     "src/components/ItemTypes.js",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "../portal-components/src/cohort/QueryExpression/QueryExpressionSection.unit.test.tsx"
   ],
   "exclude": ["node_modules"]
 }

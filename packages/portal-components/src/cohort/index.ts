@@ -2,6 +2,7 @@ import CohortManager from "./CohortManager";
 import CohortNotificationProvider from "./CohortNotificationProvider";
 import QueryExpressionSection from "./QueryExpression/QueryExpressionSection";
 import CohortBadge from "./QueryExpression/CohortBadge";
+import QueryRepresentationLabel from "./QueryExpression/QueryRepresentationLabel";
 import type { Cohort } from "./types";
 
 export {
@@ -9,5 +10,6 @@ export {
   CohortNotificationProvider,
   QueryExpressionSection,
   CohortBadge,
+  QueryRepresentationLabel,
   Cohort,
 };
