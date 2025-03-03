@@ -21,6 +21,10 @@ interface PpProps {
   basepath?: string;
 }
 
+const DEMO_sample = "2409";
+const DEMO_experimentID = "9f155433-3c2e-4b67-a452-eb32f06c93f7";
+const DEMO_projectID = "BEATAML1.0-COHORT";
+
 export const ScRNAseqWrapper: FC<PpProps> = (props: PpProps) => {
   const isDemoMode = useIsDemoApp();
   // to track reusable instance for mds3 skewer track
@@ -80,7 +84,11 @@ export const ScRNAseqWrapper: FC<PpProps> = (props: PpProps) => {
   const divRef = useRef();
   return (
     <div>
-      {isDemoMode && <DemoText>Demo showing a preselected sample.</DemoText>}
+      {isDemoMode && (
+        <DemoText>
+          Demo showing data for Case {DEMO_sample}, Project {DEMO_projectID} .
+        </DemoText>
+      )}
       <div
         ref={divRef}
         className="sjpp-wrapper-root-div"
@@ -150,8 +158,8 @@ function getScRNAseqArg(
           plots: [
             {
               chartType: "singleCellPlot",
-              sample: "2409",
-              experimentID: "9f155433-3c2e-4b67-a452-eb32f06c93f7",
+              sample: DEMO_sample,
+              experimentID: DEMO_experimentID,
               activeTab: 2,
             },
           ],
