@@ -10,6 +10,7 @@ import {
   useFetchUserDetailsQuery,
   buildCohortGqlOperator,
 } from "@gff/core";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 
 import { RxComponentCallbacks } from "./sjpp-types";
 
@@ -20,6 +21,7 @@ interface PpProps {
 }
 
 export const ScRNAseqWrapper: FC<PpProps> = (props: PpProps) => {
+  const isDemoMode = useIsDemoApp();
   // to track reusable instance for mds3 skewer track
   const ppRef = useRef<PpApi>();
   const prevArg = useRef<any>({});
@@ -44,12 +46,14 @@ export const ScRNAseqWrapper: FC<PpProps> = (props: PpProps) => {
       const rootElem = divRef.current as HTMLElement;
       const arg = getScRNAseqArg(
         props,
-        filter0,
+        isDemoMode ? null : filter0,
         rootElem,
         scRNAseqCallbacks,
         appCallbacks,
+        isDemoMode,
       );
       if (!arg) return;
+
       // compare the argument to runpp to avoid unnecessary render
       if ((arg || prevArg.current) && isEqual(prevArg.current, arg)) return;
       prevArg.current = arg;
@@ -98,6 +102,13 @@ interface ScRNAseqArg {
   noheader: true;
   nobox: true;
   hide_dsHandles: true;
+  state?: {
+    plots?: {
+      sample?: string;
+      experimentID?: string;
+      activeTab?: number;
+    }[];
+  };
   opts: ScRNAseqArgOpts;
 }
 interface ScRNAseqArgOpts {
@@ -119,6 +130,7 @@ function getScRNAseqArg(
   holder: Element,
   scRNAseqCallbacks?: RxComponentCallbacks,
   appCallbacks?: RxComponentCallbacks,
+  isDemoMode?: boolean,
 ) {
   const arg: ScRNAseqArg = {
     // host in gdc is just a relative url path,
@@ -130,6 +142,18 @@ function getScRNAseqArg(
     noheader: true,
     nobox: true,
     hide_dsHandles: true,
+    state: !isDemoMode
+      ? undefined
+      : {
+          plots: [
+            {
+              chartType: "singleCellPlot",
+              sample: "2409",
+              experimentID: "9f155433-3c2e-4b67-a452-eb32f06c93f7",
+              activeTab: 2,
+            },
+          ],
+        },
     opts: {
       app: {
         callbacks: appCallbacks,
@@ -139,5 +163,6 @@ function getScRNAseqArg(
       },
     },
   };
+
   return arg;
 }
