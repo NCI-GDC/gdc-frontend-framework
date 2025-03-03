@@ -93,7 +93,13 @@ const AnalysisCenter: NextPage = () => {
           useClearCohortFilters: () => () => {},
           useRemoveCohortFilter: () => () => {},
           useUpdateCohortFilter: () => () => {},
-          useFieldNameToTitle: () => (field) => field,
+          useFieldNameToTitle: () => (field) =>
+            field
+              .split(".")
+              .slice(-1)
+              .map((s) => s.split("_"))
+              .flat()
+              .join(" "),
           useFormatValue: () => (value) => Promise.resolve(value),
         }}
       />
