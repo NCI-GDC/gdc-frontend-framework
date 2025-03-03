@@ -11,6 +11,7 @@ import {
   buildCohortGqlOperator,
 } from "@gff/core";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
+import { DemoText } from "@/components/tailwindComponents";
 
 import { RxComponentCallbacks } from "./sjpp-types";
 
@@ -79,6 +80,7 @@ export const ScRNAseqWrapper: FC<PpProps> = (props: PpProps) => {
   const divRef = useRef();
   return (
     <div>
+      {isDemoMode && <DemoText>Demo showing a preselected sample.</DemoText>}
       <div
         ref={divRef}
         className="sjpp-wrapper-root-div"
