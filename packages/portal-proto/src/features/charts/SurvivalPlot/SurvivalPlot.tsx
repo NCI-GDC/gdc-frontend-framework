@@ -33,6 +33,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
   names = [],
   plotType = SurvivalPlotTypes.mutation,
   title = "Overall Survival Plot",
+  showTitleOnlyOnDownload = false,
   hideLegend = false,
   height = 380,
   field,
@@ -212,7 +213,9 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-center flex-wrap">
-        <div className="font-heading text-[1rem] font-medium">{title}</div>
+        {!showTitleOnlyOnDownload && (
+          <div className="font-heading text-[1rem] font-medium">{title}</div>
+        )}
         <div className="flex items-center ml-auto gap-1">
           <Menu
             position="bottom-start"
@@ -335,9 +338,11 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
         <div className="survival-plot" ref={container} />
       </div>
       <OffscreenWrapper>
-        <div className="w-[700px] h-[500px] m-2" ref={downloadRef}>
-          <div className="font-heading text-[1rem] font-medium">{title}</div>
-          <div className="flex flex-col">
+        <div className="w-[700px] m-2" ref={downloadRef}>
+          <div className="flex flex-col items-center">
+            <div className="font-heading text-[1rem] font-medium">{title}</div>
+          </div>
+          <div className="flex flex-col font-content-noto">
             {!hideLegend &&
               legend?.map((x, idx) => {
                 return (
