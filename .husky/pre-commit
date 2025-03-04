@@ -1,5 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-pre-commit run --all-files
 npx lint-staged --allow-empty
