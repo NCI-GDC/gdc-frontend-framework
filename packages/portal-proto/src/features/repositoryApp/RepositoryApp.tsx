@@ -53,7 +53,6 @@ const useCohortCentricFiles = () => {
     selectCurrentCohortFilters(state),
   );
 
-  const allFilters = joinFilters(cohortFilters, repositoryFilters);
   const { data: fileData, isFetching: fileDataFetching } = useGetFilesQuery({
     case_filters: buildCohortGqlOperator(cohortFilters),
     filters: buildCohortGqlOperator(repositoryFilters),
@@ -65,7 +64,10 @@ const useCohortCentricFiles = () => {
     size: 20,
   });
 
-  const { data: imagesCount } = useImageCounts(allFilters);
+  const { data: imagesCount } = useImageCounts({
+    cohortFilters,
+    repositoryFilters,
+  });
 
   return {
     caseFilters: cohortFilters,
@@ -139,9 +141,7 @@ export const RepositoryApp = (): JSX.Element => {
   const [sampleSheetDownloadActive, setSampleSheetDownloadActive] =
     useState(false);
   const [tableXPosition, setTableXPosition] = useState<number>(undefined);
-
-  const viewImageDisabled =
-    imagesCount.slidesCount <= 0 && imagesCount.casesWithImagesCount <= 0;
+  const viewImageDisabled = imagesCount.slidesCount <= 0;
   return (
     <>
       <PersistGate persistor={persistor}>

@@ -6,7 +6,7 @@ import {
   AppDataSelectorResponse,
   FilterSet,
   buildCohortGqlOperator,
-  joinFilters,
+  Bucket,
 } from "@gff/core";
 import { AppState } from "./appApi";
 import { createUseAppDataHook } from "@/features/repositoryApp/hooks";
@@ -18,20 +18,15 @@ import { createUseAppDataHook } from "@/features/repositoryApp/hooks";
  */
 
 const repositoryCaseSlidesQuery = `query repositoryCaseSlides(
-  $filters: FiltersArgument
+  $caseFilters: FiltersArgument
   $fileFilters: FiltersArgument
 ) {
   viewer {
     repository {
-      cases {
-        hits(case_filters: $filters) {
-          total
-        }
-      }
       files {
         aggregations(
-          case_filters: $fileFilters
-          aggregations_filter_themselves: false
+          case_filters: $caseFilters
+          filters: $fileFilters
         ) {
           files__data_type: data_type {
             buckets {
@@ -47,32 +42,22 @@ const repositoryCaseSlidesQuery = `query repositoryCaseSlides(
 
 export const fetchImageCounts = createAsyncThunk(
   "repositoryApp/getImageCounts",
-  async (
-    filters: FilterSet,
-  ): Promise<GraphQLApiResponse<Record<string, any>>> => {
-    const fileFilters = buildCohortGqlOperator(filters);
-    const caseFilters = buildCohortGqlOperator(
-      joinFilters(filters, {
-        mode: "and",
-        root: {
-          "summary.experimental_strategies.experimental_strategy": {
-            operator: "includes",
-            field: "summary.experimental_strategies.experimental_strategy",
-            operands: ["Tissue Slide", "Diagnostic Slide"],
-          },
-        },
-      }),
-    );
+  async ({
+    cohortFilters,
+    repositoryFilters,
+  }: {
+    cohortFilters: FilterSet;
+    repositoryFilters: FilterSet;
+  }): Promise<GraphQLApiResponse<Record<string, any>>> => {
     const variables = {
-      filters: caseFilters,
-      fileFilters: fileFilters,
+      caseFilters: buildCohortGqlOperator(cohortFilters),
+      fileFilters: buildCohortGqlOperator(repositoryFilters),
     };
     return await graphqlAPI(repositoryCaseSlidesQuery, variables);
   },
 );
 
 export interface ImageCount {
-  readonly casesWithImagesCount: number;
   readonly slidesCount: number;
 }
 
@@ -83,7 +68,6 @@ export interface ImageCountState extends ImageCount {
 }
 
 const initialState: ImageCountState = {
-  casesWithImagesCount: -1,
   slidesCount: -1,
   status: "uninitialized",
 };
@@ -98,24 +82,21 @@ const slice = createSlice({
         if (state.requestId != action.meta.requestId) return state;
 
         const dataRoot = action.payload.data?.viewer?.repository;
-        state.casesWithImagesCount = dataRoot?.cases?.hits?.total;
         const imageBucket =
           dataRoot?.files?.aggregations.files__data_type.buckets.find(
-            (x) => x.bucket === "Slide Image",
+            (x: Bucket) => x.key === "Slide Image",
           );
         state.slidesCount = imageBucket ? imageBucket.doc_count : -1;
         state.status = "fulfilled";
         return state;
       })
       .addCase(fetchImageCounts.pending, (state, action) => {
-        state.casesWithImagesCount = -1;
         state.status = "pending";
         state.requestId = action.meta.requestId;
         return state;
       })
       .addCase(fetchImageCounts.rejected, (state, action) => {
         if (state.requestId != action.meta.requestId) return state;
-        state.casesWithImagesCount = -1;
         state.status = "rejected";
         return state;
       });
@@ -128,7 +109,6 @@ export const selectCasesWithImagesCount = (
   state: AppState,
 ): AppDataSelectorResponse<ImageCount> => ({
   data: {
-    casesWithImagesCount: state.images.casesWithImagesCount,
     slidesCount: state.images.slidesCount,
   },
   status: state.images.status,
