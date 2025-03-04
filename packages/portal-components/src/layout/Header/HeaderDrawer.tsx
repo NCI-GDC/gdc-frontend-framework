@@ -6,14 +6,15 @@ import {
   DownArrowCollapseIcon,
   LeftArrowIcon,
 } from "src/commonIcons";
-import HeaderLink, { HeaderLinkProps } from "./HeaderLink";
+import HeaderLink from "./HeaderLink";
+import { HeaderItem, HeaderLinkItem } from "./types";
+import { createHeaderItem, isHeaderButtonItem } from "./HeaderItem";
 
 interface HeaderDrawerProps {
-  readonly headerLinks: ReadonlyArray<HeaderLinkProps>;
+  readonly headerLinks: ReadonlyArray<HeaderItem>;
   readonly drawerOpened: boolean;
   readonly closeDrawer: () => void;
-  readonly externalAppLinks: ReadonlyArray<HeaderLinkProps>;
-  readonly cartSize: number;
+  readonly externalAppLinks: ReadonlyArray<HeaderLinkItem>;
 }
 
 const HeaderDrawer: React.FC<HeaderDrawerProps> = ({
@@ -56,11 +57,31 @@ const HeaderDrawer: React.FC<HeaderDrawerProps> = ({
         Navigation
       </div>
       <ul>
-        {headerLinks.map((linkProps) => (
-          <li key={linkProps.customDataTestID}>
-            <HeaderLink {...linkProps} variant="drawer" />
-          </li>
-        ))}
+        {headerLinks.map((item) => {
+          if (isHeaderButtonItem(item)) {
+            const handleClick = () => {
+              if (item.onClick) {
+                item.onClick();
+              }
+              closeDrawer();
+            };
+            return (
+              <li key={item.customDataTestID}>
+                {createHeaderItem({
+                  ...item,
+                  onClick: handleClick,
+                  variant: "drawer",
+                })}
+              </li>
+            );
+          }
+
+          return (
+            <li key={item.customDataTestID}>
+              {createHeaderItem({ ...item, variant: "drawer" })}
+            </li>
+          );
+        })}
 
         <li>
           <UnstyledButton

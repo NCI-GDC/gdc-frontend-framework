@@ -180,6 +180,18 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
     |Second line of therapy               |
     |Dexamethasone                        |
     |Stem Cell Transplantation, Autologous|
+    |cases.case_id                        |
+    |cases.consent_type                   |
+    |cases.days_to_consent                |
+    |cases.days_to_lost_to_followup       |
+    |cases.disease_type                   |
+    |cases.index_date                     |
+    |cases.lost_to_followup               |
+    |cases.primary_site                   |
+    |0afc2090-c198-4ca6-b0c4-cb93b10b01f6 |
+    |Plasma Cell Tumors                   |
+    |First Treatment                      |
+    |Hematopoietic and reticuloendothelial systems|
 * Verify that "TSV from Cohort Summary View Clinical" does not contain specified information
     |required_info                          |
     |---------------------------------------|
@@ -240,6 +252,13 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
     |95f61328-b1c3-4fe1-919f-971adf3823b0 |
     |not hispanic or latino               |
     |MMRF_2246_demographic1               |
+    |0afc2090-c198-4ca6-b0c4-cb93b10b01f6 |
+    |Plasma Cell Tumors                   |
+    |First Treatment                      |
+    |Hematopoietic and reticuloendothelial systems|
+    |Plasma Cell Tumors                   |
+    |First Treatment                      |
+
 * Verify that "JSON from Cohort Summary View Clinical" does not contain specified information
     |required_info                        |
     |-------------------------------------|
@@ -250,6 +269,9 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
 ## Clinical - Validate JSON Fields
   |field_name                                       |
   |-------------------------------------------------|
+  |disease_type                                     |
+  |index_date                                       |
+  |primary_site                                     |
   |case_id	                                        |
   |follow_ups.follow_up_id                          |
   |follow_ups.created_datetime	                    |

@@ -146,6 +146,16 @@ tags: gdc-data-portal-v2, regression, project-summary, clinical-biospecimen-down
     |Invasive mucinous adenocarcinoma       |
     |8230/3                                 |
     |Neoadjuvant                            |
+    |cases.case_id                          |
+    |cases.consent_type                     |
+    |cases.days_to_consent                  |
+    |cases.days_to_lost_to_followup         |
+    |cases.disease_type                     |
+    |cases.index_date                       |
+    |cases.lost_to_followup                 |
+    |cases.primary_site                     |
+    |cases.submitter_id                     |
+
 * Verify that "TSV from Project Summary Clinical" does not contain specified information
     |required_info                          |
     |---------------------------------------|
@@ -217,6 +227,8 @@ tags: gdc-data-portal-v2, regression, project-summary, clinical-biospecimen-down
     |field_name                             |
     |---------------------------------------|
     |exposures.tobacco_smoking_status	    |
+    |disease_type                           |
+    |primary_site                           |
     |case_id	                            |
     |project.project_id                     |
     |submitter_id	                        |

@@ -226,9 +226,9 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
       />
     ),
     tags: ["variantAnalysis", "cnv", "ssm"],
-    //hasDemo: true,
+    hasDemo: true,
     description:
-      "Visual single-cell RNA-Seq data with cluster plots and gene expression overlays.",
+      "Visualize single-cell RNA-Seq data with cluster plots and gene expression overlays.",
     id: "scRNAseq",
     countsField: "scRNAseqCaseCount",
     optimizeRules: ["available data = ssm or cnv"],
@@ -267,21 +267,6 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
     noDataTooltip:
       "Current cohort does not have MAF data available for download.",
   },
-  /*
-  {
-    name: "scRNA-Seq",
-    icon: "scRnaSeqViz.png",
-    tags: ["geneExpression"],
-    hasDemo: true,
-    description:
-      "Visualize patterns in single-cell gene expression in your cohort.",
-    id: "SingleCellRnaSeq",
-    caseCounts: 0.1,
-    optimizeRules: ["experimental_strategy === scrna-seq"],
-    noDataTooltip:
-      "Current cohort does not have scRNA-Seq data available for visualization.",
-  },
-  */
 ];
 
 export const APPTAGS = [

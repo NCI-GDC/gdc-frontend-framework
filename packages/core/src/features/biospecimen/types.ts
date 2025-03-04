@@ -1,7 +1,6 @@
 export interface SampleNode {
   sample_id: string | null;
   submitter_id: string | null;
-  sample_type_id: string | null;
   tissue_type: string | null;
   tumor_code_id: string | null;
   shortest_dimension: string | null;
@@ -11,7 +10,6 @@ export interface SampleNode {
   tumor_descriptor: string | null;
   current_weight: string | null;
   initial_weight: string | null;
-  composition: string | null;
   time_between_clamping_and_freezing: string | null;
   time_between_excision_and_freezing: string | null;
   days_to_sample_procurement: number | null;

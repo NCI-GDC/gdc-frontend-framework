@@ -13,10 +13,12 @@ import {
   SelectCohortsModal,
   WithOrWithoutCohortType,
 } from "./SelectCohortsModal";
-import SaveCohortModal from "@/components/Modals/SaveCohortModal";
+import { SaveCohortModal } from "@gff/portal-components";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { CountsIcon } from "@/components/tailwindComponents";
 import { Tooltip } from "@mantine/core";
+import { cohortActionsHooks } from "@/features/cohortBuilder/CohortManager/cohortActionHooks";
+import { INVALID_COHORT_NAMES } from "@/features/cohortBuilder/utils";
 
 interface CasesCohortButtonProps {
   readonly onCreateSet: () => void;
@@ -127,6 +129,8 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
             },
           },
         }}
+        hooks={cohortActionsHooks}
+        invalidCohortNames={INVALID_COHORT_NAMES}
       />
     </>
   );

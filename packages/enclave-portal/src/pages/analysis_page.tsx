@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import SequenceReadsIcon from "public/apps/icons/SequenceReads.svg";
 import ProjectsIcon from "public/layout/icons/crowd-of-users.svg";
 import PageLayout from "@/components/PageLayout";
+import CohortManager from "@/features/cohort/CohortManager";
 
 const ActiveAnalysisToolNoSSR = dynamic(
   () => import("@/features/analysis/ActiveAnalysisTool"),
@@ -72,6 +73,7 @@ const AnalysisCenter: NextPage = () => {
           key="analysis-center"
         />
       </Head>
+      <CohortManager />
       <AnalysisWorkspace
         registeredApps={REGISTERED_APPS}
         recommendedApps={RECOMMENDED_APPS}

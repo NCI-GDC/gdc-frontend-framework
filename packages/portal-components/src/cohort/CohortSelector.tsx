@@ -1,34 +1,28 @@
-import {
-  selectAvailableCohorts,
-  selectCurrentCohortId,
-  selectCurrentCohortModified,
-  selectCurrentCohortSaved,
-  setActiveCohort,
-  useCoreDispatch,
-  useCoreSelector,
-} from "@gff/core";
+import React from "react";
+import { useDeepCompareMemo } from "use-deep-compare";
 import { Select } from "@mantine/core";
-import { CustomCohortSelectItem, UnsavedIcon } from "./CustomCohortSelectItem";
-import { useDeepCompareCallback, useDeepCompareMemo } from "use-deep-compare";
-import { DropdownIcon } from "@/utils/icons";
+import { UnsavedIcon, CustomCohortSelectItem } from "./CustomCohortSelectItem";
+import { Cohort } from "./types";
+import { DropdownIcon } from "src/commonIcons";
 
-const CohortSelector = () => {
-  const coreDispatch = useCoreDispatch();
-  const cohorts = useCoreSelector(selectAvailableCohorts);
-  const currentCohortId = useCoreSelector(selectCurrentCohortId);
-  const currentCohortModified = useCoreSelector(selectCurrentCohortModified);
-  const currentCohortSaved = useCoreSelector(selectCurrentCohortSaved);
-  const handleCohortChange = useDeepCompareCallback(
-    (id: string) => {
-      coreDispatch(setActiveCohort(id));
-    },
-    [coreDispatch],
-  );
+interface CohortSelectorProps {
+  readonly selectAvailableCohorts: () => Cohort[];
+  readonly selectCurrentCohort: () => Cohort;
+  readonly setActiveCohort: (newCohort: string) => void;
+}
 
-  const cohortStatusMessage = currentCohortSaved
+const CohortSelector: React.FC<CohortSelectorProps> = ({
+  selectAvailableCohorts,
+  selectCurrentCohort,
+  setActiveCohort,
+}) => {
+  const cohorts = selectAvailableCohorts();
+  const currentCohort = selectCurrentCohort();
+
+  const cohortStatusMessage = currentCohort.saved
     ? "Changes not saved"
     : "Cohort not saved";
-  const isSavedUnchanged = currentCohortSaved && !currentCohortModified;
+  const isSavedUnchanged = currentCohort.saved && !currentCohort.modified;
 
   const cohortList = useDeepCompareMemo(
     () =>
@@ -51,13 +45,13 @@ const CohortSelector = () => {
         data={cohortList}
         searchable
         clearable={false}
-        value={currentCohortId}
+        value={currentCohort.id}
         onChange={(id) => {
           if (id !== null) {
-            handleCohortChange(id);
+            setActiveCohort(id);
           }
         }}
-        renderOption={CustomCohortSelectItem}
+        renderOption={CustomCohortSelectItem as any}
         classNames={{
           root: "border-secondary-darkest w-56 md:w-80 z-[290]",
           input:
