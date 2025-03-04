@@ -35,7 +35,6 @@ import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
   readonly indexPath?: string;
-  readonly Options?: React.FC<unknown>;
   readonly ContextBar?: ReactNode;
   readonly isContextBarSticky?: boolean;
 }
@@ -43,7 +42,6 @@ interface UserFlowVariedPagesProps {
 export const UserFlowVariedPages = ({
   headerElements,
   indexPath = "/",
-  Options,
   children,
   ContextBar = undefined,
   isContextBarSticky = false,
@@ -188,7 +186,7 @@ export const UserFlowVariedPages = ({
         {banners.map((banner) => (
           <Banner {...banner} key={banner.id} />
         ))}
-        <Header {...{ headerElements, indexPath, Options }} />
+        <Header {...{ headerElements, indexPath }} />
       </header>
       <ClearStoreErrorBoundary>
         <>
