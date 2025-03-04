@@ -114,6 +114,7 @@ interface ScRNAseqArg {
   hide_dsHandles: true;
   state?: {
     plots?: {
+      chartType: "singleCellPlot";
       sample?: string;
       experimentID?: string;
       activeTab?: number;
