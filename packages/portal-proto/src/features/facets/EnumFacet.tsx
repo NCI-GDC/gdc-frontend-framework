@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
+import { flatten } from "lodash";
 import { fieldNameToTitle } from "@gff/core";
 import { DEFAULT_VISIBLE_ITEMS, updateFacetEnum } from "./utils";
 import { EnumFacetHooks, FacetCardProps } from "@/features/facets/types";
@@ -15,6 +16,20 @@ import FacetControlsHeader from "./FacetControlsHeader";
 import { BAD_DATA_MESSAGE } from "./constants";
 import { CloseIcon } from "@/utils/icons";
 import { calculateStickyHeaderHeight } from "src/utils/";
+import MiniSearch from "minisearch";
+import { STOP_WORDS, TOKENIZE_STRING } from "../cohortBuilder/dictionary";
+
+interface FacetResultDoc {
+  enum: string;
+  count: number;
+}
+
+export const miniSearch = new MiniSearch<FacetResultDoc>({
+  fields: ["enum"],
+  storeFields: ["enum", "count"],
+  tokenize: (string) => string.split(TOKENIZE_STRING), // indexing tokenizer
+  processTerm: (term) => (STOP_WORDS.has(term) ? null : term.toLowerCase()), // index term processing
+});
 
 /**
  *  Enumeration facet filters handle display and selection of
@@ -188,14 +203,31 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           }, [] as Array<[string, number]>)
         : [];
 
-      const filteredData = [
-        ...tempFilteredData,
-        ...selectedEnumNotInData,
-      ].filter((entry) =>
-        searchTerm === ""
-          ? entry
-          : entry[0].toLowerCase().includes(searchTerm.toLowerCase().trim()),
-      );
+      const enumData = [...tempFilteredData, ...selectedEnumNotInData];
+
+      let filteredData = enumData;
+
+      if (searchTerm) {
+        miniSearch.removeAll();
+
+        const searchDocuments = enumData.map((entry) => ({
+          id: entry[0],
+          enum: entry[0],
+          count: entry[1],
+        }));
+
+        miniSearch.addAll(searchDocuments);
+
+        const results = miniSearch.search(searchTerm, {
+          prefix: true,
+          combineWith: "OR",
+        });
+
+        const terms = flatten(results.map((r) => r.terms));
+        filteredData = enumData.filter((d) =>
+          terms.some((t) => d[0].toLowerCase().includes(t)),
+        );
+      }
 
       const remainingValues = filteredData.length - maxValuesToDisplay;
       const cardStyle = calcCardStyle(remainingValues);

@@ -82,7 +82,10 @@ export const parseFieldName = (
 ): { field_type: string; field_name: string; full: string } => {
   const parsed = field.split("__");
   const full = field.replaceAll("__", ".");
-  if (parsed.at(-2) === "treatments") {
+  if (
+    parsed.at(-2) === "treatments" ||
+    parsed.at(-2) === "other_clinical_attributes"
+  ) {
     return { field_type: parsed.at(-2), field_name: parsed.at(-1), full };
   }
   return { field_type: parsed.at(0), field_name: parsed.at(-1), full };

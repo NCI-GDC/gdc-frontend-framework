@@ -202,13 +202,10 @@ const getOrder = (type) => {
     "tumor_descriptor",
     "specimen_type",
     "preservation_method",
-    "tumor_code",
     "tumor_code_id",
-    "oct_embedded",
     "shortest_dimension",
     "intermediate_dimension",
     "longest_dimension",
-    "is_ffpe",
     "pathology_report_uuid",
     "current_weight",
     "initial_weight",
@@ -234,7 +231,6 @@ const getOrder = (type) => {
     "submitter_id",
     "analyte_id",
     "analyte_type",
-    "analyte_type_id",
     "well_number",
     "amount",
     "a260_a280_ratio",
@@ -268,7 +264,6 @@ const getOrder = (type) => {
     "amount",
     "concentration",
     "analyte_type",
-    "analyte_type_id",
   ];
 
   let order;

@@ -128,7 +128,7 @@ class GenericLocators:
     )
 
     BUTTON_COLUMN_SELECTOR = '[data-testid="button-column-selector-box"]'
-    BUTTON_COLUMN_SELECTOR_IN_TABLE = lambda table_name: f'[data-testid="table-{table_name}"] >> [data-testid="button-column-selector-box"]'
+    BUTTON_COLUMN_SELECTOR_IN_TABLE = lambda table_name: f'[data-testid="table-{table_name}"] >> [data-testid="button-column-selector-box"] >> nth=0'
     SWITCH_COLUMN_SELECTOR = (
         lambda switch_name: f'[data-testid="column-selector-popover-modal"] >> [data-testid="column-selector-row-{switch_name}"] label div >> nth=0'
     )

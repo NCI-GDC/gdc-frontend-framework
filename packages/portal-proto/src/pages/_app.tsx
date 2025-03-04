@@ -136,10 +136,11 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
     primaryShade: { light: 4, dark: 7 },
     breakpoints: {
       xs: "31.25em",
-      sm: "50em",
-      md: "62.5em",
-      lg: "80em",
-      xl: "112.5em",
+      sm: "40em",
+      md: "48em",
+      lg: "64em",
+      xl: "80em",
+      "2xl": "96em",
     },
     components: {
       TextInput: {

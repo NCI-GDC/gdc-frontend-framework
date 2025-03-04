@@ -115,9 +115,8 @@ export const SearchInput: React.FC = () => {
       hash: undefined,
     });
 
-    const enumSearchResult = Object.values(result?.match || {}).some((m) =>
-      m.includes("enum"),
-    );
+    const matches = Object.values(result?.match || {});
+    const enumSearchResult = matches.some((m) => m.includes("enum"));
 
     const additionalQuery = enumSearchResult
       ? { tab: result.categoryKey, searchTerm }
@@ -393,7 +392,7 @@ export const SearchInput: React.FC = () => {
                           label={
                             <>
                               <Highlight
-                                highlight={searchTerm}
+                                highlight={result.terms}
                                 highlightStyles={{ fontStyle: "italic" }}
                               >
                                 {result.description}
@@ -407,7 +406,7 @@ export const SearchInput: React.FC = () => {
                                     {MAX_MATCHED_VALUES}):
                                   </b>
                                   <Highlight
-                                    highlight={searchTerm}
+                                    highlight={result.terms}
                                     highlightStyles={{ fontStyle: "italic" }}
                                   >
                                     {matchingEnums.join(" • ")}

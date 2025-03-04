@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   Switch,
-  Divider,
   Tooltip,
   Collapse,
   ActionIcon,
@@ -30,8 +29,9 @@ import {
   CloseIcon,
   DoubleLeftIcon,
   DoubleRightIcon,
-  DownIcon,
-  RightIcon,
+  DownArrowIcon,
+  SearchIcon,
+  UpArrowIcon,
 } from "@/utils/icons";
 
 interface CDaveField {
@@ -76,7 +76,7 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
   );
 
   return filteredFields.length > 0 ? (
-    <>
+    <div className="mb-4 last:mb-0">
       <span
         onClick={() => setGroupOpen(!groupOpen)}
         onKeyDown={createKeyboardAccessibleFunction(() =>
@@ -84,18 +84,22 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
         )}
         tabIndex={0}
         role="button"
-        className="text-md text-primary-contrast cursor-pointer bg-primary font-heading font-semibold flex items-center p-2 sticky top-0 z-10"
+        className="text-sm xl:text-[1rem] text-primary-contrast cursor-pointer bg-primary-darker font-heading font-semibold flex items-center p-2 sticky top-0 z-10"
         aria-controls={`cdave-control-group-${name}`}
         aria-expanded={groupOpen}
       >
         {groupOpen ? (
-          <DownIcon aria-hidden="true" />
+          <UpArrowIcon aria-hidden="true" size={24} />
         ) : (
-          <RightIcon aria-hidden="true" />
+          <DownArrowIcon aria-hidden="true" size={24} />
         )}{" "}
         {name}
       </span>
-      <Collapse in={groupOpen} id={`cdave-control-group-${name}`}>
+      <Collapse
+        in={groupOpen}
+        id={`cdave-control-group-${name}`}
+        className="border-1 border-base-lighter rounded-b-md"
+      >
         <div className="flex flex-col">
           <ul className="bg-base-max text-md">
             {visibleFields.map((field) => (
@@ -117,7 +121,7 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
           </div>
         </div>
       </Collapse>
-    </>
+    </div>
   ) : null;
 };
 
@@ -141,8 +145,10 @@ const FieldControl: React.FC<FieldControlProps> = ({
   }, [activeFields, field.full]);
 
   const displayName = toDisplayName(field.field_name);
+  const variant =
+    field.field_type === "other_clinical_attributes" ? "darker" : "DEFAULT";
   const fieldColor =
-    tailwindConfig.theme.extend.colors[COLOR_MAP[field.field_type]]?.DEFAULT;
+    tailwindConfig.theme.extend.colors[COLOR_MAP[field.field_type]]?.[variant];
 
   const handleChange = useDeepCompareCallback(
     (e) => {
@@ -153,7 +159,7 @@ const FieldControl: React.FC<FieldControlProps> = ({
   );
 
   return (
-    <li data-testid={`row-field-${displayName}-cdave`} className="px-2 pt-2">
+    <li data-testid={`row-field-${displayName}-cdave`} className="px-2">
       <Switch
         label={
           searchTerm ? (
@@ -173,9 +179,9 @@ const FieldControl: React.FC<FieldControlProps> = ({
         labelPosition="left"
         color={fieldColor}
         classNames={{
-          root: "py-2",
+          root: "py-1",
           body: "flex justify-between items-center",
-          label: "cursor-pointer text-base text-black font-content font-medium",
+          label: "cursor-pointer text-sm text-black font-content font-medium",
           track: `cursor-pointer ${COLOR_CLASS_HOVER_MAP[field.field_type]}`,
         }}
         checked={checked}
@@ -184,7 +190,6 @@ const FieldControl: React.FC<FieldControlProps> = ({
       {searchTerm && (
         <Highlight highlight={searchTerm}>{field?.description || ""}</Highlight>
       )}
-      <Divider />
     </li>
   );
 };
@@ -226,8 +231,10 @@ const Controls: React.FC<ControlPanelProps> = ({
   return (
     <div
       className={`${
-        controlsExpanded ? "w-80 bg-base-max shadow-md" : ""
-      } pl-4 pt-2 flex flex-col min-h-[560px] max-h-screen`}
+        controlsExpanded
+          ? "min-w-[14rem] w-3/12 max-w-[23rem] flex-shrink-0 flex flex-col min-h-[560px] max-h-screen"
+          : ""
+      }`}
     >
       <Tooltip
         withArrow
@@ -237,16 +244,16 @@ const Controls: React.FC<ControlPanelProps> = ({
       >
         <ActionIcon
           onClick={() => setControlsExpanded(!controlsExpanded)}
-          aria-label={"Collapse/Expand controls"}
-          aria-controls={"cdave-control-panel"}
+          aria-label="Collapse/Expand controls"
+          aria-controls="cdave-control-panel"
           aria-expanded={controlsExpanded}
-          className="text-base"
+          className="text-accent"
           variant="subtle"
         >
           {controlsExpanded ? (
-            <DoubleLeftIcon aria-hidden="true" />
+            <DoubleLeftIcon size="24" aria-hidden="true" />
           ) : (
-            <DoubleRightIcon aria-hidden="true" />
+            <DoubleRightIcon size="24" naria-hidden="true" />
           )}
         </ActionIcon>
       </Tooltip>
@@ -255,34 +262,31 @@ const Controls: React.FC<ControlPanelProps> = ({
         id="cdave-control-panel"
         data-testid="cdave-control-panel"
       >
-        <div className="mr-4">
-          <Input
-            data-testid="textbox-cdave-search-bar"
-            placeholder="Search"
-            className="py-2"
-            value={searchTerm}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setSearchTerm(e.target.value)
-            }
-            rightSectionPointerEvents="all"
-            rightSection={
-              searchTerm && (
-                <ActionIcon onClick={() => setSearchTerm("")} variant="subtle">
-                  <CloseIcon aria-label="clear search" />
-                </ActionIcon>
-              )
-            }
-            aria-label="Search fields"
-          />
-        </div>
-        <p
-          data-testid="text-fields-with-values"
-          className="p-2 font-heading font-medium"
-        >
-          {Object.keys(fieldsWithData).length} of {cDaveFields.length} fields
-          with values
+        <Input
+          data-testid="textbox-cdave-search-bar"
+          placeholder="Search"
+          className="py-2"
+          value={searchTerm}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setSearchTerm(e.target.value)
+          }
+          rightSectionPointerEvents="all"
+          leftSection={<SearchIcon size={24} />}
+          rightSection={
+            searchTerm && (
+              <ActionIcon onClick={() => setSearchTerm("")} variant="subtle">
+                <CloseIcon aria-label="clear search" />
+              </ActionIcon>
+            )
+          }
+          aria-label="Search fields"
+        />
+
+        <p data-testid="text-fields-with-values" className="p-2 font-heading">
+          <strong>{Object.keys(fieldsWithData).length}</strong> of{" "}
+          <strong>{cDaveFields.length}</strong> fields with values
         </p>
-        <div className="max-h-screen overflow-y-scroll">
+        <div className="max-h-screen overflow-y-auto border-t-1 border-b-1 border-base-lighter rounded-b-md rounded-t-md">
           {Object.entries(TABS).map(([key, label]) => (
             <ControlGroup
               name={label}

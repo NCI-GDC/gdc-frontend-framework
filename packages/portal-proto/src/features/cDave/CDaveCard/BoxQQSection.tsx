@@ -62,10 +62,11 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
   const boxPlotDownloadName = `${fieldName}-box-plot-${date}`;
   const qqPlotDownloadName = `${fieldName}-qq-plot-${date}`;
 
+  const field_type = clinicalNestedField ? clinicalField : clinicalType;
+  const variant =
+    field_type === "other_clinical_attributes" ? "darker" : "DEFAULT";
   const color =
-    tailwindConfig.theme.extend.colors[
-      COLOR_MAP[clinicalNestedField ? clinicalField : clinicalType]
-    ]?.DEFAULT;
+    tailwindConfig.theme.extend.colors[COLOR_MAP[field_type]]?.[variant];
 
   const originalDataDimension = DATA_DIMENSIONS[field]?.unit;
 

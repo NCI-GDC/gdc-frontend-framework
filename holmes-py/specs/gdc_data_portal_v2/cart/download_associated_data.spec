@@ -84,6 +84,18 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |a242040c-f78a-4fa8-8960-8e2f1020f0d5 |
     |HCM-CSHL-0182-C25_other_clinical_attribute|
     |Initial Diagnosis                    |
+    |cases.case_id                        |
+    |cases.consent_type                   |
+    |cases.days_to_consent                |
+    |cases.days_to_lost_to_followup       |
+    |cases.disease_type                   |
+    |cases.index_date                     |
+    |cases.lost_to_followup               |
+    |cases.primary_site                   |
+    |cases.submitter_id                   |
+    |Cystic, Mucinous and Serous Neoplasms  |
+    |Pancreas                               |
+    |Diagnosis                              |
 
 * Verify that "TSV from Cart Header Dropdown" does not contain specified information
     |required_info                          |
@@ -170,6 +182,11 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |MMRF_2579_oca1                       |
     |a242040c-f78a-4fa8-8960-8e2f1020f0d5 |
     |HCM-CSHL-0182-C25_other_clinical_attribute|
+    |disease_type                         |
+    |index_date                           |
+    |primary_site                         |
+    |case_id	                          |
+    |submitter_id	                      |
 
 * Verify that "JSON from Cart Header Dropdown" does not contain specified information
     |required_info                        |
@@ -326,12 +343,22 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |d342f285-b9ba-4737-b668-09bfc761e74f |
     |93d6d769-17fe-4bc9-bf94-bc9f92f1c747 |
     |TCGA-BG-A0M0-10A, TCGA-BG-A0M0-01A   |
+    |Normal, Tumor                        |
+    |Tumor, Normal                        |
+    |Primary, Not Applicable              |
+    |Metastatic                           |
+    |3D Organoid, Buffy Coat              |
+    |Solid Tissue, Unknown                |
+    |Unknown, OCT                         |
+    |Frozen, Frozen                       |
+
 * Verify that "Sample Sheet from Page" does not contain specified information
     |required_info                        |
     |-------------------------------------|
     |FM-AD                                |
     |TCGA-LUAD                            |
     |APOLLO                               |
+    |Sample Type                          |
 
 ## Metadata
 * Download "Metadata" from "Page"

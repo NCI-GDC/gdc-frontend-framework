@@ -91,30 +91,32 @@ const CardControls: React.FC<CardControlsProps> = ({
 
   return (
     <>
-      <div className="flex justify-between gap-2 py-2">
-        <div className="flex flex-wrap-reverse gap-2">
-          <CasesCohortButtonFromFilters
-            filters={
-              selectedFacets.length === 0
-                ? undefined
-                : buildCohortGqlOperator(filters)
-            }
-            case_filters={
-              selectedFacets.length === 0
-                ? undefined
-                : buildCohortGqlOperator(cohortFilters)
-            }
-            numCases={
-              selectedFacets.length === 0
-                ? 0
-                : selectedFacets
-                    .map((facet) => facet.numCases)
-                    .reduce((a, b) => a + b)
-            }
-          />
+      <div className="flex justify-between gap-2 py-2 flex-reverse-wrap md:flex-wrap">
+        <div className="flex flex-wrap gap-2">
+          <div className="order-2 md:order-1">
+            <CasesCohortButtonFromFilters
+              filters={
+                selectedFacets.length === 0
+                  ? undefined
+                  : buildCohortGqlOperator(filters)
+              }
+              case_filters={
+                selectedFacets.length === 0
+                  ? undefined
+                  : buildCohortGqlOperator(cohortFilters)
+              }
+              numCases={
+                selectedFacets.length === 0
+                  ? 0
+                  : selectedFacets
+                      .map((facet) => facet.numCases)
+                      .reduce((a, b) => a + b)
+              }
+            />
+          </div>
           <Button
             data-testid="button-tsv-cdave-card"
-            className="bg-base-max text-primary border-primary"
+            className="bg-base-max text-primary border-primary order-1 md:order-2"
             onClick={downloadTSVFile}
           >
             TSV

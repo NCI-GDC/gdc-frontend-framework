@@ -1,21 +1,15 @@
 export interface SampleNode {
   sample_id: string | null;
   submitter_id: string | null;
-  sample_type: string | null;
-  sample_type_id: string | null;
   tissue_type: string | null;
-  tumor_code: string | null;
   tumor_code_id: string | null;
-  oct_embedded: string | null;
   shortest_dimension: string | null;
   intermediate_dimension: string | null;
   longest_dimension: string | null;
-  is_ffpe: string | null;
   pathology_report_uuid: string | null;
   tumor_descriptor: string | null;
   current_weight: string | null;
   initial_weight: string | null;
-  composition: string | null;
   time_between_clamping_and_freezing: string | null;
   time_between_excision_and_freezing: string | null;
   days_to_sample_procurement: number | null;
@@ -51,7 +45,6 @@ export interface AnalytesNode {
   submitter_id: string | null;
   analyte_id: string | null;
   analyte_type: string | null;
-  analyte_type_id: string | null;
   well_number: string | null;
   amount: string | null;
   a260_a280_ratio: string | null;
@@ -89,7 +82,6 @@ export interface AliquotsNode {
   amount: string | null;
   concentration: string | null;
   analyte_type: string | null;
-  analyte_type_id: string | null;
 }
 
 export type BiospecimenEntityType =
