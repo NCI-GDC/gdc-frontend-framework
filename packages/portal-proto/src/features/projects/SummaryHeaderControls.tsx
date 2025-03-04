@@ -1,5 +1,5 @@
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-import SaveCohortModal from "@/components/Modals/SaveCohortModal";
+import { SaveCohortModal } from "@gff/portal-components";
 import { focusStyles } from "@/utils/index";
 import download from "@/utils/download";
 import { useCoreDispatch } from "@gff/core";
@@ -8,6 +8,8 @@ import { useState } from "react";
 import { ProjectViewProps } from "./ProjectView";
 import { getFormattedTimestamp } from "@/utils/date";
 import { DownloadIcon } from "@/utils/icons";
+import { cohortActionsHooks } from "../cohortBuilder/CohortManager/cohortActionHooks";
+import { INVALID_COHORT_NAMES } from "../cohortBuilder/utils";
 
 function SummaryHeaderControls({
   projectData,
@@ -171,6 +173,8 @@ function SummaryHeaderControls({
           },
         }}
         onClose={() => setShowSaveCohort(false)}
+        hooks={cohortActionsHooks}
+        invalidCohortNames={INVALID_COHORT_NAMES}
       />
 
       <DropdownWithIcon

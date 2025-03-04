@@ -8,7 +8,9 @@ import { Loader } from "@mantine/core";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import UserInputModal from "@/components/Modals/UserInputModal";
 import InputEntityList from "@/components/InputEntityList/InputEntityList";
-import SaveCohortModal from "@/components/Modals/SaveCohortModal";
+import { SaveCohortModal } from "@gff/portal-components";
+import { cohortActionsHooks } from "../CohortManager/cohortActionHooks";
+import { INVALID_COHORT_NAMES } from "../utils";
 
 interface SubmitButtonProps {
   readonly ids: string[];
@@ -49,6 +51,8 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
             },
           },
         }}
+        hooks={cohortActionsHooks}
+        invalidCohortNames={INVALID_COHORT_NAMES}
       />
 
       <DarkFunctionButton

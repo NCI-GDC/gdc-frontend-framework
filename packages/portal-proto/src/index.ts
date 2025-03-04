@@ -13,7 +13,6 @@ import CohortCreationButton from "@/components/CohortCreationButton";
 import { CollapsibleContainer } from "@/components/CollapsibleContainer";
 import { ImageSlideCount } from "@/components/ImageSlideCount";
 import { DownloadButton } from "@/components/DownloadButtons";
-import SaveCohortModal from "@/components/Modals/SaveCohortModal";
 import UserInputModal from "@/components/Modals/UserInputModal";
 // facets
 import FunctionButton from "@/components/FunctionButton";
@@ -41,7 +40,6 @@ export {
   CollapsibleContainer,
   ImageSlideCount,
   DownloadButton,
-  SaveCohortModal,
   UserInputModal,
   FunctionButton,
   EnumFacet,

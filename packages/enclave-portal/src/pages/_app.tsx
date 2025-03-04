@@ -1,11 +1,12 @@
 import React from "react";
-import { AppContext } from "@gff/portal-components";
+import { AppContext, CohortNotificationProvider } from "@gff/portal-components";
 import type {
   ImageComponentType,
   LinkComponentType,
 } from "@gff/portal-components";
 import { createTheme, MantineProvider, Modal } from "@mantine/core";
 import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
 import type { AppProps } from "next/app";
 import Image from "next/image";
 import Link from "next/link";
@@ -24,6 +25,22 @@ const EnclavePortalApp: React.FC<AppProps> = ({
 }: AppProps) => {
   const theme = createTheme({
     fontFamily: "Montserrat, Noto Sans, sans-serif",
+    colors: {
+      blue: Object.values(
+        tailwindConfig.theme.extend.colors["nci-blue"],
+      ) as any,
+      gray: Object.values(
+        tailwindConfig.theme.extend.colors["nci-gray"],
+      ) as any,
+      ...Object.fromEntries(
+        Object.entries(defaultTailwindColorTheme).map(([key, values]) => [
+          key,
+          Object.values(values as any),
+        ]),
+      ),
+    },
+    primaryColor: "primary",
+    primaryShade: { light: 4, dark: 7 },
     components: {
       ActionIcon: {
         defaultProps: {
@@ -103,7 +120,9 @@ const EnclavePortalApp: React.FC<AppProps> = ({
           theme,
         }}
       >
-        <Component {...pageProps} />
+        <CohortNotificationProvider useSetActiveCohort={() => () => {}}>
+          <Component {...pageProps} />
+        </CohortNotificationProvider>
       </AppContext.Provider>
     </MantineProvider>
   );

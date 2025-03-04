@@ -20,6 +20,8 @@
     "lib": ["dom", "esnext"],
     "baseUrl": ".",
     "paths": {
+      "@/cohort/*": ["src/cohort/*"],
+      "@/common/*": ["src/common/*"],
       "@/layout/*": ["src/layout/*"],
       "@/modals/*": ["src/modals/*"]
     },

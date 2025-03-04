@@ -2,8 +2,10 @@ import React, { ReactNode, useState } from "react";
 import { Tooltip, ButtonProps, Loader } from "@mantine/core";
 import tw from "tailwind-styled-components";
 import { FilterSet, useCoreDispatch, Modals, showModal } from "@gff/core";
-import SaveCohortModal from "@/components/Modals/SaveCohortModal";
+import { SaveCohortModal } from "@gff/portal-components";
 import { PlusIcon } from "@/utils/icons";
+import { cohortActionsHooks } from "@/features/cohortBuilder/CohortManager/cohortActionHooks";
+import { INVALID_COHORT_NAMES } from "@/features/cohortBuilder/utils";
 
 interface CohortCreationStyledButtonProps extends ButtonProps {
   $fullWidth?: boolean;
@@ -157,6 +159,8 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
         filters={cohortFilters}
         caseFilters={caseFilters}
         createStaticCohort={createStaticCohort}
+        hooks={cohortActionsHooks}
+        invalidCohortNames={INVALID_COHORT_NAMES}
       />
     </div>
   );
