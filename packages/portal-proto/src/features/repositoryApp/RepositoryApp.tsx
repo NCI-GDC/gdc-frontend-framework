@@ -148,7 +148,7 @@ export const RepositoryApp = (): JSX.Element => {
         <TableXPositionContext.Provider
           value={{ xPosition: tableXPosition, setXPosition: setTableXPosition }}
         >
-          <div className="flex m-4 gap-0.5">
+          <div className="flex pt-4 px-4 pb-16 gap-4">
             <FileFacetPanel />
             <div
               className="overflow-hidden h-full w-full"
