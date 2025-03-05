@@ -118,4 +118,31 @@ export const EXAMPLE_COHORTS: Cohort[] = [
     saved: true,
     modified: false,
   },
+  {
+    name: "50-60 year olds",
+    id: "0000-0000-1111-2222",
+    filters: {
+      mode: "and",
+      root: {
+        "cases.diagnoses.age_at_diagnosis": {
+          operator: "and",
+          operands: [
+            {
+              field: "cases.diagnoses.age_at_diagnosis",
+              operator: ">=",
+              operand: 18263,
+            },
+            {
+              field: "cases.diagnoses.age_at_diagnosis",
+              operator: "<",
+              operand: 21915,
+            },
+          ],
+        },
+      },
+    },
+    modified_datetime: new Date(2020, 1, 9).toISOString(),
+    saved: true,
+    modified: false,
+  },
 ];

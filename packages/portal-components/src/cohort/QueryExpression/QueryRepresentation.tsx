@@ -267,13 +267,16 @@ export const ClosedRangeQueryElement: React.FC<
     <>
       <QueryElement field={field} hooks={hooks}>
         <QueryContainer>
-          <ComparisonElement operation={lower} />
+          <ComparisonElement operation={{ ...lower, hooks }} />
           <div className="flex items-center">
             <span className={"uppercase text-accent-contrast-max font-bold"}>
               {op}
             </span>
           </div>
-          <ComparisonElement operation={upper} showLabel={false} />
+          <ComparisonElement
+            operation={{ ...upper, hooks }}
+            showLabel={false}
+          />
         </QueryContainer>
       </QueryElement>
     </>
