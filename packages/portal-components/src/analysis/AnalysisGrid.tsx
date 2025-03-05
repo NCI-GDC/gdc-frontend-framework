@@ -61,12 +61,10 @@ const AnalysisGrid: React.FC<AnalysisGridProps> = ({
 
           <div className="flex gap-4 lg:gap-6 flex-wrap">
             {activeApps
-              .sort((a, b) =>
-                initialApps[a].name
-                  .toLowerCase()
-                  .localeCompare(initialApps[b].name.toLowerCase()),
-              )
               .map((k) => initialApps[k])
+              .sort((a, b) =>
+                a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
+              )
               .map((x: AppRegistrationEntry, idx: number) => {
                 const countHook = registry.getHook(x.countsField);
                 return (
