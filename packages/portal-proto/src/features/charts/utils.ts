@@ -51,25 +51,27 @@ const createSVG = async (ref: MutableRefObject<HTMLElement>): Promise<Blob> => {
   const styles = [];
   // Copy styles from page into SVG
   for (const sheet of document.styleSheets) {
-    for (const rule of sheet.cssRules) {
-      // For fonts we need to retrieve the font file, encode it to a data url and then embed back in svg
-      if (isFontRule(rule)) {
-        const fontUrl = rule.style
-          .getPropertyValue("src")
-          .split("(")[1]
-          .split(")")[0]
-          .replace(/"|'/g, "");
-        if (fontUrl.includes("latin")) {
+    try {
+      for (const rule of sheet.cssRules) {
+        // For fonts we need to retrieve the font file, encode it to a data url and then embed back in svg
+        if (isFontRule(rule)) {
+          const fontUrl = rule.style
+            .getPropertyValue("src")
+            .split("(")[1]
+            .split(")")[0]
+            .replace(/"|'/g, "");
           const fontFile = await fetch(fontUrl);
           const blob = await fontFile.blob();
           const base64 = await blobToBase64(blob);
           styles.push(
             rule.cssText.replace(/src: url\(.*?\)/, `src: url(${base64})`),
           );
+        } else {
+          styles.push(rule.cssText);
         }
-      } else {
-        styles.push(rule.cssText);
       }
+    } catch (e) {
+      console.warn(e, sheet.href);
     }
   }
   styleTag.innerHTML = styles.join("\n");
