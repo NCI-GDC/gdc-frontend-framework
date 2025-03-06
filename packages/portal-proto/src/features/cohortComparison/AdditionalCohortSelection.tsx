@@ -128,31 +128,29 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
 
   return (
     <div className="bg-base-max">
-      <div className="p-4">
+      <div className="p-4 w-full xl:w-3/4">
         <h2 className="font-heading text-lg font-bold py-2 text-primary-content-darkest">
           Select a cohort to compare with {primaryCohort.name}
         </h2>
-        <p className="font-content pb-2 w-3/4">
+        <p className="font-content pb-2">
           Display the survival analysis of your cohorts and compare
           characteristics such as gender, vital status and age at diagnosis.
           Create cohorts in the Analysis Center.
         </p>
-        <div className="w-3/4">
-          <VerticalTable
-            data={displayedData}
-            columns={cohortListTableColumns}
-            pagination={{
-              page,
-              pages,
-              size,
-              from,
-              total,
-              label: "cohort",
-            }}
-            status="fulfilled"
-            handleChange={handleChange}
-          />
-        </div>
+        <VerticalTable
+          data={displayedData}
+          columns={cohortListTableColumns}
+          pagination={{
+            page,
+            pages,
+            size,
+            from,
+            total,
+            label: "cohort",
+          }}
+          status="fulfilled"
+          handleChange={handleChange}
+        />
       </div>
       <div className="flex flex-row justify-end w-full sticky bottom-0 bg-base-lightest py-2 px-4">
         <FunctionButton

@@ -91,6 +91,7 @@ const Header: React.FC<HeaderProps> = ({
             role="navigation"
             aria-label=""
           >
+            {/* add keys here */}
             {headerLinks.map((item) => createHeaderItem(item))}
             {LoginButton && <LoginButton />}
             <ExternalAppMenu externalAppLinks={externalAppLinks} />
