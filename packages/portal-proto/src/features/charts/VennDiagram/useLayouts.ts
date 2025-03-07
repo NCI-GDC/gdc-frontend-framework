@@ -282,9 +282,9 @@ export const createThreeCircleLayout = (
             x2: c2c3I[0].x * scaleFactor + xOffset,
             y2: c2c3I[0].y * scaleFactor + yOffset,
             cpx1: 276.57138073154556 * scaleFactor + xOffset,
-            cpy1: 178.39309854645956 * scaleFactor + xOffset,
+            cpy1: 178.39309854645956 * scaleFactor + yOffset,
             cpx2: 295.09565039824025 * scaleFactor + xOffset,
-            cpy2: 205.8690362868878 * scaleFactor + xOffset,
+            cpy2: 205.8690362868878 * scaleFactor + yOffset,
           },
           style: {
             ...style,
@@ -297,9 +297,9 @@ export const createThreeCircleLayout = (
           id: "S2_intersect_S3_minus_S1.3",
           shape: {
             x1: c2c3I[0].x * scaleFactor + xOffset,
-            y1: c2c3I[0].y * scaleFactor + xOffset,
+            y1: c2c3I[0].y * scaleFactor + yOffset,
             x2: c1c2I[1].x * scaleFactor + xOffset,
-            y2: c1c2I[1].y * scaleFactor + xOffset,
+            y2: c1c2I[1].y * scaleFactor + yOffset,
             cpx1: 268.3512766705979 * scaleFactor + xOffset,
             cpy1: 254.4753429717167 * scaleFactor + yOffset,
             cpx2: 230.64159888490266 * scaleFactor + xOffset,
