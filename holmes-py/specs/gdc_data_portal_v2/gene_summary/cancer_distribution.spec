@@ -23,9 +23,19 @@ tags: gdc-data-portal-v2, regression, gene-summary
     |Disease Type                           |2      |
     |Primary Site                           |3      |
     |# SSM Affected Cases                   |4      |
-    |# CNV Gains                            |5      |
-    |# CNV Losses                           |6      |
+    |# CNV Amplifications                   |5      |
+    |# CNV Homozygous Deletions             |6      |
     |# Mutations                            |7      |
+* In table "Cancer Distribution Gene Summary" select or deselect these options from the table column selector
+    |table_column_to_select                 |
+    |---------------------------------------|
+    |# CNV Gains                            |
+    |# CNV Heterozygous Deletions           |
+* Verify the table "Cancer Distribution Gene Summary" header text is correct
+    |expected_text                          |column |
+    |---------------------------------------|-------|
+    |# CNV Gains                            |6      |
+    |# CNV Heterozygous Deletions           |7      |
 * Select value from table "Cancer Distribution Gene Summary" by row and column
     |row   |column|
     |------|------|
@@ -66,6 +76,16 @@ tags: gdc-data-portal-v2, regression, gene-summary
     |Lymphoid Leukemias                     |
     |Acute Lymphoblastic Leukemia           |
     |TCGA-LGG                               |
+    |31                                     |
+    |512                                    |
+    |6.0546875                              |
+    |0.9191176470588236                     |
+    |32                                     |
+    |5.88235294117647                       |
+    |4.595588235294118                      |
+    |544                                    |
+    |42                                     |
+
 * Verify that "JSON from Gene Summary Cancer Distribution" does not contain specified information
     |required_info                          |
     |---------------------------------------|
@@ -79,6 +99,8 @@ tags: gdc-data-portal-v2, regression, gene-summary
     |PTEN                                   |
     |TP53                                   |
     |FAT3                                   |
+    |num_cnv_loss                           |
+    |num_cnv_loss_percent                   |
 
 ## Cancer Distribution - Validate JSON File Fields
   |field_name                               |
@@ -88,11 +110,15 @@ tags: gdc-data-portal-v2, regression, gene-summary
   |site	                                    |
   |num_affected_cases                       |
   |num_affected_cases_total                 |
-  |num_affected_cases_percent               |
+  |affected_cases_percent                   |
+  |num_cnv_amplification	                  |
+  |cnv_amplification_percent	              |
   |num_cnv_gain                             |
-  |num_cnv_gain_percent                     |
-  |num_cnv_loss                             |
-  |num_cnv_loss_percent                     |
+  |cnv_gain_percent                         |
+  |num_cnv_heterozygous_deletion	          |
+  |cnv_heterozygous_deletion_percent        |
+  |num_cnv_homozygous_deletion              |
+  |cnv_homozygous_deletion_percent          |
   |num_cnv_cases_total                      |
   |mutations_counts                         |
 * Verify that the "JSON from Gene Summary Cancer Distribution" has <field_name> for each object
@@ -107,13 +133,19 @@ tags: gdc-data-portal-v2, regression, gene-summary
     |Disease Type                           |
     |Primary Site                           |
     |# SSM Affected Cases                   |
+    |# CNV Amplifications                   |
     |# CNV Gains                            |
-    |# CNV Losses                           |
+    |# CNV Heterozygous Deletions           |
+    |# CNV Homozygous Deletions             |
     |# Mutations                            |
     |TCGA-UCEC                              |
     |Plasma Cell Tumors                     |
     |Colon,Rectosigmoid junction            |
     |31 / 512 (6.05 %)                      |
+    |0 / 459 (0.00 %)                       |
+    |3 / 167 (1.80 %)                       |
+    |54 / 411 (13.14 %)                     |
+    |3 / 1290 (0.23 %)                      |
     |MP2PRT-ALL                             |
     |TCGA-LGG                               |
     |CPTAC-3                                |
@@ -130,6 +162,7 @@ tags: gdc-data-portal-v2, regression, gene-summary
     |PTEN                                   |
     |TP53                                   |
     |FAT3                                   |
+    |# CNV Losses                           |
 
 ## Cancer Distribution Mutations Graph: JSON
 * Expand dropdown in graph "Cancer Distribution Mutations"
@@ -151,17 +184,18 @@ tags: gdc-data-portal-v2, regression, gene-summary
     |required_info                          |
     |---------------------------------------|
     |TARGET-OS                              |
-    |TCGA-PCPG                              |
-    |TCGA-KICH                              |
-    |CDDP_EAGLE-1                           |
-    |TCGA-MESO                              |
+    |TCGA-SARC                              |
+    |CGCI-HTMCP-CC                          |
+    |TCGA-STAD                              |
 
 ## Cancer Distribution CNV Graph - Validate JSON File Fields
   |field_name                               |
   |-----------------------------------------|
   |symbol			                              |
+  |amplification                            |
   |gain                                     |
-  |loss	                                    |
+  |heterozygous deletion                    |
+  |homozygous deletion                      |
   |total                                    |
 * Verify that the "JSON from Graph Dropdown" has <field_name> for each object
 
@@ -180,35 +214,50 @@ tags: gdc-data-portal-v2, regression, gene-summary
   |-----------------|---------------------------------------------------------------|--------------------|
   |Save             |TCGA-UCEC: RBM15 SSM Affected Cases in Cohort has been saved   |Remove Modal        |
 
-## Save New Cohort: CNV Gain
+## Save New Cohort: CNV Amplifications
 * Collect button labels in table for comparison
   |button_label                         |row  |column |
   |-------------------------------------|-----|-------|
-  |TCGA-COAD: RBM15 CNV Gain            |2    |5      |
+  |TCGA-UCEC: RBM15 CNV Amplifications  |1    |5      |
 * Select value from table by row and column
   |row   |column|
   |------|------|
-  |2     |5     |
-* Name the cohort "TCGA-COAD: RBM15 CNV Gain" in the Cohort Bar section
+  |1     |5     |
+* Name the cohort "TCGA-UCEC: RBM15 CNV Amplifications" in the Cohort Bar section
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                            |Keep or Remove Modal|
   |-----------------|-----------------------------------------------------|--------------------|
-  |Save             |TCGA-COAD: RBM15 CNV Gain has been saved             |Remove Modal        |
+  |Save             |TCGA-UCEC: RBM15 CNV Amplifications has been saved   |Remove Modal        |
 
-## Save New Cohort: CNV Loss
+## Save New Cohort: CNV Gains
 * Collect button labels in table for comparison
   |button_label                         |row  |column |
   |-------------------------------------|-----|-------|
-  |TCGA-READ: RBM15 CNV Loss            |3    |6      |
+  |TCGA-COAD: RBM15 CNV Gains           |2    |6      |
 * Select value from table by row and column
   |row   |column|
   |------|------|
-  |3     |6     |
-* Name the cohort "TCGA-READ: RBM15 CNV Loss" in the Cohort Bar section
+  |2     |6     |
+* Name the cohort "TCGA-COAD: RBM15 CNV Gains" in the Cohort Bar section
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                            |Keep or Remove Modal|
   |-----------------|-----------------------------------------------------|--------------------|
-  |Save             |TCGA-READ: RBM15 CNV Loss has been saved             |Remove Modal        |
+  |Save             |TCGA-COAD: RBM15 CNV Gains has been saved            |Remove Modal        |
+
+## Save New Cohort: CNV Heterozygous Deletions
+* Collect button labels in table for comparison
+  |button_label                                 |row  |column |
+  |---------------------------------------------|-----|-------|
+  |TCGA-READ: RBM15 CNV Heterozygous Deletions  |3    |7      |
+* Select value from table by row and column
+  |row   |column|
+  |------|------|
+  |3     |7     |
+* Name the cohort "TCGA-READ: RBM15 CNV Heterozygous Deletions" in the Cohort Bar section
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal                                  |Keep or Remove Modal|
+  |-----------------|-----------------------------------------------------------|--------------------|
+  |Save             |TCGA-READ: RBM15 CNV Heterozygous Deletions has been saved |Remove Modal        |
 
 ## Validate Cohorts
 * Navigate to "Analysis" from "Header" "section"
@@ -218,12 +267,17 @@ tags: gdc-data-portal-v2, regression, gene-summary
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "TCGA-UCEC: RBM15 SSM Affected Cases in Cohort" are "Equal"
 
-* Switch cohort to "TCGA-COAD: RBM15 CNV Gain" from the Cohort Bar dropdown list
-* "TCGA-COAD: RBM15 CNV Gain" should be the active cohort
+* Switch cohort to "TCGA-UCEC: RBM15 CNV Amplifications" from the Cohort Bar dropdown list
+* "TCGA-UCEC: RBM15 CNV Amplifications" should be the active cohort
 * Collect Cohort Bar Case Count for comparison
-* Verify "Cohort Bar Case Count" and "TCGA-COAD: RBM15 CNV Gain" are "Equal"
+* Verify "Cohort Bar Case Count" and "TCGA-UCEC: RBM15 CNV Amplifications" are "Equal"
 
-* Switch cohort to "TCGA-READ: RBM15 CNV Loss" from the Cohort Bar dropdown list
-* "TCGA-READ: RBM15 CNV Loss" should be the active cohort
+* Switch cohort to "TCGA-COAD: RBM15 CNV Gains" from the Cohort Bar dropdown list
+* "TCGA-COAD: RBM15 CNV Gains" should be the active cohort
 * Collect Cohort Bar Case Count for comparison
-* Verify "Cohort Bar Case Count" and "TCGA-READ: RBM15 CNV Loss" are "Equal"
+* Verify "Cohort Bar Case Count" and "TCGA-COAD: RBM15 CNV Gains" are "Equal"
+
+* Switch cohort to "TCGA-READ: RBM15 CNV Heterozygous Deletions" from the Cohort Bar dropdown list
+* "TCGA-READ: RBM15 CNV Heterozygous Deletions" should be the active cohort
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "TCGA-READ: RBM15 CNV Heterozygous Deletions" are "Equal"

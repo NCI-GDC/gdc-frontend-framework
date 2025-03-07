@@ -38,10 +38,8 @@ const INITIAL_STATE = {
   ids: INITIAL_IDS,
   entities: INITIAL_ENTITIES,
   currentCohort: "ALL-GDC-COHORT",
-  message: undefined,
 } as EntityState<Cohort, CohortId> & {
   currentCohort: string;
-  message: string[] | undefined;
 };
 
 const APP_INITIAL_STATE = {
@@ -125,7 +123,6 @@ describe("test setting/getting currentCohortId", () => {
     availableCohorts: {
       ...INITIAL_STATE,
       currentCohort: "asdf",
-      message: undefined,
     },
     counts: {
       ...NullCountsData,
@@ -144,7 +141,7 @@ describe("test setting/getting currentCohortId", () => {
 
   test("should set the current cohort id", () => {
     const newState = availableCohortsReducer(
-      { ...INITIAL_STATE, currentCohort: "asdf", message: undefined },
+      { ...INITIAL_STATE, currentCohort: "asdf" },
       setCurrentCohortId("1111-2222-3333-4444"),
     );
     const currentCohortId = selectCurrentCohortId({
@@ -312,7 +309,6 @@ describe("filter by prefix", () => {
         ...state.cohort,
         availableCohorts: {
           currentCohort: "000-000-000-1",
-          message: ["newCohort|New Cohort"],
           ids: ["000-000-000-1"],
           entities: {
             "000-000-000-1": {
@@ -395,12 +391,11 @@ describe("add, update, and remove cohort", () => {
 
   test("should add new cohort to available cohorts", () => {
     const availableCohorts = availableCohortsReducer(
-      { ids: [], entities: {}, currentCohort: "", message: undefined },
+      { ids: [], entities: {}, currentCohort: "" },
       addNewDefaultUnsavedCohort(),
     );
     expect(availableCohorts).toEqual({
       currentCohort: "000-000-000-1",
-      message: ["newCohort|Unsaved_Cohort|000-000-000-1"],
       ids: ["000-000-000-1"],
       entities: {
         "000-000-000-1": {
@@ -423,11 +418,10 @@ describe("add, update, and remove cohort", () => {
     });
   });
 
-  test("should add new cohort with filter and message", () => {
+  test("should add new cohort with filter", () => {
     const availableCohorts = availableCohortsReducer(
       {
         currentCohort: "000-000-000-1",
-        message: undefined,
         ids: ["000-000-000-1"],
         entities: {
           "000-000-000-1": {
@@ -458,14 +452,12 @@ describe("add, update, and remove cohort", () => {
             },
           },
         },
-        message: "newProjectsCohort",
         name: "New Cohort 2",
         replace: true,
       }),
     );
     expect(availableCohorts).toEqual({
       currentCohort: "000-000-000-2",
-      message: ["newProjectsCohort|New Cohort 2|000-000-000-2"],
       ids: ["000-000-000-1", "000-000-000-2"],
       entities: {
         "000-000-000-1": {
@@ -515,7 +507,6 @@ describe("add, update, and remove cohort", () => {
     const availableCohorts = availableCohortsReducer(
       {
         currentCohort: "000-000-000-1",
-        message: undefined,
         ids: ["000-000-000-1"],
         entities: {
           "000-000-000-1": {
@@ -539,7 +530,6 @@ describe("add, update, and remove cohort", () => {
     );
     expect(availableCohorts).toEqual({
       currentCohort: "000-000-000-3",
-      message: ["newCohort|Unsaved_Cohort|000-000-000-3"],
       ids: ["000-000-000-1", "000-000-000-3"],
       entities: {
         "000-000-000-1": {
@@ -581,7 +571,6 @@ describe("add, update, and remove cohort", () => {
       availableCohortsReducer(
         {
           currentCohort: "000-000-000-1",
-          message: undefined,
           ids: ["000-000-000-1"],
           entities: {
             "000-000-000-1": {
@@ -613,7 +602,6 @@ describe("add, update, and remove cohort", () => {
       availableCohortsReducer(
         {
           currentCohort: "000-000-000-1",
-          message: undefined,
           ids: ["000-000-000-1"],
           entities: {
             "000-000-000-1": {
@@ -644,7 +632,6 @@ describe("add, update, and remove cohort", () => {
               },
             },
           },
-          message: "newProjectsCohort",
           name: "New Cohort 2",
         }),
       ),
@@ -657,7 +644,6 @@ describe("add, update, and remove cohort", () => {
     const availableCohorts = availableCohortsReducer(
       {
         currentCohort: "000-000-000-1",
-        message: undefined,
         ids: ["000-000-000-1"],
         entities: {
           "000-000-000-1": {
@@ -695,7 +681,6 @@ describe("add, update, and remove cohort", () => {
           modified_datetime: "2020-11-01T00:00:00.000Z",
         },
       },
-      message: undefined,
     });
   });
 
@@ -703,7 +688,6 @@ describe("add, update, and remove cohort", () => {
     const availableCohorts = availableCohortsReducer(
       {
         currentCohort: "000-000-000-2",
-        message: undefined,
         ids: ["000-000-000-1", "000-000-000-2"],
         entities: {
           "000-000-000-1": {
@@ -734,11 +718,10 @@ describe("add, update, and remove cohort", () => {
           },
         },
       },
-      removeCohort({ shouldShowMessage: true }),
+      removeCohort({}),
     );
     expect(availableCohorts).toEqual({
       currentCohort: "000-000-000-1",
-      message: ["deleteCohort|New Cohort 2|000-000-000-2"],
       ids: ["000-000-000-1"],
       entities: {
         "000-000-000-1": {
@@ -761,7 +744,6 @@ describe("add, update, and remove cohort", () => {
   test("should create new unsaved cohort when removing last cohort", () => {
     const removeState = {
       currentCohort: "000-000-000-1",
-      message: ["deleteCohort|New Cohort 2|000-000-000-1"],
       ids: ["000-000-000-1"],
       entities: {
         "000-000-000-1": {
@@ -786,7 +768,7 @@ describe("add, update, and remove cohort", () => {
 
     const availableCohorts = availableCohortsReducer(
       removeState,
-      removeCohort({ shouldShowMessage: true }),
+      removeCohort({}),
     );
     expect(Object.values(availableCohorts.entities)[0]?.name).toEqual(
       "Unsaved_Cohort",
@@ -797,7 +779,6 @@ describe("add, update, and remove cohort", () => {
     const availableCohorts = availableCohortsReducer(
       {
         currentCohort: "000-000-000-1",
-        message: undefined,
         ids: ["000-000-000-1"],
         entities: {
           "000-000-000-1": {
@@ -827,14 +808,12 @@ describe("add, update, and remove cohort", () => {
             },
           },
         },
-        message: "newProjectsCohort",
         name: "New Cohort 2",
         replace: true,
       }),
     );
     expect(availableCohorts).toEqual({
       currentCohort: "000-000-000-4",
-      message: ["newProjectsCohort|New Cohort 2|000-000-000-4"],
       ids: ["000-000-000-4"],
       entities: {
         "000-000-000-4": {

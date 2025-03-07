@@ -35,11 +35,12 @@ import {
 } from "src/utils/contexts";
 import { Notifications } from "@mantine/notifications";
 import "@mantine/notifications/styles.css";
-import {
-  AppContext,
+import { AppContext, CohortNotificationProvider } from "@gff/portal-components";
+import type {
   ImageComponentType,
   LinkComponentType,
 } from "@gff/portal-components";
+import { useSetActiveCohort } from "@/features/cohortBuilder/CohortManager/cohortActionHooks";
 
 if (process.env.NODE_ENV !== "test") ReactModal.setAppElement("#__next");
 
@@ -290,8 +291,12 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                   theme,
                 }}
               >
-                <Notifications position="top-center" />
-                <Component {...pageProps} />
+                <CohortNotificationProvider
+                  useSetActiveCohort={useSetActiveCohort}
+                >
+                  <Notifications position="top-center" />
+                  <Component {...pageProps} />
+                </CohortNotificationProvider>
               </AppContext.Provider>
             </SummaryModalContext.Provider>
           </URLContext.Provider>

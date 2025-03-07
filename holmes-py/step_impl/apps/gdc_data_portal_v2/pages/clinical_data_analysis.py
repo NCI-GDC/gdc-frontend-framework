@@ -7,11 +7,11 @@ from ....base.base_page import BasePage
 class ClinicalDataAnalysisLocators:
     PLEASE_WAIT_SPINNER = "svg[data-testid='please_wait_spinner']"
 
-    GROUP_TABLE = lambda group: f"div[id=cdave-control-group-{group}]"
+    GROUP_TABLE = lambda group: f'div[id="cdave-control-group-{group}"]'
     GROUP_TABLE_PLUS_BUTTON = (
-        lambda group: f"div[id='cdave-control-group-{group}'] >> button[data-testid='plus-icon']"
+        lambda group: f'div[id="cdave-control-group-{group}"] >> button[data-testid="plus-icon"]'
     )
-    PROPERTY_ROW = lambda property: f"text='{property}'"
+    PROPERTY_ROW = lambda property: f'text="{property}"'
     FIELD_SELECT_SWITCH_IDENT = (
         lambda field_name: f'[data-testid="row-field-{field_name}-cdave"] >> text={field_name}'
     )
@@ -125,6 +125,8 @@ class ClinicalDataAnalysisPage(BasePage):
         self.click(ClinicalDataAnalysisLocators.GROUP_TABLE_PLUS_BUTTON("Diagnosis"))
         self.click(ClinicalDataAnalysisLocators.GROUP_TABLE_PLUS_BUTTON("Treatment"))
         self.click(ClinicalDataAnalysisLocators.GROUP_TABLE_PLUS_BUTTON("Exposures"))
+        if self.is_visible(ClinicalDataAnalysisLocators.GROUP_TABLE_PLUS_BUTTON("Other Clinical Attribute")):
+            self.click(ClinicalDataAnalysisLocators.GROUP_TABLE_PLUS_BUTTON("Other Clinical Attribute"))
 
     def get_analysis_card_table_data_by_row_column(self, analysis_card_name, row, column):
         locator = ClinicalDataAnalysisLocators.TABLE_ON_ANALYSIS_CARD_ROW_COLUMN(analysis_card_name, row, column)

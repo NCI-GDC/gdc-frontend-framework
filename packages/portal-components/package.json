@@ -1,6 +1,6 @@
 {
   "name": "@gff/portal-components",
-  "version": "2.15.5",
+  "version": "2.16.1",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -21,6 +21,8 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@mantine/core": "^7.8.1",
+    "@mantine/notifications": "^7.8.1",
+    "@mantine/modals": "^7.8.1",
     "react-icons": "^4.12.0"
   },
   "peerDependencies": {

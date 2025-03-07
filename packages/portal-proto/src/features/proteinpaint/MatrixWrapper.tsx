@@ -27,9 +27,11 @@ import {
   SelectSamplesCallback,
   RxComponentCallbacks,
 } from "./sjpp-types";
-import SaveCohortModal from "@/components/Modals/SaveCohortModal";
+import { SaveCohortModal } from "@gff/portal-components";
 import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
 import { isEqual, cloneDeep } from "lodash";
+import { cohortActionsHooks } from "../cohortBuilder/CohortManager/cohortActionHooks";
+import { INVALID_COHORT_NAMES } from "../cohortBuilder/utils";
 
 const basepath = PROTEINPAINT_API;
 
@@ -242,6 +244,8 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
         opened={showSaveCohortModal}
         onClose={() => setShowSaveCohortModal(false)}
         filters={newCohortFilters}
+        hooks={cohortActionsHooks}
+        invalidCohortNames={INVALID_COHORT_NAMES}
       />
 
       <GeneSetModal
