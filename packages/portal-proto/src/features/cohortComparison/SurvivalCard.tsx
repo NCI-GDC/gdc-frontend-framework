@@ -181,11 +181,7 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
   const isLoading = isSetsloading || isFetching || isUninitialized;
 
   return (
-    <Paper
-      data-testid="card-analysis-survival-cohort-comparison"
-      p="md"
-      className="min-w-[600px]"
-    >
+    <Paper data-testid="card-analysis-survival-cohort-comparison" p="md">
       <h2 className="font-heading text-lg font-semibold">Survival Analysis</h2>
       {data?.survivalData.length === 0 ? (
         <div className="p-1">
