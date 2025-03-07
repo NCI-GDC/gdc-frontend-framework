@@ -45,7 +45,7 @@ export const bodyplotSlice = graphqlAPISlice.injectEndpoints({
       query: () => ({
         graphQLQuery: `query HumanBody {
         viewer {
-          repository {
+          explore {
             cases {
               aggregations {
                 primary_site {
@@ -65,8 +65,7 @@ export const bodyplotSlice = graphqlAPISlice.injectEndpoints({
       }),
       transformResponse: (response) =>
         processData(
-          response.data.viewer.repository.cases.aggregations.primary_site
-            .buckets,
+          response.data.viewer.explore.cases.aggregations.primary_site.buckets,
         ),
     }),
   }),
