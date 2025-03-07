@@ -36,8 +36,7 @@ export type BodyPlotDataKey =
   | "Thyroid"
   | "Uterus";
 
-// TODO replace below with BodyPlotDataKey
-type BodyPlotData = Record<string, BodyplotDataElement>;
+type BodyPlotData = Record<BodyPlotDataKey, BodyplotDataElement>;
 
 export const HUMAN_BODY_MAPPINGS: BodyPlotData = {
   "Adrenal Gland": {
