@@ -9,9 +9,7 @@ describe("test processData for Bodyplot response", () => {
   test("processData", () => {
     const results = processData(
       receivedBodyplotData.data.viewer.repository.cases.aggregations
-        .diagnoses__tissue_or_organ_of_origin.buckets,
-      receivedBodyplotData.data.viewer.repository.files.aggregations
-        .cases__diagnoses__tissue_or_organ_of_origin.buckets,
+        .primary_site.buckets,
     );
     expect(results).toEqual(expectedProcessedData);
   });
