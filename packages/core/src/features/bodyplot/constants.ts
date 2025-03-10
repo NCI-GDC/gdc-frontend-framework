@@ -554,7 +554,9 @@ export const HUMAN_BODY_MAPPINGS: BodyPlotData = {
   },
 };
 
-export const HUMAN_BODY_MAPPER = (category: string): Record<string, string[]> =>
+export const HUMAN_BODY_MAPPER = (
+  category: string,
+): Record<string, BodyPlotDataKey[]> =>
   Object.entries(HUMAN_BODY_MAPPINGS).reduce(
     (mainAcc: Record<string, string[]>, [sapiensLabel, byCategories]) => ({
       ...mainAcc,

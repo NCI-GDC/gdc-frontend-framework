@@ -2,6 +2,8 @@ import { graphqlAPISlice } from "../gdcapi/gdcgraphql";
 import {
   HUMAN_BODY_ALL_ALLOWED_SITES,
   HUMAN_BODY_SITES_MAP,
+  HUMAN_BODY_MAPPINGS,
+  BodyPlotDataKey,
 } from "./constants";
 
 interface Bucket {
@@ -18,14 +20,14 @@ export interface BodyplotData extends BodyplotCountsData {
 }
 
 export const processData = (casesBuckets: Bucket[]): BodyplotData[] => {
-  const groupedResults: Record<string, Bucket[]> = {};
+  const groupedResults: Partial<Record<BodyPlotDataKey, Bucket[]>> = {};
 
   casesBuckets.map((bucket) => {
     const primarySiteGroups = HUMAN_BODY_SITES_MAP[bucket.key];
     for (const primarySiteGroup of primarySiteGroups) {
       if (groupedResults[primarySiteGroup]) {
         groupedResults[primarySiteGroup] = [
-          ...groupedResults[primarySiteGroup],
+          ...(groupedResults[primarySiteGroup] || []),
           bucket,
         ];
       } else {
@@ -35,9 +37,10 @@ export const processData = (casesBuckets: Bucket[]): BodyplotData[] => {
   });
 
   const formattedResults = Object.entries(groupedResults)
-    .map(([group, buckets]) => ({
-      key: group,
-      allPrimarySites: buckets.map((b) => b.key),
+    .map(([majorPrimarySite, buckets]) => ({
+      key: majorPrimarySite,
+      allPrimarySites:
+        HUMAN_BODY_MAPPINGS[majorPrimarySite as BodyPlotDataKey].byPrimarySite,
       caseCount: buckets.reduce((sum, { doc_count }) => sum + doc_count, 0),
     }))
     .filter(({ key }) => HUMAN_BODY_ALL_ALLOWED_SITES.includes(key));
