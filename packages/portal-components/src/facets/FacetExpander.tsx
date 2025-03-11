@@ -1,8 +1,7 @@
-import { LessIcon, MoreIcon } from "@/utils/icons";
 import React from "react";
-import tw from "tailwind-styled-components";
+import { LessIcon, MoreIcon } from "src/commonIcons";
 
-export const ExpanderLabel = tw.div`
+const expanderLabelStyles = `
 text-accent-content-darker
 p-1
 font-bold
@@ -46,7 +45,7 @@ const FacetExpander: React.FC<FacetExpanderProps> = ({
               size="1rem"
               aria-hidden="true"
             />
-            <ExpanderLabel>{remainingValues} more</ExpanderLabel>
+            <div className={expanderLabelStyles}>{remainingValues} more</div>
           </div>
         </button>
       ) : isGroupExpanded ? (
@@ -62,7 +61,7 @@ const FacetExpander: React.FC<FacetExpanderProps> = ({
               onClick={() => onShowChanged(!isGroupExpanded)}
               aria-hidden="true"
             />
-            <ExpanderLabel>show less</ExpanderLabel>
+            <div className={expanderLabelStyles}>show less</div>
           </div>
         </button>
       ) : null}

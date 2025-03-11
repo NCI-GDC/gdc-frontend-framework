@@ -1,6 +1,6 @@
-import { SelectorIcon, SortAscIcon, SortDesIcon } from "@/utils/icons";
-import { Button } from "@mantine/core";
 import React, { useEffect, useRef, useState } from "react";
+import { Button } from "@mantine/core";
+import { SelectorIcon, SortAscIcon, SortDesIcon } from "src/commonIcons";
 import { SortType } from "./types";
 
 interface FacetSortPanelProps {
@@ -39,10 +39,10 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
   setSort,
   field,
 }: FacetSortPanelProps) => {
-  const liveRegionRef = useRef(null);
+  const liveRegionRef = useRef<HTMLSpanElement>(null);
   const [sortingStatus, setSortingStatus] = useState("");
   useEffect(() => {
-    if (sortingStatus) {
+    if (sortingStatus && liveRegionRef.current) {
       liveRegionRef.current.textContent = sortingStatus;
     }
   }, [sortingStatus]);

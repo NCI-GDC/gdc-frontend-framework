@@ -1,10 +1,4 @@
-import {
-  FacetDefinition,
-  NumericFromTo,
-  OperandValue,
-  Operation,
-} from "@gff/core";
-import { ComponentType, ReactNode } from "react";
+import { Operation } from "@/cohort/QueryExpression/types";
 
 export interface FacetResponse {
   readonly data?: Record<string, number>;
@@ -56,6 +50,7 @@ export interface FacetCommonHooks {
   useTotalCounts: GetTotalCountsFunction; // get the totals count by type: cases, files, genes, ssms, projects
   useToggleExpandFilter?: () => (field: string, expanded: boolean) => void;
   useFilterExpanded?: (field: string) => boolean;
+  useFieldNameToTitle: () => (field: string) => string;
 }
 
 export type FacetRequiredHooks =
@@ -79,13 +74,8 @@ export interface FacetCardProps<T extends FacetCommonHooks> {
   readonly startShowingData?: boolean;
   readonly hideIfEmpty?: boolean;
   readonly width?: string;
-  readonly dismissCallback?: (string) => void;
-
-  readonly header?: {
-    readonly Panel?: ComponentType<{ children: ReactNode }>; // optional header component
-    readonly Label?: ComponentType<{ children: ReactNode }>; // optional facet label component
-    readonly iconStyle?: string; // optional facet button component
-  };
+  readonly dismissCallback?: (field: string) => void;
+  readonly variant?: "default" | "summary";
 }
 
 export type RangeFromOp = ">" | ">=";

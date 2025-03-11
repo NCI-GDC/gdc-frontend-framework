@@ -1,11 +1,12 @@
 import React from "react";
 import { fieldNameToTitle } from "@gff/core";
-import EnumFacet from "@/features/facets/EnumFacet";
+import EnumFacet from "./EnumFacet";
 import NumericRangeFacet from "@/features/facets/NumericRangeFacet";
 import DateRangeFacet from "@/features/facets/DateRangeFacet";
 import ExactValueFacet from "@/features/facets/ExactValueFacet";
 import ToggleFacet from "@/features/facets/ToggleFacet";
-import SetFacet from "./SetFacet";
+import SetFacet from "../../../portal-proto/src/features/facets/SetFacet";
+import UploadFacet from "./UploadFacet";
 import {
   EnumFacetHooks,
   FacetCardDefinition,
@@ -13,8 +14,7 @@ import {
   RangeFacetHooks,
   SetFacetHooks,
   ValueFacetHooks,
-} from "@/features/facets/types";
-import UploadFacet from "@/features/facets/UploadFacet";
+} from "./types";
 
 /**
  * createFacetCard given a facet definition it will create a

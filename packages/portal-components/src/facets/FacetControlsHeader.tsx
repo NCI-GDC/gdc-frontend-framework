@@ -1,13 +1,5 @@
 import React, { useEffect } from "react";
 import { ActionIcon, Tooltip } from "@mantine/core";
-import { fieldNameToTitle } from "@gff/core";
-import {
-  FacetIconButton,
-  controlsIconStyle,
-  FacetText,
-  FacetHeader,
-} from "./components";
-import { FacetCardProps, FacetRequiredHooks } from "./types";
 import {
   CloseIcon,
   ExpandLessIcon,
@@ -15,19 +7,21 @@ import {
   FlipIcon,
   SearchIcon,
   UndoIcon,
-} from "@/utils/icons";
+} from "src/commonIcons";
+import { FacetCardProps, FacetRequiredHooks } from "./types";
+import { facetIconButtonStyles } from "./styles";
 
 type FacetHeaderProps = Pick<
   FacetCardProps<FacetRequiredHooks>,
   | "field"
   | "description"
   | "hooks"
+  | "variant"
   | "facetName"
   | "showSearch"
   | "showFlip"
   | "dismissCallback"
   | "isFacetView"
-  | "header"
 > & {
   showClearSelection?: boolean;
   toggleFlip?: () => void;
@@ -53,7 +47,8 @@ const FacetControlsHeader = ({
   field,
   description,
   hooks,
-  facetName = null,
+  variant,
+  facetName = undefined,
   showSearch = false,
   showFlip = false,
   showClearSelection = true,
@@ -61,17 +56,13 @@ const FacetControlsHeader = ({
   toggleFlip = undefined,
   toggleSearch = undefined,
   dismissCallback = undefined,
-  header = {
-    Panel: FacetHeader,
-    Label: FacetText,
-    iconStyle: controlsIconStyle,
-  },
 }: FacetHeaderProps) => {
   const clearFilters = hooks.useClearFilter();
   const isFilterExpanded =
     hooks?.useFilterExpanded && hooks.useFilterExpanded(field);
   const toggleExpandFilter =
     hooks?.useToggleExpandFilter && hooks.useToggleExpandFilter();
+  const fieldNameToTitle = hooks.useFieldNameToTitle();
 
   useEffect(() => {
     // Initialize filter as expanded
@@ -80,8 +71,19 @@ const FacetControlsHeader = ({
     }
   }, [field, isFilterExpanded, toggleExpandFilter]);
 
+  const iconStyle =
+    variant === "default"
+      ? "text-primary-contrast-darker hover:text-primary-lighter"
+      : "text-primary-darkest hover:text-primary-lighter";
+
   return (
-    <header.Panel>
+    <div
+      className={
+        variant === "default"
+          ? "flex justify-between flex-nowrap bg-primary-darker px-2 shrink-0"
+          : "flex items-start justify-between flex-nowrap px-1.5 border-base- border-b-1"
+      }
+    >
       <div className="flex flex-row items-center">
         {toggleExpandFilter && (
           <Tooltip label={isFilterExpanded ? "Collapse card" : "Expand card"}>
@@ -109,64 +111,74 @@ const FacetControlsHeader = ({
           transitionProps={{ duration: 200, transition: "fade" }}
           disabled={!description}
         >
-          <header.Label>
+          <div
+            className={
+              variant === "default"
+                ? "text-primary-contrast-darker font-heading font-semibold text-sm xl:text-[1rem] break-words py-2"
+                : "text-primary-darkest font-heading font-semibold text-[1.25em] break-words py-2"
+            }
+          >
             {facetName ? facetName : fieldNameToTitle(field)}
-          </header.Label>
+          </div>
         </Tooltip>
       </div>
       <div className="flex flex-row">
         {showSearch ? (
           <Tooltip label="Search values">
-            <FacetIconButton
+            <button
+              className={facetIconButtonStyles}
               onClick={() => {
                 toggleExpandFilter && toggleExpandFilter(field, true);
-                toggleSearch();
+                toggleSearch && toggleSearch();
               }}
               aria-label="Search"
             >
               <SearchIcon
                 size="1.45em"
-                className={header.iconStyle}
+                className={iconStyle}
                 aria-hidden="true"
               />
-            </FacetIconButton>
+            </button>
           </Tooltip>
         ) : null}
         {showFlip ? (
           <Tooltip label={isFacetView ? "Chart view" : "Selection view"}>
-            <FacetIconButton
+            <button
+              className={facetIconButtonStyles}
               onClick={() => {
                 toggleExpandFilter && toggleExpandFilter(field, true);
-                toggleFlip();
+                toggleFlip && toggleFlip();
               }}
               aria-pressed={!isFacetView}
               aria-label={isFacetView ? "Chart view" : "Selection view"}
             >
               <FlipIcon
                 size="1.45em"
-                className={header.iconStyle}
+                className={iconStyle}
                 aria-hidden="true"
               />
-            </FacetIconButton>
+            </button>
           </Tooltip>
         ) : null}
         {showClearSelection && (
           <Tooltip label="Clear selection">
-            <FacetIconButton
+            <button
+              className={facetIconButtonStyles}
               onClick={() => clearFilters(field)}
               aria-label="clear selection"
             >
               <UndoIcon
                 size="1.25em"
-                className={header.iconStyle}
+                className={iconStyle}
                 aria-hidden="true"
               />
-            </FacetIconButton>
+            </button>
           </Tooltip>
         )}
         {dismissCallback ? (
           <Tooltip label="Remove the facet">
-            <FacetIconButton
+            <button
+              className={facetIconButtonStyles}
               onClick={() => {
                 dismissCallback(field);
               }}
@@ -174,14 +186,14 @@ const FacetControlsHeader = ({
             >
               <CloseIcon
                 size="1.25em"
-                className={header.iconStyle}
+                className={iconStyle}
                 aria-hidden="true"
               />
-            </FacetIconButton>
+            </button>
           </Tooltip>
         ) : null}
       </div>
-    </header.Panel>
+    </div>
   );
 };
 

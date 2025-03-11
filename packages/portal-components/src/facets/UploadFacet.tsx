@@ -1,26 +1,18 @@
 import React from "react";
-import {
-  Modals,
-  showModal,
-  useCoreDispatch,
-  Includes,
-  trimFirstFieldNameToTitle,
-} from "@gff/core";
+import { useDeepCompareMemo } from "use-deep-compare";
 import { Button, Tooltip } from "@mantine/core";
 import {
   controlsIconStyle,
   FacetHeader,
   FacetIconButton,
   FacetText,
-} from "./components";
+} from "./styles";
 import { useCohortFacetFilters } from "../cohortBuilder/utils";
-import { CohortBadge } from "@gff/portal-components";
+import CohortBadge from "@/cohort/QueryExpression/CohortBadge";
 import { humanify } from "@/utils/index";
-import { FacetRequiredHooks } from "./types";
-import { useDeepCompareMemo } from "use-deep-compare";
-import { UndoIcon } from "@/utils/icons";
 import { calculateStickyHeaderHeight } from "src/utils/";
-import queryExpressionHooks from "../cohortBuilder/queryExpressionHooks";
+import { UndoIcon } from "src/commonIcons";
+import { FacetRequiredHooks } from "./types";
 
 interface UploadFacetProps {
   field: string;

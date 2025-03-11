@@ -9,7 +9,7 @@ import {
 } from "@gff/core";
 import { QueryRepresentationLabel } from "@gff/portal-components";
 import { FacetCardProps, SetFacetHooks } from "./types";
-import FacetControlsHeader from "./FacetControlsHeader";
+import FacetControlsHeader from "@gff/portal-components/src/facets/FacetControlsHeader";
 import { CloseIcon } from "@/utils/icons";
 import queryExpressionHooks from "../cohortBuilder/queryExpressionHooks";
 

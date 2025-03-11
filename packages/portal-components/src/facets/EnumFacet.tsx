@@ -1,23 +1,27 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useRouter } from "next/router";
-import { flatten } from "lodash";
-import { fieldNameToTitle } from "@gff/core";
-import { DEFAULT_VISIBLE_ITEMS, updateFacetEnum } from "./utils";
-import { EnumFacetHooks, FacetCardProps } from "@/features/facets/types";
-import { EnumFacetChart } from "../charts/EnumFacetChart";
-import { ActionIcon, Checkbox, LoadingOverlay, TextInput } from "@mantine/core";
-import { controlsIconStyle, FacetText, FacetHeader } from "./components";
-import FacetExpander from "@/features/facets/FacetExpander";
-import FacetSortPanel from "@/features/facets/FacetSortPanel";
-import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
-import { SortType } from "./types";
 import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
-import FacetControlsHeader from "./FacetControlsHeader";
-import { BAD_DATA_MESSAGE } from "./constants";
-import { CloseIcon } from "@/utils/icons";
+import { flatten } from "lodash";
+import { ActionIcon, Checkbox, LoadingOverlay, TextInput } from "@mantine/core";
+
+import OverflowTooltippedLabel from "@/common/OverflowTooltippedLabel";
+
+//import { useRouter } from "next/router";
+//import { fieldNameToTitle } from "@gff/core";
+import { updateFacetEnum } from "../../../portal-proto/src/features/facets/utils";
+import { EnumFacetChart } from "../../../portal-proto/src/features/charts/EnumFacetChart";
 import { calculateStickyHeaderHeight } from "src/utils/";
 import MiniSearch from "minisearch";
-import { STOP_WORDS, TOKENIZE_STRING } from "../cohortBuilder/dictionary";
+import {
+  STOP_WORDS,
+  TOKENIZE_STRING,
+} from "../../../portal-proto/src/features/cohortBuilder/dictionary";
+import { CloseIcon } from "src/commonIcons";
+import FacetSortPanel from "./FacetSortPanel";
+import FacetControlsHeader from "./FacetControlsHeader";
+import { SortType, EnumFacetHooks, FacetCardProps } from "./types";
+import { BAD_DATA_MESSAGE, DEFAULT_VISIBLE_ITEMS } from "./constants";
+
+import FacetExpander from "./FacetExpander";
 
 interface FacetResultDoc {
   enum: string;
@@ -54,7 +58,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   hooks,
   valueLabel,
   description,
-  facetName = null,
+  facetName = undefined,
   showSearch = true,
   showFlip = true,
   startShowingData = true,
@@ -62,11 +66,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   hideIfEmpty = true,
   dismissCallback = undefined,
   width = undefined,
-  header = {
-    Panel: FacetHeader,
-    Label: FacetText,
-    iconStyle: controlsIconStyle,
-  },
+  variant = "default",
 }: FacetCardProps<EnumFacetHooks>) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -77,13 +77,15 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   });
   const [sortedData, setSortedData] = useState(undefined);
   const [isFacetView, setIsFacetView] = useState(startShowingData);
-  const cardRef = useRef<HTMLDivElement>(null);
   const { data, enumFilters, isSuccess, error, isUninitialized, isFetching } =
     hooks.useGetEnumFacetData(field);
   const [dataProcessed, setDataProcessed] = useState(false);
-
   const [selectedEnums, setSelectedEnums] = useState(enumFilters);
-  const searchInputRef = useRef(null);
+
+  const cardRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  // TODO - move to hook
+  /*
   const router = useRouter();
   const hash = window?.location?.hash.split("#")?.[1];
   const searchTermParam = router?.query?.searchTerm as string;
@@ -95,6 +97,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
       setSearchTerm(searchTermParam);
     }
   }, [cardSelected, searchTermParam]);
+  */
 
   const totalCount = hooks.useTotalCounts(field);
   const clearFilters = hooks.useClearFilter();
@@ -102,6 +105,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   const isFilterExpanded =
     hooks?.useFilterExpanded && hooks.useFilterExpanded(field);
   const showFilters = isFilterExpanded === undefined || isFilterExpanded;
+  const fieldNameToTitle = hooks.useFieldNameToTitle();
 
   useEffect(() => {
     if (isSearching) {
@@ -327,7 +331,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           toggleFlip={toggleFlip}
           toggleSearch={toggleSearch}
           dismissCallback={dismissCallback}
-          header={header}
+          variant={variant}
         />
       </div>
       <div
@@ -354,7 +358,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                     <ActionIcon
                       onClick={() => {
                         setSearchTerm("");
-                        searchInputRef.current.focus();
+                        searchInputRef?.current?.focus();
                       }}
                       className="border-0"
                     >

@@ -3,13 +3,10 @@ import { isEqual } from "lodash";
 import { Text, Modal, LoadingOverlay, Badge, Tooltip } from "@mantine/core";
 import { fieldNameToTitle } from "@gff/core";
 import { createFacetCard } from "@/features/facets/CreateFacetCard";
-import {
-  FacetCardDefinition,
-  FacetRequiredHooks,
-} from "@/features/facets/types";
 import FacetSelection from "@/components/FacetSelection";
 import { TableXPositionContext } from "@/components/Table/VerticalTable";
-import { AddIcon, UndoIcon } from "@/utils/icons";
+import { AddIcon, UndoIcon } from "src/commonIcons";
+import { FacetCardDefinition, FacetRequiredHooks } from "./types";
 
 interface FilterPanelProps {
   readonly facetDefinitions: FacetCardDefinition[];
