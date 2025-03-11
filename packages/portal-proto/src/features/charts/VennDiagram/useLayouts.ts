@@ -808,7 +808,14 @@ export const useLayout = ({
           },
         })),
       ],
-      tooltip: {},
+      tooltip: {
+        show: true,
+        trigger: "item" as const,
+        transitionDuration: 0,
+        position: function (point: [number, number]) {
+          return [point[0], point[1] + 20];
+        },
+      },
       series: [
         {
           type: "custom" as const,
@@ -844,7 +851,7 @@ export const useLayout = ({
               const dataIndex = params?.dataIndex;
               const dataValue = chartData[dataIndex]?.value;
               return dataValue === 0
-                ? `This region contains 0 items`
+                ? "This region contains 0 items"
                 : undefined;
             },
             borderWidth: 0,
