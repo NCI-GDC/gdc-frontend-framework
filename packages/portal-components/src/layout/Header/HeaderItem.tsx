@@ -11,7 +11,7 @@ export const isHeaderButtonItem = (
 
 export const createHeaderItem = (item: HeaderItem): React.ReactElement => {
   if (isHeaderButtonItem(item)) {
-    return <HeaderButton {...item} />;
+    return <HeaderButton {...item} key={`button-${item.customDataTestID}`} />;
   }
-  return <HeaderLink {...item} />;
+  return <HeaderLink {...item} key={`link-${item.customDataTestID}`} />;
 };
