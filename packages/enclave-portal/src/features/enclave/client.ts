@@ -44,7 +44,7 @@ interface PrimaryDiagnosisOperation {
   ["primary_diagnosis"]: IncludesOperation;
 }
 
-interface TissuOrOrganOfOriginOperation {
+interface TissueOrOrganOfOriginOperation {
   ["tissue_or_organ_of_origin"]: IncludesOperation;
 }
 interface AgeAtDiagnosisMaxOperation {
