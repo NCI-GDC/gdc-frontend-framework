@@ -7,7 +7,7 @@ interface IncludesOperation {
   readonly operands: ReadonlyArray<string>;
 }
 
-interface GreaterThanOEqualsThanOperation {
+interface GreaterThanOrEqualsThanOperation {
   readonly operator: ">=";
   readonly field: string;
   readonly operand: number;
