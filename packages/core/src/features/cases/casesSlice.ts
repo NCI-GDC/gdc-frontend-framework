@@ -1,19 +1,16 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import {
-  CoreDataSelectorResponse,
-  createUseCoreDataHook,
-} from "../../dataAccess";
-import { CoreState } from "../../reducers";
-import {
-  fetchGdcAnnotations,
-  fetchGdcCases,
-  Pagination,
-  SortBy,
-} from "../gdcapi/gdcapi";
+import { fetchGdcAnnotations, fetchGdcCases } from "../gdcapi";
+import { Pagination, SortBy } from "../gdcapi/types";
 import { AnnotationDefaults, CaseDefaults } from "../gdcapi/types";
 import { CoreDispatch } from "../../store";
 import { groupBy } from "lodash";
 import { GqlOperation } from "../gdcapi/filters";
+import { CoreState } from "src/reducers";
+import {
+  CoreDataSelectorResponse,
+  createUseCoreDataHook,
+} from "src/dataAccess";
+
 interface CaseSliceResponseData {
   case_id: string;
   case_uuid: string;

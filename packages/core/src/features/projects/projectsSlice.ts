@@ -1,6 +1,10 @@
 import { Middleware, Reducer } from "@reduxjs/toolkit";
-import { endpointSlice, GdcApiRequest, GdcApiResponse } from "../gdcapi/gdcapi";
-import { ProjectDefaults } from "../gdcapi/types";
+import { endpointSlice } from "../gdcapi";
+import {
+  GdcApiRequest,
+  GdcApiResponse,
+  ProjectDefaults,
+} from "../gdcapi/types";
 
 export const projectsApiSlice = endpointSlice.injectEndpoints({
   endpoints: (builder) => ({

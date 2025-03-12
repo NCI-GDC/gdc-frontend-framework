@@ -1,4 +1,4 @@
-import { isBucketsAggregation, isStatsAggregation } from "../gdcapi/gdcapi";
+import { isBucketsAggregation, isStatsAggregation } from "../gdcapi/utils";
 import { GQLIndexType, GQLDocType } from "./types";
 import { ERROR_UNHANDLED_AGGREGATION } from "../../constants";
 

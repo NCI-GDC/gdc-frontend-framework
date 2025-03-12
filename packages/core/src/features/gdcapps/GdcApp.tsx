@@ -23,7 +23,7 @@ import {
 import { registerGdcApp } from "./gdcAppRegistry";
 import { DataStatus } from "../../dataAccess";
 import { CookiesProvider } from "react-cookie";
-import { Pagination } from "../gdcapi/gdcapi";
+import { Pagination } from "../gdcapi/types";
 
 // using a random uuid v4 as the namespace
 const GDC_APP_NAMESPACE = "0bd921a8-e5a7-4e73-a63c-e3f872798061";

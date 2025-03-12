@@ -1,7 +1,7 @@
 import { buildCohortGqlOperator, FilterSet } from "../cohort";
 import { GqlIntersection } from "../gdcapi/filters";
 import { graphqlAPISlice } from "../gdcapi/gdcgraphql";
-import { Bucket } from "../gdcapi/gdcapi";
+import { Bucket } from "../gdcapi/types";
 
 const graphQLQuery = `query CancerDistribution($caseFilters: FiltersArgument, $caseAggsFilters: FiltersArgument, $ssmTested: FiltersArgument, $ssmFilters: FiltersArgument) {
   viewer {

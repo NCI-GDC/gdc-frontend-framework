@@ -1,6 +1,7 @@
 import { Middleware, Reducer } from "@reduxjs/toolkit";
 import { castDraft } from "immer";
-import { GdcApiRequest, GdcApiResponse, endpointSlice } from "../gdcapi/gdcapi";
+import { endpointSlice } from "../gdcapi";
+import { GdcApiRequest, GdcApiResponse } from "../gdcapi/types";
 import { FileDefaults } from "../gdcapi/types";
 
 const accessTypes = ["open", "controlled"] as const;
