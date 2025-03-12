@@ -83,17 +83,11 @@ const createSVG = async (ref: MutableRefObject<HTMLElement>): Promise<Blob> => {
   );
   chartWrapper.setAttribute(
     "width",
-    `${
-      Number(ref.current.querySelector("svg").getAttribute("width")) +
-      EXTRA_PADDING
-    }`,
+    `${Number(ref.current.getBoundingClientRect().width) + EXTRA_PADDING}`,
   );
   chartWrapper.setAttribute(
     "height",
-    `${
-      Number(ref.current.querySelector("svg").getAttribute("height")) +
-      EXTRA_PADDING
-    }`,
+    `${Number(ref.current.getBoundingClientRect().height) + EXTRA_PADDING}`,
   );
   chartWrapper.append(document.importNode(ref.current, true));
   svgElement.append(chartWrapper);
@@ -136,10 +130,8 @@ export const handleDownloadPNG = async (
   const svgBlob = await createSVG(ref);
   const svgHref = URL.createObjectURL(svgBlob);
   const svgImage = new Image(
-    Number(ref.current.querySelector("svg").getAttribute("width")) +
-      EXTRA_PADDING,
-    Number(ref.current.querySelector("svg").getAttribute("height")) +
-      EXTRA_PADDING,
+    Number(ref.current.getBoundingClientRect().width) + EXTRA_PADDING,
+    Number(ref.current.getBoundingClientRect().height) + EXTRA_PADDING,
   );
   const canvas = document.createElement("canvas");
   const canvasCtx = canvas.getContext("2d");
