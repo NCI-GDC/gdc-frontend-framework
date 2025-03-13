@@ -18,7 +18,7 @@ import {
   TABS,
 } from "./constants";
 import { toDisplayName } from "./utils";
-import tailwindConfig from "../../../tailwind.config";
+import tailwindConfig from "tailwind.config";
 import { FacetExpander } from "@gff/portal-components";
 import {
   useDeepCompareCallback,

@@ -46,10 +46,7 @@ import {
   graphqlAPISliceReducerPath,
   graphqlAPIReducer,
 } from "./features/gdcapi/gdcgraphql";
-import {
-  endpointReducer,
-  endpointSliceReducerPath,
-} from "./features/gdcapi/gdcapi";
+import { endpointReducer, endpointSliceReducerPath } from "./features/gdcapi";
 import { setsReducer } from "./features/sets";
 import { sessionStorage } from "./storage-persist";
 import {

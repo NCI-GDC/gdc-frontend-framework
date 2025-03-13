@@ -1,6 +1,6 @@
 import { buildCohortGqlOperator, FilterSet } from "../cohort";
 import { GqlIntersection, Includes } from "../gdcapi/filters";
-import { Buckets, Bucket } from "../gdcapi/gdcapi";
+import { Buckets, Bucket } from "../gdcapi/types";
 import { GraphQLApiResponse, graphqlAPISlice } from "../gdcapi/gdcgraphql";
 
 interface GeneCancerDistributionTableResponse {
