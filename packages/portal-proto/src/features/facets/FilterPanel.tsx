@@ -2,11 +2,14 @@ import React, { useState, useContext, useRef, useMemo } from "react";
 import { isEqual } from "lodash";
 import { Text, Modal, LoadingOverlay, Badge, Tooltip } from "@mantine/core";
 import { fieldNameToTitle } from "@gff/core";
-import { createFacetCard } from "@/features/facets/CreateFacetCard";
+import { createFacetCards } from "@gff/portal-components";
+import {
+  FacetCardDefinition,
+  FacetRequiredHooks,
+} from "@/features/facets/types";
 import FacetSelection from "@/components/FacetSelection";
 import { TableXPositionContext } from "@/components/Table/VerticalTable";
-import { AddIcon, UndoIcon } from "src/commonIcons";
-import { FacetCardDefinition, FacetRequiredHooks } from "./types";
+import { AddIcon, UndoIcon } from "@/utils/icons";
 
 interface FilterPanelProps {
   readonly facetDefinitions: FacetCardDefinition[];
@@ -158,11 +161,11 @@ const FilterPanel = ({
               : true;
           const facetName =
             facet.title || fieldNameToTitle(facet.full, isDefault ? 1 : 2);
-          return createFacetCard({
-            facet,
+          return createFacetCards({
+            facets: facet,
             valueLabel:
               typeof valueLabel === "string" ? valueLabel : valueLabel(facet),
-            dataFunctions: facetHooks,
+            hooks: facetHooks,
             idPrefix: app,
             dismissCallback: !isDefault
               ? customConfig.handleRemoveFilter

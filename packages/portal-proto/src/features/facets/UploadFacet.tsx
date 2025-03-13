@@ -1,18 +1,28 @@
 import React from "react";
-import { useDeepCompareMemo } from "use-deep-compare";
+import {
+  Modals,
+  showModal,
+  useCoreDispatch,
+  useCoreSelector,
+  useGeneSymbol,
+  selectCurrentCohortId,
+  Includes,
+  trimFirstFieldNameToTitle,
+} from "@gff/core";
 import { Button, Tooltip } from "@mantine/core";
 import {
   controlsIconStyle,
   FacetHeader,
   FacetIconButton,
   FacetText,
-} from "./styles";
+} from "./components";
 import { useCohortFacetFilters } from "../cohortBuilder/utils";
-import CohortBadge from "@/cohort/QueryExpression/CohortBadge";
+import CohortBadge from "../cohortBuilder/CohortBadge";
 import { humanify } from "@/utils/index";
-import { calculateStickyHeaderHeight } from "src/utils/";
-import { UndoIcon } from "src/commonIcons";
 import { FacetRequiredHooks } from "./types";
+import { useDeepCompareMemo } from "use-deep-compare";
+import { UndoIcon } from "@/utils/icons";
+import { calculateStickyHeaderHeight } from "src/utils/";
 
 interface UploadFacetProps {
   field: string;
@@ -34,6 +44,7 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
   customFaceTitle,
 }) => {
   const coreDispatch = useCoreDispatch();
+  const currentCohortId = useCoreSelector(selectCurrentCohortId);
   const clearFilters = useClearFilter();
   const hash = window?.location?.hash.split("#")?.[1];
   const cardSelected = hash !== undefined && hash === fullField;
@@ -54,6 +65,10 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
     return includeFilters.find((f) => f.field === field)?.operands || [];
   }, [filters, field]);
 
+  const { data: geneSymbolDict, isSuccess } = useGeneSymbol(
+    field === "genes.gene_id" ? items.map((x) => x.toString()) : [],
+  );
+
   const renderBadges = (items: string[], itemField: string) => {
     return items.map((item, index) => (
       <CohortBadge
@@ -63,7 +78,9 @@ const UploadFacet: React.FC<UploadFacetProps> = ({
         customTestid={`query-rep-${itemField}-${item}-${index}`}
         operands={items}
         operator="includes"
-        hooks={queryExpressionHooks}
+        currentCohortId={currentCohortId}
+        geneSymbolDict={geneSymbolDict}
+        isSuccess={isSuccess}
       />
     ));
   };

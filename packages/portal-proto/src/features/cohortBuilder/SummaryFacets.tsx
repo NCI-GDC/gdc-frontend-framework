@@ -1,4 +1,4 @@
-import EnumFacet from "../facets/EnumFacet";
+import EnumFacet from "@gff/portal-components";
 import { GQLDocType, GQLIndexType } from "@gff/core";
 import {
   useClearFilters,

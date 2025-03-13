@@ -10,6 +10,7 @@ import {
 } from "@gff/portal-components";
 import SequenceReadsIcon from "public/apps/icons/SequenceReads.svg";
 import ProjectsIcon from "public/layout/icons/crowd-of-users.svg";
+import CohortBuilderIcon from "public/apps/icons/CohortBuilder.svg";
 import PageLayout from "@/components/PageLayout";
 import CohortManager from "@/features/cohort/CohortManager";
 import { EXAMPLE_COHORTS } from "@/features/cohort/cohorts";
@@ -47,6 +48,23 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
     id: "TestApp",
     countsField: "caseCount",
     tags: [],
+  },
+  {
+    name: "Cohort Builder",
+    icon: (
+      <CohortBuilderIcon
+        width={64}
+        height={64}
+        viewBox="0 0 60 60"
+        aria-hidden="true"
+      />
+    ),
+    tags: ["generalUtility"],
+    hasDemo: false,
+    id: "CohortBuilder",
+    countsField: "caseCount",
+    description:
+      "Build and define your custom cohorts using a variety of clinical and biospecimen features.",
   },
 ];
 

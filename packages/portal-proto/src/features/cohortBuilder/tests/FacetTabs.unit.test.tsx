@@ -1,6 +1,6 @@
 import { render } from "test-utils";
 import userEvent from "@testing-library/user-event";
-import { FacetTabs } from "../FacetTabs";
+import { FacetTabs } from "@gff/portal-components/src/facets/FacetTabs";
 import * as hooks from "@/features/facets/hooks";
 import { NextRouter, useRouter } from "next/router";
 

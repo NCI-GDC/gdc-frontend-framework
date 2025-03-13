@@ -1,20 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
-import { flatten } from "lodash";
 import { ActionIcon, Checkbox, LoadingOverlay, TextInput } from "@mantine/core";
 
 import OverflowTooltippedLabel from "@/common/OverflowTooltippedLabel";
 
 //import { useRouter } from "next/router";
 //import { fieldNameToTitle } from "@gff/core";
-import { updateFacetEnum } from "../../../portal-proto/src/features/facets/utils";
-import { EnumFacetChart } from "../../../portal-proto/src/features/charts/EnumFacetChart";
-import { calculateStickyHeaderHeight } from "src/utils/";
-import MiniSearch from "minisearch";
-import {
-  STOP_WORDS,
-  TOKENIZE_STRING,
-} from "../../../portal-proto/src/features/cohortBuilder/dictionary";
+//import { updateFacetEnum } from "../../../portal-proto/src/features/facets/utils";
+//import { calculateStickyHeaderHeight } from "src/utils/";
 import { CloseIcon } from "src/commonIcons";
 import FacetSortPanel from "./FacetSortPanel";
 import FacetControlsHeader from "./FacetControlsHeader";
@@ -23,6 +16,7 @@ import { BAD_DATA_MESSAGE, DEFAULT_VISIBLE_ITEMS } from "./constants";
 
 import FacetExpander from "./FacetExpander";
 
+/*
 interface FacetResultDoc {
   enum: string;
   count: number;
@@ -34,6 +28,7 @@ export const miniSearch = new MiniSearch<FacetResultDoc>({
   tokenize: (string) => string.split(TOKENIZE_STRING), // indexing tokenizer
   processTerm: (term) => (STOP_WORDS.has(term) ? null : term.toLowerCase()), // index term processing
 });
+*/
 
 /**
  *  Enumeration facet filters handle display and selection of
@@ -67,6 +62,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   dismissCallback = undefined,
   width = undefined,
   variant = "default",
+  Chart = undefined,
 }: FacetCardProps<EnumFacetHooks>) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -75,12 +71,12 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     type: "alpha",
     direction: "asc",
   });
-  const [sortedData, setSortedData] = useState(undefined);
+  const [sortedData, setSortedData] = useState<Record<string, number>>({});
   const [isFacetView, setIsFacetView] = useState(startShowingData);
   const { data, enumFilters, isSuccess, error, isUninitialized, isFetching } =
     hooks.useGetEnumFacetData(field);
   const [dataProcessed, setDataProcessed] = useState(false);
-  const [selectedEnums, setSelectedEnums] = useState(enumFilters);
+  const [selectedEnums, setSelectedEnums] = useState(enumFilters || []);
 
   const cardRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -114,7 +110,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   }, [isSearching]);
 
   useDeepCompareEffect(() => {
-    setSelectedEnums(enumFilters);
+    setSelectedEnums(enumFilters || []);
   }, [enumFilters]);
 
   const maxValuesToDisplay = DEFAULT_VISIBLE_ITEMS;
@@ -125,12 +121,23 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
       ...facetChartData,
       isSuccess: false,
     });
-    if (checked) {
-      const updated = selectedEnums ? [...selectedEnums, value] : [value];
-      updateFacetEnum(field, updated, updateFacetFilters, clearFilters);
-    } else {
-      const updated = selectedEnums.filter((x) => x != value);
-      updateFacetEnum(field, updated, updateFacetFilters, clearFilters);
+
+    const updated = checked
+      ? selectedEnums
+        ? [...selectedEnums, value]
+        : [value]
+      : selectedEnums.filter((x) => x != value);
+
+    if (updated.length > 0) {
+      updateFacetFilters(field, {
+        operator: "includes",
+        field,
+        operands: updated,
+      });
+    }
+    // no values remove the filter
+    else {
+      clearFilters(field);
     }
   };
 
@@ -212,6 +219,8 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
       let filteredData = enumData;
 
       if (searchTerm) {
+        //TODO - move to hook
+        /*
         miniSearch.removeAll();
 
         const searchDocuments = enumData.map((entry) => ({
@@ -227,10 +236,12 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           combineWith: "OR",
         });
 
+
         const terms = flatten(results.map((r) => r.terms));
         filteredData = enumData.filter((d) =>
           terms.some((t) => d[0].toLowerCase().includes(t)),
         );
+        */
       }
 
       const remainingValues = filteredData.length - maxValuesToDisplay;
@@ -305,18 +316,20 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     return null; // nothing to render if visibleItems == 0
   }
 
-  const stickyHeaderHeight = calculateStickyHeaderHeight();
+  //const stickyHeaderHeight = calculateStickyHeaderHeight();
 
   return (
     <div
       className={`flex flex-col ${
         width ? width : "mx-0"
       } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition ${
-        cardSelected ? "animate-border-highlight " : undefined
+        false ? "animate-border-highlight " : undefined
       }`}
-      style={{
-        scrollMarginTop: stickyHeaderHeight + 10,
-      }}
+      style={
+        {
+          //scrollMarginTop: stickyHeaderHeight + 10,
+        }
+      }
       id={field}
     >
       <div>
@@ -502,8 +515,9 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                 {facetChartData.filteredData.length === 0 ? (
                   <div className="mx-4">No results found</div>
                 ) : (
-                  !isFacetView && (
-                    <EnumFacetChart
+                  !isFacetView &&
+                  Chart !== undefined && (
+                    <Chart
                       field={field}
                       data={facetChartData.filteredDataObj}
                       selectedEnums={selectedEnums}

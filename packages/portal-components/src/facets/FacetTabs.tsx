@@ -1,63 +1,60 @@
-import React, { useEffect, useState, useRef } from "react";
-import { useDeepCompareEffect } from "use-deep-compare";
-import { useRouter } from "next/router";
-import tw from "tailwind-styled-components";
+import React, { useState, useRef } from "react";
+//import { useDeepCompareEffect } from "use-deep-compare";
+//import { partial } from "lodash";
+
+//import { useRouter } from "next/router";
+//import tw from "tailwind-styled-components";
+//import {
+//  addFilterToCohortBuilder,
+//  CohortBuilderCategoryConfig,
+//  FacetDefinition,
+//  GQLDocType,
+//  GQLIndexType,
+//  removeFilterFromCohortBuilder,
+//  selectCohortBuilderConfig,
+//  selectCohortBuilderConfigCategory,
+//  selectCohortBuilderConfigFilters,
+//  selectFacetDefinitionsByName,
+//  useCoreDispatch,
+//  useCoreSelector,
+//  useFacetDictionary,
+//  usePrevious,
+//  selectFacetDefinition,
+//  fieldNameToTitle,
+//} from "@gff/core";
 import {
-  addFilterToCohortBuilder,
-  CohortBuilderCategoryConfig,
-  FacetDefinition,
-  GQLDocType,
-  GQLIndexType,
-  removeFilterFromCohortBuilder,
-  selectCohortBuilderConfig,
-  selectCohortBuilderConfigCategory,
-  selectCohortBuilderConfigFilters,
-  selectFacetDefinitionsByName,
-  useCoreDispatch,
-  useCoreSelector,
-  useFacetDictionary,
-  usePrevious,
-  selectFacetDefinition,
-  fieldNameToTitle,
-} from "@gff/core";
-import {
-  Button,
-  Flex,
-  LoadingOverlay,
-  Modal,
-  Stack,
-  StackProps,
+  //Button,
+  //Flex,
+  //LoadingOverlay,
+  //Modal,
+  //Stack,
+  //StackProps,
   Tabs,
   TabsProps,
-  Text,
+  //Text,
 } from "@mantine/core";
-import { getFacetInfo, upload_facets } from "@/features/cohortBuilder/utils";
-import FacetSelection from "@/components/FacetSelection";
-import { createFacetCardsFromList } from "@/features/facets/CreateFacetCard";
+//import { getFacetInfo, upload_facets } from "@/features/cohortBuilder/utils";
+//import FacetSelection from "@/components/FacetSelection";
+//import {
+//  useClearFilters,
+//  useRangeFacet,
+//  useSelectFieldFilter,
+//  useTotalCounts,
+//  useUpdateFacetFilter,
+//  FacetDocTypeToCountsIndexMap,
+//  FacetDocTypeToLabelsMap,
+//  useEnumFacetValues,
+//  useEnumFacets,
+//} from "@/features/facets/hooks";
+//import { AddFacetIcon, AddIcon } from "src/commonIcons";
+import createFacetCards from "./CreateFacetCard";
 import {
-  useClearFilters,
-  useRangeFacet,
-  useSelectFieldFilter,
-  useTotalCounts,
-  useUpdateFacetFilter,
-  FacetDocTypeToCountsIndexMap,
-  FacetDocTypeToLabelsMap,
-  useEnumFacetValues,
-  useEnumFacets,
-} from "@/features/facets/hooks";
-import { partial } from "lodash";
-import { FacetCardDefinition } from "@/features/facets/types";
-import { AddFacetIcon, AddIcon } from "@/utils/icons";
-import useScrollToHash from "@/hooks/useScrollToHash";
-
-const CustomFacetWhenEmptyGroup = tw(Stack)<StackProps>`
-h-64
-bg-base-lightest
-w-1/2
-border-2
-border-dotted
-m-6
-`;
+  FacetCardDefinition,
+  FacetRequiredHooks,
+  CohortBuilderCategoryConfig,
+  FacetDefinition,
+} from "./types";
+//import useScrollToHash from "@/hooks/useScrollToHash";
 
 const StyledFacetTabs = (props: TabsProps) => {
   return (
@@ -102,27 +99,35 @@ const StyledFacetTabs = (props: TabsProps) => {
 
 type FacetGroupProps = {
   children?: React.ReactNode;
-  facets: ReadonlyArray<FacetDefinition>;
-  indexType: GQLIndexType;
-  docType: GQLDocType;
+  facets: FacetDefinition[];
+  //indexType: GQLIndexType;
+  //docType: GQLDocType;
+  usePopulateFacetData: () => (facets: FacetDefinition[]) => void;
 };
 
 export const FacetGroup: React.FC<FacetGroupProps> = ({
-  docType,
-  indexType,
+  //docType,
+  //indexType,
   facets,
   children,
+  usePopulateFacetData,
 }: FacetGroupProps) => {
+  const populateFacetData = usePopulateFacetData();
+  /*
   const enumFacets = facets.filter((x) => x.facet_type === "enum");
 
   const availableFields = facets.map((f) => f.full);
   useScrollToHash(availableFields, false);
 
+  /*
   useEnumFacets(
     docType,
     indexType,
     enumFacets.map((entry) => entry.full),
   );
+  */
+
+  populateFacetData(facets);
 
   return (
     <div
@@ -134,6 +139,7 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
   );
 };
 
+/*
 const CustomFacetGroup = (): JSX.Element => {
   const customConfig = useCoreSelector((state) =>
     selectCohortBuilderConfigCategory(state, "custom"),
@@ -204,7 +210,7 @@ const CustomFacetGroup = (): JSX.Element => {
       <div className="w-full">
         {customFacetDefinitions.length == 0 ? (
           <Flex justify="center" align="center" className="h-full">
-            <CustomFacetWhenEmptyGroup align="center" justify="center">
+            <Stack align="center" justify="center" className="h-64 bg-base-lightest w-1/2 border-2 border-dotted m-6">
               <AddFacetIcon className="text-primary-content" size="3em" />
               <Text size="md" className="text-primary-content-darker font-bold">
                 No custom filters added
@@ -218,7 +224,7 @@ const CustomFacetGroup = (): JSX.Element => {
               >
                 Add a Custom Filter
               </Button>
-            </CustomFacetWhenEmptyGroup>
+            </Stack>
           </Flex>
         ) : (
           <FacetGroup
@@ -240,9 +246,9 @@ const CustomFacetGroup = (): JSX.Element => {
                 Add a Custom Filter
               </Text>
             </Button>
-            {createFacetCardsFromList({
+            {createFacetCards({
               facets: customFacetDefinitions as FacetCardDefinition[],
-              dataFunctions: {
+              hooks: {
                 useGetEnumFacetData: partial(
                   useEnumFacetValues,
                   "cases",
@@ -269,27 +275,46 @@ const CustomFacetGroup = (): JSX.Element => {
     </div>
   );
 };
+*/
 
-export const FacetTabs = (): JSX.Element => {
-  const tabsConfig = useCoreSelector((state) =>
-    selectCohortBuilderConfig(state),
-  );
-  const router = useRouter();
-  const routerTab = router?.query?.tab;
-  const prevRouterTab = usePrevious(routerTab);
-  const facets =
-    useCoreSelector((state) => selectFacetDefinition(state)).data || {};
-  const [activeTab, setActiveTab] = useState(
+interface FacetTabProps {
+  readonly hooks: FacetRequiredHooks;
+  readonly facetDefinitions: Record<string, FacetDefinition>;
+  readonly tabsConfig: Record<string, CohortBuilderCategoryConfig>;
+  readonly usePopulateFacetData: () => (facets: FacetDefinition[]) => void;
+  readonly FacetDocTypeToLabelsMap: Record<string, string>;
+}
+
+export const FacetTabs: React.FC<FacetTabProps> = ({
+  hooks,
+  facetDefinitions,
+  tabsConfig,
+  usePopulateFacetData,
+  //FacetDocTypeToLabelsMap,
+}) => {
+  //const tabsConfig = useCoreSelector((state) =>
+  //  selectCohortBuilderConfig(state),
+  //);
+  //const router = useRouter();
+  let routerTab; //= router?.query?.tab;
+  //const prevRouterTab = usePrevious(routerTab);
+  //const facets =
+  //  useCoreSelector((state) => selectFacetDefinition(state)).data || {};
+  const [activeTab, setActiveTab] = useState<string | null>(
     routerTab ? (routerTab as string) : Object.keys(tabsConfig)[0],
   );
-  const liveRegionRef = useRef(null);
+  const liveRegionRef = useRef<HTMLSpanElement>(null);
+
+  /*
   const hash = window?.location?.hash.split("#")?.[1];
   const searchTermParam = router?.query?.searchTerm as string;
 
   useEffect(() => {
     if (hash && searchTermParam) {
       const facetName = fieldNameToTitle(hash);
-      liveRegionRef.current.textContent = `Search applied. Focused on ${facetName}`;
+      if (liveRegionRef.current) {
+        liveRegionRef.current.textContent = `Search applied. Focused on ${facetName}`;
+      }
     }
   }, [hash, searchTermParam]);
 
@@ -308,6 +333,7 @@ export const FacetTabs = (): JSX.Element => {
     // https://github.com/vercel/next.js/discussions/29403#discussioncomment-1908563
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, routerTab, prevRouterTab]);
+  */
 
   return (
     <div className="w-100">
@@ -355,43 +381,26 @@ export const FacetTabs = (): JSX.Element => {
             const facetList =
               key === "custom"
                 ? []
-                : getFacetInfo(tabEntry.facets, {
-                    ...facets,
-                    ...upload_facets,
-                  });
+                : tabEntry.facets
+                    .map((field) => facetDefinitions[field])
+                    .filter((facet) => facet);
             return (
               <Tabs.Panel key={key} value={key}>
                 {key === "custom" ? (
-                  <CustomFacetGroup />
+                  <></>
                 ) : (
                   <FacetGroup
-                    indexType={tabEntry.index as GQLIndexType}
-                    docType={tabEntry.docType as GQLDocType}
+                    //indexType={tabEntry.index as GQLIndexType}
+                    //docType={tabEntry.docType as GQLDocType}
                     facets={facetList}
+                    usePopulateFacetData={usePopulateFacetData}
                   >
-                    {createFacetCardsFromList({
+                    {createFacetCards({
                       facets: facetList as FacetCardDefinition[],
-                      dataFunctions: {
-                        useGetEnumFacetData: partial(
-                          useEnumFacetValues,
-                          tabEntry.docType as GQLDocType,
-                          tabEntry.index as GQLIndexType,
-                        ),
-                        useGetRangeFacetData: partial(
-                          useRangeFacet,
-                          tabEntry.docType as GQLDocType,
-                          tabEntry.index as GQLIndexType,
-                        ),
-                        useGetFacetFilters: useSelectFieldFilter,
-                        useUpdateFacetFilters: useUpdateFacetFilter,
-                        useClearFilter: useClearFilters,
-                        useTotalCounts: partial(
-                          useTotalCounts,
-                          FacetDocTypeToCountsIndexMap[tabEntry.docType],
-                        ),
-                      },
+                      hooks,
                       idPrefix: "cohort-builder",
-                      valueLabel: FacetDocTypeToLabelsMap[tabEntry.docType],
+                      valueLabel: "cases",
+                      //valueLabel: FacetDocTypeToLabelsMap[tabEntry.docType],
                     })}
                   </FacetGroup>
                 )}

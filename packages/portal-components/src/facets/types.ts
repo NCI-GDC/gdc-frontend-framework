@@ -1,15 +1,8 @@
 import { Operation } from "@/cohort/QueryExpression/types";
+import { DataFetchingResult } from "src/types";
 
-export interface FacetResponse {
-  readonly data?: Record<string, number>;
-  readonly error?: string;
-  readonly isUninitialized: boolean;
-  readonly isFetching: boolean;
-  readonly isSuccess: boolean;
-  readonly isError: boolean;
-}
-
-export interface EnumFacetResponse extends FacetResponse {
+export interface EnumFacetResponse
+  extends DataFetchingResult<Record<string, number>> {
   readonly enumFilters?: ReadonlyArray<string>;
 }
 
@@ -22,26 +15,9 @@ export type ClearFacetFunction = (field: string) => void;
 export type ClearFacetHook = () => ClearFacetFunction;
 export type GetTotalCountsFunction = (field?: string) => number;
 
-export type GetRangeFacetDataFunction = (
-  field: string,
-  ranges: ReadonlyArray<NumericFromTo>,
-) => FacetResponse;
-
 export type EnumFacetHooks = FacetCommonHooks & {
   useGetEnumFacetData: GetEnumFacetDataFunction; // gets data for EnumFacets and ToggleFacet
-};
-
-export type ValueFacetHooks = FacetCommonHooks & {
-  useGetFacetFilters: SelectFacetFilterFunction; // gets the current filters
-};
-
-export type RangeFacetHooks = FacetCommonHooks & {
-  useGetRangeFacetData: GetRangeFacetDataFunction; // gets the data for Range Facets
-  useGetFacetFilters: SelectFacetFilterFunction; // gets the current filters
-};
-
-export type SetFacetHooks = FacetCommonHooks & {
-  useGetFacetValues: (field: string) => OperandValue;
+  //useUpdateFacetEnum:
 };
 
 export interface FacetCommonHooks {
@@ -50,14 +26,10 @@ export interface FacetCommonHooks {
   useTotalCounts: GetTotalCountsFunction; // get the totals count by type: cases, files, genes, ssms, projects
   useToggleExpandFilter?: () => (field: string, expanded: boolean) => void;
   useFilterExpanded?: (field: string) => boolean;
-  useFieldNameToTitle: () => (field: string) => string;
+  useFieldNameToTitle: () => (field: string, sections?: number) => string;
 }
 
-export type FacetRequiredHooks =
-  | EnumFacetHooks
-  | ValueFacetHooks
-  | RangeFacetHooks
-  | SetFacetHooks;
+export type FacetRequiredHooks = EnumFacetHooks;
 
 export interface FacetCardProps<T extends FacetCommonHooks> {
   readonly field: string;
@@ -76,44 +48,31 @@ export interface FacetCardProps<T extends FacetCommonHooks> {
   readonly width?: string;
   readonly dismissCallback?: (field: string) => void;
   readonly variant?: "default" | "summary";
+  readonly Chart?: React.FC<any>;
 }
 
-export type RangeFromOp = ">" | ">=";
-export type RangeToOp = "<" | "<=";
-
-export interface FromToRangeValues<T> {
-  readonly from?: T;
-  readonly to?: T;
+export interface AllowableRange {
+  readonly minimum: number;
+  readonly maximum: number;
 }
 
-export interface FromToRange<T> extends FromToRangeValues<T> {
-  readonly fromOp?: RangeFromOp;
-  readonly toOp?: RangeToOp;
+export interface FacetDefinition {
+  readonly description: string; //description from _mapping
+  readonly field: string; // name of field minus "case", "file"
+  readonly full: string; //  full name of filter (e.g. prepended with case.)
+  readonly type: string; // type from mapping
+  //readonly doc_type: GQLDocType;
+  readonly facet_type?: string; // classified type based on type + name: e.g. age, year, enumeration, etc
+  readonly range?: AllowableRange; // range of value types
+  readonly hasData?: boolean;
+  readonly title?: string;
 }
 
-export interface StringRange {
-  readonly fromOp?: RangeFromOp;
-  readonly from?: string;
-  readonly toOp?: RangeToOp;
-  readonly to?: string;
+export interface CohortBuilderCategoryConfig {
+  readonly label: string;
+  readonly facets: ReadonlyArray<string>;
 }
 
-/**
- * Represent a range. Used to configure a row
- * of a range list.
- */
-export interface RangeBucketElement {
-  readonly from: number;
-  readonly to: number;
-  readonly key: string; // key for facet range
-  readonly label: string; // label for value
-  readonly valueLabel?: string; // string representation of the count
-  value?: number; // count of items in range
-}
-
-/**
- * Sort type for range buckets
- */
 export interface SortType {
   type: "value" | "alpha";
   direction: "asc" | "dsc";

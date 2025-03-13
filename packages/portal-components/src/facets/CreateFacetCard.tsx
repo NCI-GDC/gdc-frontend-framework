@@ -1,19 +1,9 @@
 import React from "react";
-import { fieldNameToTitle } from "@gff/core";
 import EnumFacet from "./EnumFacet";
-import NumericRangeFacet from "@/features/facets/NumericRangeFacet";
-import DateRangeFacet from "@/features/facets/DateRangeFacet";
-import ExactValueFacet from "@/features/facets/ExactValueFacet";
-import ToggleFacet from "@/features/facets/ToggleFacet";
-import SetFacet from "../../../portal-proto/src/features/facets/SetFacet";
-import UploadFacet from "./UploadFacet";
 import {
   EnumFacetHooks,
   FacetCardDefinition,
   FacetRequiredHooks,
-  RangeFacetHooks,
-  SetFacetHooks,
-  ValueFacetHooks,
 } from "./types";
 
 /**
@@ -38,21 +28,22 @@ import {
  */
 
 interface CreateFacetCardProps {
-  facet: Partial<FacetCardDefinition>;
+  facets: FacetCardDefinition[];
   valueLabel: string;
-  dataFunctions: FacetRequiredHooks;
+  hooks: FacetRequiredHooks;
   idPrefix: string;
   dismissCallback?: (field: string) => void;
   hideIfEmpty?: boolean;
   showPercent?: boolean;
   facetName?: string;
+  facetNameSections?: number;
   width?: string;
 }
 
-export const createFacetCard = ({
-  facet,
+const createFacetCards = ({
+  facets,
   valueLabel,
-  dataFunctions,
+  hooks,
   idPrefix,
   dismissCallback,
   hideIfEmpty = false,
@@ -60,175 +51,28 @@ export const createFacetCard = ({
   facetName,
   width,
 }: CreateFacetCardProps): React.ReactNode => {
-  if (facet.facet_type === "enum")
-    return (
-      <EnumFacet
-        key={`${idPrefix}-enum-${facet.full}`}
-        valueLabel={valueLabel}
-        field={facet.full}
-        facetName={facetName}
-        description={facet.description}
-        dismissCallback={dismissCallback}
-        hideIfEmpty={hideIfEmpty}
-        showPercent={showPercent}
-        width={width}
-        hooks={{
-          ...(dataFunctions as EnumFacetHooks),
-        }}
-      />
-    );
-  if (facet.facet_type == "exact") {
-    return (
-      <ExactValueFacet
-        key={`${idPrefix}-exact-${facet.full}`}
-        field={facet.full}
-        dismissCallback={dismissCallback}
-        hideIfEmpty={hideIfEmpty}
-        hooks={{ ...(dataFunctions as ValueFacetHooks) }}
-        facetName={facetName}
-        width={width}
-      />
-    );
-  }
-  if (facet.facet_type == "toggle") {
-    return (
-      <ToggleFacet
-        key={`${idPrefix}-toggle-${facet.full}`}
-        field={facet.full}
-        valueLabel={valueLabel}
-        dismissCallback={dismissCallback}
-        hideIfEmpty={hideIfEmpty}
-        showPercent={showPercent}
-        hooks={{
-          ...(dataFunctions as EnumFacetHooks),
-        }}
-        facetName={facetName}
-        width={width}
-      />
-    );
-  }
-  if (facet.facet_type === "datetime")
-    return (
-      <DateRangeFacet
-        key={`${idPrefix}-date-range-${facet.full}`}
-        field={facet.full}
-        description={facet.description}
-        dismissCallback={dismissCallback}
-        hideIfEmpty={hideIfEmpty}
-        hooks={{
-          ...(dataFunctions as RangeFacetHooks),
-        }}
-        facetName={facetName}
-        width={width}
-      />
-    );
-  if (
-    [
-      "year",
-      "years",
-      "age",
-      "age_in_years",
-      "days",
-      "percent",
-      "range",
-    ].includes(facet.facet_type)
-  ) {
-    return (
-      <NumericRangeFacet
-        key={`${idPrefix}-range-${facet.full}`}
-        field={facet.full}
-        valueLabel={valueLabel}
-        description={facet.description}
-        rangeDatatype={facet.facet_type}
-        minimum={facet?.range?.minimum}
-        maximum={facet?.range?.maximum}
-        hideIfEmpty={hideIfEmpty}
-        hooks={{
-          ...(dataFunctions as RangeFacetHooks),
-        }}
-        dismissCallback={dismissCallback}
-        facetName={facetName}
-        width={width}
-      />
-    );
-  }
-  if (facet.facet_type === "upload") {
-    return (
-      <UploadFacet
-        key={`${idPrefix}-exact-${facet.field}`}
-        field={facet.field}
-        fullField={facet.full}
-        customFaceTitle={facet.title}
-        useClearFilter={dataFunctions.useClearFilter}
-        facetButtonName={facet.uploadLabel}
-        width={width}
-        toolTip={facet.toolTip}
-      />
-    );
-  } else if (facet.facet_type === "set") {
-    return (
-      <SetFacet
-        key={`${idPrefix}-set-${facet.full}`}
-        facetName={facet?.name}
-        facetTitle={facet.title}
-        facetBtnToolTip={facet?.toolTip}
-        field={facet.full}
-        valueLabel={valueLabel}
-        hooks={dataFunctions as SetFacetHooks}
-      />
-    );
-  }
-  return <div> Unknown FacetType {facet.facet_type}</div>;
+  return facets.map((facet) => {
+    if (facet.facet_type === "enum") {
+      return (
+        <EnumFacet
+          key={`${idPrefix}-enum-${facet.full}`}
+          valueLabel={valueLabel}
+          field={facet.full}
+          facetName={facetName}
+          description={facet.description}
+          dismissCallback={dismissCallback}
+          hideIfEmpty={hideIfEmpty}
+          showPercent={showPercent}
+          width={width}
+          hooks={{
+            ...(hooks as EnumFacetHooks),
+          }}
+        />
+      );
+    }
+
+    return <div> Unknown FacetType {facet.facet_type}</div>;
+  });
 };
 
-type CreateFacetCardFromListProps = Pick<
-  CreateFacetCardProps,
-  | "dataFunctions"
-  | "idPrefix"
-  | "valueLabel"
-  | "dismissCallback"
-  | "hideIfEmpty"
-  | "showPercent"
-  | "width"
-> & { facets: Partial<FacetCardDefinition>[]; facetNameSections?: number };
-
-/**
- * Creates and returns an array of Facet components defined by the facet definition array
- * @param facet - array of FacetDefinitions to create
- * @param dataFunctions - data getter and setter hooks
- * @param valueLabel - label for counts
- * @param idPrefix - prefix for created Facet Component key prop. This is used to ensure the ref
- *                  has a 1) unique 2) persistent id, so each call to createFacetCardsFromList must
- *                  have a unique prefix, the name of the analysis tool is a good choice
- * @param dismissCallback - define if facet should be removable from their parent
- * @param hideIfEmpty - hide facets if they do not have data
- * @param showPercent - whether to show the count percent of whole
- * @param facetName - optional name of facet (if undefined it will be extracted from the full field name)
- * @param width - override the default width
- */
-
-export const createFacetCardsFromList = ({
-  facets,
-  dataFunctions,
-  idPrefix,
-  valueLabel,
-  dismissCallback = undefined,
-  hideIfEmpty = false,
-  showPercent = true,
-  facetNameSections = 1,
-  width = undefined,
-}: CreateFacetCardFromListProps): ReadonlyArray<React.ReactNode> => {
-  return facets.map((facet) =>
-    createFacetCard({
-      facet,
-      valueLabel,
-      dataFunctions,
-      idPrefix,
-      dismissCallback,
-      hideIfEmpty,
-      showPercent,
-      facetName: fieldNameToTitle(facet.full, facetNameSections),
-      width,
-    }),
-  );
-};
+export default createFacetCards;
