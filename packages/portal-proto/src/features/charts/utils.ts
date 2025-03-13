@@ -60,12 +60,14 @@ const createSVG = async (ref: MutableRefObject<HTMLElement>): Promise<Blob> => {
             .split("(")[1]
             .split(")")[0]
             .replace(/"|'/g, "");
-          const fontFile = await fetch(fontUrl);
-          const blob = await fontFile.blob();
-          const base64 = await blobToBase64(blob);
-          styles.push(
-            rule.cssText.replace(/src: url\(.*?\)/, `src: url(${base64})`),
-          );
+          if (fontUrl.includes("latin")) {
+            const fontFile = await fetch(fontUrl);
+            const blob = await fontFile.blob();
+            const base64 = await blobToBase64(blob);
+            styles.push(
+              rule.cssText.replace(/src: url\(.*?\)/, `src: url(${base64})`),
+            );
+          }
         } else {
           styles.push(rule.cssText);
         }
