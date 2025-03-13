@@ -7,7 +7,7 @@ interface IncludesOperation {
   readonly operands: ReadonlyArray<string>;
 }
 
-interface GreaterThanOrEqualsThanOperation {
+interface GreaterThanOrEqualsOperation {
   readonly operator: ">=";
   readonly field: string;
   readonly operand: number;
@@ -21,7 +21,7 @@ interface LessThanOrEqualsOperation {
 
 type PortalOperation =
   | IncludesOperation
-  | GreaterThanOEqualsThanOperation
+  | GreaterThanOrEqualsOperation
   | LessThanOrEqualsOperation;
 
 interface GenderOperation {
@@ -52,7 +52,7 @@ interface AgeAtDiagnosisMaxOperation {
 }
 
 interface AgeAtDiagnosisMinOperation {
-  ["age_at_diagnosis_min"]: GreaterThanOEqualsThanOperation;
+  ["age_at_diagnosis_min"]: GreaterThanOrEqualsOperation;
 }
 
 type PortalFilters = GenderOperation &
@@ -60,7 +60,7 @@ type PortalFilters = GenderOperation &
   VitalStatusOperation &
   EthnicityOperation &
   PrimaryDiagnosisOperation &
-  TissuOrOrganOfOriginOperation &
+  TissueOrOrganOfOriginOperation &
   AgeAtDiagnosisMaxOperation &
   AgeAtDiagnosisMinOperation;
 
