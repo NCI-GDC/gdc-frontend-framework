@@ -1,6 +1,6 @@
 {
   "name": "@gff/portal-components",
-  "version": "2.16.3",
+  "version": "2.16.4",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -28,18 +28,18 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.1",
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "@swc/core": "^1.9.2",
     "@types/lodash": "4.17.13",
     "@types/node": "22.9.1",
     "@types/react": "^18.2.0",
     "autoprefixer": "^10.4.20",
     "rollup": "^4.27.3",
-    "@swc/core": "^1.9.2",
-    "@rollup/plugin-commonjs": "^28.0.1",
-    "@rollup/plugin-node-resolve": "^15.3.0",
     "rollup-plugin-dts": "6.1.1",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-swc3": "^0.12.1",
     "rollup-swc-preserve-directives": "^0.7.0",
-    "rollup-plugin-peer-deps-external": "^2.2.4",
     "tailwindcss": "^3.4.14",
     "typescript": "^5.6.3"
   }
