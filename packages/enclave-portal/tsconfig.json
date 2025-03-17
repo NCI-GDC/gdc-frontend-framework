@@ -18,7 +18,7 @@
       "@/features/*": ["src/features/*"]
     },
     "module": "esnext",
-    "target": "ES2017"
+    "target": "ES2021"
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "global.d.ts"],
   "exclude": ["node_modules"]
