@@ -1,6 +1,11 @@
 import { coreStore } from "../../store";
 import { fetchFacetByNameGQL } from "./facetSliceGQL";
 
+jest.mock("src/constants", () => ({
+  ...jest.requireActual("src/constants"),
+  GDC_APP_API_AUTH: "https://portal.gdc.cancer.gov/auth/api/v0",
+}));
+
 describe("test enum facet bucket queries", () => {
   beforeEach(() => {
     jest.clearAllMocks();
