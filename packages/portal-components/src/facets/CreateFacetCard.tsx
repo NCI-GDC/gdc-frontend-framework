@@ -74,7 +74,12 @@ const createFacetCards = ({
       );
     }
 
-    return <div> Unknown FacetType {facet.facet_type}</div>;
+    return (
+      <div key={`${idPrefix}-unknown-${facet.full}`}>
+        {" "}
+        Unknown FacetType {facet.facet_type}
+      </div>
+    );
   });
 };
 

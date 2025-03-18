@@ -3,6 +3,7 @@ import {
   selectCohortBuilderConfig,
   useCoreSelector,
   selectFacetDefinition,
+  useFacetDictionary,
 } from "@gff/core";
 import { FacetTabs } from "@gff/portal-components";
 import {
@@ -15,6 +16,7 @@ import {
   useUpdateFacetFilter,
   FacetDocTypeToCountsIndexMap,
   //useEnumFacets,
+  usePopulateFacetData,
 } from "@/features/facets/hooks";
 import { useFieldNameToTitle } from "./queryExpressionHooks";
 
@@ -25,7 +27,29 @@ const CohortBuilder = () => {
   const facets =
     useCoreSelector((state) => selectFacetDefinition(state)).data || {};
 
-  console.log({ facets });
+  /*
+  const router = useRouter();
+  let routerTab = router?.query?.tab;
+  const prevRouterTab = usePrevious(routerTab);
+
+    useEffect(() => {
+      // Check if the change was initiated by the router
+      if (routerTab !== prevRouterTab) {
+        setActiveTab(routerTab as string);
+      } else {
+        // Change initiated by user interaction
+        if (activeTab !== routerTab) {
+          router.push({ query: { ...router.query, tab: activeTab } }, undefined, {
+            scroll: false,
+          });
+        }
+      }
+      // https://github.com/vercel/next.js/discussions/29403#discussioncomment-1908563
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeTab, routerTab, prevRouterTab]);
+    */
+
+  const { isSuccess: isDictionaryReady } = useFacetDictionary();
 
   return (
     <FacetTabs
@@ -41,7 +65,7 @@ const CohortBuilder = () => {
         useTotalCounts,
         useFieldNameToTitle: useFieldNameToTitle,
       }}
-      usePopulateFacetSearchData={(() => () => {}) as any}
+      usePopulateFacetData={usePopulateFacetData}
     />
   );
 };

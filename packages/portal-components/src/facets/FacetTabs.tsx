@@ -1,27 +1,5 @@
-import React, { useState, useRef } from "react";
-//import { useDeepCompareEffect } from "use-deep-compare";
-//import { partial } from "lodash";
+import React, { useState, useRef, useEffect } from "react";
 
-//import { useRouter } from "next/router";
-//import tw from "tailwind-styled-components";
-//import {
-//  addFilterToCohortBuilder,
-//  CohortBuilderCategoryConfig,
-//  FacetDefinition,
-//  GQLDocType,
-//  GQLIndexType,
-//  removeFilterFromCohortBuilder,
-//  selectCohortBuilderConfig,
-//  selectCohortBuilderConfigCategory,
-//  selectCohortBuilderConfigFilters,
-//  selectFacetDefinitionsByName,
-//  useCoreDispatch,
-//  useCoreSelector,
-//  useFacetDictionary,
-//  usePrevious,
-//  selectFacetDefinition,
-//  fieldNameToTitle,
-//} from "@gff/core";
 import {
   //Button,
   //Flex,
@@ -35,17 +13,6 @@ import {
 } from "@mantine/core";
 //import { getFacetInfo, upload_facets } from "@/features/cohortBuilder/utils";
 //import FacetSelection from "@/components/FacetSelection";
-//import {
-//  useClearFilters,
-//  useRangeFacet,
-//  useSelectFieldFilter,
-//  useTotalCounts,
-//  useUpdateFacetFilter,
-//  FacetDocTypeToCountsIndexMap,
-//  FacetDocTypeToLabelsMap,
-//  useEnumFacetValues,
-//  useEnumFacets,
-//} from "@/features/facets/hooks";
 //import { AddFacetIcon, AddIcon } from "src/commonIcons";
 import createFacetCards from "./CreateFacetCard";
 import {
@@ -100,35 +67,25 @@ const StyledFacetTabs = (props: TabsProps) => {
 type FacetGroupProps = {
   children?: React.ReactNode;
   facets: FacetDefinition[];
-  //indexType: GQLIndexType;
-  //docType: GQLDocType;
-  usePopulateFacetSearchData: () => (facets: FacetDefinition[]) => void;
+  usePopulateFacetData: (
+    facets: FacetDefinition[],
+    queryOptions?: Record<string, string>,
+  ) => void;
   queryOptions?: Record<string, string>;
 };
 
 export const FacetGroup: React.FC<FacetGroupProps> = ({
-  //docType,
-  //indexType,
   facets,
   children,
-  usePopulateFacetSearchData,
+  usePopulateFacetData,
+  queryOptions,
 }: FacetGroupProps) => {
-  const populateFacetSearchData = usePopulateFacetSearchData();
-  /*
-  const enumFacets = facets.filter((x) => x.facet_type === "enum");
+  usePopulateFacetData(facets, queryOptions);
 
+  /*
   const availableFields = facets.map((f) => f.full);
   useScrollToHash(availableFields, false);
-
-  /*
-  useEnumFacets(
-    docType,
-    indexType,
-    enumFacets.map((entry) => entry.full),
-  );
   */
-
-  populateFacetSearchData(facets);
 
   return (
     <div
@@ -282,9 +239,7 @@ interface FacetTabProps {
   readonly hooks: FacetRequiredHooks;
   readonly facetDefinitions: Record<string, FacetDefinition>;
   readonly tabsConfig: Record<string, CohortBuilderCategoryConfig>;
-  readonly usePopulateFacetSearchData: () => (
-    facets: FacetDefinition[],
-  ) => void;
+  readonly usePopulateFacetData: () => (facets: FacetDefinition[]) => void;
   readonly FacetDocTypeToLabelsMap: Record<string, string>;
 }
 
@@ -292,25 +247,21 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
   hooks,
   facetDefinitions,
   tabsConfig,
-  usePopulateFacetSearchData,
+  usePopulateFacetData,
   //FacetDocTypeToLabelsMap,
 }) => {
-  //const tabsConfig = useCoreSelector((state) =>
-  //  selectCohortBuilderConfig(state),
-  //);
-  //const router = useRouter();
-  let routerTab; //= router?.query?.tab;
-  //const prevRouterTab = usePrevious(routerTab);
-  //const facets =
-  //  useCoreSelector((state) => selectFacetDefinition(state)).data || {};
+  const fieldNameToTitle = hooks.useFieldNameToTitle();
+
+  const searchParams = new URLSearchParams(window.location.search);
+  const routerTab = searchParams.get("tab");
+
   const [activeTab, setActiveTab] = useState<string | null>(
     routerTab ? (routerTab as string) : Object.keys(tabsConfig)[0],
   );
   const liveRegionRef = useRef<HTMLSpanElement>(null);
 
-  /*
   const hash = window?.location?.hash.split("#")?.[1];
-  const searchTermParam = router?.query?.searchTerm as string;
+  const searchTermParam = searchParams.get("search");
 
   useEffect(() => {
     if (hash && searchTermParam) {
@@ -320,23 +271,6 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
       }
     }
   }, [hash, searchTermParam]);
-
-  useEffect(() => {
-    // Check if the change was initiated by the router
-    if (routerTab !== prevRouterTab) {
-      setActiveTab(routerTab as string);
-    } else {
-      // Change initiated by user interaction
-      if (activeTab !== routerTab) {
-        router.push({ query: { ...router.query, tab: activeTab } }, undefined, {
-          scroll: false,
-        });
-      }
-    }
-    // https://github.com/vercel/next.js/discussions/29403#discussioncomment-1908563
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab, routerTab, prevRouterTab]);
-  */
 
   return (
     <div className="w-100">
@@ -394,7 +328,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
                 ) : (
                   <FacetGroup
                     facets={facetList}
-                    usePopulateFacetSearchData={usePopulateFacetSearchData}
+                    usePopulateFacetData={usePopulateFacetData}
                     queryOptions={tabEntry.queryOptions}
                   >
                     {createFacetCards({
