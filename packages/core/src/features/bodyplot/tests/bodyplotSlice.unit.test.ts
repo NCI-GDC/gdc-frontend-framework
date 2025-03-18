@@ -3,7 +3,7 @@ import { processData } from "../bodyplotSlice";
 import {
   receivedBodyplotData,
   expectedProcessedData,
-} from "./bodyplotSlice.test.data";
+} from "./bodyplotSliceTestData";
 
 describe("test processData for Bodyplot response", () => {
   test("processData", () => {
