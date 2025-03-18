@@ -6,7 +6,10 @@ export interface EnumFacetResponse
   readonly enumFilters?: ReadonlyArray<string>;
 }
 
-export type GetEnumFacetDataFunction = (field: string) => EnumFacetResponse;
+export type GetEnumFacetDataFunction = (
+  field: string,
+  queryOptions?: Record<string, string>,
+) => EnumFacetResponse;
 
 export type SelectFacetFilterFunction = (field: string) => Operation;
 export type UpdateFacetFilterFunction = (field: string, op: Operation) => void;
@@ -49,6 +52,7 @@ export interface FacetCardProps<T extends FacetCommonHooks> {
   readonly dismissCallback?: (field: string) => void;
   readonly variant?: "default" | "summary";
   readonly Chart?: React.FC<any>;
+  readonly queryOptions?: Record<string, string>;
 }
 
 export interface AllowableRange {
@@ -71,6 +75,7 @@ export interface FacetDefinition {
 export interface CohortBuilderCategoryConfig {
   readonly label: string;
   readonly facets: ReadonlyArray<string>;
+  readonly queryOptions?: Record<string, string>;
 }
 
 export interface SortType {

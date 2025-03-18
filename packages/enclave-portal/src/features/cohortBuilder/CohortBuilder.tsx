@@ -1,6 +1,8 @@
 import React from "react";
 import { FacetTabs } from "@gff/portal-components";
+import facetDefintions from "./facet_dictionary.json";
 import tabsConfig from "./cohort_builder.json";
+import { useGetEnumFacetData } from "./hooks";
 
 const CohortBuilder: React.FC = () => {
   return (
@@ -11,12 +13,18 @@ const CohortBuilder: React.FC = () => {
             useClearFilter: () => () => {},
             useUpdateFacetFilters: () => () => {},
             useTotalCounts: () => 0,
-            useFieldNameToTitle: () => (field) => field,
-            useGetEnumFacetData: () => () => ({ data: {} }),
+            useFieldNameToTitle: () => (field: string) =>
+              field
+                .split(".")
+                .slice(-1)
+                .map((s) => s.split("_"))
+                .flat()
+                .join(" "),
+            useGetEnumFacetData: useGetEnumFacetData as any,
           }}
-          facetDefinitions={{}}
+          facetDefinitions={facetDefintions}
           tabsConfig={tabsConfig.config}
-          usePopulateFacetData={() => () => {}}
+          usePopulateFacetSearchData={() => () => {}}
           FacetDocTypeToLabelsMap={{}}
         />
       </div>

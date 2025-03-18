@@ -1,0 +1,10 @@
+{
+  "primary_diagnosis": {
+    "description": "Text term used to describe the patient's histologic diagnosis, as described by the World Health Organization's (WHO) International Classification of Diseases for Oncology (ICD-O).",
+    "doc_type": "cases",
+    "field": "primary_diagnosis",
+    "full": "primary_diagnosis",
+    "type": "keyword",
+    "facet_type": "enum"
+  }
+}

@@ -60,7 +60,7 @@ const useUpdateCohortFilter = () => {
   return updateCohortFilter;
 };
 
-const useFieldNameToTitle = () => {
+export const useFieldNameToTitle = () => {
   const fieldToTitle = useCallback((field: string) => {
     return field === "genes.gene_id" ? "Mutated Gene" : fieldNameToTitle(field);
   }, []);

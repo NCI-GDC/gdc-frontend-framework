@@ -38,6 +38,7 @@ interface CreateFacetCardProps {
   facetName?: string;
   facetNameSections?: number;
   width?: string;
+  queryOptions?: Record<string, string>;
 }
 
 const createFacetCards = ({
@@ -50,6 +51,7 @@ const createFacetCards = ({
   showPercent = true,
   facetName,
   width,
+  queryOptions,
 }: CreateFacetCardProps): React.ReactNode => {
   return facets.map((facet) => {
     if (facet.facet_type === "enum") {
@@ -67,6 +69,7 @@ const createFacetCards = ({
           hooks={{
             ...(hooks as EnumFacetHooks),
           }}
+          queryOptions={queryOptions}
         />
       );
     }

@@ -345,13 +345,12 @@ export const useClearFilters = (): ClearFacetFunction => {
 };
 
 export const useEnumFacetValues = (
-  docType: GQLDocType,
-  indexType: GQLIndexType,
   field: string,
+  queryOptions: { docType: GQLDocType },
 ): EnumFacetResponse => {
   // facet data is store in core
   const facet: FacetBuckets = useCoreSelector((state) =>
-    selectFacetByDocTypeAndField(state, docType, field),
+    selectFacetByDocTypeAndField(state, queryOptions.docType, field),
   );
   const enumValues = useCohortFacetFilterByName(field);
   return {

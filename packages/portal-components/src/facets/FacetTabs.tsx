@@ -102,7 +102,8 @@ type FacetGroupProps = {
   facets: FacetDefinition[];
   //indexType: GQLIndexType;
   //docType: GQLDocType;
-  usePopulateFacetData: () => (facets: FacetDefinition[]) => void;
+  usePopulateFacetSearchData: () => (facets: FacetDefinition[]) => void;
+  queryOptions?: Record<string, string>;
 };
 
 export const FacetGroup: React.FC<FacetGroupProps> = ({
@@ -110,9 +111,9 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
   //indexType,
   facets,
   children,
-  usePopulateFacetData,
+  usePopulateFacetSearchData,
 }: FacetGroupProps) => {
-  const populateFacetData = usePopulateFacetData();
+  const populateFacetSearchData = usePopulateFacetSearchData();
   /*
   const enumFacets = facets.filter((x) => x.facet_type === "enum");
 
@@ -127,7 +128,7 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
   );
   */
 
-  populateFacetData(facets);
+  populateFacetSearchData(facets);
 
   return (
     <div
@@ -281,7 +282,9 @@ interface FacetTabProps {
   readonly hooks: FacetRequiredHooks;
   readonly facetDefinitions: Record<string, FacetDefinition>;
   readonly tabsConfig: Record<string, CohortBuilderCategoryConfig>;
-  readonly usePopulateFacetData: () => (facets: FacetDefinition[]) => void;
+  readonly usePopulateFacetSearchData: () => (
+    facets: FacetDefinition[],
+  ) => void;
   readonly FacetDocTypeToLabelsMap: Record<string, string>;
 }
 
@@ -289,7 +292,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
   hooks,
   facetDefinitions,
   tabsConfig,
-  usePopulateFacetData,
+  usePopulateFacetSearchData,
   //FacetDocTypeToLabelsMap,
 }) => {
   //const tabsConfig = useCoreSelector((state) =>
@@ -390,10 +393,9 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
                   <></>
                 ) : (
                   <FacetGroup
-                    //indexType={tabEntry.index as GQLIndexType}
-                    //docType={tabEntry.docType as GQLDocType}
                     facets={facetList}
-                    usePopulateFacetData={usePopulateFacetData}
+                    usePopulateFacetSearchData={usePopulateFacetSearchData}
+                    queryOptions={tabEntry.queryOptions}
                   >
                     {createFacetCards({
                       facets: facetList as FacetCardDefinition[],
@@ -401,6 +403,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
                       idPrefix: "cohort-builder",
                       valueLabel: "cases",
                       //valueLabel: FacetDocTypeToLabelsMap[tabEntry.docType],
+                      queryOptions: tabEntry.queryOptions,
                     })}
                   </FacetGroup>
                 )}

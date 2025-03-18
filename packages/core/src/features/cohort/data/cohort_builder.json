@@ -11,8 +11,10 @@
         "cases.diagnoses.tissue_or_organ_of_origin",
         "cases.upload.case_id"
       ],
-      "docType": "cases",
-      "index": "explore"
+      "queryOptions": {
+        "docType": "cases",
+        "index": "explore"
+      }
     },
     "demographic": {
       "label": "Demographic",
@@ -23,8 +25,10 @@
         "cases.diagnoses.age_at_diagnosis",
         "cases.demographic.vital_status"
       ],
-      "docType": "cases",
-      "index": "explore"
+      "queryOptions": {
+        "docType": "cases",
+        "index": "explore"
+      }
     },
     "general_diagnosis": {
       "label": "General Diagnosis",
@@ -40,8 +44,10 @@
         "cases.diagnoses.sites_of_involvement",
         "cases.diagnoses.laterality"
       ],
-      "docType": "cases",
-      "index": "explore"
+      "queryOptions": {
+        "docType": "cases",
+        "index": "explore"
+      }
     },
     "disease_status": {
       "label": "Disease Status and History",
@@ -54,8 +60,10 @@
         "cases.diagnoses.child_pugh_classification",
         "cases.diagnoses.ishak_fibrosis_score"
       ],
-      "docType": "cases",
-      "index": "explore"
+      "queryOptions": {
+        "docType": "cases",
+        "index": "explore"
+      }
     },
     "disease_specific_classifications": {
       "label": "Disease Specific Classifications",
@@ -77,8 +85,10 @@
         "cases.diagnoses.wilms_tumor_histologic_subtype",
         "cases.diagnoses.weiss_assessment_score"
       ],
-      "docType": "cases",
-      "index": "explore"
+      "queryOptions": {
+        "docType": "cases",
+        "index": "explore"
+      }
     },
     "treatment": {
       "label": "Treatment",
@@ -89,8 +99,10 @@
         "cases.diagnoses.treatments.treatment_outcome",
         "cases.diagnoses.treatments.treatment_type"
       ],
-      "docType": "cases",
-      "index": "explore"
+      "queryOptions": {
+        "docType": "cases",
+        "index": "explore"
+      }
     },
     "exposure": {
       "label": "Exposure",
@@ -102,8 +114,10 @@
         "cases.exposures.pack_years_smoked",
         "cases.exposures.tobacco_smoking_onset_year"
       ],
-      "docType": "cases",
-      "index": "explore"
+      "queryOptions": {
+        "docType": "cases",
+        "index": "explore"
+      }
     },
     "biospecimen": {
       "label": "Biospecimen",
@@ -115,14 +129,18 @@
         "cases.samples.tumor_descriptor",
         "cases.samples.portions.analytes.aliquots.analyte_type"
       ],
-      "docType": "cases",
-      "index": "explore"
+      "queryOptions": {
+        "docType": "cases",
+        "index": "explore"
+      }
     },
     "molecular_filters": {
       "label": "Molecular Filters",
       "facets": ["genes.upload.gene_id", "ssms.upload.ssm_id"],
-      "docType": "cases",
-      "index": "explore"
+      "queryOptions": {
+        "docType": "cases",
+        "index": "explore"
+      }
     },
     "available_data": {
       "label": "Available Data",
@@ -135,14 +153,18 @@
         "files.platform",
         "files.access"
       ],
-      "docType": "cases",
-      "index": "explore"
+      "queryOptions": {
+        "docType": "cases",
+        "index": "explore"
+      }
     },
     "custom": {
       "label": "Custom Filters",
       "facets": [],
-      "docType": "cases",
-      "index": "explore"
+      "queryOptions": {
+        "docType": "cases",
+        "index": "explore"
+      }
     }
   }
 }

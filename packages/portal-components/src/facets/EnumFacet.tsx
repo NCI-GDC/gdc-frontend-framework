@@ -63,6 +63,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   width = undefined,
   variant = "default",
   Chart = undefined,
+  queryOptions = undefined,
 }: FacetCardProps<EnumFacetHooks>) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -73,11 +74,13 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   });
   const [sortedData, setSortedData] = useState<Record<string, number>>({});
   const [isFacetView, setIsFacetView] = useState(startShowingData);
+  console.log({ hooks });
   const { data, enumFilters, isSuccess, error, isUninitialized, isFetching } =
-    hooks.useGetEnumFacetData(field);
+    hooks.useGetEnumFacetData(field, queryOptions);
   const [dataProcessed, setDataProcessed] = useState(false);
   const [selectedEnums, setSelectedEnums] = useState(enumFilters || []);
 
+  console.log({ data, enumFilters });
   const cardRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   // TODO - move to hook
