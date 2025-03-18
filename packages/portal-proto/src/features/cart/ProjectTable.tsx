@@ -13,11 +13,11 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
   projectData,
   customDataTestID,
 }: ProjectTableProps) => {
-  const sortedProjectData = [...projectData].sort((a, b) => {
+  const sortedProjectData = [...(projectData || [])].sort((a, b) => {
     return b.file_size - a.file_size;
   });
 
-  const tableData = (sortedProjectData || []).map((project) => ({
+  const tableData = sortedProjectData.map((project) => ({
     key: project.key,
     case_count: project.case_count?.toLocaleString(),
     doc_count: project.doc_count?.toLocaleString(),
