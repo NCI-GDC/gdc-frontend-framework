@@ -5,7 +5,7 @@ from ....base.base_page import BasePage
 
 class MutationSummaryLocators:
     BUTTON_CONSEQUENCES = (
-        lambda button_name: f"[data-testid='table-consequences-distribution-mutation-summary'] >> button:has-text('{button_name}') >> nth=0"
+        lambda button_name: f"[data-testid='table-consequences-mutation-summary'] >> button:has-text('{button_name}') >> nth=0"
     )
     BUTTON_CANCER_DISTRIBUTION = (
         lambda button_name: f"[data-testid='table-cancer-distribution-mutation-summary'] >> button:has-text('{button_name}') >> nth=0"
