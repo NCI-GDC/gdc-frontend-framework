@@ -78,6 +78,8 @@ export const useFacetSearch = (): MiniSearch<FacetSearchDocument> => {
   );
   const facets = useCoreSelector((state) => selectFacetDefinition(state));
 
+  useAllEnumFacets();
+
   const facetResults = useCoreSelector((state) => selectCaseFacets(state));
 
   useDeepCompareEffect(() => {

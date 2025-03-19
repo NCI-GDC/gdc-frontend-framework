@@ -3,22 +3,22 @@ import {
   selectCohortBuilderConfig,
   useCoreSelector,
   selectFacetDefinition,
-  useFacetDictionary,
 } from "@gff/core";
 import { FacetTabs } from "@gff/portal-components";
 import {
   FacetDocTypeToLabelsMap,
   useEnumFacetValues,
   useClearFilters,
-  //useRangeFacet,
-  useSelectFieldFilter,
   useTotalCounts,
   useUpdateFacetFilter,
   FacetDocTypeToCountsIndexMap,
-  //useEnumFacets,
   usePopulateFacetData,
 } from "@/features/facets/hooks";
 import { useFieldNameToTitle } from "./queryExpressionHooks";
+
+const getFacetLabel = (queryOptions) => {
+  return FacetDocTypeToLabelsMap[queryOptions.docType];
+};
 
 const CohortBuilder = () => {
   const tabsConfig = useCoreSelector((state) =>
@@ -27,6 +27,7 @@ const CohortBuilder = () => {
   const facets =
     useCoreSelector((state) => selectFacetDefinition(state)).data || {};
 
+  // TODO
   /*
   const router = useRouter();
   let routerTab = router?.query?.tab;
@@ -49,8 +50,6 @@ const CohortBuilder = () => {
     }, [activeTab, routerTab, prevRouterTab]);
     */
 
-  const { isSuccess: isDictionaryReady } = useFacetDictionary();
-
   return (
     <FacetTabs
       facetDefinitions={facets}
@@ -66,6 +65,7 @@ const CohortBuilder = () => {
         useFieldNameToTitle: useFieldNameToTitle,
       }}
       usePopulateFacetData={usePopulateFacetData}
+      getFacetLabel={getFacetLabel}
     />
   );
 };

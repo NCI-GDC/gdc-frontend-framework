@@ -24,8 +24,7 @@ const CohortBuilder: React.FC = () => {
           }}
           facetDefinitions={facetDefintions}
           tabsConfig={tabsConfig.config}
-          usePopulateFacetSearchData={() => () => {}}
-          FacetDocTypeToLabelsMap={{}}
+          getFacetLabel={() => "Cases"}
         />
       </div>
     </>

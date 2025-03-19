@@ -11,6 +11,7 @@ import {
   TabsProps,
   //Text,
 } from "@mantine/core";
+import useScrollToHash from "@/common/useScrollToHash";
 //import { getFacetInfo, upload_facets } from "@/features/cohortBuilder/utils";
 //import FacetSelection from "@/components/FacetSelection";
 //import { AddFacetIcon, AddIcon } from "src/commonIcons";
@@ -67,7 +68,7 @@ const StyledFacetTabs = (props: TabsProps) => {
 type FacetGroupProps = {
   children?: React.ReactNode;
   facets: FacetDefinition[];
-  usePopulateFacetData: (
+  usePopulateFacetData?: (
     facets: FacetDefinition[],
     queryOptions?: Record<string, string>,
   ) => void;
@@ -80,12 +81,10 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
   usePopulateFacetData,
   queryOptions,
 }: FacetGroupProps) => {
-  usePopulateFacetData(facets, queryOptions);
+  usePopulateFacetData && usePopulateFacetData(facets, queryOptions);
 
-  /*
   const availableFields = facets.map((f) => f.full);
   useScrollToHash(availableFields, false);
-  */
 
   return (
     <div
@@ -239,8 +238,11 @@ interface FacetTabProps {
   readonly hooks: FacetRequiredHooks;
   readonly facetDefinitions: Record<string, FacetDefinition>;
   readonly tabsConfig: Record<string, CohortBuilderCategoryConfig>;
-  readonly usePopulateFacetData: () => (facets: FacetDefinition[]) => void;
-  readonly FacetDocTypeToLabelsMap: Record<string, string>;
+  readonly usePopulateFacetData?: (
+    facets: FacetDefinition[],
+    queryOptions?: Record<string, string>,
+  ) => void;
+  readonly getFacetLabel: (queryOptions?: Record<string, string>) => string;
 }
 
 export const FacetTabs: React.FC<FacetTabProps> = ({
@@ -248,7 +250,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
   facetDefinitions,
   tabsConfig,
   usePopulateFacetData,
-  //FacetDocTypeToLabelsMap,
+  getFacetLabel,
 }) => {
   const fieldNameToTitle = hooks.useFieldNameToTitle();
 
@@ -335,8 +337,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
                       facets: facetList as FacetCardDefinition[],
                       hooks,
                       idPrefix: "cohort-builder",
-                      valueLabel: "cases",
-                      //valueLabel: FacetDocTypeToLabelsMap[tabEntry.docType],
+                      valueLabel: getFacetLabel(tabEntry.queryOptions),
                       queryOptions: tabEntry.queryOptions,
                     })}
                   </FacetGroup>
