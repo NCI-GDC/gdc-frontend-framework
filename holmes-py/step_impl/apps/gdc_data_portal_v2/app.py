@@ -24,6 +24,7 @@ from ..gdc_data_portal_v2.pages.set_operations_page import SetOperationsPage
 from ..gdc_data_portal_v2.pages.cohort_case_view import CohortCaseViewPage
 from ..gdc_data_portal_v2.pages.cart_page import CartPage
 from ..gdc_data_portal_v2.pages.gene_summary_page import GeneSummaryPage
+from ..gdc_data_portal_v2.pages.mutation_summary_page import GeneSummaryPage
 
 
 class GDCDataPortalV2App:
