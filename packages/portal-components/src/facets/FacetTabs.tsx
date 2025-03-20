@@ -1,28 +1,26 @@
 import React, { useState, useRef, useEffect } from "react";
-
 import {
-  //Button,
-  //Flex,
-  //LoadingOverlay,
-  //Modal,
-  //Stack,
-  //StackProps,
+  Button,
+  Flex,
+  LoadingOverlay,
+  Modal,
+  Stack,
   Tabs,
   TabsProps,
-  //Text,
+  Text,
 } from "@mantine/core";
 import useScrollToHash from "@/common/useScrollToHash";
 //import { getFacetInfo, upload_facets } from "@/features/cohortBuilder/utils";
-//import FacetSelection from "@/components/FacetSelection";
-//import { AddFacetIcon, AddIcon } from "src/commonIcons";
+import { AddFacetIcon, AddIcon } from "src/commonIcons";
+import { DataFetchingResult } from "src/types";
 import createFacetCards from "./CreateFacetCard";
+import FacetSelection from "./FacetSelection";
 import {
   FacetCardDefinition,
   FacetRequiredHooks,
   CohortBuilderCategoryConfig,
   FacetDefinition,
 } from "./types";
-//import useScrollToHash from "@/hooks/useScrollToHash";
 
 const StyledFacetTabs = (props: TabsProps) => {
   return (
@@ -66,13 +64,13 @@ const StyledFacetTabs = (props: TabsProps) => {
 };
 
 type FacetGroupProps = {
-  children?: React.ReactNode;
-  facets: FacetDefinition[];
-  usePopulateFacetData?: (
+  readonly children?: React.ReactNode;
+  readonly facets: FacetDefinition[];
+  readonly usePopulateFacetData?: (
     facets: FacetDefinition[],
     queryOptions?: Record<string, string>,
   ) => void;
-  queryOptions?: Record<string, string>;
+  readonly queryOptions?: Record<string, string>;
 };
 
 export const FacetGroup: React.FC<FacetGroupProps> = ({
@@ -96,59 +94,49 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
   );
 };
 
-/*
-const CustomFacetGroup = (): JSX.Element => {
-  const customConfig = useCoreSelector((state) =>
-    selectCohortBuilderConfigCategory(state, "custom"),
-  );
-  const cohortBuilderFilters = useCoreSelector((state) =>
-    selectCohortBuilderConfigFilters(state),
-  );
+interface CustomFacetGroupProps {
+  readonly hooks: FacetRequiredHooks;
+  readonly customFacetHooks: {
+    readonly useCustomFacets: () => DataFetchingResult<FacetDefinition[]>;
+    readonly useAvailableCustomFacets: (onlyFiltersWithValues: boolean) => {
+      data: Record<string, FacetDefinition>;
+    };
+    readonly useAddCustomFilter: () => (filter: string) => void;
+    readonly useRemoveCustomFilter: () => (filter: string) => void;
+  };
+  readonly usePopulateFacetData?: (
+    facets: FacetDefinition[],
+    queryOptions?: Record<string, string>,
+  ) => void;
+  readonly queryOptions?: Record<string, string>;
+  readonly getFacetLabel: (queryOptions?: Record<string, string>) => string;
+}
 
-  const [customFacetDefinitions, setCustomFacetDefinitions] = useState<
-    ReadonlyArray<FacetDefinition>
-  >([]);
+const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
+  hooks,
+  customFacetHooks,
+  usePopulateFacetData,
+  queryOptions,
+  getFacetLabel,
+}) => {
   const [opened, setOpened] = useState(false);
-  const { isSuccess: isDictionaryReady } = useFacetDictionary();
-
-  const coreDispatch = useCoreDispatch();
-  const facets = useCoreSelector((state) =>
-    selectFacetDefinitionsByName(state, customConfig.facets),
-  );
-
-  // rebuild customFacets
-  useDeepCompareEffect(() => {
-    if (isDictionaryReady) {
-      setCustomFacetDefinitions(facets);
-    }
-  }, [facets, isDictionaryReady]);
+  const { data: customFacetDefinitions, isSuccess } =
+    customFacetHooks.useCustomFacets();
+  const addCustomFilter = customFacetHooks.useAddCustomFilter();
+  const removeCustomFilter = customFacetHooks.useRemoveCustomFilter();
 
   const handleFilterSelected = (filter: string) => {
     setOpened(false);
-    coreDispatch(addFilterToCohortBuilder({ facetName: filter }));
+    addCustomFilter(filter);
   };
 
-  const handleRemoveFilter = (filter: string) => {
-    coreDispatch(removeFilterFromCohortBuilder({ facetName: filter }));
-  };
-
-  const customEnumFacets = customFacetDefinitions.filter(
-    (x) => x.facet_type === "enum",
-  );
-
-  useEnumFacets(
-    "cases",
-    customConfig.index as GQLIndexType,
-    customEnumFacets.map((entry) => entry.full),
-  );
+  usePopulateFacetData &&
+    usePopulateFacetData(customFacetDefinitions, queryOptions);
 
   // handle the case where there are no custom filters
   return (
     <div className="flex flex-colw-full h-full bg-base-max pr-6">
-      <LoadingOverlay
-        data-testid="loading-spinner"
-        visible={!isDictionaryReady}
-      />
+      <LoadingOverlay data-testid="loading-spinner" visible={!isSuccess} />
       <Modal
         data-testid="modal-cohort-builder-add-custom-filter"
         size="xl"
@@ -158,16 +146,19 @@ const CustomFacetGroup = (): JSX.Element => {
       >
         <div className="p-4">
           <FacetSelection
-            facetType="cases"
+            useAvailableCustomFacets={customFacetHooks.useAvailableCustomFacets}
             handleFilterSelected={handleFilterSelected}
-            usedFacets={cohortBuilderFilters}
           />
         </div>
       </Modal>
       <div className="w-full">
         {customFacetDefinitions.length == 0 ? (
           <Flex justify="center" align="center" className="h-full">
-            <Stack align="center" justify="center" className="h-64 bg-base-lightest w-1/2 border-2 border-dotted m-6">
+            <Stack
+              align="center"
+              justify="center"
+              className="h-64 bg-base-lightest w-1/2 border-2 border-dotted m-6"
+            >
               <AddFacetIcon className="text-primary-content" size="3em" />
               <Text size="md" className="text-primary-content-darker font-bold">
                 No custom filters added
@@ -185,9 +176,8 @@ const CustomFacetGroup = (): JSX.Element => {
           </Flex>
         ) : (
           <FacetGroup
-            indexType={customConfig.index as GQLIndexType}
-            docType="cases"
             facets={customFacetDefinitions}
+            queryOptions={queryOptions}
           >
             <Button
               data-testid="button-cohort-builder-add-a-custom-filter"
@@ -205,26 +195,12 @@ const CustomFacetGroup = (): JSX.Element => {
             </Button>
             {createFacetCards({
               facets: customFacetDefinitions as FacetCardDefinition[],
-              hooks: {
-                useGetEnumFacetData: partial(
-                  useEnumFacetValues,
-                  "cases",
-                  customConfig.index as GQLIndexType,
-                ),
-                useGetRangeFacetData: partial(
-                  useRangeFacet,
-                  "cases",
-                  customConfig.index,
-                ),
-                useGetFacetFilters: useSelectFieldFilter,
-                useUpdateFacetFilters: useUpdateFacetFilter,
-                useClearFilter: useClearFilters,
-                useTotalCounts: partial(useTotalCounts, "caseCounts"),
-              },
+              hooks,
               idPrefix: "cohort-builder",
-              valueLabel: FacetDocTypeToLabelsMap["cases"],
-              dismissCallback: handleRemoveFilter,
+              valueLabel: getFacetLabel(queryOptions),
               facetNameSections: 2,
+              queryOptions,
+              dismissCallback: removeCustomFilter,
             })}
           </FacetGroup>
         )}
@@ -232,12 +208,19 @@ const CustomFacetGroup = (): JSX.Element => {
     </div>
   );
 };
-*/
 
 interface FacetTabProps {
   readonly hooks: FacetRequiredHooks;
   readonly facetDefinitions: Record<string, FacetDefinition>;
   readonly tabsConfig: Record<string, CohortBuilderCategoryConfig>;
+  readonly customFacetHooks?: {
+    readonly useCustomFacets: () => DataFetchingResult<FacetDefinition[]>;
+    readonly useAvailableCustomFacets: (onlyFiltersWithValues: boolean) => {
+      data: Record<string, FacetDefinition>;
+    };
+    readonly useAddCustomFilter: () => (filter: string) => void;
+    readonly useRemoveCustomFilter: () => (filter: string) => void;
+  };
   readonly usePopulateFacetData?: (
     facets: FacetDefinition[],
     queryOptions?: Record<string, string>,
@@ -249,6 +232,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
   hooks,
   facetDefinitions,
   tabsConfig,
+  customFacetHooks,
   usePopulateFacetData,
   getFacetLabel,
 }) => {
@@ -325,8 +309,14 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
                     .filter((facet) => facet);
             return (
               <Tabs.Panel key={key} value={key}>
-                {key === "custom" ? (
-                  <></>
+                {key === "custom" && customFacetHooks ? (
+                  <CustomFacetGroup
+                    hooks={hooks}
+                    usePopulateFacetData={usePopulateFacetData}
+                    queryOptions={tabEntry.queryOptions}
+                    getFacetLabel={getFacetLabel}
+                    customFacetHooks={customFacetHooks}
+                  />
                 ) : (
                   <FacetGroup
                     facets={facetList}

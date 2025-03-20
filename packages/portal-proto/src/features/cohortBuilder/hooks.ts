@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
 import {
   useCoreDispatch,
@@ -10,7 +10,19 @@ import {
   Cohort,
   removeCohort,
   NullCountsData,
+  useFacetDictionary,
+  selectFacetDefinitionsByName,
+  selectCohortBuilderConfigCategory,
+  selectCohortBuilderConfigFilters,
+  selectUsefulFacets,
+  fetchFacetsWithValues,
+  FacetDefinition,
+  GQLDocType,
+  GQLIndexType,
+  addFilterToCohortBuilder,
+  removeFilterFromCohortBuilder,
 } from "@gff/core";
+import { useEnumFacets } from "@/features/facets/hooks";
 
 export const useSetupInitialCohorts = (): boolean => {
   const [fetched, setFetched] = useState(false);
@@ -70,4 +82,146 @@ export const useSetupInitialCohorts = (): boolean => {
   ]);
 
   return fetched;
+};
+
+export const usePopulateFacetData = (
+  facets: FacetDefinition[],
+  queryOptions: { index: GQLIndexType; docType: GQLDocType },
+) => {
+  const enumFacets = facets.filter((x) => x.facet_type === "enum");
+
+  useEnumFacets(
+    queryOptions.docType,
+    queryOptions.index,
+    enumFacets.map((entry) => entry.full),
+  );
+};
+
+export const useCustomFacets = () => {
+  const customConfig = useCoreSelector((state) =>
+    selectCohortBuilderConfigCategory(state, "custom"),
+  );
+  const [customFacetDefinitions, setCustomFacetDefinitions] = useState<
+    ReadonlyArray<FacetDefinition>
+  >([]);
+  const { isSuccess } = useFacetDictionary();
+  const facets = useCoreSelector((state) =>
+    selectFacetDefinitionsByName(state, customConfig.facets),
+  );
+
+  useDeepCompareEffect(() => {
+    if (isSuccess) {
+      setCustomFacetDefinitions(facets);
+    }
+  }, [facets, isSuccess]);
+
+  return { data: customFacetDefinitions, isSuccess };
+};
+
+export const useAvailableCustomFacets = (onlyFiltersWithValues: boolean) => {
+  // get the current list of cohort filters
+  const { data: dictionaryData, isSuccess: isDictionaryReady } =
+    useFacetDictionary();
+  const usedFacets = useCoreSelector((state) =>
+    selectCohortBuilderConfigFilters(state),
+  );
+
+  const [availableFacets, setAvailableFacets] = useState(undefined); // Facets that are current not used
+  const [currentFacets, setCurrentFacets] = useState(undefined); // current set of Facets
+
+  const { data: usefulFacets, status: usefulFacetsStatus } = useCoreSelector(
+    (state) => selectUsefulFacets(state, "cases"),
+  );
+  const coreDispatch = useCoreDispatch();
+
+  // select facets with values if not already requested
+  useEffect(() => {
+    if (
+      onlyFiltersWithValues &&
+      usefulFacetsStatus == "uninitialized" &&
+      isDictionaryReady
+    ) {
+      coreDispatch(fetchFacetsWithValues("cases"));
+    }
+  }, [
+    coreDispatch,
+    isDictionaryReady,
+    onlyFiltersWithValues,
+    usefulFacetsStatus,
+  ]);
+
+  // if data changes or the current facetSet changes rebuild the
+  // available facet list
+  useDeepCompareEffect(() => {
+    if (isDictionaryReady) {
+      // build the list of filters that are not currently used
+      const unusedFacets = Object.values(dictionaryData)
+        .filter((x: FacetDefinition) => {
+          return x.full.startsWith("cases");
+        })
+        .filter((x: FacetDefinition) => {
+          return !usedFacets.includes(x.full);
+        })
+        .reduce(
+          (res: Record<string, FacetDefinition>, value: FacetDefinition) => {
+            return { ...res, [value.field]: value };
+          },
+          {},
+        );
+
+      setAvailableFacets(unusedFacets);
+    }
+  }, [
+    usedFacets,
+    isDictionaryReady,
+    onlyFiltersWithValues,
+    usefulFacetsStatus,
+    usefulFacets,
+    dictionaryData,
+  ]);
+
+  useEffect(() => {
+    const pick = (obj, keys) =>
+      Object.fromEntries(
+        keys.filter((key) => key in obj).map((key) => [key, obj[key]]),
+      );
+
+    if (onlyFiltersWithValues) {
+      if (usefulFacetsStatus == "fulfilled") {
+        // use only the filters in the list of useful filters
+        const filters = pick(availableFacets, usefulFacets);
+        setCurrentFacets(filters);
+      } else {
+        setCurrentFacets(undefined);
+      }
+    } // use all un-used filters (not assigned to Cohort Builder or Download)
+    else setCurrentFacets(availableFacets);
+  }, [
+    availableFacets,
+    onlyFiltersWithValues,
+    usefulFacetsStatus,
+    usefulFacets,
+  ]);
+
+  return { data: currentFacets };
+};
+
+export const useAddCustomFilter = () => {
+  const coreDispatch = useCoreDispatch();
+
+  const addCustomFilter = (filter: string) => {
+    coreDispatch(addFilterToCohortBuilder({ facetName: filter }));
+  };
+
+  return addCustomFilter;
+};
+
+export const useRemoveCustomFilter = () => {
+  const coreDispatch = useCoreDispatch();
+
+  const removeCustomFilter = (filter: string) => {
+    coreDispatch(removeFilterFromCohortBuilder({ facetName: filter }));
+  };
+
+  return removeCustomFilter;
 };

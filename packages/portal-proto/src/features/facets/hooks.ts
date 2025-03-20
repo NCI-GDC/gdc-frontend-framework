@@ -1,3 +1,6 @@
+import { useEffect, useMemo } from "react";
+import { UnknownAction, ThunkDispatch } from "@reduxjs/toolkit";
+import { useDeepCompareEffect } from "use-deep-compare";
 import {
   Operation,
   EnumValueExtractorHandler,
@@ -30,7 +33,6 @@ import {
   selectCohortBuilderConfig,
   selectFacetDefinition,
 } from "@gff/core";
-import { useEffect, useMemo } from "react";
 import isEqual from "lodash/isEqual";
 import {
   ClearFacetFunction,
@@ -39,9 +41,6 @@ import {
   UpdateFacetFilterFunction,
 } from "@/features/facets/types";
 import { getFacetInfo } from "@/features/cohortBuilder/utils";
-import { UnknownAction, ThunkDispatch } from "@reduxjs/toolkit";
-import { useDeepCompareEffect } from "use-deep-compare";
-import { FacetDefinition } from "@gff/core";
 
 /**
  * Filter selector for all the facet filters
@@ -354,7 +353,6 @@ export const useEnumFacetValues = (
     selectFacetByDocTypeAndField(state, queryOptions.docType, field),
   );
 
-  console.log({ facet, queryOptions, field });
   const enumValues = useCohortFacetFilterByName(field);
   return {
     data: facet?.buckets,
@@ -365,19 +363,6 @@ export const useEnumFacetValues = (
     isSuccess: facet?.status === "fulfilled",
     isError: facet?.status === "rejected",
   };
-};
-
-export const usePopulateFacetData = (
-  facets: FacetDefinition[],
-  queryOptions: { index: GQLIndexType; docType: GQLDocType },
-) => {
-  const enumFacets = facets.filter((x) => x.facet_type === "enum");
-
-  useEnumFacets(
-    queryOptions.docType,
-    queryOptions.index,
-    enumFacets.map((entry) => entry.full),
-  );
 };
 
 export const useTotalCounts = (name: string): number => {

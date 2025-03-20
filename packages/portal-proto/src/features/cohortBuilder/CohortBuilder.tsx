@@ -11,9 +11,14 @@ import {
   useClearFilters,
   useTotalCounts,
   useUpdateFacetFilter,
-  FacetDocTypeToCountsIndexMap,
-  usePopulateFacetData,
 } from "@/features/facets/hooks";
+import {
+  usePopulateFacetData,
+  useCustomFacets,
+  useAvailableCustomFacets,
+  useAddCustomFilter,
+  useRemoveCustomFilter,
+} from "./hooks";
 import { useFieldNameToTitle } from "./queryExpressionHooks";
 
 const getFacetLabel = (queryOptions) => {
@@ -54,7 +59,6 @@ const CohortBuilder = () => {
     <FacetTabs
       facetDefinitions={facets}
       tabsConfig={tabsConfig}
-      FacetDocTypeToLabelsMap={FacetDocTypeToLabelsMap}
       hooks={{
         useGetEnumFacetData: useEnumFacetValues,
         //useGetRangeFacetData: useRangeFacet,
@@ -63,6 +67,12 @@ const CohortBuilder = () => {
         useClearFilter: useClearFilters,
         useTotalCounts,
         useFieldNameToTitle: useFieldNameToTitle,
+      }}
+      customFacetHooks={{
+        useCustomFacets,
+        useAvailableCustomFacets,
+        useAddCustomFilter,
+        useRemoveCustomFilter,
       }}
       usePopulateFacetData={usePopulateFacetData}
       getFacetLabel={getFacetLabel}

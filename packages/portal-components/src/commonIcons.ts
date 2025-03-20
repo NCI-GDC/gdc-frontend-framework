@@ -26,6 +26,7 @@ import {
   MdExpandMore as ExpandMoreIcon,
   MdSearch as SearchIcon,
   MdFlip as FlipIcon,
+  MdLibraryAdd as AddFacetIcon,
 } from "react-icons/md";
 import { VscFeedback as FeedbackIcon } from "react-icons/vsc";
 import {
@@ -76,4 +77,5 @@ export {
   SelectorIcon,
   SortDesIcon,
   SortAscIcon,
+  AddFacetIcon,
 };

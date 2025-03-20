@@ -1,15 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  FacetDefinition,
-  fetchFacetsWithValues,
-  useCoreDispatch,
-  useCoreSelector,
-  useFacetDictionary,
-  usePrevious,
-  FacetDefinitionType,
-  selectUsefulFacets,
-} from "@gff/core";
-import {
   Checkbox,
   Group,
   Highlight,
@@ -19,12 +9,12 @@ import {
   Stack,
   UnstyledButton,
 } from "@mantine/core";
-import isEqual from "lodash/isEqual";
+import { FacetDefinition } from "./types";
 
 interface FacetListProps {
   readonly data?: Record<string, FacetDefinition>; // Facets to display
   readonly searchString?: string; // current search string (used to highlight matches)
-  readonly handleFilterSelected: (_: string) => void; // called when a Facet is picked.
+  readonly handleFilterSelected: (field: string) => void; // called when a Facet is picked.
 }
 
 /**
@@ -35,7 +25,7 @@ interface FacetListProps {
  */
 const FacetList: React.FC<FacetListProps> = ({
   data,
-  searchString,
+  searchString = "",
   handleFilterSelected,
 }: FacetListProps) => {
   return (
@@ -84,7 +74,6 @@ const FacetList: React.FC<FacetListProps> = ({
 };
 
 interface FacetSelectionProps {
-  readonly facetType: FacetDefinitionType;
   readonly facets: Record<string, FacetDefinition>;
   readonly handleFilterSelected: (_: string) => void;
   readonly handleFilteredWithValuesChanged: (_: boolean) => void;
@@ -96,7 +85,9 @@ const FacetSelectionPanel = ({
   handleFilteredWithValuesChanged,
 }: FacetSelectionProps) => {
   const [searchString, setSearchString] = useState("");
-  const [filteredData, setFilteredData] = useState(undefined);
+  const [filteredData, setFilteredData] = useState<
+    Record<string, FacetDefinition> | undefined
+  >(undefined);
 
   useEffect(() => {
     if (!facets) return;
@@ -167,9 +158,10 @@ const FacetSelectionPanel = ({
 };
 
 interface FacetSelectionModalProps {
-  readonly facetType: FacetDefinitionType;
-  readonly usedFacets: ReadonlyArray<string>;
-  readonly handleFilterSelected: (string) => void;
+  readonly useAvailableCustomFacets: (onlyFiltersWithValues: boolean) => {
+    data: Record<string, FacetDefinition>;
+  };
+  readonly handleFilterSelected: (field: string) => void;
 }
 
 /**
@@ -181,96 +173,19 @@ interface FacetSelectionModalProps {
  * @param handleFilterSelected - function which handled when a filter is selected
  */
 const FacetSelection = ({
-  facetType,
-  usedFacets,
+  useAvailableCustomFacets,
   handleFilterSelected,
 }: FacetSelectionModalProps): JSX.Element => {
-  // get the current list of cohort filters
-  const { data: dictionaryData, isSuccess: isDictionaryReady } =
-    useFacetDictionary();
-  const [availableFacets, setAvailableFacets] = useState(undefined); // Facets that are current not used
-  const [currentFacets, setCurrentFacets] = useState(undefined); // current set of Facets
-  const [useUsefulFacets, setUseUsefulFacets] = useState(false); // list of Facet which have values
-  const prevAssignedFacets = usePrevious(usedFacets);
-
-  const { data: usefulFacets, status: usefulFacetsStatus } = useCoreSelector(
-    (state) => selectUsefulFacets(state, facetType),
+  const [onlyFiltersWithValues, setOnlyFiltersWithValues] = useState(false);
+  const { data: currentFacets } = useAvailableCustomFacets(
+    onlyFiltersWithValues,
   );
-  const coreDispatch = useCoreDispatch();
-
-  // select facets with values if not already requested
-  useEffect(() => {
-    if (
-      useUsefulFacets &&
-      usefulFacetsStatus == "uninitialized" &&
-      isDictionaryReady
-    ) {
-      coreDispatch(fetchFacetsWithValues(facetType));
-    }
-  }, [
-    coreDispatch,
-    facetType,
-    isDictionaryReady,
-    useUsefulFacets,
-    usefulFacetsStatus,
-  ]);
-
-  // if data changes or the current facetSet changes rebuild the
-  // available facet list
-  useEffect(() => {
-    if (!isEqual(prevAssignedFacets, usedFacets) && isDictionaryReady) {
-      // build the list of filters that are not currently used
-      const unusedFacets = Object.values(dictionaryData)
-        .filter((x: FacetDefinition) => {
-          return x.full.startsWith(facetType);
-        })
-        .filter((x: FacetDefinition) => {
-          return !usedFacets.includes(x.full);
-        })
-        .reduce(
-          (res: Record<string, FacetDefinition>, value: FacetDefinition) => {
-            return { ...res, [value.field]: value };
-          },
-          {},
-        );
-
-      setAvailableFacets(unusedFacets);
-    }
-  }, [
-    usedFacets,
-    isDictionaryReady,
-    prevAssignedFacets,
-    useUsefulFacets,
-    usefulFacetsStatus,
-    usefulFacets,
-    facetType,
-    dictionaryData,
-  ]);
-
-  useEffect(() => {
-    const pick = (obj, keys) =>
-      Object.fromEntries(
-        keys.filter((key) => key in obj).map((key) => [key, obj[key]]),
-      );
-
-    if (useUsefulFacets) {
-      if (usefulFacetsStatus == "fulfilled") {
-        // use only the filters in the list of useful filters
-        const filters = pick(availableFacets, usefulFacets);
-        setCurrentFacets(filters);
-      } else {
-        setCurrentFacets(undefined);
-      }
-    } // use all un-used filters (not assigned to Cohort Builder or Download)
-    else setCurrentFacets(availableFacets);
-  }, [availableFacets, useUsefulFacets, usefulFacetsStatus, usefulFacets]);
 
   return (
     <FacetSelectionPanel
       facets={currentFacets}
-      facetType={facetType}
       handleFilterSelected={handleFilterSelected}
-      handleFilteredWithValuesChanged={setUseUsefulFacets}
+      handleFilteredWithValuesChanged={setOnlyFiltersWithValues}
     />
   );
 };

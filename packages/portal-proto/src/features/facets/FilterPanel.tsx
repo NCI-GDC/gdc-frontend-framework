@@ -2,12 +2,11 @@ import React, { useState, useContext, useRef, useMemo } from "react";
 import { isEqual } from "lodash";
 import { Text, Modal, LoadingOverlay, Badge, Tooltip } from "@mantine/core";
 import { fieldNameToTitle } from "@gff/core";
-import { createFacetCards } from "@gff/portal-components";
+import { createFacetCards, FacetSelection } from "@gff/portal-components";
 import {
   FacetCardDefinition,
   FacetRequiredHooks,
 } from "@/features/facets/types";
-import FacetSelection from "@/components/FacetSelection";
 import { TableXPositionContext } from "@/components/Table/VerticalTable";
 import { AddIcon, UndoIcon } from "@/utils/icons";
 
