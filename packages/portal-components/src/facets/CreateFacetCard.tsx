@@ -39,6 +39,8 @@ interface CreateFacetCardProps {
   facetNameSections?: number;
   width?: string;
   queryOptions?: Record<string, string>;
+  cardScrollMargin?: number;
+  Chart?: React.FC;
 }
 
 const createFacetCards = ({
@@ -52,6 +54,8 @@ const createFacetCards = ({
   facetName,
   width,
   queryOptions,
+  cardScrollMargin,
+  Chart,
 }: CreateFacetCardProps): React.ReactNode => {
   return facets.map((facet) => {
     if (facet.facet_type === "enum") {
@@ -70,6 +74,8 @@ const createFacetCards = ({
             ...(hooks as EnumFacetHooks),
           }}
           queryOptions={queryOptions}
+          cardScrollMargin={cardScrollMargin}
+          Chart={Chart}
         />
       );
     }

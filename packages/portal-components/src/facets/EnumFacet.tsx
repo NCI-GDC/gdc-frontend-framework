@@ -1,12 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
 import { ActionIcon, Checkbox, LoadingOverlay, TextInput } from "@mantine/core";
-
 import OverflowTooltippedLabel from "@/common/OverflowTooltippedLabel";
-
-//import { useRouter } from "next/router";
-//import { fieldNameToTitle } from "@gff/core";
-//import { updateFacetEnum } from "../../../portal-proto/src/features/facets/utils";
 //import { calculateStickyHeaderHeight } from "src/utils/";
 import { CloseIcon } from "src/commonIcons";
 import FacetSortPanel from "./FacetSortPanel";
@@ -15,20 +10,6 @@ import { SortType, EnumFacetHooks, FacetCardProps } from "./types";
 import { BAD_DATA_MESSAGE, DEFAULT_VISIBLE_ITEMS } from "./constants";
 
 import FacetExpander from "./FacetExpander";
-
-/*
-interface FacetResultDoc {
-  enum: string;
-  count: number;
-}
-
-export const miniSearch = new MiniSearch<FacetResultDoc>({
-  fields: ["enum"],
-  storeFields: ["enum", "count"],
-  tokenize: (string) => string.split(TOKENIZE_STRING), // indexing tokenizer
-  processTerm: (term) => (STOP_WORDS.has(term) ? null : term.toLowerCase()), // index term processing
-});
-*/
 
 /**
  *  Enumeration facet filters handle display and selection of
@@ -64,6 +45,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   variant = "default",
   Chart = undefined,
   queryOptions = undefined,
+  cardScrollMargin = 0,
 }: FacetCardProps<EnumFacetHooks>) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -81,22 +63,22 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
 
   const cardRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
-  // TODO - move to hook
-  /*
-  const router = useRouter();
+
   const hash = window?.location?.hash.split("#")?.[1];
-  const searchTermParam = router?.query?.searchTerm as string;
+  const searchParams = new URLSearchParams(window.location.search);
+
+  const searchTermParam = searchParams.get("searchTerm") as string;
+  console.log({ searchTermParam, searchParams });
   const cardSelected = hash !== undefined && hash === field;
 
   useEffect(() => {
-    if (cardSelected && searchTermParam !== undefined) {
+    if (cardSelected && searchTermParam !== null) {
       setIsSearching(true);
       setSearchTerm(searchTermParam);
     }
   }, [cardSelected, searchTermParam]);
-  */
 
-  const totalCount = hooks.useTotalCounts(field);
+  const totalCount = hooks.useTotalCounts(queryOptions);
   const clearFilters = hooks.useClearFilter();
   const updateFacetFilters = hooks.useUpdateFacetFilters();
   const isFilterExpanded =
@@ -217,34 +199,9 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
 
       const enumData = [...tempFilteredData, ...selectedEnumNotInData];
 
-      let filteredData = enumData;
-
-      if (searchTerm) {
-        //TODO - move to hook
-        /*
-        miniSearch.removeAll();
-
-        const searchDocuments = enumData.map((entry) => ({
-          id: entry[0],
-          enum: entry[0],
-          count: entry[1],
-        }));
-
-        miniSearch.addAll(searchDocuments);
-
-        const results = miniSearch.search(searchTerm, {
-          prefix: true,
-          combineWith: "OR",
-        });
-
-
-        const terms = flatten(results.map((r) => r.terms));
-        filteredData = enumData.filter((d) =>
-          terms.some((t) => d[0].toLowerCase().includes(t)),
-        );
-        */
-      }
-
+      const filteredData = searchTerm
+        ? hooks.useSearchEnumTerms(enumData, searchTerm)
+        : enumData;
       const remainingValues = filteredData.length - maxValuesToDisplay;
       const cardStyle = calcCardStyle(remainingValues);
       const numberOfBarsToDisplay = calcNumberOfBarsToDisplay(
@@ -317,8 +274,6 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     return null; // nothing to render if visibleItems == 0
   }
 
-  //const stickyHeaderHeight = calculateStickyHeaderHeight();
-
   return (
     <div
       className={`flex flex-col ${
@@ -326,11 +281,9 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
       } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition ${
         false ? "animate-border-highlight " : undefined
       }`}
-      style={
-        {
-          //scrollMarginTop: stickyHeaderHeight + 10,
-        }
-      }
+      style={{
+        scrollMarginTop: cardScrollMargin + 10,
+      }}
       id={field}
     >
       <div>

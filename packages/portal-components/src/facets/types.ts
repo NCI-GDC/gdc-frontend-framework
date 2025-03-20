@@ -16,11 +16,16 @@ export type UpdateFacetFilterFunction = (field: string, op: Operation) => void;
 export type UpdateFacetFilterHook = () => UpdateFacetFilterFunction;
 export type ClearFacetFunction = (field: string) => void;
 export type ClearFacetHook = () => ClearFacetFunction;
-export type GetTotalCountsFunction = (field?: string) => number;
+export type GetTotalCountsFunction = (
+  queryOptions?: Record<string, string>,
+) => number;
 
 export type EnumFacetHooks = FacetCommonHooks & {
   useGetEnumFacetData: GetEnumFacetDataFunction; // gets data for EnumFacets and ToggleFacet
-  //useUpdateFacetEnum:
+  useSearchEnumTerms: (
+    enumData: [string, number][],
+    searchTerm: string,
+  ) => [string, number][];
 };
 
 export interface FacetCommonHooks {
@@ -53,6 +58,7 @@ export interface FacetCardProps<T extends FacetCommonHooks> {
   readonly variant?: "default" | "summary";
   readonly Chart?: React.FC<any>;
   readonly queryOptions?: Record<string, string>;
+  readonly cardScrollMargin?: number;
 }
 
 export interface AllowableRange {
@@ -65,7 +71,6 @@ export interface FacetDefinition {
   readonly field: string; // name of field minus "case", "file"
   readonly full: string; //  full name of filter (e.g. prepended with case.)
   readonly type: string; // type from mapping
-  //readonly doc_type: GQLDocType;
   readonly facet_type?: string; // classified type based on type + name: e.g. age, year, enumeration, etc
   readonly range?: AllowableRange; // range of value types
   readonly hasData?: boolean;

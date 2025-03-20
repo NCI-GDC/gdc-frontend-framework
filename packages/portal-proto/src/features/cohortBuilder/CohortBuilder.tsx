@@ -12,14 +12,17 @@ import {
   useTotalCounts,
   useUpdateFacetFilter,
 } from "@/features/facets/hooks";
+import { EnumFacetChart } from "@/features/charts/EnumFacetChart";
 import {
   usePopulateFacetData,
   useCustomFacets,
   useAvailableCustomFacets,
   useAddCustomFilter,
   useRemoveCustomFilter,
+  useSearchEnumTerms,
 } from "./hooks";
 import { useFieldNameToTitle } from "./queryExpressionHooks";
+import { calculateStickyHeaderHeight } from "src/utils";
 
 const getFacetLabel = (queryOptions) => {
   return FacetDocTypeToLabelsMap[queryOptions.docType];
@@ -61,6 +64,7 @@ const CohortBuilder = () => {
       tabsConfig={tabsConfig}
       hooks={{
         useGetEnumFacetData: useEnumFacetValues,
+        useSearchEnumTerms,
         //useGetRangeFacetData: useRangeFacet,
         //useGetFacetFilters: useSelectFieldFilter,
         useUpdateFacetFilters: useUpdateFacetFilter,
@@ -76,6 +80,8 @@ const CohortBuilder = () => {
       }}
       usePopulateFacetData={usePopulateFacetData}
       getFacetLabel={getFacetLabel}
+      cardScrollMargin={calculateStickyHeaderHeight()}
+      Chart={EnumFacetChart}
     />
   );
 };

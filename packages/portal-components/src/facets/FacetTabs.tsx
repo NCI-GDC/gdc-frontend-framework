@@ -110,6 +110,7 @@ interface CustomFacetGroupProps {
   ) => void;
   readonly queryOptions?: Record<string, string>;
   readonly getFacetLabel: (queryOptions?: Record<string, string>) => string;
+  readonly cardScrollMargin?: number;
 }
 
 const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
@@ -118,6 +119,7 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
   usePopulateFacetData,
   queryOptions,
   getFacetLabel,
+  cardScrollMargin,
 }) => {
   const [opened, setOpened] = useState(false);
   const { data: customFacetDefinitions, isSuccess } =
@@ -201,6 +203,7 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
               facetNameSections: 2,
               queryOptions,
               dismissCallback: removeCustomFilter,
+              cardScrollMargin,
             })}
           </FacetGroup>
         )}
@@ -226,6 +229,8 @@ interface FacetTabProps {
     queryOptions?: Record<string, string>,
   ) => void;
   readonly getFacetLabel: (queryOptions?: Record<string, string>) => string;
+  readonly cardScrollMargin?: number;
+  readonly Chart?: React.FC;
 }
 
 export const FacetTabs: React.FC<FacetTabProps> = ({
@@ -235,6 +240,8 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
   customFacetHooks,
   usePopulateFacetData,
   getFacetLabel,
+  cardScrollMargin,
+  Chart,
 }) => {
   const fieldNameToTitle = hooks.useFieldNameToTitle();
 
@@ -316,6 +323,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
                     queryOptions={tabEntry.queryOptions}
                     getFacetLabel={getFacetLabel}
                     customFacetHooks={customFacetHooks}
+                    cardScrollMargin={cardScrollMargin}
                   />
                 ) : (
                   <FacetGroup
@@ -329,6 +337,8 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
                       idPrefix: "cohort-builder",
                       valueLabel: getFacetLabel(tabEntry.queryOptions),
                       queryOptions: tabEntry.queryOptions,
+                      cardScrollMargin,
+                      Chart,
                     })}
                   </FacetGroup>
                 )}

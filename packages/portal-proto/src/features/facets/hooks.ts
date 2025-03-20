@@ -365,8 +365,15 @@ export const useEnumFacetValues = (
   };
 };
 
-export const useTotalCounts = (name: string): number => {
-  return useCoreSelector((state) => selectTotalCountsByName(state, name));
+export const useTotalCounts = ({
+  docType,
+}: {
+  docType: GQLDocType;
+}): number => {
+  const caseCountName = FacetDocTypeToCountsIndexMap[docType];
+  return useCoreSelector((state) =>
+    selectTotalCountsByName(state, caseCountName),
+  );
 };
 
 export const FacetDocTypeToCountsIndexMap = {

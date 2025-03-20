@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
+import { flatten } from "lodash";
+import MiniSearch from "minisearch";
 import {
   useCoreDispatch,
   useCoreSelector,
@@ -23,6 +25,7 @@ import {
   removeFilterFromCohortBuilder,
 } from "@gff/core";
 import { useEnumFacets } from "@/features/facets/hooks";
+import { STOP_WORDS, TOKENIZE_STRING } from "./dictionary";
 
 export const useSetupInitialCohorts = (): boolean => {
   const [fetched, setFetched] = useState(false);
@@ -224,4 +227,38 @@ export const useRemoveCustomFilter = () => {
   };
 
   return removeCustomFilter;
+};
+
+interface FacetResultDoc {
+  enum: string;
+  count: number;
+}
+
+export const miniSearch = new MiniSearch<FacetResultDoc>({
+  fields: ["enum"],
+  storeFields: ["enum", "count"],
+  tokenize: (string) => string.split(TOKENIZE_STRING), // indexing tokenizer
+  processTerm: (term) => (STOP_WORDS.has(term) ? null : term.toLowerCase()), // index term processing
+});
+
+export const useSearchEnumTerms = (enumData, searchTerm: string) => {
+  miniSearch.removeAll();
+
+  const searchDocuments = enumData.map((entry) => ({
+    id: entry[0],
+    enum: entry[0],
+    count: entry[1],
+  }));
+
+  miniSearch.addAll(searchDocuments);
+
+  const results = miniSearch.search(searchTerm, {
+    prefix: true,
+    combineWith: "OR",
+  });
+
+  const terms = flatten(results.map((r) => r.terms));
+  return enumData.filter((d) =>
+    terms.some((t) => d[0].toLowerCase().includes(t)),
+  );
 };

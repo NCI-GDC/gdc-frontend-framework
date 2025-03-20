@@ -12,7 +12,7 @@ const CohortBuilder: React.FC = () => {
           hooks={{
             useClearFilter: () => () => {},
             useUpdateFacetFilters: () => () => {},
-            useTotalCounts: () => 0,
+            useTotalCounts: () => 1,
             useFieldNameToTitle: () => (field: string) =>
               field
                 .split(".")
