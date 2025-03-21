@@ -10,7 +10,6 @@ import {
   Text,
 } from "@mantine/core";
 import useScrollToHash from "@/common/useScrollToHash";
-//import { getFacetInfo, upload_facets } from "@/features/cohortBuilder/utils";
 import { AddFacetIcon, AddIcon } from "src/commonIcons";
 import { DataFetchingResult } from "src/types";
 import createFacetCards from "./CreateFacetCard";
@@ -66,7 +65,7 @@ const StyledFacetTabs = (props: TabsProps) => {
 type FacetGroupProps = {
   readonly children?: React.ReactNode;
   readonly facets: FacetDefinition[];
-  readonly usePopulateFacetData?: (
+  readonly usePopulateFacetData: (
     facets: FacetDefinition[],
     queryOptions?: Record<string, string>,
   ) => void;
@@ -79,7 +78,7 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
   usePopulateFacetData,
   queryOptions,
 }: FacetGroupProps) => {
-  usePopulateFacetData && usePopulateFacetData(facets, queryOptions);
+  usePopulateFacetData(facets, queryOptions);
 
   const availableFields = facets.map((f) => f.full);
   useScrollToHash(availableFields, false);
@@ -104,7 +103,7 @@ interface CustomFacetGroupProps {
     readonly useAddCustomFilter: () => (filter: string) => void;
     readonly useRemoveCustomFilter: () => (filter: string) => void;
   };
-  readonly usePopulateFacetData?: (
+  readonly usePopulateFacetData: (
     facets: FacetDefinition[],
     queryOptions?: Record<string, string>,
   ) => void;
@@ -132,8 +131,7 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
     addCustomFilter(filter);
   };
 
-  usePopulateFacetData &&
-    usePopulateFacetData(customFacetDefinitions, queryOptions);
+  usePopulateFacetData(customFacetDefinitions, queryOptions);
 
   // handle the case where there are no custom filters
   return (
@@ -180,6 +178,7 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
           <FacetGroup
             facets={customFacetDefinitions}
             queryOptions={queryOptions}
+            usePopulateFacetData={usePopulateFacetData}
           >
             <Button
               data-testid="button-cohort-builder-add-a-custom-filter"
@@ -224,7 +223,7 @@ interface FacetTabProps {
     readonly useAddCustomFilter: () => (filter: string) => void;
     readonly useRemoveCustomFilter: () => (filter: string) => void;
   };
-  readonly usePopulateFacetData?: (
+  readonly usePopulateFacetData: (
     facets: FacetDefinition[],
     queryOptions?: Record<string, string>,
   ) => void;
@@ -263,7 +262,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
         liveRegionRef.current.textContent = `Search applied. Focused on ${facetName}`;
       }
     }
-  }, [hash, searchTermParam]);
+  }, [hash, searchTermParam, fieldNameToTitle]);
 
   return (
     <div className="w-100">

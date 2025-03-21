@@ -15,7 +15,7 @@ export const useGetEnumFacetData = (field: string) => {
     };
 
     fetchValues();
-  }, []);
+  }, [field]);
 
   return { data: enumResult, isSuccess: true };
 };

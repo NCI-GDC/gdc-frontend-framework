@@ -212,8 +212,8 @@ export const useAllEnumFacets = () => {
         coreDispatch(
           fetchFacetByNameGQL({
             field: enumFacets,
-            docType: tabEntry.docType as GQLDocType,
-            index: tabEntry.index as GQLIndexType,
+            docType: tabEntry.queryOptions.docType as GQLDocType,
+            index: tabEntry.queryOptions.index as GQLIndexType,
             caseFilterSelector: selectCurrentCohortFilters,
           }),
         );

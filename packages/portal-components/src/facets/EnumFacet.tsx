@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from "react";
 import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
 import { ActionIcon, Checkbox, LoadingOverlay, TextInput } from "@mantine/core";
 import OverflowTooltippedLabel from "@/common/OverflowTooltippedLabel";
-//import { calculateStickyHeaderHeight } from "src/utils/";
 import { CloseIcon } from "src/commonIcons";
 import FacetSortPanel from "./FacetSortPanel";
 import FacetControlsHeader from "./FacetControlsHeader";
@@ -27,7 +26,6 @@ import FacetExpander from "./FacetExpander";
  * @param dismissCallback - if facet can be removed, supply a function which will ensure the "dismiss" control will be visible
  * @param width - set the width of the facet
  * @param header - object containing the components to use for the header
- * @category Facets
  */
 const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   field,
@@ -240,6 +238,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
     calcCardStyle,
     calcNumberOfBarsToDisplay,
     selectedEnums,
+    hooks,
   ]);
 
   useDeepCompareEffect(() => {
@@ -279,7 +278,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
       className={`flex flex-col ${
         width ? width : "mx-0"
       } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition ${
-        false ? "animate-border-highlight " : undefined
+        cardSelected ? "animate-border-highlight " : undefined
       }`}
       style={{
         scrollMarginTop: cardScrollMargin + 10,
