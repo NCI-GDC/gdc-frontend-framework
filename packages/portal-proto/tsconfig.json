@@ -35,8 +35,7 @@
     "**/*.tsx",
     "src/components/ItemTypes.js",
     ".next/types/**/*.ts",
-    "../portal-components/src/facets/FacetTabs.tsx",
-    "../portal-components/src/facets/FacetSelection.tsx"
+    "../portal-components/src/facets/FacetTabs.unit.test.tsx"
   ],
   "exclude": ["node_modules"]
 }

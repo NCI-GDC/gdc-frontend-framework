@@ -66,7 +66,6 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   const searchParams = new URLSearchParams(window.location.search);
 
   const searchTermParam = searchParams.get("searchTerm") as string;
-  console.log({ searchTermParam, searchParams });
   const cardSelected = hash !== undefined && hash === field;
 
   useEffect(() => {

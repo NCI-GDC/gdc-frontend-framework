@@ -1,6 +1,7 @@
-import { useState } from "react";
-import { DAYS_IN_YEAR } from "@gff/core";
+import React, { useState } from "react";
+import { useDeepCompareEffect } from "use-deep-compare";
 import { NumberInput, SegmentedControl } from "@mantine/core";
+import { useForm } from "@mantine/form";
 import {
   ClearFacetHook,
   FromToRange,
@@ -14,9 +15,8 @@ import {
   buildRangeOperator,
   getLowerAgeYears,
 } from "../utils";
-import { useDeepCompareEffect } from "use-deep-compare";
-import { useForm } from "@mantine/form";
-import { WarningIconMessage, WarningTriangleIcon } from "@/utils/icons";
+import { WarningMessageIcon, WarningTriangleIcon } from "src/commonIcons";
+import { DAYS_IN_YEAR } from "../constants";
 
 interface FromToProps {
   readonly minimum: number;
@@ -69,7 +69,7 @@ const WarningOrError: React.FC<WarningOrErrorProps> = ({
     {hasErrors ? (
       <div className="text-utility-error flex gap-2">
         <div>
-          <WarningIconMessage size="1rem" />
+          <WarningMessageIcon size="1rem" />
         </div>
         <span>
           Please enter a number between {lowerUnitRange} and {upperUnitRange}.
@@ -150,15 +150,21 @@ const FromTo: React.FC<FromToProps> = ({
         if (
           value !== undefined &&
           (value < lowerUnitRange || value > upperUnitRange)
-        )
+        ) {
           return true;
+        }
+
+        return false;
       },
       toValue: (value) => {
         if (
           value !== undefined &&
           (value < lowerUnitRange || value > upperUnitRange)
-        )
+        ) {
           return true;
+        }
+
+        return false;
       },
     },
   });

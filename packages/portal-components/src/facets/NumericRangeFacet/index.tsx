@@ -6,7 +6,6 @@ import Years from "./Years";
 import PercentRange from "./PercentRange";
 import NumericRangePanel from "./NumericRangePanel";
 import FacetControlsHeader from "../FacetControlsHeader";
-import { calculateStickyHeaderHeight } from "src/utils/";
 
 /**
  * A component which manages a numeric range facet
@@ -31,9 +30,12 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
   valueLabel,
   minimum = undefined,
   maximum = undefined,
-  facetName = null,
+  facetName = undefined,
   dismissCallback = undefined,
   width = undefined,
+  cardScrollMargin,
+  queryOptions,
+  Chart,
 }: NumericFacetProps) => {
   const [isFacetView, setIsFacetView] = useState(true);
   const isFilterExpanded =
@@ -54,7 +56,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
     }
   }, [clearValues]);
 
-  const stickyHeaderHeight = calculateStickyHeaderHeight();
+  console.log({ queryOptions });
 
   return (
     <div
@@ -65,7 +67,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
       }`}
       id={field}
       style={{
-        scrollMarginTop: stickyHeaderHeight + 10,
+        scrollMarginTop: cardScrollMargin,
       }}
     >
       <FacetControlsHeader
@@ -94,6 +96,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 maximum={maximum}
                 clearValues={clearValues}
                 isFacetView={isFacetView}
+                queryOptions={queryOptions}
               />
             ),
             age_in_years: (
@@ -106,6 +109,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 maximum={maximum}
                 clearValues={clearValues}
                 isFacetView={isFacetView}
+                queryOptions={queryOptions}
               />
             ),
             year: (
@@ -117,6 +121,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 maximum={maximum}
                 clearValues={clearValues}
                 isFacetView={isFacetView}
+                queryOptions={queryOptions}
               />
             ),
             years: (
@@ -128,6 +133,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 maximum={maximum}
                 clearValues={clearValues}
                 isFacetView={isFacetView}
+                queryOptions={queryOptions}
               />
             ),
             days: (
@@ -140,6 +146,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 maximum={maximum}
                 clearValues={clearValues}
                 isFacetView={isFacetView}
+                queryOptions={queryOptions}
               />
             ),
             percent: (
@@ -151,6 +158,8 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 maximum={maximum}
                 clearValues={clearValues}
                 isFacetView={isFacetView}
+                queryOptions={queryOptions}
+                Chart={Chart}
               />
             ),
             range: (
@@ -162,6 +171,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 maximum={maximum}
                 clearValues={clearValues}
                 isFacetView={isFacetView}
+                queryOptions={queryOptions}
               />
             ),
           }[rangeDatatype as string]

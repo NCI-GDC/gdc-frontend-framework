@@ -1,34 +1,38 @@
+import React from "react";
 import RangeInputWithPrefixedRanges from "./RangeInputWithPrefixedRanges";
 import { NumericFacetData } from "./types";
 
-const PercentRange: React.FC<NumericFacetData> = ({
+// Calendar Year
+const Year: React.FC<NumericFacetData> = ({
   field,
-  valueLabel,
   hooks,
+  valueLabel,
   clearValues,
   minimum = undefined,
   maximum = undefined,
   isFacetView,
+  queryOptions,
 }: NumericFacetData) => {
-  const adjMinimum = minimum != undefined ? minimum : 0;
-  const adjMaximum = maximum != undefined ? maximum : 100;
+  const adjMinimum = minimum != undefined ? minimum : 1900;
+  const adjMaximum = maximum != undefined ? maximum : 2050;
   const numBuckets = Math.round((adjMaximum - adjMinimum) / 10);
 
   return (
-    <div className="flex flex-col w-100 space-y-2 px-2  mt-2">
+    <div className="flex flex-col w-100 space-y-2 px-2 mt-1 ">
       <RangeInputWithPrefixedRanges
+        hooks={{ ...hooks }}
+        units="year"
         valueLabel={valueLabel}
-        hooks={hooks}
-        units="percent"
         minimum={adjMinimum}
         maximum={adjMaximum}
         numBuckets={numBuckets}
         field={field}
         clearValues={clearValues}
         isFacetView={isFacetView}
+        queryOptions={queryOptions}
       />
     </div>
   );
 };
 
-export default PercentRange;
+export default Year;

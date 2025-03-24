@@ -1,7 +1,7 @@
+import React, { useState } from "react";
 import { SegmentedControl } from "@mantine/core";
-import { useState } from "react";
 import RangeInputWithPrefixedRanges from "./RangeInputWithPrefixedRanges";
-import { NumericFacetData } from "./types";
+import { NumericFacetData, NumericUnits } from "./types";
 
 const DaysOrYears: React.FC<NumericFacetData> = ({
   field,
@@ -12,6 +12,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
   isFacetView,
   minimum,
   maximum,
+  queryOptions,
 }: NumericFacetData) => {
   const [units, setUnits] = useState("years");
   // no data if true means the Day/Year SegmentedControl should not be rendered.
@@ -34,7 +35,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
       )}
 
       <RangeInputWithPrefixedRanges
-        units={units}
+        units={units as NumericUnits}
         rangeDatatype={rangeDatatype}
         hooks={{ ...hooks }}
         minimum={minimum ?? -32873}
@@ -45,6 +46,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
         clearValues={clearValues}
         isFacetView={isFacetView}
         setHasData={(value) => setHasData(value)}
+        queryOptions={queryOptions}
       />
     </div>
   );

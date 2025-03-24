@@ -27,6 +27,7 @@ import {
   MdSearch as SearchIcon,
   MdFlip as FlipIcon,
   MdLibraryAdd as AddFacetIcon,
+  MdWarning as WarningTriangleIcon,
 } from "react-icons/md";
 import { VscFeedback as FeedbackIcon } from "react-icons/vsc";
 import {
@@ -78,4 +79,5 @@ export {
   SortDesIcon,
   SortAscIcon,
   AddFacetIcon,
+  WarningTriangleIcon,
 };

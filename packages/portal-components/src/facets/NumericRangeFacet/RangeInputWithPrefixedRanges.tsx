@@ -1,4 +1,4 @@
-import { EnumFacetChart } from "@/features/charts/EnumFacetChart";
+import React from "react";
 import { LoadingOverlay } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
@@ -17,6 +17,7 @@ import {
   radioStyle,
 } from "./utils";
 import { BAD_DATA_MESSAGE } from "../constants";
+import { NumericUnits } from "./types";
 
 interface RangeInputWithPrefixedRangesProps {
   readonly field: string;
@@ -25,12 +26,14 @@ interface RangeInputWithPrefixedRangesProps {
   readonly numBuckets: number;
   readonly minimum: number;
   readonly maximum: number;
-  readonly units: string;
+  readonly units: NumericUnits;
   readonly valueLabel: string;
   readonly showZero?: boolean;
   readonly clearValues?: boolean;
   readonly isFacetView?: boolean;
-  readonly setHasData?: (boolean) => void;
+  readonly setHasData?: (hasData: boolean) => void;
+  readonly queryOptions?: Record<string, string>;
+  readonly Chart?: React.FC<any>;
 }
 
 const RangeInputWithPrefixedRanges: React.FC<
@@ -48,12 +51,14 @@ const RangeInputWithPrefixedRanges: React.FC<
   clearValues = undefined,
   isFacetView = true,
   setHasData = () => null,
+  queryOptions,
+  Chart,
 }: RangeInputWithPrefixedRangesProps) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false); // handles the expanded group
 
   // get the current filter for this facet
   const filter = hooks.useGetFacetFilters(field);
-  const totalCount = hooks.useTotalCounts(field);
+  const totalCount = hooks.useTotalCounts(queryOptions);
 
   // giving the filter value, extract the From/To values and
   // build it's key
@@ -217,8 +222,8 @@ const RangeInputWithPrefixedRanges: React.FC<
               isFacetView ? "invisible" : ""
             }`}
           >
-            {!isFacetView && totalBuckets > 0 && (
-              <EnumFacetChart
+            {!isFacetView && totalBuckets > 0 && Chart !== undefined && (
+              <Chart
                 field={field}
                 data={chartData}
                 selectedEnums={[]}

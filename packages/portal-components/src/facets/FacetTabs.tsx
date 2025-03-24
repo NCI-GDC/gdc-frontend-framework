@@ -212,6 +212,8 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
 };
 
 interface FacetTabProps {
+  readonly activeTab: string;
+  readonly setActiveTab: (tab: string | null) => void;
   readonly hooks: FacetRequiredHooks;
   readonly facetDefinitions: Record<string, FacetDefinition>;
   readonly tabsConfig: Record<string, CohortBuilderCategoryConfig>;
@@ -233,6 +235,8 @@ interface FacetTabProps {
 }
 
 export const FacetTabs: React.FC<FacetTabProps> = ({
+  activeTab,
+  setActiveTab,
   hooks,
   facetDefinitions,
   tabsConfig,
@@ -245,11 +249,6 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
   const fieldNameToTitle = hooks.useFieldNameToTitle();
 
   const searchParams = new URLSearchParams(window.location.search);
-  const routerTab = searchParams.get("tab");
-
-  const [activeTab, setActiveTab] = useState<string | null>(
-    routerTab ? (routerTab as string) : Object.keys(tabsConfig)[0],
-  );
   const liveRegionRef = useRef<HTMLSpanElement>(null);
 
   const hash = window?.location?.hash.split("#")?.[1];

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import FacetSortPanel from "../FacetSortPanel";
 import {
   FromToRange,
@@ -48,7 +48,7 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
   });
 
   // process when range is selected
-  const handleSelection = (rangeKey) => {
+  const handleSelection = (rangeKey: string) => {
     const data: FromToRange<number> = {
       from: rangeLabelsAndValues[rangeKey].from,
       to: rangeLabelsAndValues[rangeKey].to,
@@ -57,7 +57,9 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
     };
     const rangeFilters = buildRangeOperator(field, data);
 
-    updateFilters(field, rangeFilters);
+    if (rangeFilters) {
+      updateFilters(field, rangeFilters);
+    }
     setSelected(rangeKey);
   };
 
@@ -83,10 +85,10 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
             sortType.type === "value"
               ? (a, b) =>
                   sortType.direction === "dsc"
-                    ? rangeLabelsAndValues[b].value -
-                      rangeLabelsAndValues[a].value
-                    : rangeLabelsAndValues[a].value -
-                      rangeLabelsAndValues[b].value
+                    ? (rangeLabelsAndValues[b].value || 0) -
+                      (rangeLabelsAndValues[a].value || 0)
+                    : (rangeLabelsAndValues[a].value || 0) -
+                      (rangeLabelsAndValues[b].value || 0)
               : (a, b) =>
                   sortType.direction === "dsc"
                     ? rangeLabelsAndValues[b].from -

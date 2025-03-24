@@ -1,4 +1,4 @@
-import { Operation } from "@/cohort/QueryExpression/types";
+import { Operation, NumericFromTo } from "@/cohort/QueryExpression/types";
 import { DataFetchingResult } from "src/types";
 
 export interface EnumFacetResponse
@@ -10,6 +10,11 @@ export type GetEnumFacetDataFunction = (
   field: string,
   queryOptions?: Record<string, string>,
 ) => EnumFacetResponse;
+
+export type GetRangeFacetDataFunction = (
+  field: string,
+  ranges: ReadonlyArray<NumericFromTo>,
+) => DataFetchingResult<Record<string, number>>;
 
 export type SelectFacetFilterFunction = (field: string) => Operation;
 export type UpdateFacetFilterFunction = (field: string, op: Operation) => void;
@@ -28,6 +33,11 @@ export type EnumFacetHooks = FacetCommonHooks & {
   ) => [string, number][];
 };
 
+export type RangeFacetHooks = FacetCommonHooks & {
+  useGetRangeFacetData: GetRangeFacetDataFunction; // gets the data for Range Facets
+  useGetFacetFilters: SelectFacetFilterFunction; // gets the current filters
+};
+
 export interface FacetCommonHooks {
   useClearFilter: ClearFacetHook; // clear Facet Filters and remove facet from filter set
   useUpdateFacetFilters: UpdateFacetFilterHook; // updates the filters
@@ -37,7 +47,7 @@ export interface FacetCommonHooks {
   useFieldNameToTitle: () => (field: string, sections?: number) => string;
 }
 
-export type FacetRequiredHooks = EnumFacetHooks;
+export type FacetRequiredHooks = EnumFacetHooks | RangeFacetHooks;
 
 export interface FacetCardProps<T extends FacetCommonHooks> {
   readonly field: string;
@@ -61,6 +71,32 @@ export interface FacetCardProps<T extends FacetCommonHooks> {
   readonly cardScrollMargin?: number;
 }
 
+export type RangeFromOp = ">" | ">=";
+export type RangeToOp = "<" | "<=";
+
+export interface FromToRangeValues<T> {
+  readonly from?: T;
+  readonly to?: T;
+}
+
+export interface FromToRange<T> extends FromToRangeValues<T> {
+  readonly fromOp?: RangeFromOp;
+  readonly toOp?: RangeToOp;
+}
+
+/**
+ * Represent a range. Used to configure a row
+ * of a range list.
+ */
+export interface RangeBucketElement {
+  readonly from: number;
+  readonly to: number;
+  readonly key: string; // key for facet range
+  readonly label: string; // label for value
+  readonly valueLabel?: string; // string representation of the count
+  value?: number; // count of items in range
+}
+
 export interface AllowableRange {
   readonly minimum: number;
   readonly maximum: number;
@@ -71,7 +107,7 @@ export interface FacetDefinition {
   readonly field: string; // name of field minus "case", "file"
   readonly full: string; //  full name of filter (e.g. prepended with case.)
   readonly type: string; // type from mapping
-  readonly facet_type?: string; // classified type based on type + name: e.g. age, year, enumeration, etc
+  readonly facet_type: string; // classified type based on type + name: e.g. age, year, enumeration, etc
   readonly range?: AllowableRange; // range of value types
   readonly hasData?: boolean;
   readonly title?: string;

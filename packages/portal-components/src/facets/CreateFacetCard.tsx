@@ -1,7 +1,9 @@
 import React from "react";
 import EnumFacet from "./EnumFacet";
+import NumericRangeFacet from "./NumericRangeFacet";
 import {
   EnumFacetHooks,
+  RangeFacetHooks,
   FacetCardDefinition,
   FacetRequiredHooks,
 } from "./types";
@@ -57,6 +59,7 @@ const createFacetCards = ({
   cardScrollMargin,
   Chart,
 }: CreateFacetCardProps): React.ReactNode => {
+  console.log({ queryOptions });
   return facets.map((facet) => {
     if (facet.facet_type === "enum") {
       return (
@@ -73,6 +76,40 @@ const createFacetCards = ({
           hooks={{
             ...(hooks as EnumFacetHooks),
           }}
+          queryOptions={queryOptions}
+          cardScrollMargin={cardScrollMargin}
+          Chart={Chart}
+        />
+      );
+    }
+
+    if (
+      [
+        "year",
+        "years",
+        "age",
+        "age_in_years",
+        "days",
+        "percent",
+        "range",
+      ].includes(facet.facet_type)
+    ) {
+      return (
+        <NumericRangeFacet
+          key={`${idPrefix}-range-${facet.full}`}
+          field={facet.full}
+          valueLabel={valueLabel}
+          description={facet.description}
+          rangeDatatype={facet.facet_type}
+          minimum={facet?.range?.minimum}
+          maximum={facet?.range?.maximum}
+          hideIfEmpty={hideIfEmpty}
+          hooks={{
+            ...(hooks as RangeFacetHooks),
+          }}
+          dismissCallback={dismissCallback}
+          facetName={facetName}
+          width={width}
           queryOptions={queryOptions}
           cardScrollMargin={cardScrollMargin}
           Chart={Chart}

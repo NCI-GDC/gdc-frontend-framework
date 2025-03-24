@@ -47,7 +47,7 @@ const FacetControlsHeader = ({
   field,
   description,
   hooks,
-  variant,
+  variant = "default",
   facetName = undefined,
   showSearch = false,
   showFlip = false,

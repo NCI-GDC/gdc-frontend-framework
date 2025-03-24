@@ -1,3 +1,4 @@
+import React from "react";
 import { useDeepCompareMemo } from "use-deep-compare";
 import { extractRangeValues } from "../utils";
 import FromTo from "./FromTo";

@@ -176,3 +176,17 @@ export const handleOperation = <T>(
 const assertNever = (x: never): never => {
   throw Error(`Exhaustive comparison did not handle: ${x}`);
 };
+
+export interface NumericFromTo {
+  readonly from: number;
+  readonly to: number;
+}
+
+export type EnumOperandValue = ReadonlyArray<string | number>;
+export type RangeOperandValue = string | number;
+export type SetOperandValue = ReadonlyArray<Operation>;
+export type OperandValue =
+  | EnumOperandValue
+  | RangeOperandValue
+  | SetOperandValue
+  | undefined;

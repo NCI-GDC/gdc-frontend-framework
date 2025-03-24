@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import {
   selectCohortBuilderConfig,
   useCoreSelector,
   selectFacetDefinition,
+  usePrevious,
 } from "@gff/core";
 import { FacetTabs } from "@gff/portal-components";
 import {
@@ -11,6 +13,8 @@ import {
   useClearFilters,
   useTotalCounts,
   useUpdateFacetFilter,
+  useRangeFacet,
+  useSelectFieldFilter,
 } from "@/features/facets/hooks";
 import { EnumFacetChart } from "@/features/charts/EnumFacetChart";
 import {
@@ -35,38 +39,40 @@ const CohortBuilder = () => {
   const facets =
     useCoreSelector((state) => selectFacetDefinition(state)).data || {};
 
-  // TODO
-  /*
   const router = useRouter();
-  let routerTab = router?.query?.tab;
+  const routerTab = router?.query?.tab;
   const prevRouterTab = usePrevious(routerTab);
+  const [activeTab, setActiveTab] = useState<string | null>(
+    routerTab ? (routerTab as string) : Object.keys(tabsConfig)[0],
+  );
 
-    useEffect(() => {
-      // Check if the change was initiated by the router
-      if (routerTab !== prevRouterTab) {
-        setActiveTab(routerTab as string);
-      } else {
-        // Change initiated by user interaction
-        if (activeTab !== routerTab) {
-          router.push({ query: { ...router.query, tab: activeTab } }, undefined, {
-            scroll: false,
-          });
-        }
+  useEffect(() => {
+    // Check if the change was initiated by the router
+    if (routerTab !== prevRouterTab) {
+      setActiveTab(routerTab as string);
+    } else {
+      // Change initiated by user interaction
+      if (activeTab !== routerTab) {
+        router.push({ query: { ...router.query, tab: activeTab } }, undefined, {
+          scroll: false,
+        });
       }
-      // https://github.com/vercel/next.js/discussions/29403#discussioncomment-1908563
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeTab, routerTab, prevRouterTab]);
-    */
+    }
+    // https://github.com/vercel/next.js/discussions/29403#discussioncomment-1908563
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab, routerTab, prevRouterTab]);
 
   return (
     <FacetTabs
+      activeTab={activeTab}
+      setActiveTab={setActiveTab}
       facetDefinitions={facets}
       tabsConfig={tabsConfig}
       hooks={{
         useGetEnumFacetData: useEnumFacetValues,
         useSearchEnumTerms,
-        //useGetRangeFacetData: useRangeFacet,
-        //useGetFacetFilters: useSelectFieldFilter,
+        useGetRangeFacetData: useRangeFacet,
+        useGetFacetFilters: useSelectFieldFilter,
         useUpdateFacetFilters: useUpdateFacetFilter,
         useClearFilter: useClearFilters,
         useTotalCounts,

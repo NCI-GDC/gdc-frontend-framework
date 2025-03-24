@@ -21,10 +21,12 @@ const CohortBuilder: React.FC = () => {
                 .flat()
                 .join(" "),
             useGetEnumFacetData: useGetEnumFacetData as any,
+            useSearchEnumTerms: (enumData) => enumData,
           }}
           facetDefinitions={facetDefintions}
           tabsConfig={tabsConfig.config}
           getFacetLabel={() => "Cases"}
+          usePopulateFacetData={() => {}}
         />
       </div>
     </>
