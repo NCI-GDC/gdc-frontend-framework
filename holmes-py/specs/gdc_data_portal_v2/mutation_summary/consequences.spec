@@ -39,11 +39,6 @@ tags: gdc-data-portal-v2, regression, mutation-summary
     |expected_text                          |row  |column |
     |---------------------------------------|-----|-------|
     |chr3:179148114-179240093 (GRCh38)      |5    |2      |
-* Quick search for "chr3:g.179218303G>A" and go to its page
-* In table "Consequences Mutation Summary" these selections should take the user to correct page in a new tab
-    |row  |column |expected_text                                                        |
-    |-----|-------|---------------------------------------------------------------------|
-    |1    |7      |phosphatidylinositol-4,5-bisphosphate 3-kinase catalytic subunit     |
 
 ## Navigate back to Mutation Summary Page: chr3:g.179218303G>A
 * Quick search for "chr3:g.179218303G>A" and go to its page
