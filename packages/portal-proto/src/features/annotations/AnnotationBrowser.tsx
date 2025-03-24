@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import AnnotationFilterPanel from "./AnnotationFilterPanel";
 import AnnotationTable from "./AnnotationTable";
 import { useClearAllAnnotationFilters } from "./hooks";
+import { TableXPositionContext } from "@/components/Table/VerticalTable";
 
 const AnnotationBrowser = () => {
   const clearAllFilters = useClearAllAnnotationFilters();
@@ -9,22 +10,27 @@ const AnnotationBrowser = () => {
     return () => clearAllFilters();
   }, [clearAllFilters]);
 
+  const [tableXPosition, setTableXPosition] = useState<number>(undefined);
+
   return (
     <>
       <h1 className="uppercase text-primary-darkest text-2xl font-montserrat p-4">
         Browse Annotations
       </h1>
       <hr />
-      <div className="flex flex-col m-4">
-        <div className="flex flex-row">
-          <div className="flex flex-col gap-y-2 mt-1 w-1/4">
-            <AnnotationFilterPanel />
-          </div>
-          <div className="grow overflow-hidden mt-10">
+      <TableXPositionContext.Provider
+        value={{ xPosition: tableXPosition, setXPosition: setTableXPosition }}
+      >
+        <div
+          className="flex p-4 px-4 pb-16 gap-4 w-full"
+          data-testid="table-projects"
+        >
+          <AnnotationFilterPanel />
+          <div className="grow overflow-hidden mt-8">
             <AnnotationTable />
           </div>
         </div>
-      </div>
+      </TableXPositionContext.Provider>
     </>
   );
 };
