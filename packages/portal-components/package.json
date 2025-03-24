@@ -20,19 +20,20 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@mantine/core": "^7.8.1",
-    "@mantine/notifications": "^7.8.1",
-    "@mantine/modals": "^7.8.1",
+    "@mantine/core": "^7.17.2",
+    "@mantine/notifications": "^7.17.2",
+    "@mantine/form": "^7.17.2",
+    "@mantine/modals": "^7.17.2",
     "react-icons": "^4.12.0"
   },
   "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@types/lodash": "4.17.13",
     "@types/node": "22.9.1",
-    "@types/react": "^18.2.0",
+    "@types/react": "^18.3.1",
     "autoprefixer": "^10.4.20",
     "rollup": "^4.27.3",
     "@swc/core": "^1.9.2",

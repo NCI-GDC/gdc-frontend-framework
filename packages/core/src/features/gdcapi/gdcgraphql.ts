@@ -1,6 +1,6 @@
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
-import { GDC_APP_API_AUTH } from "../../constants";
-import { coreCreateApi } from "../../coreCreateApi";
+import { GDC_APP_API_AUTH } from "src/constants";
+import { coreCreateApi } from "src/coreCreateApi";
 import serializeQueryArgsWithDataRelease from "src/serializeQueryArgs";
 
 export interface GraphQLFetchError {
