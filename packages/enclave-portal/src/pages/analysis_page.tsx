@@ -1,15 +1,18 @@
-import {
-  AnalysisWorkspace,
-  AppRegistrationEntry,
-} from "@gff/portal-components";
+import React, { useState } from "react";
 import { NextPage } from "next";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import {
+  AnalysisWorkspace,
+  AppRegistrationEntry,
+  QueryExpressionSection,
+} from "@gff/portal-components";
 import SequenceReadsIcon from "public/apps/icons/SequenceReads.svg";
 import ProjectsIcon from "public/layout/icons/crowd-of-users.svg";
 import PageLayout from "@/components/PageLayout";
 import CohortManager from "@/features/cohort/CohortManager";
+import { EXAMPLE_COHORTS } from "@/features/cohort/cohorts";
 
 const ActiveAnalysisToolNoSSR = dynamic(
   () => import("@/features/analysis/ActiveAnalysisTool"),
@@ -63,6 +66,9 @@ const AnalysisCenter: NextPage = () => {
     router.push({ query: { app, ...(demoMode && { demoMode }) } });
   };
 
+  const [cohorts, setCohorts] = useState(EXAMPLE_COHORTS);
+  const [currentCohort, setCurrentCohort] = useState(EXAMPLE_COHORTS[0].id);
+
   return (
     <PageLayout>
       <Head>
@@ -73,7 +79,30 @@ const AnalysisCenter: NextPage = () => {
           key="analysis-center"
         />
       </Head>
-      <CohortManager />
+      <CohortManager
+        cohorts={cohorts}
+        setCohorts={setCohorts}
+        currentCohort={currentCohort}
+        setCurrentCohort={setCurrentCohort}
+      />
+      <QueryExpressionSection
+        filters={cohorts.find((c) => c.id === currentCohort)?.filters}
+        hooks={{
+          useSelectCurrentCohort: () =>
+            cohorts.find((c) => c.id === currentCohort) || cohorts[0],
+          useClearCohortFilters: () => () => {},
+          useRemoveCohortFilter: () => () => {},
+          useUpdateCohortFilter: () => () => {},
+          useFieldNameToTitle: () => (field) =>
+            field
+              .split(".")
+              .slice(-1)
+              .map((s) => s.split("_"))
+              .flat()
+              .join(" "),
+          useFormatValue: () => (value) => Promise.resolve(value),
+        }}
+      />
       <AnalysisWorkspace
         registeredApps={REGISTERED_APPS}
         recommendedApps={RECOMMENDED_APPS}
