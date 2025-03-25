@@ -185,6 +185,8 @@ def download_file_at_file_table(file: str, source: str):
         "Manage Sets": APP.manage_sets_page.click_on_download_for_set,
         "Most Frequent Somatic Mutations": APP.shared.click_button_in_most_frequent_somatic_mutations,
         "Mutation Frequency": APP.mutation_frequency_page.click_table_download_button,
+        "Mutation Summary Consequences": APP.mutation_summary_page.click_consequences_button,
+        "Mutation Summary Cancer Distribution": APP.mutation_summary_page.click_cancer_distribution_button,
         "Page": APP.shared.click_button_with_displayed_text_name,
         "Projects": APP.projects_page.click_button,
         "Project Summary": APP.project_summary_page.click_button,
