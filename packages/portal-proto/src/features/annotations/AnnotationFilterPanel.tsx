@@ -1,15 +1,14 @@
 import React from "react";
 import { partial } from "lodash";
 import {
-  FacetDefinition,
   fieldNameToTitle,
   GQLDocType,
   selectAnnotationFacetByField,
 } from "@gff/core";
 import { Group, Text } from "@mantine/core";
-import { createFacetCard } from "@/features/facets/CreateFacetCard";
+import { createFacetCards } from "@gff/portal-components";
 import { useTotalCounts, useLocalFilters } from "@/features/facets/hooks";
-import { FacetRequiredHooks } from "@/features/facets/types";
+//import { FacetRequiredHooks } from "@/features/facets/types";
 import FilterFacets from "./filters.json";
 import {
   useAnnotationEnumValues,
@@ -18,6 +17,7 @@ import {
   useSelectFieldFilter,
   useUpdateAnnotationFacetFilter,
 } from "./hooks";
+import { useFieldNameToTitle } from "../cohortBuilder/queryExpressionHooks";
 
 const useAnnotationEnumData = (docType: GQLDocType, field: string) =>
   useLocalFilters(
@@ -29,12 +29,13 @@ const useAnnotationEnumData = (docType: GQLDocType, field: string) =>
   );
 
 export const AnnotationFacetPanel = (): JSX.Element => {
-  const facetHooks: FacetRequiredHooks = {
+  const facetHooks = {
     useGetEnumFacetData: partial(useAnnotationEnumData, "annotations"),
     useUpdateFacetFilters: useUpdateAnnotationFacetFilter,
     useGetFacetFilters: useSelectFieldFilter,
     useClearFilter: useClearAnnotationFilters,
-    useTotalCounts: partial(useTotalCounts, "annotationCounts"),
+    useTotalCounts: useTotalCounts,
+    useFieldNameToTitle,
   };
 
   return (
@@ -50,10 +51,10 @@ export const AnnotationFacetPanel = (): JSX.Element => {
       >
         {FilterFacets.map((x) => {
           const facetName = x.title || fieldNameToTitle(x.full);
-          return createFacetCard({
-            facet: x as Partial<FacetDefinition>,
+          return createFacetCards({
+            facets: [x] as any,
             valueLabel: "Annotations",
-            dataFunctions: facetHooks,
+            hooks: facetHooks as any,
             idPrefix: "annotation-browser",
             facetName,
             width: "w-full",

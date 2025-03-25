@@ -14,6 +14,7 @@ export type GetEnumFacetDataFunction = (
 export type GetRangeFacetDataFunction = (
   field: string,
   ranges: ReadonlyArray<NumericFromTo>,
+  queryOptions?: Record<string, string>,
 ) => DataFetchingResult<Record<string, number>>;
 
 export type SelectFacetFilterFunction = (field: string) => Operation;
@@ -38,6 +39,11 @@ export type RangeFacetHooks = FacetCommonHooks & {
   useGetFacetFilters: SelectFacetFilterFunction; // gets the current filters
 };
 
+export type UploadFacetHooks = FacetCommonHooks & {
+  useCohortFacetFilters: any;
+  useOpenSetModal: () => (field: string) => void;
+};
+
 export interface FacetCommonHooks {
   useClearFilter: ClearFacetHook; // clear Facet Filters and remove facet from filter set
   useUpdateFacetFilters: UpdateFacetFilterHook; // updates the filters
@@ -47,7 +53,10 @@ export interface FacetCommonHooks {
   useFieldNameToTitle: () => (field: string, sections?: number) => string;
 }
 
-export type FacetRequiredHooks = EnumFacetHooks | RangeFacetHooks;
+export type FacetRequiredHooks =
+  | EnumFacetHooks
+  | RangeFacetHooks
+  | UploadFacetHooks;
 
 export interface FacetCardProps<T extends FacetCommonHooks> {
   readonly field: string;
@@ -70,6 +79,19 @@ export interface FacetCardProps<T extends FacetCommonHooks> {
   readonly queryOptions?: Record<string, string>;
   readonly cardScrollMargin?: number;
 }
+
+export type UploadFacetCardProps = Pick<
+  FacetCardProps<UploadFacetHooks>,
+  | "field"
+  | "hooks"
+  | "facetTitle"
+  | "facetBtnToolTip"
+  | "width"
+  | "cardScrollMargin"
+> & {
+  readonly fullField: string;
+  readonly uploadLabel?: string;
+};
 
 export type RangeFromOp = ">" | ">=";
 export type RangeToOp = "<" | "<=";
@@ -107,7 +129,7 @@ export interface FacetDefinition {
   readonly field: string; // name of field minus "case", "file"
   readonly full: string; //  full name of filter (e.g. prepended with case.)
   readonly type: string; // type from mapping
-  readonly facet_type: string; // classified type based on type + name: e.g. age, year, enumeration, etc
+  readonly facet_type?: string; // classified type based on type + name: e.g. age, year, enumeration, etc
   readonly range?: AllowableRange; // range of value types
   readonly hasData?: boolean;
   readonly title?: string;

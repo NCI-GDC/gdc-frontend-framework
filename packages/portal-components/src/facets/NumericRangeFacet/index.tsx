@@ -56,8 +56,6 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
     }
   }, [clearValues]);
 
-  console.log({ queryOptions });
-
   return (
     <div
       className={`flex flex-col ${

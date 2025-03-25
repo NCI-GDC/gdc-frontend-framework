@@ -82,9 +82,8 @@ const useEnumFiltersByNames = (
  *  Facet Selector using GQL which will refresh when filters/enum values changes.
  */
 export const useEnumFacet = (
-  docType: GQLDocType,
-  indexType: GQLIndexType,
   field: string,
+  { docType, indexType }: { docType: GQLDocType; indexType: GQLIndexType },
 ): EnumFacetResponse => {
   const coreDispatch = useCoreDispatch();
 
@@ -143,14 +142,14 @@ export const useEnumFacet = (
  * @param fields - list of fields.
  */
 export const useEnumFacets = (
-  docType: GQLDocType,
-  indexType: GQLIndexType,
   fields: ReadonlyArray<string>,
+  { docType, indexType }: { docType: GQLDocType; indexType: GQLIndexType },
 ): void => {
   const facet: ReadonlyArray<FacetBuckets> = useCoreSelector((state) =>
     selectMultipleFacetsByDocTypeAndField(state, docType, fields),
   );
   const coreDispatch = useCoreDispatch();
+  console.log("1", { docType, indexType });
 
   const enumValues = useEnumFiltersByNames(fields);
   const currentCohortFilters = useCohortFacetFilter();
@@ -213,7 +212,7 @@ export const useAllEnumFacets = () => {
           fetchFacetByNameGQL({
             field: enumFacets,
             docType: tabEntry.queryOptions.docType as GQLDocType,
-            index: tabEntry.queryOptions.index as GQLIndexType,
+            index: tabEntry.queryOptions.indexType as GQLIndexType,
             caseFilterSelector: selectCurrentCohortFilters,
           }),
         );
@@ -259,10 +258,9 @@ export const updateEnumFilters: UpdateEnumFiltersFunc = (
 };
 
 export const useRangeFacet = (
-  docType: GQLDocType,
-  indexType: GQLIndexType,
   field: string,
   ranges: ReadonlyArray<NumericFromTo>,
+  { docType, indexType }: { docType: GQLDocType; indexType: GQLIndexType },
   overrideCohortFilters?: GqlOperation,
 ): FacetResponse => {
   const coreDispatch = useCoreDispatch();

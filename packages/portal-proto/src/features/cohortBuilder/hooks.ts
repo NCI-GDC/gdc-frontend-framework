@@ -89,14 +89,15 @@ export const useSetupInitialCohorts = (): boolean => {
 
 export const usePopulateFacetData = (
   facets: FacetDefinition[],
-  queryOptions: { index: GQLIndexType; docType: GQLDocType },
+  queryOptions: { indexType: GQLIndexType; docType: GQLDocType },
 ) => {
   const enumFacets = facets.filter((x) => x.facet_type === "enum");
 
+  console.log({ queryOptions });
+
   useEnumFacets(
-    queryOptions.docType,
-    queryOptions.index,
     enumFacets.map((entry) => entry.full),
+    queryOptions,
   );
 };
 

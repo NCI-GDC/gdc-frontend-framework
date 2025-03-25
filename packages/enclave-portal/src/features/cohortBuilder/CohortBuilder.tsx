@@ -27,6 +27,8 @@ const CohortBuilder: React.FC = () => {
           tabsConfig={tabsConfig.config}
           getFacetLabel={() => "Cases"}
           usePopulateFacetData={() => {}}
+          activeTab="general"
+          setActiveTab={() => {}}
         />
       </div>
     </>

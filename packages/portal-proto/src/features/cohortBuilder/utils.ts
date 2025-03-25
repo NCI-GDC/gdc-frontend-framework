@@ -3,16 +3,16 @@ import {
   FilterSet,
   selectCurrentCohortFilters,
   useCoreSelector,
+  GQLDocType,
 } from "@gff/core";
-import { FacetCardDefinition } from "@/features/facets/types";
 import { SummaryFacetInfo } from "./SummaryFacets";
 
 // These new upload facets will not be returned by the mapping API call, hence they are manually defined as upload_facets
-export const upload_facets: Record<string, FacetCardDefinition> = {
+export const upload_facets = {
   "cases.upload.case_id": {
     description: "",
     toolTip: "Filter the current cohort by entering/uploading specific cases",
-    doc_type: "cases",
+    doc_type: "cases" as GQLDocType,
     facet_type: "upload",
     field: "cases.case_id",
     full: "cases.upload.case_id",
@@ -24,7 +24,7 @@ export const upload_facets: Record<string, FacetCardDefinition> = {
     description: "",
     toolTip:
       "Filter the current cohort by entering/uploading specific genes or selecting gene sets",
-    doc_type: "cases",
+    doc_type: "cases" as GQLDocType,
     facet_type: "upload",
     field: "genes.gene_id",
     full: "genes.upload.gene_id",
@@ -37,7 +37,7 @@ export const upload_facets: Record<string, FacetCardDefinition> = {
     description: "",
     toolTip:
       "Filter the current cohort by entering/uploading specific Simple Somatic Mutations (SSMs) or selecting mutation sets",
-    doc_type: "cases",
+    doc_type: "cases" as GQLDocType,
     facet_type: "upload",
     field: "ssms.ssm_id",
     full: "ssms.upload.ssm_id",

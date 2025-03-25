@@ -6,7 +6,7 @@ export interface CohortBuilderCategoryConfig {
   readonly label: string;
   readonly queryOptions: {
     readonly docType: string;
-    readonly index: string;
+    readonly indexType: string;
   };
   readonly facets: ReadonlyArray<string>;
 }

@@ -27,6 +27,7 @@ import {
 } from "./hooks";
 import { useFieldNameToTitle } from "./queryExpressionHooks";
 import { calculateStickyHeaderHeight } from "src/utils";
+import { upload_facets, useCohortFacetFilters } from "./utils";
 
 const getFacetLabel = (queryOptions) => {
   return FacetDocTypeToLabelsMap[queryOptions.docType];
@@ -66,7 +67,7 @@ const CohortBuilder = () => {
     <FacetTabs
       activeTab={activeTab}
       setActiveTab={setActiveTab}
-      facetDefinitions={facets}
+      facetDefinitions={{ ...facets, ...upload_facets }}
       tabsConfig={tabsConfig}
       hooks={{
         useGetEnumFacetData: useEnumFacetValues,
@@ -77,6 +78,7 @@ const CohortBuilder = () => {
         useClearFilter: useClearFilters,
         useTotalCounts,
         useFieldNameToTitle: useFieldNameToTitle,
+        useCohortFacetFilters: useCohortFacetFilters,
       }}
       customFacetHooks={{
         useCustomFacets,

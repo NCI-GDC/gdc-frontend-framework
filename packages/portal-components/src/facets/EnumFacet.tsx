@@ -346,13 +346,14 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                 }`}
               >
                 <div>
-                  <FacetSortPanel
-                    sortType={sortType}
-                    valueLabel={valueLabel}
-                    setSort={setSortType}
-                    field={facetName ? facetName : fieldNameToTitle(field)}
-                  />
-
+                  {valueLabel && (
+                    <FacetSortPanel
+                      sortType={sortType}
+                      valueLabel={valueLabel}
+                      setSort={setSortType}
+                      field={facetName ? facetName : fieldNameToTitle(field)}
+                    />
+                  )}
                   <div
                     className={facetChartData.cardStyle}
                     role="group"

@@ -46,6 +46,7 @@ export const fetchFacetByNameGQL = createAsyncThunk<
     },
     thunkAPI,
   ) => {
+    console.log({ docType, index });
     const caseFilters = caseFilterSelector(thunkAPI.getState());
     // the GDC GraphQL schema does accept the docType prepended if the
     // docType is the same. Remove it but use the original field string

@@ -1,9 +1,5 @@
 import { FilterSet, OperandValue, Operation } from "@gff/core";
 import { extractValue } from "@/features/facets/hooks";
-import {
-  ClearFacetFunction,
-  UpdateFacetFilterFunction,
-} from "@/features/facets/types";
 import { useAppSelector, useAppDispatch } from "@/features/annotations/appApi";
 import {
   selectAnnotationFiltersByName,
@@ -17,7 +13,7 @@ export const useAnnotationsFilters = (): FilterSet => {
   return useAppSelector((state) => selectFilters(state));
 };
 
-export const useClearAnnotationFilters = (): ClearFacetFunction => {
+export const useClearAnnotationFilters = () => {
   const dispatch = useAppDispatch();
   return (field: string) => {
     dispatch(removeAnnotationFilter(field));
@@ -38,7 +34,7 @@ export const useAnnotationEnumValues = (field: string): OperandValue => {
   return enumFilters ? extractValue(enumFilters) : undefined;
 };
 
-export const useUpdateAnnotationFacetFilter = (): UpdateFacetFilterFunction => {
+export const useUpdateAnnotationFacetFilter = () => {
   const dispatch = useAppDispatch();
 
   return (field: string, operation: Operation) => {

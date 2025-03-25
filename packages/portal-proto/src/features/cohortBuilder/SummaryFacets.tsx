@@ -1,4 +1,4 @@
-import EnumFacet from "@gff/portal-components";
+import { EnumFacet } from "@gff/portal-components";
 import { GQLDocType, GQLIndexType } from "@gff/core";
 import {
   useClearFilters,
@@ -44,10 +44,13 @@ hover:text-primary-darker
 export const SummaryFacets: React.FC<SummaryFacetProps> = ({
   fields,
 }: SummaryFacetProps) => {
+  const queryOptions = {
+    docType: fields[0].docType,
+    indexType: fields[0].indexType,
+  };
   useEnumFacets(
-    fields[0].docType,
-    fields[0].indexType,
     fields.map((entry) => entry.field),
+    queryOptions,
   );
 
   return (
@@ -56,29 +59,23 @@ export const SummaryFacets: React.FC<SummaryFacetProps> = ({
         return (
           <EnumFacet
             field={entry.field}
-            header={{
-              Panel: SummaryFacetHeader,
-              Label: SummaryFacetHeaderLabel,
-              iconStyle: "text-primary-darkest hover:text-primary-lighter",
-            }}
             valueLabel={FacetDocTypeToLabelsMap[entry.docType]}
             facetName={entry.name}
             startShowingData={false}
             key={`summary-chart-${entry.field}-${index}`}
             hideIfEmpty={false}
-            hooks={{
-              useUpdateFacetFilters: useUpdateFacetFilter,
-              useTotalCounts: partial(
-                useTotalCounts,
-                FacetDocTypeToCountsIndexMap[entry.docType],
-              ),
-              useClearFilter: useClearFilters,
-              useGetEnumFacetData: partial(
-                useEnumFacetValues,
-                entry.docType,
-                entry.indexType,
-              ),
-            }}
+            hooks={
+              {
+                useUpdateFacetFilters: useUpdateFacetFilter,
+                useTotalCounts: partial(
+                  useTotalCounts,
+                  FacetDocTypeToCountsIndexMap[entry.docType],
+                ),
+                useClearFilter: useClearFilters,
+                useGetEnumFacetData: useEnumFacetValues,
+              } as any
+            }
+            queryOptions={queryOptions}
           />
         );
       })}

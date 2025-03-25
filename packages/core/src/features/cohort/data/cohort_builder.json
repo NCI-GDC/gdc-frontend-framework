@@ -13,7 +13,7 @@
       ],
       "queryOptions": {
         "docType": "cases",
-        "index": "explore"
+        "indexType": "explore"
       }
     },
     "demographic": {
@@ -27,7 +27,7 @@
       ],
       "queryOptions": {
         "docType": "cases",
-        "index": "explore"
+        "indexType": "explore"
       }
     },
     "general_diagnosis": {
@@ -46,7 +46,7 @@
       ],
       "queryOptions": {
         "docType": "cases",
-        "index": "explore"
+        "indexType": "explore"
       }
     },
     "disease_status": {
@@ -62,7 +62,7 @@
       ],
       "queryOptions": {
         "docType": "cases",
-        "index": "explore"
+        "indexType": "explore"
       }
     },
     "disease_specific_classifications": {
@@ -87,7 +87,7 @@
       ],
       "queryOptions": {
         "docType": "cases",
-        "index": "explore"
+        "indexType": "explore"
       }
     },
     "treatment": {
@@ -101,7 +101,7 @@
       ],
       "queryOptions": {
         "docType": "cases",
-        "index": "explore"
+        "indexType": "explore"
       }
     },
     "exposure": {
@@ -116,7 +116,7 @@
       ],
       "queryOptions": {
         "docType": "cases",
-        "index": "explore"
+        "indexType": "explore"
       }
     },
     "biospecimen": {
@@ -131,7 +131,7 @@
       ],
       "queryOptions": {
         "docType": "cases",
-        "index": "explore"
+        "indexType": "explore"
       }
     },
     "molecular_filters": {
@@ -139,7 +139,7 @@
       "facets": ["genes.upload.gene_id", "ssms.upload.ssm_id"],
       "queryOptions": {
         "docType": "cases",
-        "index": "explore"
+        "indexType": "explore"
       }
     },
     "available_data": {
@@ -155,7 +155,7 @@
       ],
       "queryOptions": {
         "docType": "cases",
-        "index": "explore"
+        "indexType": "explore"
       }
     },
     "custom": {
@@ -163,7 +163,7 @@
       "facets": [],
       "queryOptions": {
         "docType": "cases",
-        "index": "explore"
+        "indexType": "explore"
       }
     }
   }

@@ -1,9 +1,11 @@
 import React from "react";
 import EnumFacet from "./EnumFacet";
 import NumericRangeFacet from "./NumericRangeFacet";
+import UploadFacet from "./UploadFacet";
 import {
   EnumFacetHooks,
   RangeFacetHooks,
+  UploadFacetHooks,
   FacetCardDefinition,
   FacetRequiredHooks,
 } from "./types";
@@ -59,7 +61,6 @@ const createFacetCards = ({
   cardScrollMargin,
   Chart,
 }: CreateFacetCardProps): React.ReactNode => {
-  console.log({ queryOptions });
   return facets.map((facet) => {
     if (facet.facet_type === "enum") {
       return (
@@ -84,6 +85,7 @@ const createFacetCards = ({
     }
 
     if (
+      facet.facet_type &&
       [
         "year",
         "years",
@@ -113,6 +115,20 @@ const createFacetCards = ({
           queryOptions={queryOptions}
           cardScrollMargin={cardScrollMargin}
           Chart={Chart}
+        />
+      );
+    }
+    if (facet.facet_type === "upload") {
+      return (
+        <UploadFacet
+          key={`${idPrefix}-exact-${facet.field}`}
+          field={facet.field}
+          fullField={facet.full}
+          facetTitle={facet.title}
+          uploadLabel={facet.uploadLabel}
+          width={width}
+          facetBtnToolTip={facet.toolTip}
+          hooks={{ ...(hooks as UploadFacetHooks) }}
         />
       );
     }
