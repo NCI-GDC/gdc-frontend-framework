@@ -1,7 +1,8 @@
 import React from "react";
-import EnumFacet from "./EnumFacet";
-import NumericRangeFacet from "./NumericRangeFacet";
-import UploadFacet from "./UploadFacet";
+import EnumFacet from "./facetTypes/EnumFacet";
+import NumericRangeFacet from "./facetTypes/NumericRangeFacet";
+import UploadFacet from "./facetTypes/UploadFacet";
+import DateRangeFacet from "./facetTypes/DateRangeFacet";
 import {
   EnumFacetHooks,
   RangeFacetHooks,
@@ -83,6 +84,22 @@ const createFacetCards = ({
         />
       );
     }
+
+    if (facet.facet_type === "datetime")
+      return (
+        <DateRangeFacet
+          key={`${idPrefix}-date-range-${facet.full}`}
+          field={facet.full}
+          description={facet.description}
+          dismissCallback={dismissCallback}
+          hideIfEmpty={hideIfEmpty}
+          hooks={{
+            ...(hooks as RangeFacetHooks),
+          }}
+          facetName={facetName}
+          width={width}
+        />
+      );
 
     if (
       facet.facet_type &&

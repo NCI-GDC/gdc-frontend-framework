@@ -3,12 +3,12 @@ import { LoadingOverlay } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
 import FacetExpander from "../FacetExpander";
-import { RangeFacetHooks } from "../types";
+import { RangeFacetHooks } from "../../types";
 import {
   buildRangeBuckets,
   DEFAULT_VISIBLE_ITEMS,
   extractRangeValues,
-} from "../utils";
+} from "../../utils";
 import FromTo from "./FromTo";
 import RangeValueSelector from "./RangeValueSelector";
 import {
@@ -16,7 +16,7 @@ import {
   classifyRangeType,
   radioStyle,
 } from "./utils";
-import { BAD_DATA_MESSAGE } from "../constants";
+import { BAD_DATA_MESSAGE } from "../../constants";
 import { NumericUnits } from "./types";
 
 interface RangeInputWithPrefixedRangesProps {

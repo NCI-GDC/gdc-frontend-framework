@@ -34,6 +34,10 @@ export type EnumFacetHooks = FacetCommonHooks & {
   ) => [string, number][];
 };
 
+export type ValueFacetHooks = FacetCommonHooks & {
+  useGetFacetFilters: SelectFacetFilterFunction; // gets the current filters
+};
+
 export type RangeFacetHooks = FacetCommonHooks & {
   useGetRangeFacetData: GetRangeFacetDataFunction; // gets the data for Range Facets
   useGetFacetFilters: SelectFacetFilterFunction; // gets the current filters
@@ -55,6 +59,7 @@ export interface FacetCommonHooks {
 
 export type FacetRequiredHooks =
   | EnumFacetHooks
+  | ValueFacetHooks
   | RangeFacetHooks
   | UploadFacetHooks;
 
@@ -104,6 +109,13 @@ export interface FromToRangeValues<T> {
 export interface FromToRange<T> extends FromToRangeValues<T> {
   readonly fromOp?: RangeFromOp;
   readonly toOp?: RangeToOp;
+}
+
+export interface StringRange {
+  readonly fromOp?: RangeFromOp;
+  readonly from?: string;
+  readonly toOp?: RangeToOp;
+  readonly to?: string;
 }
 
 /**

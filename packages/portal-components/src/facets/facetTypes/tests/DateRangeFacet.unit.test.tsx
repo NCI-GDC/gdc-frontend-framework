@@ -1,4 +1,5 @@
-import { render } from "test-utils";
+import React from "react";
+import { render } from "@testing-library/react";
 import DateRangeFacet from "../DateRangeFacet";
 
 window.ResizeObserver =

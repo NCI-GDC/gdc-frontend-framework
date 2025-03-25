@@ -2,10 +2,10 @@ import React from "react";
 import { useDeepCompareMemo } from "use-deep-compare";
 import { Button, Tooltip } from "@mantine/core";
 import CohortBadge from "@/cohort/QueryExpression/CohortBadge";
-import { humanify } from "@/common/utils";
-import { UploadFacetCardProps } from "./types";
-import FacetControlsHeader from "./FacetControlsHeader";
 import { Includes } from "@/cohort/QueryExpression/types";
+import { humanify } from "@/common/utils";
+import { UploadFacetCardProps } from "../types";
+import FacetControlsHeader from "./FacetControlsHeader";
 
 const UploadFacet: React.FC<UploadFacetCardProps> = ({
   field,

@@ -5,9 +5,8 @@ import OverflowTooltippedLabel from "@/common/OverflowTooltippedLabel";
 import { CloseIcon } from "src/commonIcons";
 import FacetSortPanel from "./FacetSortPanel";
 import FacetControlsHeader from "./FacetControlsHeader";
-import { SortType, EnumFacetHooks, FacetCardProps } from "./types";
-import { BAD_DATA_MESSAGE, DEFAULT_VISIBLE_ITEMS } from "./constants";
-
+import { SortType, EnumFacetHooks, FacetCardProps } from "../types";
+import { BAD_DATA_MESSAGE, DEFAULT_VISIBLE_ITEMS } from "../constants";
 import FacetExpander from "./FacetExpander";
 
 /**

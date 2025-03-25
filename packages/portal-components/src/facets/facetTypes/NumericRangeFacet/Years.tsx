@@ -1,9 +1,9 @@
 import React from "react";
-import { getLowerAgeYears } from "../utils";
+import { getLowerAgeYears } from "../../utils";
 import RangeInputWithPrefixedRanges from "./RangeInputWithPrefixedRanges";
-import { NumericFacetData } from "./types";
+import { NumericFacetProps } from "./types";
 
-const Years: React.FC<NumericFacetData> = ({
+const Years: React.FC<NumericFacetProps> = ({
   field,
   valueLabel,
   rangeDatatype,
@@ -14,7 +14,7 @@ const Years: React.FC<NumericFacetData> = ({
   isFacetView,
   queryOptions,
   Chart,
-}: NumericFacetData) => {
+}: NumericFacetProps) => {
   // minimum and maximum values if not undefined are in days so need to convert it to years
   const adjMinimum = minimum != undefined ? getLowerAgeYears(minimum) : 0;
   const adjMaximum = maximum != undefined ? getLowerAgeYears(maximum) : 89;

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@mantine/core";
 import { SelectorIcon, SortAscIcon, SortDesIcon } from "src/commonIcons";
-import { SortType } from "./types";
+import { SortType } from "../types";
 
 interface FacetSortPanelProps {
   sortType: SortType;

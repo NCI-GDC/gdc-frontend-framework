@@ -8,8 +8,8 @@ import {
   SearchIcon,
   UndoIcon,
 } from "src/commonIcons";
-import { FacetCardProps, FacetRequiredHooks } from "./types";
-import { facetIconButtonStyles } from "./styles";
+import { FacetCardProps, FacetRequiredHooks } from "../types";
+import { facetIconButtonStyles } from "../styles";
 
 type FacetHeaderProps = Pick<
   FacetCardProps<FacetRequiredHooks>,

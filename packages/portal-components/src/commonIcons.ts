@@ -33,6 +33,8 @@ import { VscFeedback as FeedbackIcon } from "react-icons/vsc";
 import {
   FaCaretDown as DropdownIcon,
   FaUndo as UndoIcon,
+  FaPlus as PlusIcon,
+  FaMinus as MinusIcon,
 } from "react-icons/fa";
 import { RiErrorWarningFill as WarningMessageIcon } from "react-icons/ri";
 import { FaCircle as CircleIcon } from "react-icons/fa";
@@ -41,6 +43,7 @@ import {
   PiCaretDownFill as SortDesIcon,
   PiCaretUpFill as SortAscIcon,
 } from "react-icons/pi";
+import { ImCalendar as CalendarIcon } from "react-icons/im";
 
 export {
   CartIcon,
@@ -80,4 +83,7 @@ export {
   SortAscIcon,
   AddFacetIcon,
   WarningTriangleIcon,
+  CalendarIcon,
+  PlusIcon,
+  MinusIcon,
 };

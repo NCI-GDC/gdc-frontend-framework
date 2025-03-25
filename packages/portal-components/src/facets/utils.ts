@@ -14,7 +14,7 @@ import {
   RangeBucketElement,
 } from "./types";
 import { DAYS_IN_YEAR } from "./constants";
-import { NumericUnits } from "./NumericRangeFacet/types";
+import { NumericUnits } from "./facetTypes/NumericRangeFacet/types";
 
 export const DEFAULT_VISIBLE_ITEMS = 6;
 const RANGE_DECIMAL_PRECISION = 1;
@@ -22,7 +22,6 @@ const RANGE_DECIMAL_PRECISION = 1;
 export const symmetricalRound = (x: number): number =>
   x < 0 ? Math.round(Math.abs(x)) * -1 : Math.round(x);
 
-// TODO write unit test for these
 export const getLowerAgeYears = (days: number): number =>
   symmetricalRound(days / DAYS_IN_YEAR);
 export const getLowerAgeFromYears = (years: number): number =>
@@ -280,3 +279,15 @@ export const ageInYearsAndDaysFromDays = (ageInDays: number): number[] =>
     Math.floor(ageInDays / DAYS_IN_YEAR),
     Math.ceil(ageInDays % DAYS_IN_YEAR),
   );
+
+export const trimFirstFieldNameToTitle = (
+  fieldName: string,
+  fieldNameToTitle: (fieldName: string, parts?: number) => string,
+  trim = false,
+): string => {
+  if (trim) {
+    const source = fieldName.slice(fieldName.indexOf(".") + 1);
+    return fieldNameToTitle(source ? source : fieldName, 0);
+  }
+  return fieldNameToTitle(fieldName);
+};

@@ -1,8 +1,7 @@
 import React, { useMemo } from "react";
-import { EnumFacetHooks, FacetCardProps } from "./types";
-import { updateFacetEnum } from "./utils";
-import { trimFirstFieldNameToTitle } from "@gff/core";
 import { LoadingOverlay, Switch } from "@mantine/core";
+import { EnumFacetHooks, FacetCardProps } from "../types";
+import { updateFacetEnum, trimFirstFieldNameToTitle } from "../utils";
 import FacetControlsHeader from "./FacetControlsHeader";
 
 const extractToggleValue = (values?: ReadonlyArray<string>): boolean =>
@@ -34,10 +33,11 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   const isFilterExpanded =
     hooks?.useFilterExpanded && hooks.useFilterExpanded(field);
   const showFilters = isFilterExpanded === undefined || isFilterExpanded;
+  const fieldNameToTitle = hooks.useFieldNameToTitle();
 
   const facetTitle = facetName
     ? facetName
-    : trimFirstFieldNameToTitle(field, true);
+    : trimFirstFieldNameToTitle(field, fieldNameToTitle, true);
 
   const { data, isSuccess, enumFilters } = hooks.useGetEnumFacetData(field);
 

@@ -8,15 +8,15 @@ import {
   RangeFromOp,
   RangeToOp,
   UpdateFacetFilterHook,
-} from "../types";
+} from "../../types";
 import {
   adjustDaysToYearsIfUnitsAreYears,
   adjustYearsToDaysIfUnitsAreYears,
   buildRangeOperator,
   getLowerAgeYears,
-} from "../utils";
+} from "../../utils";
 import { WarningMessageIcon, WarningTriangleIcon } from "src/commonIcons";
-import { DAYS_IN_YEAR } from "../constants";
+import { DAYS_IN_YEAR } from "../../constants";
 
 interface FromToProps {
   readonly minimum: number;

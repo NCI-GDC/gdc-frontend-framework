@@ -1,6 +1,7 @@
-import { render } from "test-utils";
+import React from "react";
+import { render } from "@testing-library/react";
 import ToggleFacet from "../ToggleFacet";
-import { EnumFacetResponse } from "@/features/facets/types";
+import { EnumFacetResponse } from "src/facets/types";
 
 describe("<ToggleFacet />", () => {
   beforeEach(() => {
@@ -26,6 +27,8 @@ describe("<ToggleFacet />", () => {
           useUpdateFacetFilters: jest.fn(),
           useClearFilter: jest.fn(),
           useTotalCounts: jest.fn(),
+          useFieldNameToTitle: jest.fn(),
+          useSearchEnumTerms: jest.fn(),
         }}
       />,
     );
@@ -58,6 +61,8 @@ describe("<ToggleFacet />", () => {
           useUpdateFacetFilters: jest.fn(),
           useClearFilter: jest.fn(),
           useTotalCounts: jest.fn(),
+          useFieldNameToTitle: jest.fn(),
+          useSearchEnumTerms: jest.fn(),
         }}
       />,
     );

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { SegmentedControl } from "@mantine/core";
 import RangeInputWithPrefixedRanges from "./RangeInputWithPrefixedRanges";
-import { NumericFacetData, NumericUnits } from "./types";
+import { NumericFacetProps, NumericUnits } from "./types";
 
-const DaysOrYears: React.FC<NumericFacetData> = ({
+const DaysOrYears: React.FC<NumericFacetProps> = ({
   field,
   rangeDatatype,
   hooks,
@@ -14,7 +14,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
   maximum,
   queryOptions,
   Chart,
-}: NumericFacetData) => {
+}) => {
   const [units, setUnits] = useState("years");
   // no data if true means the Day/Year SegmentedControl should not be rendered.
   // TODO: this is not ideal and perhaps should be refactored

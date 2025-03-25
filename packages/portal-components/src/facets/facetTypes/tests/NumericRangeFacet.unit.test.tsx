@@ -1,11 +1,7 @@
-import { render } from "test-utils";
+import React from "react";
+import { render } from "@testing-library/react";
 import NumericRangeFacet from "../NumericRangeFacet";
-import { EnumFacetResponse } from "@/features/facets/types";
-
-jest.mock("@gff/core", () => ({
-  ...jest.requireActual("@gff/core"),
-  useCoreDispatch: jest.fn(),
-}));
+import { EnumFacetResponse } from "../../types";
 
 describe("<NumericRangeFacet />", () => {
   beforeEach(() => {
@@ -46,6 +42,7 @@ describe("<NumericRangeFacet />", () => {
           useUpdateFacetFilters: jest.fn(),
           useClearFilter: jest.fn(),
           useTotalCounts: jest.fn(() => 4109),
+          useFieldNameToTitle: jest.fn(),
         }}
       />,
     );

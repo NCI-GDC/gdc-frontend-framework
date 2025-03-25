@@ -1,15 +1,15 @@
 import React, { useState, useMemo } from "react";
-import { FacetCardProps, ValueFacetHooks } from "./types";
 import { ActionIcon, Badge, Group, TextInput } from "@mantine/core";
+import { CloseIcon, PlusIcon } from "src/commonIcons";
+import { FacetCardProps, ValueFacetHooks } from "../types";
+import { trimFirstFieldNameToTitle } from "../utils";
+import FacetControlsHeader from "./FacetControlsHeader";
 import {
   Operation,
-  Excludes,
   Includes,
-  trimFirstFieldNameToTitle,
+  Excludes,
   EnumOperandValue,
-} from "@gff/core";
-import FacetControlsHeader from "./FacetControlsHeader";
-import { CloseIcon, PlusIcon } from "@/utils/icons";
+} from "@/cohort/QueryExpression/types";
 
 type ExactValueProps = Omit<
   FacetCardProps<ValueFacetHooks>,
@@ -54,9 +54,10 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
   const [textValue, setTextValue] = useState(""); // Handle the state of the TextInput
   const clearFilters = hooks.useClearFilter();
   const updateFacetFilters = hooks.useUpdateFacetFilters();
+  const fieldNameToTitle = hooks.useFieldNameToTitle();
   const facetTitle = facetName
     ? facetName
-    : trimFirstFieldNameToTitle(field, true);
+    : trimFirstFieldNameToTitle(field, fieldNameToTitle, true);
   const facetValue = hooks.useGetFacetFilters(field);
   const textValues = useMemo(() => extractValues(facetValue), [facetValue]);
   const isFilterExpanded =

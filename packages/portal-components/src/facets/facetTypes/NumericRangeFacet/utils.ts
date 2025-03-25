@@ -1,4 +1,4 @@
-import { FromToRange, RangeBucketElement } from "../types";
+import { FromToRange, RangeBucketElement } from "../../types";
 
 export const radioStyle =
   "form-check-input form-check-input appearance-none rounded-full h-3 w-3 border border-base-light bg-base-lightest checked:bg-primary-dark checked:bg-primary-dark focus:ring-0 focus:ring-offset-0 focus:outline-none focus:bg-primary-darkest active:bg-primary-dark transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer";

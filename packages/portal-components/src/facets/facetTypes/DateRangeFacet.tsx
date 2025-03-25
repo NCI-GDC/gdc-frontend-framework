@@ -1,15 +1,11 @@
 import React, { useState, useMemo } from "react";
-import { FacetCardProps, ValueFacetHooks } from "./types";
 import { ActionIcon, Popover } from "@mantine/core";
 import { DateInput, DatePicker } from "@mantine/dates";
-import {
-  buildRangeOperator,
-  extractRangeValues,
-} from "@/features/facets/utils";
-import { StringRange } from "./types";
+import { getFormattedTimestamp } from "@/common/date";
+import { CalendarIcon, MinusIcon, PlusIcon } from "src/commonIcons";
+import { buildRangeOperator, extractRangeValues } from "../utils";
 import FacetControlsHeader from "./FacetControlsHeader";
-import { CalendarIcon, MinusIcon, PlusIcon } from "@/utils/icons";
-import { getFormattedTimestamp } from "@/utils/date";
+import { FacetCardProps, ValueFacetHooks, StringRange } from "../types";
 
 type DateRangeFacetProps = Omit<
   FacetCardProps<ValueFacetHooks>,
@@ -101,7 +97,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
             size="sm"
             placeholder="Since"
             className="px-1"
-            maxDate={dateRangeValue[1]}
+            maxDate={dateRangeValue[1] ?? undefined}
             valueFormat="YYYY-MM-DD"
             onChange={(d: Date | null) =>
               setDateRangeValue([d, dateRangeValue[1]])
@@ -120,7 +116,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
             className="px-1"
             valueFormat="YYYY-MM-DD"
             value={dateRangeValue[1]}
-            minDate={dateRangeValue[0]}
+            minDate={dateRangeValue[0] ?? undefined}
             onChange={(d: Date | null) =>
               setDateRangeValue([dateRangeValue[0], d])
             }

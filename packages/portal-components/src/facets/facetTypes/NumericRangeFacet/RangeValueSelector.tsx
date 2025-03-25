@@ -5,8 +5,8 @@ import {
   RangeBucketElement,
   SortType,
   UpdateFacetFilterFunction,
-} from "../types";
-import { buildRangeOperator } from "../utils";
+} from "../../types";
+import { buildRangeOperator } from "../../utils";
 import { radioStyle } from "./utils";
 
 interface RangeValueSelectorProps {

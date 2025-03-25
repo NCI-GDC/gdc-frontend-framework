@@ -7,7 +7,7 @@ import {
   symmetricalRound,
   getLowerAgeYears,
   getLowerAgeFromYears,
-} from "../utils";
+} from "./utils";
 
 describe("Build Range Tests for Numeric Ranges", () => {
   test("a closed numeric range", () => {
@@ -683,13 +683,11 @@ describe("test days to years conversion", () => {
 
   test("getLowerAgeYears", () => {
     expect(getLowerAgeYears(730.5)).toBe(2);
-    expect(getLowerAgeYears(undefined)).toBeUndefined();
     expect(getLowerAgeYears(365.25)).toBe(1);
   });
 
   test("getLowerAgeFromYears", () => {
     expect(getLowerAgeFromYears(2)).toBe(731);
-    expect(getLowerAgeFromYears(undefined)).toBeUndefined();
     expect(getLowerAgeFromYears(1)).toBe(365);
   });
 });

@@ -1,12 +1,8 @@
-import { render } from "test-utils";
+import React from "react";
+import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import ExactValueFacet from "../ExactValueFacet";
-import { Operation } from "@gff/core";
-
-jest.mock("@gff/core", () => ({
-  ...jest.requireActual("@gff/core"),
-  useCoreDispatch: jest.fn(),
-}));
+import { Operation } from "@/cohort/QueryExpression/types";
 
 describe("<ExactValueFacet />", () => {
   beforeEach(() => {
@@ -44,7 +40,7 @@ describe("<ExactValueFacet />", () => {
   });
 
   it("add a value with ExactValueFacet control", async () => {
-    let values = undefined;
+    let values: Operation | undefined = undefined;
     const { getByRole, getByLabelText, getByText } = render(
       <ExactValueFacet
         field="cases.diagnoses.annotations.case_id"

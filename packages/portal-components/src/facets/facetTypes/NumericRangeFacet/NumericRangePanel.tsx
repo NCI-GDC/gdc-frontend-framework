@@ -1,17 +1,17 @@
 import React from "react";
 import { useDeepCompareMemo } from "use-deep-compare";
-import { extractRangeValues } from "../utils";
+import { extractRangeValues } from "../../utils";
 import FromTo from "./FromTo";
-import { NumericFacetData } from "./types";
+import { NumericFacetProps } from "./types";
 import { classifyRangeType } from "./utils";
 
-const NumericRangePanel: React.FC<NumericFacetData> = ({
+const NumericRangePanel: React.FC<NumericFacetProps> = ({
   field,
   hooks,
   clearValues,
   minimum = undefined,
   maximum = undefined,
-}: NumericFacetData) => {
+}) => {
   const adjMinimum = minimum != undefined ? minimum : 0;
   const adjMaximum = maximum != undefined ? maximum : 999999;
 
