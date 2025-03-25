@@ -1,4 +1,4 @@
-import { getFormattedTimestamp } from "@gff/portal-components/src/common/date";
+import { getFormattedTimestamp } from "@/utils/date";
 
 describe("getFormattedTimestamp", () => {
   afterEach(() => {

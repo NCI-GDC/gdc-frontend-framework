@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { ActionIcon, Popover } from "@mantine/core";
 import { DateInput, DatePicker } from "@mantine/dates";
-import { getFormattedTimestamp } from "@/common/date";
+import { getFormattedTimestamp } from "../utils";
 import { CalendarIcon, MinusIcon, PlusIcon } from "src/commonIcons";
 import { buildRangeOperator, extractRangeValues } from "../utils";
 import FacetControlsHeader from "./FacetControlsHeader";
