@@ -17,7 +17,8 @@
       "@/components/*": ["src/components/*"],
       "@/features/*": ["src/features/*"]
     },
-    "module": "esnext"
+    "module": "esnext",
+    "target": "ES2021"
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "global.d.ts"],
   "exclude": ["node_modules"]

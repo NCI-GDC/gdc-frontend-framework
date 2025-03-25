@@ -36,8 +36,7 @@ export type BodyPlotDataKey =
   | "Thyroid"
   | "Uterus";
 
-// TODO replace below with BodyPlotDataKey
-type BodyPlotData = Record<string, BodyplotDataElement>;
+type BodyPlotData = Record<BodyPlotDataKey, BodyplotDataElement>;
 
 export const HUMAN_BODY_MAPPINGS: BodyPlotData = {
   "Adrenal Gland": {
@@ -555,15 +554,25 @@ export const HUMAN_BODY_MAPPINGS: BodyPlotData = {
   },
 };
 
-export const HUMAN_BODY_MAPPER = (category: string): Record<string, string> =>
+export const HUMAN_BODY_MAPPER = (
+  category: "byPrimarySite" | "byTissueOrOrganOfOrigin",
+): Record<string, BodyPlotDataKey[]> =>
   Object.entries(HUMAN_BODY_MAPPINGS).reduce(
-    (mainAcc, [sapiensLabel, byCategories]) => ({
+    (mainAcc: Record<string, string[]>, [sapiensLabel, byCategories]) => ({
       ...mainAcc,
       ...byCategories[category].reduce(
-        (acc: any, categoryKey: string) => ({
+        (acc, categoryKey: string) => ({
           ...acc,
-          [categoryKey.toLowerCase() || sapiensLabel.toLowerCase()]:
-            sapiensLabel,
+          [categoryKey.toLowerCase() || sapiensLabel.toLowerCase()]: mainAcc[
+            categoryKey.toLowerCase() || sapiensLabel.toLowerCase()
+          ]
+            ? [
+                ...mainAcc[
+                  categoryKey.toLowerCase() || sapiensLabel.toLowerCase()
+                ],
+                sapiensLabel,
+              ]
+            : [sapiensLabel],
         }),
         {},
       ),
