@@ -21,10 +21,13 @@ import {
 } from "./setsSlice";
 import {
   useGeneSetCountQuery,
+  useLazyGeneSetCountQuery,
   useGeneSetCountsQuery,
   useSsmSetCountQuery,
+  useLazySsmSetCountQuery,
   useSsmSetCountsQuery,
   useCaseSetCountQuery,
+  useLazyCaseSetCountQuery,
   useCaseSetCountsQuery,
 } from "./setCountSlice";
 import {
@@ -51,10 +54,13 @@ export {
   selectAllSets,
   SetTypes,
   useGeneSetCountQuery,
+  useLazyGeneSetCountQuery,
   useGeneSetCountsQuery,
   useSsmSetCountQuery,
+  useLazySsmSetCountQuery,
   useSsmSetCountsQuery,
   useCaseSetCountQuery,
+  useLazyCaseSetCountQuery,
   useCaseSetCountsQuery,
   useAppendToGeneSetMutation,
   useAppendToSsmSetMutation,

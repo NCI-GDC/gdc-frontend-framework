@@ -1,5 +1,9 @@
-import { PropsWithChildren, useContext, useEffect } from "react";
+import React, { PropsWithChildren, useContext, useEffect } from "react";
 import { get } from "lodash";
+import { ActionIcon, Divider, Group, Tooltip } from "@mantine/core";
+import { QueryExpressionsExpandedContext } from "./QueryExpressionSection";
+import CohortBadge from "./CohortBadge";
+import { CloseIcon, RightArrowIcon, LeftArrowIcon } from "src/commonIcons";
 import {
   Equals,
   ExcludeIfAny,
@@ -16,61 +20,27 @@ import {
   NotEquals,
   Operation,
   OperationHandler,
-  removeCohortFilter,
+  QueryExpressionHooks,
   Union,
-  useCoreDispatch,
-  fieldNameToTitle,
-  useCoreSelector,
-  selectCurrentCohortId,
-  useGeneSymbol,
-  useCurrentCohortFilters,
-  updateActiveCohortFilter,
-} from "@gff/core";
-import { ActionIcon, Divider, Group, Tooltip } from "@mantine/core";
-import tw from "tailwind-styled-components";
-import { QueryExpressionsExpandedContext } from "./QueryExpressionSection";
-import CohortBadge from "./CohortBadge";
-import { CloseIcon, RightArrowIcon, LeftArrowIcon } from "@/utils/icons";
+} from "./types";
 
-const QueryRepresentationText = tw.div`
-flex truncate ... px-2 py-1 bg-base-max h-full
-`;
+const QueryRepresentationText: React.FC<PropsWithChildren> = ({ children }) => (
+  <div className="flex truncate ... px-2 py-1 bg-base-max h-full">
+    {children}
+  </div>
+);
 
-const QueryFieldLabel = tw.div`
-bg-accent-cool-content-lightest
-rounded-l-md
-text-base-darkest
-uppercase
-px-2
-border-primary-darkest
-border-r-[1.5px]
-flex
-items-center
-`;
+const QueryFieldLabel: React.FC<PropsWithChildren> = ({ children }) => (
+  <div className="bg-accent-cool-content-lightest rounded-l-md text-base-darkest uppercase px-2 border-primary-darkest border-r-[1.5px] flex items-center">
+    {children}
+  </div>
+);
 
-const QueryItemContainer = tw.div`
-flex
-flex-row
-items-center
-font-heading
-font-medium
-text-sm
-rounded-md
-border-[1.5px]
-mr-1
-mb-2
-border-secondary-darkest
-w-inherit
-`;
-
-const QueryContainer = tw.div`
-flex
-flex-row
-items-stretch
-h-full
-bg-white
-rounded-md
-`;
+const QueryContainer: React.FC<PropsWithChildren> = ({ children }) => (
+  <div className="flex flex-row items-stretch h-full bg-white rounded-md">
+    {children}
+  </div>
+);
 
 type RangeOperation =
   | LessThan
@@ -94,38 +64,35 @@ const IncludeExcludeQueryElement: React.FC<
   field,
   operator,
   operands: operandsProp,
+  hooks,
 }: Includes | Excludes | ExcludeIfAny) => {
   const [queryExpressionsExpanded, setQueryExpressionsExpanded] = useContext(
     QueryExpressionsExpandedContext,
   );
-  const currentCohortId = useCoreSelector((state) =>
-    selectCurrentCohortId(state),
-  );
+  const currentCohort = hooks.useSelectCurrentCohort();
+  const fieldNameToTitle = hooks.useFieldNameToTitle();
 
   useEffect(() => {
     if (get(queryExpressionsExpanded, field) === undefined) {
-      setQueryExpressionsExpanded({
-        type: "expand",
-        cohortId: currentCohortId,
-        field,
-      });
+      setQueryExpressionsExpanded &&
+        setQueryExpressionsExpanded({
+          type: "expand",
+          cohortId: currentCohort.id,
+          field,
+        });
     }
   }, [
     field,
-    currentCohortId,
+    currentCohort.id,
     queryExpressionsExpanded,
     setQueryExpressionsExpanded,
   ]);
 
   const expanded = get(queryExpressionsExpanded, field, true);
-  const fieldName =
-    field === "genes.gene_id" ? "Mutated Gene" : fieldNameToTitle(field);
+
+  const fieldName = fieldNameToTitle(field);
   const operands =
     typeof operandsProp === "string" ? [operandsProp] : operandsProp;
-
-  const { data: geneSymbolDict, isSuccess } = useGeneSymbol(
-    field === "genes.gene_id" ? operands.map((x) => x.toString()) : [],
-  );
 
   return (
     <QueryContainer>
@@ -136,11 +103,12 @@ const IncludeExcludeQueryElement: React.FC<
         variant="transparent"
         size={"xs"}
         onClick={() => {
-          setQueryExpressionsExpanded({
-            type: expanded ? "collapse" : "expand",
-            cohortId: currentCohortId,
-            field,
-          });
+          setQueryExpressionsExpanded &&
+            setQueryExpressionsExpanded({
+              type: expanded ? "collapse" : "expand",
+              cohortId: currentCohort.id,
+              field,
+            });
         }}
         className="ml-1 my-auto hover:bg-accent-darker hover:text-white"
         aria-label={expanded ? `collapse ${fieldName}` : `expand ${fieldName}`}
@@ -175,9 +143,7 @@ const IncludeExcludeQueryElement: React.FC<
                   customTestid={`query-rep-${field}-${value}-${i}`}
                   operands={operands}
                   operator={operator}
-                  currentCohortId={currentCohortId}
-                  geneSymbolDict={geneSymbolDict}
-                  isSuccess={isSuccess}
+                  hooks={hooks}
                 />
               );
             })}
@@ -197,11 +163,13 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
   operation,
   showLabel = true,
 }: ComparisonElementProps) => {
-  const coreDispatch = useCoreDispatch();
-  const filters = useCurrentCohortFilters();
+  const currentCohort = operation.hooks.useSelectCurrentCohort();
+  const updateActiveCohortFilter = operation.hooks.useUpdateCohortFilter();
+  const removeCohortFilter = operation.hooks.useRemoveCohortFilter();
+  const fieldNameToTitle = operation.hooks.useFieldNameToTitle();
 
   const handleRemove = (remove: ComparisonOperation) => {
-    const fieldDetail = filters.root[remove.field];
+    const fieldDetail = currentCohort.filters.root[remove.field];
 
     if (!fieldDetail) return;
 
@@ -216,20 +184,19 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
 
       if (remainingOperands.length > 0) {
         const [firstOperand] = remainingOperands;
-        coreDispatch(
-          updateActiveCohortFilter({
-            field: firstOperand.field,
-            operation: firstOperand,
-          }),
-        );
+        updateActiveCohortFilter({
+          field: firstOperand.field,
+          operation: firstOperand,
+        });
       } else {
-        coreDispatch(removeCohortFilter(remove.field));
+        removeCohortFilter(remove.field);
       }
     } else {
-      coreDispatch(removeCohortFilter(remove.field));
+      removeCohortFilter(remove.field);
     }
   };
 
+  /*
   const { data: geneSymbolDict, isSuccess } = useGeneSymbol([
     operation.operand.toString(),
   ]);
@@ -240,6 +207,9 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
   } else {
     value = operation.operand.toString();
   }
+    */
+
+  const value = operation.operand.toString();
 
   return (
     <>
@@ -264,7 +234,10 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
 const ExistsElement: React.FC<Exists | Missing> = ({
   field,
   operator,
+  hooks,
 }: Exists | Missing) => {
+  const fieldNameToTitle = hooks.useFieldNameToTitle();
+
   return (
     <div className="flex flex-row items-center">
       {fieldNameToTitle(field)} is
@@ -276,6 +249,7 @@ const ExistsElement: React.FC<Exists | Missing> = ({
 interface ClosedRangeQueryElementProps {
   readonly lower: ComparisonOperation;
   readonly upper: ComparisonOperation;
+  readonly hooks: QueryExpressionHooks;
   readonly op?: "and";
 }
 
@@ -284,21 +258,25 @@ export const ClosedRangeQueryElement: React.FC<
 > = ({
   lower,
   upper,
+  hooks,
   op = "and",
 }: PropsWithChildren<ClosedRangeQueryElementProps>) => {
   const field = lower.field; // As this is a Range the field for both lower and upper will be the same
 
   return (
     <>
-      <QueryElement field={field}>
+      <QueryElement field={field} hooks={hooks}>
         <QueryContainer>
-          <ComparisonElement operation={lower} />
+          <ComparisonElement operation={{ ...lower, hooks }} />
           <div className="flex items-center">
             <span className={"uppercase text-accent-contrast-max font-bold"}>
               {op}
             </span>
           </div>
-          <ComparisonElement operation={upper} showLabel={false} />
+          <ComparisonElement
+            operation={{ ...upper, hooks }}
+            showLabel={false}
+          />
         </QueryContainer>
       </QueryElement>
     </>
@@ -307,43 +285,34 @@ export const ClosedRangeQueryElement: React.FC<
 
 interface QueryElementProps {
   field: string;
+  hooks: QueryExpressionHooks;
 }
 
 export const QueryElement = ({
   field,
+  hooks,
   children,
 }: PropsWithChildren<QueryElementProps>) => {
-  const coreDispatch = useCoreDispatch();
   const [, setQueryExpressionsExpanded] = useContext(
     QueryExpressionsExpandedContext,
   );
-  const currentCohortId = useCoreSelector((state) =>
-    selectCurrentCohortId(state),
-  );
+  const currentCohort = hooks.useSelectCurrentCohort();
+  const removeCohortFilter = hooks.useRemoveCohortFilter();
+  const fieldNameToTitle = hooks.useFieldNameToTitle();
 
   const handleRemoveFilter = () => {
-    coreDispatch(removeCohortFilter(field));
-    setQueryExpressionsExpanded({
-      type: "clear",
-      cohortId: currentCohortId,
-      field,
-    });
+    removeCohortFilter(field);
+    setQueryExpressionsExpanded &&
+      setQueryExpressionsExpanded({
+        type: "clear",
+        cohortId: currentCohort.id,
+        field,
+      });
   };
 
-  // TODO: Enable facet dropdown
-  //const handlePopupFacet = () => {
-  //  setShowPopup(!showPopup);
-  //};
-
   return (
-    <QueryItemContainer>
+    <div className="flex flex-row items-center font-heading font-medium text-sm rounded-md border-[1.5px] mr-1 mb-2 border-secondary-darkest w-inherit">
       {children}
-      {/* ---
-        // TODO: enable facet dropdown
-         <button onClick={handlePopupFacet}>
-        <DropDownIcon size="1.5em" onClick={handlePopupFacet} />
-      </button>
-      -- */}
       <button
         className="bg-accent-vivid p-0 m-0 h-full rounded-r-sm text-white hover:bg-accent-darker"
         onClick={handleRemoveFilter}
@@ -351,14 +320,14 @@ export const QueryElement = ({
       >
         <CloseIcon size="1.5em" className="px-1" aria-hidden="true" />
       </button>
-    </QueryItemContainer>
+    </div>
   );
 };
 
 /**
  *  Processes a Filter into a component representation
  */
-class CohortFilterToComponent implements OperationHandler<JSX.Element> {
+class CohortFilterToComponent implements OperationHandler<React.ReactNode> {
   handleIncludes = (f: Includes) => (
     <QueryElement key={f.field} {...f}>
       <IncludeExcludeQueryElement {...f} />
@@ -428,18 +397,22 @@ class CohortFilterToComponent implements OperationHandler<JSX.Element> {
           key={(f.operands[0] as ComparisonOperation).field}
           lower={f.operands[0] as ComparisonOperation}
           upper={f.operands[1] as ComparisonOperation}
+          hooks={f.hooks}
         />
       );
     }
     return null;
   };
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   handleUnion = (_f: Union) => {
     return <div>Union</div>;
   };
 }
 
-export const convertFilterToComponent = (filter: Operation): JSX.Element => {
-  const handler: OperationHandler<JSX.Element> = new CohortFilterToComponent();
-  return handleOperation(handler, filter);
+export const convertFilterToComponent = (
+  filter: Operation,
+  hooks: QueryExpressionHooks,
+): React.ReactNode => {
+  const handler: OperationHandler<React.ReactNode> =
+    new CohortFilterToComponent();
+  return handleOperation(handler, filter, hooks);
 };

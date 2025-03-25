@@ -14,7 +14,6 @@ import { GqlOperation, Operation } from "../gdcapi/filters";
 import { CoreDataSelectorResponse, DataStatus } from "../../dataAccess";
 import { CoreDispatch } from "../../store";
 import { useCoreSelector } from "../../hooks";
-import { SetTypes } from "../sets";
 import { defaultCohortNameGenerator } from "./utils";
 import { CountsData, CountsDataAndStatus, NullCountsData } from "./type";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
@@ -26,13 +25,6 @@ export interface CaseSetDataAndStatus {
   readonly status: DataStatus; // status of create caseSet
   readonly error?: string; // any error message
   readonly caseSetIds?: Record<string, string>; // prefix mapped caseSetIds
-}
-
-export interface CohortStoredSets {
-  readonly ids: string[];
-  readonly setId: string;
-  readonly setType: SetTypes;
-  readonly field: string;
 }
 
 /**
@@ -56,7 +48,6 @@ export interface Cohort {
   readonly name: string;
   readonly filters: FilterSet; // active filters for cohort
   readonly caseSet: CaseSetDataAndStatus; // case ids for frozen cohorts
-  readonly sets?: CohortStoredSets[];
   readonly modified?: boolean; // flag which is set to true if modified and unsaved
   readonly modified_datetime: string; // last time cohort was modified
   readonly saved?: boolean; // flag indicating if cohort has been saved.
@@ -312,10 +303,6 @@ const slice = createSlice({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [action.payload]: _a, ...updated } = root;
 
-      const sets = (state.entities[getCurrentCohort(state)]?.sets || []).filter(
-        (set) => set.field !== action.payload,
-      );
-
       cohortsAdapter.updateOne(state, {
         id: getCurrentCohort(state),
         changes: {
@@ -326,7 +313,6 @@ const slice = createSlice({
             caseSetIds: undefined,
             status: "uninitialized",
           },
-          sets,
         },
       });
     },
@@ -341,7 +327,6 @@ const slice = createSlice({
             caseSetIds: undefined,
             status: "uninitialized",
           },
-          sets: undefined,
         },
       });
     },
@@ -375,31 +360,6 @@ const slice = createSlice({
             status: "uninitialized",
             caseSetIds: undefined,
           },
-        },
-      });
-    },
-    addNewCohortSet: (state, action: PayloadAction<CohortStoredSets>) => {
-      const currentCohort = getCurrentCohort(state);
-      const sets = state.entities[currentCohort]?.sets;
-      cohortsAdapter.updateOne(state, {
-        id: currentCohort,
-        changes: {
-          sets: [...(sets !== undefined ? sets : []), action.payload],
-        },
-      });
-    },
-    removeCohortSet: (state, action: PayloadAction<string>) => {
-      const currentCohort = getCurrentCohort(state);
-      const sets = state.entities[currentCohort]?.sets;
-
-      cohortsAdapter.updateOne(state, {
-        id: currentCohort,
-        changes: {
-          sets: [
-            ...(sets !== undefined ? sets : []).filter(
-              (set) => set.setId !== action.payload,
-            ),
-          ],
         },
       });
     },
@@ -495,8 +455,6 @@ export const {
   copyToSavedCohort,
   discardCohortChanges,
   setIsLoggedIn,
-  addNewCohortSet,
-  removeCohortSet,
 } = slice.actions;
 
 /**

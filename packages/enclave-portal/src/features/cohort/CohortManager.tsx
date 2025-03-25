@@ -1,128 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   CohortManager as CommonCohortManager,
   Cohort,
 } from "@gff/portal-components";
-
-const EXAMPLE_COHORTS: Cohort[] = [
-  {
-    name: "Baily's Cohort",
-    id: "0000-0000-1000-0000",
-    filters: {
-      mode: "and",
-      root: {
-        "cases.primary_site": {
-          operator: "includes",
-          field: "cases.primary_site",
-          operands: ["breast", "bronchus and lung"],
-        },
-      },
-    },
-    modified: false,
-    saved: true,
-    modified_datetime: new Date(2020, 1, 15).toISOString(),
-  },
-  {
-    name: "Pancreas",
-    id: "0000-0000-1001-0000",
-    filters: {
-      root: {
-        "cases.primary_site": {
-          field: "cases.primary_site",
-          operands: ["pancreas"],
-          operator: "includes",
-        },
-      },
-      mode: "and",
-    },
-    modified_datetime: new Date(2020, 1, 9).toISOString(),
-    saved: false,
-    modified: false,
-  },
-  {
-    name: "Pancreas - KRAS mutated",
-    id: "0000-0000-1002-0000",
-    filters: {
-      root: {
-        "genes.symbol": {
-          field: "genes.symbol",
-          operands: ["KRAS"],
-          operator: "includes",
-        },
-        "cases.primary_site": {
-          field: "cases.primary_site",
-          operands: ["pancreas"],
-          operator: "includes",
-        },
-      },
-      mode: "and",
-    },
-    modified: false,
-    saved: true,
-    modified_datetime: new Date(2020, 1, 8).toISOString(),
-  },
-  {
-    name: "Pancreas - KRAS not mutated",
-    id: "0000-0000-1003-0000",
-    filters: {
-      root: {
-        "genes.symbol": {
-          field: "genes.symbol",
-          operands: ["KRAS"],
-          operator: "excludeifany",
-        },
-        "cases.primary_site": {
-          field: "cases.primary_site",
-          operands: ["pancreas"],
-          operator: "includes",
-        },
-      },
-      mode: "and",
-    },
-    modified: false,
-    saved: true,
-    modified_datetime: new Date(2020, 1, 7).toISOString(),
-  },
-  {
-    name: "breast, true",
-    id: "0000-0000-1004-0000",
-    filters: {
-      root: {
-        "cases.primary_site": {
-          operator: "includes",
-          field: "cases.primary_site",
-          operands: ["breast"],
-        },
-        "genes.is_cancer_gene_census": {
-          operator: "includes",
-          field: "gene.is_cancer_gene_census",
-          operands: ["true"],
-        },
-      },
-      mode: "and",
-    },
-    modified: false,
-    saved: true,
-    modified_datetime: new Date(2020, 1, 6).toISOString(),
-  },
-  {
-    name: "Lung",
-    id: "0000-0000-0000-2222",
-    filters: {
-      root: {
-        "cases.primary_site": {
-          field: "cases.primary_site",
-          operands: ["lung"],
-          operator: "includes",
-        },
-      },
-      mode: "and",
-    },
-    modified_datetime: new Date(2020, 1, 9).toISOString(),
-    saved: true,
-    modified: false,
-  },
-];
 
 const UNSAVED_DEFAULT_COHORT: Cohort = {
   name: "Unsaved_Cohort",
@@ -136,10 +16,19 @@ const UNSAVED_DEFAULT_COHORT: Cohort = {
   modified_datetime: new Date().toISOString(),
 };
 
-const CohortManager = () => {
-  const [cohorts, setCohorts] = useState(EXAMPLE_COHORTS);
-  const [currentCohort, setCurrentCohort] = useState(EXAMPLE_COHORTS[0].id);
+interface CohortManagerProps {
+  cohorts: Cohort[];
+  setCohorts: (cohorts: Cohort[]) => void;
+  currentCohort: string;
+  setCurrentCohort: (cohort: string) => void;
+}
 
+const CohortManager: React.FC<CohortManagerProps> = ({
+  cohorts,
+  setCohorts,
+  currentCohort,
+  setCurrentCohort,
+}) => {
   return (
     <CommonCohortManager
       hooks={{

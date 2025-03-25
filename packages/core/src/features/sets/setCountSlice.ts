@@ -282,9 +282,12 @@ export const setCountSlice = graphqlAPISlice
 
 export const {
   useGeneSetCountQuery,
+  useLazyGeneSetCountQuery,
   useGeneSetCountsQuery,
   useSsmSetCountQuery,
+  useLazySsmSetCountQuery,
   useSsmSetCountsQuery,
   useCaseSetCountQuery,
+  useLazyCaseSetCountQuery,
   useCaseSetCountsQuery,
 } = setCountSlice;
