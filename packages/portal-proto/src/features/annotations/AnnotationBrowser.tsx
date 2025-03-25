@@ -23,7 +23,7 @@ const AnnotationBrowser = () => {
       >
         <div
           className="flex p-4 px-4 pb-16 gap-4 w-full"
-          data-testid="table-projects"
+          data-testid="table-annotations"
         >
           <AnnotationFilterPanel />
           <div className="grow overflow-hidden mt-8">
