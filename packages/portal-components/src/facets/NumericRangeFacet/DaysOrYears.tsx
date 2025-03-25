@@ -13,6 +13,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
   minimum,
   maximum,
   queryOptions,
+  Chart,
 }: NumericFacetData) => {
   const [units, setUnits] = useState("years");
   // no data if true means the Day/Year SegmentedControl should not be rendered.
@@ -47,6 +48,7 @@ const DaysOrYears: React.FC<NumericFacetData> = ({
         isFacetView={isFacetView}
         setHasData={(value) => setHasData(value)}
         queryOptions={queryOptions}
+        Chart={Chart}
       />
     </div>
   );

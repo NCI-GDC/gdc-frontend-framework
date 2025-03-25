@@ -95,6 +95,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 clearValues={clearValues}
                 isFacetView={isFacetView}
                 queryOptions={queryOptions}
+                Chart={Chart}
               />
             ),
             age_in_years: (
@@ -108,6 +109,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 clearValues={clearValues}
                 isFacetView={isFacetView}
                 queryOptions={queryOptions}
+                Chart={Chart}
               />
             ),
             year: (
@@ -120,6 +122,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 clearValues={clearValues}
                 isFacetView={isFacetView}
                 queryOptions={queryOptions}
+                Chart={Chart}
               />
             ),
             years: (
@@ -132,6 +135,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 clearValues={clearValues}
                 isFacetView={isFacetView}
                 queryOptions={queryOptions}
+                Chart={Chart}
               />
             ),
             days: (
@@ -145,6 +149,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
                 clearValues={clearValues}
                 isFacetView={isFacetView}
                 queryOptions={queryOptions}
+                Chart={Chart}
               />
             ),
             percent: (

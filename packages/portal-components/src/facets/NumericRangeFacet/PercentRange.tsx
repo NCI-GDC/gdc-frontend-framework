@@ -11,6 +11,7 @@ const PercentRange: React.FC<NumericFacetData> = ({
   maximum = undefined,
   isFacetView,
   queryOptions,
+  Chart,
 }: NumericFacetData) => {
   const adjMinimum = minimum != undefined ? minimum : 0;
   const adjMaximum = maximum != undefined ? maximum : 100;
@@ -29,6 +30,7 @@ const PercentRange: React.FC<NumericFacetData> = ({
         clearValues={clearValues}
         isFacetView={isFacetView}
         queryOptions={queryOptions}
+        Chart={Chart}
       />
     </div>
   );

@@ -93,8 +93,6 @@ export const usePopulateFacetData = (
 ) => {
   const enumFacets = facets.filter((x) => x.facet_type === "enum");
 
-  console.log({ queryOptions });
-
   useEnumFacets(
     enumFacets.map((entry) => entry.full),
     queryOptions,

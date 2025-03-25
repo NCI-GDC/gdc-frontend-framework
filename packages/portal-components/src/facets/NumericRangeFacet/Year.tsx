@@ -12,6 +12,7 @@ const Year: React.FC<NumericFacetData> = ({
   maximum = undefined,
   isFacetView,
   queryOptions,
+  Chart,
 }: NumericFacetData) => {
   const adjMinimum = minimum != undefined ? minimum : 1900;
   const adjMaximum = maximum != undefined ? maximum : 2050;
@@ -30,6 +31,7 @@ const Year: React.FC<NumericFacetData> = ({
         clearValues={clearValues}
         isFacetView={isFacetView}
         queryOptions={queryOptions}
+        Chart={Chart}
       />
     </div>
   );

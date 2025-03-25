@@ -149,7 +149,6 @@ export const useEnumFacets = (
     selectMultipleFacetsByDocTypeAndField(state, docType, fields),
   );
   const coreDispatch = useCoreDispatch();
-  console.log("1", { docType, indexType });
 
   const enumValues = useEnumFiltersByNames(fields);
   const currentCohortFilters = useCohortFacetFilter();

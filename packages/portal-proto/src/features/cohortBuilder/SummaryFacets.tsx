@@ -5,12 +5,12 @@ import {
   useTotalCounts,
   useUpdateFacetFilter,
   FacetDocTypeToLabelsMap,
-  FacetDocTypeToCountsIndexMap,
   useEnumFacets,
   useEnumFacetValues,
 } from "@/features/facets/hooks";
-import partial from "lodash/partial";
 import tw from "tailwind-styled-components";
+import { useFieldNameToTitle } from "./queryExpressionHooks";
+import { EnumFacetChart } from "../charts/EnumFacetChart";
 
 export interface SummaryFacetInfo {
   readonly field: string;
@@ -67,15 +67,15 @@ export const SummaryFacets: React.FC<SummaryFacetProps> = ({
             hooks={
               {
                 useUpdateFacetFilters: useUpdateFacetFilter,
-                useTotalCounts: partial(
-                  useTotalCounts,
-                  FacetDocTypeToCountsIndexMap[entry.docType],
-                ),
+                useTotalCounts,
                 useClearFilter: useClearFilters,
                 useGetEnumFacetData: useEnumFacetValues,
+                useFieldNameToTitle,
               } as any
             }
             queryOptions={queryOptions}
+            Chart={EnumFacetChart}
+            variant="summary"
           />
         );
       })}

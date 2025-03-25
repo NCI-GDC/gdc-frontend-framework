@@ -13,6 +13,7 @@ const Years: React.FC<NumericFacetData> = ({
   maximum = undefined,
   isFacetView,
   queryOptions,
+  Chart,
 }: NumericFacetData) => {
   // minimum and maximum values if not undefined are in days so need to convert it to years
   const adjMinimum = minimum != undefined ? getLowerAgeYears(minimum) : 0;
@@ -33,6 +34,7 @@ const Years: React.FC<NumericFacetData> = ({
         clearValues={clearValues}
         isFacetView={isFacetView}
         queryOptions={queryOptions}
+        Chart={Chart}
       />
     </div>
   );
