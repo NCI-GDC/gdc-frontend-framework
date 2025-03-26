@@ -10,6 +10,7 @@ import {
   FacetCardDefinition,
   FacetRequiredHooks,
 } from "./types";
+import { QueryExpressionHooks } from "@/cohort/QueryExpression/types";
 
 /**
  * createFacetCard given a facet definition it will create a
@@ -36,6 +37,7 @@ interface CreateFacetCardProps {
   facets: FacetCardDefinition[];
   valueLabel: string;
   hooks: FacetRequiredHooks;
+  queryExpressionHooks?: QueryExpressionHooks;
   idPrefix: string;
   dismissCallback?: (field: string) => void;
   hideIfEmpty?: boolean;
@@ -52,6 +54,7 @@ const createFacetCards = ({
   facets,
   valueLabel,
   hooks,
+  queryExpressionHooks,
   idPrefix,
   dismissCallback,
   hideIfEmpty = false,
@@ -135,7 +138,7 @@ const createFacetCards = ({
         />
       );
     }
-    if (facet.facet_type === "upload") {
+    if (facet.facet_type === "upload" && queryExpressionHooks) {
       return (
         <UploadFacet
           key={`${idPrefix}-exact-${facet.field}`}
@@ -146,6 +149,7 @@ const createFacetCards = ({
           width={width}
           facetBtnToolTip={facet.toolTip}
           hooks={{ ...(hooks as UploadFacetHooks) }}
+          queryExpressionHooks={queryExpressionHooks}
         />
       );
     }

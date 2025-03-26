@@ -16,10 +16,12 @@ const UploadFacet: React.FC<UploadFacetCardProps> = ({
   width,
   hooks,
   cardScrollMargin,
+  queryExpressionHooks,
 }) => {
   const hash = window?.location?.hash.split("#")?.[1];
   const cardSelected = hash !== undefined && hash === fullField;
   const fieldNameToTitle = hooks.useFieldNameToTitle();
+  const openModal = hooks.useOpenUploadModal();
 
   const title = humanify(facetTitle ? facetTitle : fieldNameToTitle(field));
 
@@ -42,21 +44,9 @@ const UploadFacet: React.FC<UploadFacetCardProps> = ({
         customTestid={`query-rep-${itemField}-${item}-${index}`}
         operands={items}
         operator="includes"
-        hooks={{} as any}
+        hooks={queryExpressionHooks}
       />
     ));
-  };
-
-  const handleButtonClick = () => {
-    /*
-    if (field === "cases.case_id") {
-      coreDispatch(showModal({ modal: Modals.GlobalCaseSetModal }));
-    } else if (field === "genes.gene_id") {
-      coreDispatch(showModal({ modal: Modals.GlobalGeneSetModal }));
-    } else if (field === "ssms.ssm_id") {
-      coreDispatch(showModal({ modal: Modals.GlobalMutationSetModal }));
-    }
-      */
   };
 
   return (
@@ -82,7 +72,11 @@ const UploadFacet: React.FC<UploadFacetCardProps> = ({
             withArrow
             transitionProps={{ duration: 200, transition: "fade" }}
           >
-            <Button variant="outline" fullWidth onClick={handleButtonClick}>
+            <Button
+              variant="outline"
+              fullWidth
+              onClick={() => openModal(field)}
+            >
               {uploadLabel}
             </Button>
           </Tooltip>

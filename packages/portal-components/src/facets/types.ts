@@ -1,4 +1,8 @@
-import { Operation, NumericFromTo } from "@/cohort/QueryExpression/types";
+import {
+  Operation,
+  NumericFromTo,
+  QueryExpressionHooks,
+} from "@/cohort/QueryExpression/types";
 import { DataFetchingResult } from "src/types";
 
 export interface EnumFacetResponse
@@ -45,7 +49,7 @@ export type RangeFacetHooks = FacetCommonHooks & {
 
 export type UploadFacetHooks = FacetCommonHooks & {
   useCohortFacetFilters: any;
-  useOpenSetModal: () => (field: string) => void;
+  useOpenUploadModal: () => (field: string) => void;
 };
 
 export interface FacetCommonHooks {
@@ -96,6 +100,7 @@ export type UploadFacetCardProps = Pick<
 > & {
   readonly fullField: string;
   readonly uploadLabel?: string;
+  readonly queryExpressionHooks: QueryExpressionHooks;
 };
 
 export type RangeFromOp = ">" | ">=";

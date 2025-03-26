@@ -20,6 +20,7 @@ import {
   CohortBuilderCategoryConfig,
   FacetDefinition,
 } from "./types";
+import { QueryExpressionHooks } from "@/cohort/QueryExpression/types";
 
 const StyledFacetTabs = (props: TabsProps) => {
   return (
@@ -215,6 +216,7 @@ interface FacetTabProps {
   readonly activeTab: string;
   readonly setActiveTab: (tab: string | null) => void;
   readonly hooks: FacetRequiredHooks;
+  readonly queryExpressionHooks: QueryExpressionHooks;
   readonly facetDefinitions: Record<string, FacetDefinition>;
   readonly tabsConfig: Record<string, CohortBuilderCategoryConfig>;
   readonly customFacetHooks?: {
@@ -238,6 +240,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
   activeTab,
   setActiveTab,
   hooks,
+  queryExpressionHooks,
   facetDefinitions,
   tabsConfig,
   customFacetHooks,
@@ -332,6 +335,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
                     {createFacetCards({
                       facets: facetList as FacetCardDefinition[],
                       hooks,
+                      queryExpressionHooks,
                       idPrefix: "cohort-builder",
                       valueLabel: getFacetLabel(tabEntry.queryOptions),
                       queryOptions: tabEntry.queryOptions,

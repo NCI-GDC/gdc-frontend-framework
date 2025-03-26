@@ -6,7 +6,7 @@ import { createFacetCards, FacetSelection } from "@gff/portal-components";
 import {
   FacetCardDefinition,
   FacetRequiredHooks,
-} from "@/features/facets/types";
+} from "@gff/portal-components";
 import { TableXPositionContext } from "@/components/Table/VerticalTable";
 import { AddIcon, UndoIcon } from "@/utils/icons";
 

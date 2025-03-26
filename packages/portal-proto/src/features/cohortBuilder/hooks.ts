@@ -23,6 +23,8 @@ import {
   GQLIndexType,
   addFilterToCohortBuilder,
   removeFilterFromCohortBuilder,
+  Modals,
+  showModal,
 } from "@gff/core";
 import { useEnumFacets } from "@/features/facets/hooks";
 import { STOP_WORDS, TOKENIZE_STRING } from "./dictionary";
@@ -260,4 +262,20 @@ export const useSearchEnumTerms = (enumData, searchTerm: string) => {
   return enumData.filter((d) =>
     terms.some((t) => d[0].toLowerCase().includes(t)),
   );
+};
+
+export const useOpenUploadModal = () => {
+  const coreDispatch = useCoreDispatch();
+
+  const openUploadModal = (field: string) => {
+    if (field === "cases.case_id") {
+      coreDispatch(showModal({ modal: Modals.GlobalCaseSetModal }));
+    } else if (field === "genes.gene_id") {
+      coreDispatch(showModal({ modal: Modals.GlobalGeneSetModal }));
+    } else if (field === "ssms.ssm_id") {
+      coreDispatch(showModal({ modal: Modals.GlobalMutationSetModal }));
+    }
+  };
+
+  return openUploadModal;
 };

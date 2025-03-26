@@ -24,8 +24,11 @@ import {
   useAddCustomFilter,
   useRemoveCustomFilter,
   useSearchEnumTerms,
+  useOpenUploadModal,
 } from "./hooks";
-import { useFieldNameToTitle } from "./queryExpressionHooks";
+import queryExpressionHooks, {
+  useFieldNameToTitle,
+} from "./queryExpressionHooks";
 import { calculateStickyHeaderHeight } from "src/utils";
 import { upload_facets, useCohortFacetFilters } from "./utils";
 
@@ -79,7 +82,9 @@ const CohortBuilder = () => {
         useTotalCounts,
         useFieldNameToTitle: useFieldNameToTitle,
         useCohortFacetFilters: useCohortFacetFilters,
+        useOpenUploadModal,
       }}
+      queryExpressionHooks={queryExpressionHooks}
       customFacetHooks={{
         useCustomFacets,
         useAvailableCustomFacets,
