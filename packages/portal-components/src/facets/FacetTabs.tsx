@@ -216,7 +216,7 @@ interface FacetTabProps {
   readonly activeTab: string;
   readonly setActiveTab: (tab: string | null) => void;
   readonly hooks: FacetRequiredHooks;
-  readonly queryExpressionHooks: QueryExpressionHooks;
+  readonly queryExpressionHooks?: QueryExpressionHooks;
   readonly facetDefinitions: Record<string, FacetDefinition>;
   readonly tabsConfig: Record<string, CohortBuilderCategoryConfig>;
   readonly customFacetHooks?: {

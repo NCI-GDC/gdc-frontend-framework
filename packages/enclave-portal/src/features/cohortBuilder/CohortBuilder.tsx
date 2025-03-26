@@ -22,6 +22,8 @@ const CohortBuilder: React.FC = () => {
                 .join(" "),
             useGetEnumFacetData: useGetEnumFacetData as any,
             useSearchEnumTerms: (enumData) => enumData,
+            useGetFacetFilters: () => {},
+            useGetRangeFacetData: () => ({ data: {} }),
           }}
           facetDefinitions={facetDefintions}
           tabsConfig={tabsConfig.config}

@@ -8,7 +8,8 @@
         "gender",
         "race",
         "ethnicity",
-        "vital_status"
+        "vital_status",
+        "age_at_diagnosis"
       ]
     }
   }
