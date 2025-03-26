@@ -47,6 +47,7 @@ import { getFormattedTimestamp } from "@/utils/date";
 import { ComparativeSurvival } from "@/features/genomic/types";
 import { appendSearchTermFilters } from "../utils";
 import TotalItems from "@/components/Table/TotalItem";
+import { SET_COUNT_LIMIT } from "@/components/Modals/SetModals/constants";
 
 export interface GTableContainerProps {
   readonly selectedSurvivalPlot: ComparativeSurvival;
@@ -246,7 +247,7 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
           root: {
             "genes.gene_id": {
               field: "genes.gene_id",
-              operands: selectedGenes,
+              operands: selectedGenes.slice(0, SET_COUNT_LIMIT),
               operator: "includes",
             },
           },
@@ -337,6 +338,7 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
                 : undefined
             }
             sort="case.project.project_id"
+            isManualSelection={selectedGenes.length > 0}
             saveCount={
               selectedGenes.length === 0
                 ? data?.genes?.genes_total

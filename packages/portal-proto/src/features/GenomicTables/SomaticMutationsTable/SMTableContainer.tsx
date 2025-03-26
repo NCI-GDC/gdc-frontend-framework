@@ -45,6 +45,7 @@ import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon
 import SMTableSubcomponent from "./SMTableSubcomponent";
 import { ComparativeSurvival } from "@/features/genomic/types";
 import TotalItems from "@/components/Table/TotalItem";
+import { SET_COUNT_LIMIT } from "@/components/Modals/SetModals/constants";
 
 export interface SMTableContainerProps {
   readonly selectedSurvivalPlot?: ComparativeSurvival;
@@ -276,7 +277,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           root: {
             "ssms.ssm_id": {
               field: "ssms.ssm_id",
-              operands: selectedMutations,
+              operands: selectedMutations.slice(0, SET_COUNT_LIMIT),
               operator: "includes",
             },
           },
@@ -414,6 +415,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                     : undefined
                 }
                 sort="occurrence.case.project.project_id"
+                isManualSelection={selectedMutations.length > 0}
                 saveCount={
                   selectedMutations.length === 0
                     ? data?.ssmsTotal

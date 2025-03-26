@@ -28,6 +28,7 @@ interface SaveSelectionAsSetModalProps {
   readonly saveCount: number;
   readonly setType: SetTypes;
   readonly setTypeLabel: string;
+  readonly isManualSelection?: boolean;
   readonly createSetHook:
     | typeof useCreateTopNGeneSetFromFiltersMutation
     | typeof useCreateGeneSetFromFiltersMutation;
@@ -46,6 +47,7 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
   closeModal,
   sort,
   opened,
+  isManualSelection = false,
 }: SaveSelectionAsSetModalProps) => {
   const dispatch = useCoreDispatch();
   const sets = useCoreSelector((state) => selectSetsByType(state, setType));
@@ -83,6 +85,38 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
     }
   }, [opened, setValues]);
 
+  const handleSave = () => {
+    if (response.isLoading) return;
+    createSet({
+      case_filters: cohortFilters,
+      filters,
+      size: form.values.top,
+      score: sort,
+      set_type: "mutable",
+      intent: "user",
+    })
+      .unwrap()
+      .then((response: string) => {
+        dispatch(
+          addSet({
+            setType,
+            setName: form.values.name.trim(),
+            setId: response,
+          }),
+        );
+        showNotification({
+          message: "Set has been saved.",
+          closeButtonProps: { "aria-label": "Close notification" },
+        });
+        closeModal();
+        form.reset();
+      })
+      .catch(() => {
+        dispatch(showModal({ modal: Modals.SaveSetErrorModal }));
+      });
+  };
+
+  console.log({ filters, cohortFilters });
   return (
     <Modal
       title={`Save ${max?.toLocaleString()} ${setTypeLabel}${
@@ -96,24 +130,35 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
       size="lg"
       classNames={{
         close: "p-0 drop-shadow-lg",
+        header: "flex gap-1",
       }}
     >
       <div className="p-4">
-        <NumberInput
-          data-testid="textbox-number-of-top-items"
-          required
-          label="Save top:"
-          min={1}
-          max={max}
-          {...form.getInputProps("top")}
-        />
-        <p
-          data-testid="text-up-to-top-items-can-be-saved"
-          className="text-sm pb-2 pt-1"
-        >
-          Up to the top {max?.toLocaleString()} {setTypeLabel}
-          {max > 1 ? "s" : ""} can be saved.
-        </p>
+        {isManualSelection && saveCount > SET_COUNT_LIMIT && (
+          <p className="text-sm mb-2">
+            Only the top {SET_COUNT_LIMIT} {setTypeLabel}s will be saved.
+          </p>
+        )}
+        {!isManualSelection && (
+          <>
+            <NumberInput
+              data-testid="textbox-number-of-top-items"
+              required
+              label="Save top:"
+              min={1}
+              max={max}
+              {...form.getInputProps("top")}
+            />
+            <p
+              data-testid="text-up-to-top-items-can-be-saved"
+              className="text-sm pb-2 pt-1"
+            >
+              Up to the top {max?.toLocaleString()} {setTypeLabel}
+              {max > 1 ? "s" : ""} can be saved.
+            </p>
+          </>
+        )}
+
         <TextInput
           data-testid="textbox-set-name"
           required
@@ -135,36 +180,7 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
         </FunctionButton>
         <DarkFunctionButton
           data-testid="button-save"
-          onClick={() => {
-            if (response.isLoading) return;
-            createSet({
-              case_filters: cohortFilters,
-              filters,
-              size: form.values.top,
-              score: sort,
-              set_type: "mutable",
-              intent: "user",
-            })
-              .unwrap()
-              .then((response: string) => {
-                dispatch(
-                  addSet({
-                    setType,
-                    setName: form.values.name.trim(),
-                    setId: response,
-                  }),
-                );
-                showNotification({
-                  message: "Set has been saved.",
-                  closeButtonProps: { "aria-label": "Close notification" },
-                });
-                closeModal();
-                form.reset();
-              })
-              .catch(() => {
-                dispatch(showModal({ modal: Modals.SaveSetErrorModal }));
-              });
-          }}
+          onClick={handleSave}
           disabled={!form.isValid()}
           leftSection={
             response?.isLoading ? <Loader size="sm" color="white" /> : undefined
