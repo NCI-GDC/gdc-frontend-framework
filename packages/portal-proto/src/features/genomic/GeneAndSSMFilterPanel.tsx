@@ -22,6 +22,7 @@ import FilterPanel from "@/features/facets/FilterPanel";
 import { FacetCardDefinition } from "@/features/facets/types";
 import { useAppSelector } from "./appApi";
 import { selectFiltersAppliedCount } from "./geneAndSSMFiltersSlice";
+import { useFieldNameToTitle } from "../cohortBuilder/queryExpressionHooks";
 
 const GeneAndSSMFilterPanel = ({
   isDemoMode,
@@ -57,6 +58,7 @@ const GeneAndSSMFilterPanel = ({
     useGetFacetValues: useGenomicFilterByName,
     useToggleExpandFilter: useToggleExpandFilter,
     useFilterExpanded: useFilterExpandedState,
+    useFieldNameToTitle,
   };
 
   return (

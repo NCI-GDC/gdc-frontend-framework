@@ -34,12 +34,10 @@ import {
   useToggleExpandFilter,
   useClearAllRepositoryFilters,
 } from "@/features/repositoryApp/hooks";
-import {
-  FacetDocTypeToCountsIndexMap,
-  useTotalCounts,
-} from "@/features/facets/hooks";
+import { useTotalCounts } from "@/features/facets/hooks";
 import { FacetRequiredHooks } from "@/features/facets/types";
 import FilterPanel from "@/features/facets/FilterPanel";
+import { useFieldNameToTitle } from "../cohortBuilder/queryExpressionHooks";
 
 const useRepositoryEnumData = (field: string) =>
   useLocalFilters(field, useRepositoryEnumValues, useRepositoryFilters);
@@ -92,12 +90,10 @@ export const FileFacetPanel = (): JSX.Element => {
     useUpdateFacetFilters: useUpdateRepositoryFacetFilter,
     useGetFacetFilters: useSelectFieldFilter,
     useClearFilter: useClearRepositoryFilters,
-    useTotalCounts: partial(
-      useTotalCounts,
-      FacetDocTypeToCountsIndexMap["files"],
-    ),
+    useTotalCounts: useTotalCounts,
     useToggleExpandFilter: useToggleExpandFilter,
     useFilterExpanded: useFilterExpandedState,
+    useFieldNameToTitle,
   };
 
   const allFiltersCollapsed = useAllFiltersCollapsed();

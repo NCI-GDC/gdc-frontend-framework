@@ -3,12 +3,15 @@ import EnumFacet from "./facetTypes/EnumFacet";
 import NumericRangeFacet from "./facetTypes/NumericRangeFacet";
 import UploadFacet from "./facetTypes/UploadFacet";
 import DateRangeFacet from "./facetTypes/DateRangeFacet";
+import ExactValueFacet from "./facetTypes/ExactValueFacet";
+import ToggleFacet from "./facetTypes/ToggleFacet";
 import {
   EnumFacetHooks,
   RangeFacetHooks,
   UploadFacetHooks,
   FacetCardDefinition,
   FacetRequiredHooks,
+  ValueFacetHooks,
 } from "./types";
 import { QueryExpressionHooks } from "@/cohort/QueryExpression/types";
 
@@ -84,6 +87,37 @@ const createFacetCards = ({
           queryOptions={queryOptions}
           cardScrollMargin={cardScrollMargin}
           Chart={Chart}
+        />
+      );
+    }
+
+    if (facet.facet_type == "exact") {
+      return (
+        <ExactValueFacet
+          key={`${idPrefix}-exact-${facet.full}`}
+          field={facet.full}
+          dismissCallback={dismissCallback}
+          hideIfEmpty={hideIfEmpty}
+          hooks={{ ...(hooks as ValueFacetHooks) }}
+          facetName={facetName}
+          width={width}
+        />
+      );
+    }
+    if (facet.facet_type == "toggle") {
+      return (
+        <ToggleFacet
+          key={`${idPrefix}-toggle-${facet.full}`}
+          field={facet.full}
+          valueLabel={valueLabel}
+          dismissCallback={dismissCallback}
+          hideIfEmpty={hideIfEmpty}
+          showPercent={showPercent}
+          hooks={{
+            ...(hooks as EnumFacetHooks),
+          }}
+          facetName={facetName}
+          width={width}
         />
       );
     }

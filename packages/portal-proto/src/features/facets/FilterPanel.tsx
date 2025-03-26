@@ -2,8 +2,9 @@ import React, { useState, useContext, useRef, useMemo } from "react";
 import { isEqual } from "lodash";
 import { Text, Modal, LoadingOverlay, Badge, Tooltip } from "@mantine/core";
 import { fieldNameToTitle } from "@gff/core";
-import { createFacetCards, FacetSelection } from "@gff/portal-components";
 import {
+  createFacetCards,
+  FacetSelection,
   FacetCardDefinition,
   FacetRequiredHooks,
 } from "@gff/portal-components";
@@ -161,7 +162,7 @@ const FilterPanel = ({
           const facetName =
             facet.title || fieldNameToTitle(facet.full, isDefault ? 1 : 2);
           return createFacetCards({
-            facets: facet,
+            facets: [facet],
             valueLabel:
               typeof valueLabel === "string" ? valueLabel : valueLabel(facet),
             hooks: facetHooks,
@@ -173,6 +174,7 @@ const FilterPanel = ({
             showPercent,
             facetName,
             width: "w-full",
+            queryOptions: { docType: "cases" },
           });
         })}
       </div>

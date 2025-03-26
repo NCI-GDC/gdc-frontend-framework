@@ -22,6 +22,7 @@ import partial from "lodash/partial";
 import FilterPanel from "@/features/facets/FilterPanel";
 import { useAppSelector } from "./appApi";
 import { selectFiltersAppliedCount } from "./projectCenterFiltersSlice";
+import { useFieldNameToTitle } from "../cohortBuilder/queryExpressionHooks";
 
 const useProjectEnumData = (docType: GQLDocType, field: string) =>
   useLocalFilters(
@@ -38,9 +39,10 @@ export const ProjectFacetPanel = (): JSX.Element => {
     useUpdateFacetFilters: useUpdateProjectsFacetFilter,
     useGetFacetFilters: useSelectFieldFilter,
     useClearFilter: useClearProjectsFilters,
-    useTotalCounts: partial(useTotalCounts, "projectsCounts"),
+    useTotalCounts: useTotalCounts,
     useToggleExpandFilter: useToggleExpandProjectFilter,
     useFilterExpanded: useFilterExpandedState,
+    useFieldNameToTitle,
   };
 
   const allFiltersCollapsed = useAllFiltersCollapsed();
