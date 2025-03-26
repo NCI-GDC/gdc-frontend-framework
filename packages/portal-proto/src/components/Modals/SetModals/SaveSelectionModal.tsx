@@ -25,7 +25,6 @@ import { useDeepCompareCallback } from "use-deep-compare";
 interface SaveSelectionAsSetModalProps {
   readonly cohortFilters?: GqlOperation;
   readonly filters: GqlOperation;
-  readonly initialSetName: string;
   readonly saveCount: number;
   readonly setType: SetTypes;
   readonly setTypeLabel: string;
@@ -40,7 +39,6 @@ interface SaveSelectionAsSetModalProps {
 const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
   cohortFilters,
   filters,
-  initialSetName,
   saveCount,
   setType,
   setTypeLabel,
@@ -57,7 +55,7 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
   const form = useForm({
     initialValues: {
       top: max,
-      name: initialSetName,
+      name: "",
     },
     validate: {
       top: (value) =>
@@ -73,11 +71,10 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
   });
 
   const setValues = useDeepCompareCallback(
-    () =>
-      form.setValues((prev) => ({ ...prev, name: initialSetName, top: max })),
+    () => form.setValues((prev) => ({ ...prev, top: max })),
     // https://github.com/mantinedev/mantine/issues/5338
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [form.setValues, initialSetName, max],
+    [form.setValues, max],
   );
 
   useEffect(() => {
@@ -123,6 +120,7 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
           label="Name"
           {...form.getInputProps("name")}
           maxLength={100}
+          data-autofocus
         />
         {form.errors?.name === undefined &&
         Object.values(sets).includes(form.values.name.trim()) ? (

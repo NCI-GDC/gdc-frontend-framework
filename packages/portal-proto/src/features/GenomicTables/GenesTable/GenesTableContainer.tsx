@@ -27,7 +27,7 @@ import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
-import { filtersToName, statusBooleansToDataStatus } from "src/utils";
+import { statusBooleansToDataStatus } from "src/utils";
 import download from "src/utils/download";
 import { SummaryModalContext } from "@/utils/contexts";
 import VerticalTable from "@/components/Table/VerticalTable";
@@ -335,11 +335,6 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
               operationSetFilters
                 ? convertFilterToGqlFilter(operationSetFilters)
                 : undefined
-            }
-            initialSetName={
-              selectedGenes.length === 0
-                ? filtersToName(setFilters)
-                : "Custom Gene Selection"
             }
             sort="case.project.project_id"
             saveCount={
