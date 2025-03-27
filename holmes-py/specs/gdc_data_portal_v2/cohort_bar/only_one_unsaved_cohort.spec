@@ -25,7 +25,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |-----------------|-------------------------------------------|--------------------|
   |Save             |Cohort has been saved                      |Remove Modal        |
 * "Saved unsaved cohort" should be the active cohort
-* Is text "Changes not saved" not present on the page
+* Is text "Changes not saved" not present on the Cohort Bar
 * "Add" should be "enabled" in the Cohort Bar
 * "Save" should be "disabled" in the Cohort Bar
 * "Save As" should be "enabled" in the Cohort Bar
@@ -35,7 +35,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |facet_name       |selection                    |
   |-----------------|-----------------------------|
   |Laterality       |right                        |
-* Is text "Changes not saved" present on the page
+* Is text "Changes not saved" present on the Cohort Bar
 * "Add" should be "enabled" in the Cohort Bar
 * "Save" should be "enabled" in the Cohort Bar
 * "Save As" should be "enabled" in the Cohort Bar
