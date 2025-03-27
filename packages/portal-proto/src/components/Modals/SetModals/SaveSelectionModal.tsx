@@ -116,7 +116,6 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
       });
   };
 
-  console.log({ filters, cohortFilters });
   return (
     <Modal
       title={`Save ${max?.toLocaleString()} ${setTypeLabel}${
