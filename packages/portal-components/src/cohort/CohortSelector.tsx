@@ -71,6 +71,7 @@ const CohortSelector: React.FC<CohortSelectorProps> = ({
         styles={{ section: { pointerEvents: "none" } }}
       />
       <div
+        data-testid="text-cohort-bar-message"
         className={`ml-auto text-heading text-sm font-semibold mt-0.85 text-primary-contrast ${
           !isSavedUnchanged ? "visible" : "invisible"
         }`}
