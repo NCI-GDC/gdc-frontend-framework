@@ -7,7 +7,7 @@ import SaveCohortModal from "@/modals/SaveCohortModal";
 import CohortActions from "./CohortActions";
 import CohortSelector from "./CohortSelector";
 import { actionButtonVariant, darkFunctionVariant } from "./style";
-import { CohortHooks } from "./types";
+import { CohortHooks, CohortNotificationCommandNoParam } from "./types";
 import { CohortNotificationContext } from "./CohortNotificationProvider";
 
 interface CohortManagerProps {
@@ -156,9 +156,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                   .then(
                     () =>
                       setCohortMessage &&
-                      setCohortMessage([
-                        { cmd: "discardChanges", param1: currentCohort.name },
-                      ]),
+                      setCohortMessage([{ cmd: "discardChanges" }]),
                   )
                   .catch(
                     () =>
@@ -185,6 +183,12 @@ const CohortManager: React.FC<CohortManagerProps> = ({
               onActionClick={() => {
                 setShowUpdateCohort(false);
                 handleUpdate();
+                setCohortMessage &&
+                  setCohortMessage([
+                    {
+                      cmd: "savedCurrentCohort",
+                    } as CohortNotificationCommandNoParam,
+                  ]);
               }}
             />
 
