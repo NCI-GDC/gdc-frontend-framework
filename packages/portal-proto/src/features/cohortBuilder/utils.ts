@@ -19,6 +19,7 @@ export const upload_facets = {
     uploadLabel: "Upload Cases",
     range: undefined,
     type: "keyword",
+    title: "Case ID",
   },
   "genes.upload.gene_id": {
     description: "",

@@ -18,8 +18,6 @@ import {
   selectRepositoryConfigFacets,
 } from "@/features/repositoryApp/repositoryConfigSlice";
 import { selectAppliedFilterCount } from "./repositoryFiltersSlice";
-import partial from "lodash/partial";
-
 import {
   useLocalFilters,
   useRepositoryFilters,
@@ -35,7 +33,7 @@ import {
   useClearAllRepositoryFilters,
 } from "@/features/repositoryApp/hooks";
 import { useTotalCounts } from "@/features/facets/hooks";
-import { FacetRequiredHooks } from "@/features/facets/types";
+import { FacetRequiredHooks } from "@gff/portal-components";
 import FilterPanel from "@/features/facets/FilterPanel";
 import { useFieldNameToTitle } from "../cohortBuilder/queryExpressionHooks";
 

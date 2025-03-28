@@ -37,7 +37,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
   field,
   description,
   hooks,
-  facetName = undefined,
+  facetName,
   dismissCallback = undefined,
   width = undefined,
 }: DateRangeFacetProps) => {

@@ -1,8 +1,9 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import {
   Button,
   Flex,
   LoadingOverlay,
+  MantineProvider,
   Modal,
   Stack,
   Tabs,
@@ -10,6 +11,8 @@ import {
   Text,
 } from "@mantine/core";
 import useScrollToHash from "@/common/useScrollToHash";
+import { QueryExpressionHooks } from "@/cohort/QueryExpression/types";
+import { AppContext } from "src/context";
 import { AddFacetIcon, AddIcon } from "src/commonIcons";
 import { DataFetchingResult } from "src/types";
 import createFacetCards from "./CreateFacetCard";
@@ -20,7 +23,6 @@ import {
   CohortBuilderCategoryConfig,
   FacetDefinition,
 } from "./types";
-import { QueryExpressionHooks } from "@/cohort/QueryExpression/types";
 
 const StyledFacetTabs = (props: TabsProps) => {
   return (
@@ -126,6 +128,7 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
     customFacetHooks.useCustomFacets();
   const addCustomFilter = customFacetHooks.useAddCustomFilter();
   const removeCustomFilter = customFacetHooks.useRemoveCustomFilter();
+  const fieldNameToTitle = hooks.useFieldNameToTitle();
 
   const handleFilterSelected = (filter: string) => {
     setOpened(false);
@@ -200,7 +203,7 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
               hooks,
               idPrefix: "cohort-builder",
               valueLabel: getFacetLabel(queryOptions),
-              facetNameSections: 2,
+              facetNameFormatter: (field: string) => fieldNameToTitle(field, 2),
               queryOptions,
               dismissCallback: removeCustomFilter,
               cardScrollMargin,
@@ -212,13 +215,28 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
   );
 };
 
+/**
+ * Component for rendering a tabbed facet selection view
+ * @param activeTab - which tab is currently active
+ * @param setActiveTab - function to set the active tab
+ * @param hooks - Hooks for retrieving data, modifying cohort, etc for the various facet types
+ * @param facetDefinitions - Description of facets and their properties
+ * @param tabsConfig - Configuration for tab sections, which fields they contain and any additional fields needed to query data for that tab
+ * @param queryExpressionHooks -
+ * @param customFacetHooks - Hooks for custom facet selection
+ * @param usePopulateFacetData - Hook for prepopulating the facet data for a tab
+ * @param getFacetLabel - Callback for determining the data label
+ * @param cardScrollMargin - Scroll margin for cards, used for positioning cards on the page when scrolled to
+ * @param Chart - Component for rendering a Chart view of the data
+ */
+
 interface FacetTabProps {
   readonly activeTab: string;
   readonly setActiveTab: (tab: string | null) => void;
   readonly hooks: FacetRequiredHooks;
-  readonly queryExpressionHooks?: QueryExpressionHooks;
   readonly facetDefinitions: Record<string, FacetDefinition>;
   readonly tabsConfig: Record<string, CohortBuilderCategoryConfig>;
+  readonly queryExpressionHooks?: QueryExpressionHooks;
   readonly customFacetHooks?: {
     readonly useCustomFacets: () => DataFetchingResult<FacetDefinition[]>;
     readonly useAvailableCustomFacets: (onlyFiltersWithValues: boolean) => {
@@ -250,6 +268,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
   Chart,
 }) => {
   const fieldNameToTitle = hooks.useFieldNameToTitle();
+  const { theme } = useContext(AppContext);
 
   const searchParams = new URLSearchParams(window.location.search);
   const liveRegionRef = useRef<HTMLSpanElement>(null);
@@ -267,89 +286,93 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
   }, [hash, searchTermParam, fieldNameToTitle]);
 
   return (
-    <div className="w-100">
-      <span
-        id="facetTab-liveRegion"
-        aria-live="assertive"
-        ref={liveRegionRef}
-        className="sr-only"
-      />
-      <StyledFacetTabs
-        orientation="vertical"
-        value={activeTab}
-        onChange={setActiveTab}
-        keepMounted={false}
-        classNames={{
-          tab: "pl-0 data-active:pl-4 ml-4 data-active:text-primary-content-darkest data-active:border-primary-darkest data-active:border-accent-vivid data-active:border-l-4 data-active:bg-base-max data-active:font-bold sm:w-44 md:w-60 lg:w-80 text-primary-content-darkest font-medium hover:pl-4 hover:bg-accent-vivid hover:text-primary-contrast-min my-1",
-          list: "flex flex-col bg-primary-lightest text-primary-contrast-dark w-60 md:w-72 lg:w-80 py-4",
-          tabLabel: "text-left",
-          root: "bg-base-max",
-        }}
-      >
-        <Tabs.List>
+    <MantineProvider theme={theme}>
+      <div className="w-100">
+        <span
+          id="facetTab-liveRegion"
+          aria-live="assertive"
+          ref={liveRegionRef}
+          className="sr-only"
+        />
+        <StyledFacetTabs
+          orientation="vertical"
+          value={activeTab}
+          onChange={setActiveTab}
+          keepMounted={false}
+          classNames={{
+            tab: "pl-0 data-active:pl-4 ml-4 data-active:text-primary-content-darkest data-active:border-primary-darkest data-active:border-accent-vivid data-active:border-l-4 data-active:bg-base-max data-active:font-bold sm:w-44 md:w-60 lg:w-80 text-primary-content-darkest font-medium hover:pl-4 hover:bg-accent-vivid hover:text-primary-contrast-min my-1",
+            list: "flex flex-col bg-primary-lightest text-primary-contrast-dark w-60 md:w-72 lg:w-80 py-4",
+            tabLabel: "text-left",
+            root: "bg-base-max",
+          }}
+        >
+          <Tabs.List>
+            {Object.entries(tabsConfig).map(
+              ([key, tabEntry]: [string, CohortBuilderCategoryConfig]) => {
+                return (
+                  <Tabs.Tab
+                    key={key}
+                    value={key}
+                    data-testid={
+                      "button-cohort-builder-" +
+                      tabEntry.label
+                        .toLowerCase()
+                        .replaceAll("_", "-")
+                        .replaceAll(" ", "-")
+                    }
+                  >
+                    {tabEntry.label}
+                  </Tabs.Tab>
+                );
+              },
+            )}
+          </Tabs.List>
           {Object.entries(tabsConfig).map(
             ([key, tabEntry]: [string, CohortBuilderCategoryConfig]) => {
+              const facetList =
+                key === "custom"
+                  ? []
+                  : tabEntry.facets
+                      .map((field) => facetDefinitions[field])
+                      .filter((facet) => facet);
               return (
-                <Tabs.Tab
-                  key={key}
-                  value={key}
-                  data-testid={
-                    "button-cohort-builder-" +
-                    tabEntry.label
-                      .toLowerCase()
-                      .replaceAll("_", "-")
-                      .replaceAll(" ", "-")
-                  }
-                >
-                  {tabEntry.label}
-                </Tabs.Tab>
+                <Tabs.Panel key={key} value={key}>
+                  {key === "custom" && customFacetHooks ? (
+                    <CustomFacetGroup
+                      hooks={hooks}
+                      usePopulateFacetData={usePopulateFacetData}
+                      queryOptions={tabEntry.queryOptions}
+                      getFacetLabel={getFacetLabel}
+                      customFacetHooks={customFacetHooks}
+                      cardScrollMargin={cardScrollMargin}
+                    />
+                  ) : (
+                    <FacetGroup
+                      facets={facetList}
+                      usePopulateFacetData={usePopulateFacetData}
+                      queryOptions={tabEntry.queryOptions}
+                    >
+                      {createFacetCards({
+                        facets: facetList as FacetCardDefinition[],
+                        facetNameFormatter: (field: string) =>
+                          fieldNameToTitle(field),
+                        hooks,
+                        queryExpressionHooks,
+                        idPrefix: "cohort-builder",
+                        valueLabel: getFacetLabel(tabEntry.queryOptions),
+                        queryOptions: tabEntry.queryOptions,
+                        cardScrollMargin,
+                        Chart,
+                      })}
+                    </FacetGroup>
+                  )}
+                </Tabs.Panel>
               );
             },
           )}
-        </Tabs.List>
-        {Object.entries(tabsConfig).map(
-          ([key, tabEntry]: [string, CohortBuilderCategoryConfig]) => {
-            const facetList =
-              key === "custom"
-                ? []
-                : tabEntry.facets
-                    .map((field) => facetDefinitions[field])
-                    .filter((facet) => facet);
-            return (
-              <Tabs.Panel key={key} value={key}>
-                {key === "custom" && customFacetHooks ? (
-                  <CustomFacetGroup
-                    hooks={hooks}
-                    usePopulateFacetData={usePopulateFacetData}
-                    queryOptions={tabEntry.queryOptions}
-                    getFacetLabel={getFacetLabel}
-                    customFacetHooks={customFacetHooks}
-                    cardScrollMargin={cardScrollMargin}
-                  />
-                ) : (
-                  <FacetGroup
-                    facets={facetList}
-                    usePopulateFacetData={usePopulateFacetData}
-                    queryOptions={tabEntry.queryOptions}
-                  >
-                    {createFacetCards({
-                      facets: facetList as FacetCardDefinition[],
-                      hooks,
-                      queryExpressionHooks,
-                      idPrefix: "cohort-builder",
-                      valueLabel: getFacetLabel(tabEntry.queryOptions),
-                      queryOptions: tabEntry.queryOptions,
-                      cardScrollMargin,
-                      Chart,
-                    })}
-                  </FacetGroup>
-                )}
-              </Tabs.Panel>
-            );
-          },
-        )}
-      </StyledFacetTabs>
-    </div>
+        </StyledFacetTabs>
+      </div>
+    </MantineProvider>
   );
 };
 

@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { LoadingOverlay, Switch } from "@mantine/core";
 import { EnumFacetHooks, FacetCardProps } from "../types";
-import { updateFacetEnum, trimFirstFieldNameToTitle } from "../utils";
+import { updateFacetEnum } from "../utils";
 import FacetControlsHeader from "./FacetControlsHeader";
 
 const extractToggleValue = (values?: ReadonlyArray<string>): boolean =>
@@ -24,7 +24,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   hooks,
   description,
   valueLabel,
-  facetName = undefined,
+  facetName,
   dismissCallback = undefined,
   width = undefined,
 }: FacetCardProps<EnumFacetHooks>) => {
@@ -33,11 +33,6 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   const isFilterExpanded =
     hooks?.useFilterExpanded && hooks.useFilterExpanded(field);
   const showFilters = isFilterExpanded === undefined || isFilterExpanded;
-  const fieldNameToTitle = hooks.useFieldNameToTitle();
-
-  const facetTitle = facetName
-    ? facetName
-    : trimFirstFieldNameToTitle(field, fieldNameToTitle, true);
 
   const { data, isSuccess, enumFilters } = hooks.useGetEnumFacetData(field);
 
@@ -88,7 +83,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
               color="accent"
               checked={toggleValue}
               onChange={(event) => setValue(event.currentTarget.checked)}
-              aria-label={facetTitle}
+              aria-label={facetName}
               data-testid="toggle-facet-value"
               classNames={{
                 root: "w-full",

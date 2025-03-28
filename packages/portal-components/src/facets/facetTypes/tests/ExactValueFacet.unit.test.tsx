@@ -3,6 +3,7 @@ import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import ExactValueFacet from "../ExactValueFacet";
 import { Operation } from "@/cohort/QueryExpression/types";
+import { MantineProvider } from "@mantine/core";
 
 describe("<ExactValueFacet />", () => {
   beforeEach(() => {
@@ -11,17 +12,21 @@ describe("<ExactValueFacet />", () => {
 
   it("test if ExactValueFacet control has expected components", async () => {
     const { getByRole, getByTestId } = render(
-      <ExactValueFacet
-        field="cases.diagnoses.annotations.case_id"
-        width="w-1/3"
-        hooks={
-          {
-            useGetFacetFilters: jest.fn(),
-            useUpdateFacetFilters: jest.fn(),
-            useClearFilter: jest.fn(),
-          } as any
-        }
-      />,
+      <MantineProvider>
+        <ExactValueFacet
+          field="cases.diagnoses.annotations.case_id"
+          width="w-1/3"
+          hooks={
+            {
+              useGetFacetFilters: jest.fn(),
+              useUpdateFacetFilters: jest.fn(),
+              useClearFilter: jest.fn(),
+            } as any
+          }
+          facetName="Case ID"
+        />
+        ,
+      </MantineProvider>,
     );
 
     expect(
@@ -42,26 +47,30 @@ describe("<ExactValueFacet />", () => {
   it("add a value with ExactValueFacet control", async () => {
     let values: Operation | undefined = undefined;
     const { getByRole, getByLabelText, getByText } = render(
-      <ExactValueFacet
-        field="cases.diagnoses.annotations.case_id"
-        width="w-1/3"
-        hooks={
-          {
-            useClearFilter: jest.fn(),
-            useGetFacetFilters: jest.fn(() => values),
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            useUpdateFacetFilters: jest.fn(
-              () => (_1: string, _2: Operation) => {
-                values = {
-                  operator: "includes",
-                  field: "cases.diagnoses.annotations.case_id",
-                  operands: ["case_id_1000"],
-                };
-              },
-            ),
-          } as any
-        }
-      />,
+      <MantineProvider>
+        <ExactValueFacet
+          field="cases.diagnoses.annotations.case_id"
+          width="w-1/3"
+          hooks={
+            {
+              useClearFilter: jest.fn(),
+              useGetFacetFilters: jest.fn(() => values),
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              useUpdateFacetFilters: jest.fn(
+                () => (_1: string, _2: Operation) => {
+                  values = {
+                    operator: "includes",
+                    field: "cases.diagnoses.annotations.case_id",
+                    operands: ["case_id_1000"],
+                  };
+                },
+              ),
+            } as any
+          }
+          facetName="Case ID"
+        />
+        ,
+      </MantineProvider>,
     );
 
     const input = getByLabelText("enter value to add filter");

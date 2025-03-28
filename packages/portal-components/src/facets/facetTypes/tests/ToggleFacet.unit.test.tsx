@@ -2,6 +2,7 @@ import React from "react";
 import { render } from "@testing-library/react";
 import ToggleFacet from "../ToggleFacet";
 import { EnumFacetResponse } from "src/facets/types";
+import { MantineProvider } from "@mantine/core";
 
 describe("<ToggleFacet />", () => {
   beforeEach(() => {
@@ -9,28 +10,32 @@ describe("<ToggleFacet />", () => {
   });
   it("test if ToggleFacet control has expected components", async () => {
     const { getByText, getByTestId } = render(
-      <ToggleFacet
-        valueLabel="Cases"
-        field="gene.is_cancer_gene_census"
-        width="w-1/3"
-        hooks={{
-          useGetEnumFacetData: jest.fn((): EnumFacetResponse => {
-            return {
-              data: {},
-              isSuccess: true,
-              enumFilters: undefined,
-              isUninitialized: false,
-              isError: false,
-              isFetching: false,
-            };
-          }),
-          useUpdateFacetFilters: jest.fn(),
-          useClearFilter: jest.fn(),
-          useTotalCounts: jest.fn(),
-          useFieldNameToTitle: jest.fn(),
-          useSearchEnumTerms: jest.fn(),
-        }}
-      />,
+      <MantineProvider>
+        <ToggleFacet
+          valueLabel="Cases"
+          field="gene.is_cancer_gene_census"
+          width="w-1/3"
+          hooks={{
+            useGetEnumFacetData: jest.fn((): EnumFacetResponse => {
+              return {
+                data: {},
+                isSuccess: true,
+                enumFilters: undefined,
+                isUninitialized: false,
+                isError: false,
+                isFetching: false,
+              };
+            }),
+            useUpdateFacetFilters: jest.fn(),
+            useClearFilter: jest.fn(),
+            useTotalCounts: jest.fn(),
+            useFieldNameToTitle: jest.fn(),
+            useSearchEnumTerms: jest.fn(),
+          }}
+          facetName="Is Cancer Gene Census"
+        />
+        ,
+      </MantineProvider>,
     );
 
     const ctrl = getByTestId("toggle-facet-value");
@@ -43,28 +48,32 @@ describe("<ToggleFacet />", () => {
 
   it("test when ToggleFacet control has data", async () => {
     const { getByTestId, getByText } = render(
-      <ToggleFacet
-        valueLabel="Cases"
-        field="gene.is_cancer_gene_census"
-        width="w-1/3"
-        hooks={{
-          useGetEnumFacetData: jest.fn((): EnumFacetResponse => {
-            return {
-              data: { "1": 21734 },
-              isSuccess: true,
-              enumFilters: ["true"],
-              isUninitialized: false,
-              isError: false,
-              isFetching: false,
-            };
-          }),
-          useUpdateFacetFilters: jest.fn(),
-          useClearFilter: jest.fn(),
-          useTotalCounts: jest.fn(),
-          useFieldNameToTitle: jest.fn(),
-          useSearchEnumTerms: jest.fn(),
-        }}
-      />,
+      <MantineProvider>
+        <ToggleFacet
+          valueLabel="Cases"
+          field="gene.is_cancer_gene_census"
+          width="w-1/3"
+          hooks={{
+            useGetEnumFacetData: jest.fn((): EnumFacetResponse => {
+              return {
+                data: { "1": 21734 },
+                isSuccess: true,
+                enumFilters: ["true"],
+                isUninitialized: false,
+                isError: false,
+                isFetching: false,
+              };
+            }),
+            useUpdateFacetFilters: jest.fn(),
+            useClearFilter: jest.fn(),
+            useTotalCounts: jest.fn(),
+            useFieldNameToTitle: jest.fn().mockReturnValue(jest.fn()),
+            useSearchEnumTerms: jest.fn(),
+          }}
+          facetName="Is Cancer Gene Census"
+        />
+        ,
+      </MantineProvider>,
     );
 
     const ctrl = getByTestId("toggle-facet-value");

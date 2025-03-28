@@ -280,18 +280,6 @@ export const ageInYearsAndDaysFromDays = (ageInDays: number): number[] =>
     Math.ceil(ageInDays % DAYS_IN_YEAR),
   );
 
-export const trimFirstFieldNameToTitle = (
-  fieldName: string,
-  fieldNameToTitle: (fieldName: string, parts?: number) => string,
-  trim = false,
-): string => {
-  if (trim) {
-    const source = fieldName.slice(fieldName.indexOf(".") + 1);
-    return fieldNameToTitle(source ? source : fieldName, 0);
-  }
-  return fieldNameToTitle(fieldName);
-};
-
 // https://stackoverflow.com/questions/2388115/get-locale-short-date-format-using-javascript
 /**
  * Returns a formatted timestamp string based on the provided date or the current date.

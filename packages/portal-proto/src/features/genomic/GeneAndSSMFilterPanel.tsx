@@ -19,7 +19,7 @@ import { FacetDocTypeToLabelsMap } from "@/features/facets/hooks";
 import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
 import MutationSetModal from "@/components/Modals/SetModals/MutationSetModal";
 import FilterPanel from "@/features/facets/FilterPanel";
-import { FacetCardDefinition } from "@/features/facets/types";
+import { FacetCardDefinition } from "@gff/portal-components";
 import { useAppSelector } from "./appApi";
 import { selectFiltersAppliedCount } from "./geneAndSSMFiltersSlice";
 import { useFieldNameToTitle } from "../cohortBuilder/queryExpressionHooks";

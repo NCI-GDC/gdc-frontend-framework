@@ -32,7 +32,7 @@ import { QueryExpressionHooks } from "@/cohort/QueryExpression/types";
  * @param dismissCallback - callback when defined will remove facet from parent panel
  * @param hideIfEmpty - hide facets if they do not have data
  * @param showPercent - whether to show the count percent of whole
- * @param facetName - optional name of facet (if undefined it will be extracted from the full field name)
+ * @param facetNameFormatter - function that takes the full field and returns a human readable name
  * @param width -  override the default width
  */
 
@@ -40,13 +40,12 @@ interface CreateFacetCardProps {
   facets: FacetCardDefinition[];
   valueLabel: string;
   hooks: FacetRequiredHooks;
+  facetNameFormatter: (field: string) => string;
   queryExpressionHooks?: QueryExpressionHooks;
   idPrefix: string;
   dismissCallback?: (field: string) => void;
   hideIfEmpty?: boolean;
   showPercent?: boolean;
-  facetName?: string;
-  facetNameSections?: number;
   width?: string;
   queryOptions?: Record<string, string>;
   cardScrollMargin?: number;
@@ -57,12 +56,12 @@ const createFacetCards = ({
   facets,
   valueLabel,
   hooks,
+  facetNameFormatter,
   queryExpressionHooks,
   idPrefix,
   dismissCallback,
   hideIfEmpty = false,
   showPercent = true,
-  facetName,
   width,
   queryOptions,
   cardScrollMargin,
@@ -75,7 +74,7 @@ const createFacetCards = ({
           key={`${idPrefix}-enum-${facet.full}`}
           valueLabel={valueLabel}
           field={facet.full}
-          facetName={facetName}
+          facetName={facetNameFormatter(facet.full)}
           description={facet.description}
           dismissCallback={dismissCallback}
           hideIfEmpty={hideIfEmpty}
@@ -99,7 +98,7 @@ const createFacetCards = ({
           dismissCallback={dismissCallback}
           hideIfEmpty={hideIfEmpty}
           hooks={{ ...(hooks as ValueFacetHooks) }}
-          facetName={facetName}
+          facetName={facetNameFormatter(facet.full)}
           width={width}
         />
       );
@@ -116,7 +115,7 @@ const createFacetCards = ({
           hooks={{
             ...(hooks as EnumFacetHooks),
           }}
-          facetName={facetName}
+          facetName={facetNameFormatter(facet.full)}
           width={width}
         />
       );
@@ -133,7 +132,7 @@ const createFacetCards = ({
           hooks={{
             ...(hooks as RangeFacetHooks),
           }}
-          facetName={facetName}
+          facetName={facetNameFormatter(facet.full)}
           width={width}
         />
       );
@@ -164,7 +163,7 @@ const createFacetCards = ({
             ...(hooks as RangeFacetHooks),
           }}
           dismissCallback={dismissCallback}
-          facetName={facetName}
+          facetName={facetNameFormatter(facet.full)}
           width={width}
           queryOptions={queryOptions}
           cardScrollMargin={cardScrollMargin}
@@ -175,10 +174,10 @@ const createFacetCards = ({
     if (facet.facet_type === "upload" && queryExpressionHooks) {
       return (
         <UploadFacet
-          key={`${idPrefix}-exact-${facet.field}`}
-          field={facet.field}
+          key={`${idPrefix}-exact-${facet.full}`}
+          field={facet.full}
           fullField={facet.full}
-          facetTitle={facet.title}
+          facetName={facet.title as string}
           uploadLabel={facet.uploadLabel}
           width={width}
           facetBtnToolTip={facet.toolTip}

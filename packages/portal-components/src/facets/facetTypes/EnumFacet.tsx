@@ -31,7 +31,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   hooks,
   valueLabel,
   description,
-  facetName = undefined,
+  facetName,
   showSearch = true,
   showFlip = true,
   startShowingData = true,
@@ -80,7 +80,6 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   const isFilterExpanded =
     hooks?.useFilterExpanded && hooks.useFilterExpanded(field);
   const showFilters = isFilterExpanded === undefined || isFilterExpanded;
-  const fieldNameToTitle = hooks.useFieldNameToTitle();
 
   useEffect(() => {
     if (isSearching) {
@@ -311,9 +310,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                 data-testid="textbox-search-values"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                aria-label={`${
-                  facetName ? facetName : fieldNameToTitle(field)
-                } values`}
+                aria-label={`${facetName} values`}
                 className={"p-2"}
                 placeholder="Search"
                 ref={searchInputRef}
@@ -350,7 +347,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
                       sortType={sortType}
                       valueLabel={valueLabel}
                       setSort={setSortType}
-                      field={facetName ? facetName : fieldNameToTitle(field)}
+                      field={facetName}
                     />
                   )}
                   <div

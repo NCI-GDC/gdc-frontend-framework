@@ -48,7 +48,7 @@ const FacetControlsHeader = ({
   description,
   hooks,
   variant = "default",
-  facetName = undefined,
+  facetName,
   showSearch = false,
   showFlip = false,
   showClearSelection = true,
@@ -62,7 +62,6 @@ const FacetControlsHeader = ({
     hooks?.useFilterExpanded && hooks.useFilterExpanded(field);
   const toggleExpandFilter =
     hooks?.useToggleExpandFilter && hooks.useToggleExpandFilter();
-  const fieldNameToTitle = hooks.useFieldNameToTitle();
 
   useEffect(() => {
     // Initialize filter as expanded
@@ -118,7 +117,7 @@ const FacetControlsHeader = ({
                 : "text-primary-darkest font-heading font-semibold text-[1.25em] break-words py-2"
             }
           >
-            {facetName ? facetName : fieldNameToTitle(field)}
+            {facetName}
           </div>
         </Tooltip>
       </div>

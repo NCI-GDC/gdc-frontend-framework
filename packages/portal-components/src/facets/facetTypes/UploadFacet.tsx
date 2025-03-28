@@ -3,14 +3,13 @@ import { useDeepCompareMemo } from "use-deep-compare";
 import { Button, Tooltip } from "@mantine/core";
 import CohortBadge from "@/cohort/QueryExpression/CohortBadge";
 import { Includes } from "@/cohort/QueryExpression/types";
-import { humanify } from "@/common/utils";
 import { UploadFacetCardProps } from "../types";
 import FacetControlsHeader from "./FacetControlsHeader";
 
 const UploadFacet: React.FC<UploadFacetCardProps> = ({
   field,
   fullField,
-  facetTitle,
+  facetName,
   uploadLabel,
   facetBtnToolTip,
   width,
@@ -20,10 +19,7 @@ const UploadFacet: React.FC<UploadFacetCardProps> = ({
 }) => {
   const hash = window?.location?.hash.split("#")?.[1];
   const cardSelected = hash !== undefined && hash === fullField;
-  const fieldNameToTitle = hooks.useFieldNameToTitle();
   const openModal = hooks.useOpenUploadModal();
-
-  const title = humanify(facetTitle ? facetTitle : fieldNameToTitle(field));
 
   const filters = hooks.useCohortFacetFilters();
   const noFilters = Object.keys(filters?.root || {}).length === 0;
@@ -61,7 +57,7 @@ const UploadFacet: React.FC<UploadFacetCardProps> = ({
       }}
       id={fullField}
     >
-      <FacetControlsHeader field={field} hooks={hooks} facetName={title} />
+      <FacetControlsHeader field={field} hooks={hooks} facetName={facetName} />
       <div className="p-4">
         <div className="flex justify-center">
           <Tooltip

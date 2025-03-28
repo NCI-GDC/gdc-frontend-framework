@@ -1,23 +1,7 @@
 import React from "react";
 import { render } from "@testing-library/react";
 import DateRangeFacet from "../DateRangeFacet";
-
-window.ResizeObserver =
-  window.ResizeObserver ||
-  jest.fn().mockImplementation(() => ({
-    disconnect: jest.fn(),
-    observe: jest.fn(),
-    unobserve: jest.fn(),
-  }));
-
-jest.mock("@gff/core", () => ({
-  ...jest.requireActual("@gff/core"),
-  useCoreDispatch: jest.fn(),
-  useCoreSelector: jest.fn(),
-  useCartSummaryQuery: jest.fn(),
-  useFetchUserDetailsQuery: jest.fn(),
-  useGetFilesQuery: jest.fn(),
-}));
+import { MantineProvider } from "@mantine/core";
 
 describe("<DateRangeFacet />", () => {
   beforeEach(() => {
@@ -26,17 +10,21 @@ describe("<DateRangeFacet />", () => {
 
   it("render DataRangeFacet control", async () => {
     const { getByRole } = render(
-      <DateRangeFacet
-        field="files.analysis.input_files.created_datetime"
-        width="w-1/3"
-        hooks={
-          {
+      <MantineProvider>
+        <DateRangeFacet
+          field="files.analysis.input_files.created_datetime"
+          width="w-1/3"
+          hooks={{
             useGetFacetFilters: jest.fn(),
             useUpdateFacetFilters: jest.fn(),
             useClearFilter: jest.fn(),
-          } as any
-        }
-      />,
+            useTotalCounts: jest.fn(),
+            useFieldNameToTitle: jest.fn().mockReturnValue(jest.fn()),
+          }}
+          facetName="Created Datetime"
+        />
+        ,
+      </MantineProvider>,
     );
 
     expect(

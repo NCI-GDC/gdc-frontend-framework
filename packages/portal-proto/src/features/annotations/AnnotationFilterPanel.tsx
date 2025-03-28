@@ -8,7 +8,6 @@ import {
 import { Group, Text } from "@mantine/core";
 import { createFacetCards } from "@gff/portal-components";
 import { useTotalCounts, useLocalFilters } from "@/features/facets/hooks";
-//import { FacetRequiredHooks } from "@/features/facets/types";
 import FilterFacets from "./filters.json";
 import {
   useAnnotationEnumValues,
@@ -50,13 +49,12 @@ export const AnnotationFacetPanel = (): JSX.Element => {
         className="flex flex-col gap-y-4 h-screen overflow-y-scroll mr-3 mb-4 border-t-1 border-b-1 rounded-md"
       >
         {FilterFacets.map((x) => {
-          const facetName = x.title || fieldNameToTitle(x.full);
           return createFacetCards({
             facets: [x] as any,
             valueLabel: "Annotations",
             hooks: facetHooks as any,
             idPrefix: "annotation-browser",
-            facetName,
+            facetNameFormatter: (x) => fieldNameToTitle(x),
             width: "w-full",
           });
         })}

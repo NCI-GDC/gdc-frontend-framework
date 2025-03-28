@@ -71,9 +71,8 @@ export interface FacetCardProps<T extends FacetCommonHooks> {
   readonly field: string;
   readonly hooks: T;
   readonly valueLabel: string;
+  readonly facetName: string;
   readonly description?: string;
-  readonly facetName?: string;
-  readonly facetTitle?: string;
   readonly facetBtnToolTip?: string;
   readonly showSearch?: boolean;
   readonly showFlip?: boolean;
@@ -93,7 +92,7 @@ export type UploadFacetCardProps = Pick<
   FacetCardProps<UploadFacetHooks>,
   | "field"
   | "hooks"
-  | "facetTitle"
+  | "facetName"
   | "facetBtnToolTip"
   | "width"
   | "cardScrollMargin"
@@ -101,6 +100,13 @@ export type UploadFacetCardProps = Pick<
   readonly fullField: string;
   readonly uploadLabel?: string;
   readonly queryExpressionHooks: QueryExpressionHooks;
+};
+
+export type NumericFacetCardProps = FacetCardProps<RangeFacetHooks> & {
+  readonly rangeDatatype?: string;
+  readonly minimum: number | undefined;
+  readonly maximum: number | undefined;
+  readonly clearValues?: boolean;
 };
 
 export type RangeFromOp = ">" | ">=";
@@ -145,11 +151,8 @@ export interface FacetDefinition {
   readonly description: string; //description from _mapping
   readonly field: string; // name of field minus "case", "file"
   readonly full: string; //  full name of filter (e.g. prepended with case.)
-  readonly type: string; // type from mapping
   readonly facet_type?: string; // classified type based on type + name: e.g. age, year, enumeration, etc
   readonly range?: AllowableRange; // range of value types
-  readonly hasData?: boolean;
-  readonly title?: string;
 }
 
 export interface CohortBuilderCategoryConfig {
@@ -164,7 +167,8 @@ export interface SortType {
 }
 
 export type FacetCardDefinition = FacetDefinition & {
-  name?: string;
-  toolTip?: string;
-  uploadLabel?: string;
+  readonly title?: string;
+  readonly name?: string;
+  readonly toolTip?: string;
+  readonly uploadLabel?: string;
 };

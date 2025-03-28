@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { NumericFacetProps } from "./types";
 import DaysOrYears from "./DaysOrYears";
 import Year from "./Year";
 import Years from "./Years";
 import PercentRange from "./PercentRange";
 import NumericRangePanel from "./NumericRangePanel";
 import FacetControlsHeader from "../FacetControlsHeader";
+import { NumericFacetCardProps } from "src/facets/types";
 
 /**
  * A component which manages a numeric range facet
@@ -22,7 +22,7 @@ import FacetControlsHeader from "../FacetControlsHeader";
  * @category Facets
  */
 
-const NumericRangeFacet: React.FC<NumericFacetProps> = ({
+const NumericRangeFacet: React.FC<NumericFacetCardProps> = ({
   field,
   hooks,
   rangeDatatype,
@@ -30,13 +30,13 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
   valueLabel,
   minimum = undefined,
   maximum = undefined,
-  facetName = undefined,
+  facetName,
   dismissCallback = undefined,
   width = undefined,
   cardScrollMargin,
   queryOptions,
   Chart,
-}: NumericFacetProps) => {
+}) => {
   const [isFacetView, setIsFacetView] = useState(true);
   const isFilterExpanded =
     hooks?.useFilterExpanded && hooks.useFilterExpanded(field);
@@ -72,7 +72,7 @@ const NumericRangeFacet: React.FC<NumericFacetProps> = ({
         field={field}
         description={description}
         hooks={hooks}
-        facetName={facetName}
+        facetName={facetName as string}
         dismissCallback={dismissCallback}
         isFacetView={isFacetView}
         toggleFlip={toggleFlip}

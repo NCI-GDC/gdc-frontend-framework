@@ -34,12 +34,6 @@ import {
   selectFacetDefinition,
 } from "@gff/core";
 import isEqual from "lodash/isEqual";
-import {
-  ClearFacetFunction,
-  EnumFacetResponse,
-  FacetResponse,
-  UpdateFacetFilterFunction,
-} from "@/features/facets/types";
 import { getFacetInfo } from "@/features/cohortBuilder/utils";
 
 /**
@@ -84,7 +78,7 @@ const useEnumFiltersByNames = (
 export const useEnumFacet = (
   field: string,
   { docType, indexType }: { docType: GQLDocType; indexType: GQLIndexType },
-): EnumFacetResponse => {
+) => {
   const coreDispatch = useCoreDispatch();
 
   const facet: FacetBuckets = useCoreSelector((state) =>
@@ -261,7 +255,7 @@ export const useRangeFacet = (
   ranges: ReadonlyArray<NumericFromTo>,
   { docType, indexType }: { docType: GQLDocType; indexType: GQLIndexType },
   overrideCohortFilters?: GqlOperation,
-): FacetResponse => {
+) => {
   const coreDispatch = useCoreDispatch();
   const facet: FacetBuckets = useCoreSelector((state) =>
     selectRangeFacetByField(state, field),
@@ -325,7 +319,7 @@ export const useSelectFieldFilter = (field: string): Operation => {
 };
 
 // Update filter hook
-export const useUpdateFacetFilter = (): UpdateFacetFilterFunction => {
+export const useUpdateFacetFilter = () => {
   const dispatch = useCoreDispatch();
   // update the filter for this facet
   return (field: string, operation: Operation) => {
@@ -334,7 +328,7 @@ export const useUpdateFacetFilter = (): UpdateFacetFilterFunction => {
 };
 
 // Core ClearFilters hook
-export const useClearFilters = (): ClearFacetFunction => {
+export const useClearFilters = () => {
   const dispatch = useCoreDispatch();
   return (field: string) => {
     dispatch(removeCohortFilter(field));
@@ -344,7 +338,7 @@ export const useClearFilters = (): ClearFacetFunction => {
 export const useEnumFacetValues = (
   field: string,
   queryOptions: { docType: GQLDocType },
-): EnumFacetResponse => {
+) => {
   // facet data is store in core
   const facet: FacetBuckets = useCoreSelector((state) =>
     selectFacetByDocTypeAndField(state, queryOptions.docType, field),
@@ -395,7 +389,7 @@ export const useLocalFilters = (
   selectFieldEnumValues: (field: string) => OperandValue,
   selectLocalFilters: () => FilterSet,
   facetSelector: (state: CoreState, field: string) => FacetBuckets,
-): EnumFacetResponse => {
+) => {
   const coreDispatch = useCoreDispatch();
 
   const facet: FacetBuckets = useCoreSelector((state) =>

@@ -2,7 +2,6 @@ import React, { useState, useMemo } from "react";
 import { ActionIcon, Badge, Group, TextInput } from "@mantine/core";
 import { CloseIcon, PlusIcon } from "src/commonIcons";
 import { FacetCardProps, ValueFacetHooks } from "../types";
-import { trimFirstFieldNameToTitle } from "../utils";
 import FacetControlsHeader from "./FacetControlsHeader";
 import {
   Operation,
@@ -46,7 +45,7 @@ const extractValues = (
 const ExactValueFacet: React.FC<ExactValueProps> = ({
   field,
   description,
-  facetName = undefined,
+  facetName,
   dismissCallback = undefined,
   width = undefined,
   hooks,
@@ -54,10 +53,6 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
   const [textValue, setTextValue] = useState(""); // Handle the state of the TextInput
   const clearFilters = hooks.useClearFilter();
   const updateFacetFilters = hooks.useUpdateFacetFilters();
-  const fieldNameToTitle = hooks.useFieldNameToTitle();
-  const facetTitle = facetName
-    ? facetName
-    : trimFirstFieldNameToTitle(field, fieldNameToTitle, true);
   const facetValue = hooks.useGetFacetFilters(field);
   const textValues = useMemo(() => extractValues(facetValue), [facetValue]);
   const isFilterExpanded =
@@ -130,7 +125,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
           <TextInput
             data-testid="textbox-add-filter-value"
             size="sm"
-            placeholder={`Enter ${facetTitle}`}
+            placeholder={`Enter ${facetName}`}
             classNames={{
               root: "grow",
               input: "border-r-0 rounded-r-none py-1",

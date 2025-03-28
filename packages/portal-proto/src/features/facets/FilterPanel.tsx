@@ -10,6 +10,7 @@ import {
 } from "@gff/portal-components";
 import { TableXPositionContext } from "@/components/Table/VerticalTable";
 import { AddIcon, UndoIcon } from "@/utils/icons";
+import { useAvailableCustomFacets } from "../cohortBuilder/hooks";
 
 interface FilterPanelProps {
   readonly facetDefinitions: FacetCardDefinition[];
@@ -65,6 +66,7 @@ const FilterPanel = ({
   const ref = useRef<HTMLDivElement>();
 
   const facetFields = facetDefinitions.map((x) => x.full);
+
   const { xPosition } = useContext(TableXPositionContext);
   const maxHeight = useMemo(() => {
     const calcHeight = xPosition - ref?.current?.getBoundingClientRect().top;
@@ -133,12 +135,11 @@ const FilterPanel = ({
             >
               <div className="p-4">
                 <FacetSelection
-                  facetType="files"
                   handleFilterSelected={(filter: string) => {
                     customConfig.handleCustomFilterSelected(filter);
                     setOpened(false);
                   }}
-                  usedFacets={facetFields}
+                  useAvailableCustomFacets={useAvailableCustomFacets}
                 />
               </div>
             </Modal>
