@@ -344,7 +344,6 @@ export const useEnumFacetValues = (
     selectFacetByDocTypeAndField(state, queryOptions.docType, field),
   );
 
-  console.log({ field, facet, queryOptions });
   const enumValues = useCohortFacetFilterByName(field);
   return {
     data: facet?.buckets,

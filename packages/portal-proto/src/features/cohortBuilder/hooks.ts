@@ -292,7 +292,6 @@ export const useUploadFilterItems = (uploadField: string) => {
     );
 
     const field = uploadField.split(".upload").join("");
-    console.log({ field, includeFilters });
     return includeFilters.find((f) => f.field === field)?.operands || [];
   }, [filters, uploadField]);
 

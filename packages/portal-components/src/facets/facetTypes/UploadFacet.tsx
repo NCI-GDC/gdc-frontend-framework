@@ -70,7 +70,7 @@ const UploadFacet: React.FC<UploadFacetCardProps> = ({
         <div className="mt-2 max-h-96 overflow-y-auto">
           {noData ? null : (
             <div className="flex flex-wrap gap-1">
-              {renderBadges(items as string[], field)}
+              {renderBadges(items as string[], field.split(".upload").join(""))}
             </div>
           )}
         </div>
