@@ -1,10 +1,5 @@
 import { useEffect, useMemo, useCallback } from "react";
 import {
-  ClearFacetFunction,
-  EnumFacetResponse,
-  UpdateFacetFilterFunction,
-} from "@/features/facets/types";
-import {
   EnumOperandValue,
   FacetBuckets,
   fetchFacetByNameGQL,
@@ -64,19 +59,18 @@ import FilterFacets from "@/features/genomic/filters.json";
  * Update Genomic Enum Facets filters. These are app local updates and are not added
  * to the current (global) cohort.
  */
-export const useUpdateGenomicEnumFacetFilter =
-  (): UpdateFacetFilterFunction => {
-    const dispatch = useAppDispatch();
-    // update the filter for this facet
-    return (field: string, operation: Operation) => {
-      dispatch(updateGeneAndSSMFilter({ field: field, operation: operation }));
-    };
+export const useUpdateGenomicEnumFacetFilter = () => {
+  const dispatch = useAppDispatch();
+  // update the filter for this facet
+  return (field: string, operation: Operation) => {
+    dispatch(updateGeneAndSSMFilter({ field: field, operation: operation }));
   };
+};
 
 /**
  * clears the genomic (local filters)
  */
-export const useClearGenomicFilters = (): ClearFacetFunction => {
+export const useClearGenomicFilters = () => {
   const dispatch = useAppDispatch();
   return (field: string) => {
     dispatch(removeGeneAndSSMFilter(field));
@@ -139,14 +133,13 @@ export const useAllFiltersCollapsed = () => {
   return useAppSelector((state) => selectAllFiltersCollapsed(state));
 };
 
-export const useTotalGenomicCounts = (field: string) => {
-  const docType = FilterFacets.find((f) => f.full === field)?.doc_type;
+export const useTotalGenomicCounts = ({ docType }: { docType: GQLDocType }) => {
   return useTotalCounts(FacetDocTypeToCountsIndexMap[docType]);
 };
 
-export const useGenesFacetValues = (field: string): EnumFacetResponse => {
+export const useGenesFacetValues = (field: string) => {
   // facet data is store in core
-  const docType = FilterFacets.find((f) => f.full === field)
+  const docType = FilterFacets.find((f) => f.field === field)
     .doc_type as GQLDocType;
   const facet: FacetBuckets = useCoreSelector((state) =>
     selectFacetByDocTypeAndField(state, docType, field),

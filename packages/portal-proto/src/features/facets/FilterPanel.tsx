@@ -65,7 +65,7 @@ const FilterPanel = ({
   const [opened, setOpened] = useState(false);
   const ref = useRef<HTMLDivElement>();
 
-  const facetFields = facetDefinitions.map((x) => x.full);
+  const facetFields = facetDefinitions.map((x) => x.field);
 
   const { xPosition } = useContext(TableXPositionContext);
   const maxHeight = useMemo(() => {
@@ -158,10 +158,8 @@ const FilterPanel = ({
         {facetDefinitions.map((facet) => {
           const isDefault =
             customConfig?.defaultFilters !== undefined
-              ? customConfig.defaultFilters.includes(facet.full)
+              ? customConfig.defaultFilters.includes(facet.field)
               : true;
-          const facetName =
-            facet.title || fieldNameToTitle(facet.full, isDefault ? 1 : 2);
           return createFacetCards({
             facets: [facet],
             valueLabel:
@@ -173,7 +171,13 @@ const FilterPanel = ({
               : undefined,
             hideIfEmpty,
             showPercent,
-            facetName,
+            facetNameFormatter: (field: string) => {
+              const isDefault =
+                customConfig?.defaultFilters !== undefined
+                  ? customConfig.defaultFilters.includes(field)
+                  : true;
+              return fieldNameToTitle(field, isDefault ? 1 : 2);
+            },
             width: "w-full",
             queryOptions: { docType: "cases" },
           });

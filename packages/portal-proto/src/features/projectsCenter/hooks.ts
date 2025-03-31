@@ -1,8 +1,4 @@
 import {
-  ClearFacetFunction,
-  UpdateFacetFilterFunction,
-} from "@/features/facets/types";
-import {
   useAppDispatch,
   useAppSelector,
 } from "@/features/projectsCenter/appApi";
@@ -23,7 +19,7 @@ import {
 import { useCallback } from "react";
 import { extractValue } from "@/features/facets/hooks";
 
-export const useUpdateProjectsFacetFilter = (): UpdateFacetFilterFunction => {
+export const useUpdateProjectsFacetFilter = () => {
   const dispatch = useAppDispatch();
   // update the filter for this facet
 
@@ -44,7 +40,7 @@ export const useProjectsFilters = (): FilterSet => {
 /**
  * removes the filter from the project current/active filters
  */
-export const useClearProjectsFilters = (): ClearFacetFunction => {
+export const useClearProjectsFilters = () => {
   const dispatch = useAppDispatch();
   return (field: string) => {
     dispatch(removeProjectFilter(field));

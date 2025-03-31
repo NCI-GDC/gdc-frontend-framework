@@ -25,12 +25,13 @@ import {
   useRemoveCustomFilter,
   useSearchEnumTerms,
   useOpenUploadModal,
+  useUploadFilterItems,
 } from "./hooks";
 import queryExpressionHooks, {
   useFieldNameToTitle,
 } from "./queryExpressionHooks";
 import { calculateStickyHeaderHeight } from "src/utils";
-import { upload_facets, useCohortFacetFilters } from "./utils";
+import { upload_facets } from "./utils";
 
 const getFacetLabel = (queryOptions) => {
   return FacetDocTypeToLabelsMap[queryOptions.docType];
@@ -81,8 +82,9 @@ const CohortBuilder = () => {
         useClearFilter: useClearFilters,
         useTotalCounts,
         useFieldNameToTitle: useFieldNameToTitle,
-        useCohortFacetFilters: useCohortFacetFilters,
         useOpenUploadModal,
+        useFilterItems: useUploadFilterItems,
+        usePopulateFacetData,
       }}
       queryExpressionHooks={queryExpressionHooks}
       customFacetHooks={{
@@ -91,7 +93,6 @@ const CohortBuilder = () => {
         useAddCustomFilter,
         useRemoveCustomFilter,
       }}
-      usePopulateFacetData={usePopulateFacetData}
       getFacetLabel={getFacetLabel}
       cardScrollMargin={calculateStickyHeaderHeight()}
       Chart={EnumFacetChart}

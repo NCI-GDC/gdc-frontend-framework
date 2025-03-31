@@ -14,7 +14,6 @@ import useScrollToHash from "@/common/useScrollToHash";
 import { QueryExpressionHooks } from "@/cohort/QueryExpression/types";
 import { AppContext } from "src/context";
 import { AddFacetIcon, AddIcon } from "src/commonIcons";
-import { DataFetchingResult } from "src/types";
 import createFacetCards from "./CreateFacetCard";
 import FacetSelection from "./FacetSelection";
 import {
@@ -22,6 +21,7 @@ import {
   FacetRequiredHooks,
   CohortBuilderCategoryConfig,
   FacetDefinition,
+  CustomFacetHooks,
 } from "./types";
 
 const StyledFacetTabs = (props: TabsProps) => {
@@ -68,22 +68,20 @@ const StyledFacetTabs = (props: TabsProps) => {
 type FacetGroupProps = {
   readonly children?: React.ReactNode;
   readonly facets: FacetDefinition[];
-  readonly usePopulateFacetData: (
-    facets: FacetDefinition[],
-    queryOptions?: Record<string, string>,
-  ) => void;
+  readonly hooks: FacetRequiredHooks;
   readonly queryOptions?: Record<string, string>;
 };
 
 export const FacetGroup: React.FC<FacetGroupProps> = ({
   facets,
   children,
-  usePopulateFacetData,
+  hooks,
   queryOptions,
 }: FacetGroupProps) => {
+  const { usePopulateFacetData = () => {} } = hooks;
   usePopulateFacetData(facets, queryOptions);
 
-  const availableFields = facets.map((f) => f.full);
+  const availableFields = facets.map((f) => f.field);
   useScrollToHash(availableFields, false);
 
   return (
@@ -98,18 +96,7 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
 
 interface CustomFacetGroupProps {
   readonly hooks: FacetRequiredHooks;
-  readonly customFacetHooks: {
-    readonly useCustomFacets: () => DataFetchingResult<FacetDefinition[]>;
-    readonly useAvailableCustomFacets: (onlyFiltersWithValues: boolean) => {
-      data: Record<string, FacetDefinition>;
-    };
-    readonly useAddCustomFilter: () => (filter: string) => void;
-    readonly useRemoveCustomFilter: () => (filter: string) => void;
-  };
-  readonly usePopulateFacetData: (
-    facets: FacetDefinition[],
-    queryOptions?: Record<string, string>,
-  ) => void;
+  readonly customFacetHooks: CustomFacetHooks;
   readonly queryOptions?: Record<string, string>;
   readonly getFacetLabel: (queryOptions?: Record<string, string>) => string;
   readonly cardScrollMargin?: number;
@@ -118,7 +105,6 @@ interface CustomFacetGroupProps {
 const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
   hooks,
   customFacetHooks,
-  usePopulateFacetData,
   queryOptions,
   getFacetLabel,
   cardScrollMargin,
@@ -129,6 +115,7 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
   const addCustomFilter = customFacetHooks.useAddCustomFilter();
   const removeCustomFilter = customFacetHooks.useRemoveCustomFilter();
   const fieldNameToTitle = hooks.useFieldNameToTitle();
+  const { usePopulateFacetData = () => {} } = hooks;
 
   const handleFilterSelected = (filter: string) => {
     setOpened(false);
@@ -182,7 +169,7 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
           <FacetGroup
             facets={customFacetDefinitions}
             queryOptions={queryOptions}
-            usePopulateFacetData={usePopulateFacetData}
+            hooks={hooks}
           >
             <Button
               data-testid="button-cohort-builder-add-a-custom-filter"
@@ -237,18 +224,7 @@ interface FacetTabProps {
   readonly facetDefinitions: Record<string, FacetDefinition>;
   readonly tabsConfig: Record<string, CohortBuilderCategoryConfig>;
   readonly queryExpressionHooks?: QueryExpressionHooks;
-  readonly customFacetHooks?: {
-    readonly useCustomFacets: () => DataFetchingResult<FacetDefinition[]>;
-    readonly useAvailableCustomFacets: (onlyFiltersWithValues: boolean) => {
-      data: Record<string, FacetDefinition>;
-    };
-    readonly useAddCustomFilter: () => (filter: string) => void;
-    readonly useRemoveCustomFilter: () => (filter: string) => void;
-  };
-  readonly usePopulateFacetData: (
-    facets: FacetDefinition[],
-    queryOptions?: Record<string, string>,
-  ) => void;
+  readonly customFacetHooks?: CustomFacetHooks;
   readonly getFacetLabel: (queryOptions?: Record<string, string>) => string;
   readonly cardScrollMargin?: number;
   readonly Chart?: React.FC;
@@ -262,7 +238,6 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
   facetDefinitions,
   tabsConfig,
   customFacetHooks,
-  usePopulateFacetData,
   getFacetLabel,
   cardScrollMargin,
   Chart,
@@ -340,7 +315,6 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
                   {key === "custom" && customFacetHooks ? (
                     <CustomFacetGroup
                       hooks={hooks}
-                      usePopulateFacetData={usePopulateFacetData}
                       queryOptions={tabEntry.queryOptions}
                       getFacetLabel={getFacetLabel}
                       customFacetHooks={customFacetHooks}
@@ -349,7 +323,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
                   ) : (
                     <FacetGroup
                       facets={facetList}
-                      usePopulateFacetData={usePopulateFacetData}
+                      hooks={hooks}
                       queryOptions={tabEntry.queryOptions}
                     >
                       {createFacetCards({

@@ -48,7 +48,10 @@ export type RangeFacetHooks = FacetCommonHooks & {
 };
 
 export type UploadFacetHooks = FacetCommonHooks & {
-  useCohortFacetFilters: any;
+  useFilterItems: (field: string) => {
+    noData: boolean;
+    items: readonly (string | number)[];
+  };
   useOpenUploadModal: () => (field: string) => void;
 };
 
@@ -59,6 +62,19 @@ export interface FacetCommonHooks {
   useToggleExpandFilter?: () => (field: string, expanded: boolean) => void;
   useFilterExpanded?: (field: string) => boolean;
   useFieldNameToTitle: () => (field: string, sections?: number) => string;
+  usePopulateFacetData?: (
+    facets: FacetDefinition[],
+    queryOptions?: Record<string, string>,
+  ) => void;
+}
+
+export interface CustomFacetHooks {
+  readonly useCustomFacets: () => DataFetchingResult<FacetDefinition[]>;
+  readonly useAvailableCustomFacets: (onlyFiltersWithValues: boolean) => {
+    data: Record<string, FacetDefinition>;
+  };
+  readonly useAddCustomFilter: () => (filter: string) => void;
+  readonly useRemoveCustomFilter: () => (filter: string) => void;
 }
 
 export type FacetRequiredHooks =
@@ -97,7 +113,6 @@ export type UploadFacetCardProps = Pick<
   | "width"
   | "cardScrollMargin"
 > & {
-  readonly fullField: string;
   readonly uploadLabel?: string;
   readonly queryExpressionHooks: QueryExpressionHooks;
 };
@@ -148,9 +163,8 @@ export interface AllowableRange {
 }
 
 export interface FacetDefinition {
-  readonly description: string; //description from _mapping
-  readonly field: string; // name of field minus "case", "file"
-  readonly full: string; //  full name of filter (e.g. prepended with case.)
+  readonly description?: string; //description of field
+  readonly field: string; // name of field
   readonly facet_type?: string; // classified type based on type + name: e.g. age, year, enumeration, etc
   readonly range?: AllowableRange; // range of value types
 }
@@ -167,7 +181,6 @@ export interface SortType {
 }
 
 export type FacetCardDefinition = FacetDefinition & {
-  readonly title?: string;
   readonly name?: string;
   readonly toolTip?: string;
   readonly uploadLabel?: string;

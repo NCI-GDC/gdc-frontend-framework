@@ -71,10 +71,10 @@ const createFacetCards = ({
     if (facet.facet_type === "enum") {
       return (
         <EnumFacet
-          key={`${idPrefix}-enum-${facet.full}`}
+          key={`${idPrefix}-enum-${facet.field}`}
           valueLabel={valueLabel}
-          field={facet.full}
-          facetName={facetNameFormatter(facet.full)}
+          field={facet.field}
+          facetName={facetNameFormatter(facet.field)}
           description={facet.description}
           dismissCallback={dismissCallback}
           hideIfEmpty={hideIfEmpty}
@@ -93,12 +93,12 @@ const createFacetCards = ({
     if (facet.facet_type == "exact") {
       return (
         <ExactValueFacet
-          key={`${idPrefix}-exact-${facet.full}`}
-          field={facet.full}
+          key={`${idPrefix}-exact-${facet.field}`}
+          field={facet.field}
           dismissCallback={dismissCallback}
           hideIfEmpty={hideIfEmpty}
           hooks={{ ...(hooks as ValueFacetHooks) }}
-          facetName={facetNameFormatter(facet.full)}
+          facetName={facetNameFormatter(facet.field)}
           width={width}
         />
       );
@@ -106,8 +106,8 @@ const createFacetCards = ({
     if (facet.facet_type == "toggle") {
       return (
         <ToggleFacet
-          key={`${idPrefix}-toggle-${facet.full}`}
-          field={facet.full}
+          key={`${idPrefix}-toggle-${facet.field}`}
+          field={facet.field}
           valueLabel={valueLabel}
           dismissCallback={dismissCallback}
           hideIfEmpty={hideIfEmpty}
@@ -115,7 +115,7 @@ const createFacetCards = ({
           hooks={{
             ...(hooks as EnumFacetHooks),
           }}
-          facetName={facetNameFormatter(facet.full)}
+          facetName={facetNameFormatter(facet.field)}
           width={width}
         />
       );
@@ -124,15 +124,15 @@ const createFacetCards = ({
     if (facet.facet_type === "datetime")
       return (
         <DateRangeFacet
-          key={`${idPrefix}-date-range-${facet.full}`}
-          field={facet.full}
+          key={`${idPrefix}-date-range-${facet.field}`}
+          field={facet.field}
           description={facet.description}
           dismissCallback={dismissCallback}
           hideIfEmpty={hideIfEmpty}
           hooks={{
             ...(hooks as RangeFacetHooks),
           }}
-          facetName={facetNameFormatter(facet.full)}
+          facetName={facetNameFormatter(facet.field)}
           width={width}
         />
       );
@@ -151,8 +151,8 @@ const createFacetCards = ({
     ) {
       return (
         <NumericRangeFacet
-          key={`${idPrefix}-range-${facet.full}`}
-          field={facet.full}
+          key={`${idPrefix}-range-${facet.field}`}
+          field={facet.field}
           valueLabel={valueLabel}
           description={facet.description}
           rangeDatatype={facet.facet_type}
@@ -163,7 +163,7 @@ const createFacetCards = ({
             ...(hooks as RangeFacetHooks),
           }}
           dismissCallback={dismissCallback}
-          facetName={facetNameFormatter(facet.full)}
+          facetName={facetNameFormatter(facet.field)}
           width={width}
           queryOptions={queryOptions}
           cardScrollMargin={cardScrollMargin}
@@ -174,10 +174,9 @@ const createFacetCards = ({
     if (facet.facet_type === "upload" && queryExpressionHooks) {
       return (
         <UploadFacet
-          key={`${idPrefix}-exact-${facet.full}`}
-          field={facet.full}
-          fullField={facet.full}
-          facetName={facet.title as string}
+          key={`${idPrefix}-exact-${facet.field}`}
+          field={facet.field}
+          facetName={facetNameFormatter(facet.field)}
           uploadLabel={facet.uploadLabel}
           width={width}
           facetBtnToolTip={facet.toolTip}
@@ -188,7 +187,7 @@ const createFacetCards = ({
     }
 
     return (
-      <div key={`${idPrefix}-unknown-${facet.full}`}>
+      <div key={`${idPrefix}-unknown-${facet.field}`}>
         {" "}
         Unknown FacetType {facet.facet_type}
       </div>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useDeepCompareEffect } from "use-deep-compare";
+import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
 import { flatten } from "lodash";
 import MiniSearch from "minisearch";
 import {
@@ -25,9 +25,11 @@ import {
   removeFilterFromCohortBuilder,
   Modals,
   showModal,
+  Includes,
 } from "@gff/core";
 import { useEnumFacets } from "@/features/facets/hooks";
 import { STOP_WORDS, TOKENIZE_STRING } from "./dictionary";
+import { useCohortFacetFilters } from "./utils";
 
 export const useSetupInitialCohorts = (): boolean => {
   const [fetched, setFetched] = useState(false);
@@ -268,14 +270,28 @@ export const useOpenUploadModal = () => {
   const coreDispatch = useCoreDispatch();
 
   const openUploadModal = (field: string) => {
-    if (field === "cases.case_id") {
+    if (field === "cases.upload.case_id") {
       coreDispatch(showModal({ modal: Modals.GlobalCaseSetModal }));
-    } else if (field === "genes.gene_id") {
+    } else if (field === "genes.upload.gene_id") {
       coreDispatch(showModal({ modal: Modals.GlobalGeneSetModal }));
-    } else if (field === "ssms.ssm_id") {
+    } else if (field === "ssms.upload.ssm_id") {
       coreDispatch(showModal({ modal: Modals.GlobalMutationSetModal }));
     }
   };
 
   return openUploadModal;
+};
+
+export const useUploadFilterItems = (field: string) => {
+  const filters = useCohortFacetFilters();
+  const noData = Object.keys(filters?.root || {}).length === 0;
+
+  const items = useDeepCompareMemo(() => {
+    const includeFilters = Object.values(
+      filters.root as Record<string, Includes>,
+    );
+    return includeFilters.find((f) => f.field === field)?.operands || [];
+  }, [filters, field]);
+
+  return { noData, items };
 };

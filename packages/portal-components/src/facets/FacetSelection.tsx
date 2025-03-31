@@ -44,7 +44,7 @@ const FacetList: React.FC<FacetListProps> = ({
                 >
                   <button
                     data-testid={"button-" + x.field}
-                    onClick={() => handleFilterSelected(x.full)}
+                    onClick={() => handleFilterSelected(x.field)}
                     className="text-left"
                   >
                     <Highlight

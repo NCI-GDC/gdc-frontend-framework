@@ -1,6 +1,6 @@
 [
   {
-    "full": "genes.gene_id",
+    "field": "genes.gene_id",
     "title": "Mutated Gene",
     "name": "Genes",
     "facet_type": "set",
@@ -8,7 +8,7 @@
     "toolTip": "Filter Mutation Frequency by entering/uploading specific genes or selecting gene sets"
   },
   {
-    "full": "ssms.ssm_id",
+    "field": "ssms.ssm_id",
     "title": "Somatic Mutation",
     "name": "Somatic Mutations",
     "facet_type": "set",
@@ -16,43 +16,43 @@
     "toolTip": "Filter Mutation Frequency by entering/uploading specific Simple Somatic Mutations (SSMs) or selecting mutation sets"
   },
   {
-    "full": "genes.biotype",
+    "field": "genes.biotype",
     "title": "Biotype",
     "facet_type": "enum",
     "doc_type": "genes"
   },
   {
-    "full": "genes.is_cancer_gene_census",
+    "field": "genes.is_cancer_gene_census",
     "title": "Is Cancer Gene Census",
     "facet_type": "toggle",
     "doc_type": "genes"
   },
   {
-    "full": "ssms.consequence.transcript.annotation.vep_impact",
+    "field": "ssms.consequence.transcript.annotation.vep_impact",
     "title": "VEP Impact",
     "facet_type": "enum",
     "doc_type": "ssms"
   },
   {
-    "full": "ssms.consequence.transcript.annotation.sift_impact",
+    "field": "ssms.consequence.transcript.annotation.sift_impact",
     "title": "SIFT Impact",
     "facet_type": "enum",
     "doc_type": "ssms"
   },
   {
-    "full": "ssms.consequence.transcript.annotation.polyphen_impact",
+    "field": "ssms.consequence.transcript.annotation.polyphen_impact",
     "title": "Polyphen Impact",
     "facet_type": "enum",
     "doc_type": "ssms"
   },
   {
-    "full": "ssms.consequence.transcript.consequence_type",
+    "field": "ssms.consequence.transcript.consequence_type",
     "title": "Consequence Type",
     "facet_type": "enum",
     "doc_type": "ssms"
   },
   {
-    "full": "ssms.mutation_subtype",
+    "field": "ssms.mutation_subtype",
     "title": "Type",
     "facet_type": "enum",
     "doc_type": "ssms"

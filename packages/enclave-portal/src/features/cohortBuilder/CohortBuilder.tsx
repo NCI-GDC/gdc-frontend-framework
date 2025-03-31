@@ -28,7 +28,6 @@ const CohortBuilder: React.FC = () => {
           facetDefinitions={facetDefintions}
           tabsConfig={tabsConfig.config}
           getFacetLabel={() => "Cases"}
-          usePopulateFacetData={() => {}}
           activeTab="general"
           setActiveTab={() => {}}
         />
