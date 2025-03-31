@@ -75,7 +75,6 @@ export const HUMAN_BODY_MAPPINGS: BodyPlotData = {
     byPrimarySite: [
       "Bones, joints and articular cartilage of limbs",
       "Bones, joints and articular cartilage of other and unspecified sites",
-      "Other and ill-defined sites",
     ],
     byTissueOrOrganOfOrigin: [
       "Bone of limb, NOS",
@@ -199,7 +198,6 @@ export const HUMAN_BODY_MAPPINGS: BodyPlotData = {
       "Nasopharynx",
       "Oropharynx",
       "Other and ill-defined sites in lip, oral cavity and pharynx",
-      "Other and ill-defined sites",
       "Other and unspecified major salivary glands",
       "Other and unspecified parts of mouth",
       "Other and unspecified parts of tongue",
