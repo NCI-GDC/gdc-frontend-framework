@@ -289,7 +289,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           hooks={hooks}
           facetName={facetName}
           showSearch={showSearch}
-          showFlip={showFlip}
+          showFlip={showFlip && Chart !== undefined}
           isFacetView={isFacetView}
           toggleFlip={toggleFlip}
           toggleSearch={toggleSearch}

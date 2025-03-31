@@ -71,7 +71,15 @@ const CohortBuilder = () => {
     <FacetTabs
       activeTab={activeTab}
       setActiveTab={setActiveTab}
-      facetDefinitions={{ ...facets, ...upload_facets }}
+      facetDefinitions={{
+        ...Object.fromEntries(
+          Object.entries(facets).map(([key, f]) => [
+            key,
+            { ...f, field: f.full },
+          ]),
+        ),
+        ...upload_facets,
+      }}
       tabsConfig={tabsConfig}
       hooks={{
         useGetEnumFacetData: useEnumFacetValues,

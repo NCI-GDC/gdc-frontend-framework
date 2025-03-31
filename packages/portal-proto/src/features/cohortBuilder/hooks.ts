@@ -282,7 +282,7 @@ export const useOpenUploadModal = () => {
   return openUploadModal;
 };
 
-export const useUploadFilterItems = (field: string) => {
+export const useUploadFilterItems = (uploadField: string) => {
   const filters = useCohortFacetFilters();
   const noData = Object.keys(filters?.root || {}).length === 0;
 
@@ -290,8 +290,11 @@ export const useUploadFilterItems = (field: string) => {
     const includeFilters = Object.values(
       filters.root as Record<string, Includes>,
     );
+
+    const field = uploadField.split(".upload").join("");
+    console.log({ field, includeFilters });
     return includeFilters.find((f) => f.field === field)?.operands || [];
-  }, [filters, field]);
+  }, [filters, uploadField]);
 
   return { noData, items };
 };

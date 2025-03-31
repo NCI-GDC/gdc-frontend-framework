@@ -92,14 +92,14 @@ export const useFacetSearch = (): MiniSearch<FacetSearchDocument> => {
         ...(facets.data || {}),
         ...upload_facets,
       }).forEach((facet) => {
-        const result = facetResults[facet.full];
+        const result = facetResults[facet.field];
         searchDocuments.push({
-          name: facet.title ?? fieldNameToTitle(facet.full),
+          name: facet.name ?? fieldNameToTitle(facet.field),
           enum: Object.keys(result?.buckets || {}),
           category: category.label,
           categoryKey,
           description: facet.description,
-          id: facet.full,
+          id: facet.field,
         });
       });
     });

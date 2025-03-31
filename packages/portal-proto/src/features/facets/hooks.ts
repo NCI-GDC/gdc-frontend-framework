@@ -198,7 +198,7 @@ export const useAllEnumFacets = () => {
 
       const enumFacets = facetList
         .filter((x) => x.facet_type === "enum")
-        .map((x) => x.full);
+        .map((x) => x.field);
 
       if (enumFacets.length > 0) {
         coreDispatch(
@@ -344,6 +344,7 @@ export const useEnumFacetValues = (
     selectFacetByDocTypeAndField(state, queryOptions.docType, field),
   );
 
+  console.log({ field, facet, queryOptions });
   const enumValues = useCohortFacetFilterByName(field);
   return {
     data: facet?.buckets,

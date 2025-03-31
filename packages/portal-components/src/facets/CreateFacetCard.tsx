@@ -176,7 +176,7 @@ const createFacetCards = ({
         <UploadFacet
           key={`${idPrefix}-exact-${facet.field}`}
           field={facet.field}
-          facetName={facetNameFormatter(facet.field)}
+          facetName={facet.name ?? facetNameFormatter(facet.field)}
           uploadLabel={facet.uploadLabel}
           width={width}
           facetBtnToolTip={facet.toolTip}
