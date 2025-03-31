@@ -16,7 +16,6 @@ const extractToggleValue = (values?: ReadonlyArray<string>): boolean =>
  * @param facetName - name of the facet
  * @param dismissCallback - callback to call when the facet is dismissed
  * @param width - width of the facet
- * @category Facets
  */
 
 const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({

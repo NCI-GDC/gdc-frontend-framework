@@ -133,7 +133,7 @@ export const useFacetTabLoaded = (tab: string) => {
 
   const facetNames = facetList
     .filter((x) => x.facet_type === "enum")
-    .map((x) => x.full);
+    .map((x) => x.field);
 
   const filteredFacets = Object.entries(facetResults).filter(([facetName]) =>
     facetNames.includes(facetName),

@@ -19,7 +19,6 @@ import { NumericFacetCardProps } from "src/facets/types";
  * @param facetName - name of the facet
  * @param dismissCallback  - function to call when facet is dismissed
  * @param width - width of the facet
- * @category Facets
  */
 
 const NumericRangeFacet: React.FC<NumericFacetCardProps> = ({

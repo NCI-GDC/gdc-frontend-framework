@@ -285,8 +285,8 @@ export const ageInYearsAndDaysFromDays = (ageInDays: number): number[] =>
  * Returns a formatted timestamp string based on the provided date or the current date.
  *
  * @param options - An object containing the following optional parameters:
- *   @param options.date - A Date object to format. If not provided, uses the current date.
- *   @param options.includeTimes - Boolean to include time in the output. Defaults to false.
+ * @param date - A Date object to format. If not provided, uses the current date.
+ * @param includeTimes - Boolean to include time in the output. Defaults to false.
  * @returns A timestamp in the format 'YYYY-MM-DD' if includeTimes is false, or 'YYYY-MM-DD.HHMMSS' if true.
  * If date is null it returns undefined
  *

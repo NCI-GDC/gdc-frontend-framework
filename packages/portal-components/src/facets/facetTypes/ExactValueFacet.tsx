@@ -40,7 +40,6 @@ const extractValues = (
  * @param dismissCallback - callback function to dismiss the facet
  * @param width - width of the facet
  * @param hooks - hooks to use for the facet
- * @category Facets
  */
 const ExactValueFacet: React.FC<ExactValueProps> = ({
   field,

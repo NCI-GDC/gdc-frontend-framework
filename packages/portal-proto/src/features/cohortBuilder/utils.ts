@@ -1,5 +1,4 @@
 import {
-  FacetDefinition,
   FilterSet,
   selectCurrentCohortFilters,
   useCoreSelector,
