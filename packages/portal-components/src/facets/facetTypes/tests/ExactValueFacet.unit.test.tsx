@@ -15,7 +15,6 @@ describe("<ExactValueFacet />", () => {
       <MantineProvider>
         <ExactValueFacet
           field="cases.diagnoses.annotations.case_id"
-          width="w-1/3"
           hooks={
             {
               useGetFacetFilters: jest.fn(),
@@ -50,7 +49,6 @@ describe("<ExactValueFacet />", () => {
       <MantineProvider>
         <ExactValueFacet
           field="cases.diagnoses.annotations.case_id"
-          width="w-1/3"
           hooks={
             {
               useClearFilter: jest.fn(),

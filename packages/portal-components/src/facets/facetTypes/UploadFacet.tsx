@@ -9,7 +9,6 @@ const UploadFacet: React.FC<UploadFacetCardProps> = ({
   facetName,
   uploadLabel,
   facetBtnToolTip,
-  width,
   hooks,
   cardScrollMargin,
   queryExpressionHooks,
@@ -36,9 +35,7 @@ const UploadFacet: React.FC<UploadFacetCardProps> = ({
 
   return (
     <div
-      className={`flex flex-col ${
-        width || "mx-0"
-      } bg-base-max border-base-lighter border-1 rounded-b-md text-xs transition ${
+      className={`flex flex-col mx-0 bg-base-max border-base-lighter border-1 rounded-b-md text-xs transition ${
         cardSelected ? "animate-border-highlight " : undefined
       }`}
       style={{

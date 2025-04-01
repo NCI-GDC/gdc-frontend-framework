@@ -46,7 +46,6 @@ interface CreateFacetCardProps {
   dismissCallback?: (field: string) => void;
   hideIfEmpty?: boolean;
   showPercent?: boolean;
-  width?: string;
   queryOptions?: Record<string, string>;
   cardScrollMargin?: number;
   Chart?: React.FC;
@@ -62,7 +61,6 @@ const createFacetCards = ({
   dismissCallback,
   hideIfEmpty = false,
   showPercent = true,
-  width,
   queryOptions,
   cardScrollMargin,
   Chart,
@@ -79,7 +77,6 @@ const createFacetCards = ({
           dismissCallback={dismissCallback}
           hideIfEmpty={hideIfEmpty}
           showPercent={showPercent}
-          width={width}
           hooks={{
             ...(hooks as EnumFacetHooks),
           }}
@@ -99,7 +96,6 @@ const createFacetCards = ({
           hideIfEmpty={hideIfEmpty}
           hooks={{ ...(hooks as ValueFacetHooks) }}
           facetName={facetNameFormatter(facet.field)}
-          width={width}
         />
       );
     }
@@ -116,7 +112,6 @@ const createFacetCards = ({
             ...(hooks as EnumFacetHooks),
           }}
           facetName={facetNameFormatter(facet.field)}
-          width={width}
         />
       );
     }
@@ -133,7 +128,6 @@ const createFacetCards = ({
             ...(hooks as RangeFacetHooks),
           }}
           facetName={facetNameFormatter(facet.field)}
-          width={width}
         />
       );
 
@@ -164,7 +158,6 @@ const createFacetCards = ({
           }}
           dismissCallback={dismissCallback}
           facetName={facetNameFormatter(facet.field)}
-          width={width}
           queryOptions={queryOptions}
           cardScrollMargin={cardScrollMargin}
           Chart={Chart}
@@ -178,7 +171,6 @@ const createFacetCards = ({
           field={facet.field}
           facetName={facet.name ?? facetNameFormatter(facet.field)}
           uploadLabel={facet.uploadLabel}
-          width={width}
           facetBtnToolTip={facet.toolTip}
           hooks={{ ...(hooks as UploadFacetHooks) }}
           queryExpressionHooks={queryExpressionHooks}

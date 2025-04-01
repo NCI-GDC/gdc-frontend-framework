@@ -30,6 +30,7 @@ import {
 import { useEnumFacets } from "@/features/facets/hooks";
 import { STOP_WORDS, TOKENIZE_STRING } from "./dictionary";
 import { useCohortFacetFilters } from "./utils";
+import { FacetCardDefinition } from "@gff/portal-components";
 
 export const useSetupInitialCohorts = (): boolean => {
   const [fetched, setFetched] = useState(false);
@@ -117,7 +118,8 @@ export const useCustomFacets = () => {
 
   useDeepCompareEffect(() => {
     if (isSuccess) {
-      setCustomFacetDefinitions(facets);
+      console.log({ facets });
+      setCustomFacetDefinitions(facets.map((f) => ({ ...f, field: f.full })));
     }
   }, [facets, isSuccess]);
 
@@ -168,13 +170,16 @@ export const useAvailableCustomFacets = (onlyFiltersWithValues: boolean) => {
         .filter((x: FacetDefinition) => {
           return !usedFacets.includes(x.full);
         })
+        .map((x: FacetDefinition) => ({ ...x, field: x.full }))
         .reduce(
-          (res: Record<string, FacetDefinition>, value: FacetDefinition) => {
+          (
+            res: Record<string, FacetCardDefinition>,
+            value: FacetCardDefinition,
+          ) => {
             return { ...res, [value.field]: value };
           },
           {},
         );
-
       setAvailableFacets(unusedFacets);
     }
   }, [
@@ -216,6 +221,7 @@ export const useAddCustomFilter = () => {
   const coreDispatch = useCoreDispatch();
 
   const addCustomFilter = (filter: string) => {
+    console.log({ filter });
     coreDispatch(addFilterToCohortBuilder({ facetName: filter }));
   };
 

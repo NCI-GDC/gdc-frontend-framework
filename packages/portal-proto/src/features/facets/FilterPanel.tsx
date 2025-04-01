@@ -178,7 +178,6 @@ const FilterPanel = ({
                   : true;
               return fieldNameToTitle(field, isDefault ? 1 : 2);
             },
-            width: "w-full",
             queryOptions: { docType: "cases" },
           });
         })}

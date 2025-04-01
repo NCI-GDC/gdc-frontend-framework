@@ -25,7 +25,6 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   valueLabel,
   facetName,
   dismissCallback = undefined,
-  width = undefined,
 }: FacetCardProps<EnumFacetHooks>) => {
   const clearFilters = hooks.useClearFilter();
   const updateFacetFilters = hooks.useUpdateFacetFilters();
@@ -48,9 +47,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
 
   return (
     <div
-      className={`flex flex-col ${
-        width ? width : "mx-0"
-      } bg-base-max relative border-base-lighter border-1 rounded-b-md transition text-sm`}
+      className={`flex flex-col mx-0 bg-base-max relative border-base-lighter border-1 rounded-b-md transition text-sm`}
     >
       <FacetControlsHeader
         field={field}

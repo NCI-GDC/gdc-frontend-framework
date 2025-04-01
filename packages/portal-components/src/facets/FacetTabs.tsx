@@ -100,6 +100,7 @@ interface CustomFacetGroupProps {
   readonly queryOptions?: Record<string, string>;
   readonly getFacetLabel: (queryOptions?: Record<string, string>) => string;
   readonly cardScrollMargin?: number;
+  readonly Chart?: React.FC<any>;
 }
 
 const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
@@ -108,6 +109,7 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
   queryOptions,
   getFacetLabel,
   cardScrollMargin,
+  Chart,
 }) => {
   const [opened, setOpened] = useState(false);
   const { data: customFacetDefinitions, isSuccess } =
@@ -194,6 +196,7 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
               queryOptions,
               dismissCallback: removeCustomFilter,
               cardScrollMargin,
+              Chart,
             })}
           </FacetGroup>
         )}
@@ -343,6 +346,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
                         getFacetLabel={getFacetLabel}
                         customFacetHooks={customFacetHooks}
                         cardScrollMargin={cardScrollMargin}
+                        Chart={Chart}
                       />
                     ) : (
                       <FacetGroup

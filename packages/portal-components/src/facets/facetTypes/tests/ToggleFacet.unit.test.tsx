@@ -14,7 +14,6 @@ describe("<ToggleFacet />", () => {
         <ToggleFacet
           valueLabel="Cases"
           field="gene.is_cancer_gene_census"
-          width="w-1/3"
           hooks={{
             useGetEnumFacetData: jest.fn((): EnumFacetResponse => {
               return {
@@ -52,7 +51,6 @@ describe("<ToggleFacet />", () => {
         <ToggleFacet
           valueLabel="Cases"
           field="gene.is_cancer_gene_census"
-          width="w-1/3"
           hooks={{
             useGetEnumFacetData: jest.fn((): EnumFacetResponse => {
               return {

@@ -14,7 +14,6 @@ describe("<NumericRangeFacet />", () => {
       <MantineProvider>
         <NumericRangeFacet
           field="cases.diagnoses.age_at_diagnosis"
-          width="w-1/3"
           rangeDatatype="age"
           valueLabel="Cases"
           minimum={0}

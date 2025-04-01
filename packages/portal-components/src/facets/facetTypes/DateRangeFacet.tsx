@@ -38,7 +38,6 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
   hooks,
   facetName,
   dismissCallback = undefined,
-  width = undefined,
 }: DateRangeFacetProps) => {
   const clearFilters = hooks.useClearFilter();
   const facetValue = hooks.useGetFacetFilters(field);
@@ -73,9 +72,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
 
   return (
     <div
-      className={`flex flex-col ${
-        width ? width : "mx-0"
-      } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition`}
+      className={`flex flex-col mx-0 bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition`}
     >
       <FacetControlsHeader
         field={field}

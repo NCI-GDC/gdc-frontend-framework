@@ -46,7 +46,6 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
   description,
   facetName,
   dismissCallback = undefined,
-  width = undefined,
   hooks,
 }: ExactValueProps) => {
   const [textValue, setTextValue] = useState(""); // Handle the state of the TextInput
@@ -105,9 +104,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
 
   return (
     <div
-      className={`flex flex-col ${
-        width ? width : "mx-0"
-      } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition`}
+      className={`flex flex-col mx-0 bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition`}
     >
       <FacetControlsHeader
         field={field}

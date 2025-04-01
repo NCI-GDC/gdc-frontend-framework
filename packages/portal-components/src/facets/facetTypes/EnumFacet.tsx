@@ -5,7 +5,7 @@ import OverflowTooltippedLabel from "@/common/OverflowTooltippedLabel";
 import { CloseIcon } from "src/commonIcons";
 import FacetSortPanel from "./FacetSortPanel";
 import FacetControlsHeader from "./FacetControlsHeader";
-import { SortType, EnumFacetHooks, FacetCardProps } from "../types";
+import { SortType, EnumFacetCardProps } from "../types";
 import { BAD_DATA_MESSAGE, DEFAULT_VISIBLE_ITEMS } from "../constants";
 import FacetExpander from "./FacetExpander";
 
@@ -26,24 +26,21 @@ import FacetExpander from "./FacetExpander";
  * @param width - set the width of the facet
  * @param header - object containing the components to use for the header
  */
-const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
+const EnumFacet: React.FC<EnumFacetCardProps> = ({
   field,
   hooks,
   valueLabel,
   description,
   facetName,
-  showSearch = true,
-  showFlip = true,
   startShowingData = true,
   showPercent = true,
   hideIfEmpty = true,
   dismissCallback = undefined,
-  width = undefined,
   variant = "default",
   Chart = undefined,
   queryOptions = undefined,
   cardScrollMargin = 0,
-}: FacetCardProps<EnumFacetHooks>) => {
+}) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -272,9 +269,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
 
   return (
     <div
-      className={`flex flex-col ${
-        width ? width : "mx-0"
-      } bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition ${
+      className={`flex flex-col mx-0 bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition ${
         cardSelected ? "animate-border-highlight " : undefined
       }`}
       style={{
@@ -288,8 +283,7 @@ const EnumFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
           description={description}
           hooks={hooks}
           facetName={facetName}
-          showSearch={showSearch}
-          showFlip={showFlip && Chart !== undefined}
+          showFlip={Chart !== undefined}
           isFacetView={isFacetView}
           toggleFlip={toggleFlip}
           toggleSearch={toggleSearch}

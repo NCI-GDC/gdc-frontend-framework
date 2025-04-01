@@ -55,7 +55,6 @@ export const AnnotationFacetPanel = (): JSX.Element => {
             hooks: facetHooks as any,
             idPrefix: "annotation-browser",
             facetNameFormatter: (x) => fieldNameToTitle(x),
-            width: "w-full",
           });
         })}
       </div>

@@ -13,19 +13,15 @@ import { facetIconButtonStyles } from "../styles";
 
 type FacetHeaderProps = Pick<
   FacetCardProps<FacetRequiredHooks>,
-  | "field"
-  | "description"
-  | "hooks"
-  | "variant"
-  | "facetName"
-  | "showSearch"
-  | "showFlip"
-  | "dismissCallback"
-  | "isFacetView"
+  "field" | "description" | "hooks" | "facetName" | "dismissCallback"
 > & {
-  showClearSelection?: boolean;
-  toggleFlip?: () => void;
-  toggleSearch?: () => void;
+  readonly showClearSelection?: boolean;
+  readonly toggleFlip?: () => void;
+  readonly toggleSearch?: () => void;
+  readonly showSearch?: boolean;
+  readonly showFlip?: boolean;
+  readonly isFacetView?: boolean;
+  readonly variant?: "default" | "summary";
 };
 
 /**

@@ -89,32 +89,26 @@ export interface FacetCardProps<T extends FacetCommonHooks> {
   readonly valueLabel: string;
   readonly facetName: string;
   readonly description?: string;
-  readonly facetBtnToolTip?: string;
-  readonly showSearch?: boolean;
-  readonly showFlip?: boolean;
-  readonly isFacetView?: boolean;
   readonly showPercent?: boolean;
   readonly startShowingData?: boolean;
   readonly hideIfEmpty?: boolean;
-  readonly width?: string;
   readonly dismissCallback?: (field: string) => void;
-  readonly variant?: "default" | "summary";
   readonly Chart?: React.FC<any>;
   readonly queryOptions?: Record<string, string>;
   readonly cardScrollMargin?: number;
 }
 
+export type EnumFacetCardProps = FacetCardProps<EnumFacetHooks> & {
+  readonly variant?: "default" | "summary";
+};
+
 export type UploadFacetCardProps = Pick<
   FacetCardProps<UploadFacetHooks>,
-  | "field"
-  | "hooks"
-  | "facetName"
-  | "facetBtnToolTip"
-  | "width"
-  | "cardScrollMargin"
+  "field" | "hooks" | "facetName" | "cardScrollMargin"
 > & {
   readonly uploadLabel?: string;
   readonly queryExpressionHooks: QueryExpressionHooks;
+  readonly facetBtnToolTip?: string;
 };
 
 export type NumericFacetCardProps = FacetCardProps<RangeFacetHooks> & {
@@ -154,7 +148,7 @@ export interface RangeBucketElement {
   readonly key: string; // key for facet range
   readonly label: string; // label for value
   readonly valueLabel?: string; // string representation of the count
-  value?: number; // count of items in range
+  readonly value?: number; // count of items in range
 }
 
 export interface AllowableRange {

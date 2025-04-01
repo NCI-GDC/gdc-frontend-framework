@@ -8,6 +8,7 @@ export type NumericFacetProps = Omit<
   readonly minimum: number | undefined;
   readonly maximum: number | undefined;
   readonly clearValues?: boolean;
+  readonly isFacetView: boolean;
 };
 
 export type NumericUnits = "days" | "years" | "percent" | "year";
