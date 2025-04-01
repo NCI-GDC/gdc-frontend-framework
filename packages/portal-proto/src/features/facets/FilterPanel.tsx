@@ -15,7 +15,7 @@ import { useAvailableCustomFacets } from "../cohortBuilder/hooks";
 interface FilterPanelProps {
   readonly facetDefinitions: FacetCardDefinition[];
   readonly facetHooks: FacetRequiredHooks;
-  readonly valueLabel: string | ((x: FacetCardDefinition) => string);
+  readonly valueLabel: string | ((queryOptions) => string);
   readonly app: string;
   readonly toggleAllFiltersExpanded: (expanded: boolean) => void;
   readonly allFiltersCollapsed: boolean;
@@ -155,31 +155,22 @@ const FilterPanel = ({
         }}
         ref={ref}
       >
-        {facetDefinitions.map((facet) => {
-          const isDefault =
-            customConfig?.defaultFilters !== undefined
-              ? customConfig.defaultFilters.includes(facet.field)
-              : true;
-          return createFacetCards({
-            facets: [facet],
-            valueLabel:
-              typeof valueLabel === "string" ? valueLabel : valueLabel(facet),
-            hooks: facetHooks,
-            idPrefix: app,
-            dismissCallback: !isDefault
-              ? customConfig.handleRemoveFilter
-              : undefined,
-            hideIfEmpty,
-            showPercent,
-            facetNameFormatter: (field: string) => {
-              const isDefault =
-                customConfig?.defaultFilters !== undefined
-                  ? customConfig.defaultFilters.includes(field)
-                  : true;
-              return fieldNameToTitle(field, isDefault ? 1 : 2);
-            },
-            queryOptions: { docType: "cases" },
-          });
+        {createFacetCards({
+          facets: facetDefinitions,
+          valueLabel,
+          hooks: facetHooks,
+          idPrefix: app,
+          dismissCallback: customConfig?.handleRemoveFilter || undefined,
+          hideIfEmpty,
+          showPercent,
+          facetNameFormatter: (field: string) => {
+            const isDefault =
+              customConfig?.defaultFilters !== undefined
+                ? customConfig.defaultFilters.includes(field)
+                : true;
+            return fieldNameToTitle(field, isDefault ? 1 : 2);
+          },
+          queryOptions: { docType: "cases" },
         })}
       </div>
     </div>

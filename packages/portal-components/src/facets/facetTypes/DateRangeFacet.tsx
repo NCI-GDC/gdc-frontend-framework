@@ -30,7 +30,6 @@ type DateRange = [Date | null, Date | null];
  * @param hooks - hooks to use for the facet
  * @param facetName - name of the facet
  * @param dismissCallback - callback to call when the facet is dismissed
- * @param width - width of the facet
  */
 const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
   field,

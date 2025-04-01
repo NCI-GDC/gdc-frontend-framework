@@ -1,4 +1,5 @@
 import React from "react";
+import { MantineProvider } from "@mantine/core";
 import EnumFacet from "./facetTypes/EnumFacet";
 import NumericRangeFacet from "./facetTypes/NumericRangeFacet";
 import UploadFacet from "./facetTypes/UploadFacet";
@@ -16,7 +17,7 @@ import {
 import { QueryExpressionHooks } from "@/cohort/QueryExpression/types";
 
 /**
- * createFacetCard given a facet definition it will create a
+ * createFacetCards - given a facet definition it will create a
  * facet component appropriate for the facet
  * All facets require a set of functions (e.g. hooks) which define get/set data,
  * filters, and counts. As create facets can create any facet type, all possible
@@ -33,12 +34,11 @@ import { QueryExpressionHooks } from "@/cohort/QueryExpression/types";
  * @param hideIfEmpty - hide facets if they do not have data
  * @param showPercent - whether to show the count percent of whole
  * @param facetNameFormatter - function that takes the full field and returns a human readable name
- * @param width -  override the default width
  */
 
 interface CreateFacetCardProps {
   facets: FacetCardDefinition[];
-  valueLabel: string;
+  valueLabel: string | ((queryOptions?: Record<string, string>) => string);
   hooks: FacetRequiredHooks;
   facetNameFormatter: (field: string) => string;
   queryExpressionHooks?: QueryExpressionHooks;
@@ -65,126 +65,142 @@ const createFacetCards = ({
   cardScrollMargin,
   Chart,
 }: CreateFacetCardProps): React.ReactNode => {
-  return facets.map((facet) => {
-    if (facet.facet_type === "enum") {
-      return (
-        <EnumFacet
-          key={`${idPrefix}-enum-${facet.field}`}
-          valueLabel={valueLabel}
-          field={facet.field}
-          facetName={facetNameFormatter(facet.field)}
-          description={facet.description}
-          dismissCallback={dismissCallback}
-          hideIfEmpty={hideIfEmpty}
-          showPercent={showPercent}
-          hooks={{
-            ...(hooks as EnumFacetHooks),
-          }}
-          queryOptions={queryOptions}
-          cardScrollMargin={cardScrollMargin}
-          Chart={Chart}
-        />
-      );
-    }
+  return (
+    <MantineProvider>
+      {facets.map((facet) => {
+        if (facet.facet_type === "enum") {
+          return (
+            <EnumFacet
+              key={`${idPrefix}-enum-${facet.field}`}
+              valueLabel={
+                typeof valueLabel === "string"
+                  ? valueLabel
+                  : valueLabel(queryOptions)
+              }
+              field={facet.field}
+              facetName={facetNameFormatter(facet.field)}
+              description={facet.description}
+              dismissCallback={dismissCallback}
+              hideIfEmpty={hideIfEmpty}
+              showPercent={showPercent}
+              hooks={{
+                ...(hooks as EnumFacetHooks),
+              }}
+              queryOptions={queryOptions}
+              cardScrollMargin={cardScrollMargin}
+              Chart={Chart}
+            />
+          );
+        }
 
-    if (facet.facet_type == "exact") {
-      return (
-        <ExactValueFacet
-          key={`${idPrefix}-exact-${facet.field}`}
-          field={facet.field}
-          dismissCallback={dismissCallback}
-          hideIfEmpty={hideIfEmpty}
-          hooks={{ ...(hooks as ValueFacetHooks) }}
-          facetName={facetNameFormatter(facet.field)}
-        />
-      );
-    }
-    if (facet.facet_type == "toggle") {
-      return (
-        <ToggleFacet
-          key={`${idPrefix}-toggle-${facet.field}`}
-          field={facet.field}
-          valueLabel={valueLabel}
-          dismissCallback={dismissCallback}
-          hideIfEmpty={hideIfEmpty}
-          showPercent={showPercent}
-          hooks={{
-            ...(hooks as EnumFacetHooks),
-          }}
-          facetName={facetNameFormatter(facet.field)}
-        />
-      );
-    }
+        if (facet.facet_type == "exact") {
+          return (
+            <ExactValueFacet
+              key={`${idPrefix}-exact-${facet.field}`}
+              field={facet.field}
+              dismissCallback={dismissCallback}
+              hideIfEmpty={hideIfEmpty}
+              hooks={{ ...(hooks as ValueFacetHooks) }}
+              facetName={facetNameFormatter(facet.field)}
+            />
+          );
+        }
+        if (facet.facet_type == "toggle") {
+          return (
+            <ToggleFacet
+              key={`${idPrefix}-toggle-${facet.field}`}
+              field={facet.field}
+              valueLabel={
+                typeof valueLabel === "string"
+                  ? valueLabel
+                  : valueLabel(queryOptions)
+              }
+              dismissCallback={dismissCallback}
+              hideIfEmpty={hideIfEmpty}
+              showPercent={showPercent}
+              hooks={{
+                ...(hooks as EnumFacetHooks),
+              }}
+              facetName={facetNameFormatter(facet.field)}
+            />
+          );
+        }
 
-    if (facet.facet_type === "datetime")
-      return (
-        <DateRangeFacet
-          key={`${idPrefix}-date-range-${facet.field}`}
-          field={facet.field}
-          description={facet.description}
-          dismissCallback={dismissCallback}
-          hideIfEmpty={hideIfEmpty}
-          hooks={{
-            ...(hooks as RangeFacetHooks),
-          }}
-          facetName={facetNameFormatter(facet.field)}
-        />
-      );
+        if (facet.facet_type === "datetime")
+          return (
+            <DateRangeFacet
+              key={`${idPrefix}-date-range-${facet.field}`}
+              field={facet.field}
+              description={facet.description}
+              dismissCallback={dismissCallback}
+              hideIfEmpty={hideIfEmpty}
+              hooks={{
+                ...(hooks as RangeFacetHooks),
+              }}
+              facetName={facetNameFormatter(facet.field)}
+            />
+          );
 
-    if (
-      facet.facet_type &&
-      [
-        "year",
-        "years",
-        "age",
-        "age_in_years",
-        "days",
-        "percent",
-        "range",
-      ].includes(facet.facet_type)
-    ) {
-      return (
-        <NumericRangeFacet
-          key={`${idPrefix}-range-${facet.field}`}
-          field={facet.field}
-          valueLabel={valueLabel}
-          description={facet.description}
-          rangeDatatype={facet.facet_type}
-          minimum={facet?.range?.minimum}
-          maximum={facet?.range?.maximum}
-          hideIfEmpty={hideIfEmpty}
-          hooks={{
-            ...(hooks as RangeFacetHooks),
-          }}
-          dismissCallback={dismissCallback}
-          facetName={facetNameFormatter(facet.field)}
-          queryOptions={queryOptions}
-          cardScrollMargin={cardScrollMargin}
-          Chart={Chart}
-        />
-      );
-    }
-    if (facet.facet_type === "upload" && queryExpressionHooks) {
-      return (
-        <UploadFacet
-          key={`${idPrefix}-exact-${facet.field}`}
-          field={facet.field}
-          facetName={facet.name ?? facetNameFormatter(facet.field)}
-          uploadLabel={facet.uploadLabel}
-          facetBtnToolTip={facet.toolTip}
-          hooks={{ ...(hooks as UploadFacetHooks) }}
-          queryExpressionHooks={queryExpressionHooks}
-        />
-      );
-    }
+        if (
+          facet.facet_type &&
+          [
+            "year",
+            "years",
+            "age",
+            "age_in_years",
+            "days",
+            "percent",
+            "range",
+          ].includes(facet.facet_type)
+        ) {
+          return (
+            <NumericRangeFacet
+              key={`${idPrefix}-range-${facet.field}`}
+              field={facet.field}
+              valueLabel={
+                typeof valueLabel === "string"
+                  ? valueLabel
+                  : valueLabel(queryOptions)
+              }
+              description={facet.description}
+              rangeDatatype={facet.facet_type}
+              minimum={facet?.range?.minimum}
+              maximum={facet?.range?.maximum}
+              hideIfEmpty={hideIfEmpty}
+              hooks={{
+                ...(hooks as RangeFacetHooks),
+              }}
+              dismissCallback={dismissCallback}
+              facetName={facetNameFormatter(facet.field)}
+              queryOptions={queryOptions}
+              cardScrollMargin={cardScrollMargin}
+              Chart={Chart}
+            />
+          );
+        }
+        if (facet.facet_type === "upload" && queryExpressionHooks) {
+          return (
+            <UploadFacet
+              key={`${idPrefix}-exact-${facet.field}`}
+              field={facet.field}
+              facetName={facet.name ?? facetNameFormatter(facet.field)}
+              uploadLabel={facet.uploadLabel}
+              facetBtnToolTip={facet.toolTip}
+              hooks={{ ...(hooks as UploadFacetHooks) }}
+              queryExpressionHooks={queryExpressionHooks}
+            />
+          );
+        }
 
-    return (
-      <div key={`${idPrefix}-unknown-${facet.field}`}>
-        {" "}
-        Unknown FacetType {facet.facet_type}
-      </div>
-    );
-  });
+        return (
+          <div key={`${idPrefix}-unknown-${facet.field}`}>
+            {" "}
+            Unknown FacetType {facet.facet_type}
+          </div>
+        );
+      })}
+    </MantineProvider>
+  );
 };
 
 export default createFacetCards;

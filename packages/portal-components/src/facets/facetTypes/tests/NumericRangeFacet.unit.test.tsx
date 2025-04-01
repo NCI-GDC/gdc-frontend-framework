@@ -18,7 +18,7 @@ describe("<NumericRangeFacet />", () => {
           valueLabel="Cases"
           minimum={0}
           maximum={32873}
-          facetName="Age at Diagnoses"
+          facetName="Age at Diagnosis"
           hooks={{
             useGetRangeFacetData: jest.fn((): EnumFacetResponse => {
               return {

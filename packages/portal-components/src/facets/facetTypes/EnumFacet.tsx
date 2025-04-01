@@ -17,14 +17,13 @@ import FacetExpander from "./FacetExpander";
  * @param valueLabel - label for the values column (e.g. "Cases" "Projects")
  * @param description - describes information about the facet
  * @param facetName - name of the Facet in human-readable form
- * @param showSearch - if the search icon show be displayed
- * @param showFlip - if the flip icon should be displayed
  * @param startShowingData - set = false to show the chart by default
  * @param showPercent - show the percentage
  * @param hideIfEmpty - if facet has no data, do not render
  * @param dismissCallback - if facet can be removed, supply a function which will ensure the "dismiss" control will be visible
- * @param width - set the width of the facet
- * @param header - object containing the components to use for the header
+ * @param variant - display variant
+ * @param queryOptions - info to pass back to data fetching hooks about this facet
+ * @param Chart - Component for rendering a Chart view of the data
  */
 const EnumFacet: React.FC<EnumFacetCardProps> = ({
   field,

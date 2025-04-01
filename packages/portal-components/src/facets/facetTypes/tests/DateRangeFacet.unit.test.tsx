@@ -1,7 +1,7 @@
 import React from "react";
+import { MantineProvider } from "@mantine/core";
 import { render } from "@testing-library/react";
 import DateRangeFacet from "../DateRangeFacet";
-import { MantineProvider } from "@mantine/core";
 
 describe("<DateRangeFacet />", () => {
   beforeEach(() => {

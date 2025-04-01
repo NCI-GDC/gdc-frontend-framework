@@ -20,10 +20,11 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@mantine/core": "^7.17.2",
-    "@mantine/dates": "^7.17.2",
-    "@mantine/notifications": "^7.17.2",
-    "@mantine/modals": "^7.17.2",
+    "@mantine/core": "^7.17.3",
+    "@mantine/dates": "^7.17.3",
+    "@mantine/notifications": "^7.17.3",
+    "@mantine/modals": "^7.17.3",
+    "@mantine/form": "^7.17.3",
     "react-icons": "^4.12.0"
   },
   "peerDependencies": {

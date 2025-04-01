@@ -18,7 +18,8 @@ import { NumericFacetCardProps } from "src/facets/types";
  * @param maximum - maximum value for the range
  * @param facetName - name of the facet
  * @param dismissCallback  - function to call when facet is dismissed
- * @param width - width of the facet
+ * @param queryOptions - info to pass back to data fetching hooks about this facet
+ * @param Chart - Component for rendering a Chart view of the data
  */
 
 const NumericRangeFacet: React.FC<NumericFacetCardProps> = ({
