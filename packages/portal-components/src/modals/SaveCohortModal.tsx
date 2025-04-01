@@ -105,7 +105,7 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
             setShowReplaceCohort(true);
             setIsSaving(false);
           } else {
-            if (setAsCurrent) {
+            if (setAsCurrent || saveAs) {
               setActiveCohort(newCohortId);
             }
 
