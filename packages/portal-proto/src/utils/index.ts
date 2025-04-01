@@ -4,7 +4,6 @@ import {
   DAYS_IN_YEAR,
   FilterSet,
   joinFilters,
-  isIncludes,
   DataStatus,
 } from "@gff/core";
 import { replace, sortBy } from "lodash";
@@ -232,33 +231,6 @@ export const processFilters = (
     : !filter_A && filter_B
     ? filter_B
     : joinFilters(filter_B, filter_A);
-
-const MAX_VALUE_COUNT = 6;
-/**
- * Creates a name for a filter set based on it's contents
- * @param filters -
- * @returns a name with up to 6 filters, grouped by field
- */
-export const filtersToName = (filters: FilterSet): string => {
-  const filterValues = [];
-  let valueCount = 0;
-  for (const filter of Object.values(filters?.root || {})) {
-    const filtersForField = isIncludes(filter) ? filter?.operands : [];
-    if (valueCount + filtersForField.length > MAX_VALUE_COUNT) {
-      const filtersToAdd = filtersForField.slice(
-        0,
-        MAX_VALUE_COUNT - valueCount,
-      );
-      filterValues.push(filtersToAdd.join(" / ") + "...");
-      break;
-    } else {
-      filterValues.push(filtersForField.join(" / "));
-      valueCount += filtersForField.length;
-    }
-  }
-
-  return filterValues.join(", ");
-};
 
 /**
  * convert hooks 3 boolean status to DataStatus

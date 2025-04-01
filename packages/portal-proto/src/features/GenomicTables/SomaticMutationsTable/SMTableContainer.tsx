@@ -24,7 +24,7 @@ import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
-import { filtersToName, statusBooleansToDataStatus } from "src/utils";
+import { statusBooleansToDataStatus } from "src/utils";
 import FunctionButton from "@/components/FunctionButton";
 import { CountsIcon, HeaderTitle } from "@/components/tailwindComponents";
 import download from "@/utils/download";
@@ -45,6 +45,7 @@ import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon
 import SMTableSubcomponent from "./SMTableSubcomponent";
 import { ComparativeSurvival } from "@/features/genomic/types";
 import TotalItems from "@/components/Table/TotalItem";
+import { SET_COUNT_LIMIT } from "@/components/Modals/SetModals/constants";
 
 export interface SMTableContainerProps {
   readonly selectedSurvivalPlot?: ComparativeSurvival;
@@ -276,7 +277,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           root: {
             "ssms.ssm_id": {
               field: "ssms.ssm_id",
-              operands: selectedMutations,
+              operands: selectedMutations.slice(0, SET_COUNT_LIMIT),
               operator: "includes",
             },
           },
@@ -414,11 +415,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                     : undefined
                 }
                 sort="occurrence.case.project.project_id"
-                initialSetName={
-                  selectedMutations.length === 0
-                    ? filtersToName(setFilters)
-                    : "Custom Mutation Selection"
-                }
+                isManualSelection={selectedMutations.length > 0}
                 saveCount={
                   selectedMutations.length === 0
                     ? data?.ssmsTotal
