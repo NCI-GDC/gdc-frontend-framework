@@ -26,6 +26,7 @@ import {
   Modals,
   showModal,
   Includes,
+  FacetDefinitionType,
 } from "@gff/core";
 import { useEnumFacets } from "@/features/facets/hooks";
 import { STOP_WORDS, TOKENIZE_STRING } from "./dictionary";
@@ -118,7 +119,6 @@ export const useCustomFacets = () => {
 
   useDeepCompareEffect(() => {
     if (isSuccess) {
-      console.log({ facets });
       setCustomFacetDefinitions(facets.map((f) => ({ ...f, field: f.full })));
     }
   }, [facets, isSuccess]);
@@ -126,7 +126,10 @@ export const useCustomFacets = () => {
   return { data: customFacetDefinitions, isSuccess };
 };
 
-export const useAvailableCustomFacets = (onlyFiltersWithValues: boolean) => {
+export const useAvailableCustomFacets = (
+  onlyFiltersWithValues: boolean,
+  queryOptions?: { facetType: FacetDefinitionType },
+) => {
   // get the current list of cohort filters
   const { data: dictionaryData, isSuccess: isDictionaryReady } =
     useFacetDictionary();
@@ -138,7 +141,7 @@ export const useAvailableCustomFacets = (onlyFiltersWithValues: boolean) => {
   const [currentFacets, setCurrentFacets] = useState(undefined); // current set of Facets
 
   const { data: usefulFacets, status: usefulFacetsStatus } = useCoreSelector(
-    (state) => selectUsefulFacets(state, "cases"),
+    (state) => selectUsefulFacets(state, queryOptions.facetType),
   );
   const coreDispatch = useCoreDispatch();
 
@@ -149,13 +152,14 @@ export const useAvailableCustomFacets = (onlyFiltersWithValues: boolean) => {
       usefulFacetsStatus == "uninitialized" &&
       isDictionaryReady
     ) {
-      coreDispatch(fetchFacetsWithValues("cases"));
+      coreDispatch(fetchFacetsWithValues(queryOptions.facetType));
     }
   }, [
     coreDispatch,
     isDictionaryReady,
     onlyFiltersWithValues,
     usefulFacetsStatus,
+    queryOptions.facetType,
   ]);
 
   // if data changes or the current facetSet changes rebuild the
@@ -165,7 +169,7 @@ export const useAvailableCustomFacets = (onlyFiltersWithValues: boolean) => {
       // build the list of filters that are not currently used
       const unusedFacets = Object.values(dictionaryData)
         .filter((x: FacetDefinition) => {
-          return x.full.startsWith("cases");
+          return x.full.startsWith(queryOptions.facetType);
         })
         .filter((x: FacetDefinition) => {
           return !usedFacets.includes(x.full);
@@ -189,6 +193,7 @@ export const useAvailableCustomFacets = (onlyFiltersWithValues: boolean) => {
     usefulFacetsStatus,
     usefulFacets,
     dictionaryData,
+    queryOptions,
   ]);
 
   useEffect(() => {
@@ -221,7 +226,6 @@ export const useAddCustomFilter = () => {
   const coreDispatch = useCoreDispatch();
 
   const addCustomFilter = (filter: string) => {
-    console.log({ filter });
     coreDispatch(addFilterToCohortBuilder({ facetName: filter }));
   };
 

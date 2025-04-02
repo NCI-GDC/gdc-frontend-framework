@@ -158,27 +158,32 @@ const FacetSelectionPanel = ({
 };
 
 interface FacetSelectionModalProps {
-  readonly useAvailableCustomFacets: (onlyFiltersWithValues: boolean) => {
+  readonly useAvailableCustomFacets: (
+    onlyFiltersWithValues: boolean,
+    queryOptions?: Record<string, string>,
+  ) => {
     data: Record<string, FacetDefinition>;
   };
   readonly handleFilterSelected: (field: string) => void;
+  readonly queryOptions?: Record<string, string>;
 }
 
 /**
  * Top Level Facet Selection Panel. This component handles getting the available Facets using the supplied selector (useFacetSelector)
- * The Facets are either Case or File and are set by the facetType parameter. If a user picks a facet it will call handleFilterSelected
+ * If a user picks a facet it will call handleFilterSelected
  * passing the full name of the selected Facet
- * @param facetType - cases or files
- * @param useFacets - list of filter currently in use, those filters are not shown in the list
+ * @param useAvailableCustomFacets - hook to retrieve list of filter currently in use, those filters are not shown in the list
  * @param handleFilterSelected - function which handled when a filter is selected
  */
 const FacetSelection = ({
   useAvailableCustomFacets,
   handleFilterSelected,
+  queryOptions,
 }: FacetSelectionModalProps): JSX.Element => {
   const [onlyFiltersWithValues, setOnlyFiltersWithValues] = useState(false);
   const { data: currentFacets } = useAvailableCustomFacets(
     onlyFiltersWithValues,
+    queryOptions,
   );
 
   return (

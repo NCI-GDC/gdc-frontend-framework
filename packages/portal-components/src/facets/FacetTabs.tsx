@@ -141,6 +141,7 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
           <FacetSelection
             useAvailableCustomFacets={customFacetHooks.useAvailableCustomFacets}
             handleFilterSelected={handleFilterSelected}
+            queryOptions={queryOptions}
           />
         </div>
       </Modal>

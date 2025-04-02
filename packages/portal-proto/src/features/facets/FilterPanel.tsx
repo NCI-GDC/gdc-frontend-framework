@@ -11,6 +11,7 @@ import {
 import { TableXPositionContext } from "@/components/Table/VerticalTable";
 import { AddIcon, UndoIcon } from "@/utils/icons";
 import { useAvailableCustomFacets } from "../cohortBuilder/hooks";
+import { FacetQueryOptions } from "./types";
 
 interface FilterPanelProps {
   readonly facetDefinitions: FacetCardDefinition[];
@@ -24,6 +25,7 @@ interface FilterPanelProps {
     readonly handleCustomFilterSelected: (filter: string) => void;
     readonly handleResetCustomFilters: () => void;
     readonly defaultFilters: string[];
+    readonly queryOptions?: FacetQueryOptions;
   };
   readonly filtersAppliedCount?: number;
   readonly handleClearAll: () => void;
@@ -140,6 +142,7 @@ const FilterPanel = ({
                     setOpened(false);
                   }}
                   useAvailableCustomFacets={useAvailableCustomFacets}
+                  queryOptions={customConfig.queryOptions}
                 />
               </div>
             </Modal>
