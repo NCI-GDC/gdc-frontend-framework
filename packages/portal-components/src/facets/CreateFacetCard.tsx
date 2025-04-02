@@ -13,12 +13,13 @@ import {
   FacetCardDefinition,
   FacetRequiredHooks,
   ValueFacetHooks,
+  EnumChartProps,
 } from "./types";
 import { QueryExpressionHooks } from "@/cohort/QueryExpression/types";
 
 /**
- * createFacetCards - given a facet definition it will create a
- * facet component appropriate for the facet
+ * createFacetCards - given a list of facet definitions it will create
+ * facet components appropriate for the facets
  * All facets require a set of functions (e.g. hooks) which define get/set data,
  * filters, and counts. As create facets can create any facet type, all possible
  * functions must be supplied (i.e. include the EnumFacetHooks and RangeFacetHooks in dataFunctions
@@ -34,6 +35,8 @@ import { QueryExpressionHooks } from "@/cohort/QueryExpression/types";
  * @param hideIfEmpty - hide facets if they do not have data
  * @param showPercent - whether to show the count percent of whole
  * @param facetNameFormatter - function that takes the full field and returns a human readable name
+ * @param cardScrollMargin - Scroll margin for cards, used for positioning cards on the page when scrolled to
+ * @param Chart - Component for rendering a Chart view of the data
  */
 
 interface CreateFacetCardProps {
@@ -48,7 +51,7 @@ interface CreateFacetCardProps {
   showPercent?: boolean;
   queryOptions?: Record<string, string>;
   cardScrollMargin?: number;
-  Chart?: React.FC;
+  Chart?: React.FC<EnumChartProps>;
 }
 
 const createFacetCards = ({

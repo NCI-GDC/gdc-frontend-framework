@@ -83,6 +83,17 @@ export type FacetRequiredHooks =
   | RangeFacetHooks
   | UploadFacetHooks;
 
+export interface EnumChartProps {
+  readonly field: string;
+  readonly data: Record<string, number>;
+  readonly selectedEnums: readonly string[];
+  readonly isSuccess: boolean;
+  readonly showTitle: boolean;
+  readonly valueLabel: string;
+  readonly maxBins: number;
+  readonly height: number;
+}
+
 export interface FacetCardProps<T extends FacetCommonHooks> {
   readonly field: string;
   readonly hooks: T;
@@ -93,7 +104,7 @@ export interface FacetCardProps<T extends FacetCommonHooks> {
   readonly startShowingData?: boolean;
   readonly hideIfEmpty?: boolean;
   readonly dismissCallback?: (field: string) => void;
-  readonly Chart?: React.FC<any>;
+  readonly Chart?: React.FC<EnumChartProps>;
   readonly queryOptions?: Record<string, string>;
   readonly cardScrollMargin?: number;
 }

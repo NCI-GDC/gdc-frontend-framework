@@ -22,6 +22,8 @@ import {
   CohortBuilderCategoryConfig,
   FacetDefinition,
   CustomFacetHooks,
+  FacetCardProps,
+  EnumChartProps,
 } from "./types";
 
 const StyledFacetTabs = (props: TabsProps) => {
@@ -220,7 +222,7 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
  * @param Chart - Component for rendering a Chart view of the data
  */
 
-interface FacetTabProps {
+type FacetTabProps = {
   readonly activeTab: string;
   readonly setActiveTab: (tab: string | null) => void;
   readonly hooks: FacetRequiredHooks;
@@ -230,8 +232,8 @@ interface FacetTabProps {
   readonly customFacetHooks?: CustomFacetHooks;
   readonly getFacetLabel: (queryOptions?: Record<string, string>) => string;
   readonly cardScrollMargin?: number;
-  readonly Chart?: React.FC;
-}
+  readonly Chart?: React.FC<EnumChartProps>;
+};
 
 export const FacetTabs: React.FC<FacetTabProps> = ({
   activeTab,
@@ -264,7 +266,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
   }, [hash, searchTermParam, fieldNameToTitle]);
 
   const firstEntry = Object.values(tabsConfig)[0];
-  const firstFacetList = firstEntry.facets
+  const firstFacetList = firstEntry?.facets
     .map((field) => facetDefinitions[field])
     .filter((facet) => facet);
 
@@ -278,23 +280,34 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
           className="sr-only"
         />
         {Object.entries(tabsConfig).length === 1 ? (
-          <FacetGroup
-            facets={firstFacetList}
-            hooks={hooks}
-            queryOptions={firstEntry.queryOptions}
-          >
-            {createFacetCards({
-              facets: firstFacetList as FacetCardDefinition[],
-              facetNameFormatter: (field: string) => fieldNameToTitle(field),
-              hooks,
-              queryExpressionHooks,
-              idPrefix: "cohort-builder",
-              valueLabel: getFacetLabel(firstEntry.queryOptions),
-              queryOptions: firstEntry.queryOptions,
-              cardScrollMargin,
-              Chart,
-            })}
-          </FacetGroup>
+          Object.keys(tabsConfig)[0] === "custom" && customFacetHooks ? (
+            <CustomFacetGroup
+              hooks={hooks}
+              queryOptions={firstEntry.queryOptions}
+              getFacetLabel={getFacetLabel}
+              customFacetHooks={customFacetHooks}
+              cardScrollMargin={cardScrollMargin}
+              Chart={Chart}
+            />
+          ) : (
+            <FacetGroup
+              facets={firstFacetList}
+              hooks={hooks}
+              queryOptions={firstEntry.queryOptions}
+            >
+              {createFacetCards({
+                facets: firstFacetList as FacetCardDefinition[],
+                facetNameFormatter: (field: string) => fieldNameToTitle(field),
+                hooks,
+                queryExpressionHooks,
+                idPrefix: "cohort-builder",
+                valueLabel: getFacetLabel(firstEntry.queryOptions),
+                queryOptions: firstEntry.queryOptions,
+                cardScrollMargin,
+                Chart,
+              })}
+            </FacetGroup>
+          )
         ) : (
           <StyledFacetTabs
             orientation="vertical"
