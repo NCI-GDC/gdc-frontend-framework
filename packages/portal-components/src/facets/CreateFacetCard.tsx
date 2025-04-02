@@ -15,7 +15,6 @@ import {
   ValueFacetHooks,
   EnumChartProps,
 } from "./types";
-import { QueryExpressionHooks } from "@/cohort/QueryExpression/types";
 
 /**
  * createFacetCards - given a list of facet definitions it will create
@@ -27,16 +26,17 @@ import { QueryExpressionHooks } from "@/cohort/QueryExpression/types";
  *
  * @param facet - facet definition
  * @param valueLabel - label for counts
- * @param dataFunctions - data getter and setter hooks
+ * @param hooks - data getter and setter hooks
+ * @param facetNameFormatter - function that takes the full field and returns a human readable name
  * @param idPrefix - prefix for created Facet Component key prop. This is used to ensure the ref
  *                  has a 1) unique 2) persistent id, so each call to createFacetCardsFromList must
  *                  have a unique prefix, the name of the analysis tool is a good choice
  * @param dismissCallback - callback when defined will remove facet from parent panel
  * @param hideIfEmpty - hide facets if they do not have data
  * @param showPercent - whether to show the count percent of whole
- * @param facetNameFormatter - function that takes the full field and returns a human readable name
  * @param cardScrollMargin - Scroll margin for cards, used for positioning cards on the page when scrolled to
  * @param Chart - Component for rendering a Chart view of the data
+ * @param queryOptions - info to pass back to data fetching hooks about this facet
  */
 
 interface CreateFacetCardProps {
@@ -44,7 +44,6 @@ interface CreateFacetCardProps {
   valueLabel: string | ((queryOptions?: Record<string, string>) => string);
   hooks: FacetRequiredHooks;
   facetNameFormatter: (field: string) => string;
-  queryExpressionHooks?: QueryExpressionHooks;
   idPrefix: string;
   dismissCallback?: (field: string) => void;
   hideIfEmpty?: boolean;
@@ -59,7 +58,6 @@ const createFacetCards = ({
   valueLabel,
   hooks,
   facetNameFormatter,
-  queryExpressionHooks,
   idPrefix,
   dismissCallback,
   hideIfEmpty = false,
@@ -181,7 +179,7 @@ const createFacetCards = ({
             />
           );
         }
-        if (facet.facet_type === "upload" && queryExpressionHooks) {
+        if (facet.facet_type === "upload") {
           return (
             <UploadFacet
               key={`${idPrefix}-exact-${facet.field}`}
@@ -190,7 +188,6 @@ const createFacetCards = ({
               uploadLabel={facet.uploadLabel}
               facetBtnToolTip={facet.toolTip}
               hooks={{ ...(hooks as UploadFacetHooks) }}
-              queryExpressionHooks={queryExpressionHooks}
             />
           );
         }

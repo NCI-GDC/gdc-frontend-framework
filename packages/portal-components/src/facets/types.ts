@@ -1,8 +1,5 @@
-import {
-  Operation,
-  NumericFromTo,
-  QueryExpressionHooks,
-} from "@/cohort/QueryExpression/types";
+import { Operation, NumericFromTo } from "@/cohort/QueryExpression/types";
+import { Cohort } from "../cohort";
 import { DataFetchingResult } from "src/types";
 
 export interface EnumFacetResponse
@@ -53,6 +50,18 @@ export type UploadFacetHooks = FacetCommonHooks & {
     items: readonly (string | number)[];
   };
   useOpenUploadModal: () => (field: string) => void;
+  useSelectCurrentCohort: () => Cohort;
+  useClearCohortFilters: () => () => void;
+  useRemoveCohortFilter: () => (field: string) => void;
+  useUpdateCohortFilter: () => ({
+    field,
+    operation,
+  }: {
+    field: string;
+    operation: any;
+  }) => void;
+  useFieldNameToTitle: () => (field: string) => string;
+  useFormatValue: () => (value: string, field: string) => Promise<string>;
 };
 
 export interface FacetCommonHooks {
@@ -118,7 +127,6 @@ export type UploadFacetCardProps = Pick<
   "field" | "hooks" | "facetName" | "cardScrollMargin"
 > & {
   readonly uploadLabel?: string;
-  readonly queryExpressionHooks: QueryExpressionHooks;
   readonly facetBtnToolTip?: string;
 };
 
@@ -181,8 +189,8 @@ export interface CohortBuilderCategoryConfig {
 }
 
 export interface SortType {
-  type: "value" | "alpha";
-  direction: "asc" | "dsc";
+  readonly type: "value" | "alpha";
+  readonly direction: "asc" | "dsc";
 }
 
 export type FacetCardDefinition = FacetDefinition & {

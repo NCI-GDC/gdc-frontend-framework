@@ -11,7 +11,6 @@ const UploadFacet: React.FC<UploadFacetCardProps> = ({
   facetBtnToolTip,
   hooks,
   cardScrollMargin,
-  queryExpressionHooks,
 }) => {
   const hash = window?.location?.hash.split("#")?.[1];
   const cardSelected = hash !== undefined && hash === field;
@@ -28,7 +27,7 @@ const UploadFacet: React.FC<UploadFacetCardProps> = ({
         customTestid={`query-rep-${itemField}-${item}-${index}`}
         operands={items}
         operator="includes"
-        hooks={queryExpressionHooks}
+        hooks={hooks}
       />
     ));
   };

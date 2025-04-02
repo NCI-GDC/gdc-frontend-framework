@@ -93,8 +93,8 @@ const CohortBuilder = () => {
         useOpenUploadModal,
         useFilterItems: useUploadFilterItems,
         usePopulateFacetData,
+        ...queryExpressionHooks,
       }}
-      queryExpressionHooks={queryExpressionHooks}
       customFacetHooks={{
         useCustomFacets,
         useAvailableCustomFacets,

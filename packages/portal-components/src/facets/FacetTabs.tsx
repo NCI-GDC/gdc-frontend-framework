@@ -11,7 +11,6 @@ import {
   Text,
 } from "@mantine/core";
 import useScrollToHash from "@/common/useScrollToHash";
-import { QueryExpressionHooks } from "@/cohort/QueryExpression/types";
 import { AppContext } from "src/context";
 import { AddFacetIcon, AddIcon } from "src/commonIcons";
 import createFacetCards from "./CreateFacetCard";
@@ -22,7 +21,6 @@ import {
   CohortBuilderCategoryConfig,
   FacetDefinition,
   CustomFacetHooks,
-  FacetCardProps,
   EnumChartProps,
 } from "./types";
 
@@ -214,9 +212,7 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
  * @param hooks - Hooks for retrieving data, modifying cohort, etc for the various facet types
  * @param facetDefinitions - Description of facets and their properties
  * @param tabsConfig - Configuration for tab sections, which fields they contain and any additional fields needed to query data for that tab
- * @param queryExpressionHooks -
  * @param customFacetHooks - Hooks for custom facet selection
- * @param usePopulateFacetData - Hook for prepopulating the facet data for a tab
  * @param getFacetLabel - Callback for determining the data label
  * @param cardScrollMargin - Scroll margin for cards, used for positioning cards on the page when scrolled to
  * @param Chart - Component for rendering a Chart view of the data
@@ -228,7 +224,6 @@ type FacetTabProps = {
   readonly hooks: FacetRequiredHooks;
   readonly facetDefinitions: Record<string, FacetDefinition>;
   readonly tabsConfig: Record<string, CohortBuilderCategoryConfig>;
-  readonly queryExpressionHooks?: QueryExpressionHooks;
   readonly customFacetHooks?: CustomFacetHooks;
   readonly getFacetLabel: (queryOptions?: Record<string, string>) => string;
   readonly cardScrollMargin?: number;
@@ -239,7 +234,6 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
   activeTab,
   setActiveTab,
   hooks,
-  queryExpressionHooks,
   facetDefinitions,
   tabsConfig,
   customFacetHooks,
@@ -299,7 +293,6 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
                 facets: firstFacetList as FacetCardDefinition[],
                 facetNameFormatter: (field: string) => fieldNameToTitle(field),
                 hooks,
-                queryExpressionHooks,
                 idPrefix: "cohort-builder",
                 valueLabel: getFacetLabel(firstEntry.queryOptions),
                 queryOptions: firstEntry.queryOptions,
@@ -372,7 +365,6 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
                           facetNameFormatter: (field: string) =>
                             fieldNameToTitle(field),
                           hooks,
-                          queryExpressionHooks,
                           idPrefix: "cohort-builder",
                           valueLabel: getFacetLabel(tabEntry.queryOptions),
                           queryOptions: tabEntry.queryOptions,
