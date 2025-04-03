@@ -19,7 +19,10 @@ import {
 } from "./CohortNotifications";
 import { MantineProvider } from "@mantine/core";
 import { AppContext } from "src/context";
-import { CohortNotificationCommand } from "./types";
+import {
+  CohortNotificationCommand,
+  CohortNotificationCommandWithParam,
+} from "./types";
 
 const SaveCohortErrorModal = ({ context, id }: ContextModalProps) => (
   <>
@@ -69,7 +72,13 @@ const CohortNotificationProvider: React.FC<CohortNotificationWrapperProps> = ({
       switch (message.cmd) {
         case "newCohort":
           showNotification({
-            message: <NewCohortNotification cohortName={message.param1} />,
+            message: (
+              <NewCohortNotification
+                cohortName={
+                  (message as CohortNotificationCommandWithParam).param1
+                }
+              />
+            ),
             classNames: {
               description: "flex flex-col content-center text-center",
             },
@@ -79,7 +88,13 @@ const CohortNotificationProvider: React.FC<CohortNotificationWrapperProps> = ({
           break;
         case "deleteCohort":
           showNotification({
-            message: <DeleteCohortNotification cohortName={message.param1} />,
+            message: (
+              <DeleteCohortNotification
+                cohortName={
+                  (message as CohortNotificationCommandWithParam).param1
+                }
+              />
+            ),
             classNames: {
               description: "flex flex-col content-center text-center",
             },
@@ -89,7 +104,13 @@ const CohortNotificationProvider: React.FC<CohortNotificationWrapperProps> = ({
           break;
         case "savedCohort":
           showNotification({
-            message: <SavedCohortNotification cohortName={message.param1} />,
+            message: (
+              <SavedCohortNotification
+                cohortName={
+                  (message as CohortNotificationCommandWithParam).param1
+                }
+              />
+            ),
             classNames: {
               description: "flex flex-col content-center text-center",
             },
@@ -101,8 +122,13 @@ const CohortNotificationProvider: React.FC<CohortNotificationWrapperProps> = ({
           showNotification({
             message: (
               <SavedCohortNotificationWithSetAsCurrent
-                cohortName={message.param1}
-                cohortId={message.param2 as string}
+                cohortName={
+                  (message as CohortNotificationCommandWithParam).param1
+                }
+                cohortId={
+                  (message as CohortNotificationCommandWithParam)
+                    .param2 as string
+                }
                 useSetActiveCohort={useSetActiveCohort}
               />
             ),
@@ -135,7 +161,13 @@ const CohortNotificationProvider: React.FC<CohortNotificationWrapperProps> = ({
           break;
         case "error":
           showNotification({
-            message: <ErrorCohortNotification errorType={message.param1} />,
+            message: (
+              <ErrorCohortNotification
+                errorType={
+                  (message as CohortNotificationCommandWithParam).param1
+                }
+              />
+            ),
             classNames: {
               description: "flex flex-col content-center text-center",
             },

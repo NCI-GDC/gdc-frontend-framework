@@ -8,6 +8,13 @@ import {
   updateAnnotationFilter,
   clearAnnotationFilters,
 } from "./annotationBrowserFilterSlice";
+import {
+  selectAllFiltersCollapsed,
+  selectFilterExpanded,
+  toggleAllFilters,
+  toggleFilter,
+} from "./annotationBrowserExpandSlice";
+import { useCallback } from "react";
 
 export const useAnnotationsFilters = (): FilterSet => {
   return useAppSelector((state) => selectFilters(state));
@@ -22,9 +29,9 @@ export const useClearAnnotationFilters = () => {
 
 export const useClearAllAnnotationFilters = () => {
   const dispatch = useAppDispatch();
-  return () => {
+  return useCallback(() => {
     dispatch(clearAnnotationFilters());
-  };
+  }, [dispatch]);
 };
 
 export const useAnnotationEnumValues = (field: string): OperandValue => {
@@ -44,4 +51,26 @@ export const useUpdateAnnotationFacetFilter = () => {
 
 export const useSelectFieldFilter = (field: string): Operation => {
   return useAppSelector((state) => selectAnnotationFiltersByName(state, field));
+};
+
+export const useToggleExpandAnnotationFilter = () => {
+  const dispatch = useAppDispatch();
+  return (field: string, expanded: boolean) => {
+    dispatch(toggleFilter({ field, expanded }));
+  };
+};
+
+export const useToggleAllAnnotationFilters = () => {
+  const dispatch = useAppDispatch();
+  return (expanded: boolean) => {
+    dispatch(toggleAllFilters(expanded));
+  };
+};
+
+export const useFilterExpandedState = (field: string) => {
+  return useAppSelector((state) => selectFilterExpanded(state, field));
+};
+
+export const useAllFiltersCollapsed = () => {
+  return useAppSelector((state) => selectAllFiltersCollapsed(state));
 };

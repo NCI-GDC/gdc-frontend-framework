@@ -18,11 +18,19 @@ export type NotificationTypes =
   | "discardChanges"
   | "error";
 
-export interface CohortNotificationCommand {
-  cmd: NotificationTypes;
+export interface CohortNotificationCommandWithParam {
+  cmd: Omit<NotificationTypes, "savedCurrentCohort" | "discardChanges">;
   param1: string;
   param2?: string;
 }
+
+export interface CohortNotificationCommandNoParam {
+  cmd: "savedCurrentCohort" | "discardChanges";
+}
+
+export type CohortNotificationCommand =
+  | CohortNotificationCommandWithParam
+  | CohortNotificationCommandNoParam;
 
 type SetCohortMessageFunc = (cmd: CohortNotificationCommand[]) => void;
 

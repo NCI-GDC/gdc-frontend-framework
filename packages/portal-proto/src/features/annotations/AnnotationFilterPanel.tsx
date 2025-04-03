@@ -1,22 +1,28 @@
 import React from "react";
 import { partial } from "lodash";
 import {
-  fieldNameToTitle,
+  FacetDefinition,
   GQLDocType,
   selectAnnotationFacetByField,
 } from "@gff/core";
-import { Group, Text } from "@mantine/core";
-import { createFacetCards } from "@gff/portal-components";
 import { useTotalCounts, useLocalFilters } from "@/features/facets/hooks";
 import FilterFacets from "./filters.json";
 import {
+  useAllFiltersCollapsed,
   useAnnotationEnumValues,
   useAnnotationsFilters,
+  useClearAllAnnotationFilters,
   useClearAnnotationFilters,
+  useFilterExpandedState,
   useSelectFieldFilter,
+  useToggleAllAnnotationFilters,
+  useToggleExpandAnnotationFilter,
   useUpdateAnnotationFacetFilter,
 } from "./hooks";
 import { useFieldNameToTitle } from "../cohortBuilder/queryExpressionHooks";
+import FilterPanel from "../facets/FilterPanel";
+import { selectFiltersAppliedCount } from "./annotationBrowserFilterSlice";
+import { useAppSelector } from "./appApi";
 
 const useAnnotationEnumData = (docType: GQLDocType, field: string) =>
   useLocalFilters(
@@ -35,30 +41,26 @@ export const AnnotationFacetPanel = (): JSX.Element => {
     useClearFilter: useClearAnnotationFilters,
     useTotalCounts: useTotalCounts,
     useFieldNameToTitle,
+    useToggleExpandFilter: useToggleExpandAnnotationFilter,
+    useFilterExpanded: useFilterExpandedState,
   };
 
+  const allFiltersCollapsed = useAllFiltersCollapsed();
+  const toggleAllFiltersExpanded = useToggleAllAnnotationFilters();
+  const clearAllFilters = useClearAllAnnotationFilters();
+  const filtersAppliedCount = useAppSelector(selectFiltersAppliedCount);
+
   return (
-    <>
-      <Group justify="space-between">
-        <Text size="lg" className="text-primary-content-darker font-bold">
-          Filters
-        </Text>
-      </Group>
-      <div
-        data-testid="filters-facets"
-        className="flex flex-col gap-y-4 h-screen overflow-y-scroll mr-3 mb-4 border-t-1 border-b-1 rounded-md"
-      >
-        {FilterFacets.map((x) => {
-          return createFacetCards({
-            facets: [x] as any,
-            valueLabel: "Annotations",
-            hooks: facetHooks as any,
-            idPrefix: "annotation-browser",
-            facetNameFormatter: (x) => fieldNameToTitle(x),
-          });
-        })}
-      </div>
-    </>
+    <FilterPanel
+      facetDefinitions={FilterFacets as FacetDefinition[]}
+      facetHooks={facetHooks}
+      valueLabel="Annotations"
+      app="annotation-browser"
+      toggleAllFiltersExpanded={toggleAllFiltersExpanded}
+      allFiltersCollapsed={allFiltersCollapsed}
+      handleClearAll={clearAllFilters}
+      filtersAppliedCount={filtersAppliedCount}
+    />
   );
 };
 
