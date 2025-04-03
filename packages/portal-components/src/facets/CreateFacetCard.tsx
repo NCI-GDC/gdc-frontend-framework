@@ -14,6 +14,7 @@ import {
   FacetRequiredHooks,
   ValueFacetHooks,
   EnumChartProps,
+  QueryOptions,
 } from "./types";
 
 /**
@@ -34,21 +35,21 @@ import {
  * @param dismissCallback - callback when defined will remove facet from parent panel
  * @param hideIfEmpty - hide facets if they do not have data
  * @param showPercent - whether to show the count percent of whole
+ * @param queryOptions - info to pass back to data fetching hooks about this facet
  * @param cardScrollMargin - Scroll margin for cards, used for positioning cards on the page when scrolled to
  * @param Chart - Component for rendering a Chart view of the data
- * @param queryOptions - info to pass back to data fetching hooks about this facet
  */
 
 interface CreateFacetCardProps {
   facets: FacetCardDefinition[];
-  valueLabel: string | ((queryOptions?: Record<string, string>) => string);
   hooks: FacetRequiredHooks;
   facetNameFormatter: (field: string) => string;
   idPrefix: string;
+  valueLabel?: string | ((queryOptions?: QueryOptions) => string);
   dismissCallback?: (field: string) => void;
   hideIfEmpty?: boolean;
   showPercent?: boolean;
-  queryOptions?: Record<string, string>;
+  queryOptions?: QueryOptions;
   cardScrollMargin?: number;
   Chart?: React.FC<EnumChartProps>;
 }
@@ -74,7 +75,7 @@ const createFacetCards = ({
             <EnumFacet
               key={`${idPrefix}-enum-${facet.field}`}
               valueLabel={
-                typeof valueLabel === "string"
+                valueLabel === undefined || typeof valueLabel === "string"
                   ? valueLabel
                   : valueLabel(queryOptions)
               }
@@ -112,7 +113,7 @@ const createFacetCards = ({
               key={`${idPrefix}-toggle-${facet.field}`}
               field={facet.field}
               valueLabel={
-                typeof valueLabel === "string"
+                valueLabel === undefined || typeof valueLabel === "string"
                   ? valueLabel
                   : valueLabel(queryOptions)
               }
@@ -159,7 +160,7 @@ const createFacetCards = ({
               key={`${idPrefix}-range-${facet.field}`}
               field={facet.field}
               valueLabel={
-                typeof valueLabel === "string"
+                valueLabel === undefined || typeof valueLabel === "string"
                   ? valueLabel
                   : valueLabel(queryOptions)
               }

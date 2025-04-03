@@ -2,6 +2,8 @@ import { Operation, NumericFromTo } from "@/cohort/QueryExpression/types";
 import { Cohort } from "../cohort";
 import { DataFetchingResult } from "src/types";
 
+export type QueryOptions = Record<string, unknown>;
+
 export interface EnumFacetResponse
   extends DataFetchingResult<Record<string, number>> {
   readonly enumFilters?: ReadonlyArray<string>;
@@ -9,13 +11,13 @@ export interface EnumFacetResponse
 
 export type GetEnumFacetDataFunction = (
   field: string,
-  queryOptions?: Record<string, string>,
+  queryOptions?: QueryOptions,
 ) => EnumFacetResponse;
 
 export type GetRangeFacetDataFunction = (
   field: string,
   ranges: ReadonlyArray<NumericFromTo>,
-  queryOptions?: Record<string, string>,
+  queryOptions?: QueryOptions,
 ) => DataFetchingResult<Record<string, number>>;
 
 export type SelectFacetFilterFunction = (field: string) => Operation;
@@ -23,9 +25,7 @@ export type UpdateFacetFilterFunction = (field: string, op: Operation) => void;
 export type UpdateFacetFilterHook = () => UpdateFacetFilterFunction;
 export type ClearFacetFunction = (field: string) => void;
 export type ClearFacetHook = () => ClearFacetFunction;
-export type GetTotalCountsFunction = (
-  queryOptions?: Record<string, string>,
-) => number;
+export type GetTotalCountsFunction = (queryOptions?: QueryOptions) => number;
 
 export type EnumFacetHooks = FacetCommonHooks & {
   useGetEnumFacetData: GetEnumFacetDataFunction; // gets data for EnumFacets and ToggleFacet
@@ -73,13 +73,16 @@ export interface FacetCommonHooks {
   useFieldNameToTitle: () => (field: string, sections?: number) => string;
   usePopulateFacetData?: (
     facets: FacetDefinition[],
-    queryOptions?: Record<string, string>,
+    queryOptions?: QueryOptions,
   ) => void;
 }
 
 export interface CustomFacetHooks {
   readonly useCustomFacets: () => DataFetchingResult<FacetDefinition[]>;
-  readonly useAvailableCustomFacets: (onlyFiltersWithValues: boolean) => {
+  readonly useAvailableCustomFacets: (
+    onlyFiltersWithValues: boolean,
+    queryOptions?: QueryOptions,
+  ) => {
     data: Record<string, FacetDefinition>;
   };
   readonly useAddCustomFilter: () => (filter: string) => void;
@@ -98,23 +101,24 @@ export interface EnumChartProps {
   readonly selectedEnums: readonly string[];
   readonly isSuccess: boolean;
   readonly showTitle: boolean;
-  readonly valueLabel: string;
   readonly maxBins: number;
   readonly height: number;
+  readonly valueLabel?: string;
 }
 
 export interface FacetCardProps<T extends FacetCommonHooks> {
   readonly field: string;
   readonly hooks: T;
-  readonly valueLabel: string;
   readonly facetName: string;
+  readonly valueLabel?: string;
   readonly description?: string;
+  readonly showCount?: boolean;
   readonly showPercent?: boolean;
   readonly startShowingData?: boolean;
   readonly hideIfEmpty?: boolean;
   readonly dismissCallback?: (field: string) => void;
   readonly Chart?: React.FC<EnumChartProps>;
-  readonly queryOptions?: Record<string, string>;
+  readonly queryOptions?: QueryOptions;
   readonly cardScrollMargin?: number;
 }
 
@@ -185,7 +189,7 @@ export interface FacetDefinition {
 export interface CohortBuilderCategoryConfig {
   readonly label: string;
   readonly facets: ReadonlyArray<string>;
-  readonly queryOptions?: Record<string, string>;
+  readonly queryOptions?: QueryOptions;
 }
 
 export interface SortType {

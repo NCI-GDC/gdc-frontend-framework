@@ -22,6 +22,7 @@ import {
   FacetDefinition,
   CustomFacetHooks,
   EnumChartProps,
+  QueryOptions,
 } from "./types";
 
 const StyledFacetTabs = (props: TabsProps) => {
@@ -69,7 +70,7 @@ type FacetGroupProps = {
   readonly children?: React.ReactNode;
   readonly facets: FacetDefinition[];
   readonly hooks: FacetRequiredHooks;
-  readonly queryOptions?: Record<string, string>;
+  readonly queryOptions?: QueryOptions;
 };
 
 export const FacetGroup: React.FC<FacetGroupProps> = ({
@@ -97,8 +98,8 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
 interface CustomFacetGroupProps {
   readonly hooks: FacetRequiredHooks;
   readonly customFacetHooks: CustomFacetHooks;
-  readonly queryOptions?: Record<string, string>;
-  readonly getFacetLabel: (queryOptions?: Record<string, string>) => string;
+  readonly queryOptions?: QueryOptions;
+  readonly getFacetLabel?: (queryOptions?: QueryOptions) => string;
   readonly cardScrollMargin?: number;
   readonly Chart?: React.FC<any>;
 }
@@ -192,7 +193,7 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
               facets: customFacetDefinitions as FacetCardDefinition[],
               hooks,
               idPrefix: "cohort-builder",
-              valueLabel: getFacetLabel(queryOptions),
+              valueLabel: getFacetLabel,
               facetNameFormatter: (field: string) => fieldNameToTitle(field, 2),
               queryOptions,
               dismissCallback: removeCustomFilter,
@@ -226,7 +227,7 @@ type FacetTabProps = {
   readonly facetDefinitions: Record<string, FacetDefinition>;
   readonly tabsConfig: Record<string, CohortBuilderCategoryConfig>;
   readonly customFacetHooks?: CustomFacetHooks;
-  readonly getFacetLabel: (queryOptions?: Record<string, string>) => string;
+  readonly getFacetLabel?: (queryOptions?: QueryOptions) => string;
   readonly cardScrollMargin?: number;
   readonly Chart?: React.FC<EnumChartProps>;
 };
@@ -295,7 +296,9 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
                 facetNameFormatter: (field: string) => fieldNameToTitle(field),
                 hooks,
                 idPrefix: "cohort-builder",
-                valueLabel: getFacetLabel(firstEntry.queryOptions),
+                valueLabel: getFacetLabel
+                  ? getFacetLabel(firstEntry.queryOptions)
+                  : undefined,
                 queryOptions: firstEntry.queryOptions,
                 cardScrollMargin,
                 Chart,
@@ -367,7 +370,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
                             fieldNameToTitle(field),
                           hooks,
                           idPrefix: "cohort-builder",
-                          valueLabel: getFacetLabel(tabEntry.queryOptions),
+                          valueLabel: getFacetLabel,
                           queryOptions: tabEntry.queryOptions,
                           cardScrollMargin,
                           Chart,

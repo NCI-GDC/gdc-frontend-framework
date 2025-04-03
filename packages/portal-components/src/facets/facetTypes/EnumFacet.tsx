@@ -28,9 +28,9 @@ import FacetExpander from "./FacetExpander";
 const EnumFacet: React.FC<EnumFacetCardProps> = ({
   field,
   hooks,
-  valueLabel,
   description,
   facetName,
+  valueLabel = undefined,
   startShowingData = true,
   showPercent = true,
   hideIfEmpty = true,
@@ -415,25 +415,30 @@ const EnumFacet: React.FC<EnumFacetCardProps> = ({
                                   }
                                 />
                               </div>
+
                               <OverflowTooltippedLabel label={value}>
                                 <span className="font-content">{value}</span>
                               </OverflowTooltippedLabel>
-                              <div
-                                data-testid={`text-${value}`}
-                                className="flex-none text-right w-14 font-content text-sm"
-                              >
-                                {count.toLocaleString()}
-                              </div>
-                              {showPercent ? (
-                                <div className="flex-none text-right w-18 font-content text-sm">
-                                  (
-                                  {(
-                                    ((count as number) / totalCount) *
-                                    100
-                                  ).toFixed(2)}
-                                  %)
-                                </div>
-                              ) : null}
+                              {count && (
+                                <>
+                                  <div
+                                    data-testid={`text-${value}`}
+                                    className="flex-none text-right w-14 font-content text-sm"
+                                  >
+                                    {count.toLocaleString()}
+                                  </div>
+                                  {showPercent ? (
+                                    <div className="flex-none text-right w-18 font-content text-sm">
+                                      (
+                                      {(
+                                        ((count as number) / totalCount) *
+                                        100
+                                      ).toFixed(2)}
+                                      %)
+                                    </div>
+                                  ) : null}
+                                </>
+                              )}
                             </div>
                           );
                         })

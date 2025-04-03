@@ -3,7 +3,6 @@ import { LoadingOverlay } from "@mantine/core";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
 import FacetExpander from "../FacetExpander";
-import { RangeFacetHooks } from "../../types";
 import {
   buildRangeBuckets,
   DEFAULT_VISIBLE_ITEMS,
@@ -17,24 +16,15 @@ import {
   radioStyle,
 } from "./utils";
 import { BAD_DATA_MESSAGE } from "../../constants";
-import { NumericUnits } from "./types";
+import { NumericFacetProps, NumericUnits } from "./types";
 
-interface RangeInputWithPrefixedRangesProps {
-  readonly field: string;
-  readonly rangeDatatype?: string;
-  readonly hooks: RangeFacetHooks;
+type RangeInputWithPrefixedRangesProps = NumericFacetProps & {
   readonly numBuckets: number;
-  readonly minimum: number;
-  readonly maximum: number;
   readonly units: NumericUnits;
-  readonly valueLabel: string;
   readonly showZero?: boolean;
-  readonly clearValues?: boolean;
   readonly isFacetView?: boolean;
   readonly setHasData?: (hasData: boolean) => void;
-  readonly queryOptions?: Record<string, string>;
-  readonly Chart?: React.FC<any>;
-}
+};
 
 const RangeInputWithPrefixedRanges: React.FC<
   RangeInputWithPrefixedRangesProps
@@ -43,8 +33,8 @@ const RangeInputWithPrefixedRanges: React.FC<
   hooks,
   units,
   numBuckets,
-  minimum,
-  maximum,
+  minimum = 0,
+  maximum = 0,
   valueLabel,
   rangeDatatype,
   showZero = false,
@@ -53,7 +43,7 @@ const RangeInputWithPrefixedRanges: React.FC<
   setHasData = () => null,
   queryOptions,
   Chart,
-}: RangeInputWithPrefixedRangesProps) => {
+}) => {
   const [isGroupExpanded, setIsGroupExpanded] = useState(false); // handles the expanded group
 
   // get the current filter for this facet
@@ -79,7 +69,7 @@ const RangeInputWithPrefixedRanges: React.FC<
 
   const {
     data: rangeData,
-    isSuccess,
+    isSuccess = false,
     isFetching,
     error,
   } = hooks.useGetRangeFacetData(field, ranges, queryOptions);
@@ -94,7 +84,7 @@ const RangeInputWithPrefixedRanges: React.FC<
       Object.fromEntries(
         Object.values(rangeLabelsAndValues).map((range) => [
           range.label,
-          range.value,
+          range.value || 0,
         ]),
       ),
     [rangeLabelsAndValues],

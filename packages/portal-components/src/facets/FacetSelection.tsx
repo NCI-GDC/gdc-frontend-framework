@@ -9,7 +9,7 @@ import {
   Stack,
   UnstyledButton,
 } from "@mantine/core";
-import { FacetDefinition } from "./types";
+import { FacetDefinition, QueryOptions } from "./types";
 
 interface FacetListProps {
   readonly data?: Record<string, FacetDefinition>; // Facets to display
@@ -160,12 +160,12 @@ const FacetSelectionPanel = ({
 interface FacetSelectionModalProps {
   readonly useAvailableCustomFacets: (
     onlyFiltersWithValues: boolean,
-    queryOptions?: Record<string, string>,
+    queryOptions?: QueryOptions,
   ) => {
     data: Record<string, FacetDefinition>;
   };
   readonly handleFilterSelected: (field: string) => void;
-  readonly queryOptions?: Record<string, string>;
+  readonly queryOptions?: QueryOptions;
 }
 
 /**

@@ -8,9 +8,7 @@ export const useGetEnumFacetData = (field: string) => {
     const fetchValues = async () => {
       const result = await fetchFilterTopValues(field, 100, {});
       setEnumResult(
-        Object.fromEntries(
-          [...result.top_n_values].map((filter) => [filter, 0]),
-        ),
+        Object.fromEntries([...result.top_n_values].map((filter) => [filter])),
       );
     };
 

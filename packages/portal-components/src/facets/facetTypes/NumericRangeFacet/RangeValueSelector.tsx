@@ -12,7 +12,7 @@ import { radioStyle } from "./utils";
 interface RangeValueSelectorProps {
   readonly itemsToShow: number;
   readonly field: string;
-  readonly valueLabel: string;
+  readonly valueLabel?: string;
   readonly rangeLabelsAndValues: Record<string, RangeBucketElement>;
   selected: string;
   setSelected: (value: string) => void;
@@ -69,12 +69,14 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
     <div className="flex flex-col px-1">
       {Object.keys(rangeLabelsAndValues).length > 1 ? (
         <>
-          <FacetSortPanel
-            sortType={sortType}
-            valueLabel={valueLabel}
-            setSort={setSortType}
-            field={field}
-          />
+          {valueLabel && (
+            <FacetSortPanel
+              sortType={sortType}
+              valueLabel={valueLabel}
+              setSort={setSortType}
+              field={field}
+            />
+          )}
         </>
       ) : null}
       <fieldset className="mt-1">

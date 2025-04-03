@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
-import { flatten } from "lodash";
+import { flatten, pick } from "lodash";
 import MiniSearch from "minisearch";
 import {
   useCoreDispatch,
@@ -28,11 +28,10 @@ import {
   Includes,
   FacetDefinitionType,
 } from "@gff/core";
+import { FacetCardDefinition } from "@gff/portal-components";
 import { useEnumFacets } from "@/features/facets/hooks";
 import { STOP_WORDS, TOKENIZE_STRING } from "./dictionary";
 import { useCohortFacetFilters } from "./utils";
-import { FacetCardDefinition } from "@gff/portal-components";
-import { pick } from "lodash";
 import { FacetQueryOptions } from "../facets/types";
 
 export const useSetupInitialCohorts = (): boolean => {
@@ -130,7 +129,7 @@ export const useCustomFacets = () => {
 
 export const useAvailableCustomFacets = (
   onlyFiltersWithValues: boolean,
-  queryOptions: FacetQueryOptions,
+  queryOptions?: FacetQueryOptions,
 ) => {
   // get the current list of cohort filters
   const { data: dictionaryData, isSuccess: isDictionaryReady } =
@@ -144,7 +143,7 @@ export const useAvailableCustomFacets = (
   const [currentFacets, setCurrentFacets] = useState(undefined); // current set of Facets
 
   const { data: usefulFacets, status: usefulFacetsStatus } = useCoreSelector(
-    (state) => selectUsefulFacets(state, facetType),
+    (state) => selectUsefulFacets(state, facetType as FacetDefinitionType),
   );
   const coreDispatch = useCoreDispatch();
 
@@ -155,7 +154,7 @@ export const useAvailableCustomFacets = (
       usefulFacetsStatus == "uninitialized" &&
       isDictionaryReady
     ) {
-      coreDispatch(fetchFacetsWithValues(facetType));
+      coreDispatch(fetchFacetsWithValues(facetType as FacetDefinitionType));
     }
   }, [
     coreDispatch,
@@ -196,6 +195,7 @@ export const useAvailableCustomFacets = (
     usefulFacets,
     dictionaryData,
     queryOptions,
+    facetType,
   ]);
 
   useEffect(() => {
@@ -251,7 +251,10 @@ export const miniSearch = new MiniSearch<FacetResultDoc>({
   processTerm: (term) => (STOP_WORDS.has(term) ? null : term.toLowerCase()), // index term processing
 });
 
-export const useSearchEnumTerms = (enumData, searchTerm: string) => {
+export const useSearchEnumTerms = (
+  enumData: [string, number][],
+  searchTerm: string,
+) => {
   miniSearch.removeAll();
 
   const searchDocuments = enumData.map((entry) => ({
