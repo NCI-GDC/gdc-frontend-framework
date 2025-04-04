@@ -12,6 +12,7 @@ import { TableXPositionContext } from "@/components/Table/VerticalTable";
 import { AddIcon, UndoIcon } from "@/utils/icons";
 import { useAvailableCustomFacets } from "../cohortBuilder/hooks";
 import { FacetQueryOptions } from "./types";
+import { EnumFacetChart } from "../charts/EnumFacetChart";
 
 interface FilterPanelProps {
   readonly facetDefinitions: FacetCardDefinition[];
@@ -173,6 +174,7 @@ const FilterPanel = ({
                 : true;
             return fieldNameToTitle(field, isDefault ? 1 : 2);
           },
+          Chart: EnumFacetChart,
           queryOptions: { docType: "cases" },
         })}
       </div>
