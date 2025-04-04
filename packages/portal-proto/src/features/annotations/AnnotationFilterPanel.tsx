@@ -23,6 +23,7 @@ import { useFieldNameToTitle } from "../cohortBuilder/queryExpressionHooks";
 import FilterPanel from "../facets/FilterPanel";
 import { selectFiltersAppliedCount } from "./annotationBrowserFilterSlice";
 import { useAppSelector } from "./appApi";
+import { useSearchEnumTerms } from "../cohortBuilder/hooks";
 
 const useAnnotationEnumData = (docType: GQLDocType, field: string) =>
   useLocalFilters(
@@ -43,6 +44,7 @@ export const AnnotationFacetPanel = (): JSX.Element => {
     useFieldNameToTitle,
     useToggleExpandFilter: useToggleExpandAnnotationFilter,
     useFilterExpanded: useFilterExpandedState,
+    useSearchEnumTerms,
   };
 
   const allFiltersCollapsed = useAllFiltersCollapsed();

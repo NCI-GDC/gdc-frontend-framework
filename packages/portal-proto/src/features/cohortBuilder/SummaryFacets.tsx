@@ -11,6 +11,7 @@ import {
 import tw from "tailwind-styled-components";
 import { useFieldNameToTitle } from "./queryExpressionHooks";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
+import { useSearchEnumTerms } from "./hooks";
 
 export interface SummaryFacetInfo {
   readonly field: string;
@@ -64,15 +65,14 @@ export const SummaryFacets: React.FC<SummaryFacetProps> = ({
             startShowingData={false}
             key={`summary-chart-${entry.field}-${index}`}
             hideIfEmpty={false}
-            hooks={
-              {
-                useUpdateFacetFilters: useUpdateFacetFilter,
-                useTotalCounts,
-                useClearFilter: useClearFilters,
-                useGetEnumFacetData: useEnumFacetValues,
-                useFieldNameToTitle,
-              } as any
-            }
+            hooks={{
+              useUpdateFacetFilters: useUpdateFacetFilter,
+              useTotalCounts,
+              useClearFilter: useClearFilters,
+              useGetEnumFacetData: useEnumFacetValues,
+              useFieldNameToTitle,
+              useSearchEnumTerms,
+            }}
             queryOptions={queryOptions}
             Chart={EnumFacetChart}
             variant="summary"

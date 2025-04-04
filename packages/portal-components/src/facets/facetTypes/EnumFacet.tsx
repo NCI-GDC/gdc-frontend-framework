@@ -288,7 +288,7 @@ const EnumFacet: React.FC<EnumFacetCardProps> = ({
           toggleSearch={toggleSearch}
           dismissCallback={dismissCallback}
           variant={variant}
-          showSearch
+          showSearch={hooks.useSearchEnumTerms !== undefined}
         />
       </div>
       <div
