@@ -14,6 +14,7 @@ import { isInterval, parseContinuousBucket } from "../utils";
 import { CategoricalBins, CustomInterval, NamedFromTo } from "../types";
 import { DEMO_COHORT_FILTERS } from "../constants";
 import { ExternalDownloadStateSurvivalPlot } from "@/features/charts/SurvivalPlot/SurvivalPlot";
+import { toDisplayName } from "../utils";
 
 interface ClinicalSurvivalPlotProps {
   readonly field: string;
@@ -124,7 +125,8 @@ const ClinicalSurvivalPlot: React.FC<ClinicalSurvivalPlotProps> = ({
       <ExternalDownloadStateSurvivalPlot
         data={data}
         height={150}
-        title={""}
+        title={toDisplayName(field)}
+        showTitleOnlyOnDownload
         field={field}
         names={selectedSurvivalPlots}
         plotType={plotType}

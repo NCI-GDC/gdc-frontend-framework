@@ -1,9 +1,9 @@
+import { endpointSlice } from "src/features/gdcapi";
 import {
-  endpointSlice,
   GdcApiRequest,
   GdcApiResponse,
-} from "../../gdcapi/gdcapi";
-import { SSMSDefaults } from "../../gdcapi/types";
+  SSMSDefaults,
+} from "src/features/gdcapi/types";
 
 interface SummaryData {
   uuid: string;

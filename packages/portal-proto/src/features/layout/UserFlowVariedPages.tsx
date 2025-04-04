@@ -1,13 +1,9 @@
-import { PropsWithChildren, ReactNode, useEffect } from "react";
-import { showNotification } from "@mantine/notifications";
+import { PropsWithChildren, ReactNode } from "react";
 import {
   isString,
   useCoreSelector,
   useCoreDispatch,
   selectBanners,
-  selectCurrentCohortName,
-  selectCohortMessage,
-  clearCohortMessage,
   useGetBannerNotificationsQuery,
   selectCurrentModal,
   Modals,
@@ -15,16 +11,6 @@ import {
 } from "@gff/core";
 import Banner from "@/components/Banner";
 import { Button, Modal } from "@mantine/core";
-import {
-  DeleteCohortNotification,
-  DiscardChangesCohortNotification,
-  ErrorCohortNotification,
-  NewCohortNotification,
-  SavedCurrentCohortNotification,
-  NewCohortNotificationWithSetAsCurrent,
-  SavedCohortNotification,
-  SavedCohortNotificationWithSetAsCurrent,
-} from "@/features/cohortBuilder/CohortNotifications";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { useElementSize } from "@mantine/hooks";
@@ -35,7 +21,6 @@ import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
   readonly indexPath?: string;
-  readonly Options?: React.FC<unknown>;
   readonly ContextBar?: ReactNode;
   readonly isContextBarSticky?: boolean;
 }
@@ -43,7 +28,6 @@ interface UserFlowVariedPagesProps {
 export const UserFlowVariedPages = ({
   headerElements,
   indexPath = "/",
-  Options,
   children,
   ContextBar = undefined,
   isContextBarSticky = false,
@@ -53,128 +37,6 @@ export const UserFlowVariedPages = ({
 
   useGetBannerNotificationsQuery();
   const banners = useCoreSelector((state) => selectBanners(state));
-
-  const currentCohortName = useCoreSelector((state) =>
-    selectCurrentCohortName(state),
-  );
-  const cohortMessage = useCoreSelector((state) => selectCohortMessage(state));
-
-  useEffect(() => {
-    if (cohortMessage) {
-      for (const message of cohortMessage) {
-        const cmdAndParam = message.split("|", 3);
-        if (cmdAndParam.length == 3) {
-          if (cmdAndParam[0] === "newCohort") {
-            showNotification({
-              message: <NewCohortNotification cohortName={cmdAndParam[1]} />,
-              classNames: {
-                description: "flex flex-col content-center text-center",
-              },
-              autoClose: 5000,
-              closeButtonProps: { "aria-label": "Close notification" },
-            });
-          }
-          if (cmdAndParam[0] === "deleteCohort") {
-            showNotification({
-              message: <DeleteCohortNotification cohortName={cmdAndParam[1]} />,
-              classNames: {
-                description: "flex flex-col content-center text-center",
-              },
-              autoClose: 5000,
-              closeButtonProps: { "aria-label": "Close notification" },
-            });
-          }
-          if (cmdAndParam[0] === "savedCohort") {
-            showNotification({
-              message: <SavedCohortNotification cohortName={cmdAndParam[1]} />,
-              classNames: {
-                description: "flex flex-col content-center text-center",
-              },
-              autoClose: 5000,
-              closeButtonProps: { "aria-label": "Close notification" },
-            });
-          }
-          if (cmdAndParam[0] === "savedCohortSetCurrent") {
-            showNotification({
-              message: (
-                <SavedCohortNotificationWithSetAsCurrent
-                  cohortName={cmdAndParam[1]}
-                  cohortId={cmdAndParam[2]}
-                />
-              ),
-              classNames: {
-                description: "flex flex-col content-center text-center",
-              },
-              autoClose: 5000,
-              closeButtonProps: { "aria-label": "Close notification" },
-            });
-          }
-          if (cmdAndParam[0] === "savedCurrentCohort") {
-            showNotification({
-              message: <SavedCurrentCohortNotification />,
-              classNames: {
-                description: "flex flex-col content-center text-center",
-              },
-              autoClose: 5000,
-              closeButtonProps: { "aria-label": "Close notification" },
-            });
-          }
-          if (cmdAndParam[0] === "discardChanges") {
-            showNotification({
-              message: <DiscardChangesCohortNotification />,
-              classNames: {
-                description: "flex flex-col content-center text-center",
-              },
-              autoClose: 5000,
-              closeButtonProps: { "aria-label": "Close notification" },
-            });
-          }
-          if (cmdAndParam[0] === "error") {
-            showNotification({
-              message: <ErrorCohortNotification errorType={cmdAndParam[1]} />,
-              classNames: {
-                description: "flex flex-col content-center text-center",
-              },
-              autoClose: 5000,
-              closeButtonProps: { "aria-label": "Close notification" },
-            });
-          }
-          if (cmdAndParam[0] === "newCasesCohort") {
-            showNotification({
-              message: (
-                <NewCohortNotificationWithSetAsCurrent
-                  cohortName={cmdAndParam[1]}
-                  cohortId={cmdAndParam[2]}
-                />
-              ),
-              classNames: {
-                description: "flex flex-col content-center text-center",
-              },
-              autoClose: 5000,
-              closeButtonProps: { "aria-label": "Close notification" },
-            });
-          }
-          if (cmdAndParam[0] === "newProjectsCohort") {
-            showNotification({
-              message: (
-                <NewCohortNotificationWithSetAsCurrent
-                  cohortName={cmdAndParam[1]}
-                  cohortId={cmdAndParam[2]}
-                />
-              ),
-              classNames: {
-                description: "flex flex-col content-center text-center",
-              },
-              autoClose: 5000,
-              closeButtonProps: { "aria-label": "Close notification" },
-            });
-          }
-        }
-      }
-
-      dispatch(clearCohortMessage());
-    }
-  }, [cohortMessage, dispatch, currentCohortName]);
 
   const { ref: headerRef, height: headerHeight } = useElementSize();
 
@@ -188,7 +50,7 @@ export const UserFlowVariedPages = ({
         {banners.map((banner) => (
           <Banner {...banner} key={banner.id} />
         ))}
-        <Header {...{ headerElements, indexPath, Options }} />
+        <Header {...{ headerElements, indexPath }} />
       </header>
       <ClearStoreErrorBoundary>
         <>

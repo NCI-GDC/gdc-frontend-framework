@@ -1,9 +1,14 @@
 import { createAppStore } from "@gff/core";
 import { annotationBrowserReducer } from "./annotationBrowserFilterSlice";
+import { combineReducers } from "@reduxjs/toolkit";
+import { annotationBrowserExpandReducer } from "./annotationBrowserExpandSlice";
 
 const PROJECT_APP_NAME = "AnnotationBrowser";
 
-const reducers = annotationBrowserReducer;
+const reducers = combineReducers({
+  annotationBrowserFilterState: annotationBrowserReducer,
+  annotationExpandState: annotationBrowserExpandReducer,
+});
 
 export const { id, AppStore, AppContext, useAppSelector, useAppDispatch } =
   createAppStore({

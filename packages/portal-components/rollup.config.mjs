@@ -35,11 +35,31 @@ const config = [
         swcPreserveDirectives(),
       ),
     ],
+    onwarn(warning, warn) {
+      // Ignore warnings about 'use client' directives
+      if (
+        warning.code === "MODULE_LEVEL_DIRECTIVE" &&
+        warning.message.includes('"use client"')
+      ) {
+        return;
+      }
+      warn(warning);
+    },
   },
   {
     input: "./dist/dts/index.d.ts",
     output: [{ file: "dist/index.d.ts", format: "es" }],
     plugins: [dts()],
+    onwarn(warning, warn) {
+      // Ignore warnings about 'use client' directives
+      if (
+        warning.code === "MODULE_LEVEL_DIRECTIVE" &&
+        warning.message.includes('"use client"')
+      ) {
+        return;
+      }
+      warn(warning);
+    },
   },
 ];
 

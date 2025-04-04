@@ -1,6 +1,6 @@
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
-import { GDC_APP_API_AUTH } from "../../constants";
-import { coreCreateApi } from "../../coreCreateApi";
+import { GDC_APP_API_AUTH } from "src/constants";
+import { coreCreateApi } from "src/coreCreateApi";
 import serializeQueryArgsWithDataRelease from "src/serializeQueryArgs";
 
 export interface GraphQLFetchError {
@@ -17,9 +17,9 @@ const errorIsGraphQLError = (
   return (e as GraphQLFetchError)?.variables !== undefined;
 };
 
-type UnknownJson = Record<string, any>;
+type AnyJson = Record<string, any>;
 
-export interface GraphQLApiResponse<H = UnknownJson> {
+export interface GraphQLApiResponse<H = AnyJson> {
   readonly data: H;
   readonly errors: Record<string, string>;
 }

@@ -14,7 +14,7 @@ const Projects: FC = () => {
   return (
     <>
       {!isDemoMode && GdcApp ? (
-        <GdcApp></GdcApp>
+        <GdcApp />
       ) : (
         <DemoUtil text="Demo mode is not available for this app" />
       )}

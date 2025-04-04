@@ -9,6 +9,8 @@ const VennDiagram: React.FC<VennDiagramProps> = ({
   ariaLabel,
   onClickHandler,
   interactable = true,
+  width = 400,
+  height = 400,
 }: VennDiagramProps) => {
   const highlightedIndices = useMemo(
     () => chartData.filter((d) => d?.highlighted).map((d) => d.key),
@@ -22,9 +24,11 @@ const VennDiagram: React.FC<VennDiagramProps> = ({
     ariaLabel,
     onClickHandler,
     interactable,
+    width,
+    height,
   });
 
-  return <EChartWrapper option={option} height={400} width={400} />;
+  return <EChartWrapper option={option} height={height} width={width} />;
 };
 
 export default VennDiagram;

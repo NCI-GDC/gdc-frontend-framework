@@ -1,4 +1,4 @@
-import { Buckets } from "../gdcapi/gdcapi";
+import { Buckets } from "../gdcapi/types";
 import { GraphQLApiResponse, graphqlAPISlice } from "../gdcapi/gdcgraphql";
 
 interface SubrowResponse {

@@ -13,7 +13,7 @@ import {
 import { useAppDispatch } from "@/features/genomic/appApi";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
 import { clearGeneAndSSMFilters } from "@/features/genomic/geneAndSSMFiltersSlice";
-import GeneAndSSMFilterPanel from "@/features/genomic/FilterPanel";
+import GeneAndSSMFilterPanel from "@/features/genomic/GeneAndSSMFilterPanel";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { DemoText } from "@/components/tailwindComponents";
 import { GenesPanel } from "@/features/genomic/GenesPanel";
@@ -166,7 +166,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
       <TableXPositionContext.Provider
         value={{ xPosition: tableXPosition, setXPosition: setTableXPosition }}
       >
-        <div className="flex flex-row gap-4 m-4">
+        <div className="flex gap-4 m-4">
           <GeneAndSSMFilterPanel isDemoMode={isDemoMode} />
           <Tabs
             variant="pills"

@@ -6,15 +6,12 @@ import {
   showModal,
   EnumOperandValue,
   Modals,
-  useGeneSymbol,
-  useGeneSetCountQuery,
-  useSsmSetCountQuery,
 } from "@gff/core";
-
+import { QueryRepresentationLabel } from "@gff/portal-components";
 import { FacetCardProps, SetFacetHooks } from "./types";
-import QueryRepresentationLabel from "./QueryRepresentationLabel";
 import FacetControlsHeader from "./FacetControlsHeader";
 import { CloseIcon } from "@/utils/icons";
+import queryExpressionHooks from "../cohortBuilder/queryExpressionHooks";
 
 const FACET_TO_MODAL = {
   "genes.gene_id": Modals.LocalGeneSetModal,
@@ -51,9 +48,6 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
   const dispatch = useCoreDispatch();
   const facetValues = (hooks.useGetFacetValues(field) ||
     []) as EnumOperandValue;
-  const { data: geneSymbolDict, isSuccess } = useGeneSymbol(
-    field === "genes.gene_id" ? facetValues.map((x) => x.toString()) : [],
-  );
 
   const setValues = (values: EnumOperandValue) => {
     if (values.length > 0) {
@@ -132,13 +126,7 @@ const SetFacet: React.FC<FacetCardProps<SetFacetHooks>> = ({
                 <QueryRepresentationLabel
                   field={field}
                   value={operand.toString()}
-                  geneSymbolDict={geneSymbolDict}
-                  geneSymbolSuccess={isSuccess}
-                  useCountHook={
-                    field === "genes.gene_id"
-                      ? useGeneSetCountQuery
-                      : useSsmSetCountQuery
-                  }
+                  hooks={queryExpressionHooks}
                 />
               </Badge>
             ))}

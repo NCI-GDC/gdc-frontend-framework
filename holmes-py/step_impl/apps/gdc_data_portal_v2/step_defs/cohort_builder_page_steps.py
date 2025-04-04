@@ -54,6 +54,7 @@ def perform_filter_card_action(tab_name: str, table):
 
 @step("Expected result <expected_text> in the search bar on the Cohort Builder page")
 def validate_search_bar_result_text(expected_text: str):
+    APP.shared.wait_for_loading_spinners_to_detach()
     is_expected_text_present = APP.cohort_builder_page.validate_search_bar_result(
         expected_text
     )

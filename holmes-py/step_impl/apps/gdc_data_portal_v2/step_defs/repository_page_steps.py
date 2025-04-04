@@ -103,6 +103,54 @@ def store_count_repository_for_comparison(item: str):
             break
     data_store.spec[f"{item} Count Repository Page"] = item_count
 
+@step("Verify filters have correct access level <table>")
+def verify_filters_access_level(table):
+    """
+    verify_filters_access_level Selects a filter and then compares its file count
+    to the file count of given access level. To be used when a filter should have
+    all Open Access or all Controlled Access.
+
+    :param v[0]: Facet card
+    :param v[1]: Filter to select and compare
+    :param v[2]: Access Level
+    """
+    for k, v in enumerate(table):
+        if APP.repository_page.is_show_more_or_show_less_button_visible_within_filter_card_repository(
+            v[0], "plus-icon"
+        ):
+            APP.repository_page.click_show_more_less_within_filter_card_repository(
+                v[0], "plus-icon"
+            )
+
+        APP.shared.make_selection_within_filter_group(v[0], v[1])
+        APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        APP.shared.wait_for_loading_spinner_table_to_detatch()
+        APP.shared.wait_for_loading_spinner_to_detatch()
+        time.sleep(0.1)
+
+        filter_case_count = (
+            APP.repository_page.get_file_count_from_filter_within_facet_group(
+                v[0], v[1]
+            )
+        )
+
+        access_case_count = (
+            APP.repository_page.get_file_count_from_filter_within_facet_group(
+                "Access", v[2]
+            )
+        )
+
+        assert (
+            filter_case_count == access_case_count
+        ), f"The filter '{v[1]}' has value '{filter_case_count}' and access level '{v[2]}' has value '{access_case_count}' that does NOT match"
+
+
+        APP.shared.perform_action_within_filter_card(v[0], "clear selection")
+        APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        APP.shared.wait_for_loading_spinner_table_to_detatch()
+        APP.shared.wait_for_loading_spinner_to_detatch()
+        time.sleep(0.1)
+
 @step("Verify that the following default filters are displayed in order <table>")
 def default_filters(table):
     repository = APP.repository_page
@@ -118,7 +166,6 @@ def default_filters(table):
         f" not displayed in order.\nActual: {actual_filters_order}"
         f"\nExpected: {expected_default_filters_in_order}"
     )
-
 
 @step("Verify <count> items on Add a Custom Filter filter list")
 def verify_file_filter_list_count(count: int):

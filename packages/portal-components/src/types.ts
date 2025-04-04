@@ -1,13 +1,17 @@
-export interface DataFetchingResult<T> {
+export interface DataFetchingResult<T> extends DataFetchingStatus {
   readonly data: T;
-  readonly isSuccess: boolean;
-  readonly isFetching: boolean;
+}
+
+export interface DataFetchingStatus {
+  readonly isSuccess?: boolean;
+  readonly isFetching?: boolean;
+  readonly isError?: boolean;
 }
 
 export type DataFetchingHook<T> = () => DataFetchingResult<T>;
 
 export type ImageComponentType = React.ComponentType<
-  React.HTMLProps<HTMLImageElement>
+  React.HTMLProps<HTMLImageElement> & { layout: string }
 >;
 
 export type LinkComponentType = React.ComponentType<

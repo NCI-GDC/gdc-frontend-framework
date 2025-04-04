@@ -60,12 +60,14 @@ const createSVG = async (ref: MutableRefObject<HTMLElement>): Promise<Blob> => {
             .split("(")[1]
             .split(")")[0]
             .replace(/"|'/g, "");
-          const fontFile = await fetch(fontUrl);
-          const blob = await fontFile.blob();
-          const base64 = await blobToBase64(blob);
-          styles.push(
-            rule.cssText.replace(/src: url\(.*?\)/, `src: url(${base64})`),
-          );
+          if (fontUrl.includes("latin")) {
+            const fontFile = await fetch(fontUrl);
+            const blob = await fontFile.blob();
+            const base64 = await blobToBase64(blob);
+            styles.push(
+              rule.cssText.replace(/src: url\(.*?\)/, `src: url(${base64})`),
+            );
+          }
         } else {
           styles.push(rule.cssText);
         }
@@ -83,17 +85,11 @@ const createSVG = async (ref: MutableRefObject<HTMLElement>): Promise<Blob> => {
   );
   chartWrapper.setAttribute(
     "width",
-    `${
-      Number(ref.current.querySelector("svg").getAttribute("width")) +
-      EXTRA_PADDING
-    }`,
+    `${Number(ref.current.getBoundingClientRect().width) + EXTRA_PADDING}`,
   );
   chartWrapper.setAttribute(
     "height",
-    `${
-      Number(ref.current.querySelector("svg").getAttribute("height")) +
-      EXTRA_PADDING
-    }`,
+    `${Number(ref.current.getBoundingClientRect().height) + EXTRA_PADDING}`,
   );
   chartWrapper.append(document.importNode(ref.current, true));
   svgElement.append(chartWrapper);
@@ -136,10 +132,8 @@ export const handleDownloadPNG = async (
   const svgBlob = await createSVG(ref);
   const svgHref = URL.createObjectURL(svgBlob);
   const svgImage = new Image(
-    Number(ref.current.querySelector("svg").getAttribute("width")) +
-      EXTRA_PADDING,
-    Number(ref.current.querySelector("svg").getAttribute("height")) +
-      EXTRA_PADDING,
+    Number(ref.current.getBoundingClientRect().width) + EXTRA_PADDING,
+    Number(ref.current.getBoundingClientRect().height) + EXTRA_PADDING,
   );
   const canvas = document.createElement("canvas");
   const canvasCtx = canvas.getContext("2d");
