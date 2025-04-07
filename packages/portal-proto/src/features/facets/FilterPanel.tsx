@@ -76,6 +76,18 @@ const FilterPanel = ({
     return isNaN(calcHeight) ? undefined : calcHeight;
   }, [xPosition]);
 
+  console.log({ facetDefinitions, customConfig });
+  const customFacetDefinitions = customConfig
+    ? facetDefinitions.filter(
+        (facet) => !customConfig.defaultFilters.includes(facet.full),
+      )
+    : [];
+  const defaultFacetDefinitions = customConfig
+    ? facetDefinitions.filter((facet) =>
+        customConfig.defaultFilters.includes(facet.field),
+      )
+    : facetDefinitions;
+
   return (
     <div className="flex flex-col gap-y-4 min-w-[14rem] w-3/12 max-w-[23rem]">
       <Text size="lg" className="text-primary-content-darker font-bold">
@@ -160,20 +172,27 @@ const FilterPanel = ({
         ref={ref}
       >
         {createFacetCards({
-          facets: facetDefinitions,
+          facets: customFacetDefinitions,
           valueLabel,
           hooks: facetHooks,
           idPrefix: app,
-          dismissCallback: customConfig?.handleRemoveFilter || undefined,
+          dismissCallback: customConfig?.handleRemoveFilter,
           hideIfEmpty,
           showPercent,
           facetNameFormatter: (field: string) => {
-            const isDefault =
-              customConfig?.defaultFilters !== undefined
-                ? customConfig.defaultFilters.includes(field)
-                : true;
-            return fieldNameToTitle(field, isDefault ? 1 : 2);
+            return fieldNameToTitle(field, 2);
           },
+          Chart: EnumFacetChart,
+          queryOptions: { docType: "cases" },
+        })}
+        {createFacetCards({
+          facets: defaultFacetDefinitions,
+          valueLabel,
+          hooks: facetHooks,
+          idPrefix: app,
+          hideIfEmpty,
+          showPercent,
+          facetNameFormatter: fieldNameToTitle,
           Chart: EnumFacetChart,
           queryOptions: { docType: "cases" },
         })}

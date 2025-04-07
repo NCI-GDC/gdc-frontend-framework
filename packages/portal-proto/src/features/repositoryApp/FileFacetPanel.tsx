@@ -36,6 +36,7 @@ import { useTotalCounts } from "@/features/facets/hooks";
 import { FacetRequiredHooks } from "@gff/portal-components";
 import FilterPanel from "@/features/facets/FilterPanel";
 import { useFieldNameToTitle } from "../cohortBuilder/queryExpressionHooks";
+import { useSearchEnumTerms } from "../cohortBuilder/hooks";
 
 const useRepositoryEnumData = (field: string) =>
   useLocalFilters(field, useRepositoryEnumValues, useRepositoryFilters);
@@ -52,7 +53,7 @@ export const FileFacetPanel = (): JSX.Element => {
 
   const [facetDefinitions, setFacetDefinitions] = useState<
     Array<FacetDefinition>
-  >([...facets]);
+  >(facets.map((f) => ({ ...f, field: f.full })));
 
   const dispatch = useAppDispatch();
 
@@ -78,7 +79,7 @@ export const FileFacetPanel = (): JSX.Element => {
   // rebuild customFacets
   useDeepCompareEffect(() => {
     if (isDictionaryReady) {
-      setFacetDefinitions([...facets]);
+      setFacetDefinitions(facets.map((f) => ({ ...f, field: f.full })));
     }
   }, [facets, isDictionaryReady]);
 
@@ -92,6 +93,7 @@ export const FileFacetPanel = (): JSX.Element => {
     useToggleExpandFilter: useToggleExpandFilter,
     useFilterExpanded: useFilterExpandedState,
     useFieldNameToTitle,
+    useSearchEnumTerms: useSearchEnumTerms,
   };
 
   const allFiltersCollapsed = useAllFiltersCollapsed();
