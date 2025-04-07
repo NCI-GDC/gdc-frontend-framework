@@ -77,7 +77,7 @@ const createFacetCards = ({
               valueLabel={
                 valueLabel === undefined || typeof valueLabel === "string"
                   ? valueLabel
-                  : valueLabel(queryOptions)
+                  : valueLabel(facet?.queryOptions ?? queryOptions)
               }
               field={facet.field}
               facetName={facetNameFormatter(facet.field)}
@@ -88,7 +88,7 @@ const createFacetCards = ({
               hooks={{
                 ...(hooks as EnumFacetHooks),
               }}
-              queryOptions={queryOptions}
+              queryOptions={facet?.queryOptions ?? queryOptions}
               cardScrollMargin={cardScrollMargin}
               Chart={Chart}
             />
@@ -115,7 +115,7 @@ const createFacetCards = ({
               valueLabel={
                 valueLabel === undefined || typeof valueLabel === "string"
                   ? valueLabel
-                  : valueLabel(queryOptions)
+                  : valueLabel(facet?.queryOptions ?? queryOptions)
               }
               dismissCallback={dismissCallback}
               hideIfEmpty={hideIfEmpty}
@@ -162,7 +162,7 @@ const createFacetCards = ({
               valueLabel={
                 valueLabel === undefined || typeof valueLabel === "string"
                   ? valueLabel
-                  : valueLabel(queryOptions)
+                  : valueLabel(facet?.queryOptions ?? queryOptions)
               }
               description={facet.description}
               rangeDatatype={facet.facet_type}
@@ -174,7 +174,7 @@ const createFacetCards = ({
               }}
               dismissCallback={dismissCallback}
               facetName={facetNameFormatter(facet.field)}
-              queryOptions={queryOptions}
+              queryOptions={facet?.queryOptions ?? queryOptions}
               cardScrollMargin={cardScrollMargin}
               Chart={Chart}
             />

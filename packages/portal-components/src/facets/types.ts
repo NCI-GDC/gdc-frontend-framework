@@ -201,4 +201,5 @@ export type FacetCardDefinition = FacetDefinition & {
   readonly name?: string;
   readonly toolTip?: string;
   readonly uploadLabel?: string;
+  readonly queryOptions?: QueryOptions;
 };

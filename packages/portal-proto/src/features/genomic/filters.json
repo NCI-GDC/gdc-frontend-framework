@@ -1,60 +1,79 @@
 [
   {
     "field": "genes.gene_id",
-    "title": "Mutated Gene",
-    "name": "Genes",
-    "facet_type": "set",
-    "doc_type": "genes",
+    "name": "Mutated Gene",
+    "uploadLabel": "Upload Genes",
+    "facet_type": "upload",
+    "queryOptions": {
+      "docType": "genes"
+    },
     "toolTip": "Filter Mutation Frequency by entering/uploading specific genes or selecting gene sets"
   },
   {
     "field": "ssms.ssm_id",
-    "title": "Somatic Mutation",
-    "name": "Somatic Mutations",
-    "facet_type": "set",
-    "doc_type": "ssms",
+    "name": "Somatic Mutation",
+    "uploadLabel": "Upload Somatic Mutations",
+    "facet_type": "upload",
+    "queryOptions": {
+      "docType": "ssms"
+    },
     "toolTip": "Filter Mutation Frequency by entering/uploading specific Simple Somatic Mutations (SSMs) or selecting mutation sets"
   },
   {
     "field": "genes.biotype",
     "title": "Biotype",
     "facet_type": "enum",
-    "doc_type": "genes"
+    "queryOptions": {
+      "docType": "genes"
+    }
   },
   {
     "field": "genes.is_cancer_gene_census",
     "title": "Is Cancer Gene Census",
     "facet_type": "toggle",
-    "doc_type": "genes"
+    "queryOptions": {
+      "docType": "genes"
+    }
   },
   {
     "field": "ssms.consequence.transcript.annotation.vep_impact",
     "title": "VEP Impact",
     "facet_type": "enum",
+    "queryOptions": {
+      "docType": "ssms"
+    },
     "doc_type": "ssms"
   },
   {
     "field": "ssms.consequence.transcript.annotation.sift_impact",
     "title": "SIFT Impact",
     "facet_type": "enum",
-    "doc_type": "ssms"
+    "queryOptions": {
+      "docType": "ssms"
+    }
   },
   {
     "field": "ssms.consequence.transcript.annotation.polyphen_impact",
     "title": "Polyphen Impact",
     "facet_type": "enum",
-    "doc_type": "ssms"
+    "queryOptions": {
+      "docType": "ssms"
+    }
   },
   {
     "field": "ssms.consequence.transcript.consequence_type",
     "title": "Consequence Type",
     "facet_type": "enum",
-    "doc_type": "ssms"
+    "queryOptions": {
+      "docType": "ssms"
+    }
   },
   {
     "field": "ssms.mutation_subtype",
     "title": "Type",
     "facet_type": "enum",
-    "doc_type": "ssms"
+    "queryOptions": {
+      "docType": "ssms"
+    }
   }
 ]

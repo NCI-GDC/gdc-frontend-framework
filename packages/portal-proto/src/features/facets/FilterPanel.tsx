@@ -76,10 +76,9 @@ const FilterPanel = ({
     return isNaN(calcHeight) ? undefined : calcHeight;
   }, [xPosition]);
 
-  console.log({ facetDefinitions, customConfig });
   const customFacetDefinitions = customConfig
     ? facetDefinitions.filter(
-        (facet) => !customConfig.defaultFilters.includes(facet.full),
+        (facet) => !customConfig.defaultFilters.includes(facet.field),
       )
     : [];
   const defaultFacetDefinitions = customConfig

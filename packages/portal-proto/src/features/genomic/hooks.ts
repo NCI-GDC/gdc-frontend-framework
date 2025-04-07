@@ -139,8 +139,8 @@ export const useTotalGenomicCounts = ({ docType }: { docType: GQLDocType }) => {
 
 export const useGenesFacetValues = (field: string) => {
   // facet data is store in core
-  const docType = FilterFacets.find((f) => f.field === field)
-    .doc_type as GQLDocType;
+  const docType = FilterFacets.find((f) => f.field === field).queryOptions
+    .docType as GQLDocType;
   const facet: FacetBuckets = useCoreSelector((state) =>
     selectFacetByDocTypeAndField(state, docType, field),
   );

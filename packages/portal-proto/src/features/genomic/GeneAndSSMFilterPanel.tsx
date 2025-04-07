@@ -23,7 +23,11 @@ import { FacetCardDefinition } from "@gff/portal-components";
 import { useAppSelector } from "./appApi";
 import { selectFiltersAppliedCount } from "./geneAndSSMFiltersSlice";
 import { useFieldNameToTitle } from "../cohortBuilder/queryExpressionHooks";
-import { useSearchEnumTerms } from "../cohortBuilder/hooks";
+import {
+  useOpenUploadModal,
+  useSearchEnumTerms,
+  useUploadFilterItems,
+} from "../cohortBuilder/hooks";
 
 const GeneAndSSMFilterPanel = ({
   isDemoMode,
@@ -36,13 +40,17 @@ const GeneAndSSMFilterPanel = ({
   useGenesFacets(
     "genes",
     "explore",
-    FilterFacets.filter((f) => f.doc_type === "genes").map((x) => x.field),
+    FilterFacets.filter((f) => f.queryOptions.docType === "genes").map(
+      (x) => x.field,
+    ),
     isDemoMode,
   );
   useGenesFacets(
     "ssms",
     "explore",
-    FilterFacets.filter((f) => f.doc_type === "ssms").map((x) => x.field),
+    FilterFacets.filter((f) => f.queryOptions.docType === "ssms").map(
+      (x) => x.field,
+    ),
     isDemoMode,
   );
 
@@ -61,6 +69,8 @@ const GeneAndSSMFilterPanel = ({
     useFilterExpanded: useFilterExpandedState,
     useFieldNameToTitle,
     useSearchEnumTerms,
+    useOpenUploadModal,
+    useFilterItems: useUploadFilterItems,
   };
 
   return (
@@ -85,8 +95,8 @@ const GeneAndSSMFilterPanel = ({
       <FilterPanel
         facetDefinitions={FilterFacets as FacetCardDefinition[]}
         facetHooks={GenomicFilterHooks}
-        valueLabel={(x: FacetCardDefinition & { doc_type: string }) =>
-          FacetDocTypeToLabelsMap[x.doc_type]
+        valueLabel={({ docType }: { docType: string }) =>
+          FacetDocTypeToLabelsMap[docType]
         }
         app="genes-mutations-app"
         toggleAllFiltersExpanded={toggleAllFiltersExpanded}
