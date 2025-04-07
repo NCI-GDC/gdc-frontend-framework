@@ -120,7 +120,7 @@ tags: gdc-data-portal-v2, regression, cart
 * Verify the table "Cart Items" body text is correct
     |expected_text                          |row  |column |
     |---------------------------------------|-----|-------|
-    |controlled                             |1    |3      |
+    |Controlled                             |1    |3      |
     |d2f99693-269c-4f5a-8d3a-646be6d0ee3d.wxs.varscan2.raw_somatic_mutation.vcf.gz|1    |4      |
     |1                                      |1    |5      |
     |TCGA-OV                                |1    |6      |
