@@ -49,5 +49,5 @@ tags: gdc-data-portal-v2, regression, mutation-summary
     |row  |column |expected_text                                                        |
     |-----|-------|---------------------------------------------------------------------|
     |1    |2      |All alleles are reported in the Forward orientation.                 |
-    |2    |2      |This section shows a general overview of the selected mutation.      |
+    |2    |2      |In order to access COSMIC data                                       |
     |3    |2      |1                                                                    |
