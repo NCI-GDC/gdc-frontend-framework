@@ -1,29 +1,14 @@
-import { GqlOperation } from "../gdcapi/filters";
 import {
   graphqlAPI,
   GraphQLApiResponse,
   graphqlAPISlice,
   GraphQLFetchError,
 } from "../gdcapi/gdcgraphql";
-
-type SetIntent = "user" | "portal";
-type SetCreationType = "instant" | "ephemeral" | "mutable" | "frozen";
-
-export interface CreateSetValueArgs {
-  values: readonly string[];
-  set_type: SetCreationType;
-  intent: SetIntent;
-}
-
-export interface CreateSetFilterArgs {
-  case_filters?: GqlOperation | Record<string, never>;
-  filters?: GqlOperation | Record<string, never>;
-  size?: number;
-  score?: string;
-  set_id?: string;
-  set_type: SetCreationType;
-  intent: SetIntent;
-}
+import {
+  CreateSetFilterArgs,
+  CreateSetValueArgs,
+  createTopNQuery,
+} from "./shared";
 
 const createGeneSetMutation = `mutation createSet(
   $input: CreateSetInput
@@ -61,28 +46,6 @@ const createSsmsSetMutation = `mutation createSet(
     }
   }
 }`;
-
-const CreateTopNQuery = (
-  index: "genes" | "ssms",
-  field: "gene_id" | "ssm_id",
-) => {
-  return `query topN${index}Query($cohortFilter: FiltersArgument,
-  $filters: FiltersArgument, $score: String, $size: Int) {
-  viewer {
-    explore {
-      ${index}  {
-        hits(filters: $filters, case_filters: $cohortFilter, score:$score, first: $size) {
-          edges {
-            node {
-                ${field}
-            }
-          }
-        }
-      }
-    }
-  }
-}`;
-};
 
 const transformSsmsSetResponse = (
   response: GraphQLApiResponse<any>,
@@ -240,7 +203,7 @@ export const createSetSlice = graphqlAPISlice
           let results: GraphQLApiResponse<any>;
           // get the top N genes listed by score
           try {
-            results = await graphqlAPI(CreateTopNQuery("genes", "gene_id"), {
+            results = await graphqlAPI(createTopNQuery("genes", "gene_id"), {
               cohortFilter: case_filters,
               filters,
               size,
@@ -328,7 +291,7 @@ export const createSetSlice = graphqlAPISlice
           let results: GraphQLApiResponse<any>;
           // get the top N ssms listed by score
           try {
-            results = await graphqlAPI(CreateTopNQuery("ssms", "ssm_id"), {
+            results = await graphqlAPI(createTopNQuery("ssms", "ssm_id"), {
               cohortFilter: case_filters,
               filters,
               size,

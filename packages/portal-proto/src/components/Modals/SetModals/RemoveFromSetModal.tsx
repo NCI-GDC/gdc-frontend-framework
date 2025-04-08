@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal } from "@mantine/core";
+import { Loader, Modal } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import {
   buildCohortGqlOperator,
@@ -11,11 +11,19 @@ import {
   useRemoveFromGeneSetMutation,
   showModal,
   Modals,
+  useRemoveFromSsmSetMutation,
+  useRemoveTopNSsmsSetFromFiltersMutation,
 } from "@gff/core";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import FunctionButton from "@/components/FunctionButton";
 import SetTable from "./SetTable";
+import { SET_COUNT_LIMIT } from "./constants";
+
+type RemoveFromSetMutationHook =
+  | typeof useRemoveFromGeneSetMutation
+  | typeof useRemoveFromSsmSetMutation
+  | typeof useRemoveTopNSsmsSetFromFiltersMutation;
 
 interface RemoveFromSetModalProps {
   readonly filters: FilterSet;
@@ -25,8 +33,10 @@ interface RemoveFromSetModalProps {
   readonly setTypeLabel: string;
   readonly closeModal: () => void;
   readonly countHook: typeof useGeneSetCountsQuery;
-  readonly removeFromSetHook: typeof useRemoveFromGeneSetMutation;
+  readonly removeFromSetHook: RemoveFromSetMutationHook;
   readonly opened: boolean;
+  readonly sort?: string;
+  readonly isManualSelection?: boolean;
 }
 
 const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
@@ -39,10 +49,84 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
   countHook,
   removeFromSetHook,
   opened,
+  sort,
+  isManualSelection,
 }: RemoveFromSetModalProps) => {
   const [selectedSets, setSelectedSets] = useState<string[][]>([]);
   const dispatch = useCoreDispatch();
-  const [removeFromSet] = removeFromSetHook();
+  const [removeFromSet, response] = removeFromSetHook();
+
+  const handleSave = () => {
+    if (response.isLoading) return;
+    if (!isManualSelection) {
+      removeFromSet({
+        setId: selectedSets[0][0],
+        filters: buildCohortGqlOperator(filters)
+          ? {
+              op: "and",
+              content: [buildCohortGqlOperator(filters)],
+            }
+          : {},
+        case_filters: buildCohortGqlOperator(cohortFilters) ?? {},
+        size: SET_COUNT_LIMIT, // use min function here
+        score: sort,
+      })
+        .unwrap()
+        .then((newSetId) => {
+          if (newSetId === undefined) {
+            dispatch(showModal({ modal: Modals.SaveSetErrorModal }));
+          } else {
+            dispatch(
+              addSet({
+                setType,
+                setName: selectedSets[0][1],
+                setId: newSetId,
+              }),
+            );
+            showNotification({
+              message: "Set has been modified.",
+              closeButtonProps: { "aria-label": "Close notification" },
+            });
+            closeModal();
+          }
+        })
+        .catch(() => {
+          dispatch(showModal({ modal: Modals.SaveSetErrorModal }));
+        });
+    } else {
+      removeFromSet({
+        setId: selectedSets[0][0],
+        filters: buildCohortGqlOperator(filters)
+          ? {
+              op: "and",
+              content: [buildCohortGqlOperator(filters)],
+            }
+          : {},
+      })
+        .unwrap()
+        .then((newSetId) => {
+          if (newSetId === undefined) {
+            dispatch(showModal({ modal: Modals.SaveSetErrorModal }));
+          } else {
+            dispatch(
+              addSet({
+                setType,
+                setName: selectedSets[0][1],
+                setId: newSetId,
+              }),
+            );
+            showNotification({
+              message: "Set has been modified.",
+              closeButtonProps: { "aria-label": "Close notification" },
+            });
+            closeModal();
+          }
+        })
+        .catch(() => {
+          dispatch(showModal({ modal: Modals.SaveSetErrorModal }));
+        });
+    }
+  };
 
   return (
     <Modal
@@ -76,42 +160,11 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
         </FunctionButton>
         <DarkFunctionButton
           data-testid="button-save"
-          onClick={() =>
-            removeFromSet({
-              filters: buildCohortGqlOperator(filters)
-                ? {
-                    content: [buildCohortGqlOperator(filters)],
-                    op: "and",
-                  }
-                : {},
-              case_filters: buildCohortGqlOperator(cohortFilters) ?? {},
-              setId: selectedSets[0][0],
-            })
-              .unwrap()
-              .then((response) => {
-                const newSetId = response;
-                if (newSetId === undefined) {
-                  dispatch(showModal({ modal: Modals.SaveSetErrorModal }));
-                } else {
-                  dispatch(
-                    addSet({
-                      setType,
-                      setName: selectedSets[0][1],
-                      setId: newSetId,
-                    }),
-                  );
-                  showNotification({
-                    message: "Set has been modified.",
-                    closeButtonProps: { "aria-label": "Close notification" },
-                  });
-                  closeModal();
-                }
-              })
-              .catch(() => {
-                dispatch(showModal({ modal: Modals.SaveSetErrorModal }));
-              })
-          }
+          onClick={handleSave}
           disabled={selectedSets.length === 0}
+          leftSection={
+            response?.isLoading ? <Loader size="sm" color="white" /> : undefined
+          }
         >
           Save
         </DarkFunctionButton>
