@@ -298,13 +298,15 @@ export const useUploadFilterItems = (uploadField: string) => {
   const noData = Object.keys(filters?.root || {}).length === 0;
 
   const items = useDeepCompareMemo(() => {
+    if (noData) return [];
+
     const includeFilters = Object.values(
       filters.root as Record<string, Includes>,
     );
 
     const field = uploadField.split(".upload").join("");
     return includeFilters.find((f) => f.field === field)?.operands || [];
-  }, [filters, uploadField]);
+  }, [filters, uploadField, noData]);
 
   return { noData, items };
 };
