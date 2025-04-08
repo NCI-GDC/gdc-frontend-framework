@@ -176,7 +176,7 @@ export const useAvailableCustomFacets = (
         .filter((x: FacetDefinition) => {
           return !usedFacets.includes(x.full);
         })
-        .map((x: FacetCardDefinition) => ({ ...x, field: x.full }))
+        .map((x: FacetDefinition) => ({ ...x, field: x.full }))
         .reduce(
           (
             res: Record<string, FacetCardDefinition>,

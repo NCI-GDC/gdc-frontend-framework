@@ -2,7 +2,7 @@ import React from "react";
 import { FacetTabs } from "@gff/portal-components";
 import facetDefintions from "./facet_dictionary.json";
 import tabsConfig from "./cohort_builder.json";
-import { useGetEnumFacetData } from "./hooks";
+import { useGetEnumFacetData, useGetRangeFacetData } from "./hooks";
 
 const CohortBuilder: React.FC = () => {
   return (
@@ -26,7 +26,7 @@ const CohortBuilder: React.FC = () => {
             useGetEnumFacetData: useGetEnumFacetData as any,
             useSearchEnumTerms: (enumData) => enumData,
             useGetFacetFilters: () => {},
-            useGetRangeFacetData: () => ({ data: {} }),
+            useGetRangeFacetData: useGetRangeFacetData,
           }}
           facetDefinitions={facetDefintions}
           tabsConfig={tabsConfig.config}

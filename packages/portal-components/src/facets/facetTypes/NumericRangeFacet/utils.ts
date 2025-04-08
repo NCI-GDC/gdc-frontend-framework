@@ -38,13 +38,13 @@ export const buildRangeLabelsAndValues = (
     b[x] = {
       ...bucketRanges[x],
       key: x,
-      value: rangeData ? rangeData[x] : undefined,
-      valueLabel: rangeData
+      value: rangeData?.[x],
+      valueLabel: rangeData?.[x]
         ? `${rangeData[x]?.toLocaleString()} (${(
             ((rangeData[x] as number) / totalCount) *
             100
           ).toFixed(2)}%)`
-        : "",
+        : undefined,
     };
     return b;
   }, {} as Record<string, RangeBucketElement>);

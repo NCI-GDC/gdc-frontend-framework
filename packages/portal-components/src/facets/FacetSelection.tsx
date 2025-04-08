@@ -9,10 +9,10 @@ import {
   Stack,
   UnstyledButton,
 } from "@mantine/core";
-import { FacetDefinition, QueryOptions } from "./types";
+import { FacetCardDefinition, QueryOptions } from "./types";
 
 interface FacetListProps {
-  readonly data?: Record<string, FacetDefinition>; // Facets to display
+  readonly data?: Record<string, FacetCardDefinition>; // Facets to display
   readonly searchString?: string; // current search string (used to highlight matches)
   readonly handleFilterSelected: (field: string) => void; // called when a Facet is picked.
 }
@@ -74,7 +74,7 @@ const FacetList: React.FC<FacetListProps> = ({
 };
 
 interface FacetSelectionProps {
-  readonly facets: Record<string, FacetDefinition>;
+  readonly facets: Record<string, FacetCardDefinition>;
   readonly handleFilterSelected: (_: string) => void;
   readonly handleFilteredWithValuesChanged: (_: boolean) => void;
 }
@@ -86,7 +86,7 @@ const FacetSelectionPanel = ({
 }: FacetSelectionProps) => {
   const [searchString, setSearchString] = useState("");
   const [filteredData, setFilteredData] = useState<
-    Record<string, FacetDefinition> | undefined
+    Record<string, FacetCardDefinition> | undefined
   >(undefined);
 
   useEffect(() => {
@@ -99,7 +99,7 @@ const FacetSelectionPanel = ({
                 y.description?.includes(searchString.trim())
             : true;
         })
-        .reduce((res: Record<string, FacetDefinition>, value) => {
+        .reduce((res: Record<string, FacetCardDefinition>, value) => {
           return { ...res, [value.field]: value };
         }, {});
       setFilteredData(s);
@@ -162,7 +162,7 @@ interface FacetSelectionModalProps {
     onlyFiltersWithValues: boolean,
     queryOptions?: QueryOptions,
   ) => {
-    data: Record<string, FacetDefinition>;
+    data: Record<string, FacetCardDefinition>;
   };
   readonly handleFilterSelected: (field: string) => void;
   readonly queryOptions?: QueryOptions;

@@ -1,9 +1,6 @@
-import { FacetCardProps, RangeFacetHooks } from "../../types";
+import { NumericFacetCardProps } from "../../types";
 
-export type NumericFacetProps = Omit<
-  FacetCardProps<RangeFacetHooks>,
-  "facetName"
-> & {
+export type NumericFacetProps = Omit<NumericFacetCardProps, "facetName"> & {
   readonly rangeDatatype?: string;
   readonly minimum: number | undefined;
   readonly maximum: number | undefined;

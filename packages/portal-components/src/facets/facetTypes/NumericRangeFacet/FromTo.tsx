@@ -146,7 +146,7 @@ const FromTo: React.FC<FromToProps> = ({
           : undefined,
     },
     validate: {
-      fromValue: (value) => {
+      fromValue: (value: number | undefined) => {
         if (
           value !== undefined &&
           (value < lowerUnitRange || value > upperUnitRange)
@@ -156,7 +156,7 @@ const FromTo: React.FC<FromToProps> = ({
 
         return false;
       },
-      toValue: (value) => {
+      toValue: (value: number | undefined) => {
         if (
           value !== undefined &&
           (value < lowerUnitRange || value > upperUnitRange)

@@ -19,7 +19,6 @@ import {
   FacetCardDefinition,
   FacetRequiredHooks,
   CohortBuilderCategoryConfig,
-  FacetDefinition,
   CustomFacetHooks,
   EnumChartProps,
   QueryOptions,
@@ -68,7 +67,7 @@ const StyledFacetTabs = (props: TabsProps) => {
 
 type FacetGroupProps = {
   readonly children?: React.ReactNode;
-  readonly facets: FacetDefinition[];
+  readonly facets: FacetCardDefinition[];
   readonly hooks: FacetRequiredHooks;
   readonly queryOptions?: QueryOptions;
 };
@@ -224,7 +223,7 @@ type FacetTabProps = {
   readonly activeTab: string;
   readonly setActiveTab: (tab: string | null) => void;
   readonly hooks: FacetRequiredHooks;
-  readonly facetDefinitions: Record<string, FacetDefinition>;
+  readonly facetDefinitions: Record<string, FacetCardDefinition>;
   readonly tabsConfig: Record<string, CohortBuilderCategoryConfig>;
   readonly customFacetHooks?: CustomFacetHooks;
   readonly getFacetLabel?: (queryOptions?: QueryOptions) => string;
@@ -292,7 +291,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
               queryOptions={firstEntry.queryOptions}
             >
               {createFacetCards({
-                facets: firstFacetList as FacetCardDefinition[],
+                facets: firstFacetList,
                 facetNameFormatter: (field: string) => fieldNameToTitle(field),
                 hooks,
                 idPrefix: "cohort-builder",
@@ -365,7 +364,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
                         queryOptions={tabEntry.queryOptions}
                       >
                         {createFacetCards({
-                          facets: facetList as FacetCardDefinition[],
+                          facets: facetList,
                           facetNameFormatter: (field: string) =>
                             fieldNameToTitle(field),
                           hooks,

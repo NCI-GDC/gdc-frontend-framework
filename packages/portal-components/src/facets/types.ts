@@ -72,18 +72,18 @@ export interface FacetCommonHooks {
   useFilterExpanded?: (field: string) => boolean;
   useFieldNameToTitle: () => (field: string, sections?: number) => string;
   usePopulateFacetData?: (
-    facets: FacetDefinition[],
+    facets: FacetCardDefinition[],
     queryOptions?: QueryOptions,
   ) => void;
 }
 
 export interface CustomFacetHooks {
-  readonly useCustomFacets: () => DataFetchingResult<FacetDefinition[]>;
+  readonly useCustomFacets: () => DataFetchingResult<FacetCardDefinition[]>;
   readonly useAvailableCustomFacets: (
     onlyFiltersWithValues: boolean,
     queryOptions?: QueryOptions,
   ) => {
-    data: Record<string, FacetDefinition>;
+    data: Record<string, FacetCardDefinition>;
   };
   readonly useAddCustomFilter: () => (filter: string) => void;
   readonly useRemoveCustomFilter: () => (filter: string) => void;
@@ -179,13 +179,6 @@ export interface AllowableRange {
   readonly maximum: number;
 }
 
-export interface FacetDefinition {
-  readonly description?: string; //description of field
-  readonly field: string; // name of field
-  readonly facet_type?: string; // classified type based on type + name: e.g. age, year, enumeration, etc
-  readonly range?: AllowableRange; // range of value types
-}
-
 export interface CohortBuilderCategoryConfig {
   readonly label: string;
   readonly facets: ReadonlyArray<string>;
@@ -197,9 +190,13 @@ export interface SortType {
   readonly direction: "asc" | "dsc";
 }
 
-export type FacetCardDefinition = FacetDefinition & {
-  readonly name?: string;
+export type FacetCardDefinition = {
+  readonly description?: string; //description of field
+  readonly field: string; // name of field
+  readonly facet_type?: string; // classified type based on type + name: e.g. age, year, enumeration, etc
+  readonly range?: AllowableRange; // range of value types
+  readonly name?: string; // human readable name, if not supplied will use facetNameFormatter
   readonly toolTip?: string;
-  readonly uploadLabel?: string;
-  readonly queryOptions?: QueryOptions;
+  readonly uploadLabel?: string; // specific field for upload facet, button label
+  readonly queryOptions?: QueryOptions; // info to pass back to data fetching hooks about this facet
 };
