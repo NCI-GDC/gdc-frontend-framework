@@ -19,8 +19,7 @@ interface FacetListProps {
 
 /**
  * A Facet Filter List which is used to display and select a facet to add
- * to an application: CohortBuilder and Repository( e.x. Download) are
- * two tools using this component
+ * to an application
  *
  */
 const FacetList: React.FC<FacetListProps> = ({

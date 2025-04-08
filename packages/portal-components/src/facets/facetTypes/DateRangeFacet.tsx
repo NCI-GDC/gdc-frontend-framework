@@ -24,7 +24,7 @@ const convertStringToDate = (dateStr?: string): Date | null => {
 type DateRange = [Date | null, Date | null];
 
 /**
- * Facet card for a date range field
+ * Facet card component for date range fields
  * @param field - field to facet on
  * @param description - description of the facet
  * @param hooks - hooks to use for the facet

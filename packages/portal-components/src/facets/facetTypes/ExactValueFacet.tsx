@@ -33,12 +33,11 @@ const extractValues = (
 };
 
 /**
- * Exact value facet component
+ * Facet component for exact value fields
  * @param field - field to facet on
  * @param description - description of the facet
  * @param facetName - name of the facet
  * @param dismissCallback - callback function to dismiss the facet
- * @param width - width of the facet
  * @param hooks - hooks to use for the facet
  */
 const ExactValueFacet: React.FC<ExactValueProps> = ({

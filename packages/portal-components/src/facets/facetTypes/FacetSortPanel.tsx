@@ -29,7 +29,7 @@ const sortTypeToAriaDescription = (
 /**
  * FacetCards "sort" header supporting sort by A-Z or by Value both ascending and descending
  * @param sortType - current sort type
- * @param valueLabel - Value labels, typically "case" "file"
+ * @param valueLabel - Value labels
  * @param setSort - sets the sort type and direction
  * @param field - specifies the facet table name
  */

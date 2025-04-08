@@ -4,6 +4,9 @@ import CohortBadge from "@/cohort/QueryExpression/CohortBadge";
 import { UploadFacetCardProps } from "../types";
 import FacetControlsHeader from "./FacetControlsHeader";
 
+/**
+ * Facet card component for fields were a user can upload a list of values
+ */
 const UploadFacet: React.FC<UploadFacetCardProps> = ({
   field,
   facetName,

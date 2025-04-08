@@ -33,14 +33,14 @@ interface CreateFacetCardProps {
 
 /**
  * createFacetCards - given a list of facet definitions it will create
- * facet components appropriate for the facets
+ * facet card components appropriate for the facets
  * All facets require a set of functions (e.g. hooks) which define get/set data,
  * filters, and counts. As create facets can create any facet type, all possible
  * functions must be supplied (i.e. include the EnumFacetHooks and RangeFacetHooks in dataFunctions
  * if your app can create both).
  *
- * @param facet - facet definition
- * @param valueLabel - label for counts
+ * @param facets - facet definition
+ * @param valueLabel - label for counts or function that returns a label
  * @param hooks - data getter and setter hooks
  * @param facetNameFormatter - function that takes the field and returns a human readable name
  * @param idPrefix - prefix for created Facet Component key prop. This is used to ensure the ref

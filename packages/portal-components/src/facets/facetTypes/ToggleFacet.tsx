@@ -8,7 +8,7 @@ const extractToggleValue = (values?: ReadonlyArray<string>): boolean =>
   values !== undefined && values.length > 0 && values.includes("true");
 
 /**
- * Facet card for a boolean field
+ * Facet card for boolean fields
  * @param field - field to facet on
  * @param hooks - hooks to use for the facet
  * @param description - description of the facet

@@ -1,5 +1,8 @@
-import { Operation, NumericFromTo } from "@/cohort/QueryExpression/types";
-import { Cohort } from "../cohort";
+import {
+  Operation,
+  NumericFromTo,
+  QueryExpressionHooks,
+} from "@/cohort/QueryExpression/types";
 import { DataFetchingResult } from "src/types";
 
 export type QueryOptions = Record<string, unknown>;
@@ -28,7 +31,13 @@ export type ClearFacetHook = () => ClearFacetFunction;
 export type GetTotalCountsFunction = (queryOptions?: QueryOptions) => number;
 
 export type EnumFacetHooks = FacetCommonHooks & {
-  useGetEnumFacetData: GetEnumFacetDataFunction; // gets data for EnumFacets and ToggleFacet
+  /**
+   * Hook that returns the values and counts for the enum facet type
+   */
+  useGetEnumFacetData: GetEnumFacetDataFunction;
+  /**
+   * Hooks that takes the enum data and a search term and returns filtered data. If not provided, the search icon won't appear on cards.
+   */
   useSearchEnumTerms: (
     enumData: [string, number][],
     searchTerm: string,
@@ -40,37 +49,56 @@ export type ValueFacetHooks = FacetCommonHooks & {
 };
 
 export type RangeFacetHooks = FacetCommonHooks & {
-  useGetRangeFacetData: GetRangeFacetDataFunction; // gets the data for Range Facets
+  /**
+   * Hook that returns range values and counts
+   */
+  useGetRangeFacetData: GetRangeFacetDataFunction;
   useGetFacetFilters: SelectFacetFilterFunction; // gets the current filters
 };
 
-export type UploadFacetHooks = FacetCommonHooks & {
-  useFilterItems: (field: string) => {
-    noData: boolean;
-    items: readonly (string | number)[];
+export type UploadFacetHooks = FacetCommonHooks &
+  QueryExpressionHooks & {
+    /**
+     * Hook that returns a list of the uploaded items
+     */
+    useFilterItems: (field: string) => {
+      noData: boolean;
+      items: readonly (string | number)[];
+    };
+    /**
+     * Hook that opens the upload modal
+     */
+    useOpenUploadModal: () => (field: string) => void;
   };
-  useOpenUploadModal: () => (field: string) => void;
-  useSelectCurrentCohort: () => Cohort;
-  useClearCohortFilters: () => () => void;
-  useRemoveCohortFilter: () => (field: string) => void;
-  useUpdateCohortFilter: () => ({
-    field,
-    operation,
-  }: {
-    field: string;
-    operation: any;
-  }) => void;
-  useFieldNameToTitle: () => (field: string) => string;
-  useFormatValue: () => (value: string, field: string) => Promise<string>;
-};
 
 export interface FacetCommonHooks {
-  useClearFilter: ClearFacetHook; // clear Facet Filters and remove facet from filter set
-  useUpdateFacetFilters: UpdateFacetFilterHook; // updates the filters
-  useTotalCounts: GetTotalCountsFunction; // get the totals count by type: cases, files, genes, ssms, projects
-  useToggleExpandFilter?: () => (field: string, expanded: boolean) => void;
-  useFilterExpanded?: (field: string) => boolean;
+  /**
+   * Hook to clear facet card selections and remove from filters
+   */
+  useClearFilter: ClearFacetHook;
+  /**
+   * Hook to update filters with the facet card selections
+   */
+  useUpdateFacetFilters: UpdateFacetFilterHook;
+  /**
+   * Hook that returns the total count, used for calculating percentage
+   */
+  useTotalCounts: GetTotalCountsFunction;
+  /**
+   * Hook that takes the API field and returns a human readable field name
+   */
   useFieldNameToTitle: () => (field: string, sections?: number) => string;
+  /**
+   * Hook for toggling the expand/collapse state of the facet card
+   */
+  useToggleExpandFilter?: () => (field: string, expanded: boolean) => void;
+  /**
+   * Hooks that returns the expand/collapse state of the facet card
+   */
+  useFilterExpanded?: (field: string) => boolean;
+  /**
+   * Hook for prefetching the facet data for a group of facets
+   */
   usePopulateFacetData?: (
     facets: FacetCardDefinition[],
     queryOptions?: QueryOptions,
@@ -78,14 +106,27 @@ export interface FacetCommonHooks {
 }
 
 export interface CustomFacetHooks {
+  /**
+   * Hook that returns a list of a user's currently selected custom facets
+   */
   readonly useCustomFacets: () => DataFetchingResult<FacetCardDefinition[]>;
+  /**
+   * Hook that returns facets available for a user to add to their custom facets, option to return only facets
+   * with data
+   */
   readonly useAvailableCustomFacets: (
     onlyFiltersWithValues: boolean,
     queryOptions?: QueryOptions,
   ) => {
     data: Record<string, FacetCardDefinition>;
   };
+  /**
+   * Hook to add a custom filter to a user's panel
+   */
   readonly useAddCustomFilter: () => (filter: string) => void;
+  /**
+   * Hook to remove a custom filter to a user's panel
+   */
   readonly useRemoveCustomFilter: () => (filter: string) => void;
 }
 
