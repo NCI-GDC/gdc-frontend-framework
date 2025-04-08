@@ -56,9 +56,12 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
   const dispatch = useCoreDispatch();
   const [removeFromSet, response] = removeFromSetHook();
 
+  const max = Math.min(removeFromCount, SET_COUNT_LIMIT);
+
   const handleSave = () => {
     if (response.isLoading) return;
     if (!isManualSelection) {
+      // we need to select top N items from the set in this case done by useRemoveTopNSsmsSetFromFiltersMutation
       removeFromSet({
         setId: selectedSets[0][0],
         filters: buildCohortGqlOperator(filters)
@@ -68,7 +71,7 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
             }
           : {},
         case_filters: buildCohortGqlOperator(cohortFilters) ?? {},
-        size: SET_COUNT_LIMIT, // use min function here
+        size: max,
         score: sort,
       })
         .unwrap()
@@ -141,6 +144,9 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
       }}
     >
       <div className="p-4">
+        {removeFromCount > SET_COUNT_LIMIT && (
+          <p className="mb-2">Only the top 50,000 mutations will be removed.</p>
+        )}
         <SetTable
           selectedSets={selectedSets}
           setSelectedSets={setSelectedSets}

@@ -1,3 +1,4 @@
+import { GqlOperation } from "../gdcapi/filters";
 import {
   graphqlAPI,
   GraphQLApiResponse,
@@ -142,7 +143,7 @@ export const modifySetSlice = graphqlAPISlice
           filters,
         }: {
           setId: string;
-          filters: any; // type it here
+          filters: GqlOperation | Record<string, never>; // type it here
         }) => ({
           graphQLQuery: removeFromGeneSetQuery,
           graphQLFilters: {
@@ -164,7 +165,7 @@ export const modifySetSlice = graphqlAPISlice
           filters,
         }: {
           setId: string;
-          filters: any; // type it here
+          filters: GqlOperation | Record<string, never>;
         }) => ({
           graphQLQuery: removeFromSsmSetQuery,
           graphQLFilters: {
