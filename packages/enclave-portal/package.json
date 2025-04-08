@@ -1,11 +1,11 @@
 {
   "name": "enclave-portal",
-  "version": "2.16.1",
+  "version": "2.16.5",
   "dependencies": {
-    "@gff/portal-components": "^2.15.4",
     "@mantine/core": "^7.17.3",
     "@mantine/notifications": "^7.17.3",
-    "next": "^14.2.5",
+    "@gff/portal-components": "^2.16.5",
+    "next": "^15.2.3",
     "typescript": "^5.6.3"
   },
   "peerDependencies": {

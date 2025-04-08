@@ -2,7 +2,7 @@ import { useRef, FC, useState } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
 import { runproteinpaint } from "@sjcrh/proteinpaint-client";
 import { LoadingOverlay } from "@mantine/core";
-import { isEqual } from "lodash";
+import { isEqual, cloneDeep } from "lodash";
 import {
   useCoreSelector,
   selectCurrentCohortFilters,
@@ -25,13 +25,26 @@ const DEMO_sample = "2409";
 const DEMO_experimentID = "9f155433-3c2e-4b67-a452-eb32f06c93f7";
 const DEMO_projectID = "BEATAML1.0-COHORT";
 
+export const demoFilter = Object.freeze({
+  op: "in",
+  content: Object.freeze({
+    field: "cases.submitter_id",
+    value: Object.freeze([DEMO_sample]),
+  }),
+});
+
+// filters={"op":"in","content":{"field":"file_id","value":"df80679e-c4d3-487b-934c-fcc782e5d46e"}}
+// &fields=file_size,experimental_strategy,associated_entities.entity_submitter_id,associated_entities.entity_type,associated_entities.case_id,cases.samples.sample_type
+
 export const ScRNAseqWrapper: FC<PpProps> = (props: PpProps) => {
   const isDemoMode = useIsDemoApp();
+  const currentCohort = useCoreSelector(selectCurrentCohortFilters);
+  const filter0 = isDemoMode
+    ? cloneDeep(demoFilter)
+    : buildCohortGqlOperator(currentCohort);
   // to track reusable instance for mds3 skewer track
   const ppRef = useRef<PpApi>();
   const prevArg = useRef<any>({});
-  const currentCohort = useCoreSelector(selectCurrentCohortFilters);
-  const filter0 = buildCohortGqlOperator(currentCohort);
   const userDetails = useFetchUserDetailsQuery();
   const [isLoading, setIsLoading] = useState(false);
   const showLoadingOverlay = () => setIsLoading(true);
@@ -51,7 +64,7 @@ export const ScRNAseqWrapper: FC<PpProps> = (props: PpProps) => {
       const rootElem = divRef.current as HTMLElement;
       const arg = getScRNAseqArg(
         props,
-        isDemoMode ? null : filter0,
+        filter0, //isDemoMode ? null : filter0,
         rootElem,
         scRNAseqCallbacks,
         appCallbacks,
