@@ -5,21 +5,21 @@ export const createTopNQuery = (
   field: "gene_id" | "ssm_id",
 ) => {
   return `query topN${index}Query($cohortFilter: FiltersArgument,
-  $filters: FiltersArgument, $score: String, $size: Int) {
-  viewer {
-    explore {
-      ${index}  {
-        hits(filters: $filters, case_filters: $cohortFilter, score:$score, first: $size) {
-          edges {
-            node {
-                ${field}
+    $filters: FiltersArgument, $score: String, $size: Int) {
+    viewer {
+      explore {
+        ${index}  {
+          hits(filters: $filters, case_filters: $cohortFilter, score:$score, first: $size) {
+            edges {
+              node {
+                  ${field}
+              }
             }
           }
         }
       }
     }
-  }
-}`;
+  }`;
 };
 
 type SetIntent = "user" | "portal";
