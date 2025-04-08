@@ -24,7 +24,7 @@ const CohortBuilder: React.FC = () => {
                 )
                 .join(" "),
             useGetEnumFacetData: useGetEnumFacetData as any,
-            useSearchEnumTerms: (enumData) => enumData,
+            useSearchEnumTerms: (enumData: [string, number][]) => enumData,
             useGetFacetFilters: () => {},
             useGetRangeFacetData: useGetRangeFacetData,
           }}
