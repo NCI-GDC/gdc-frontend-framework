@@ -17,29 +17,6 @@ import {
   QueryOptions,
 } from "./types";
 
-/**
- * createFacetCards - given a list of facet definitions it will create
- * facet components appropriate for the facets
- * All facets require a set of functions (e.g. hooks) which define get/set data,
- * filters, and counts. As create facets can create any facet type, all possible
- * functions must be supplied (i.e. include the EnumFacetHooks and RangeFacetHooks in dataFunctions
- * if your app can create both).
- *
- * @param facet - facet definition
- * @param valueLabel - label for counts
- * @param hooks - data getter and setter hooks
- * @param facetNameFormatter - function that takes the full field and returns a human readable name
- * @param idPrefix - prefix for created Facet Component key prop. This is used to ensure the ref
- *                  has a 1) unique 2) persistent id, so each call to createFacetCardsFromList must
- *                  have a unique prefix, the name of the analysis tool is a good choice
- * @param dismissCallback - callback when defined will remove facet from parent panel
- * @param hideIfEmpty - hide facets if they do not have data
- * @param showPercent - whether to show the count percent of whole
- * @param queryOptions - info to pass back to data fetching hooks about this facet
- * @param cardScrollMargin - Scroll margin for cards, used for positioning cards on the page when scrolled to
- * @param Chart - Component for rendering a Chart view of the data
- */
-
 interface CreateFacetCardProps {
   facets: FacetCardDefinition[];
   hooks: FacetRequiredHooks;
@@ -53,6 +30,29 @@ interface CreateFacetCardProps {
   cardScrollMargin?: number;
   Chart?: React.FC<EnumChartProps>;
 }
+
+/**
+ * createFacetCards - given a list of facet definitions it will create
+ * facet components appropriate for the facets
+ * All facets require a set of functions (e.g. hooks) which define get/set data,
+ * filters, and counts. As create facets can create any facet type, all possible
+ * functions must be supplied (i.e. include the EnumFacetHooks and RangeFacetHooks in dataFunctions
+ * if your app can create both).
+ *
+ * @param facet - facet definition
+ * @param valueLabel - label for counts
+ * @param hooks - data getter and setter hooks
+ * @param facetNameFormatter - function that takes the field and returns a human readable name
+ * @param idPrefix - prefix for created Facet Component key prop. This is used to ensure the ref
+ *                  has a 1) unique 2) persistent id, so each call to createFacetCardsFromList must
+ *                  have a unique prefix, the name of the analysis tool is a good choice
+ * @param dismissCallback - callback when defined will remove facet from parent panel
+ * @param hideIfEmpty - hide facets if they do not have data
+ * @param showPercent - whether to show the count percent of whole
+ * @param queryOptions - info to pass back to data fetching hooks about this facet
+ * @param cardScrollMargin - Scroll margin for cards, used for positioning cards on the page when scrolled to
+ * @param Chart - Component for rendering a Chart view of the data
+ */
 
 const createFacetCards = ({
   facets,

@@ -191,12 +191,36 @@ export interface SortType {
 }
 
 export type FacetCardDefinition = {
-  readonly description?: string; //description of field
-  readonly field: string; // name of field
-  readonly facet_type?: string; // classified type based on type + name: e.g. age, year, enumeration, etc
-  readonly range?: AllowableRange; // range of value types
-  readonly name?: string; // human readable name, if not supplied will use facetNameFormatter
+  /**
+   * field name in the API
+   */
+  readonly field: string;
+  /**
+   * description of field
+   */
+  readonly description?: string;
+  /**
+   * classified type based on type + name: e.g. age, year, enumeration, etc
+   */
+  readonly facet_type?: string;
+  /**
+   * specific field for numeric range facets, specifies the min/max bounds of the values
+   */
+  readonly range?: AllowableRange;
+  /**
+   * human readable name, if not supplied will use facetNameFormatter
+   */
+  readonly name?: string;
+  /**
+   * specifc field for upload facet, toolip for upload button
+   */
   readonly toolTip?: string;
-  readonly uploadLabel?: string; // specific field for upload facet, button label
-  readonly queryOptions?: QueryOptions; // info to pass back to data fetching hooks about this facet
+  /**
+   * specific field for upload facet, upload button label
+   */
+  readonly uploadLabel?: string;
+  /**
+   *  info to pass back to data fetching hooks about this facet
+   */
+  readonly queryOptions?: QueryOptions;
 };

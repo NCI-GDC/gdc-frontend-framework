@@ -206,6 +206,18 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
   );
 };
 
+type FacetTabProps = {
+  readonly activeTab: string;
+  readonly setActiveTab: (tab: string | null) => void;
+  readonly hooks: FacetRequiredHooks;
+  readonly facetDefinitions: Record<string, FacetCardDefinition>;
+  readonly tabsConfig: Record<string, CohortBuilderCategoryConfig>;
+  readonly customFacetHooks?: CustomFacetHooks;
+  readonly getFacetLabel?: (queryOptions?: QueryOptions) => string;
+  readonly cardScrollMargin?: number;
+  readonly Chart?: React.FC<EnumChartProps>;
+};
+
 /**
  * Component for rendering a tabbed facet selection view
  * @param activeTab - which tab is currently active
@@ -218,18 +230,6 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
  * @param cardScrollMargin - Scroll margin for cards, used for positioning cards on the page when scrolled to
  * @param Chart - Component for rendering a Chart view of the data
  */
-
-type FacetTabProps = {
-  readonly activeTab: string;
-  readonly setActiveTab: (tab: string | null) => void;
-  readonly hooks: FacetRequiredHooks;
-  readonly facetDefinitions: Record<string, FacetCardDefinition>;
-  readonly tabsConfig: Record<string, CohortBuilderCategoryConfig>;
-  readonly customFacetHooks?: CustomFacetHooks;
-  readonly getFacetLabel?: (queryOptions?: QueryOptions) => string;
-  readonly cardScrollMargin?: number;
-  readonly Chart?: React.FC<EnumChartProps>;
-};
 
 export const FacetTabs: React.FC<FacetTabProps> = ({
   activeTab,
