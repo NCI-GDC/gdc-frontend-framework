@@ -124,8 +124,8 @@ export const createAppID = (name: string, version: string): string =>
 // Define the return type interface
 export interface AppStoreReturn {
   id: string;
-  useAppSelector: TypedUseSelectorHook<any>; // Replace 'any' with your actual AppState type
-  useAppDispatch: () => any; // Replace 'any' with your actual AppDispatch type
+  useAppSelector: TypedUseSelectorHook<any>; // TODO replace any
+  useAppDispatch: () => any; // TODO replace any
   AppStore: Store<any>;
   AppContext: Context<ReactReduxContextValue<any, UnknownAction>>;
   useAppStore: () => Store<any, UnknownAction>;
