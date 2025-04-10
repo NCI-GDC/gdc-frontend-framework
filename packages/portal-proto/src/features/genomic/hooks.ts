@@ -23,6 +23,8 @@ import {
   useGetSsmTableDataMutation,
   GqlOperation,
   buildSSMSTableSearchFilters,
+  showModal,
+  Modals,
 } from "@gff/core";
 import { useDeepCompareEffect } from "use-deep-compare";
 import isEqual from "lodash/isEqual";
@@ -471,4 +473,19 @@ export const useTopGeneSsms = ({
   ]);
 
   return ssmSearch ? topSSMSuccess : topGeneSSMSSuccess;
+};
+
+export const useOpenUploadModal = () => {
+  const coreDispatch = useCoreDispatch();
+
+  const openUploadModal = (field: string) => {
+    console.log({ field });
+    if (field === "genes.upload.gene_id") {
+      coreDispatch(showModal({ modal: Modals.LocalGeneSetModal }));
+    } else if (field === "ssms.upload.ssm_id") {
+      coreDispatch(showModal({ modal: Modals.LocalMutationSetModal }));
+    }
+  };
+
+  return openUploadModal;
 };
