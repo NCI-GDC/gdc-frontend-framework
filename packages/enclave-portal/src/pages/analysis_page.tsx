@@ -27,8 +27,8 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
     name: "Projects",
     icon: (
       <ProjectsIcon
-        width={64}
-        height={64}
+        width={48}
+        height={48}
         viewBox="0 -20 128 128"
         aria-hidden="true"
       />
@@ -68,7 +68,7 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
   },
 ];
 
-export const RECOMMENDED_APPS = ["Projects"];
+export const RECOMMENDED_APPS = ["CohortBuilder"];
 
 const AnalysisCenter: NextPage = () => {
   const router = useRouter();
