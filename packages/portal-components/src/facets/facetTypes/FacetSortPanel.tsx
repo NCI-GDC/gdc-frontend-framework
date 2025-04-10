@@ -5,7 +5,7 @@ import { SortType } from "../types";
 
 interface FacetSortPanelProps {
   sortType: SortType;
-  valueLabel: string;
+  valueLabel?: string;
   setSort: (sort: SortType) => void;
   field: string;
 }
@@ -88,34 +88,37 @@ const FacetSortPanel: React.FC<FacetSortPanelProps> = ({
       >
         Name
       </Button>
-      <Button
-        className="pr-0 mr-0 text-sm"
-        classNames={{
-          section: "ml-1",
-        }}
-        variant="subtle"
-        size="compact-xs"
-        color="primary.9"
-        onClick={() => {
-          const direction =
-            sortType.type === "value" && sortType.direction === "asc"
-              ? "dsc"
-              : "asc";
-          const sortObj: SortType = {
-            type: "value",
-            direction,
-          };
-          setSort(sortObj);
-          setSortingStatus(
-            sortTypeToAriaDescription(sortObj, valueLabel, field),
-          );
-        }}
-        rightSection={<ValueSortIcon size={valueIconSize} aria-hidden="true" />}
-        aria-label={`Sort ${valueLabel} numerically`}
-      >
-        {valueLabel}
-      </Button>
-
+      {valueLabel && (
+        <Button
+          className="pr-0 mr-0 text-sm"
+          classNames={{
+            section: "ml-1",
+          }}
+          variant="subtle"
+          size="compact-xs"
+          color="primary.9"
+          onClick={() => {
+            const direction =
+              sortType.type === "value" && sortType.direction === "asc"
+                ? "dsc"
+                : "asc";
+            const sortObj: SortType = {
+              type: "value",
+              direction,
+            };
+            setSort(sortObj);
+            setSortingStatus(
+              sortTypeToAriaDescription(sortObj, valueLabel, field),
+            );
+          }}
+          rightSection={
+            <ValueSortIcon size={valueIconSize} aria-hidden="true" />
+          }
+          aria-label={`Sort ${valueLabel} numerically`}
+        >
+          {valueLabel}
+        </Button>
+      )}
       <span
         id={`${field}-liveRegion`}
         aria-live="polite"
