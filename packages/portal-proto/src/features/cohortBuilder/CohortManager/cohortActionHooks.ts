@@ -300,7 +300,7 @@ const useUpdateCohortState = () => {
           );
       }
     },
-    [coreDispatch],
+    [coreDispatch, fetchSavedFilters],
   );
 
   return updateCohortState;
