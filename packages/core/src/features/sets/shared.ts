@@ -4,12 +4,12 @@ export const createTopNQuery = (
   index: "genes" | "ssms",
   field: "gene_id" | "ssm_id",
 ) => {
-  return `query topN${index}Query($cohortFilter: FiltersArgument,
+  return `query topN${index}Query($case_filters: FiltersArgument,
     $filters: FiltersArgument, $score: String, $size: Int) {
     viewer {
       explore {
         ${index}  {
-          hits(filters: $filters, case_filters: $cohortFilter, score:$score, first: $size) {
+          hits(filters: $filters, case_filters: $case_filters, score:$score, first: $size) {
             edges {
               node {
                   ${field}

@@ -60,8 +60,9 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
 
   const handleSave = () => {
     if (response.isLoading) return;
-    if (!isManualSelection) {
+    if (!isManualSelection && setType === "ssms") {
       // we need to select top N items from the set in this case done by useRemoveTopNSsmsSetFromFiltersMutation
+      // this currently being used only for ssm set
       removeFromSet({
         setId: selectedSets[0][0],
         filters: buildCohortGqlOperator(filters)

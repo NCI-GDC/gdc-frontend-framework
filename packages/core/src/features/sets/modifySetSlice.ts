@@ -95,11 +95,18 @@ export const modifySetSlice = graphqlAPISlice
   .injectEndpoints({
     endpoints: (builder) => ({
       appendToGeneSet: builder.mutation({
-        query: ({ setId, filters, size, score }: ModifySetFilterArgs) => ({
+        query: ({
+          setId,
+          filters,
+          size,
+          score,
+          case_filters,
+        }: ModifySetFilterArgs) => ({
           graphQLQuery: appendToGeneSetQuery,
           graphQLFilters: {
             input: {
               set_id: `set_id:${setId}`,
+              case_filters,
               filters,
               size,
               score,
@@ -143,7 +150,7 @@ export const modifySetSlice = graphqlAPISlice
           filters,
         }: {
           setId: string;
-          filters: GqlOperation | Record<string, never>; // type it here
+          filters: GqlOperation | Record<string, never>;
         }) => ({
           graphQLQuery: removeFromGeneSetQuery,
           graphQLFilters: {
@@ -191,7 +198,7 @@ export const modifySetSlice = graphqlAPISlice
           // get the top N ssms listed by score
           try {
             results = await graphqlAPI(createTopNQuery("ssms", "ssm_id"), {
-              cohortFilter: case_filters,
+              case_filters,
               filters,
               size,
               score,

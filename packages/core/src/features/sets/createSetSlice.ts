@@ -204,7 +204,7 @@ export const createSetSlice = graphqlAPISlice
           // get the top N genes listed by score
           try {
             results = await graphqlAPI(createTopNQuery("genes", "gene_id"), {
-              cohortFilter: case_filters,
+              case_filters,
               filters,
               size,
               score,
@@ -292,7 +292,7 @@ export const createSetSlice = graphqlAPISlice
           // get the top N ssms listed by score
           try {
             results = await graphqlAPI(createTopNQuery("ssms", "ssm_id"), {
-              cohortFilter: case_filters,
+              case_filters,
               filters,
               size,
               score,
