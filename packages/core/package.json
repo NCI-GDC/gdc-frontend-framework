@@ -21,7 +21,7 @@
   "author": "",
   "license": "Apache-2.0",
   "peerDependencies": {
-    "@reduxjs/toolkit": "^2.5.0",
+    "@reduxjs/toolkit": "~2.5.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-redux": "^7.2.3",
@@ -50,6 +50,7 @@
     "uuid": "^8.3.2"
   },
   "optionalDependencies": {
+    "@napi-rs/magic-string-linux-x64-gnu": "^0.3.4",
     "@rollup/rollup-linux-x64-gnu": "^4.28.1",
     "@swc/core-linux-x64-gnu": "^1.10.0"
   }
