@@ -293,7 +293,6 @@ const useUpdateCohortState = () => {
             coreDispatch(
               discardCohortChanges({
                 filters: buildGqlOperationToFilterSet(savedFilters.filters),
-                showMessage: false,
                 id: cohortId,
               }),
             ),
