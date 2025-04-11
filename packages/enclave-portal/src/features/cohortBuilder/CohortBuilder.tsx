@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { FacetTabs } from "@gff/portal-components";
+import { FacetTabs, Operation } from "@gff/portal-components";
+import { useFieldNameToTitle } from "@/hooks/useFieldNameToTitle";
 import facetDefintions from "./facet_dictionary.json";
 import tabsConfig from "./cohort_builder.json";
-import { useGetEnumFacetData, useGetRangeFacetData } from "./hooks";
-import { useFieldNameToTitle } from "@/hooks/useFieldNameToTitle";
+import { useGetEnumFacetData } from "./hooks";
 
 const CohortBuilder: React.FC = () => {
   const [activeFilters, setActiveFilters] = useState<
@@ -17,17 +17,17 @@ const CohortBuilder: React.FC = () => {
           hooks={{
             useClearFilter: () => (field: string) =>
               setActiveFilters({ ...activeFilters, [field]: undefined }),
-            useUpdateFacetFilters: () => (field: string, op: any) =>
+            useUpdateFacetFilters: () => (field: string, op: Operation) =>
               setActiveFilters({ ...activeFilters, [field]: op }),
             useTotalCounts: () => 1,
             useFieldNameToTitle,
-            useGetEnumFacetData: useGetEnumFacetData as any,
+            useGetEnumFacetData: useGetEnumFacetData,
             useSearchEnumTerms: (
               enumData: [string, number][],
               searchTerm: string,
             ) => enumData.filter((e) => e[0].startsWith(searchTerm)),
             useGetFacetFilters: (field: string) => activeFilters[field],
-            useGetRangeFacetData: useGetRangeFacetData,
+            useGetRangeFacetData: () => () => undefined,
           }}
           facetDefinitions={facetDefintions}
           tabsConfig={tabsConfig.config}

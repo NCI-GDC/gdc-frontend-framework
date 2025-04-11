@@ -1,7 +1,6 @@
 import React from "react";
 import { render } from "@testing-library/react";
 import NumericRangeFacet from "../NumericRangeFacet";
-import { EnumFacetResponse } from "../../types";
 import { MantineProvider } from "@mantine/core";
 
 describe("<NumericRangeFacet />", () => {
@@ -20,7 +19,7 @@ describe("<NumericRangeFacet />", () => {
           maximum={32873}
           facetName="Age at Diagnosis"
           hooks={{
-            useGetRangeFacetData: jest.fn((): EnumFacetResponse => {
+            useGetRangeFacetData: jest.fn(() => {
               return {
                 data: {
                   "0.0-3653.0": 4109,

@@ -1,7 +1,6 @@
 import React from "react";
 import { render } from "@testing-library/react";
 import ToggleFacet from "../ToggleFacet";
-import { EnumFacetResponse } from "src/facets/types";
 import { MantineProvider } from "@mantine/core";
 
 describe("<ToggleFacet />", () => {
@@ -15,7 +14,7 @@ describe("<ToggleFacet />", () => {
           valueLabel="Cases"
           field="gene.is_cancer_gene_census"
           hooks={{
-            useGetEnumFacetData: jest.fn((): EnumFacetResponse => {
+            useGetEnumFacetData: jest.fn(() => {
               return {
                 data: {},
                 isSuccess: true,
@@ -30,6 +29,7 @@ describe("<ToggleFacet />", () => {
             useTotalCounts: jest.fn(),
             useFieldNameToTitle: jest.fn(),
             useSearchEnumTerms: jest.fn(),
+            useGetFacetFilters: jest.fn(),
           }}
           facetName="Is Cancer Gene Census"
         />
@@ -52,7 +52,7 @@ describe("<ToggleFacet />", () => {
           valueLabel="Cases"
           field="gene.is_cancer_gene_census"
           hooks={{
-            useGetEnumFacetData: jest.fn((): EnumFacetResponse => {
+            useGetEnumFacetData: jest.fn(() => {
               return {
                 data: { "1": 21734 },
                 isSuccess: true,
@@ -67,6 +67,7 @@ describe("<ToggleFacet />", () => {
             useTotalCounts: jest.fn(),
             useFieldNameToTitle: jest.fn().mockReturnValue(jest.fn()),
             useSearchEnumTerms: jest.fn(),
+            useGetFacetFilters: jest.fn(),
           }}
           facetName="Is Cancer Gene Census"
         />

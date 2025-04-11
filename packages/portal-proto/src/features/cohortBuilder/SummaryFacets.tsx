@@ -7,6 +7,7 @@ import {
   FacetDocTypeToLabelsMap,
   useEnumFacets,
   useEnumFacetValues,
+  useSelectFieldFilter,
 } from "@/features/facets/hooks";
 import tw from "tailwind-styled-components";
 import { useFieldNameToTitle } from "./queryExpressionHooks";
@@ -72,6 +73,7 @@ export const SummaryFacets: React.FC<SummaryFacetProps> = ({
               useGetEnumFacetData: useEnumFacetValues,
               useFieldNameToTitle,
               useSearchEnumTerms,
+              useGetFacetFilters: useSelectFieldFilter,
             }}
             queryOptions={queryOptions}
             Chart={EnumFacetChart}
