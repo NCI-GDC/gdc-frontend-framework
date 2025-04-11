@@ -5,8 +5,7 @@
     "@mantine/core": "7.17.3",
     "@mantine/notifications": "7.17.3",
     "@gff/portal-components": "^2.16.5",
-    "next": "^15.2.3",
-    "typescript": "^5.6.3"
+    "next": "^15.2.3"
   },
   "peerDependencies": {
     "react": "^18.3.1",
