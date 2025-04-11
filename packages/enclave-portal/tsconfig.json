@@ -15,7 +15,8 @@
     "baseUrl": ".",
     "paths": {
       "@/components/*": ["src/components/*"],
-      "@/features/*": ["src/features/*"]
+      "@/features/*": ["src/features/*"],
+      "@/hooks/*": ["src/hooks/*"]
     },
     "module": "esnext",
     "target": "ES2021"

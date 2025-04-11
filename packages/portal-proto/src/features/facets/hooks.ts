@@ -119,7 +119,6 @@ export const useEnumFacet = (
 
   return {
     data: facet?.buckets,
-    enumFilters: (enumValues as EnumOperandValue)?.map((x) => x.toString()),
     error: facet?.error,
     isUninitialized: facet === undefined,
     isFetching: facet?.status === "pending",

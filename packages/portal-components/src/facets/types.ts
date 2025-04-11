@@ -7,15 +7,10 @@ import { DataFetchingResult } from "src/types";
 
 export type QueryOptions = Record<string, unknown>;
 
-export interface EnumFacetResponse
-  extends DataFetchingResult<Record<string, number>> {
-  readonly enumFilters?: ReadonlyArray<string>;
-}
-
 export type GetEnumFacetDataFunction = (
   field: string,
   queryOptions?: QueryOptions,
-) => EnumFacetResponse;
+) => DataFetchingResult<Record<string, number>>;
 
 export type GetRangeFacetDataFunction = (
   field: string,
@@ -42,10 +37,17 @@ export type EnumFacetHooks = FacetCommonHooks & {
     enumData: [string, number][],
     searchTerm: string,
   ) => [string, number][];
+  /**
+   * Hooks that returns the currently selected filters
+   */
+  useGetFacetFilters: SelectFacetFilterFunction;
 };
 
 export type ValueFacetHooks = FacetCommonHooks & {
-  useGetFacetFilters: SelectFacetFilterFunction; // gets the current filters
+  /**
+   * Hooks that returns the currently selected filters
+   */
+  useGetFacetFilters: SelectFacetFilterFunction;
 };
 
 export type RangeFacetHooks = FacetCommonHooks & {
@@ -53,7 +55,10 @@ export type RangeFacetHooks = FacetCommonHooks & {
    * Hook that returns range values and counts
    */
   useGetRangeFacetData: GetRangeFacetDataFunction;
-  useGetFacetFilters: SelectFacetFilterFunction; // gets the current filters
+  /**
+   * Hooks that returns the currently selected filters
+   */
+  useGetFacetFilters: SelectFacetFilterFunction;
 };
 
 export type UploadFacetHooks = FacetCommonHooks &

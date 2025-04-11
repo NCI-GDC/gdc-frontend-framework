@@ -1,5 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
+import {
+  useDeepCompareCallback,
+  useDeepCompareEffect,
+  useDeepCompareMemo,
+} from "use-deep-compare";
 import { ActionIcon, Checkbox, LoadingOverlay, TextInput } from "@mantine/core";
 import OverflowTooltippedLabel from "@/common/OverflowTooltippedLabel";
 import { CloseIcon } from "src/commonIcons";
@@ -8,6 +12,7 @@ import FacetControlsHeader from "./FacetControlsHeader";
 import { SortType, EnumFacetCardProps } from "../types";
 import { BAD_DATA_MESSAGE, DEFAULT_VISIBLE_ITEMS } from "../constants";
 import FacetExpander from "./FacetExpander";
+import { Includes } from "@/cohort/QueryExpression/types";
 
 /**
  * Facet card component for enumerated fields
@@ -48,10 +53,15 @@ const EnumFacet: React.FC<EnumFacetCardProps> = ({
   });
   const [sortedData, setSortedData] = useState<Record<string, number>>({});
   const [isFacetView, setIsFacetView] = useState(startShowingData);
-  const { data, enumFilters, isSuccess, error, isUninitialized, isFetching } =
+  const { data, isSuccess, error, isUninitialized, isFetching } =
     hooks.useGetEnumFacetData(field, queryOptions);
+  const filters = hooks.useGetFacetFilters(field);
+  const enumFilters = useDeepCompareMemo(
+    () => (filters as Includes)?.operands.map((x) => x.toString()) || [],
+    [filters],
+  );
   const [dataProcessed, setDataProcessed] = useState(false);
-  const [selectedEnums, setSelectedEnums] = useState(enumFilters || []);
+  const [selectedEnums, setSelectedEnums] = useState(enumFilters);
 
   const cardRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -83,7 +93,7 @@ const EnumFacet: React.FC<EnumFacetCardProps> = ({
   }, [isSearching]);
 
   useDeepCompareEffect(() => {
-    setSelectedEnums(enumFilters || []);
+    setSelectedEnums(enumFilters);
   }, [enumFilters]);
 
   const maxValuesToDisplay = DEFAULT_VISIBLE_ITEMS;

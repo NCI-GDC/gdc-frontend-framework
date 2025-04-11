@@ -1,31 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import { FacetTabs } from "@gff/portal-components";
 import facetDefintions from "./facet_dictionary.json";
 import tabsConfig from "./cohort_builder.json";
 import { useGetEnumFacetData, useGetRangeFacetData } from "./hooks";
+import { useFieldNameToTitle } from "@/hooks/useFieldNameToTitle";
 
 const CohortBuilder: React.FC = () => {
+  const [activeFilters, setActiveFilters] = useState<
+    Record<string, any | undefined>
+  >({});
+  console.log({ activeFilters });
+
   return (
     <>
       <div className="flex flex-col">
         <FacetTabs
           hooks={{
-            useClearFilter: () => () => {},
-            useUpdateFacetFilters: () => () => {},
+            useClearFilter: () => (field: string) =>
+              setActiveFilters({ ...activeFilters, [field]: undefined }),
+            useUpdateFacetFilters: () => (field: string, op: any) =>
+              setActiveFilters({ ...activeFilters, [field]: op }),
             useTotalCounts: () => 1,
-            useFieldNameToTitle: () => (field: string) =>
-              field
-                .split(".")
-                .slice(-1)
-                .map((s) => s.split("_"))
-                .flat()
-                .map((s) =>
-                  s.length > 0 ? s[0].toUpperCase() + s.slice(1) : "",
-                )
-                .join(" "),
+            useFieldNameToTitle,
             useGetEnumFacetData: useGetEnumFacetData as any,
             useSearchEnumTerms: (enumData: [string, number][]) => enumData,
-            useGetFacetFilters: () => {},
+            useGetFacetFilters: (field: string) => activeFilters[field],
             useGetRangeFacetData: useGetRangeFacetData,
           }}
           facetDefinitions={facetDefintions}
