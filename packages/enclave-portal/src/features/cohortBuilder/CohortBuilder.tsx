@@ -9,7 +9,6 @@ const CohortBuilder: React.FC = () => {
   const [activeFilters, setActiveFilters] = useState<
     Record<string, any | undefined>
   >({});
-  console.log({ activeFilters });
 
   return (
     <>
@@ -23,7 +22,10 @@ const CohortBuilder: React.FC = () => {
             useTotalCounts: () => 1,
             useFieldNameToTitle,
             useGetEnumFacetData: useGetEnumFacetData as any,
-            useSearchEnumTerms: (enumData: [string, number][]) => enumData,
+            useSearchEnumTerms: (
+              enumData: [string, number][],
+              searchTerm: string,
+            ) => enumData.filter((e) => e[0].startsWith(searchTerm)),
             useGetFacetFilters: (field: string) => activeFilters[field],
             useGetRangeFacetData: useGetRangeFacetData,
           }}
