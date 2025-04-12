@@ -154,6 +154,11 @@ export const buildSSMSTableSearchFilters = (
           field: "ssms.gene_aa_change",
           operands: [`*${term}*`],
         },
+        {
+          operator: "includes",
+          field: "ssms.ssm_id",
+          operands: [`*${term}*`],
+        },
       ],
     };
   }
