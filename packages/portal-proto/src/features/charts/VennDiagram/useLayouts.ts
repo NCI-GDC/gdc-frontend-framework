@@ -841,8 +841,8 @@ export const useLayout = ({
                     ? NOT_ALLOWED_TEXT
                     : "#333333",
               },
-              scaleX: 1.5,
-              scaleY: 1.5,
+              scaleX: 1.25,
+              scaleY: 1.25,
             };
           },
           data: chartData,
