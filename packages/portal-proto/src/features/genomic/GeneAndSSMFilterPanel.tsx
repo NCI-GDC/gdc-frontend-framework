@@ -42,8 +42,8 @@ const GeneAndSSMFilterPanel = ({
   useGenesFacets(
     "genes",
     "explore",
-    FilterFacets.filter((f) => f.queryOptions.docType === "genes").map(
-      (x) => x.field,
+    FilterFacets.filter((f) => f.queryOptions.docType === "genes").map((x) =>
+      x.field.includes("upload") ? x.field.split(".upload").join("") : x.field,
     ),
     isDemoMode,
   );

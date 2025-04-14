@@ -31,21 +31,32 @@ export type EnumFacetHooks = FacetCommonHooks & {
    */
   useGetEnumFacetData: GetEnumFacetDataFunction;
   /**
-   * Hooks that takes the enum data and a search term and returns filtered data. If not provided, the search icon won't appear on cards.
+   * Hook that takes the enum data and a search term and returns filtered data. If not provided, the search icon won't appear on cards.
    */
   useSearchEnumTerms: (
     enumData: [string, number][],
     searchTerm: string,
   ) => [string, number][];
   /**
-   * Hooks that returns the currently selected filters
+   * Hook that returns the currently selected filters
    */
   useGetFacetFilters: SelectFacetFilterFunction;
 };
 
+export type ToggleFacetHooks = FacetCommonHooks & {
+  /**
+   * Hook that returns the values and counts for the enum facet type
+   */
+  useGetEnumFacetData: GetEnumFacetDataFunction;
+  /**
+   * Hook that returns the currently selected filters
+   */
+  useGetFacetFilters: (field: string) => string[];
+};
+
 export type ValueFacetHooks = FacetCommonHooks & {
   /**
-   * Hooks that returns the currently selected filters
+   * Hook that returns the currently selected filters
    */
   useGetFacetFilters: SelectFacetFilterFunction;
 };
@@ -56,7 +67,7 @@ export type RangeFacetHooks = FacetCommonHooks & {
    */
   useGetRangeFacetData: GetRangeFacetDataFunction;
   /**
-   * Hooks that returns the currently selected filters
+   * Hook that returns the currently selected filters
    */
   useGetFacetFilters: SelectFacetFilterFunction;
 };
@@ -98,7 +109,7 @@ export interface FacetCommonHooks {
    */
   useToggleExpandFilter?: () => (field: string, expanded: boolean) => void;
   /**
-   * Hooks that returns the expand/collapse state of the facet card
+   * Hook that returns the expand/collapse state of the facet card
    */
   useFilterExpanded?: (field: string) => boolean;
   /**
@@ -137,6 +148,7 @@ export interface CustomFacetHooks {
 
 export type FacetRequiredHooks =
   | EnumFacetHooks
+  | ToggleFacetHooks
   | ValueFacetHooks
   | RangeFacetHooks
   | UploadFacetHooks;

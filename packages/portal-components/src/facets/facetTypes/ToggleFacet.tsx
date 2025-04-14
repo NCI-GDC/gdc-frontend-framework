@@ -1,8 +1,6 @@
 import React, { useMemo } from "react";
-import { useDeepCompareMemo } from "use-deep-compare";
 import { LoadingOverlay, Switch } from "@mantine/core";
-import { Includes } from "@/cohort/QueryExpression/types";
-import { EnumFacetHooks, FacetCardProps } from "../types";
+import { FacetCardProps, ToggleFacetHooks } from "../types";
 import { updateFacetEnum } from "../utils";
 import FacetControlsHeader from "./FacetControlsHeader";
 
@@ -17,17 +15,16 @@ const extractToggleValue = (values?: ReadonlyArray<string>): boolean =>
  * @param valueLabel - label for the value
  * @param facetName - name of the facet
  * @param dismissCallback - callback to call when the facet is dismissed
- * @param width - width of the facet
  */
 
-const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
+const ToggleFacet: React.FC<FacetCardProps<ToggleFacetHooks>> = ({
   field,
   hooks,
   description,
   valueLabel,
   facetName,
   dismissCallback = undefined,
-}: FacetCardProps<EnumFacetHooks>) => {
+}) => {
   const clearFilters = hooks.useClearFilter();
   const updateFacetFilters = hooks.useUpdateFacetFilters();
   const isFilterExpanded =
@@ -35,11 +32,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   const showFilters = isFilterExpanded === undefined || isFilterExpanded;
 
   const { data, isSuccess } = hooks.useGetEnumFacetData(field);
-  const filters = hooks.useGetFacetFilters(field);
-  const enumFilters = useDeepCompareMemo(
-    () => ((filters as Includes)?.operands || []).map((x) => x.toString()),
-    [filters],
-  );
+  const enumFilters = hooks.useGetFacetFilters(field);
 
   const toggleValue = useMemo(
     () => extractToggleValue(enumFilters),

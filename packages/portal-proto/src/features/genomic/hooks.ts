@@ -145,6 +145,7 @@ export const useGenesFacetValues = (field: string) => {
   const facet: FacetBuckets = useCoreSelector((state) =>
     selectFacetByDocTypeAndField(state, docType, field),
   );
+
   return {
     data: facet?.buckets,
     error: facet?.error,
@@ -476,7 +477,6 @@ export const useOpenUploadModal = () => {
   const coreDispatch = useCoreDispatch();
 
   const openUploadModal = (field: string) => {
-    console.log({ field });
     if (field === "genes.upload.gene_id") {
       coreDispatch(showModal({ modal: Modals.LocalGeneSetModal }));
     } else if (field === "ssms.upload.ssm_id") {

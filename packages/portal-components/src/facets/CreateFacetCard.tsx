@@ -15,6 +15,7 @@ import {
   ValueFacetHooks,
   EnumChartProps,
   QueryOptions,
+  ToggleFacetHooks,
 } from "./types";
 
 interface CreateFacetCardProps {
@@ -121,7 +122,7 @@ const createFacetCards = ({
               hideIfEmpty={hideIfEmpty}
               showPercent={showPercent}
               hooks={{
-                ...(hooks as EnumFacetHooks),
+                ...(hooks as ToggleFacetHooks),
               }}
               facetName={facetNameFormatter(facet.field)}
             />

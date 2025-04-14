@@ -41,8 +41,7 @@
     "facet_type": "enum",
     "queryOptions": {
       "docType": "ssms"
-    },
-    "doc_type": "ssms"
+    }
   },
   {
     "field": "ssms.consequence.transcript.annotation.sift_impact",

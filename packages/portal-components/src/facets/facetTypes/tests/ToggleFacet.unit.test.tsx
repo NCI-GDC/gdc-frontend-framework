@@ -28,7 +28,6 @@ describe("<ToggleFacet />", () => {
             useClearFilter: jest.fn(),
             useTotalCounts: jest.fn(),
             useFieldNameToTitle: jest.fn(),
-            useSearchEnumTerms: jest.fn(),
             useGetFacetFilters: jest.fn(),
           }}
           facetName="Is Cancer Gene Census"
@@ -66,8 +65,7 @@ describe("<ToggleFacet />", () => {
             useClearFilter: jest.fn(),
             useTotalCounts: jest.fn(),
             useFieldNameToTitle: jest.fn().mockReturnValue(jest.fn()),
-            useSearchEnumTerms: jest.fn(),
-            useGetFacetFilters: jest.fn(),
+            useGetFacetFilters: jest.fn().mockReturnValue(["true"]),
           }}
           facetName="Is Cancer Gene Census"
         />
