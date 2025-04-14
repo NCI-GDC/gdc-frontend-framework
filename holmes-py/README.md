@@ -17,7 +17,7 @@ _Detects and reports UI defects_
 This project uses
 
 - [Gauge](http://gauge.org/)
-- [Python 3.8.x or above](https://docs.python.org/3/index.html)
+- [Python 3.9.x or above](https://docs.python.org/3/index.html)
 - [Playwright](https://playwright.dev/python/docs/library#macos)
 
 ## Concepts covered
