@@ -66,7 +66,7 @@ const GeneAndSSMFilterPanel = ({
     useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
     useClearFilter: useClearGenomicFilters,
     useTotalCounts: useTotalGenomicCounts,
-    useGetFacetValues: useGenomicFilterByName,
+    useGetFacetFilters: useGenomicFilterByName,
     useToggleExpandFilter: useToggleExpandFilter,
     useFilterExpanded: useFilterExpandedState,
     useFieldNameToTitle,

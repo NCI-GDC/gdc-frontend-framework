@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useCallback } from "react";
 import {
-  EnumOperandValue,
   FacetBuckets,
   fetchFacetByNameGQL,
   FilterSet,
@@ -146,10 +145,8 @@ export const useGenesFacetValues = (field: string) => {
   const facet: FacetBuckets = useCoreSelector((state) =>
     selectFacetByDocTypeAndField(state, docType, field),
   );
-  const enumValues = useGenomicFilterByName(field);
   return {
     data: facet?.buckets,
-    enumFilters: (enumValues as EnumOperandValue)?.map((x) => x.toString()),
     error: facet?.error,
     isUninitialized: facet === undefined,
     isFetching: facet?.status === "pending",

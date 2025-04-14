@@ -37,7 +37,7 @@ const ToggleFacet: React.FC<FacetCardProps<EnumFacetHooks>> = ({
   const { data, isSuccess } = hooks.useGetEnumFacetData(field);
   const filters = hooks.useGetFacetFilters(field);
   const enumFilters = useDeepCompareMemo(
-    () => (filters as Includes)?.operands.map((x) => x.toString()) || [],
+    () => ((filters as Includes)?.operands || []).map((x) => x.toString()),
     [filters],
   );
 

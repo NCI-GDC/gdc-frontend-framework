@@ -57,7 +57,7 @@ const EnumFacet: React.FC<EnumFacetCardProps> = ({
     hooks.useGetEnumFacetData(field, queryOptions);
   const filters = hooks.useGetFacetFilters(field);
   const enumFilters = useDeepCompareMemo(
-    () => (filters as Includes)?.operands.map((x) => x.toString()) || [],
+    () => ((filters as Includes)?.operands || []).map((x) => x.toString()),
     [filters],
   );
   const [dataProcessed, setDataProcessed] = useState(false);
