@@ -812,7 +812,7 @@ export const useLayout = ({
             },
           } as GraphicComponentOption),
       ),
-    [],
+    [chartData],
   );
 
   useDeepCompareEffect(() => {
