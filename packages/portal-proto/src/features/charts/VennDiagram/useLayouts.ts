@@ -1,12 +1,10 @@
 import { useState, useCallback, useMemo } from "react";
-import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
 import {
-  CustomSeriesRenderItemAPI,
-  CustomSeriesRenderItemParams,
-  EChartsOption,
-  ElementEvent,
-  GraphicComponentOption,
-} from "echarts";
+  useDeepCompareCallback,
+  useDeepCompareEffect,
+  useDeepCompareMemo,
+} from "use-deep-compare";
+import { EChartsOption, ElementEvent, GraphicComponentOption } from "echarts";
 import { GraphicComponentGroupOption, VennDiagramProps } from "./types";
 
 const HIGHLIGHT_COLOR = "#a5d5d9";
@@ -661,6 +659,8 @@ const getLayout = (
 
 type UseLayoutProps = VennDiagramProps & {
   readonly highlightedIndices: string[];
+  readonly height: number;
+  readonly width: number;
 };
 
 export const useLayout = ({
@@ -713,7 +713,7 @@ export const useLayout = ({
   );
 
   const handleEvent = useDeepCompareCallback(
-    (event: ElementEvent, type: "mouseover" | "mouseout" | "click") => {
+    (event: any, type: "mouseover" | "mouseout" | "click") => {
       const eventId = String(event.target.id);
       const id = eventId.includes(".") ? eventId.split(".")[0] : eventId;
       const element = chartData.find((datum) => datum.key === id);
@@ -774,6 +774,47 @@ export const useLayout = ({
     [handleEvent, interactable],
   );
 
+  const handleEventWrapper = (key: string) => ({
+    onclick: () => handleEvent({ target: { id: key } }, "click"),
+    onmouseover: () => handleEvent({ target: { id: key } }, "mouseover"),
+    onmouseout: () => handleEvent({ target: { id: key } }, "mouseout"),
+  });
+
+  const valueTexts = useDeepCompareMemo(
+    () =>
+      chartData.map(
+        ({ key, value }) =>
+          ({
+            type: "text",
+            id: `value-${key}`,
+            ...labelLayout[key],
+            style: {
+              text: value.toLocaleString(),
+              textAlign: "middle",
+              textVerticalAlign: "middle",
+              fill:
+                value === 0 && currentMouseOver === key
+                  ? NOT_ALLOWED_TEXT
+                  : "#333",
+              fontSize: 16 * scaleFactor,
+            },
+            z: 300,
+            ...handleEventWrapper(key),
+            tooltip: {
+              show: true,
+              formatter: () =>
+                value === 0 ? "This region contains 0 items" : undefined,
+              borderWidth: 0,
+              backgroundColor: "black",
+              textStyle: {
+                color: "white",
+              },
+            },
+          } as GraphicComponentOption),
+      ),
+    [],
+  );
+
   useDeepCompareEffect(() => {
     setChartLayout(
       getLayout(
@@ -807,6 +848,8 @@ export const useLayout = ({
             fontSize: "16px",
           },
         })),
+
+        ...valueTexts,
       ],
       tooltip: {
         show: true,
@@ -816,52 +859,6 @@ export const useLayout = ({
           return [point[0], point[1] + 20];
         },
       },
-      series: [
-        {
-          type: "custom" as const,
-          z: 300,
-          renderItem: (
-            params: CustomSeriesRenderItemParams,
-            api: CustomSeriesRenderItemAPI,
-          ) => {
-            const dataIndex = params?.dataIndex;
-            const key = chartData[dataIndex]?.key;
-            const dataValue = chartData[dataIndex]?.value;
-            return {
-              type: "text",
-              ...labelLayout[key],
-              style: {
-                text:
-                  typeof dataValue === "string"
-                    ? dataValue
-                    : api.value(0)?.toLocaleString() || "",
-                textAlign: "middle",
-                fill:
-                  dataValue === 0 && currentMouseOver === key
-                    ? NOT_ALLOWED_TEXT
-                    : "#333333",
-              },
-              scaleX: 1.25,
-              scaleY: 1.25,
-            };
-          },
-          data: chartData,
-          tooltip: {
-            formatter: (params) => {
-              const dataIndex = params?.dataIndex;
-              const dataValue = chartData[dataIndex]?.value;
-              return dataValue === 0
-                ? "This region contains 0 items"
-                : undefined;
-            },
-            borderWidth: 0,
-            backgroundColor: "black",
-            textStyle: {
-              color: "white",
-            },
-          },
-        },
-      ],
     };
     setOption(fullChartOption);
   }, [
@@ -875,6 +872,7 @@ export const useLayout = ({
     labelLayout,
     ariaLabel,
     currentMouseOver,
+    valueTexts,
   ]);
 
   return option;

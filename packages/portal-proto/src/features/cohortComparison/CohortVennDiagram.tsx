@@ -91,8 +91,6 @@ const CohortVennDiagram: React.FC<CohortVennDiagramProps> = ({
         labels={LABELS}
         ariaLabel="The Venn diagram displays the number of cases shared between the cohorts."
         interactable={false}
-        width={viewportWidth < 1280 ? 314 : 400}
-        height={viewportWidth < 1280 ? 300 : 350}
       />
     </div>
   );
