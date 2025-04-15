@@ -31,7 +31,7 @@ This project uses
 # Prerequisites
 
 - [Install Gauge](https://docs.gauge.org/getting_started/installing-gauge.html?os=macos&language=python&ide=vscode)
-- [Install Python 3.8.x or above](https://www.python.org/downloads/)
+- [Install Python 3.9.x or above](https://www.python.org/downloads/)
 - [Install Gauge-Python plugin](https://github.com/kashishm/gauge-python/wiki/User-Documentation) by running
 
   ````bash
@@ -51,7 +51,7 @@ This project uses
 Ensure that you either create a virtual environment or are working in a Docker container.
 Make sure to create the environment in the holmes-py folder.
 
-_Creating a virtual environment:_ (Minimum python version 3.8.x)
+_Creating a virtual environment:_ (Minimum python version 3.9.x)
 
 ```bash
 python3 -m venv venv
@@ -79,10 +79,10 @@ deactivate
 
 ##### Minimum versions:
 ```bash
-Python: 3.8.x
-getgauge: 0.3.17
+Python: 3.9.x
+getgauge: 0.4.9
 playwright: 1.23.1
-protobuf: 3.20.1
+protobuf: 3.20.2
 ```
 Upgrade pip before attempting to install dependencies
 ````bash
