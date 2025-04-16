@@ -99,7 +99,7 @@ export const useFacetSearch = (): MiniSearch<FacetSearchDocument> => {
           category: category.label,
           categoryKey,
           description: facet.description,
-          id: facet.full ?? facet.field,
+          id: facet.field,
         });
       });
     });

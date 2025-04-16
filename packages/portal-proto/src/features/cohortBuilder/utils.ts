@@ -3,6 +3,7 @@ import {
   selectCurrentCohortFilters,
   useCoreSelector,
   GQLDocType,
+  FacetDefinition,
 } from "@gff/core";
 import { SummaryFacetInfo } from "./SummaryFacets";
 import { FacetCardDefinition } from "@gff/portal-components";
@@ -54,9 +55,15 @@ export const upload_facets = {
  */
 export const getFacetInfo = (
   fields: ReadonlyArray<string>,
-  facets: Record<string, FacetCardDefinition>,
+  facets: Record<string, FacetDefinition | FacetCardDefinition>,
 ): ReadonlyArray<FacetCardDefinition> => {
-  return fields.map((field) => facets[field]).filter((facet) => facet);
+  return fields
+    .map((field) => facets[field])
+    .filter((facet) => facet)
+    .map((facet) => ({
+      ...facet,
+      field: (facet as FacetDefinition).full ?? facet.field,
+    }));
 };
 
 export const useCohortFacetFilters = (): FilterSet => {
