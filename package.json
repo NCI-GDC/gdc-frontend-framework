@@ -86,7 +86,8 @@
   },
   "overrides": {
     "glob": "^11.0.0",
-    "globby": "^11.0.4"
+    "globby": "^11.0.4",
+    "@napi-rs/magic-string": "0.3.4"
   },
   "engines": {
     "npm": ">=10.2.4",

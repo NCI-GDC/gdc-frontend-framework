@@ -1,4 +1,4 @@
-import React, { ComponentType, useEffect } from "react";
+import React, { Context, ComponentType, useEffect } from "react";
 import { coreStore } from "../../store";
 import { v5 as uuidv5 } from "uuid";
 import { addGdcAppMetadata, EntityType } from "./gdcAppsSlice";
@@ -121,7 +121,17 @@ export const createAppID = (name: string, version: string): string =>
 // Apps with Local Storage
 //
 
-export const createAppStore = (options: CreateGDCAppStore) => {
+// Define the return type interface
+export interface AppStoreReturn {
+  id: string;
+  useAppSelector: TypedUseSelectorHook<any>; // TODO replace any
+  useAppDispatch: () => any; // TODO replace any
+  AppStore: Store<any>;
+  AppContext: Context<ReactReduxContextValue<any, UnknownAction>>;
+  useAppStore: () => Store<any, UnknownAction>;
+}
+
+export const createAppStore = (options: CreateGDCAppStore): AppStoreReturn => {
   const { name, version, reducers } = options;
   const nameVersion = `${name}::${version}`;
   const id = createAppID(name, version);

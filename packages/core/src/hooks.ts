@@ -21,7 +21,7 @@ import { CoreState } from "./reducers";
  * If we are creating all of our actions through RTK, then PayloadAction might be the
  * correct opinionated type.
  */
-export const CoreContext = React.createContext(
+export const CoreContext = React.createContext<any>(
   undefined as unknown as ReactReduxContextValue<CoreState>,
 );
 
