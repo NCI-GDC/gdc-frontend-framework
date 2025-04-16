@@ -171,7 +171,10 @@ const EnumFacet: React.FC<EnumFacetCardProps> = ({
 
   const calcNumberOfBarsToDisplay = useDeepCompareCallback(
     (visibleItems: number) => {
-      const totalNumberOfBars = enumFilters ? enumFilters.length : visibleItems;
+      const totalNumberOfBars =
+        enumFilters && enumFilters.length > 0
+          ? enumFilters.length
+          : visibleItems;
       return isGroupExpanded
         ? Math.min(16, totalNumberOfBars)
         : Math.min(maxValuesToDisplay, totalNumberOfBars);
