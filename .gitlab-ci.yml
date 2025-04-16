@@ -16,11 +16,11 @@ pre-commit:
 
 stages:
   - .pre
-  - build_ui_tests_image
   - test
   - unit
   - release
   - "tag image"
+  - build_ui_tests_image
   - deploy
   - .trigger_ui_tests
 
