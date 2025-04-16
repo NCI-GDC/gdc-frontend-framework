@@ -20,6 +20,8 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+RUN ln -fs /usr/bin/python3.9 /usr/bin/python3
+
 RUN curl -SsL https://downloads.gauge.org/stable | sh
 
 COPY . /app
