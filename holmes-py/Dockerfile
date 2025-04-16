@@ -1,9 +1,9 @@
 FROM mcr.microsoft.com/playwright:v1.23.1-focal
 
 RUN apt-get update && apt-get install -y \
-    python3 \
+    python3.9 \
     python3-pip \
-    python3-dev \
+    python3.9-dev \
     python3-tk \
     scrot \
     unzip \
@@ -19,6 +19,8 @@ RUN apt-get update && apt-get install -y \
     libatspi2.0-0 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+RUN ln -fs /usr/bin/python3.9 /usr/bin/python3
 
 RUN curl -SsL https://downloads.gauge.org/stable | sh
 
