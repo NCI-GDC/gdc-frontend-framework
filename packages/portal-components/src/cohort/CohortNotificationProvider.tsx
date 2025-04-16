@@ -5,6 +5,7 @@ import React, {
   useReducer,
 } from "react";
 import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
+import { isEqual } from "lodash";
 import { Button } from "@mantine/core";
 import { Notifications, showNotification } from "@mantine/notifications";
 import { ContextModalProps, ModalsProvider } from "@mantine/modals";
@@ -46,7 +47,7 @@ const cohortMessageReducer = (
     case "update":
       return [...state, ...action.payload];
     case "clear":
-      return [];
+      return state.filter((message) => !isEqual(message, action.payload));
     default:
       return state;
   }
@@ -84,6 +85,9 @@ const CohortNotificationProvider: React.FC<CohortNotificationWrapperProps> = ({
             },
             autoClose: 5000,
             closeButtonProps: { "aria-label": "Close notification" },
+            id: `new-cohort-${
+              (message as CohortNotificationCommandWithParam).param1
+            }`,
           });
           break;
         case "deleteCohort":
@@ -100,6 +104,9 @@ const CohortNotificationProvider: React.FC<CohortNotificationWrapperProps> = ({
             },
             autoClose: 5000,
             closeButtonProps: { "aria-label": "Close notification" },
+            id: `delete-cohort-${
+              (message as CohortNotificationCommandWithParam).param1
+            }`,
           });
           break;
         case "savedCohort":
@@ -116,6 +123,9 @@ const CohortNotificationProvider: React.FC<CohortNotificationWrapperProps> = ({
             },
             autoClose: 5000,
             closeButtonProps: { "aria-label": "Close notification" },
+            id: `saved-cohort-${
+              (message as CohortNotificationCommandWithParam).param1
+            }`,
           });
           break;
         case "savedCohortSetCurrent":
@@ -137,6 +147,9 @@ const CohortNotificationProvider: React.FC<CohortNotificationWrapperProps> = ({
             },
             autoClose: 5000,
             closeButtonProps: { "aria-label": "Close notification" },
+            id: `saved-cohort-set-current-${
+              (message as CohortNotificationCommandWithParam).param2
+            }`,
           });
           break;
         case "savedCurrentCohort":
@@ -147,6 +160,7 @@ const CohortNotificationProvider: React.FC<CohortNotificationWrapperProps> = ({
             },
             autoClose: 5000,
             closeButtonProps: { "aria-label": "Close notification" },
+            id: "saved-current-cohort",
           });
           break;
         case "discardChanges":
@@ -157,6 +171,7 @@ const CohortNotificationProvider: React.FC<CohortNotificationWrapperProps> = ({
             },
             autoClose: 5000,
             closeButtonProps: { "aria-label": "Close notification" },
+            id: "discard-changes",
           });
           break;
         case "error":
@@ -173,12 +188,14 @@ const CohortNotificationProvider: React.FC<CohortNotificationWrapperProps> = ({
             },
             autoClose: 5000,
             closeButtonProps: { "aria-label": "Close notification" },
+            id: `cohort-error-${
+              (message as CohortNotificationCommandWithParam).param1
+            }`,
           });
           break;
       }
+      dispatch({ type: "clear", payload: [message] });
     }
-
-    dispatch({ type: "clear", payload: [] });
   }, [cohortMessage, useSetActiveCohort]);
 
   const updateCohortMessage = useDeepCompareCallback(
