@@ -602,10 +602,23 @@ const chartConfig: EChartsOption = {
 const addHighlight = (
   chartLayout: GraphicComponentOption[],
   highlightedIndices: string[],
+  hoveredId: string | null = null,
   isCursorAllowed: boolean = true,
 ) => {
   return chartLayout.map((group: GraphicComponentGroupOption) => {
-    if (highlightedIndices.includes(group.id)) {
+    const isHighlighted = highlightedIndices.includes(group.id);
+    const isHovered = hoveredId === group.id;
+
+    const getFillColor = () => {
+      if (isHovered && !isCursorAllowed) {
+        return NOT_ALLOWED_HIGHLIGHT_COLOR;
+      } else if (isHighlighted || isHovered) {
+        return HIGHLIGHT_COLOR;
+      }
+      return group.style?.fill || "#f0f0f0";
+    };
+
+    if (isHighlighted || isHovered) {
       if (group?.children) {
         return {
           ...group,
@@ -614,9 +627,7 @@ const addHighlight = (
             ...(!isCursorAllowed && { cursor: "not-allowed" }),
             style: {
               ...child.style,
-              fill: isCursorAllowed
-                ? HIGHLIGHT_COLOR
-                : NOT_ALLOWED_HIGHLIGHT_COLOR,
+              fill: getFillColor(),
             },
           })),
         };
@@ -626,9 +637,7 @@ const addHighlight = (
           ...(!isCursorAllowed && { cursor: "not-allowed" }),
           style: {
             ...group.style,
-            fill: isCursorAllowed
-              ? HIGHLIGHT_COLOR
-              : NOT_ALLOWED_HIGHLIGHT_COLOR,
+            fill: getFillColor(),
           },
         };
       }
@@ -642,7 +651,7 @@ const getLayout = (
   twoCircles: boolean,
   highlightedIndices: string[],
   scaleFactor: number,
-  id: string = null,
+  hoveredId: string | null = null,
   isCursorAllowed: boolean = true,
   xOffset: number = 0,
   yOffset: number = 0,
@@ -650,11 +659,7 @@ const getLayout = (
   const layout = twoCircles
     ? createTwoCircleLayout(scaleFactor, xOffset, yOffset)
     : createThreeCircleLayout(scaleFactor, xOffset, yOffset);
-  return addHighlight(
-    layout,
-    id ? [...highlightedIndices, id] : highlightedIndices,
-    isCursorAllowed,
-  );
+  return addHighlight(layout, highlightedIndices, hoveredId, isCursorAllowed);
 };
 
 type UseLayoutProps = VennDiagramProps & {
@@ -821,13 +826,23 @@ export const useLayout = ({
         twoCircles,
         highlightedIndices,
         scaleFactor,
-        null,
-        true,
+        currentMouseOver || null,
+        currentMouseOver
+          ? chartData.find((d) => d.key === currentMouseOver)?.value !== 0
+          : true,
         xOffset,
         yOffset,
       ),
     );
-  }, [highlightedIndices, twoCircles, scaleFactor, xOffset, yOffset]);
+  }, [
+    highlightedIndices,
+    twoCircles,
+    scaleFactor,
+    xOffset,
+    yOffset,
+    currentMouseOver,
+    chartData,
+  ]);
 
   useDeepCompareEffect(() => {
     const fullChartOption = {
