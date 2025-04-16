@@ -212,10 +212,11 @@ export const useImportCohort = () => {
   return handleImport;
 };
 
-const useSaveCohortToBE = () => {
+const useUpdateCohortState = () => {
   const coreDispatch = useCoreDispatch();
+  const [fetchSavedFilters] = useLazyGetCohortByIdQuery();
 
-  const saveCohortToBE = useDeepCompareCallback(
+  const updateCohortState = useDeepCompareCallback(
     ({
       payload,
       newName,
@@ -283,17 +284,31 @@ const useSaveCohortToBE = () => {
           }),
         );
       }
+
+      if (saveAs) {
+        // Should discard local changes from current cohort when saving as
+        fetchSavedFilters(cohortId)
+          .unwrap()
+          .then((savedFilters) =>
+            coreDispatch(
+              discardCohortChanges({
+                filters: buildGqlOperationToFilterSet(savedFilters.filters),
+                id: cohortId,
+              }),
+            ),
+          );
+      }
     },
-    [coreDispatch],
+    [coreDispatch, fetchSavedFilters],
   );
 
-  return saveCohortToBE;
+  return updateCohortState;
 };
 
 export const useSaveCohort = () => {
   const [addCohort] = useAddCohortMutation();
   const [createSet] = useCreateCaseSetFromFiltersMutation();
-  const saveCohortToBE = useSaveCohortToBE();
+  const updateCohortState = useUpdateCohortState();
 
   const handleAddCohort = useDeepCompareCallback(
     async ({
@@ -351,7 +366,7 @@ export const useSaveCohort = () => {
       await addCohort({ cohort: addBody, delete_existing: false })
         .unwrap()
         .then(async (payload) => {
-          saveCohortToBE({ payload, newName, cohortId, saveAs });
+          updateCohortState({ payload, newName, cohortId, saveAs });
 
           result = { cohortAlreadyExists: false, newCohortId: payload.id };
         })
@@ -366,7 +381,7 @@ export const useSaveCohort = () => {
 
       return result;
     },
-    [addCohort, createSet, saveCohortToBE],
+    [addCohort, createSet, updateCohortState],
   );
 
   return handleAddCohort;
@@ -377,7 +392,7 @@ export const useReplaceCohort = () => {
   const cohorts = useCoreSelector(selectCohortsFromStore);
   const [addCohort] = useAddCohortMutation();
   const [fetchCohortList] = useLazyGetCohortsByContextIdQuery();
-  const saveCohortToBE = useSaveCohortToBE();
+  const updateCohortState = useUpdateCohortState();
 
   const handleReplaceCohort = useDeepCompareCallback(
     async ({
@@ -407,7 +422,7 @@ export const useReplaceCohort = () => {
       await addCohort({ cohort: addBody, delete_existing: true })
         .unwrap()
         .then((payload) => {
-          saveCohortToBE({ payload, newName, cohortId, saveAs });
+          updateCohortState({ payload, newName, cohortId, saveAs });
           result = { newCohortId: payload.id };
         });
 
@@ -429,7 +444,7 @@ export const useReplaceCohort = () => {
 
       return result;
     },
-    [addCohort, cohorts, coreDispatch, fetchCohortList, saveCohortToBE],
+    [addCohort, cohorts, coreDispatch, fetchCohortList, updateCohortState],
   );
 
   return handleReplaceCohort;
