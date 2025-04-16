@@ -1,10 +1,10 @@
 FROM mcr.microsoft.com/playwright:v1.23.1-focal
 
 RUN apt-get update && apt-get install -y \
-    python3 \
-    python3-pip \
-    python3-dev \
-    python3-tk \
+    python3.9 \
+    python3.9-pip \
+    python3.9-dev \
+    python3.9-tk \
     scrot \
     unzip \
     libnss3 \
