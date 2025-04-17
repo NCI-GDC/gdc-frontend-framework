@@ -41,7 +41,9 @@ const SaveCohortErrorModal = ({ context, id }: ContextModalProps) => (
 
 const cohortMessageReducer = (
   state: CohortNotificationCommand[],
-  action: { type: "update" | "clear"; payload: CohortNotificationCommand[] },
+  action:
+    | { type: "update"; payload: CohortNotificationCommand[] }
+    | { type: "clear"; payload: CohortNotificationCommand },
 ) => {
   switch (action.type) {
     case "update":
@@ -194,7 +196,7 @@ const CohortNotificationProvider: React.FC<CohortNotificationWrapperProps> = ({
           });
           break;
       }
-      dispatch({ type: "clear", payload: [message] });
+      dispatch({ type: "clear", payload: message });
     }
   }, [cohortMessage, useSetActiveCohort]);
 

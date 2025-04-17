@@ -871,14 +871,9 @@ export const discardActiveCohortChanges =
 
 export const setActiveCohortList =
   (cohorts: Cohort[]): ThunkAction<void, CoreState, undefined, UnknownAction> =>
-  async (dispatch: CoreDispatch, getState) => {
+  async (dispatch: CoreDispatch) => {
     // set the list of all cohorts
     dispatch(setCohortList(cohorts));
-
-    const availableCohorts = selectAllCohorts(getState());
-    if (Object.keys(availableCohorts).length === 0) {
-      dispatch(addNewDefaultUnsavedCohort());
-    }
 
     // have to request counts for all cohorts loaded from the backend
     cohorts.forEach((cohort) => {

@@ -15,6 +15,7 @@ interface CohortManagerProps {
   readonly hooks: CohortHooks;
   readonly defaultCohortName: string;
   readonly invalidCohortNames?: string[];
+  readonly isFetchingCohorts?: boolean;
 }
 
 /**
@@ -26,6 +27,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   hooks,
   defaultCohortName,
   invalidCohortNames = [],
+  isFetchingCohorts = false,
 }) => {
   const currentCohort = hooks.useSelectCurrentCohort();
   const cohorts = hooks.useSelectAvailableCohorts();
@@ -54,7 +56,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   useCreateCohortExternally(setCohortMessage);
 
   useDeepCompareEffect(() => {
-    if (cohorts.length === 0) {
+    if (cohorts.length === 0 && !isFetchingCohorts) {
       addNewDefaultUnsavedCohort();
       setCohortMessage &&
         setCohortMessage([{ cmd: "newCohort", param1: defaultCohortName }]);
@@ -64,6 +66,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
     addNewDefaultUnsavedCohort,
     defaultCohortName,
     setCohortMessage,
+    isFetchingCohorts,
   ]);
 
   return (
