@@ -55,7 +55,7 @@ export const SetOperations: React.FC<SetOperationsProps> = ({
         )}
       </div>
       <div className="flex flex-col lg:flex-row gap-8 lg:gap-0">
-        <div className="relative my-auto lg:basis-2/5 max-w-[400px] w-full mx-auto">
+        <div className="relative my-auto lg:basis-2/5 max-w-[800px] w-full mx-auto">
           <LoadingOverlay visible={isLoading} />
           <VennDiagram
             labels={["S₁", "S₂", "S₃"]}

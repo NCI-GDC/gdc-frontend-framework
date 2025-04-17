@@ -11,23 +11,22 @@ const VennDiagram: React.FC<VennDiagramProps> = ({
   interactable = true,
 }: VennDiagramProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [dimensions, setDimensions] = useState({ width: 400, height: 400 });
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
     const node = containerRef.current;
     if (!node) return;
-
-    const updateSize = () => {
+    const update = () => {
       const { width, height } = node.getBoundingClientRect();
       setDimensions({ width, height });
     };
-
-    const observer = new ResizeObserver(updateSize);
+    const observer = new ResizeObserver(update);
     observer.observe(node);
-    updateSize();
-
+    update();
     return () => observer.disconnect();
   }, []);
+
+  console.log({ dimensions });
 
   const highlightedIndices = chartData
     .filter((d) => d?.highlighted)
@@ -45,18 +44,16 @@ const VennDiagram: React.FC<VennDiagramProps> = ({
   });
 
   return (
-    <div
-      ref={containerRef}
+    <EChartWrapperResponsive
+      option={option}
+      chartRef={containerRef}
       style={{
         width: "100%",
         aspectRatio: "4 / 3",
         minHeight: 400,
-        maxWidth: 400,
         margin: "0 auto",
       }}
-    >
-      <EChartWrapperResponsive option={option} />
-    </div>
+    />
   );
 };
 
