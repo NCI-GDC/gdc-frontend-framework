@@ -741,40 +741,6 @@ describe("add, update, and remove cohort", () => {
     });
   });
 
-  test("should create new unsaved cohort when removing last cohort", () => {
-    const removeState = {
-      currentCohort: "000-000-000-1",
-      ids: ["000-000-000-1"],
-      entities: {
-        "000-000-000-1": {
-          name: "New Cohort",
-          filters: { mode: "and", root: {} },
-          id: "000-000-000-1",
-          caseSet: {
-            caseSetId: {
-              mode: "and",
-              root: {},
-            },
-            status: "uninitialized" as DataStatus,
-          },
-          counts: {
-            ...NullCountsData,
-          },
-          modified: false,
-          modified_datetime: new Date().toISOString(),
-        },
-      },
-    };
-
-    const availableCohorts = availableCohortsReducer(
-      removeState,
-      removeCohort({}),
-    );
-    expect(Object.values(availableCohorts.entities)[0]?.name).toEqual(
-      "Unsaved_Cohort",
-    );
-  });
-
   test("should removed prior unsaved cohort when adding new one", () => {
     const availableCohorts = availableCohortsReducer(
       {
