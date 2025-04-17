@@ -276,7 +276,6 @@ const FromTo: React.FC<FromToProps> = ({
             placeholder={`Min: ${lowerUnitRange}${unitsLabel} `}
             // units are always days
             onChange={(value) => {
-              console.log({ type: typeof value });
               if (value === "") {
                 form.setFieldValue("fromValue", undefined);
               } else {
