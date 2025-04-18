@@ -7,6 +7,8 @@ import {
 import { EChartsOption, ElementEvent, GraphicComponentOption } from "echarts";
 import { GraphicComponentGroupOption, VennDiagramProps } from "./types";
 
+// TODO: move out most of these into separate files and make useLayout function much cleaner
+// https://gdc-ctds.atlassian.net/browse/PEAR-2393
 const SELECTED_COLOR = "#A5D5D9";
 const HOVER_COLOR = "#8DC8CC";
 const HOVER_SELECTED_COLOR = "#7FBCC0";
@@ -912,6 +914,8 @@ export const useLayout = ({
         },
       },
       graphic: [
+        // TODO: need to name this better - this is a bit misleading as we are not adding just events but echarts graphics
+        // https://gdc-ctds.atlassian.net/browse/PEAR-2393
         ...addEvents(chartLayout),
         ...outerLabelLayout.map((labelConfig, idx) => ({
           ...labelConfig,
