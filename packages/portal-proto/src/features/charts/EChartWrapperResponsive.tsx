@@ -1,46 +1,54 @@
-import React, { useRef, useEffect } from "react";
-import { init, EChartsOption, ECharts } from "echarts";
+import React, { useRef } from "react";
+import { init, EChartsOption } from "echarts";
 import { useDeepCompareEffect } from "use-deep-compare";
 
-export interface EChartWrapperProps {
+export interface EChartWrapperResponsiveProps {
   readonly option: EChartsOption;
-  readonly chartRef?: React.MutableRefObject<HTMLDivElement>;
-  readonly className?: string;
   readonly style?: React.CSSProperties;
+  readonly onDimensionsChange?: (dimensions: {
+    width: number;
+    height: number;
+  }) => void;
 }
 
-const EChartWrapperResponsive: React.FC<EChartWrapperProps> = ({
+const EChartWrapperResponsive: React.FC<EChartWrapperResponsiveProps> = ({
   option,
-  chartRef,
-  className,
   style,
-}: EChartWrapperProps) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const wrapperRef = chartRef ?? ref;
+  onDimensionsChange,
+}: EChartWrapperResponsiveProps) => {
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useDeepCompareEffect(() => {
-    const node = wrapperRef.current;
+    const node = containerRef.current;
     if (!node) return;
 
     const chart = init(node, null, { renderer: "svg" });
     chart.setOption(option);
     chart.resize();
 
-    const observer = new ResizeObserver(() => {
+    const handleResize = () => {
+      const { width, height } = node.getBoundingClientRect();
+
+      if (onDimensionsChange) {
+        onDimensionsChange({ width, height });
+      }
       chart.resize();
-    });
+    };
+
+    const observer = new ResizeObserver(handleResize);
     observer.observe(node);
+
+    handleResize();
 
     return () => {
       observer.disconnect();
       chart.dispose();
     };
-  }, [option]);
+  }, [option, onDimensionsChange]);
 
   return (
     <div
-      ref={wrapperRef}
-      className={className}
+      ref={containerRef}
       style={{
         width: "100%",
         aspectRatio: "4 / 3",

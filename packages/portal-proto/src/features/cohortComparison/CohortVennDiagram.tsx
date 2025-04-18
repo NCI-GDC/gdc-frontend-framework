@@ -7,7 +7,6 @@ import {
 import makeIntersectionFilters from "./makeIntersectionFilters";
 import { LoadingOverlay } from "@mantine/core";
 import { useDeepCompareMemo } from "use-deep-compare";
-import { useViewportSize } from "@mantine/hooks";
 
 const VennDiagram = dynamic(() => import("@/features/charts/VennDiagram"), {
   ssr: false,
@@ -41,8 +40,6 @@ const CohortVennDiagram: React.FC<CohortVennDiagramProps> = ({
   caseSetIds,
   isLoading: externalLoading,
 }: CohortVennDiagramProps) => {
-  const { width: viewportWidth } = useViewportSize();
-
   const filters = useDeepCompareMemo(
     () =>
       makeIntersectionFilters(
@@ -84,7 +81,7 @@ const CohortVennDiagram: React.FC<CohortVennDiagramProps> = ({
   }, [isLoading, data]);
 
   return (
-    <div className="relative">
+    <div className="relative max-w-[400px] 2xl:max-w-[600px] w-full mx-auto">
       <LoadingOverlay visible={isLoading} zIndex={1} />
       <VennDiagram
         chartData={chartData}

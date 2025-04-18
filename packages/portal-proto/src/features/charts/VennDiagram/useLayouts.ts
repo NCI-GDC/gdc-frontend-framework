@@ -7,7 +7,9 @@ import {
 import { EChartsOption, ElementEvent, GraphicComponentOption } from "echarts";
 import { GraphicComponentGroupOption, VennDiagramProps } from "./types";
 
-const HIGHLIGHT_COLOR = "#a5d5d9";
+const SELECTED_COLOR = "#A5D5D9";
+const HOVER_COLOR = "#8DC8CC";
+const HOVER_SELECTED_COLOR = "#7FBCC0";
 const NOT_ALLOWED_HIGHLIGHT_COLOR = "#9b9b9b";
 const NOT_ALLOWED_TEXT = "#0A0A0A";
 
@@ -612,10 +614,17 @@ const addHighlight = (
     const getFillColor = () => {
       if (isHovered && !isCursorAllowed) {
         return NOT_ALLOWED_HIGHLIGHT_COLOR;
-      } else if (isHighlighted || isHovered) {
-        return HIGHLIGHT_COLOR;
       }
-      return group.style?.fill || "#f0f0f0";
+      if (isHovered && isHighlighted) {
+        return HOVER_SELECTED_COLOR;
+      }
+      if (isHovered) {
+        return HOVER_COLOR;
+      }
+      if (isHighlighted) {
+        return SELECTED_COLOR;
+      }
+      return group.style?.fill ?? style.fill;
     };
 
     if (isHighlighted || isHovered) {
@@ -675,8 +684,8 @@ export const useLayout = ({
   ariaLabel,
   onClickHandler,
   interactable,
-  width = 400,
-  height = 400,
+  width,
+  height,
 }: UseLayoutProps): EChartsOption => {
   const twoCircles = chartData.length === 3;
   const [chartLayout, setChartLayout] = useState<GraphicComponentOption[]>([]);
@@ -767,57 +776,107 @@ export const useLayout = ({
 
   const addEvents = useCallback(
     (layout: GraphicComponentOption[]) =>
-      interactable
-        ? layout.map((section) => ({
+      layout.map((section) => {
+        const rootKey = (section.id as string).split(".")[0];
+        const datum = chartData.find((d) => d.key === rootKey);
+        const isZero = datum?.value === 0;
+
+        const handlers = interactable
+          ? {
+              onmouseover: (evt: ElementEvent) => handleEvent(evt, "mouseover"),
+              onmouseout: (evt: ElementEvent) => handleEvent(evt, "mouseout"),
+              onclick: (evt: ElementEvent) => handleEvent(evt, "click"),
+            }
+          : {};
+
+        const cursorProp = interactable ? {} : { cursor: "auto" };
+
+        const zeroTooltip =
+          isZero && interactable
+            ? {
+                tooltip: {
+                  show: true,
+                  formatter: () => "This region contains 0 items",
+                  borderWidth: 0,
+                  backgroundColor: "black",
+                  textStyle: { color: "white" },
+                },
+              }
+            : {};
+
+        if ("children" in section) {
+          return {
             ...section,
-            onmouseover: (event: ElementEvent) =>
-              handleEvent(event, "mouseover"),
-            onmouseout: (event: ElementEvent) => handleEvent(event, "mouseout"),
-            onclick: (event: ElementEvent) => handleEvent(event, "click"),
-          }))
-        : layout,
-    [handleEvent, interactable],
+            ...handlers,
+            ...cursorProp,
+            ...zeroTooltip,
+            children: section.children.map((child) => ({
+              ...child,
+              ...handlers,
+              ...cursorProp,
+              ...zeroTooltip,
+            })),
+          };
+        }
+
+        return {
+          ...section,
+          ...handlers,
+          ...cursorProp,
+          ...zeroTooltip,
+        };
+      }),
+    [chartData, interactable, handleEvent],
   );
 
-  const handleEventWrapper = (key: string) => ({
-    onclick: () => handleEvent({ target: { id: key } }, "click"),
-    onmouseover: () => handleEvent({ target: { id: key } }, "mouseover"),
-    onmouseout: () => handleEvent({ target: { id: key } }, "mouseout"),
-  });
+  const handleEventWrapper = useCallback(
+    (key: string) => ({
+      onclick: () => handleEvent({ target: { id: key } }, "click"),
+      onmouseover: () => handleEvent({ target: { id: key } }, "mouseover"),
+      onmouseout: () => handleEvent({ target: { id: key } }, "mouseout"),
+    }),
+    [handleEvent],
+  );
 
   const valueTexts = useDeepCompareMemo(
     () =>
-      chartData.map(
-        ({ key, value }) =>
-          ({
-            type: "text",
-            id: `value-${key}`,
-            ...labelLayout[key],
-            style: {
-              text: value.toLocaleString(),
-              textAlign: "middle",
-              textVerticalAlign: "middle",
-              fill:
-                value === 0 && currentMouseOver === key
-                  ? NOT_ALLOWED_TEXT
-                  : "#333",
-              fontSize: 16 * scaleFactor,
-            },
-            z: 300,
-            ...handleEventWrapper(key),
-            tooltip: {
-              show: true,
-              formatter: () =>
-                value === 0 ? "This region contains 0 items" : undefined,
-              borderWidth: 0,
-              backgroundColor: "black",
-              textStyle: {
-                color: "white",
+      chartData.map(({ key, value }) => ({
+        type: "text",
+        id: `value-${key}`,
+        ...labelLayout[key],
+        style: {
+          text: value.toLocaleString(),
+          textAlign: "middle",
+          textVerticalAlign: "middle",
+          fill:
+            value === 0 && currentMouseOver === key ? NOT_ALLOWED_TEXT : "#333",
+          fontSize: 16 * scaleFactor,
+        },
+        z: 300,
+
+        ...(interactable ? handleEventWrapper(key) : { cursor: "auto" }),
+
+        ...(interactable
+          ? {
+              tooltip: {
+                show: true,
+                formatter: () =>
+                  value === 0 ? "This region contains 0 items" : undefined,
+                borderWidth: 0,
+                backgroundColor: "black",
+                textStyle: { color: "white" },
               },
-            },
-          } as GraphicComponentOption),
-      ),
-    [chartData, labelLayout],
+            }
+          : {}),
+      })),
+    [
+      chartData,
+      labelLayout,
+      currentMouseOver,
+      handleEventWrapper,
+      interactable,
+      scaleFactor,
+    ],
   );
 
   useDeepCompareEffect(() => {
@@ -862,6 +921,7 @@ export const useLayout = ({
             fill: "#333333",
             fontSize: "16px",
           },
+          cursor: "auto",
         })),
 
         ...valueTexts,
