@@ -390,7 +390,6 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
     }
   };
 
-  // need to update this and make it responsive
   return (
     <div className="bg-base-max">
       <div className="p-4 w-full xl:w-3/4 flex flex-col gap-2">
