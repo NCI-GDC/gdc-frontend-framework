@@ -54,8 +54,8 @@ export const SetOperations: React.FC<SetOperationsProps> = ({
           </p>
         )}
       </div>
-      <div className="flex flex-col lg:flex-row gap-8 lg:gap-0">
-        <div className="relative my-auto lg:basis-2/5 max-w-[400px] 2xl:max-w-[600px] w-full mx-auto">
+      <div className="flex flex-col lg:flex-row gap-8 lg:gap-4">
+        <div className="relative my-auto lg:basis-1/3 max-w-[400px] 2xl:max-w-[600px] w-full mx-auto">
           <LoadingOverlay visible={isLoading} />
           <VennDiagram
             labels={["S₁", "S₂", "S₃"]}
@@ -64,7 +64,7 @@ export const SetOperations: React.FC<SetOperationsProps> = ({
             onClickHandler={onClickHandler}
           />
         </div>
-        <div className="relative lg:basis-3/5">
+        <div className="relative lg:basis-2/3">
           <SetOperationsSummaryTable
             sets={sets}
             countHook={countHook}
