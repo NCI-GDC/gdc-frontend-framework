@@ -8,7 +8,7 @@ import SetOperationsChartsForGeneSSMS from "@/features/set-operations/SetOperati
 import { SelectionScreenContext } from "@gff/portal-components";
 import SelectionPanel from "@/features/set-operations/SelectionPanel";
 import { useRouter } from "next/router";
-import { useCoreSelector, selectMultipleCohortsById } from "@gff/core";
+import { useCoreSelector, selectMultipleCohortsByIdOrName } from "@gff/core";
 import { LoadingOverlay } from "@mantine/core";
 import { useDeepCompareEffect } from "use-deep-compare";
 
@@ -40,11 +40,11 @@ const SetOperationsSelection = (): JSX.Element => {
 
   // Need to get current ids of selected cohorts because the ids update after the cohort is saved
   const cohorts = useCoreSelector((state) =>
-    selectMultipleCohortsById(
+    selectMultipleCohortsByIdOrName(
       state,
       overwriteSelectedEntities
-        ? [cohort1Id as string, cohort2Id as string]
-        : selectedEntities.map((e) => e.id),
+        ? [{ id: cohort1Id as string }, { id: cohort2Id as string }]
+        : selectedEntities,
     ),
   );
 

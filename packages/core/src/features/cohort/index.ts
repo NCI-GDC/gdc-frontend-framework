@@ -36,7 +36,7 @@ import {
   selectCurrentCohortCaseSet,
   selectCurrentCohortModified,
   selectCohortIsLoggedIn,
-  selectCohortById,
+  selectCohortByIdOrName,
   selectCurrentCohort,
   setCohortList,
   selectCurrentCohortSaved,
@@ -58,7 +58,7 @@ import {
   selectHasUnsavedCohorts,
   selectUnsavedCohortName,
   UNSAVED_COHORT_NAME,
-  selectMultipleCohortsById,
+  selectMultipleCohortsByIdOrName,
   fetchCohortCaseCounts,
 } from "./availableCohortsSlice";
 
@@ -115,7 +115,7 @@ export {
   selectCurrentCohortId,
   selectCurrentCohortName,
   selectCurrentCohortCaseCount,
-  selectCohortById,
+  selectCohortByIdOrName,
   selectCohortNameById,
   selectAvailableCohortByName,
   selectCurrentCohortFilters,
@@ -148,5 +148,5 @@ export {
   selectHasUnsavedCohorts,
   selectUnsavedCohortName,
   UNSAVED_COHORT_NAME,
-  selectMultipleCohortsById,
+  selectMultipleCohortsByIdOrName,
 };
