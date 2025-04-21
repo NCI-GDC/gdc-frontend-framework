@@ -867,4 +867,12 @@ describe("selecting cohorts", () => {
     ]);
     expect(cohorts).toEqual([MOCK_COHORTS[1], MOCK_COHORTS[6]]);
   });
+
+  test("should return cohort by name", () => {
+    const cohorts = selectMultipleCohortsByIdOrName(APP_INITIAL_STATE, [
+      { id: "0000-0000-1000-0000", name: "Baily's Cohort" },
+      { id: "a-new-id", name: "Pancreas" },
+    ]);
+    expect(cohorts).toEqual([MOCK_COHORTS[1], MOCK_COHORTS[2]]);
+  });
 });
