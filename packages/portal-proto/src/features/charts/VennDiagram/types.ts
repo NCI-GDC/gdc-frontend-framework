@@ -12,8 +12,6 @@ export interface VennDiagramProps {
   readonly ariaLabel: string;
   readonly onClickHandler?: (key: string) => void;
   readonly interactable?: boolean;
-  readonly width?: number;
-  readonly height?: number;
 }
 
 export interface GraphicComponentGroupOption extends ElementProps, GroupProps {

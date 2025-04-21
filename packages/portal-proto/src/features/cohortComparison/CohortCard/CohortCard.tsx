@@ -47,7 +47,7 @@ const CohortCard: React.FC<CohortCardProps> = ({
             href={{
               pathname: "/analysis_page",
               query: {
-                app: "SetOperations",
+                app: "SetOperationsApp",
                 skipSelectionScreen: "true",
                 cohort1Id: cohorts.primary_cohort.id,
                 cohort2Id: cohorts.comparison_cohort.id,
