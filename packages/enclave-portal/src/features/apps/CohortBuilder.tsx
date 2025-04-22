@@ -1,5 +1,5 @@
 import React from "react";
-import CohortBuilder from "../cohortBuilder/CohortBuilder";
+import CohortBuilder from "@/features/cohortBuilder/CohortBuilder";
 
 const CohortBuilderApp: React.FC = () => {
   return <CohortBuilder />;
