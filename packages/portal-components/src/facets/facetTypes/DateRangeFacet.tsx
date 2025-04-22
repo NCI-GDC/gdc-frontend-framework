@@ -70,9 +70,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
   };
 
   return (
-    <div
-      className="flex flex-col mx-0 bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition"
-    >
+    <div className="flex flex-col mx-0 bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition">
       <FacetControlsHeader
         field={field}
         description={description}
