@@ -4,8 +4,10 @@ import { CoreState } from "../../reducers";
 
 export interface CohortBuilderCategoryConfig {
   readonly label: string;
-  readonly docType: string;
-  readonly index: string;
+  readonly queryOptions: {
+    readonly docType: string;
+    readonly indexType: string;
+  };
   readonly facets: ReadonlyArray<string>;
 }
 

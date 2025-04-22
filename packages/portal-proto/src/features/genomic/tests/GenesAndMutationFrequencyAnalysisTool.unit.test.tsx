@@ -3,7 +3,8 @@ import * as genomicHook from "src/features/genomic/hooks";
 import * as core from "@gff/core";
 import * as genomicReducer from "src/features/genomic/appApi";
 import { useIsDemoApp, useIsDemoAppType } from "@/hooks/useIsDemoApp";
-import { render, waitFor } from "test-utils";
+import { render } from "test-utils";
+import { waitFor } from "@testing-library/react";
 
 jest.mock("src/hooks/useIsDemoApp");
 jest.mock("@gff/core", () => ({
@@ -31,6 +32,9 @@ jest.mock("next/router", () => ({
 
 beforeEach(() => {
   jest.spyOn(genomicHook, "useGenesFacets").mockImplementation(jest.fn());
+  jest
+    .spyOn(genomicHook, "useTotalGenomicCounts")
+    .mockImplementation(jest.fn());
   jest.spyOn(genomicReducer, "useAppDispatch").mockReturnValue(jest.fn());
   jest.spyOn(genomicReducer, "useAppSelector").mockImplementation(jest.fn());
   jest.clearAllMocks();

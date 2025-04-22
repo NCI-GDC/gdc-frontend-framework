@@ -112,8 +112,10 @@ describe("cohortConfig reducer", () => {
         "cases.diagnoses.tissue_or_organ_of_origin",
         "cases.upload.case_id",
       ],
-      docType: "cases",
-      index: "explore",
+      queryOptions: {
+        docType: "cases",
+        indexType: "explore",
+      },
     };
     const builderCommonConfig = selectCohortBuilderConfigCategory(
       state,
@@ -129,8 +131,10 @@ describe("cohortConfig reducer", () => {
         "demographic.country_of_residence_at_enrollment",
         "demographic.education_level",
       ],
-      docType: "cases",
-      index: "explore",
+      queryOptions: {
+        docType: "cases",
+        indexType: "explore",
+      },
     };
 
     const builderCommonConfig = selectCohortBuilderConfigCategory(

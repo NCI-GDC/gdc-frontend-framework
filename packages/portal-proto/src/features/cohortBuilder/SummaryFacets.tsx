@@ -1,16 +1,18 @@
-import EnumFacet from "../facets/EnumFacet";
+import { EnumFacet } from "@gff/portal-components";
 import { GQLDocType, GQLIndexType } from "@gff/core";
 import {
   useClearFilters,
   useTotalCounts,
   useUpdateFacetFilter,
   FacetDocTypeToLabelsMap,
-  FacetDocTypeToCountsIndexMap,
   useEnumFacets,
   useEnumFacetValues,
+  useSelectFieldFilter,
 } from "@/features/facets/hooks";
-import partial from "lodash/partial";
 import tw from "tailwind-styled-components";
+import { useFieldNameToTitle } from "./queryExpressionHooks";
+import { EnumFacetChart } from "../charts/EnumFacetChart";
+import { useSearchEnumTerms } from "./hooks";
 
 export interface SummaryFacetInfo {
   readonly field: string;
@@ -44,10 +46,13 @@ hover:text-primary-darker
 export const SummaryFacets: React.FC<SummaryFacetProps> = ({
   fields,
 }: SummaryFacetProps) => {
+  const queryOptions = {
+    docType: fields[0].docType,
+    indexType: fields[0].indexType,
+  };
   useEnumFacets(
-    fields[0].docType,
-    fields[0].indexType,
     fields.map((entry) => entry.field),
+    queryOptions,
   );
 
   return (
@@ -56,11 +61,6 @@ export const SummaryFacets: React.FC<SummaryFacetProps> = ({
         return (
           <EnumFacet
             field={entry.field}
-            header={{
-              Panel: SummaryFacetHeader,
-              Label: SummaryFacetHeaderLabel,
-              iconStyle: "text-primary-darkest hover:text-primary-lighter",
-            }}
             valueLabel={FacetDocTypeToLabelsMap[entry.docType]}
             facetName={entry.name}
             startShowingData={false}
@@ -68,17 +68,16 @@ export const SummaryFacets: React.FC<SummaryFacetProps> = ({
             hideIfEmpty={false}
             hooks={{
               useUpdateFacetFilters: useUpdateFacetFilter,
-              useTotalCounts: partial(
-                useTotalCounts,
-                FacetDocTypeToCountsIndexMap[entry.docType],
-              ),
+              useTotalCounts,
               useClearFilter: useClearFilters,
-              useGetEnumFacetData: partial(
-                useEnumFacetValues,
-                entry.docType,
-                entry.indexType,
-              ),
+              useGetEnumFacetData: useEnumFacetValues,
+              useFieldNameToTitle,
+              useSearchEnumTerms,
+              useGetFacetFilters: useSelectFieldFilter,
             }}
+            queryOptions={queryOptions}
+            Chart={EnumFacetChart}
+            variant="summary"
           />
         );
       })}
