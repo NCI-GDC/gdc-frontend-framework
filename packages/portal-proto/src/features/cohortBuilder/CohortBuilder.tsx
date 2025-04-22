@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { useDeepCompareMemo } from "use-deep-compare";
 import {
   selectCohortBuilderConfig,
   useCoreSelector,
@@ -41,8 +42,7 @@ const CohortBuilder = () => {
   const tabsConfig = useCoreSelector((state) =>
     selectCohortBuilderConfig(state),
   );
-  const facets =
-    useCoreSelector((state) => selectFacetDefinition(state)).data || {};
+  const facets = useCoreSelector((state) => selectFacetDefinition(state));
 
   const router = useRouter();
   const routerTab = router?.query?.tab;
@@ -67,19 +67,24 @@ const CohortBuilder = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, routerTab, prevRouterTab]);
 
+  const facetDefinitions = useDeepCompareMemo(
+    () => ({
+      ...Object.fromEntries(
+        Object.entries(facets?.data || {}).map(([key, f]) => [
+          key,
+          { ...f, field: f.full },
+        ]),
+      ),
+      ...upload_facets,
+    }),
+    [facets],
+  );
+
   return (
     <FacetTabs
       activeTab={activeTab}
       setActiveTab={setActiveTab}
-      facetDefinitions={{
-        ...Object.fromEntries(
-          Object.entries(facets).map(([key, f]) => [
-            key,
-            { ...f, field: f.full },
-          ]),
-        ),
-        ...upload_facets,
-      }}
+      facetDefinitions={facetDefinitions}
       tabsConfig={tabsConfig}
       hooks={{
         useGetEnumFacetData: useEnumFacetValues,
