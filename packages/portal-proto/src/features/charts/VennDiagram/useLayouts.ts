@@ -1,15 +1,17 @@
 import { useState, useCallback, useMemo } from "react";
-import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
 import {
-  CustomSeriesRenderItemAPI,
-  CustomSeriesRenderItemParams,
-  EChartsOption,
-  ElementEvent,
-  GraphicComponentOption,
-} from "echarts";
+  useDeepCompareCallback,
+  useDeepCompareEffect,
+  useDeepCompareMemo,
+} from "use-deep-compare";
+import { EChartsOption, ElementEvent, GraphicComponentOption } from "echarts";
 import { GraphicComponentGroupOption, VennDiagramProps } from "./types";
 
-const HIGHLIGHT_COLOR = "#a5d5d9";
+// TODO: move out most of these into separate files and make useLayout function much cleaner
+// https://gdc-ctds.atlassian.net/browse/PEAR-2393
+const SELECTED_COLOR = "#A5D5D9";
+const HOVER_COLOR = "#8DC8CC";
+const HOVER_SELECTED_COLOR = "#7FBCC0";
 const NOT_ALLOWED_HIGHLIGHT_COLOR = "#9b9b9b";
 const NOT_ALLOWED_TEXT = "#0A0A0A";
 
@@ -604,10 +606,30 @@ const chartConfig: EChartsOption = {
 const addHighlight = (
   chartLayout: GraphicComponentOption[],
   highlightedIndices: string[],
+  hoveredId: string | null = null,
   isCursorAllowed: boolean = true,
 ) => {
   return chartLayout.map((group: GraphicComponentGroupOption) => {
-    if (highlightedIndices.includes(group.id)) {
+    const isHighlighted = highlightedIndices.includes(group.id);
+    const isHovered = hoveredId === group.id;
+
+    const getFillColor = () => {
+      if (isHovered && !isCursorAllowed) {
+        return NOT_ALLOWED_HIGHLIGHT_COLOR;
+      }
+      if (isHovered && isHighlighted) {
+        return HOVER_SELECTED_COLOR;
+      }
+      if (isHovered) {
+        return HOVER_COLOR;
+      }
+      if (isHighlighted) {
+        return SELECTED_COLOR;
+      }
+      return group.style?.fill ?? style.fill;
+    };
+
+    if (isHighlighted || isHovered) {
       if (group?.children) {
         return {
           ...group,
@@ -616,9 +638,7 @@ const addHighlight = (
             ...(!isCursorAllowed && { cursor: "not-allowed" }),
             style: {
               ...child.style,
-              fill: isCursorAllowed
-                ? HIGHLIGHT_COLOR
-                : NOT_ALLOWED_HIGHLIGHT_COLOR,
+              fill: getFillColor(),
             },
           })),
         };
@@ -628,9 +648,7 @@ const addHighlight = (
           ...(!isCursorAllowed && { cursor: "not-allowed" }),
           style: {
             ...group.style,
-            fill: isCursorAllowed
-              ? HIGHLIGHT_COLOR
-              : NOT_ALLOWED_HIGHLIGHT_COLOR,
+            fill: getFillColor(),
           },
         };
       }
@@ -644,7 +662,7 @@ const getLayout = (
   twoCircles: boolean,
   highlightedIndices: string[],
   scaleFactor: number,
-  id: string = null,
+  hoveredId: string | null = null,
   isCursorAllowed: boolean = true,
   xOffset: number = 0,
   yOffset: number = 0,
@@ -652,15 +670,13 @@ const getLayout = (
   const layout = twoCircles
     ? createTwoCircleLayout(scaleFactor, xOffset, yOffset)
     : createThreeCircleLayout(scaleFactor, xOffset, yOffset);
-  return addHighlight(
-    layout,
-    id ? [...highlightedIndices, id] : highlightedIndices,
-    isCursorAllowed,
-  );
+  return addHighlight(layout, highlightedIndices, hoveredId, isCursorAllowed);
 };
 
 type UseLayoutProps = VennDiagramProps & {
   readonly highlightedIndices: string[];
+  readonly height: number;
+  readonly width: number;
 };
 
 export const useLayout = ({
@@ -670,8 +686,8 @@ export const useLayout = ({
   ariaLabel,
   onClickHandler,
   interactable,
-  width = 400,
-  height = 400,
+  width,
+  height,
 }: UseLayoutProps): EChartsOption => {
   const twoCircles = chartData.length === 3;
   const [chartLayout, setChartLayout] = useState<GraphicComponentOption[]>([]);
@@ -713,7 +729,7 @@ export const useLayout = ({
   );
 
   const handleEvent = useDeepCompareCallback(
-    (event: ElementEvent, type: "mouseover" | "mouseout" | "click") => {
+    (event: any, type: "mouseover" | "mouseout" | "click") => {
       const eventId = String(event.target.id);
       const id = eventId.includes(".") ? eventId.split(".")[0] : eventId;
       const element = chartData.find((datum) => datum.key === id);
@@ -762,16 +778,107 @@ export const useLayout = ({
 
   const addEvents = useCallback(
     (layout: GraphicComponentOption[]) =>
-      interactable
-        ? layout.map((section) => ({
+      layout.map((section) => {
+        const rootKey = (section.id as string).split(".")[0];
+        const datum = chartData.find((d) => d.key === rootKey);
+        const isZero = datum?.value === 0;
+
+        const handlers = interactable
+          ? {
+              onmouseover: (evt: ElementEvent) => handleEvent(evt, "mouseover"),
+              onmouseout: (evt: ElementEvent) => handleEvent(evt, "mouseout"),
+              onclick: (evt: ElementEvent) => handleEvent(evt, "click"),
+            }
+          : {};
+
+        const cursorProp = interactable ? {} : { cursor: "auto" };
+
+        const zeroTooltip =
+          isZero && interactable
+            ? {
+                tooltip: {
+                  show: true,
+                  formatter: () => "This region contains 0 items",
+                  borderWidth: 0,
+                  backgroundColor: "black",
+                  textStyle: { color: "white" },
+                },
+              }
+            : {};
+
+        if ("children" in section) {
+          return {
             ...section,
-            onmouseover: (event: ElementEvent) =>
-              handleEvent(event, "mouseover"),
-            onmouseout: (event: ElementEvent) => handleEvent(event, "mouseout"),
-            onclick: (event: ElementEvent) => handleEvent(event, "click"),
-          }))
-        : layout,
-    [handleEvent, interactable],
+            ...handlers,
+            ...cursorProp,
+            ...zeroTooltip,
+            children: section.children.map((child) => ({
+              ...child,
+              ...handlers,
+              ...cursorProp,
+              ...zeroTooltip,
+            })),
+          };
+        }
+
+        return {
+          ...section,
+          ...handlers,
+          ...cursorProp,
+          ...zeroTooltip,
+        };
+      }),
+    [chartData, interactable, handleEvent],
+  );
+
+  const handleEventWrapper = useCallback(
+    (key: string) => ({
+      onclick: () => handleEvent({ target: { id: key } }, "click"),
+      onmouseover: () => handleEvent({ target: { id: key } }, "mouseover"),
+      onmouseout: () => handleEvent({ target: { id: key } }, "mouseout"),
+    }),
+    [handleEvent],
+  );
+
+  const valueTexts = useDeepCompareMemo(
+    () =>
+      chartData.map(({ key, value }) => ({
+        type: "text",
+        id: `value-${key}`,
+        ...labelLayout[key],
+        style: {
+          text: value.toLocaleString(),
+          textAlign: "middle",
+          textVerticalAlign: "middle",
+          fill:
+            value === 0 && currentMouseOver === key ? NOT_ALLOWED_TEXT : "#333",
+          fontSize: 16 * scaleFactor,
+        },
+        z: 300,
+
+        ...(interactable ? handleEventWrapper(key) : { cursor: "auto" }),
+
+        ...(interactable
+          ? {
+              tooltip: {
+                show: true,
+                formatter: () =>
+                  value === 0 ? "This region contains 0 items" : undefined,
+                borderWidth: 0,
+                backgroundColor: "black",
+                textStyle: { color: "white" },
+              },
+            }
+          : {}),
+      })),
+    [
+      chartData,
+      labelLayout,
+      currentMouseOver,
+      handleEventWrapper,
+      interactable,
+      scaleFactor,
+    ],
   );
 
   useDeepCompareEffect(() => {
@@ -780,13 +887,23 @@ export const useLayout = ({
         twoCircles,
         highlightedIndices,
         scaleFactor,
-        null,
-        true,
+        currentMouseOver || null,
+        currentMouseOver
+          ? chartData.find((d) => d.key === currentMouseOver)?.value !== 0
+          : true,
         xOffset,
         yOffset,
       ),
     );
-  }, [highlightedIndices, twoCircles, scaleFactor, xOffset, yOffset]);
+  }, [
+    highlightedIndices,
+    twoCircles,
+    scaleFactor,
+    xOffset,
+    yOffset,
+    currentMouseOver,
+    chartData,
+  ]);
 
   useDeepCompareEffect(() => {
     const fullChartOption = {
@@ -797,6 +914,8 @@ export const useLayout = ({
         },
       },
       graphic: [
+        // TODO: need to name this better - this is a bit misleading as we are not adding just events but echarts graphics
+        // https://gdc-ctds.atlassian.net/browse/PEAR-2393
         ...addEvents(chartLayout),
         ...outerLabelLayout.map((labelConfig, idx) => ({
           ...labelConfig,
@@ -806,7 +925,10 @@ export const useLayout = ({
             fill: "#333333",
             fontSize: "16px",
           },
+          cursor: "auto",
         })),
+
+        ...valueTexts,
       ],
       tooltip: {
         show: true,
@@ -816,52 +938,6 @@ export const useLayout = ({
           return [point[0], point[1] + 20];
         },
       },
-      series: [
-        {
-          type: "custom" as const,
-          z: 300,
-          renderItem: (
-            params: CustomSeriesRenderItemParams,
-            api: CustomSeriesRenderItemAPI,
-          ) => {
-            const dataIndex = params?.dataIndex;
-            const key = chartData[dataIndex]?.key;
-            const dataValue = chartData[dataIndex]?.value;
-            return {
-              type: "text",
-              ...labelLayout[key],
-              style: {
-                text:
-                  typeof dataValue === "string"
-                    ? dataValue
-                    : api.value(0)?.toLocaleString() || "",
-                textAlign: "middle",
-                fill:
-                  dataValue === 0 && currentMouseOver === key
-                    ? NOT_ALLOWED_TEXT
-                    : "#333333",
-              },
-              scaleX: 1.5,
-              scaleY: 1.5,
-            };
-          },
-          data: chartData,
-          tooltip: {
-            formatter: (params) => {
-              const dataIndex = params?.dataIndex;
-              const dataValue = chartData[dataIndex]?.value;
-              return dataValue === 0
-                ? "This region contains 0 items"
-                : undefined;
-            },
-            borderWidth: 0,
-            backgroundColor: "black",
-            textStyle: {
-              color: "white",
-            },
-          },
-        },
-      ],
     };
     setOption(fullChartOption);
   }, [
@@ -875,6 +951,7 @@ export const useLayout = ({
     labelLayout,
     ariaLabel,
     currentMouseOver,
+    valueTexts,
   ]);
 
   return option;
