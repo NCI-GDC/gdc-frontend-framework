@@ -145,12 +145,14 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
               ]}
               onChange={(d) => setDataDimension(d as DataDimension)}
               disabled={noData || downloadInProgress}
+              padding={1}
             />
           )}
           <SegmentedControl
             data={chartButtons}
             onChange={(c) => setChartType(c as ChartTypes)}
             disabled={noData || downloadInProgress}
+            padding={1}
           />
           <Tooltip
             label="Remove Card"

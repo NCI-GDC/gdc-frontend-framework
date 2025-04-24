@@ -277,8 +277,8 @@ const FromTo: React.FC<FromToProps> = ({
         <div className="flex flex-col grow my-1 text-base-contrast-max bg-base-lightest rounded-md p-2">
           <fieldset className="flex flex-col gap-y-1 text-sm">
             <legend className="sr-only">Numeric from/to filters</legend>
-            <div className="flex gap-2 items-center justify-end flex-nowrap font-content">
-              <div className="text-right font-bold">From</div>
+            <div className="flex gap-2 items-center justify-end font-content">
+              <div className="text-right font-bold font-montserrat">From</div>
               <SegmentedControl
                 size="sm"
                 className="basis-1/5"
@@ -314,8 +314,8 @@ const FromTo: React.FC<FromToProps> = ({
                 aria-label="input from value"
               />
             </div>
-            <div className="flex gap-2 items-center justify-end flex-nowrap font-content">
-              <div className="text-right font-bold">To</div>
+            <div className="flex gap-2 items-center justify-end font-content">
+              <div className="text-right font-bold font-montserrat">To</div>
               <SegmentedControl
                 size="sm"
                 className="basis-1/5"
@@ -351,16 +351,16 @@ const FromTo: React.FC<FromToProps> = ({
               />
             </div>
           </fieldset>
-          {Object.keys(form.errors).length > 0 || isWarning ? (
-            <WarningOrError
-              hasErrors={Object.keys(form.errors).length > 0}
-              isWarning={isWarning}
-              lowerUnitRange={lowerUnitRange}
-              upperUnitRange={upperUnitRange}
-            />
-          ) : null}
         </div>
       </div>
+      {Object.keys(form.errors).length > 0 || isWarning ? (
+        <WarningOrError
+          hasErrors={Object.keys(form.errors).length > 0}
+          isWarning={isWarning}
+          lowerUnitRange={lowerUnitRange}
+          upperUnitRange={upperUnitRange}
+        />
+      ) : null}
       <div className="flex items-stretch w-100 pt-1">
         <button className={applyButtonClasses} onClick={handleApply}>
           Apply

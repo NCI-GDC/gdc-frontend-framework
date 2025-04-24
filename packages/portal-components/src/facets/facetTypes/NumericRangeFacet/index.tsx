@@ -57,8 +57,8 @@ const NumericRangeFacet: React.FC<NumericFacetCardProps> = ({
 
   return (
     <div
-      className={`flex flex-col mx-0 bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition h-fit  ${
-        cardSelected ? "animate-border-highlight " : undefined
+      className={`flex flex-col mx-0 bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition  ${
+        cardSelected ? "animate-border-highlight " : ""
       }`}
       id={field}
       style={{
@@ -76,7 +76,7 @@ const NumericRangeFacet: React.FC<NumericFacetCardProps> = ({
         showFlip={rangeDatatype !== "range" && Chart !== undefined}
       />
       <div
-        className={showFilters ? "h-fit" : "h-0 invisible"}
+        className={showFilters ? "h-full" : "h-0 invisible"}
         aria-hidden={!showFilters}
       >
         {
