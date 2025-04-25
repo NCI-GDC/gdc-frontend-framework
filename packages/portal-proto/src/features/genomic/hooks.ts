@@ -486,3 +486,9 @@ export const useOpenUploadModal = () => {
 
   return openUploadModal;
 };
+
+export const useUploadFilterItems = (uploadField: string) => {
+  const field = uploadField.split(".upload").join("");
+  const items = useGenomicFilterByName(field);
+  return { items, noData: items === undefined };
+};

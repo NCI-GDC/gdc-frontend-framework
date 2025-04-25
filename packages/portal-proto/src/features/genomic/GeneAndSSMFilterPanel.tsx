@@ -25,11 +25,11 @@ import { selectFiltersAppliedCount } from "./geneAndSSMFiltersSlice";
 import queryExpressionHooks, {
   useFieldNameToTitle,
 } from "../cohortBuilder/queryExpressionHooks";
+import { useSearchEnumTerms } from "../cohortBuilder/hooks";
 import {
-  useSearchEnumTerms,
+  useOpenUploadModal,
   useUploadFilterItems,
-} from "../cohortBuilder/hooks";
-import { useOpenUploadModal } from "@/features/genomic/hooks";
+} from "@/features/genomic/hooks";
 
 const GeneAndSSMFilterPanel = ({
   isDemoMode,
@@ -50,8 +50,8 @@ const GeneAndSSMFilterPanel = ({
   useGenesFacets(
     "ssms",
     "explore",
-    FilterFacets.filter((f) => f.queryOptions.docType === "ssms").map(
-      (x) => x.field,
+    FilterFacets.filter((f) => f.queryOptions.docType === "ssms").map((x) =>
+      x.field.includes("upload") ? x.field.split(".upload").join("") : x.field,
     ),
     isDemoMode,
   );
