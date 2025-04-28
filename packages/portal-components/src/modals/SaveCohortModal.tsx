@@ -70,7 +70,14 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
     setIsSaving(true);
 
     if (replace) {
-      replaceCohort({ newName, filters, cohortId, saveAs })
+      replaceCohort({
+        newName,
+        filters,
+        caseFilters,
+        createStaticCohort,
+        cohortId,
+        saveAs,
+      })
         .then(({ newCohortId }) => {
           setCohortMessage &&
             setCohortMessage([
