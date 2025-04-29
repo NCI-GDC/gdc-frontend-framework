@@ -76,7 +76,7 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
             setCohortMessage &&
               setCohortMessage([
                 {
-                  cmd: "savedCohort",
+                  cmd: setAsCurrent ? "savedCohort" : "savedCurrentCohort",
                   param1: newName,
                   param2: newCohortId,
                 },
