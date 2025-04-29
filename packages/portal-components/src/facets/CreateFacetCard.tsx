@@ -81,7 +81,7 @@ const createFacetCards = ({
                   : valueLabel(facet?.queryOptions ?? queryOptions)
               }
               field={facet.field}
-              facetName={facetNameFormatter(facet.field)}
+              facetName={facet.name ?? facetNameFormatter(facet.field)}
               description={facet.description}
               dismissCallback={dismissCallback}
               hideIfEmpty={hideIfEmpty}
@@ -104,7 +104,7 @@ const createFacetCards = ({
               dismissCallback={dismissCallback}
               hideIfEmpty={hideIfEmpty}
               hooks={{ ...(hooks as ValueFacetHooks) }}
-              facetName={facetNameFormatter(facet.field)}
+              facetName={facet.name ?? facetNameFormatter(facet.field)}
             />
           );
         }
@@ -124,7 +124,7 @@ const createFacetCards = ({
               hooks={{
                 ...(hooks as ToggleFacetHooks),
               }}
-              facetName={facetNameFormatter(facet.field)}
+              facetName={facet.name ?? facetNameFormatter(facet.field)}
             />
           );
         }
@@ -140,7 +140,7 @@ const createFacetCards = ({
               hooks={{
                 ...(hooks as RangeFacetHooks),
               }}
-              facetName={facetNameFormatter(facet.field)}
+              facetName={facet.name ?? facetNameFormatter(facet.field)}
             />
           );
 
@@ -174,7 +174,7 @@ const createFacetCards = ({
                 ...(hooks as RangeFacetHooks),
               }}
               dismissCallback={dismissCallback}
-              facetName={facetNameFormatter(facet.field)}
+              facetName={facet.name ?? facetNameFormatter(facet.field)}
               queryOptions={facet?.queryOptions ?? queryOptions}
               cardScrollMargin={cardScrollMargin}
               Chart={Chart}
