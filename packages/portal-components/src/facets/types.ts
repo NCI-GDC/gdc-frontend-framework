@@ -80,9 +80,15 @@ export type UploadFacetHooks = FacetCommonHooks & {
   /**
    * Hook that opens the upload modal
    */
-  useSelectCurrentCohort?: () => Cohort;
   useOpenUploadModal: () => (field: string) => void;
+  /**
+   * Hook that returns formatted label for the filter badge
+   */
   useFormatValue: () => (value: string, field: string) => Promise<string>;
+  /**
+   * Optional hook that returns the current cohort, used for managing collapse/expand filter state
+   */
+  useSelectCurrentCohort?: () => Cohort;
 };
 
 export interface FacetCommonHooks {

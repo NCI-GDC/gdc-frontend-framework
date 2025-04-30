@@ -2,10 +2,10 @@ import React, { useContext } from "react";
 import { ActionIcon, Badge } from "@mantine/core";
 import OverflowTooltippedLabel from "@/common/OverflowTooltippedLabel";
 import { Cohort } from "@/cohort/types";
+import { Operation } from "@/cohort/QueryExpression/types";
+import { QueryExpressionsExpandedContext } from "@/cohort/QueryExpression/QueryExpressionSection";
 import { CloseIcon } from "src/commonIcons";
-import { QueryExpressionsExpandedContext } from "../cohort/QueryExpression/QueryExpressionSection";
 import FormattedFilterLabel from "./FormattedFilterLabel";
-import { Operation } from "../cohort";
 
 const RemoveButton = ({ label }: { label: string }) => (
   <ActionIcon
