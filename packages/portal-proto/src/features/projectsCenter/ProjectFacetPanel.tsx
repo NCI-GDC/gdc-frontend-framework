@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  FacetDefinition,
-  GQLDocType,
-  selectProjectsFacetByField,
-} from "@gff/core";
+import { GQLDocType, selectProjectsFacetByField } from "@gff/core";
 import {
   useClearProjectsFilters,
   useSelectFieldFilter,
@@ -54,7 +50,7 @@ export const ProjectFacetPanel = (): JSX.Element => {
 
   return (
     <FilterPanel
-      facetDefinitions={FilterFacets.project as FacetDefinition[]}
+      facetDefinitions={FilterFacets.project}
       facetHooks={ProjectFacetHooks}
       valueLabel="Projects"
       app="projects-center"
