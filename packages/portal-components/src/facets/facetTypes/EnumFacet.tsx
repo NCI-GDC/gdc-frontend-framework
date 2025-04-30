@@ -430,7 +430,7 @@ const EnumFacet: React.FC<EnumFacetCardProps> = ({
                               <OverflowTooltippedLabel label={value}>
                                 <span className="font-content">{value}</span>
                               </OverflowTooltippedLabel>
-                              {count && (
+                              {count !== undefined && (
                                 <>
                                   <div
                                     data-testid={`text-${value}`}
