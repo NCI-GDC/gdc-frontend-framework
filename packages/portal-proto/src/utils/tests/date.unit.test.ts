@@ -1,4 +1,4 @@
-import { getFormattedTimestamp } from "../date";
+import { getFormattedTimestamp } from "@/utils/date";
 
 describe("getFormattedTimestamp", () => {
   afterEach(() => {

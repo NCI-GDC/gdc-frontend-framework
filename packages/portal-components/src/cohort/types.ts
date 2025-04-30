@@ -60,9 +60,13 @@ export interface CohortHooks {
   useReplaceCohort: () => ({
     newName,
     filters,
+    cohortId,
+    saveAs,
   }: {
     newName: string;
     filters: any;
+    cohortId?: string;
+    saveAs: boolean;
   }) => Promise<{ newCohortId: string }>;
   useExportCohort?: () => {
     handleExport: () => void;

@@ -13,7 +13,7 @@ import {
 } from "./utils";
 import AnnotationsTable from "./AnnotationsTable";
 import ProjectsIcon from "public/user-flow/icons/summary/projects.svg";
-import useScrollToHash from "@/hooks/useScrollToHash";
+import { useScrollToHash } from "@gff/portal-components";
 import { useViewportSize } from "@mantine/hooks";
 import { LG_BREAKPOINT } from "src/utils";
 import SummaryHeaderControls from "./SummaryHeaderControls";

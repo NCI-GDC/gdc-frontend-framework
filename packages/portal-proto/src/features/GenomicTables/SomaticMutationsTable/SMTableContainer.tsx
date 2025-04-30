@@ -545,7 +545,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             search={{
               enabled: true,
               defaultSearchTerm: searchTerm,
-              tooltip: "e.g. TP53, ENSG00000141510, chr17:g.7675088C>T, R175H",
+              tooltip:
+                "e.g. TP53, ENSG00000141510, chr17:g.7675088C>T, R175H, 8e30604f-3a45-5533-bdd7-0a4353700318",
             }}
             tableTotalDetail={
               <TotalItems total={data?.ssmsTotal} itemName="somatic mutation" />
