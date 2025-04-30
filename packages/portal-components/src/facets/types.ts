@@ -1,8 +1,5 @@
-import {
-  Operation,
-  NumericFromTo,
-  QueryExpressionHooks,
-} from "@/cohort/QueryExpression/types";
+import { Cohort } from "@/cohort/types";
+import { Operation, NumericFromTo } from "@/cohort/QueryExpression/types";
 import { DataFetchingResult } from "src/types";
 
 export type QueryOptions = Record<string, unknown>;
@@ -72,20 +69,21 @@ export type RangeFacetHooks = FacetCommonHooks & {
   useGetFacetFilters: SelectFacetFilterFunction;
 };
 
-export type UploadFacetHooks = FacetCommonHooks &
-  QueryExpressionHooks & {
-    /**
-     * Hook that returns a list of the uploaded items
-     */
-    useFilterItems: (field: string) => {
-      noData: boolean;
-      items: readonly (string | number)[];
-    };
-    /**
-     * Hook that opens the upload modal
-     */
-    useOpenUploadModal: () => (field: string) => void;
+export type UploadFacetHooks = FacetCommonHooks & {
+  /**
+   * Hook that returns a list of the uploaded items
+   */
+  useFilterItems: (field: string) => {
+    noData: boolean;
+    items: readonly (string | number)[];
   };
+  /**
+   * Hook that opens the upload modal
+   */
+  useSelectCurrentCohort?: () => Cohort;
+  useOpenUploadModal: () => (field: string) => void;
+  useFormatValue: () => (value: string, field: string) => Promise<string>;
+};
 
 export interface FacetCommonHooks {
   /**

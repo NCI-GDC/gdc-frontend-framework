@@ -22,9 +22,10 @@ import FilterPanel from "@/features/facets/FilterPanel";
 import { FacetCardDefinition } from "@gff/portal-components";
 import { useAppSelector } from "./appApi";
 import { selectFiltersAppliedCount } from "./geneAndSSMFiltersSlice";
-import queryExpressionHooks, {
+import {
   useFieldNameToTitle,
-} from "../cohortBuilder/queryExpressionHooks";
+  useFormatValue,
+} from "@/features/cohortBuilder/queryExpressionHooks";
 import { useSearchEnumTerms } from "../cohortBuilder/hooks";
 import {
   useOpenUploadModal,
@@ -73,7 +74,7 @@ const GeneAndSSMFilterPanel = ({
     useSearchEnumTerms,
     useOpenUploadModal,
     useFilterItems: useUploadFilterItems,
-    ...queryExpressionHooks,
+    useFormatValue,
   };
 
   return (

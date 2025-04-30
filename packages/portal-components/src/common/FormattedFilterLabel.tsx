@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { QueryExpressionHooks } from "./types";
 
-interface QueryRepresentationLabelProps {
+interface FormattedFilterLabelProps {
   readonly field: string;
   readonly value: string;
-  readonly hooks: QueryExpressionHooks;
+  readonly useFormatValue: () => (
+    value: string,
+    field: string,
+  ) => Promise<string>;
 }
 
-const QueryRepresentationLabel: React.FC<QueryRepresentationLabelProps> = ({
+const FormattedFilterLabel: React.FC<FormattedFilterLabelProps> = ({
   field,
   value,
-  hooks,
-}: QueryRepresentationLabelProps) => {
+  useFormatValue,
+}: FormattedFilterLabelProps) => {
   const [formattedValue, setFormattedValue] = useState("...");
 
-  const formatValue = hooks.useFormatValue();
+  const formatValue = useFormatValue();
 
   useEffect(() => {
     formatValue(value, field).then((v: string) => {
@@ -27,4 +29,4 @@ const QueryRepresentationLabel: React.FC<QueryRepresentationLabelProps> = ({
   return <>{formattedValue}</>;
 };
 
-export default QueryRepresentationLabel;
+export default FormattedFilterLabel;

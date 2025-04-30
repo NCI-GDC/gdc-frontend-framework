@@ -2,7 +2,7 @@ import React, { PropsWithChildren, useContext, useEffect } from "react";
 import { get } from "lodash";
 import { ActionIcon, Divider, Group, Tooltip } from "@mantine/core";
 import { QueryExpressionsExpandedContext } from "./QueryExpressionSection";
-import CohortBadge from "./CohortBadge";
+import FilterBadge from "@/common/FilterBadge";
 import { CloseIcon, RightArrowIcon, LeftArrowIcon } from "src/commonIcons";
 import {
   Equals,
@@ -138,14 +138,19 @@ const IncludeExcludeQueryElement: React.FC<IncludeExcludeQueryElementProps> = ({
             {operands.map((x, i) => {
               const value = x.toString();
               return (
-                <CohortBadge
+                <FilterBadge
                   key={`query-rep-${field}-${value}-${i}`}
                   field={field}
                   value={value}
                   customTestid={`query-rep-${field}-${value}-${i}`}
                   operands={operands}
                   operator={operator}
-                  hooks={hooks}
+                  hooks={{
+                    useSelectCurrentCohort: hooks.useSelectCurrentCohort,
+                    useClearFilter: hooks.useRemoveCohortFilter,
+                    useUpdateFilter: hooks.useUpdateCohortFilter,
+                    useFormatValue: hooks.useFormatValue,
+                  }}
                 />
               );
             })}
@@ -188,10 +193,7 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
 
       if (remainingOperands.length > 0) {
         const [firstOperand] = remainingOperands;
-        updateActiveCohortFilter({
-          field: firstOperand.field,
-          operation: firstOperand,
-        });
+        updateActiveCohortFilter(firstOperand.field, firstOperand);
       } else {
         removeCohortFilter(remove.field);
       }
