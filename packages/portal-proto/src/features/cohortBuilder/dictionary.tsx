@@ -1,4 +1,5 @@
 import { useDeepCompareEffect } from "use-deep-compare";
+// TODO: Remove the JSON config file and replace with the dictionary slice.
 import GDC_Dictionary from "./config/gdc_tooltips.json";
 import GDC_Dictionary_Flattened from "./config/gdc_facet_dictionary_flat.json";
 import MiniSearch from "minisearch";
@@ -11,7 +12,6 @@ import {
 } from "@gff/core";
 import { getFacetInfo, upload_facets } from "@/features/cohortBuilder/utils";
 import { useAllEnumFacets } from "../facets/hooks";
-// TODO: Remove the above JSON config file and replace with the dictionary slice.
 
 export const get_facet_list = (
   category: string,
@@ -92,14 +92,14 @@ export const useFacetSearch = (): MiniSearch<FacetSearchDocument> => {
         ...(facets.data || {}),
         ...upload_facets,
       }).forEach((facet) => {
-        const result = facetResults[facet.full];
+        const result = facetResults[facet.field];
         searchDocuments.push({
-          name: facet.title ?? fieldNameToTitle(facet.full),
+          name: facet.name ?? fieldNameToTitle(facet.field),
           enum: Object.keys(result?.buckets || {}),
           category: category.label,
           categoryKey,
           description: facet.description,
-          id: facet.full,
+          id: facet.field,
         });
       });
     });
@@ -133,7 +133,7 @@ export const useFacetTabLoaded = (tab: string) => {
 
   const facetNames = facetList
     .filter((x) => x.facet_type === "enum")
-    .map((x) => x.full);
+    .map((x) => x.field);
 
   const filteredFacets = Object.entries(facetResults).filter(([facetName]) =>
     facetNames.includes(facetName),

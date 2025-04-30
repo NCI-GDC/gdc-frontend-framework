@@ -1,9 +1,9 @@
-import FacetTabs from "../cohortBuilder/FacetTabs";
 import { FC } from "react";
 import { DemoUtil } from "./DemoUtil";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
+import CohortBuilder from "@/features/cohortBuilder/CohortBuilder";
 
-const CohortBuilder: FC = () => {
+const CohortBuilderApp: FC = () => {
   const isDemoMode = useIsDemoApp();
   return (
     <>
@@ -11,11 +11,11 @@ const CohortBuilder: FC = () => {
         <DemoUtil text="Demo mode is not available for this app" />
       ) : (
         <div className="flex flex-col">
-          <FacetTabs />
+          <CohortBuilder />
         </div>
       )}
     </>
   );
 };
 
-export default CohortBuilder;
+export default CohortBuilderApp;

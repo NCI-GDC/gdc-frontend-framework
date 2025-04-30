@@ -1,50 +1,49 @@
 import {
-  FacetDefinition,
   FilterSet,
   selectCurrentCohortFilters,
   useCoreSelector,
+  GQLDocType,
+  FacetDefinition,
 } from "@gff/core";
-import { FacetCardDefinition } from "@/features/facets/types";
 import { SummaryFacetInfo } from "./SummaryFacets";
+import { FacetCardDefinition } from "@gff/portal-components";
 
 // These new upload facets will not be returned by the mapping API call, hence they are manually defined as upload_facets
-export const upload_facets: Record<string, FacetCardDefinition> = {
+export const upload_facets = {
   "cases.upload.case_id": {
     description: "",
     toolTip: "Filter the current cohort by entering/uploading specific cases",
-    doc_type: "cases",
+    doc_type: "cases" as GQLDocType,
     facet_type: "upload",
-    field: "cases.case_id",
-    full: "cases.upload.case_id",
+    field: "cases.upload.case_id",
     uploadLabel: "Upload Cases",
     range: undefined,
     type: "keyword",
+    name: "Case ID",
   },
   "genes.upload.gene_id": {
     description: "",
     toolTip:
       "Filter the current cohort by entering/uploading specific genes or selecting gene sets",
-    doc_type: "cases",
+    doc_type: "cases" as GQLDocType,
     facet_type: "upload",
-    field: "genes.gene_id",
-    full: "genes.upload.gene_id",
+    field: "genes.upload.gene_id",
     uploadLabel: "Upload Genes",
     range: undefined,
     type: "keyword",
-    title: "Mutated Gene",
+    name: "Mutated Gene",
   },
   "ssms.upload.ssm_id": {
     description: "",
     toolTip:
       "Filter the current cohort by entering/uploading specific Simple Somatic Mutations (SSMs) or selecting mutation sets",
-    doc_type: "cases",
+    doc_type: "cases" as GQLDocType,
     facet_type: "upload",
-    field: "ssms.ssm_id",
-    full: "ssms.upload.ssm_id",
+    field: "ssms.upload.ssm_id",
     uploadLabel: "Upload Somatic Mutations",
     range: undefined,
     type: "keyword",
-    title: "Somatic Mutation",
+    name: "Somatic Mutation",
   },
 };
 
@@ -56,9 +55,15 @@ export const upload_facets: Record<string, FacetCardDefinition> = {
  */
 export const getFacetInfo = (
   fields: ReadonlyArray<string>,
-  facets: Record<string, FacetDefinition>,
-): ReadonlyArray<FacetDefinition> => {
-  return fields.map((field) => facets[field]).filter((facet) => facet);
+  facets: Record<string, FacetDefinition | FacetCardDefinition>,
+): ReadonlyArray<FacetCardDefinition> => {
+  return fields
+    .map((field) => facets[field])
+    .filter((facet) => facet)
+    .map((facet) => ({
+      ...facet,
+      field: (facet as FacetDefinition).full ?? facet.field,
+    }));
 };
 
 export const useCohortFacetFilters = (): FilterSet => {

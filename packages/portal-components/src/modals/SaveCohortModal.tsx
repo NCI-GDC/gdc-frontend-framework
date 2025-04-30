@@ -70,18 +70,29 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
     setIsSaving(true);
 
     if (replace) {
-      replaceCohort({ newName, filters })
+      replaceCohort({ newName, filters, cohortId, saveAs })
         .then(({ newCohortId }) => {
-          setCohortMessage &&
-            setCohortMessage([
-              {
-                cmd: "savedCohort",
-                param1: newName,
-                param2: newCohortId,
-              },
-            ]);
+          if (setAsCurrent || saveAs) {
+            setCohortMessage &&
+              setCohortMessage([
+                {
+                  cmd: setAsCurrent ? "savedCohort" : "savedCurrentCohort",
+                  param1: newName,
+                  param2: newCohortId,
+                },
+              ]);
 
-          setActiveCohort(newCohortId);
+            setActiveCohort(newCohortId);
+          } else {
+            setCohortMessage &&
+              setCohortMessage([
+                {
+                  cmd: "savedCohortSetCurrent",
+                  param1: newName,
+                  param2: newCohortId,
+                },
+              ]);
+          }
           closeModal();
         })
         .catch(() => {

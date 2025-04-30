@@ -4,6 +4,7 @@ import QueryExpressionSection from "./QueryExpression/QueryExpressionSection";
 import CohortBadge from "./QueryExpression/CohortBadge";
 import QueryRepresentationLabel from "./QueryExpression/QueryRepresentationLabel";
 import type { Cohort } from "./types";
+import type { Operation } from "./QueryExpression/types";
 
 export {
   CohortManager,
@@ -12,4 +13,5 @@ export {
   CohortBadge,
   QueryRepresentationLabel,
   Cohort,
+  Operation,
 };

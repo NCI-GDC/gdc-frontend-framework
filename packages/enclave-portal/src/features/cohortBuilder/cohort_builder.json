@@ -1,0 +1,16 @@
+{
+  "config": {
+    "general": {
+      "label": "General",
+      "facets": [
+        "primary_diagnosis",
+        "tissue_or_organ_of_origin",
+        "gender",
+        "race",
+        "ethnicity",
+        "vital_status",
+        "age_at_diagnosis"
+      ]
+    }
+  }
+}

@@ -45,17 +45,17 @@ export const SetOperations: React.FC<SetOperationsProps> = ({
   );
 
   return (
-    <div className="flex flex-col p-2">
+    <div className="flex flex-col p-4 w-full">
       <div>
         {isDemoMode && (
-          <p>
+          <p className="mb-2">
             Demo showing high impact mutations overlap in Bladder between
             Mutect, Varscan and Muse pipelines.
           </p>
         )}
       </div>
-      <div className="flex flex-row pt-2">
-        <div className="relative">
+      <div className="flex flex-col lg:flex-row gap-8 lg:gap-4">
+        <div className="relative my-auto lg:basis-1/3 max-w-[400px] 2xl:max-w-[600px] w-full mx-auto">
           <LoadingOverlay visible={isLoading} />
           <VennDiagram
             labels={["S₁", "S₂", "S₃"]}
@@ -64,7 +64,7 @@ export const SetOperations: React.FC<SetOperationsProps> = ({
             onClickHandler={onClickHandler}
           />
         </div>
-        <div className="w-full ml-2 mt-2 mb-4 relative">
+        <div className="relative lg:basis-2/3">
           <SetOperationsSummaryTable
             sets={sets}
             countHook={countHook}

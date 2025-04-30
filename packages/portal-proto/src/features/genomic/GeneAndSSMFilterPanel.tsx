@@ -19,9 +19,17 @@ import { FacetDocTypeToLabelsMap } from "@/features/facets/hooks";
 import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
 import MutationSetModal from "@/components/Modals/SetModals/MutationSetModal";
 import FilterPanel from "@/features/facets/FilterPanel";
-import { FacetCardDefinition } from "@/features/facets/types";
+import { FacetCardDefinition } from "@gff/portal-components";
 import { useAppSelector } from "./appApi";
 import { selectFiltersAppliedCount } from "./geneAndSSMFiltersSlice";
+import queryExpressionHooks, {
+  useFieldNameToTitle,
+} from "../cohortBuilder/queryExpressionHooks";
+import {
+  useSearchEnumTerms,
+  useUploadFilterItems,
+} from "../cohortBuilder/hooks";
+import { useOpenUploadModal } from "@/features/genomic/hooks";
 
 const GeneAndSSMFilterPanel = ({
   isDemoMode,
@@ -34,13 +42,17 @@ const GeneAndSSMFilterPanel = ({
   useGenesFacets(
     "genes",
     "explore",
-    FilterFacets.filter((f) => f.doc_type === "genes").map((x) => x.full),
+    FilterFacets.filter((f) => f.queryOptions.docType === "genes").map((x) =>
+      x.field.includes("upload") ? x.field.split(".upload").join("") : x.field,
+    ),
     isDemoMode,
   );
   useGenesFacets(
     "ssms",
     "explore",
-    FilterFacets.filter((f) => f.doc_type === "ssms").map((x) => x.full),
+    FilterFacets.filter((f) => f.queryOptions.docType === "ssms").map(
+      (x) => x.field,
+    ),
     isDemoMode,
   );
 
@@ -54,9 +66,14 @@ const GeneAndSSMFilterPanel = ({
     useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
     useClearFilter: useClearGenomicFilters,
     useTotalCounts: useTotalGenomicCounts,
-    useGetFacetValues: useGenomicFilterByName,
+    useGetFacetFilters: useGenomicFilterByName,
     useToggleExpandFilter: useToggleExpandFilter,
     useFilterExpanded: useFilterExpandedState,
+    useFieldNameToTitle,
+    useSearchEnumTerms,
+    useOpenUploadModal,
+    useFilterItems: useUploadFilterItems,
+    ...queryExpressionHooks,
   };
 
   return (
@@ -81,8 +98,8 @@ const GeneAndSSMFilterPanel = ({
       <FilterPanel
         facetDefinitions={FilterFacets as FacetCardDefinition[]}
         facetHooks={GenomicFilterHooks}
-        valueLabel={(x: FacetCardDefinition) =>
-          FacetDocTypeToLabelsMap[x.doc_type]
+        valueLabel={({ docType }: { docType: string }) =>
+          FacetDocTypeToLabelsMap[docType]
         }
         app="genes-mutations-app"
         toggleAllFiltersExpanded={toggleAllFiltersExpanded}

@@ -6,7 +6,6 @@ import {
   selectAnnotationFacetByField,
 } from "@gff/core";
 import { useTotalCounts, useLocalFilters } from "@/features/facets/hooks";
-import { FacetRequiredHooks } from "@/features/facets/types";
 import FilterFacets from "./filters.json";
 import {
   useAllFiltersCollapsed,
@@ -20,9 +19,11 @@ import {
   useToggleExpandAnnotationFilter,
   useUpdateAnnotationFacetFilter,
 } from "./hooks";
+import { useFieldNameToTitle } from "../cohortBuilder/queryExpressionHooks";
 import FilterPanel from "../facets/FilterPanel";
 import { selectFiltersAppliedCount } from "./annotationBrowserFilterSlice";
 import { useAppSelector } from "./appApi";
+import { useSearchEnumTerms } from "../cohortBuilder/hooks";
 
 const useAnnotationEnumData = (docType: GQLDocType, field: string) =>
   useLocalFilters(
@@ -34,14 +35,16 @@ const useAnnotationEnumData = (docType: GQLDocType, field: string) =>
   );
 
 export const AnnotationFacetPanel = (): JSX.Element => {
-  const facetHooks: FacetRequiredHooks = {
+  const facetHooks = {
     useGetEnumFacetData: partial(useAnnotationEnumData, "annotations"),
     useUpdateFacetFilters: useUpdateAnnotationFacetFilter,
     useGetFacetFilters: useSelectFieldFilter,
     useClearFilter: useClearAnnotationFilters,
-    useTotalCounts: partial(useTotalCounts, "annotationCounts"),
+    useTotalCounts: useTotalCounts,
+    useFieldNameToTitle,
     useToggleExpandFilter: useToggleExpandAnnotationFilter,
     useFilterExpanded: useFilterExpandedState,
+    useSearchEnumTerms,
   };
 
   const allFiltersCollapsed = useAllFiltersCollapsed();
