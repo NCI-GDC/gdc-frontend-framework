@@ -2,9 +2,9 @@
   "name": "enclave-portal",
   "version": "2.16.5",
   "dependencies": {
+    "@mantine/core": "7.17.4",
+    "@mantine/notifications": "7.17.4",
     "@gff/portal-components": "^2.16.5",
-    "@mantine/core": "^7.17.2",
-    "@mantine/notifications": "^7.17.2",
     "next": "^15.2.4"
   },
   "peerDependencies": {

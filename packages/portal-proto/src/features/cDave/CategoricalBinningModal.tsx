@@ -331,7 +331,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
         {errorMessage && (
           <Group className="grow" gap={8} justify="center">
             <AlertIcon color="red" />
-            <Text color="red">{errorMessage}</Text>
+            <Text c="red">{errorMessage}</Text>
           </Group>
         )}
         <Group gap={8}>
@@ -491,6 +491,7 @@ const GroupInput: React.FC<GroupInputProps> = ({
           className={"w-1/2"}
           onKeyDown={createKeyboardAccessibleFunction(closeInput)}
           {...form.getInputProps("group")}
+          maxLength={100}
         />
       ) : (
         <div

@@ -8,7 +8,7 @@ import {
   GqlIntersection,
 } from "@gff/core";
 import { SetOperationEntityType } from "@/features/set-operations/types";
-import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
+import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionAsSetModal";
 import { Loader, Tooltip } from "@mantine/core";
 import CohortCreationButton, {
   CohortCreationStyledButton,

@@ -16,12 +16,12 @@ import {
   buildSSMSTableSearchFilters,
   filterSetToOperation,
   convertFilterToGqlFilter,
+  useRemoveTopNSsmsSetFromFiltersMutation,
 } from "@gff/core";
 import { useEffect, useState, useContext, useMemo, useCallback } from "react";
 import { useDeepCompareCallback, useDeepCompareMemo } from "use-deep-compare";
 import { Loader } from "@mantine/core";
 import isEqual from "lodash/isEqual";
-import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
 import { statusBooleansToDataStatus } from "src/utils";
@@ -46,6 +46,7 @@ import SMTableSubcomponent from "./SMTableSubcomponent";
 import { ComparativeSurvival } from "@/features/genomic/types";
 import TotalItems from "@/components/Table/TotalItem";
 import { SET_COUNT_LIMIT } from "@/components/Modals/SetModals/constants";
+import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionAsSetModal";
 
 export interface SMTableContainerProps {
   readonly selectedSurvivalPlot?: ComparativeSurvival;
@@ -467,7 +468,13 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 setTypeLabel="mutation"
                 countHook={useSsmSetCountsQuery}
                 closeModal={handleRemoveFromSetModalClose}
-                removeFromSetHook={useRemoveFromSsmSetMutation}
+                removeFromSetHook={
+                  selectedMutations.length === 0
+                    ? useRemoveTopNSsmsSetFromFiltersMutation
+                    : useRemoveFromSsmSetMutation
+                }
+                isManualSelection={selectedMutations.length > 0}
+                sort="occurrence.case.project.project_id"
               />
             </>
           )}

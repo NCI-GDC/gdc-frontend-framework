@@ -35,6 +35,7 @@ const SingleAppsPage: NextPage = () => {
           handleIsSticky={(isStickyParam: boolean) =>
             setIsSticky(isStickyParam)
           }
+          isFetchingCohorts={!initialCohortsFetched}
         />
       }
       isContextBarSticky={isSticky}

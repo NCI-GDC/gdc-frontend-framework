@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  FacetDefinition,
-  GQLDocType,
-  selectProjectsFacetByField,
-} from "@gff/core";
+import { GQLDocType, selectProjectsFacetByField } from "@gff/core";
 import {
   useClearProjectsFilters,
   useSelectFieldFilter,
@@ -22,6 +18,8 @@ import partial from "lodash/partial";
 import FilterPanel from "@/features/facets/FilterPanel";
 import { useAppSelector } from "./appApi";
 import { selectFiltersAppliedCount } from "./projectCenterFiltersSlice";
+import { useFieldNameToTitle } from "../cohortBuilder/queryExpressionHooks";
+import { useSearchEnumTerms } from "../cohortBuilder/hooks";
 
 const useProjectEnumData = (docType: GQLDocType, field: string) =>
   useLocalFilters(
@@ -38,9 +36,11 @@ export const ProjectFacetPanel = (): JSX.Element => {
     useUpdateFacetFilters: useUpdateProjectsFacetFilter,
     useGetFacetFilters: useSelectFieldFilter,
     useClearFilter: useClearProjectsFilters,
-    useTotalCounts: partial(useTotalCounts, "projectsCounts"),
+    useTotalCounts: useTotalCounts,
     useToggleExpandFilter: useToggleExpandProjectFilter,
     useFilterExpanded: useFilterExpandedState,
+    useFieldNameToTitle,
+    useSearchEnumTerms,
   };
 
   const allFiltersCollapsed = useAllFiltersCollapsed();
@@ -50,7 +50,7 @@ export const ProjectFacetPanel = (): JSX.Element => {
 
   return (
     <FilterPanel
-      facetDefinitions={FilterFacets.project as FacetDefinition[]}
+      facetDefinitions={FilterFacets.project}
       facetHooks={ProjectFacetHooks}
       valueLabel="Projects"
       app="projects-center"

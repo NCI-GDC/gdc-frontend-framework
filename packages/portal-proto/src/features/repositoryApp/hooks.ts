@@ -18,12 +18,6 @@ import { useCallback, useEffect } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
 import { ThunkDispatch, AnyAction } from "@reduxjs/toolkit";
 import isEqual from "lodash/isEqual";
-import {
-  ClearFacetFunction,
-  EnumFacetResponse,
-  FacetResponse,
-  UpdateFacetFilterFunction,
-} from "@/features/facets/types";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { extractValue } from "@/features/facets/hooks";
 import { AppDataSelector, AppState } from "@/features/repositoryApp/appApi";
@@ -73,7 +67,7 @@ export const useRepositoryFilters = (): FilterSet => {
 /**
  * removes the filter from the repository current/active filters
  */
-export const useClearRepositoryFilters = (): ClearFacetFunction => {
+export const useClearRepositoryFilters = () => {
   const dispatch = useAppDispatch();
   return (field: string) => {
     dispatch(removeRepositoryFilter(field));
@@ -165,7 +159,7 @@ export const useLocalFilters = (
   field: string,
   selectFieldEnumValues: (field: string) => OperandValue,
   selectLocalFilters: () => FilterSet,
-): EnumFacetResponse => {
+) => {
   const appDispatch = useAppDispatch();
 
   const facet: FacetBuckets = useAppSelector((state: AppState) =>
@@ -225,7 +219,7 @@ export const useLocalFilters = (
 export const useRepositoryRangeFacet = (
   field: string,
   ranges: ReadonlyArray<NumericFromTo>,
-): FacetResponse => {
+) => {
   const appDispatch = useAppDispatch();
   const facet: FacetBuckets = useAppSelector((state) =>
     selectRangeFacetByField(state, field),
@@ -258,7 +252,7 @@ export const useRepositoryRangeFacet = (
   };
 };
 
-export const useUpdateRepositoryFacetFilter = (): UpdateFacetFilterFunction => {
+export const useUpdateRepositoryFacetFilter = () => {
   const dispatch = useAppDispatch();
   // update the filter for this facet
   return useCallback(
@@ -269,7 +263,7 @@ export const useUpdateRepositoryFacetFilter = (): UpdateFacetFilterFunction => {
   );
 };
 
-export const useRemoveRepositoryFacetFilter = (): ClearFacetFunction => {
+export const useRemoveRepositoryFacetFilter = () => {
   const dispatch = useAppDispatch();
   // update the filter for this facet
   return useCallback(

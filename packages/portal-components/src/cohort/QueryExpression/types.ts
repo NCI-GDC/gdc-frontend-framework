@@ -34,87 +34,74 @@ export interface Equals {
   readonly operator: "=";
   readonly field: string;
   readonly operand: string | number;
-  readonly hooks: QueryExpressionHooks;
 }
 
 export interface NotEquals {
   readonly operator: "!=";
   readonly field: string;
   readonly operand: string | number;
-  readonly hooks: QueryExpressionHooks;
 }
 
 export interface LessThan {
   readonly operator: "<";
   readonly field: string;
   readonly operand: string | number;
-  readonly hooks: QueryExpressionHooks;
 }
 
 export interface LessThanOrEquals {
   readonly operator: "<=";
   readonly field: string;
   readonly operand: string | number;
-  readonly hooks: QueryExpressionHooks;
 }
 
 export interface GreaterThan {
   readonly operator: ">";
   readonly field: string;
   readonly operand: string | number;
-  readonly hooks: QueryExpressionHooks;
 }
 
 export interface GreaterThanOrEquals {
   readonly operator: ">=";
   readonly field: string;
   readonly operand: string | number;
-  readonly hooks: QueryExpressionHooks;
 }
 
 export interface Missing {
   readonly operator: "missing";
   readonly field: string;
-  readonly hooks: QueryExpressionHooks;
 }
 
 export interface Exists {
   readonly operator: "exists";
   readonly field: string;
-  readonly hooks: QueryExpressionHooks;
 }
 
 export interface Includes {
   readonly operator: "includes";
   readonly field: string;
   readonly operands: ReadonlyArray<string | number>;
-  readonly hooks: QueryExpressionHooks;
 }
 
 export interface Excludes {
   readonly operator: "excludes";
   readonly field: string;
   readonly operands: ReadonlyArray<string | number>;
-  readonly hooks: QueryExpressionHooks;
 }
 
 export interface ExcludeIfAny {
   readonly operator: "excludeifany";
   readonly field: string;
   readonly operands: string | ReadonlyArray<string | number>;
-  readonly hooks: QueryExpressionHooks;
 }
 
 export interface Intersection {
   readonly operator: "and";
   readonly operands: ReadonlyArray<Operation>;
-  readonly hooks: QueryExpressionHooks;
 }
 
 export interface Union {
   readonly operator: "or";
   readonly operands: ReadonlyArray<Operation>;
-  readonly hooks: QueryExpressionHooks;
 }
 
 export type UnionOrIntersection = Union | Intersection;
@@ -128,19 +115,25 @@ export const isOperandsType = (
 };
 
 export interface OperationHandler<T> {
-  handleEquals: (op: Equals) => T;
-  handleNotEquals: (op: NotEquals) => T;
-  handleLessThan: (op: LessThan) => T;
-  handleLessThanOrEquals: (op: LessThanOrEquals) => T;
-  handleGreaterThan: (op: GreaterThan) => T;
-  handleGreaterThanOrEquals: (op: GreaterThanOrEquals) => T;
-  handleMissing: (op: Missing) => T;
-  handleExists: (op: Exists) => T;
-  handleIncludes: (op: Includes) => T;
-  handleExcludes: (op: Excludes) => T;
-  handleExcludeIfAny: (op: ExcludeIfAny) => T;
-  handleIntersection: (op: Intersection) => T;
-  handleUnion: (op: Union) => T;
+  handleEquals: (op: Equals, hooks: QueryExpressionHooks) => T;
+  handleNotEquals: (op: NotEquals, hooks: QueryExpressionHooks) => T;
+  handleLessThan: (op: LessThan, hooks: QueryExpressionHooks) => T;
+  handleLessThanOrEquals: (
+    op: LessThanOrEquals,
+    hooks: QueryExpressionHooks,
+  ) => T;
+  handleGreaterThan: (op: GreaterThan, hooks: QueryExpressionHooks) => T;
+  handleGreaterThanOrEquals: (
+    op: GreaterThanOrEquals,
+    hooks: QueryExpressionHooks,
+  ) => T;
+  handleMissing: (op: Missing, hooks: QueryExpressionHooks) => T;
+  handleExists: (op: Exists, hooks: QueryExpressionHooks) => T;
+  handleIncludes: (op: Includes, hooks: QueryExpressionHooks) => T;
+  handleExcludes: (op: Excludes, hooks: QueryExpressionHooks) => T;
+  handleExcludeIfAny: (op: ExcludeIfAny, hooks: QueryExpressionHooks) => T;
+  handleIntersection: (op: Intersection, hooks: QueryExpressionHooks) => T;
+  handleUnion: (op: Union, hooks: QueryExpressionHooks) => T;
 }
 
 export const handleOperation = <T>(
@@ -150,31 +143,31 @@ export const handleOperation = <T>(
 ): T => {
   switch (op.operator) {
     case "=":
-      return handler.handleEquals({ ...op, hooks });
+      return handler.handleEquals(op, hooks);
     case "!=":
-      return handler.handleNotEquals({ ...op, hooks });
+      return handler.handleNotEquals(op, hooks);
     case "<":
-      return handler.handleLessThan({ ...op, hooks });
+      return handler.handleLessThan(op, hooks);
     case "<=":
-      return handler.handleLessThanOrEquals({ ...op, hooks });
+      return handler.handleLessThanOrEquals(op, hooks);
     case ">":
-      return handler.handleGreaterThan({ ...op, hooks });
+      return handler.handleGreaterThan(op, hooks);
     case ">=":
-      return handler.handleGreaterThanOrEquals({ ...op, hooks });
+      return handler.handleGreaterThanOrEquals(op, hooks);
     case "missing":
-      return handler.handleMissing({ ...op, hooks });
+      return handler.handleMissing(op, hooks);
     case "exists":
-      return handler.handleExists({ ...op, hooks });
+      return handler.handleExists(op, hooks);
     case "includes":
-      return handler.handleIncludes({ ...op, hooks });
+      return handler.handleIncludes(op, hooks);
     case "excludes":
-      return handler.handleExcludes({ ...op, hooks });
+      return handler.handleExcludes(op, hooks);
     case "excludeifany":
-      return handler.handleExcludeIfAny({ ...op, hooks });
+      return handler.handleExcludeIfAny(op, hooks);
     case "and":
-      return handler.handleIntersection({ ...op, hooks });
+      return handler.handleIntersection(op, hooks);
     case "or":
-      return handler.handleUnion({ ...op, hooks });
+      return handler.handleUnion(op, hooks);
     default:
       return assertNever(op);
   }
@@ -183,3 +176,17 @@ export const handleOperation = <T>(
 const assertNever = (x: never): never => {
   throw Error(`Exhaustive comparison did not handle: ${x}`);
 };
+
+export interface NumericFromTo {
+  readonly from: number;
+  readonly to: number;
+}
+
+export type EnumOperandValue = ReadonlyArray<string | number>;
+export type RangeOperandValue = string | number;
+export type SetOperandValue = ReadonlyArray<Operation>;
+export type OperandValue =
+  | EnumOperandValue
+  | RangeOperandValue
+  | SetOperandValue
+  | undefined;

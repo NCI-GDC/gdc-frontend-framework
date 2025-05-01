@@ -58,14 +58,16 @@ export const isRangeOperation = (x?: Operation): x is RangeOperation => {
   );
 };
 
-const IncludeExcludeQueryElement: React.FC<
-  Includes | Excludes | ExcludeIfAny
-> = ({
+type IncludeExcludeQueryElementProps = (Includes | Excludes | ExcludeIfAny) & {
+  hooks: QueryExpressionHooks;
+};
+
+const IncludeExcludeQueryElement: React.FC<IncludeExcludeQueryElementProps> = ({
   field,
   operator,
   operands: operandsProp,
   hooks,
-}: Includes | Excludes | ExcludeIfAny) => {
+}) => {
   const [queryExpressionsExpanded, setQueryExpressionsExpanded] = useContext(
     QueryExpressionsExpandedContext,
   );
@@ -156,17 +158,19 @@ const IncludeExcludeQueryElement: React.FC<
 
 interface ComparisonElementProps {
   operation: ComparisonOperation;
+  hooks: QueryExpressionHooks;
   readonly showLabel?: boolean;
 }
 
 const ComparisonElement: React.FC<ComparisonElementProps> = ({
   operation,
+  hooks,
   showLabel = true,
 }: ComparisonElementProps) => {
-  const currentCohort = operation.hooks.useSelectCurrentCohort();
-  const updateActiveCohortFilter = operation.hooks.useUpdateCohortFilter();
-  const removeCohortFilter = operation.hooks.useRemoveCohortFilter();
-  const fieldNameToTitle = operation.hooks.useFieldNameToTitle();
+  const currentCohort = hooks.useSelectCurrentCohort();
+  const updateActiveCohortFilter = hooks.useUpdateCohortFilter();
+  const removeCohortFilter = hooks.useRemoveCohortFilter();
+  const fieldNameToTitle = hooks.useFieldNameToTitle();
 
   const handleRemove = (remove: ComparisonOperation) => {
     const fieldDetail = currentCohort.filters.root[remove.field];
@@ -196,19 +200,6 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
     }
   };
 
-  /*
-  const { data: geneSymbolDict, isSuccess } = useGeneSymbol([
-    operation.operand.toString(),
-  ]);
-
-  let value = "";
-  if (operation.field === "genes.gene_id") {
-    value = isSuccess ? geneSymbolDict[operation.operand] ?? "..." : "...";
-  } else {
-    value = operation.operand.toString();
-  }
-    */
-
   const value = operation.operand.toString();
 
   return (
@@ -231,11 +222,9 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
   );
 };
 
-const ExistsElement: React.FC<Exists | Missing> = ({
-  field,
-  operator,
-  hooks,
-}: Exists | Missing) => {
+const ExistsElement: React.FC<
+  (Exists | Missing) & { hooks: QueryExpressionHooks }
+> = ({ field, operator, hooks }) => {
   const fieldNameToTitle = hooks.useFieldNameToTitle();
 
   return (
@@ -267,14 +256,15 @@ export const ClosedRangeQueryElement: React.FC<
     <>
       <QueryElement field={field} hooks={hooks}>
         <QueryContainer>
-          <ComparisonElement operation={{ ...lower, hooks }} />
+          <ComparisonElement operation={lower} hooks={hooks} />
           <div className="flex items-center">
             <span className={"uppercase text-accent-contrast-max font-bold"}>
               {op}
             </span>
           </div>
           <ComparisonElement
-            operation={{ ...upper, hooks }}
+            operation={upper}
+            hooks={hooks}
             showLabel={false}
           />
         </QueryContainer>
@@ -328,62 +318,68 @@ export const QueryElement = ({
  *  Processes a Filter into a component representation
  */
 class CohortFilterToComponent implements OperationHandler<React.ReactNode> {
-  handleIncludes = (f: Includes) => (
-    <QueryElement key={f.field} {...f}>
-      <IncludeExcludeQueryElement {...f} />
+  handleIncludes = (f: Includes, hooks: QueryExpressionHooks) => (
+    <QueryElement key={f.field} {...f} hooks={hooks}>
+      <IncludeExcludeQueryElement {...f} hooks={hooks} />
     </QueryElement>
   );
-  handleExcludes = (f: Excludes) => (
-    <QueryElement key={f.field} {...f}>
-      <IncludeExcludeQueryElement {...f} />
+  handleExcludes = (f: Excludes, hooks: QueryExpressionHooks) => (
+    <QueryElement key={f.field} {...f} hooks={hooks}>
+      <IncludeExcludeQueryElement {...f} hooks={hooks} />
     </QueryElement>
   );
-  handleEquals = (f: Equals) => (
-    <QueryElement key={f.field} {...f}>
-      <ComparisonElement operation={f} />
+  handleEquals = (f: Equals, hooks: QueryExpressionHooks) => (
+    <QueryElement key={f.field} {...f} hooks={hooks}>
+      <ComparisonElement operation={f} hooks={hooks} />
     </QueryElement>
   );
-  handleNotEquals = (f: NotEquals) => (
-    <QueryElement key={f.field} {...f}>
-      <ComparisonElement operation={f} />
+  handleNotEquals = (f: NotEquals, hooks: QueryExpressionHooks) => (
+    <QueryElement key={f.field} {...f} hooks={hooks}>
+      <ComparisonElement operation={f} hooks={hooks} />
     </QueryElement>
   );
-  handleLessThan = (f: LessThan) => (
-    <QueryElement key={f.field} {...f}>
-      <ComparisonElement operation={f} />
+  handleLessThan = (f: LessThan, hooks: QueryExpressionHooks) => (
+    <QueryElement key={f.field} {...f} hooks={hooks}>
+      <ComparisonElement operation={f} hooks={hooks} />
     </QueryElement>
   );
-  handleLessThanOrEquals = (f: LessThanOrEquals) => (
-    <QueryElement key={f.field} {...f}>
-      <ComparisonElement operation={f} />
+  handleLessThanOrEquals = (
+    f: LessThanOrEquals,
+    hooks: QueryExpressionHooks,
+  ) => (
+    <QueryElement key={f.field} {...f} hooks={hooks}>
+      <ComparisonElement operation={f} hooks={hooks} />
     </QueryElement>
   );
-  handleGreaterThan = (f: GreaterThan) => (
-    <QueryElement key={f.field} {...f}>
-      <ComparisonElement operation={f} />
+  handleGreaterThan = (f: GreaterThan, hooks: QueryExpressionHooks) => (
+    <QueryElement key={f.field} {...f} hooks={hooks}>
+      <ComparisonElement operation={f} hooks={hooks} />
     </QueryElement>
   );
-  handleGreaterThanOrEquals = (f: GreaterThanOrEquals) => (
-    <QueryElement key={f.field} {...f}>
-      <ComparisonElement operation={f} />
+  handleGreaterThanOrEquals = (
+    f: GreaterThanOrEquals,
+    hooks: QueryExpressionHooks,
+  ) => (
+    <QueryElement key={f.field} {...f} hooks={hooks}>
+      <ComparisonElement operation={f} hooks={hooks} />
     </QueryElement>
   );
-  handleExists = (f: Exists) => (
-    <QueryElement key={f.field} {...f}>
-      <ExistsElement {...f} />
+  handleExists = (f: Exists, hooks: QueryExpressionHooks) => (
+    <QueryElement key={f.field} {...f} hooks={hooks}>
+      <ExistsElement {...f} hooks={hooks} />
     </QueryElement>
   );
-  handleMissing = (f: Missing) => (
-    <QueryElement key={f.field} {...f}>
-      <ExistsElement {...f} />
+  handleMissing = (f: Missing, hooks: QueryExpressionHooks) => (
+    <QueryElement key={f.field} {...f} hooks={hooks}>
+      <ExistsElement {...f} hooks={hooks} />
     </QueryElement>
   );
-  handleExcludeIfAny = (f: ExcludeIfAny) => (
-    <QueryElement key={f.field} {...f}>
-      <IncludeExcludeQueryElement {...f} />
+  handleExcludeIfAny = (f: ExcludeIfAny, hooks: QueryExpressionHooks) => (
+    <QueryElement key={f.field} {...f} hooks={hooks}>
+      <IncludeExcludeQueryElement {...f} hooks={hooks} />
     </QueryElement>
   );
-  handleIntersection = (f: Intersection) => {
+  handleIntersection = (f: Intersection, hooks: QueryExpressionHooks) => {
     if (f.operands.length < 1) return null;
 
     // special case of ranges combined with AND
@@ -397,7 +393,7 @@ class CohortFilterToComponent implements OperationHandler<React.ReactNode> {
           key={(f.operands[0] as ComparisonOperation).field}
           lower={f.operands[0] as ComparisonOperation}
           upper={f.operands[1] as ComparisonOperation}
-          hooks={f.hooks}
+          hooks={hooks}
         />
       );
     }

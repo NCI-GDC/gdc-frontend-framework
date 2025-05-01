@@ -20,14 +20,30 @@ import {
   MdFileUpload as UploadIcon,
   MdDownload as DownloadIcon,
   MdClose as CloseIcon,
+  MdAddCircle as MoreIcon,
+  MdRemoveCircle as LessIcon,
+  MdExpandLess as ExpandLessIcon,
+  MdExpandMore as ExpandMoreIcon,
+  MdSearch as SearchIcon,
+  MdFlip as FlipIcon,
+  MdLibraryAdd as AddFacetIcon,
+  MdWarning as WarningTriangleIcon,
 } from "react-icons/md";
 import { VscFeedback as FeedbackIcon } from "react-icons/vsc";
 import {
   FaCaretDown as DropdownIcon,
   FaUndo as UndoIcon,
+  FaPlus as PlusIcon,
+  FaMinus as MinusIcon,
 } from "react-icons/fa";
 import { RiErrorWarningFill as WarningMessageIcon } from "react-icons/ri";
 import { FaCircle as CircleIcon } from "react-icons/fa";
+import {
+  PiCaretUpDownFill as SelectorIcon,
+  PiCaretDownFill as SortDesIcon,
+  PiCaretUpFill as SortAscIcon,
+} from "react-icons/pi";
+import { ImCalendar as CalendarIcon } from "react-icons/im";
 
 export {
   CartIcon,
@@ -56,4 +72,18 @@ export {
   WarningMessageIcon,
   CloseIcon,
   CircleIcon,
+  MoreIcon,
+  LessIcon,
+  ExpandLessIcon,
+  ExpandMoreIcon,
+  SearchIcon,
+  FlipIcon,
+  SelectorIcon,
+  SortDesIcon,
+  SortAscIcon,
+  AddFacetIcon,
+  WarningTriangleIcon,
+  CalendarIcon,
+  PlusIcon,
+  MinusIcon,
 };
