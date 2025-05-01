@@ -60,11 +60,15 @@ export interface CohortHooks {
   useReplaceCohort: () => ({
     newName,
     filters,
+    caseFilters,
+    createStaticCohort,
     cohortId,
     saveAs,
   }: {
     newName: string;
     filters: any;
+    caseFilters: any;
+    createStaticCohort: boolean;
     cohortId?: string;
     saveAs: boolean;
   }) => Promise<{ newCohortId: string }>;
