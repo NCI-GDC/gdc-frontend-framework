@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import {
   useDeepCompareCallback,
   useDeepCompareEffect,
@@ -737,43 +737,14 @@ export const useLayout = ({
 
       if (type === "mouseover") {
         setCurrentMouseOver(id);
-        setChartLayout(
-          getLayout(
-            twoCircles,
-            highlightedIndices,
-            scaleFactor,
-            id,
-            isCursorAllowed,
-            xOffset,
-            yOffset,
-          ),
-        );
       } else if (type === "mouseout") {
-        setChartLayout(
-          getLayout(
-            twoCircles,
-            highlightedIndices,
-            scaleFactor,
-            null,
-            true,
-            xOffset,
-            yOffset,
-          ),
-        );
         setCurrentMouseOver("");
       } else if (type === "click" && isCursorAllowed) {
+        setCurrentMouseOver("");
         onClickHandler(id);
       }
     },
-    [
-      highlightedIndices,
-      twoCircles,
-      chartData,
-      onClickHandler,
-      scaleFactor,
-      xOffset,
-      yOffset,
-    ],
+    [chartData, onClickHandler],
   );
 
   const addEvents = useCallback(
@@ -882,15 +853,16 @@ export const useLayout = ({
   );
 
   useDeepCompareEffect(() => {
+    const isCursorAllowed = currentMouseOver
+      ? chartData.find((d) => d.key === currentMouseOver)?.value !== 0
+      : true;
     setChartLayout(
       getLayout(
         twoCircles,
         highlightedIndices,
         scaleFactor,
         currentMouseOver || null,
-        currentMouseOver
-          ? chartData.find((d) => d.key === currentMouseOver)?.value !== 0
-          : true,
+        isCursorAllowed,
         xOffset,
         yOffset,
       ),
