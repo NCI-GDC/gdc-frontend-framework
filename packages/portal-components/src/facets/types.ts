@@ -48,7 +48,7 @@ export type ToggleFacetHooks = FacetCommonHooks & {
   /**
    * Hook that returns the currently selected filters
    */
-  useGetFacetFilters: (field: string) => string[];
+  useGetFacetFilters: (field: string) => Operation;
 };
 
 export type ValueFacetHooks = FacetCommonHooks & {
