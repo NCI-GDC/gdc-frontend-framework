@@ -10,9 +10,9 @@ import {
 } from "@gff/portal-components";
 import { TableXPositionContext } from "@/components/Table/VerticalTable";
 import { AddIcon, UndoIcon } from "@/utils/icons";
-import { useAvailableCustomFacets } from "../cohortBuilder/hooks";
 import { FacetQueryOptions } from "./types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
+import { useAvailableCustomFacets } from "../cohortBuilder/hooks";
 
 interface FilterPanelProps {
   readonly facetDefinitions: FacetCardDefinition[];
@@ -22,6 +22,7 @@ interface FilterPanelProps {
   readonly toggleAllFiltersExpanded: (expanded: boolean) => void;
   readonly allFiltersCollapsed: boolean;
   readonly customConfig?: {
+    readonly usedFacets: readonly string[];
     readonly handleRemoveFilter: (filter: string) => void;
     readonly handleCustomFilterSelected: (filter: string) => void;
     readonly handleResetCustomFilters: () => void;
@@ -155,6 +156,7 @@ const FilterPanel = ({
                   }}
                   useAvailableCustomFacets={useAvailableCustomFacets}
                   queryOptions={customConfig.queryOptions}
+                  usedFacets={customConfig.usedFacets}
                 />
               </div>
             </Modal>

@@ -131,6 +131,7 @@ export interface CustomFacetHooks {
    * with data
    */
   readonly useAvailableCustomFacets: (
+    usedFacets: readonly string[],
     onlyFiltersWithValues: boolean,
     queryOptions?: QueryOptions,
   ) => {
