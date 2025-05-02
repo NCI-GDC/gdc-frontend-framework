@@ -28,111 +28,18 @@ import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton
 import { UserInputContext } from "@/components/Modals/UserInputModal";
 import DiscardChangesButton from "@/components/Modals/DiscardChangesButton";
 import ButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
-import { getMatchedIdentifiers, MatchResults } from "./utils";
+import {
+  EXCEED_LIMIT_ERROR,
+  getMatchedIdentifiers,
+  MATCH_LIMIT,
+  parseTokens,
+  REACHED_LIMIT_WARNING,
+} from "./utils";
 import MatchTablesWrapper from "./MatchTablesWrapper";
 import fieldConfig from "./fieldConfig";
 import { FileIcon, InfoIcon } from "@/utils/icons";
 import { useDebouncedCallback } from "@mantine/hooks";
-
-export const MATCH_LIMIT = 50000;
-
-const REACHED_LIMIT_WARNING =
-  "Your data contains the maximum of 50,000 identifiers. Only 50,000 identifiers can be processed.";
-const EXCEED_LIMIT_ERROR =
-  "Your data exceeds the maximum of 50,000 identifiers. Only the first 50,000 will be processed.";
-
-const parseTokens = (input: string) =>
-  input
-    .trim()
-    .split(/[\s,]+/)
-    .filter((t) => t !== "");
-
-interface State {
-  input: string;
-  tokens: string[];
-  matched: MatchResults[];
-  file: File | null;
-  isFetching: boolean;
-  isProcessingFile: boolean;
-  limitError: string | null;
-  validationError: string | null;
-  statusMessage: string;
-  isNotInitialized: boolean;
-}
-
-type Action =
-  | { type: "SET_INPUT"; payload: string }
-  | { type: "SET_TOKENS"; payload: string[] }
-  | { type: "SET_MATCHED"; payload: MatchResults[] }
-  | { type: "SET_FILE"; payload: File | null }
-  | { type: "START_FETCH" }
-  | { type: "END_FETCH" }
-  | { type: "START_FILE_PROCESSING" }
-  | { type: "END_FILE_PROCESSING" }
-  | { type: "SET_LIMIT_ERROR"; payload: string | null }
-  | { type: "SET_VALIDATION_ERROR"; payload: string | null }
-  | { type: "RESET" };
-
-const initialState: State = {
-  input: "",
-  tokens: [],
-  matched: [],
-  file: null,
-  isFetching: false,
-  isProcessingFile: false,
-  limitError: null,
-  validationError: null,
-  statusMessage: "",
-  isNotInitialized: true,
-};
-
-function reducer(state: State, action: Action): State {
-  switch (action.type) {
-    case "SET_INPUT":
-      return { ...state, input: action.payload };
-    case "SET_TOKENS":
-      return { ...state, tokens: action.payload };
-    case "SET_MATCHED":
-      return { ...state, matched: action.payload };
-    case "SET_FILE":
-      return { ...state, file: action.payload };
-    case "START_FETCH":
-      return {
-        ...state,
-        isFetching: true,
-        isNotInitialized: false,
-        statusMessage: "Validating input. This may take a few moments.",
-        validationError: null,
-      };
-    case "END_FETCH":
-      return {
-        ...state,
-        isFetching: false,
-        isNotInitialized: false,
-        statusMessage: "",
-      };
-    case "START_FILE_PROCESSING":
-      return {
-        ...state,
-        isProcessingFile: true,
-        validationError: null,
-        limitError: null,
-      };
-    case "END_FILE_PROCESSING":
-      return {
-        ...state,
-        isProcessingFile: false,
-      };
-    case "SET_LIMIT_ERROR":
-      return { ...state, limitError: action.payload };
-    case "SET_VALIDATION_ERROR":
-      return { ...state, validationError: action.payload };
-    case "RESET":
-      return initialState;
-    default:
-      return state;
-  }
-}
+import { initialState, inputEntityListReducer } from "./InputEntityListReducer";
 
 interface InputEntityListProps {
   readonly inputInstructions: string;
@@ -159,7 +66,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
   RightButton,
   LeftButton,
 }: InputEntityListProps) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(inputEntityListReducer, initialState);
   const [, setUserEnteredInput] = useContext(UserInputContext);
   const inputRef = useRef(null);
   const lastValidatedTokensRef = useRef<Set<string>>(new Set<string>());
