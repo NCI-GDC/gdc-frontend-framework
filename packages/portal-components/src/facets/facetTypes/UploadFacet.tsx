@@ -28,7 +28,7 @@ const UploadFacet: React.FC<UploadFacetCardProps> = ({
   const renderBadges = (items: string[], itemField: string) => {
     return items.map((item, index) => (
       <FilterBadge
-        key={index}
+        key={`query-rep-${itemField}-${item}-${index}`}
         field={itemField}
         value={item}
         customTestid={`query-rep-${itemField}-${item}-${index}`}
