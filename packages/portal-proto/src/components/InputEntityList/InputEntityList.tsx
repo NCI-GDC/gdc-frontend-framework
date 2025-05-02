@@ -199,6 +199,31 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
     [processInputDebounced],
   );
 
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      if (state.tokens.length >= MATCH_LIMIT) {
+        const allowedKeys = [
+          "Backspace",
+          "Delete",
+          "ArrowLeft",
+          "ArrowRight",
+          "ArrowUp",
+          "ArrowDown",
+          "Home",
+          "End",
+          "Tab",
+        ];
+
+        const isKeyCombo = event.ctrlKey || event.metaKey || event.altKey;
+
+        if (!allowedKeys.includes(event.key) && !isKeyCombo) {
+          event.preventDefault();
+        }
+      }
+    },
+    [],
+  );
+
   const handleFileChange = useCallback(
     async (file: File | null) => {
       dispatch({ type: "SET_FILE", payload: file });
@@ -313,28 +338,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
               onChange={(event) => {
                 handleInputChange(event.target.value);
               }}
-              onKeyDown={(event) => {
-                if (state.tokens.length >= MATCH_LIMIT) {
-                  const allowedKeys = [
-                    "Backspace",
-                    "Delete",
-                    "ArrowLeft",
-                    "ArrowRight",
-                    "ArrowUp",
-                    "ArrowDown",
-                    "Home",
-                    "End",
-                    "Tab",
-                  ];
-
-                  const isKeyCombo =
-                    event.ctrlKey || event.metaKey || event.altKey;
-
-                  if (!allowedKeys.includes(event.key) && !isKeyCombo) {
-                    event.preventDefault();
-                  }
-                }
-              }}
+              onKeyDown={handleKeyDown}
               minRows={5}
               maxRows={5}
               id="identifier-input"
@@ -392,7 +396,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
             <MatchTablesWrapper
               matched={state.matched}
               unmatched={unmatched}
-              numberInput={state.tokens.length}
+              numberInput={new Set(state.tokens).size}
               entityLabel={entityLabel}
               fieldDisplay={fieldDisplay}
             />
