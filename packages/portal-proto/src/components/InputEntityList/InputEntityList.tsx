@@ -69,6 +69,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
   const [state, dispatch] = useReducer(inputEntityListReducer, initialState);
   const [, setUserEnteredInput] = useContext(UserInputContext);
   const inputRef = useRef(null);
+  const resetFileInputRef = useRef(null);
   const lastValidatedTokensRef = useRef<Set<string>>(new Set<string>());
   const coreDispatch = useCoreDispatch();
 
@@ -221,7 +222,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
         }
       }
     },
-    [],
+    [state.tokens.length],
   );
 
   const handleFileChange = useCallback(
@@ -245,6 +246,11 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
 
       dispatch({ type: "END_FILE_PROCESSING" });
 
+      if (resetFileInputRef.current) {
+        setTimeout(() => {
+          resetFileInputRef.current();
+        }, 100);
+      }
       procesInput(contents);
     },
     [procesInput],
@@ -354,6 +360,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
           <FileInput
             value={state.file}
             onChange={handleFileChange}
+            resetRef={resetFileInputRef}
             leftSection={
               state.isProcessingFile ? (
                 <Loader size="xs" />
@@ -375,6 +382,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
             rightSectionWidth={80}
             aria-describedby="file-upload-screen-reader-msg"
             placeholder="Upload file"
+            disabled={state.isFetching}
           />
         </div>
 
