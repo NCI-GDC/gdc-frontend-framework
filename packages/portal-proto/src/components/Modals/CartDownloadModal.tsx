@@ -86,6 +86,7 @@ const CartDownloadModal = ({
       <hr />
       <div className="flex justify-end gap-2 mt-4">
         <Button
+          data-testid="button-cancel"
           onClick={() => {
             dispatch(hideModal());
             setActive(false);
@@ -96,6 +97,7 @@ const CartDownloadModal = ({
           Cancel
         </Button>
         <DownloadButton
+          data-testid="button-download"
           inactiveText={`Download ${numFilesCanAccess} Authorized File${
             numFilesCanAccess !== 1 ? "s" : ""
           }`}
