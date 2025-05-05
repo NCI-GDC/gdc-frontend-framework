@@ -22,6 +22,8 @@ const EChartWrapperResponsive: React.FC<EChartWrapperResponsiveProps> = ({
     const node = containerRef.current;
     if (!node) return;
 
+    console.log("here");
+    // seprate this out into init and options change
     const chart = init(node, null, { renderer: "svg" });
     chart.setOption(option);
     chart.resize();

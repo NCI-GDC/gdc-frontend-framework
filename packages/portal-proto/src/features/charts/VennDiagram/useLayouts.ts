@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo } from "react";
 import {
   useDeepCompareCallback,
   useDeepCompareEffect,
@@ -735,6 +735,7 @@ export const useLayout = ({
       const element = chartData.find((datum) => datum.key === id);
       const isCursorAllowed = element?.value !== 0;
 
+      console.log({ eventId, id, element, isCursorAllowed, type });
       if (type === "mouseover") {
         setCurrentMouseOver(id);
       } else if (type === "mouseout") {
@@ -922,7 +923,6 @@ export const useLayout = ({
     chartData,
     labelLayout,
     ariaLabel,
-    currentMouseOver,
     valueTexts,
   ]);
 
