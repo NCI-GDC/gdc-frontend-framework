@@ -80,7 +80,7 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
         saveAs,
       })
         .then(({ newCohortId }) => {
-          if (setAsCurrent || saveAs || currentCohort.name == newName) {
+          if (setAsCurrent || saveAs || currentCohort?.name == newName) {
             setCohortMessage &&
               setCohortMessage([
                 {
