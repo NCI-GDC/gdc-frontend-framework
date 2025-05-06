@@ -203,21 +203,10 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
       if (state.tokens.length >= MATCH_LIMIT) {
-        const allowedKeys = [
-          "Backspace",
-          "Delete",
-          "ArrowLeft",
-          "ArrowRight",
-          "ArrowUp",
-          "ArrowDown",
-          "Home",
-          "End",
-          "Tab",
-        ];
+        // Keys that would add a new separator (and thus create a new token)
+        const disallowedKeys = [" ", "Tab", ",", "Enter"];
 
-        const isKeyCombo = event.ctrlKey || event.metaKey || event.altKey;
-
-        if (!allowedKeys.includes(event.key) && !isKeyCombo) {
+        if (disallowedKeys.includes(event.key)) {
           event.preventDefault();
         }
       }
