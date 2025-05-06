@@ -65,6 +65,7 @@ export const CAPITALIZED_TERMS = [
   "iss",
   "icd",
   "igcccg",
+  "bmi",
 ];
 
 export const SPECIAL_CASE_FIELDS = {
@@ -172,7 +173,18 @@ export const FACET_SORT = {
     "tobacco_smoking_onset_year",
     "tobacco_smoking_quit_year",
   ],
-  other_clinical_attributes: ["premature_at_birth", "pregnant_at_diagnosis"],
+  other_clinical_attributes: [
+    "bmi",
+    "weight",
+    "height",
+    "risk_factors",
+    "menopause_status",
+    "comorbidities",
+    "premature_at_birth",
+    "pregnant_at_diagnosis",
+    "pregnancy_outcome",
+    "number_of_pregnancies",
+  ],
 };
 
 export const DATA_DIMENSIONS: Record<
@@ -201,6 +213,12 @@ export const DATA_DIMENSIONS: Record<
     toggleValue: "Years",
   },
   "diagnoses.year_of_diagnosis": { unit: "Years" },
+  "follow_ups.other_clinical_attributes.weight": {
+    unit: "Kilograms",
+  },
+  "follow_ups.other_clinical_attributes.height": {
+    unit: "Centimeters",
+  },
 };
 
 export const TABS = {
