@@ -52,7 +52,6 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
   const [isSaving, setIsSaving] = useState(false);
   const saveCohort = hooks.useSaveCohort();
   const replaceCohort = hooks.useReplaceCohort();
-  const setActiveCohort = hooks.useSetActiveCohort();
   const setCohortMessage = useContext(CohortNotificationContext);
   const { theme } = useContext(AppContext);
 
@@ -77,6 +76,7 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
         createStaticCohort,
         cohortId,
         saveAs,
+        setAsCurrent,
       })
         .then(({ newCohortId }) => {
           if (setAsCurrent || saveAs) {
@@ -88,8 +88,6 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
                   param2: newCohortId,
                 },
               ]);
-
-            setActiveCohort(newCohortId);
           } else {
             setCohortMessage &&
               setCohortMessage([
@@ -117,16 +115,13 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
         caseFilters,
         createStaticCohort,
         saveAs,
+        setAsCurrent,
       })
         .then(({ cohortAlreadyExists, newCohortId }) => {
           if (cohortAlreadyExists) {
             setShowReplaceCohort(true);
             setIsSaving(false);
           } else {
-            if (setAsCurrent || saveAs) {
-              setActiveCohort(newCohortId);
-            }
-
             let cmd: NotificationTypes;
             if (cohortId) {
               cmd = saveAs ? "savedCohort" : "savedCurrentCohort";

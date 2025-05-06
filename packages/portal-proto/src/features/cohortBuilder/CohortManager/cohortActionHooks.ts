@@ -33,6 +33,7 @@ import {
   updateCohortName,
   CohortModel,
   addNewUnsavedCohort,
+  selectCurrentCohortName,
 } from "@gff/core";
 import { useCohortFacetFilters } from "../utils";
 import { exportCohort, removeQueryParamsFromRouter } from "./cohortUtils";
@@ -214,6 +215,7 @@ export const useImportCohort = () => {
 
 const useUpdateCohortState = () => {
   const coreDispatch = useCoreDispatch();
+  const currentCohortName = useCoreSelector(selectCurrentCohortName);
   const [fetchSavedFilters] = useLazyGetCohortByIdQuery();
 
   const updateCohortState = useDeepCompareCallback(
@@ -222,11 +224,13 @@ const useUpdateCohortState = () => {
       newName,
       cohortId,
       saveAs,
+      setAsCurrent,
     }: {
       payload: CohortModel;
       newName: string;
       cohortId: string;
       saveAs: boolean;
+      setAsCurrent: boolean;
     }) => {
       if (cohortId) {
         if (saveAs) {
@@ -298,8 +302,12 @@ const useUpdateCohortState = () => {
             ),
           );
       }
+
+      if (setAsCurrent || saveAs || newName === currentCohortName) {
+        coreDispatch(setCurrentCohortId(payload.id));
+      }
     },
-    [coreDispatch, fetchSavedFilters],
+    [coreDispatch, fetchSavedFilters, currentCohortName],
   );
 
   return updateCohortState;
@@ -373,6 +381,7 @@ export const useSaveCohort = () => {
       caseFilters,
       createStaticCohort,
       saveAs,
+      setAsCurrent,
     }: {
       newName: string;
       cohortId?: string;
@@ -380,6 +389,7 @@ export const useSaveCohort = () => {
       caseFilters: FilterSet;
       createStaticCohort: boolean;
       saveAs: boolean;
+      setAsCurrent: boolean;
     }) => {
       let result = { cohortAlreadyExists: false, newCohortId: undefined };
 
@@ -393,7 +403,13 @@ export const useSaveCohort = () => {
       await addCohort({ cohort: addBody, delete_existing: false })
         .unwrap()
         .then(async (payload) => {
-          updateCohortState({ payload, newName, cohortId, saveAs });
+          updateCohortState({
+            payload,
+            newName,
+            cohortId,
+            saveAs,
+            setAsCurrent,
+          });
 
           result = { cohortAlreadyExists: false, newCohortId: payload.id };
         })
@@ -430,6 +446,7 @@ export const useReplaceCohort = () => {
       createStaticCohort,
       cohortId,
       saveAs,
+      setAsCurrent,
     }: {
       newName: string;
       filters: FilterSet;
@@ -437,6 +454,7 @@ export const useReplaceCohort = () => {
       createStaticCohort: boolean;
       cohortId: string;
       saveAs: boolean;
+      setAsCurrent: boolean;
     }) => {
       const addBody = await createCohortRequest({
         filters,
@@ -450,7 +468,14 @@ export const useReplaceCohort = () => {
       await addCohort({ cohort: addBody, delete_existing: true })
         .unwrap()
         .then((payload) => {
-          updateCohortState({ payload, newName, cohortId, saveAs });
+          console.log({ payload });
+          updateCohortState({
+            payload,
+            newName,
+            cohortId,
+            saveAs,
+            setAsCurrent,
+          });
           result = { newCohortId: payload.id };
         });
 

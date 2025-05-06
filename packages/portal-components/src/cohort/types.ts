@@ -49,6 +49,7 @@ export interface CohortHooks {
     caseFilters,
     createStaticCohort,
     saveAs,
+    setAsCurrent,
   }: {
     newName: string;
     cohortId?: string;
@@ -56,6 +57,7 @@ export interface CohortHooks {
     caseFilters: any;
     createStaticCohort: boolean;
     saveAs: boolean;
+    setAsCurrent: boolean;
   }) => Promise<{ cohortAlreadyExists: boolean; newCohortId: string }>;
   useReplaceCohort: () => ({
     newName,
@@ -64,6 +66,7 @@ export interface CohortHooks {
     createStaticCohort,
     cohortId,
     saveAs,
+    setAsCurrent,
   }: {
     newName: string;
     filters: any;
@@ -71,6 +74,7 @@ export interface CohortHooks {
     createStaticCohort: boolean;
     cohortId?: string;
     saveAs: boolean;
+    setAsCurrent: boolean;
   }) => Promise<{ newCohortId: string }>;
   useExportCohort?: () => {
     handleExport: () => void;
