@@ -33,10 +33,12 @@ const DownloadAccessAgreement: React.FC<DownloadAccessAgreementProps> = ({
         You are attempting to download files that are controlled access:
       </Text>
       <Checkbox
+        data-testid="checkbox-download-agreement"
         label={
           <Text className="text-[15px]">
             I agree to abide by the{" "}
             <Anchor
+              data-testid="link-gdc-data-use-agreement"
               size="sm"
               href="https://gdc.cancer.gov/about-data/data-analysis-policies"
               target="_blank"
@@ -47,6 +49,7 @@ const DownloadAccessAgreement: React.FC<DownloadAccessAgreementProps> = ({
             </Anchor>{" "}
             and the study-specific Data Use Certification Agreement available in{" "}
             <Anchor
+              data-testid="link-dbgap"
               size="sm"
               href={dbGapLink}
               target="_blank"
@@ -74,6 +77,7 @@ const DownloadAccessAgreement: React.FC<DownloadAccessAgreementProps> = ({
         <li>
           I agree to abide by the{" "}
           <a
+            data-testid="link-nih-genomic-data-sharing-policy"
             href="https://osp.od.nih.gov/scientific-sharing/policies/"
             target="_blank"
             rel="noopener noreferrer"

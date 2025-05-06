@@ -47,6 +47,7 @@ export const AgreementModal = ({
       </div>
       <div className="flex justify-end mt-2.5 gap-2">
         <Button
+          data-testid="button-cancel"
           onClick={() => dispatch(hideModal())}
           className="!bg-primary hover:!bg-primary-darker"
         >
@@ -54,6 +55,7 @@ export const AgreementModal = ({
         </Button>
 
         <DownloadButton
+          data-testid="button-download"
           disabled={!checked}
           filename={file?.file_name}
           extraParams={{

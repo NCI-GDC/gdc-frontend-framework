@@ -83,7 +83,6 @@ const LoginButtonOrUserDropdown = () => {
       {userInfo?.data?.username ? (
         <Menu
           width={200}
-          data-testid="userdropdown"
           offset={-5}
           position="bottom-end"
           classNames={{
@@ -91,29 +90,28 @@ const LoginButtonOrUserDropdown = () => {
             item: "text-base-darker data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest",
           }}
         >
-          <Menu.Target>
+          <Menu.Target data-testid="button-header-username">
             <Button
               rightSection={<ArrowDropDownIcon size="2em" aria-hidden="true" />}
               variant="subtle"
               className="text-primary-darkest font-header text-sm font-medium font-heading"
               classNames={{ section: "ml-0" }}
-              data-testid="usernameButton"
               ref={userDropdownRef}
             >
               {userInfo?.data?.username}
             </Button>
           </Menu.Target>
-          <Menu.Dropdown>
+          <Menu.Dropdown data-testid="dropdown-menu-options">
             <Menu.Item
               leftSection={<PersonIcon size="1.25em" />}
               onClick={handleUserProfileClick}
-              data-testid="userprofilemenu"
+              data-testid="button-header-user-profile"
             >
               User Profile
             </Menu.Item>
             <Menu.Item
               leftSection={<DownloadIcon size="1.25em" />}
-              data-testid="downloadTokenMenuItem"
+              data-testid="button-header-download-token"
               onClick={handleDownloadTokenClick}
             >
               Download Token
@@ -121,7 +119,7 @@ const LoginButtonOrUserDropdown = () => {
             <Menu.Item
               leftSection={<LogoutIcon size="1.25em" />}
               onClick={handleLogoutClick}
-              data-testid="logoutMenuItem"
+              data-testid="button-header-logout"
             >
               Logout
             </Menu.Item>
