@@ -33,7 +33,6 @@ import {
   updateCohortName,
   CohortModel,
   addNewUnsavedCohort,
-  selectCurrentCohortName,
 } from "@gff/core";
 import { useCohortFacetFilters } from "../utils";
 import { exportCohort, removeQueryParamsFromRouter } from "./cohortUtils";
@@ -215,7 +214,6 @@ export const useImportCohort = () => {
 
 const useUpdateCohortState = () => {
   const coreDispatch = useCoreDispatch();
-  const currentCohortName = useCoreSelector(selectCurrentCohortName);
   const [fetchSavedFilters] = useLazyGetCohortByIdQuery();
 
   const updateCohortState = useDeepCompareCallback(
@@ -224,7 +222,6 @@ const useUpdateCohortState = () => {
       newName,
       cohortId,
       saveAs,
-      setAsCurrent,
     }: {
       payload: CohortModel;
       newName: string;
@@ -302,12 +299,8 @@ const useUpdateCohortState = () => {
             ),
           );
       }
-
-      if (setAsCurrent || saveAs || newName === currentCohortName) {
-        coreDispatch(setCurrentCohortId(payload.id));
-      }
     },
-    [coreDispatch, fetchSavedFilters, currentCohortName],
+    [coreDispatch, fetchSavedFilters],
   );
 
   return updateCohortState;

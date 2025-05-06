@@ -66,7 +66,6 @@ export interface CohortHooks {
     createStaticCohort,
     cohortId,
     saveAs,
-    setAsCurrent,
   }: {
     newName: string;
     filters: any;
@@ -74,7 +73,6 @@ export interface CohortHooks {
     createStaticCohort: boolean;
     cohortId?: string;
     saveAs: boolean;
-    setAsCurrent: boolean;
   }) => Promise<{ newCohortId: string }>;
   useExportCohort?: () => {
     handleExport: () => void;
