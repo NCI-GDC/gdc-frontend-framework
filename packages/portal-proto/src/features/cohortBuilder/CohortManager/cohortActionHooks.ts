@@ -227,7 +227,6 @@ const useUpdateCohortState = () => {
       newName: string;
       cohortId: string;
       saveAs: boolean;
-      setAsCurrent: boolean;
     }) => {
       if (cohortId) {
         if (saveAs) {
@@ -374,7 +373,6 @@ export const useSaveCohort = () => {
       caseFilters,
       createStaticCohort,
       saveAs,
-      setAsCurrent,
     }: {
       newName: string;
       cohortId?: string;
@@ -382,7 +380,6 @@ export const useSaveCohort = () => {
       caseFilters: FilterSet;
       createStaticCohort: boolean;
       saveAs: boolean;
-      setAsCurrent: boolean;
     }) => {
       let result = { cohortAlreadyExists: false, newCohortId: undefined };
 
@@ -401,7 +398,6 @@ export const useSaveCohort = () => {
             newName,
             cohortId,
             saveAs,
-            setAsCurrent,
           });
 
           result = { cohortAlreadyExists: false, newCohortId: payload.id };
@@ -439,7 +435,6 @@ export const useReplaceCohort = () => {
       createStaticCohort,
       cohortId,
       saveAs,
-      setAsCurrent,
     }: {
       newName: string;
       filters: FilterSet;
@@ -447,7 +442,6 @@ export const useReplaceCohort = () => {
       createStaticCohort: boolean;
       cohortId: string;
       saveAs: boolean;
-      setAsCurrent: boolean;
     }) => {
       const addBody = await createCohortRequest({
         filters,
@@ -467,7 +461,6 @@ export const useReplaceCohort = () => {
             newName,
             cohortId,
             saveAs,
-            setAsCurrent,
           });
           result = { newCohortId: payload.id };
         });

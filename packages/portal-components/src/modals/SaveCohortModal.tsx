@@ -117,7 +117,6 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
         caseFilters,
         createStaticCohort,
         saveAs,
-        setAsCurrent,
       })
         .then(({ cohortAlreadyExists, newCohortId }) => {
           if (cohortAlreadyExists) {
