@@ -393,12 +393,7 @@ export const useSaveCohort = () => {
       await addCohort({ cohort: addBody, delete_existing: false })
         .unwrap()
         .then(async (payload) => {
-          updateCohortState({
-            payload,
-            newName,
-            cohortId,
-            saveAs,
-          });
+          updateCohortState({ payload, newName, cohortId, saveAs });
 
           result = { cohortAlreadyExists: false, newCohortId: payload.id };
         })
@@ -455,13 +450,7 @@ export const useReplaceCohort = () => {
       await addCohort({ cohort: addBody, delete_existing: true })
         .unwrap()
         .then((payload) => {
-          console.log({ payload });
-          updateCohortState({
-            payload,
-            newName,
-            cohortId,
-            saveAs,
-          });
+          updateCohortState({ payload, newName, cohortId, saveAs });
           result = { newCohortId: payload.id };
         });
 
