@@ -278,10 +278,10 @@ const FromTo: React.FC<FromToProps> = ({
           <fieldset className="flex flex-col gap-y-1 text-sm">
             <legend className="sr-only">Numeric from/to filters</legend>
             <div className="flex gap-2 justify-end font-content">
-              <div className=" flex items-center justify-end font-bold font-montserrat h-8 w-12">
+              <div className=" flex items-center justify-end font-bold font-montserrat h-8 w-16">
                 From
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 grow">
                 <SegmentedControl
                   size="sm"
                   className="w-12 h-10"
@@ -301,7 +301,7 @@ const FromTo: React.FC<FromToProps> = ({
                   {...form.getInputProps("fromValue")}
                   value={form.values.fromValue ?? ""}
                   data-testid="textbox-input-from-value"
-                  className="text-sm"
+                  className="text-sm grow"
                   placeholder={`Min: ${lowerUnitRange}${unitsLabel} `}
                   // units are always days
                   onChange={(value) => {
@@ -319,10 +319,10 @@ const FromTo: React.FC<FromToProps> = ({
               </div>
             </div>
             <div className="flex gap-2 justify-end font-content pt-1">
-              <div className=" flex items-center justify-end font-bold font-montserrat h-8 w-12">
+              <div className=" flex items-center justify-end font-bold font-montserrat h-8 w-16">
                 To
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 grow">
                 <SegmentedControl
                   size="sm"
                   className="w-12 h-10"
@@ -342,7 +342,7 @@ const FromTo: React.FC<FromToProps> = ({
                   {...form.getInputProps("toValue")}
                   value={form.values.toValue ?? ""}
                   data-testid="textbox-input-to-value"
-                  className="text-sm"
+                  className="text-sm grow"
                   placeholder={`Max: ${upperUnitRange}${unitsLabel} `}
                   onChange={(value) => {
                     if (value === "" || typeof value === "string") {
