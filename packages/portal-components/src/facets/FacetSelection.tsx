@@ -42,7 +42,7 @@ const FacetList: React.FC<FacetListProps> = ({
                   } hover:bg-[var(--mantine-color-blue-1)]`}
                 >
                   <button
-                    data-testid={"button-" + x.field}
+                    data-testid={`button-${x.name ?? x.field}`}
                     onClick={() => handleFilterSelected(x.field)}
                     className="text-left"
                   >
@@ -51,7 +51,7 @@ const FacetList: React.FC<FacetListProps> = ({
                       highlight={searchString}
                       className="font-bold"
                     >
-                      {x.field}
+                      {x.name ?? x.field}
                     </Highlight>
                     {x.description ? (
                       <Highlight

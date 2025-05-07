@@ -24,7 +24,7 @@ import { useDeepCompareCallback, useDeepCompareMemo } from "use-deep-compare";
 import FunctionButton from "@/components/FunctionButton";
 import { Loader } from "@mantine/core";
 import isEqual from "lodash/isEqual";
-import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
+import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionAsSetModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
 import { statusBooleansToDataStatus } from "src/utils";

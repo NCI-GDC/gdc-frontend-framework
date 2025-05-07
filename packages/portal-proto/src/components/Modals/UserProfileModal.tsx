@@ -72,12 +72,12 @@ export const UserProfileModal = ({
       }
       openModal={openModal}
       size="60%"
-      buttons={[{ title: "Close", dataTestId: "button-user-profile-done" }]}
+      buttons={[{ title: "Close", dataTestId: "button-close" }]}
     >
       <div className={`${!data ? "py-4" : "py-2"}`}>
         {data?.length > 0 ? (
           <ScrollableTableWithFixedHeader
-            customDataTestID="user-profile-table"
+            customDataTestID="table-user-profile-access"
             tableData={{
               headers: headings,
               tableRows: data,

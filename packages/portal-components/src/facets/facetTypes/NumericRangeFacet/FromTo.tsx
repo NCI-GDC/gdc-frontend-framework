@@ -305,10 +305,10 @@ const FromTo: React.FC<FromToProps> = ({
                   placeholder={`Min: ${lowerUnitRange}${unitsLabel} `}
                   // units are always days
                   onChange={(value) => {
-                    if (value === "" || typeof value === "string") {
+                    if (value === "") {
                       form.setFieldValue("fromValue", undefined);
                     } else {
-                      form.setFieldValue("fromValue", value);
+                      form.setFieldValue("fromValue", Number(value));
                     }
                     changedCallback();
                   }}
@@ -345,10 +345,10 @@ const FromTo: React.FC<FromToProps> = ({
                   className="text-sm grow"
                   placeholder={`Max: ${upperUnitRange}${unitsLabel} `}
                   onChange={(value) => {
-                    if (value === "" || typeof value === "string") {
+                    if (value === "") {
                       form.setFieldValue("toValue", undefined);
                     } else {
-                      form.setFieldValue("toValue", value);
+                      form.setFieldValue("toValue", Number(value));
                     }
                     changedCallback();
                   }}
