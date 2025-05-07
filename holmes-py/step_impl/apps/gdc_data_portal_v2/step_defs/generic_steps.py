@@ -54,6 +54,19 @@ def setup_test_run():
     time.sleep(2)
 
 
+@before_spec("<controlled-access>")
+def before_spec_hook():
+    """
+    Before each spec is ran, automation will check if the file contains the tag "controlled-access".
+    If it does, automation will check the data portal to see if the user is logged in. If not, automation
+    will click the login button and we will manually login to the data portal.
+
+    Gauge does not allow for this kind of tag checking in before_suite, so this is my workaround. To do
+    it before spec in an 'if' statement.
+    """
+    APP.header_section.login_to_data_portal_if_possible()
+
+
 @after_spec
 def setup_next_spec_run():
     """
@@ -177,6 +190,7 @@ def download_file_at_file_table(file: str, source: str):
         "Cohort Summary View Clinical": APP.cohort_case_view_page.click_clinical_summary_view,
         "Cohort Table View Biospecimen": APP.cohort_case_view_page.click_biospecimen_table_view,
         "Cohort Table View Clinical": APP.cohort_case_view_page.click_clinical_table_view,
+        "Controlled Access Modal": APP.modal.click_download_button,
         "File Summary": APP.file_summary_page.click_download_button,
         "File Summary Annotation Table": APP.file_summary_page.click_annotation_table_download_option,
         "File Summary File Versions": APP.file_summary_page.click_file_version_download_option,
@@ -911,9 +925,16 @@ def click_link_data_testid(link_data_testid: str):
 
 @step("Select the following checkboxes <table>")
 def click_checkboxes(table):
+    """Selects checkboxes given from table exactly as typed"""
     for k, v in enumerate(table):
         APP.shared.click_checkbox(v[0])
         time.sleep(0.1)
+
+@step("Select checkbox <checkbox_name>")
+def click_checkbox_normalize_ident(checkbox_name:str):
+    """Normalizes the checkbox name, then attempts to check"""
+    APP.shared.click_checkbox_normalize_ident(checkbox_name)
+    time.sleep(0.1)
 
 @step("Select the radio button <button_name>")
 def click_radio_data_testid_button(button_name:str):

@@ -676,6 +676,12 @@ class BasePage:
         locator = GenericLocators.CHECKBOX_IDENT(checkbox_name)
         self.click(locator)
 
+    def click_checkbox_normalize_ident(self, checkbox_name):
+        """Clicks a checkbox with given, unmodified name"""
+        checkbox_name = self.normalize_button_identifier(checkbox_name)
+        locator = GenericLocators.CHECKBOX_IDENT(checkbox_name)
+        self.click(locator)
+
     def click_radio_button(self, radio_name):
         """Clicks a radio button in a filter card"""
         locator = GenericLocators.RADIO_BUTTON_IDENT(radio_name)

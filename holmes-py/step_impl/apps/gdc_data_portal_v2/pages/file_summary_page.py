@@ -9,6 +9,8 @@ class FileSummaryLocators:
     ADD_TO_CART_BUTTON_IDENT = 'text="Add to Cart" >> nth=0'
     REMOVE_FROM_CART_BUTTON_IDENT = 'text="Remove From Cart" >> nth=0'
 
+    BUTTON_FILE_SUMMARY_PAGE = lambda button_name: f"[data-testid='button-{button_name}-file-summary']"
+
     ADDED_TO_CART_MESSAGE_IDENT = 'p:has-text("Added")'
     REMOVED_FROM_CART_MESSAGE_IDENT = 'p:has-text("Removed")'
 
@@ -38,6 +40,12 @@ class FileSummaryPage(BasePage):
         self.click(remove_file_button_locator)
         removed_file_message = FileSummaryLocators.REMOVED_FROM_CART_MESSAGE_IDENT
         self.wait_until_locator_is_visible(removed_file_message)
+
+    def click_button(self, button_name):
+        """Clicks specified button on File Summary page"""
+        button_name = self.normalize_button_identifier(button_name)
+        locator = FileSummaryLocators.BUTTON_FILE_SUMMARY_PAGE(button_name)
+        self.click(locator)
 
     def click_download_file_button(self):
         """Clicks download file button in upper-left corner"""
