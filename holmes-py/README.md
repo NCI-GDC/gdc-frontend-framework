@@ -157,6 +157,26 @@ consistency of test results. Anymore than 6, and there would be some flakey test
 
 If a test does fail, rerun them individually before reporting results.
 
+### How to Execute Each Type of Test Suite
+The tests should be ran by tag. We have open-access and controlled-access tests that are not compatible to be ran together.
+The controlled-access tests require you to manually login when prompted. The other tests do not have to be interacted with
+once execution begins. Any of the commands below can also be ran in parallel or with de-bug mode. See above for commands.
+
+#### Regression Test
+````
+gauge run specs --tags "regression"
+````
+
+#### Data Test
+````
+gauge run specs --tags "data-release"
+````
+
+#### Controlled Access Test
+````
+gauge run specs --tags "controlled-access"
+````
+
 ### Gauge Execution Documentation
 See [Run Gauge Specifications](https://docs.gauge.org/execution.html?os=macos&language=python&ide=vscode)
 
