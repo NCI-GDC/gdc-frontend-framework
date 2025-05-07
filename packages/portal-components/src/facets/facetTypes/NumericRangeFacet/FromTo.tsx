@@ -318,7 +318,7 @@ const FromTo: React.FC<FromToProps> = ({
                 />
               </div>
             </div>
-            <div className="flex gap-2 justify-end font-content">
+            <div className="flex gap-2 justify-end font-content pt-1">
               <div className=" flex items-center justify-end font-bold font-montserrat h-8 w-12">
                 To
               </div>
