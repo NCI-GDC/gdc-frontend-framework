@@ -277,78 +277,86 @@ const FromTo: React.FC<FromToProps> = ({
         <div className="flex flex-col grow my-1 text-base-contrast-max bg-base-lightest rounded-md p-2">
           <fieldset className="flex flex-col gap-y-1 text-sm">
             <legend className="sr-only">Numeric from/to filters</legend>
-            <div className="flex gap-2 items-center justify-end font-content">
-              <div className="text-right font-bold font-montserrat">From</div>
-              <SegmentedControl
-                size="sm"
-                className="basis-1/5"
-                value={form.values.fromOp}
-                onChange={(value) => {
-                  form.setFieldValue("fromOp", value as RangeFromOp);
-                  changedCallback();
-                }}
-                data={[
-                  { label: "\u2265", value: ">=" },
-                  { label: ">", value: ">" },
-                ]}
-                aria-label="select greater and equal or greater than"
-                padding={1.5}
-              />
-              <NumberInput
-                {...form.getInputProps("fromValue")}
-                value={form.values.fromValue ?? ""}
-                data-testid="textbox-input-from-value"
-                className="text-sm basis-3/5"
-                placeholder={`Min: ${lowerUnitRange}${unitsLabel} `}
-                // units are always days
-                onChange={(value) => {
-                  if (value === "" || typeof value === "string") {
-                    form.setFieldValue("fromValue", undefined);
-                  } else {
-                    form.setFieldValue("fromValue", value);
-                  }
-                  changedCallback();
-                }}
-                error={form?.errors?.fromValue}
-                hideControls
-                aria-label="input from value"
-              />
+            <div className="flex gap-2 justify-end font-content">
+              <div className=" flex items-center justify-end font-bold font-montserrat h-8 w-12">
+                From
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <SegmentedControl
+                  size="sm"
+                  className="w-12 h-10"
+                  value={form.values.fromOp}
+                  onChange={(value) => {
+                    form.setFieldValue("fromOp", value as RangeFromOp);
+                    changedCallback();
+                  }}
+                  data={[
+                    { label: "\u2265", value: ">=" },
+                    { label: ">", value: ">" },
+                  ]}
+                  aria-label="select greater and equal or greater than"
+                  padding={1.5}
+                />
+                <NumberInput
+                  {...form.getInputProps("fromValue")}
+                  value={form.values.fromValue ?? ""}
+                  data-testid="textbox-input-from-value"
+                  className="text-sm"
+                  placeholder={`Min: ${lowerUnitRange}${unitsLabel} `}
+                  // units are always days
+                  onChange={(value) => {
+                    if (value === "" || typeof value === "string") {
+                      form.setFieldValue("fromValue", undefined);
+                    } else {
+                      form.setFieldValue("fromValue", value);
+                    }
+                    changedCallback();
+                  }}
+                  error={form?.errors?.fromValue}
+                  hideControls
+                  aria-label="input from value"
+                />
+              </div>
             </div>
-            <div className="flex gap-2 items-center justify-end font-content">
-              <div className="text-right font-bold font-montserrat">To</div>
-              <SegmentedControl
-                size="sm"
-                className="basis-1/5"
-                value={form.values.toOp}
-                onChange={(value) => {
-                  form.setFieldValue("toOp", value as RangeToOp);
-                  changedCallback();
-                }}
-                data={[
-                  { label: "\u2264", value: "<=" },
-                  { label: "<", value: "<" },
-                ]}
-                aria-label="select less or less than and equal"
-                padding={1.5}
-              />
-              <NumberInput
-                {...form.getInputProps("toValue")}
-                value={form.values.toValue ?? ""}
-                data-testid="textbox-input-to-value"
-                className="text-sm basis-3/5"
-                placeholder={`Max: ${upperUnitRange}${unitsLabel} `}
-                onChange={(value) => {
-                  if (value === "" || typeof value === "string") {
-                    form.setFieldValue("toValue", undefined);
-                  } else {
-                    form.setFieldValue("toValue", value);
-                  }
-                  changedCallback();
-                }}
-                error={form?.errors?.toValue}
-                hideControls
-                aria-label="input to value"
-              />
+            <div className="flex gap-2 justify-end font-content">
+              <div className=" flex items-center justify-end font-bold font-montserrat h-8 w-12">
+                To
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <SegmentedControl
+                  size="sm"
+                  className="w-12 h-10"
+                  value={form.values.toOp}
+                  onChange={(value) => {
+                    form.setFieldValue("toOp", value as RangeToOp);
+                    changedCallback();
+                  }}
+                  data={[
+                    { label: "\u2264", value: "<=" },
+                    { label: "<", value: "<" },
+                  ]}
+                  aria-label="select less or less than and equal"
+                  padding={1.5}
+                />
+                <NumberInput
+                  {...form.getInputProps("toValue")}
+                  value={form.values.toValue ?? ""}
+                  data-testid="textbox-input-to-value"
+                  className="text-sm"
+                  placeholder={`Max: ${upperUnitRange}${unitsLabel} `}
+                  onChange={(value) => {
+                    if (value === "" || typeof value === "string") {
+                      form.setFieldValue("toValue", undefined);
+                    } else {
+                      form.setFieldValue("toValue", value);
+                    }
+                    changedCallback();
+                  }}
+                  error={form?.errors?.toValue}
+                  hideControls
+                  aria-label="input to value"
+                />
+              </div>
             </div>
           </fieldset>
         </div>
