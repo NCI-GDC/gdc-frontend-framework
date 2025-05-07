@@ -55,11 +55,7 @@ describe("test indexing human body mapper", () => {
       "not reported": ["Not Reported"],
       oropharynx: ["Head and Neck"],
       "other and ill-defined digestive organs": ["Other and Ill-defined Sites"],
-      "other and ill-defined sites": [
-        "Bone",
-        "Head and Neck",
-        "Other and Ill-defined Sites",
-      ],
+      "other and ill-defined sites": ["Other and Ill-defined Sites"],
       "other and ill-defined sites in lip, oral cavity and pharynx": [
         "Head and Neck",
       ],

@@ -24,10 +24,10 @@ import { useDeepCompareCallback, useDeepCompareMemo } from "use-deep-compare";
 import FunctionButton from "@/components/FunctionButton";
 import { Loader } from "@mantine/core";
 import isEqual from "lodash/isEqual";
-import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
+import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionAsSetModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
-import { filtersToName, statusBooleansToDataStatus } from "src/utils";
+import { statusBooleansToDataStatus } from "src/utils";
 import download from "src/utils/download";
 import { SummaryModalContext } from "@/utils/contexts";
 import VerticalTable from "@/components/Table/VerticalTable";
@@ -47,6 +47,7 @@ import { getFormattedTimestamp } from "@/utils/date";
 import { ComparativeSurvival } from "@/features/genomic/types";
 import { appendSearchTermFilters } from "../utils";
 import TotalItems from "@/components/Table/TotalItem";
+import { SET_COUNT_LIMIT } from "@/components/Modals/SetModals/constants";
 
 export interface GTableContainerProps {
   readonly selectedSurvivalPlot: ComparativeSurvival;
@@ -246,7 +247,7 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
           root: {
             "genes.gene_id": {
               field: "genes.gene_id",
-              operands: selectedGenes,
+              operands: selectedGenes.slice(0, SET_COUNT_LIMIT),
               operator: "includes",
             },
           },
@@ -336,12 +337,8 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
                 ? convertFilterToGqlFilter(operationSetFilters)
                 : undefined
             }
-            initialSetName={
-              selectedGenes.length === 0
-                ? filtersToName(setFilters)
-                : "Custom Gene Selection"
-            }
             sort="case.project.project_id"
+            isManualSelection={selectedGenes.length > 0}
             saveCount={
               selectedGenes.length === 0
                 ? data?.genes?.genes_total

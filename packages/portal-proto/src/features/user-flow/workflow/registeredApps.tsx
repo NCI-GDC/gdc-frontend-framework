@@ -148,7 +148,7 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
     countsField: "caseCount",
     description:
       "Display a Venn diagram and compare/contrast your cohorts or sets of the same type.",
-    id: "SetOperations",
+    id: "SetOperationsApp",
     selectionScreen: SelectionPanel,
   },
   {

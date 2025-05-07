@@ -17,7 +17,11 @@ import ImportCohortModal from "../Modals/ImportCohortModal";
 import { cohortActionsHooks } from "./cohortActionHooks";
 import { INVALID_COHORT_NAMES, useCohortFacetFilters } from "../utils";
 
-const CohortManager: React.FC = () => {
+interface CohortManagerProps {
+  readonly isFetchingCohorts: boolean;
+}
+
+const CohortManager: React.FC<CohortManagerProps> = ({ isFetchingCohorts }) => {
   const modal = useCoreSelector(selectCurrentModal);
   const coreDispatch = useCoreDispatch();
 
@@ -34,6 +38,7 @@ const CohortManager: React.FC = () => {
         hooks={cohortActionsHooks}
         invalidCohortNames={INVALID_COHORT_NAMES}
         defaultCohortName={UNSAVED_COHORT_NAME}
+        isFetchingCohorts={isFetchingCohorts}
       />
       <ImportCohortModal opened={modal === Modals.ImportCohortModal} />
       <CaseSetModal

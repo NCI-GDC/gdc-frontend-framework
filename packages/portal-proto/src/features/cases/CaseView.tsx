@@ -37,7 +37,7 @@ import SMTableContainer from "../GenomicTables/SomaticMutationsTable/SMTableCont
 import FilesTable from "./FilesTable";
 import UsersIcon from "public/user-flow/icons/summary/users.svg";
 import AnnotationsTable from "./AnnotationsTable";
-import useScrollToHash from "@/hooks/useScrollToHash";
+import { useScrollToHash } from "@gff/portal-components";
 import { useSynchronizedRowHeights } from "@/components/HorizontalTable/useSynchronizedRowHeights";
 import { CartIcon, EditIcon, FileIcon } from "@/utils/icons";
 

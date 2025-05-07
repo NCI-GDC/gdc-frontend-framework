@@ -16,11 +16,6 @@ import { DownloadButton } from "@/components/DownloadButtons";
 import UserInputModal from "@/components/Modals/UserInputModal";
 // facets
 import FunctionButton from "@/components/FunctionButton";
-import EnumFacet from "@/features/facets/EnumFacet";
-import DateRangeFacet from "@/features/facets/DateRangeFacet";
-import ExactValueFacet from "@/features/facets/ExactValueFacet";
-import NumericRangeFacet from "@/features/facets/NumericRangeFacet";
-import ToggleFacet from "@/features/facets/ToggleFacet";
 // hooks
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 //charts
@@ -42,11 +37,6 @@ export {
   DownloadButton,
   UserInputModal,
   FunctionButton,
-  EnumFacet,
-  DateRangeFacet,
-  ExactValueFacet,
-  NumericRangeFacet,
-  ToggleFacet,
   useIsDemoApp,
   BarChart,
   CNVBarChart,

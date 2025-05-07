@@ -1,0 +1,53 @@
+{
+  "primary_diagnosis": {
+    "description": "Text term used to describe the patient's histologic diagnosis, as described by the World Health Organization's (WHO) International Classification of Diseases for Oncology (ICD-O).",
+    "field": "primary_diagnosis",
+    "type": "keyword",
+    "facet_type": "enum"
+  },
+  "tissue_or_organ_of_origin": {
+    "description": "The text term used to describe the anatomic site of origin, of the patient\"s malignant disease, as described by the World Health Organization\"s (WHO) International Classification of Diseases for Oncology (ICD-O).",
+    "field": "tissue_or_organ_of_origin",
+    "type": "keyword",
+    "facet_type": "enum"
+  },
+  "gender": {
+    "description": "Text designations that identify gender. Gender is described as the assemblage of properties that distinguish people on the basis of their societal roles. [Explanatory Comment 1: Identification of gender is based upon self-report and may come from a form, questionnaire, interview, etc.]",
+    "field": "gender",
+    "type": "keyword",
+    "facet_type": "enum"
+  },
+  "race": {
+    "description": "An arbitrary classification of a taxonomic group that is a division of a species. It usually arises as a consequence of geographical isolation within a species and is characterized by shared heredity, physical attributes and behavior, and in the case of humans, by common history, nationality, or geographic distribution. The provided values are based on the categories defined by the U.S. Office of Management and Business and used by the U.S. Census Bureau.",
+    "field": "race",
+    "full": "race",
+    "type": "keyword",
+    "facet_type": "enum"
+  },
+  "ethnicity": {
+    "description": "An individual\"s self-described social and cultural grouping, specifically whether an individual describes themselves as Hispanic or Latino. The provided values are based on the categories defined by the U.S. Office of Management and Business and used by the U.S. Census Bureau.",
+    "field": "ethnicity",
+    "type": "keyword",
+    "facet_type": "enum"
+  },
+  "vital_status": {
+    "description": "The survival state of the person registered on the protocol.",
+    "field": "vital_status",
+    "type": "keyword",
+    "facet_type": "enum"
+  },
+  "age_at_diagnosis": {
+    "description": "Age at the time of diagnosis expressed in number of days since birth.",
+    "field": "age_at_diagnosis",
+    "type": "long",
+    "facet_type": "age",
+    "range": {
+      "minimum": 0,
+      "maximum": 32872
+    },
+    "queryOptions": {
+      "minimumField": "age_at_diagnosis_min",
+      "maximumField": "age_at_diagnosis_max"
+    }
+  }
+}

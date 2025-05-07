@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect, useCallback } from "react";
-import { useDeepCompareMemo } from "use-deep-compare";
+import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
 import {
   VisibilityState,
   ColumnOrderState,
@@ -141,6 +141,10 @@ const AnnnotationTable: React.FC = () => {
         }
       : buildSearchFilters(searchTerm)
     : buildCohortGqlOperator(filters);
+
+  useDeepCompareEffect(() => {
+    setActivePage(1);
+  }, [filters]);
 
   const { data, isSuccess, isFetching, isError } = useGetAnnotationsQuery({
     request: {

@@ -46,9 +46,11 @@ import { getFormattedTimestamp } from "@/utils/date";
 const ContextBar = ({
   handleIsSticky,
   isSticky,
+  isFetchingCohorts,
 }: {
   handleIsSticky: (isSticky: boolean) => void;
   isSticky: boolean;
+  isFetchingCohorts: boolean;
 }): JSX.Element => {
   const coreDispatch = useCoreDispatch();
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
@@ -235,7 +237,7 @@ const ContextBar = ({
 
   return (
     <CollapsibleContainer
-      Top={<CohortManager />}
+      Top={<CohortManager isFetchingCohorts={isFetchingCohorts} />}
       isCollapsed={isGroupCollapsed}
       toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
       onlyIcon={false}

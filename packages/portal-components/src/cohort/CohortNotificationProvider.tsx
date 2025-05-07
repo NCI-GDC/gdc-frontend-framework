@@ -5,6 +5,7 @@ import React, {
   useReducer,
 } from "react";
 import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
+import { isEqual } from "lodash";
 import { Button } from "@mantine/core";
 import { Notifications, showNotification } from "@mantine/notifications";
 import { ContextModalProps, ModalsProvider } from "@mantine/modals";
@@ -19,7 +20,10 @@ import {
 } from "./CohortNotifications";
 import { MantineProvider } from "@mantine/core";
 import { AppContext } from "src/context";
-import { CohortNotificationCommand } from "./types";
+import {
+  CohortNotificationCommand,
+  CohortNotificationCommandWithParam,
+} from "./types";
 
 const SaveCohortErrorModal = ({ context, id }: ContextModalProps) => (
   <>
@@ -37,13 +41,15 @@ const SaveCohortErrorModal = ({ context, id }: ContextModalProps) => (
 
 const cohortMessageReducer = (
   state: CohortNotificationCommand[],
-  action: { type: "update" | "clear"; payload: CohortNotificationCommand[] },
+  action:
+    | { type: "update"; payload: CohortNotificationCommand[] }
+    | { type: "clear"; payload: CohortNotificationCommand },
 ) => {
   switch (action.type) {
     case "update":
       return [...state, ...action.payload];
     case "clear":
-      return [];
+      return state.filter((message) => !isEqual(message, action.payload));
     default:
       return state;
   }
@@ -69,40 +75,72 @@ const CohortNotificationProvider: React.FC<CohortNotificationWrapperProps> = ({
       switch (message.cmd) {
         case "newCohort":
           showNotification({
-            message: <NewCohortNotification cohortName={message.param1} />,
+            message: (
+              <NewCohortNotification
+                cohortName={
+                  (message as CohortNotificationCommandWithParam).param1
+                }
+              />
+            ),
             classNames: {
               description: "flex flex-col content-center text-center",
             },
             autoClose: 5000,
             closeButtonProps: { "aria-label": "Close notification" },
+            id: `new-cohort-${
+              (message as CohortNotificationCommandWithParam).param1
+            }`,
           });
           break;
         case "deleteCohort":
           showNotification({
-            message: <DeleteCohortNotification cohortName={message.param1} />,
+            message: (
+              <DeleteCohortNotification
+                cohortName={
+                  (message as CohortNotificationCommandWithParam).param1
+                }
+              />
+            ),
             classNames: {
               description: "flex flex-col content-center text-center",
             },
             autoClose: 5000,
             closeButtonProps: { "aria-label": "Close notification" },
+            id: `delete-cohort-${
+              (message as CohortNotificationCommandWithParam).param1
+            }`,
           });
           break;
         case "savedCohort":
           showNotification({
-            message: <SavedCohortNotification cohortName={message.param1} />,
+            message: (
+              <SavedCohortNotification
+                cohortName={
+                  (message as CohortNotificationCommandWithParam).param1
+                }
+              />
+            ),
             classNames: {
               description: "flex flex-col content-center text-center",
             },
             autoClose: 5000,
             closeButtonProps: { "aria-label": "Close notification" },
+            id: `saved-cohort-${
+              (message as CohortNotificationCommandWithParam).param1
+            }`,
           });
           break;
         case "savedCohortSetCurrent":
           showNotification({
             message: (
               <SavedCohortNotificationWithSetAsCurrent
-                cohortName={message.param1}
-                cohortId={message.param2 as string}
+                cohortName={
+                  (message as CohortNotificationCommandWithParam).param1
+                }
+                cohortId={
+                  (message as CohortNotificationCommandWithParam)
+                    .param2 as string
+                }
                 useSetActiveCohort={useSetActiveCohort}
               />
             ),
@@ -111,6 +149,9 @@ const CohortNotificationProvider: React.FC<CohortNotificationWrapperProps> = ({
             },
             autoClose: 5000,
             closeButtonProps: { "aria-label": "Close notification" },
+            id: `saved-cohort-set-current-${
+              (message as CohortNotificationCommandWithParam).param2
+            }`,
           });
           break;
         case "savedCurrentCohort":
@@ -121,6 +162,7 @@ const CohortNotificationProvider: React.FC<CohortNotificationWrapperProps> = ({
             },
             autoClose: 5000,
             closeButtonProps: { "aria-label": "Close notification" },
+            id: "saved-current-cohort",
           });
           break;
         case "discardChanges":
@@ -131,22 +173,31 @@ const CohortNotificationProvider: React.FC<CohortNotificationWrapperProps> = ({
             },
             autoClose: 5000,
             closeButtonProps: { "aria-label": "Close notification" },
+            id: "discard-changes",
           });
           break;
         case "error":
           showNotification({
-            message: <ErrorCohortNotification errorType={message.param1} />,
+            message: (
+              <ErrorCohortNotification
+                errorType={
+                  (message as CohortNotificationCommandWithParam).param1
+                }
+              />
+            ),
             classNames: {
               description: "flex flex-col content-center text-center",
             },
             autoClose: 5000,
             closeButtonProps: { "aria-label": "Close notification" },
+            id: `cohort-error-${
+              (message as CohortNotificationCommandWithParam).param1
+            }`,
           });
           break;
       }
+      dispatch({ type: "clear", payload: message });
     }
-
-    dispatch({ type: "clear", payload: [] });
   }, [cohortMessage, useSetActiveCohort]);
 
   const updateCohortMessage = useDeepCompareCallback(

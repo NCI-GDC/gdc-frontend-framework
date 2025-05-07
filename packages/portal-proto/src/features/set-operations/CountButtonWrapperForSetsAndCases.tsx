@@ -8,7 +8,7 @@ import {
   GqlIntersection,
 } from "@gff/core";
 import { SetOperationEntityType } from "@/features/set-operations/types";
-import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
+import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionAsSetModal";
 import { Loader, Tooltip } from "@mantine/core";
 import CohortCreationButton, {
   CohortCreationStyledButton,
@@ -81,7 +81,6 @@ const CountButtonWrapperForSet: React.FC<CountButtonWrapperForSetProps> = ({
         opened={showSaveModal && entityType === "mutations"}
         filters={filters}
         sort="occurrence.case.project.project_id"
-        initialSetName="Custom Mutation Selection"
         saveCount={count}
         setType="ssms"
         setTypeLabel="mutation"
@@ -92,7 +91,6 @@ const CountButtonWrapperForSet: React.FC<CountButtonWrapperForSetProps> = ({
       <SaveSelectionAsSetModal
         opened={showSaveModal && entityType === "genes"}
         filters={filters}
-        initialSetName={"Custom Gene Selection"}
         sort="case.project.project_id"
         saveCount={count}
         setType="genes"

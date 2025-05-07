@@ -265,15 +265,10 @@ const slice = createSlice({
       );
 
       const selector = cohortsAdapter.getSelectors();
-      if (selector.selectAll(state).length === 0) {
-        cohortsAdapter.addOne(
-          state,
-          newCohort({ customName: UNSAVED_COHORT_NAME }),
-        );
-        const selector = cohortsAdapter.getSelectors();
-        const createdCohort = selector.selectAll(state)[0];
-        state.currentCohort = createdCohort.id;
-      } else if (action?.payload.id === undefined) {
+      if (
+        selector.selectAll(state).length > 0 &&
+        action?.payload.id === undefined
+      ) {
         state.currentCohort = selector.selectAll(state)[0].id;
       }
     },
@@ -876,14 +871,9 @@ export const discardActiveCohortChanges =
 
 export const setActiveCohortList =
   (cohorts: Cohort[]): ThunkAction<void, CoreState, undefined, UnknownAction> =>
-  async (dispatch: CoreDispatch, getState) => {
+  async (dispatch: CoreDispatch) => {
     // set the list of all cohorts
     dispatch(setCohortList(cohorts));
-
-    const availableCohorts = selectAllCohorts(getState());
-    if (Object.keys(availableCohorts).length === 0) {
-      dispatch(addNewDefaultUnsavedCohort());
-    }
 
     // have to request counts for all cohorts loaded from the backend
     cohorts.forEach((cohort) => {

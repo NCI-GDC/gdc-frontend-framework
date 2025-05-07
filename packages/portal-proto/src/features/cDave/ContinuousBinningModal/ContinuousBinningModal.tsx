@@ -416,6 +416,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                           ? rangeForm.validateField(`ranges.${idx}.name`)
                           : undefined
                       }
+                      maxLength={100}
                     />
                   </td>
                   <td>

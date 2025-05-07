@@ -212,10 +212,11 @@ export const useImportCohort = () => {
   return handleImport;
 };
 
-const useSaveCohortToBE = () => {
+const useUpdateCohortState = () => {
   const coreDispatch = useCoreDispatch();
+  const [fetchSavedFilters] = useLazyGetCohortByIdQuery();
 
-  const saveCohortToBE = useDeepCompareCallback(
+  const updateCohortState = useDeepCompareCallback(
     ({
       payload,
       newName,
@@ -283,17 +284,86 @@ const useSaveCohortToBE = () => {
           }),
         );
       }
+
+      if (saveAs) {
+        // Should discard local changes from current cohort when saving as
+        fetchSavedFilters(cohortId)
+          .unwrap()
+          .then((savedFilters) =>
+            coreDispatch(
+              discardCohortChanges({
+                filters: buildGqlOperationToFilterSet(savedFilters.filters),
+                id: cohortId,
+              }),
+            ),
+          );
+      }
     },
-    [coreDispatch],
+    [coreDispatch, fetchSavedFilters],
   );
 
-  return saveCohortToBE;
+  return updateCohortState;
+};
+
+const useCreateCohortRequest = () => {
+  const [createSet] = useCreateCaseSetFromFiltersMutation();
+
+  const createCohortRequest = async ({
+    filters,
+    caseFilters,
+    newName,
+    createStaticCohort,
+  }: {
+    filters: FilterSet;
+    caseFilters: FilterSet;
+    newName: string;
+    createStaticCohort: boolean;
+  }) => {
+    let cohortFilters = filters;
+
+    if (createStaticCohort) {
+      await createSet({
+        filters: buildCohortGqlOperator(filters),
+        case_filters: buildCohortGqlOperator(caseFilters),
+        intent: "portal",
+        set_type: "frozen",
+      })
+        .unwrap()
+        .then((setId: string) => {
+          cohortFilters = {
+            mode: "and",
+            root: {
+              "cases.case_id": {
+                field: "cases.case_id",
+                operands: [`set_id:${setId}`],
+                operator: "includes",
+              },
+            },
+          } as FilterSet;
+        });
+    }
+
+    const filteredCohortFilters = omit(cohortFilters, "isLoggedIn");
+
+    const addBody = {
+      name: newName,
+      type: "dynamic",
+      filters:
+        Object.keys(filteredCohortFilters.root).length > 0
+          ? buildCohortGqlOperator(filteredCohortFilters)
+          : {},
+    };
+
+    return addBody;
+  };
+
+  return createCohortRequest;
 };
 
 export const useSaveCohort = () => {
   const [addCohort] = useAddCohortMutation();
-  const [createSet] = useCreateCaseSetFromFiltersMutation();
-  const saveCohortToBE = useSaveCohortToBE();
+  const updateCohortState = useUpdateCohortState();
+  const createCohortRequest = useCreateCohortRequest();
 
   const handleAddCohort = useDeepCompareCallback(
     async ({
@@ -311,47 +381,19 @@ export const useSaveCohort = () => {
       createStaticCohort: boolean;
       saveAs: boolean;
     }) => {
-      let cohortFilters = filters;
-
-      if (createStaticCohort) {
-        await createSet({
-          filters: buildCohortGqlOperator(filters),
-          case_filters: buildCohortGqlOperator(caseFilters),
-          intent: "portal",
-          set_type: "frozen",
-        })
-          .unwrap()
-          .then((setId: string) => {
-            cohortFilters = {
-              mode: "and",
-              root: {
-                "cases.case_id": {
-                  field: "cases.case_id",
-                  operands: [`set_id:${setId}`],
-                  operator: "includes",
-                },
-              },
-            } as FilterSet;
-          });
-      }
-
-      const filteredCohortFilters = omit(cohortFilters, "isLoggedIn");
-
-      const addBody = {
-        name: newName,
-        type: "dynamic",
-        filters:
-          Object.keys(filteredCohortFilters.root).length > 0
-            ? buildCohortGqlOperator(filteredCohortFilters)
-            : {},
-      };
-
       let result = { cohortAlreadyExists: false, newCohortId: undefined };
+
+      const addBody = await createCohortRequest({
+        filters,
+        caseFilters,
+        newName,
+        createStaticCohort,
+      });
 
       await addCohort({ cohort: addBody, delete_existing: false })
         .unwrap()
         .then(async (payload) => {
-          saveCohortToBE({ payload, newName, cohortId, saveAs });
+          updateCohortState({ payload, newName, cohortId, saveAs });
 
           result = { cohortAlreadyExists: false, newCohortId: payload.id };
         })
@@ -366,7 +408,7 @@ export const useSaveCohort = () => {
 
       return result;
     },
-    [addCohort, createSet, saveCohortToBE],
+    [addCohort, updateCohortState, createCohortRequest],
   );
 
   return handleAddCohort;
@@ -377,37 +419,38 @@ export const useReplaceCohort = () => {
   const cohorts = useCoreSelector(selectCohortsFromStore);
   const [addCohort] = useAddCohortMutation();
   const [fetchCohortList] = useLazyGetCohortsByContextIdQuery();
-  const saveCohortToBE = useSaveCohortToBE();
+  const updateCohortState = useUpdateCohortState();
+  const createCohortRequest = useCreateCohortRequest();
 
   const handleReplaceCohort = useDeepCompareCallback(
     async ({
       newName,
       filters,
+      caseFilters,
+      createStaticCohort,
       cohortId,
       saveAs,
     }: {
       newName: string;
       filters: FilterSet;
+      caseFilters: FilterSet;
+      createStaticCohort: boolean;
       cohortId: string;
       saveAs: boolean;
     }) => {
-      const filteredCohortFilters = omit(filters, "isLoggedIn");
-
-      const addBody = {
-        name: newName,
-        type: "dynamic",
-        filters:
-          Object.keys(filteredCohortFilters.root).length > 0
-            ? buildCohortGqlOperator(filteredCohortFilters)
-            : {},
-      };
+      const addBody = await createCohortRequest({
+        filters,
+        caseFilters,
+        newName,
+        createStaticCohort,
+      });
 
       let result = { newCohortId: undefined };
 
       await addCohort({ cohort: addBody, delete_existing: true })
         .unwrap()
         .then((payload) => {
-          saveCohortToBE({ payload, newName, cohortId, saveAs });
+          updateCohortState({ payload, newName, cohortId, saveAs });
           result = { newCohortId: payload.id };
         });
 
@@ -429,7 +472,14 @@ export const useReplaceCohort = () => {
 
       return result;
     },
-    [addCohort, cohorts, coreDispatch, fetchCohortList, saveCohortToBE],
+    [
+      addCohort,
+      cohorts,
+      coreDispatch,
+      fetchCohortList,
+      updateCohortState,
+      createCohortRequest,
+    ],
   );
 
   return handleReplaceCohort;

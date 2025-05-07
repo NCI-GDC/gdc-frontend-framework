@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Operation, FilterSet } from "@gff/core";
+import { Operation, FilterSet, isOperandsType } from "@gff/core";
 import { AppState } from "./appApi";
 
 export interface AnnotationCenterFiltersState {
@@ -11,7 +11,7 @@ const initialState: AnnotationCenterFiltersState = {
 };
 
 const slice = createSlice({
-  name: "AnnotationCenter/filters",
+  name: "annotationCenter/filters",
   initialState,
   reducers: {
     updateAnnotationFilter: (
@@ -54,11 +54,17 @@ export const {
 } = slice.actions;
 
 export const selectFilters = (state: AppState): FilterSet | undefined =>
-  state.filters;
+  state.annotationBrowserFilterState.filters;
 
 export const selectAnnotationFiltersByName = (
   state: AppState,
   name: string,
 ): Operation | undefined => {
-  return state.filters.root[name];
+  return state.annotationBrowserFilterState.filters.root[name];
 };
+
+export const selectFiltersAppliedCount = (state: AppState): number =>
+  Object.values(state.annotationBrowserFilterState.filters.root).reduce(
+    (a, b) => (isOperandsType(b) ? b?.operands.length : 1) + a,
+    0,
+  );

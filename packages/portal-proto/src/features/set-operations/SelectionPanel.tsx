@@ -392,54 +392,53 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
 
   return (
     <div className="bg-base-max">
-      <div className="p-4">
-        <h2 className="font-heading text-lg font-bold py-2 text-primary-content-darkest">
-          Select 2 or 3 of the same set type
-        </h2>
-        <p className="font-content">
-          Display a Venn diagram and compare/contrast your cohorts or sets of
-          the same type.
-        </p>
-        <p className="pb-2 font-content">
-          Create cohorts in the Analysis Center. Create gene/mutation sets in{" "}
-          <Link
-            data-testid="link-manage-sets"
-            href="/manage_sets"
-            className="text-utility-link font-content underline"
-          >
-            Manage Sets
-          </Link>{" "}
-          or in analysis tools (e.g.{" "}
-          <Link
-            data-testid="link-mutation-frequency"
-            href="/analysis_page?app=MutationFrequencyApp"
-            className="text-utility-link font-content underline"
-          >
-            Mutation Frequency
-          </Link>
-          ).
-        </p>
-        <div className="w-3/4">
-          <VerticalTable
-            data={displayedData}
-            columns={setSelectionPanelColumns}
-            pagination={{
-              page,
-              pages,
-              size,
-              from,
-              total,
-              label: "set",
-            }}
-            status={
-              isGeneSuccess && isMutationSuccess ? "fulfilled" : "pending"
-            }
-            sorting={sorting}
-            setSorting={setSorting}
-            handleChange={handleChange}
-            columnSorting="manual"
-          />
+      <div className="p-4 w-full xl:w-3/4 flex flex-col gap-2">
+        <div>
+          <h2 className="font-content text-xl font-bold text-primary-content-darkest">
+            Select 2 or 3 of the same set type
+          </h2>
+          <p className="font-content text-sm">
+            Display a Venn diagram and compare/contrast your cohorts or sets of
+            the same type.
+          </p>
+          <p className="pb-2 font-content text-sm">
+            Create cohorts in the Analysis Center. Create gene/mutation sets in{" "}
+            <Link
+              data-testid="link-manage-sets"
+              href="/manage_sets"
+              className="text-utility-link font-content underline font-bold"
+            >
+              Manage Sets
+            </Link>{" "}
+            or in analysis tools (e.g.{" "}
+            <Link
+              data-testid="link-mutation-frequency"
+              href="/analysis_page?app=MutationFrequencyApp"
+              className="text-utility-link font-content underline font-bold"
+            >
+              Mutation Frequency
+            </Link>
+            ).
+          </p>
         </div>
+
+        <VerticalTable
+          data={displayedData}
+          columns={setSelectionPanelColumns}
+          pagination={{
+            page,
+            pages,
+            size,
+            from,
+            total,
+            label: "set",
+          }}
+          status={isGeneSuccess && isMutationSuccess ? "fulfilled" : "pending"}
+          sorting={sorting}
+          setSorting={setSorting}
+          handleChange={handleChange}
+          columnSorting="manual"
+        />
       </div>
       <div className="flex flex-row justify-end w-full sticky bottom-0 bg-base-lightest py-2 px-4">
         <FunctionButton

@@ -18,11 +18,19 @@ export type NotificationTypes =
   | "discardChanges"
   | "error";
 
-export interface CohortNotificationCommand {
-  cmd: NotificationTypes;
+export interface CohortNotificationCommandWithParam {
+  cmd: Omit<NotificationTypes, "savedCurrentCohort" | "discardChanges">;
   param1: string;
   param2?: string;
 }
+
+export interface CohortNotificationCommandNoParam {
+  cmd: "savedCurrentCohort" | "discardChanges";
+}
+
+export type CohortNotificationCommand =
+  | CohortNotificationCommandWithParam
+  | CohortNotificationCommandNoParam;
 
 type SetCohortMessageFunc = (cmd: CohortNotificationCommand[]) => void;
 
@@ -52,9 +60,17 @@ export interface CohortHooks {
   useReplaceCohort: () => ({
     newName,
     filters,
+    caseFilters,
+    createStaticCohort,
+    cohortId,
+    saveAs,
   }: {
     newName: string;
     filters: any;
+    caseFilters: any;
+    createStaticCohort: boolean;
+    cohortId?: string;
+    saveAs: boolean;
   }) => Promise<{ newCohortId: string }>;
   useExportCohort?: () => {
     handleExport: () => void;

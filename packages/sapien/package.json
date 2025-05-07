@@ -1,6 +1,6 @@
 {
   "name": "@nci-gdc/sapien",
-  "version": "2.16.1",
+  "version": "2.16.5",
   "description": "Organ Map of Human Body",
   "browser": true,
   "main": "dist/index.js",
@@ -35,6 +35,6 @@
     "rollup": "^4.27.3",
     "rollup-plugin-copy": "^3.5.0",
     "rollup-plugin-dts": "^6.1.0",
-    "typescript": "^5.6.3"
+    "typescript": "^5.8.2"
   }
 }

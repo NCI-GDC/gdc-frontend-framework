@@ -2,19 +2,22 @@ import React, { useState, useContext, useRef, useMemo } from "react";
 import { isEqual } from "lodash";
 import { Text, Modal, LoadingOverlay, Badge, Tooltip } from "@mantine/core";
 import { fieldNameToTitle } from "@gff/core";
-import { createFacetCard } from "@/features/facets/CreateFacetCard";
 import {
+  createFacetCards,
+  FacetSelection,
   FacetCardDefinition,
   FacetRequiredHooks,
-} from "@/features/facets/types";
-import FacetSelection from "@/components/FacetSelection";
+} from "@gff/portal-components";
 import { TableXPositionContext } from "@/components/Table/VerticalTable";
 import { AddIcon, UndoIcon } from "@/utils/icons";
+import { useAvailableCustomFacets } from "../cohortBuilder/hooks";
+import { FacetQueryOptions } from "./types";
+import { EnumFacetChart } from "../charts/EnumFacetChart";
 
 interface FilterPanelProps {
   readonly facetDefinitions: FacetCardDefinition[];
   readonly facetHooks: FacetRequiredHooks;
-  readonly valueLabel: string | ((x: FacetCardDefinition) => string);
+  readonly valueLabel: string | ((queryOptions) => string);
   readonly app: string;
   readonly toggleAllFiltersExpanded: (expanded: boolean) => void;
   readonly allFiltersCollapsed: boolean;
@@ -23,6 +26,7 @@ interface FilterPanelProps {
     readonly handleCustomFilterSelected: (filter: string) => void;
     readonly handleResetCustomFilters: () => void;
     readonly defaultFilters: string[];
+    readonly queryOptions?: FacetQueryOptions;
   };
   readonly filtersAppliedCount?: number;
   readonly handleClearAll: () => void;
@@ -64,12 +68,24 @@ const FilterPanel = ({
   const [opened, setOpened] = useState(false);
   const ref = useRef<HTMLDivElement>();
 
-  const facetFields = facetDefinitions.map((x) => x.full);
+  const facetFields = facetDefinitions.map((x) => x.field);
+
   const { xPosition } = useContext(TableXPositionContext);
   const maxHeight = useMemo(() => {
     const calcHeight = xPosition - ref?.current?.getBoundingClientRect().top;
     return isNaN(calcHeight) ? undefined : calcHeight;
   }, [xPosition]);
+
+  const customFacetDefinitions = customConfig
+    ? facetDefinitions.filter(
+        (facet) => !customConfig.defaultFilters.includes(facet.field),
+      )
+    : [];
+  const defaultFacetDefinitions = customConfig
+    ? facetDefinitions.filter((facet) =>
+        customConfig.defaultFilters.includes(facet.field),
+      )
+    : facetDefinitions;
 
   return (
     <div className="flex flex-col gap-y-4 min-w-[14rem] w-3/12 max-w-[23rem]">
@@ -133,12 +149,12 @@ const FilterPanel = ({
             >
               <div className="p-4">
                 <FacetSelection
-                  facetType="files"
                   handleFilterSelected={(filter: string) => {
                     customConfig.handleCustomFilterSelected(filter);
                     setOpened(false);
                   }}
-                  usedFacets={facetFields}
+                  useAvailableCustomFacets={useAvailableCustomFacets}
+                  queryOptions={customConfig.queryOptions}
                 />
               </div>
             </Modal>
@@ -154,27 +170,30 @@ const FilterPanel = ({
         }}
         ref={ref}
       >
-        {facetDefinitions.map((facet) => {
-          const isDefault =
-            customConfig?.defaultFilters !== undefined
-              ? customConfig.defaultFilters.includes(facet.full)
-              : true;
-          const facetName =
-            facet.title || fieldNameToTitle(facet.full, isDefault ? 1 : 2);
-          return createFacetCard({
-            facet,
-            valueLabel:
-              typeof valueLabel === "string" ? valueLabel : valueLabel(facet),
-            dataFunctions: facetHooks,
-            idPrefix: app,
-            dismissCallback: !isDefault
-              ? customConfig.handleRemoveFilter
-              : undefined,
-            hideIfEmpty,
-            showPercent,
-            facetName,
-            width: "w-full",
-          });
+        {createFacetCards({
+          facets: customFacetDefinitions,
+          valueLabel,
+          hooks: facetHooks,
+          idPrefix: app,
+          dismissCallback: customConfig?.handleRemoveFilter,
+          hideIfEmpty,
+          showPercent,
+          facetNameFormatter: (field: string) => {
+            return fieldNameToTitle(field, 2);
+          },
+          Chart: EnumFacetChart,
+          queryOptions: { docType: "cases" },
+        })}
+        {createFacetCards({
+          facets: defaultFacetDefinitions,
+          valueLabel,
+          hooks: facetHooks,
+          idPrefix: app,
+          hideIfEmpty,
+          showPercent,
+          facetNameFormatter: fieldNameToTitle,
+          Chart: EnumFacetChart,
+          queryOptions: { docType: "cases" },
         })}
       </div>
     </div>

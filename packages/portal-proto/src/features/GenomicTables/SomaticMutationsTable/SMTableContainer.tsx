@@ -16,15 +16,15 @@ import {
   buildSSMSTableSearchFilters,
   filterSetToOperation,
   convertFilterToGqlFilter,
+  useRemoveTopNSsmsSetFromFiltersMutation,
 } from "@gff/core";
 import { useEffect, useState, useContext, useMemo, useCallback } from "react";
 import { useDeepCompareCallback, useDeepCompareMemo } from "use-deep-compare";
 import { Loader } from "@mantine/core";
 import isEqual from "lodash/isEqual";
-import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
-import { filtersToName, statusBooleansToDataStatus } from "src/utils";
+import { statusBooleansToDataStatus } from "src/utils";
 import FunctionButton from "@/components/FunctionButton";
 import { CountsIcon, HeaderTitle } from "@/components/tailwindComponents";
 import download from "@/utils/download";
@@ -45,6 +45,8 @@ import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon
 import SMTableSubcomponent from "./SMTableSubcomponent";
 import { ComparativeSurvival } from "@/features/genomic/types";
 import TotalItems from "@/components/Table/TotalItem";
+import { SET_COUNT_LIMIT } from "@/components/Modals/SetModals/constants";
+import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionAsSetModal";
 
 export interface SMTableContainerProps {
   readonly selectedSurvivalPlot?: ComparativeSurvival;
@@ -276,7 +278,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
           root: {
             "ssms.ssm_id": {
               field: "ssms.ssm_id",
-              operands: selectedMutations,
+              operands: selectedMutations.slice(0, SET_COUNT_LIMIT),
               operator: "includes",
             },
           },
@@ -414,11 +416,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                     : undefined
                 }
                 sort="occurrence.case.project.project_id"
-                initialSetName={
-                  selectedMutations.length === 0
-                    ? filtersToName(setFilters)
-                    : "Custom Mutation Selection"
-                }
+                isManualSelection={selectedMutations.length > 0}
                 saveCount={
                   selectedMutations.length === 0
                     ? data?.ssmsTotal
@@ -470,7 +468,13 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 setTypeLabel="mutation"
                 countHook={useSsmSetCountsQuery}
                 closeModal={handleRemoveFromSetModalClose}
-                removeFromSetHook={useRemoveFromSsmSetMutation}
+                removeFromSetHook={
+                  selectedMutations.length === 0
+                    ? useRemoveTopNSsmsSetFromFiltersMutation
+                    : useRemoveFromSsmSetMutation
+                }
+                isManualSelection={selectedMutations.length > 0}
+                sort="occurrence.case.project.project_id"
               />
             </>
           )}
@@ -548,7 +552,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             search={{
               enabled: true,
               defaultSearchTerm: searchTerm,
-              tooltip: "e.g. TP53, ENSG00000141510, chr17:g.7675088C>T, R175H",
+              tooltip:
+                "e.g. TP53, ENSG00000141510, chr17:g.7675088C>T, R175H, 8e30604f-3a45-5533-bdd7-0a4353700318",
             }}
             tableTotalDetail={
               <TotalItems total={data?.ssmsTotal} itemName="somatic mutation" />

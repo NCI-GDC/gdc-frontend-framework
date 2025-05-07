@@ -1,4 +1,5 @@
 import React, { useContext, useState } from "react";
+import { useDeepCompareEffect } from "use-deep-compare";
 import { Tooltip, MantineProvider, Button } from "@mantine/core";
 import { AppContext } from "src/context";
 import { UndoIcon } from "src/commonIcons";
@@ -7,13 +8,14 @@ import SaveCohortModal from "@/modals/SaveCohortModal";
 import CohortActions from "./CohortActions";
 import CohortSelector from "./CohortSelector";
 import { actionButtonVariant, darkFunctionVariant } from "./style";
-import { CohortHooks } from "./types";
+import { CohortHooks, CohortNotificationCommandNoParam } from "./types";
 import { CohortNotificationContext } from "./CohortNotificationProvider";
 
 interface CohortManagerProps {
   readonly hooks: CohortHooks;
   readonly defaultCohortName: string;
   readonly invalidCohortNames?: string[];
+  readonly isFetchingCohorts?: boolean;
 }
 
 /**
@@ -25,8 +27,10 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   hooks,
   defaultCohortName,
   invalidCohortNames = [],
+  isFetchingCohorts = false,
 }) => {
   const currentCohort = hooks.useSelectCurrentCohort();
+  const cohorts = hooks.useSelectAvailableCohorts();
 
   const handleDelete = hooks.useDeleteCohort();
   const handleDiscard = hooks.useDiscardChanges();
@@ -50,6 +54,20 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   const setCohortMessage = useContext(CohortNotificationContext);
 
   useCreateCohortExternally(setCohortMessage);
+
+  useDeepCompareEffect(() => {
+    if (cohorts.length === 0 && !isFetchingCohorts) {
+      addNewDefaultUnsavedCohort();
+      setCohortMessage &&
+        setCohortMessage([{ cmd: "newCohort", param1: defaultCohortName }]);
+    }
+  }, [
+    cohorts,
+    addNewDefaultUnsavedCohort,
+    defaultCohortName,
+    setCohortMessage,
+    isFetchingCohorts,
+  ]);
 
   return (
     <MantineProvider
@@ -156,9 +174,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                   .then(
                     () =>
                       setCohortMessage &&
-                      setCohortMessage([
-                        { cmd: "discardChanges", param1: currentCohort.name },
-                      ]),
+                      setCohortMessage([{ cmd: "discardChanges" }]),
                   )
                   .catch(
                     () =>
@@ -185,6 +201,12 @@ const CohortManager: React.FC<CohortManagerProps> = ({
               onActionClick={() => {
                 setShowUpdateCohort(false);
                 handleUpdate();
+                setCohortMessage &&
+                  setCohortMessage([
+                    {
+                      cmd: "savedCurrentCohort",
+                    } as CohortNotificationCommandNoParam,
+                  ]);
               }}
             />
 
