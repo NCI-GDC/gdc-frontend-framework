@@ -22,14 +22,15 @@ import FilterPanel from "@/features/facets/FilterPanel";
 import { FacetCardDefinition } from "@gff/portal-components";
 import { useAppSelector } from "./appApi";
 import { selectFiltersAppliedCount } from "./geneAndSSMFiltersSlice";
-import queryExpressionHooks, {
-  useFieldNameToTitle,
-} from "../cohortBuilder/queryExpressionHooks";
 import {
-  useSearchEnumTerms,
+  useFieldNameToTitle,
+  useFormatValue,
+} from "@/features/cohortBuilder/queryExpressionHooks";
+import { useSearchEnumTerms } from "../cohortBuilder/hooks";
+import {
+  useOpenUploadModal,
   useUploadFilterItems,
-} from "../cohortBuilder/hooks";
-import { useOpenUploadModal } from "@/features/genomic/hooks";
+} from "@/features/genomic/hooks";
 
 const GeneAndSSMFilterPanel = ({
   isDemoMode,
@@ -50,8 +51,8 @@ const GeneAndSSMFilterPanel = ({
   useGenesFacets(
     "ssms",
     "explore",
-    FilterFacets.filter((f) => f.queryOptions.docType === "ssms").map(
-      (x) => x.field,
+    FilterFacets.filter((f) => f.queryOptions.docType === "ssms").map((x) =>
+      x.field.includes("upload") ? x.field.split(".upload").join("") : x.field,
     ),
     isDemoMode,
   );
@@ -73,7 +74,7 @@ const GeneAndSSMFilterPanel = ({
     useSearchEnumTerms,
     useOpenUploadModal,
     useFilterItems: useUploadFilterItems,
-    ...queryExpressionHooks,
+    useFormatValue,
   };
 
   return (

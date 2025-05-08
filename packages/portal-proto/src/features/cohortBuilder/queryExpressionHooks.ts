@@ -14,6 +14,7 @@ import {
   useLazySsmSetCountQuery,
   useLazyCaseSetCountQuery,
 } from "@gff/core";
+import { Operation } from "@gff/core";
 
 export const useSelectCurrentCohort = () => {
   return useCoreSelector((state) => selectCurrentCohort(state));
@@ -46,7 +47,7 @@ const useUpdateCohortFilter = () => {
   const coreDispatch = useCoreDispatch();
 
   const updateCohortFilter = useCallback(
-    ({ field, operation }) => {
+    (field: string, operation: Operation) => {
       coreDispatch(
         updateActiveCohortFilter({
           field,
@@ -70,7 +71,7 @@ export const useFieldNameToTitle = () => {
   return fieldToTitle;
 };
 
-const useFormatValue = () => {
+export const useFormatValue = () => {
   const [getGeneSymbol] = useLazyGeneSymbolQuery();
   const sets = useCoreSelector((state) => selectAllSets(state));
   const [getGeneSetCount] = useLazyGeneSetCountQuery();

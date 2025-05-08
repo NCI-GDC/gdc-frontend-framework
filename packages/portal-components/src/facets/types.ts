@@ -1,8 +1,5 @@
-import {
-  Operation,
-  NumericFromTo,
-  QueryExpressionHooks,
-} from "@/cohort/QueryExpression/types";
+import { Cohort } from "@/cohort/types";
+import { Operation, NumericFromTo } from "@/cohort/QueryExpression/types";
 import { DataFetchingResult } from "src/types";
 
 export type QueryOptions = Record<string, unknown>;
@@ -51,7 +48,7 @@ export type ToggleFacetHooks = FacetCommonHooks & {
   /**
    * Hook that returns the currently selected filters
    */
-  useGetFacetFilters: (field: string) => string[];
+  useGetFacetFilters: (field: string) => Operation;
 };
 
 export type ValueFacetHooks = FacetCommonHooks & {
@@ -72,20 +69,27 @@ export type RangeFacetHooks = FacetCommonHooks & {
   useGetFacetFilters: SelectFacetFilterFunction;
 };
 
-export type UploadFacetHooks = FacetCommonHooks &
-  QueryExpressionHooks & {
-    /**
-     * Hook that returns a list of the uploaded items
-     */
-    useFilterItems: (field: string) => {
-      noData: boolean;
-      items: readonly (string | number)[];
-    };
-    /**
-     * Hook that opens the upload modal
-     */
-    useOpenUploadModal: () => (field: string) => void;
+export type UploadFacetHooks = FacetCommonHooks & {
+  /**
+   * Hook that returns a list of the uploaded items
+   */
+  useFilterItems: (field: string) => {
+    noData: boolean;
+    items: readonly (string | number)[];
   };
+  /**
+   * Hook that opens the upload modal
+   */
+  useOpenUploadModal: () => (field: string) => void;
+  /**
+   * Hook that returns formatted label for the filter badge
+   */
+  useFormatValue: () => (value: string, field: string) => Promise<string>;
+  /**
+   * Optional hook that returns the current cohort, used for managing collapse/expand filter state
+   */
+  useSelectCurrentCohort?: () => Cohort;
+};
 
 export interface FacetCommonHooks {
   /**
