@@ -31,7 +31,7 @@ class GenericLocators:
     TEXT_COHORT_BAR_CASE_COUNT = (
         f'[data-testid="expandcollapseButton"] >> span[class="pr-1 font-bold"]'
     )
-    CART_IDENT = '[data-testid="button-header-cart"] >> ..'
+    CART_IDENT = '[data-testid="button-header-cart"]'
 
     BUTTON_CLEAR_ACTIVE_COHORT_FILTERS = (
         '[data-testid="button-clear-all-cohort-filters"]'
@@ -192,6 +192,10 @@ class BasePage:
 
     def get_text(self, locator):
         return self.driver.locator(locator).text_content()
+
+    def get_inner_text(self, locator):
+        """Returns only what a user can see on the page"""
+        return self.driver.locator(locator).inner_text()
 
     def get_input_value(self, locator):
         return self.driver.locator(locator).input_value()
@@ -369,11 +373,11 @@ class BasePage:
         table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT_IN_SPECIFIED_TABLE(table_name, row, column)
         # Try to return drilled down locator.
         if self.is_visible(table_locator_to_select):
-            return self.get_text(table_locator_to_select)
+            return self.get_inner_text(table_locator_to_select)
         # If that is not available, return a higher level locator.
         else:
             table_locator_to_select = GenericLocators.TABLE_AREA_TO_COLLECT_IN_SPECIFIED_TABLE(table_name, row, column)
-            return self.get_text(table_locator_to_select)
+            return self.get_inner_text(table_locator_to_select)
 
     def hover_table_body_by_row_column(self, row, column):
         """

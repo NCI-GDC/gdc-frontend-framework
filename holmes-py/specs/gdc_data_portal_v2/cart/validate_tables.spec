@@ -62,18 +62,18 @@ tags: gdc-data-portal-v2, regression, cart
     |2                                      |1    |2      |
     |5                                      |1    |3      |
     |3.59 MB                                |1    |4      |
-    |CGCI-BLGSP                             |2    |1      |
-    |1                                      |2    |2      |
-    |4                                      |2    |3      |
-    |12.47 MB                               |2    |4      |
-    |TCGA-OV                                |3    |1      |
+    |MMRF-COMMPASS                          |2    |1      |
+    |2                                      |2    |2      |
+    |2                                      |2    |3      |
+    |4.29 MB                                |2    |4      |
+    |CGCI-BLGSP                             |3    |1      |
     |1                                      |3    |2      |
-    |3                                      |3    |3      |
-    |627.12 kB                              |3    |4      |
-    |MMRF-COMMPASS                          |4    |1      |
-    |2                                      |4    |2      |
-    |2                                      |4    |3      |
-    |4.29 MB                                |4    |4      |
+    |4                                      |3    |3      |
+    |12.47 MB                               |3    |4      |
+    |TCGA-OV                                |4    |1      |
+    |1                                      |4    |2      |
+    |3                                      |4    |3      |
+    |627.12 kB                              |4    |4      |
     |TARGET-AML                             |5    |1      |
     |1                                      |5    |2      |
     |1                                      |5    |3      |
@@ -120,7 +120,7 @@ tags: gdc-data-portal-v2, regression, cart
 * Verify the table "Cart Items" body text is correct
     |expected_text                          |row  |column |
     |---------------------------------------|-----|-------|
-    |controlled                             |1    |3      |
+    |Controlled                             |1    |3      |
     |d2f99693-269c-4f5a-8d3a-646be6d0ee3d.wxs.varscan2.raw_somatic_mutation.vcf.gz|1    |4      |
     |1                                      |1    |5      |
     |TCGA-OV                                |1    |6      |
@@ -215,56 +215,58 @@ tags: gdc-data-portal-v2, regression, cart
     |1794c455-e32e-4a8b-9934-88aa63421c94 |
 
 ## Remove Files and Validate Changes
-* In table "Cart Items", search the table for "aa292d88-0f41-4618-a74b-ed7455e6a1bc"
+* In table "Cart Items", search the table for "99ba6902-c95a-4955-af15-879363eda256"
 * Wait for table "Cart Items" body text to appear
     |expected_text                                        |row  |column |
     |-----------------------------------------------------|-----|-------|
-    |aa292d88-0f41-4618-a74b-ed7455e6a1bc                 |1    |2      |
+    |99ba6902-c95a-4955-af15-879363eda256                 |1    |2      |
 * Select value from table "Cart Items" by row and column
     |row   |column|
     |------|------|
     |1     |1     |
-* Is temporary modal with text "Removed df2d803c-95d5-447d-8345-eafcd4c71c69.mirnaseq.mirnas.quantification.txt from the cart." present on the page and "Remove Modal"
+* Is temporary modal with text "Removed f04b5948-a1dc-4534-8c38-1e08bf1b2a40.rna_seq.augmented_star_gene_counts.tsv from the cart." present on the page and "Remove Modal"
 
-* In table "Cart Items", search the table for "8c38ec6c-ded8-49c9-8bbe-4fcc9b292939"
+* In table "Cart Items", search the table for "322bb3ff-5123-47fd-bcd3-af4fbc2ad20f"
 * Wait for table "Cart Items" body text to appear
     |expected_text                                        |row  |column |
     |-----------------------------------------------------|-----|-------|
-    |8c38ec6c-ded8-49c9-8bbe-4fcc9b292939                 |1    |2      |
+    |322bb3ff-5123-47fd-bcd3-af4fbc2ad20f                 |1    |2      |
 * Select value from table "Cart Items" by row and column
     |row   |column|
     |------|------|
     |1     |1     |
-* Is temporary modal with text "Removed d2f99693-269c-4f5a-8d3a-646be6d0ee3d.wxs.varscan2.raw_somatic_mutation.vcf.gz from the cart." present on the page and "Remove Modal"
+* Is temporary modal with text "Removed HCMI_CMDC.81de7870-81c1-445f-9df8-669a5ffbd817.wxs.Pindel.somatic_annotation.vcf.gz from the cart." present on the page and "Remove Modal"
+
+
 
 * Verify the table "File counts by authorization level" body text is correct
     |expected_text                          |row  |column |
     |---------------------------------------|-----|-------|
     |Authorized                             |1    |1      |
     |8                                      |1    |2      |
-    |8.04 MB                                |1    |3      |
+    |3.86 MB                                |1    |3      |
     |Unauthorized                           |2    |1      |
     |5                                      |2    |2      |
-    |13.07 MB                               |2    |3      |
+    |13.09 MB                               |2    |3      |
 * Verify the table "File counts by project" body text is correct
     |expected_text                          |row  |column |
     |---------------------------------------|-----|-------|
-    |CGCI-BLGSP                             |1    |1      |
-    |1                                      |1    |2      |
+    |HCMI-CMDC                              |1    |1      |
+    |2                                      |1    |2      |
     |4                                      |1    |3      |
-    |12.47 MB                               |1    |4      |
-    |HCMI-CMDC                              |2    |1      |
-    |2                                      |2    |2      |
+    |3.55 MB                                |1    |4      |
+    |CGCI-BLGSP                             |2    |1      |
+    |1                                      |2    |2      |
     |4                                      |2    |3      |
-    |3.54 MB                                |2    |4      |
-    |MMRF-COMMPASS                          |3    |1      |
-    |2                                      |3    |2      |
-    |2                                      |3    |3      |
-    |4.29 MB                                |3    |4      |
-    |TCGA-OV                                |4    |1      |
+    |12.47 MB                               |2    |4      |
+    |TCGA-OV                                |3    |1      |
+    |1                                      |3    |2      |
+    |3                                      |3    |3      |
+    |627.12 kB                              |3    |4      |
+    |MMRF-COMMPASS                          |4    |1      |
     |1                                      |4    |2      |
-    |2                                      |4    |3      |
-    |563.74 kB                              |4    |4      |
+    |1                                      |4    |3      |
+    |64.47 kB                               |4    |4      |
     |TARGET-AML                             |5    |1      |
     |1                                      |5    |2      |
     |1                                      |5    |3      |

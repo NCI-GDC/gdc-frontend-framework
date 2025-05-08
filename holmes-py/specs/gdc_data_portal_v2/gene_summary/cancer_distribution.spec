@@ -79,11 +79,7 @@ tags: gdc-data-portal-v2, regression, gene-summary
     |31                                     |
     |512                                    |
     |6.0546875                              |
-    |0.9191176470588236                     |
-    |32                                     |
-    |5.88235294117647                       |
-    |4.595588235294118                      |
-    |544                                    |
+    |540                                    |
     |42                                     |
 
 * Verify that "JSON from Gene Summary Cancer Distribution" does not contain specified information
@@ -142,9 +138,9 @@ tags: gdc-data-portal-v2, regression, gene-summary
     |Plasma Cell Tumors                     |
     |Colon,Rectosigmoid junction            |
     |31 / 512 (6.05 %)                      |
-    |0 / 459 (0.00 %)                       |
-    |3 / 167 (1.80 %)                       |
-    |54 / 411 (13.14 %)                     |
+    |0 / 454 (0.00 %)                       |
+    |6 / 167 (3.59 %)                       |
+    |58 / 402 (14.43 %)                     |
     |3 / 1290 (0.23 %)                      |
     |MP2PRT-ALL                             |
     |TCGA-LGG                               |
@@ -174,7 +170,7 @@ tags: gdc-data-portal-v2, regression, gene-summary
     |TCGA-UCEC                              |
     |6.0546875                              |
     |CDDP_EAGLE-1                           |
-    |TCGA-ACC                               |
+    |TCGA-PAAD                              |
 
 ## Cancer Distribution CNV Graph: JSON
 * Expand dropdown in graph "Cancer Distribution CNV"

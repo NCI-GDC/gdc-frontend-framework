@@ -19,7 +19,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar,smoke-test
   |-----------------|---------------------|
   |Gender           |female               |
   |Vital Status     |alive                |
-* Is text "Cohort not saved" present on the page
+* Is text "Cohort not saved" present on the Cohort Bar
 * Select "Save" from the Cohort Bar
 * Name the cohort "test save 1" in the Cohort Bar section
 * Perform action and validate modal text
@@ -27,14 +27,14 @@ tags: gdc-data-portal-v2, regression, cohort-bar,smoke-test
   |-----------------|-------------------------------------------|--------------------|
   |Save             |Cohort has been saved                      |Remove Modal        |
 * "test save 1" should be the active cohort
-* Is text "Cohort not saved" not present on the page
+* Is text "Cohort not saved" not present on the Cohort Bar
 
 ## Save a cohort for the second time
 * Make the following selections from "General" tab on the Cohort Builder page
   |facet_name       |selection                    |
   |-----------------|-----------------------------|
   |Disease Type     |adenomas and adenocarcinomas |
-* Is text "Changes not saved" present on the page
+* Is text "Changes not saved" present on the Cohort Bar
 * Select "Save" from the Cohort Bar
 * Is text "You cannot undo this action." present on the page
 * Perform action and validate modal text
@@ -42,17 +42,17 @@ tags: gdc-data-portal-v2, regression, cohort-bar,smoke-test
   |-----------------|-------------------------------------------|--------------------|
   |Save             |Cohort has been saved                      |Remove Modal        |
 * "test save 1" should be the active cohort
-* Is text "Changes not saved" not present on the page
+* Is text "Changes not saved" not present on the Cohort Bar
 
 ## Switch cohorts
 * Select "Add" from the Cohort Bar
 * Is modal with text "Unsaved_Cohort has been created" present on the page and "Remove Modal"
 * Switch cohort to "test save 1" from the Cohort Bar dropdown list
 * "test save 1" should be the active cohort
-* Is text "Cohort not saved" not present on the page
+* Is text "Cohort not saved" not present on the Cohort Bar
 * Switch cohort to "Unsaved_Cohort" from the Cohort Bar dropdown list
 * "Unsaved_Cohort" should be the active cohort
-* Is text "Cohort not saved" present on the page
+* Is text "Cohort not saved" present on the Cohort Bar
 * Switch cohort to "test save 1" from the Cohort Bar dropdown list
 * "test save 1" should be the active cohort
 
@@ -74,7 +74,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar,smoke-test
   |facet_name               |selection                    |
   |-------------------------|-----------------------------|
   |Tobacco Smoking Status   |lifelong non-smoker          |
-* Is text "Cohort not saved" present on the page
+* Is text "Cohort not saved" present on the Cohort Bar
 * Select "Delete" from the Cohort Bar
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|

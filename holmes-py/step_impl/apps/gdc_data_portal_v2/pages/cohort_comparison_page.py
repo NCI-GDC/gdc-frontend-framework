@@ -24,7 +24,7 @@ class CohortComparisonLocators:
     )
 
     BUTTON_ADD_REMOVE_ANALYSIS_CARD = (
-        lambda analysis_card_name: f'[data-testid="button-enable-{analysis_card_name}-cohort-comparison"]'
+        lambda analysis_card_name: f'[data-testid="button-enable-{analysis_card_name}-cohort-comparison"] >> ..'
     )
     ANALYSIS_CARD_IDENT = (
         lambda analysis_card_name: f'[data-testid="card-{analysis_card_name}-cohort-comparison"]'

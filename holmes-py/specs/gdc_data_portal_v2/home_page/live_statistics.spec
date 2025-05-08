@@ -18,7 +18,7 @@ tags: gdc-data-portal-v2, regression, home-page
   |---------------|-------------------|
   |Projects       |86                 |
   |Primary Sites  |69                 |
-  |Cases          |44,736             |
-  |Files          |1,121,816          |
-  |Genes          |22,534             |
-  |Mutations      |2,940,240          |
+  |Cases          |45,087             |
+  |Files          |1,185,790          |
+  |Genes          |22,565             |
+  |Mutations      |3,019,319          |
