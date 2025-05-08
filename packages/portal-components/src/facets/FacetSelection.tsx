@@ -157,7 +157,9 @@ const FacetSelectionPanel = ({
 };
 
 interface FacetSelectionModalProps {
+  readonly usedFacets: readonly string[];
   readonly useAvailableCustomFacets: (
+    usedFacets: readonly string[],
     onlyFiltersWithValues: boolean,
     queryOptions?: QueryOptions,
   ) => {
@@ -171,16 +173,20 @@ interface FacetSelectionModalProps {
  * Top Level Facet Selection Panel. This component handles getting the available Facets using the supplied selector (useFacetSelector)
  * If a user picks a facet it will call handleFilterSelected
  * passing the full name of the selected Facet
+ * @param usedFacets - list of facets that have already been selected
  * @param useAvailableCustomFacets - hook to retrieve list of filter currently in use, those filters are not shown in the list
  * @param handleFilterSelected - function which handled when a filter is selected
+ * @param queryOptions - info to pass back to data fetching hooks about this facet
  */
 const FacetSelection = ({
+  usedFacets,
   useAvailableCustomFacets,
   handleFilterSelected,
   queryOptions,
 }: FacetSelectionModalProps): JSX.Element => {
   const [onlyFiltersWithValues, setOnlyFiltersWithValues] = useState(false);
   const { data: currentFacets } = useAvailableCustomFacets(
+    usedFacets,
     onlyFiltersWithValues,
     queryOptions,
   );

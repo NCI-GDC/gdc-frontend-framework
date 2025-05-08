@@ -15,7 +15,6 @@ import {
   useFacetDictionary,
   selectFacetDefinitionsByName,
   selectCohortBuilderConfigCategory,
-  selectCohortBuilderConfigFilters,
   selectUsefulFacets,
   fetchFacetsWithValues,
   FacetDefinition,
@@ -128,15 +127,14 @@ export const useCustomFacets = () => {
 };
 
 export const useAvailableCustomFacets = (
+  usedFacets: ReadonlyArray<string>,
   onlyFiltersWithValues: boolean,
   queryOptions?: FacetQueryOptions,
 ) => {
   // get the current list of cohort filters
   const { data: dictionaryData, isSuccess: isDictionaryReady } =
     useFacetDictionary();
-  const usedFacets = useCoreSelector((state) =>
-    selectCohortBuilderConfigFilters(state),
-  );
+
   const { facetType = "cases" } = queryOptions;
 
   const [availableFacets, setAvailableFacets] = useState(undefined); // Facets that are current not used

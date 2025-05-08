@@ -110,6 +110,7 @@ export const FileFacetPanel = (): JSX.Element => {
       handleClearAll={clearAllFilters}
       filtersAppliedCount={appliedFilterCount}
       customConfig={{
+        usedFacets: facetsConfig,
         handleResetCustomFilters,
         handleRemoveFilter,
         handleCustomFilterSelected: handleFilterSelected,
