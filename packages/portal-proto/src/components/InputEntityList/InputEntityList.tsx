@@ -170,7 +170,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
     ],
   );
 
-  const procesInput = useCallback(
+  const processInput = useCallback(
     (rawInput: string) => {
       const newTokens = parseTokens(rawInput);
       const [processedTokens, limitMessage] = processTokens(newTokens);
@@ -190,7 +190,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
     [processTokens, validateTokens],
   );
 
-  const processInputDebounced = useDebouncedCallback(procesInput, 1000);
+  const processInputDebounced = useDebouncedCallback(processInput, 1000);
 
   const handleInputChange = useCallback(
     (rawInput: string) => {
@@ -240,9 +240,9 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
           resetFileInputRef.current();
         }, 100);
       }
-      procesInput(contents);
+      processInput(contents);
     },
-    [procesInput],
+    [processInput],
   );
 
   const reset = () => {
