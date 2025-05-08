@@ -6,6 +6,8 @@ import time
 
 class HeaderSectionLocators:
     BUTTON_IDENT = lambda button_name: f"[data-testid='button-header-{button_name}']"
+    BUTTON_LOGIN = "[data-testid='button-header-login'] >> nth=1"
+    BUTTON_USERNAME = "[data-testid='button-header-username'] >> nth=1"
 
     # These are all locators that only appear when the respective page has fully loaded
     ANALYSIS_CENTER_WAIT_FOR_ELEMENT = "[data-testid='Clinical Data Analysis-tool']"
@@ -80,3 +82,11 @@ class HeaderSection(BasePage):
         self.wait_for_loading_spinner_table_to_detatch()
         self.wait_for_loading_spinner_to_detatch()
         self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+
+    def login_to_data_portal_if_possible(self):
+        login_locator = HeaderSectionLocators.BUTTON_LOGIN
+        if self.is_visible(login_locator):
+            self.click(login_locator)
+            wait_for_username_locator = HeaderSectionLocators.BUTTON_USERNAME
+            self.wait_until_locator_is_visible(wait_for_username_locator, 60000)
+            self.wait_for_loading_spinners_to_detach()
