@@ -17,6 +17,7 @@ import {
   useMemo,
   createContext,
   useContext,
+  useLayoutEffect,
 } from "react";
 import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
 import { LoadingOverlay } from "@mantine/core";
@@ -112,7 +113,6 @@ function VerticalTable<TData>({
 
   const ref = useRef<HTMLDivElement>();
   const { xPosition, setXPosition } = useContext(TableXPositionContext);
-  const bottomXCoor = ref?.current?.getBoundingClientRect()?.bottom;
   useEffect(() => {
     if (sortingStatus && announcementTimestamp) {
       liveRegionRef.current.textContent = sortingStatus;
@@ -169,16 +169,24 @@ function VerticalTable<TData>({
   });
 
   // Only set xPosition on initial load, not when table options change
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (
-      setXPosition &&
-      xPosition === undefined &&
-      status === "fulfilled" &&
-      table.getRowModel().rows.length > 0
+      !setXPosition ||
+      xPosition !== undefined ||
+      status !== "fulfilled" ||
+      table.getRowModel().rows.length === 0 ||
+      !ref.current
     ) {
-      setXPosition(bottomXCoor);
+      return;
     }
-  }, [setXPosition, bottomXCoor, xPosition, status, table]);
+
+    requestAnimationFrame(() => {
+      if (ref.current) {
+        const tableBottom = ref.current.getBoundingClientRect().bottom;
+        setXPosition(tableBottom);
+      }
+    });
+  }, [setXPosition, xPosition, status, table]);
 
   const handleSorting = (
     header: Header<TData, unknown>,

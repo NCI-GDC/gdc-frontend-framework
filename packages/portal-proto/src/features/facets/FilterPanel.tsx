@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef, useMemo } from "react";
+import React, { useState, useContext, useRef, useLayoutEffect } from "react";
 import { isEqual } from "lodash";
 import { Text, Modal, LoadingOverlay, Badge, Tooltip } from "@mantine/core";
 import { fieldNameToTitle } from "@gff/core";
@@ -67,13 +67,16 @@ const FilterPanel = ({
 }: FilterPanelProps) => {
   const [opened, setOpened] = useState(false);
   const ref = useRef<HTMLDivElement>();
+  const [maxHeight, setMaxHeight] = useState<number | undefined>(undefined);
 
   const facetFields = facetDefinitions.map((x) => x.field);
 
   const { xPosition } = useContext(TableXPositionContext);
-  const maxHeight = useMemo(() => {
-    const calcHeight = xPosition - ref?.current?.getBoundingClientRect().top;
-    return isNaN(calcHeight) ? undefined : calcHeight;
+
+  useLayoutEffect(() => {
+    if (!ref.current || !xPosition) return;
+    const calcHeight = xPosition - ref.current.getBoundingClientRect().top;
+    setMaxHeight(calcHeight > 0 ? calcHeight : undefined);
   }, [xPosition]);
 
   const customFacetDefinitions = customConfig
