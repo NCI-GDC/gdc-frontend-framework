@@ -134,11 +134,11 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
             }}
             error={
               inputError ? (
-                <div className="text-utility-error flex gap-2">
+                <div className="text-utility-error flex gap-2 font-content-noto">
                   <div>
                     <WarningMessageIcon size="1rem" />
                   </div>
-                  <span>Please enter a unique value</span>
+                  <span>Please enter a unique value.</span>
                 </div>
               ) : undefined
             }
