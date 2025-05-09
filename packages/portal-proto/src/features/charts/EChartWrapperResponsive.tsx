@@ -1,5 +1,5 @@
-import React, { useRef } from "react";
-import { init, EChartsOption } from "echarts";
+import React, { useEffect, useRef } from "react";
+import { init, EChartsOption, ECharts } from "echarts";
 import { useDeepCompareEffect } from "use-deep-compare";
 
 export interface EChartWrapperResponsiveProps {
@@ -17,16 +17,14 @@ const EChartWrapperResponsive: React.FC<EChartWrapperResponsiveProps> = ({
   onDimensionsChange,
 }: EChartWrapperResponsiveProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const chartInstanceRef = useRef<ECharts>(null);
 
-  useDeepCompareEffect(() => {
+  useEffect(() => {
     const node = containerRef.current;
     if (!node) return;
 
-    console.log("here");
-    // seprate this out into init and options change
     const chart = init(node, null, { renderer: "svg" });
-    chart.setOption(option);
-    chart.resize();
+    chartInstanceRef.current = chart;
 
     const handleResize = () => {
       const { width, height } = node.getBoundingClientRect();
@@ -46,7 +44,14 @@ const EChartWrapperResponsive: React.FC<EChartWrapperResponsiveProps> = ({
       observer.disconnect();
       chart.dispose();
     };
-  }, [option, onDimensionsChange]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useDeepCompareEffect(() => {
+    if (chartInstanceRef.current) {
+      chartInstanceRef.current.setOption(option);
+    }
+  }, [option]);
 
   return (
     <div
