@@ -735,7 +735,6 @@ export const useLayout = ({
       } else if (type === "mouseout") {
         setCurrentMouseOver("");
       } else if (type === "click" && isCursorAllowed) {
-        setCurrentMouseOver("");
         onClickHandler(id);
       }
     },
