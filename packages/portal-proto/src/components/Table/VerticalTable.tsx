@@ -180,7 +180,7 @@ function VerticalTable<TData>({
     ) {
       setXPosition(ref?.current?.getBoundingClientRect()?.bottom);
     }
-  }, [setXPosition, xPosition, status, table]);
+  }, [setXPosition, xPosition, status, table.getRowModel().rows.length]);
 
   const handleSorting = (
     header: Header<TData, unknown>,
