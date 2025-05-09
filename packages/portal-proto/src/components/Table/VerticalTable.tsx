@@ -109,7 +109,6 @@ function VerticalTable<TData>({
   const [announcementTimestamp, setAnnouncementTimestamp] = useState(
     Date.now(),
   );
-
   const [clickedColumnId, setClickedColumnId] = useState<string>(null);
 
   const liveRegionRef = useRef(null);
