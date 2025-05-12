@@ -170,10 +170,16 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
           className="flex mb-8"
         >
           <div className="basis-1/2">
-            <HorizontalTable tableData={idTableData} />
+            <HorizontalTable
+              customDataTestID="table-left-summary-annotation-summary"
+              tableData={idTableData}
+            />
           </div>
           <div className="basis-1/2">
-            <HorizontalTable tableData={tableData} />
+            <HorizontalTable
+              customDataTestID="table-right-summary-annotation-summary"
+              tableData={tableData}
+            />
           </div>
         </div>
         <HeaderTitle>Notes</HeaderTitle>
