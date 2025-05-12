@@ -32,6 +32,7 @@ interface PpProps {
   ssm_id?: string;
   mds3_ssm2canonicalisoform?: mds3_isoform;
   geneSearch4GDCmds3?: boolean;
+  hardcodeCnvOnly?: boolean;
 }
 
 export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
@@ -93,7 +94,9 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
       const rootElem = divRef.current as HTMLElement;
       const data = getLollipopTrack(props, filter0, callback);
       if (!data) return;
-      if (isDemoMode) data.geneSymbol = "MYC";
+      if (isDemoMode) {
+        data.geneSymbol = "MYC";
+      }
       // compare the argument to runpp to avoid unnecessary render
       if ((data || prevArg.current) && isEqual(prevArg.current, data)) return;
       prevArg.current = data;
@@ -162,12 +165,17 @@ interface Mds3Arg {
   nobox?: boolean;
   hide_dsHandles?: boolean;
   host: string;
-  genome: string;
   gene2canonicalisoform?: string;
   mds3_ssm2canonicalisoform?: mds3_isoform;
-  geneSearch4GDCmds3?: boolean;
+  geneSearch4GDCmds3?:
+    | boolean
+    | {
+        hardcodeCnvOnly?: boolean;
+      };
   geneSymbol?: string;
-  tracks: Track[];
+  tracks?: Track[];
+  filter0?: FilterSet;
+  allow2selectSamples?: SelectSamples;
 }
 
 interface Track {
@@ -175,6 +183,7 @@ interface Track {
   dslabel: string;
   filter0: FilterSet;
   allow2selectSamples?: SelectSamples;
+  hardcodeCnvOnly?: boolean;
 }
 
 interface mds3_isoform {
@@ -191,25 +200,22 @@ function getLollipopTrack(
     // host in gdc is just a relative url path,
     // using the same domain as the GDC portal where PP is embedded
     host: props.basepath || (basepath as string),
-    genome: "hg38", // hardcoded for gdc
-    tracks: [
-      {
-        type: "mds3",
-        dslabel: "GDC",
-        filter0,
-        // allow2selectSamples: { buttons },
-        allow2selectSamples: {
-          buttonText: "Create Cohort",
-          attributes: [
-            { from: "sample_id", to: "cases.case_id", convert: true },
-          ],
-          callback,
-        },
-      },
-    ],
+    geneSearch4GDCmds3: {
+      hardcodeCnvOnly: props.hardcodeCnvOnly,
+    },
+    filter0,
+    allow2selectSamples: {
+      buttonText: "Create Cohort",
+      attributes: [{ from: "sample_id", to: "cases.case_id", convert: true }],
+      callback,
+    },
   };
 
-  if (props.geneId) {
+  if (props.hardcodeCnvOnly) {
+    arg.geneSearch4GDCmds3 = {
+      hardcodeCnvOnly: true,
+    };
+  } else if (props.geneId) {
     arg.gene2canonicalisoform = props.geneId;
   } else if (props.ssm_id) {
     arg.mds3_ssm2canonicalisoform = {
