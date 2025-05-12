@@ -23,7 +23,7 @@ const NumericRangePanel: React.FC<NumericFacetProps> = ({
   }, [filter]);
 
   return (
-    <div className="px-2 mb-2">
+    <div className="px-2 my-2">
       <FromTo
         field={field}
         minimum={adjMinimum}

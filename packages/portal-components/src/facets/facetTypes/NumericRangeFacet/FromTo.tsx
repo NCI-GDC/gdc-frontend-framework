@@ -274,7 +274,7 @@ const FromTo: React.FC<FromToProps> = ({
             color="accent"
           />
         )}
-        <div className="flex flex-col grow my-1 text-base-contrast-max bg-base-lightest rounded-md p-2">
+        <div className="flex flex-col grow mb-1 text-base-contrast-max bg-base-lightest rounded-md p-2">
           <fieldset className="flex flex-col gap-y-1 text-sm">
             <legend className="sr-only">Numeric from/to filters</legend>
             <div className="flex gap-2 justify-end font-content">
