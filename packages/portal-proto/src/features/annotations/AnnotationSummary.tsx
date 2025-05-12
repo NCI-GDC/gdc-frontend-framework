@@ -51,6 +51,7 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
       if (annotation?.entity_type === "case") {
         return (
           <Link
+            data-testid="link-entity-annotation-summary"
             href={`/cases/${annotation?.entity_id}`}
             className="underline text-utility-link"
           >
@@ -62,6 +63,7 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
         if (entityType === "File") {
           return (
             <Link
+              data-testid="link-entity-annotation-summary"
               href={`/files/${annotation?.entity_id}`}
               className="underline text-utility-link"
             >
@@ -71,6 +73,7 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
         } else {
           return (
             <Link
+              data-testid="link-entity-annotation-summary"
               href={`/cases/${annotation?.case_id}?bioId=${annotation?.entity_id}`}
               className="underline text-utility-link"
             >
@@ -100,6 +103,7 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
               annotation.case_id
             ) : (
               <Link
+                data-testid="link-case-annotation-summary"
                 href={`/cases/${annotation.case_id}`}
                 className="underline text-utility-link"
                 key={`case_link_${annotation.case_id}`}
@@ -127,6 +131,7 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
         values: [
           annotation?.project?.project_id ? (
             <Link
+              data-testid="link-project-annotation-summary"
               href={`/projects/${annotation?.project?.project_id}`}
               className="underline text-utility-link"
               key={`project_link_${annotation?.project?.project_id}`}
@@ -170,10 +175,16 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
           className="flex mb-8"
         >
           <div className="basis-1/2">
-            <HorizontalTable tableData={idTableData} />
+            <HorizontalTable
+              customDataTestID="table-left-summary-annotation-summary"
+              tableData={idTableData}
+            />
           </div>
           <div className="basis-1/2">
-            <HorizontalTable tableData={tableData} />
+            <HorizontalTable
+              customDataTestID="table-right-summary-annotation-summary"
+              tableData={tableData}
+            />
           </div>
         </div>
         <HeaderTitle>Notes</HeaderTitle>
