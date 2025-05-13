@@ -21,13 +21,7 @@ const CohortCountButton: React.FC<CountButtonProp> = ({
 
   const count = data?.[countName] ?? 0;
   const isLoading = status !== "fulfilled";
-
-  let displayLabel = count === 1 ? singularLabel : `${singularLabel}s`;
-  if (capitalize) {
-    displayLabel = displayLabel.toUpperCase();
-  } else {
-    displayLabel = capitalizeFirstLetter(displayLabel);
-  }
+  const displayLabel = count === 1 ? singularLabel : `${singularLabel}s`;
 
   const countClassName = bold ? "font-bold pr-1" : "pr-1";
   const labelClassName = bold ? "font-medium" : "";
@@ -45,12 +39,18 @@ const CohortCountButton: React.FC<CountButtonProp> = ({
             size="xs"
             className="mr-2"
           />{" "}
-          {displayLabel}
+          {capitalizeFirstLetter(displayLabel)}
         </>
       ) : (
         <>
           <span className={countClassName}>{count.toLocaleString()}</span>{" "}
-          <span className={labelClassName}>{displayLabel}</span>
+          <span
+            className={
+              capitalize ? `${labelClassName} uppercase` : labelClassName
+            }
+          >
+            {capitalizeFirstLetter(displayLabel)}
+          </span>
         </>
       )}
     </div>
