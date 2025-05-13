@@ -1,4 +1,4 @@
-# Annotation Summary - Validate Tables
+# Annotation Summary Page - Validate Tables
 Date Created        : 05/12/2025
 Version			    : 1.0
 Owner		        : GDC QA
