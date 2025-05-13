@@ -17,6 +17,7 @@ import {
   useMemo,
   createContext,
   useContext,
+  useLayoutEffect,
 } from "react";
 import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
 import { LoadingOverlay } from "@mantine/core";
@@ -104,15 +105,16 @@ function VerticalTable<TData>({
   customBreakpoint,
 }: TableProps<TData>): JSX.Element {
   const [tableData, setTableData] = useState(data);
-  const liveRegionRef = useRef(null);
   const [sortingStatus, setSortingStatus] = useState("");
   const [announcementTimestamp, setAnnouncementTimestamp] = useState(
     Date.now(),
   );
+  const [clickedColumnId, setClickedColumnId] = useState<string>(null);
 
+  const liveRegionRef = useRef(null);
   const ref = useRef<HTMLDivElement>();
   const { xPosition, setXPosition } = useContext(TableXPositionContext);
-  const bottomXCoor = ref?.current?.getBoundingClientRect()?.bottom;
+
   useEffect(() => {
     if (sortingStatus && announcementTimestamp) {
       liveRegionRef.current.textContent = sortingStatus;
@@ -146,7 +148,6 @@ function VerticalTable<TData>({
   const coreRowModel = useMemo(() => getCoreRowModel<TData>(), []);
   const sortedRowModel = useMemo(() => getSortedRowModel<TData>(), []);
 
-  const [clickedColumnId, setClickedColumnId] = useState<string>(null);
   const table = useReactTable({
     columns,
     data: tableData,
@@ -169,16 +170,17 @@ function VerticalTable<TData>({
   });
 
   // Only set xPosition on initial load, not when table options change
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (
       setXPosition &&
       xPosition === undefined &&
       status === "fulfilled" &&
-      table.getRowModel().rows.length > 0
+      table.getRowModel().rows.length > 0 &&
+      ref.current
     ) {
-      setXPosition(bottomXCoor);
+      setXPosition(ref?.current?.getBoundingClientRect()?.bottom);
     }
-  }, [setXPosition, bottomXCoor, xPosition, status, table]);
+  }, [setXPosition, xPosition, status, table.getRowModel().rows.length]);
 
   const handleSorting = (
     header: Header<TData, unknown>,
