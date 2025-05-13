@@ -17,12 +17,18 @@ import OncoMatrixIcon from "public/user-flow/icons/apps/OncoMatrix.svg";
 import GeneExpressionIcon from "public/user-flow/icons/apps/GeneExpression.svg";
 import ScRNASeqIcon from "public/user-flow/icons/apps/scRNASeq.svg";
 import { useLazyScRNAseqCaseCountQuery } from "../../proteinpaint/scRNAseqCaseCount";
+import { useLazyCnvSegmentCaseCountQuery } from "../../proteinpaint/CnvSegmentCaseCount";
 import { CountHookRegistry } from "@gff/core";
 import { AppRegistrationEntry } from "@gff/portal-components";
 
 CountHookRegistry.getInstance().registerHook(
   "scRNAseqCaseCount",
   useLazyScRNAseqCaseCountQuery,
+);
+
+CountHookRegistry.getInstance().registerHook(
+  "CnvSegmentCaseCount",
+  useLazyCnvSegmentCaseCountQuery,
 );
 
 export const COHORTS = [
@@ -281,10 +287,9 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
     hasDemo: true,
     description: "",
     id: "CnvSegmentApp",
-    countsField: "ssmCaseCount",
-    optimizeRules: ["available data = ssm"],
+    countsField: "CnvSegmentCaseCount",
     noDataTooltip:
-      "Current cohort does not have SSM data available for visualization.",
+      "Current cohort does not have CNV segment data available for visualization.",
   },
 ];
 
