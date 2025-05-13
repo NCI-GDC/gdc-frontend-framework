@@ -252,8 +252,9 @@ const ContextBar = ({
         <CohortCountButton
           customDataTestID="button-cases-cohort-bar"
           countName="caseCount"
-          label="CASES"
+          singularLabel="case"
           bold
+          capitalize
         />
       }
       ExtraControl={
@@ -303,7 +304,12 @@ const ContextBar = ({
                 },
               ]}
               TargetButtonChildren={
-                <CohortCountButton countName="fileCount" label="Files" />
+                <CohortCountButton countName="fileCount" singularLabel="file" />
+              }
+              targetButtonTooltip={
+                cohortCounts?.data?.fileCount === 0
+                  ? "No files in current cohort"
+                  : undefined
               }
               LeftSection={
                 <DownloadIcon
@@ -312,7 +318,10 @@ const ContextBar = ({
                   className="hidden md:block"
                 />
               }
-              targetButtonDisabled={cohortCounts.status !== "fulfilled"}
+              targetButtonDisabled={
+                cohortCounts.status !== "fulfilled" ||
+                cohortCounts?.data?.fileCount === 0
+              }
             />
 
             <DropdownWithIcon

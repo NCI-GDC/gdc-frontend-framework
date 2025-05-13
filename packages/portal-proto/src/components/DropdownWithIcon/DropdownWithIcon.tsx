@@ -56,9 +56,9 @@ interface DropdownWithIconProps {
   customDataTestId?: string;
 
   /**
-    tooltip
+    target button's tooltip
    */
-  tooltip?: string;
+  targetButtonTooltip?: string;
 
   /**
    * aria-label for the button
@@ -86,7 +86,7 @@ export const DropdownWithIcon = ({
   customPosition,
   fullHeight,
   customDataTestId = undefined,
-  tooltip = undefined,
+  targetButtonTooltip = undefined,
   buttonAriaLabel = undefined,
 }: DropdownWithIconProps): JSX.Element => {
   const targetRef = useRef<HTMLButtonElement>();
@@ -98,31 +98,23 @@ export const DropdownWithIcon = ({
       zIndex={9000} //dropdown should be on top of everything when open
     >
       <Menu.Target>
-        <Button
-          variant="outline"
-          color="primary"
-          className={`bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary ${focusStyles}`}
-          {...(LeftSection && { leftSection: LeftSection })}
-          rightSection={RightSection}
-          disabled={targetButtonDisabled}
-          classNames={{
-            root: `${fullHeight ? "h-full" : undefined}`,
-          }}
-          ref={targetRef}
-          aria-label={buttonAriaLabel}
-        >
-          <div>
-            {tooltip?.length && !targetButtonDisabled ? (
-              <div>
-                <Tooltip label={tooltip}>
-                  <div>{TargetButtonChildren}</div>
-                </Tooltip>
-              </div>
-            ) : (
-              <div>{TargetButtonChildren}</div>
-            )}
-          </div>
-        </Button>
+        <Tooltip label={targetButtonTooltip} disabled={!targetButtonTooltip}>
+          <Button
+            variant="outline"
+            color="primary"
+            className={`flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary ${focusStyles}`}
+            {...(LeftSection && { leftSection: LeftSection })}
+            rightSection={RightSection}
+            disabled={targetButtonDisabled}
+            classNames={{
+              root: `${fullHeight ? "h-full" : undefined}`,
+            }}
+            ref={targetRef}
+            aria-label={buttonAriaLabel}
+          >
+            {TargetButtonChildren}
+          </Button>
+        </Tooltip>
       </Menu.Target>
       <Menu.Dropdown
         data-testid="dropdown-menu-options"

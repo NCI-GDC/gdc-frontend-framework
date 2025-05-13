@@ -2,15 +2,11 @@ import { Button, Tooltip } from "@mantine/core";
 import { forwardRef } from "react";
 import tw from "tailwind-styled-components";
 import MicroscopeIcon from "public/user-flow/icons/Microscope.svg";
-import DisabledMicroscopeIcon from "public/user-flow/icons/DisabledMicroscope.svg";
 
 const SlideCountsIcon = tw.div<{
   $count?: number;
 }>`
-  ${(p: { $count?: number }) =>
-    p.$count !== undefined && p.$count > 0
-      ? "bg-accent-vivid"
-      : "bg-base-lighter"}
+    bg-accent-vivid
     text-base-max
     inline-flex
     items-center
@@ -33,13 +29,11 @@ export const ImageSlideCount = forwardRef<
     <Tooltip label="No slide images to view" disabled={slideCount !== 0}>
       <Button
         data-testid="button-view-slide-images"
-        leftSection={
-          slideCount === 0 ? <DisabledMicroscopeIcon /> : <MicroscopeIcon />
-        }
+        leftSection={<MicroscopeIcon />}
         size="compact-xs"
         disabled={slideCount === 0}
         variant="outline"
-        className="bg-base-max border-base-lighter"
+        className="border-base-lighter bg-base-max text-primary disabled:border disabled:bg-base-lightest disabled:opacity-50 disabled:border-primary"
         classNames={{
           section: "ml-0 mr-2",
         }}
