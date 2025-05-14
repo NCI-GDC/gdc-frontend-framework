@@ -38,7 +38,7 @@ const LoginButtonOrUserDropdown = () => {
     if (userInfo?.status === 401 && prevUserStatus === 200) {
       dispatch(showModal({ modal: Modals.SessionExpireModal }));
     }
-  }, [prevUserStatus, userInfo?.status]);
+  }, [prevUserStatus, userInfo?.status, dispatch]);
 
   useDeepCompareEffect(() => {
     if (userInfo?.data?.username) {
