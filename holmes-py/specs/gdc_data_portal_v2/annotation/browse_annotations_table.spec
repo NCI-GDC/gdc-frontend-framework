@@ -6,7 +6,8 @@ Description		    : Validate Main Table in Browse Annotations
 Test-Case           : PEAR-2420
 
 tags: gdc-data-portal-v2, regression, annotations
-## Navigate to Table View
+
+## Navigate to Browse Annotations
 * On GDC Data Portal V2 app
 * Navigate to "Browse Annotations" from "Header" "section"
 
@@ -48,6 +49,7 @@ tags: gdc-data-portal-v2, regression, annotations
     |---------------------------------------|-----|-------|
     |aa3127f7-b51c-5969-b081-935d6f1a834b   |1    |1      |
 * Verify the table "Annotations" has a total of "1" items
+* Verify the page is showing "Showing 1 - 1 of 1 annotation"
 * Verify the table "Annotations" body text is correct
     |expected_text                          |row  |column |
     |---------------------------------------|-----|-------|

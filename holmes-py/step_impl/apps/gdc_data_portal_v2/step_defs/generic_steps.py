@@ -1090,6 +1090,12 @@ def flip_switch_filter_card(filter_card_name:str):
     time.sleep(1)
     APP.shared.wait_for_loading_spinners_to_detach()
 
+@step("Search in a filter card <table>")
+def search_in_filter_card(table):
+    for k, v in enumerate(table):
+        APP.shared.type_in_filter_card_search_text_area(v[0], v[1], v[2])
+        time.sleep(0.1)
+
 @step("Expand or contract a filter <table>")
 def click_show_more_or_show_less(table):
     for k, v in enumerate(table):

@@ -156,6 +156,9 @@ class GenericLocators:
     FILTER_GROUP_SHOW_MORE_LESS_IDENT = (
         lambda group_name, more_or_less: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> button[data-testid="{more_or_less}"]'
     )
+    FILTER_GROUP_TEXT_AREA_IDENT = (
+        lambda group_name, textbox_id: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> [data-testid="textbox-{textbox_id}"]'
+    )
 
     SHOWING_NUMBER_OF_ITEMS_IN_TABLE = lambda table_specified: f'[data-testid="table-{table_specified}"] >> [data-testid="text-showing-count"]'
     SHOWING_NUMBER_OF_ITEMS = '[data-testid="text-showing-count"]'
@@ -838,6 +841,14 @@ class BasePage:
             filter_group_name, label
         )
         self.click(locator)
+
+    def type_in_filter_card_search_text_area(self, facet_group_name, textbox_id, text):
+        """Send keys in the search textbox area"""
+        textbox_id = self.normalize_button_identifier(textbox_id)
+        locator = GenericLocators.FILTER_GROUP_TEXT_AREA_IDENT(
+            facet_group_name, textbox_id
+        )
+        self.send_keys(locator, text)
 
     def select_table_by_row_column(self, row, column):
         """
