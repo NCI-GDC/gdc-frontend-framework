@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { Button, Menu } from "@mantine/core";
 import saveAs from "file-saver";
 import urlJoin from "url-join";
@@ -12,6 +12,7 @@ import {
   setIsLoggedIn,
   selectCohortIsLoggedIn,
   useCoreSelector,
+  usePrevious,
 } from "@gff/core";
 import { LoginButton } from "@/components/LoginButton";
 import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
@@ -25,11 +26,19 @@ import {
 const LoginButtonOrUserDropdown = () => {
   const dispatch = useCoreDispatch();
   const { data: userInfo } = useFetchUserDetailsQuery();
+  const prevUserStatus = usePrevious(userInfo?.status);
   const userDropdownRef = useRef<HTMLButtonElement>();
   const [fetchToken] = useLazyFetchTokenQuery({ refetchOnFocus: false });
   const cohortIsLoggedIn = useCoreSelector((state) =>
     selectCohortIsLoggedIn(state),
   );
+
+  useEffect(() => {
+    // User's session has expired
+    if (userInfo?.status === 401 && prevUserStatus === 200) {
+      dispatch(showModal({ modal: Modals.SessionExpireModal }));
+    }
+  }, [prevUserStatus, userInfo?.status]);
 
   useDeepCompareEffect(() => {
     if (userInfo?.data?.username) {
