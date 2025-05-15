@@ -1,21 +1,7 @@
-import { Button, Tooltip } from "@mantine/core";
+import { Badge, Button, Tooltip } from "@mantine/core";
 import { forwardRef } from "react";
-import tw from "tailwind-styled-components";
 import MicroscopeIcon from "public/user-flow/icons/Microscope.svg";
 
-const SlideCountsIcon = tw.div<{
-  $count?: number;
-}>`
-    bg-accent-vivid
-    text-base-max
-    inline-flex
-    items-center
-    w-4
-    h-4
-    justify-center
-    font-heading
-    rounded-sm
-  `;
 interface ImageSlideCountProps {
   slideCount: number;
   onClick?: () => void;
@@ -38,9 +24,15 @@ export const ImageSlideCount = forwardRef<
           section: "ml-0 mr-2",
         }}
         rightSection={
-          <SlideCountsIcon $count={slideCount}>
+          <Badge
+            variant="filled"
+            className={`px-1 bg-accent-vivid h-4 ${
+              slideCount === 0 ? "cursor-not-allowed" : "cursor-pointer"
+            }`}
+            radius="xs"
+          >
             {slideCount === 0 ? "--" : slideCount}
-          </SlideCountsIcon>
+          </Badge>
         }
         ref={ref}
         onClick={onClick}
