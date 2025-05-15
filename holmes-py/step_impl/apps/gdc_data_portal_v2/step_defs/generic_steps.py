@@ -173,6 +173,7 @@ def close_the_modal():
 @step("Download <file> from <source>")
 def download_file_at_file_table(file: str, source: str):
     sources = {
+        "Browse Annotations": APP.browse_annotations.click_annotation_download_button,
         "Cart Items": APP.shared.click_button_data_testid_normalize,
         "Cart Header": APP.shared.click_button_with_displayed_text_name,
         "Cart Header Dropdown": APP.shared.click_text_option_from_dropdown_menu,
