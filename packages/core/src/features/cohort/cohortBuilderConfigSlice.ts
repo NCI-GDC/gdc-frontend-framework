@@ -19,6 +19,7 @@ type CohortBuilderCategory =
   | "disease_specific_classifications"
   | "treatment"
   | "exposure"
+  | "other_clinical_attributes"
   | "biospecimen"
   | "available_data"
   | "custom";
