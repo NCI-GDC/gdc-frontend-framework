@@ -21,7 +21,7 @@ export const ImageSlideCount = forwardRef<
         variant="outline"
         className="border-base-lighter bg-base-max text-primary disabled:border disabled:bg-base-lightest disabled:opacity-50 disabled:border-primary"
         classNames={{
-          section: "ml-0 mr-2",
+          section: "ml-0",
         }}
         rightSection={
           <Badge
