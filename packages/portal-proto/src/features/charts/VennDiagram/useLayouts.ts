@@ -1,9 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
-import {
-  useDeepCompareCallback,
-  useDeepCompareEffect,
-  useDeepCompareMemo,
-} from "use-deep-compare";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { EChartsOption, ElementEvent, GraphicComponentOption } from "echarts";
 import { GraphicComponentGroupOption, VennDiagramProps } from "./types";
 
@@ -728,7 +723,7 @@ export const useLayout = ({
     [twoCircles, scaleFactor, xOffset, yOffset],
   );
 
-  const handleEvent = useDeepCompareCallback(
+  const handleEvent = useCallback(
     (event: any, type: "mouseover" | "mouseout" | "click") => {
       const eventId = String(event.target.id);
       const id = eventId.includes(".") ? eventId.split(".")[0] : eventId;
@@ -737,43 +732,13 @@ export const useLayout = ({
 
       if (type === "mouseover") {
         setCurrentMouseOver(id);
-        setChartLayout(
-          getLayout(
-            twoCircles,
-            highlightedIndices,
-            scaleFactor,
-            id,
-            isCursorAllowed,
-            xOffset,
-            yOffset,
-          ),
-        );
       } else if (type === "mouseout") {
-        setChartLayout(
-          getLayout(
-            twoCircles,
-            highlightedIndices,
-            scaleFactor,
-            null,
-            true,
-            xOffset,
-            yOffset,
-          ),
-        );
         setCurrentMouseOver("");
       } else if (type === "click" && isCursorAllowed) {
         onClickHandler(id);
       }
     },
-    [
-      highlightedIndices,
-      twoCircles,
-      chartData,
-      onClickHandler,
-      scaleFactor,
-      xOffset,
-      yOffset,
-    ],
+    [chartData, onClickHandler],
   );
 
   const addEvents = useCallback(
@@ -840,7 +805,7 @@ export const useLayout = ({
     [handleEvent],
   );
 
-  const valueTexts = useDeepCompareMemo(
+  const valueTexts = useMemo(
     () =>
       chartData.map(({ key, value }) => ({
         type: "text",
@@ -881,16 +846,17 @@ export const useLayout = ({
     ],
   );
 
-  useDeepCompareEffect(() => {
+  useEffect(() => {
+    const isCursorAllowed = currentMouseOver
+      ? chartData.find((d) => d.key === currentMouseOver)?.value !== 0
+      : true;
     setChartLayout(
       getLayout(
         twoCircles,
         highlightedIndices,
         scaleFactor,
         currentMouseOver || null,
-        currentMouseOver
-          ? chartData.find((d) => d.key === currentMouseOver)?.value !== 0
-          : true,
+        isCursorAllowed,
         xOffset,
         yOffset,
       ),
@@ -905,7 +871,7 @@ export const useLayout = ({
     chartData,
   ]);
 
-  useDeepCompareEffect(() => {
+  useEffect(() => {
     const fullChartOption = {
       ...chartConfig,
       aria: {
@@ -940,19 +906,7 @@ export const useLayout = ({
       },
     };
     setOption(fullChartOption);
-  }, [
-    chartLayout,
-    addEvents,
-    highlightedIndices,
-    interactable,
-    labels,
-    outerLabelLayout,
-    chartData,
-    labelLayout,
-    ariaLabel,
-    currentMouseOver,
-    valueTexts,
-  ]);
+  }, [chartLayout, addEvents, labels, outerLabelLayout, ariaLabel, valueTexts]);
 
   return option;
 };

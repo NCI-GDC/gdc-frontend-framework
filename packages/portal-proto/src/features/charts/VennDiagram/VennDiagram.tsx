@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useLayout } from "./useLayouts";
 import { VennDiagramProps } from "./types";
 import EChartWrapperResponsive from "../EChartWrapperResponsive";
@@ -12,9 +12,10 @@ const VennDiagram: React.FC<VennDiagramProps> = ({
 }: VennDiagramProps) => {
   const [dimensions, setDimensions] = useState({ width: 400, height: 400 });
 
-  const highlightedIndices = chartData
-    .filter((d) => d?.highlighted)
-    .map((d) => d.key);
+  const highlightedIndices = useMemo(
+    () => chartData.filter((d) => d?.highlighted).map((d) => d.key),
+    [chartData],
+  );
 
   const option = useLayout({
     chartData,
