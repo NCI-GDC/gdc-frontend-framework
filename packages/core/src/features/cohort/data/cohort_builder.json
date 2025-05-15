@@ -151,8 +151,8 @@
         "indexType": "explore"
       }
     },
-    "molecular_filters": {
-      "label": "Molecular Filters",
+    "genomic_filters": {
+      "label": "Genomic Filters",
       "facets": ["genes.upload.gene_id", "ssms.upload.ssm_id"],
       "queryOptions": {
         "docType": "cases",
