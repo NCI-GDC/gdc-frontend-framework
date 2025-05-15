@@ -1,13 +1,4 @@
-interface Match {
-  readonly field: string;
-  readonly value: string;
-}
-
-export interface MatchResults {
-  readonly submittedIdentifiers: Match[];
-  readonly mappedTo: Match[];
-  readonly output: Match[];
-}
+import { MatchResults } from "./type";
 
 /**
   Parses through the API response to figure out what fields our matched values correspond to
@@ -152,3 +143,16 @@ const findAllIdentifiers = (
     }
   });
 };
+
+export const MATCH_LIMIT = 50000;
+
+export const REACHED_LIMIT_WARNING =
+  "Your data contains the maximum of 50,000 identifiers. Only 50,000 identifiers can be processed.";
+export const EXCEED_LIMIT_ERROR =
+  "Your data exceeds the maximum of 50,000 identifiers. Only the first 50,000 will be processed.";
+
+export const parseTokens = (input: string) =>
+  input
+    .trim()
+    .split(/[\s,]+/)
+    .filter((t) => t !== "");

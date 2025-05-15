@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { Tabs, Badge, Collapse } from "@mantine/core";
 import { createKeyboardAccessibleFunction } from "src/utils";
 import { StyledTab } from "@/components/StyledComponents/Tabs";
-import { MatchResults } from "./utils";
 import MatchedTable from "./MatchedTable";
 import UnmatchedTable from "./UnmatchedTable";
 import { CollapseCircleIcon, ExpandCircleIcon } from "@/utils/icons";
+import { MatchResults } from "./type";
 
 interface MatchTablesProps {
   readonly matched: MatchResults[];
