@@ -182,6 +182,16 @@ mkcert localhost
 local-ssl-proxy --config path/to/ssl-proxy.json --cert localhost.pem --key localhost-key.pem
 ```
 
+### Mock server
+
+A mock server can be used to mock responses from outside clients. This can be useful for testing auth related issues. To set up your dev
+site to use the mock server:
+
+1. Create a certificate for your mock server, detailed here: https://www.mocks-server.org/docs/guides/https-protocol/#creating-a-self-signed-certificate. Use `mock-server-key.pem` and `mock-server-cert.pem` for names.
+2. Uncomment `https://localhost:3100` in next.config.js
+3. Set your dev site to point at the mock server for auth calls with `export NEXT_PUBLIC_GDC_AUTH=https://localhost:3100` and restart the dev site
+4. Start the mock server with `npm run mocks`. In the mock server process, you can select `Use route variant` to toggle between different responses.
+
 ## Version
 
 Update the versions of all workspaces at the same time. (Replace 2.13.0 with the new version to set)

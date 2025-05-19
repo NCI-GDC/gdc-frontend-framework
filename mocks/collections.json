@@ -1,0 +1,6 @@
+[
+  {
+    "id": "user",
+    "routes": ["user:success"]
+  }
+]
