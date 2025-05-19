@@ -18,6 +18,7 @@ class HeaderSectionLocators:
     REPOSITORY_ADDITIONAL_WAIT_FOR_ELEMENT = "[data-testid='text-showing-count']"
     HOME_WAIT_FOR_ELEMENT = "[data-testid='text-cases-gdc-count']"
     MANAGE_SETS_WAIT_FOR_ELEMENT = "[data-testid='button-create-set']"
+    BROWSE_ANNOTATIONS_WAIT_FOR_ELEMENT = "[data-testid='table-annotations']"
 
 
 class HeaderSection(BasePage):
@@ -75,6 +76,8 @@ class HeaderSection(BasePage):
             # We are not guaranteed to see any one thing on the cart page, so instead
             # we will pause for a moment.
             time.sleep(1)
+        elif page_to_load == "browse-annotations":
+            self.wait_for_selector(HeaderSectionLocators.BROWSE_ANNOTATIONS_WAIT_FOR_ELEMENT)
 
         self.wait_for_loading_spinner_table_to_detatch()
         self.wait_for_loading_spinner_to_detatch()
