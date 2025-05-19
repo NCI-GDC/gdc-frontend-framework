@@ -283,7 +283,7 @@ const FromTo: React.FC<FromToProps> = ({
               </div>
               <div
                 className={`flex flex-col ${
-                  onSelectRadio ? "min-[1800px]:flex-row" : "lg:flex-row"
+                  onSelectRadio ? "min-[1800px]:flex-row" : "xl:flex-row"
                 } flex-nowrap gap-2 grow`}
               >
                 <SegmentedControl
@@ -328,7 +328,7 @@ const FromTo: React.FC<FromToProps> = ({
               </div>
               <div
                 className={`flex flex-col ${
-                  onSelectRadio ? "min-[1800px]:flex-row" : "lg:flex-row"
+                  onSelectRadio ? "min-[1800px]:flex-row" : "xl:flex-row"
                 } flex-nowrap gap-2 grow`}
               >
                 <SegmentedControl
