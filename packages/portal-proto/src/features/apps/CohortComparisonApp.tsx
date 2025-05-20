@@ -88,7 +88,7 @@ const CohortComparisonApp: React.FC = () => {
   const comparisonCohortObj: Cohort = useCoreSelector((state) =>
     selectCohortByIdOrName(state, comparisonCohort?.id, comparisonCohort?.name),
   );
-  const comparisonCohortFilter = comparisonCohortObj.filters;
+  const comparisonCohortFilter = comparisonCohortObj?.filters;
   /* Comparison Cohort Details End */
 
   const cohorts = isDemoMode
