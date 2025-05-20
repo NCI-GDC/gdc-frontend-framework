@@ -221,6 +221,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
             position="bottom-start"
             offset={1}
             transitionProps={{ duration: 0 }}
+            closeOnItemClick={false}
           >
             <Menu.Target>
               <Tooltip label="Download Survival Plot data or image">

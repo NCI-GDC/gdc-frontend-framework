@@ -134,7 +134,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
         data-testid="cart-header"
       >
         <div className="flex flex-wrap gap-2">
-          <Menu width="target">
+          <Menu width="target" closeOnItemClick={false}>
             <Menu.Target>
               <Button
                 data-testid="button-download-cart"

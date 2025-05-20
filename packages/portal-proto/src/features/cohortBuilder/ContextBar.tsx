@@ -200,7 +200,7 @@ const ContextBar = ({
   };
 
   const handleBiospeciemenTSVDownload = () => {
-    setBiospecimenDownloadActive(true);
+    setBiospecimenDownloadActive(true); // separate these out into tsv and json
     download({
       endpoint: "biospecimen_tar",
       method: "POST",
@@ -313,6 +313,7 @@ const ContextBar = ({
                 />
               }
               targetButtonDisabled={cohortCounts.status !== "fulfilled"}
+              closeOnItemClick={false}
             />
 
             <DropdownWithIcon
@@ -369,19 +370,18 @@ const ContextBar = ({
                       icon: <DownloadIcon aria-label="Download" />,
                     },
                   ]}
-                  TargetButtonChildren={
-                    biospecimenDownloadActive ? "Processing" : "Biospecimen"
-                  }
+                  TargetButtonChildren="Biospecimen"
                   LeftSection={
                     <span className="hidden md:block">
                       {biospecimenDownloadActive ? (
-                        <Loader size={20} />
+                        <Loader size={20} /> // get rid of this from and use it in menu item // use separate for JSON and TSV
                       ) : (
                         <DownloadIcon size="1rem" aria-hidden="true" />
                       )}
                     </span>
                   }
                   targetButtonDisabled={cohortCounts.status !== "fulfilled"}
+                  closeOnItemClick={false}
                 />
 
                 <DropdownWithIcon
@@ -398,12 +398,10 @@ const ContextBar = ({
                       icon: <DownloadIcon aria-label="Download" />,
                     },
                   ]}
-                  TargetButtonChildren={
-                    clinicalDownloadActive ? "Processing" : "Clinical"
-                  }
+                  TargetButtonChildren="Clinical"
                   LeftSection={
                     <span className="hidden md:block">
-                      {biospecimenDownloadActive ? (
+                      {clinicalDownloadActive ? ( // get rid of this from and use it in menu item // use separate for JSON and TSV
                         <Loader size={20} />
                       ) : (
                         <DownloadIcon size="1rem" aria-hidden="true" />
@@ -411,6 +409,7 @@ const ContextBar = ({
                     </span>
                   }
                   targetButtonDisabled={cohortCounts.status !== "fulfilled"}
+                  closeOnItemClick={false}
                 />
               </>
             )}

@@ -64,6 +64,10 @@ interface DropdownWithIconProps {
    * aria-label for the button
    */
   buttonAriaLabel?: string;
+  /**
+   * Determines whether Menu should be closed when item is clicked
+   */
+  closeOnItemClick?: boolean;
 }
 
 export const DropdownWithIcon = ({
@@ -88,6 +92,7 @@ export const DropdownWithIcon = ({
   customDataTestId = undefined,
   tooltip = undefined,
   buttonAriaLabel = undefined,
+  closeOnItemClick = true,
 }: DropdownWithIconProps): JSX.Element => {
   const targetRef = useRef<HTMLButtonElement>();
   return (
@@ -96,6 +101,7 @@ export const DropdownWithIcon = ({
       {...(customPosition && { position: customPosition })}
       data-testid={customDataTestId ?? "menu-elem"}
       zIndex={9000} //dropdown should be on top of everything when open
+      closeOnItemClick={closeOnItemClick} // probably send this as a
     >
       <Menu.Target>
         <Button

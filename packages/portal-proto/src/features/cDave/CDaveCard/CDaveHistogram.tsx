@@ -114,7 +114,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                 />
               </Group>
             </Radio.Group>
-            <Menu>
+            <Menu closeOnItemClick={false}>
               <Menu.Target>
                 <Tooltip
                   label="Download image or data"
@@ -128,11 +128,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                     className="bg-base-max border-primary"
                     aria-label="Download image or data"
                   >
-                    {downloadInProgress ? (
-                      <Loader size={16} />
-                    ) : (
-                      <DownloadIcon className="text-primary" aria-hidden />
-                    )}
+                    <DownloadIcon className="text-primary" aria-hidden />
                   </ActionIcon>
                 </Tooltip>
               </Menu.Target>
@@ -147,6 +143,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                     );
                     setDownloadInProgress(false);
                   }}
+                  leftSection={downloadInProgress ? <Loader size={16} /> : null} // need to separate these variables
                 >
                   SVG
                 </Menu.Item>
@@ -159,6 +156,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                     );
                     setDownloadInProgress(false);
                   }}
+                  leftSection={downloadInProgress ? <Loader size={16} /> : null} // need to separate these variables
                 >
                   PNG
                 </Menu.Item>
