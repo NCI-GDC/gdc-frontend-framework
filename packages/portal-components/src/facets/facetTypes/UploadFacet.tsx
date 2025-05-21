@@ -72,6 +72,7 @@ const UploadFacet: React.FC<UploadFacetCardProps> = ({
               variant="outline"
               fullWidth
               onClick={() => openModal(field)}
+              data-testid={`button-${facetName}`}
             >
               {uploadLabel}
             </Button>
