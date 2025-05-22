@@ -36,6 +36,8 @@ import {
 } from "@gff/core";
 import { useCohortFacetFilters } from "../utils";
 import { exportCohort, removeQueryParamsFromRouter } from "./cohortUtils";
+import download from "@/utils/download";
+import { getFormattedTimestamp } from "@/utils/date";
 
 export const useSelectAvailableCohorts = () => {
   return useCoreSelector((state) => selectCohortsFromStore(state));
@@ -178,23 +180,30 @@ export const useUpdateFilters = () => {
 export const useExportCohort = () => {
   const currentCohort = useCoreSelector(selectCurrentCohortFromStore);
   const [getCases, { isFetching, isError }] = useLazyGetCasesQuery();
+  const coreDispatch = useCoreDispatch();
 
-  const handleExport = useDeepCompareCallback(() => {
-    getCases({
-      request: {
-        case_filters: buildCohortGqlOperator(
-          currentCohort.filters ?? undefined,
-        ),
-        fields: ["case_id"],
-        size: 50000,
-      },
-      fetchAll: true,
-    })
-      .unwrap()
-      .then((payload) => {
-        exportCohort(payload?.hits, currentCohort.name);
+  const handleExport = useDeepCompareCallback(async () => {
+    // this doesn't work yet
+    try {
+      await download({
+        endpoint: "cases",
+        method: "POST",
+        params: {
+          case_filters: buildCohortGqlOperator(
+            currentCohort.filters ?? undefined,
+          ),
+          size: 50000,
+          format: "tsv",
+          fields: ["case_id"],
+          filename: `cohort_${currentCohort.name.replace(
+            /[^A-Za-z0-9_.]/g,
+            "_",
+          )}.${getFormattedTimestamp()}.tsv`,
+        },
+        dispatch: coreDispatch,
       });
-  }, [currentCohort, getCases]);
+    } catch (error) {}
+  }, [currentCohort, coreDispatch]);
 
   return {
     handleExport,

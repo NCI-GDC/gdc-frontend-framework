@@ -51,7 +51,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
 }: HistogramProps) => {
   const [displayPercent, setDisplayPercent] = useState(false);
   const downloadChartRef = useRef<HTMLElement>();
-  const { downloadInProgress, setDownloadInProgress } = useContext(
+  const { downloadInProgress, downloadType, setDownloadProgress } = useContext(
     DownloadProgressContext,
   );
 
@@ -136,27 +136,35 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
               <Menu.Dropdown data-testid="dropdown-menu-options">
                 <Menu.Item
                   onClick={async () => {
-                    setDownloadInProgress(true);
+                    setDownloadProgress(true, "svg");
                     await handleDownloadSVG(
                       downloadChartRef,
                       `${downloadFileName}.svg`,
                     );
-                    setDownloadInProgress(false);
+                    setDownloadProgress(false, null);
                   }}
-                  leftSection={downloadInProgress ? <Loader size={16} /> : null} // need to separate these variables
+                  leftSection={
+                    downloadInProgress && downloadType === "svg" ? (
+                      <Loader size={16} />
+                    ) : null
+                  }
                 >
                   SVG
                 </Menu.Item>
                 <Menu.Item
                   onClick={async () => {
-                    setDownloadInProgress(true);
+                    setDownloadProgress(true, "png");
                     await handleDownloadPNG(
                       downloadChartRef,
                       `${downloadFileName}.png`,
                     );
-                    setDownloadInProgress(false);
+                    setDownloadProgress(false, null);
                   }}
-                  leftSection={downloadInProgress ? <Loader size={16} /> : null} // need to separate these variables
+                  leftSection={
+                    downloadInProgress && downloadType === "png" ? (
+                      <Loader size={16} />
+                    ) : null
+                  }
                 >
                   PNG
                 </Menu.Item>

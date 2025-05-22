@@ -428,8 +428,13 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
               onClick={handleTSVDownload}
               data-testid="button-tsv-mutation-frequency"
               disabled={isFetching}
+              leftSection={
+                downloadMutatedGenesTSVActive ? (
+                  <Loader size={16} color="currentColor" />
+                ) : null
+              }
             >
-              {downloadMutatedGenesTSVActive ? <Loader size="sm" /> : "TSV"}
+              TSV
             </FunctionButton>
           </div>
         }

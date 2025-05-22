@@ -30,7 +30,7 @@ import {
 import VerticalTable from "@/components/Table/VerticalTable";
 import { HandleChangeInput } from "@/components/Table/types";
 import { downloadTSV } from "@/components/Table/utils";
-import { Tooltip } from "@mantine/core";
+import { Loader, Tooltip } from "@mantine/core";
 import { useDeepCompareMemo } from "use-deep-compare";
 import TotalItems from "@/components/Table/TotalItem";
 
@@ -52,6 +52,7 @@ const FilesTable: React.FC<FilesTableProps> = ({
   const [activePage, setActivePage] = useState(1);
   const [sortBy, setSortBy] = useState<SortBy[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [jsonDownloadInProgress, setJsonDownloadInProgress] = useState(false);
 
   const sortByActions = (sortByObj: SortingState) => {
     const tempSortBy: SortBy[] = sortByObj.map((sortObj) => {
@@ -334,6 +335,7 @@ const FilesTable: React.FC<FilesTableProps> = ({
   }, [sorting]);
 
   const handleDownloadJSON = async () => {
+    setJsonDownloadInProgress(true);
     await download({
       endpoint: "files",
       method: "POST",
@@ -361,6 +363,7 @@ const FilesTable: React.FC<FilesTableProps> = ({
         ].join(","),
       },
       dispatch,
+      done: () => setJsonDownloadInProgress(false),
     });
   };
 
@@ -404,6 +407,7 @@ const FilesTable: React.FC<FilesTableProps> = ({
               onClick={handleDownloadJSON}
               aria-label="Download JSON"
               disabled={isFetching}
+              leftSection={jsonDownloadInProgress ? <Loader size={16} /> : null}
             >
               JSON
             </FunctionButton>

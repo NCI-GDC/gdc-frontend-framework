@@ -18,13 +18,18 @@ function SummaryHeaderControls({
 }) {
   const dispatch = useCoreDispatch();
   const [manifestDownloadActive, setManifestDownloadActive] = useState(false);
-  const [clinicalDownloadActive, setClinicalDownloadActive] = useState(false);
-  const [biospecimenDownloadActive, setBiospecimenDownloadActive] =
+  const [clinicalDownloadActiveTSV, setClinicalDownloadActiveTSV] =
+    useState(false);
+  const [clinicalDownloadActiveJSON, setClinicalDownloadActiveJSON] =
+    useState(false);
+  const [biospecimenDownloadActiveTSV, setBiospecimenDownloadActiveTSV] =
+    useState(false);
+  const [biospecimenDownloadActiveJSON, setBiospecimenDownloadActiveJSON] =
     useState(false);
   const [showSaveCohort, setShowSaveCohort] = useState(false);
 
   const handleBiospeciemenTSVDownload = () => {
-    setBiospecimenDownloadActive(true);
+    setBiospecimenDownloadActiveTSV(true);
     download({
       endpoint: "biospecimen_tar",
       method: "POST",
@@ -42,12 +47,12 @@ function SummaryHeaderControls({
         },
         size: projectData.summary?.case_count,
       },
-      done: () => setBiospecimenDownloadActive(false),
+      done: () => setBiospecimenDownloadActiveTSV(false),
     });
   };
 
   const handleBiospeciemenJSONDownload = () => {
-    setBiospecimenDownloadActive(true);
+    setBiospecimenDownloadActiveJSON(true);
     download({
       endpoint: "biospecimen_tar",
       method: "POST",
@@ -67,12 +72,12 @@ function SummaryHeaderControls({
         },
         size: projectData.summary?.case_count,
       },
-      done: () => setBiospecimenDownloadActive(false),
+      done: () => setBiospecimenDownloadActiveJSON(false),
     });
   };
 
   const handleClinicalTSVDownload = () => {
-    setClinicalDownloadActive(true);
+    setClinicalDownloadActiveTSV(true);
     download({
       endpoint: "clinical_tar",
       method: "POST",
@@ -90,12 +95,12 @@ function SummaryHeaderControls({
         },
         size: projectData.summary?.case_count,
       },
-      done: () => setClinicalDownloadActive(false),
+      done: () => setClinicalDownloadActiveTSV(false),
     });
   };
 
   const handleClinicalJSONDownload = () => {
-    setClinicalDownloadActive(true);
+    setClinicalDownloadActiveJSON(true);
     download({
       endpoint: "clinical_tar",
       method: "POST",
@@ -115,7 +120,7 @@ function SummaryHeaderControls({
         },
         size: projectData.summary?.case_count,
       },
-      done: () => setClinicalDownloadActive(false),
+      done: () => setClinicalDownloadActiveJSON(false),
     });
   };
 
@@ -182,54 +187,56 @@ function SummaryHeaderControls({
         dropdownElements={[
           {
             title: "TSV",
-            icon: <DownloadIcon size={16} aria-label="download" />,
+            icon: biospecimenDownloadActiveTSV ? (
+              <Loader size={16} />
+            ) : (
+              <DownloadIcon size={16} aria-label="download" />
+            ),
             onClick: handleBiospeciemenTSVDownload,
           },
           {
             title: "JSON",
-            icon: <DownloadIcon size={16} aria-label="download" />,
+            icon: biospecimenDownloadActiveJSON ? (
+              <Loader size={16} />
+            ) : (
+              <DownloadIcon size={16} aria-label="download" />
+            ),
             onClick: handleBiospeciemenJSONDownload,
           },
         ]}
         TargetButtonChildren={
-          <span className="font-medium text-sm">
-            {biospecimenDownloadActive ? "Processing" : "Biospecimen"}
-          </span>
+          <span className="font-medium text-sm">Biospecimen</span>
         }
-        LeftSection={
-          biospecimenDownloadActive ? (
-            <Loader size={20} />
-          ) : (
-            <DownloadIcon size="1rem" aria-label="download" />
-          )
-        }
+        LeftSection={<DownloadIcon size="1rem" aria-label="download" />}
+        closeOnItemClick={false}
       />
       <DropdownWithIcon
         customDataTestId="button-clinical-project-summary"
         dropdownElements={[
           {
             title: "TSV",
-            icon: <DownloadIcon size={16} aria-label="download" />,
+            icon: clinicalDownloadActiveTSV ? (
+              <Loader size={16} />
+            ) : (
+              <DownloadIcon size={16} aria-label="download" />
+            ),
             onClick: handleClinicalTSVDownload,
           },
           {
             title: "JSON",
-            icon: <DownloadIcon size={16} aria-label="download" />,
+            icon: clinicalDownloadActiveJSON ? (
+              <Loader size={16} />
+            ) : (
+              <DownloadIcon size={16} aria-label="download" />
+            ),
             onClick: handleClinicalJSONDownload,
           },
         ]}
         TargetButtonChildren={
-          <span className="font-medium text-sm">
-            {clinicalDownloadActive ? "Processing" : "Clinical"}
-          </span>
+          <span className="font-medium text-sm">Clinical</span>
         }
-        LeftSection={
-          clinicalDownloadActive ? (
-            <Loader size={20} />
-          ) : (
-            <DownloadIcon size="1rem" aria-label="download" />
-          )
-        }
+        LeftSection={<DownloadIcon size="1rem" aria-label="download" />}
+        closeOnItemClick={false}
       />
       <Tooltip
         transitionProps={{ duration: 200, transition: "fade" }}
@@ -248,14 +255,14 @@ function SummaryHeaderControls({
             manifestDownloadActive ? (
               <Loader size={20} />
             ) : (
-              <DownloadIcon size="1.25em" aria-label="download" />
+              <DownloadIcon size="1rem" aria-label="download" />
             )
           }
           className={`text-primary bg-base-max border-primary hover:bg-primary-darkest hover:text-base-max ${focusStyles}`}
           classNames={{ label: "font-medium text-sm" }}
           onClick={handleManifestDownload}
         >
-          {manifestDownloadActive ? "Processing" : "Manifest"}
+          Manifest
         </Button>
       </Tooltip>
     </div>

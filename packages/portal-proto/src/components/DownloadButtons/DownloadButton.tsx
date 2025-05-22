@@ -37,7 +37,7 @@ interface DownloadButtonProps {
   endpoint?: string;
   disabled?: boolean;
   inactiveText: string;
-  activeText: string;
+  activeText?: string; // remove this
   filename?: string;
   downloadSize?: number;
   format?: string;
@@ -122,7 +122,7 @@ export const DownloadButton = forwardRef<
     }: DownloadButtonProps,
     ref,
   ) => {
-    const text = active ? activeText : inactiveText;
+    const text = inactiveText;
     const dispatch = useCoreDispatch();
     const Icon = active ? (
       <Loader size="sm" className="p-1" />

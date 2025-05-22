@@ -319,7 +319,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     });
   };
 
-  const handleTSVDownload = () => {
+  const handleTSVDownloadSSM = () => {
     setDownloadMutationsFrequencyTSVActive(true);
 
     download({
@@ -387,6 +387,12 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
 
   const operationCohortFilters = filterSetToOperation(cohortFilters);
   const operationSetFilters = filterSetToOperation(setFilters);
+
+  const handleTSVDownload = caseFilter
+    ? handleTSVCaseDownload
+    : geneSymbol
+    ? handleTSVGeneDownload
+    : handleTSVDownloadSSM;
 
   return (
     <>
@@ -518,35 +524,19 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                   customDataTestId="button-save-edit-mutation-set"
                 />
 
-                {caseFilter || geneSymbol ? (
-                  <FunctionButton
-                    data-testid="button-tsv-mutation-frequency"
-                    onClick={
-                      caseFilter ? handleTSVCaseDownload : handleTSVGeneDownload
-                    }
-                    aria-label="Download TSV"
-                    disabled={isFetching}
-                  >
-                    {downloadMutationsFrequencyTSVActive ? (
-                      <Loader size="sm" />
-                    ) : (
-                      "TSV"
-                    )}
-                  </FunctionButton>
-                ) : (
-                  <FunctionButton
-                    onClick={handleTSVDownload}
-                    data-testid="button-tsv-mutation-frequency"
-                    aria-label="Download TSV"
-                    disabled={isFetching}
-                  >
-                    {downloadMutationsFrequencyTSVActive ? (
-                      <Loader size="sm" />
-                    ) : (
-                      "TSV"
-                    )}
-                  </FunctionButton>
-                )}
+                <FunctionButton
+                  data-testid="button-tsv-mutation-frequency"
+                  onClick={handleTSVDownload}
+                  aria-label="Download TSV"
+                  disabled={isFetching}
+                  leftSection={
+                    downloadMutationsFrequencyTSVActive ? (
+                      <Loader size={16} color="currentColor" />
+                    ) : null
+                  }
+                >
+                  TSV
+                </FunctionButton>
               </div>
             }
             search={{

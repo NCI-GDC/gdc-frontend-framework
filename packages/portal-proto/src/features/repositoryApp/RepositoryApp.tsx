@@ -157,7 +157,6 @@ export const RepositoryApp = (): JSX.Element => {
               <div className="flex flex-wrap Custom-Repo-Width:justify-end gap-2 mt-8 mb-4">
                 <DownloadButton
                   data-testid="button-sample-sheet-files-table"
-                  activeText="Processing"
                   inactiveText="Sample Sheet"
                   setActive={setSampleSheetDownloadActive}
                   active={sampleSheetDownloadActive}
@@ -190,7 +189,6 @@ export const RepositoryApp = (): JSX.Element => {
                 />
                 <DownloadButton
                   data-testid="button-metadata-files-table"
-                  activeText="Processing"
                   inactiveText="Metadata"
                   setActive={setMetadataDownloadActive}
                   active={metadataDownloadActive}

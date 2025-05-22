@@ -1,4 +1,10 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+} from "react";
 import { Box, Menu, Tooltip, Loader, ActionIcon } from "@mantine/core";
 import isNumber from "lodash/isNumber";
 import { useMouse } from "@mantine/hooks";
@@ -7,6 +13,7 @@ import { SummaryModalContext } from "src/utils/contexts";
 import {
   DashboardDownloadContext,
   DownloadProgressContext,
+  DownloadType,
 } from "@gff/portal-components";
 import OffscreenWrapper from "@/components/OffscreenWrapper";
 import {
@@ -201,7 +208,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
     return () => dispatch({ type: "remove", payload: charts });
   }, [dispatch, downloadFileName]);
 
-  const { downloadInProgress, setDownloadInProgress } = useContext(
+  const { downloadInProgress, downloadType, setDownloadProgress } = useContext(
     DownloadProgressContext,
   );
 
@@ -230,36 +237,42 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
                   aria-label="Download Survival Plot data or image"
                   variant="outline"
                 >
-                  {downloadInProgress ? (
-                    <Loader size={16} />
-                  ) : (
-                    <DownloadIcon size="1rem" aria-hidden="true" />
-                  )}
+                  <DownloadIcon size="1rem" aria-hidden="true" />
                 </ActionIcon>
               </Tooltip>
             </Menu.Target>
             <Menu.Dropdown data-testid="dropdown-menu-options">
               <Menu.Item
                 onClick={async () => {
-                  setDownloadInProgress(true);
+                  setDownloadProgress(true, "svg");
                   await handleDownloadSVG(
                     downloadRef,
                     `${downloadFileName}.svg`,
                   );
-                  setDownloadInProgress(false);
+                  setDownloadProgress(false, null);
                 }}
+                leftSection={
+                  downloadInProgress && downloadType === "svg" ? (
+                    <Loader size={16} />
+                  ) : null
+                }
               >
                 SVG
               </Menu.Item>
               <Menu.Item
                 onClick={async () => {
-                  setDownloadInProgress(true);
+                  setDownloadProgress(true, "png");
                   await handleDownloadPNG(
                     downloadRef,
                     `${downloadFileName}.png`,
                   );
-                  setDownloadInProgress(false);
+                  setDownloadProgress(false, null);
                 }}
+                leftSection={
+                  downloadInProgress && downloadType === "png" ? (
+                    <Loader size={16} />
+                  ) : null
+                }
               >
                 PNG
               </Menu.Item>
@@ -366,9 +379,19 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
 
 const SurvivalPlot = (props: SurvivalPlotProps) => {
   const [downloadInProgress, setDownloadInProgress] = useState(false);
+  const [downloadType, setDownloadType] = useState<DownloadType>(null);
+
+  const setDownloadProgress = useCallback(
+    (inProgress: boolean, type: DownloadType) => {
+      setDownloadInProgress(inProgress);
+      setDownloadType(type);
+    },
+    [],
+  );
+
   return (
     <DownloadProgressContext.Provider
-      value={{ downloadInProgress, setDownloadInProgress }}
+      value={{ downloadInProgress, downloadType, setDownloadProgress }}
     >
       <ExternalDownloadStateSurvivalPlot {...props} />
     </DownloadProgressContext.Provider>

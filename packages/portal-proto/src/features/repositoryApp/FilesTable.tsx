@@ -41,6 +41,7 @@ import { downloadTSV } from "@/components/Table/utils";
 import { REPO_BREAKPOINT, statusBooleansToDataStatus } from "src/utils";
 import { useDeepCompareEffect } from "use-deep-compare";
 import { PersonIcon, SaveIcon } from "@/utils/icons";
+import { Loader } from "@mantine/core";
 
 export type FilesTableDataType = {
   file: GdcFile;
@@ -67,6 +68,7 @@ const FilesTables: React.FC = () => {
   const [pageSize, setPageSize] = useState(20);
   const [offset, setOffset] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
+  const [jsonDownloadInProgress, setJsonDownloadInProgress] = useState(false);
 
   const repositoryFilters = useAppSelector((state) => selectFilters(state));
   const cohortFilters = useCoreSelector((state) =>
@@ -340,6 +342,7 @@ const FilesTables: React.FC = () => {
   };
 
   const handleDownloadJSON = async () => {
+    setJsonDownloadInProgress(true);
     await download({
       endpoint: "files",
       method: "POST",
@@ -368,6 +371,7 @@ const FilesTables: React.FC = () => {
         ].join(","),
       },
       dispatch: coreDispatch,
+      done: () => setJsonDownloadInProgress(false),
     });
   };
 
@@ -456,6 +460,11 @@ const FilesTables: React.FC = () => {
               onClick={handleDownloadJSON}
               data-testid="button-json-files-table"
               disabled={isFetching}
+              leftSection={
+                jsonDownloadInProgress ? (
+                  <Loader size={16} color="currentColor" />
+                ) : null
+              }
             >
               JSON
             </FunctionButton>

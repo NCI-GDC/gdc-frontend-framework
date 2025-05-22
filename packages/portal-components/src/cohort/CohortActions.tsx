@@ -135,7 +135,7 @@ const CohortActions: React.FC<CohortActionsProps> = ({
               variant="action"
             >
               {exportCohortPending ? (
-                <Loader />
+                <Loader size={24} color="currentColor" />
               ) : (
                 <DownloadIcon size="1.5em" aria-hidden="true" />
               )}
