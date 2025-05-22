@@ -115,5 +115,13 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
 * Check clinical properties
    |property                  |group                     |
    |--------------------------|--------------------------|
-   |Premature At Birth        |Other Clinical Attribute  |
-   |Pregnant At Diagnosis     |Other Clinical Attribute  |
+   |BMI                       |Other Clinical Attribute  |
+   |Weight                    |                          |
+   |Height                    |                          |
+   |Risk Factors              |                          |
+   |Menopause Status          |                          |
+   |Comorbidities             |                          |
+   |Premature At Birth        |                          |
+   |Pregnant At Diagnosis     |                          |
+   |Pregnancy Outcome         |                          |
+   |Number Of Pregnancies     |                          |

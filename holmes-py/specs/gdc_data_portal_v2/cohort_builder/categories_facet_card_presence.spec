@@ -98,6 +98,18 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards, regression
   |Pack Years Smoked          |
   |Tobacco Smoking Onset Year |
 
+* Validate presence of facet cards on the "Other Clinical Attributes" tab on the Cohort Builder page
+  |facet_name                 |
+  |---------------------------|
+  |BMI                        |
+  |Weight                     |
+  |Height                     |
+  |Risk Factors               |
+  |Menopause Status           |
+  |Comorbidities              |
+  |Pregnancy Outcome          |
+  |Number of Pregnancies      |
+
 * Validate presence of facet cards on the "Biospecimen" tab on the Cohort Builder page
   |facet_name                 |
   |---------------------------|
