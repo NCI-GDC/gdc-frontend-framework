@@ -61,14 +61,14 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
 
 ## Mutated Gene - Single Identifier
 * Clear active cohort filters
-* Select the following labels from "Molecular Filters" tab on the Cohort Builder page
+* Select the following labels from "Genomic Filters" tab on the Cohort Builder page
   |facet_name       |selection            |
   |-----------------|---------------------|
   |Mutated Gene     |Upload Genes         |
 * Upload "One Gene" "txt" from "Cohort Builder" in "Cohort Filter Import" through "Browse"
 * Is text "1 submitted gene identifier mapped to 1 unique GDC gene" present on the page
 * Select "Submit"
-* Validate expected custom filters "are" present in facet cards on the "Molecular Filters" tab on the Cohort Builder page
+* Validate expected custom filters "are" present in facet cards on the "Genomic Filters" tab on the Cohort Builder page
   |facet_name           |custom_filter_text                     |
   |---------------------|---------------------------------------|
   |Mutated Gene         |USH2A                                  |
@@ -80,21 +80,21 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
   |Filter to Remove             |
   |-----------------------------|
   |Mutated Gene                 |
-* Validate expected custom filters "are not" present in facet cards on the "Molecular Filters" tab on the Cohort Builder page
+* Validate expected custom filters "are not" present in facet cards on the "Genomic Filters" tab on the Cohort Builder page
   |facet_name           |custom_filter_text                     |
   |---------------------|---------------------------------------|
   |Mutated Gene         |USH2A                                  |
 
 ## Mutated Gene - Multiple Identifiers
 * Clear active cohort filters
-* Select the following labels from "Molecular Filters" tab on the Cohort Builder page
+* Select the following labels from "Genomic Filters" tab on the Cohort Builder page
   |facet_name       |selection            |
   |-----------------|---------------------|
   |Mutated Gene     |Upload Genes         |
 * Upload "Multiple Genes" "txt" from "Cohort Builder" in "Cohort Filter Import" through "Browse"
 * Is text "5 submitted gene identifiers mapped to 5 unique GDC genes" present on the page
 * Select "Submit"
-* Validate expected custom filters "are" present in facet cards on the "Molecular Filters" tab on the Cohort Builder page
+* Validate expected custom filters "are" present in facet cards on the "Genomic Filters" tab on the Cohort Builder page
   |facet_name           |custom_filter_text                     |
   |---------------------|---------------------------------------|
   |Mutated Gene         |5 input genes                          |
@@ -102,7 +102,7 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
   |facet_name           |selections                             |position in filter area  |
   |---------------------|---------------------------------------|-------------------------|
   |Mutated Gene         |5 input genes                          |1                        |
-* Remove the following custom filters in facet cards on the "Molecular Filters" tab on the Cohort Builder page
+* Remove the following custom filters in facet cards on the "Genomic Filters" tab on the Cohort Builder page
   |facet_name           |custom_filter_text                     |
   |---------------------|---------------------------------------|
   |Mutated Gene         |5 input genes                          |
@@ -110,14 +110,14 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
 
 ## Somatic Mutation - Single Identifier
 * Clear active cohort filters
-* Select the following labels from "Molecular Filters" tab on the Cohort Builder page
+* Select the following labels from "Genomic Filters" tab on the Cohort Builder page
   |facet_name       |selection                      |
   |-----------------|-------------------------------|
   |Somatic Mutation |Upload Somatic Mutations       |
 * Upload "One Mutation" "txt" from "Cohort Builder" in "Cohort Filter Import" through "Browse"
 * Is text "1 submitted mutation identifier mapped to 1 unique GDC mutation" present on the page
 * Select "Submit"
-* Validate expected custom filters "are" present in facet cards on the "Molecular Filters" tab on the Cohort Builder page
+* Validate expected custom filters "are" present in facet cards on the "Genomic Filters" tab on the Cohort Builder page
   |facet_name           |custom_filter_text                     |
   |---------------------|---------------------------------------|
   |Somatic Mutation     |99eb3457-6125-5255-8322-88d0b55578ea   |
@@ -129,14 +129,14 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
   |Filter to Remove             |
   |-----------------------------|
   |Ssm Id                       |
-* Validate expected custom filters "are not" present in facet cards on the "Molecular Filters" tab on the Cohort Builder page
+* Validate expected custom filters "are not" present in facet cards on the "Genomic Filters" tab on the Cohort Builder page
   |facet_name           |custom_filter_text                     |
   |---------------------|---------------------------------------|
   |Somatic Mutation     |99eb3457-6125-5255-8322-88d0b55578ea   |
 
 ## Somatic Mutation - Multiple Identifiers
 * Clear active cohort filters
-* Select the following labels from "Molecular Filters" tab on the Cohort Builder page
+* Select the following labels from "Genomic Filters" tab on the Cohort Builder page
   |facet_name       |selection                      |
   |-----------------|-------------------------------|
   |Somatic Mutation |Upload Somatic Mutations       |
@@ -144,7 +144,7 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
 * Is text "5 submitted mutation identifiers mapped to 5 unique GDC mutations" present on the page
 * Select "Submit"
 * Pause "2" seconds
-* Validate expected custom filters "are" present in facet cards on the "Molecular Filters" tab on the Cohort Builder page
+* Validate expected custom filters "are" present in facet cards on the "Genomic Filters" tab on the Cohort Builder page
   |facet_name           |custom_filter_text                     |
   |---------------------|---------------------------------------|
   |Somatic Mutation     |5 input ssm ids                        |
@@ -152,7 +152,7 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
   |facet_name           |selections                             |position in filter area  |
   |---------------------|---------------------------------------|-------------------------|
   |Ssm Id               |5 input ssm ids                        |1                        |
-* Remove the following custom filters in facet cards on the "Molecular Filters" tab on the Cohort Builder page
+* Remove the following custom filters in facet cards on the "Genomic Filters" tab on the Cohort Builder page
   |facet_name           |custom_filter_text                     |
   |---------------------|---------------------------------------|
   |Ssm Id               |5 input ssm ids                        |

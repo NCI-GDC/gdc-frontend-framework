@@ -108,7 +108,7 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards, regression
   |Tumor Descriptor           |
   |Analyte Type               |
 
-* Validate presence of facet cards on the "Molecular Filters" tab on the Cohort Builder page
+* Validate presence of facet cards on the "Genomic Filters" tab on the Cohort Builder page
   |facet_name                 |
   |---------------------------|
   |Mutated Gene               |
