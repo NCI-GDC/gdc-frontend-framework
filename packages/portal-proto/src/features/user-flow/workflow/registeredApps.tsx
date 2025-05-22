@@ -274,7 +274,7 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
       "Current cohort does not have MAF data available for download.",
   },
   {
-    name: "CNV Segment",
+    name: "Copy Number Segment",
     icon: (
       <ProteinPaintIcon
         height={48}
@@ -285,7 +285,7 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
     ),
     tags: ["variantAnalysis", "cnv"],
     hasDemo: true,
-    description: "",
+    description: "Visualize copy number variation over a gene or region.",
     id: "CnvSegmentApp",
     countsField: "CnvSegmentCaseCount",
     noDataTooltip:

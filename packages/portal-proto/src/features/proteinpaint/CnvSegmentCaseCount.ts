@@ -33,6 +33,13 @@ const CnvSegmentCaseCountSlice = graphqlAPISlice.injectEndpoints({
                   value: ["segment_cnv"],
                 },
               },
+              {
+                op: "not",
+                content: {
+                  field: "segment_cnv.segment_cnv_id",
+                  //value: 'missing'
+                },
+              },
             ],
           },
         };
