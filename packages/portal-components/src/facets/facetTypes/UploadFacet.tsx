@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Tooltip } from "@mantine/core";
-import CohortBadge from "@/cohort/QueryExpression/CohortBadge";
+import FilterBadge from "@/common/FilterBadge";
 import { UploadFacetCardProps } from "../types";
 import FacetControlsHeader from "./FacetControlsHeader";
 
@@ -20,17 +20,25 @@ const UploadFacet: React.FC<UploadFacetCardProps> = ({
   const openModal = hooks.useOpenUploadModal();
 
   const { noData, items } = hooks.useFilterItems(field);
+  const useClearUploadFilter = () => {
+    const clearFilter = hooks.useClearFilter();
+    return (field: string) => clearFilter(field.split(".upload").join(""));
+  };
 
   const renderBadges = (items: string[], itemField: string) => {
     return items.map((item, index) => (
-      <CohortBadge
-        key={index}
+      <FilterBadge
+        key={`query-rep-${itemField}-${item}-${index}`}
         field={itemField}
         value={item}
         customTestid={`query-rep-${itemField}-${item}-${index}`}
         operands={items}
         operator="includes"
-        hooks={hooks}
+        hooks={{
+          useClearFilter: useClearUploadFilter,
+          useUpdateFilter: hooks.useUpdateFacetFilters,
+          useFormatValue: hooks.useFormatValue,
+        }}
       />
     ));
   };
@@ -45,7 +53,11 @@ const UploadFacet: React.FC<UploadFacetCardProps> = ({
       }}
       id={field}
     >
-      <FacetControlsHeader field={field} hooks={hooks} facetName={facetName} />
+      <FacetControlsHeader
+        field={field}
+        hooks={{ ...hooks, useClearFilter: useClearUploadFilter }}
+        facetName={facetName}
+      />
       <div className="p-4">
         <div className="flex justify-center">
           <Tooltip
@@ -60,6 +72,7 @@ const UploadFacet: React.FC<UploadFacetCardProps> = ({
               variant="outline"
               fullWidth
               onClick={() => openModal(field)}
+              data-testid={`button-${facetName}`}
             >
               {uploadLabel}
             </Button>

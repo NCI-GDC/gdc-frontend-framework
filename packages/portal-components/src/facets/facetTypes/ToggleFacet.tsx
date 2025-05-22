@@ -1,10 +1,11 @@
 import React, { useMemo } from "react";
 import { LoadingOverlay, Switch } from "@mantine/core";
+import { Includes } from "@/cohort/QueryExpression/types";
 import { FacetCardProps, ToggleFacetHooks } from "../types";
 import { updateFacetEnum } from "../utils";
 import FacetControlsHeader from "./FacetControlsHeader";
 
-const extractToggleValue = (values?: ReadonlyArray<string>): boolean =>
+const extractToggleValue = (values?: ReadonlyArray<string | number>): boolean =>
   values !== undefined && values.length > 0 && values.includes("true");
 
 /**
@@ -35,7 +36,10 @@ const ToggleFacet: React.FC<FacetCardProps<ToggleFacetHooks>> = ({
   const enumFilters = hooks.useGetFacetFilters(field);
 
   const toggleValue = useMemo(
-    () => extractToggleValue(enumFilters),
+    () =>
+      extractToggleValue(
+        enumFilters ? (enumFilters as Includes)?.operands : [],
+      ),
     [enumFilters],
   );
 

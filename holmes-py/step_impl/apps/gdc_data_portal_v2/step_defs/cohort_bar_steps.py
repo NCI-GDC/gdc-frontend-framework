@@ -25,6 +25,20 @@ def click_button_on_cohort_bar(button_name: str):
         APP.cohort_bar.click_cohort_bar_button(button_name)
     time.sleep(0.5)
 
+@step("Is text <expected_text> present on the Cohort Bar")
+def is_text_present_on_the_cohort_bar(expected_text: str):
+    """Verifies if expected text is on the Cohort Bar"""
+    is_text_present = APP.cohort_bar.is_text_present_on_cohort_bar(expected_text)
+    assert is_text_present, f"The text '{expected_text}' is NOT present"
+
+@step("Is text <expected_text> not present on the Cohort Bar")
+def is_text_present_on_the_page(expected_text: str):
+    """Verifies if text is no longer on the cohort bar as expected"""
+    is_text_not_present = APP.cohort_bar.is_text_not_present_on_cohort_bar(expected_text)
+    assert (
+        is_text_not_present
+    ), f"The text '{expected_text}' is present when it should not"
+
 @step("Unpin the Cohort Bar")
 def unpin_cohort_bar():
     APP.cohort_bar.unpin_cohort_bar()

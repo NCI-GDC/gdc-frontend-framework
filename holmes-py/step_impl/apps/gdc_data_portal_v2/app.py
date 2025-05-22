@@ -25,6 +25,7 @@ from ..gdc_data_portal_v2.pages.cohort_case_view import CohortCaseViewPage
 from ..gdc_data_portal_v2.pages.cart_page import CartPage
 from ..gdc_data_portal_v2.pages.gene_summary_page import GeneSummaryPage
 from ..gdc_data_portal_v2.pages.mutation_summary_page import MutationSummaryPage
+from ..gdc_data_portal_v2.pages.browse_annotations import BrowseAnnotationPage
 
 
 class GDCDataPortalV2App:
@@ -65,3 +66,4 @@ class GDCDataPortalV2App:
         self.cart_page = CartPage(self.driver, self.URL)
         self.gene_summary_page = GeneSummaryPage(self.driver, self.URL)
         self.mutation_summary_page = MutationSummaryPage(self.driver, self.URL)
+        self.browse_annotations = BrowseAnnotationPage(self.driver, self.URL)

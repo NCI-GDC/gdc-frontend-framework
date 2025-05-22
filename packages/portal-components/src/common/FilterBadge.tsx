@@ -1,10 +1,11 @@
 import React, { useContext } from "react";
 import { ActionIcon, Badge } from "@mantine/core";
 import OverflowTooltippedLabel from "@/common/OverflowTooltippedLabel";
+import { Cohort } from "@/cohort/types";
+import { Operation } from "@/cohort/QueryExpression/types";
+import { QueryExpressionsExpandedContext } from "@/cohort/QueryExpression/QueryExpressionSection";
 import { CloseIcon } from "src/commonIcons";
-import { QueryExpressionsExpandedContext } from "./QueryExpressionSection";
-import { QueryExpressionHooks } from "./types";
-import QueryRepresentationLabel from "./QueryRepresentationLabel";
+import FormattedFilterLabel from "./FormattedFilterLabel";
 
 const RemoveButton = ({ label }: { label: string }) => (
   <ActionIcon
@@ -18,48 +19,52 @@ const RemoveButton = ({ label }: { label: string }) => (
   </ActionIcon>
 );
 
-interface CohortBadgeProps {
+interface FilterBadgeProps {
   field: string;
   value: string;
   customTestid: string;
   operands: readonly (string | number)[];
   operator: "includes" | "excludes" | "excludeifany";
-  hooks: QueryExpressionHooks;
+  hooks: {
+    useSelectCurrentCohort?: () => Cohort;
+    useClearFilter: () => (field: string) => void;
+    useUpdateFilter: () => (field: string, operation: Operation) => void;
+    useFormatValue: () => (value: string, field: string) => Promise<string>;
+  };
 }
-const CohortBadge: React.FC<CohortBadgeProps> = ({
+const FilterBadge: React.FC<FilterBadgeProps> = ({
   field,
   value,
   customTestid,
   hooks,
   operands,
   operator,
-}: CohortBadgeProps) => {
+}: FilterBadgeProps) => {
   const [, setQueryExpressionsExpanded] = useContext(
     QueryExpressionsExpandedContext,
   );
-  const currentCohort = hooks.useSelectCurrentCohort();
-  const updateActiveCohortFilter = hooks.useUpdateCohortFilter();
-  const removeCohortFilter = hooks.useRemoveCohortFilter();
+  const { useSelectCurrentCohort = () => undefined } = hooks;
+  const currentCohort = useSelectCurrentCohort();
+  const updateFilter = hooks.useUpdateFilter();
+  const removeFilter = hooks.useClearFilter();
 
   const handleOnClick = () => {
     const newOperands = operands.filter((o) => o !== value);
 
     if (newOperands.length === 0) {
-      setQueryExpressionsExpanded &&
+      currentCohort &&
+        setQueryExpressionsExpanded &&
         setQueryExpressionsExpanded({
           type: "clear",
           cohortId: currentCohort.id,
           field,
         });
-      removeCohortFilter(field);
+      removeFilter(field);
     } else {
-      updateActiveCohortFilter({
+      updateFilter(field, {
+        operator,
         field,
-        operation: {
-          operator,
-          field,
-          operands: newOperands,
-        },
+        operands: newOperands,
       });
     }
   };
@@ -78,10 +83,14 @@ const CohortBadge: React.FC<CohortBadgeProps> = ({
         label={value}
         className="flex-grow text-md font-content-noto"
       >
-        <QueryRepresentationLabel field={field} value={value} hooks={hooks} />
+        <FormattedFilterLabel
+          field={field}
+          value={value}
+          useFormatValue={hooks.useFormatValue}
+        />
       </OverflowTooltippedLabel>
     </Badge>
   );
 };
 
-export default CohortBadge;
+export default FilterBadge;

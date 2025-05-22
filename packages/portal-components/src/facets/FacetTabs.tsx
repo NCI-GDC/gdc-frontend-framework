@@ -139,6 +139,7 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
       >
         <div className="p-4">
           <FacetSelection
+            usedFacets={customFacetDefinitions.map((x) => x.field)}
             useAvailableCustomFacets={customFacetHooks.useAvailableCustomFacets}
             handleFilterSelected={handleFilterSelected}
             queryOptions={queryOptions}

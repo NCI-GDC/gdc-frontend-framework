@@ -4,13 +4,7 @@ export interface QueryExpressionHooks {
   useSelectCurrentCohort: () => Cohort;
   useClearCohortFilters: () => () => void;
   useRemoveCohortFilter: () => (field: string) => void;
-  useUpdateCohortFilter: () => ({
-    field,
-    operation,
-  }: {
-    field: string;
-    operation: any;
-  }) => void;
+  useUpdateCohortFilter: () => (field: string, operation: Operation) => void;
   useFieldNameToTitle: () => (field: string) => string;
   useFormatValue: () => (value: string, field: string) => Promise<string>;
 }

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { SegmentedControl } from "@mantine/core";
+import SegmentedControl from "@/common/SegmentedControl";
 import RangeInputWithPrefixedRanges from "./RangeInputWithPrefixedRanges";
 import { NumericFacetProps, NumericUnits } from "./types";
 
@@ -24,15 +24,18 @@ const DaysOrYears: React.FC<NumericFacetProps> = ({
   return (
     <div className="flex flex-col w-100 space-y-2 px-2 mt-1 ">
       {hasData && (
-        <SegmentedControl
-          data={[
-            { label: "Days", value: "days" },
-            { label: "Years", value: "years" },
-          ]}
-          value={units}
-          color="primary"
-          onChange={setUnits}
-        />
+        <div className="flex flex-col items-stretch w-100 mt-1">
+          <SegmentedControl
+            data={[
+              { label: "Days", value: "days" },
+              { label: "Years", value: "years" },
+            ]}
+            value={units}
+            color="primary"
+            onChange={setUnits}
+            padding={2}
+          />
+        </div>
       )}
 
       <RangeInputWithPrefixedRanges

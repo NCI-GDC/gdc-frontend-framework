@@ -8,8 +8,10 @@ import {
   Stats,
   GqlOperation,
 } from "@gff/core";
-import SegmentedControl from "@/components/SegmentedControl";
-import { DownloadProgressContext } from "@gff/portal-components";
+import {
+  DownloadProgressContext,
+  SegmentedControl,
+} from "@gff/portal-components";
 import ContinuousData from "./ContinuousData";
 import CategoricalData from "./CategoricalData";
 import { ChartTypes, DataDimension } from "../types";
@@ -143,12 +145,14 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
               ]}
               onChange={(d) => setDataDimension(d as DataDimension)}
               disabled={noData || downloadInProgress}
+              padding={1}
             />
           )}
           <SegmentedControl
             data={chartButtons}
             onChange={(c) => setChartType(c as ChartTypes)}
             disabled={noData || downloadInProgress}
+            padding={1}
           />
           <Tooltip
             label="Remove Card"

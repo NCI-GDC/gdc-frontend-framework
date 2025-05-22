@@ -85,7 +85,11 @@ export const useClearAllGenomicFilters = () => {
   }, [dispatch]);
 };
 
-export const useGenomicFilterByName = (field: string): OperandValue => {
+export const useGenomicFilterByName = (field: string) => {
+  return useAppSelector((state) => selectGeneAndSSMFiltersByName(state, field));
+};
+
+export const useGenomicFilterValueByName = (field: string): OperandValue => {
   const enumFilters: Operation = useAppSelector((state) =>
     selectGeneAndSSMFiltersByName(state, field),
   );
@@ -485,4 +489,10 @@ export const useOpenUploadModal = () => {
   };
 
   return openUploadModal;
+};
+
+export const useUploadFilterItems = (uploadField: string) => {
+  const field = uploadField.split(".upload").join("");
+  const items = useGenomicFilterValueByName(field);
+  return { items, noData: items === undefined };
 };

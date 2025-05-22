@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { ActionIcon, Badge, Group, TextInput } from "@mantine/core";
-import { CloseIcon, PlusIcon } from "src/commonIcons";
+import { CloseIcon, PlusIcon, WarningMessageIcon } from "src/commonIcons";
 import { FacetCardProps, ValueFacetHooks } from "../types";
 import FacetControlsHeader from "./FacetControlsHeader";
 import {
@@ -55,6 +55,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
   const isFilterExpanded =
     hooks?.useFilterExpanded && hooks.useFilterExpanded(field);
   const showFilters = isFilterExpanded === undefined || isFilterExpanded;
+  const [inputError, setInputError] = useState(false);
 
   const setValues = (values: EnumOperandValue) => {
     if (values.length > 0) {
@@ -94,7 +95,15 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
         color="white"
         radius="xl"
         variant="transparent"
-        onClick={() => setValues(textValues.filter((i) => i !== x))}
+        onClick={() => {
+          const updatedValues = textValues.filter((i) => i !== x);
+          setValues(updatedValues);
+          if (updatedValues.includes(textValue)) {
+            setInputError(true);
+          } else {
+            setInputError(false);
+          }
+        }}
       >
         <CloseIcon size={10} aria-label="remove value from filter" />
       </ActionIcon>
@@ -116,29 +125,48 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
         className={showFilters ? "h-full" : "h-0 invisible"}
         aria-hidden={!showFilters}
       >
-        <div className="flex flex-nowrap items-center p-2">
+        <div className="p-2">
           <TextInput
             data-testid="textbox-add-filter-value"
             size="sm"
             placeholder={`Enter ${facetName}`}
             classNames={{
               root: "grow",
-              input: "border-r-0 rounded-r-none py-1",
+              input: "border-r-0 py-1",
             }}
             aria-label="enter value to add filter"
             value={textValue}
-            onChange={(event) => setTextValue(event.currentTarget.value)}
-          />
-          <ActionIcon
-            size="lg"
-            aria-label="add string value"
-            className="bg-accent text-accent-contrast border-base-min border-1 rounded-l-none h-[30px]"
-            onClick={() => {
-              if (textValue.length > 0) addValue(textValue.trim());
+            onChange={(event) => {
+              setTextValue(event.currentTarget.value);
+              setInputError(false);
             }}
-          >
-            <PlusIcon />
-          </ActionIcon>
+            error={
+              inputError ? (
+                <div className="text-utility-error flex gap-2 font-content-noto">
+                  <div>
+                    <WarningMessageIcon size="1rem" />
+                  </div>
+                  <span>Please enter a unique value.</span>
+                </div>
+              ) : undefined
+            }
+            rightSection={
+              <ActionIcon
+                size="lg"
+                aria-label="add string value"
+                className="bg-accent text-accent-contrast border-base-min border-1 rounded-l-none h-[30px]"
+                onClick={() => {
+                  if (textValues.includes(textValue)) {
+                    setInputError(true);
+                  } else if (textValue.length > 0) {
+                    addValue(textValue.trim());
+                  }
+                }}
+              >
+                <PlusIcon />
+              </ActionIcon>
+            }
+          />
         </div>
         {/* h-96 is max height for the content of ExactValueFacet, EnumFacet, UploadFacet */}
         <Group
@@ -153,6 +181,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
               color="accent"
               key={x}
               rightSection={removeButton(x)}
+              className="normal-case"
             >
               {x}
             </Badge>

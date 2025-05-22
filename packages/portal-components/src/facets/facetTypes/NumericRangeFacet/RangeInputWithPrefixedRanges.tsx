@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { LoadingOverlay } from "@mantine/core";
-import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
 import FacetExpander from "../FacetExpander";
 import {
@@ -10,11 +9,7 @@ import {
 } from "../../utils";
 import FromTo from "./FromTo";
 import RangeValueSelector from "./RangeValueSelector";
-import {
-  buildRangeLabelsAndValues,
-  classifyRangeType,
-  radioStyle,
-} from "./utils";
+import { buildRangeLabelsAndValues, classifyRangeType } from "./utils";
 import { BAD_DATA_MESSAGE } from "../../constants";
 import { NumericFacetProps, NumericUnits } from "./types";
 
@@ -142,98 +137,87 @@ const RangeInputWithPrefixedRanges: React.FC<
     <>
       <LoadingOverlay data-testid="loading-spinner" visible={isFetching} />
       <div className="flex flex-col space-y-2 mt-1">
-        <div className="flex justify-items-stretch items-center">
-          <div>
-            <input
-              aria-label="custom range"
-              type="radio"
-              className={radioStyle}
-              id={`${field}_custom`}
-              name={`${field}_range_selection`}
-              checked={selectedRange === "custom"}
-              onChange={() => {
-                setSelectedRange("custom");
-                setIsCustom(true);
+        <FromTo
+          minimum={minimum}
+          maximum={maximum}
+          values={filterValues}
+          field={`${field}`}
+          units={units}
+          changedCallback={resetToCustom}
+          {...hooks}
+          clearValues={clearValues}
+          rangeDatatype={rangeDatatype}
+          radioSelected={selectedRange === "custom"}
+          onSelectRadio={() => {
+            setSelectedRange("custom");
+            setIsCustom(true);
+          }}
+        />
+      </div>
+      <div
+        className={
+          isFacetView
+            ? `flip-card h-full `
+            : `flip-card flip-card-flipped h-full`
+        }
+      >
+        <div
+          className={`flex flex-col border-t-2 card-face bg-base-max ${
+            !isFacetView ? "invisible" : ""
+          }`}
+        >
+          {totalBuckets == 0 ? (
+            <div className="mx-4 font-content">{BAD_DATA_MESSAGE}</div>
+          ) : isSuccess ? (
+            <RangeValueSelector
+              field={`${field}`}
+              valueLabel={valueLabel}
+              itemsToShow={bucketsToShow}
+              rangeLabelsAndValues={rangeLabelsAndValues}
+              selected={selectedRange}
+              useUpdateFacetFilters={hooks.useUpdateFacetFilters}
+              setSelected={(value) => {
+                setIsCustom(false); // no longer a customRange
+                // this is the only way user interaction
+                // can set this to False
+                setSelectedRange(value);
               }}
             />
-          </div>
-          <FromTo
-            minimum={minimum}
-            maximum={maximum}
-            values={filterValues}
-            field={`${field}`}
-            units={units}
-            changedCallback={resetToCustom}
-            {...hooks}
-            clearValues={clearValues}
-            rangeDatatype={rangeDatatype}
-          />
+          ) : null}
+          {
+            <FacetExpander
+              remainingValues={remainingValues}
+              isGroupExpanded={isGroupExpanded}
+              onShowChanged={onShowModeChanged}
+            />
+          }
         </div>
         <div
-          className={
-            isFacetView
-              ? `flip-card h-full `
-              : `flip-card flip-card-flipped h-full`
-          }
+          className={`card-face card-back rounded-b-md bg-base-max h-full pb-1 ${
+            isFacetView ? "invisible" : ""
+          }`}
         >
-          <div
-            className={`flex flex-col border-t-2 card-face bg-base-max ${
-              !isFacetView ? "invisible" : ""
-            }`}
-          >
-            {totalBuckets == 0 ? (
-              <div className="mx-4 font-content">{BAD_DATA_MESSAGE}</div>
-            ) : isSuccess ? (
-              <RangeValueSelector
-                field={`${field}`}
-                valueLabel={valueLabel}
-                itemsToShow={bucketsToShow}
-                rangeLabelsAndValues={rangeLabelsAndValues}
-                selected={selectedRange}
-                useUpdateFacetFilters={hooks.useUpdateFacetFilters}
-                setSelected={(value) => {
-                  setIsCustom(false); // no longer a customRange
-                  // this is the only way user interaction
-                  // can set this to False
-                  setSelectedRange(value);
-                }}
-              />
-            ) : null}
-            {
-              <FacetExpander
-                remainingValues={remainingValues}
-                isGroupExpanded={isGroupExpanded}
-                onShowChanged={onShowModeChanged}
-              />
-            }
-          </div>
-          <div
-            className={`card-face card-back rounded-b-md bg-base-max h-full pb-1 ${
-              isFacetView ? "invisible" : ""
-            }`}
-          >
-            {!isFacetView && totalBuckets > 0 && Chart !== undefined && (
-              <Chart
-                field={field}
-                data={chartData}
-                selectedEnums={[]}
-                showTitle={false}
-                isSuccess={isSuccess}
-                valueLabel={valueLabel}
-                maxBins={numberOfBarsToDisplay}
-                height={
-                  (numberOfBarsToDisplay == 1
-                    ? 110
-                    : numberOfBarsToDisplay == 2
-                    ? 220
-                    : numberOfBarsToDisplay == 3
-                    ? 240
-                    : numberOfBarsToDisplay * 65 + 10) -
-                  (isGroupExpanded ? 15 : 0)
-                }
-              />
-            )}
-          </div>
+          {!isFacetView && totalBuckets > 0 && Chart !== undefined && (
+            <Chart
+              field={field}
+              data={chartData}
+              selectedEnums={[]}
+              showTitle={false}
+              isSuccess={isSuccess}
+              valueLabel={valueLabel}
+              maxBins={numberOfBarsToDisplay}
+              height={
+                (numberOfBarsToDisplay == 1
+                  ? 110
+                  : numberOfBarsToDisplay == 2
+                  ? 220
+                  : numberOfBarsToDisplay == 3
+                  ? 240
+                  : numberOfBarsToDisplay * 65 + 10) -
+                (isGroupExpanded ? 15 : 0)
+              }
+            />
+          )}
         </div>
       </div>
     </>

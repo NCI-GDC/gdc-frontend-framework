@@ -65,7 +65,11 @@ describe("<ToggleFacet />", () => {
             useClearFilter: jest.fn(),
             useTotalCounts: jest.fn(),
             useFieldNameToTitle: jest.fn().mockReturnValue(jest.fn()),
-            useGetFacetFilters: jest.fn().mockReturnValue(["true"]),
+            useGetFacetFilters: jest.fn().mockReturnValue({
+              field: "genes.is_cancer_gene_census",
+              operands: ["true"],
+              operator: "includes",
+            }),
           }}
           facetName="Is Cancer Gene Census"
         />

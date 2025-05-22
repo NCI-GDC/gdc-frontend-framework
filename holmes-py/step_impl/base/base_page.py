@@ -31,7 +31,7 @@ class GenericLocators:
     TEXT_COHORT_BAR_CASE_COUNT = (
         f'[data-testid="expandcollapseButton"] >> span[class="pr-1 font-bold"]'
     )
-    CART_IDENT = '[data-testid="button-header-cart"] >> ..'
+    CART_IDENT = '[data-testid="button-header-cart"]'
 
     BUTTON_CLEAR_ACTIVE_COHORT_FILTERS = (
         '[data-testid="button-clear-all-cohort-filters"]'
@@ -156,6 +156,9 @@ class GenericLocators:
     FILTER_GROUP_SHOW_MORE_LESS_IDENT = (
         lambda group_name, more_or_less: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> button[data-testid="{more_or_less}"]'
     )
+    FILTER_GROUP_TEXT_AREA_IDENT = (
+        lambda group_name, textbox_id: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> [data-testid="textbox-{textbox_id}"]'
+    )
 
     SHOWING_NUMBER_OF_ITEMS_IN_TABLE = lambda table_specified: f'[data-testid="table-{table_specified}"] >> [data-testid="text-showing-count"]'
     SHOWING_NUMBER_OF_ITEMS = '[data-testid="text-showing-count"]'
@@ -192,6 +195,10 @@ class BasePage:
 
     def get_text(self, locator):
         return self.driver.locator(locator).text_content()
+
+    def get_inner_text(self, locator):
+        """Returns only what a user can see on the page"""
+        return self.driver.locator(locator).inner_text()
 
     def get_input_value(self, locator):
         return self.driver.locator(locator).input_value()
@@ -369,11 +376,11 @@ class BasePage:
         table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT_IN_SPECIFIED_TABLE(table_name, row, column)
         # Try to return drilled down locator.
         if self.is_visible(table_locator_to_select):
-            return self.get_text(table_locator_to_select)
+            return self.get_inner_text(table_locator_to_select)
         # If that is not available, return a higher level locator.
         else:
             table_locator_to_select = GenericLocators.TABLE_AREA_TO_COLLECT_IN_SPECIFIED_TABLE(table_name, row, column)
-            return self.get_text(table_locator_to_select)
+            return self.get_inner_text(table_locator_to_select)
 
     def hover_table_body_by_row_column(self, row, column):
         """
@@ -676,6 +683,12 @@ class BasePage:
         locator = GenericLocators.CHECKBOX_IDENT(checkbox_name)
         self.click(locator)
 
+    def click_checkbox_normalize_ident(self, checkbox_name):
+        """Clicks a checkbox with given, unmodified name"""
+        checkbox_name = self.normalize_button_identifier(checkbox_name)
+        locator = GenericLocators.CHECKBOX_IDENT(checkbox_name)
+        self.click(locator)
+
     def click_radio_button(self, radio_name):
         """Clicks a radio button in a filter card"""
         locator = GenericLocators.RADIO_BUTTON_IDENT(radio_name)
@@ -828,6 +841,14 @@ class BasePage:
             filter_group_name, label
         )
         self.click(locator)
+
+    def type_in_filter_card_search_text_area(self, facet_group_name, textbox_id, text):
+        """Send keys in the search textbox area"""
+        textbox_id = self.normalize_button_identifier(textbox_id)
+        locator = GenericLocators.FILTER_GROUP_TEXT_AREA_IDENT(
+            facet_group_name, textbox_id
+        )
+        self.send_keys(locator, text)
 
     def select_table_by_row_column(self, row, column):
         """

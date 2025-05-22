@@ -6,8 +6,8 @@ import { useDeepCompareMemo } from "use-deep-compare";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import VerticalTable from "../Table/VerticalTable";
 import { HandleChangeInput } from "../Table/types";
-import { MatchResults } from "./utils";
 import FunctionButton from "../FunctionButton";
+import { MatchResults } from "./type";
 
 // check for HGNC
 const isHGNC = (value: string) => value.startsWith("HGNC:");

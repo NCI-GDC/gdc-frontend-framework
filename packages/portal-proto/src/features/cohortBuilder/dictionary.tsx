@@ -119,7 +119,7 @@ export const useFacetTabLoaded = (tab: string) => {
   const facetResults = useCoreSelector((state) => selectCaseFacets(state));
   const facetTab = tabsConfig[tab];
 
-  if (tab === "custom" || tab === "molecular_filters") {
+  if (tab === "custom" || tab === "genomic_filters") {
     return true;
   }
 

@@ -34,7 +34,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |-----------------|-------------------------------------------|--------------------|
   |Save             |Cohort has been saved                      |Remove Modal        |
 * "Save as test - step 1" should be the active cohort
-* Is text "Changes not saved" not present on the page
+* Is text "Changes not saved" not present on the Cohort Bar
 
 ## Edit and Save As Cohort
 * Remove these filters from the cohort query area
@@ -62,7 +62,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |-----------------|-------------------------------------------|--------------------|
   |Save             |This is now your current cohort.           |Remove Modal        |
 * "Save As Cohort - step 2" should be the active cohort
-* Is text "Changes not saved" not present on the page
+* Is text "Changes not saved" not present on the Cohort Bar
 * Validate the cohort query filter area has these filters
   |facet_name                   |selection            |position in filter area  |
   |-----------------------------|---------------------|-------------------------|

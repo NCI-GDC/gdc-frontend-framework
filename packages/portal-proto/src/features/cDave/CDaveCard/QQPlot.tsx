@@ -151,6 +151,12 @@ const QQPlot: React.FC<QQPlotProps> = ({
           fontSize: 12,
           color: "black",
           fontFamily: "Noto Sans",
+          formatter: (value: number) =>
+            value.toLocaleString("en-US", {
+              maximumFractionDigits: 2,
+              notation: "compact",
+              compactDisplay: "short",
+            }),
         },
         axisTick: {
           length: 6,

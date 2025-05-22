@@ -45,7 +45,7 @@ jest.mock("@sjcrh/proteinpaint-client", () => ({
   }),
 }));
 
-test("SSM lolliplot arguments", () => {
+test("CNV Segment arguments", () => {
   userDetails = { data: { username: "test" } };
   const { unmount, rerender } = render(
     <MantineProvider
@@ -56,7 +56,7 @@ test("SSM lolliplot arguments", () => {
         },
       }}
     >
-      <ProteinPaintWrapper />
+      <ProteinPaintWrapper hardcodeCnvOnly={true} />
     </MantineProvider>,
   );
   expect(typeof runpparg).toBe("object");
@@ -70,7 +70,7 @@ test("SSM lolliplot arguments", () => {
     attributes: [{ from: "sample_id", to: "cases.case_id", convert: true }],
     callback: runpparg.allow2selectSamples?.callback,
   });
-  expect(runpparg.geneSearch4GDCmds3).toEqual(true);
+  expect(runpparg.geneSearch4GDCmds3).toEqual({ hardcodeCnvOnly: true });
   isDemoMode = true;
   rerender(
     <MantineProvider

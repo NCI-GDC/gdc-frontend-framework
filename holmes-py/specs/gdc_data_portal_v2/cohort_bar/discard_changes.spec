@@ -32,7 +32,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |-------------------|---------------------|-------------------------|
   |Alcohol History    |not reported         |1                        |
   |Preservation Method|ffpe                 |2                        |
-* Is text "Cohort not saved" present on the page
+* Is text "Cohort not saved" present on the Cohort Bar
 * Select "Discard" from the Cohort Bar
 * Is text "Discard Changes" present on the page
 * Is text "Are you sure you want to permanently discard the unsaved changes?" present on the page
@@ -43,7 +43,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Equal"
 * "Discard" should be "disabled" in the Cohort Bar
-* Is text "Cohort not saved" present on the page
+* Is text "Cohort not saved" present on the Cohort Bar
 * Validate the cohort query filter does not have these filters
   |facet_name         |selections           |
   |-------------------|---------------------|
@@ -67,7 +67,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |facet_name         |selection            |
   |-------------------|---------------------|
   |Residual Disease    |r0                   |
-* Is text "Changes not saved" present on the page
+* Is text "Changes not saved" present on the Cohort Bar
 * Validate the cohort query filter area has these filters
   |facet_name         |selections           |position in filter area  |
   |-------------------|---------------------|-------------------------|
@@ -81,7 +81,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Equal"
 * "Discard" should be "disabled" in the Cohort Bar
-* Is text "Changes not saved" not present on the page
+* Is text "Changes not saved" not present on the Cohort Bar
 * Validate the cohort query filter does not have these filters
   |facet_name         |selections           |
   |-------------------|---------------------|
@@ -112,7 +112,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |Ethnicity          |not hispanic or latino|1                       |
   |Igcccg Stage       |good prognosis       |2                        |
   |Project            |TCGA-TGCT            |3                        |
-* Is text "Changes not saved" present on the page
+* Is text "Changes not saved" present on the Cohort Bar
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
 * Select "Discard" from the Cohort Bar
@@ -124,7 +124,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
 * "Discard" should be "disabled" in the Cohort Bar
-* Is text "Changes not saved" not present on the page
+* Is text "Changes not saved" not present on the Cohort Bar
 * Validate the cohort query filter area has these filters
   |facet_name         |selections           |position in filter area  |
   |-------------------|---------------------|-------------------------|
@@ -141,7 +141,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * Clear active cohort filters
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Equal"
-* Is text "Changes not saved" present on the page
+* Is text "Changes not saved" present on the Cohort Bar
 * Validate the cohort query filter does not have these filters
   |facet_name         |selections           |
   |-------------------|---------------------|
@@ -156,7 +156,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
 * "Discard" should be "disabled" in the Cohort Bar
-* Is text "Changes not saved" not present on the page
+* Is text "Changes not saved" not present on the Cohort Bar
 * Validate the cohort query filter area has these filters
   |facet_name         |selections           |position in filter area  |
   |-------------------|---------------------|-------------------------|

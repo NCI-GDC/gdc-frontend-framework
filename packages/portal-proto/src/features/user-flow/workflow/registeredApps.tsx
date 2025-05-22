@@ -267,6 +267,25 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
     noDataTooltip:
       "Current cohort does not have MAF data available for download.",
   },
+  {
+    name: "CNV Segment",
+    icon: (
+      <ProteinPaintIcon
+        height={48}
+        width={80}
+        viewBox="-12 0 80 48"
+        aria-hidden="true"
+      />
+    ),
+    tags: ["variantAnalysis", "cnv"],
+    hasDemo: true,
+    description: "",
+    id: "CnvSegmentApp",
+    countsField: "ssmCaseCount",
+    optimizeRules: ["available data = ssm"],
+    noDataTooltip:
+      "Current cohort does not have SSM data available for visualization.",
+  },
 ];
 
 export const APPTAGS = [

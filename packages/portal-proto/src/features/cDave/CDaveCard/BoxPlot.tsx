@@ -150,6 +150,13 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
         crossAxis={false}
         tickCount={8}
         tickLabelComponent={emptyChart ? <></> : undefined}
+        tickFormat={(value: number) =>
+          value.toLocaleString("en-US", {
+            maximumFractionDigits: 2,
+            notation: "compact",
+            compactDisplay: "short",
+          })
+        }
       />
       <VictoryBoxPlot
         style={{

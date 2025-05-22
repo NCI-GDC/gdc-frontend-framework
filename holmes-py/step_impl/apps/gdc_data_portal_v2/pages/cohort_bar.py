@@ -25,6 +25,9 @@ class CohortBarLocators:
         '>> .. >> .. >> .. >> svg[xmlns="http://www.w3.org/2000/svg"]'
     )
 
+    TEXT_COHORT_BAR_MESSAGE = (
+        lambda expected_message: f'[data-testid="text-cohort-bar-message"] >> text={expected_message} >> nth=0'
+    )
     TEXT_COHORT_QUERY_FILTER = (
         lambda full_query_filter, position: f'[data-testid="text-cohort-filters"] > div:nth-child({position}) > div:has-text("{full_query_filter}") >> nth=0'
     )
@@ -86,6 +89,22 @@ class CohortBar(BasePage):
     def click_set_as_current_cohort_from_temp_message(self):
         locator = CohortBarLocators.SET_AS_COHORT_BUTTON_TEMP_COHORT_MESSAGE
         self.click(locator)
+
+    def is_text_present_on_cohort_bar(self, expected_text):
+        locator = CohortBarLocators.TEXT_COHORT_BAR_MESSAGE(expected_text)
+        try:
+            self.wait_until_locator_is_visible(locator)
+        except:
+            return False
+        return True
+
+    def is_text_not_present_on_cohort_bar(self, text):
+        locator = CohortBarLocators.TEXT_COHORT_BAR_MESSAGE(text)
+        try:
+            self.wait_until_locator_is_hidden(locator)
+        except:
+            return False
+        return True
 
     def is_expected_active_cohort_present(self, cohort_name: str):
         locator = CohortBarLocators.ACTIVE_COHORT(cohort_name)
