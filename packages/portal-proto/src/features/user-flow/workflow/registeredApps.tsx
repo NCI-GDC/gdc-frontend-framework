@@ -17,12 +17,18 @@ import OncoMatrixIcon from "public/user-flow/icons/apps/OncoMatrix.svg";
 import GeneExpressionIcon from "public/user-flow/icons/apps/GeneExpression.svg";
 import ScRNASeqIcon from "public/user-flow/icons/apps/scRNASeq.svg";
 import { useLazyScRNAseqCaseCountQuery } from "../../proteinpaint/scRNAseqCaseCount";
+import { useLazyCnvSegmentCaseCountQuery } from "../../proteinpaint/CnvSegmentCaseCount";
 import { CountHookRegistry } from "@gff/core";
 import { AppRegistrationEntry } from "@gff/portal-components";
 
 CountHookRegistry.getInstance().registerHook(
   "scRNAseqCaseCount",
   useLazyScRNAseqCaseCountQuery,
+);
+
+CountHookRegistry.getInstance().registerHook(
+  "CnvSegmentCaseCount",
+  useLazyCnvSegmentCaseCountQuery,
 );
 
 export const COHORTS = [
@@ -268,7 +274,7 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
       "Current cohort does not have MAF data available for download.",
   },
   {
-    name: "CNV Segment",
+    name: "Copy Number Segment",
     icon: (
       <ProteinPaintIcon
         height={48}
@@ -279,12 +285,11 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
     ),
     tags: ["variantAnalysis", "cnv"],
     hasDemo: true,
-    description: "",
+    description: "Visualize copy number variation over a gene or region.",
     id: "CnvSegmentApp",
-    countsField: "ssmCaseCount",
-    optimizeRules: ["available data = ssm"],
+    countsField: "CnvSegmentCaseCount",
     noDataTooltip:
-      "Current cohort does not have SSM data available for visualization.",
+      "Current cohort does not have CNV segment data available for visualization.",
   },
 ];
 
