@@ -73,6 +73,7 @@
         "cases.diagnoses.cog_renal_stage",
         "cases.diagnoses.figo_stage",
         "cases.diagnoses.igcccg_stage",
+        "cases.diagnoses.inrg_stage",
         "cases.diagnoses.inss_stage",
         "cases.diagnoses.iss_stage",
         "cases.diagnoses.masaoka_stage",
@@ -82,6 +83,7 @@
         "cases.diagnoses.cog_rhabdomyosarcoma_risk_group",
         "cases.diagnoses.eln_risk_classification",
         "cases.diagnoses.international_prognostic_index",
+        "cases.diagnoses.medulloblastoma_molecular_classification",
         "cases.diagnoses.wilms_tumor_histologic_subtype",
         "cases.diagnoses.weiss_assessment_score"
       ],
