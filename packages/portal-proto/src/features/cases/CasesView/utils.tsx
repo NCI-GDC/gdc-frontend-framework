@@ -7,7 +7,7 @@ import {
 } from "@gff/core";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Dispatch, SetStateAction, useMemo } from "react";
-import { Button, Checkbox, Menu } from "@mantine/core";
+import { Button, Checkbox, Menu, Tooltip } from "@mantine/core";
 import { allFilesInCart } from "@/utils/index";
 import { addToCart, removeFromCart } from "@/features/cart/updateCart";
 import { ImageSlideCount } from "@/components/ImageSlideCount";
@@ -113,44 +113,48 @@ export const useGenerateCasesTableColumns = ({
               ),
             )
             .filter((item) => item.length > 0).length;
+          const isDisabled = row.original.files_count === 0;
           const isPlural = row.original.files_count > 1;
           return (
             <Menu position="bottom-start" zIndex={300}>
               <Menu.Target>
-                <Button
-                  data-testid="button-add-remove-cases-table"
-                  aria-label={`${
-                    isAllFilesInCart ? "remove" : "add"
-                  } all files ${isAllFilesInCart ? "from" : "to"} the cart`}
-                  leftSection={
-                    <div className="mr-2">
-                      <CartIcon
-                        className={
-                          isAllFilesInCart && "text-primary-contrast-darkest"
-                        }
-                        aria-hidden="true"
-                      />
-                    </div>
-                  }
-                  rightSection={
-                    <div className="border-l">
-                      <DropdownIcon
-                        className={
-                          isAllFilesInCart && "text-primary-contrast-darkest"
-                        }
-                        size={18}
-                        aria-hidden="true"
-                      />
-                    </div>
-                  }
-                  variant="outline"
-                  classNames={{
-                    root: "w-12 pr-0",
-                    section: "m-0",
-                  }}
-                  size="compact-xs"
-                  className={`${isAllFilesInCart && "bg-primary-darkest"}`}
-                />
+                <Tooltip label="No files to add to Cart" disabled={!isDisabled}>
+                  <Button
+                    data-testid="button-add-remove-cases-table"
+                    aria-label={`${
+                      isAllFilesInCart ? "remove" : "add"
+                    } all files ${isAllFilesInCart ? "from" : "to"} the cart`}
+                    leftSection={
+                      <div className="mr-2">
+                        <CartIcon
+                          className={
+                            isAllFilesInCart && "text-primary-contrast-darkest"
+                          }
+                          aria-hidden="true"
+                        />
+                      </div>
+                    }
+                    rightSection={
+                      <div className="border-l">
+                        <DropdownIcon
+                          className={
+                            isAllFilesInCart && "text-primary-contrast-darkest"
+                          }
+                          size={18}
+                          aria-hidden="true"
+                        />
+                      </div>
+                    }
+                    variant="outline"
+                    classNames={{
+                      root: "w-12 pr-0 bg-base-max text-primary disabled:border disabled:bg-base-lightest disabled:opacity-50 disabled:border-primary",
+                      section: "m-0",
+                    }}
+                    size="compact-xs"
+                    className={`${isAllFilesInCart && "bg-primary-darkest"}`}
+                    disabled={isDisabled}
+                  />
+                </Tooltip>
               </Menu.Target>
               <Menu.Dropdown>
                 {numberOfFilesToRemove < row.original.files_count && (
