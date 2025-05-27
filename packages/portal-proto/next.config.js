@@ -9,6 +9,8 @@ const connectSrc = [
   "https://browser-intake-datadoghq.com",
   "https://api.gdc.cancer.gov",
   "https://www.google-analytics.com",
+  // Uncomment to use mock server for testing
+  //"https://localhost:3100",
 ];
 
 if (process.env.NODE_ENV == "development") {
