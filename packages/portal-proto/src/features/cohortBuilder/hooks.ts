@@ -199,7 +199,6 @@ export const useAvailableCustomFacets = (
     facetType,
   ]);
 
-  console.log({ availableFacets });
   useEffect(() => {
     if (onlyFiltersWithValues && availableFacets && usefulFacets) {
       if (usefulFacetsStatus == "fulfilled") {
