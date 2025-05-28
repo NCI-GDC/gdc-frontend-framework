@@ -54,6 +54,7 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
   const replaceCohort = hooks.useReplaceCohort();
   const setActiveCohort = hooks.useSetActiveCohort();
   const setCohortMessage = useContext(CohortNotificationContext);
+  const currentCohort = hooks.useSelectCurrentCohort();
   const { theme } = useContext(AppContext);
 
   const closeModal = useCallback(() => {
@@ -79,7 +80,7 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
         saveAs,
       })
         .then(({ newCohortId }) => {
-          if (setAsCurrent || saveAs) {
+          if (setAsCurrent || saveAs || currentCohort?.name == newName) {
             setCohortMessage &&
               setCohortMessage([
                 {
@@ -88,7 +89,6 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
                   param2: newCohortId,
                 },
               ]);
-
             setActiveCohort(newCohortId);
           } else {
             setCohortMessage &&
