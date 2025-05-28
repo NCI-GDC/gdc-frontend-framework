@@ -6,6 +6,7 @@ import {
   useCoreSelector,
   selectFacetDefinition,
   usePrevious,
+  selectCohortBuilderConfigFilters,
 } from "@gff/core";
 import { FacetTabs } from "@gff/portal-components";
 import {
@@ -50,6 +51,9 @@ const CohortBuilder = () => {
   const [activeTab, setActiveTab] = useState<string | null>(
     routerTab ? (routerTab as string) : Object.keys(tabsConfig)[0],
   );
+  const cohortBuilderFilters = useCoreSelector((state) =>
+    selectCohortBuilderConfigFilters(state),
+  );
 
   useEffect(() => {
     // Check if the change was initiated by the router
@@ -86,6 +90,7 @@ const CohortBuilder = () => {
       setActiveTab={setActiveTab}
       facetDefinitions={facetDefinitions}
       tabsConfig={tabsConfig}
+      usedFacets={cohortBuilderFilters}
       hooks={{
         useGetEnumFacetData: useEnumFacetValues,
         useSearchEnumTerms,

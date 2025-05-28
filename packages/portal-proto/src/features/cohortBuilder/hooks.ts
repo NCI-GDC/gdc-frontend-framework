@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
-import { flatten, pick } from "lodash";
+import { flatten } from "lodash";
 import MiniSearch from "minisearch";
 import {
   useCoreDispatch,
@@ -98,7 +98,6 @@ export const usePopulateFacetData = (
   queryOptions: { indexType: GQLIndexType; docType: GQLDocType },
 ) => {
   const enumFacets = facets.filter((x) => x.facet_type === "enum");
-
   useEnumFacets(
     enumFacets.map((entry) => entry.full),
     queryOptions,
@@ -109,6 +108,7 @@ export const useCustomFacets = () => {
   const customConfig = useCoreSelector((state) =>
     selectCohortBuilderConfigCategory(state, "custom"),
   );
+
   const [customFacetDefinitions, setCustomFacetDefinitions] = useState<
     ReadonlyArray<FacetDefinition>
   >([]);
@@ -137,7 +137,9 @@ export const useAvailableCustomFacets = (
 
   const { facetType = "cases" } = queryOptions;
 
-  const [availableFacets, setAvailableFacets] = useState(undefined); // Facets that are current not used
+  const [availableFacets, setAvailableFacets] = useState<
+    Record<string, FacetCardDefinition> | undefined
+  >(undefined); // Facets that are current not used
   const [currentFacets, setCurrentFacets] = useState(undefined); // current set of Facets
 
   const { data: usefulFacets, status: usefulFacetsStatus } = useCoreSelector(
@@ -197,17 +199,27 @@ export const useAvailableCustomFacets = (
     facetType,
   ]);
 
+  console.log({ availableFacets });
   useEffect(() => {
-    if (onlyFiltersWithValues) {
+    if (onlyFiltersWithValues && availableFacets && usefulFacets) {
       if (usefulFacetsStatus == "fulfilled") {
-        // use only the filters in the list of useful filters
-        const filters = pick(availableFacets, usefulFacets);
+        const filteredFacets = Object.values(availableFacets).filter((facet) =>
+          usefulFacets.includes(facet.name),
+        );
+
+        const filters = filteredFacets.reduce((acc, facet) => {
+          acc[facet.field] = facet;
+          return acc;
+        }, {});
+
         setCurrentFacets(filters);
       } else {
         setCurrentFacets(undefined);
       }
-    } // use all un-used filters (not assigned to Cohort Builder or Download)
-    else setCurrentFacets(availableFacets);
+    } else {
+      // use all un-used filters (not assigned to Cohort Builder or Download)
+      setCurrentFacets(availableFacets);
+    }
   }, [
     availableFacets,
     onlyFiltersWithValues,

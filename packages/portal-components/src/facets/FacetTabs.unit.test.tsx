@@ -31,6 +31,7 @@ describe("<FacetTabs />", () => {
             label: "General",
           },
         }}
+        usedFacets={[]}
         getFacetLabel={jest.fn()}
         activeTab="custom"
         setActiveTab={jest.fn()}
@@ -62,6 +63,7 @@ describe("<FacetTabs />", () => {
             useFieldNameToTitle: jest.fn(),
           } as any
         }
+        usedFacets={[]}
         tabsConfig={{
           general: {
             facets: [],
