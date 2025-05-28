@@ -268,7 +268,7 @@ const ContextBar = ({
         <div className="relative p-4">
           <div className="flex gap-1 pb-4 relative lg:absolute lg:pb-0">
             <DropdownWithIcon
-              customDataTestId="button-files-cases-summary"
+              customTargetButtonDataTestId="button-files-cases-summary"
               dropdownElements={[
                 {
                   title: "Add to Cart",
@@ -325,7 +325,7 @@ const ContextBar = ({
             />
 
             <DropdownWithIcon
-              customDataTestId="button-custom-filters-cases-summary"
+              customTargetButtonDataTestId="button-custom-filters-cases-summary"
               dropdownElements={[
                 {
                   title: "Cases",
@@ -365,7 +365,7 @@ const ContextBar = ({
             {activeTab === "summary" && (
               <>
                 <DropdownWithIcon
-                  customDataTestId="button-biospecimen-cases-summary"
+                  customTargetButtonDataTestId="button-biospecimen-cases-summary"
                   dropdownElements={[
                     {
                       title: "JSON ",
@@ -394,7 +394,7 @@ const ContextBar = ({
                 />
 
                 <DropdownWithIcon
-                  customDataTestId="button-clinical-cases-summary"
+                  customTargetButtonDataTestId="button-clinical-cases-summary"
                   dropdownElements={[
                     {
                       title: "JSON",
