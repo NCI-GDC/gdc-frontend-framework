@@ -16,6 +16,7 @@ import ProteinPaintIcon from "public/user-flow/icons/apps/ProteinPaint.svg";
 import OncoMatrixIcon from "public/user-flow/icons/apps/OncoMatrix.svg";
 import GeneExpressionIcon from "public/user-flow/icons/apps/GeneExpression.svg";
 import ScRNASeqIcon from "public/user-flow/icons/apps/scRNASeq.svg";
+import CopyNumberSegmentIcon from "public/user-flow/icons/apps/CopyNumberSegment.svg";
 import { useLazyScRNAseqCaseCountQuery } from "../../proteinpaint/scRNAseqCaseCount";
 import { useLazyCnvSegmentCaseCountQuery } from "../../proteinpaint/CnvSegmentCaseCount";
 import { CountHookRegistry } from "@gff/core";
@@ -276,7 +277,7 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
   {
     name: "Copy Number Segment",
     icon: (
-      <ProteinPaintIcon
+      <CopyNumberSegmentIcon
         height={48}
         width={80}
         viewBox="-12 0 80 48"
