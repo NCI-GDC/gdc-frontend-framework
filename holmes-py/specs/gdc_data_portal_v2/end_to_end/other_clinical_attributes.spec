@@ -15,9 +15,7 @@ tags: gdc-data-portal-v2, end-to-end, regression
 * Add a custom filter from "Custom Filters" tab on the Cohort Builder page
     |filter_name                                                |
     |-----------------------------------------------------------|
-    |follow_ups.other_clinical_attributes.risk_factors          |
     |follow_ups.other_clinical_attributes.days_to_comorbidity   |
-    |follow_ups.other_clinical_attributes.bmi                   |
 
 ## Save Cohort - Risk Factors and Days to Comorbidity
 * Select "Add" from the Cohort Bar
@@ -31,10 +29,10 @@ tags: gdc-data-portal-v2, end-to-end, regression
     |facet_name                                     |selection            |
     |-----------------------------------------------|---------------------|
     |Other Clinical Attributes Days to Comorbidity  |Apply                |
-* Make the following selections from "Custom Filters" tab on the Cohort Builder page
+* Make the following selections from "Other Clinical Attributes" tab on the Cohort Builder page
     |facet_name                            |selection                      |
     |---------------------------------------|-------------------------------|
-    |Other Clinical Attributes Risk Factors|colon polyps                   |
+    |Risk Factors|colon polyps                   |
 * Select "Save" from the Cohort Bar
 * Name the cohort "OCA_Days_Comorbidity_Risk_Factor" in the Cohort Bar section
 * Perform action and validate modal text
@@ -51,15 +49,15 @@ tags: gdc-data-portal-v2, end-to-end, regression
 ## Save Cohort - Bmi
 * Select "Add" from the Cohort Bar
 * Close the message
-* Search in a filter card from "Custom Filters" tab on the Cohort Builder page
+* Search in a filter card from "Other Clinical Attributes" tab on the Cohort Builder page
     |facet_name                                     |label                |text  |
     |-----------------------------------------------|---------------------|------|
-    |Other Clinical Attributes Bmi                  |input from value     |18    |
-    |Other Clinical Attributes Bmi                  |input to value       |32    |
-* Select the following labels from "Custom Filters" tab on the Cohort Builder page
+    |Bmi                  |input from value     |18    |
+    |Bmi                  |input to value       |32    |
+* Select the following labels from "Other Clinical Attributes" tab on the Cohort Builder page
     |facet_name                                     |selection            |
     |-----------------------------------------------|---------------------|
-    |Other Clinical Attributes Bmi                  |Apply                |
+    |Bmi                  |Apply                |
 * Validate the cohort query filter area has these filters
     |facet_name         |selections           |position in filter area  |
     |-------------------|---------------------|-------------------------|

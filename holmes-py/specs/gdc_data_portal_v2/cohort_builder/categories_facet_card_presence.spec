@@ -67,6 +67,7 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards, regression
   |Cog Renal Stage            |
   |Figo Stage                 |
   |Igcccg Stage               |
+  |Inrg Stage                 |
   |Inss Stage                 |
   |Iss Stage                  |
   |Masaoka Stage              |
@@ -76,6 +77,7 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards, regression
   |Cog Rhabdomyosarcoma Risk Group|
   |International Prognostic Index |
   |Eln Risk Classification        |
+  |Medulloblastoma Molecular Classification|
   |Wilms Tumor Histologic Subtype |
   |Weiss Assessment Score     |
 
@@ -101,7 +103,7 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards, regression
 * Validate presence of facet cards on the "Other Clinical Attributes" tab on the Cohort Builder page
   |facet_name                 |
   |---------------------------|
-  |BMI                        |
+  |Bmi                        |
   |Weight                     |
   |Height                     |
   |Risk Factors               |
