@@ -170,15 +170,8 @@ export const FacetCard: React.FC<FacetCardProps> = ({
                     <CohortCreationButton
                       numCases={cohort1Value}
                       label={cohort1Value?.toLocaleString() || "--"}
-                      filters={
-                        formattedData[0][idx].filter === undefined ||
-                        cohorts.primary_cohort.filter === undefined
-                          ? undefined
-                          : joinFilters(
-                              cohorts.primary_cohort.filter,
-                              formattedData[0][idx].filter,
-                            )
-                      }
+                      caseFilters={cohorts?.primary_cohort?.filter ?? undefined}
+                      filters={formattedData[0][idx].filter ?? undefined}
                       createStaticCohort
                     />
                   </td>
@@ -189,15 +182,10 @@ export const FacetCard: React.FC<FacetCardProps> = ({
                     <CohortCreationButton
                       numCases={cohort2Value}
                       label={cohort2Value?.toLocaleString() || "--"}
-                      filters={
-                        formattedData[1][idx].filter === undefined ||
-                        cohorts.comparison_cohort.filter === undefined
-                          ? undefined
-                          : joinFilters(
-                              cohorts.comparison_cohort.filter,
-                              formattedData[1][idx].filter,
-                            )
+                      caseFilters={
+                        cohorts?.comparison_cohort?.filter ?? undefined
                       }
+                      filters={formattedData[1][idx].filter ?? undefined}
                       createStaticCohort
                     />
                   </td>
