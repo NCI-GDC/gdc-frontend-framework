@@ -21,7 +21,7 @@
   },
   {
     "field": "genes.biotype",
-    "title": "Biotype",
+    "name": "Biotype",
     "facet_type": "enum",
     "queryOptions": {
       "docType": "genes"
@@ -29,7 +29,7 @@
   },
   {
     "field": "genes.is_cancer_gene_census",
-    "title": "Is Cancer Gene Census",
+    "name": "Is Cancer Gene Census",
     "facet_type": "toggle",
     "queryOptions": {
       "docType": "genes"
@@ -37,7 +37,7 @@
   },
   {
     "field": "ssms.consequence.transcript.annotation.vep_impact",
-    "title": "VEP Impact",
+    "name": "VEP Impact",
     "facet_type": "enum",
     "queryOptions": {
       "docType": "ssms"
@@ -45,7 +45,7 @@
   },
   {
     "field": "ssms.consequence.transcript.annotation.sift_impact",
-    "title": "SIFT Impact",
+    "name": "SIFT Impact",
     "facet_type": "enum",
     "queryOptions": {
       "docType": "ssms"
@@ -53,7 +53,7 @@
   },
   {
     "field": "ssms.consequence.transcript.annotation.polyphen_impact",
-    "title": "Polyphen Impact",
+    "name": "Polyphen Impact",
     "facet_type": "enum",
     "queryOptions": {
       "docType": "ssms"
@@ -61,7 +61,7 @@
   },
   {
     "field": "ssms.consequence.transcript.consequence_type",
-    "title": "Consequence Type",
+    "name": "Consequence Type",
     "facet_type": "enum",
     "queryOptions": {
       "docType": "ssms"
@@ -69,7 +69,7 @@
   },
   {
     "field": "ssms.mutation_subtype",
-    "title": "Type",
+    "name": "Type",
     "facet_type": "enum",
     "queryOptions": {
       "docType": "ssms"
