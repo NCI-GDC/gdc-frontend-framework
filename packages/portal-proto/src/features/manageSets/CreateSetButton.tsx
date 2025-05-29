@@ -82,7 +82,7 @@ const CreateSetButton: React.FC = () => {
       <CreateGeneModal opened={modal === Modals.GlobalGeneSetModal} />
       <CreateMutationModal opened={modal === Modals.GlobalMutationSetModal} />
       <DropdownWithIcon
-        customDataTestId="button-create-set"
+        customTargetButtonDataTestId="button-create-set"
         TargetButtonChildren={<>Create Set</>}
         dropdownElements={[
           {
