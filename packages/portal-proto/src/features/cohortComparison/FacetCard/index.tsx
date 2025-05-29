@@ -1,6 +1,6 @@
 import { Paper } from "@mantine/core";
 import saveAs from "file-saver";
-import { Bucket, joinFilters } from "@gff/core";
+import { Bucket } from "@gff/core";
 import { calculatePercentageAsNumber, humanify } from "src/utils";
 import BarChart from "../../charts/BarChart";
 import FunctionButton from "@/components/FunctionButton";
