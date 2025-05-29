@@ -51,9 +51,9 @@ interface DropdownWithIconProps {
    */
   fullHeight?: boolean;
   /**
-   * custom test id
+   * custom target button's test id
    */
-  customDataTestId?: string;
+  customTargetButtonDataTestId?: string;
 
   /**
     target button's tooltip
@@ -85,7 +85,7 @@ export const DropdownWithIcon = ({
   menuLabelCustomClass,
   customPosition,
   fullHeight,
-  customDataTestId = undefined,
+  customTargetButtonDataTestId = undefined,
   targetButtonTooltip = undefined,
   buttonAriaLabel = undefined,
 }: DropdownWithIconProps): JSX.Element => {
@@ -94,7 +94,6 @@ export const DropdownWithIcon = ({
     <Menu
       width={!disableTargetWidth && "target"}
       {...(customPosition && { position: customPosition })}
-      data-testid={customDataTestId ?? "menu-elem"}
       zIndex={9000} //dropdown should be on top of everything when open
     >
       <Menu.Target>
@@ -111,6 +110,7 @@ export const DropdownWithIcon = ({
             }}
             ref={targetRef}
             aria-label={buttonAriaLabel}
+            data-testid={customTargetButtonDataTestId ?? "menu-elem"}
           >
             {TargetButtonChildren}
           </Button>
