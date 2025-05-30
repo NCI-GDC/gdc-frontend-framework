@@ -5,7 +5,7 @@ import SaveCohortModal from "./SaveCohortModal";
 
 const hooks = {
   useSelectCurrentCohort: jest.fn(),
-  useSelectAvailableCohorts: jest.fn(),
+  useSelectAvailableCohorts: jest.fn().mockReturnValue([]),
   useDeleteCohort: jest.fn(),
   useDiscardChanges: jest.fn(),
   useUpdateFilters: jest.fn(),
