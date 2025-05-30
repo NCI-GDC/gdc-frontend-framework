@@ -41,7 +41,6 @@ jest.mock("@gff/core", () => ({
   hideModal: jest.fn(() => nullFunction()),
   Modals: jest.fn().mockReturnValue({}),
   selectCurrentModal: jest.fn(() => nullFunction()),
-  selectAvailableCohorts: jest.fn().mockReturnValue([]),
 }));
 
 jest.mock("@/hooks/useIsDemoApp", () => ({
