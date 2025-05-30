@@ -31,11 +31,14 @@ jest.mock("@gff/core", () => ({
   ] as any),
   useLazyGetCohortByIdQuery: jest.fn().mockReturnValue([jest.fn()]),
   useCreateCaseSetFromFiltersMutation: jest.fn().mockReturnValue([jest.fn()]),
+  selectCohortsFromStore: jest.fn().mockReturnValue([]),
 }));
 
 jest.mock("@/hooks/useIsDemoApp", () => ({
   useIsDemoApp: jest.fn(() => isDemoMode),
 }));
+
+jest.mock("@gff/portal-components");
 
 jest.mock("@sjcrh/proteinpaint-client", () => ({
   __esModule: true,
