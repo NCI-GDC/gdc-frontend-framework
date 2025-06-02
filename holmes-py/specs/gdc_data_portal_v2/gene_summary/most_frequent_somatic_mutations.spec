@@ -132,6 +132,7 @@ tags: gdc-data-portal-v2, regression, gene-summary
 
 ## Navigate to Gene Summary Page: KMT2D
 * Quick search for "KMT2D" and go to its page
+* Pause "3" seconds
 
 ## Save Mutation Set
 * Select value from table "Most Frequent Somatic Mutations" by row and column
