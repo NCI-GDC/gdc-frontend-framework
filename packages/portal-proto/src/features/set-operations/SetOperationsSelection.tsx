@@ -52,13 +52,13 @@ const SetOperationsSelection = (): JSX.Element => {
     cohort1Id === "demoCohort1Id" && cohort2Id === "demoCohort2Id";
 
   useDeepCompareEffect(() => {
-    if (cohorts.length > 0 || isCohortComparisonDemo) {
+    if (isCohortComparisonDemo || overwriteSelectedEntities) {
       setSelectedEntityType("cohort");
+    }
 
-      // A cohort has been deleted, kick user back to selection screen
-      if (cohorts.length < 2 && !isCohortComparisonDemo) {
-        setSelectionScreenOpen(true);
-      }
+    // A cohort has been deleted, kick user back to selection screen
+    if (cohorts.length < 2 && !isCohortComparisonDemo) {
+      setSelectionScreenOpen(true);
     }
   }, [cohorts, isCohortComparisonDemo, setSelectionScreenOpen]);
 
