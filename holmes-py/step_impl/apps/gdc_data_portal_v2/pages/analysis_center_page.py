@@ -163,7 +163,7 @@ class AnalysisCenterPage(BasePage):
         if page_to_load == "set operations demo":
             # Need to wait for loading spinners to be present, for them to disappear
             try:
-                self.wait_for_loading_spinner_to_be_visible(7500)
+                self.wait_for_loading_spinner_to_be_visible(10000)
                 self.wait_for_loading_spinner_to_detatch()
             except:
                 self.wait_for_loading_spinner_to_detatch()
