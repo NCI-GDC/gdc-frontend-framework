@@ -29,6 +29,7 @@ const CohortBuilder: React.FC = () => {
             useGetFacetFilters: (field: string) => activeFilters[field],
             useGetRangeFacetData: () => () => undefined,
           }}
+          usedFacets={[]}
           facetDefinitions={facetDefintions}
           tabsConfig={tabsConfig.config}
           activeTab="general"

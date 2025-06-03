@@ -6,7 +6,7 @@ import {
   FilterSet,
   selectCurrentCohortFilters,
   Cohort,
-  selectCohortFilterSetById,
+  selectCohortByIdOrName,
   selectCurrentCohortId,
 } from "@gff/core";
 import { SelectionScreenContext } from "@gff/portal-components";
@@ -85,9 +85,10 @@ const CohortComparisonApp: React.FC = () => {
 
   /* Comparison Cohort Details */
   const [comparisonCohort, setComparisonCohort] = useState<Cohort>();
-  const comparisonCohortFilter = useCoreSelector((state) =>
-    selectCohortFilterSetById(state, comparisonCohort?.id),
+  const comparisonCohortObj: Cohort = useCoreSelector((state) =>
+    selectCohortByIdOrName(state, comparisonCohort?.id, comparisonCohort?.name),
   );
+  const comparisonCohortFilter = comparisonCohortObj?.filters;
   /* Comparison Cohort Details End */
 
   const cohorts = isDemoMode

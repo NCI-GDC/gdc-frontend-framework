@@ -183,7 +183,7 @@ function SummaryHeaderControls({
       />
 
       <DropdownWithIcon
-        customDataTestId="button-biospecimen-project-summary"
+        customTargetButtonDataTestId="button-biospecimen-project-summary"
         dropdownElements={[
           {
             title: "TSV",
@@ -211,7 +211,7 @@ function SummaryHeaderControls({
         closeOnItemClick={false}
       />
       <DropdownWithIcon
-        customDataTestId="button-clinical-project-summary"
+        customTargetButtonDataTestId="button-clinical-project-summary"
         dropdownElements={[
           {
             title: "TSV",

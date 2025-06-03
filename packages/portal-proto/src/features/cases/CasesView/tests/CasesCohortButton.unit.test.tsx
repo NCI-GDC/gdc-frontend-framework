@@ -49,7 +49,7 @@ describe("CasesCohortButton", () => {
   });
 
   it("disables target button when there are no cases", () => {
-    const { getByTestId } = render(
+    const { getByRole } = render(
       <CasesCohortButton
         onCreateSet={() => {}}
         response={{ isSuccess: false, isError: false }}
@@ -58,7 +58,7 @@ describe("CasesCohortButton", () => {
       />,
     );
 
-    const targetButton = getByTestId("button-save-new-cohort-cases-table");
+    const targetButton = getByRole("button", { name: "Save New Cohort" });
     expect(targetButton).toBeDisabled();
   });
 });

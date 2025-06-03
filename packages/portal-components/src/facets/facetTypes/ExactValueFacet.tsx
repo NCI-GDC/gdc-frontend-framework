@@ -95,7 +95,15 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
         color="white"
         radius="xl"
         variant="transparent"
-        onClick={() => setValues(textValues.filter((i) => i !== x))}
+        onClick={() => {
+          const updatedValues = textValues.filter((i) => i !== x);
+          setValues(updatedValues);
+          if (updatedValues.includes(textValue)) {
+            setInputError(true);
+          } else {
+            setInputError(false);
+          }
+        }}
       >
         <CloseIcon size={10} aria-label="remove value from filter" />
       </ActionIcon>

@@ -726,9 +726,10 @@ export const selectCurrentCohortCaseSet = (
  * @category Cohort
  * @category Selectors
  */
-export const selectCohortById = (
+export const selectCohortByIdOrName = (
   state: CoreState,
   cohortId: string,
+  cohortName?: string,
 ): Cohort | undefined => {
   const id = cohortSelectors.selectById(state, cohortId);
 
@@ -736,18 +737,24 @@ export const selectCohortById = (
     const idByUnsaved = cohortSelectors
       .selectAll(state)
       .find((c) => c?.unsavedCohortId === cohortId);
-    return idByUnsaved;
+    if (idByUnsaved) {
+      return idByUnsaved;
+    }
+
+    return cohortSelectors
+      .selectAll(state)
+      .find((cohort) => cohort.name == cohortName);
   }
 
   return id;
 };
 
-export const selectMultipleCohortsById = (
+export const selectMultipleCohortsByIdOrName = (
   state: CoreState,
-  cohortIds: string[],
+  cohorts: { id: string; name?: string }[],
 ) =>
-  cohortIds
-    .map((id) => selectCohortById(state, id))
+  cohorts
+    .map((cohort) => selectCohortByIdOrName(state, cohort.id, cohort.name))
     .filter((cohort) => cohort !== undefined);
 
 /**

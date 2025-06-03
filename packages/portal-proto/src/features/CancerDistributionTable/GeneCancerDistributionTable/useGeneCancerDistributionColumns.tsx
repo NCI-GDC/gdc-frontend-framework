@@ -145,8 +145,7 @@ export const useGeneCancerDistributionColumns = ({
           header: () => (
             <HeaderTooltip
               title="# SSM Affected Cases"
-              tooltip={`# Cases tested for Simple Somatic Mutations in the Project affected by ${symbol}
-        / # Cases tested for Simple Somatic Mutations in the Project`}
+              tooltip={`# Cases in the Project affected by Simple Somatic Mutations in ${symbol} / # Cases tested for Simple Somatic Mutations in the Project`}
             />
           ),
           cell: ({ row }) => (

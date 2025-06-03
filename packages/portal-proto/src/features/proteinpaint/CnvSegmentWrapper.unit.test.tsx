@@ -37,6 +37,8 @@ jest.mock("@/hooks/useIsDemoApp", () => ({
   useIsDemoApp: jest.fn(() => isDemoMode),
 }));
 
+jest.mock("@gff/portal-components");
+
 jest.mock("@sjcrh/proteinpaint-client", () => ({
   __esModule: true,
   bindProteinPaint: jest.fn(async (arg) => {

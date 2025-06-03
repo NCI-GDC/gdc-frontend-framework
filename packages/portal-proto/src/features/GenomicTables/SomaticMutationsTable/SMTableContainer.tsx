@@ -521,7 +521,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                   }
                   menuLabelCustomClass="bg-primary text-primary-contrast font-heading font-bold mb-2"
                   customPosition="bottom-start"
-                  customDataTestId="button-save-edit-mutation-set"
+                  customTargetButtonDataTestId="button-save-edit-mutation-set"
                 />
 
                 <FunctionButton

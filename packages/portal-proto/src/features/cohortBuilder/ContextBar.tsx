@@ -257,8 +257,9 @@ const ContextBar = ({
         <CohortCountButton
           customDataTestID="button-cases-cohort-bar"
           countName="caseCount"
-          label="CASES"
+          singularLabel="case"
           bold
+          capitalize
         />
       }
       ExtraControl={
@@ -272,7 +273,7 @@ const ContextBar = ({
         <div className="relative p-4">
           <div className="flex gap-1 pb-4 relative lg:absolute lg:pb-0">
             <DropdownWithIcon
-              customDataTestId="button-files-cases-summary"
+              customTargetButtonDataTestId="button-files-cases-summary"
               dropdownElements={[
                 {
                   title: "Add to Cart",
@@ -308,7 +309,12 @@ const ContextBar = ({
                 },
               ]}
               TargetButtonChildren={
-                <CohortCountButton countName="fileCount" label="Files" />
+                <CohortCountButton countName="fileCount" singularLabel="file" />
+              }
+              targetButtonTooltip={
+                cohortCounts?.data?.fileCount === 0
+                  ? "No files in current cohort"
+                  : undefined
               }
               LeftSection={
                 <DownloadIcon
@@ -317,12 +323,15 @@ const ContextBar = ({
                   className="hidden md:block"
                 />
               }
-              targetButtonDisabled={cohortCounts.status !== "fulfilled"}
               closeOnItemClick={false}
+              targetButtonDisabled={
+                cohortCounts.status !== "fulfilled" ||
+                cohortCounts?.data?.fileCount === 0
+              }
             />
 
             <DropdownWithIcon
-              customDataTestId="button-custom-filters-cases-summary"
+              customTargetButtonDataTestId="button-custom-filters-cases-summary"
               dropdownElements={[
                 {
                   title: "Cases",
@@ -362,7 +371,7 @@ const ContextBar = ({
             {activeTab === "summary" && (
               <>
                 <DropdownWithIcon
-                  customDataTestId="button-biospecimen-cases-summary"
+                  customTargetButtonDataTestId="button-biospecimen-cases-summary"
                   dropdownElements={[
                     {
                       title: "JSON ",
@@ -394,7 +403,7 @@ const ContextBar = ({
                 />
 
                 <DropdownWithIcon
-                  customDataTestId="button-clinical-cases-summary"
+                  customTargetButtonDataTestId="button-clinical-cases-summary"
                   dropdownElements={[
                     {
                       title: "JSON",

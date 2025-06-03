@@ -423,7 +423,7 @@ export const ContextualCasesView: React.FC = () => {
             <CasesCohortButtonFromValues pickedCases={pickedCases} />
 
             <DropdownWithIcon
-              customDataTestId="button-biospecimen-cases-table"
+              customTargetButtonDataTestId="button-biospecimen-cases-table"
               targetButtonDisabled={isFetching}
               dropdownElements={[
                 {
@@ -463,7 +463,7 @@ export const ContextualCasesView: React.FC = () => {
             />
 
             <DropdownWithIcon
-              customDataTestId="button-clinical-cases-table"
+              customTargetButtonDataTestId="button-clinical-cases-table"
               targetButtonDisabled={isFetching}
               dropdownElements={[
                 {

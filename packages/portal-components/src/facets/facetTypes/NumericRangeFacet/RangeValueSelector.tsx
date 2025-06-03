@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Radio } from "@mantine/core";
 import FacetSortPanel from "../FacetSortPanel";
 import {
   FromToRange,
@@ -7,7 +8,6 @@ import {
   UpdateFacetFilterFunction,
 } from "../../types";
 import { buildRangeOperator } from "../../utils";
-import { radioStyle } from "./utils";
 
 interface RangeValueSelectorProps {
   readonly itemsToShow: number;
@@ -102,16 +102,15 @@ const RangeValueSelector: React.FC<RangeValueSelectorProps> = ({
             return (
               <div
                 key={`${field}_${rangeKey}`}
-                className="flex justify-start items-center form-check mb-1 font-content text-sm"
+                className="flex justify-start items-center gap-2 form-check mb-1 font-content text-sm"
               >
-                <input
-                  type="radio"
+                <Radio
                   id={`${field}_${rangeKey}_${i}`}
                   name={`${field}_range_selection`}
                   aria-label={rangeLabelsAndValues[rangeKey].valueLabel}
                   value={rangeKey}
                   checked={rangeKey === selected}
-                  className={radioStyle}
+                  color="accent"
                   onChange={() => handleSelection(rangeKey)}
                   data-testid={`checkbox-${rangeLabelsAndValues[rangeKey].label}`}
                 />

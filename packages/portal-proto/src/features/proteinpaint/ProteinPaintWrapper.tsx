@@ -95,7 +95,9 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
       const data = getLollipopTrack(props, filter0, callback);
       if (!data) return;
       if (isDemoMode) {
-        data.geneSymbol = "MYC";
+        data.geneSymbol = props.hardcodeCnvOnly
+          ? "chr8:127682515-127792250"
+          : "MYC";
       }
       // compare the argument to runpp to avoid unnecessary render
       if ((data || prevArg.current) && isEqual(prevArg.current, data)) return;
@@ -137,11 +139,12 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   );
 
   const divRef = useRef();
+  const demoText = props.hardcodeCnvOnly
+    ? "Demo showing MYC CNV segments from all GDC cases"
+    : "Demo showing MYC mutations from all GDC cases.";
   return (
     <div>
-      {isDemoMode && (
-        <DemoText>Demo showing MYC variants for all GDC.</DemoText>
-      )}
+      {isDemoMode && <DemoText>{demoText}</DemoText>}
       <div
         ref={divRef}
         className="sjpp-wrapper-root-div"

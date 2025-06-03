@@ -97,6 +97,7 @@ export const FacetGroup: React.FC<FacetGroupProps> = ({
 interface CustomFacetGroupProps {
   readonly hooks: FacetRequiredHooks;
   readonly customFacetHooks: CustomFacetHooks;
+  readonly usedFacets: string[];
   readonly queryOptions?: QueryOptions;
   readonly getFacetLabel?: (queryOptions?: QueryOptions) => string;
   readonly cardScrollMargin?: number;
@@ -110,6 +111,7 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
   getFacetLabel,
   cardScrollMargin,
   Chart,
+  usedFacets,
 }) => {
   const [opened, setOpened] = useState(false);
   const { data: customFacetDefinitions, isSuccess } =
@@ -139,7 +141,7 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
       >
         <div className="p-4">
           <FacetSelection
-            usedFacets={customFacetDefinitions.map((x) => x.field)}
+            usedFacets={usedFacets}
             useAvailableCustomFacets={customFacetHooks.useAvailableCustomFacets}
             handleFilterSelected={handleFilterSelected}
             queryOptions={queryOptions}
@@ -213,6 +215,7 @@ type FacetTabProps = {
   readonly hooks: FacetRequiredHooks;
   readonly facetDefinitions: Record<string, FacetCardDefinition>;
   readonly tabsConfig: Record<string, CohortBuilderCategoryConfig>;
+  readonly usedFacets: string[];
   readonly customFacetHooks?: CustomFacetHooks;
   readonly getFacetLabel?: (queryOptions?: QueryOptions) => string;
   readonly cardScrollMargin?: number;
@@ -238,6 +241,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
   hooks,
   facetDefinitions,
   tabsConfig,
+  usedFacets,
   customFacetHooks,
   getFacetLabel,
   cardScrollMargin,
@@ -284,6 +288,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
               customFacetHooks={customFacetHooks}
               cardScrollMargin={cardScrollMargin}
               Chart={Chart}
+              usedFacets={usedFacets}
             />
           ) : (
             <FacetGroup
@@ -357,6 +362,7 @@ export const FacetTabs: React.FC<FacetTabProps> = ({
                         customFacetHooks={customFacetHooks}
                         cardScrollMargin={cardScrollMargin}
                         Chart={Chart}
+                        usedFacets={usedFacets}
                       />
                     ) : (
                       <FacetGroup

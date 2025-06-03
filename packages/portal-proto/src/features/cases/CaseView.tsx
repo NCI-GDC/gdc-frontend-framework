@@ -279,34 +279,39 @@ export const CaseView: React.FC<CaseViewProps> = ({
         headerTitleLeft="Case"
         headerTitle={headerTitle}
         leftElement={
-          <Button
-            data-testid="button-add-all-remove-all-files-case-summary"
-            leftSection={<CartIcon />}
-            className={`${
-              isAllFilesInCart
-                ? "bg-nci-red-darker text-base-max hover:bg-removeButtonHover"
-                : "text-primary bg-base-max hover:bg-primary-darkest hover:text-base-max"
-            } ${focusStyles}`}
-            onClick={() =>
-              isAllFilesInCart
-                ? removeFromCart(
-                    mapGdcFileToCartFile(data.files),
-                    currentCart,
-                    dispatch,
-                  )
-                : addToCart(
-                    mapGdcFileToCartFile(data.files),
-                    currentCart,
-                    dispatch,
-                  )
-            }
-            disabled={filesCountTotal === 0}
-            classNames={{ label: "font-medium text-sm" }}
+          <Tooltip
+            label="No files to add to Cart"
+            disabled={filesCountTotal !== 0}
           >
-            {!isAllFilesInCart
-              ? "Add all files to the cart"
-              : "Remove all files from the cart"}
-          </Button>
+            <Button
+              data-testid="button-add-all-remove-all-files-case-summary"
+              leftSection={<CartIcon />}
+              className={`${
+                isAllFilesInCart
+                  ? "bg-nci-red-darker text-base-max hover:bg-removeButtonHover"
+                  : "text-primary bg-base-max hover:bg-primary-darkest hover:text-base-max"
+              } ${focusStyles} data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary `}
+              onClick={() =>
+                isAllFilesInCart
+                  ? removeFromCart(
+                      mapGdcFileToCartFile(data.files),
+                      currentCart,
+                      dispatch,
+                    )
+                  : addToCart(
+                      mapGdcFileToCartFile(data.files),
+                      currentCart,
+                      dispatch,
+                    )
+              }
+              disabled={filesCountTotal === 0}
+              classNames={{ label: "font-medium text-sm" }}
+            >
+              {!isAllFilesInCart
+                ? "Add all files to the cart"
+                : "Remove all files from the cart"}
+            </Button>
+          </Tooltip>
         }
         rightElement={
           <div className="flex items-center gap-4 text-xl text-base-lightest font-medium leading-6 font-montserrat uppercase">
