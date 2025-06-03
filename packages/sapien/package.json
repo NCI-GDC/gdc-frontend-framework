@@ -1,6 +1,6 @@
 {
   "name": "@nci-gdc/sapien",
-  "version": "2.17.0",
+  "version": "2.17.1",
   "description": "Organ Map of Human Body",
   "browser": true,
   "main": "dist/index.js",
