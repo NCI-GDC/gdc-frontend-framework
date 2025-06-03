@@ -169,18 +169,19 @@ function VerticalTable<TData>({
     enableSorting: columnSorting === "manual" || columnSorting === "enable",
   });
 
+  const rowCount = table.getRowModel().rows.length;
   // Only set xPosition on initial load, not when table options change
   useLayoutEffect(() => {
     if (
       setXPosition &&
       xPosition === undefined &&
       status === "fulfilled" &&
-      table.getRowModel().rows.length > 0 &&
+      rowCount > 0 &&
       ref.current
     ) {
       setXPosition(ref?.current?.getBoundingClientRect()?.bottom);
     }
-  }, [setXPosition, xPosition, status, table.getRowModel().rows.length]);
+  }, [setXPosition, xPosition, status, rowCount]);
 
   const handleSorting = (
     header: Header<TData, unknown>,

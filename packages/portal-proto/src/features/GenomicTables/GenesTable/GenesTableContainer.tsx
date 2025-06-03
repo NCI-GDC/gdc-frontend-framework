@@ -422,7 +422,7 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
               }
               menuLabelCustomClass="bg-primary text-primary-contrast font-heading font-bold mb-2"
               customPosition="bottom-start"
-              customDataTestId="button-save-edit-gene-set"
+              customTargetButtonDataTestId="button-save-edit-gene-set"
             />
             <FunctionButton
               onClick={handleTSVDownload}

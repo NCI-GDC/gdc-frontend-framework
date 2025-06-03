@@ -6,7 +6,7 @@ import {
   FilterSet,
   selectCurrentCohortFilters,
   Cohort,
-  selectCohortFilterSetById,
+  selectCohortByIdOrName,
   selectCurrentCohortId,
   selectAllCohorts,
 } from "@gff/core";
@@ -92,9 +92,10 @@ const CohortComparisonApp: React.FC = () => {
   /* Comparison Cohort Details */
   const [comparisonCohort, setComparisonCohort] = useState<Cohort>();
   const comparisonCohortId = comparisonCohort?.id;
-  const comparisonCohortFilter = useCoreSelector((state) =>
-    selectCohortFilterSetById(state, comparisonCohort?.id),
+  const comparisonCohortObj: Cohort = useCoreSelector((state) =>
+    selectCohortByIdOrName(state, comparisonCohort?.id, comparisonCohort?.name),
   );
+  const comparisonCohortFilter = comparisonCohortObj?.filters;
   /* Comparison Cohort Details End */
 
   const cohorts = isDemoMode

@@ -2,11 +2,10 @@ import { FacetDefinition, FacetTypes } from "./types";
 import SupplementalFacetDefinitions from "./data/facet_additional_data.json";
 import { some, includes } from "lodash";
 
-const FieldNameOverrides: Record<string, string> = {
+const fieldNameOverrides: Record<string, string> = {
   "cases.project.program.name": "Program",
   "cases.project.project_id": "Project",
   "genes.gene_id": "Mutated Gene",
-  "cases.follow_ups.other_clinical_attributes.bmi": "BMI",
 };
 
 const COMMON_PREPOSITIONS = [
@@ -54,8 +53,8 @@ export const trimFirstFieldNameToTitle = (
  */
 
 export const fieldNameToTitle = (fieldName: string, sections = 1): string => {
-  if (fieldName in FieldNameOverrides) {
-    return FieldNameOverrides[fieldName];
+  if (fieldName in fieldNameOverrides) {
+    return fieldNameOverrides[fieldName];
   }
   return fieldName
     .split(".")
