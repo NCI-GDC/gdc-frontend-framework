@@ -33,6 +33,8 @@ interface DropdownWithIconProps {
     onClick?: () => void;
     icon?: JSX.Element;
     disabled?: boolean; // if true, disables the menu item
+    isLoading?: boolean; // if true, shows loading tooltip
+    loadingTooltip?: string; // custom loading tooltip text
   }>;
   /**
    *    only provide menuLabelText if we want label for dropdown elements
@@ -95,12 +97,15 @@ export const DropdownWithIcon = ({
   closeOnItemClick = true,
 }: DropdownWithIconProps): JSX.Element => {
   const targetRef = useRef<HTMLButtonElement>();
+  const defaultLoadingTooltip =
+    "A previous download is being processed. Additional downloads may be started.";
+
   return (
     <Menu
       width={!disableTargetWidth && "target"}
       {...(customPosition && { position: customPosition })}
       zIndex={9000} //dropdown should be on top of everything when open
-      closeOnItemClick={closeOnItemClick} // probably send this as a
+      closeOnItemClick={closeOnItemClick}
     >
       <Menu.Target>
         <Tooltip label={targetButtonTooltip} disabled={!targetButtonTooltip}>
@@ -137,26 +142,50 @@ export const DropdownWithIcon = ({
             <Menu.Divider />
           </>
         )}
-        {dropdownElements.map(({ title, onClick, icon, disabled }, idx) => (
-          <Menu.Item
-            onClick={() => {
-              if (onClick) {
-                onClick();
-              }
-              // This is done inorder to set the last focused element as the menu target element
-              // This is done to return focus to the target element if the modal is closed with ESC
-              if (targetRef?.current) {
-                targetRef?.current?.focus();
-              }
-            }}
-            key={`${title}-${idx}`}
-            data-testid={`${title}-${idx}`}
-            leftSection={icon && icon}
-            disabled={disabled}
-          >
-            {title}
-          </Menu.Item>
-        ))}
+        {dropdownElements.map(
+          (
+            { title, onClick, icon, disabled, isLoading, loadingTooltip },
+            idx,
+          ) => {
+            const menuItem = (
+              <Menu.Item
+                onClick={() => {
+                  if (onClick) {
+                    onClick();
+                  }
+                  // This is done inorder to set the last focused element as the menu target element
+                  // This is done to return focus to the target element if the modal is closed with ESC
+                  if (targetRef?.current) {
+                    targetRef?.current?.focus();
+                  }
+                }}
+                key={`${title}-${idx}`}
+                data-testid={`${title}-${idx}`}
+                leftSection={icon && icon}
+                disabled={disabled}
+              >
+                {title}
+              </Menu.Item>
+            );
+
+            if (isLoading) {
+              return (
+                <Tooltip
+                  key={`${title}-${idx}`}
+                  label={loadingTooltip || defaultLoadingTooltip}
+                  position="right"
+                  withArrow
+                  multiline
+                  w={400}
+                >
+                  <div>{menuItem}</div>
+                </Tooltip>
+              );
+            }
+
+            return menuItem;
+          },
+        )}
       </Menu.Dropdown>
     </Menu>
   );

@@ -465,9 +465,12 @@ const FilesTables: React.FC = () => {
                   <Loader size={16} color="currentColor" />
                 ) : null
               }
+              tooltip="A previous download is being processed. Additional downloads may be started."
+              showTooltip={jsonDownloadInProgress}
             >
               JSON
             </FunctionButton>
+
             <FunctionButton
               onClick={handleDownloadTSV}
               data-testid="button-tsv-files-table"

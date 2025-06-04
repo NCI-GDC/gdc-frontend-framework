@@ -12,8 +12,7 @@ import { DownloadIcon } from "@/utils/icons";
  * @category Buttons
  * @property endpoint - The endpoint to download from.
  * @property disabled - Whether the button is disabled.
- * @property inactiveText - The text to display when the button is inactive.
- * @property activeText - The text to display when the button is active.
+ * @property buttonTitle - The text to display when the button is inactive.
  * @property filename - The name of the file to download.
  * @property size - The size of the download.
  * @property format - The format of the download.
@@ -23,8 +22,6 @@ import { DownloadIcon } from "@/utils/icons";
  * @property extraParams - Any extra parameters to download.
  * @property method - The method to use for the download.
  * @property customStyle - Any custom styles to apply to the button.
- * @property showLoading - Whether to show the loading icon.
- * @property showIcon - Whether to show the download icon.
  * @property preventClickEvent - Whether to prevent the default click event.
  * @property onClick - The function to call when the button is clicked.
  * @property setActive - The function to call when the button is set active.
@@ -36,8 +33,7 @@ import { DownloadIcon } from "@/utils/icons";
 interface DownloadButtonProps {
   endpoint?: string;
   disabled?: boolean;
-  inactiveText: string;
-  activeText?: string; // remove this
+  buttonLabel: string;
   filename?: string;
   downloadSize?: number;
   format?: string;
@@ -47,8 +43,6 @@ interface DownloadButtonProps {
   extraParams?: Record<string, any>;
   method?: string;
   customStyle?: string;
-  showLoading?: boolean;
-  showIcon?: boolean;
   preventClickEvent?: boolean;
   onClick?: () => void;
   setActive?: Dispatch<SetStateAction<boolean>>;
@@ -66,8 +60,7 @@ interface DownloadButtonProps {
  * the data, creating the file, and downloading the file.
  * @param endpoint - The endpoint to download from.
  * @param disabled - Whether the button is disabled.
- * @param inactiveText - The text to display when the button is inactive.
- * @param activeText - The text to display when the button is active.
+ * @param buttonLabel - button's label.
  * @param filename - The name of the file to download.
  * @param downloadSize - The size of the download.
  * @param format - The format of the download.
@@ -77,8 +70,6 @@ interface DownloadButtonProps {
  * @param extraParams - Any extra parameters to download.
  * @param method - The method to use for the download.
  * @param customStyle - Any custom styles to apply to the button.
- * @param showLoading - Whether to show the loading icon.
- * @param showIcon - Whether to show the download icon.
  * @param preventClickEvent - Whether to prevent the default click event.
  * @param onClick - The function to call when the button is clicked.
  * @param setActive - The function to call when the button is set active.
@@ -103,14 +94,11 @@ export const DownloadButton = forwardRef<
       fields = [],
       caseFilters = {},
       filters = {},
-      inactiveText,
-      activeText,
+      buttonLabel,
       extraParams,
       method = "POST",
       setActive,
       onClick,
-      showLoading = true,
-      showIcon = true,
       preventClickEvent = false,
       active,
       Modal400,
@@ -122,27 +110,27 @@ export const DownloadButton = forwardRef<
     }: DownloadButtonProps,
     ref,
   ) => {
-    const text = inactiveText;
     const dispatch = useCoreDispatch();
-    const Icon = active ? (
-      <Loader size="sm" className="p-1" />
-    ) : (
-      <DownloadIcon title="download" size={16} />
-    );
+    const tooltipContent = active
+      ? "A previous download is being processed. Additional downloads may be started."
+      : toolTip;
 
+    const shouldShowTooltip = active || !!toolTip;
     return (
       <Tooltip
-        disabled={!toolTip}
-        label={toolTip}
+        disabled={!shouldShowTooltip}
+        label={tooltipContent}
         multiline={multilineToolTip}
         w={multilineToolTip ? 400 : "auto"}
+        key={buttonLabel}
       >
         <FunctionButton
           $variant={displayVariant}
           ref={ref}
           leftSection={
-            showIcon &&
-            inactiveText && (
+            active ? (
+              <Loader size="1rem" color="currentColor" />
+            ) : (
               <DownloadIcon
                 aria-label="download"
                 className="hidden xl:block"
@@ -152,7 +140,6 @@ export const DownloadButton = forwardRef<
           }
           classNames={{ section: "mr-0 xl:mr-2" }}
           disabled={disabled}
-          loading={showLoading && active}
           variant="outline"
           onClick={() => {
             if (!preventClickEvent && onClick) {
@@ -186,7 +173,7 @@ export const DownloadButton = forwardRef<
           }}
           {...buttonProps}
         >
-          {text || Icon}
+          {buttonLabel}
         </FunctionButton>
       </Tooltip>
     );

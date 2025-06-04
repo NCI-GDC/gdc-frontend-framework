@@ -292,6 +292,7 @@ const ContextBar = ({
                   icon: downloadManifestActive ? (
                     <Loader size={14} />
                   ) : undefined,
+                  isLoading: downloadManifestActive,
                 },
                 {
                   title: "Metadata",
@@ -299,6 +300,7 @@ const ContextBar = ({
                   icon: downloadMetadataActive ? (
                     <Loader size={14} />
                   ) : undefined,
+                  isLoading: downloadMetadataActive,
                 },
                 {
                   title: "Sample Sheet",
@@ -306,6 +308,7 @@ const ContextBar = ({
                   icon: downloadSampleSheetActive ? (
                     <Loader size={14} />
                   ) : undefined,
+                  isLoading: downloadSampleSheetActive,
                 },
               ]}
               TargetButtonChildren={
@@ -381,6 +384,7 @@ const ContextBar = ({
                       ) : (
                         <DownloadIcon aria-label="Download" />
                       ),
+                      isLoading: biospecimenDownloadActiveJSON,
                     },
                     {
                       title: "TSV",
@@ -390,6 +394,7 @@ const ContextBar = ({
                       ) : (
                         <DownloadIcon aria-label="Download" />
                       ),
+                      isLoading: biospecimenDownloadActiveTSV,
                     },
                   ]}
                   TargetButtonChildren="Biospecimen"
@@ -413,6 +418,7 @@ const ContextBar = ({
                       ) : (
                         <DownloadIcon aria-label="Download" />
                       ),
+                      isLoading: clinicalDownloadActiveJSON,
                     },
                     {
                       title: "TSV",
@@ -422,6 +428,7 @@ const ContextBar = ({
                       ) : (
                         <DownloadIcon aria-label="Download" />
                       ),
+                      isLoading: clinicalDownloadActiveTSV,
                     },
                   ]}
                   TargetButtonChildren="Clinical"

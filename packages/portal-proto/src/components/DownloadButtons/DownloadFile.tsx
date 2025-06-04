@@ -13,20 +13,16 @@ import { FunctionButtonVariants } from "../FunctionButton";
 
 interface DownloadFileProps {
   file: GdcFile;
-  activeText?: string;
-  inactiveText?: string;
+  buttonLabel?: string;
   setfileToDownload?: React.Dispatch<React.SetStateAction<GdcFile>>;
-  showLoading?: boolean;
   customDataTestID?: string;
   displayVariant?: FunctionButtonVariants;
 }
 
 export const DownloadFile: React.FC<DownloadFileProps> = ({
   file,
-  activeText,
-  inactiveText,
+  buttonLabel,
   setfileToDownload,
-  showLoading = true,
   customDataTestID,
   displayVariant,
 }: DownloadFileProps) => {
@@ -71,12 +67,10 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
         }}
         filename={file.file_name}
         endpoint={`data/${file.file_id}`}
-        activeText={activeText}
-        inactiveText={inactiveText}
+        buttonLabel={buttonLabel}
         method="GET"
         setActive={setActive}
         active={active}
-        showLoading={showLoading}
         displayVariant={displayVariant}
       />
     );
@@ -85,12 +79,10 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
   return (
     <DownloadButton
       data-testid={customDataTestID}
-      inactiveText={inactiveText}
-      activeText={activeText}
+      buttonLabel={buttonLabel}
       onClick={onClick}
       setActive={setActive}
       active={active}
-      showLoading={showLoading}
       displayVariant={displayVariant}
     />
   );

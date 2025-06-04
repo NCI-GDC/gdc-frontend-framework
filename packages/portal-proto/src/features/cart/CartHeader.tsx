@@ -11,7 +11,7 @@ import {
   useFetchUserDetailsQuery,
 } from "@gff/core";
 import fileSize from "filesize";
-import { Button, Loader, Menu } from "@mantine/core";
+import { Button, Loader, Menu, Tooltip } from "@mantine/core";
 import CartSizeLimitModal from "@/components/Modals/CartSizeLimitModal";
 import CartDownloadModal from "@/components/Modals/CartDownloadModal";
 import { DownloadButton } from "@/components/DownloadButtons";
@@ -158,47 +158,66 @@ const CartHeader: React.FC<CartHeaderProps> = ({
               </Button>
             </Menu.Target>
             <Menu.Dropdown data-testid="dropdown-menu-options">
-              <Menu.Item
-                onClick={() => {
-                  setManifestDownloadActive(true);
-                  downloadManifest(cart, setManifestDownloadActive, dispatch);
-                }}
-                leftSection={
-                  manifestDownloadActive ? (
-                    <Loader size={15} />
-                  ) : (
-                    <DownloadIcon aria-hidden="true" />
-                  )
-                }
+              <Tooltip
+                label="A previous download is being processed. Additional downloads may be started."
+                disabled={!manifestDownloadActive}
               >
-                Manifest
-              </Menu.Item>
-              <Menu.Item
-                onClick={() => {
-                  setCartDownloadActive(true);
-                  downloadCart(
-                    filesByCanAccess,
-                    dbGapList,
-                    setCartDownloadActive,
-                    dispatch,
-                  );
-                }}
-                leftSection={
-                  cartDownloadActive ? (
-                    <Loader size={15} />
-                  ) : (
-                    <DownloadIcon aria-hidden="true" />
-                  )
-                }
+                <span>
+                  <Menu.Item
+                    onClick={() => {
+                      setManifestDownloadActive(true);
+                      downloadManifest(
+                        cart,
+                        setManifestDownloadActive,
+                        dispatch,
+                      );
+                    }}
+                    leftSection={
+                      manifestDownloadActive ? (
+                        <Loader size={15} />
+                      ) : (
+                        <DownloadIcon aria-hidden="true" />
+                      )
+                    }
+                  >
+                    Manifest
+                  </Menu.Item>
+                </span>
+              </Tooltip>
+              <Tooltip
+                label="A previous download is being processed. Additional downloads may be started."
+                disabled={!cartDownloadActive}
               >
-                Cart
-              </Menu.Item>
+                <span>
+                  <Menu.Item
+                    onClick={() => {
+                      setCartDownloadActive(true);
+                      downloadCart(
+                        filesByCanAccess,
+                        dbGapList,
+                        setCartDownloadActive,
+                        dispatch,
+                      );
+                    }}
+                    leftSection={
+                      cartDownloadActive ? (
+                        <Loader size={15} />
+                      ) : (
+                        <DownloadIcon aria-hidden="true" />
+                      )
+                    }
+                  >
+                    Cart
+                  </Menu.Item>
+                </span>
+              </Tooltip>
             </Menu.Dropdown>
           </Menu>
+          {/* Biospecimen */}
           <Menu width="target">
             <Menu.Target>
               <Button
-                data-testid="button-download-associated-data"
+                data-testid="button-download-biospecimen"
                 classNames={{
                   root: `${buttonStyle} ${focusStyles}`,
                 }}
@@ -223,10 +242,8 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 component={DownloadButton}
                 classNames={{ item: "font-normal" }}
                 displayVariant="subtle"
-                activeText="Processing"
-                inactiveText="JSON"
+                buttonLabel="JSON"
                 preventClickEvent
-                showIcon={true}
                 endpoint="biospecimen_tar"
                 setActive={setBiospecimenJSONDownloadActive}
                 active={biospecimenJSONDownloadActive}
@@ -253,10 +270,8 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 component={DownloadButton}
                 classNames={{ item: "font-normal" }}
                 displayVariant="subtle"
-                activeText="Processing"
-                inactiveText="TSV"
+                buttonLabel="TSV"
                 preventClickEvent
-                showIcon={true}
                 endpoint="biospecimen_tar"
                 setActive={setBiospecimenTSVDownloadActive}
                 active={biospecimenTSVDownloadActive}
@@ -281,10 +296,11 @@ const CartHeader: React.FC<CartHeaderProps> = ({
               />
             </Menu.Dropdown>
           </Menu>
+          {/* Clinical */}
           <Menu width="target">
             <Menu.Target>
               <Button
-                data-testid="button-download-associated-data"
+                data-testid="button-download-clinical"
                 classNames={{
                   root: `${buttonStyle} ${focusStyles}`,
                 }}
@@ -309,10 +325,8 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 component={DownloadButton}
                 classNames={{ item: "font-normal" }}
                 displayVariant="subtle"
-                activeText="Processing"
-                inactiveText="JSON"
+                buttonLabel="JSON"
                 preventClickEvent
-                showIcon={true}
                 endpoint="clinical_tar"
                 setActive={setClinicalJSONDownloadActive}
                 active={clinicalJSONDownloadActive}
@@ -339,10 +353,8 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 component={DownloadButton}
                 classNames={{ item: "font-normal" }}
                 displayVariant="subtle"
-                activeText="Processing"
-                inactiveText="TSV"
+                buttonLabel="TSV"
                 preventClickEvent
-                showIcon={true}
                 endpoint="clinical_tar"
                 setActive={setClinicalTSVDownloadActive}
                 active={clinicalTSVDownloadActive}
@@ -367,13 +379,11 @@ const CartHeader: React.FC<CartHeaderProps> = ({
               />
             </Menu.Dropdown>
           </Menu>
-
+          {/* Sample Sheet */}
           <DownloadButton
             displayVariant="header"
-            activeText="Processing"
-            inactiveText="Sample Sheet"
+            buttonLabel="Sample Sheet"
             preventClickEvent
-            showIcon={true}
             endpoint="files"
             setActive={setSampleSheetDownloadActive}
             active={sampleSheetDownloadActive}
@@ -411,10 +421,9 @@ const CartHeader: React.FC<CartHeaderProps> = ({
               tsv_format: "sample-sheet",
             }}
           />
+          {/* Metadata */}
           <DownloadButton
-            activeText="Processing"
-            inactiveText="Metadata"
-            showIcon={true}
+            buttonLabel="Metadata"
             displayVariant="header"
             preventClickEvent
             endpoint="files"
@@ -497,6 +506,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
               ].join(","),
             }}
           />
+          {/* Remove From Cart */}
           <Menu>
             <Menu.Target>
               <Button

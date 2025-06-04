@@ -434,6 +434,7 @@ export const ContextualCasesView: React.FC = () => {
                   ) : (
                     <DownloadIcon aria-label="Download" />
                   ),
+                  isLoading: biospecimenDownloadActiveJSON,
                 },
                 {
                   title: "TSV",
@@ -443,6 +444,7 @@ export const ContextualCasesView: React.FC = () => {
                   ) : (
                     <DownloadIcon aria-label="Download" />
                   ),
+                  isLoading: biospecimenDownloadActiveTSV,
                 },
               ]}
               TargetButtonChildren="Biospecimen"
@@ -474,6 +476,7 @@ export const ContextualCasesView: React.FC = () => {
                   ) : (
                     <DownloadIcon aria-label="Download" />
                   ),
+                  isLoading: clinicalDownloadActiveJSON,
                 },
                 {
                   title: "TSV",
@@ -483,6 +486,7 @@ export const ContextualCasesView: React.FC = () => {
                   ) : (
                     <DownloadIcon aria-label="Download" />
                   ),
+                  isLoading: clinicalDownloadActiveTSV,
                 },
               ]}
               TargetButtonChildren="Clinical"

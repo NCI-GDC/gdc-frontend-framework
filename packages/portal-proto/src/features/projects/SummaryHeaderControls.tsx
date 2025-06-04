@@ -193,6 +193,7 @@ function SummaryHeaderControls({
               <DownloadIcon size={16} aria-label="download" />
             ),
             onClick: handleBiospeciemenTSVDownload,
+            isLoading: biospecimenDownloadActiveTSV,
           },
           {
             title: "JSON",
@@ -202,6 +203,7 @@ function SummaryHeaderControls({
               <DownloadIcon size={16} aria-label="download" />
             ),
             onClick: handleBiospeciemenJSONDownload,
+            isLoading: biospecimenDownloadActiveJSON,
           },
         ]}
         TargetButtonChildren={
@@ -221,6 +223,7 @@ function SummaryHeaderControls({
               <DownloadIcon size={16} aria-label="download" />
             ),
             onClick: handleClinicalTSVDownload,
+            isLoading: clinicalDownloadActiveTSV,
           },
           {
             title: "JSON",
@@ -230,6 +233,7 @@ function SummaryHeaderControls({
               <DownloadIcon size={16} aria-label="download" />
             ),
             onClick: handleClinicalJSONDownload,
+            isLoading: clinicalDownloadActiveJSON,
           },
         ]}
         TargetButtonChildren={
@@ -241,8 +245,12 @@ function SummaryHeaderControls({
       <Tooltip
         transitionProps={{ duration: 200, transition: "fade" }}
         w={220}
-        label="Download a manifest for use with the GDC Data Transfer Tool. The GDC
-          Data Transfer Tool is recommended for transferring large volumes of data."
+        label={
+          manifestDownloadActive
+            ? "A previous download is being processed. Additional downloads may be started."
+            : `Download a manifest for use with the GDC Data Transfer Tool. The GDC
+          Data Transfer Tool is recommended for transferring large volumes of data.`
+        }
         arrowSize={10}
         position="bottom"
         multiline
@@ -253,7 +261,7 @@ function SummaryHeaderControls({
           variant="outline"
           leftSection={
             manifestDownloadActive ? (
-              <Loader size={20} />
+              <Loader size="1rem" />
             ) : (
               <DownloadIcon size="1rem" aria-label="download" />
             )

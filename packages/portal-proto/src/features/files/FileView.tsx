@@ -65,8 +65,7 @@ const LeftSideElementForHeader: React.FC<LeftSideElementForHeaderProps> = ({
 
     <DownloadFile
       customDataTestID="button-download-file-summary"
-      inactiveText="Download"
-      activeText="Processing"
+      buttonLabel="Download"
       file={file}
       displayVariant="header-subtle"
       setfileToDownload={setFileToDownload}

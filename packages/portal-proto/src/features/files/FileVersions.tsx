@@ -137,6 +137,7 @@ const FileVersions = ({ file_id }: { file_id: string }): JSX.Element => {
                   LeftSection={
                     <DownloadIcon size="1rem" aria-label="download" />
                   }
+                  closeOnItemClick={false}
                 />
               </div>
             }

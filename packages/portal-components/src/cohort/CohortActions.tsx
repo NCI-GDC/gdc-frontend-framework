@@ -126,7 +126,15 @@ const CohortActions: React.FC<CohortActionsProps> = ({
         </Tooltip>
       )}
       {handleExport && (
-        <Tooltip label="Export Cohort" position="bottom" withArrow>
+        <Tooltip
+          label={
+            exportCohortPending
+              ? "A previous download is being processed. Additional downloads may be started."
+              : "Export Cohort"
+          }
+          position="bottom"
+          withArrow
+        >
           <span>
             <Button
               data-testid="downloadButton"
@@ -135,7 +143,7 @@ const CohortActions: React.FC<CohortActionsProps> = ({
               variant="action"
             >
               {exportCohortPending ? (
-                <Loader size={24} color="currentColor" />
+                <Loader size={16} color="currentColor" />
               ) : (
                 <DownloadIcon size="1.5em" aria-hidden="true" />
               )}

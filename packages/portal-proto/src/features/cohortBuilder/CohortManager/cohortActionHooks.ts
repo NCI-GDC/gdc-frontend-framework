@@ -180,6 +180,7 @@ export const useExportCohort = () => {
   const [getCases, { isFetching, isError }] = useLazyGetCasesQuery();
 
   const handleExport = useDeepCompareCallback(() => {
+    console.log("reached hereeeeee!!!");
     getCases({
       request: {
         case_filters: buildCohortGqlOperator(

@@ -168,7 +168,6 @@ export const formatEntityInfo = (
           <div data-testid="button-download-slide-biospecimen">
             <DownloadFile
               file={mapFileData(selectedSlide)[0]}
-              showLoading={false}
               displayVariant="icon"
             />
           </div>

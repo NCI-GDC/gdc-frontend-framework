@@ -407,7 +407,13 @@ const FilesTable: React.FC<FilesTableProps> = ({
               onClick={handleDownloadJSON}
               aria-label="Download JSON"
               disabled={isFetching}
-              leftSection={jsonDownloadInProgress ? <Loader size={16} /> : null}
+              leftSection={
+                jsonDownloadInProgress ? (
+                  <Loader size={16} color="currentColor" />
+                ) : null
+              }
+              tooltip="A previous download is being processed. Additional downloads may be started."
+              showTooltip={jsonDownloadInProgress}
             >
               JSON
             </FunctionButton>

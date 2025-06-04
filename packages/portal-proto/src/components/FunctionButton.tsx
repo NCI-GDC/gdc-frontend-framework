@@ -1,5 +1,6 @@
 import tw from "tailwind-styled-components";
-import { Button, ButtonProps } from "@mantine/core";
+import { Button, ButtonProps, Tooltip } from "@mantine/core";
+import { forwardRef } from "react";
 
 export type FunctionButtonVariants =
   | "filled"
@@ -13,15 +14,11 @@ interface FunctionButtonProps extends ButtonProps {
   $variant?: FunctionButtonVariants;
   ref?: any;
   onClick?: () => void;
+  tooltip?: string;
+  showTooltip?: boolean;
 }
 
-/**
- * Function button component
- * @param variant - display variant
- * @param disabled - whether the button is disabled
- * @category Buttons
- */
-export default tw(Button)<FunctionButtonProps>`
+const StyledButton = tw(Button)<FunctionButtonProps>`
  ${(p: FunctionButtonProps) =>
    p.disabled
      ? "opacity-60 border-opacity-60 text-opacity-60 aria-disabled"
@@ -48,3 +45,24 @@ ${(p: FunctionButtonProps) =>
 ${(p: FunctionButtonProps) =>
   p.$variant === "icon" ? "w-8 p-0 h-6" : undefined}
 `;
+
+/**
+ * Function button component
+ * @param variant - display variant
+ * @param disabled - whether the button is disabled
+ * @param tooltip = tooltip text to show
+ * @param showTooltip - whether to show the tooltip (defaults to true if tooltip is provided)
+ * @category Buttons
+ */
+const FunctionButton = forwardRef<HTMLButtonElement, FunctionButtonProps>(
+  ({ tooltip, showTooltip, ...props }, ref) => {
+    const button = <StyledButton ref={ref} {...props} />;
+
+    if (tooltip && (showTooltip ?? true)) {
+      return <Tooltip label={tooltip}>{button}</Tooltip>;
+    }
+    return button;
+  },
+);
+
+export default FunctionButton;
