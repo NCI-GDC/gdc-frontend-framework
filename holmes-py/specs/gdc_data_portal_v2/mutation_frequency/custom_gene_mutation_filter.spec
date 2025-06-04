@@ -35,7 +35,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 
 ## Validate Custom Gene Filters
 * Is text "Overall Survival Plot" present on the page
-* Select "Genes" in the Mutation Frequency app
+* Select "Mutated Gene" in the Mutation Frequency app
 * Upload "Custom Gene Filters" "txt" from "Mutation Frequency" in "Mutation Frequency Custom Filter" through "Browse"
 * Pause "5" seconds
 * Is text "6 submitted gene identifiers mapped to 6 unique GDC genes" present on the page
@@ -61,7 +61,7 @@ but it usually requires a wait. So I've put 5 seconds.
   |Mutated Gene         |clear selection      |
 
 ## Filter by Existing Gene Set
-* Select "Genes" in the Mutation Frequency app
+* Select "Mutated Gene" in the Mutation Frequency app
 * Switch to tab "Saved Sets" in Modal
 * Change number of entries shown in the table "Sets" to "100"
 * Verify the set "MF-Existing Gene Set" displays a count of "5" in Modal
@@ -93,7 +93,7 @@ but it usually requires a wait. So I've put 5 seconds.
 ## Validate Custom Mutation Filters
 * Switch to "Mutations" tab in the Mutation Frequency app
 * Wait for table loading spinner
-* Select "Somatic Mutations" in the Mutation Frequency app
+* Select "Somatic Mutation" in the Mutation Frequency app
 * Upload "Custom Mutation Filters" "txt" from "Mutation Frequency" in "Mutation Frequency Custom Filter" through "Browse"
 * Pause "5" seconds
 * Is text "4 submitted mutation identifiers mapped to 4 unique GDC mutations" present on the page
@@ -117,7 +117,7 @@ but it usually requires a wait. So I've put 3 seconds.
   |Somatic Mutations        |clear selection      |
 
 ## Filter by Existing Mutation Set
-* Select "Somatic Mutations" in the Mutation Frequency app
+* Select "Somatic Mutation" in the Mutation Frequency app
 * Switch to tab "Saved Sets" in Modal
 * Change number of entries shown in the table "Sets" to "100"
 * Verify the set "MF-Existing Mutation Set" displays a count of "5" in Modal

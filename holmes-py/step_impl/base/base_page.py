@@ -29,7 +29,7 @@ class GenericLocators:
     )
     # This locator allows you to grab the case count text for further testing
     TEXT_COHORT_BAR_CASE_COUNT = (
-        f'[data-testid="expandcollapseButton"] >> span[class="pr-1 font-bold"]'
+        f'[data-testid="expandcollapseButton"] >> [data-testid="button-cases-cohort-bar"] >> span:nth-child(1)'
     )
     CART_IDENT = '[data-testid="button-header-cart"]'
 

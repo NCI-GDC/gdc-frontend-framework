@@ -19,8 +19,8 @@ class CaseSummaryLocators:
     BUTTON_CASE_SUMMARY_PAGE = lambda button_name: f"[data-testid='button-{button_name}-case-summary']"
 
     BUTTON_CLINICAL_TAB = lambda tab_name: f"[data-testid='button-{tab_name}-tab']"
-    BUTTON_CLINICAL_TABLE_DOWNLOAD = "[data-testid='table-clinical-case-summary'] >> div:text-is('Download')"
-    BUTTON_BIOSPECIMEN_TABLE_DOWNLOAD = "[data-testid='table-biospecimen-case-summary'] >> div:text-is('Download')"
+    BUTTON_CLINICAL_TABLE_DOWNLOAD = "[data-testid='table-clinical-case-summary'] >> span:text-is('Download')"
+    BUTTON_BIOSPECIMEN_TABLE_DOWNLOAD = "[data-testid='table-biospecimen-case-summary'] >> span:text-is('Download')"
 
     SEARCH_BAR_FILES_TABLE = '[data-testid="table-files-case-summary"] >> [data-testid="textbox-table-search-bar"]'
     BUTTON_DOWNLOAD_FILE_FILES_TABLE = '[data-testid="table-files-case-summary"] >> [data-testid="button-download-file"]'

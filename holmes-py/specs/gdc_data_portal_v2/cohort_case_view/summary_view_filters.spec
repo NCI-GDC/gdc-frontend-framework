@@ -101,7 +101,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
   |facet_name         |selections           |position in filter area  |
   |-------------------|---------------------|-------------------------|
   |Mutated Gene       |10 input genes       |1                        |
-* Validate expected custom filters "are" present in facet cards on the "Molecular Filters" tab on the Cohort Builder page
+* Validate expected custom filters "are" present in facet cards on the "Genomic Filters" tab on the Cohort Builder page
   |facet_name           |custom_filter_text                     |
   |---------------------|---------------------------------------|
   |Mutated Gene         |10 input genes                         |
@@ -118,7 +118,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
   |facet_name         |selections                           |position in filter area  |
   |-------------------|-------------------------------------|-------------------------|
   |Ssm Id             |fffffe32-4644-509e-8ff4-9ea2841c7094 |1                        |
-* Validate expected custom filters "are" present in facet cards on the "Molecular Filters" tab on the Cohort Builder page
+* Validate expected custom filters "are" present in facet cards on the "Genomic Filters" tab on the Cohort Builder page
   |facet_name         |custom_filter_text                   |
   |-------------------|-------------------------------------|
   |Somatic Mutation   |fffffe32-4644-509e-8ff4-9ea2841c7094 |

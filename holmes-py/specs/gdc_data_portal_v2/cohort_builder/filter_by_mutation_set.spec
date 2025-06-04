@@ -24,7 +24,7 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
 * Navigate to "Cohort" from "Header" "section"
 * Select "Add" from the Cohort Bar
 * Is temporary modal with text "Unsaved_Cohort has been created" present on the page and "Remove Modal"
-* Select the following labels from "Molecular Filters" tab on the Cohort Builder page
+* Select the following labels from "Genomic Filters" tab on the Cohort Builder page
   |facet_name       |selection                  |
   |-----------------|---------------------------|
   |Somatic Mutation |Upload Somatic Mutations   |
@@ -36,7 +36,7 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
   |-------------------------|
   |CB-Existing Mutation Set |
 * Select button "Submit"
-* Validate expected custom filters "are" present in facet cards on the "Molecular Filters" tab on the Cohort Builder page
+* Validate expected custom filters "are" present in facet cards on the "Genomic Filters" tab on the Cohort Builder page
   |facet_name           |custom_filter_text                     |
   |---------------------|---------------------------------------|
   |Somatic Mutation     |CB-Existing Mutation Set               |
@@ -61,7 +61,7 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
 
 ## Filter Cohort by Created Mutation Set in Modal
 * Navigate to "Cohort" from "Header" "section"
-* Select the following labels from "Molecular Filters" tab on the Cohort Builder page
+* Select the following labels from "Genomic Filters" tab on the Cohort Builder page
   |facet_name       |selection                |
   |-----------------|-------------------------|
   |Somatic Mutation |Upload Somatic Mutations |
@@ -81,7 +81,7 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
   |---------------------|
   |CB-New Mutation Set  |
 * Select button "Submit"
-* Validate expected custom filters "are" present in facet cards on the "Molecular Filters" tab on the Cohort Builder page
+* Validate expected custom filters "are" present in facet cards on the "Genomic Filters" tab on the Cohort Builder page
   |facet_name           |custom_filter_text                     |
   |---------------------|---------------------------------------|
   |Somatic Mutation     |CB-New Mutation Set                    |
