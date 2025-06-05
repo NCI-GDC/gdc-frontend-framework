@@ -32,7 +32,7 @@ tags: gdc-data-portal-v2, regression, footer, navigation
   |FOIA                                       |provides individuals with a right to access to records         |
   |HHS Vulnerability Disclosure               |If you make a good faith effort to comply with this policy     |
   |U.S. Department of Health and Human Services|Receive the latest updates from the Secretary and Press Releases.|
-  |National Institutes of Health              |National Institutes of Health, 9000 Rockville Pike, Bethesda,  |
+  |National Institutes of Health              |9000 Rockville Pike Bethesda, Maryland 20892                   |
   |National Cancer Institute                  |National Cancer Institute                                      |
   |USA.gov                                    |USA.gov helps you locate a                                     |
 
