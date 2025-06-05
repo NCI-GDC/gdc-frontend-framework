@@ -122,7 +122,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
       break;
   }
 
-  const handleDownloadJSON = async () => {
+  const handleDownloadJSON = () => {
     const blob = new Blob(
       [
         JSON.stringify(
@@ -143,7 +143,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
     saveAs(blob, `${downloadFileName}.json`);
   };
 
-  const handleDownloadTSV = async () => {
+  const handleDownloadTSV = () => {
     if (plotData.length === 0) {
       return;
     }

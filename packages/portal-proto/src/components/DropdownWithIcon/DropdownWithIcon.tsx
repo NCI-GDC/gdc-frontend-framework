@@ -3,6 +3,7 @@ import { Button, Menu, Tooltip } from "@mantine/core";
 import { FloatingPosition } from "@mantine/core/lib/components/Floating/types";
 import { focusStyles } from "src/utils";
 import { DropdownIcon } from "@/utils/icons";
+import { ADDITIONAL_DOWNLOAD_MESSAGE } from "@/utils/constants";
 
 interface DropdownWithIconProps {
   /**
@@ -97,8 +98,6 @@ export const DropdownWithIcon = ({
   closeOnItemClick = true,
 }: DropdownWithIconProps): JSX.Element => {
   const targetRef = useRef<HTMLButtonElement>();
-  const defaultLoadingTooltip =
-    "A previous download is being processed. Additional downloads may be started.";
 
   return (
     <Menu
@@ -172,7 +171,7 @@ export const DropdownWithIcon = ({
               return (
                 <Tooltip
                   key={`${title}-${idx}`}
-                  label={loadingTooltip || defaultLoadingTooltip}
+                  label={loadingTooltip || ADDITIONAL_DOWNLOAD_MESSAGE}
                   position="right"
                   withArrow
                   multiline

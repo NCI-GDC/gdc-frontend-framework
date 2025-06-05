@@ -1,11 +1,11 @@
-import { ButtonProps, Loader, Tooltip } from "@mantine/core";
+import { ButtonProps } from "@mantine/core";
 import download from "src/utils/download";
 import { hideModal, Modals, useCoreDispatch } from "@gff/core";
 import { Dispatch, SetStateAction, forwardRef } from "react";
 import FunctionButton, {
   FunctionButtonVariants,
 } from "@/components/FunctionButton";
-import { DownloadIcon } from "@/utils/icons";
+import { ADDITIONAL_DOWNLOAD_MESSAGE } from "@/utils/constants";
 
 /**
  * Properties for the DownloadButton component.
@@ -50,7 +50,7 @@ interface DownloadButtonProps {
   Modal403?: Modals;
   Modal400?: Modals;
   toolTip?: string;
-  multilineToolTip?: boolean;
+  multilineTooltip?: boolean;
   displayVariant?: FunctionButtonVariants;
 }
 
@@ -77,7 +77,7 @@ interface DownloadButtonProps {
  * @param Modal403 - The modal to display when a 403 error occurs.
  * @param Modal400 - The modal to display when a 400 error occurs.
  * @param toolTip - The tooltip to display.
- * @param multilineToolTip - The tooltip will be displayed in multiple lines
+ * @param multilineTooltip - The tooltip will be displayed in multiple lines
  * @category Buttons
  */
 export const DownloadButton = forwardRef<
@@ -103,79 +103,62 @@ export const DownloadButton = forwardRef<
       active,
       Modal400,
       Modal403,
-      toolTip,
-      multilineToolTip = false,
+      toolTip = "",
+      multilineTooltip = false,
       displayVariant,
       ...buttonProps
     }: DownloadButtonProps,
     ref,
   ) => {
     const dispatch = useCoreDispatch();
-    const tooltipContent = active
-      ? "A previous download is being processed. Additional downloads may be started."
-      : toolTip;
+    const tooltipContent = active ? ADDITIONAL_DOWNLOAD_MESSAGE : toolTip;
 
-    const shouldShowTooltip = active || !!toolTip;
     return (
-      <Tooltip
-        disabled={!shouldShowTooltip}
-        label={tooltipContent}
-        multiline={multilineToolTip}
-        w={multilineToolTip ? 400 : "auto"}
-        key={buttonLabel}
-      >
-        <FunctionButton
-          $variant={displayVariant}
-          ref={ref}
-          leftSection={
-            active ? (
-              <Loader size="1rem" color="currentColor" />
-            ) : (
-              <DownloadIcon
-                aria-label="download"
-                className="hidden xl:block"
-                size="1rem"
-              />
-            )
+      <FunctionButton
+        $variant={displayVariant}
+        ref={ref}
+        isActive={active}
+        isDownload
+        showDownloadIcon
+        tooltip={tooltipContent}
+        multilineTooltip={multilineTooltip}
+        classNames={{ section: "mr-0 xl:mr-2" }}
+        disabled={disabled}
+        variant="outline"
+        onClick={() => {
+          if (!preventClickEvent && onClick) {
+            onClick();
+            return;
           }
-          classNames={{ section: "mr-0 xl:mr-2" }}
-          disabled={disabled}
-          variant="outline"
-          onClick={() => {
-            if (!preventClickEvent && onClick) {
-              onClick();
-              return;
-            }
-            dispatch(hideModal());
-            const params = {
-              size: downloadSize,
-              attachment: true,
-              format,
-              fields: fields.join(),
-              case_filters: caseFilters,
-              filters,
-              pretty: true,
-              ...(filename ? { filename } : {}),
-              ...extraParams,
-            };
-            if (setActive) {
-              setActive(true);
-            }
-            download({
-              params,
-              endpoint,
-              method,
-              done: () => setActive && setActive(false),
-              dispatch,
-              Modal400,
-              Modal403,
-            });
-          }}
-          {...buttonProps}
-        >
-          {buttonLabel}
-        </FunctionButton>
-      </Tooltip>
+          dispatch(hideModal());
+          const params = {
+            size: downloadSize,
+            attachment: true,
+            format,
+            fields: fields.join(),
+            case_filters: caseFilters,
+            filters,
+            pretty: true,
+            ...(filename ? { filename } : {}),
+            ...extraParams,
+          };
+          if (setActive) {
+            setActive(true);
+          }
+          download({
+            params,
+            endpoint,
+            method,
+            done: () => setActive && setActive(false),
+            dispatch,
+            Modal400,
+            Modal403,
+          });
+        }}
+        {...buttonProps}
+      >
+        {buttonLabel}
+      </FunctionButton>
     );
   },
 );

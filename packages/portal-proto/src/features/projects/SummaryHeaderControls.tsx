@@ -10,6 +10,10 @@ import { getFormattedTimestamp } from "@/utils/date";
 import { DownloadIcon } from "@/utils/icons";
 import { cohortActionsHooks } from "../cohortBuilder/CohortManager/cohortActionHooks";
 import { INVALID_COHORT_NAMES } from "../cohortBuilder/utils";
+import {
+  ADDITIONAL_DOWNLOAD_MESSAGE,
+  MANIFEST_DOWNLOAD_MESSAGE,
+} from "@/utils/constants";
 
 function SummaryHeaderControls({
   projectData,
@@ -243,13 +247,11 @@ function SummaryHeaderControls({
         closeOnItemClick={false}
       />
       <Tooltip
-        transitionProps={{ duration: 200, transition: "fade" }}
-        w={220}
+        w={400}
         label={
           manifestDownloadActive
-            ? "A previous download is being processed. Additional downloads may be started."
-            : `Download a manifest for use with the GDC Data Transfer Tool. The GDC
-          Data Transfer Tool is recommended for transferring large volumes of data.`
+            ? ADDITIONAL_DOWNLOAD_MESSAGE
+            : MANIFEST_DOWNLOAD_MESSAGE
         }
         arrowSize={10}
         position="bottom"

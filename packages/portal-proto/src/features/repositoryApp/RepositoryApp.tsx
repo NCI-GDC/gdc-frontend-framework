@@ -42,6 +42,7 @@ import { TableXPositionContext } from "@/components/Table/VerticalTable";
 import { getFormattedTimestamp } from "@/utils/date";
 import { focusStyles } from "@/utils/index";
 import { CartIcon } from "@/utils/icons";
+import { MANIFEST_DOWNLOAD_MESSAGE } from "@/utils/constants";
 
 export const persistor = persistStore(AppStore);
 
@@ -263,8 +264,8 @@ export const RepositoryApp = (): JSX.Element => {
                 <DownloadButton
                   data-testid="button-manifest-files-table"
                   buttonLabel="Manifest"
-                  toolTip="Download a manifest for use with the GDC Data Transfer Tool. The GDC Data Transfer Tool is recommended for transferring large volumes of data."
-                  multilineToolTip
+                  toolTip={MANIFEST_DOWNLOAD_MESSAGE}
+                  multilineTooltip
                   endpoint="files"
                   method="POST"
                   extraParams={{

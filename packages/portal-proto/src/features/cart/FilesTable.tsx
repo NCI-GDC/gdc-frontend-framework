@@ -30,7 +30,6 @@ import {
 import VerticalTable from "@/components/Table/VerticalTable";
 import { HandleChangeInput } from "@/components/Table/types";
 import { downloadTSV } from "@/components/Table/utils";
-import { Loader, Tooltip } from "@mantine/core";
 import { useDeepCompareMemo } from "use-deep-compare";
 import TotalItems from "@/components/Table/TotalItem";
 
@@ -401,33 +400,24 @@ const FilesTable: React.FC<FilesTableProps> = ({
       }
       additionalControls={
         <div className="flex gap-2">
-          <Tooltip label="Download JSON">
-            <FunctionButton
-              data-testid="button-json"
-              onClick={handleDownloadJSON}
-              aria-label="Download JSON"
-              disabled={isFetching}
-              leftSection={
-                jsonDownloadInProgress ? (
-                  <Loader size={16} color="currentColor" />
-                ) : null
-              }
-              tooltip="A previous download is being processed. Additional downloads may be started."
-              showTooltip={jsonDownloadInProgress}
-            >
-              JSON
-            </FunctionButton>
-          </Tooltip>
-          <Tooltip label="Download TSV">
-            <FunctionButton
-              data-testid="button-tsv"
-              onClick={handleDownloadTSV}
-              aria-label="Download TSV"
-              disabled={isFetching}
-            >
-              TSV
-            </FunctionButton>
-          </Tooltip>
+          <FunctionButton
+            data-testid="button-json"
+            onClick={handleDownloadJSON}
+            aria-label="Download JSON"
+            disabled={isFetching}
+            isDownload
+            isActive={jsonDownloadInProgress}
+          >
+            JSON
+          </FunctionButton>
+          <FunctionButton
+            data-testid="button-tsv"
+            onClick={handleDownloadTSV}
+            aria-label="Download TSV"
+            disabled={isFetching}
+          >
+            TSV
+          </FunctionButton>
         </div>
       }
       pagination={pagination}

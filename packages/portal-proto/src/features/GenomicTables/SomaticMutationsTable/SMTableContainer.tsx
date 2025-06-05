@@ -20,7 +20,6 @@ import {
 } from "@gff/core";
 import { useEffect, useState, useContext, useMemo, useCallback } from "react";
 import { useDeepCompareCallback, useDeepCompareMemo } from "use-deep-compare";
-import { Loader } from "@mantine/core";
 import isEqual from "lodash/isEqual";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
@@ -529,11 +528,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                   onClick={handleTSVDownload}
                   aria-label="Download TSV"
                   disabled={isFetching}
-                  leftSection={
-                    downloadMutationsFrequencyTSVActive ? (
-                      <Loader size={16} color="currentColor" />
-                    ) : null
-                  }
+                  isDownload
+                  isActive={downloadMutationsFrequencyTSVActive}
                 >
                   TSV
                 </FunctionButton>

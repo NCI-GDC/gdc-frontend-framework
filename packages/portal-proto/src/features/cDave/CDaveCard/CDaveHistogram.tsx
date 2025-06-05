@@ -14,6 +14,7 @@ import { toDisplayName } from "../utils";
 import { DisplayData } from "../types";
 import { useDeepCompareMemo } from "use-deep-compare";
 import { DownloadIcon } from "@/utils/icons";
+import { ADDITIONAL_DOWNLOAD_MESSAGE } from "@/utils/constants";
 
 const formatBarChartData = (
   data: DisplayData,
@@ -91,7 +92,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
         </div>
       ) : (
         <>
-          <div className="flex flex-row justify-between pl-2 pr-0">
+          <div className="flex justify-between pl-2 pr-0">
             <Radio.Group
               size="sm"
               onChange={(value) => setDisplayPercent(value === "percent")}
@@ -134,40 +135,51 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
               </Menu.Target>
 
               <Menu.Dropdown data-testid="dropdown-menu-options">
-                <Menu.Item
-                  onClick={async () => {
-                    setDownloadProgress(true, "svg");
-                    await handleDownloadSVG(
-                      downloadChartRef,
-                      `${downloadFileName}.svg`,
-                    );
-                    setDownloadProgress(false, null);
-                  }}
-                  leftSection={
-                    downloadInProgress && downloadType === "svg" ? (
-                      <Loader size={16} />
-                    ) : null
-                  }
+                <Tooltip
+                  label={ADDITIONAL_DOWNLOAD_MESSAGE}
+                  disabled={!downloadInProgress || downloadType !== "svg"}
                 >
-                  SVG
-                </Menu.Item>
-                <Menu.Item
-                  onClick={async () => {
-                    setDownloadProgress(true, "png");
-                    await handleDownloadPNG(
-                      downloadChartRef,
-                      `${downloadFileName}.png`,
-                    );
-                    setDownloadProgress(false, null);
-                  }}
-                  leftSection={
-                    downloadInProgress && downloadType === "png" ? (
-                      <Loader size={16} />
-                    ) : null
-                  }
+                  <Menu.Item
+                    onClick={async () => {
+                      setDownloadProgress(true, "svg");
+                      await handleDownloadSVG(
+                        downloadChartRef,
+                        `${downloadFileName}.svg`,
+                      );
+                      setDownloadProgress(false, null);
+                    }}
+                    leftSection={
+                      downloadInProgress && downloadType === "svg" ? (
+                        <Loader size={16} />
+                      ) : null
+                    }
+                  >
+                    SVG
+                  </Menu.Item>
+                </Tooltip>
+
+                <Tooltip
+                  label={ADDITIONAL_DOWNLOAD_MESSAGE}
+                  disabled={!downloadInProgress || downloadType !== "png"}
                 >
-                  PNG
-                </Menu.Item>
+                  <Menu.Item
+                    onClick={async () => {
+                      setDownloadProgress(true, "png");
+                      await handleDownloadPNG(
+                        downloadChartRef,
+                        `${downloadFileName}.png`,
+                      );
+                      setDownloadProgress(false, null);
+                    }}
+                    leftSection={
+                      downloadInProgress && downloadType === "png" ? (
+                        <Loader size={16} />
+                      ) : null
+                    }
+                  >
+                    PNG
+                  </Menu.Item>
+                </Tooltip>
                 <Menu.Item
                   component="a"
                   href={`data:text/json;charset=utf-8, ${encodeURIComponent(

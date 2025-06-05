@@ -1,6 +1,8 @@
 import tw from "tailwind-styled-components";
-import { Button, ButtonProps, Tooltip } from "@mantine/core";
+import { Button, ButtonProps, Loader, Tooltip } from "@mantine/core";
 import { forwardRef } from "react";
+import { DownloadIcon } from "@/utils/icons";
+import { ADDITIONAL_DOWNLOAD_MESSAGE } from "@/utils/constants";
 
 export type FunctionButtonVariants =
   | "filled"
@@ -15,7 +17,12 @@ interface FunctionButtonProps extends ButtonProps {
   ref?: any;
   onClick?: () => void;
   tooltip?: string;
-  showTooltip?: boolean;
+  multilineTooltip?: boolean;
+  isActive?: boolean;
+  isDownload?: boolean;
+  showDownloadIcon?: boolean;
+  loaderSize?: number;
+  downloadIconSize?: number;
 }
 
 const StyledButton = tw(Button)<FunctionButtonProps>`
@@ -46,20 +53,76 @@ ${(p: FunctionButtonProps) =>
   p.$variant === "icon" ? "w-8 p-0 h-6" : undefined}
 `;
 
+// should have loader or download button based on prop?
 /**
  * Function button component
  * @param variant - display variant
  * @param disabled - whether the button is disabled
- * @param tooltip = tooltip text to show
- * @param showTooltip - whether to show the tooltip (defaults to true if tooltip is provided)
+ * @param tooltip - tooltip text to show / for downloads it shows toolip only when isActive is true
+ * @param multilineTooltip - show tooltip in multiline
+ * @param isActive - shows loader when true
+ * @param isDownload - if it should behave as download button
+ * @param showDownloadIcon - shows download icon when true (ignored if isActive is true)
+ * @param loaderSize - size of the loader (defaults to 16)
+ * @param downloadIconSize - size of the download icon (defaults to 16)
  * @category Buttons
  */
 const FunctionButton = forwardRef<HTMLButtonElement, FunctionButtonProps>(
-  ({ tooltip, showTooltip, ...props }, ref) => {
-    const button = <StyledButton ref={ref} {...props} />;
+  (
+    {
+      tooltip,
+      multilineTooltip = false,
+      isActive = false,
+      isDownload = false,
+      showDownloadIcon = false,
+      loaderSize = 16,
+      downloadIconSize = 16,
+      leftSection,
+      ...props
+    },
+    ref,
+  ) => {
+    const tooltipLabel = tooltip
+      ? tooltip
+      : isDownload && isActive
+      ? ADDITIONAL_DOWNLOAD_MESSAGE
+      : undefined;
 
-    if (tooltip && (showTooltip ?? true)) {
-      return <Tooltip label={tooltip}>{button}</Tooltip>;
+    const getLeftSection = () => {
+      if (leftSection !== undefined) {
+        return leftSection;
+      }
+
+      if (isActive) {
+        return <Loader size={loaderSize} color="currentColor" />;
+      }
+
+      if (showDownloadIcon) {
+        return (
+          <DownloadIcon
+            size={downloadIconSize}
+            aria-label="download"
+            className="hidden xl:block"
+          />
+        );
+      }
+
+      return null;
+    };
+    const button = (
+      <StyledButton ref={ref} leftSection={getLeftSection()} {...props} />
+    );
+
+    if (tooltipLabel) {
+      return (
+        <Tooltip
+          label={tooltipLabel}
+          multiline={multilineTooltip}
+          w={multilineTooltip ? "400" : "auto"}
+        >
+          {button}
+        </Tooltip>
+      );
     }
     return button;
   },

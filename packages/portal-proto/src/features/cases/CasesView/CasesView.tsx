@@ -511,11 +511,8 @@ export const ContextualCasesView: React.FC = () => {
               onClick={handleJSONDownload}
               disabled={isFetching}
               size="sm"
-              leftSection={
-                cohortTableJSONDownloadActive ? (
-                  <Loader size={16} color="currentColor" />
-                ) : null
-              }
+              isActive={cohortTableJSONDownloadActive}
+              showDownloadIcon
             >
               JSON
             </FunctionButton>
@@ -525,11 +522,8 @@ export const ContextualCasesView: React.FC = () => {
               onClick={handleTSVDownload}
               disabled={isFetching}
               size="sm"
-              leftSection={
-                cohortTableTSVDownloadActive ? (
-                  <Loader size={16} color="currentColor" />
-                ) : null
-              }
+              isActive={cohortTableTSVDownloadActive}
+              showDownloadIcon
             >
               TSV
             </FunctionButton>

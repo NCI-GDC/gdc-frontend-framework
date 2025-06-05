@@ -28,6 +28,7 @@ import {
   SaveIcon,
 } from "@/utils/icons";
 import { getFormattedTimestamp } from "@/utils/date";
+import { ADDITIONAL_DOWNLOAD_MESSAGE } from "@/utils/constants";
 
 const buttonStyle =
   "bg-base-max text-primary border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary";
@@ -159,7 +160,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             </Menu.Target>
             <Menu.Dropdown data-testid="dropdown-menu-options">
               <Tooltip
-                label="A previous download is being processed. Additional downloads may be started."
+                label={ADDITIONAL_DOWNLOAD_MESSAGE}
                 disabled={!manifestDownloadActive}
               >
                 <span>

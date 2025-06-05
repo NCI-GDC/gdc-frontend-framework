@@ -41,7 +41,6 @@ import { downloadTSV } from "@/components/Table/utils";
 import { REPO_BREAKPOINT, statusBooleansToDataStatus } from "src/utils";
 import { useDeepCompareEffect } from "use-deep-compare";
 import { PersonIcon, SaveIcon } from "@/utils/icons";
-import { Loader } from "@mantine/core";
 
 export type FilesTableDataType = {
   file: GdcFile;
@@ -460,13 +459,8 @@ const FilesTables: React.FC = () => {
               onClick={handleDownloadJSON}
               data-testid="button-json-files-table"
               disabled={isFetching}
-              leftSection={
-                jsonDownloadInProgress ? (
-                  <Loader size={16} color="currentColor" />
-                ) : null
-              }
-              tooltip="A previous download is being processed. Additional downloads may be started."
-              showTooltip={jsonDownloadInProgress}
+              isActive={jsonDownloadInProgress}
+              isDownload
             >
               JSON
             </FunctionButton>
