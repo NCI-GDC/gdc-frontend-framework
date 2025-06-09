@@ -512,7 +512,6 @@ export const ContextualCasesView: React.FC = () => {
               disabled={isFetching}
               size="sm"
               isActive={cohortTableJSONDownloadActive}
-              showDownloadIcon
             >
               JSON
             </FunctionButton>
@@ -523,7 +522,6 @@ export const ContextualCasesView: React.FC = () => {
               disabled={isFetching}
               size="sm"
               isActive={cohortTableTSVDownloadActive}
-              showDownloadIcon
             >
               TSV
             </FunctionButton>
