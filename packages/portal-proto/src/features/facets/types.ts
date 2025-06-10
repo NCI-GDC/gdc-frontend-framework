@@ -1,6 +1,6 @@
 import { FacetDefinitionType, GQLDocType, GQLIndexType } from "@gff/core";
 
-type FacetQueryOptions = {
+export type FacetQueryOptions = {
   readonly docType?: GQLDocType;
   readonly indexType?: GQLIndexType;
   readonly facetType?: FacetDefinitionType;
