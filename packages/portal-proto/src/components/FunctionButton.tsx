@@ -53,7 +53,6 @@ ${(p: FunctionButtonProps) =>
   p.$variant === "icon" ? "w-8 p-0 h-6" : undefined}
 `;
 
-// should have loader or download button based on prop?
 /**
  * Function button component
  * @param variant - display variant

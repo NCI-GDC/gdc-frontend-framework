@@ -319,7 +319,6 @@ const ProjectsTable: React.FC = () => {
     }
   };
 
-  // add states here
   const handleDownloadJSON = async () => {
     setJsonDownloadInProgress(true);
     await download({
