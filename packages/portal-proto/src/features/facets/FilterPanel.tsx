@@ -1,4 +1,10 @@
-import React, { useState, useContext, useRef, useMemo } from "react";
+import React, {
+  useState,
+  useContext,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import { isEqual } from "lodash";
 import { Text, Modal, LoadingOverlay, Badge, Tooltip } from "@mantine/core";
 import { fieldNameToTitle } from "@gff/core";
@@ -10,10 +16,10 @@ import {
 } from "@gff/portal-components";
 import { TableXPositionContext } from "@/components/Table/VerticalTable";
 import { AddIcon, UndoIcon } from "@/utils/icons";
-import { FacetQueryOptions } from "./types";
+import { CustomConfig } from "./types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
 import { useAvailableCustomFacets } from "../cohortBuilder/hooks";
-
+import { showNotification } from "@mantine/notifications";
 interface FilterPanelProps {
   readonly facetDefinitions: FacetCardDefinition[];
   readonly facetHooks: FacetRequiredHooks;
@@ -21,14 +27,7 @@ interface FilterPanelProps {
   readonly app: string;
   readonly toggleAllFiltersExpanded: (expanded: boolean) => void;
   readonly allFiltersCollapsed: boolean;
-  readonly customConfig?: {
-    readonly usedFacets: readonly string[];
-    readonly handleRemoveFilter: (filter: string) => void;
-    readonly handleCustomFilterSelected: (filter: string) => void;
-    readonly handleResetCustomFilters: () => void;
-    readonly defaultFilters: string[];
-    readonly queryOptions?: FacetQueryOptions;
-  };
+  readonly customConfig?: CustomConfig;
   readonly filtersAppliedCount?: number;
   readonly handleClearAll: () => void;
   readonly hideIfEmpty?: boolean;
@@ -88,6 +87,14 @@ const FilterPanel = ({
       )
     : facetDefinitions;
 
+  const handleResetCustomFilter = useCallback(() => {
+    customConfig.handleResetCustomFilters();
+    showNotification({
+      message:
+        "Custom filter cards have been removed from the Filters panel. Existing filters will still be applied.",
+    });
+  }, [customConfig]);
+
   return (
     <div className="flex flex-col gap-y-4 min-w-[14rem] w-3/12 max-w-[23rem]">
       <Text size="lg" className="text-primary-content-darker font-bold">
@@ -119,11 +126,11 @@ const FilterPanel = ({
         {customConfig !== undefined && (
           <>
             <div className="flex min-h-[36px] mt-3.5 w-full">
-              <Tooltip label="Reset custom filters">
+              <Tooltip label="Remove all custom filters card" offset={10}>
                 <button
                   data-testid="button-reset-custom-filters-files-table"
                   className="flex justify-center items-center w-12 border-1 rounded-l-md border-primary-darker text-primary disabled:opacity-50 disabled:bg-base-max disabled:text-primary disabled:cursor-not-allowed"
-                  onClick={() => customConfig.handleResetCustomFilters()}
+                  onClick={handleResetCustomFilter}
                   disabled={isEqual(customConfig.defaultFilters, facetFields)}
                   aria-label="Reset custom filters"
                 >
