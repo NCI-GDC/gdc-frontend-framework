@@ -34,6 +34,7 @@ export const getDefaultFacets = (): string[] => RepositoryDefaultConfig.facets;
 
 export const selectCustomFacets = (state: AppState) =>
   state.facets.customFacets;
+
 export const selectRepositoryConfigFacets = (
   state: AppState,
 ): ReadonlyArray<string> => [

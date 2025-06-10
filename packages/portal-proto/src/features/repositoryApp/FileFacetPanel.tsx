@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useMemo } from "react";
-import { useDeepCompareEffect } from "use-deep-compare";
+import React, { useState, useCallback } from "react";
+import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
 import {
   FacetDefinition,
   selectFacetDefinitionsByName,
@@ -100,7 +100,7 @@ export const FileFacetPanel = (): JSX.Element => {
   const allFiltersCollapsed = useAllFiltersCollapsed();
   const toggleAllFiltersExpanded = useToggleAllProjectFilters();
 
-  const customConfig: CustomConfig = useMemo(
+  const customConfig: CustomConfig = useDeepCompareMemo(
     () => ({
       usedFacets: facetsConfig,
       handleResetCustomFilters,
