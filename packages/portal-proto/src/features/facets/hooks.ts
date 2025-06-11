@@ -366,12 +366,13 @@ export const useTotalCounts = ({
   );
 };
 
-export const FacetDocTypeToCountsIndexMap = {
+export const FacetDocTypeToCountsIndexMap: Record<GQLDocType, string> = {
   cases: "caseCounts",
   files: "fileCounts",
   genes: "genesCounts",
   ssms: "mutationCounts",
-  projects: "projectCounts",
+  projects: "projectsCounts",
+  annotations: "annotationCounts",
 };
 
 export const FacetDocTypeToLabelsMap = {
@@ -380,6 +381,7 @@ export const FacetDocTypeToLabelsMap = {
   genes: "Genes",
   ssms: "Mutations",
   projects: "Projects",
+  annotations: "Annotations",
 };
 
 export const useLocalFilters = (

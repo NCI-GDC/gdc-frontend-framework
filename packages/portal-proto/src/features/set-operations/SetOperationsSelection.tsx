@@ -62,7 +62,12 @@ const SetOperationsSelection = (): JSX.Element => {
     if (cohorts.length < 2 && !isCohortComparisonDemo) {
       setSelectionScreenOpen(true);
     }
-  }, [cohorts, isCohortComparisonDemo, setSelectionScreenOpen]);
+  }, [
+    cohorts,
+    isCohortComparisonDemo,
+    setSelectionScreenOpen,
+    overwriteSelectedEntities,
+  ]);
 
   return !ready ? (
     <LoadingOverlay data-testid="loading-spinner" visible />
