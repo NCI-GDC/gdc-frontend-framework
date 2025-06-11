@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button, Divider, Modal, Radio, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { Statistics } from "@gff/core";
@@ -35,6 +35,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
   dataDimension,
   opened,
 }: ContinuousBinningModalProps) => {
+  const [hasReset, setHasReset] = useState(false);
   const customIntervalSet = isInterval(customBins);
 
   const displayDataDimension = useDataDimension(field);
@@ -64,7 +65,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
         }))
       : [],
   );
-  const [hasReset, setHasReset] = useState(false);
+
   const initialIntervalForm = {
     setIntervalSize: customIntervalSet
       ? String(
@@ -218,6 +219,25 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
     }
   };
 
+  const resetFields = useCallback(() => {
+    intervalForm.setValues({
+      setIntervalSize: String(binSize),
+      setIntervalMin: String(formattedStats.min),
+      setIntervalMax: String(formattedStats.max),
+    });
+    rangeForm.setValues({
+      ranges: [{ name: "", from: "", to: "" }],
+    });
+    // Adding form objects to dep array causes infinite rerenders
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [binSize, formattedStats.max, formattedStats.min]);
+
+  useEffect(() => {
+    if (customBins === null) {
+      resetFields();
+    }
+  }, [resetFields, customBins]);
+
   const intervalFormAtDefault =
     intervalForm.getValues().setIntervalSize === String(binSize) &&
     intervalForm.getValues().setIntervalMin === String(formattedStats.min) &&
@@ -345,14 +365,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
             aria-label="reset bins"
             className="p-2"
             onClick={() => {
-              intervalForm.setValues({
-                setIntervalSize: String(binSize),
-                setIntervalMin: String(formattedStats.min),
-                setIntervalMax: String(formattedStats.max),
-              });
-              rangeForm.setValues({
-                ranges: [{ name: "", from: "", to: "" }],
-              });
+              resetFields();
               setSavedRangeRows([]);
               setBinMethod("interval");
               setHasReset(true);
