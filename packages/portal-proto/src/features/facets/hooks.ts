@@ -366,7 +366,7 @@ export const useTotalCounts = ({
   );
 };
 
-export const FacetDocTypeToCountsIndexMap = {
+export const FacetDocTypeToCountsIndexMap: Record<GQLDocType, string> = {
   cases: "caseCounts",
   files: "fileCounts",
   genes: "genesCounts",

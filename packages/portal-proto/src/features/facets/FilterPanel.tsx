@@ -13,7 +13,6 @@ import { AddIcon, UndoIcon } from "@/utils/icons";
 import { FacetQueryOptions } from "./types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
 import { useAvailableCustomFacets } from "../cohortBuilder/hooks";
-import { FacetDocTypeToCountsIndexMap } from "./hooks";
 
 interface FilterPanelProps {
   readonly facetDefinitions: FacetCardDefinition[];
