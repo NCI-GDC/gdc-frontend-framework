@@ -117,6 +117,7 @@ export const FileFacetPanel = (): JSX.Element => {
         defaultFilters,
         queryOptions: { facetType: "files" },
       }}
+      docType="files"
       isLoading={!isDictionaryReady}
     />
   );

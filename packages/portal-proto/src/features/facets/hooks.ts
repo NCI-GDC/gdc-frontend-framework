@@ -371,7 +371,8 @@ export const FacetDocTypeToCountsIndexMap = {
   files: "fileCounts",
   genes: "genesCounts",
   ssms: "mutationCounts",
-  projects: "projectCounts",
+  projects: "projectsCounts",
+  annotations: "annotationCounts",
 };
 
 export const FacetDocTypeToLabelsMap = {
@@ -380,6 +381,7 @@ export const FacetDocTypeToLabelsMap = {
   genes: "Genes",
   ssms: "Mutations",
   projects: "Projects",
+  annotations: "Annotations",
 };
 
 export const useLocalFilters = (
