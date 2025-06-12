@@ -126,7 +126,7 @@ const FilterPanel = ({
         {customConfig !== undefined && (
           <>
             <div className="flex min-h-[36px] mt-3.5 w-full">
-              <Tooltip label="Remove all custom filters card" offset={10}>
+              <Tooltip label="Remove all custom filters cards" offset={10}>
                 <button
                   data-testid="button-reset-custom-filters-files-table"
                   className="flex justify-center items-center w-12 border-1 rounded-l-md border-primary-darker text-primary disabled:opacity-50 disabled:bg-base-max disabled:text-primary disabled:cursor-not-allowed"
