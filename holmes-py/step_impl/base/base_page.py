@@ -427,7 +427,7 @@ class BasePage:
         """
         text_locator = GenericLocators.TEXT_IN_PARAGRAPH(text)
         try:
-            self.wait_until_locator_is_visible(text_locator)
+            self.wait_until_locator_is_visible(text_locator, 60000)
             if action.lower() == "remove modal":
                 # On occasion, the automation will move so fast and click the close 'x' button
                 # it changes what the active cohort is. I cannot reproduce it manually, and it stops

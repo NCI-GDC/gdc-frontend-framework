@@ -209,3 +209,59 @@ Note: This is to resolve flaky test
 * Verify "Cohort Bar Case Count" and "chr1:g.6197725delT Affected Cases in Cohort" are "Equal"
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
 * Search the table for ""
+
+## Mutations - Replace with Affected Cases in Cohort
+* Switch cohort to "Blank - Mutation Frequency" from the Cohort Bar dropdown list
+* "Blank - Mutation Frequency" should be the active cohort
+Note: This is to resolve flaky test
+* Select value from table "Most Frequent Somatic Mutations" by row and column
+  |row   |column|
+  |------|------|
+  |1     |1     |
+  |1     |1     |
+* Pause "1" seconds
+* Collect button labels in table for comparison
+  |button_label                                 |row  |column |
+  |---------------------------------------------|-----|-------|
+  |First Row Affected Cases in Cohort           |1    |8      |
+* Select value from table by row and column
+  |row   |column|
+  |------|------|
+  |1     |8     |
+* Name the cohort "Blank - Mutation Frequency" in the Cohort Bar section
+* Select button "Save Name"
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
+  |-----------------|-------------------------------------------|--------------------|
+  |Replace          |Cohort has been saved                      |Remove Modal        |
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "First Row Affected Cases in Cohort" are "Equal"
+* Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
+
+## Genes - Replace with Affected Cases in Cohort
+* Switch to "Genes" tab in the Mutation Frequency app
+* Is text "Distribution of Most Frequently Mutated Genes" present on the page
+Note: This is to resolve flaky test
+* Select value from table "Genes" by row and column
+  |row   |column|
+  |------|------|
+  |1     |1     |
+  |1     |1     |
+* Pause "1" seconds
+* Collect button labels in table for comparison
+  |button_label                         |row  |column |
+  |-------------------------------------|-----|-------|
+  |First Row SSM Affected Cases in Cohort|1    |6      |
+* Select value from table by row and column
+  |row   |column|
+  |------|------|
+  |1     |6     |
+* Name the cohort "Blank - Mutation Frequency" in the Cohort Bar section
+* Select button "Save Name"
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
+  |-----------------|-------------------------------------------|--------------------|
+  |Replace          |Cohort has been saved                      |Remove Modal        |
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "First Row SSM Affected Cases in Cohort" are "Equal"
+* Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
