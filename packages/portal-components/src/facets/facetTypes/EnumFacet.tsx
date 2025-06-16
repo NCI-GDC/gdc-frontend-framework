@@ -400,7 +400,7 @@ const EnumFacet: React.FC<EnumFacetCardProps> = ({
                           return (
                             <div
                               key={`${field}-${value}`}
-                              className="flex flex-row items-center gap-x-1 px-2"
+                              className="flex flex-row items-center gap-x-1 px-2 min-w-0"
                             >
                               <div className="flex-none">
                                 <Checkbox
@@ -427,19 +427,25 @@ const EnumFacet: React.FC<EnumFacetCardProps> = ({
                                 />
                               </div>
 
-                              <OverflowTooltippedLabel label={value}>
-                                <span className="font-content">{value}</span>
-                              </OverflowTooltippedLabel>
+                              <div className="flex-1 min-w-0">
+                                <OverflowTooltippedLabel
+                                  label={value}
+                                  className="block font-content text-sm"
+                                >
+                                  <span className="font-content">{value}</span>
+                                </OverflowTooltippedLabel>
+                              </div>
+
                               {count !== undefined && (
-                                <>
+                                <div className="flex flex-none items-center gap-x-1">
                                   <div
                                     data-testid={`text-${value}`}
-                                    className="flex-none text-right w-14 font-content text-sm"
+                                    className="text-right font-content text-sm"
                                   >
                                     {count.toLocaleString()}
                                   </div>
                                   {showPercent ? (
-                                    <div className="flex-none text-right w-18 font-content text-sm">
+                                    <div className="text-right w-18 font-content text-sm">
                                       (
                                       {(
                                         ((count as number) / totalCount) *
@@ -448,7 +454,7 @@ const EnumFacet: React.FC<EnumFacetCardProps> = ({
                                       %)
                                     </div>
                                   ) : null}
-                                </>
+                                </div>
                               )}
                             </div>
                           );
