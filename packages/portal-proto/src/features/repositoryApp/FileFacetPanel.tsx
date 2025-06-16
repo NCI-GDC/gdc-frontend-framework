@@ -43,6 +43,8 @@ const useRepositoryEnumData = (field: string) =>
 
 export const FileFacetPanel = (): JSX.Element => {
   const facetsConfig = useAppSelector(selectRepositoryConfigFacets);
+  const [filtersExpanded, setFiltersExpanded] = useState(true);
+
   const { isSuccess: isDictionaryReady } = useFacetDictionary();
   const facets = useCoreSelector((state) =>
     selectFacetDefinitionsByName(state, facetsConfig),
@@ -118,6 +120,8 @@ export const FileFacetPanel = (): JSX.Element => {
         queryOptions: { facetType: "files" },
       }}
       isLoading={!isDictionaryReady}
+      filtersExpanded={filtersExpanded}
+      setFiltersExpanded={setFiltersExpanded}
     />
   );
 };

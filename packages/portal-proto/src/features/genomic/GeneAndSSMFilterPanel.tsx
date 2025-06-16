@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useCoreSelector, Modals, selectCurrentModal } from "@gff/core";
 import FilterFacets from "@/features/genomic/filters.json";
 import {
@@ -39,6 +39,7 @@ const GeneAndSSMFilterPanel = ({
 }): JSX.Element => {
   const modal = useCoreSelector((state) => selectCurrentModal(state));
   const updateFilters = useUpdateGenomicEnumFacetFilter();
+  const [filtersExpanded, setFiltersExpanded] = useState(true);
 
   useGenesFacets(
     "genes",
@@ -109,6 +110,8 @@ const GeneAndSSMFilterPanel = ({
         showPercent={false}
         filtersAppliedCount={filtersAppliedCount}
         handleClearAll={clearAllFilters}
+        filtersExpanded={filtersExpanded}
+        setFiltersExpanded={setFiltersExpanded}
       />
     </>
   );

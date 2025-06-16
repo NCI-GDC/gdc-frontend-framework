@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { partial } from "lodash";
 import {
   FacetDefinition,
@@ -35,6 +35,7 @@ const useAnnotationEnumData = (docType: GQLDocType, field: string) =>
   );
 
 export const AnnotationFacetPanel = (): JSX.Element => {
+  const [filtersExpanded, setFiltersExpanded] = useState(true);
   const facetHooks = {
     useGetEnumFacetData: partial(useAnnotationEnumData, "annotations"),
     useUpdateFacetFilters: useUpdateAnnotationFacetFilter,
@@ -62,6 +63,8 @@ export const AnnotationFacetPanel = (): JSX.Element => {
       allFiltersCollapsed={allFiltersCollapsed}
       handleClearAll={clearAllFilters}
       filtersAppliedCount={filtersAppliedCount}
+      filtersExpanded={filtersExpanded}
+      setFiltersExpanded={setFiltersExpanded}
     />
   );
 };
