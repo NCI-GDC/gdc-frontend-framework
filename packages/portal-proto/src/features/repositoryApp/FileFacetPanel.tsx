@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { useDeepCompareEffect } from "use-deep-compare";
+import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
 import {
   FacetDefinition,
   selectFacetDefinitionsByName,
@@ -37,6 +37,7 @@ import { FacetRequiredHooks } from "@gff/portal-components";
 import FilterPanel from "@/features/facets/FilterPanel";
 import { useFieldNameToTitle } from "../cohortBuilder/queryExpressionHooks";
 import { useSearchEnumTerms } from "../cohortBuilder/hooks";
+import { CustomConfig } from "../facets/types";
 
 const useRepositoryEnumData = (field: string) =>
   useLocalFilters(field, useRepositoryEnumValues, useRepositoryFilters);
@@ -99,6 +100,24 @@ export const FileFacetPanel = (): JSX.Element => {
   const allFiltersCollapsed = useAllFiltersCollapsed();
   const toggleAllFiltersExpanded = useToggleAllProjectFilters();
 
+  const customConfig: CustomConfig = useDeepCompareMemo(
+    () => ({
+      usedFacets: facetsConfig,
+      handleResetCustomFilters,
+      handleRemoveFilter,
+      handleCustomFilterSelected: handleFilterSelected,
+      defaultFilters,
+      queryOptions: { facetType: "files" },
+    }),
+    [
+      facetsConfig,
+      handleResetCustomFilters,
+      handleRemoveFilter,
+      handleFilterSelected,
+      defaultFilters,
+    ],
+  );
+
   return (
     <FilterPanel
       facetDefinitions={facetDefinitions}
@@ -109,14 +128,7 @@ export const FileFacetPanel = (): JSX.Element => {
       allFiltersCollapsed={allFiltersCollapsed}
       handleClearAll={clearAllFilters}
       filtersAppliedCount={appliedFilterCount}
-      customConfig={{
-        usedFacets: facetsConfig,
-        handleResetCustomFilters,
-        handleRemoveFilter,
-        handleCustomFilterSelected: handleFilterSelected,
-        defaultFilters,
-        queryOptions: { facetType: "files" },
-      }}
+      customConfig={customConfig}
       isLoading={!isDictionaryReady}
     />
   );
