@@ -99,6 +99,9 @@ const CohortNotificationProvider: React.FC<CohortNotificationWrapperProps> = ({
                 cohortName={
                   (message as CohortNotificationCommandWithParam).param1
                 }
+                newCohortName={
+                  (message as CohortNotificationCommandWithParam).param2
+                }
               />
             ),
             classNames: {

@@ -4,6 +4,7 @@ import { cleanNotifications } from "@mantine/notifications";
 
 export interface CohortNotificationProps {
   readonly cohortName: string;
+  readonly newCohortName?: string;
 }
 
 export const NewCohortNotification: React.FC<CohortNotificationProps> = ({
@@ -92,11 +93,17 @@ export const SavedCohortNotificationWithSetAsCurrent: React.FC<
 
 export const DeleteCohortNotification: React.FC<CohortNotificationProps> = ({
   cohortName,
+  newCohortName,
 }: CohortNotificationProps) => {
   return (
     <>
       <p>
-        <b>{cohortName}</b> has been deleted.
+        <b>{cohortName}</b> has been deleted.{" "}
+        {newCohortName && (
+          <>
+            <b>{newCohortName}</b> is now your current cohort.
+          </>
+        )}
       </p>
     </>
   );
