@@ -1113,6 +1113,7 @@ def select_table_value_by_row_column(table):
     Selects values from tables by giving a row and column
     Row and Column indexing begins at '1'
     """
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
     for k, v in enumerate(table):
         APP.shared.select_table_by_row_column(v[0], v[1])
         time.sleep(1)
@@ -1132,6 +1133,7 @@ def select_table_value_by_row_column(table_name:str, table):
     In specified table, selects values from tables by giving a row and column
     Row and Column indexing begins at '1'
     """
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
     for k, v in enumerate(table):
         APP.shared.select_specified_table_by_row_column(table_name, v[0], v[1])
         time.sleep(1)
