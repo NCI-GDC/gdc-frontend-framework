@@ -3,7 +3,7 @@ Date Created   : 09/17/2023
 Version			   : 1.0
 Owner		       : GDC QA
 Description		 : Create a Filtered Cohort Using Different Table Buttons
-Test-Case      : PEAR-1510
+Test-Case      : PEAR-1510, PEAR-2458
 
 tags: gdc-data-portal-v2, mutation-frequency, regression
 

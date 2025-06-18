@@ -1,9 +1,9 @@
 # End to End - Replace Cohort With Filtered Cohort Button
 Date Created        : 06/12/2025
-Version			    : 1.0
-Owner		        : GDC QA
-Description		    : Replace Cohort with Various Filtered Cohort Buttons
-Test-case           :
+Version			        : 1.0
+Owner		            : GDC QA
+Description		      : Replace Cohort with Various Filtered Cohort Buttons
+Test-case           : PEAR-2458
 
 tags: gdc-data-portal-v2, end-to-end, regression
 
