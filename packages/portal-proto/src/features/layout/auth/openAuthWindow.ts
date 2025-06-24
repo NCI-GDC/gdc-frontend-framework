@@ -13,15 +13,11 @@ const openAuthWindow = (): Promise<unknown> => {
           clearInterval(interval);
           reject("window closed manually");
         }
-        console.log(15, "openAuthWindow");
         try {
-          console.log(16, "openAuthWindow", win.document.URL);
           if (
-            true
-            //win.document.URL.includes(location.origin) &&
-            //!win.document.URL.includes("auth")
+            win.document.URL.includes(location.origin) &&
+            !win.document.URL.includes("auth")
           ) {
-            console.log(20, "openAuthWindow");
             win.close();
             clearInterval(interval);
             if (win.document.URL.includes("error=401")) {

@@ -7,7 +7,7 @@ if [[ "$1" == "unlink" ]]; then
 	# to test the published client package before submitting a PR with an updated pp-client version
 	npm unlink ../proteinpaint/client
 	npm uninstall @sjcrh/proteinpaint-client --save --workspace=packages/portal-proto
-	npm install @sjcrh/proteinpaint-client@2.129.5-c5a0eaea6.0 --save --save-exact --workspace=packages/portal-proto
+	npm install @sjcrh/proteinpaint-client --save --save-exact --workspace=packages/portal-proto
 
 else
 	# to test the local PP client code
