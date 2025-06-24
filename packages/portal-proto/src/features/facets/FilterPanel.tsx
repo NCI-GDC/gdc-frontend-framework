@@ -46,8 +46,6 @@ interface FilterPanelProps {
   readonly hideIfEmpty?: boolean;
   readonly showPercent?: boolean;
   readonly isLoading?: boolean;
-  readonly filtersExpanded: boolean;
-  readonly setFiltersExpanded: (expanded: boolean) => void;
 }
 
 /**
@@ -79,10 +77,9 @@ const FilterPanel = ({
   hideIfEmpty = false,
   showPercent = true,
   isLoading = false,
-  filtersExpanded,
-  setFiltersExpanded,
 }: FilterPanelProps) => {
   const [opened, setOpened] = useState(false);
+  const [filtersExpanded, setFiltersExpanded] = useState(true);
   const ref = useRef<HTMLDivElement>();
   const { xPosition } = useContext(TableXPositionContext);
 
@@ -175,7 +172,7 @@ const FilterPanel = ({
                   <button
                     data-testid="button-reset-custom-filters-files-table"
                     className="flex justify-center items-center w-12 border-1 rounded-l-md border-primary-darker text-primary disabled:opacity-50 disabled:bg-base-max disabled:text-primary disabled:cursor-not-allowed"
-                    onClick={() => customConfig.handleResetCustomFilters()}
+                    onClick={handleResetCustomFilter}
                     disabled={isEqual(customConfig.defaultFilters, facetFields)}
                     aria-label="Reset custom filters"
                   >

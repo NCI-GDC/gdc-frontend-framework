@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { GQLDocType, selectProjectsFacetByField } from "@gff/core";
 import {
   useClearProjectsFilters,
@@ -31,8 +31,6 @@ const useProjectEnumData = (docType: GQLDocType, field: string) =>
   );
 
 export const ProjectFacetPanel = (): JSX.Element => {
-  const [filtersExpanded, setFiltersExpanded] = useState(true);
-
   const ProjectFacetHooks = {
     useGetEnumFacetData: partial(useProjectEnumData, "projects"),
     useUpdateFacetFilters: useUpdateProjectsFacetFilter,
@@ -60,8 +58,6 @@ export const ProjectFacetPanel = (): JSX.Element => {
       allFiltersCollapsed={allFiltersCollapsed}
       handleClearAll={clearAllFilters}
       filtersAppliedCount={filtersAppliedCount}
-      filtersExpanded={filtersExpanded}
-      setFiltersExpanded={setFiltersExpanded}
     />
   );
 };
