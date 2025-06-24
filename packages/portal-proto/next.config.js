@@ -22,8 +22,15 @@ if (process.env.NODE_ENV == "development") {
   const PROTEINPAINT_HOST =
     PROTEINPAINT_API.split("://")[1]?.split("/")[0] || "";
 
-  if (PROTEINPAINT_HOST && !connectSrc.includes(`https://${PROTEINPAINT_HOST}`))
+  if (
+    PROTEINPAINT_HOST &&
+    !connectSrc.includes(`https://${PROTEINPAINT_HOST}`)
+  ) {
     connectSrc.push(`https://${PROTEINPAINT_HOST}`);
+    // this is to support a simulated auth server using PP expressjs route,
+    // which is not committed and not part of a published container build
+    connectSrc.push(`https://${PROTEINPAINT_HOST.replace("3011", "3333")}`);
+  }
 }
 
 // Fallback if Docker is not run: This calls git directly

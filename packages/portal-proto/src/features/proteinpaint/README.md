@@ -17,7 +17,38 @@ From the gdc-frontend-framework directory,
 ## Login testing
 
 For Proteinpaint tracks that require user login, such as the Sequence Read tool,
-refer to the "Running Auth" section in the root README.md.
+follow the initial setup in the "Running Auth" section in the root README.md. Then,
+the following dev-only changes will likely be required:
+
+- add the `auth proxy` entry to `proteinpaint/ssl-proxy.json`:
+
+```json
+  "GFF proxy": {
+    "source": 3010,
+    "target": 3001,
+    "hostname": "localhost.gdc.cancer.gov",
+    "key": "./localhost.gdc.cancer.gov-key.pem",
+    "cert": "./localhost.gdc.cancer.gov.pem"
+  },
+  "PP proxy": {
+    "source": 3011,
+    "target": 3456,
+    "hostname": "localhost.gdc.cancer.gov",
+    "key": "./localhost.gdc.cancer.gov-key.pem",
+    "cert": "./localhost.gdc.cancer.gov.pem"
+  },
+  "auth proxy": {
+    "source": 3333,
+    "target": 3000,
+    "hostname": "localhost.gdc.cancer.gov",
+    "key": "./localhost.gdc.cancer.gov-key.pem",
+    "cert": "./localhost.gdc.cancer.gov.pem"
+  },
+```
+
+- edit `portal-proto/.env.development` to have `NEXT_PUBLIC_GDC_AUTH=https://localhost.gdc.cancer.gov:3333/auth`
+- edit `portal-proto/features/layout/openAuthWindow.ts` to force `if (true) {win.close() ....}` instead of detecting `window.document.URL` substrings
+- from the `proteinpaint` dir, run `local-ssl-proxy --config ssl-proxy.json --cert localhost.gdc.cancer.gov.pem --key localhost.gdc.cancer.gov-key.pem`
 
 ## Testing
 

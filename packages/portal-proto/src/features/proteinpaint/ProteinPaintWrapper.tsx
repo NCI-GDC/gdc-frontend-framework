@@ -43,6 +43,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
 
   // to track reusable instance for mds3 skewer track
   const prevArg = useRef<any>({});
+  const prevUser = useRef<any>({});
   const coreDispatch = useCoreDispatch();
   const [showSaveCohort, setShowSaveCohort] = useState(false);
   const [createSet, response] = useCreateCaseSetFromValuesMutation();
@@ -91,6 +92,12 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
 
   useDeepCompareEffect(
     () => {
+      // debounce until one of these is true
+      // otherwise, the userDetails.isFetching changing from false > true > false
+      // could trigger unnecessary, wasteful PP-app state update
+      if (userDetails?.isSuccess === false && userDetails?.isError === false)
+        return;
+
       const rootElem = divRef.current as HTMLElement;
       const data = getLollipopTrack(props, filter0, callback);
       if (!data) return;
@@ -99,9 +106,18 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
           ? "chr8:127682515-127792250"
           : "MYC";
       }
+      const hasChangedUsername =
+        prevUser?.current !== userDetails?.data?.data?.username;
+      prevUser.current = userDetails?.data?.data?.username;
       // compare the argument to runpp to avoid unnecessary render
-      if ((data || prevArg.current) && isEqual(prevArg.current, data)) return;
+      if (
+        (data || prevArg.current) &&
+        isEqual(prevArg.current, data) &&
+        !hasChangedUsername
+      )
+        return;
       prevArg.current = data;
+      prevUser.current = userDetails?.data?.data?.username;
 
       const toolContainer = rootElem.parentNode.parentNode
         .parentNode as HTMLElement;
@@ -111,7 +127,6 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
         { holder: rootElem, noheader: true, nobox: true },
         cloneDeep(data),
       ) as Mds3Arg;
-
       // bindProteinPaint() handles rapid update requests/race condition,
       // so no need to include debouncing and promise code in this wrapper
       // TODO: will revert to using runproteinpaint() once these advanced capabilities
@@ -121,10 +136,12 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
         initArgs: arg,
         updateArgs: arg,
         isStale() {
-          // new data has replaced this one, will prevent unnecessary render
-          // in case of race condition
+          // prevArg.current === data, strict equvialance by reference ONLY when the data/runpp arg was updated the first time,
+          // then ignore updates when changes are not related to runpp() arg/track;
+          // if new data has replaced the reference, then prevent unnecessary re-render in case of race condition
           return prevArg.current != data;
         },
+        hasChangedUsername,
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -145,11 +162,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
   return (
     <div>
       {isDemoMode && <DemoText>{demoText}</DemoText>}
-      <div
-        ref={divRef}
-        className="sjpp-wrapper-root-div"
-        //userDetails={userDetails}
-      />
+      <div ref={divRef} className="sjpp-wrapper-root-div" />
 
       <SaveCohortModal // Show the modal, create a saved cohort when save button is clicked
         opened={showSaveCohort}

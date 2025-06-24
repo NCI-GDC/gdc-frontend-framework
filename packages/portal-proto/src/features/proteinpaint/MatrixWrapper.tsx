@@ -60,6 +60,7 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
     : buildCohortGqlOperator(currentCohort);
   const userDetails = useFetchUserDetailsQuery();
   const prevData = useRef<any>();
+  const prevUser = useRef<any>(undefined);
   const coreDispatch = useCoreDispatch();
   const [showSaveCohortModal, setShowSaveCohortModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -164,10 +165,15 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
     () => {
       // debounce until one of these is true
       // otherwise, the userDetails.isFetching changing from false > true > false
-      // could trigger unnecessary, wastefule PP-app state update
+      // could trigger unnecessary, wasteful PP-app state update
       if (userDetails?.isSuccess === false && userDetails?.isError === false)
         return;
       if (isGeneFetching) return;
+
+      const hasChangedUsername =
+        prevUser?.current !== userDetails?.data?.data?.username;
+      prevUser.current = userDetails?.data?.data?.username;
+
       const data = {
         filter0: filter0 || null,
         userData: userDetails?.data,
@@ -218,6 +224,7 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
           // in case of race condition
           return prevData.current != data;
         },
+        hasChangedUsername,
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
