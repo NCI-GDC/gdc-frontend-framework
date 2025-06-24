@@ -2,6 +2,7 @@ import json
 import re
 import tarfile
 import time
+import random
 
 from datetime import datetime as dt
 from uuid import UUID, uuid4
@@ -85,6 +86,28 @@ def setup_next_spec_run():
     if not APP.shared.is_no_active_cohort_filter_text_present():
         APP.shared.clear_active_cohort_filters()
 
+@after_spec
+def save_cohort_if_needed():
+    """
+    After a spec file has executed, if the "Add Cohort" button is disabled
+    this will save the current cohort to enable it again for future tests. This step
+    works in conjunction with the previous 'setup_next_spec_run()'.
+
+    """
+    APP.shared.wait_for_loading_spinners_to_detach()
+    if APP.cohort_bar.is_disabled('[data-testid="addButton"]'):
+        APP.cohort_bar.click_cohort_bar_button("save")
+        APP.cohort_bar.click_text_option_from_dropdown_menu("Save")
+        # Name the cohort something random so if we need to execute this step
+        # multiple times we do not run into an issue with same name.
+        cohort_name = random.randrange(1, 1000000000)
+        APP.shared.send_text_into_text_box(f"{cohort_name}", "Name Input Field")
+        APP.shared.click_button_in_modal_with_displayed_text_name("Save")
+        APP.cohort_bar.wait_for_text_in_temporary_message(
+            "Cohort has been saved", "Remove Modal"
+        )
+        APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        time.sleep(2)
 
 @step("On GDC Data Portal V2 app")
 def navigate_to_app():
