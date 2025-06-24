@@ -146,3 +146,28 @@ def save_cohort_analysis_card_cohort_comparison(table):
         )
         APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
         time.sleep(2)
+
+@step("Replace active cohort with one from an analysis card on Cohort Comparison <table>")
+def save_cohort_analysis_card_cohort_comparison(table):
+    """
+    save_cohort_analysis_card_cohort_comparison Save a cohort from an analysis card
+    on the cohort comparison main screen.
+
+    :param v[0]: Analysis Card
+    :param v[1]: Filter Row Name
+    :param v[2]: Cohort Number to select (i.e 1 or 2)
+    :param v[3]: Cohort Name
+    :param v[4]: Expected Message
+    """
+    for k, v in enumerate(table):
+        APP.cohort_comparison_page.click_save_cohort_button_on_analysis_card_cohort_comparison(
+            v[0], v[1], v[2]
+        )
+        APP.shared.send_text_into_text_box(v[3], "Name Input Field")
+        APP.shared.click_button_in_modal_with_displayed_text_name("Save")
+        APP.shared.click_button_in_modal_with_displayed_text_name("Replace")
+        APP.cohort_bar.wait_for_text_in_temporary_message(
+            "Cohort has been saved.", "Remove Modal"
+        )
+        APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        time.sleep(2)

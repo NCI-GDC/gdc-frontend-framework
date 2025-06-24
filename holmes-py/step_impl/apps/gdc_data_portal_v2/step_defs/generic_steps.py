@@ -1024,7 +1024,7 @@ def click_named_button_in_modal_and_wait_for_temp_message_text(table):
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
     for k, v in enumerate(table):
         APP.shared.click_button_in_modal_with_displayed_text_name(v[0])
-        is_cohort_message_present = APP.cohort_bar.wait_for_text_in_temporary_message(
+        is_cohort_message_present = APP.shared.wait_for_text_in_temporary_message(
             v[1], v[2]
         )
         assert is_cohort_message_present, f"The text '{v[1]}' is NOT present"
@@ -1113,6 +1113,7 @@ def select_table_value_by_row_column(table):
     Selects values from tables by giving a row and column
     Row and Column indexing begins at '1'
     """
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
     for k, v in enumerate(table):
         APP.shared.select_table_by_row_column(v[0], v[1])
         time.sleep(1)
@@ -1132,6 +1133,7 @@ def select_table_value_by_row_column(table_name:str, table):
     In specified table, selects values from tables by giving a row and column
     Row and Column indexing begins at '1'
     """
+    APP.shared.wait_for_loading_spinner_table_to_detatch()
     for k, v in enumerate(table):
         APP.shared.select_specified_table_by_row_column(table_name, v[0], v[1])
         time.sleep(1)

@@ -1,4 +1,10 @@
-import React, { useState, useContext, useRef, useMemo } from "react";
+import React, {
+  useState,
+  useContext,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import { isEqual } from "lodash";
 import {
   Text,
@@ -22,9 +28,10 @@ import {
   DoubleRightIcon,
   UndoIcon,
 } from "@/utils/icons";
-import { FacetQueryOptions } from "./types";
+import { CustomConfig } from "./types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
 import { useAvailableCustomFacets } from "../cohortBuilder/hooks";
+import { showNotification } from "@mantine/notifications";
 
 interface FilterPanelProps {
   readonly facetDefinitions: FacetCardDefinition[];
@@ -33,14 +40,7 @@ interface FilterPanelProps {
   readonly app: string;
   readonly toggleAllFiltersExpanded: (expanded: boolean) => void;
   readonly allFiltersCollapsed: boolean;
-  readonly customConfig?: {
-    readonly usedFacets: readonly string[];
-    readonly handleRemoveFilter: (filter: string) => void;
-    readonly handleCustomFilterSelected: (filter: string) => void;
-    readonly handleResetCustomFilters: () => void;
-    readonly defaultFilters: string[];
-    readonly queryOptions?: FacetQueryOptions;
-  };
+  readonly customConfig?: CustomConfig;
   readonly filtersAppliedCount?: number;
   readonly handleClearAll: () => void;
   readonly hideIfEmpty?: boolean;
@@ -103,6 +103,14 @@ const FilterPanel = ({
         customConfig.defaultFilters.includes(facet.field),
       )
     : facetDefinitions;
+
+  const handleResetCustomFilter = useCallback(() => {
+    customConfig.handleResetCustomFilters();
+    showNotification({
+      message:
+        "Custom filter cards have been removed from the Filters panel. Existing filters will still be applied.",
+    });
+  }, [customConfig]);
 
   return (
     <div
