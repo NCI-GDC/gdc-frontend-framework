@@ -105,6 +105,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
     status: false,
     notes: false,
   });
+  const [jsonDownloadInProgress, setJsonDownloadInProgress] = useState(false);
 
   useEffect(() => {
     setSortBy(
@@ -279,6 +280,7 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
   const coreDispatch = useCoreDispatch();
 
   const handleDownloadJSON = async () => {
+    setJsonDownloadInProgress(true);
     await download({
       endpoint: "annotations",
       method: "POST",
@@ -304,11 +306,12 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
         ].join(","),
       },
       dispatch: coreDispatch,
+      done: () => setJsonDownloadInProgress(false),
     });
   };
 
-  const handleDownloadTSV = () => {
-    downloadTSV<AnnotationTableData>({
+  const handleDownloadTSV = async () => {
+    await downloadTSV<AnnotationTableData>({
       tableData: formattedTableData,
       columnOrder,
       columnVisibility,
@@ -327,6 +330,8 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
             <FunctionButton
               data-testid="button-json-projects-table"
               onClick={handleDownloadJSON}
+              isActive={jsonDownloadInProgress}
+              isDownload
             >
               JSON
             </FunctionButton>

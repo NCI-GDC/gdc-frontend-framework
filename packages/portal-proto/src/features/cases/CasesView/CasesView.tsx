@@ -77,9 +77,14 @@ export const ContextualCasesView: React.FC = () => {
   );
 
   /* download active */
-  const [biospecimenDownloadActive, setBiospecimenDownloadActive] =
+  const [biospecimenDownloadActiveJSON, setBiospecimenDownloadActiveJSON] =
     useState(false);
-  const [clinicalDownloadActive, setClinicalDownloadActive] = useState(false);
+  const [biospecimenDownloadActiveTSV, setBiospecimenDownloadActiveTSV] =
+    useState(false);
+  const [clinicalDownloadActiveJSON, setClinicalDownloadActiveJSON] =
+    useState(false);
+  const [clinicalDownloadActiveTSV, setClinicalDownloadActiveTSV] =
+    useState(false);
   const [cohortTableJSONDownloadActive, setCohortTableJSONDownloadActive] =
     useState(false);
   const [cohortTableTSVDownloadActive, setCohortTableTSVDownloadActive] =
@@ -291,7 +296,7 @@ export const ContextualCasesView: React.FC = () => {
         format: "tsv",
       },
       dispatch,
-      //done: () => setCohortTableTSVDownloadActive(false),
+      done: () => setCohortTableTSVDownloadActive(false),
     });
   };
 
@@ -331,7 +336,7 @@ export const ContextualCasesView: React.FC = () => {
   };
 
   const handleClinicalTSVDownload = () => {
-    setClinicalDownloadActive(true);
+    setClinicalDownloadActiveTSV(true);
     download({
       endpoint: "clinical_tar",
       method: "POST",
@@ -344,12 +349,12 @@ export const ContextualCasesView: React.FC = () => {
         // there are no local filters to be passed
         size: caseCounts,
       },
-      done: () => setClinicalDownloadActive(false),
+      done: () => setClinicalDownloadActiveTSV(false),
     });
   };
 
   const handleClinicalJSONDownload = () => {
-    setClinicalDownloadActive(true);
+    setClinicalDownloadActiveJSON(true);
     download({
       endpoint: "clinical_tar",
       method: "POST",
@@ -363,12 +368,12 @@ export const ContextualCasesView: React.FC = () => {
         case_filters: clinicalBiodownloadFilter,
         size: caseCounts,
       },
-      done: () => setClinicalDownloadActive(false),
+      done: () => setClinicalDownloadActiveJSON(false),
     });
   };
 
   const handleBiospeciemenTSVDownload = () => {
-    setBiospecimenDownloadActive(true);
+    setBiospecimenDownloadActiveTSV(true);
     download({
       endpoint: "biospecimen_tar",
       method: "POST",
@@ -380,12 +385,12 @@ export const ContextualCasesView: React.FC = () => {
         case_filters: clinicalBiodownloadFilter,
         size: caseCounts,
       },
-      done: () => setBiospecimenDownloadActive(false),
+      done: () => setBiospecimenDownloadActiveTSV(false),
     });
   };
 
   const handleBiospeciemenJSONDownload = () => {
-    setBiospecimenDownloadActive(true);
+    setBiospecimenDownloadActiveJSON(true);
     download({
       endpoint: "biospecimen_tar",
       method: "POST",
@@ -399,7 +404,7 @@ export const ContextualCasesView: React.FC = () => {
         case_filters: clinicalBiodownloadFilter,
         size: caseCounts,
       },
-      done: () => setBiospecimenDownloadActive(false),
+      done: () => setBiospecimenDownloadActiveJSON(false),
     });
   };
 
@@ -424,21 +429,27 @@ export const ContextualCasesView: React.FC = () => {
                 {
                   title: "JSON",
                   onClick: handleBiospeciemenJSONDownload,
-                  icon: <DownloadIcon aria-label="Download" />,
+                  icon: biospecimenDownloadActiveJSON ? (
+                    <Loader size={16} />
+                  ) : (
+                    <DownloadIcon aria-label="Download" />
+                  ),
+                  isLoading: biospecimenDownloadActiveJSON,
                 },
                 {
                   title: "TSV",
                   onClick: handleBiospeciemenTSVDownload,
-                  icon: <DownloadIcon aria-label="Download" />,
+                  icon: biospecimenDownloadActiveTSV ? (
+                    <Loader size={16} />
+                  ) : (
+                    <DownloadIcon aria-label="Download" />
+                  ),
+                  isLoading: biospecimenDownloadActiveTSV,
                 },
               ]}
-              TargetButtonChildren={
-                biospecimenDownloadActive ? "Processing" : "Biospecimen"
-              }
+              TargetButtonChildren="Biospecimen"
               LeftSection={
-                biospecimenDownloadActive ? (
-                  <Loader size={20} className="hidden md:block" />
-                ) : pickedCases.length ? (
+                pickedCases.length ? (
                   <CountsIcon $count={pickedCases.length}>
                     {pickedCases.length}
                   </CountsIcon>
@@ -450,6 +461,7 @@ export const ContextualCasesView: React.FC = () => {
                   />
                 )
               }
+              closeOnItemClick={false}
             />
 
             <DropdownWithIcon
@@ -459,21 +471,27 @@ export const ContextualCasesView: React.FC = () => {
                 {
                   title: "JSON",
                   onClick: handleClinicalJSONDownload,
-                  icon: <DownloadIcon aria-label="Download" />,
+                  icon: clinicalDownloadActiveJSON ? (
+                    <Loader size={16} />
+                  ) : (
+                    <DownloadIcon aria-label="Download" />
+                  ),
+                  isLoading: clinicalDownloadActiveJSON,
                 },
                 {
                   title: "TSV",
                   onClick: handleClinicalTSVDownload,
-                  icon: <DownloadIcon aria-label="Download" />,
+                  icon: clinicalDownloadActiveTSV ? (
+                    <Loader size={16} />
+                  ) : (
+                    <DownloadIcon aria-label="Download" />
+                  ),
+                  isLoading: clinicalDownloadActiveTSV,
                 },
               ]}
-              TargetButtonChildren={
-                clinicalDownloadActive ? "Processing" : "Clinical"
-              }
+              TargetButtonChildren="Clinical"
               LeftSection={
-                clinicalDownloadActive ? (
-                  <Loader size={20} className="hidden md:block" />
-                ) : pickedCases.length ? (
+                pickedCases.length ? (
                   <CountsIcon $count={pickedCases.length}>
                     {pickedCases.length}
                   </CountsIcon>
@@ -485,6 +503,7 @@ export const ContextualCasesView: React.FC = () => {
                   />
                 )
               }
+              closeOnItemClick={false}
             />
 
             <FunctionButton
@@ -492,8 +511,9 @@ export const ContextualCasesView: React.FC = () => {
               onClick={handleJSONDownload}
               disabled={isFetching}
               size="sm"
+              isActive={cohortTableJSONDownloadActive}
             >
-              {cohortTableJSONDownloadActive ? <Loader /> : "JSON"}
+              JSON
             </FunctionButton>
 
             <FunctionButton
@@ -501,8 +521,9 @@ export const ContextualCasesView: React.FC = () => {
               onClick={handleTSVDownload}
               disabled={isFetching}
               size="sm"
+              isActive={cohortTableTSVDownloadActive}
             >
-              {cohortTableTSVDownloadActive ? <Loader /> : "TSV"}
+              TSV
             </FunctionButton>
           </div>
         }

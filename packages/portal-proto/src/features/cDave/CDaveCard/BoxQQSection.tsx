@@ -218,7 +218,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
   return (
     <>
       <div className="flex justify-end">
-        <Menu>
+        <Menu closeOnItemClick={false}>
           <Menu.Target>
             <Tooltip
               label="Download image or data"

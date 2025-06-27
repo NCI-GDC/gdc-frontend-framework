@@ -24,7 +24,6 @@ import {
   SMTableImpacts,
 } from "../GenomicTables/SomaticMutationsTable/TableComponents";
 import saveAs from "file-saver";
-import { Loader } from "@mantine/core";
 import { getFormattedTimestamp } from "@/utils/date";
 import { downloadTSV } from "@/components/Table/utils";
 import ImpactHeaderWithTooltip from "../GenomicTables/SharedComponent/ImpactHeaderWithTooltip";
@@ -38,11 +37,6 @@ export const ConsequenceTable = ({
 }: {
   ssmsId: string;
 }): JSX.Element => {
-  const [
-    consequenceTableJSONDownloadActive,
-    setConsequenceTableJSONDownloadActive,
-  ] = useState(false);
-
   const {
     data: initialData,
     isFetching,
@@ -308,7 +302,6 @@ export const ConsequenceTable = ({
   };
 
   const handleJSONDownload = () => {
-    setConsequenceTableJSONDownloadActive(true);
     const json = initialData.consequence.map(
       ({
         transcript: {
@@ -352,7 +345,6 @@ export const ConsequenceTable = ({
       type: "application/json",
     });
     saveAs(blob, `consequences-data.${getFormattedTimestamp()}.json`);
-    setConsequenceTableJSONDownloadActive(false);
   };
 
   return (
@@ -380,7 +372,7 @@ export const ConsequenceTable = ({
       additionalControls={
         <div className="flex gap-2 mb-2">
           <FunctionButton onClick={handleJSONDownload} disabled={isFetching}>
-            {consequenceTableJSONDownloadActive ? <Loader /> : "JSON"}
+            JSON
           </FunctionButton>
           <FunctionButton onClick={handleTSVDownload} disabled={isFetching}>
             TSV

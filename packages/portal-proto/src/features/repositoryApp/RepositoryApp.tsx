@@ -42,6 +42,7 @@ import { TableXPositionContext } from "@/components/Table/VerticalTable";
 import { getFormattedTimestamp } from "@/utils/date";
 import { focusStyles } from "@/utils/index";
 import { CartIcon } from "@/utils/icons";
+import { MANIFEST_DOWNLOAD_MESSAGE } from "@/utils/constants";
 
 export const persistor = persistStore(AppStore);
 
@@ -157,12 +158,10 @@ export const RepositoryApp = (): JSX.Element => {
               <div className="flex flex-wrap Custom-Repo-Width:justify-end gap-2 mt-8 mb-4">
                 <DownloadButton
                   data-testid="button-sample-sheet-files-table"
-                  activeText="Processing"
-                  inactiveText="Sample Sheet"
+                  buttonLabel="Sample Sheet"
                   setActive={setSampleSheetDownloadActive}
                   active={sampleSheetDownloadActive}
                   preventClickEvent
-                  showIcon={true}
                   endpoint="files"
                   filename={`gdc_sample_sheet.${new Date()
                     .toISOString()
@@ -190,11 +189,9 @@ export const RepositoryApp = (): JSX.Element => {
                 />
                 <DownloadButton
                   data-testid="button-metadata-files-table"
-                  activeText="Processing"
-                  inactiveText="Metadata"
+                  buttonLabel="Metadata"
                   setActive={setMetadataDownloadActive}
                   active={metadataDownloadActive}
-                  showIcon={true}
                   preventClickEvent
                   endpoint="files"
                   filename={`metadata.repository.${new Date()
@@ -266,10 +263,9 @@ export const RepositoryApp = (): JSX.Element => {
                 />
                 <DownloadButton
                   data-testid="button-manifest-files-table"
-                  activeText="Processing"
-                  inactiveText="Manifest"
-                  toolTip="Download a manifest for use with the GDC Data Transfer Tool. The GDC Data Transfer Tool is recommended for transferring large volumes of data."
-                  multilineToolTip
+                  buttonLabel="Manifest"
+                  toolTip={MANIFEST_DOWNLOAD_MESSAGE}
+                  multilineTooltip
                   endpoint="files"
                   method="POST"
                   extraParams={{

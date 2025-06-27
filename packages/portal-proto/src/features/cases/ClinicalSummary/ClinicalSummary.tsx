@@ -40,7 +40,10 @@ export const ClinicalSummary = ({
   readonly submitter_id: string;
 }): JSX.Element => {
   const [activeTab, setActiveTab] = useState<string | null>("demographic");
-  const [clinicalDownloadActive, setClinicalDownloadActive] = useState(false);
+  const [clinicalDownloadActiveTSV, setClinicalDownloadActiveTSV] =
+    useState(false);
+  const [clinicalDownloadActiveJSON, setClinicalDownloadActiveJSON] =
+    useState(false);
   const dispatch = useCoreDispatch();
 
   const formatDataForDemographics = () => {
@@ -96,7 +99,7 @@ export const ClinicalSummary = ({
   );
 
   const handleClinicalTSVDownload = () => {
-    setClinicalDownloadActive(true);
+    setClinicalDownloadActiveTSV(true);
     download({
       endpoint: "clinical_tar",
       method: "POST",
@@ -113,12 +116,12 @@ export const ClinicalSummary = ({
           },
         },
       },
-      done: () => setClinicalDownloadActive(false),
+      done: () => setClinicalDownloadActiveTSV(false),
     });
   };
 
   const handleClinicalJSONDownload = () => {
-    setClinicalDownloadActive(true);
+    setClinicalDownloadActiveJSON(true);
     download({
       endpoint: "clinical_tar",
       method: "POST",
@@ -137,7 +140,7 @@ export const ClinicalSummary = ({
           },
         },
       },
-      done: () => setClinicalDownloadActive(false),
+      done: () => setClinicalDownloadActiveJSON(false),
     });
   };
 
@@ -150,25 +153,28 @@ export const ClinicalSummary = ({
         dropdownElements={[
           {
             title: "TSV",
-            icon: <DownloadIcon size={16} aria-label="download" />,
+            icon: clinicalDownloadActiveTSV ? (
+              <Loader size={16} color="currentColor" />
+            ) : (
+              <DownloadIcon size={16} aria-label="download" />
+            ),
             onClick: handleClinicalTSVDownload,
+            isLoading: clinicalDownloadActiveTSV,
           },
           {
             title: "JSON",
-            icon: <DownloadIcon size={16} aria-label="download" />,
+            icon: clinicalDownloadActiveJSON ? (
+              <Loader size={16} color="currentColor" />
+            ) : (
+              <DownloadIcon size={16} aria-label="download" />
+            ),
             onClick: handleClinicalJSONDownload,
+            isLoading: clinicalDownloadActiveJSON,
           },
         ]}
-        TargetButtonChildren={
-          clinicalDownloadActive ? "Processing" : "Download"
-        }
-        LeftSection={
-          clinicalDownloadActive ? (
-            <Loader size={20} />
-          ) : (
-            <DownloadIcon size="1rem" aria-label="download" />
-          )
-        }
+        TargetButtonChildren="Download"
+        LeftSection={<DownloadIcon size="1rem" aria-label="download" />}
+        closeOnItemClick={false}
       />
 
       <Tabs

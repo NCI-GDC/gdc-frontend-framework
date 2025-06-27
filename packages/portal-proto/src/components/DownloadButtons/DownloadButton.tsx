@@ -1,19 +1,18 @@
-import { ButtonProps, Loader, Tooltip } from "@mantine/core";
+import { ButtonProps } from "@mantine/core";
 import download from "src/utils/download";
 import { hideModal, Modals, useCoreDispatch } from "@gff/core";
 import { Dispatch, SetStateAction, forwardRef } from "react";
 import FunctionButton, {
   FunctionButtonVariants,
 } from "@/components/FunctionButton";
-import { DownloadIcon } from "@/utils/icons";
+import { ADDITIONAL_DOWNLOAD_MESSAGE } from "@/utils/constants";
 
 /**
  * Properties for the DownloadButton component.
  * @category Buttons
  * @property endpoint - The endpoint to download from.
  * @property disabled - Whether the button is disabled.
- * @property inactiveText - The text to display when the button is inactive.
- * @property activeText - The text to display when the button is active.
+ * @property buttonTitle - The text to display when the button is inactive.
  * @property filename - The name of the file to download.
  * @property size - The size of the download.
  * @property format - The format of the download.
@@ -23,8 +22,6 @@ import { DownloadIcon } from "@/utils/icons";
  * @property extraParams - Any extra parameters to download.
  * @property method - The method to use for the download.
  * @property customStyle - Any custom styles to apply to the button.
- * @property showLoading - Whether to show the loading icon.
- * @property showIcon - Whether to show the download icon.
  * @property preventClickEvent - Whether to prevent the default click event.
  * @property onClick - The function to call when the button is clicked.
  * @property setActive - The function to call when the button is set active.
@@ -36,8 +33,7 @@ import { DownloadIcon } from "@/utils/icons";
 interface DownloadButtonProps {
   endpoint?: string;
   disabled?: boolean;
-  inactiveText: string;
-  activeText: string;
+  buttonLabel: string;
   filename?: string;
   downloadSize?: number;
   format?: string;
@@ -47,8 +43,6 @@ interface DownloadButtonProps {
   extraParams?: Record<string, any>;
   method?: string;
   customStyle?: string;
-  showLoading?: boolean;
-  showIcon?: boolean;
   preventClickEvent?: boolean;
   onClick?: () => void;
   setActive?: Dispatch<SetStateAction<boolean>>;
@@ -56,7 +50,7 @@ interface DownloadButtonProps {
   Modal403?: Modals;
   Modal400?: Modals;
   toolTip?: string;
-  multilineToolTip?: boolean;
+  multilineTooltip?: boolean;
   displayVariant?: FunctionButtonVariants;
 }
 
@@ -66,8 +60,7 @@ interface DownloadButtonProps {
  * the data, creating the file, and downloading the file.
  * @param endpoint - The endpoint to download from.
  * @param disabled - Whether the button is disabled.
- * @param inactiveText - The text to display when the button is inactive.
- * @param activeText - The text to display when the button is active.
+ * @param buttonLabel - button's label.
  * @param filename - The name of the file to download.
  * @param downloadSize - The size of the download.
  * @param format - The format of the download.
@@ -77,8 +70,6 @@ interface DownloadButtonProps {
  * @param extraParams - Any extra parameters to download.
  * @param method - The method to use for the download.
  * @param customStyle - Any custom styles to apply to the button.
- * @param showLoading - Whether to show the loading icon.
- * @param showIcon - Whether to show the download icon.
  * @param preventClickEvent - Whether to prevent the default click event.
  * @param onClick - The function to call when the button is clicked.
  * @param setActive - The function to call when the button is set active.
@@ -86,7 +77,7 @@ interface DownloadButtonProps {
  * @param Modal403 - The modal to display when a 403 error occurs.
  * @param Modal400 - The modal to display when a 400 error occurs.
  * @param toolTip - The tooltip to display.
- * @param multilineToolTip - The tooltip will be displayed in multiple lines
+ * @param multilineTooltip - The tooltip will be displayed in multiple lines
  * @category Buttons
  */
 export const DownloadButton = forwardRef<
@@ -103,92 +94,73 @@ export const DownloadButton = forwardRef<
       fields = [],
       caseFilters = {},
       filters = {},
-      inactiveText,
-      activeText,
+      buttonLabel,
       extraParams,
       method = "POST",
       setActive,
       onClick,
-      showLoading = true,
-      showIcon = true,
       preventClickEvent = false,
       active,
       Modal400,
       Modal403,
-      toolTip,
-      multilineToolTip = false,
+      toolTip = "",
+      multilineTooltip = false,
       displayVariant,
       ...buttonProps
     }: DownloadButtonProps,
     ref,
   ) => {
-    const text = active ? activeText : inactiveText;
     const dispatch = useCoreDispatch();
-    const Icon = active ? (
-      <Loader size="sm" className="p-1" />
-    ) : (
-      <DownloadIcon title="download" size={16} />
-    );
+    const tooltipContent = active ? ADDITIONAL_DOWNLOAD_MESSAGE : toolTip;
 
     return (
-      <Tooltip
-        disabled={!toolTip}
-        label={toolTip}
-        multiline={multilineToolTip}
-        w={multilineToolTip ? 400 : "auto"}
-      >
-        <FunctionButton
-          $variant={displayVariant}
-          ref={ref}
-          leftSection={
-            showIcon &&
-            inactiveText && (
-              <DownloadIcon
-                aria-label="download"
-                className="hidden xl:block"
-                size="1rem"
-              />
-            )
+      <FunctionButton
+        $variant={displayVariant}
+        ref={ref}
+        isActive={active}
+        isDownload
+        showDownloadIcon
+        tooltip={tooltipContent}
+        multilineTooltip={multilineTooltip}
+        classNames={{
+          section: `mr-0 ${displayVariant === "icon" ? "" : "xl:mr-2"}`,
+        }}
+        disabled={disabled}
+        variant="outline"
+        onClick={() => {
+          if (!preventClickEvent && onClick) {
+            onClick();
+            return;
           }
-          classNames={{ section: "mr-0 xl:mr-2" }}
-          disabled={disabled}
-          loading={showLoading && active}
-          variant="outline"
-          onClick={() => {
-            if (!preventClickEvent && onClick) {
-              onClick();
-              return;
-            }
-            dispatch(hideModal());
-            const params = {
-              size: downloadSize,
-              attachment: true,
-              format,
-              fields: fields.join(),
-              case_filters: caseFilters,
-              filters,
-              pretty: true,
-              ...(filename ? { filename } : {}),
-              ...extraParams,
-            };
-            if (setActive) {
-              setActive(true);
-            }
-            download({
-              params,
-              endpoint,
-              method,
-              done: () => setActive && setActive(false),
-              dispatch,
-              Modal400,
-              Modal403,
-            });
-          }}
-          {...buttonProps}
-        >
-          {text || Icon}
-        </FunctionButton>
-      </Tooltip>
+          dispatch(hideModal());
+          const params = {
+            size: downloadSize,
+            attachment: true,
+            format,
+            fields: fields.join(),
+            case_filters: caseFilters,
+            filters,
+            pretty: true,
+            ...(filename ? { filename } : {}),
+            ...extraParams,
+          };
+          if (setActive) {
+            setActive(true);
+          }
+          download({
+            params,
+            endpoint,
+            method,
+            done: () => setActive && setActive(false),
+            dispatch,
+            Modal400,
+            Modal403,
+          });
+        }}
+        {...buttonProps}
+      >
+        {buttonLabel}
+      </FunctionButton>
     );
   },
 );

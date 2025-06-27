@@ -29,12 +29,18 @@ export const DashboardDownloadContext = createContext<{
   dispatch: Dispatch<{ type: "add" | "remove"; payload: ChartDownloadInfo[] }>;
 }>({ state: [], dispatch: () => {} });
 
+export type DownloadType = "svg" | "png" | null;
+
 export const DownloadProgressContext = createContext<{
   downloadInProgress: boolean;
-  setDownloadInProgress: ((inProgress: boolean) => void) | undefined;
+  downloadType: DownloadType;
+  setDownloadProgress:
+    | ((inProgress: boolean, type: DownloadType) => void)
+    | undefined;
 }>({
   downloadInProgress: false,
-  setDownloadInProgress: undefined,
+  downloadType: null,
+  setDownloadProgress: undefined,
 });
 
 // Selection screen context

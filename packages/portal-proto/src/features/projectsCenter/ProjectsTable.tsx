@@ -57,7 +57,7 @@ const ProjectsTable: React.FC = () => {
   const [sortBy, setSortBy] = useState<SortBy[]>([
     { field: "summary.case_count", direction: "desc" },
   ]);
-
+  const [jsonDownloadInProgress, setJsonDownloadInProgress] = useState(false);
   const { setEntityMetadata } = useContext(SummaryModalContext);
 
   const projectFilters = useAppSelector((state) => selectFilters(state));
@@ -320,6 +320,7 @@ const ProjectsTable: React.FC = () => {
   };
 
   const handleDownloadJSON = async () => {
+    setJsonDownloadInProgress(true);
     await download({
       endpoint: "projects",
       method: "POST",
@@ -341,11 +342,12 @@ const ProjectsTable: React.FC = () => {
         ].join(","),
       },
       dispatch: coreDispatch,
+      done: () => setJsonDownloadInProgress(false),
     });
   };
 
-  const handleDownloadTSV = () => {
-    downloadTSV({
+  const handleDownloadTSV = async () => {
+    await downloadTSV({
       tableData: formattedTableData,
       columnOrder,
       columnVisibility,
@@ -381,6 +383,8 @@ const ProjectsTable: React.FC = () => {
             data-testid="button-json-projects-table"
             onClick={handleDownloadJSON}
             disabled={isFetching}
+            isDownload
+            isActive={jsonDownloadInProgress}
           >
             JSON
           </FunctionButton>

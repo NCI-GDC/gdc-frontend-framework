@@ -41,7 +41,9 @@ export const Biospecimen = ({
   submitter_id,
 }: BiospecimenProps): JSX.Element => {
   const router = useRouter();
-  const [biospecimenDownloadActive, setBiospecimenDownloadActive] =
+  const [biospecimenDownloadActiveTSV, setBiospecimenDownloadActiveTSV] =
+    useState(false);
+  const [biospecimenDownloadActiveJSON, setBiospecimenDownloadActiveJSON] =
     useState(false);
   const [treeStatusOverride, setTreeStatusOverride] =
     useState<overrideMessage | null>(null);
@@ -128,7 +130,7 @@ export const Biospecimen = ({
   });
 
   const handleBiospeciemenTSVDownload = () => {
-    setBiospecimenDownloadActive(true);
+    setBiospecimenDownloadActiveTSV(true);
     download({
       endpoint: "biospecimen_tar",
       method: "POST",
@@ -145,12 +147,12 @@ export const Biospecimen = ({
           },
         },
       },
-      done: () => setBiospecimenDownloadActive(false),
+      done: () => setBiospecimenDownloadActiveTSV(false),
     });
   };
 
   const handleBiospeciemenJSONDownload = () => {
-    setBiospecimenDownloadActive(true);
+    setBiospecimenDownloadActiveJSON(true);
     download({
       endpoint: "biospecimen_tar",
       method: "POST",
@@ -169,7 +171,7 @@ export const Biospecimen = ({
           },
         },
       },
-      done: () => setBiospecimenDownloadActive(false),
+      done: () => setBiospecimenDownloadActiveJSON(false),
     });
   };
 
@@ -190,25 +192,26 @@ export const Biospecimen = ({
             dropdownElements={[
               {
                 title: "TSV",
-                icon: <DownloadIcon size={16} aria-label="download" />,
+                icon: biospecimenDownloadActiveTSV ? (
+                  <Loader size={16} color="currentColor" />
+                ) : (
+                  <DownloadIcon size={16} aria-label="download" />
+                ),
                 onClick: handleBiospeciemenTSVDownload,
               },
               {
                 title: "JSON",
-                icon: <DownloadIcon size={16} aria-label="download" />,
+                icon: biospecimenDownloadActiveJSON ? (
+                  <Loader size={16} color="currentColor" />
+                ) : (
+                  <DownloadIcon size={16} aria-label="download" />
+                ),
                 onClick: handleBiospeciemenJSONDownload,
               },
             ]}
-            TargetButtonChildren={
-              biospecimenDownloadActive ? "Processing" : "Download"
-            }
-            LeftSection={
-              biospecimenDownloadActive ? (
-                <Loader size={20} />
-              ) : (
-                <DownloadIcon size="1rem" aria-label="download" />
-              )
-            }
+            TargetButtonChildren="Download"
+            LeftSection={<DownloadIcon size="1rem" aria-label="download" />}
+            closeOnItemClick={false}
           />
 
           <div className="flex mt-2 gap-4">

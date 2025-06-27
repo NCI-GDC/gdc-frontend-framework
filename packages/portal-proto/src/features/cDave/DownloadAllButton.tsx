@@ -26,6 +26,7 @@ const DownloadAllButton: React.FC = () => {
       ]}
       TargetButtonChildren={"Download All Images"}
       LeftSection={<DownloadIcon aria-hidden="true" size="1rem" />}
+      closeOnItemClick={false}
     />
   );
 };
