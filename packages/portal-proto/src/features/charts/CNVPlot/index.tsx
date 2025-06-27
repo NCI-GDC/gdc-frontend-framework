@@ -165,7 +165,7 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
         preparedData,
         [
           "cnv_amplification_percent",
-          "cnv_gain_percent:",
+          "cnv_gain_percent",
           "cnv_heterozygous_deletion_percent",
           "cnv_homozygous_deletion_percent",
         ],
