@@ -430,16 +430,17 @@ const EnumFacet: React.FC<EnumFacetCardProps> = ({
                               <OverflowTooltippedLabel label={value}>
                                 <span className="font-content">{value}</span>
                               </OverflowTooltippedLabel>
+
                               {count !== undefined && (
                                 <>
                                   <div
                                     data-testid={`text-${value}`}
-                                    className="flex-none text-right w-14 font-content text-sm"
+                                    className="flex-none text-right font-content text-sm"
                                   >
                                     {count.toLocaleString()}
                                   </div>
                                   {showPercent ? (
-                                    <div className="flex-none text-right w-18 font-content text-sm">
+                                    <div className="flex-none text-right font-content text-sm">
                                       (
                                       {(
                                         ((count as number) / totalCount) *
