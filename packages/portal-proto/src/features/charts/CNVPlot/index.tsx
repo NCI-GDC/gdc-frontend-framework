@@ -145,22 +145,17 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
 
   const jsonData = useDeepCompareMemo(() => {
     const preparedData = top20ChartData.map(
-      ({
-        project: symbol,
-        amplification,
-        gain,
-        loss,
-        homozygousDeletion,
-        total,
-      }) => ({
-        symbol,
-        amplification: amplification ? (amplification / total) * 100 : 0,
-        gain: gain ? (gain / total) * 100 : 0,
-        "heterozygous deletion": loss ? (loss / total) * 100 : 0,
-        "homozygous deletion": homozygousDeletion
+      ({ project, amplification, gain, loss, homozygousDeletion, total }) => ({
+        project,
+        cnv_amplification_percent: amplification
+          ? (amplification / total) * 100
+          : 0,
+        cnv_gain_percent: gain ? (gain / total) * 100 : 0,
+        cnv_heterozygous_deletion_percent: loss ? (loss / total) * 100 : 0,
+        cnv_homozygous_deletion_percent: homozygousDeletion
           ? (homozygousDeletion / total) * 100
           : 0,
-        total,
+        num_cnv_cases_total: total,
       }),
     );
 
