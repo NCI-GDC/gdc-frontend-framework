@@ -164,10 +164,10 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
       return orderBy(
         preparedData,
         [
-          "amplification",
-          "gain",
-          "heterozygous deletion",
-          "homozygous deletion",
+          "cnv_amplification_percent",
+          "cnv_gain_percent:",
+          "cnv_heterozygous_deletion_percent",
+          "cnv_homozygous_deletion_percent",
         ],
         ["desc", "desc", "desc", "desc"],
       );
