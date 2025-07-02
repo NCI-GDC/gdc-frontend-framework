@@ -37,7 +37,7 @@ playwright==1.23.1
 pre-commit==3.5.0
     # via -r requirements.in
     # This is the highest version of docker that can be compiled on Gitlab (as of 03/18/2024)
-protobuf==3.20.2
+protobuf==4.25.8
     # via
     #   -r requirements.in
     #   getgauge
@@ -67,7 +67,7 @@ rubicon-objc==0.4.7
     # via mouseinfo
 setuptools==78.1.1
     # Added this to fix a SNYK security flag
-virtualenv==20.25.1
+virtualenv==20.26.6
     # via pre-commit
 websockets==10.1
     # via playwright
