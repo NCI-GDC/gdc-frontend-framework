@@ -1,5 +1,5 @@
 import React, { ReactNode, useContext, useEffect } from "react";
-import { Burger, MantineProvider } from "@mantine/core";
+import { Burger, Divider, MantineProvider } from "@mantine/core";
 import { useDisclosure, useViewportSize } from "@mantine/hooks";
 import { AppContext } from "src/context";
 import ExternalAppMenu from "../ExternalAppMenu";
@@ -17,6 +17,10 @@ interface HeaderProps {
   readonly indexPath: string;
   readonly LoginButton?: React.ComponentType;
   readonly QuickSearch?: React.ComponentType;
+  readonly controlledDataLink?: {
+    href: string;
+    label: string;
+  };
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -27,6 +31,7 @@ const Header: React.FC<HeaderProps> = ({
   indexPath,
   LoginButton = undefined,
   QuickSearch = undefined,
+  controlledDataLink = undefined,
 }: HeaderProps) => {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
@@ -115,8 +120,23 @@ const Header: React.FC<HeaderProps> = ({
             ))}
           </div>
           {QuickSearch && (
-            <div className="xl:w-1/3">
-              <QuickSearch />
+            <div className="xl:w-1/2 2xl:w-2/5 flex gap-4 items-center">
+              {controlledDataLink && (
+                <>
+                  <a
+                    className="text-primary font-bold flex-shrink cursor-pointer text-right"
+                    href={controlledDataLink.href}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {controlledDataLink.label}
+                  </a>
+                  <Divider orientation="vertical" className="flex-shrink-0" />
+                </>
+              )}
+              <div className="flex-1 flex-shrink-0">
+                <QuickSearch />
+              </div>
             </div>
           )}
         </div>
