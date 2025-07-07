@@ -62,6 +62,7 @@ export const AnnotationFacetPanel = (): JSX.Element => {
       allFiltersCollapsed={allFiltersCollapsed}
       handleClearAll={clearAllFilters}
       filtersAppliedCount={filtersAppliedCount}
+      docType="annotations"
     />
   );
 };
