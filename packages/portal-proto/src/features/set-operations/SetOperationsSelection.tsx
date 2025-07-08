@@ -44,7 +44,9 @@ const SetOperationsSelection = (): JSX.Element => {
       state,
       overwriteSelectedEntities
         ? [{ id: cohort1Id as string }, { id: cohort2Id as string }]
-        : selectedEntities,
+        : selectedEntityType === "cohort"
+        ? selectedEntities
+        : [],
     ),
   );
 
@@ -52,15 +54,20 @@ const SetOperationsSelection = (): JSX.Element => {
     cohort1Id === "demoCohort1Id" && cohort2Id === "demoCohort2Id";
 
   useDeepCompareEffect(() => {
-    if (cohorts.length > 0 || isCohortComparisonDemo) {
+    if (isCohortComparisonDemo || overwriteSelectedEntities) {
       setSelectedEntityType("cohort");
-
-      // A cohort has been deleted, kick user back to selection screen
-      if (cohorts.length < 2 && !isCohortComparisonDemo) {
-        setSelectionScreenOpen(true);
-      }
     }
-  }, [cohorts, isCohortComparisonDemo, setSelectionScreenOpen]);
+
+    // A cohort has been deleted, kick user back to selection screen
+    if (cohorts.length < 2 && !isCohortComparisonDemo) {
+      setSelectionScreenOpen(true);
+    }
+  }, [
+    cohorts,
+    isCohortComparisonDemo,
+    setSelectionScreenOpen,
+    overwriteSelectedEntities,
+  ]);
 
   return !ready ? (
     <LoadingOverlay data-testid="loading-spinner" visible />

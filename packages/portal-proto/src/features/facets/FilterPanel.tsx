@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { isEqual } from "lodash";
 import { Text, Modal, LoadingOverlay, Badge, Tooltip } from "@mantine/core";
-import { fieldNameToTitle } from "@gff/core";
+import { fieldNameToTitle, GQLDocType } from "@gff/core";
 import {
   createFacetCards,
   FacetSelection,
@@ -33,6 +33,7 @@ interface FilterPanelProps {
   readonly hideIfEmpty?: boolean;
   readonly showPercent?: boolean;
   readonly isLoading?: boolean;
+  readonly docType?: GQLDocType;
 }
 
 /**
@@ -56,6 +57,7 @@ const FilterPanel = ({
   facetHooks,
   valueLabel,
   app,
+  docType,
   toggleAllFiltersExpanded,
   allFiltersCollapsed,
   customConfig = undefined,
@@ -191,7 +193,7 @@ const FilterPanel = ({
             return fieldNameToTitle(field, 2);
           },
           Chart: EnumFacetChart,
-          queryOptions: { docType: "cases" },
+          queryOptions: { docType: docType ?? "cases" },
         })}
         {createFacetCards({
           facets: defaultFacetDefinitions,
@@ -202,7 +204,7 @@ const FilterPanel = ({
           showPercent,
           facetNameFormatter: fieldNameToTitle,
           Chart: EnumFacetChart,
-          queryOptions: { docType: "cases" },
+          queryOptions: { docType: docType ?? "cases" },
         })}
       </div>
     </div>

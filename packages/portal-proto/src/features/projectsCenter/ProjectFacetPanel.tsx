@@ -58,6 +58,7 @@ export const ProjectFacetPanel = (): JSX.Element => {
       allFiltersCollapsed={allFiltersCollapsed}
       handleClearAll={clearAllFilters}
       filtersAppliedCount={filtersAppliedCount}
+      docType="projects"
     />
   );
 };
