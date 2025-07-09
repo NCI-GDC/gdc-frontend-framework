@@ -3,7 +3,7 @@ Date Created    : 07/09/2025
 Version	        : 1.0
 Owner		        : GDC QA
 Description		  : Selecting different sets and cohorts with the same name
-Test-Case       : PEAR-1231
+Test-Case       : PEAR-1231, PEAR-1230
 
 tags: gdc-data-portal-v2, set-operations, regression
 
@@ -45,22 +45,6 @@ tags: gdc-data-portal-v2, set-operations, regression
 * Navigate to "Set Operations" from "Analysis" "app"
 * Change number of entries shown in the table to "100"
 
-## Gene Set Selection Logic
-* Verify the button "Run Set Operations" is disabled
-* Select the following checkboxes in the Set Operations analysis screen by name and type
-  |checkbox_name            |type           |
-  |-------------------------|---------------|
-  |A-Same_Name_1            |Genes          |
-  |A-Same_Name_2            |Genes          |
-* Verify the button "Run Set Operations" is enabled
-* Checkbox "A-Same_Name_1" with entity type "Mutations" should be disabled in the Set Operations app
-* Checkbox "A-Same_Name_1" with entity type "Cohort" should be disabled in the Set Operations app
-* Select the following checkboxes in the Set Operations analysis screen by name and type
-  |checkbox_name            |type           |
-  |-------------------------|---------------|
-  |A-Same_Name_1            |Genes          |
-  |A-Same_Name_2            |Genes          |
-
 ## Mutation Set Selection Logic
 * Verify the button "Run Set Operations" is disabled
 * Select the following checkboxes in the Set Operations analysis screen by name and type
@@ -92,3 +76,21 @@ tags: gdc-data-portal-v2, set-operations, regression
   |-------------------------|---------------|
   |A-Same_Name_1            |Cohort         |
   |A-Same_Name_2            |Cohort         |
+
+## Gene Set Selection Logic and Validate Analysis Screen
+* Verify the button "Run Set Operations" is disabled
+* Select the following checkboxes in the Set Operations analysis screen by name and type
+  |checkbox_name            |type           |
+  |-------------------------|---------------|
+  |A-Same_Name_1            |Genes          |
+  |A-Same_Name_2            |Genes          |
+* Verify the button "Run Set Operations" is enabled
+* Checkbox "A-Same_Name_1" with entity type "Mutations" should be disabled in the Set Operations app
+* Checkbox "A-Same_Name_1" with entity type "Cohort" should be disabled in the Set Operations app
+* Run analysis on Set Operations
+* Download "S1 intersect S2" from "Set Operations"
+* Read from "S1 intersect S2 from Set Operations"
+* Verify that "S1 intersect S2 from Set Operations" has expected information
+  |required_info    |
+  |-----------------|
+  |ENSG00000198286  |
