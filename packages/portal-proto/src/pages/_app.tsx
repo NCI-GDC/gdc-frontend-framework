@@ -67,6 +67,11 @@ if (process.env.NEXT_PUBLIC_DD_ENABLED) {
     trackViewsManually: true,
     defaultPrivacyLevel: "mask",
     version: `v${PUBLIC_APP_INFO?.version}-${PUBLIC_APP_INFO?.hash}`,
+    allowedTracingUrls: [
+      "https://gdc.cancer.gov",
+      // Matches any subdomain of cancer.gov, such as https://portal.gdc.cancer.gov
+      /^https:\/\/[^\/]+\.cancer\.gov/
+    ],
   });
 }
 
