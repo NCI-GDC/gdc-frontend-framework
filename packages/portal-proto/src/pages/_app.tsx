@@ -70,7 +70,7 @@ if (process.env.NEXT_PUBLIC_DD_ENABLED) {
     allowedTracingUrls: [
       "https://gdc.cancer.gov",
       // Matches any subdomain of cancer.gov, such as https://portal.gdc.cancer.gov
-      /^https:\/\/[^\/]+\.cancer\.gov/
+      /^https:\/\/[^]+\.cancer\.gov/,
     ],
   });
 }
