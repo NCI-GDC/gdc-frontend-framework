@@ -6,6 +6,8 @@ from ....base.base_page import GenericLocators
 
 class SetOperationsLocators:
     CHECKBOX_SELECT_SET = lambda set_name: f'[data-testid="checkbox-{set_name}-set-operations"]'
+    CHECKBOX_SELECT_SET_BY_NAME_AND_TYPE = lambda set_name, set_type: f'text={set_type}{set_name} >> [data-testid="checkbox-{set_name}-set-operations"]'
+
     TEXT_ITEM_COUNT= lambda set_name: f'[data-testid="text-{set_name}-item-count-set-operations"]'
     BUTTON_RUN_SELECTION_SCREEN = '[data-testid="button-run-set-operations"]'
 
@@ -32,6 +34,14 @@ class SetOperationsPage(BasePage):
 
     def is_checkbox_enabled_set_operations(self, set_name):
         locator = SetOperationsLocators.CHECKBOX_SELECT_SET(set_name)
+        return self.is_enabled(locator)
+
+    def is_checkbox_disabled_set_operations_by_name_type(self, set_name, set_type):
+        locator = SetOperationsLocators.CHECKBOX_SELECT_SET_BY_NAME_AND_TYPE(set_name, set_type)
+        return self.is_disabled(locator)
+
+    def is_checkbox_enabled_set_operations_by_name_type(self, set_name, set_type):
+        locator = SetOperationsLocators.CHECKBOX_SELECT_SET_BY_NAME_AND_TYPE(set_name, set_type)
         return self.is_enabled(locator)
 
     def get_item_count_selection_screen_set_operations(self, set_name):
@@ -69,6 +79,10 @@ class SetOperationsPage(BasePage):
 
     def click_checkbox_set_operations(self, set_name):
         locator = SetOperationsLocators.CHECKBOX_SELECT_SET(set_name)
+        self.click(locator)
+
+    def click_checkbox_set_operations_by_name_type(self, set_name, set_type):
+        locator = SetOperationsLocators.CHECKBOX_SELECT_SET_BY_NAME_AND_TYPE(set_name, set_type)
         self.click(locator)
 
     def click_save_set_button_set_operations(self, set_name):
