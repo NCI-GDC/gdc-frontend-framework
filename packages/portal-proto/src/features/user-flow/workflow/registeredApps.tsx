@@ -292,6 +292,25 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
     noDataTooltip:
       "Current cohort does not have CNV segment data available for visualization.",
   },
+  {
+    name: "Correlation Plot",
+    icon: (
+      <CopyNumberSegmentIcon
+        height={48}
+        width={80}
+        viewBox="-12 0 80 48"
+        aria-hidden="true"
+      />
+    ),
+    tags: ["variantAnalysis"],
+    hasDemo: true,
+    description:
+      "Visualize correlations between clinical and genomic variables.",
+    id: "Correlation",
+    countsField: "caseCount",
+    noDataTooltip:
+      "Current cohort does not have cases available for visualization.",
+  },
 ];
 
 export const APPTAGS = [
