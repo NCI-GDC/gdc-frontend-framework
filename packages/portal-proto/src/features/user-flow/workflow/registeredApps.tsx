@@ -188,7 +188,7 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
       <ProteinPaintIcon
         height={48}
         width={80}
-        viewBox="-12 0 80 48"
+        style={{ margin: "0" }}
         aria-hidden="true"
       />
     ),
@@ -209,6 +209,7 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
         className="m-auto"
         height={48}
         width={80}
+        style={{ margin: "0" }}
         aria-hidden="true"
       />
     ),
@@ -229,6 +230,7 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
         className="m-auto"
         height={48}
         width={80}
+        style={{ margin: "0" }}
         aria-hidden="true"
       />
     ),
@@ -249,6 +251,7 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
         className="m-auto"
         height={48}
         width={80}
+        style={{ margin: "0" }}
         aria-hidden="true"
       />
     ),
@@ -280,7 +283,7 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
       <CopyNumberSegmentIcon
         height={48}
         width={80}
-        viewBox="-12 0 80 48"
+        style={{ margin: "0" }}
         aria-hidden="true"
       />
     ),
@@ -298,7 +301,7 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
       <CopyNumberSegmentIcon
         height={48}
         width={80}
-        viewBox="-12 0 80 48"
+        style={{ margin: "0" }}
         aria-hidden="true"
       />
     ),
