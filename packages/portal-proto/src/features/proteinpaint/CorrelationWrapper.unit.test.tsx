@@ -7,9 +7,6 @@ let runpparg,
   userDetails,
   isDemoMode = false;
 
-const resultsCreateCaseSet = { data: "test-pp-caseSet", isSuccess: true };
-const nullFunction = () => null;
-
 jest.mock("@gff/core", () => ({
   useCoreSelector: jest.fn().mockReturnValue({}),
   buildCohortGqlOperator: jest.fn(() => filter),
