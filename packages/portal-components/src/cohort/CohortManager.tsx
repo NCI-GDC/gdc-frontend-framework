@@ -142,11 +142,23 @@ const CohortManager: React.FC<CohortManagerProps> = ({
               }
               subText={<>You cannot undo this action.</>}
               onActionClick={() => {
+                const remainingCohorts = cohorts.filter(
+                  (cohort) => cohort.id !== currentCohort.id,
+                );
+                const nextCohortName =
+                  remainingCohorts.length > 0
+                    ? remainingCohorts[0].name
+                    : undefined;
+
                 handleDelete()
                   .then(() => {
                     setCohortMessage &&
                       setCohortMessage([
-                        { cmd: "deleteCohort", param1: currentCohort.name },
+                        {
+                          cmd: "deleteCohort",
+                          param1: currentCohort.name,
+                          param2: nextCohortName,
+                        },
                       ]);
                   })
                   .catch(

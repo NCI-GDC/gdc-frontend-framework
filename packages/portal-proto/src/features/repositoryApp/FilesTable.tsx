@@ -67,6 +67,7 @@ const FilesTables: React.FC = () => {
   const [pageSize, setPageSize] = useState(20);
   const [offset, setOffset] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
+  const [jsonDownloadInProgress, setJsonDownloadInProgress] = useState(false);
 
   const repositoryFilters = useAppSelector((state) => selectFilters(state));
   const cohortFilters = useCoreSelector((state) =>
@@ -340,6 +341,7 @@ const FilesTables: React.FC = () => {
   };
 
   const handleDownloadJSON = async () => {
+    setJsonDownloadInProgress(true);
     await download({
       endpoint: "files",
       method: "POST",
@@ -368,6 +370,7 @@ const FilesTables: React.FC = () => {
         ].join(","),
       },
       dispatch: coreDispatch,
+      done: () => setJsonDownloadInProgress(false),
     });
   };
 
@@ -456,9 +459,12 @@ const FilesTables: React.FC = () => {
               onClick={handleDownloadJSON}
               data-testid="button-json-files-table"
               disabled={isFetching}
+              isActive={jsonDownloadInProgress}
+              isDownload
             >
               JSON
             </FunctionButton>
+
             <FunctionButton
               onClick={handleDownloadTSV}
               data-testid="button-tsv-files-table"

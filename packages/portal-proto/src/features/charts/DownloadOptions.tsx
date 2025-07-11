@@ -24,7 +24,7 @@ const DownloadOptions: React.FC<ChartDownloadProps> = ({
   };
 
   return (
-    <Menu width="auto">
+    <Menu width="auto" closeOnItemClick={false}>
       <Menu.Target>
         <Tooltip label="Download image or data">
           <ActionIcon

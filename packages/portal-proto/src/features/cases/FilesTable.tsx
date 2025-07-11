@@ -20,7 +20,6 @@ import {
   useGetFilesQuery,
   GqlOperation,
 } from "@gff/core";
-import { Loader, Tooltip } from "@mantine/core";
 import {
   ColumnDef,
   ColumnOrderState,
@@ -69,7 +68,6 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
   ]);
   const [fileToDownload, setFileToDownload] = useState(null);
   const [downloadJSONActive, setDownloadJSONActive] = useState(false);
-  const [downloadTSVActive, setDownloadTSVActive] = useState(false);
   const [pageSize, setPageSize] = useState(10);
   const [activePage, setActivePage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
@@ -315,9 +313,8 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
     });
   };
 
-  const handleDownloadTSV = () => {
-    setDownloadTSVActive(true);
-    downloadTSV({
+  const handleDownloadTSV = async () => {
+    await downloadTSV({
       tableData,
       columnOrder,
       fileName: `files-table.${getFormattedTimestamp()}.tsv`,
@@ -331,14 +328,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
           },
         },
       },
-    })
-      .then(() => {
-        setDownloadTSVActive(false);
-      })
-      .catch((error) => {
-        console.error("Error during download:", error);
-        setDownloadTSVActive(false);
-      });
+    });
   };
 
   return (
@@ -354,24 +344,22 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
         status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
         additionalControls={
           <div className="flex gap-2 mb-2">
-            <Tooltip label="Download JSON">
-              <FunctionButton
-                data-testid="button-json-files-case-summary"
-                onClick={handleDownloadJSON}
-                aria-label="Download JSON"
-              >
-                {downloadJSONActive ? <Loader size="sm" /> : "JSON"}
-              </FunctionButton>
-            </Tooltip>
-            <Tooltip label="Download TSV">
-              <FunctionButton
-                data-testid="button-tsv-files-case-summary"
-                onClick={handleDownloadTSV}
-                aria-label="Download TSV"
-              >
-                {downloadTSVActive ? <Loader size="sm" /> : "TSV"}
-              </FunctionButton>
-            </Tooltip>
+            <FunctionButton
+              data-testid="button-json-files-case-summary"
+              onClick={handleDownloadJSON}
+              aria-label="Download JSON"
+              isDownload
+              isActive={downloadJSONActive}
+            >
+              JSON
+            </FunctionButton>
+            <FunctionButton
+              data-testid="button-tsv-files-case-summary"
+              onClick={handleDownloadTSV}
+              aria-label="Download TSV"
+            >
+              TSV
+            </FunctionButton>
           </div>
         }
         showControls={true}

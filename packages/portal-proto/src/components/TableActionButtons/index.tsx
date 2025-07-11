@@ -47,7 +47,6 @@ export const TableActionButtons = ({
       <DownloadFile
         customDataTestID="button-download-file"
         file={downloadFile}
-        showLoading={false}
         setfileToDownload={setFileToDownload}
         displayVariant="icon"
       />

@@ -22,7 +22,6 @@ import {
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useDeepCompareCallback, useDeepCompareMemo } from "use-deep-compare";
 import FunctionButton from "@/components/FunctionButton";
-import { Loader } from "@mantine/core";
 import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionAsSetModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
@@ -428,8 +427,10 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
               onClick={handleTSVDownload}
               data-testid="button-tsv-mutation-frequency"
               disabled={isFetching}
+              isActive={downloadMutatedGenesTSVActive}
+              isDownload
             >
-              {downloadMutatedGenesTSVActive ? <Loader size="sm" /> : "TSV"}
+              TSV
             </FunctionButton>
           </div>
         }

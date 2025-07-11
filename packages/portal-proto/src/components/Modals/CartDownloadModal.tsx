@@ -98,10 +98,9 @@ const CartDownloadModal = ({
         </Button>
         <DownloadButton
           data-testid="button-download"
-          inactiveText={`Download ${numFilesCanAccess} Authorized File${
+          buttonLabel={`Download ${numFilesCanAccess} Authorized File${
             numFilesCanAccess !== 1 ? "s" : ""
           }`}
-          activeText=""
           disabled={
             numFilesCanAccess === 0 ||
             (user?.username && dbGapList.length > 0 && !checked)

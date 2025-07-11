@@ -40,7 +40,7 @@ playwright==1.23.1
     # via -r requirements.in
 pre-commit==3.6.2
     # via -r requirements.in
-protobuf==3.20.2
+protobuf==4.25.8
     # via
     #   -r requirements.in
     #   getgauge
@@ -79,7 +79,9 @@ rubicon-objc==0.4.7
     # via mouseinfo
 setuptools==78.1.1
     # Added this to fix a SNYK security flag
-virtualenv==20.25.1
-    # via pre-commit
+virtualenv==20.26.6
+    # via
+    #   -r requirements.in
+    #   pre-commit
 websockets==10.1
     # via playwright

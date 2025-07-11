@@ -14,7 +14,7 @@ import {
   Tooltip,
   ActionIcon,
 } from "@mantine/core";
-import { fieldNameToTitle } from "@gff/core";
+import { fieldNameToTitle, GQLDocType } from "@gff/core";
 import {
   createFacetCards,
   FacetSelection,
@@ -46,6 +46,7 @@ interface FilterPanelProps {
   readonly hideIfEmpty?: boolean;
   readonly showPercent?: boolean;
   readonly isLoading?: boolean;
+  readonly docType?: GQLDocType;
 }
 
 /**
@@ -69,6 +70,7 @@ const FilterPanel = ({
   facetHooks,
   valueLabel,
   app,
+  docType,
   toggleAllFiltersExpanded,
   allFiltersCollapsed,
   customConfig = undefined,
@@ -165,53 +167,54 @@ const FilterPanel = ({
               </div>
             )}
           </div>
-          {customConfig !== undefined && (
-            <>
-              <div className="flex min-h-[36px] mt-3.5 w-full">
-                <Tooltip label="Reset custom filters">
-                  <button
-                    data-testid="button-reset-custom-filters-files-table"
-                    className="flex justify-center items-center w-12 border-1 rounded-l-md border-primary-darker text-primary disabled:opacity-50 disabled:bg-base-max disabled:text-primary disabled:cursor-not-allowed"
-                    onClick={handleResetCustomFilter}
-                    disabled={isEqual(customConfig.defaultFilters, facetFields)}
-                    aria-label="Reset custom filters"
-                  >
-                    <UndoIcon />
-                  </button>
-                </Tooltip>
-                <button
-                  aria-label="Add a custom filter"
-                  data-testid="button-add-a-file-filter"
-                  className="flex justify-center items-center border-1 border-l-0 border-primary-darker rounded-r-md text-primary hover:text-base-max hover:bg-primary w-full"
-                  onClick={() => setOpened(true)}
-                >
-                  <AddIcon className="text-2xl xl:text-xl" />
-                  <Text className="text-sm font-bold">Add a Custom Filter</Text>
-                </button>
-              </div>
-
-              <Modal
-                data-testid="modal-repository-add-custom-filter"
-                size="xl"
-                opened={opened}
-                onClose={() => setOpened(false)}
-                title="Add a Custom Filter"
-              >
-                <div className="p-4">
-                  <FacetSelection
-                    handleFilterSelected={(filter: string) => {
-                      customConfig.handleCustomFilterSelected(filter);
-                      setOpened(false);
-                    }}
-                    useAvailableCustomFacets={useAvailableCustomFacets}
-                    queryOptions={customConfig.queryOptions}
-                    usedFacets={customConfig.usedFacets}
-                  />
-                </div>
-              </Modal>
-            </>
-          )}
         </div>
+        {customConfig !== undefined && (
+          <>
+            <div className="flex min-h-[36px] mt-3.5 w-full">
+              <Tooltip label="Remove all custom filters cards" offset={10}>
+                <button
+                  data-testid="button-reset-custom-filters-files-table"
+                  className="flex justify-center items-center w-12 border-1 rounded-l-md border-primary-darker text-primary disabled:opacity-50 disabled:bg-base-max disabled:text-primary disabled:cursor-not-allowed"
+                  onClick={handleResetCustomFilter}
+                  disabled={isEqual(customConfig.defaultFilters, facetFields)}
+                  aria-label="Reset custom filters"
+                >
+                  <UndoIcon />
+                </button>
+              </Tooltip>
+              <button
+                aria-label="Add a custom filter"
+                data-testid="button-add-a-file-filter"
+                className="flex justify-center items-center border-1 border-l-0 border-primary-darker rounded-r-md text-primary hover:text-base-max hover:bg-primary w-full"
+                onClick={() => setOpened(true)}
+              >
+                <AddIcon className="text-2xl xl:text-xl" />
+                <Text className="text-sm font-bold">Add a Custom Filter</Text>
+              </button>
+            </div>
+
+            <Modal
+              data-testid="modal-repository-add-custom-filter"
+              size="xl"
+              opened={opened}
+              onClose={() => setOpened(false)}
+              title="Add a Custom Filter"
+            >
+              <div className="p-4">
+                <FacetSelection
+                  handleFilterSelected={(filter: string) => {
+                    customConfig.handleCustomFilterSelected(filter);
+                    setOpened(false);
+                  }}
+                  useAvailableCustomFacets={useAvailableCustomFacets}
+                  queryOptions={customConfig.queryOptions}
+                  usedFacets={customConfig.usedFacets}
+                />
+              </div>
+            </Modal>
+          </>
+        )}
+
         <LoadingOverlay data-testid="loading-spinner" visible={isLoading} />
         <div
           data-testid="filters-facets"
@@ -233,7 +236,7 @@ const FilterPanel = ({
               return fieldNameToTitle(field, 2);
             },
             Chart: EnumFacetChart,
-            queryOptions: { docType: "cases" },
+            queryOptions: { docType: docType ?? "cases" },
           })}
           {createFacetCards({
             facets: defaultFacetDefinitions,
@@ -244,7 +247,7 @@ const FilterPanel = ({
             showPercent,
             facetNameFormatter: fieldNameToTitle,
             Chart: EnumFacetChart,
-            queryOptions: { docType: "cases" },
+            queryOptions: { docType: docType ?? "cases" },
           })}
         </div>
       </div>

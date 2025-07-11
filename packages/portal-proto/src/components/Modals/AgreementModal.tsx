@@ -64,8 +64,7 @@ export const AgreementModal = ({
             related_files: true,
           }}
           endpoint={`data/${file?.file_id}`}
-          activeText="Processing"
-          inactiveText="Download"
+          buttonLabel="Download"
           method="GET"
           setActive={setActive}
           active={active}

@@ -64,9 +64,14 @@ const ContextBar = ({
   const [downloadMetadataActive, setDownloadMetadataActive] = useState(false);
   const [downloadSampleSheetActive, setDownloadSampleSheetActive] =
     useState(false);
-  const [biospecimenDownloadActive, setBiospecimenDownloadActive] =
+  const [biospecimenDownloadActiveJSON, setBiospecimenDownloadActiveJSON] =
     useState(false);
-  const [clinicalDownloadActive, setClinicalDownloadActive] = useState(false);
+  const [biospecimenDownloadActiveTSV, setBiospecimenDownloadActiveTSV] =
+    useState(false);
+  const [clinicalDownloadActiveJSON, setClinicalDownloadActiveJSON] =
+    useState(false);
+  const [clinicalDownloadActiveTSV, setClinicalDownloadActiveTSV] =
+    useState(false);
   /* download active end */
 
   const currentCohortId = useCoreSelector((state) =>
@@ -164,7 +169,7 @@ const ContextBar = ({
   };
 
   const handleClinicalTSVDownload = () => {
-    setClinicalDownloadActive(true);
+    setClinicalDownloadActiveTSV(true);
     download({
       endpoint: "clinical_tar",
       method: "POST",
@@ -176,12 +181,12 @@ const ContextBar = ({
         case_filters: downloadFilter,
         size: caseCounts,
       },
-      done: () => setClinicalDownloadActive(false),
+      done: () => setClinicalDownloadActiveTSV(false),
     });
   };
 
   const handleClinicalJSONDownload = () => {
-    setClinicalDownloadActive(true);
+    setClinicalDownloadActiveJSON(true);
     download({
       endpoint: "clinical_tar",
       method: "POST",
@@ -195,12 +200,12 @@ const ContextBar = ({
         filters: downloadFilter,
         size: caseCounts,
       },
-      done: () => setClinicalDownloadActive(false),
+      done: () => setClinicalDownloadActiveJSON(false),
     });
   };
 
   const handleBiospeciemenTSVDownload = () => {
-    setBiospecimenDownloadActive(true);
+    setBiospecimenDownloadActiveTSV(true); // separate these out into tsv and json
     download({
       endpoint: "biospecimen_tar",
       method: "POST",
@@ -212,12 +217,12 @@ const ContextBar = ({
         filters: downloadFilter,
         size: caseCounts,
       },
-      done: () => setBiospecimenDownloadActive(false),
+      done: () => setBiospecimenDownloadActiveTSV(false),
     });
   };
 
   const handleBiospeciemenJSONDownload = () => {
-    setBiospecimenDownloadActive(true);
+    setBiospecimenDownloadActiveJSON(true);
     download({
       endpoint: "biospecimen_tar",
       method: "POST",
@@ -231,7 +236,7 @@ const ContextBar = ({
         filters: downloadFilter,
         size: caseCounts,
       },
-      done: () => setBiospecimenDownloadActive(false),
+      done: () => setBiospecimenDownloadActiveJSON(false),
     });
   };
 
@@ -287,6 +292,7 @@ const ContextBar = ({
                   icon: downloadManifestActive ? (
                     <Loader size={14} />
                   ) : undefined,
+                  isLoading: downloadManifestActive,
                 },
                 {
                   title: "Metadata",
@@ -294,6 +300,7 @@ const ContextBar = ({
                   icon: downloadMetadataActive ? (
                     <Loader size={14} />
                   ) : undefined,
+                  isLoading: downloadMetadataActive,
                 },
                 {
                   title: "Sample Sheet",
@@ -301,6 +308,7 @@ const ContextBar = ({
                   icon: downloadSampleSheetActive ? (
                     <Loader size={14} />
                   ) : undefined,
+                  isLoading: downloadSampleSheetActive,
                 },
               ]}
               TargetButtonChildren={
@@ -318,6 +326,7 @@ const ContextBar = ({
                   className="hidden md:block"
                 />
               }
+              closeOnItemClick={false}
               targetButtonDisabled={
                 cohortCounts.status !== "fulfilled" ||
                 cohortCounts?.data?.fileCount === 0
@@ -370,27 +379,32 @@ const ContextBar = ({
                     {
                       title: "JSON ",
                       onClick: handleBiospeciemenJSONDownload,
-                      icon: <DownloadIcon aria-label="Download" />,
+                      icon: biospecimenDownloadActiveJSON ? (
+                        <Loader size={16} />
+                      ) : (
+                        <DownloadIcon aria-label="Download" />
+                      ),
+                      isLoading: biospecimenDownloadActiveJSON,
                     },
                     {
                       title: "TSV",
                       onClick: handleBiospeciemenTSVDownload,
-                      icon: <DownloadIcon aria-label="Download" />,
+                      icon: biospecimenDownloadActiveTSV ? (
+                        <Loader size={16} />
+                      ) : (
+                        <DownloadIcon aria-label="Download" />
+                      ),
+                      isLoading: biospecimenDownloadActiveTSV,
                     },
                   ]}
-                  TargetButtonChildren={
-                    biospecimenDownloadActive ? "Processing" : "Biospecimen"
-                  }
+                  TargetButtonChildren="Biospecimen"
                   LeftSection={
                     <span className="hidden md:block">
-                      {biospecimenDownloadActive ? (
-                        <Loader size={20} />
-                      ) : (
-                        <DownloadIcon size="1rem" aria-hidden="true" />
-                      )}
+                      <DownloadIcon size="1rem" aria-hidden="true" />
                     </span>
                   }
                   targetButtonDisabled={cohortCounts.status !== "fulfilled"}
+                  closeOnItemClick={false}
                 />
 
                 <DropdownWithIcon
@@ -399,27 +413,32 @@ const ContextBar = ({
                     {
                       title: "JSON",
                       onClick: handleClinicalJSONDownload,
-                      icon: <DownloadIcon aria-label="Download" />,
+                      icon: clinicalDownloadActiveJSON ? (
+                        <Loader size={16} />
+                      ) : (
+                        <DownloadIcon aria-label="Download" />
+                      ),
+                      isLoading: clinicalDownloadActiveJSON,
                     },
                     {
                       title: "TSV",
                       onClick: handleClinicalTSVDownload,
-                      icon: <DownloadIcon aria-label="Download" />,
+                      icon: clinicalDownloadActiveTSV ? (
+                        <Loader size={16} />
+                      ) : (
+                        <DownloadIcon aria-label="Download" />
+                      ),
+                      isLoading: clinicalDownloadActiveTSV,
                     },
                   ]}
-                  TargetButtonChildren={
-                    clinicalDownloadActive ? "Processing" : "Clinical"
-                  }
+                  TargetButtonChildren="Clinical"
                   LeftSection={
                     <span className="hidden md:block">
-                      {biospecimenDownloadActive ? (
-                        <Loader size={20} />
-                      ) : (
-                        <DownloadIcon size="1rem" aria-hidden="true" />
-                      )}
+                      <DownloadIcon size="1rem" aria-hidden="true" />
                     </span>
                   }
                   targetButtonDisabled={cohortCounts.status !== "fulfilled"}
+                  closeOnItemClick={false}
                 />
               </>
             )}
