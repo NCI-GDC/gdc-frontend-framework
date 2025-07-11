@@ -241,6 +241,10 @@ export const Header: React.FC<HeaderProps> = ({
         AppLogo={AppLogo}
         LoginButton={LoginButtonOrUserDropdown}
         QuickSearch={QuickSearch}
+        controlledDataLink={{
+          href: "https://gdc.cancer.gov/access-data/obtaining-access-controlled-data",
+          label: "Obtaining Access to Controlled Data",
+        }}
       />
 
       {/* Modals Start */}
