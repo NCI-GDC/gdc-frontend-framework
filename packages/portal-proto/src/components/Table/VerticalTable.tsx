@@ -383,7 +383,10 @@ function VerticalTable<TData>({
                     )}
                   >
                     {/* 2nd row is a custom 1 cell row */}
-                    <td colSpan={row.getVisibleCells().length}>
+                    <td
+                      colSpan={row.getVisibleCells().length}
+                      className="relative"
+                    >
                       {/* Need to pass in the SubRow component to render here */}
                       {renderSubComponent({ row, clickedColumnId })}
                     </td>
