@@ -32,6 +32,7 @@ import {
   CoreState,
   selectCohortBuilderConfig,
   selectFacetDefinition,
+  TotalCounts,
 } from "@gff/core";
 import isEqual from "lodash/isEqual";
 import { getFacetInfo } from "@/features/cohortBuilder/utils";
@@ -366,7 +367,10 @@ export const useTotalCounts = ({
   );
 };
 
-export const FacetDocTypeToCountsIndexMap: Record<GQLDocType, string> = {
+export const FacetDocTypeToCountsIndexMap: Record<
+  GQLDocType,
+  keyof TotalCounts
+> = {
   cases: "caseCounts",
   files: "fileCounts",
   genes: "genesCounts",

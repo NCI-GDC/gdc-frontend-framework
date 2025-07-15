@@ -55,8 +55,18 @@ const CountsGraphQLQuery = `
   }
 }`;
 
+export interface TotalCounts {
+  readonly caseCounts: number;
+  readonly fileCounts: number;
+  readonly genesCounts: number;
+  readonly mutationCounts: number;
+  readonly projectsCounts: number;
+  readonly primarySiteCounts: number;
+  readonly annotationCounts: number;
+}
+
 export interface TotalCountsState {
-  readonly counts: Record<string, number>;
+  readonly counts: TotalCounts;
   readonly status: DataStatus;
   readonly error?: string;
   readonly requestId?: string;
@@ -130,7 +140,7 @@ export const totalCountsReducer = slice.reducer;
 
 export const selectTotalCountsData = (
   state: CoreState,
-): CoreDataSelectorResponse<Record<string, number>> => {
+): CoreDataSelectorResponse<TotalCounts> => {
   return {
     data: state.summary.counts,
     status: state.summary.status,
@@ -138,12 +148,12 @@ export const selectTotalCountsData = (
   };
 };
 
-export const selectTotalCounts = (state: CoreState): Record<string, number> =>
+export const selectTotalCounts = (state: CoreState): TotalCounts =>
   state.summary.counts;
 
 export const selectTotalCountsByName = (
   state: CoreState,
-  name: string,
+  name: keyof TotalCounts,
 ): number => {
   const counts = state.summary.counts;
   return counts[name];
