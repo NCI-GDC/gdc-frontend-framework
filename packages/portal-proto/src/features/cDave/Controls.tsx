@@ -253,7 +253,7 @@ const Controls: React.FC<ControlPanelProps> = ({
           {controlsExpanded ? (
             <DoubleLeftIcon size="24" aria-hidden="true" />
           ) : (
-            <DoubleRightIcon size="24" naria-hidden="true" />
+            <DoubleRightIcon size="24" aria-hidden="true" />
           )}
         </ActionIcon>
       </Tooltip>

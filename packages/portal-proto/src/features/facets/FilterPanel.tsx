@@ -6,7 +6,14 @@ import React, {
   useCallback,
 } from "react";
 import { isEqual } from "lodash";
-import { Text, Modal, LoadingOverlay, Badge, Tooltip } from "@mantine/core";
+import {
+  Text,
+  Modal,
+  LoadingOverlay,
+  Badge,
+  Tooltip,
+  ActionIcon,
+} from "@mantine/core";
 import { fieldNameToTitle, GQLDocType } from "@gff/core";
 import {
   createFacetCards,
@@ -15,11 +22,17 @@ import {
   FacetRequiredHooks,
 } from "@gff/portal-components";
 import { TableXPositionContext } from "@/components/Table/VerticalTable";
-import { AddIcon, UndoIcon } from "@/utils/icons";
+import {
+  AddIcon,
+  DoubleLeftIcon,
+  DoubleRightIcon,
+  UndoIcon,
+} from "@/utils/icons";
 import { CustomConfig } from "./types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
 import { useAvailableCustomFacets } from "../cohortBuilder/hooks";
 import { showNotification } from "@mantine/notifications";
+
 interface FilterPanelProps {
   readonly facetDefinitions: FacetCardDefinition[];
   readonly facetHooks: FacetRequiredHooks;
@@ -68,6 +81,7 @@ const FilterPanel = ({
   isLoading = false,
 }: FilterPanelProps) => {
   const [opened, setOpened] = useState(false);
+  const [filtersExpanded, setFiltersExpanded] = useState(true);
   const ref = useRef<HTMLDivElement>();
   const { xPosition } = useContext(TableXPositionContext);
 
@@ -98,32 +112,61 @@ const FilterPanel = ({
   }, [customConfig]);
 
   return (
-    <div className="flex flex-col gap-y-4 min-w-[14rem] w-3/12 max-w-[23rem]">
-      <Text size="lg" className="text-primary-content-darker font-bold">
-        Filters
-      </Text>
-      <div className="flex flex-col flex-wrap">
-        <div className="flex flex-wrap justify-between text-primary-content-darker">
-          <button
-            data-testid="button-expand-collapse-files-table"
-            onClick={() => toggleAllFiltersExpanded(allFiltersCollapsed)}
-          >
-            {allFiltersCollapsed ? "Expand All" : "Collapse All"}
-          </button>
-          {filtersAppliedCount > 0 && (
-            <div className="flex flex-row items-center gap-1">
-              <Badge className="bg-accent-vivid px-1.5" radius="xs">
-                {filtersAppliedCount}
-              </Badge>
-              <button
-                onClick={() => {
-                  handleClearAll();
-                }}
-              >
-                Reset Filters
-              </button>
-            </div>
+    <div
+      className={`${
+        filtersExpanded
+          ? "flex flex-col gap-y-4 min-w-[14rem] w-3/12 max-w-[23rem]"
+          : ""
+      }`}
+    >
+      <Tooltip
+        withArrow
+        withinPortal
+        offset={-2}
+        label={filtersExpanded ? "Hide Filters Panel" : "Show Filters Panel"}
+      >
+        <ActionIcon
+          onClick={() => setFiltersExpanded(!filtersExpanded)}
+          aria-label="Collapse/Expand filter panel"
+          aria-controls="filters-panel"
+          aria-expanded={filtersExpanded}
+          className="text-accent"
+          variant="subtle"
+        >
+          {filtersExpanded ? (
+            <DoubleLeftIcon size="24" aria-hidden="true" />
+          ) : (
+            <DoubleRightIcon size="24" aria-hidden="true" />
           )}
+        </ActionIcon>
+      </Tooltip>
+      <div className={filtersExpanded ? "block" : "hidden"}>
+        <Text size="lg" className="text-primary-content-darker font-bold">
+          Filters
+        </Text>
+        <div className="flex flex-col flex-wrap">
+          <div className="flex flex-wrap justify-between text-primary-content-darker">
+            <button
+              data-testid="button-expand-collapse-files-table"
+              onClick={() => toggleAllFiltersExpanded(allFiltersCollapsed)}
+            >
+              {allFiltersCollapsed ? "Expand All" : "Collapse All"}
+            </button>
+            {filtersAppliedCount > 0 && (
+              <div className="flex flex-row items-center gap-1">
+                <Badge className="bg-accent-vivid px-1.5" radius="xs">
+                  {filtersAppliedCount}
+                </Badge>
+                <button
+                  onClick={() => {
+                    handleClearAll();
+                  }}
+                >
+                  Reset Filters
+                </button>
+              </div>
+            )}
+          </div>
         </div>
         {customConfig !== undefined && (
           <>
@@ -171,41 +214,42 @@ const FilterPanel = ({
             </Modal>
           </>
         )}
-      </div>
-      <LoadingOverlay data-testid="loading-spinner" visible={isLoading} />
-      <div
-        data-testid="filters-facets"
-        className="flex flex-col gap-y-4 max-h-screen overflow-y-auto border-t-1 border-b-1 rounded-md"
-        style={{
-          maxHeight,
-        }}
-        ref={ref}
-      >
-        {createFacetCards({
-          facets: customFacetDefinitions,
-          valueLabel,
-          hooks: facetHooks,
-          idPrefix: app,
-          dismissCallback: customConfig?.handleRemoveFilter,
-          hideIfEmpty,
-          showPercent,
-          facetNameFormatter: (field: string) => {
-            return fieldNameToTitle(field, 2);
-          },
-          Chart: EnumFacetChart,
-          queryOptions: { docType: docType ?? "cases" },
-        })}
-        {createFacetCards({
-          facets: defaultFacetDefinitions,
-          valueLabel,
-          hooks: facetHooks,
-          idPrefix: app,
-          hideIfEmpty,
-          showPercent,
-          facetNameFormatter: fieldNameToTitle,
-          Chart: EnumFacetChart,
-          queryOptions: { docType: docType ?? "cases" },
-        })}
+
+        <LoadingOverlay data-testid="loading-spinner" visible={isLoading} />
+        <div
+          data-testid="filters-facets"
+          className="flex flex-col gap-y-4 max-h-screen overflow-y-auto border-t-1 border-b-1 rounded-md"
+          style={{
+            maxHeight,
+          }}
+          ref={ref}
+        >
+          {createFacetCards({
+            facets: customFacetDefinitions,
+            valueLabel,
+            hooks: facetHooks,
+            idPrefix: app,
+            dismissCallback: customConfig?.handleRemoveFilter,
+            hideIfEmpty,
+            showPercent,
+            facetNameFormatter: (field: string) => {
+              return fieldNameToTitle(field, 2);
+            },
+            Chart: EnumFacetChart,
+            queryOptions: { docType: docType ?? "cases" },
+          })}
+          {createFacetCards({
+            facets: defaultFacetDefinitions,
+            valueLabel,
+            hooks: facetHooks,
+            idPrefix: app,
+            hideIfEmpty,
+            showPercent,
+            facetNameFormatter: fieldNameToTitle,
+            Chart: EnumFacetChart,
+            queryOptions: { docType: docType ?? "cases" },
+          })}
+        </div>
       </div>
     </div>
   );
