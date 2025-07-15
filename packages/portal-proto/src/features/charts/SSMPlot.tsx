@@ -124,10 +124,10 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
           filename="cancer-distribution-bar-chart"
           divId={chartDivId}
           jsonData={[
-            ...sortedData.map(({ project: label, percent: value }) => {
+            ...sortedData.map(({ project, percent }) => {
               return {
-                label,
-                value,
+                project,
+                affected_cases_percent: percent,
               };
             }),
           ]}
