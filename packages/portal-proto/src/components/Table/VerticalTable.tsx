@@ -381,6 +381,7 @@ function VerticalTable<TData>({
                       /\W/g,
                       "_",
                     )}
+                    className="border border-base-lighter"
                   >
                     {/* 2nd row is a custom 1 cell row */}
                     <td
