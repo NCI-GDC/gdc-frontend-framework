@@ -1,5 +1,7 @@
 import { SummaryHeaderTitle } from "@/components/tailwindComponents";
+import { XL_BREAKPOINT } from "@/utils/index";
 import { Divider } from "@mantine/core";
+import { useViewportSize } from "@mantine/hooks";
 import { ReactNode, useEffect, useState } from "react";
 import { IconType } from "react-icons";
 
@@ -17,6 +19,7 @@ export interface SummaryHeaderProps {
   rightElement?: ReactNode;
   isModal?: boolean;
 }
+
 export const SummaryHeader = ({
   Icon,
   headerTitleLeft,
@@ -25,9 +28,14 @@ export const SummaryHeader = ({
   rightElement,
   isModal = false,
 }: SummaryHeaderProps): JSX.Element => {
+  const { width } = useViewportSize();
   const [topOffset, setTopOffset] = useState("0px");
+  const [isScrollingDown, setIsScrollingDown] = useState(false);
+  const [prevScrollTop, setPrevScrollTop] = useState(0);
+
   const isFile = headerTitleLeft === "File";
   const isProject = headerTitleLeft === "Project";
+  const isSmallScreenSize = width < XL_BREAKPOINT;
 
   useEffect(() => {
     const globalHeader = document.querySelector("#global-header");
@@ -44,11 +52,55 @@ export const SummaryHeader = ({
     };
   }, []);
 
+  useEffect(() => {
+    if (isModal || !isSmallScreenSize) return;
+
+    const handleScroll = () => {
+      const currentScrollTop = window.scrollY;
+      const globalHeader = document.querySelector("#global-header");
+      const globalHeaderBottom =
+        globalHeader?.getBoundingClientRect().bottom || 0;
+
+      // Only start hiding/showing behavior after scrolling past the global header's bottom
+      if (currentScrollTop > globalHeaderBottom) {
+        if (currentScrollTop > prevScrollTop) {
+          setIsScrollingDown(true);
+        } else {
+          setIsScrollingDown(false);
+        }
+      } else {
+        setIsScrollingDown(false);
+      }
+
+      setPrevScrollTop(currentScrollTop);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [prevScrollTop, isModal, isSmallScreenSize]);
+
+  const headerClassName = (() => {
+    const baseClasses =
+      "bg-primary-vivid py-4 px-4 w-full flex flex-col shadow-lg gap-4 transition-transform duration-500 ease-in-out";
+
+    const positionClasses = isModal
+      ? "sticky top-0 rounded-t-sm z-20"
+      : "sticky z-10";
+
+    const transformClasses =
+      !isModal && isSmallScreenSize && isScrollingDown
+        ? "transform -translate-y-full"
+        : "transform translate-y-0";
+
+    return `${baseClasses} ${positionClasses} ${transformClasses}`;
+  })();
+
   return (
     <div
-      className={`bg-primary-vivid py-4 px-4 w-full flex flex-col shadow-lg gap-4 ${
-        isModal ? "sticky top-0 rounded-t-sm z-20" : "sticky z-10"
-      }`}
+      className={headerClassName}
       style={!isModal ? { top: topOffset } : undefined}
     >
       <div data-testid="text-summary-bar" className="flex gap-4">
