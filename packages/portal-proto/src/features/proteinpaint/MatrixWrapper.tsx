@@ -1,4 +1,4 @@
-import { useRef, useCallback, useState, FC } from "react";
+import { useRef, useCallback, useState, useEffect, FC } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
 import { bindProteinPaint } from "@sjcrh/proteinpaint-client";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
@@ -60,6 +60,7 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
     : buildCohortGqlOperator(currentCohort);
   const userDetails = useFetchUserDetailsQuery();
   const prevData = useRef<any>();
+  const abortCtrl = useRef<any>();
   const coreDispatch = useCoreDispatch();
   const [showSaveCohortModal, setShowSaveCohortModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -93,6 +94,20 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
     },
     [createSet],
   );
+
+  useEffect(() => {
+    return () => {
+      console.log(98, window.location.href);
+      if (window.location.href.includes("OncoMatrix")) return;
+      console.log(
+        100,
+        "MatrixWrapper abortCtrl.current.abort()",
+        abortCtrl.current,
+      );
+      abortCtrl.current?.abort(); //(`${props.chartType} was closed/hidden`)
+      console.log(102, "abortCtrl.current?.signal", abortCtrl.current?.signal);
+    };
+  }, []);
 
   // a set for the new cohort is created, now show the save cohort modal
   useDeepCompareEffect(() => {
@@ -177,10 +192,12 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
         (data || prevData.current) && !isEqual(prevData.current, data);
       if (hasUpdates) prevData.current = data;
       const rootElem = divRef.current as HTMLElement;
+      abortCtrl.current = new AbortController();
+      const abortSignal = abortCtrl.current.signal;
 
       let updateArgs;
       if (hasUpdates) {
-        updateArgs = { filter0: data.filter0 };
+        updateArgs = { filter0: data.filter0, abortSignal };
         if (lastGeneSetRequestId != genesRequestId) {
           setLastGeneSetRequestId(genesRequestId);
           updateArgs.genes = geneDetailData.hits.map((h) => ({
@@ -204,6 +221,7 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
         hide_dsHandles: true,
         filter0: data.filter0,
       });
+      initArgs.opts.app.abortSignal = abortSignal;
 
       // bindProteinPaint() handles rapid update requests/race condition,
       // so no need to include debouncing and promise code in this wrapper
@@ -287,6 +305,7 @@ interface MatrixArgOpts {
 
 interface MatrixArgOptsApp {
   callbacks?: RxComponentCallbacks;
+  abortSignal?: AbortSignal;
 }
 
 interface MatrixArgOptsMatrix {
