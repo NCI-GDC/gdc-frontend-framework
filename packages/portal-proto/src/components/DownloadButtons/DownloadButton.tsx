@@ -122,9 +122,6 @@ export const DownloadButton = forwardRef<
         showDownloadIcon
         tooltip={tooltipContent}
         multilineTooltip={multilineTooltip}
-        classNames={{
-          section: `mr-0 ${displayVariant === "icon" ? "" : "xl:mr-2"}`,
-        }}
         disabled={disabled}
         variant="outline"
         onClick={() => {

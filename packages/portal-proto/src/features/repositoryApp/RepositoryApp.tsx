@@ -1,8 +1,6 @@
 import {
   buildCohortGqlOperator,
-  CartFile,
   CART_LIMIT,
-  CoreDispatch,
   FilterSet,
   GdcFile,
   GqlOperation,
@@ -81,6 +79,9 @@ const useCohortCentricFiles = () => {
 };
 
 export const RepositoryApp = (): JSX.Element => {
+  const [manifestActive, setManifestActive] = useState(false);
+  const [addFilesLoading, setAddFilesLoading] = useState(false);
+  const [removeFilesLoading, setRemoveFilesLoading] = useState(false);
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
   const router = useRouter();
@@ -92,29 +93,8 @@ export const RepositoryApp = (): JSX.Element => {
     imagesCount,
     fileDataFetching,
   } = useCohortCentricFiles();
-  const [
-    getFileSizeSliceData, // This is the mutation trigger
-    { isLoading: allFilesLoading }, // This is the destructured mutation result
-  ] = useGetAllFilesMutation();
+  const [getFileSizeSliceData] = useGetAllFilesMutation();
 
-  const getAllSelectedFiles = (
-    callback: (
-      files: readonly CartFile[],
-      currentCart: CartFile[],
-      dispatch: CoreDispatch,
-    ) => void,
-    caseFilters: GqlOperation,
-    localFilters: GqlOperation,
-  ) => {
-    getFileSizeSliceData({ caseFilters: caseFilters, filters: localFilters })
-      .unwrap()
-      .then((data: GdcFile[]) => {
-        return mapGdcFileToCartFile(data);
-      })
-      .then((cartFiles) => {
-        callback(cartFiles, currentCart, dispatch);
-      });
-  };
   const buildCohortGqlOperatorWithCart = (): GqlOperation => {
     // create filter with current cart file ids
     const cartFilterSet: FilterSet = {
@@ -129,7 +109,32 @@ export const RepositoryApp = (): JSX.Element => {
     };
     return buildCohortGqlOperator(joinFilters(localFilters, cartFilterSet));
   };
-  const [active, setActive] = useState(false);
+
+  const handleCartOperation = (operationType: "add" | "remove") => {
+    const isAdd = operationType === "add";
+    const setLoading = isAdd ? setAddFilesLoading : setRemoveFilesLoading;
+    const callback = isAdd ? addToCart : removeFromCart;
+    const filters = isAdd
+      ? buildCohortGqlOperator(localFilters)
+      : buildCohortGqlOperatorWithCart();
+
+    setLoading(true);
+
+    getFileSizeSliceData({
+      caseFilters: buildCohortGqlOperator(caseFilters),
+      filters: filters,
+    })
+      .unwrap()
+      .then((data: GdcFile[]) => {
+        return mapGdcFileToCartFile(data);
+      })
+      .then((cartFiles) => {
+        callback(cartFiles, currentCart, dispatch);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   const clearAllFilters = useClearAllRepositoryFilters();
   useEffect(() => {
@@ -143,6 +148,7 @@ export const RepositoryApp = (): JSX.Element => {
     useState(false);
   const [tableXPosition, setTableXPosition] = useState<number>(undefined);
   const viewImageDisabled = imagesCount.slidesCount <= 0;
+
   return (
     <>
       <PersistGate persistor={persistor}>
@@ -273,8 +279,8 @@ export const RepositoryApp = (): JSX.Element => {
                   }}
                   caseFilters={buildCohortGqlOperator(caseFilters)}
                   filters={buildCohortGqlOperator(localFilters)}
-                  setActive={setActive}
-                  active={active}
+                  setActive={setManifestActive}
+                  active={manifestActive}
                   filename={`gdc_manifest.${getFormattedTimestamp({
                     includeTimes: true,
                   })}.txt`}
@@ -303,9 +309,14 @@ export const RepositoryApp = (): JSX.Element => {
                 <FunctionButton
                   data-testid="button-add-all-files-table"
                   leftSection={
-                    <CartIcon aria-hidden="true" className="hidden xl:block" />
+                    addFilesLoading ? undefined : (
+                      <CartIcon
+                        aria-hidden="true"
+                        className="hidden xl:block"
+                      />
+                    )
                   }
-                  loading={allFilesLoading}
+                  isActive={addFilesLoading}
                   variant="outline"
                   disabled={fileDataFetching}
                   onClick={() => {
@@ -316,14 +327,9 @@ export const RepositoryApp = (): JSX.Element => {
                     ) {
                       showCartOverLimitNotification(currentCart.length);
                     } else {
-                      getAllSelectedFiles(
-                        addToCart,
-                        buildCohortGqlOperator(caseFilters),
-                        buildCohortGqlOperator(localFilters),
-                      );
+                      handleCartOperation("add");
                     }
                   }}
-                  classNames={{ section: "mr-0 xl:mr-2" }}
                 >
                   Add All Files to Cart
                 </FunctionButton>
@@ -331,19 +337,19 @@ export const RepositoryApp = (): JSX.Element => {
                 <FunctionButtonRemove
                   data-testid="button-remove-all-files-table"
                   leftSection={
-                    <CartIcon aria-hidden="true" className="hidden xl:block" />
+                    removeFilesLoading ? undefined : (
+                      <CartIcon
+                        aria-hidden="true"
+                        className="hidden xl:block"
+                      />
+                    )
                   }
                   classNames={{
                     root: `bg-nci-red-darker text-base-max hover:bg-removeButtonHover border-0 ${focusStyles}`,
-                    section: "mr-0 xl:mr-2",
                   }}
-                  loading={allFilesLoading}
+                  isActive={removeFilesLoading}
                   onClick={() => {
-                    getAllSelectedFiles(
-                      removeFromCart,
-                      buildCohortGqlOperator(caseFilters),
-                      buildCohortGqlOperatorWithCart(),
-                    );
+                    handleCartOperation("remove");
                   }}
                 >
                   Remove All From Cart
