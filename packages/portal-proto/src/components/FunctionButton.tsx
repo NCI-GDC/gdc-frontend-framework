@@ -109,7 +109,15 @@ const FunctionButton = forwardRef<HTMLButtonElement, FunctionButtonProps>(
       return null;
     };
     const button = (
-      <StyledButton ref={ref} leftSection={getLeftSection()} {...props} />
+      <StyledButton
+        ref={ref}
+        leftSection={getLeftSection()}
+        classNames={{
+          section: `mr-0 ${isActive ? "mr-2" : "xl:mr-2"}`,
+          ...props.classNames,
+        }}
+        {...props}
+      />
     );
 
     if (tooltipLabel) {
