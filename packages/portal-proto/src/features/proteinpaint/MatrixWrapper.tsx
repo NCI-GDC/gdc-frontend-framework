@@ -221,6 +221,7 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
         },
       })
         .then?.((_app) => {
+          // set the app, could be OncoMatrix or Gene Expression Clustering depending on props.chartType
           toolApp.current = _app;
         })
         .catch((e) => {
