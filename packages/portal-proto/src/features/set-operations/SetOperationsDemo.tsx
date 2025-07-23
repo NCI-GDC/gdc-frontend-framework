@@ -103,10 +103,9 @@ const DEMO_SETS = [
 ];
 
 const SetOperationsDemo = (): JSX.Element => {
-  const { data: demoCounts, isSuccess: demoCountsSuccess } =
-    useSsmSetCountsQuery({
-      setIds: DEMO_SETS.map((set) => set.id),
-    });
+  const { isSuccess: demoCountsSuccess } = useSsmSetCountsQuery({
+    setIds: DEMO_SETS.map((set) => set.id),
+  });
   const [createDemoSet1, demoSetResponse1] =
     useCreateSsmsSetFromFiltersMutation();
   const [createDemoSet2, demoSetResponse2] =
