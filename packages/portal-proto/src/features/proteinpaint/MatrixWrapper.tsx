@@ -224,7 +224,9 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
           toolApp.current = _app;
         })
         .catch((e) => {
-          throw e;
+          // the app should either work or display an error in a red banner within the tool container div,
+          // this uncaught-by-app error is unlikely to happen except for bundling issues that are not detected at build time
+          console.error(e);
         });
 
       return () => {
