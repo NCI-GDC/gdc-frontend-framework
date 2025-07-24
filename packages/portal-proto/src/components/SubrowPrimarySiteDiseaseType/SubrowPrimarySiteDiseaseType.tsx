@@ -38,7 +38,10 @@ function SubrowPrimarySiteDiseaseType<T>({
         <div className="columns-4 font-content text-sm">
           {values.map((value) => (
             <div className="flex items-center" key={value}>
-              <CircleIcon size="0.65em" className="text-primary shrink-0" />
+              <CircleIcon
+                size="0.65em"
+                className="text-primary shrink-0 self-start mt-1.5"
+              />
               <p className="pl-2">{value}</p>
             </div>
           ))}
