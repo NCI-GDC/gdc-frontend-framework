@@ -60,6 +60,7 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
     : buildCohortGqlOperator(currentCohort);
   const userDetails = useFetchUserDetailsQuery();
   const prevData = useRef<any>();
+  const toolApp = useRef<any>();
   const coreDispatch = useCoreDispatch();
   const [showSaveCohortModal, setShowSaveCohortModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -218,7 +219,24 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
           // in case of race condition
           return prevData.current != data;
         },
-      });
+      })
+        .then?.((_app) => {
+          toolApp.current = _app;
+        })
+        .catch((e) => {
+          // the app should either work or display an error in a red banner within the tool container div,
+          // this uncaught-by-app error is unlikely to happen except for bundling issues that are not detected at build time
+          console.error(e);
+        });
+
+      return () => {
+        if (!toolApp.current) return;
+        const toolName =
+          props.chartType == "hierCluster" ? "GeneExpression" : "OncoMatrix";
+        if (window.location.href.includes(toolName)) return;
+        // cancel unnecessary network requests when this tool app is hidden
+        toolApp.current.triggerAbort();
+      };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [filter0, userDetails, geneDetailData],
