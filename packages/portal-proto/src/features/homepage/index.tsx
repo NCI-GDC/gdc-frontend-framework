@@ -44,7 +44,7 @@ const Homepage = (): JSX.Element => {
           >
             Explore Our Cancer Datasets
           </Link>
-          <HorizontalSummaryTotalsPanel />
+          <HorizontalSummaryTotalsPanel countsInfo={countsInfo} />
         </div>
 
         <div
@@ -61,7 +61,7 @@ const Homepage = (): JSX.Element => {
         body={
           <>
             High-quality datasets spanning{" "}
-            {countsInfo?.caseCount?.toLocaleString()} cases from cancer genomic
+            {countsInfo?.caseCounts?.toLocaleString()} cases from cancer genomic
             studies such as{" "}
             <strong className="italic font-bold">
               The Cancer Genomic Atlas (TCGA), Human Cancer Models Initiative
