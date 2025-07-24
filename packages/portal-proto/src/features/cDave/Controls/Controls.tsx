@@ -12,6 +12,7 @@ import {
 } from "@/utils/icons";
 import { CDaveField, sortFacetFields } from "./utils";
 import ControlGroup from "./ControlGroup";
+import { toDisplayName } from "../utils";
 
 interface ControlsProps {
   readonly updateFields: (field: string) => void;
@@ -32,9 +33,33 @@ const Controls: React.FC<ControlsProps> = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [onlyDataChecked, setOnlyDataChecked] = useState(false);
-  const groupedFields = useDeepCompareMemo(
-    () => groupBy(cDaveFields, "field_type"),
-    [cDaveFields],
+
+  const filteredFields = useDeepCompareMemo(() => {
+    let fieldsToFilter = cDaveFields;
+
+    if (onlyDataChecked) {
+      fieldsToFilter = cDaveFields.filter(
+        (field) => fieldsWithData[field.full] !== undefined,
+      );
+    }
+
+    if (!searchTerm) return fieldsToFilter;
+    return fieldsToFilter.filter(
+      (field) =>
+        field.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        toDisplayName(field.field_name)
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()),
+    );
+  }, [searchTerm, cDaveFields, onlyDataChecked, fieldsWithData]);
+
+  const groupedFilteredFields = useDeepCompareMemo(
+    () => groupBy(filteredFields, "field_type"),
+    [filteredFields],
+  );
+
+  const hasResults = Object.values(groupedFilteredFields).some(
+    (fields) => fields.length > 0,
   );
 
   return (
@@ -106,20 +131,28 @@ const Controls: React.FC<ControlsProps> = ({
           size="sm"
         />
 
-        <div className="max-h-screen overflow-y-auto border-t-1 border-b-1 border-base-lighter rounded-b-md rounded-t-md">
-          {Object.entries(TABS).map(([key, label]) => (
-            <ControlGroup
-              name={label}
-              fields={sortFacetFields(groupedFields[key] || [], key)}
-              updateFields={updateFields}
-              activeFields={activeFields}
-              searchTerm={searchTerm}
-              key={key}
-              onlyDataChecked={onlyDataChecked}
-              fieldsWithData={fieldsWithData}
-            />
-          ))}
-        </div>
+        <>
+          {!hasResults ? (
+            <div className="p-4">No results found</div>
+          ) : (
+            <div className="max-h-screen overflow-y-auto border-t-1 border-b-1 border-base-lighter rounded-b-md rounded-t-md">
+              {Object.entries(TABS).map(([key, label]) => (
+                <ControlGroup
+                  name={label}
+                  fields={sortFacetFields(
+                    groupedFilteredFields[key] || [],
+                    key,
+                  )}
+                  updateFields={updateFields}
+                  activeFields={activeFields}
+                  searchTerm={searchTerm}
+                  key={key}
+                  onlyDataChecked={onlyDataChecked}
+                />
+              ))}
+            </div>
+          )}
+        </>
       </div>
     </div>
   );

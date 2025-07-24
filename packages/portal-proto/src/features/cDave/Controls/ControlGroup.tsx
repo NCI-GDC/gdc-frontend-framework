@@ -9,7 +9,6 @@ import {
 import { toDisplayName } from "../utils";
 import tailwindConfig from "tailwind.config";
 import { Switch, Highlight, Tooltip, Collapse } from "@mantine/core";
-import { Buckets, Stats } from "@gff/core";
 import { createKeyboardAccessibleFunction } from "@/utils/index";
 import { FacetExpander } from "@gff/portal-components";
 import { DownArrowIcon, UpArrowIcon } from "@/utils/icons";
@@ -89,8 +88,7 @@ interface ControlGroupProps {
   readonly updateFields: (field: string) => void;
   readonly activeFields: string[];
   readonly searchTerm?: string;
-  readonly onlyDataChecked?: boolean;
-  readonly fieldsWithData?: Record<string, Stats | Buckets>;
+  readonly onlyDataChecked: boolean;
 }
 
 const ControlGroup: React.FC<ControlGroupProps> = ({
@@ -100,37 +98,14 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
   activeFields,
   searchTerm,
   onlyDataChecked,
-  fieldsWithData,
 }: ControlGroupProps) => {
-  console.log({ fieldsWithData, fields });
   const [groupOpen, setGroupOpen] = useState(true);
   const [fieldsCollapsed, setFieldsCollapsed] = useState(true);
 
-  const filteredFields = useDeepCompareMemo(() => {
-    let fieldsToFilter = fields;
-
-    if (onlyDataChecked && fieldsWithData) {
-      fieldsToFilter = fields.filter(
-        (field) => fieldsWithData[field.full] !== undefined,
-      );
-    }
-
-    if (!searchTerm) return fieldsToFilter;
-    return fieldsToFilter.filter(
-      (f) =>
-        f.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        toDisplayName(f.field_name)
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase()),
-    );
-  }, [searchTerm, fields, onlyDataChecked, fieldsWithData]);
-
   const visibleFields = useDeepCompareMemo(
-    () => (fieldsCollapsed ? filteredFields.slice(0, 5) : filteredFields),
-    [fieldsCollapsed, filteredFields],
+    () => (fieldsCollapsed ? fields.slice(0, 5) : fields),
+    [fieldsCollapsed, fields],
   );
-
-  console.log({ filteredFields, visibleFields });
 
   return (
     <div className="mb-4 last:mb-0">
@@ -157,7 +132,7 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
         id={`cdave-control-group-${name}`}
         className="border-1 border-base-lighter rounded-b-md"
       >
-        {filteredFields.length > 0 ? (
+        {fields.length > 0 ? (
           <div className="flex flex-col">
             <ul className="bg-base-max text-md">
               {visibleFields.map((field) => (
@@ -172,7 +147,7 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
             </ul>
             <div className="text-sm">
               <FacetExpander
-                remainingValues={filteredFields.length - 5}
+                remainingValues={fields.length - 5}
                 isGroupExpanded={!fieldsCollapsed}
                 onShowChanged={() => setFieldsCollapsed(!fieldsCollapsed)}
               />
