@@ -58,7 +58,7 @@ const Controls: React.FC<ControlsProps> = ({
     [filteredFields],
   );
 
-  const hasResults = Object.values(groupedFilteredFields).some(
+  const hasSomeResults = Object.values(groupedFilteredFields).some(
     (fields) => fields.length > 0,
   );
 
@@ -126,29 +126,42 @@ const Controls: React.FC<ControlsProps> = ({
           label="Only show properties with data"
           classNames={{
             input: "checked:bg-accent checked:border-accent",
+            label: "font-montserrat text-[1rem]",
           }}
           className="mb-3"
           size="sm"
         />
 
         <>
-          {!hasResults ? (
+          {!hasSomeResults ? (
             <div className="p-4">No results found</div>
           ) : (
             <div className="max-h-screen overflow-y-auto border-t-1 border-b-1 border-base-lighter rounded-b-md rounded-t-md">
-              {Object.entries(TABS).map(([key, label]) => (
-                <ControlGroup
-                  name={label}
-                  fields={sortFacetFields(
-                    groupedFilteredFields[key] || [],
-                    key,
-                  )}
-                  updateFields={updateFields}
-                  activeFields={activeFields}
-                  searchTerm={searchTerm}
-                  key={key}
-                />
-              ))}
+              {Object.entries(TABS).map(([key, label]) => {
+                const fieldsForCategory = sortFacetFields(
+                  groupedFilteredFields[key] || [],
+                  key,
+                );
+
+                if (
+                  searchTerm &&
+                  searchTerm.length > 0 &&
+                  fieldsForCategory.length === 0
+                ) {
+                  return null;
+                }
+
+                return (
+                  <ControlGroup
+                    name={label}
+                    fields={fieldsForCategory}
+                    updateFields={updateFields}
+                    activeFields={activeFields}
+                    searchTerm={searchTerm}
+                    key={key}
+                  />
+                );
+              })}
             </div>
           )}
         </>

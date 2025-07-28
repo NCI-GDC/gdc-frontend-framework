@@ -334,7 +334,7 @@ describe("<Controls />", () => {
   });
 
   it("search multiple terms", async () => {
-    const { getByPlaceholderText, queryByText } = render(
+    const { getByPlaceholderText, queryByText, queryByRole } = render(
       <Controls
         updateFields={jest.fn()}
         controlsExpanded={true}
@@ -364,6 +364,10 @@ describe("<Controls />", () => {
     await userEvent.type(input, "treatment t");
 
     expect(queryByText("Treatment T")).toBeInTheDocument();
+
+    expect(
+      queryByRole("button", { name: "Demographic" }),
+    ).not.toBeInTheDocument();
     expect(queryByText("Gender")).not.toBeInTheDocument();
   });
 
