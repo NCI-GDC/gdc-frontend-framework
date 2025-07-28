@@ -88,7 +88,6 @@ interface ControlGroupProps {
   readonly updateFields: (field: string) => void;
   readonly activeFields: string[];
   readonly searchTerm?: string;
-  readonly onlyDataChecked: boolean;
 }
 
 const ControlGroup: React.FC<ControlGroupProps> = ({
@@ -97,7 +96,6 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
   updateFields,
   activeFields,
   searchTerm,
-  onlyDataChecked,
 }: ControlGroupProps) => {
   const [groupOpen, setGroupOpen] = useState(true);
   const [fieldsCollapsed, setFieldsCollapsed] = useState(true);
@@ -153,9 +151,16 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
               />
             </div>
           </div>
-        ) : onlyDataChecked ? (
-          <div className="p-4 font-content">No properties with data</div>
-        ) : null}
+        ) : (
+          <div
+            className="p-4 font-content"
+            data-testid={`no-data-message-${name
+              .toLowerCase()
+              .replaceAll(" ", "-")}`}
+          >
+            No properties with data
+          </div>
+        )}
       </Collapse>
     </div>
   );

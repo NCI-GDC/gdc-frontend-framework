@@ -147,7 +147,6 @@ const Controls: React.FC<ControlsProps> = ({
                   activeFields={activeFields}
                   searchTerm={searchTerm}
                   key={key}
-                  onlyDataChecked={onlyDataChecked}
                 />
               ))}
             </div>
