@@ -4,6 +4,7 @@ function ShowingCount({
   from,
   total,
   label,
+  customPluralLabel = undefined,
   dataLength,
   status,
   pageSize,
@@ -12,6 +13,7 @@ function ShowingCount({
   from: number;
   total: number;
   label: string;
+  customPluralLabel?: string;
   dataLength: number;
   status: DataStatus;
   pageSize: number;
@@ -25,12 +27,13 @@ function ShowingCount({
     const fromValue = paginationFrom?.toLocaleString();
     const toValue = paginationTo?.toLocaleString();
     const totalValue = total?.toLocaleString();
-    const updatedLabel = label && total > 1 ? `${label}s` : label;
+    const pluralizedLabel =
+      label && total > 1 ? customPluralLabel || `${label}s` : label;
 
     outputString = (
       <span>
         <b>{fromValue}</b> - <b>{toValue}</b> of <b>{totalValue}</b>
-        {label && ` ${updatedLabel}`}
+        {label && ` ${pluralizedLabel}`}
       </span>
     );
   }

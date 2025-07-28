@@ -52,6 +52,7 @@ interface DownloadButtonProps {
   toolTip?: string;
   multilineTooltip?: boolean;
   displayVariant?: FunctionButtonVariants;
+  fromFileView?: boolean;
 }
 
 /**
@@ -106,6 +107,7 @@ export const DownloadButton = forwardRef<
       toolTip = "",
       multilineTooltip = false,
       displayVariant,
+      fromFileView = false,
       ...buttonProps
     }: DownloadButtonProps,
     ref,
@@ -119,6 +121,7 @@ export const DownloadButton = forwardRef<
         ref={ref}
         isActive={active}
         isDownload
+        fromFileView={fromFileView}
         showDownloadIcon
         tooltip={tooltipContent}
         multilineTooltip={multilineTooltip}

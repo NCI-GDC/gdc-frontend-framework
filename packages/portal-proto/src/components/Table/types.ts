@@ -58,6 +58,10 @@ export interface PaginationOptions {
    * label of data shown
    */
   label: string;
+  /**
+   * custom plural text
+   */
+  customPluralLabel?: string;
 }
 
 /**
