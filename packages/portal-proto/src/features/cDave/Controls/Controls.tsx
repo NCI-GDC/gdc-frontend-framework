@@ -134,7 +134,7 @@ const Controls: React.FC<ControlsProps> = ({
 
         <>
           {!hasSomeResults ? (
-            <div className="p-4">No results found</div>
+            <div className="p-4 font-content">No results found</div>
           ) : (
             <div className="max-h-screen overflow-y-auto border-t-1 border-b-1 border-base-lighter rounded-b-md rounded-t-md">
               {Object.entries(TABS).map(([key, label]) => {
