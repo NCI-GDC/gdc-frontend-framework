@@ -54,11 +54,14 @@ const ClinicalDataAnalysis: React.FC = () => {
     data: cDaveResult,
     isFetching,
     isSuccess,
-  } = useGetClinicalAnalysisQuery({
-    case_filters: cohortFilters,
-    facets,
-    size: 0,
-  });
+  } = useGetClinicalAnalysisQuery(
+    {
+      case_filters: cohortFilters,
+      facets,
+      size: 0,
+    },
+    { skip: facets.length === 0 },
+  );
 
   const updateFields = useDeepCompareCallback(
     (field: string) => {
