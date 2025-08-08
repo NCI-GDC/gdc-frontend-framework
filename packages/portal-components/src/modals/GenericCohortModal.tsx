@@ -28,35 +28,33 @@ const GenericCohortModal: React.FC<GenericCohortModalProps> = ({
       radius="md"
       onClose={onClose}
     >
-      <div className="font-montserrat py-5 pr-6 pl-2.5">
-        <p className="font-medium text-[0.95rem] text-base-ink">{mainText}</p>
-        <p className="text-sm pt-3 text-base-ink">{subText}</p>
+      <div className="font-content p-4">
+        <p className="font-medium text-md">{mainText}</p>
+        <p className="text-sm pt-3">{subText}</p>
       </div>
-      <div className="bg-base-lightest p-4">
-        <div className="flex justify-end gap-3">
-          <Button
-            variant="outline"
-            styles={{
-              root: {
-                backgroundColor: "white",
-              },
-            }}
-            color="secondary"
-            onClick={onClose}
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="filled"
-            color="secondary"
-            onClick={() => {
-              onActionClick();
-              onClose();
-            }}
-          >
-            {actionText}
-          </Button>
-        </div>
+      <div className="bg-base-lightest p-4 flex justify-end gap-3">
+        <Button
+          variant="outline"
+          styles={{
+            root: {
+              backgroundColor: "white",
+            },
+          }}
+          color="secondary"
+          onClick={onClose}
+        >
+          Cancel
+        </Button>
+        <Button
+          variant="filled"
+          color="secondary"
+          onClick={() => {
+            onActionClick();
+            onClose();
+          }}
+        >
+          {actionText}
+        </Button>
       </div>
     </Modal>
   );

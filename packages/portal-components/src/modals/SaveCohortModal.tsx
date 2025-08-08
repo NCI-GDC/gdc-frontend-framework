@@ -168,17 +168,16 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
 
   const UpdateBody = () => (
     <>
-      <div className="p-4">
-        <p className="font-content text-sm">
+      <div className="font-content p-4">
+        <p className="font-medium text-md">
           A saved cohort with same name already exists. Are you sure you want to
           replace it?
         </p>
-        <p className="text-xs font-content mt-1">
-          You cannot undo this action.
-        </p>
+        <p className="text-sm pt-3">You cannot undo this action.</p>
       </div>
+
       <div
-        className="bg-base-lightest flex p-4 gap-4 justify-end mt-4 rounded-b-lg sticky"
+        className="bg-base-lightest p-4 flex justify-end gap-3"
         data-testid="modal-button-container"
       >
         <Button
