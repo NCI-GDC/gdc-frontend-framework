@@ -100,6 +100,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                         disabled={!currentCohort.modified}
                         aria-label="Discard cohort changes"
                         variant="action"
+                        className="rounded-none rounded-l-md"
                       >
                         <UndoIcon aria-hidden="true" />
                       </Button>
