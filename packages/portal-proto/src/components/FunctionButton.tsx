@@ -20,7 +20,7 @@ interface FunctionButtonProps extends ButtonProps {
   multilineTooltip?: boolean;
   isActive?: boolean;
   isDownload?: boolean;
-  fromFileView?: boolean;
+  disableResponsiveIcon?: boolean;
   showDownloadIcon?: boolean;
   loaderSize?: number;
   downloadIconSize?: number;
@@ -74,7 +74,7 @@ const FunctionButton = forwardRef<HTMLButtonElement, FunctionButtonProps>(
       multilineTooltip = false,
       isActive = false,
       isDownload = false,
-      fromFileView = false,
+      disableResponsiveIcon = false,
       showDownloadIcon = false,
       loaderSize = 16,
       downloadIconSize = 16,
@@ -103,7 +103,9 @@ const FunctionButton = forwardRef<HTMLButtonElement, FunctionButtonProps>(
           <DownloadIcon
             size={downloadIconSize}
             aria-label="download"
-            className={`${!fromFileView ? "hidden xl:block" : "block"}`}
+            className={`${
+              !disableResponsiveIcon ? "hidden xl:block" : "block"
+            }`}
           />
         );
       }
@@ -115,7 +117,9 @@ const FunctionButton = forwardRef<HTMLButtonElement, FunctionButtonProps>(
         ref={ref}
         leftSection={getLeftSection()}
         classNames={{
-          section: `mr-0 ${isActive || fromFileView ? "mr-2" : "xl:mr-2"}`,
+          section: `mr-0 ${
+            isActive || disableResponsiveIcon ? "mr-2" : "xl:mr-2"
+          }`,
           ...props.classNames,
         }}
         {...props}
