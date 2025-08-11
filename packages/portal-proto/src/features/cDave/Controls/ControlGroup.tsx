@@ -153,7 +153,7 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
           </div>
         ) : (
           <div
-            className="p-4 font-content"
+            className="p-4 font-content text-sm"
             data-testid={`no-data-message-${name
               .toLowerCase()
               .replaceAll(" ", "-")}`}
