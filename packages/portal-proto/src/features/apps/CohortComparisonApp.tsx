@@ -122,8 +122,10 @@ const CohortComparisonApp: React.FC = () => {
   useDeepCompareEffect(() => {
     if (
       !isDemoMode &&
-      (!allCohortsIds.includes(prevPrimaryCohortId) ||
-        !allCohortsIds.includes(prevComparisonCohortId))
+      ((prevPrimaryCohortId !== undefined &&
+        !allCohortsIds.includes(prevPrimaryCohortId)) ||
+        (prevComparisonCohortId !== undefined &&
+          !allCohortsIds.includes(prevComparisonCohortId)))
     ) {
       setSelectionScreenOpen(true);
     }
