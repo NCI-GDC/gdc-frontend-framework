@@ -141,6 +141,7 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download, regressio
     |tobacco_use_per_day                    |
 
 ## Clinical Table - Download JSON: Exposure, Pathological Detail
+* Pause "3" seconds
 * Download "JSON" from "Case Summary Clinical Table"
 * Read from "JSON from Case Summary Clinical Table"
 * Verify that "JSON from Case Summary Clinical Table" has expected information

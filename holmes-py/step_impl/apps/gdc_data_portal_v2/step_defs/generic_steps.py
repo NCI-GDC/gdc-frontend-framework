@@ -1193,8 +1193,7 @@ def send_text_into_specified_table_search_bar(table_name: str, text: str):
     # So we have an abundance of waits.
     APP.shared.wait_for_loading_spinner_table_to_detatch()
     APP.shared.keyboard_press("Enter")
-    APP.shared.wait_for_loading_spinner_table_to_detatch()
-    APP.shared.wait_for_loading_spinner_to_detatch()
+    APP.shared.wait_for_loading_spinners_to_detach()
 
 
 @step("Search the table for <text>")
@@ -1208,8 +1207,7 @@ def send_text_into_table_search_bar(text: str):
     # So we have an abundance of waits.
     APP.shared.wait_for_loading_spinner_table_to_detatch()
     APP.shared.keyboard_press("Enter")
-    APP.shared.wait_for_loading_spinner_table_to_detatch()
-    APP.shared.wait_for_loading_spinner_to_detatch()
+    APP.shared.wait_for_loading_spinners_to_detach()
 
 
 @step("Quick search for <text> and go to its page")
