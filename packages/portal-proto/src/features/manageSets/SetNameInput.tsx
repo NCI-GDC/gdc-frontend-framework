@@ -45,7 +45,7 @@ const SetNameInput: React.FC<SetNameInputProps> = ({
     <>
       <div
         data-testid="text-set-name"
-        className={`flex flex-row gap-2 ${
+        className={`flex flex-row gap-2 whitespace-pre ${
           editing ? "items-start" : "items-center"
         }`}
       >

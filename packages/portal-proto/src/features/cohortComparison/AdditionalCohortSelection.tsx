@@ -79,7 +79,9 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
             data-testid="text-cohort-name-cohort-comparison"
             htmlFor={row.original.id}
             className={
-              !row.original.counts.caseCount ? "text-base-lighter" : undefined
+              !row.original.counts.caseCount
+                ? "text-base-lighter whitespace-pre"
+                : "whitespace-pre"
             }
           >
             {row.original.name}
