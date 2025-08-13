@@ -17,6 +17,7 @@ import OncoMatrixIcon from "public/user-flow/icons/apps/OncoMatrix.svg";
 import GeneExpressionIcon from "public/user-flow/icons/apps/GeneExpression.svg";
 import ScRNASeqIcon from "public/user-flow/icons/apps/scRNASeq.svg";
 import CopyNumberSegmentIcon from "public/user-flow/icons/apps/CopyNumberSegment.svg";
+import CorrelationPlotIcon from "public/user-flow/icons/apps/CorrelationPlot.svg";
 import { useLazyScRNAseqCaseCountQuery } from "../../proteinpaint/scRNAseqCaseCount";
 import { useLazyCnvSegmentCaseCountQuery } from "../../proteinpaint/CnvSegmentCaseCount";
 import { CountHookRegistry } from "@gff/core";
@@ -298,7 +299,7 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
   {
     name: "Correlation Plot",
     icon: (
-      <CopyNumberSegmentIcon
+      <CorrelationPlotIcon
         height={48}
         width={80}
         style={{ margin: "0" }}
@@ -306,7 +307,7 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
       />
     ),
     tags: ["variantAnalysis"],
-    hasDemo: true,
+    //hasDemo: true,
     description:
       "Visualize correlations between clinical and genomic variables.",
     id: "Correlation",
