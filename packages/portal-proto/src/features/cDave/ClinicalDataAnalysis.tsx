@@ -8,7 +8,7 @@ import {
   selectCurrentCohortFilters,
 } from "@gff/core";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
-import Controls from "./Controls";
+import Controls from "./Controls/Controls";
 import Dashboard from "./Dashboard";
 import { DEFAULT_FIELDS, DEMO_COHORT_FILTERS, FACET_SORT } from "./constants";
 import { filterUsefulFacets, parseFieldName } from "./utils";
