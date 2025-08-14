@@ -171,6 +171,8 @@ tags: gdc-data-portal-v2, regression, gene-summary
     |6.0546875                              |
     |CDDP_EAGLE-1                           |
     |TCGA-PAAD                              |
+    |project                                |
+    |affected_cases_percent                 |
 
 ## Cancer Distribution CNV Graph: JSON
 * Expand dropdown in graph "Cancer Distribution CNV"
@@ -187,12 +189,12 @@ tags: gdc-data-portal-v2, regression, gene-summary
 ## Cancer Distribution CNV Graph - Validate JSON File Fields
   |field_name                               |
   |-----------------------------------------|
-  |symbol			                              |
-  |amplification                            |
-  |gain                                     |
-  |heterozygous deletion                    |
-  |homozygous deletion                      |
-  |total                                    |
+  |project			                            |
+  |cnv_amplification_percent                |
+  |cnv_gain_percent                         |
+  |cnv_heterozygous_deletion_percent        |
+  |cnv_homozygous_deletion_percent          |
+  |num_cnv_cases_total                      |
 * Verify that the "JSON from Graph Dropdown" has <field_name> for each object
 
 ## Save New Cohort: SSM Affected Cases

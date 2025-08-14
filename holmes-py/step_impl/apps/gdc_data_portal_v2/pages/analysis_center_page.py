@@ -31,6 +31,9 @@ class AnalysisCenterLocators:
 
     ANALYSIS_CENTER_HEADER = '[data-testid="button-header-analysis"]'
 
+    COHORT_COMPARISON_SELECTION_SCREEN_WAIT_FOR_ELEMENT = (
+        '[data-testid="button-run-cohort-comparison"]'
+    )
     MUTATION_FREQUENCY_WAIT_FOR_ELEMENT = "[data-testid='button-mutations-tab']"
     CLINICAL_DATA_ANALYSIS_WAIT_FOR_ELEMENT = "[data-testid='Gender-card']"
 
@@ -71,7 +74,7 @@ class AnalysisCenterPage(BasePage):
         retry_counter = 0
         while ((self.get_text(locator) == " ") or (self.get_text(locator) == " Cases")):
             time.sleep(1)
-            retry_counter = retry_counter+1
+            retry_counter = retry_counter + 1
             if retry_counter >= 10:
                 break
         cases_count = self.get_text(locator)
@@ -146,6 +149,16 @@ class AnalysisCenterPage(BasePage):
                 self.wait_for_selector(
                     AnalysisCenterLocators.MUTATION_FREQUENCY_WAIT_FOR_ELEMENT, 30000
                 )
+
+        if page_to_load == "cohort comparison":
+            try:
+                self.wait_for_selector(
+                    AnalysisCenterLocators.COHORT_COMPARISON_SELECTION_SCREEN_WAIT_FOR_ELEMENT, 30000
+                )
+                self.wait_for_loading_spinner_to_detatch()
+            except:
+                self.wait_for_loading_spinner_to_detatch()
+
 
         if page_to_load == "cohort comparison demo":
             # Need to wait for loading spinners to be present, for them to disappear,

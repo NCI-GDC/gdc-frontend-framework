@@ -28,6 +28,7 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
 
 ## Clinical TSV
 * Navigate to "Cart" from "Header" "section"
+* Pause "3" seconds
 * Select "Clinical"
 * Download "TSV" from "Cart Header Dropdown"
 * Read file content from compressed "TSV from Cart Header Dropdown"

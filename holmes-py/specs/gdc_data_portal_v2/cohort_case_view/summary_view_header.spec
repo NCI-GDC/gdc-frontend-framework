@@ -66,6 +66,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
     |MATCH                                |
 
 ## Biospecimen - JSON
+* Pause "3" seconds
 * Download "JSON" from "Cohort Summary View Biospecimen"
 * Read from "JSON from Cohort Summary View Biospecimen"
 * Verify that "JSON from Cohort Summary View Biospecimen" has expected information
