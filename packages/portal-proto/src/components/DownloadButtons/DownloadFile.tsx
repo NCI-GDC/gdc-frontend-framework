@@ -72,6 +72,7 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
         setActive={setActive}
         active={active}
         displayVariant={displayVariant}
+        disableResponsiveIcon
       />
     );
   }
@@ -84,6 +85,7 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
       setActive={setActive}
       active={active}
       displayVariant={displayVariant}
+      disableResponsiveIcon
     />
   );
 };

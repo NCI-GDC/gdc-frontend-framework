@@ -52,6 +52,7 @@ interface DownloadButtonProps {
   toolTip?: string;
   multilineTooltip?: boolean;
   displayVariant?: FunctionButtonVariants;
+  disableResponsiveIcon?: boolean;
 }
 
 /**
@@ -106,6 +107,7 @@ export const DownloadButton = forwardRef<
       toolTip = "",
       multilineTooltip = false,
       displayVariant,
+      disableResponsiveIcon = false,
       ...buttonProps
     }: DownloadButtonProps,
     ref,
@@ -119,6 +121,7 @@ export const DownloadButton = forwardRef<
         ref={ref}
         isActive={active}
         isDownload
+        disableResponsiveIcon={disableResponsiveIcon}
         showDownloadIcon
         tooltip={tooltipContent}
         multilineTooltip={multilineTooltip}

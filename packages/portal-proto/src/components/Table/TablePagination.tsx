@@ -87,6 +87,7 @@ function TablePagination<TData>({
             <ShowingCount
               from={pagination?.from}
               label={pagination?.label}
+              customPluralLabel={pagination?.customPluralLabel}
               total={pagination?.total}
               dataLength={tableData?.length}
               status={status}
@@ -100,6 +101,7 @@ function TablePagination<TData>({
         <ShowingCount
           from={pagination?.from}
           label={pagination?.label}
+          customPluralLabel={pagination?.customPluralLabel}
           total={pagination?.total}
           dataLength={tableData?.length}
           status={status}
