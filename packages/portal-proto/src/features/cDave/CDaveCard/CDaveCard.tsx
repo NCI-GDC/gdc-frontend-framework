@@ -36,6 +36,7 @@ interface CDaveCardProps {
   readonly updateFields: (field: string) => void;
   readonly initialDashboardRender: boolean;
   readonly cohortFilters: GqlOperation;
+  readonly yTotal: number;
 }
 
 const CDaveCard: React.FC<CDaveCardProps> = ({
@@ -44,6 +45,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   updateFields,
   initialDashboardRender,
   cohortFilters,
+  yTotal,
 }: CDaveCardProps) => {
   const [chartType, setChartType] = useState<ChartTypes>("histogram");
   const [downloadInProgress, setDownloadInProgress] = useState(false);
@@ -201,6 +203,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
             noData={noData}
             cohortFilters={cohortFilters}
             dataDimension={dataDimension}
+            yTotal={yTotal}
           />
         ) : (
           <CategoricalData
@@ -209,6 +212,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
             fieldName={fieldName}
             chartType={chartType}
             noData={noData}
+            yTotal={yTotal}
           />
         )}
       </DownloadProgressContext.Provider>

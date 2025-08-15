@@ -45,6 +45,7 @@ describe("CDaveCard", () => {
         updateFields={jest.fn()}
         initialDashboardRender
         cohortFilters={undefined}
+        yTotal={1500}
       />,
     );
 
@@ -74,6 +75,7 @@ describe("CDaveCard", () => {
         updateFields={jest.fn()}
         initialDashboardRender
         cohortFilters={undefined}
+        yTotal={1000}
       />,
     );
 
@@ -102,6 +104,7 @@ describe("CDaveCard", () => {
         updateFields={jest.fn()}
         initialDashboardRender
         cohortFilters={undefined}
+        yTotal={1500}
       />,
     );
 
@@ -134,6 +137,7 @@ describe("CDaveCard", () => {
         updateFields={jest.fn()}
         initialDashboardRender
         cohortFilters={undefined}
+        yTotal={1500}
       />,
     );
 
@@ -166,6 +170,7 @@ describe("CDaveCard", () => {
         updateFields={jest.fn()}
         initialDashboardRender
         cohortFilters={undefined}
+        yTotal={100}
       />,
     );
 
@@ -206,6 +211,7 @@ describe("CDaveCard", () => {
         updateFields={jest.fn()}
         initialDashboardRender
         cohortFilters={undefined}
+        yTotal={38}
       />,
     );
 
@@ -244,6 +250,7 @@ describe("CDaveCard", () => {
         updateFields={jest.fn()}
         initialDashboardRender
         cohortFilters={undefined}
+        yTotal={38}
       />,
     );
 
@@ -287,9 +294,51 @@ describe("CDaveCard", () => {
         updateFields={jest.fn()}
         initialDashboardRender
         cohortFilters={undefined}
+        yTotal={0}
       />,
     );
 
     expect(getByText("No data for this property")).toBeInTheDocument();
+  });
+
+  it("continuous result with total over 100%", () => {
+    jest.mocked(selectFacetDefinitionByName).mockImplementation(
+      () =>
+        ({
+          field: "exposures.cigarettes_per_day",
+          type: "long",
+        } as any),
+    );
+    jest.spyOn(facetHooks, "useRangeFacet").mockReturnValue({
+      data: { "0.0-12.0": 20, "12.0-24.0": 90 },
+      isFetching: false,
+      isSuccess: true,
+    } as any);
+    jest.mocked(useGetContinuousDataStatsQuery).mockReturnValue({
+      isFetching: false,
+      isSuccess: true,
+    } as any);
+
+    const { getByRole } = render(
+      <CDaveCard
+        data={{ stats: { count: 100 } } as any}
+        field={"exposures.cigarettes_per_day"}
+        updateFields={jest.fn()}
+        initialDashboardRender
+        cohortFilters={undefined}
+        yTotal={100}
+      />,
+    );
+
+    expect(
+      getByRole("row", {
+        name: "Select 0 to <12 0 to <12 20 (20.00%)",
+      }),
+    ).toBeInTheDocument();
+    expect(
+      getByRole("row", {
+        name: "Select 12 to <24 12 to <24 90 (90.00%)",
+      }),
+    ).toBeInTheDocument();
   });
 });

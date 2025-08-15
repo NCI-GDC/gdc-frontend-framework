@@ -50,15 +50,13 @@ const ClinicalDataAnalysis: React.FC = () => {
     [cDaveFields],
   );
 
-  const {
-    data: cDaveResult,
-    isFetching,
-    isSuccess,
-  } = useGetClinicalAnalysisQuery({
+  const { data, isFetching, isSuccess } = useGetClinicalAnalysisQuery({
     case_filters: cohortFilters,
     facets,
     size: 0,
   });
+
+  const cDaveResult = data?.data || {};
 
   const updateFields = useDeepCompareCallback(
     (field: string) => {
@@ -103,6 +101,7 @@ const ClinicalDataAnalysis: React.FC = () => {
             cohortFilters={cohortFilters}
             results={cDaveResult}
             updateFields={updateFields}
+            yTotal={data.total}
           />
         )}
       </div>

@@ -15,8 +15,15 @@ export const clinicalAnalysisApiSlice = endpointSlice.injectEndpoints({
         endpoint: "cases",
         fetchAll: false,
       }),
-      transformResponse: (response: GdcApiResponse<ProjectDefaults>) => {
-        if (response.data.aggregations) return response.data.aggregations;
+      transformResponse: (
+        response: GdcApiResponse<{ data: ProjectDefaults; total: number }>,
+      ) => {
+        if (response.data.aggregations) {
+          return {
+            data: response.data.aggregations,
+            total: response.data.pagination.total,
+          };
+        }
         return {};
       },
     }),
