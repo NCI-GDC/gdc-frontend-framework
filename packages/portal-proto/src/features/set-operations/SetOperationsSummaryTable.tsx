@@ -59,7 +59,7 @@ export const SetOperationsSummaryTable = ({
         id: "name",
         header: "Name",
         enableSorting: false,
-        cell: ({ getValue, row }) => (
+        cell: ({ getValue }) => (
           <span className="whitespace-pre">{getValue()}</span>
         ),
       }),
