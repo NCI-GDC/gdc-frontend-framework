@@ -156,7 +156,8 @@ const AssociatedCB = ({
         size,
         from,
         total,
-        label: "associated cases/biospecimen",
+        label: "associated case/biospecimen",
+        customPluralLabel: "associated cases/biospecimens",
       }}
       search={{
         enabled: true,

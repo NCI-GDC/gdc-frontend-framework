@@ -50,11 +50,14 @@ const ClinicalDataAnalysis: React.FC = () => {
     [cDaveFields],
   );
 
-  const { data, isFetching, isSuccess } = useGetClinicalAnalysisQuery({
-    case_filters: cohortFilters,
-    facets,
-    size: 0,
-  });
+  const { data, isFetching, isSuccess } = useGetClinicalAnalysisQuery(
+    {
+      case_filters: cohortFilters,
+      facets,
+      size: 0,
+    },
+    { skip: facets.length === 0 },
+  );
 
   const cDaveResult = data?.data || {};
 

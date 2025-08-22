@@ -94,6 +94,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
 * Select Custom Filter "Mutated Genes" in Cohort Case View
 * Upload "Gene List" "txt" from "Cohort Case View" in "Cohort Filter Import" through "Browse"
 * Is text "10 submitted gene identifiers mapped to 10 unique GDC genes" present on the page
+* Pause "2" seconds
 * Select "Submit"
 * Pause "2" seconds
 * Wait for loading spinners to disappear
