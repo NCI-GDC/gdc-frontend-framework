@@ -19,6 +19,7 @@ interface DashboardProps {
   readonly activeFields: string[];
   readonly results: Record<string, Buckets | Stats>;
   readonly updateFields: (field: string) => void;
+  readonly yTotal: number;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({
@@ -26,6 +27,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   activeFields,
   results,
   updateFields,
+  yTotal,
 }: DashboardProps) => {
   const initialDashboardRender = useRef(true);
   const lastDashboardRender = usePrevious(initialDashboardRender);
@@ -79,6 +81,7 @@ const Dashboard: React.FC<DashboardProps> = ({
               updateFields={updateFields}
               initialDashboardRender={initialDashboardRender.current}
               cohortFilters={cohortFilters}
+              yTotal={yTotal}
             />
           </Grid.Col>
         );
