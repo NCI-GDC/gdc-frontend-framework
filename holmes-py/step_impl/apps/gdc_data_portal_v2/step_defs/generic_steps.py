@@ -34,6 +34,7 @@ def navigate_to_app():
     print("first setup execution - 2")
     print("first setup execution - 3")
     APP.modal.accept_warning()
+    time.sleep(2)
 
 
 @before_suite
@@ -73,7 +74,7 @@ def setup_test_run():
     print("setup execution - 9")
     print("is add button enabled:")
     print(APP.shared.is_enabled(locator))
-    time.sleep(2)
+    time.sleep(3)
 
 
 @before_spec("<controlled-access>")
