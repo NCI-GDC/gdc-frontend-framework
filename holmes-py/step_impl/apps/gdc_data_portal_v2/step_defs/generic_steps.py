@@ -34,7 +34,7 @@ def navigate_to_app():
     print("first setup execution - 2")
     print("first setup execution - 3")
     APP.modal.accept_warning()
-    time.sleep(2)
+    time.sleep(5)
 
 
 @before_suite
