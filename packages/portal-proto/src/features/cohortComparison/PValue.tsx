@@ -40,7 +40,8 @@ const PValue: React.FC<PValueProps> = ({ data }: PValueProps) => {
   const { data: pValue, isSuccess } = usePValueQuery(values, {
     skip:
       pValueBuckets.length === 0 ||
-      !pValueBuckets.every((bucket) => bucket.length === 2),
+      !pValueBuckets.every((bucket) => bucket.length === 2) ||
+      values.some((bucket) => bucket.every((count) => count === undefined)),
   });
 
   if (pValue) {

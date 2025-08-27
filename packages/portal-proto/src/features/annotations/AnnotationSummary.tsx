@@ -7,7 +7,7 @@ import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import { HorizontalTable } from "@/components/HorizontalTable";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
-import { HiOutlinePencilSquare } from "react-icons/hi2";
+import { PencilSquareIcon } from "@/utils/icons";
 
 interface AnnotationSummaryProps {
   readonly annotationId: string;
@@ -51,6 +51,7 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
       if (annotation?.entity_type === "case") {
         return (
           <Link
+            data-testid="link-entity-annotation-summary"
             href={`/cases/${annotation?.entity_id}`}
             className="underline text-utility-link"
           >
@@ -62,6 +63,7 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
         if (entityType === "File") {
           return (
             <Link
+              data-testid="link-entity-annotation-summary"
               href={`/files/${annotation?.entity_id}`}
               className="underline text-utility-link"
             >
@@ -71,6 +73,7 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
         } else {
           return (
             <Link
+              data-testid="link-entity-annotation-summary"
               href={`/cases/${annotation?.case_id}?bioId=${annotation?.entity_id}`}
               className="underline text-utility-link"
             >
@@ -100,6 +103,7 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
               annotation.case_id
             ) : (
               <Link
+                data-testid="link-case-annotation-summary"
                 href={`/cases/${annotation.case_id}`}
                 className="underline text-utility-link"
                 key={`case_link_${annotation.case_id}`}
@@ -127,6 +131,7 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
         values: [
           annotation?.project?.project_id ? (
             <Link
+              data-testid="link-project-annotation-summary"
               href={`/projects/${annotation?.project?.project_id}`}
               className="underline text-utility-link"
               key={`project_link_${annotation?.project?.project_id}`}
@@ -159,21 +164,27 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
   ) : (
     <>
       <SummaryHeader
-        Icon={HiOutlinePencilSquare}
+        Icon={PencilSquareIcon}
         headerTitleLeft="Annotation"
         headerTitle={annotationId}
       />
-      <div className="mx-4 mt-24 mb-4">
+      <div className="flex flex-col gap-2 mx-4 mt-6 mb-4">
         <HeaderTitle>Summary</HeaderTitle>
         <div
           data-testid="table-summary-annotation-summary"
           className="flex mb-8"
         >
           <div className="basis-1/2">
-            <HorizontalTable tableData={idTableData} />
+            <HorizontalTable
+              customDataTestID="table-left-summary-annotation-summary"
+              tableData={idTableData}
+            />
           </div>
           <div className="basis-1/2">
-            <HorizontalTable tableData={tableData} />
+            <HorizontalTable
+              customDataTestID="table-right-summary-annotation-summary"
+              tableData={tableData}
+            />
           </div>
         </div>
         <HeaderTitle>Notes</HeaderTitle>

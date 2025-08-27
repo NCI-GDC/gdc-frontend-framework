@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { UseMutation } from "@reduxjs/toolkit/dist/query/react/buildHooks";
-import { ActionIcon, Loader, Tooltip } from "@mantine/core";
-import { FiDownload as DownloadIcon } from "react-icons/fi";
-import { MutationDefinition } from "@reduxjs/toolkit/query";
+import { ActionIcon, Loader, Tooltip, Modal } from "@mantine/core";
 import { SetOperationEntityType } from "@/features/set-operations/types";
-import { CreateSetFilterArgs, GqlOperation, useCoreDispatch } from "@gff/core";
+import {
+  useCreateCaseSetFromFiltersMutation,
+  useCreateGeneSetFromFiltersMutation,
+  useCreateSsmsSetFromFiltersMutation,
+  GqlOperation,
+  useCoreDispatch,
+} from "@gff/core";
 import download from "@/utils/download";
-import { convertDateToString } from "@/utils/date";
+import { getFormattedTimestamp } from "@/utils/date";
+import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
+import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
+import { DownloadIcon } from "@/utils/icons";
 
 const ENTITY_TYPE_TO_TAR = {
   mutations: "ssm",
@@ -15,9 +21,10 @@ const ENTITY_TYPE_TO_TAR = {
 };
 
 interface DownloadButtonProps {
-  readonly createSetHook: UseMutation<
-    MutationDefinition<CreateSetFilterArgs, any, any, any>
-  >;
+  readonly createSetHook:
+    | typeof useCreateCaseSetFromFiltersMutation
+    | typeof useCreateGeneSetFromFiltersMutation
+    | typeof useCreateSsmsSetFromFiltersMutation;
   readonly entityType: SetOperationEntityType;
   readonly filters: GqlOperation;
   readonly setKey: string;
@@ -33,6 +40,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
 }: DownloadButtonProps) => {
   const [loading, setLoading] = useState(false);
   const [createSet, response] = createSetHook();
+  const [showErrorModal, setShowErrorModal] = useState(false);
   const dispatch = useCoreDispatch();
 
   useEffect(() => {
@@ -55,9 +63,10 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
               type: ENTITY_TYPE_TO_TAR[entityType],
               filename: `${setKey
                 .replace(/∩/g, "intersection")
-                .replace(/∪/g, "union")}-set-ids.${convertDateToString(
-                new Date(),
-              )}.tsv`,
+                .replace(
+                  /∪/g,
+                  "union",
+                )}-set-ids.${getFormattedTimestamp()}.tsv`,
             },
           ],
         },
@@ -66,34 +75,61 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
         dispatch,
         hideNotification: true,
       });
+    } else if (response.isError) {
+      setShowErrorModal(true);
     }
-  }, [dispatch, entityType, response.data, response.isSuccess, setKey]);
+  }, [
+    dispatch,
+    entityType,
+    response.data,
+    response.isSuccess,
+    response.isError,
+    setKey,
+  ]);
 
   return (
-    <Tooltip
-      label={disabled ? "No items to export" : "Export as TSV"}
-      withArrow
-    >
-      <div className="w-fit">
-        <ActionIcon
-          data-testid="button-download-tsv-set-operations"
-          onClick={() =>
-            createSet({ filters, set_type: "instant", intent: "portal" })
-          }
-          color="primary"
-          variant="outline"
-          className={`${
-            disabled
-              ? "bg-base-lighter"
-              : "bg-base-max hover:bg-primary hover:text-base-max"
-          }`}
-          disabled={disabled}
-          aria-label="download TSV"
-        >
-          {loading ? <Loader size={14} /> : <DownloadIcon aria-hidden="true" />}
-        </ActionIcon>
-      </div>
-    </Tooltip>
+    <>
+      <Modal
+        opened={showErrorModal}
+        onClose={() => setShowErrorModal(false)}
+        title="Export Set Error"
+      >
+        <p className="py-2 px-4">There was a problem exporting the set.</p>
+        <ModalButtonContainer data-testid="modal-button-container">
+          <DarkFunctionButton onClick={() => setShowErrorModal(false)}>
+            OK
+          </DarkFunctionButton>
+        </ModalButtonContainer>
+      </Modal>
+      <Tooltip
+        label={disabled ? "No items to export" : "Export as TSV"}
+        withArrow
+      >
+        <div className="w-fit">
+          <ActionIcon
+            data-testid="button-download-tsv-set-operations"
+            onClick={() =>
+              createSet({ filters, set_type: "instant", intent: "portal" })
+            }
+            color="primary"
+            variant="outline"
+            className={`${
+              disabled
+                ? "bg-base-lighter"
+                : "bg-base-max hover:bg-primary hover:text-base-max"
+            }`}
+            disabled={disabled}
+            aria-label="download TSV"
+          >
+            {loading ? (
+              <Loader size={14} />
+            ) : (
+              <DownloadIcon aria-hidden="true" />
+            )}
+          </ActionIcon>
+        </div>
+      </Tooltip>
+    </>
   );
 };
 

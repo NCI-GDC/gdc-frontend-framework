@@ -13,6 +13,7 @@ tags: gdc-data-portal-v2, regression, home-page, cohort-bar
 ## Create Cohort Using Label
 * Select the "Label" "Liver" on the Body Plot Graph
 * Is text "Explore this Liver cohort in the Analysis Center?" present on the page
+* Pause "2" seconds
 * Select "Yes"
 * Is modal with text "Liver has been created. This is now your current cohort." present on the page and "Remove Modal"
 * Wait for cohort bar case count loading spinner
@@ -20,7 +21,6 @@ tags: gdc-data-portal-v2, regression, home-page, cohort-bar
   |facet_name               |selections                         |position in filter area  |
   |-------------------------|-----------------------------------|-------------------------|
   |Primary Site             |liver and intrahepatic bile ducts  |1                        |
-  |Tissue or Organ of Origin|intrahepatic bile ductliver        |2                        |
 
 ## Replace Previous Unsaved Cohort and Save the Cohort
 * Navigate to "Home" from "Header" "section"
@@ -33,7 +33,6 @@ tags: gdc-data-portal-v2, regression, home-page, cohort-bar
   |facet_name               |selections                         |position in filter area  |
   |-------------------------|-----------------------------------|-------------------------|
   |Primary Site             |Kidney                             |1                        |
-  |Tissue or Organ of Origin|kidney, nos                        |2                        |
 * Select "Save" from the Cohort Bar
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
@@ -50,7 +49,6 @@ tags: gdc-data-portal-v2, regression, home-page, cohort-bar
   |facet_name               |selections                                                       |position in filter area  |
   |-------------------------|-----------------------------------------------------------------|-------------------------|
   |Primary Site             |adrenal gland                                                    |1                        |
-  |Tissue or Organ of Origin|adrenal gland, noscortex of adrenal glandmedulla of adrenal gland|2                        |
 * Select "Delete" from the Cohort Bar
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|

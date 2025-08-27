@@ -1,7 +1,11 @@
 import tw from "tailwind-styled-components";
-import { Button } from "@mantine/core";
+import { Button, ButtonProps } from "@mantine/core";
 
-export default tw(Button)`
+interface DarkFunctionButtonProps extends ButtonProps {
+  onClick?: () => void;
+}
+
+export default tw(Button)<DarkFunctionButtonProps>`
 flex
 flex-row
 items-center

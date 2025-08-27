@@ -1,13 +1,14 @@
 import { useMemo } from "react";
 import { useGetHistoryQuery } from "@gff/core";
 import saveAs from "file-saver";
-import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import { createColumnHelper } from "@tanstack/react-table";
+import TotalItems from "@/components/Table/TotalItem";
 import { statusBooleansToDataStatus } from "@/utils/index";
 import { useDeepCompareMemo } from "use-deep-compare";
+import { DownloadIcon } from "@/utils/icons";
 
 type FileVersionsDataType = {
   version: string;
@@ -113,9 +114,9 @@ const FileVersions = ({ file_id }: { file_id: string }): JSX.Element => {
   return (
     <>
       {fileHistory && (
-        <div className="mt-14 mb-16">
-          <HeaderTitle>File Versions</HeaderTitle>
+        <div className="flex flex-col gap-2 my-8">
           <VerticalTable
+            tableTitle={<HeaderTitle>File Versions</HeaderTitle>}
             customDataTestID="table-file-versions-file-summary"
             additionalControls={
               <div className="mb-2">
@@ -136,10 +137,14 @@ const FileVersions = ({ file_id }: { file_id: string }): JSX.Element => {
                   LeftSection={
                     <DownloadIcon size="1rem" aria-label="download" />
                   }
+                  closeOnItemClick={false}
                 />
               </div>
             }
             data={tableData}
+            tableTotalDetail={
+              <TotalItems total={tableData?.length} itemName="version" />
+            }
             columns={readGroupsColumns}
             status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
           />

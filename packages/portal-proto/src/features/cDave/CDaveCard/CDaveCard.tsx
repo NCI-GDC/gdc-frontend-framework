@@ -1,12 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, ActionIcon, Tooltip, SegmentedControlItem } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
-import {
-  MdBarChart as BarChartIcon,
-  MdTrendingDown as SurvivalChartIcon,
-  MdOutlineClose as CloseIcon,
-} from "react-icons/md";
-import { AiTwotoneBoxPlot as BoxPlotIcon } from "react-icons/ai";
 import {
   useCoreSelector,
   selectFacetDefinitionByName,
@@ -14,8 +8,11 @@ import {
   Stats,
   GqlOperation,
 } from "@gff/core";
-import SegmentedControl from "@/components/SegmentedControl";
-import { DownloadProgressContext } from "@/utils/contexts";
+import {
+  DownloadProgressContext,
+  DownloadType,
+  SegmentedControl,
+} from "@gff/portal-components";
 import ContinuousData from "./ContinuousData";
 import CategoricalData from "./CategoricalData";
 import { ChartTypes, DataDimension } from "../types";
@@ -26,6 +23,12 @@ import {
   MISSING_KEY,
 } from "../constants";
 import { toDisplayName, useDataDimension } from "../utils";
+import {
+  BarChartIcon,
+  BoxPlotIcon,
+  CloseIcon,
+  SurvivalChartIcon,
+} from "@/utils/icons";
 
 interface CDaveCardProps {
   readonly field: string;
@@ -33,6 +36,7 @@ interface CDaveCardProps {
   readonly updateFields: (field: string) => void;
   readonly initialDashboardRender: boolean;
   readonly cohortFilters: GqlOperation;
+  readonly yTotal: number;
 }
 
 const CDaveCard: React.FC<CDaveCardProps> = ({
@@ -41,10 +45,12 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   updateFields,
   initialDashboardRender,
   cohortFilters,
+  yTotal,
 }: CDaveCardProps) => {
   const [chartType, setChartType] = useState<ChartTypes>("histogram");
   const [downloadInProgress, setDownloadInProgress] = useState(false);
-  const { scrollIntoView, targetRef } = useScrollIntoView();
+  const [downloadType, setDownloadType] = useState<DownloadType>(null);
+  const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>();
   const displayDataDimension = useDataDimension(field);
   const facet = useCoreSelector((state) =>
     selectFacetDefinitionByName(state, `cases.${field}`),
@@ -71,12 +77,20 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const setDownloadProgress = useCallback(
+    (inProgress: boolean, type: DownloadType) => {
+      setDownloadInProgress(inProgress);
+      setDownloadType(type);
+    },
+    [],
+  );
+
   const chartButtons: SegmentedControlItem[] = [
     {
       value: "histogram",
       label: (
         <Tooltip
-          label={"Histogram"}
+          label="Histogram"
           position="bottom-end"
           withArrow
           arrowSize={7}
@@ -97,7 +111,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
         <Tooltip label={"Survival Plot"} withArrow arrowSize={7}>
           <div
             data-testid="button-survival-plot"
-            role={"button"}
+            role="button"
             aria-label={`Select ${fieldName} survival plot`}
           >
             <SurvivalChartIcon size={20} aria-hidden="true" />
@@ -127,11 +141,10 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   return (
     <Card
       data-testid={`${fieldName}-card`}
-      shadow="sm"
-      radius="md"
-      p="xs"
-      ref={(ref) => (targetRef.current = ref)}
-      className="border-1 border-base-lightest h-full flex flex-col"
+      padding="md"
+      radius={0}
+      ref={targetRef}
+      className="border-1 border-base-lighter h-full flex flex-col"
     >
       <div className="flex justify-between mb-1">
         <h2 className="font-heading font-medium">{fieldName}</h2>
@@ -144,12 +157,14 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
               ]}
               onChange={(d) => setDataDimension(d as DataDimension)}
               disabled={noData || downloadInProgress}
+              padding={1}
             />
           )}
           <SegmentedControl
             data={chartButtons}
             onChange={(c) => setChartType(c as ChartTypes)}
             disabled={noData || downloadInProgress}
+            padding={1}
           />
           <Tooltip
             label="Remove Card"
@@ -163,13 +178,17 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
               className="border-primary text-primary-content"
               aria-label={`Remove ${fieldName} card`}
             >
-              <CloseIcon className="text-primary" aria-hidden="true" />
+              <CloseIcon
+                className="text-primary"
+                aria-hidden="true"
+                size="1rem"
+              />
             </ActionIcon>
           </Tooltip>
         </div>
       </div>
       <DownloadProgressContext.Provider
-        value={{ downloadInProgress, setDownloadInProgress }}
+        value={{ downloadInProgress, downloadType, setDownloadProgress }}
       >
         {noData ? (
           <div className="h-[32.1rem] w-full flex flex-col justify-start">
@@ -184,6 +203,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
             noData={noData}
             cohortFilters={cohortFilters}
             dataDimension={dataDimension}
+            yTotal={yTotal}
           />
         ) : (
           <CategoricalData
@@ -192,6 +212,7 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
             fieldName={fieldName}
             chartType={chartType}
             noData={noData}
+            yTotal={yTotal}
           />
         )}
       </DownloadProgressContext.Provider>

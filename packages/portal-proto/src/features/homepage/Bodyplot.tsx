@@ -82,21 +82,18 @@ const SCALE_CASE_COUNT = 1000;
 interface PopupContentProps {
   label: string | number;
   caseCount: string | number;
-  fileCount: string | number;
-  setSize: (_1: number[]) => void;
+  setSize: (sizeArray: number[]) => void;
 }
 
 /**
  * PopupContent is the content that appears when a user hovers over a body part
  * @param label - the name of the body part
  * @param caseCount - the number of cases that have data for this body part
- * @param fileCount - the number of files that have data for this body part
  * @param setSize - a function that sets the size of the popup
  */
 const PopupContent = ({
   label,
   caseCount,
-  fileCount,
   setSize,
 }: PopupContentProps): JSX.Element => {
   // get the size of the content, so we can position the popup
@@ -121,9 +118,6 @@ const PopupContent = ({
       </Text>
       <div className="flex flex-row">
         <Text size="sm">{caseCount.toLocaleString()} cases </Text>
-        <Text size="sm" className="pl-1">
-          ({fileCount.toLocaleString()} files)
-        </Text>
       </div>
     </div>
   );
@@ -138,11 +132,6 @@ const buildBodyplotFilter = (data: BodyplotDataElement): FilterSet => {
         operator: "includes",
         field: "cases.primary_site",
         operands: [...toLowerCaseAll(data.byPrimarySite)],
-      },
-      "cases.diagnoses.tissue_or_organ_of_origin": {
-        operator: "includes",
-        field: "cases.diagnoses.tissue_or_organ_of_origin",
-        operands: [...toLowerCaseAll(data.byTissueOrOrganOfOrigin)],
       },
     },
   };
@@ -250,7 +239,7 @@ export const Bodyplot = (): JSX.Element => {
         ariaLabel: (d) =>
           `${d?.key}, ${(
             d?.caseCount * SCALE_CASE_COUNT
-          ).toLocaleString()} cases, ${d?.fileCount.toLocaleString()} files`,
+          ).toLocaleString()} cases`,
       });
     }
   }, [
@@ -290,7 +279,6 @@ export const Bodyplot = (): JSX.Element => {
             <PopupContent
               label={bodyplotTooltipContent?.key}
               caseCount={bodyplotTooltipContent?.caseCount * SCALE_CASE_COUNT}
-              fileCount={bodyplotTooltipContent?.fileCount}
               setSize={setExtents}
             />
           )}

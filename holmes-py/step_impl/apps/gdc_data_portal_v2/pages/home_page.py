@@ -63,4 +63,6 @@ class HomePage(BasePage):
         locator = HomePageLocators.BODY_PLOT_GRAPH_PRIMARY_SITE(
             label_or_bar_graph, primary_site
         )
+        # Clicking on bar graph can be finicky, but hovering over it first fixed the issue.
+        self.hover(locator)
         self.click(locator)

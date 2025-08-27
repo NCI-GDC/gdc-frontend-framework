@@ -1,17 +1,20 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
-import { MdRestartAlt as ResetIcon } from "react-icons/md";
-import { FiDownload as DownloadIcon } from "react-icons/fi";
-import { Box, Menu, Tooltip, Loader } from "@mantine/core";
-import { IoMdTrendingDown as SurvivalIcon } from "react-icons/io";
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+} from "react";
+import { Box, Menu, Tooltip, Loader, ActionIcon } from "@mantine/core";
 import isNumber from "lodash/isNumber";
 import { useMouse } from "@mantine/hooks";
 import saveAs from "file-saver";
+import { SummaryModalContext } from "src/utils/contexts";
 import {
-  SummaryModalContext,
+  DashboardDownloadContext,
   DownloadProgressContext,
-} from "src/utils/contexts";
-import { DashboardDownloadContext } from "@/utils/contexts";
-import { DownloadButton } from "@/components/tailwindComponents";
+  DownloadType,
+} from "@gff/portal-components";
 import OffscreenWrapper from "@/components/OffscreenWrapper";
 import {
   MINIMUM_CASES,
@@ -30,18 +33,21 @@ import {
 } from "./utils";
 import { handleDownloadPNG, handleDownloadSVG } from "../utils";
 import { DAYS_IN_YEAR } from "@gff/core";
+import { DownloadIcon, ResetIcon, SurvivalChartIcon } from "@/utils/icons";
 
 const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
   data,
   names = [],
   plotType = SurvivalPlotTypes.mutation,
   title = "Overall Survival Plot",
+  showTitleOnlyOnDownload = false,
   hideLegend = false,
   height = 380,
   field,
   downloadFileName = "survival-plot",
   tableTooltip = false,
   noDataMessage = "",
+  isLoading,
 }: SurvivalPlotProps) => {
   // handle the current range of the xAxis: set to "undefined" to reset
   const [xDomain, setXDomain] = useState(undefined);
@@ -50,8 +56,8 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
   const { ref: mouseRef, x, y } = useMouse(); // for survival plot tooltip
   const downloadRef = useRef<HTMLDivElement | null>(null);
 
-  const pValue = data.overallStats.pValue;
-  const plotData = data.survivalData;
+  const pValue = data?.overallStats?.pValue;
+  const plotData = data?.survivalData ?? [];
 
   const hasEnoughData = [
     "gene",
@@ -116,13 +122,16 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
       break;
   }
 
-  const handleDownloadJSON = async () => {
+  const handleDownloadJSON = () => {
     const blob = new Blob(
       [
         JSON.stringify(
           plotData.map((element, index) => ({
             meta: { ...element.meta, label: `S${index + 1}` },
-            donors: element.donors,
+            donors: element.donors.map((donor) => ({
+              ...donor,
+              time: Math.round(donor.time * DAYS_IN_YEAR), // Converting to actual days from API
+            })),
           })),
           null,
           2,
@@ -134,7 +143,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
     saveAs(blob, `${downloadFileName}.json`);
   };
 
-  const handleDownloadTSV = async () => {
+  const handleDownloadTSV = () => {
     if (plotData.length === 0) {
       return;
     }
@@ -199,60 +208,71 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
     return () => dispatch({ type: "remove", payload: charts });
   }, [dispatch, downloadFileName]);
 
-  const { downloadInProgress, setDownloadInProgress } = useContext(
+  const { downloadInProgress, downloadType, setDownloadProgress } = useContext(
     DownloadProgressContext,
   );
+
   // handle errors
-  if (!(dataToUse.length > 0) && noDataMessage) {
+  if (!(dataToUse.length > 0) && !isLoading && noDataMessage) {
     return <div className="py-1">{noDataMessage}</div>;
   }
 
   return (
     <div className="flex flex-col">
-      <div className="flex w-100 items-center justify-center flex-wrap">
-        <div className="flex ml-auto text-montserrat text-lg">{title}</div>
+      <div className="flex items-center justify-center flex-wrap">
+        {!showTitleOnlyOnDownload && (
+          <div className="font-heading text-[1rem] font-medium">{title}</div>
+        )}
         <div className="flex items-center ml-auto gap-1">
           <Menu
             position="bottom-start"
             offset={1}
             transitionProps={{ duration: 0 }}
+            closeOnItemClick={false}
           >
             <Menu.Target>
               <Tooltip label="Download Survival Plot data or image">
-                <DownloadButton
-                  data-testid="button-download-survival-plot"
+                <ActionIcon
+                  data-testid="button-survival-plot-download"
                   aria-label="Download Survival Plot data or image"
+                  variant="outline"
                 >
-                  {downloadInProgress ? (
-                    <Loader size={16} />
-                  ) : (
-                    <DownloadIcon size="1.25em" aria-hidden="true" />
-                  )}
-                </DownloadButton>
+                  <DownloadIcon size="1rem" aria-hidden="true" />
+                </ActionIcon>
               </Tooltip>
             </Menu.Target>
-            <Menu.Dropdown data-testid="list-download-survival-plot-dropdown">
+            <Menu.Dropdown data-testid="dropdown-menu-options">
               <Menu.Item
                 onClick={async () => {
-                  setDownloadInProgress(true);
+                  setDownloadProgress(true, "svg");
                   await handleDownloadSVG(
                     downloadRef,
                     `${downloadFileName}.svg`,
                   );
-                  setDownloadInProgress(false);
+                  setDownloadProgress(false, null);
                 }}
+                leftSection={
+                  downloadInProgress && downloadType === "svg" ? (
+                    <Loader size={16} />
+                  ) : null
+                }
               >
                 SVG
               </Menu.Item>
               <Menu.Item
                 onClick={async () => {
-                  setDownloadInProgress(true);
+                  setDownloadProgress(true, "png");
                   await handleDownloadPNG(
                     downloadRef,
                     `${downloadFileName}.png`,
                   );
-                  setDownloadInProgress(false);
+                  setDownloadProgress(false, null);
                 }}
+                leftSection={
+                  downloadInProgress && downloadType === "png" ? (
+                    <Loader size={16} />
+                  ) : null
+                }
               >
                 PNG
               </Menu.Item>
@@ -261,41 +281,32 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
             </Menu.Dropdown>
           </Menu>
           <Tooltip label="Reset Survival Plot Zoom">
-            <DownloadButton
+            <ActionIcon
+              variant="outline"
               onClick={() => setXDomain(undefined)}
               data-testid="button-reset-survival-plot"
               aria-label="Reset Survival Plot Zoom"
             >
-              <ResetIcon size="1.15rem" aria-hidden="true"></ResetIcon>
-            </DownloadButton>
+              <ResetIcon size="1rem" aria-hidden="true" />
+            </ActionIcon>
           </Tooltip>
         </div>
       </div>
-      <div className="flex flex-col items-center ">
-        <div
-          className={
-            [
-              SurvivalPlotTypes.categorical,
-              SurvivalPlotTypes.continuous,
-            ].includes(plotType)
-              ? "flex flex-row flex-wrap justify-center"
-              : undefined
-          }
-        >
-          {!hideLegend &&
-            legend?.map((x, idx) => {
-              return (
-                <div
-                  data-testid="text-cases-with-survival-data"
-                  key={`${x.key}-${idx}`}
-                  className="px-2"
-                >
-                  {x.value}
-                </div>
-              );
-            })}
-        </div>
-        <div>
+      <div className="flex flex-col font-content-noto">
+        {!hideLegend &&
+          legend?.map((x, idx) => {
+            return (
+              <div
+                data-testid="text-cases-with-survival-data"
+                key={`${x.key}-${idx}`}
+                className="text-sm"
+              >
+                {x.value}
+              </div>
+            );
+          })}
+
+        <div className="mt-2">
           <Tooltip
             label={
               <div>
@@ -316,14 +327,16 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
         </div>
         {tableTooltip && (
           <div className="text-xs font-content">
-            Use the Survival buttons <SurvivalIcon className="inline-block" />{" "}
-            in the table below to change the survival plot
+            Use the Survival buttons{" "}
+            <SurvivalChartIcon className="inline-block" /> in the table below to
+            change the survival plot
           </div>
         )}
-        <div className="flex w-full justify-end text-xs mr-8 text-primary-content no-print font-content">
+        <div className="flex justify-end text-xs text-primary-content font-content">
           drag to zoom
         </div>
       </div>
+
       <div ref={mouseRef} className="relative">
         <Box
           className="w-36"
@@ -339,31 +352,20 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
         <div className="survival-plot" ref={container} />
       </div>
       <OffscreenWrapper>
-        <div className="w-[700px] h-[500px] pt-2" ref={downloadRef}>
-          <h2 className="font-montserrat text-center text-lg text-primary-content-dark">
-            {title}
-          </h2>
-          <div className="flex flex-col items-center font-montserrat">
-            <div
-              className={
-                [
-                  SurvivalPlotTypes.categorical,
-                  SurvivalPlotTypes.continuous,
-                ].includes(plotType)
-                  ? "flex flex-row flex-wrap justify-center"
-                  : undefined
-              }
-            >
-              {!hideLegend &&
-                legend?.map((x, idx) => {
-                  return (
-                    <div key={`${x.key}-${idx}`} className="px-2">
-                      {x.value}
-                    </div>
-                  );
-                })}
-            </div>
-            <div className="text-xs">
+        <div className="w-[700px] m-2" ref={downloadRef}>
+          <div className="flex flex-col items-center">
+            <div className="font-heading text-[1rem] font-medium">{title}</div>
+          </div>
+          <div className="flex flex-col font-content-noto">
+            {!hideLegend &&
+              legend?.map((x, idx) => {
+                return (
+                  <div key={`${x.key}-${idx}`} className="text-sm">
+                    {x.value}
+                  </div>
+                );
+              })}
+            <div className="text-xs font-content mt-2">
               {isNumber(pValue) &&
                 `Log-Rank Test P-Value = ${pValue.toExponential(2)}`}
             </div>
@@ -377,9 +379,19 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
 
 const SurvivalPlot = (props: SurvivalPlotProps) => {
   const [downloadInProgress, setDownloadInProgress] = useState(false);
+  const [downloadType, setDownloadType] = useState<DownloadType>(null);
+
+  const setDownloadProgress = useCallback(
+    (inProgress: boolean, type: DownloadType) => {
+      setDownloadInProgress(inProgress);
+      setDownloadType(type);
+    },
+    [],
+  );
+
   return (
     <DownloadProgressContext.Provider
-      value={{ downloadInProgress, setDownloadInProgress }}
+      value={{ downloadInProgress, downloadType, setDownloadProgress }}
     >
       <ExternalDownloadStateSurvivalPlot {...props} />
     </DownloadProgressContext.Provider>

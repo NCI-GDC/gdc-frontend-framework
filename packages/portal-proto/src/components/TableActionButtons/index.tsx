@@ -1,4 +1,5 @@
 import { addToCart, removeFromCart } from "@/features/cart/updateCart";
+import { CartIcon } from "@/utils/icons";
 import {
   useCoreSelector,
   selectCart,
@@ -7,7 +8,6 @@ import {
   GdcFile,
 } from "@gff/core";
 import { Button } from "@mantine/core";
-import { FaShoppingCart as CartIcon } from "react-icons/fa";
 import { DownloadFile } from "../DownloadButtons";
 
 export const TableActionButtons = ({
@@ -34,9 +34,11 @@ export const TableActionButtons = ({
         } border border-primary rounded px-2 h-6 w-8
          hover:bg-primary hover:text-base-lightest`}
         onClick={() => {
-          isOutputFileInCart
-            ? removeFromCart(file, currentCart, dispatch)
-            : addToCart(file, currentCart, dispatch);
+          if (isOutputFileInCart) {
+            removeFromCart(file, currentCart, dispatch);
+          } else {
+            addToCart(file, currentCart, dispatch);
+          }
         }}
         data-testid="button-add-remove-cart"
       >
@@ -45,7 +47,6 @@ export const TableActionButtons = ({
       <DownloadFile
         customDataTestID="button-download-file"
         file={downloadFile}
-        showLoading={false}
         setfileToDownload={setFileToDownload}
         displayVariant="icon"
       />

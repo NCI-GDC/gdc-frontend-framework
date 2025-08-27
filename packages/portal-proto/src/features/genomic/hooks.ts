@@ -1,10 +1,5 @@
+import { useEffect, useMemo, useCallback } from "react";
 import {
-  ClearFacetFunction,
-  EnumFacetResponse,
-  UpdateFacetFilterFunction,
-} from "@/features/facets/types";
-import {
-  EnumOperandValue,
   FacetBuckets,
   fetchFacetByNameGQL,
   FilterSet,
@@ -26,11 +21,13 @@ import {
   useTopGeneQuery,
   useGetSsmTableDataMutation,
   GqlOperation,
+  buildSSMSTableSearchFilters,
+  showModal,
+  Modals,
 } from "@gff/core";
-import { useEffect, useMemo } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
 import isEqual from "lodash/isEqual";
-import { extractValue } from "@/features/facets/hooks";
+import { extractValue, useTotalCounts } from "@/features/facets/hooks";
 import { useAppDispatch, useAppSelector } from "@/features/genomic/appApi";
 import {
   updateGeneAndSSMFilter,
@@ -38,38 +35,57 @@ import {
   selectGeneAndSSMFilters,
   removeGeneAndSSMFilter,
   selectGeneAndSSMFiltersByNames,
+  clearGeneAndSSMFilters,
 } from "@/features/genomic/geneAndSSMFiltersSlice";
+import {
+  toggleFilter,
+  toggleAllFilters,
+  selectFilterExpanded,
+  selectAllFiltersCollapsed,
+} from "./geneAndSSMFilterExpandedSlice";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { overwritingDemoFilterMutationFrequency } from "@/features/genomic/GenesAndMutationFrequencyAnalysisTool";
 import { buildGeneHaveAndHaveNotFilters } from "@/features/genomic/utils";
 import { AppModeState, ComparativeSurvival } from "./types";
 import { humanify } from "@/utils/index";
 import { useDeepCompareMemo } from "use-deep-compare";
+import { appendSearchTermFilters } from "@/features/GenomicTables/utils";
+import FilterFacets from "@/features/genomic/filters.json";
 
 /**
  * Update Genomic Enum Facets filters. These are app local updates and are not added
  * to the current (global) cohort.
  */
-export const useUpdateGenomicEnumFacetFilter =
-  (): UpdateFacetFilterFunction => {
-    const dispatch = useAppDispatch();
-    // update the filter for this facet
-    return (field: string, operation: Operation) => {
-      dispatch(updateGeneAndSSMFilter({ field: field, operation: operation }));
-    };
+export const useUpdateGenomicEnumFacetFilter = () => {
+  const dispatch = useAppDispatch();
+  // update the filter for this facet
+  return (field: string, operation: Operation) => {
+    dispatch(updateGeneAndSSMFilter({ field: field, operation: operation }));
   };
+};
 
 /**
  * clears the genomic (local filters)
  */
-export const useClearGenomicFilters = (): ClearFacetFunction => {
+export const useClearGenomicFilters = () => {
   const dispatch = useAppDispatch();
   return (field: string) => {
     dispatch(removeGeneAndSSMFilter(field));
   };
 };
 
-export const useGenomicFilterByName = (field: string): OperandValue => {
+export const useClearAllGenomicFilters = () => {
+  const dispatch = useAppDispatch();
+  return useCallback(() => {
+    dispatch(clearGeneAndSSMFilters());
+  }, [dispatch]);
+};
+
+export const useGenomicFilterByName = (field: string) => {
+  return useAppSelector((state) => selectGeneAndSSMFiltersByName(state, field));
+};
+
+export const useGenomicFilterValueByName = (field: string): OperandValue => {
   const enumFilters: Operation = useAppSelector((state) =>
     selectGeneAndSSMFiltersByName(state, field),
   );
@@ -96,19 +112,42 @@ export const useGenomicFacetFilter = (): FilterSet => {
   return useAppSelector((state) => selectGeneAndSSMFilters(state));
 };
 
-export const useGenesFacetValues = (
-  docType: GQLDocType,
-  indexType: GQLIndexType,
-  field: string,
-): EnumFacetResponse => {
+export const useToggleExpandFilter = () => {
+  const dispatch = useAppDispatch();
+  return (field: string, expanded: boolean) => {
+    dispatch(toggleFilter({ field, expanded }));
+  };
+};
+
+export const useToggleAllFilters = () => {
+  const dispatch = useAppDispatch();
+  return (expanded: boolean) => {
+    dispatch(toggleAllFilters(expanded));
+  };
+};
+
+export const useFilterExpandedState = (field: string) => {
+  return useAppSelector((state) => selectFilterExpanded(state, field));
+};
+
+export const useAllFiltersCollapsed = () => {
+  return useAppSelector((state) => selectAllFiltersCollapsed(state));
+};
+
+export const useTotalGenomicCounts = ({ docType }: { docType: GQLDocType }) => {
+  return useTotalCounts({ docType });
+};
+
+export const useGenesFacetValues = (field: string) => {
   // facet data is store in core
+  const docType = FilterFacets.find((f) => f.field === field).queryOptions
+    .docType as GQLDocType;
   const facet: FacetBuckets = useCoreSelector((state) =>
     selectFacetByDocTypeAndField(state, docType, field),
   );
-  const enumValues = useGenomicFilterByName(field);
+
   return {
     data: facet?.buckets,
-    enumFilters: (enumValues as EnumOperandValue)?.map((x) => x.toString()),
     error: facet?.error,
     isUninitialized: facet === undefined,
     isFetching: facet?.status === "pending",
@@ -342,6 +381,12 @@ export const useTopGeneSsms = ({
       ) {
         return;
       }
+
+      if (name === undefined) {
+        setComparativeSurvival(undefined);
+        return;
+      }
+
       const { consequence_type, aa_change } = ssms;
       setComparativeSurvival({
         symbol: symbol,
@@ -375,6 +420,12 @@ export const useTopGeneSsms = ({
   useDeepCompareEffect(() => {
     const { geneId = "", geneSymbol = "" } = searchTermsForGene;
     if (searchTermsForGene && appMode === "ssms") {
+      const searchFilters = buildSSMSTableSearchFilters(geneId);
+      const tableFilters = appendSearchTermFilters(
+        genomicFilters,
+        searchFilters,
+      );
+
       getTopSSM({
         pageSize: 1,
         offset: 0,
@@ -382,7 +433,7 @@ export const useTopGeneSsms = ({
         geneSymbol: geneSymbol,
         genomicFilters: genomicFilters,
         cohortFilters: cohortFilters,
-        caseFilter: undefined,
+        tableFilters,
       });
     }
   }, [
@@ -420,4 +471,24 @@ export const useTopGeneSsms = ({
   ]);
 
   return ssmSearch ? topSSMSuccess : topGeneSSMSSuccess;
+};
+
+export const useOpenUploadModal = () => {
+  const coreDispatch = useCoreDispatch();
+
+  const openUploadModal = (field: string) => {
+    if (field === "genes.upload.gene_id") {
+      coreDispatch(showModal({ modal: Modals.LocalGeneSetModal }));
+    } else if (field === "ssms.upload.ssm_id") {
+      coreDispatch(showModal({ modal: Modals.LocalMutationSetModal }));
+    }
+  };
+
+  return openUploadModal;
+};
+
+export const useUploadFilterItems = (uploadField: string) => {
+  const field = uploadField.split(".upload").join("");
+  const items = useGenomicFilterValueByName(field);
+  return { items, noData: items === undefined };
 };

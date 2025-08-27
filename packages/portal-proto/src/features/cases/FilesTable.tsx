@@ -18,8 +18,8 @@ import {
   useCoreDispatch,
   useCoreSelector,
   useGetFilesQuery,
+  GqlOperation,
 } from "@gff/core";
-import { Loader, Tooltip } from "@mantine/core";
 import {
   ColumnDef,
   ColumnOrderState,
@@ -34,10 +34,11 @@ import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
 import { mapGdcFileToCartFile } from "../files/utils";
 import download from "@/utils/download";
 import { downloadTSV } from "@/components/Table/utils";
-import { convertDateToString } from "@/utils/date";
+import { getFormattedTimestamp } from "@/utils/date";
 import { AgreementModal } from "@/components/Modals/AgreementModal";
 import { NoAccessToProjectModal } from "@/components/Modals/NoAccessToProjectModal";
 import { GeneralErrorModal } from "@/components/Modals/GeneraErrorModal";
+import TotalItems from "@/components/Table/TotalItem";
 
 interface FilesTableProps {
   caseId: string;
@@ -67,7 +68,6 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
   ]);
   const [fileToDownload, setFileToDownload] = useState(null);
   const [downloadJSONActive, setDownloadJSONActive] = useState(false);
-  const [downloadTSVActive, setDownloadTSVActive] = useState(false);
   const [pageSize, setPageSize] = useState(10);
   const [activePage, setActivePage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
@@ -80,40 +80,42 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
     setSortBy(tempSortBy);
   };
 
+  const tableFilters: GqlOperation = {
+    op: "and",
+    content: [
+      {
+        op: "in",
+        content: {
+          field: "cases.case_id",
+          value: [caseId],
+        },
+      },
+      {
+        op: "or",
+        content: [
+          {
+            op: "=",
+            content: {
+              field: "files.file_id",
+              value: `*${searchTerm}*`,
+            },
+          },
+          {
+            op: "=",
+            content: {
+              field: "files.file_name",
+              value: `*${searchTerm}*`,
+            },
+          },
+        ],
+      },
+    ],
+  };
+
   const { data, isFetching, isSuccess, isError } = useGetFilesQuery({
     size: pageSize,
     from: pageSize * (activePage - 1),
-    filters: {
-      op: "and",
-      content: [
-        {
-          op: "in",
-          content: {
-            field: "cases.case_id",
-            value: [caseId],
-          },
-        },
-        {
-          op: "or",
-          content: [
-            {
-              op: "=",
-              content: {
-                field: "files.file_id",
-                value: `*${searchTerm}*`,
-              },
-            },
-            {
-              op: "=",
-              content: {
-                field: "files.file_name",
-                value: `*${searchTerm}*`,
-              },
-            },
-          ],
-        },
-      ],
-    },
+    filters: tableFilters,
     sortBy: sortBy,
   });
 
@@ -147,7 +149,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
           size: pageSize,
           total: data?.pagination?.total,
           sort: "None",
-          label: "files",
+          label: "file",
         }
       : {
           count: undefined,
@@ -156,6 +158,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
           pages: undefined,
           size: undefined,
           total: undefined,
+          label: undefined,
         };
   }, [pageSize, activePage, data?.pagination?.total, isSuccess]);
 
@@ -285,13 +288,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
       endpoint: "files",
       method: "POST",
       params: {
-        filters: {
-          op: "in",
-          content: {
-            field: "cases.case_id",
-            value: [caseId],
-          },
-        },
+        filters: tableFilters,
         size: 10000,
         attachment: true,
         format: "JSON",
@@ -316,12 +313,11 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
     });
   };
 
-  const handleDownloadTSV = () => {
-    setDownloadTSVActive(true);
-    downloadTSV({
+  const handleDownloadTSV = async () => {
+    await downloadTSV({
       tableData,
       columnOrder,
-      fileName: `files-table.${convertDateToString(new Date())}.tsv`,
+      fileName: `files-table.${getFormattedTimestamp()}.tsv`,
       columnVisibility,
       columns: caseFilesTableDefaultColumns,
       option: {
@@ -332,44 +328,38 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
           },
         },
       },
-    })
-      .then(() => {
-        setDownloadTSVActive(false);
-      })
-      .catch((error) => {
-        console.error("Error during download:", error);
-        setDownloadTSVActive(false);
-      });
+    });
   };
 
   return (
-    <>
+    <div className="flex flex-col gap-2">
       <HeaderTitle>Files</HeaderTitle>
       <VerticalTable
         customDataTestID="table-files-case-summary"
         data={tableData}
         columns={caseFilesTableDefaultColumns}
+        tableTotalDetail={
+          <TotalItems total={pagination?.total} itemName="file" />
+        }
         status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
         additionalControls={
           <div className="flex gap-2 mb-2">
-            <Tooltip label="Download JSON">
-              <FunctionButton
-                data-testid="button-json-files-case-summary"
-                onClick={handleDownloadJSON}
-                aria-label="Download JSON"
-              >
-                {downloadJSONActive ? <Loader size="sm" /> : "JSON"}
-              </FunctionButton>
-            </Tooltip>
-            <Tooltip label="Download TSV">
-              <FunctionButton
-                data-testid="button-tsv-files-case-summary"
-                onClick={handleDownloadTSV}
-                aria-label="Download TSV"
-              >
-                {downloadTSVActive ? <Loader size="sm" /> : "TSV"}
-              </FunctionButton>
-            </Tooltip>
+            <FunctionButton
+              data-testid="button-json-files-case-summary"
+              onClick={handleDownloadJSON}
+              aria-label="Download JSON"
+              isDownload
+              isActive={downloadJSONActive}
+            >
+              JSON
+            </FunctionButton>
+            <FunctionButton
+              data-testid="button-tsv-files-case-summary"
+              onClick={handleDownloadTSV}
+              aria-label="Download TSV"
+            >
+              TSV
+            </FunctionButton>
           </div>
         }
         showControls={true}
@@ -401,7 +391,7 @@ const FilesTable = ({ caseId }: FilesTableProps) => {
       />
 
       <GeneralErrorModal openModal={modal === Modals.GeneralErrorModal} />
-    </>
+    </div>
   );
 };
 

@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
-import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { handleDownloadPNG, handleDownloadSVG } from "@/features/charts/utils";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
-import { DashboardDownloadContext } from "@/utils/contexts";
+import { DashboardDownloadContext } from "@gff/portal-components";
+import { DownloadIcon } from "@/utils/icons";
 
 const DownloadAllButton: React.FC = () => {
   const { state } = useContext(DashboardDownloadContext);
@@ -25,7 +25,8 @@ const DownloadAllButton: React.FC = () => {
         { title: "PNG", onClick: downloadAllPng },
       ]}
       TargetButtonChildren={"Download All Images"}
-      LeftSection={<DownloadIcon aria-hidden="true" />}
+      LeftSection={<DownloadIcon aria-hidden="true" size="1rem" />}
+      closeOnItemClick={false}
     />
   );
 };

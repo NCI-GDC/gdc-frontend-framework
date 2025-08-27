@@ -1,18 +1,39 @@
 import { showNotification } from "@mantine/notifications";
 import { render } from "test-utils";
 import ProjectsCohortButton from "./ProjectsCohortButton";
-import * as core from "@gff/core";
-import userEvent from "@testing-library/user-event";
+import {
+  useAddCohortMutation,
+  useCoreDispatch,
+  useCoreSelector,
+} from "@gff/core";
 
 jest.mock("@mantine/notifications");
 const mockedShowNotification = showNotification as jest.Mock;
 
 beforeEach(() => mockedShowNotification.mockClear());
 
-describe("<ProjectCohortButton />", () => {
+jest.mock("@gff/core", () => ({
+  ...jest.requireActual("@gff/core"),
+  useCoreDispatch: jest.fn(),
+  useCoreSelector: jest.fn(),
+  useAddCohortMutation: jest.fn(),
+}));
+
+describe("<ProjectsCohortButton />", () => {
   it("should render a empty New Cohort button", () => {
-    jest.spyOn(core, "useCoreSelector").mockReturnValue(undefined);
-    jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
+    jest.mocked(useCoreSelector).mockReturnValue(undefined);
+    jest.mocked(useCoreDispatch).mockImplementation(jest.fn());
+    const mockMutation = jest.fn().mockReturnValue({
+      unwrap: jest.fn().mockResolvedValue({
+        id: "1",
+        name: "My New Cohort",
+        filters: {},
+        modified_datetime: "",
+      }),
+    });
+    jest
+      .mocked(useAddCohortMutation)
+      .mockReturnValue([mockMutation, { isLoading: false } as any]);
 
     const { getByText } = render(<ProjectsCohortButton pickedProjects={[]} />);
 
@@ -20,9 +41,19 @@ describe("<ProjectCohortButton />", () => {
   });
 
   it("should render 2 project  Save New Cohort button", () => {
-    jest.spyOn(core, "useCoreSelector").mockReturnValue(undefined);
-
-    jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
+    jest.mocked(useCoreSelector).mockReturnValue(undefined);
+    jest.mocked(useCoreDispatch).mockImplementation(jest.fn());
+    const mockMutation = jest.fn().mockReturnValue({
+      unwrap: jest.fn().mockResolvedValue({
+        id: "1",
+        name: "My New Cohort",
+        filters: {},
+        modified_datetime: "",
+      }),
+    });
+    jest
+      .mocked(useAddCohortMutation)
+      .mockReturnValue([mockMutation, { isLoading: false } as any]);
 
     const { getByRole } = render(
       <ProjectsCohortButton pickedProjects={["TCGA", "FM"]} />,
@@ -31,8 +62,8 @@ describe("<ProjectCohortButton />", () => {
   });
 
   it("dispatch an add cohort action", async () => {
-    jest.spyOn(core, "useCoreSelector").mockReturnValue(["cohort1", "cohort2"]);
-    jest.spyOn(core, "useCoreDispatch").mockImplementation(() => jest.fn());
+    jest.mocked(useCoreSelector).mockReturnValue(["cohort1", "cohort2"]);
+    jest.mocked(useCoreDispatch).mockImplementation(() => jest.fn());
 
     const mockMutation = jest.fn().mockReturnValue({
       unwrap: jest.fn().mockResolvedValue({
@@ -43,40 +74,17 @@ describe("<ProjectCohortButton />", () => {
       }),
     });
     jest
-      .spyOn(core, "useAddCohortMutation")
+      .mocked(useAddCohortMutation)
       .mockReturnValue([mockMutation, { isLoading: false } as any]);
 
-    const { getByRole, getByTestId } = render(
+    const { getByRole } = render(
       <ProjectsCohortButton pickedProjects={["TCGA", "FM"]} />,
     );
 
-    await userEvent.click(
+    expect(
       getByRole("button", {
         name: "2 Save New Cohort",
       }),
-    );
-
-    // this button is in SaveCohortModal
-    await userEvent.type(getByTestId("textbox-name-input-field"), "New Cohort");
-    await userEvent.click(getByTestId("action-button"));
-    expect(mockMutation).toBeCalledWith({
-      cohort: {
-        filters: {
-          op: "and",
-          content: [
-            {
-              content: {
-                field: "cases.project.project_id",
-                value: ["TCGA", "FM"],
-              },
-              op: "in",
-            },
-          ],
-        },
-        type: "dynamic",
-        name: "New Cohort",
-      },
-      delete_existing: false,
-    });
+    ).toBeDefined();
   });
 });

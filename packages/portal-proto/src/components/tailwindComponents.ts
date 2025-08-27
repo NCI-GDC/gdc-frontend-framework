@@ -1,16 +1,19 @@
 import tw from "tailwind-styled-components";
 
 export const HeaderTitle = tw.h2`
-text-lg text-primary-content-darkest uppercase tracking-wide font-medium mb-1
+text-lg text-primary-content-darkest uppercase tracking-wide font-medium
 `;
+interface SummaryHeaderTitleProps {
+  $isFile?: boolean;
+}
 
-export const SummaryHeaderTitle = tw.h2`
-text-xl
-leading-[34px]
+export const SummaryHeaderTitle = tw.h2<SummaryHeaderTitleProps>`
+  ${(p: SummaryHeaderTitleProps) =>
+    p.$isFile === true ? "text-[1rem] lg:text-xl" : "text-xl"}
 text-base-lightest
-p.$isFileSummary ? "text-lg" : "text-[28px]"}
 tracking-wide
 font-medium
+break-all
 `;
 
 export const PercentBar = tw.div`
@@ -37,19 +40,6 @@ top-0
 h-full
 bg-accent-cool-lighter
 rounded-sm`;
-
-export const DownloadButton = tw.button`
-    px-1.5
-    min-h-[28px]
-    min-w-10
-    border-primary
-    text-primary
-    border
-    rounded-[4px]
-    transition-colors
-    hover:bg-primary
-    hover:text-base-max
-`;
 
 export const CountSpan = tw.span`font-bold p-0 m-0`;
 

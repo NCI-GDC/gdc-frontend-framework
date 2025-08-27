@@ -1,8 +1,4 @@
 import {
-  ClearFacetFunction,
-  UpdateFacetFilterFunction,
-} from "@/features/facets/types";
-import {
   useAppDispatch,
   useAppSelector,
 } from "@/features/projectsCenter/appApi";
@@ -14,10 +10,16 @@ import {
   updateProjectFilter,
   clearProjectFilters,
 } from "@/features/projectsCenter/projectCenterFiltersSlice";
+import {
+  toggleProjectFilter,
+  toggleAllFilters,
+  selectFilterExpanded,
+  selectAllFiltersCollapsed,
+} from "@/features/projectsCenter/projectCenterFilterExpandSlice";
 import { useCallback } from "react";
 import { extractValue } from "@/features/facets/hooks";
 
-export const useUpdateProjectsFacetFilter = (): UpdateFacetFilterFunction => {
+export const useUpdateProjectsFacetFilter = () => {
   const dispatch = useAppDispatch();
   // update the filter for this facet
 
@@ -38,7 +40,7 @@ export const useProjectsFilters = (): FilterSet => {
 /**
  * removes the filter from the project current/active filters
  */
-export const useClearProjectsFilters = (): ClearFacetFunction => {
+export const useClearProjectsFilters = () => {
   const dispatch = useAppDispatch();
   return (field: string) => {
     dispatch(removeProjectFilter(field));
@@ -50,6 +52,28 @@ export const useClearAllProjectFilters = () => {
   return useCallback(() => {
     dispatch(clearProjectFilters());
   }, [dispatch]);
+};
+
+export const useToggleExpandProjectFilter = () => {
+  const dispatch = useAppDispatch();
+  return (field: string, expanded: boolean) => {
+    dispatch(toggleProjectFilter({ field, expanded }));
+  };
+};
+
+export const useToggleAllProjectFilters = () => {
+  const dispatch = useAppDispatch();
+  return (expanded: boolean) => {
+    dispatch(toggleAllFilters(expanded));
+  };
+};
+
+export const useFilterExpandedState = (field: string) => {
+  return useAppSelector((state) => selectFilterExpanded(state, field));
+};
+
+export const useAllFiltersCollapsed = () => {
+  return useAppSelector((state) => selectAllFiltersCollapsed(state));
 };
 
 /**

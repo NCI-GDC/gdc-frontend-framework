@@ -44,10 +44,11 @@ const InitOpenseadragon = (
     anchor: OpenSeadragon.ControlAnchor.TOP_LEFT,
   });
 
-  detailsButtonWrapperRef.current &&
+  if (detailsButtonWrapperRef.current) {
     viewer.addControl(detailsButtonWrapperRef.current, {
       anchor: OpenSeadragon.ControlAnchor.TOP_LEFT,
     });
+  }
 
   return viewer;
 };

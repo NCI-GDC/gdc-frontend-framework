@@ -21,6 +21,7 @@ interface CategoricalDataProps {
   readonly fieldName: string;
   readonly chartType: ChartTypes;
   readonly noData: boolean;
+  readonly yTotal: number;
 }
 
 const CategoricalData: React.FC<CategoricalDataProps> = ({
@@ -29,6 +30,7 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
   fieldName,
   chartType,
   noData,
+  yTotal,
 }: CategoricalDataProps) => {
   const [customBinnedData, setCustomBinnedData] =
     useState<CategoricalBins>(null);
@@ -37,7 +39,6 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
     [],
   );
   const [selectedFacets, setSelectedFacets] = useState<SelectedFacet[]>([]);
-  const [yTotal, setYTotal] = useState(0);
 
   const resultData = useMemo(
     () =>
@@ -74,10 +75,6 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
         .map(({ key }) => key)
         .slice(0, 2),
     );
-
-    if (customBinnedData === null) {
-      setYTotal(displayedData.reduce((a, b) => a + b.count, 0));
-    }
 
     setSelectedFacets([]);
   }, [customBinnedData, displayedData]);

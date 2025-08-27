@@ -4,11 +4,11 @@ import {
   DAYS_IN_YEAR,
   FilterSet,
   joinFilters,
-  isIncludes,
   DataStatus,
 } from "@gff/core";
 import { replace, sortBy } from "lodash";
 import { DocumentWithWebkit } from "@/features/types";
+import tailwindConfig from "tailwind.config";
 
 export const toggleFullScreen = async (
   ref: React.MutableRefObject<any>,
@@ -32,13 +32,11 @@ export const toggleFullScreen = async (
   }
 };
 
-/* eslint-disable @typescript-eslint/ban-types */
 export const createKeyboardAccessibleFunction = (
-  func: Function,
+  func: () => void,
 ): KeyboardEventHandler<any> => {
   return (e: React.KeyboardEvent<any>) => (e.key === "Enter" ? func() : null);
 };
-/* eslint-enable */
 
 export const capitalize = (original: string): string => {
   const customCapitalizations = {
@@ -234,33 +232,6 @@ export const processFilters = (
     ? filter_B
     : joinFilters(filter_B, filter_A);
 
-const MAX_VALUE_COUNT = 6;
-/**
- * Creates a name for a filter set based on it's contents
- * @param filters -
- * @returns a name with up to 6 filters, grouped by field
- */
-export const filtersToName = (filters: FilterSet): string => {
-  const filterValues = [];
-  let valueCount = 0;
-  for (const filter of Object.values(filters?.root || {})) {
-    const filtersForField = isIncludes(filter) ? filter?.operands : [];
-    if (valueCount + filtersForField.length > MAX_VALUE_COUNT) {
-      const filtersToAdd = filtersForField.slice(
-        0,
-        MAX_VALUE_COUNT - valueCount,
-      );
-      filterValues.push(filtersToAdd.join(" / ") + "...");
-      break;
-    } else {
-      filterValues.push(filtersForField.join(" / "));
-      valueCount += filtersForField.length;
-    }
-  }
-
-  return filterValues.join(", ");
-};
-
 /**
  * convert hooks 3 boolean status to DataStatus
  * @param isFetching -
@@ -284,3 +255,22 @@ export const statusBooleansToDataStatus = (
 
 export const focusStyles =
   "focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor";
+
+export const LG_BREAKPOINT = parseInt(tailwindConfig.theme.extend.screens.lg);
+export const XL_BREAKPOINT = parseInt(tailwindConfig.theme.extend.screens.xl);
+export const REPO_BREAKPOINT = parseInt(
+  tailwindConfig.theme.extend.screens["Custom-Repo-Width"],
+);
+
+export const calculateStickyHeaderHeight = (): number => {
+  const globalHeader = document.querySelector("#global-header");
+  const contextBar = document.querySelector("#context-bar");
+  return (
+    (globalHeader?.getBoundingClientRect()?.height || 0) +
+    (contextBar?.getBoundingClientRect()?.height || 0)
+  );
+};
+
+export const capitalizeFirstLetter = (str: string): string => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};

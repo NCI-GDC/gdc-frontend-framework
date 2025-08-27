@@ -1,8 +1,8 @@
 import { FC } from "react";
-import { OncoMatrixWrapper } from "../proteinpaint/OncoMatrixWrapper";
+import { MatrixWrapper } from "../proteinpaint/MatrixWrapper";
 
 const MatrixApp: FC = () => {
-  return <OncoMatrixWrapper />;
+  return <MatrixWrapper chartType="matrix" />;
 };
 
 export default MatrixApp;

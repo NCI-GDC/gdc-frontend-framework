@@ -15,14 +15,22 @@ import {
   useRef,
   useState,
   useMemo,
+  createContext,
+  useContext,
+  useLayoutEffect,
 } from "react";
-import { useDeepCompareMemo } from "use-deep-compare";
-import { BsCaretDownFill, BsCaretUpFill } from "react-icons/bs";
-import { LoadingOverlay, Pagination, Select } from "@mantine/core";
-import { DataStatus } from "@gff/core";
-import { useDeepCompareEffect } from "use-deep-compare";
+import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
+import { LoadingOverlay } from "@mantine/core";
 import { getDefaultRowId } from "./utils";
 import TableHeader from "./TableHeader";
+import TablePagination from "./TablePagination";
+import { RowCollapseIcon, RowExpandIcon } from "@/utils/icons";
+
+// Provides the bottom X position so components can align themselves with the table
+export const TableXPositionContext = createContext<{
+  xPosition: number;
+  setXPosition: (xPosition: number) => void;
+}>({ xPosition: undefined, setXPosition: undefined });
 
 /**
  * VerticalTable is a table component that displays data in a vertical format.
@@ -36,6 +44,7 @@ import TableHeader from "./TableHeader";
  * @param enableRowSelection  - A boolean value indicating whether row selection is enabled.
  * @param status  - The status of the data.
  * @param tableTitle  - The title of the table.
+ * @param tableTotalDetail  - caption including total items in the table.
  * @param additionalControls  - Additional controls to be displayed in the table.
  * @param search  - The search options for the table.
  * @param showControls  - A boolean value indicating whether the controls should be displayed.
@@ -58,6 +67,7 @@ import TableHeader from "./TableHeader";
  * @param getRowId  - A function that returns the row id.
  * @param baseZIndex  - The base z index.
  * @param customDataTestID - optional locator for test automation
+ * @param customBreakpoint - custom breakpoint for header responsive behavior
  * @category Table
  */
 function VerticalTable<TData>({
@@ -69,8 +79,9 @@ function VerticalTable<TData>({
   setRowSelection,
   rowSelection,
   enableRowSelection = false,
-  status,
+  status = "fulfilled",
   tableTitle,
+  tableTotalDetail,
   additionalControls,
   search,
   showControls = false,
@@ -91,13 +102,18 @@ function VerticalTable<TData>({
   baseZIndex = 0,
   customDataTestID,
   customAriaLabel,
+  customBreakpoint,
 }: TableProps<TData>): JSX.Element {
   const [tableData, setTableData] = useState(data);
-  const liveRegionRef = useRef(null);
   const [sortingStatus, setSortingStatus] = useState("");
   const [announcementTimestamp, setAnnouncementTimestamp] = useState(
     Date.now(),
   );
+  const [clickedColumnId, setClickedColumnId] = useState<string>(null);
+
+  const liveRegionRef = useRef(null);
+  const ref = useRef<HTMLDivElement>();
+  const { xPosition, setXPosition } = useContext(TableXPositionContext);
 
   useEffect(() => {
     if (sortingStatus && announcementTimestamp) {
@@ -105,13 +121,9 @@ function VerticalTable<TData>({
     }
   }, [sortingStatus, announcementTimestamp]);
 
-  // TODO: status fufilled is to be sent for all the tables (even without api calls)
-  // also need in pagination (do sth about it)
   useDeepCompareEffect(() => {
-    if (status === "fulfilled") {
-      setTableData(data);
-    }
-  }, [data, status]);
+    setTableData(data);
+  }, [data]);
 
   const initialState = useDeepCompareMemo(
     () => ({
@@ -136,7 +148,6 @@ function VerticalTable<TData>({
   const coreRowModel = useMemo(() => getCoreRowModel<TData>(), []);
   const sortedRowModel = useMemo(() => getSortedRowModel<TData>(), []);
 
-  const [clickedColumnId, setClickedColumnId] = useState<string>(null);
   const table = useReactTable({
     columns,
     data: tableData,
@@ -158,38 +169,19 @@ function VerticalTable<TData>({
     enableSorting: columnSorting === "manual" || columnSorting === "enable",
   });
 
-  // TODO: Make this as a separate component leveraging pagination API of tanstack table
-  // For smoother setting of pagination so the values don't bounce around when loading new data
-  const [pageSize, setPageSize] = useState(10);
-  const [pageOn, setPageOn] = useState(1);
-  const [pageTotal, setPageTotal] = useState(1);
-
-  useEffect(() => {
-    if (pagination?.size !== undefined) {
-      setPageSize(pagination.size);
+  const rowCount = table.getRowModel().rows.length;
+  // Only set xPosition on initial load, not when table options change
+  useLayoutEffect(() => {
+    if (
+      setXPosition &&
+      xPosition === undefined &&
+      status === "fulfilled" &&
+      rowCount > 0 &&
+      ref.current
+    ) {
+      setXPosition(ref?.current?.getBoundingClientRect()?.bottom);
     }
-    if (pagination?.page !== undefined) {
-      setPageOn(pagination.page);
-    }
-    if (pagination?.pages !== undefined) {
-      setPageTotal(pagination.pages);
-    }
-  }, [pagination]);
-
-  const handlePageSizeChange = (newPageSize: string) => {
-    setPageSize(parseInt(newPageSize));
-    handleChange &&
-      handleChange({
-        newPageSize: newPageSize,
-      });
-  };
-  const handlePageChange = (newPageNumber: number) => {
-    setPageOn(newPageNumber);
-    handleChange &&
-      handleChange({
-        newPageNumber: newPageNumber,
-      });
-  };
+  }, [setXPosition, xPosition, status, rowCount]);
 
   const handleSorting = (
     header: Header<TData, unknown>,
@@ -213,14 +205,19 @@ function VerticalTable<TData>({
   };
 
   return (
-    <div data-testid={customDataTestID} className="grow overflow-hidden">
+    <div
+      data-testid={customDataTestID}
+      className="grow overflow-hidden"
+      ref={ref}
+    >
       {(additionalControls ||
-        tableTitle ||
+        tableTotalDetail ||
         search?.enabled ||
         showControls) && (
         <TableHeader
           additionalControls={additionalControls}
           tableTitle={tableTitle}
+          tableTotalDetail={tableTotalDetail}
           search={search}
           showControls={showControls}
           handleChange={handleChange}
@@ -228,6 +225,7 @@ function VerticalTable<TData>({
           columnOrder={columnOrder}
           setColumnOrder={setColumnOrder}
           baseZIndex={baseZIndex}
+          customBreakpoint={customBreakpoint}
         />
       )}
       <div className="overflow-y-auto w-full relative">
@@ -313,12 +311,12 @@ function VerticalTable<TData>({
                               className="inline-block text-xs pl-3 align-middle text-base-light"
                               aria-hidden="true"
                             >
-                              <BsCaretUpFill
+                              <RowCollapseIcon
                                 className={
                                   isColumnSorted === "asc" ? "text-primary" : ""
                                 }
                               />
-                              <BsCaretDownFill
+                              <RowExpandIcon
                                 className={`${
                                   isColumnSorted === "desc"
                                     ? "text-primary"
@@ -383,9 +381,13 @@ function VerticalTable<TData>({
                       /\W/g,
                       "_",
                     )}
+                    className="border border-base-lighter"
                   >
                     {/* 2nd row is a custom 1 cell row */}
-                    <td colSpan={row.getVisibleCells().length}>
+                    <td
+                      colSpan={row.getVisibleCells().length}
+                      className="relative"
+                    >
                       {/* Need to pass in the SubRow component to render here */}
                       {renderSubComponent({ row, clickedColumnId })}
                     </td>
@@ -402,128 +404,15 @@ function VerticalTable<TData>({
         </table>
       </div>
       {pagination && (
-        <div className="flex flex-col w-full md:px-4 lg:flex-nowrap font-heading items-center text-content bg-base-max border-base-lighter border-1 border-t-0 py-3 xl:flex-row xl:justify-between">
-          {!disablePageSize && (
-            <div className="flex justify-between items-center w-full xl:w-fit">
-              <div
-                data-testid="area-show-number-of-entries"
-                className="flex items-center m-auto ml-0 text-sm"
-              >
-                <span className="my-auto mx-1">Show</span>
-                <Select
-                  size="xs"
-                  radius="md"
-                  onChange={handlePageSizeChange}
-                  value={pageSize?.toString()}
-                  data={[
-                    { value: "10", label: "10" },
-                    { value: "20", label: "20" },
-                    { value: "40", label: "40" },
-                    { value: "100", label: "100" },
-                  ]}
-                  classNames={{
-                    root: "w-16 font-heading",
-                  }}
-                  data-testid="button-show-entries"
-                  aria-label="select page size"
-                />
-                <span className="my-auto mx-1">Entries</span>
-              </div>
-              <div className="flex xl:hidden">
-                <ShowingCount
-                  from={pagination?.from}
-                  label={pagination?.label}
-                  total={pagination?.total}
-                  dataLength={tableData?.length}
-                  status={status}
-                  pageSize={pageSize}
-                  customDataTestID="xl-hidden-text-showing-count"
-                />
-              </div>
-            </div>
-          )}
-          <div className="hidden xl:flex xl:items-center">
-            <ShowingCount
-              from={pagination?.from}
-              label={pagination?.label}
-              total={pagination?.total}
-              dataLength={tableData?.length}
-              status={status}
-              pageSize={pageSize}
-            />
-          </div>
-          <Pagination
-            data-testid="pagination"
-            color="accent.5"
-            className="mt-4 gap-1 mx-auto xl:mx-0 xl:gap-2 xl:mr-0 xl:mt-0"
-            value={pageOn}
-            onChange={handlePageChange}
-            total={pageTotal}
-            radius="xs"
-            size="sm"
-            withEdges
-            classNames={{ control: "border-0" }}
-            getControlProps={(control) => {
-              switch (control) {
-                case "previous":
-                  return { "aria-label": "previous page button" };
-                case "next":
-                  return { "aria-label": "next page button" };
-                case "first":
-                  return { "aria-label": "first page button" };
-                case "last":
-                  return { "aria-label": "last page button" };
-                default:
-                  return { "aria-label": `${control} page button` };
-              }
-            }}
-          />
-        </div>
+        <TablePagination
+          pagination={pagination}
+          disablePageSize={disablePageSize}
+          handleChange={handleChange}
+          tableData={tableData}
+          status={status}
+        />
       )}
     </div>
-  );
-}
-
-function ShowingCount({
-  from,
-  total,
-  label,
-  dataLength,
-  status,
-  pageSize,
-  customDataTestID = "text-showing-count",
-}: {
-  from: number;
-  total: number;
-  label: string;
-  dataLength: number;
-  status: DataStatus;
-  pageSize: number;
-  customDataTestID?: string;
-}) {
-  let outputString: JSX.Element;
-  if (!isNaN(from) && status === "fulfilled") {
-    const paginationFrom = from >= 0 && dataLength > 0 ? from + 1 : 0;
-
-    const defaultPaginationTo = from + pageSize;
-
-    const paginationTo =
-      defaultPaginationTo < total ? defaultPaginationTo : total;
-
-    const totalValue = total.toLocaleString();
-
-    outputString = (
-      <span>
-        <b>{paginationFrom}</b> - <b>{paginationTo}</b> of <b>{totalValue}</b>
-        {label && ` ${label}`}
-      </span>
-    );
-  }
-
-  return (
-    <p data-testid={customDataTestID} className="text-heading text-sm">
-      Showing {outputString ?? "--"}
-    </p>
   );
 }
 

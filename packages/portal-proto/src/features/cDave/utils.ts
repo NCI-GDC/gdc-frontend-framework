@@ -82,7 +82,10 @@ export const parseFieldName = (
 ): { field_type: string; field_name: string; full: string } => {
   const parsed = field.split("__");
   const full = field.replaceAll("__", ".");
-  if (parsed.at(-2) === "treatments") {
+  if (
+    parsed.at(-2) === "treatments" ||
+    parsed.at(-2) === "other_clinical_attributes"
+  ) {
     return { field_type: parsed.at(-2), field_name: parsed.at(-1), full };
   }
   return { field_type: parsed.at(0), field_name: parsed.at(-1), full };
@@ -336,18 +339,20 @@ export const parseNestedQQResponseData = (
   data.forEach((caseEntry) => {
     if (Array.isArray(caseEntry[clinicalType])) {
       caseEntry[clinicalType].forEach((nestedVal) => {
-        Array.isArray(nestedVal[clinicalField])
-          ? (parsedValues = [
-              ...parsedValues,
-              ...nestedVal[clinicalField].map((valArr) => ({
-                id: caseEntry.id,
-                value: valArr[clinicalNestedField],
-              })),
-            ])
-          : parsedValues.push({
+        if (Array.isArray(nestedVal[clinicalField])) {
+          parsedValues = [
+            ...parsedValues,
+            ...nestedVal[clinicalField].map((valArr) => ({
               id: caseEntry.id,
-              value: nestedVal[clinicalField],
-            });
+              value: valArr[clinicalNestedField],
+            })),
+          ];
+        } else {
+          parsedValues.push({
+            id: caseEntry.id,
+            value: nestedVal[clinicalField],
+          });
+        }
       });
     } else {
       parsedValues.push({

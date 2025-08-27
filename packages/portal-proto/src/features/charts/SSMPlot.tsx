@@ -46,8 +46,17 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
     return <div>Fetching chart...</div>;
   }
 
-  if (isError && "text" in error) {
-    return <div>Failed to fetch chart: {error?.text}</div>;
+  if (isError) {
+    return (
+      <div>
+        Failed to fetch chart:{" "}
+        {typeof error === "string"
+          ? error
+          : "text" in error
+          ? error?.text
+          : "error"}
+      </div>
+    );
   }
 
   if (data.cases.length < 5) {
@@ -115,10 +124,10 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
           filename="cancer-distribution-bar-chart"
           divId={chartDivId}
           jsonData={[
-            ...sortedData.map(({ project: label, percent: value }) => {
+            ...sortedData.map(({ project, percent }) => {
               return {
-                label,
-                value,
+                project,
+                affected_cases_percent: percent,
               };
             }),
           ]}

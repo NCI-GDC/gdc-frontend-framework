@@ -45,30 +45,23 @@ tags: gdc-data-portal-v2, regression, file-summary
     |017c3ae9433e7310e97cf0e84077e967       |
     |TCGA-LIHC                              |
 
-## Empty Associcated Cases/Biospecimens Table
-table-associated-cases-biospecimens-file-summary
-* Verify the table "Associated Cases Biospecimens File Summary" is displaying this information
-    |text_to_validate                       |
-    |---------------------------------------|
-    |No cases or biospecimen found.         |
-
 ## Analysis Table
 * Verify the table "Analysis File Summary" is displaying this information
     |text_to_validate                       |
     |---------------------------------------|
     |Workflow Type                          |
-    |Workflow Completion Date               |
     |Birdseed                               |
-    |2023-03-10                             |
-
-## Reference Genome Table
-* Verify the table "Reference Genome File Summary" is displaying this information
+* Verify the table "Analysis File Summary" is not displaying this information
     |text_to_validate                       |
     |---------------------------------------|
-    |Genome Build                           |
-    |GRCh38.p0                              |
-    |Genome Name                            |
-    |GRCh38.d1.vd1                          |
+    |Workflow Completion Date               |
+    |2023-03-10                             |
+
+## Verify Reference Genome Table is Not Present
+* Verify these items are not on the page
+    |item_to_validate                               |
+    |-----------------------------------------------|
+    |Table Reference Genome File Summary            |
 
 ## Source Files
 * Verify the table "Source Files File Summary" is displaying this information
@@ -102,6 +95,16 @@ table-associated-cases-biospecimens-file-summary
     |-----------------------------------------------|
     |Table Downstream Analyses Files File Summary   |
 
+## Navigate to Summary Page: 593eee9b-bd8e-4672-aed4-24d406b257fa
+* Quick search for "593eee9b-bd8e-4672-aed4-24d406b257fa" and go to its page
+## Reference Genome Table
+* Verify the table "Reference Genome File Summary" is displaying this information
+    |text_to_validate                       |
+    |---------------------------------------|
+    |Genome Build                           |
+    |GRCh38.p0                              |
+    |Genome Name                            |
+    |GRCh38.d1.vd1                          |
 
 ## Navigate to Summary Page: 61ca2fed-0a04-4987-a7fa-a1f7151f3ee1
 * Quick search for "61ca2fed-0a04-4987-a7fa-a1f7151f3ee1" and go to its page
@@ -130,7 +133,8 @@ table-associated-cases-biospecimens-file-summary
     |---------------------------------------|
     |Entity ID                              |
     |Entity Type                            |
-    |Sample Type                            |
+    |Tissue Type                            |
+    |Tumor Descriptor                       |
     |Case ID                                |
     |Annotations                            |
 * In table "Associated Cases Biospecimens File Summary", search the table for "tcga-72-4237"
@@ -261,7 +265,8 @@ table-associated-cases-biospecimens-file-summary
 * Verify the table "Annotations File Summary" is displaying this information
     |text_to_validate                       |
     |---------------------------------------|
-    |Case UUID                              |
+    |UUID                                   |
+    |Case ID                                |
     |Entity Type                            |
     |Entity ID                              |
     |Category                               |
@@ -272,7 +277,7 @@ table-associated-cases-biospecimens-file-summary
 * Verify the table "Annotations File Summary" is displaying this information
     |text_to_validate                       |
     |---------------------------------------|
-    |49f975ea-a1cf-4a9b-bf13-030c68cc99e4   |
+    |2d3a860d-81e6-5ae7-8cee-a8bcf5f07621   |
     |TCGA-33-4589                           |
     |Prior malignancy                       |
     |Notification                           |
@@ -288,20 +293,23 @@ table-associated-cases-biospecimens-file-summary
 
 ## Annotations Table - Download and Validate TSV
 * In table "Annotations File Summary", search the table for "9f1ee78d-f022-5495-b6ad-fa6aa56bafdb"
+* Wait for table "Annotations File Summary" body text to appear
+    |expected_text                          |row  |column |
+    |---------------------------------------|-----|-------|
+    |9f1ee78d-f022-5495-b6ad-fa6aa56bafdb   |1    |1      |
 * Download "TSV" from "File Summary Annotation Table"
 * Read from "TSV from File Summary Annotation Table"
 * Verify that "TSV from File Summary Annotation Table" has expected information
     |required_info                          |
     |---------------------------------------|
     |UUID                                   |
-    |Case UUID                              |
+    |Case ID                                |
     |Entity Type                            |
     |Entity ID                              |
     |Category                               |
     |Classification                         |
     |Created Datetime                       |
     |9f1ee78d-f022-5495-b6ad-fa6aa56bafdb   |
-    |972476b7-d7f3-4865-b978-0c13f29457cb   |
     |History of acceptable prior treatment related to a prior/other malignancy|
     |case                                   |
     |TCGA-22-1000                           |
@@ -314,16 +322,19 @@ table-associated-cases-biospecimens-file-summary
 * Verify that "JSON from File Summary Annotation Table" has expected information
     |required_info                          |
     |---------------------------------------|
-    |140098ef-3eec-59d0-bde7-ce23997b25ff   |
-    |[intgen.org]: Molecular Results off Spec |
-    |399c936e-ba68-4040-98d4-917a87dad603   |
-    |TCGA-21-A5DI                           |
-    |Case submitted is found to be a recurrence after submission |
-    |a172b257-ccbb-55a0-a16f-48115cd57753   |
-    |12ff5a02-93fa-5f33-bb20-3ce7fedea7a3   |
+    |9f1ee78d-f022-5495-b6ad-fa6aa56bafdb   |
+    |History of acceptable prior treatment related to a prior/other malignancy|
+    |case                                   |
+    |TCGA-22-1000                           |
     |Notification                           |
-    |Approved                               |
-    |2012-10-31T00:00:00                    |
+    |2012-11-10T00:00:00                    |
+* Verify that "JSON from File Summary Annotation Table" does not contain specified information
+    |required_info                          |
+    |---------------------------------------|
+    |0dff7825-9afc-56a7-8732-4a8a3fec73d6   |
+    |138ee9d9-fe15-5530-ac8a-aa9d51b43d57   |
+    |c481e0b7-8a68-5742-a569-dd923ea9ad57   |
+    |92a4d84a-7457-501c-b95b-2fa0a04e6297   |
 
 ## Annotations Table - Validate JSON File Fields
   |field_name                               |

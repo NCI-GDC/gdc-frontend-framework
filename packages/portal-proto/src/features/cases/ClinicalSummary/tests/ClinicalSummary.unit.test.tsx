@@ -1,16 +1,12 @@
 import { render } from "test-utils";
 import { ClinicalSummary } from "../ClinicalSummary";
 import userEvent from "@testing-library/user-event";
-import {
-  mockSingleDiagnoses,
-  mockSingleFollowUps,
-} from "./DiagnosesOrFollowUps.unit.test";
+import { mockSingleDiagnoses, mockSingleFollowUps } from "./mockData";
 import {
   mock_single_exposures,
   mock_single_family_histories,
 } from "./FamilyHistoryOrExposure.unit.test";
 import { Demographic } from "@gff/core";
-import * as func from "@gff/core";
 
 const demographic = {
   race: "asian",
@@ -23,10 +19,14 @@ const demographic = {
   days_to_birth: -23111,
 };
 
+jest.mock("@gff/core", () => ({
+  ...jest.requireActual("@gff/core"),
+  useCoreDispatch: jest.fn(),
+}));
+
 describe("<ClinicalSummary /> ", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(func, "useCoreDispatch").mockImplementation(jest.fn());
   });
 
   it("should render appropriate information when data is present", async () => {

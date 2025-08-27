@@ -2,8 +2,14 @@ import { waitFor } from "@testing-library/react";
 import { render } from "test-utils";
 import userEvent from "@testing-library/user-event";
 import * as router from "next/router";
-import * as core from "@gff/core";
 import { QuickSearch } from "../QuickSearch";
+import { useGetHistoryQuery, useQuickSearchQuery } from "@gff/core";
+
+jest.mock("@gff/core", () => ({
+  ...jest.requireActual("@gff/core"),
+  useQuickSearchQuery: jest.fn(),
+  useGetHistoryQuery: jest.fn(),
+}));
 
 jest.spyOn(router, "useRouter").mockImplementation(
   () =>
@@ -15,7 +21,7 @@ jest.spyOn(router, "useRouter").mockImplementation(
 
 describe("<QuickSearch />", () => {
   test("displays results", async () => {
-    jest.spyOn(core, "useQuickSearchQuery").mockReturnValue({
+    jest.mocked(useQuickSearchQuery).mockReturnValue({
       data: {
         searchList: [
           { id: btoa("Gene:111"), symbol: "TH" },
@@ -24,9 +30,11 @@ describe("<QuickSearch />", () => {
         query: "th",
       },
     } as any);
-    jest
-      .spyOn(core, "useGetHistoryQuery")
-      .mockReturnValue({ data: undefined } as any);
+    jest.mocked(useGetHistoryQuery).mockReturnValue({
+      data: undefined,
+      isSuccess: true,
+      isUninitialized: false,
+    } as any);
 
     const { getAllByTestId, getByTestId } = render(<QuickSearch />);
     userEvent.click(getByTestId("textbox-quick-search-bar"));
@@ -43,13 +51,23 @@ describe("<QuickSearch />", () => {
   });
 
   test("displays superseded file", async () => {
-    jest.spyOn(core, "useQuickSearchQuery").mockReturnValue({
-      data: {
-        searchList: [],
-        query: "111-222",
-      },
-    } as any);
-    jest.spyOn(core, "useGetHistoryQuery").mockReturnValue({
+    jest.mocked(useQuickSearchQuery).mockImplementation(
+      (search_str) =>
+        (search_str === "111-222"
+          ? {
+              data: {
+                searchList: [],
+                query: "111-222",
+              },
+            }
+          : {
+              data: {
+                searchList: [{ uuid: "444-555" }],
+                query: "444-555",
+              },
+            }) as any,
+    );
+    jest.mocked(useGetHistoryQuery).mockReturnValue({
       data: [
         {
           uuid: "444-555",
@@ -57,6 +75,8 @@ describe("<QuickSearch />", () => {
         },
         { uuid: "111-222", file_change: "superseded" },
       ],
+      isSuccess: true,
+      isUninitialized: false,
     } as any);
 
     const { getAllByTestId, getByTestId } = render(<QuickSearch />);
@@ -75,14 +95,16 @@ describe("<QuickSearch />", () => {
   });
 
   test("displays no results found if history is empty", async () => {
-    jest.spyOn(core, "useQuickSearchQuery").mockReturnValue({
+    jest.mocked(useQuickSearchQuery).mockReturnValue({
       data: {
         searchList: [],
         query: "111-222",
       },
     } as any);
-    jest.spyOn(core, "useGetHistoryQuery").mockReturnValue({
+    jest.mocked(useGetHistoryQuery).mockReturnValue({
       data: [],
+      isSuccess: true,
+      isUninitialized: false,
     } as any);
 
     const { getByTestId } = render(<QuickSearch />);
@@ -93,6 +115,81 @@ describe("<QuickSearch />", () => {
       () =>
         expect(getByTestId("no-results-quick-search-bar")).toBeInTheDocument(),
       { timeout: 3000 },
+    );
+    const noResults = getByTestId("no-results-quick-search-bar");
+    expect(noResults).toBeInTheDocument();
+  });
+
+  test("displays no results found if file doesn't have a newer version", async () => {
+    jest.mocked(useQuickSearchQuery).mockReturnValue({
+      data: {
+        searchList: [],
+        query: "111-222",
+      },
+    } as any);
+    jest.mocked(useGetHistoryQuery).mockReturnValue({
+      data: [
+        {
+          file_change: "released",
+          uuid: "111-222",
+          version: "1",
+        },
+      ],
+      isSuccess: true,
+      isUninitialized: false,
+    } as any);
+
+    const { getByTestId } = render(<QuickSearch />);
+    userEvent.click(getByTestId("textbox-quick-search-bar"));
+    userEvent.type(getByTestId("textbox-quick-search-bar"), "111-222");
+
+    await waitFor(
+      () =>
+        expect(getByTestId("no-results-quick-search-bar")).toBeInTheDocument(),
+      { timeout: 3000 },
+    );
+    const noResults = getByTestId("no-results-quick-search-bar");
+    expect(noResults).toBeInTheDocument();
+  });
+
+  test("displays no results in superseded file does not exist", async () => {
+    jest.mocked(useQuickSearchQuery).mockImplementation(
+      (search_str) =>
+        (search_str === "111-222"
+          ? {
+              data: {
+                searchList: [],
+                query: "111-222",
+              },
+            }
+          : {
+              data: {
+                searchList: [],
+                query: "444-555",
+              },
+              isSuccess: true,
+            }) as any,
+    );
+    jest.mocked(useGetHistoryQuery).mockReturnValue({
+      data: [
+        {
+          uuid: "444-555",
+          file_change: "released",
+        },
+        { uuid: "111-222", file_change: "superseded" },
+      ],
+      isSuccess: true,
+      isUninitialized: false,
+    } as any);
+
+    const { getByTestId } = render(<QuickSearch />);
+    userEvent.click(getByTestId("textbox-quick-search-bar"));
+    userEvent.type(getByTestId("textbox-quick-search-bar"), "111-222");
+
+    await waitFor(
+      () =>
+        expect(getByTestId("no-results-quick-search-bar")).toBeInTheDocument(),
+      { timeout: 5000 },
     );
     const noResults = getByTestId("no-results-quick-search-bar");
     expect(noResults).toBeInTheDocument();

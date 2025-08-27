@@ -15,6 +15,23 @@ import CohortLevelMAFIcon from "public/user-flow/icons/apps/CohortLevelMAF.svg";
 import ProteinPaintIcon from "public/user-flow/icons/apps/ProteinPaint.svg";
 import OncoMatrixIcon from "public/user-flow/icons/apps/OncoMatrix.svg";
 import GeneExpressionIcon from "public/user-flow/icons/apps/GeneExpression.svg";
+import ScRNASeqIcon from "public/user-flow/icons/apps/scRNASeq.svg";
+import CopyNumberSegmentIcon from "public/user-flow/icons/apps/CopyNumberSegment.svg";
+import CorrelationPlotIcon from "public/user-flow/icons/apps/CorrelationPlot.svg";
+import { useLazyScRNAseqCaseCountQuery } from "../../proteinpaint/scRNAseqCaseCount";
+import { useLazyCnvSegmentCaseCountQuery } from "../../proteinpaint/CnvSegmentCaseCount";
+import { CountHookRegistry } from "@gff/core";
+import { AppRegistrationEntry } from "@gff/portal-components";
+
+CountHookRegistry.getInstance().registerHook(
+  "scRNAseqCaseCount",
+  useLazyScRNAseqCaseCountQuery,
+);
+
+CountHookRegistry.getInstance().registerHook(
+  "CnvSegmentCaseCount",
+  useLazyCnvSegmentCaseCountQuery,
+);
 
 export const COHORTS = [
   { name: "New Custom Cohort", facets: [] },
@@ -30,7 +47,7 @@ export const COHORTS = [
   },
 ];
 
-export const REGISTERED_APPS = [
+export const REGISTERED_APPS: AppRegistrationEntry[] = [
   {
     name: "Clinical Data Analysis",
     icon: <ClinicalDataIcon aria-hidden="true" />,
@@ -139,7 +156,7 @@ export const REGISTERED_APPS = [
     countsField: "caseCount",
     description:
       "Display a Venn diagram and compare/contrast your cohorts or sets of the same type.",
-    id: "SetOperations",
+    id: "SetOperationsApp",
     selectionScreen: SelectionPanel,
   },
   {
@@ -172,7 +189,7 @@ export const REGISTERED_APPS = [
       <ProteinPaintIcon
         height={48}
         width={80}
-        viewBox="-12 0 80 48"
+        style={{ margin: "0" }}
         aria-hidden="true"
       />
     ),
@@ -182,7 +199,6 @@ export const REGISTERED_APPS = [
       "Visualize mutations in protein-coding genes by consequence type and protein domain.",
     id: "ProteinPaintApp",
     countsField: "ssmCaseCount",
-    caseCounts: 0.25,
     optimizeRules: ["available data = ssm"],
     noDataTooltip:
       "Current cohort does not have SSM data available for visualization.",
@@ -194,6 +210,7 @@ export const REGISTERED_APPS = [
         className="m-auto"
         height={48}
         width={80}
+        style={{ margin: "0" }}
         aria-hidden="true"
       />
     ),
@@ -203,10 +220,30 @@ export const REGISTERED_APPS = [
       "Visualize the top most mutated cases and genes affected by high impact mutations in your cohort.",
     id: "OncoMatrix",
     countsField: "cnvOrSsmCaseCount",
-    caseCounts: 0.25,
     optimizeRules: ["available data = ssm or cnv"],
     noDataTooltip:
       "Current cohort does not have SSM or CNV data available for visualization.",
+  },
+  {
+    name: "Single Cell RNA-seq",
+    icon: (
+      <ScRNASeqIcon
+        className="m-auto"
+        height={48}
+        width={80}
+        style={{ margin: "0" }}
+        aria-hidden="true"
+      />
+    ),
+    tags: ["variantAnalysis", "cnv", "ssm"],
+    hasDemo: true,
+    description:
+      "Visualize single-cell RNA-Seq data with cluster plots and gene expression overlays.",
+    id: "scRNAseq",
+    countsField: "scRNAseqCaseCount",
+    optimizeRules: ["available data = ssm or cnv"],
+    noDataTooltip:
+      "Current cohort does not have scRNAseq data available for visualization.",
   },
   {
     name: "Gene Expression Clustering",
@@ -215,6 +252,7 @@ export const REGISTERED_APPS = [
         className="m-auto"
         height={48}
         width={80}
+        style={{ margin: "0" }}
         aria-hidden="true"
       />
     ),
@@ -224,7 +262,6 @@ export const REGISTERED_APPS = [
       "Visualize the top most variably expressed genes in your cohort.",
     id: "GeneExpression",
     countsField: "geneExpressionCaseCount",
-    caseCounts: 0.25,
     optimizeRules: ["available data = ssm or cnv"],
     noDataTooltip:
       "Current cohort does not have gene expression data available for visualization.",
@@ -241,21 +278,43 @@ export const REGISTERED_APPS = [
     noDataTooltip:
       "Current cohort does not have MAF data available for download.",
   },
-  /*
   {
-    name: "scRNA-Seq",
-    icon: "scRnaSeqViz.png",
-    tags: ["geneExpression"],
+    name: "Copy Number Segment",
+    icon: (
+      <CopyNumberSegmentIcon
+        height={48}
+        width={80}
+        style={{ margin: "0" }}
+        aria-hidden="true"
+      />
+    ),
+    tags: ["variantAnalysis", "cnv"],
     hasDemo: true,
-    description:
-      "Visualize patterns in single-cell gene expression in your cohort.",
-    id: "SingleCellRnaSeq",
-    caseCounts: 0.1,
-    optimizeRules: ["experimental_strategy === scrna-seq"],
+    description: "Visualize copy number variation over a gene or region.",
+    id: "CnvSegmentApp",
+    countsField: "CnvSegmentCaseCount",
     noDataTooltip:
-      "Current cohort does not have scRNA-Seq data available for visualization.",
+      "Current cohort does not have CNV segment data available for visualization.",
   },
-  */
+  {
+    name: "Correlation Plot",
+    icon: (
+      <CorrelationPlotIcon
+        height={48}
+        width={80}
+        style={{ margin: "0" }}
+        aria-hidden="true"
+      />
+    ),
+    tags: ["variantAnalysis"],
+    //hasDemo: true,
+    description:
+      "Visualize correlations between clinical and genomic variables.",
+    id: "Correlation",
+    countsField: "caseCount",
+    noDataTooltip:
+      "Current cohort does not have cases available for visualization.",
+  },
 ];
 
 export const APPTAGS = [

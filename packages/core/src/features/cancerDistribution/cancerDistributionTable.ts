@@ -1,6 +1,6 @@
 import { buildCohortGqlOperator, FilterSet } from "../cohort";
 import { GqlIntersection, Includes } from "../gdcapi/filters";
-import { Buckets, Bucket } from "../gdcapi/gdcapi";
+import { Buckets, Bucket } from "../gdcapi/types";
 import { GraphQLApiResponse, graphqlAPISlice } from "../gdcapi/gdcgraphql";
 
 interface GeneCancerDistributionTableResponse {
@@ -18,10 +18,16 @@ interface GeneCancerDistributionTableResponse {
         total: {
           project__project_id: Buckets;
         };
+        cnvAmplification: {
+          project__project_id: Buckets;
+        };
         cnvGain: {
           project__project_id: Buckets;
         };
         cnvLoss: {
+          project__project_id: Buckets;
+        };
+        cnvHomozygousDeletion: {
           project__project_id: Buckets;
         };
         cnvTotal: {
@@ -56,8 +62,10 @@ export interface CancerDistributionTableData {
   projects: readonly Bucket[];
   ssmFiltered: Record<string, number>;
   ssmTotal: Record<string, number>;
+  cnvAmplification?: Record<string, number>;
   cnvGain?: Record<string, number>;
   cnvLoss?: Record<string, number>;
+  cnvHomozygousDeletion?: Record<string, number>;
   cnvTotal?: Record<string, number>;
 }
 
@@ -110,8 +118,10 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
           $ssmTested: FiltersArgument
           $ssmCountsFilters: FiltersArgument
           $caseAggsFilter: FiltersArgument
+          $cnvAmplificationFilter: FiltersArgument
           $cnvGainFilter: FiltersArgument
           $cnvLossFilter: FiltersArgument
+          $cnvHomozygousDeletionFilter: FiltersArgument
           $cnvTested: FiltersArgument
         ) {
           viewer {
@@ -135,6 +145,14 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
                     }
                   }
                 }
+                cnvAmplification: aggregations(case_filters: $cohortFilters, filters: $cnvAmplificationFilter) {
+                  project__project_id {
+                    buckets {
+                      doc_count
+                      key
+                    }
+                  }
+                }
                 cnvGain: aggregations(case_filters: $cohortFilters, filters: $cnvGainFilter) {
                   project__project_id {
                     buckets {
@@ -144,6 +162,14 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
                   }
                 }
                 cnvLoss: aggregations(case_filters: $cohortFilters, filters: $cnvLossFilter) {
+                  project__project_id {
+                    buckets {
+                      doc_count
+                      key
+                    }
+                  }
+                }
+                cnvHomozygousDeletion: aggregations(case_filters: $cohortFilters, filters: $cnvHomozygousDeletionFilter) {
                   project__project_id {
                     buckets {
                       doc_count
@@ -219,6 +245,26 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
                 ...gqlContextIntersection,
               ],
             },
+            cnvAmplificationFilter: {
+              op: "and",
+              content: [
+                {
+                  content: {
+                    field: "cases.available_variation_data",
+                    value: ["cnv"],
+                  },
+                  op: "in",
+                },
+                {
+                  content: {
+                    field: "cnvs.cnv_change_5_category",
+                    value: ["Amplification"],
+                  },
+                  op: "in",
+                },
+                ...geneGqlContextIntersection,
+              ],
+            },
             cnvGainFilter: {
               op: "and",
               content: [
@@ -231,7 +277,7 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
                 },
                 {
                   content: {
-                    field: "cnvs.cnv_change",
+                    field: "cnvs.cnv_change_5_category",
                     value: ["Gain"],
                   },
                   op: "in",
@@ -251,8 +297,28 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
                 },
                 {
                   content: {
-                    field: "cnvs.cnv_change",
+                    field: "cnvs.cnv_change_5_category",
                     value: ["Loss"],
+                  },
+                  op: "in",
+                },
+                ...geneGqlContextIntersection,
+              ],
+            },
+            cnvHomozygousDeletionFilter: {
+              op: "and",
+              content: [
+                {
+                  content: {
+                    field: "cases.available_variation_data",
+                    value: ["cnv"],
+                  },
+                  op: "in",
+                },
+                {
+                  content: {
+                    field: "cnvs.cnv_change_5_category",
+                    value: ["Homozygous Deletion"],
                   },
                   op: "in",
                 },
@@ -295,6 +361,11 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
               (b) => [b.key, b.doc_count],
             ),
           ),
+          cnvAmplification: Object.fromEntries(
+            response?.data?.viewer?.explore?.cases?.cnvAmplification?.project__project_id?.buckets.map(
+              (b) => [b.key, b.doc_count],
+            ),
+          ),
           cnvGain: Object.fromEntries(
             response?.data?.viewer?.explore?.cases?.cnvGain?.project__project_id?.buckets.map(
               (b) => [b.key, b.doc_count],
@@ -302,6 +373,11 @@ export const cancerDistributionTableApiSlice = graphqlAPISlice.injectEndpoints({
           ),
           cnvLoss: Object.fromEntries(
             response?.data?.viewer?.explore?.cases?.cnvLoss?.project__project_id?.buckets.map(
+              (b) => [b.key, b.doc_count],
+            ),
+          ),
+          cnvHomozygousDeletion: Object.fromEntries(
+            response?.data?.viewer?.explore?.cases?.cnvHomozygousDeletion?.project__project_id?.buckets.map(
               (b) => [b.key, b.doc_count],
             ),
           ),

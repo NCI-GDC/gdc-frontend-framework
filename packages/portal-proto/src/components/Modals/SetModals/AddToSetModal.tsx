@@ -1,12 +1,4 @@
 import React, { useState } from "react";
-import {
-  UseMutation,
-  UseQuery,
-} from "@reduxjs/toolkit/dist/query/react/buildHooks";
-import {
-  QueryDefinition,
-  MutationDefinition,
-} from "@reduxjs/toolkit/dist/query";
 import { Modal } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import {
@@ -15,6 +7,11 @@ import {
   buildCohortGqlOperator,
   addSet,
   useCoreDispatch,
+  useGeneSetCountQuery,
+  useGeneSetCountsQuery,
+  useAppendToGeneSetMutation,
+  showModal,
+  Modals,
 } from "@gff/core";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
@@ -26,26 +23,22 @@ import { SET_COUNT_LIMIT } from "./constants";
 
 interface AddToSetModalProps {
   readonly filters: FilterSet;
+  readonly cohortFilters?: FilterSet;
   readonly addToCount: number;
   readonly setType: SetTypes;
   readonly setTypeLabel: string;
   readonly field: string;
   readonly sort?: string;
   readonly closeModal: () => void;
-  readonly singleCountHook: UseQuery<
-    QueryDefinition<any, any, any, number, string>
-  >;
-  readonly countHook: UseQuery<
-    QueryDefinition<any, any, any, Record<string, number>, string>
-  >;
-  readonly appendSetHook: UseMutation<
-    MutationDefinition<any, any, any, string, string>
-  >;
+  readonly singleCountHook: typeof useGeneSetCountQuery;
+  readonly countHook: typeof useGeneSetCountsQuery;
+  readonly appendSetHook: typeof useAppendToGeneSetMutation;
   readonly opened: boolean;
 }
 
 const AddToSetModal: React.FC<AddToSetModalProps> = ({
   filters,
+  cohortFilters,
   addToCount,
   setType,
   setTypeLabel,
@@ -130,6 +123,7 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
           onClick={() => {
             appendToSet({
               setId: selectedSets[0][0],
+              case_filters: buildCohortGqlOperator(cohortFilters) ?? {},
               filters: {
                 content: buildCohortGqlOperator(filters)
                   ? [
@@ -160,10 +154,7 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
               .then((response) => {
                 const newSetId = response;
                 if (newSetId === undefined) {
-                  showNotification({
-                    message: "Problem modifiying set.",
-                    color: "red",
-                  });
+                  dispatch(showModal({ modal: Modals.SaveSetErrorModal }));
                 } else {
                   dispatch(
                     addSet({
@@ -181,11 +172,7 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
                 }
               })
               .catch(() => {
-                showNotification({
-                  message: "Problem modifiying set.",
-                  color: "red",
-                  closeButtonProps: { "aria-label": "Close notification" },
-                });
+                dispatch(showModal({ modal: Modals.SaveSetErrorModal }));
               });
           }}
         >

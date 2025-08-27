@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { Button, Tooltip } from "@mantine/core";
 import { CountsIcon } from "@/components/tailwindComponents";
-import SaveCohortModal from "@/components/Modals/SaveCohortModal";
+import { SaveCohortModal } from "@gff/portal-components";
+import { cohortActionsHooks } from "../cohortBuilder/CohortManager/cohortActionHooks";
+import { INVALID_COHORT_NAMES } from "../cohortBuilder/utils";
 
 const ProjectsCohortButton = ({
   pickedProjects,
@@ -50,6 +52,8 @@ const ProjectsCohortButton = ({
             },
           },
         }}
+        hooks={cohortActionsHooks}
+        invalidCohortNames={INVALID_COHORT_NAMES}
       />
     </>
   );

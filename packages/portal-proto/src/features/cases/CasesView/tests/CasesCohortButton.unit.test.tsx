@@ -2,36 +2,39 @@ import React from "react";
 import { render } from "test-utils";
 import { CasesCohortButton } from "../CasesCohortButton";
 import userEvent from "@testing-library/user-event";
-import * as core from "@gff/core";
+import { waitFor } from "@testing-library/react";
 
-const mockMutation = jest.fn().mockReturnValue({
-  unwrap: jest.fn().mockResolvedValue({
-    id: "2",
-  }),
-});
-beforeEach(() => {
-  jest.spyOn(core, "useCoreSelector").mockReturnValue([]);
-  jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
-  jest
-    .spyOn(core, "useAddCohortMutation")
-    .mockReturnValue([mockMutation, { isLoading: false } as any]);
-  jest
-    .spyOn(core, "useGetCohortsByContextIdQuery")
-    .mockReturnValue({ data: {}, refetch: jest.fn() });
-  jest
-    .spyOn(core, "useLazyGetCohortByIdQuery")
-    .mockReturnValue([jest.fn()] as any);
-  jest
-    .spyOn(core, "useCreateCaseSetFromFiltersMutation")
-    .mockReturnValue([jest.fn()] as any);
-});
+jest.mock("@gff/core", () => ({
+  ...jest.requireActual("@gff/core"),
+  useCoreSelector: jest.fn().mockReturnValue([]),
+  useCoreDispatch: jest.fn().mockImplementation(jest.fn()),
+  useAddCohortMutation: jest.fn().mockReturnValue([
+    jest.fn().mockReturnValue({
+      unwrap: jest.fn().mockResolvedValue({
+        id: "2",
+      }),
+    }),
+    { isLoading: false } as any,
+  ]),
+  useLazyGetCohortsByContextIdQuery: jest.fn().mockReturnValue([
+    jest.fn().mockReturnValue({ unwrap: jest.fn() }),
+    {
+      isSuccess: true,
+      isLoading: false,
+    },
+  ] as any),
+  useLazyGetCohortByIdQuery: jest.fn().mockReturnValue([jest.fn()] as any),
+  useCreateCaseSetFromFiltersMutation: jest
+    .fn()
+    .mockReturnValue([jest.fn()] as any),
+}));
 
 describe("CasesCohortButton", () => {
   it("displays loading message when cases are fetching", async () => {
     const { getByText } = render(
       <CasesCohortButton
         onCreateSet={() => {}}
-        response={{ isSuccess: false }}
+        response={{ isSuccess: false, isError: false }}
         cases={["case 1"]}
         numCases={1}
         fetchingCases={true}
@@ -39,20 +42,23 @@ describe("CasesCohortButton", () => {
     );
 
     await userEvent.click(getByText("Save New Cohort"));
+    await waitFor(() => expect(getByText("Loading...")).toBeDefined(), {
+      timeout: 2000,
+    });
     expect(getByText("Loading...")).toBeInTheDocument();
   });
 
   it("disables target button when there are no cases", () => {
-    const { getByTestId } = render(
+    const { getByRole } = render(
       <CasesCohortButton
         onCreateSet={() => {}}
-        response={{ isSuccess: false }}
+        response={{ isSuccess: false, isError: false }}
         cases={[]}
         numCases={0}
       />,
     );
 
-    const targetButton = getByTestId("menu-elem");
+    const targetButton = getByRole("button", { name: "Save New Cohort" });
     expect(targetButton).toBeDisabled();
   });
 });

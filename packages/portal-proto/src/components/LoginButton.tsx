@@ -1,4 +1,5 @@
 import openAuthWindow from "@/features/layout/auth/openAuthWindow";
+import { LoginIcon } from "@/utils/icons";
 import {
   hideModal,
   useCoreDispatch,
@@ -6,7 +7,6 @@ import {
   useLazyGetBannerNotificationsQuery,
 } from "@gff/core";
 import { Button } from "@mantine/core";
-import { MdOutlineLogin as LoginIcon } from "react-icons/md";
 import { theme } from "tailwind.config";
 export const LoginButton = ({
   fromSession,
@@ -20,13 +20,16 @@ export const LoginButton = ({
   const [fetchNotifications] = useLazyGetBannerNotificationsQuery();
   return (
     <Button
+      data-testid="button-header-login"
       className={`p-1 ${
         fromHeader
           ? "font-medium text-primary-darkest hover:bg-primary-lightest"
           : "hover:bg-primary-darker"
       }`}
       onClick={async () => {
-        fromSession && dispatch(hideModal());
+        if (fromSession) {
+          dispatch(hideModal());
+        }
         await openAuthWindow();
         await fetchUserDetails();
         await fetchNotifications();
@@ -43,7 +46,6 @@ export const LoginButton = ({
       }
       variant={fromHeader ? "subtle" : "filled"}
       size={fromHeader ? "compact-sm" : undefined}
-      data-testid="loginButton"
     >
       Login
     </Button>

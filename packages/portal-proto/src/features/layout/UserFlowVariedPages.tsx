@@ -1,36 +1,26 @@
-import { PropsWithChildren, ReactNode, useEffect } from "react";
-import { showNotification } from "@mantine/notifications";
+import { PropsWithChildren, ReactNode } from "react";
 import {
   isString,
   useCoreSelector,
   useCoreDispatch,
   selectBanners,
-  selectCurrentCohortName,
-  selectCohortMessage,
-  clearCohortMessage,
   useGetBannerNotificationsQuery,
+  selectCurrentModal,
+  Modals,
+  hideModal,
 } from "@gff/core";
 import Banner from "@/components/Banner";
-import { Button } from "@mantine/core";
-import {
-  DeleteCohortNotification,
-  DiscardChangesCohortNotification,
-  ErrorCohortNotification,
-  NewCohortNotification,
-  SavedCurrentCohortNotification,
-  NewCohortNotificationWithSetAsCurrent,
-  SavedCohortNotification,
-  SavedCohortNotificationWithSetAsCurrent,
-} from "@/features/cohortBuilder/CohortNotifications";
+import { Button, Modal } from "@mantine/core";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { useElementSize } from "@mantine/hooks";
 import ClearStoreErrorBoundary from "@/components/ClearStoreErrorBoundary";
+import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
+import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 
 interface UserFlowVariedPagesProps {
   readonly headerElements: ReadonlyArray<ReactNode>;
   readonly indexPath?: string;
-  readonly Options?: React.FC<unknown>;
   readonly ContextBar?: ReactNode;
   readonly isContextBarSticky?: boolean;
 }
@@ -38,136 +28,15 @@ interface UserFlowVariedPagesProps {
 export const UserFlowVariedPages = ({
   headerElements,
   indexPath = "/",
-  Options,
   children,
   ContextBar = undefined,
   isContextBarSticky = false,
 }: PropsWithChildren<UserFlowVariedPagesProps>) => {
   const dispatch = useCoreDispatch();
+  const modal = useCoreSelector((state) => selectCurrentModal(state));
 
   useGetBannerNotificationsQuery();
   const banners = useCoreSelector((state) => selectBanners(state));
-
-  const currentCohortName = useCoreSelector((state) =>
-    selectCurrentCohortName(state),
-  );
-  const cohortMessage = useCoreSelector((state) => selectCohortMessage(state));
-
-  useEffect(() => {
-    if (cohortMessage) {
-      for (const message of cohortMessage) {
-        const cmdAndParam = message.split("|", 3);
-        if (cmdAndParam.length == 3) {
-          if (cmdAndParam[0] === "newCohort") {
-            showNotification({
-              message: <NewCohortNotification cohortName={cmdAndParam[1]} />,
-              classNames: {
-                description: "flex flex-col content-center text-center",
-              },
-              autoClose: 5000,
-              closeButtonProps: { "aria-label": "Close notification" },
-            });
-          }
-          if (cmdAndParam[0] === "deleteCohort") {
-            showNotification({
-              message: <DeleteCohortNotification cohortName={cmdAndParam[1]} />,
-              classNames: {
-                description: "flex flex-col content-center text-center",
-              },
-              autoClose: 5000,
-              closeButtonProps: { "aria-label": "Close notification" },
-            });
-          }
-          if (cmdAndParam[0] === "savedCohort") {
-            showNotification({
-              message: <SavedCohortNotification cohortName={cmdAndParam[1]} />,
-              classNames: {
-                description: "flex flex-col content-center text-center",
-              },
-              autoClose: 5000,
-              closeButtonProps: { "aria-label": "Close notification" },
-            });
-          }
-          if (cmdAndParam[0] === "savedCohortSetCurrent") {
-            showNotification({
-              message: (
-                <SavedCohortNotificationWithSetAsCurrent
-                  cohortName={cmdAndParam[1]}
-                  cohortId={cmdAndParam[2]}
-                />
-              ),
-              classNames: {
-                description: "flex flex-col content-center text-center",
-              },
-              autoClose: 5000,
-              closeButtonProps: { "aria-label": "Close notification" },
-            });
-          }
-          if (cmdAndParam[0] === "savedCurrentCohort") {
-            showNotification({
-              message: <SavedCurrentCohortNotification />,
-              classNames: {
-                description: "flex flex-col content-center text-center",
-              },
-              autoClose: 5000,
-              closeButtonProps: { "aria-label": "Close notification" },
-            });
-          }
-          if (cmdAndParam[0] === "discardChanges") {
-            showNotification({
-              message: <DiscardChangesCohortNotification />,
-              classNames: {
-                description: "flex flex-col content-center text-center",
-              },
-              autoClose: 5000,
-            });
-          }
-          if (cmdAndParam[0] === "error") {
-            showNotification({
-              message: <ErrorCohortNotification errorType={cmdAndParam[1]} />,
-              classNames: {
-                description: "flex flex-col content-center text-center",
-              },
-              autoClose: 5000,
-              closeButtonProps: { "aria-label": "Close notification" },
-            });
-          }
-          if (cmdAndParam[0] === "newCasesCohort") {
-            showNotification({
-              message: (
-                <NewCohortNotificationWithSetAsCurrent
-                  cohortName={cmdAndParam[1]}
-                  cohortId={cmdAndParam[2]}
-                />
-              ),
-              classNames: {
-                description: "flex flex-col content-center text-center",
-              },
-              autoClose: 5000,
-              closeButtonProps: { "aria-label": "Close notification" },
-            });
-          }
-          if (cmdAndParam[0] === "newProjectsCohort") {
-            showNotification({
-              message: (
-                <NewCohortNotificationWithSetAsCurrent
-                  cohortName={cmdAndParam[1]}
-                  cohortId={cmdAndParam[2]}
-                />
-              ),
-              classNames: {
-                description: "flex flex-col content-center text-center",
-              },
-              autoClose: 5000,
-              closeButtonProps: { "aria-label": "Close notification" },
-            });
-          }
-        }
-      }
-
-      dispatch(clearCohortMessage());
-    }
-  }, [cohortMessage, dispatch, currentCohortName]);
 
   const { ref: headerRef, height: headerHeight } = useElementSize();
 
@@ -176,28 +45,60 @@ export const UserFlowVariedPages = ({
       <header
         className="flex-none bg-base-max sticky top-0 z-[300] shadow-lg"
         ref={headerRef}
+        id="global-header"
       >
         {banners.map((banner) => (
           <Banner {...banner} key={banner.id} />
         ))}
-        <Header {...{ headerElements, indexPath, Options }} />
+        <Header {...{ headerElements, indexPath }} />
       </header>
       <ClearStoreErrorBoundary>
-        <aside
-          className={`${isContextBarSticky ? `sticky z-[299] shadow-lg` : ""}`}
-          style={{
-            top: `${isContextBarSticky && `${Math.round(headerHeight)}px`}`, // switching this to tailwind does not work
-          }}
-        >
-          {ContextBar ? ContextBar : null}
-        </aside>
-        <main
-          data-tour="full_page_content"
-          className="flex flex-grow flex-col overflow-x-clip overflow-y-clip"
-          id="main"
-        >
-          {children}
-        </main>
+        <>
+          <aside
+            className={`${
+              isContextBarSticky ? `sticky z-[299] shadow-lg` : ""
+            }`}
+            style={{
+              top: `${isContextBarSticky && `${Math.round(headerHeight)}px`}`, // switching this to tailwind does not work
+            }}
+            id="context-bar"
+          >
+            {ContextBar ? ContextBar : null}
+          </aside>
+          <main
+            data-tour="full_page_content"
+            className="flex flex-grow flex-col overflow-x-clip overflow-y-clip"
+            id="main"
+          >
+            {children}
+          </main>
+          <Modal
+            opened={modal === Modals.SaveSetErrorModal}
+            onClose={() => dispatch(hideModal())}
+            title="Save Set Error"
+            zIndex={500}
+          >
+            <p className="py-2 px-4">There was a problem saving the set.</p>
+            <ModalButtonContainer data-testid="modal-button-container">
+              <DarkFunctionButton onClick={() => dispatch(hideModal())}>
+                OK
+              </DarkFunctionButton>
+            </ModalButtonContainer>
+          </Modal>
+
+          <Modal
+            opened={modal === Modals.SaveCohortErrorModal}
+            onClose={() => dispatch(hideModal())}
+            title="Save Cohort Error"
+          >
+            <p className="py-2 px-4">There was a problem saving the cohort.</p>
+            <ModalButtonContainer data-testid="modal-button-container">
+              <DarkFunctionButton onClick={() => dispatch(hideModal())}>
+                OK
+              </DarkFunctionButton>
+            </ModalButtonContainer>
+          </Modal>
+        </>
       </ClearStoreErrorBoundary>
       <Footer />
     </div>

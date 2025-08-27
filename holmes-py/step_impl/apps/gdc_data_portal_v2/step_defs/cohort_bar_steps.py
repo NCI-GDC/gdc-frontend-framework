@@ -25,6 +25,23 @@ def click_button_on_cohort_bar(button_name: str):
         APP.cohort_bar.click_cohort_bar_button(button_name)
     time.sleep(0.5)
 
+@step("Is text <expected_text> present on the Cohort Bar")
+def is_text_present_on_the_cohort_bar(expected_text: str):
+    """Verifies if expected text is on the Cohort Bar"""
+    is_text_present = APP.cohort_bar.is_text_present_on_cohort_bar(expected_text)
+    assert is_text_present, f"The text '{expected_text}' is NOT present"
+
+@step("Is text <expected_text> not present on the Cohort Bar")
+def is_text_present_on_the_page(expected_text: str):
+    """Verifies if text is no longer on the cohort bar as expected"""
+    is_text_not_present = APP.cohort_bar.is_text_not_present_on_cohort_bar(expected_text)
+    assert (
+        is_text_not_present
+    ), f"The text '{expected_text}' is present when it should not"
+
+@step("Unpin the Cohort Bar")
+def unpin_cohort_bar():
+    APP.cohort_bar.unpin_cohort_bar()
 
 @step("Name the cohort <cohort_name> in the Cohort Bar section")
 def name_cohort(cohort_name: str):
@@ -265,6 +282,7 @@ def validate_cohort_query_filters(table):
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
     APP.shared.wait_for_loading_spinner_to_detatch()
     APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinners_to_detach()
     for k, v in enumerate(table):
         is_cohort_filter_query_visible = APP.cohort_bar.is_cohort_query_filter_present(
             v[0], v[1], v[2]
@@ -287,3 +305,8 @@ def validate_cohort_query_filters(table):
         assert (
             is_cohort_filter_query_visible == False
         ), f"The filter '{v[0]}', with values '{v[1]}' IS present in the cohort query filter area when it should not be"
+
+@step("Validate there are no active cohort filters")
+def validate_empty_cohort_filters():
+    is_cohort_filters_empty = APP.shared.is_no_active_cohort_filter_text_present()
+    assert is_cohort_filters_empty, f"There are filters in cohort query area when there should NOT be"

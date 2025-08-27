@@ -1,5 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
+import {
+  graphqlAPI,
+  GraphQLApiResponse,
+  graphqlAPISlice,
+} from "../gdcapi/gdcgraphql";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import { CoreDataSelectorResponse, DataStatus } from "../../dataAccess";
@@ -31,6 +35,36 @@ const GeneSymbolQuery = `
             }
           }
 `;
+
+const geneSymbolSlice = graphqlAPISlice.injectEndpoints({
+  endpoints: (builder) => ({
+    geneSymbol: builder.query<string, string>({
+      query: (geneId) => {
+        const graphQLFilters = {
+          filters: {
+            content: [
+              {
+                content: {
+                  field: "genes.gene_id",
+                  value: geneId,
+                },
+                op: "in",
+              },
+            ],
+            op: "and",
+          },
+        };
+
+        return {
+          graphQLQuery: GeneSymbolQuery,
+          graphQLFilters,
+        };
+      },
+      transformResponse: (response) =>
+        response.data.viewer.explore.genes.hits.edges?.[0].node.symbol,
+    }),
+  }),
+});
 
 export const fetchGeneSymbol = createAsyncThunk<
   GraphQLApiResponse,
@@ -183,3 +217,5 @@ export const useGeneSymbol = (
     isError: status === "rejected",
   };
 };
+
+export const { useLazyGeneSymbolQuery } = geneSymbolSlice;

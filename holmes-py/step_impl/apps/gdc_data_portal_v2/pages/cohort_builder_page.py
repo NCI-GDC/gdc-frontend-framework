@@ -3,6 +3,7 @@ from playwright.sync_api import Page
 from ....base.base_page import BasePage
 from ....base.base_page import GenericLocators
 
+import time
 
 class CohortBuilderPageLocators:
     BUTTON_IDENT = (
@@ -34,6 +35,9 @@ class CohortBuilderPageLocators:
     )
     FACET_GROUP_NAMED_OBJECT_IDENT = (
         lambda group_name, object_name: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> div >> text="{object_name}"'
+    )
+    FACET_GROUP_CUSTOM_FILTER_TEXT_IDENT = (
+        lambda group_name, filter_text: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> text="{filter_text}"'
     )
 
     FILTER_TAB_LIST = (
@@ -202,8 +206,35 @@ class CohortBuilderPage(BasePage):
     # Used to check the text displayed in the query expression area
     def is_query_expression_area_text_present(self, text):
         locator = CohortBuilderPageLocators.QUERY_EXPRESSION_TEXT(text)
-        result = self.is_visible(locator)
-        return result
+        return self.is_visible(locator)
+
+    def is_facet_card_custom_filter_text_present(self, facet_card, text):
+        """Returns if filter text is present on given facet card"""
+        loading_locator = CohortBuilderPageLocators.FACET_GROUP_CUSTOM_FILTER_TEXT_IDENT(facet_card, "...")
+        # If the text "..." is visible, that means the card is still loading information. We wait until
+        # it disappears or 10 seconds elapses before checking the card for actual text
+        retry_counter = 0
+        while self.is_visible(loading_locator):
+            time.sleep(1)
+            loading_locator = CohortBuilderPageLocators.FACET_GROUP_CUSTOM_FILTER_TEXT_IDENT(facet_card, "...")
+            retry_counter = retry_counter+1
+            if retry_counter >= 10:
+                break
+        locator = CohortBuilderPageLocators.FACET_GROUP_CUSTOM_FILTER_TEXT_IDENT(facet_card, text)
+        return self.is_visible(locator)
+
+    def is_facet_card_enum_checkbox_checked(self, facet_group_name, selection):
+        """Returns if a filter card enum checkbox is checked"""
+        locator = CohortBuilderPageLocators.FACET_GROUP_SELECTION_IDENT(
+            facet_group_name, selection
+        )
+        return self.is_checked(locator)
+
+    def remove_facet_card_custom_filter_text(self, facet_card, text):
+        """Clicks the custom filter text to remove it on given facet card"""
+        locator = CohortBuilderPageLocators.FACET_GROUP_CUSTOM_FILTER_TEXT_IDENT(facet_card, text)
+        self.hover(locator)
+        self.click(locator, True)
 
     # Clicks a filter card object using its visible, displayed name
     def click_named_item_in_facet_group(self, facet_group_name, object_name):

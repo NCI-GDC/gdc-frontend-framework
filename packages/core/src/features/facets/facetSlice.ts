@@ -2,14 +2,11 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import { FacetBuckets } from "./types";
-import {
-  fetchGdcCases,
-  GdcApiResponse,
-  isBucketsAggregation,
-  isStatsAggregation,
-} from "../gdcapi/gdcapi";
-
+import { fetchGdcCases } from "../gdcapi";
+import { GdcApiResponse } from "../gdcapi/types";
+import { isBucketsAggregation, isStatsAggregation } from "../gdcapi/utils";
 import { selectCurrentCohortFilters, buildCohortGqlOperator } from "../cohort";
+import { ERROR_UNHANDLED_AGGREGATION } from "../../constants";
 
 export const fetchFacetByName = createAsyncThunk<
   GdcApiResponse<unknown>,
@@ -72,6 +69,8 @@ const slice = createSlice({
                   };
                 } else {
                   // Unhandled aggregation
+                  state.cases[field].status = "fulfilled";
+                  state.cases[field].error = ERROR_UNHANDLED_AGGREGATION;
                 }
               },
             );

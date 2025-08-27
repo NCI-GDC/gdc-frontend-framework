@@ -1,5 +1,5 @@
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
-import { getGdcHistory } from "../gdcapi/gdcapi";
+import { getGdcHistory } from "../gdcapi";
 import { HistoryDefaults } from "../gdcapi/types";
 import { coreCreateApi } from "src/coreCreateApi";
 import serializeQueryArgsWithDataRelease from "src/serializeQueryArgs";

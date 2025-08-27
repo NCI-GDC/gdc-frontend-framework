@@ -11,8 +11,10 @@
         "cases.diagnoses.tissue_or_organ_of_origin",
         "cases.upload.case_id"
       ],
-      "docType": "cases",
-      "index": "explore"
+      "queryOptions": {
+        "docType": "cases",
+        "indexType": "explore"
+      }
     },
     "demographic": {
       "label": "Demographic",
@@ -23,20 +25,29 @@
         "cases.diagnoses.age_at_diagnosis",
         "cases.demographic.vital_status"
       ],
-      "docType": "cases",
-      "index": "explore"
+      "queryOptions": {
+        "docType": "cases",
+        "indexType": "explore"
+      }
     },
     "general_diagnosis": {
       "label": "General Diagnosis",
       "facets": [
+        "cases.diagnoses.ajcc_clinical_stage",
+        "cases.diagnoses.ajcc_pathologic_stage",
+        "cases.diagnoses.uicc_clinical_stage",
+        "cases.diagnoses.uicc_pathologic_stage",
+        "cases.diagnoses.tumor_grade",
         "cases.diagnoses.morphology",
         "cases.diagnoses.year_of_diagnosis",
         "cases.diagnoses.site_of_resection_or_biopsy",
         "cases.diagnoses.sites_of_involvement",
         "cases.diagnoses.laterality"
       ],
-      "docType": "cases",
-      "index": "explore"
+      "queryOptions": {
+        "docType": "cases",
+        "indexType": "explore"
+      }
     },
     "disease_status": {
       "label": "Disease Status and History",
@@ -45,62 +56,55 @@
         "cases.diagnoses.prior_treatment",
         "cases.diagnoses.synchronous_malignancy",
         "cases.diagnoses.progression_or_recurrence",
-        "cases.diagnoses.residual_disease"
+        "cases.diagnoses.residual_disease",
+        "cases.diagnoses.child_pugh_classification",
+        "cases.diagnoses.ishak_fibrosis_score"
       ],
-      "docType": "cases",
-      "index": "explore"
+      "queryOptions": {
+        "docType": "cases",
+        "indexType": "explore"
+      }
     },
-    "stage_classification": {
-      "label": "Stage Classification",
+    "disease_specific_classifications": {
+      "label": "Disease Specific Classifications",
       "facets": [
-        "cases.diagnoses.ajcc_clinical_stage",
-        "cases.diagnoses.ajcc_pathologic_stage",
         "cases.diagnoses.ann_arbor_clinical_stage",
         "cases.diagnoses.ann_arbor_pathologic_stage",
         "cases.diagnoses.cog_renal_stage",
-        "cases.diagnoses.enneking_msts_stage",
         "cases.diagnoses.figo_stage",
         "cases.diagnoses.igcccg_stage",
+        "cases.diagnoses.inrg_stage",
         "cases.diagnoses.inss_stage",
         "cases.diagnoses.iss_stage",
-        "cases.diagnoses.masaoka_stage"
-      ],
-      "docType": "cases",
-      "index": "explore"
-    },
-    "grade_classification": {
-      "label": "Grade Classification",
-      "facets": [
+        "cases.diagnoses.masaoka_stage",
         "cases.diagnoses.inpc_grade",
-        "cases.diagnoses.tumor_grade",
-        "cases.diagnoses.who_cns_grade"
-      ],
-      "docType": "cases",
-      "index": "explore"
-    },
-    "other_classification": {
-      "label": "Other Classification",
-      "facets": [
+        "cases.diagnoses.who_cns_grade",
         "cases.diagnoses.cog_neuroblastoma_risk_group",
         "cases.diagnoses.cog_rhabdomyosarcoma_risk_group",
         "cases.diagnoses.eln_risk_classification",
         "cases.diagnoses.international_prognostic_index",
-        "cases.diagnoses.wilms_tumor_histologic_subtype"
+        "cases.diagnoses.medulloblastoma_molecular_classification",
+        "cases.diagnoses.wilms_tumor_histologic_subtype",
+        "cases.diagnoses.weiss_assessment_score"
       ],
-      "docType": "cases",
-      "index": "explore"
+      "queryOptions": {
+        "docType": "cases",
+        "indexType": "explore"
+      }
     },
     "treatment": {
       "label": "Treatment",
       "facets": [
+        "cases.diagnoses.best_overall_response",
         "cases.diagnoses.treatments.therapeutic_agents",
         "cases.diagnoses.treatments.treatment_intent_type",
         "cases.diagnoses.treatments.treatment_outcome",
-        "cases.diagnoses.treatments.treatment_type",
-        "cases.diagnoses.best_overall_response"
+        "cases.diagnoses.treatments.treatment_type"
       ],
-      "docType": "cases",
-      "index": "explore"
+      "queryOptions": {
+        "docType": "cases",
+        "indexType": "explore"
+      }
     },
     "exposure": {
       "label": "Exposure",
@@ -112,28 +116,50 @@
         "cases.exposures.pack_years_smoked",
         "cases.exposures.tobacco_smoking_onset_year"
       ],
-      "docType": "cases",
-      "index": "explore"
+      "queryOptions": {
+        "docType": "cases",
+        "indexType": "explore"
+      }
+    },
+    "other_clinical_attributes": {
+      "label": "Other Clinical Attributes",
+      "facets": [
+        "cases.follow_ups.other_clinical_attributes.bmi",
+        "cases.follow_ups.other_clinical_attributes.weight",
+        "cases.follow_ups.other_clinical_attributes.height",
+        "cases.follow_ups.other_clinical_attributes.risk_factors",
+        "cases.follow_ups.other_clinical_attributes.menopause_status",
+        "cases.follow_ups.other_clinical_attributes.comorbidities",
+        "cases.follow_ups.other_clinical_attributes.pregnancy_outcome",
+        "cases.follow_ups.other_clinical_attributes.number_of_pregnancies"
+      ],
+      "queryOptions": {
+        "docType": "cases",
+        "indexType": "explore"
+      }
     },
     "biospecimen": {
       "label": "Biospecimen",
       "facets": [
         "cases.samples.tissue_type",
         "cases.samples.biospecimen_anatomic_site",
-        "cases.samples.composition",
+        "cases.samples.specimen_type",
         "cases.samples.preservation_method",
-        "cases.samples.tumor_code",
         "cases.samples.tumor_descriptor",
         "cases.samples.portions.analytes.aliquots.analyte_type"
       ],
-      "docType": "cases",
-      "index": "explore"
+      "queryOptions": {
+        "docType": "cases",
+        "indexType": "explore"
+      }
     },
-    "molecular_filters": {
-      "label": "Molecular Filters",
+    "genomic_filters": {
+      "label": "Genomic Filters",
       "facets": ["genes.upload.gene_id", "ssms.upload.ssm_id"],
-      "docType": "cases",
-      "index": "explore"
+      "queryOptions": {
+        "docType": "cases",
+        "indexType": "explore"
+      }
     },
     "available_data": {
       "label": "Available Data",
@@ -146,14 +172,18 @@
         "files.platform",
         "files.access"
       ],
-      "docType": "cases",
-      "index": "explore"
+      "queryOptions": {
+        "docType": "cases",
+        "indexType": "explore"
+      }
     },
     "custom": {
       "label": "Custom Filters",
       "facets": [],
-      "docType": "cases",
-      "index": "explore"
+      "queryOptions": {
+        "docType": "cases",
+        "indexType": "explore"
+      }
     }
   }
 }

@@ -13,18 +13,22 @@ export const SetOperationsThree: React.FC<SetOperationsExternalProps> = ({
     entityType,
     sets,
   );
-  const { data: intersectionData } = queryHook({
-    filters: {
-      filters: intersectionFilters,
-    },
-  });
+  const { data: intersectionData, isLoading: isIntersectionLoading } =
+    queryHook({
+      filters: {
+        filters: intersectionFilters,
+      },
+    });
 
   const s1IntersectS2MinusS3DataFilters = createSetFiltersByKey(
     "S1_intersect_S2_minus_S3",
     entityType,
     sets,
   );
-  const { data: s1IntersectS2MinusS3Data } = queryHook({
+  const {
+    data: s1IntersectS2MinusS3Data,
+    isLoading: isS1IntersectS2MinusS3Loading,
+  } = queryHook({
     filters: {
       filters: s1IntersectS2MinusS3DataFilters,
     },
@@ -35,7 +39,10 @@ export const SetOperationsThree: React.FC<SetOperationsExternalProps> = ({
     entityType,
     sets,
   );
-  const { data: s2IntersectS3MinusS1Data } = queryHook({
+  const {
+    data: s2IntersectS3MinusS1Data,
+    isLoading: isS2IntersectS3MinusS1Loading,
+  } = queryHook({
     filters: {
       filters: s2IntersectS3MinusS1DataFilters,
     },
@@ -46,7 +53,10 @@ export const SetOperationsThree: React.FC<SetOperationsExternalProps> = ({
     entityType,
     sets,
   );
-  const { data: s1IntersectS3MinusS2 } = queryHook({
+  const {
+    data: s1IntersectS3MinusS2,
+    isLoading: isS1IntersectS3MinusS2Loading,
+  } = queryHook({
     filters: {
       filters: s1IntersectS3MinusS2Filters,
     },
@@ -57,33 +67,45 @@ export const SetOperationsThree: React.FC<SetOperationsExternalProps> = ({
     entityType,
     sets,
   );
-  const { data: s1MinusS2UnionS3 } = queryHook({
-    filters: {
-      filters: s1MinusS2UnionS3Filters,
-    },
-  });
+  const { data: s1MinusS2UnionS3, isLoading: isS1MinusS2UnionS3Loading } =
+    queryHook({
+      filters: {
+        filters: s1MinusS2UnionS3Filters,
+      },
+    });
 
   const s2MinusS1UnionS3Filters = createSetFiltersByKey(
     "S2_minus_S1_union_S3",
     entityType,
     sets,
   );
-  const { data: s2MinusS1UnionS3 } = queryHook({
-    filters: {
-      filters: s2MinusS1UnionS3Filters,
-    },
-  });
+  const { data: s2MinusS1UnionS3, isLoading: isS2MinusS1UnionS3Loading } =
+    queryHook({
+      filters: {
+        filters: s2MinusS1UnionS3Filters,
+      },
+    });
 
   const s3MinusS1UnionS2Filters = createSetFiltersByKey(
     "S3_minus_S1_union_S2",
     entityType,
     sets,
   );
-  const { data: s3MinusS1UnionS2 } = queryHook({
-    filters: {
-      filters: s3MinusS1UnionS2Filters,
-    },
-  });
+  const { data: s3MinusS1UnionS2, isLoading: isS3MinusS1UnionS2Loading } =
+    queryHook({
+      filters: {
+        filters: s3MinusS1UnionS2Filters,
+      },
+    });
+
+  const isLoading =
+    isIntersectionLoading ||
+    isS1IntersectS2MinusS3Loading ||
+    isS2IntersectS3MinusS1Loading ||
+    isS1IntersectS3MinusS2Loading ||
+    isS1MinusS2UnionS3Loading ||
+    isS2MinusS1UnionS3Loading ||
+    isS3MinusS1UnionS2Loading;
 
   const data = [
     {
@@ -130,6 +152,7 @@ export const SetOperationsThree: React.FC<SetOperationsExternalProps> = ({
       data={data}
       queryHook={queryHook}
       countHook={countHook}
+      isLoading={isLoading}
     />
   );
 };

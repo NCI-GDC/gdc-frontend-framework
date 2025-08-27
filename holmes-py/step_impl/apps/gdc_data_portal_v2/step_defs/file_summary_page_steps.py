@@ -18,6 +18,10 @@ def add_file_to_cart():
 def add_file_to_cart():
     APP.file_summary_page.remove_file_from_cart()
 
+@step("Select <button_name> on File Summary page")
+def click_file_summary_page_button(button_name: str):
+    APP.file_summary_page.click_button(button_name)
+
 @step("Select file download button on the file summary page")
 def click_download_file():
     APP.file_summary_page.click_download_file_button()

@@ -10,7 +10,9 @@ export const FirstTimeModal = ({
   const [cookie, setCookie] = useCookies(["NCI-Warning"]);
 
   const handleAccept = () => {
-    cookie["NCI-Warning"] || setCookie("NCI-Warning", true);
+    if (!cookie["NCI-Warning"]) {
+      setCookie("NCI-Warning", true);
+    }
   };
 
   return (

@@ -4,7 +4,6 @@ import saveAs from "file-saver";
 import tw from "tailwind-styled-components";
 import { Menu, Tooltip, ActionIcon, Button } from "@mantine/core";
 import { useResizeObserver } from "@mantine/hooks";
-import { FiDownload as DownloadIcon } from "react-icons/fi";
 import {
   useGetCaseSsmsQuery,
   joinFilters,
@@ -18,8 +17,8 @@ import tailwindConfig from "tailwind.config";
 import OffscreenWrapper from "@/components/OffscreenWrapper";
 import { handleDownloadPNG, handleDownloadSVG } from "@/features/charts/utils";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
-import { DashboardDownloadContext } from "@/utils/contexts";
-import { convertDateToString } from "@/utils/date";
+import { DashboardDownloadContext } from "@gff/portal-components";
+import { getFormattedTimestamp } from "@/utils/date";
 import { COLOR_MAP, DEMO_COHORT_FILTERS, DATA_DIMENSIONS } from "../constants";
 import {
   parseNestedQQResponseData,
@@ -30,6 +29,7 @@ import {
 import QQPlot from "./QQPlot";
 import BoxPlot from "./BoxPlot";
 import { DataDimension } from "../types";
+import { DownloadIcon } from "@/utils/icons";
 
 const LightTableRow = tw.tr`text-content text-sm font-content bg-base-max text-base-contrast-max`;
 const DarkTableRow = tw.tr`text-content text-sm font-content bg-base-lightest text-base-contrast-lightest`;
@@ -58,14 +58,15 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
   const boxDownloadChartRef = useRef<HTMLElement>();
   const qqDownloadChartRef = useRef<HTMLElement>();
   const fieldName = clinicalNestedField ?? clinicalField;
-  const date = convertDateToString(new Date());
+  const date = getFormattedTimestamp();
   const boxPlotDownloadName = `${fieldName}-box-plot-${date}`;
   const qqPlotDownloadName = `${fieldName}-qq-plot-${date}`;
 
+  const field_type = clinicalNestedField ? clinicalField : clinicalType;
+  const variant =
+    field_type === "other_clinical_attributes" ? "darker" : "DEFAULT";
   const color =
-    tailwindConfig.theme.extend.colors[
-      COLOR_MAP[clinicalNestedField ? clinicalField : clinicalType]
-    ]?.DEFAULT;
+    tailwindConfig.theme.extend.colors[COLOR_MAP[field_type]]?.[variant];
 
   const originalDataDimension = DATA_DIMENSIONS[field]?.unit;
 
@@ -217,7 +218,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
   return (
     <>
       <div className="flex justify-end">
-        <Menu>
+        <Menu closeOnItemClick={false}>
           <Menu.Target>
             <Tooltip
               label="Download image or data"
@@ -241,7 +242,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
             </Tooltip>
           </Menu.Target>
 
-          <Menu.Dropdown>
+          <Menu.Dropdown data-testid="dropdown-menu-options">
             <Menu.Item
               onClick={async () => {
                 Promise.all([
@@ -333,7 +334,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
         </OffscreenWrapper>
       </div>
       <Button
-        data-testid="button-stats-tsv-cdave-card"
+        data-testid="button-tsv-cdave-card"
         className="bg-base-max text-primary border-primary mb-2 w-fit"
         onClick={downloadTableTSVFile}
       >

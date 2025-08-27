@@ -2,9 +2,10 @@ import { FacetDefinition, FacetTypes } from "./types";
 import SupplementalFacetDefinitions from "./data/facet_additional_data.json";
 import { some, includes } from "lodash";
 
-const FieldNameOverrides: Record<string, string> = {
+const fieldNameOverrides: Record<string, string> = {
   "cases.project.program.name": "Program",
   "cases.project.project_id": "Project",
+  "genes.gene_id": "Mutated Gene",
 };
 
 const COMMON_PREPOSITIONS = [
@@ -52,8 +53,8 @@ export const trimFirstFieldNameToTitle = (
  */
 
 export const fieldNameToTitle = (fieldName: string, sections = 1): string => {
-  if (fieldName in FieldNameOverrides) {
-    return FieldNameOverrides[fieldName];
+  if (fieldName in fieldNameOverrides) {
+    return fieldNameOverrides[fieldName];
   }
   return fieldName
     .split(".")
@@ -73,7 +74,10 @@ export const classifyFacetDatatype = (f: FacetDefinition): FacetTypes => {
   if (fieldName.includes("is_cancer_gene_census")) return "toggle";
   if (fieldName.includes("figo")) return "enum";
   if (fieldName.includes("age_is_")) return "enum";
+  if (fieldName.includes("age_range")) return "enum";
+
   if (fieldName.includes("datetime")) return "datetime";
+  if (fieldName.includes("percent_range")) return "enum";
   if (fieldName.includes("percent")) return "percent";
   if (
     fieldName.includes(".age_") ||

@@ -75,6 +75,24 @@ def is_checkbox_enabled(checkbox_name: str):
     is_checkbox_enabled = APP.set_operations_page.is_checkbox_enabled_set_operations(checkbox_name)
     assert is_checkbox_enabled, f"Checkbox '{checkbox_name}' is disabled when it should NOT be"
 
+@step("Checkbox <checkbox_name> with entity type <set_type> should be disabled in the Set Operations app")
+def is_checkbox_disabled(checkbox_name: str, set_type:str):
+    """
+    Checks if checkbox based on the name and entity set type is disabled. Used for when sets have the same
+    name but in different set types.
+    """
+    is_checkbox_disabled = APP.set_operations_page.is_checkbox_disabled_set_operations_by_name_type(checkbox_name, set_type)
+    assert is_checkbox_disabled, f"Checkbox '{checkbox_name}' is enabled when it should NOT be"
+
+@step("Checkbox <checkbox_name> with entity type <set_type> should be enabled in the Set Operations app")
+def is_checkbox_enabled(checkbox_name: str, set_type:str):
+    """
+    Checks if checkbox based on the name and entity set type is enabled. Used for when sets have the same
+    name but in different set types.
+    """
+    is_checkbox_enabled = APP.set_operations_page.is_checkbox_enabled_set_operations_by_name_type(checkbox_name, set_type)
+    assert is_checkbox_enabled, f"Checkbox '{checkbox_name}' is disabled when it should NOT be"
+
 @step("Select the following checkboxes in the Set Operations selection screen <table>")
 def click_checkboxes_selection_screen(table):
     for k, v in enumerate(table):
@@ -86,6 +104,17 @@ def click_checkboxes_analysis_screen(table):
     for k, v in enumerate(table):
         checkbox_to_click = APP.shared.normalize_identifier_underscore_keep_capitalization(v[0])
         APP.set_operations_page.click_checkbox_set_operations(checkbox_to_click)
+        time.sleep(0.1)
+
+@step("Select the following checkboxes in the Set Operations analysis screen by name and type <table>")
+def click_checkboxes_analysis_screen(table):
+    """
+    Clicks the checkboxes based on the name and entity set type. Used for when sets have the same
+    name but in different set types.
+    """
+    for k, v in enumerate(table):
+        checkbox_to_click = APP.shared.normalize_identifier_underscore_keep_capitalization(v[0])
+        APP.set_operations_page.click_checkbox_set_operations_by_name_type(checkbox_to_click, v[1])
         time.sleep(0.1)
 
 @step("Select set <intersection_set_name> to save as a new set in the Set Operations analysis screen")

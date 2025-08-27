@@ -1,10 +1,7 @@
 import { PropsWithChildren, ReactNode } from "react";
 import { Tooltip } from "@mantine/core";
 import { useElementSize } from "@mantine/hooks";
-import {
-  MdExpandLess as ExpandLessIcon,
-  MdExpandMore as ExpandMoreIcon,
-} from "react-icons/md";
+import { ExpandLessIcon, ExpandMoreIcon } from "@/utils/icons";
 import { FloatingPosition } from "@mantine/core/lib/components/Floating/types";
 import { focusStyles } from "../utils";
 
@@ -42,11 +39,7 @@ export const CollapsibleContainer = (
   const { ref: descRef, height: descHeight } = useElementSize();
 
   return (
-    <div
-      className={`flex flex-col ${
-        isContextBar && "overflow-y-auto max-h-screen-100vh"
-      }`}
-    >
+    <div className={`flex flex-col ${isContextBar && "max-h-screen-100vh"}`}>
       <div className="flex flex-wrap">
         <div className="flex-grow">{Top}</div>
         <div className="flex items-center bg-primary pr-4 gap-4 flex-wrap w-full py-5 pl-5 lg:flex-no-wrap lg:w-auto lg:py-0 lg:pl-0">
@@ -90,7 +83,9 @@ export const CollapsibleContainer = (
       <div
         aria-hidden={isCollapsed}
         style={{ height: !isCollapsed ? descHeight : 0 }}
-        className="transition-[height] duration-300 overflow-hidden"
+        className={`transition-[height] duration-300 ${
+          isCollapsed ? "overflow-hidden" : ""
+        }`}
       >
         <div
           className={`${

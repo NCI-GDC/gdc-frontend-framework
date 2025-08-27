@@ -1,8 +1,8 @@
 import { upperFirst } from "lodash";
 import { Box, Button, Group, Modal, TextInput, Loader } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { RiErrorWarningFill as WarningIcon } from "react-icons/ri";
 import ErrorMessage from "../ErrorMessage";
+import { WarningIconMessage } from "@/utils/icons";
 
 interface SaveOrCreateEntityModalProps {
   entity: string;
@@ -112,8 +112,8 @@ export const SaveOrCreateEntityBody = ({
     Object.keys(form.errors).length === 0 &&
     (onNameChange && !onNameChange((form?.values?.name || "").trim()) ? (
       <span className="text-warningColorText">
-        <WarningIcon className="text-warningColor inline mr-0.5" />A {entity}{" "}
-        with the same name already exists.{" "}
+        <WarningIconMessage className="text-warningColor inline mr-0.5" />A{" "}
+        {entity} with the same name already exists.{" "}
         {additionalDuplicateMessage && additionalDuplicateMessage}
       </span>
     ) : (
@@ -142,8 +142,8 @@ export const SaveOrCreateEntityBody = ({
           classNames={{
             description: "mt-1",
             input:
-              "font-content data-[invalid=true]:text-[#AD2B4A] data-[invalid=true]:border-[#AD2B4A]",
-            error: "text-[#AD2B4A]",
+              "font-content data-[invalid=true]:text-utility-error data-[invalid=true]:border-utility-error",
+            error: "text-utility-error",
           }}
           data-autofocus
           maxLength={100}
@@ -165,6 +165,7 @@ export const SaveOrCreateEntityBody = ({
       >
         <Group justify="flex-end">
           <Button
+            data-testid="button-cancel-save"
             variant="outline"
             classNames={{ root: "bg-base-max" }}
             color="secondary"
@@ -176,7 +177,7 @@ export const SaveOrCreateEntityBody = ({
             variant="filled"
             color="secondary"
             onClick={handleActionClick}
-            data-testid="action-button"
+            data-testid="button-save-name"
             leftSection={
               loading ? <Loader size={15} color="white" /> : undefined
             }

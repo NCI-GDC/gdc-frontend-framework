@@ -55,9 +55,13 @@ export interface PaginationOptions {
    */
   total: number;
   /**
-   * optional label of data shown
+   * label of data shown
    */
-  label?: string;
+  label: string;
+  /**
+   * custom plural text
+   */
+  customPluralLabel?: string;
 }
 
 /**
@@ -91,6 +95,7 @@ export interface PaginationOptions {
  * @property getRowId - optional function is used to derive a unique ID for any given row
  * @property baseZIndex - optional used to properly set z-index of table elements (e.g. tooltips)
  * @property customDataTestID - optional locator for test automation
+ * @property customBreakpoint - custom breakpoint for header responsive behavior
  * @category Table
  */
 
@@ -151,9 +156,13 @@ export interface TableProps<TData> {
    */
   status?: DataStatus;
   /**
-   * caption to display at top of table
+   * Title of the table (optional) pass when additional control is undefined
    */
   tableTitle?: ReactNode;
+  /**
+   * caption to display at top of table (specially total items in the table)
+   */
+  tableTotalDetail?: ReactNode;
   /**
    * html block left of column sorting controls
    */
@@ -252,6 +261,7 @@ export interface TableProps<TData> {
 
   customDataTestID?: string;
   customAriaLabel?: string;
+  customBreakpoint?: number;
 }
 
 export interface HandleChangeInput {

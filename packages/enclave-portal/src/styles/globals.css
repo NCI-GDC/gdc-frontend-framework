@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* montserrat Regular, Regular Italic, Medium, Medium Italic, Bold, Bold Italic */
+@import "~@fontsource/montserrat/400.css";
+@import "~@fontsource/montserrat/400-italic.css";
+@import "~@fontsource/montserrat/500.css";
+@import "~@fontsource/montserrat/500-italic.css";
+@import "~@fontsource/montserrat/700.css";
+@import "~@fontsource/montserrat/700-italic.css";
+
+/* noto-sans Regular, Regular Italic, Bold, Bold Italic */
+@import "~@fontsource/noto-sans/400.css";
+@import "~@fontsource/noto-sans/400-italic.css";
+@import "~@fontsource/noto-sans/700.css";
+@import "~@fontsource/noto-sans/700-italic.css";

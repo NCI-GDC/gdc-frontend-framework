@@ -1,12 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
 import { ActionIcon, Drawer, ScrollArea } from "@mantine/core";
-import { MdKeyboardBackspace as LeftArrowIcon } from "react-icons/md";
 import { SortBy, useGetGenesQuery, useGetSsmsQuery } from "@gff/core";
 import { humanify } from "src/utils";
 import { SetData } from "./types";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { createColumnHelper, SortingState } from "@tanstack/react-table";
+import { LeftLongArrowIcon } from "@/utils/icons";
 
 const PAGE_SIZE = 100;
 
@@ -133,7 +133,8 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
     }
   }, [set]);
 
-  const setDetailPanelColumnHelper = createColumnHelper<typeof tableData[0]>();
+  const setDetailPanelColumnHelper =
+    createColumnHelper<(typeof tableData)[0]>();
 
   const setDetailPanelColumns = useMemo(
     () =>
@@ -211,7 +212,7 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
             aria-label="Close set panel"
             className="border-0"
           >
-            <LeftArrowIcon size={30} className="text-primary-darker" />
+            <LeftLongArrowIcon size={30} className="text-primary-darker" />
           </ActionIcon>
           <>{set?.setName}</>
         </div>

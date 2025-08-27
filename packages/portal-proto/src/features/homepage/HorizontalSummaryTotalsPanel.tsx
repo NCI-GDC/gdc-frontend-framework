@@ -1,5 +1,5 @@
 import { SummaryStatsItem } from "@/features/homepage/SummaryStatsItem";
-import { useTotalCounts, useVersionInfoDetails } from "@gff/core";
+import { TotalCounts, useVersionInfoDetails } from "@gff/core";
 import { AnchorLink } from "@/components/AnchorLink";
 import ProjectsIcon from "public/user-flow/icons/summary/projects.svg";
 import PrimarySitesIcon from "public/user-flow/icons/summary/primary-sites.svg";
@@ -8,10 +8,13 @@ import FilesIcon from "public/user-flow/icons/summary/files.svg";
 import GenesIcon from "public/user-flow/icons/summary/genes.svg";
 import MutationsIcon from "public/user-flow/icons/summary/gene-mutation.svg";
 
-const HorizontalSummaryTotalsPanel = (): JSX.Element => {
+const HorizontalSummaryTotalsPanel = ({
+  countsInfo,
+}: {
+  countsInfo: TotalCounts;
+}): JSX.Element => {
   const { data: versionInfo, isSuccess: isVersionInfoSuccess } =
     useVersionInfoDetails();
-  const { data: countsInfo } = useTotalCounts();
   const IconFormatted = ({
     Icon,
     label,

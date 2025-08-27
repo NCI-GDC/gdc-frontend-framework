@@ -3,27 +3,38 @@ import * as genomicHook from "src/features/genomic/hooks";
 import * as core from "@gff/core";
 import * as genomicReducer from "src/features/genomic/appApi";
 import { useIsDemoApp, useIsDemoAppType } from "@/hooks/useIsDemoApp";
-import { render, waitFor } from "test-utils";
+import { render } from "test-utils";
+import { waitFor } from "@testing-library/react";
 
 jest.mock("src/hooks/useIsDemoApp");
-
-beforeEach(() => {
-  jest.spyOn(core, "useCoreSelector").mockImplementation(jest.fn());
-  jest.spyOn(core, "useCoreDispatch").mockImplementation(jest.fn());
-  jest.spyOn(core, "joinFilters").mockReturnValue({} as core.FilterSet);
-  jest.spyOn(core, "useGetSurvivalPlotQuery").mockReturnValue({
+jest.mock("@gff/core", () => ({
+  ...jest.requireActual("@gff/core"),
+  useCoreDispatch: jest.fn(),
+  useCoreSelector: jest.fn(),
+  joinFilters: jest.fn().mockReturnValue({}),
+  useGetSurvivalPlotQuery: jest.fn().mockReturnValue({
     data: {
       survivalData: [{ donors: [{ id: "1" }] }],
       overallStats: { pValue: 0.5 },
     },
     refetch: jest.fn(),
-  });
-  jest.spyOn(core, "useGeneFrequencyChartQuery").mockReturnValue({
+  }),
+  useGeneFrequencyChartQuery: jest.fn().mockReturnValue({
     data: { casesTotal: 0, geneCounts: [] },
     isSuccess: true,
-  } as any);
-  jest.spyOn(core, "useTopGeneQuery").mockReturnValue({} as any);
+  }),
+  useTopGeneQuery: jest.fn().mockReturnValue({}),
+}));
+
+jest.mock("next/router", () => ({
+  useRouter: jest.fn(),
+}));
+
+beforeEach(() => {
   jest.spyOn(genomicHook, "useGenesFacets").mockImplementation(jest.fn());
+  jest
+    .spyOn(genomicHook, "useTotalGenomicCounts")
+    .mockImplementation(jest.fn());
   jest.spyOn(genomicReducer, "useAppDispatch").mockReturnValue(jest.fn());
   jest.spyOn(genomicReducer, "useAppSelector").mockImplementation(jest.fn());
   jest.clearAllMocks();

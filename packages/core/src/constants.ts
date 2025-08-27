@@ -12,3 +12,4 @@ export const PUBLIC_APP_INFO = {
   version: process.env.NEXT_PUBLIC_APP_VERSION,
   hash: process.env.NEXT_PUBLIC_APP_HASH,
 };
+export const ERROR_UNHANDLED_AGGREGATION = "Unhandled aggregation";

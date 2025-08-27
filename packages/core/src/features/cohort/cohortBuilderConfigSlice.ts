@@ -4,8 +4,10 @@ import { CoreState } from "../../reducers";
 
 export interface CohortBuilderCategoryConfig {
   readonly label: string;
-  readonly docType: string;
-  readonly index: string;
+  readonly queryOptions: {
+    readonly docType: string;
+    readonly indexType: string;
+  };
   readonly facets: ReadonlyArray<string>;
 }
 
@@ -14,11 +16,10 @@ type CohortBuilderCategory =
   | "demographic"
   | "general_diagnosis"
   | "disease_status"
-  | "stage_classification"
-  | "grade_classification"
-  | "other_classification"
+  | "disease_specific_classifications"
   | "treatment"
   | "exposure"
+  | "other_clinical_attributes"
   | "biospecimen"
   | "available_data"
   | "custom";

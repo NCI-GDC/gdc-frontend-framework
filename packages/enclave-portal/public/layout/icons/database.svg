@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="42" height="48" viewBox="0 0 42 48">
+  <g id="database" transform="translate(-2.5)">
+    <path id="path38125" d="M44.461,7.245h0C43.821,3.2,34.683,0,23.5,0S3.179,3.2,2.539,7.245H2.5V40.755h.039C3.179,44.795,12.318,48,23.5,48s20.321-3.205,20.961-7.245H44.5V7.245Z" transform="translate(0)" fill="#424a60"/>
+    <g id="g38133" transform="translate(2.5 28.981)">
+      <path id="path38127" d="M23.5,40.2c-11.6,0-21-3.447-21-7.7V43.821h.039c.64,4.04,9.778,7.245,20.961,7.245s20.321-3.205,20.961-7.245H44.5V32.5C44.5,36.751,35.1,40.2,23.5,40.2Z" transform="translate(-2.5 -32.047)" fill="#2a74a5"/>
+      <path id="path38129" d="M2.5,32v.453A2.911,2.911,0,0,1,2.539,32Z" transform="translate(-2.5 -32)" fill="#424a60"/>
+      <path id="path38131" d="M50.455,32a2.911,2.911,0,0,1,.039.453V32Z" transform="translate(-8.494 -32)" fill="#424a60"/>
+    </g>
+    <g id="g38141" transform="translate(2.5 18.113)">
+      <path id="path38135" d="M23.5,28.2c-11.6,0-21-3.447-21-7.7V31.821h.039c.64,4.04,9.778,7.245,20.961,7.245s20.321-3.205,20.961-7.245H44.5V20.5C44.5,24.751,35.1,28.2,23.5,28.2Z" transform="translate(-2.5 -20.047)" fill="#4491c4"/>
+      <path id="path38137" d="M2.5,20v.453A2.911,2.911,0,0,1,2.539,20Z" transform="translate(-2.5 -20)" fill="#556080"/>
+      <path id="path38139" d="M50.455,20a2.911,2.911,0,0,1,.039.453V20Z" transform="translate(-8.494 -20)" fill="#556080"/>
+    </g>
+    <ellipse id="ellipse38143" cx="21" cy="7.698" rx="21" ry="7.698" transform="translate(2.5)" fill="#d5ebf1"/>
+    <g id="g38151" transform="translate(2.5 7.245)">
+      <path id="path38145" d="M23.5,16.2c-11.6,0-21-3.447-21-7.7V19.821h.039c.64,4.04,9.778,7.245,20.961,7.245s20.321-3.205,20.961-7.245H44.5V8.5C44.5,12.751,35.1,16.2,23.5,16.2Z" transform="translate(-2.5 -8.047)" fill="#6db6e6"/>
+      <path id="path38147" d="M2.5,8v.453A2.911,2.911,0,0,1,2.539,8Z" transform="translate(-2.5 -8)" fill="#7383bf"/>
+      <path id="path38149" d="M50.455,8a2.911,2.911,0,0,1,.039.453V8Z" transform="translate(-8.494 -8)" fill="#7383bf"/>
+    </g>
+  </g>
+</svg>

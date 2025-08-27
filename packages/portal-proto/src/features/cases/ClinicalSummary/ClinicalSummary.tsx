@@ -12,11 +12,13 @@ import {
 } from "@gff/core";
 import { Divider, Loader, Tabs, Text } from "@mantine/core";
 import { useState } from "react";
-import { FiDownload as DownloadIcon } from "react-icons/fi";
 import { humanify, ageDisplay } from "src/utils";
-import { DiagnosesOrFollowUps } from "./DiagnosesOrFollowUps";
 import { FamilyHistoryOrExposure } from "./FamilyHistoryOrExposure";
 import download from "@/utils/download";
+import { TabbedTables } from "./TabbedTables";
+import DiagnosesTables from "./DiagnosesTables";
+import FollowUpTables from "./FollowUpTables";
+import { DownloadIcon } from "@/utils/icons";
 
 export const ClinicalSummary = ({
   demographic,
@@ -38,7 +40,10 @@ export const ClinicalSummary = ({
   readonly submitter_id: string;
 }): JSX.Element => {
   const [activeTab, setActiveTab] = useState<string | null>("demographic");
-  const [clinicalDownloadActive, setClinicalDownloadActive] = useState(false);
+  const [clinicalDownloadActiveTSV, setClinicalDownloadActiveTSV] =
+    useState(false);
+  const [clinicalDownloadActiveJSON, setClinicalDownloadActiveJSON] =
+    useState(false);
   const dispatch = useCoreDispatch();
 
   const formatDataForDemographics = () => {
@@ -82,6 +87,11 @@ export const ClinicalSummary = ({
     0,
   );
 
+  const totalOtherClinicalAttributesNodes = follow_ups.reduce(
+    (prev, curr) => prev + (curr.other_clinical_attributes || []).length,
+    0,
+  );
+
   const CountComponent = ({ count }: { count: number }) => (
     <span className="h-[11px] w-4 bg-accent-vivid text-base-lightest text-xs font-medium px-1.5 py-0.5 ml-1 rounded-sm">
       {count}
@@ -89,7 +99,7 @@ export const ClinicalSummary = ({
   );
 
   const handleClinicalTSVDownload = () => {
-    setClinicalDownloadActive(true);
+    setClinicalDownloadActiveTSV(true);
     download({
       endpoint: "clinical_tar",
       method: "POST",
@@ -106,12 +116,12 @@ export const ClinicalSummary = ({
           },
         },
       },
-      done: () => setClinicalDownloadActive(false),
+      done: () => setClinicalDownloadActiveTSV(false),
     });
   };
 
   const handleClinicalJSONDownload = () => {
-    setClinicalDownloadActive(true);
+    setClinicalDownloadActiveJSON(true);
     download({
       endpoint: "clinical_tar",
       method: "POST",
@@ -130,7 +140,7 @@ export const ClinicalSummary = ({
           },
         },
       },
-      done: () => setClinicalDownloadActive(false),
+      done: () => setClinicalDownloadActiveJSON(false),
     });
   };
 
@@ -143,25 +153,28 @@ export const ClinicalSummary = ({
         dropdownElements={[
           {
             title: "TSV",
-            icon: <DownloadIcon size={16} aria-label="download" />,
+            icon: clinicalDownloadActiveTSV ? (
+              <Loader size={16} color="currentColor" />
+            ) : (
+              <DownloadIcon size={16} aria-label="download" />
+            ),
             onClick: handleClinicalTSVDownload,
+            isLoading: clinicalDownloadActiveTSV,
           },
           {
             title: "JSON",
-            icon: <DownloadIcon size={16} aria-label="download" />,
+            icon: clinicalDownloadActiveJSON ? (
+              <Loader size={16} color="currentColor" />
+            ) : (
+              <DownloadIcon size={16} aria-label="download" />
+            ),
             onClick: handleClinicalJSONDownload,
+            isLoading: clinicalDownloadActiveJSON,
           },
         ]}
-        TargetButtonChildren={
-          clinicalDownloadActive ? "Processing" : "Download"
-        }
-        LeftSection={
-          clinicalDownloadActive ? (
-            <Loader size={20} />
-          ) : (
-            <DownloadIcon size="1rem" aria-label="download" />
-          )
-        }
+        TargetButtonChildren="Download"
+        LeftSection={<DownloadIcon size="1rem" aria-label="download" />}
+        closeOnItemClick={false}
       />
 
       <Tabs
@@ -173,7 +186,7 @@ export const ClinicalSummary = ({
         classNames={{
           root: "w-full",
           list: "mt-2 border-1 border-base-lighter border-b-3 p-2",
-          panel: "max-w-full overflow-x-auto pt-0",
+          panel: "max-w-full overflow-x-auto pt-0 pb-2",
           tab: "text-secondary-contrast-lighter font-bold font-heading text-sm px-4 py-1 mr-2 data-active:bg-nci-cyan-lightest data-active:border-2 data-active:border-primary data-active:text-primary",
         }}
         styles={(theme) => ({
@@ -228,6 +241,11 @@ export const ClinicalSummary = ({
                 Molecular Tests
                 <CountComponent count={totalMolecularTestNodes} />
               </span>
+              <Divider orientation="vertical" />
+              <span>
+                Other Clinical Attributes
+                <CountComponent count={totalOtherClinicalAttributesNodes} />
+              </span>
             </span>
           </Tabs.Tab>
         </Tabs.List>
@@ -236,7 +254,7 @@ export const ClinicalSummary = ({
           {Object.keys(demographic).length > 0 ? (
             <HorizontalTable tableData={formatDataForDemographics()} />
           ) : (
-            <Text className="p-5 bg-base-contrast font-bold">
+            <Text className="p-5 font-content text-secondary-contrast-lighter">
               No Demographic Found.
             </Text>
           )}
@@ -244,17 +262,17 @@ export const ClinicalSummary = ({
 
         <Tabs.Panel value="diagnoses" pt="xs">
           {diagnoses.length === 0 ? (
-            <Text className="p-5 bg-base-contrast font-bold">
+            <Text className="p-5 font-content text-secondary-contrast-lighter">
               No Diagnoses Found.
             </Text>
           ) : (
-            <DiagnosesOrFollowUps dataInfo={diagnoses} />
+            <TabbedTables dataInfo={diagnoses} TableElement={DiagnosesTables} />
           )}
         </Tabs.Panel>
 
         <Tabs.Panel value="family" pt="xs">
           {family_histories.length === 0 ? (
-            <Text className="p-5 bg-base-contrast font-bold">
+            <Text className="p-5 font-content text-secondary-contrast-lighter">
               No Family Histories Found.
             </Text>
           ) : (
@@ -264,9 +282,7 @@ export const ClinicalSummary = ({
 
         <Tabs.Panel value="exposures" pt="xs">
           {exposures.length === 0 ? (
-            <Text className="p-5 bg-base-contrast font-bold">
-              No Exposures Found.
-            </Text>
+            <Text className="p-5 font-content">No Exposures Found.</Text>
           ) : (
             <FamilyHistoryOrExposure dataInfo={exposures} />
           )}
@@ -274,11 +290,11 @@ export const ClinicalSummary = ({
 
         <Tabs.Panel value="followups" pt="xs">
           {follow_ups.length === 0 ? (
-            <Text className="p-5 bg-base-contrast font-bold">
+            <Text className="p-5 font-content text-secondary-contrast-lighter">
               No Follow Ups Found.
             </Text>
           ) : (
-            <DiagnosesOrFollowUps
+            <TabbedTables
               dataInfo={
                 follow_ups.length > 1
                   ? follow_ups
@@ -286,6 +302,7 @@ export const ClinicalSummary = ({
                       .sort((a, b) => a.days_to_follow_up - b.days_to_follow_up)
                   : follow_ups
               }
+              TableElement={FollowUpTables}
             />
           )}
         </Tabs.Panel>

@@ -14,7 +14,7 @@ tags: regression, smoke
 * Navigate to "Downloads" from "Header" "section"
 
 ## Filters on Repository
-* Verify that the "Filters" text is displayed on "Repository" "app"
+* Is text "Add a Custom Filter" present on the page
 
 ## Default filters on Repository
 * Verify that the following default filters are displayed in order
@@ -43,10 +43,10 @@ tags: regression, smoke
 * Verify that the "Search for a property" text is displayed on "Add a Custom Filter" "modal"
 
 ## File properties on Add a Custom Filter modal
-* Verify that the "302 properties" text is displayed on "Add a Custom Filter" "modal"
+* Verify that the "305 properties" text is displayed on "Add a Custom Filter" "modal"
 
 ## File counts listed on Add a Custom Filter modal
-* Verify "302" items on Add a Custom Filter filter list
+* Verify "305" items on Add a Custom Filter filter list
 
 ## File filter list does not start with 'files.' on Add a Custom Filter modal
 * Verify file filter names do not start with "files."

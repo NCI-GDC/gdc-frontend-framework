@@ -6,12 +6,18 @@ const columnListOrder = ["Project", "Cases", "Files", "File Size"];
 
 interface ProjectTableProps {
   readonly projectData: CartAggregation[];
+  readonly customDataTestID: string;
 }
 
 const ProjectTable: React.FC<ProjectTableProps> = ({
   projectData,
+  customDataTestID,
 }: ProjectTableProps) => {
-  const tableData = (projectData || []).map((project) => ({
+  const sortedProjectData = [...(projectData || [])].sort((a, b) => {
+    return b.case_count - a.case_count;
+  });
+
+  const tableData = sortedProjectData.map((project) => ({
     key: project.key,
     case_count: project.case_count?.toLocaleString(),
     doc_count: project.doc_count?.toLocaleString(),
@@ -20,6 +26,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({
 
   return (
     <ScrollableTableWithFixedHeader
+      customDataTestID={customDataTestID}
       tableData={{
         headers: columnListOrder,
         tableRows: tableData,

@@ -3,11 +3,6 @@ import React, { useMemo, useState } from "react";
 import { useDeepCompareMemo, useDeepCompareEffect } from "use-deep-compare";
 import { Checkbox, ActionIcon, Badge, Tooltip } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import {
-  FaTrash as TrashIcon,
-  FaExclamationCircle as WarningIcon,
-} from "react-icons/fa";
-import { BiSolidDownload as DownloadIcon } from "react-icons/bi";
 import { useCoreDispatch, removeSets, SetTypes } from "@gff/core";
 import { createKeyboardAccessibleFunction } from "src/utils";
 import download from "@/utils/download";
@@ -18,6 +13,7 @@ import DeleteSetsNotification from "./DeleteSetsNotification";
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { createColumnHelper, SortingState } from "@tanstack/react-table";
+import { AlertIcon, DownloadIcon, TrashIcon } from "@/utils/icons";
 
 interface CountBadgeProps {
   readonly count: number;
@@ -50,7 +46,7 @@ const CountBadge: React.FC<CountBadgeProps> = ({
         }`}
         color={disabled ? "gray" : "primary"}
         leftSection={
-          disabled ? <WarningIcon className="text-warningColor" /> : undefined
+          disabled ? <AlertIcon className="text-warningColor" /> : undefined
         }
         onClick={disabled ? undefined : openSetDetail}
         tabIndex={0}
@@ -81,10 +77,10 @@ const ManageSetActions: React.FC<ManageSetActionsProps> = ({
   const dispatch = useCoreDispatch();
   const { setId, setName, setType, count } = set;
 
+  // add padding for both the icons
   return (
-    <div className="flex flex-row items-center gap-1">
+    <div className="flex flex-row items-center gap-3">
       <ActionIcon
-        size={20}
         data-testid="button-delete-set"
         aria-label="Delete set"
         className="text-primary"
@@ -92,19 +88,19 @@ const ManageSetActions: React.FC<ManageSetActionsProps> = ({
           dispatch(removeSets([{ setId, setType }]));
           showNotification({
             message: <DeleteSetsNotification sets={[set]} />,
+            closeButtonProps: { "aria-label": "Close notification" },
           });
         }}
-        variant="transparent"
+        variant="outline"
       >
         <TrashIcon aria-hidden="true" />
       </ActionIcon>
       {count > 0 && (
         <ActionIcon
-          size={20}
           data-testid="button-download-set"
           aria-label="Download set"
-          className={"text-primary"}
-          variant="transparent"
+          className="text-primary"
+          variant="outline"
           onClick={() => {
             download({
               endpoint: "tar_sets",
@@ -316,7 +312,7 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
   );
 
   return (
-    <div data-testid="table-manage-sets" className="w-3/4 pb-6">
+    <div data-testid="table-manage-sets" className="w-full xl:w-3/4 pb-6">
       <VerticalTable
         data={displayedData}
         columns={manageSetsColumn}
@@ -326,7 +322,7 @@ const ManageSetsTable: React.FC<MangeSetsTableProps> = ({
           size,
           from,
           total,
-          label: "sets",
+          label: "set",
         }}
         handleChange={handleChange}
         columnSorting="enable"

@@ -28,9 +28,11 @@ const SwitchSpring: React.FC<SwitchSpringProps> = ({
 
   const toggleSwitch = () => {
     // todo: if used for > 2 icons refactor to use switch(icon) statement
-    icon
-      ? handleSwitch(selected[`symbol`], selected[`name`], plot)
-      : handleSwitch(selected);
+    if (icon) {
+      handleSwitch(selected[`symbol`], selected[`name`], plot);
+    } else {
+      handleSwitch(selected);
+    }
   };
 
   return (

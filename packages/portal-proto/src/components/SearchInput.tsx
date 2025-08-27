@@ -16,19 +16,22 @@ import {
   TextInput,
   Tooltip,
   ActionIcon,
+  Loader,
 } from "@mantine/core";
 import { useFocusWithin, useViewportSize } from "@mantine/hooks";
-import { MdSearch as SearchIcon, MdClose as CloseIcon } from "react-icons/md";
-import { FaCheck as CheckIcon } from "react-icons/fa";
 import { SearchResult } from "minisearch";
+import { useCurrentCohortFilters } from "@gff/core";
 import {
   FacetSearchDocument,
   useFacetSearch,
+  useFacetTabLoaded,
 } from "@/features/cohortBuilder/dictionary";
 import {
   BtnWithHoverCalloutTopArrow,
   BtnWithHoverCalloutLeftArrow,
 } from "./BtnWithHoverCallout";
+import { CheckIcon, CloseIcon, SearchIcon } from "@/utils/icons";
+import { useDeepCompareEffect } from "use-deep-compare";
 
 const PAGE_SIZE = 5;
 const MAX_MATCHED_VALUES = 30;
@@ -55,6 +58,9 @@ export const SearchInput: React.FC = () => {
   });
   const { width } = useViewportSize();
   const miniSearch = useFacetSearch();
+  const currentTab = router?.query?.tab;
+  const facetsLoaded = useFacetTabLoaded(currentTab as string);
+  const currentCohortFilters = useCurrentCohortFilters();
 
   const searchFacets = (s: string) => {
     return miniSearch.search(s, {
@@ -81,6 +87,10 @@ export const SearchInput: React.FC = () => {
     }
   };
 
+  useDeepCompareEffect(() => {
+    setSearchTerm("");
+  }, [currentCohortFilters]);
+
   useEffect(() => {
     setPage(1);
   }, [filteredCategories]);
@@ -99,11 +109,24 @@ export const SearchInput: React.FC = () => {
     [filteredCategories, searchResults],
   );
 
-  const clickResult = (result: FullResult) => {
+  const clickResult = async (result: FullResult) => {
+    await router.push({
+      query: router.query,
+      hash: undefined,
+    });
+
+    const matches = Object.values(result?.match || {});
+    const enumSearchResult = matches.some((m) => m.includes("enum"));
+
+    const additionalQuery = enumSearchResult
+      ? { tab: result.categoryKey, searchTerm }
+      : { tab: result.categoryKey };
+
     router.push({
       query: {
-        ...router?.query,
-        tab: result.categoryKey,
+        app: router?.query?.app,
+        tab: router?.query?.tab,
+        ...additionalQuery,
       },
       hash: result.id,
     });
@@ -277,7 +300,9 @@ export const SearchInput: React.FC = () => {
           role="grid"
           tabIndex={-1}
         >
-          {searchResults.length === 0 ? (
+          {!facetsLoaded ? (
+            <Loader size={20} />
+          ) : searchResults.length === 0 ? (
             <p
               className="text-base text-sm"
               data-testid="cohort-builder-search-no-results"
@@ -338,10 +363,10 @@ export const SearchInput: React.FC = () => {
                   .slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
                   .map((result, index) => {
                     const matchingEnums = result?.enum
-                      .slice(0, MAX_MATCHED_VALUES)
                       .filter((e) =>
                         result.terms.some((t) => e.toLowerCase().includes(t)),
-                      );
+                      )
+                      .slice(0, MAX_MATCHED_VALUES);
                     const showTooltip =
                       result.description !== "" || matchingEnums.length > 0;
                     const extraAttributes =
@@ -367,7 +392,7 @@ export const SearchInput: React.FC = () => {
                           label={
                             <>
                               <Highlight
-                                highlight={searchTerm}
+                                highlight={result.terms}
                                 highlightStyles={{ fontStyle: "italic" }}
                               >
                                 {result.description}
@@ -381,7 +406,7 @@ export const SearchInput: React.FC = () => {
                                     {MAX_MATCHED_VALUES}):
                                   </b>
                                   <Highlight
-                                    highlight={searchTerm}
+                                    highlight={result.terms}
                                     highlightStyles={{ fontStyle: "italic" }}
                                   >
                                     {matchingEnums.join(" • ")}

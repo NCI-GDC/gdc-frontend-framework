@@ -6,8 +6,11 @@ import { useDeepCompareMemo } from "use-deep-compare";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import VerticalTable from "../Table/VerticalTable";
 import { HandleChangeInput } from "../Table/types";
-import { MatchResults } from "./utils";
 import FunctionButton from "../FunctionButton";
+import { MatchResults } from "./type";
+
+// check for HGNC
+const isHGNC = (value: string) => value.startsWith("HGNC:");
 
 const MatchedTable = ({
   matched,
@@ -35,7 +38,7 @@ const MatchedTable = ({
   const [matchTableSorting, setMatchTableSorting] = useState<SortingState>([]);
 
   const matchedTableColumnHelper = useMemo(
-    () => createColumnHelper<typeof formattedMatchData[0]>(),
+    () => createColumnHelper<(typeof formattedMatchData)[0]>(),
     [],
   );
 
@@ -59,16 +62,6 @@ const MatchedTable = ({
                 row?.original[`mapped_${id.replaceAll(".", "_")}`] ?? "--",
               meta: {
                 highlighted: true,
-                sortingFn: (rowA, rowB) => {
-                  const property = `mapped_${id.replaceAll(".", "_")}`;
-                  if (rowA[property] > rowB[property]) {
-                    return 1;
-                  }
-                  if (rowA[property] < rowB[property]) {
-                    return -1;
-                  }
-                  return 0;
-                },
               },
             },
           );
@@ -92,13 +85,32 @@ const MatchedTable = ({
               meta: {
                 sortingFn: (rowA, rowB) => {
                   const property = `submitted_${id.replaceAll(".", "_")}`;
-                  if (rowA[property] > rowB[property]) {
-                    return 1;
+
+                  const valueA = rowA[property];
+                  const valueB = rowB[property];
+
+                  // if values are undefined i.e., "--"
+                  if (!valueA && !valueB) return 0;
+                  if (!valueA) return 1;
+                  if (!valueB) return -1;
+
+                  if (isHGNC(valueA) && isHGNC(valueB)) {
+                    return (
+                      Number(valueA.split(":")[1]) -
+                      Number(valueB.split(":")[1])
+                    );
                   }
-                  if (rowA[property] < rowB[property]) {
-                    return -1;
+
+                  const numA = Number(valueA);
+                  const numB = Number(valueB);
+
+                  // Check if both values are numbers
+                  if (!Number.isNaN(numA) && !Number.isNaN(numB)) {
+                    return numA - numB;
                   }
-                  return 0;
+
+                  // if values are strings
+                  return valueA.localeCompare(valueB);
                 },
               },
             },
@@ -190,9 +202,9 @@ const MatchedTable = ({
     <div className="m-4">
       <div className="flex justify-between items-center mb-2">
         <p className="text-sm">
-          {numMatched} submitted {entityLabel} identifier
-          {numMatched !== 1 && "s"} mapped to {matched.length} unique GDC{" "}
-          {entityLabel}
+          {numMatched?.toLocaleString()} submitted {entityLabel} identifier
+          {numMatched !== 1 && "s"} mapped to {matched.length?.toLocaleString()}{" "}
+          unique GDC {entityLabel}
           {matched.length !== 1 && "s"}{" "}
         </p>
         <FunctionButton onClick={downloadTSV}>TSV</FunctionButton>
@@ -204,10 +216,10 @@ const MatchedTable = ({
           status="fulfilled"
           pagination={{
             ...matchPaginationProps,
-            label: `${entityLabel}s`,
+            label: `${entityLabel}`,
           }}
           handleChange={handleMatchedTableChange}
-          columnSorting="enable"
+          columnSorting="manual"
           sorting={matchTableSorting}
           setSorting={setMatchTableSorting}
         />

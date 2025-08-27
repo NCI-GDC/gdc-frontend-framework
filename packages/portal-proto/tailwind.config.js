@@ -690,6 +690,7 @@ module.exports = {
     "./src/pages/**/*.{js,ts,jsx,tsx}",
     "./src/components/**/*.{js,ts,jsx,tsx}",
     "./src/features/**/*.{js,ts,jsx,tsx}",
+    "../../node_modules/@gff/portal-components/dist/index.js",
   ],
   safelist: [
     "bg-gdc-survival-0",
@@ -716,11 +717,12 @@ module.exports = {
   theme: {
     extend: {
       screens: {
-        "Custom-Repo-Width": "1370px",
+        "Custom-Repo-Width": "1420px",
         sm: "640px",
         md: "768px",
         lg: "1024px",
         xl: "1280px",
+        "2xl": "1536px",
       },
       colors: {
         /* These colors come from the NCI color palette. The palette defines
@@ -793,6 +795,7 @@ module.exports = {
         cartLighterOrange: "#C7501A33",
         linkDarkerColor: "#1D6796",
         emptyIconLighterColor: "#e0e9f0",
+        removeButtonHover: "#5D091D",
       },
       minHeight: {
         "screen-60vh": "60vh",
@@ -876,10 +879,19 @@ module.exports = {
           from: { transform: "translate(0, 0)" },
           to: { transform: "translate(0, 100%)" },
         },
+        highlight: {
+          from: {
+            "border-color": nciBlue.darker,
+            outline: `${nciBlue.darker} solid 2px`,
+            "box-shadow":
+              "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+          },
+        },
       },
       animation: {
         "slide-up": "slide-up 500ms ease-in-out ",
         "slide-down": "slide-down 500ms ease-in-out ",
+        "border-highlight": "highlight 7s ease-in-out",
       },
       lineHeight: {
         0: "0px",

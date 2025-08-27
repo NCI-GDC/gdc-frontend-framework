@@ -1,41 +1,49 @@
 import {
-  FacetDefinition,
   FilterSet,
   selectCurrentCohortFilters,
   useCoreSelector,
+  GQLDocType,
+  FacetDefinition,
 } from "@gff/core";
 import { SummaryFacetInfo } from "./SummaryFacets";
+import { FacetCardDefinition } from "@gff/portal-components";
 
 // These new upload facets will not be returned by the mapping API call, hence they are manually defined as upload_facets
-export const upload_facets: Record<string, FacetDefinition> = {
+export const upload_facets = {
   "cases.upload.case_id": {
-    description: "Enter/upload cases to filter the current cohort",
-    doc_type: "cases",
+    description: "",
+    toolTip: "Filter the current cohort by entering/uploading specific cases",
+    doc_type: "cases" as GQLDocType,
     facet_type: "upload",
     field: "cases.upload.case_id",
-    full: "Upload Cases",
+    uploadLabel: "Upload Cases",
     range: undefined,
     type: "keyword",
+    name: "Case ID",
   },
   "genes.upload.gene_id": {
-    description:
-      "Enter/upload genes or select gene sets to filter the current cohort",
-    doc_type: "cases",
+    description: "",
+    toolTip:
+      "Filter the current cohort by entering/uploading specific genes or selecting gene sets",
+    doc_type: "cases" as GQLDocType,
     facet_type: "upload",
     field: "genes.upload.gene_id",
-    full: "Upload Mutated Genes",
+    uploadLabel: "Upload Genes",
     range: undefined,
     type: "keyword",
+    name: "Mutated Gene",
   },
   "ssms.upload.ssm_id": {
-    description:
-      "Enter/upload simple mutations or select mutation sets to filter the current cohort",
-    doc_type: "cases",
+    description: "",
+    toolTip:
+      "Filter the current cohort by entering/uploading specific Simple Somatic Mutations (SSMs) or selecting mutation sets",
+    doc_type: "cases" as GQLDocType,
     facet_type: "upload",
     field: "ssms.upload.ssm_id",
-    full: "Upload Simple Mutations",
+    uploadLabel: "Upload Somatic Mutations",
     range: undefined,
     type: "keyword",
+    name: "Somatic Mutation",
   },
 };
 
@@ -47,9 +55,15 @@ export const upload_facets: Record<string, FacetDefinition> = {
  */
 export const getFacetInfo = (
   fields: ReadonlyArray<string>,
-  facets: Record<string, FacetDefinition>,
-): ReadonlyArray<FacetDefinition> => {
-  return fields.map((field) => facets[field]).filter((facet) => facet);
+  facets: Record<string, FacetDefinition | FacetCardDefinition>,
+): ReadonlyArray<FacetCardDefinition> => {
+  return fields
+    .map((field) => facets[field])
+    .filter((facet) => facet)
+    .map((facet) => ({
+      ...facet,
+      field: (facet as FacetDefinition).full ?? facet.field,
+    }));
 };
 
 export const useCohortFacetFilters = (): FilterSet => {
@@ -124,7 +138,10 @@ export const SAMPLE_SHEET_FIELDS = [
   "cases.project.project_id",
   "cases.submitter_id",
   "cases.samples.submitter_id",
-  "cases.samples.sample_type",
+  "cases.samples.tissue_type",
+  "cases.samples.tumor_descriptor",
+  "cases.samples.specimen_type",
+  "cases.samples.preservation_method",
 ];
 
 export const INITIAL_SUMMARY_FIELDS = [

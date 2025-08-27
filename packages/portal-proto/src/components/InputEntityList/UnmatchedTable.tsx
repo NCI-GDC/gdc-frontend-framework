@@ -30,7 +30,7 @@ const UnmatchedTable = ({
   } = useStandardPagination(unmatchedTableData);
 
   const unmatchedTableColumnHelper =
-    createColumnHelper<typeof unmatchedTableData[0]>();
+    createColumnHelper<(typeof unmatchedTableData)[0]>();
 
   const unmatchedTableColumns = useMemo(
     () => [
@@ -82,7 +82,7 @@ const UnmatchedTable = ({
           status="fulfilled"
           pagination={{
             ...unmatchedPaginationProps,
-            label: `${entityLabel}s`,
+            label: `${entityLabel}`,
           }}
           handleChange={handleUnmatchedTableChange}
           columnSorting="enable"

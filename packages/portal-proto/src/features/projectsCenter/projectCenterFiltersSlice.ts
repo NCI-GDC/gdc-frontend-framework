@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Operation, FilterSet } from "@gff/core";
+import { Operation, FilterSet, isOperandsType } from "@gff/core";
 import { AppState } from "./appApi";
 
 export interface ProjectCenterFiltersState {
@@ -52,6 +52,12 @@ export const { updateProjectFilter, removeProjectFilter, clearProjectFilters } =
 
 export const selectFilters = (state: AppState): FilterSet | undefined =>
   state.projectApp.filters;
+
+export const selectFiltersAppliedCount = (state: AppState): number =>
+  Object.values(state.projectApp.filters.root).reduce(
+    (a, b) => (isOperandsType(b) ? b?.operands.length : 1) + a,
+    0,
+  );
 
 export const selectProjectFiltersByName = (
   state: AppState,

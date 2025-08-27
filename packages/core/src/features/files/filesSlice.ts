@@ -1,11 +1,12 @@
 import { Middleware, Reducer } from "@reduxjs/toolkit";
 import { castDraft } from "immer";
-import { GdcApiRequest, GdcApiResponse, endpointSlice } from "../gdcapi/gdcapi";
+import { endpointSlice } from "../gdcapi";
+import { GdcApiRequest, GdcApiResponse } from "../gdcapi/types";
 import { FileDefaults } from "../gdcapi/types";
 
 const accessTypes = ["open", "controlled"] as const;
 
-export type AccessType = typeof accessTypes[number];
+export type AccessType = (typeof accessTypes)[number];
 
 const isAccessType = (x: unknown): x is AccessType => {
   return accessTypes.some((t) => t === x);
@@ -67,9 +68,9 @@ export type FileCaseType = ReadonlyArray<{
   };
   readonly samples?: ReadonlyArray<{
     readonly sample_id: string;
-    readonly sample_type: string;
     readonly submitter_id: string;
     readonly tissue_type: string;
+    readonly tumor_descriptor: string;
     readonly portions?: ReadonlyArray<{
       readonly submitter_id: string;
       readonly analytes?: ReadonlyArray<{
@@ -127,6 +128,22 @@ export interface GdcFile {
   readonly project_id?: string;
   readonly annotations?: ReadonlyArray<FileAnnotationsType>;
   readonly cases?: FileCaseType;
+  readonly total_reads?: string;
+  readonly average_base_quality?: number;
+  readonly average_insert_size?: number;
+  readonly average_read_length?: number;
+  readonly mean_coverage?: number;
+  readonly pairs_on_diff_chr?: string;
+  readonly contamination?: number;
+  readonly contamination_error?: number;
+  readonly proportion_reads_mapped?: number;
+  readonly proportion_reads_duplicated?: number;
+  readonly proportion_base_mismatch?: number;
+  readonly proportion_targets_no_coverage?: number;
+  readonly proportion_coverage_10x?: number;
+  readonly proportion_coverage_30x?: number;
+  readonly msi_score?: number;
+  readonly msi_status?: number;
   readonly associated_entities?: ReadonlyArray<{
     readonly entity_submitter_id: string;
     readonly entity_type: string;
@@ -135,7 +152,6 @@ export interface GdcFile {
   }>;
   readonly analysis?: {
     readonly workflow_type: string;
-    readonly updated_datetime: string;
     readonly input_files?: GdcCartFile[];
     readonly metadata?: {
       readonly read_groups: Array<{
@@ -190,6 +206,22 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
     experimental_strategy: hit.experimental_strategy,
     project_id: hit.cases?.[0]?.project?.project_id,
     annotations: hit.annotations?.map((annotation) => annotation),
+    total_reads: hit.total_reads?.toLocaleString(),
+    average_insert_size: hit?.average_insert_size,
+    average_read_length: hit?.average_read_length,
+    average_base_quality: hit?.average_base_quality,
+    mean_coverage: hit?.mean_coverage,
+    pairs_on_diff_chr: hit?.pairs_on_diff_chr?.toLocaleString(),
+    contamination: hit?.contamination,
+    contamination_error: hit?.contamination_error,
+    proportion_reads_mapped: hit?.proportion_reads_mapped,
+    proportion_reads_duplicated: hit?.proportion_reads_duplicated,
+    proportion_base_mismatch: hit?.proportion_base_mismatch,
+    proportion_targets_no_coverage: hit?.proportion_targets_no_coverage,
+    proportion_coverage_10x: hit?.proportion_coverage_10x,
+    proportion_coverage_30x: hit?.proportion_coverage_30x,
+    msi_score: hit?.msi_score,
+    msi_status: hit?.msi_status,
     cases: hit.cases?.map((caseObj) => {
       return {
         case_id: caseObj.case_id,
@@ -212,9 +244,9 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
         samples: caseObj.samples?.map((sample) => {
           return {
             sample_id: sample.sample_id,
-            sample_type: sample.sample_type,
             submitter_id: sample.submitter_id,
             tissue_type: sample.tissue_type,
+            tumor_descriptor: sample.tumor_descriptor,
             portions: sample.portions?.map((portion) => {
               return {
                 submitter_id: portion.submitter_id,
@@ -275,7 +307,6 @@ export const mapFileData = (files: ReadonlyArray<FileDefaults>): GdcFile[] => {
     analysis: hit.analysis
       ? {
           workflow_type: hit.analysis.workflow_type,
-          updated_datetime: hit.analysis.updated_datetime,
           input_files: hit.analysis.input_files?.map((file) => {
             return {
               file_name: file.file_name,

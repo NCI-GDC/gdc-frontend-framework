@@ -8,7 +8,7 @@ import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
 
 const GenesPage: NextPage = () => {
   const router = useRouter();
-  const gene = router.asPath.split("/")[2];
+  const gene = router.asPath.split("/")[2]?.split("?")?.[0];
 
   const [ready, setReady] = useState(false);
 

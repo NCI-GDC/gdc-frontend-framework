@@ -6,6 +6,8 @@ from ....base.base_page import GenericLocators
 
 class CohortBarLocators:
     COHORT_BAR_BUTTON = lambda button_name: f'[data-testid="{button_name}Button"]'
+    BUTTON_PIN_UNPIN_COHORT_BAR = '[data-testid="button-pin-unpin-cohort-bar"]'
+    BUTTON_PIN_UNPIN_COHORT_BAR_IS_UNPINNED =  '[data-testid="button-pin-unpin-cohort-bar"][data-indeterminate="true"]'
 
     COHORT_FROM_DROPDOWN_LIST = (
         lambda cohort_name: f'[data-testid="cohort-list-dropdown"] >> text="{cohort_name}"'
@@ -14,7 +16,7 @@ class CohortBarLocators:
         lambda cohort_name: f'[data-testid="cohort-list-dropdown"] >> input[value="{cohort_name}"]'
     )
 
-    IMPORT_COHORT_MODAL = 'text="Import a New Cohort"'
+    IMPORT_COHORT_MODAL = '[aria-label="Close Modal"]'
 
     SET_AS_COHORT_BUTTON_TEMP_COHORT_MESSAGE = (
         'span:has-text("Set this as your current cohort.")'
@@ -23,6 +25,9 @@ class CohortBarLocators:
         '>> .. >> .. >> .. >> svg[xmlns="http://www.w3.org/2000/svg"]'
     )
 
+    TEXT_COHORT_BAR_MESSAGE = (
+        lambda expected_message: f'[data-testid="text-cohort-bar-message"] >> text={expected_message} >> nth=0'
+    )
     TEXT_COHORT_QUERY_FILTER = (
         lambda full_query_filter, position: f'[data-testid="text-cohort-filters"] > div:nth-child({position}) > div:has-text("{full_query_filter}") >> nth=0'
     )
@@ -56,6 +61,14 @@ class CohortBar(BasePage):
         )
         self.click(locator)
 
+    def unpin_cohort_bar(self):
+        is_cohort_bar_unpinned = CohortBarLocators.BUTTON_PIN_UNPIN_COHORT_BAR_IS_UNPINNED
+        # Check if cohort bar is already unpinned
+        if not self.is_visible(is_cohort_bar_unpinned):
+            # If it is not already then we unpin
+            button_cohort_bar_pin_unpin = CohortBarLocators.BUTTON_PIN_UNPIN_COHORT_BAR
+            self.click(button_cohort_bar_pin_unpin)
+
     # Clicks the 'x' to remove a specified filter in the cohort query area
     def click_remove_filter_from_cohort_query_area(self, filter_name_to_remove: str):
         locator = CohortBarLocators.BUTTON_REMOVE_COHORT_QUERY_FILTER(
@@ -76,6 +89,22 @@ class CohortBar(BasePage):
     def click_set_as_current_cohort_from_temp_message(self):
         locator = CohortBarLocators.SET_AS_COHORT_BUTTON_TEMP_COHORT_MESSAGE
         self.click(locator)
+
+    def is_text_present_on_cohort_bar(self, expected_text):
+        locator = CohortBarLocators.TEXT_COHORT_BAR_MESSAGE(expected_text)
+        try:
+            self.wait_until_locator_is_visible(locator)
+        except:
+            return False
+        return True
+
+    def is_text_not_present_on_cohort_bar(self, text):
+        locator = CohortBarLocators.TEXT_COHORT_BAR_MESSAGE(text)
+        try:
+            self.wait_until_locator_is_hidden(locator)
+        except:
+            return False
+        return True
 
     def is_expected_active_cohort_present(self, cohort_name: str):
         locator = CohortBarLocators.ACTIVE_COHORT(cohort_name)

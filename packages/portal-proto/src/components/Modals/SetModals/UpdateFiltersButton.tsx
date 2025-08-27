@@ -1,5 +1,4 @@
-import { UseMutation } from "@reduxjs/toolkit/dist/query/react/buildHooks";
-import { MutationDefinition } from "@reduxjs/toolkit/dist/query";
+import { TypedUseMutation } from "@reduxjs/toolkit/query/react";
 import {
   useCoreDispatch,
   hideModal,
@@ -11,15 +10,14 @@ import {
 import { showNotification } from "@mantine/notifications";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import { useEffect } from "react";
+import { Loader } from "@mantine/core";
 
 interface UpdateCohortButtonProps {
   readonly ids: string[];
   readonly disabled: boolean;
   readonly hooks: {
     readonly updateFilters?: (field: string, op: Operation) => void;
-    readonly createSet?: UseMutation<
-      MutationDefinition<CreateSetValueArgs, any, any, string>
-    >;
+    readonly createSet?: TypedUseMutation<string, CreateSetValueArgs, any>;
     readonly getExistingFilters?: () => FilterSet;
   };
   readonly facetField: string;
@@ -87,6 +85,9 @@ const UpdateCohortButton: React.FC<UpdateCohortButtonProps> = ({
           dispatch(hideModal());
         }
       }}
+      leftSection={
+        response?.isLoading ? <Loader size="sm" color="white" /> : undefined
+      }
     >
       Submit
     </DarkFunctionButton>

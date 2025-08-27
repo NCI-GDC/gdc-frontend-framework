@@ -1,8 +1,5 @@
+import { StickyOffIcon, StickyOnIcon } from "@/utils/icons";
 import { Tooltip, Checkbox, CheckboxProps } from "@mantine/core";
-import {
-  BsPin as StickyOffIcon,
-  BsPinFill as StickyOnIcon,
-} from "react-icons/bs";
 
 const StickyControl = ({
   handleIsSticky,
@@ -35,7 +32,7 @@ const StickyControl = ({
       position="bottom"
     >
       <Checkbox
-        data-testid="button-cohort-bar-pin-unpin"
+        data-testid="button-pin-unpin-cohort-bar"
         classNames={{
           input:
             "bg-primary-darker rounded-md hover:bg-primary-darkest h-12 w-12 border-2 border-transparent hover:border-white focus:border-white cursor-pointer",

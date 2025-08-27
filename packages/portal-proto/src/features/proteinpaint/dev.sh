@@ -6,19 +6,21 @@
 if [[ "$1" == "unlink" ]]; then
 	# to test the published client package before submitting a PR with an updated pp-client version
 	npm unlink ../proteinpaint/client
+	npm uninstall @sjcrh/proteinpaint-client --save --workspace=packages/portal-proto
+	npm install @sjcrh/proteinpaint-client --save --save-exact --workspace=packages/portal-proto
+
 else
 	# to test the local PP client code
 	npm link ../proteinpaint/client
+	# An issue with npm link and workspaces: the non-linked @sjcrh/proteinpaint-client package
+	# may be moved to portal-proto/node_modules, creating 2 separate modules of the same package,
+	# must ensure only the linked module is used for bundling so delete
+	rm -rf packages/portal-proto/node_modules/@sjcrh
+	# also not able to do a simpler
+	# `cd packages/portal-proto && npm link path/to/proteinpaint/client`,
+	# where the linked module would be in portal-proto/node_modules instead of the
+	# other way around
 fi
-
-# An issue with npm link and workspaces: the non-linked @sjcrh/proteinpaint-client package
-# may be moved to portal-proto/node_modules, creating 2 separate modules of the same package,
-# must ensure only the linked module is used for bundling so delete
-rm -rf packages/portal-proto/node_modules/@sjcrh
-# also not able to do a simpler
-# `cd packages/portal-proto && npm link path/to/proteinpaint/client`,
-# where the linked module would be in portal-proto/node_modules instead of the
-# other way around
 
 # sometimes the nextjs bundle cache are stale after npm link
 rm -rf packages/portal-proto/.next

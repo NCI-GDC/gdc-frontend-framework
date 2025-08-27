@@ -1,4 +1,4 @@
-from getgauge.python import step, before_spec
+from getgauge.python import step, before_spec, data_store
 
 from step_impl.base.webdriver import WebDriver
 from step_impl.apps.gdc_data_portal_v2.app import GDCDataPortalV2App
@@ -9,6 +9,17 @@ def start_app():
     global APP
     APP = GDCDataPortalV2App(WebDriver.page)
 
+@step("Collect these tool card case counts for comparison <table>")
+def store_home_page_data_portal_statistics(table):
+    """
+    Stores tool card case count for use in future tests.
+    Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'
+
+    v[0] - The name of the tool card case count to collect
+    """
+    for k, v in enumerate(table):
+        tool_card_case_count = APP.analysis_center_page.get_analysis_tool_cases_count(v[0])
+        data_store.spec[f"{v[0]} Tool Card Case Count"] = tool_card_case_count
 
 @step("Validate Core Tools Navigation")
 def navigation_bar_icon_check():

@@ -44,27 +44,22 @@ query Biospecimen(
                       node {
                         submitter_id
                         sample_id
-                        sample_type
-                        sample_type_id
                         tissue_type
-                        tumor_code
                         tumor_code_id
-                        oct_embedded
                         shortest_dimension
                         intermediate_dimension
                         longest_dimension
-                        is_ffpe
                         pathology_report_uuid
                         tumor_descriptor
                         current_weight
                         initial_weight
-                        composition
                         time_between_clamping_and_freezing
                         time_between_excision_and_freezing
                         days_to_sample_procurement
                         freezing_method
                         preservation_method
                         days_to_collection
+                        specimen_type
                         portions {
                           hits(first: 99) {
                             total
@@ -83,7 +78,6 @@ query Biospecimen(
                                         submitter_id
                                         analyte_id
                                         analyte_type
-                                        analyte_type_id
                                         well_number
                                         amount
                                         a260_a280_ratio
@@ -100,7 +94,6 @@ query Biospecimen(
                                                 amount
                                                 concentration
                                                 analyte_type
-                                                analyte_type_id
                                               }
                                             }
                                           }

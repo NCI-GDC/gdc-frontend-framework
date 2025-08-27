@@ -7,9 +7,8 @@ import {
   useCreateCaseSetFromFiltersMutation,
   useCreateTopNGeneSetFromFiltersMutation,
   useCreateTopNSsmsSetFromFiltersMutation,
-  CreateSetFilterArgs,
-  CreateSetValueArgs,
 } from "./createSetSlice";
+import { type CreateSetFilterArgs, type CreateSetValueArgs } from "./shared";
 import {
   setsReducer,
   addSet,
@@ -17,14 +16,17 @@ import {
   renameSet,
   selectSetsByType,
   selectAllSets,
-  SetTypes,
+  type SetTypes,
 } from "./setsSlice";
 import {
   useGeneSetCountQuery,
+  useLazyGeneSetCountQuery,
   useGeneSetCountsQuery,
   useSsmSetCountQuery,
+  useLazySsmSetCountQuery,
   useSsmSetCountsQuery,
   useCaseSetCountQuery,
+  useLazyCaseSetCountQuery,
   useCaseSetCountsQuery,
 } from "./setCountSlice";
 import {
@@ -32,6 +34,7 @@ import {
   useAppendToSsmSetMutation,
   useRemoveFromGeneSetMutation,
   useRemoveFromSsmSetMutation,
+  useRemoveTopNSsmsSetFromFiltersMutation,
 } from "./modifySetSlice";
 
 export {
@@ -51,15 +54,19 @@ export {
   selectAllSets,
   SetTypes,
   useGeneSetCountQuery,
+  useLazyGeneSetCountQuery,
   useGeneSetCountsQuery,
   useSsmSetCountQuery,
+  useLazySsmSetCountQuery,
   useSsmSetCountsQuery,
   useCaseSetCountQuery,
+  useLazyCaseSetCountQuery,
   useCaseSetCountsQuery,
   useAppendToGeneSetMutation,
   useAppendToSsmSetMutation,
   useRemoveFromGeneSetMutation,
   useRemoveFromSsmSetMutation,
+  useRemoveTopNSsmsSetFromFiltersMutation,
   CreateSetFilterArgs,
   CreateSetValueArgs,
 };

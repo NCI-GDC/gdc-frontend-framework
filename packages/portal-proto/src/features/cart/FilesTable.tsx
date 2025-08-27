@@ -9,11 +9,12 @@ import {
   CartFile,
   SortBy,
   GdcFile,
+  GqlOperation,
 } from "@gff/core";
 import { RemoveFromCartButton } from "./updateCart";
 import FunctionButton from "@/components/FunctionButton";
 import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
-import { convertDateToString } from "src/utils/date";
+import { getFormattedTimestamp } from "src/utils/date";
 import download from "src/utils/download";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
 import { statusBooleansToDataStatus } from "src/utils";
@@ -29,16 +30,19 @@ import {
 import VerticalTable from "@/components/Table/VerticalTable";
 import { HandleChangeInput } from "@/components/Table/types";
 import { downloadTSV } from "@/components/Table/utils";
-import { Tooltip } from "@mantine/core";
 import { useDeepCompareMemo } from "use-deep-compare";
+import TotalItems from "@/components/Table/TotalItem";
 
 interface FilesTableProps {
   readonly filesByCanAccess: Record<string, CartFile[]>;
+  readonly customDataTestID: string;
 }
 
 const cartFilesTableColumnHelper = createColumnHelper<FilesTableDataType>();
 
-const FilesTable: React.FC<FilesTableProps> = () => {
+const FilesTable: React.FC<FilesTableProps> = ({
+  customDataTestID,
+}: FilesTableProps) => {
   const { setEntityMetadata } = useContext(SummaryModalContext);
   const cart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
@@ -47,6 +51,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
   const [activePage, setActivePage] = useState(1);
   const [sortBy, setSortBy] = useState<SortBy[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [jsonDownloadInProgress, setJsonDownloadInProgress] = useState(false);
 
   const sortByActions = (sortByObj: SortingState) => {
     const tempSortBy: SortBy[] = sortByObj.map((sortObj) => {
@@ -65,54 +70,56 @@ const FilesTable: React.FC<FilesTableProps> = () => {
     setSortBy(tempSortBy);
   };
 
+  const tableFilters: GqlOperation = {
+    op: "and",
+    content: [
+      {
+        op: "in",
+        content: {
+          field: "files.file_id",
+          value: cart.map((f) => f.file_id),
+        },
+      },
+      {
+        op: "or",
+        content: [
+          {
+            op: "=",
+            content: {
+              field: "files.file_id",
+              value: `*${searchTerm}*`,
+            },
+          },
+          {
+            op: "=",
+            content: {
+              field: "files.file_name",
+              value: `*${searchTerm}*`,
+            },
+          },
+          {
+            op: "=",
+            content: {
+              field: "cases.case_id",
+              value: `*${searchTerm}*`,
+            },
+          },
+          {
+            op: "=",
+            content: {
+              field: "cases.submitter_id",
+              value: `*${searchTerm}*`,
+            },
+          },
+        ],
+      },
+    ],
+  };
+
   const { data, isFetching, isSuccess, isError } = useGetFilesQuery({
     size: pageSize,
     from: pageSize * (activePage - 1),
-    filters: {
-      op: "and",
-      content: [
-        {
-          op: "in",
-          content: {
-            field: "files.file_id",
-            value: cart.map((f) => f.file_id),
-          },
-        },
-        {
-          op: "or",
-          content: [
-            {
-              op: "=",
-              content: {
-                field: "files.file_id",
-                value: `*${searchTerm}*`,
-              },
-            },
-            {
-              op: "=",
-              content: {
-                field: "files.file_name",
-                value: `*${searchTerm}*`,
-              },
-            },
-            {
-              op: "=",
-              content: {
-                field: "cases.case_id",
-                value: `*${searchTerm}*`,
-              },
-            },
-            {
-              op: "=",
-              content: {
-                field: "cases.submitter_id",
-                value: `*${searchTerm}*`,
-              },
-            },
-          ],
-        },
-      ],
-    },
+    filters: tableFilters,
     expand: ["annotations", "cases", "cases.project"],
     sortBy: sortBy,
   });
@@ -149,7 +156,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
           size: pageSize,
           total: data?.pagination?.total,
           sort: "None",
-          label: "files",
+          label: "file",
         }
       : {
           count: undefined,
@@ -158,6 +165,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
           pages: undefined,
           size: undefined,
           total: undefined,
+          label: undefined,
         };
   }, [pageSize, activePage, data?.pagination?.total, isSuccess]);
 
@@ -326,17 +334,12 @@ const FilesTable: React.FC<FilesTableProps> = () => {
   }, [sorting]);
 
   const handleDownloadJSON = async () => {
+    setJsonDownloadInProgress(true);
     await download({
       endpoint: "files",
       method: "POST",
       params: {
-        filters: {
-          op: "in",
-          content: {
-            field: "files.file_id",
-            value: cart.map((f) => f.file_id),
-          },
-        },
+        filters: tableFilters,
         size: 10000,
         attachment: true,
         format: "JSON",
@@ -359,6 +362,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
         ].join(","),
       },
       dispatch,
+      done: () => setJsonDownloadInProgress(false),
     });
   };
 
@@ -366,7 +370,7 @@ const FilesTable: React.FC<FilesTableProps> = () => {
     downloadTSV({
       tableData,
       columnOrder,
-      fileName: `files-table.${convertDateToString(new Date())}.tsv`,
+      fileName: `files-table.${getFormattedTimestamp()}.tsv`,
       columnVisibility,
       columns: cartFilesTableDefaultColumns,
       option: {
@@ -388,28 +392,32 @@ const FilesTable: React.FC<FilesTableProps> = () => {
 
   return (
     <VerticalTable
+      customDataTestID={customDataTestID}
       data={tableData}
       columns={cartFilesTableDefaultColumns}
+      tableTotalDetail={
+        <TotalItems total={data?.pagination?.total} itemName="file" />
+      }
       additionalControls={
-        <div className="flex gap-2 mb-2">
-          <Tooltip label="Download JSON">
-            <FunctionButton
-              onClick={handleDownloadJSON}
-              aria-label="Download JSON"
-              disabled={isFetching}
-            >
-              JSON
-            </FunctionButton>
-          </Tooltip>
-          <Tooltip label="Download TSV">
-            <FunctionButton
-              onClick={handleDownloadTSV}
-              aria-label="Download TSV"
-              disabled={isFetching}
-            >
-              TSV
-            </FunctionButton>
-          </Tooltip>
+        <div className="flex gap-2">
+          <FunctionButton
+            data-testid="button-json"
+            onClick={handleDownloadJSON}
+            aria-label="Download JSON"
+            disabled={isFetching}
+            isDownload
+            isActive={jsonDownloadInProgress}
+          >
+            JSON
+          </FunctionButton>
+          <FunctionButton
+            data-testid="button-tsv"
+            onClick={handleDownloadTSV}
+            aria-label="Download TSV"
+            disabled={isFetching}
+          >
+            TSV
+          </FunctionButton>
         </div>
       }
       pagination={pagination}

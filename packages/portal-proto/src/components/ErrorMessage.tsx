@@ -1,4 +1,4 @@
-import { RiErrorWarningFill as WarningIcon } from "react-icons/ri";
+import { WarningIconMessage } from "@/utils/icons";
 
 interface ErrorMessageProps {
   readonly message: string;
@@ -7,8 +7,8 @@ interface ErrorMessageProps {
 const ErrorMessage: React.FC<ErrorMessageProps> = ({
   message,
 }: ErrorMessageProps) => (
-  <span className="flex items-center mt-2 text-[#AD2B4A]">
-    <WarningIcon className="mr-1" size="1rem" />
+  <span className="flex items-center mt-2 text-utility-error">
+    <WarningIconMessage className="mr-1" size="1rem" />
     {message}
   </span>
 );

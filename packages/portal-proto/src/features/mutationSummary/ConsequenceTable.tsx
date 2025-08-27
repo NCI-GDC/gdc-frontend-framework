@@ -24,21 +24,19 @@ import {
   SMTableImpacts,
 } from "../GenomicTables/SomaticMutationsTable/TableComponents";
 import saveAs from "file-saver";
-import { Loader } from "@mantine/core";
-import { convertDateToString } from "@/utils/date";
+import { getFormattedTimestamp } from "@/utils/date";
 import { downloadTSV } from "@/components/Table/utils";
 import ImpactHeaderWithTooltip from "../GenomicTables/SharedComponent/ImpactHeaderWithTooltip";
+import TotalItems from "@/components/Table/TotalItem";
+import { StrandMinusIcon, StrandPlusIcon } from "@/utils/icons";
+
+const consequenceTableColumnHelper = createColumnHelper<ConsequenceTableData>();
 
 export const ConsequenceTable = ({
   ssmsId,
 }: {
   ssmsId: string;
 }): JSX.Element => {
-  const [
-    consequenceTableJSONDownloadActive,
-    setConsequenceTableJSONDownloadActive,
-  ] = useState(false);
-
   const {
     data: initialData,
     isFetching,
@@ -129,7 +127,7 @@ export const ConsequenceTable = ({
             consequences: consequence_type,
             transcript: transcript_id,
             is_canonical: is_canonical,
-            gene_strand: gene_strand > 0 ? "+" : "-",
+            gene_strand: gene_strand,
             impact: {
               polyphen_impact: polyphen_impact,
               polyphen_score: polyphen_score,
@@ -143,9 +141,6 @@ export const ConsequenceTable = ({
       setTableData(sortedData);
     }
   }, [isSuccess, initialData?.consequence]);
-
-  const consequenceTableColumnHelper =
-    createColumnHelper<ConsequenceTableData>();
 
   const consequenceTableDefaultColumns = useMemo<
     ColumnDef<ConsequenceTableData>[]
@@ -203,7 +198,13 @@ export const ConsequenceTable = ({
         id: "gene_strand",
         header: "Gene Strand",
         cell: ({ row }) => (
-          <span className="text-lg font-bold">{row.original.gene_strand}</span>
+          <span>
+            {row.original.gene_strand > 0 ? (
+              <StrandPlusIcon />
+            ) : (
+              <StrandMinusIcon />
+            )}
+          </span>
         ),
       }),
       consequenceTableColumnHelper.display({
@@ -225,7 +226,7 @@ export const ConsequenceTable = ({
         ),
       }),
     ],
-    [consequenceTableColumnHelper],
+    [],
   );
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(
     consequenceTableDefaultColumns.map((column) => column.id as string), //must start out with populated columnOrder so we can splice
@@ -233,9 +234,7 @@ export const ConsequenceTable = ({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   const handleTSVDownload = () => {
-    const fileName = `consequences-table.${convertDateToString(
-      new Date(),
-    )}.tsv`;
+    const fileName = `consequences-table.${getFormattedTimestamp()}.tsv`;
     downloadTSV({
       tableData,
       columns: consequenceTableDefaultColumns,
@@ -284,6 +283,11 @@ export const ConsequenceTable = ({
               return impactString;
             },
           },
+          gene_strand: {
+            composer: (consequenceData) => {
+              return consequenceData.gene_strand > 0 ? "+" : "-";
+            },
+          },
           transcript: {
             composer: (consequenceData) => {
               const transcriptString = `${consequenceData.transcript}${
@@ -298,7 +302,6 @@ export const ConsequenceTable = ({
   };
 
   const handleJSONDownload = () => {
-    setConsequenceTableJSONDownloadActive(true);
     const json = initialData.consequence.map(
       ({
         transcript: {
@@ -341,14 +344,16 @@ export const ConsequenceTable = ({
     const blob = new Blob([JSON.stringify(json, null, 2)], {
       type: "application/json",
     });
-    saveAs(blob, `consequences-data.${convertDateToString(new Date())}.json`);
-    setConsequenceTableJSONDownloadActive(false);
+    saveAs(blob, `consequences-data.${getFormattedTimestamp()}.json`);
   };
 
   return (
     <VerticalTable
       customDataTestID="table-consequences-mutation-summary"
       data={displayedData}
+      tableTotalDetail={
+        <TotalItems total={tableData?.length} itemName="consequence" />
+      }
       columns={consequenceTableDefaultColumns}
       setColumnVisibility={setColumnVisibility}
       columnVisibility={columnVisibility}
@@ -362,11 +367,12 @@ export const ConsequenceTable = ({
         size,
         from,
         total,
+        label: "consequence",
       }}
       additionalControls={
         <div className="flex gap-2 mb-2">
           <FunctionButton onClick={handleJSONDownload} disabled={isFetching}>
-            {consequenceTableJSONDownloadActive ? <Loader /> : "JSON"}
+            JSON
           </FunctionButton>
           <FunctionButton onClick={handleTSVDownload} disabled={isFetching}>
             TSV

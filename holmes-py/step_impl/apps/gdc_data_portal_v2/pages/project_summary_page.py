@@ -11,6 +11,11 @@ class ProjectSummaryLocators:
         lambda text_identifier: f"[data-testid='text-{text_identifier}-project-summary']"
     )
 
+    BUTTON_BIOSPECIMEN_DOWNLOAD = "[data-testid='button-biospecimen-project-summary']"
+    BUTTON_CLINICAL_DOWNLOAD = "[data-testid='button-clinical-project-summary']"
+    BUTTON_ANNOTATION_DOWNLOAD = (
+        lambda button_name: f"[data-testid='table-annotations-project-summary'] >> [data-testid='button-{button_name}-projects-table']"
+    )
 
 class ProjectSummaryPage(BasePage):
     def __init__(self, driver: Page, url):
@@ -20,6 +25,24 @@ class ProjectSummaryPage(BasePage):
         """Clicks specified button on Project Summary page"""
         button_name = self.normalize_button_identifier(button_name)
         locator = ProjectSummaryLocators.BUTTON_PROJECT_SUMMARY_PAGE(button_name)
+        self.click(locator)
+
+    def click_biospecimen_download_button(self, button_name):
+        """Clicks either 'JSON' or 'TSV' download button"""
+        locator = ProjectSummaryLocators.BUTTON_BIOSPECIMEN_DOWNLOAD
+        self.click(locator)
+        self.click_text_option_from_dropdown_menu(button_name)
+
+    def click_clinical_download_button(self, button_name):
+        """Clicks either 'JSON' or 'TSV' download button"""
+        locator = ProjectSummaryLocators.BUTTON_CLINICAL_DOWNLOAD
+        self.click(locator)
+        self.click_text_option_from_dropdown_menu(button_name)
+
+    def click_annotation_download_button(self, button_name):
+        """Clicks either 'JSON' or 'TSV' download button"""
+        button_name = self.normalize_button_identifier(button_name)
+        locator = ProjectSummaryLocators.BUTTON_ANNOTATION_DOWNLOAD(button_name)
         self.click(locator)
 
     def get_text_project_summary(self, text_identifier):

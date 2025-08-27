@@ -1,16 +1,22 @@
 import React, { ReactNode, useState } from "react";
-import { Tooltip } from "@mantine/core";
-import { FaPlus as PlusIcon } from "react-icons/fa";
+import { Tooltip, ButtonProps, Loader } from "@mantine/core";
 import tw from "tailwind-styled-components";
-import { FilterSet } from "@gff/core";
-import SaveCohortModal from "@/components/Modals/SaveCohortModal";
+import { FilterSet, useCoreDispatch, Modals, showModal } from "@gff/core";
+import { SaveCohortModal } from "@gff/portal-components";
+import { PlusIcon } from "@/utils/icons";
+import { cohortActionsHooks } from "@/features/cohortBuilder/CohortManager/cohortActionHooks";
+import { INVALID_COHORT_NAMES } from "@/features/cohortBuilder/utils";
 
-export const CohortCreationStyledButton = tw.button`
+interface CohortCreationStyledButtonProps extends ButtonProps {
+  $fullWidth?: boolean;
+}
+
+export const CohortCreationStyledButton = tw.button<CohortCreationStyledButtonProps>`
   flex
   items-stretch
   w-52
   h-full
-  ${(p) => !p.$fullWidth && "max-w-[125px]"}
+  ${(p: { $fullWidth: boolean }) => !p.$fullWidth && "max-w-[125px]"}
   gap-2
   rounded
   border-primary
@@ -28,10 +34,12 @@ export const CohortCreationStyledButton = tw.button`
 `;
 
 export const IconWrapperTW = tw.span`
-  ${(p) => (p.$disabled ? "bg-base-light" : "bg-accent")}
+  ${(p: { $disabled: boolean }) =>
+    p.$disabled ? "bg-base-light" : "bg-accent"}
   border-r-1
   border-solid
-  ${(p) => (p.$disabled ? "border-base-light" : "border-primary")}
+  ${(p: { $disabled: boolean }) =>
+    p.$disabled ? "border-base-light" : "border-primary"}
   flex
   items-center
   p-1
@@ -79,6 +87,7 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
   const [cohortFilters, setCohortFilters] = useState<FilterSet>(filters);
   const [loading, setLoading] = useState(false);
   const disabled = numCases === undefined || numCases === 0;
+  const dispatch = useCoreDispatch();
   const tooltipText = disabled
     ? "No cases available"
     : `Save a new cohort of ${
@@ -115,18 +124,30 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
 
             if (filtersCallback) {
               setLoading(true);
-              const createdFilters = await filtersCallback();
-              setCohortFilters(createdFilters);
-              setLoading(false);
+              await filtersCallback()
+                .then((createdFilters) => {
+                  setCohortFilters(createdFilters);
+                  setLoading(false);
+                  setShowSaveCohort(true);
+                })
+                .catch(() => {
+                  dispatch(showModal({ modal: Modals.SaveCohortErrorModal }));
+                  setLoading(false);
+                });
+            } else {
+              setShowSaveCohort(true);
             }
-            setShowSaveCohort(true);
           }}
           disabled={disabled}
           $fullWidth={React.isValidElement(label)} // if label is JSX.Element take the full width
           aria-label={tooltipText}
         >
           <IconWrapperTW $disabled={disabled} aria-hidden="true">
-            <PlusIcon color="white" size={12} />
+            {loading ? (
+              <Loader size={12} color="white" />
+            ) : (
+              <PlusIcon color="white" size={12} />
+            )}
           </IconWrapperTW>
           <span className="pr-2 self-center">{label ?? "--"}</span>
         </CohortCreationStyledButton>
@@ -138,6 +159,8 @@ const CohortCreationButton: React.FC<CohortCreationButtonProps> = ({
         filters={cohortFilters}
         caseFilters={caseFilters}
         createStaticCohort={createStaticCohort}
+        hooks={cohortActionsHooks}
+        invalidCohortNames={INVALID_COHORT_NAMES}
       />
     </div>
   );

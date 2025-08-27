@@ -1,5 +1,4 @@
-import { QueryDefinition } from "@reduxjs/toolkit/query";
-import { UseLazyQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
+import { TypedUseLazyQuery } from "@reduxjs/toolkit/query/react";
 import { FilterSet } from "../cohort";
 import {
   GraphqlApiSliceRequest,
@@ -7,18 +6,14 @@ import {
   GraphQLFetchError,
 } from "../gdcapi/gdcgraphql";
 
-export type CountHookLazyQuery = UseLazyQuery<
-  QueryDefinition<
-    FilterSet,
-    (
-      request: GraphqlApiSliceRequest,
-    ) => Promise<
-      | { error: GraphQLFetchError; data?: undefined }
-      | { data: GraphQLApiResponse<any>; error?: undefined }
-    >,
-    never,
-    number,
-    "graphql"
+export type CountHookLazyQuery = TypedUseLazyQuery<
+  number,
+  FilterSet,
+  (
+    request: GraphqlApiSliceRequest,
+  ) => Promise<
+    | { error: GraphQLFetchError | string; data?: undefined }
+    | { data: GraphQLApiResponse<any>; error?: undefined }
   >
 >;
 

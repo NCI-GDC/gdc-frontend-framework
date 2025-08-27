@@ -17,6 +17,7 @@ import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import SubrowPrimarySiteDiseaseType from "@/components/SubrowPrimarySiteDiseaseType/SubrowPrimarySiteDiseaseType";
 import { ArraySeparatedSpan } from "@/components/ArraySeparatedSpan/ArraySeparatedSpan";
+import TotalItems from "@/components/Table/TotalItem";
 
 interface PrimarySiteTableProps {
   readonly projectId: string;
@@ -43,14 +44,14 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
             disease_type: datum.disease_types,
             cases: datum.casesTotal,
             experimental_strategy: datum.files__experimental_strategy,
-            files: datum.filesTotal,
+            files: datum.filesTotal?.toLocaleString(),
           }))
         : [],
     [isFetching, data],
   );
 
   const primarySitesTableColumnHelper = useMemo(
-    () => createColumnHelper<typeof formattedData[0]>(),
+    () => createColumnHelper<(typeof formattedData)[0]>(),
     [],
   );
 
@@ -118,6 +119,15 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
       primarySitesTableColumnHelper.accessor("files", {
         id: "files",
         header: "Files",
+        meta: {
+          sortingFn: (rowA, rowB) => {
+            const a = Number(rowA.files.replace(/,/g, ""));
+            const b = Number(rowB.files.replace(/,/g, ""));
+            if (a > b) return 1;
+            if (a < b) return -1;
+            return 0;
+          },
+        },
       }),
     ],
     [primarySitesTableColumnHelper, projectId],
@@ -140,7 +150,7 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
   );
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [expanded, setExpanded] = useState<ExpandedState>({});
-  const getRowId = (originalRow: typeof formattedData[0]) => {
+  const getRowId = (originalRow: (typeof formattedData)[0]) => {
     return originalRow.primary_site;
   };
   const [expandedRowId, setExpandedRowId] = useState(null);
@@ -176,7 +186,7 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
   };
 
   const handleExpand = (
-    row: Row<typeof formattedData[0]>,
+    row: Row<(typeof formattedData)[0]>,
     columnId: string,
   ) => {
     if (
@@ -193,19 +203,12 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
   return (
     <VerticalTable
       customDataTestID="table-primary-sites-project-summary"
-      tableTitle={
-        <>
-          Total of <b>{paginationProps?.total?.toLocaleString()}</b> Primary
-          Sites
-        </>
+      tableTotalDetail={
+        <TotalItems total={paginationProps?.total} itemName="primary site" />
       }
       data={displayedData}
       columns={primarySitesTableColumns}
-      additionalControls={
-        <div className="self-end">
-          <HeaderTitle>Primary Sites</HeaderTitle>
-        </div>
-      }
+      additionalControls={<HeaderTitle>Primary Sites</HeaderTitle>}
       columnSorting="manual"
       sorting={sorting}
       setSorting={setSorting}
@@ -222,7 +225,7 @@ const PrimarySiteTable: React.FC<PrimarySiteTableProps> = ({
       setColumnOrder={setColumnOrder}
       pagination={{
         ...paginationProps,
-        label: "Primary Sites",
+        label: "Primary Site",
       }}
       status={isFetching ? "pending" : "fulfilled"}
       search={{

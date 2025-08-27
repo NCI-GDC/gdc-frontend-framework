@@ -1,5 +1,5 @@
+import { LinkIcon } from "@/utils/icons";
 import Link from "next/link";
-import { FiExternalLink } from "react-icons/fi";
 import { TypeIcon } from "./TypeIcon";
 
 export const AnchorLink = ({
@@ -22,11 +22,12 @@ export const AnchorLink = ({
       <Link
         href={href}
         target="_blank"
+        rel="noreferrer"
         className="flex gap-1 underline font-content"
         data-testid={customDataTestID}
       >
         <>
-          <FiExternalLink className="mt-1" />
+          <LinkIcon className="mt-1" />
           {title}
         </>
       </Link>

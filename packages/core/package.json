@@ -1,6 +1,6 @@
 {
   "name": "@gff/core",
-  "version": "2.14.3",
+  "version": "2.17.6",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -9,8 +9,8 @@
   "scripts": {
     "clean": "rimraf dist",
     "compile": "tsc",
-    "build": "rollup --config rollup.config.js",
-    "build:clean": "npm run clean && npm run compile && rollup --config rollup.config.js",
+    "build": "rollup --config rollup.config.mjs",
+    "build:clean": "npm run clean && npm run compile && rollup --config rollup.config.mjs",
     "build:watch": "npm run compile && npm run build -- --watch",
     "test": "jest unit",
     "test:watch": "jest unit --watch",
@@ -21,34 +21,37 @@
   "author": "",
   "license": "Apache-2.0",
   "peerDependencies": {
-    "@reduxjs/toolkit": "^1.8.5",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "@reduxjs/toolkit": "~2.5.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-redux": "^7.2.3",
     "redux-persist": "^6.0.0"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.14.5",
-    "@rollup/plugin-babel": "^5.3.0",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-typescript": "^8.2.1",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-json": "^6.1.0",
     "@types/blueimp-md5": "^2.18.0",
-    "@types/jest": "^27.0.6",
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
+    "@types/node": "^22.9.0",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.1",
     "@types/uuid": "^8.3.1",
-    "jest": "^27.0.6",
-    "rimraf": "^3.0.2",
-    "rollup": "^2.52.7",
-    "rollup-plugin-dts": "^3.0.2",
+    "rimraf": "^6.0.1",
+    "rollup": "^4.27.3",
+    "rollup-plugin-dts": "^6.1.1",
     "rollup-plugin-peer-deps-external": "^2.2.4",
-    "rollup-plugin-terser": "^7.0.2",
-    "ts-jest": "^27.0.3",
-    "typescript": "~4.6.4"
+    "rollup-plugin-swc3": "^0.12.1",
+    "rollup-swc-preserve-directives": "^0.7.0",
+    "typescript": "^5.8.2"
   },
   "dependencies": {
     "blueimp-md5": "^2.19.0",
     "queue": "^6.0.2",
     "uuid": "^8.3.2"
+  },
+  "optionalDependencies": {
+    "@napi-rs/magic-string-linux-x64-gnu": "^0.3.4",
+    "@rollup/rollup-linux-x64-gnu": "^4.28.1",
+    "@swc/core-linux-x64-gnu": "^1.10.0"
   }
 }

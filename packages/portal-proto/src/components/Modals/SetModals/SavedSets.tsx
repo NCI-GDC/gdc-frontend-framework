@@ -1,9 +1,6 @@
 import React, { useState, useMemo, useEffect, useContext } from "react";
-import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
-import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
 import { upperFirst } from "lodash";
 import { Checkbox, Tooltip } from "@mantine/core";
-import { AiOutlineFileAdd as FileAddIcon } from "react-icons/ai";
 import {
   useCoreSelector,
   selectSetsByType,
@@ -13,6 +10,7 @@ import {
   Operation,
   FilterSet,
   isIncludes,
+  useGeneSetCountsQuery,
 } from "@gff/core";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import ButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
@@ -23,15 +21,14 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { useDeepCompareMemo } from "use-deep-compare";
+import { FileAddIcon } from "@/utils/icons";
 
 interface SavedSetsProps {
   readonly setType: SetTypes;
   readonly setTypeLabel: string;
   readonly createSetsInstructions: React.ReactNode;
   readonly selectSetInstructions: string;
-  readonly countHook: UseQuery<
-    QueryDefinition<any, any, any, Record<string, number>, string>
-  >;
+  readonly countHook: typeof useGeneSetCountsQuery;
   readonly updateFilters: (field: string, op: Operation) => void;
   readonly facetField: string;
   readonly existingFiltersHook: () => FilterSet;
@@ -92,6 +89,7 @@ const SavedSets: React.FC<SavedSetsProps> = ({
             position="right"
           >
             <Checkbox
+              data-testid={`checkbox-${row.original.name}`}
               size="xs"
               classNames={{
                 input: "checked:bg-accent checked:border-accent",
@@ -109,12 +107,19 @@ const SavedSets: React.FC<SavedSetsProps> = ({
       savedSetsTableColumnHelper.accessor("name", {
         id: "name",
         header: "Name",
+        cell: ({ row }) => (
+          <div data-testid={`text-${row.original.name}-set-name`}>
+            {row.original.name}
+          </div>
+        ),
       }),
       savedSetsTableColumnHelper.accessor("count", {
         id: "count",
         header: `# ${upperFirst(setTypeLabel)}s`,
         cell: ({ row }) => (
-          <>{isSuccess ? row.original.count.toLocaleString() : "..."}</>
+          <div data-testid={`text-${row.original.name}-set-count`}>
+            {isSuccess ? row.original.count.toLocaleString() : "..."}
+          </div>
         ),
       }),
     ],
@@ -167,12 +172,13 @@ const SavedSets: React.FC<SavedSetsProps> = ({
           <>
             <p className="text-sm mb-2">{selectSetInstructions}</p>
             <VerticalTable
+              customDataTestID="table-sets"
               data={displayedData}
               columns={savedSetsColumns}
               handleChange={handleTableChange}
               status={isSuccess ? "fulfilled" : "pending"}
               enableRowSelection={true}
-              pagination={{ ...paginationProps, label: `${setTypeLabel} sets` }}
+              pagination={{ ...paginationProps, label: `${setTypeLabel} set` }}
               setRowSelection={setRowSelection}
               rowSelection={rowSelection}
               getRowId={getRowId}
@@ -181,20 +187,27 @@ const SavedSets: React.FC<SavedSetsProps> = ({
         )}
       </div>
       <ButtonContainer data-testid="modal-button-container">
-        <DarkFunctionButton className="mr-auto" disabled>
+        <DarkFunctionButton
+          data-testid="button-save-set"
+          className="mr-auto"
+          disabled
+        >
           Save Set
         </DarkFunctionButton>
         <DiscardChangesButton
+          customDataTestID="button-cancel"
           action={() => dispatch(hideModal())}
           label="Cancel"
           dark={false}
         />
         <DiscardChangesButton
+          customDataTestID="button-clear"
           disabled={selectedSets.length === 0}
           action={() => setRowSelection({})}
           label="Clear"
         />
         <DarkFunctionButton
+          data-testid="button-submit"
           disabled={selectedSets.length === 0}
           onClick={() => {
             updateFilters(facetField, {

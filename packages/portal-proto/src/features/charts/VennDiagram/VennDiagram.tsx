@@ -1,7 +1,7 @@
-import { useMemo } from "react";
-import EChartWrapper from "@/features/charts/EChartWrapper";
+import { useState, useCallback, useMemo } from "react";
 import { useLayout } from "./useLayouts";
 import { VennDiagramProps } from "./types";
+import EChartWrapperResponsive from "../EChartWrapperResponsive";
 
 const VennDiagram: React.FC<VennDiagramProps> = ({
   chartData,
@@ -10,6 +10,8 @@ const VennDiagram: React.FC<VennDiagramProps> = ({
   onClickHandler,
   interactable = true,
 }: VennDiagramProps) => {
+  const [dimensions, setDimensions] = useState({ width: 400, height: 400 });
+
   const highlightedIndices = useMemo(
     () => chartData.filter((d) => d?.highlighted).map((d) => d.key),
     [chartData],
@@ -22,9 +24,29 @@ const VennDiagram: React.FC<VennDiagramProps> = ({
     ariaLabel,
     onClickHandler,
     interactable,
+    width: dimensions.width,
+    height: dimensions.height,
   });
 
-  return <EChartWrapper option={option} height={400} width={400} />;
+  const handleDimensionsChange = useCallback(
+    (newDimensions: { width: number; height: number }) => {
+      setDimensions(newDimensions);
+    },
+    [],
+  );
+
+  return (
+    <EChartWrapperResponsive
+      option={option}
+      onDimensionsChange={handleDimensionsChange}
+      style={{
+        width: "100%",
+        aspectRatio: "4 / 3",
+        minHeight: 400,
+        margin: "0 auto",
+      }}
+    />
+  );
 };
 
 export default VennDiagram;

@@ -16,7 +16,9 @@ jest.mock("@gff/core", () => {
       isUnitialized: false,
     }),
     useCoreSelector: jest.fn(),
-    useVennIntersectionData: jest.fn(),
+    useVennDiagramQuery: jest
+      .fn()
+      .mockReturnValue({ data: {}, isLoading: false }),
     useGetSurvivalPlotQuery: jest.fn().mockReturnValue({
       data: {
         survivalData: [{ donors: [{ id: "1" }] }],

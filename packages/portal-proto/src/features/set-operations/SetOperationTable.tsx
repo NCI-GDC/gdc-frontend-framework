@@ -9,12 +9,10 @@ import { useDeepCompareMemo } from "use-deep-compare";
 import CountButtonWrapperForSetsAndCases from "./CountButtonWrapperForSetsAndCases";
 import { Checkbox, Tooltip } from "@mantine/core";
 import { createSetFiltersByKey, ENTITY_TYPE_TO_CREATE_SET_HOOK } from "./utils";
-import { GqlOperation } from "@gff/core";
 import { pickBy } from "lodash";
 import { SelectedEntities } from "./types";
-import { UseQuery } from "@reduxjs/toolkit/dist/query/react/buildHooks";
-import { QueryDefinition } from "@reduxjs/toolkit/dist/query";
 import DownloadButtonTotal from "./DownloadButton";
+import { GqlUnion, useSetOperationsCasesTotalQuery } from "@gff/core";
 
 type SetOperationTableDataType = {
   setOperation: string;
@@ -40,7 +38,7 @@ export const SetOperationTable = ({
     readonly key: string;
     readonly value: number;
   }[];
-  readonly queryHook: UseQuery<QueryDefinition<any, any, any, number, string>>;
+  readonly queryHook: typeof useSetOperationsCasesTotalQuery;
   selectedSets: {
     [k: string]: boolean;
   };
@@ -55,7 +53,7 @@ export const SetOperationTable = ({
     content: Object.keys(pickBy(selectedSets, (v) => v)).map((set) =>
       createSetFiltersByKey(set, entityType, sets),
     ),
-  } as GqlOperation;
+  } as GqlUnion;
 
   const { data: totalSelectedSets, isFetching } = queryHook({
     filters: {
@@ -179,16 +177,16 @@ export const SetOperationTable = ({
       customAriaLabel="Overlap Table"
       footer={
         <tr data-testid="row-union-of-selected-sets">
-          <td className="p-2 font-bold">Union of selected sets:</td>
           <td />
-          <td className="w-52">
+          <td className="p-2 font-bold">Union of selected sets:</td>
+          <td className="w-52 px-2.5">
             <CountButtonWrapperForSetsAndCases
               count={isFetching ? 0 : totalCount}
               filters={unionFilter}
               entityType={entityType}
             />
           </td>
-          <td className="p-2">
+          <td className="p-2.5">
             <DownloadButtonTotal
               setKey="union-of"
               filters={unionFilter}

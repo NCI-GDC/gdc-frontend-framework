@@ -1,5 +1,5 @@
-import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { FC } from "react";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { SequenceReadWrapper } from "../proteinpaint/SequenceReadWrapper";
 import { DemoUtil } from "./DemoUtil";
 

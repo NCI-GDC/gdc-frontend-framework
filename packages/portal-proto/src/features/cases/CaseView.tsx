@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import {
   useCoreDispatch,
@@ -11,15 +11,19 @@ import {
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { ActionIcon, Button, Tooltip } from "@mantine/core";
-import { useScrollIntoView } from "@mantine/hooks";
-import { FaFile, FaShoppingCart, FaEdit } from "react-icons/fa";
+import { useScrollIntoView, useViewportSize } from "@mantine/hooks";
 import { Biospecimen } from "../biospecimen/Biospecimen";
 import { addToCart, removeFromCart } from "../cart/updateCart";
 import {
   formatDataForHorizontalTable,
   mapGdcFileToCartFile,
 } from "../files/utils";
-import { allFilesInCart, focusStyles, humanify } from "src/utils";
+import {
+  allFilesInCart,
+  focusStyles,
+  humanify,
+  LG_BREAKPOINT,
+} from "src/utils";
 import CategoryTableSummary from "@/components/Summary/CategoryTableSummary";
 import { ClinicalSummary } from "./ClinicalSummary/ClinicalSummary";
 import { ImageSlideCount } from "@/components/ImageSlideCount";
@@ -27,12 +31,15 @@ import {
   formatDataForDataCateogryTable,
   formatDataForExpCateogryTable,
   getSlideCountFromCaseSummary,
+  ITEMS_PER_COLUMN,
 } from "./utils";
 import SMTableContainer from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
 import FilesTable from "./FilesTable";
 import UsersIcon from "public/user-flow/icons/summary/users.svg";
 import AnnotationsTable from "./AnnotationsTable";
-import useScrollToHash from "@/hooks/useScrollToHash";
+import { useScrollToHash } from "@gff/portal-components";
+import { useSynchronizedRowHeights } from "@/components/HorizontalTable/useSynchronizedRowHeights";
+import { CartIcon, EditIcon, FileIcon } from "@/utils/icons";
 
 export interface CaseViewProps {
   readonly data: CaseDefaults;
@@ -61,8 +68,12 @@ export const CaseView: React.FC<CaseViewProps> = ({
   const isAllFilesInCart = data?.files
     ? allFilesInCart(currentCart, mapGdcFileToCartFile(data?.files))
     : false;
-
+  const { width } = useViewportSize();
   useScrollToHash(["files", "annotations"]);
+  const leftSummaryTableRef = useRef<HTMLTableElement>(null);
+  const rightSummaryTableRef = useRef<HTMLTableElement>(null);
+
+  useSynchronizedRowHeights([leftSummaryTableRef, rightSummaryTableRef]);
 
   const {
     diagnoses = [],
@@ -158,20 +169,22 @@ export const CaseView: React.FC<CaseViewProps> = ({
                   : "text-primary bg-base-max"
               }`}
               onClick={() => {
-                isAllImagesFilesInCart
-                  ? removeFromCart(
-                      mapGdcFileToCartFile(imageFiles),
-                      currentCart,
-                      dispatch,
-                    )
-                  : addToCart(
-                      mapGdcFileToCartFile(imageFiles),
-                      currentCart,
-                      dispatch,
-                    );
+                if (isAllImagesFilesInCart) {
+                  removeFromCart(
+                    mapGdcFileToCartFile(imageFiles),
+                    currentCart,
+                    dispatch,
+                  );
+                } else {
+                  addToCart(
+                    mapGdcFileToCartFile(imageFiles),
+                    currentCart,
+                    dispatch,
+                  );
+                }
               }}
             >
-              <FaShoppingCart size={12} aria-label="Cart" />
+              <CartIcon size={12} aria-label="Cart" />
             </ActionIcon>
           </Tooltip>
         </div>
@@ -192,7 +205,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
 
   const Files = (
     <span className="flex items-center gap-1">
-      <FaFile size={24} />
+      <FileIcon />
       {filesCountTotal > 0 ? (
         <a
           data-testid="text-file-count-case-summary"
@@ -210,7 +223,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
 
   const Annotations = (
     <span className="flex items-center gap-1">
-      <FaEdit size={24} />
+      <EditIcon />
       {annotationCountData > 0 ? (
         <a
           data-testid="text-annotation-count-case-summary"
@@ -245,13 +258,19 @@ export const CaseView: React.FC<CaseViewProps> = ({
   const caseFilter: FilterSet = {
     mode: "and",
     root: {
-      "cases.project.project_id": {
+      "cases.case_id": {
         operator: "includes",
         field: "cases.case_id",
         operands: [data.case_id],
       },
     },
   };
+
+  const summaryData = formatDataForCaseSummary();
+  const [leftColumnData, rightColumnData] = [
+    summaryData.slice(0, ITEMS_PER_COLUMN),
+    summaryData.slice(ITEMS_PER_COLUMN),
+  ];
 
   return (
     <>
@@ -260,60 +279,74 @@ export const CaseView: React.FC<CaseViewProps> = ({
         headerTitleLeft="Case"
         headerTitle={headerTitle}
         leftElement={
-          <Button
-            data-testid="button-add-all-remove-all-files-case-summary"
-            leftSection={<FaShoppingCart />}
-            className={`text-primary bg-base-max hover:bg-primary-darkest hover:text-base-max ${focusStyles}`}
-            onClick={() =>
-              isAllFilesInCart
-                ? removeFromCart(
-                    mapGdcFileToCartFile(data.files),
-                    currentCart,
-                    dispatch,
-                  )
-                : addToCart(
-                    mapGdcFileToCartFile(data.files),
-                    currentCart,
-                    dispatch,
-                  )
-            }
-            disabled={filesCountTotal === 0}
-            classNames={{ label: "font-medium text-sm" }}
+          <Tooltip
+            label="No files to add to Cart"
+            disabled={filesCountTotal !== 0}
           >
-            {!isAllFilesInCart
-              ? "Add all files to the cart"
-              : "Remove all files from the cart"}
-          </Button>
+            <Button
+              data-testid="button-add-all-remove-all-files-case-summary"
+              leftSection={<CartIcon />}
+              className={`${
+                isAllFilesInCart
+                  ? "bg-nci-red-darker text-base-max hover:bg-removeButtonHover"
+                  : "text-primary bg-base-max hover:bg-primary-darkest hover:text-base-max"
+              } ${focusStyles} data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary `}
+              onClick={() =>
+                isAllFilesInCart
+                  ? removeFromCart(
+                      mapGdcFileToCartFile(data.files),
+                      currentCart,
+                      dispatch,
+                    )
+                  : addToCart(
+                      mapGdcFileToCartFile(data.files),
+                      currentCart,
+                      dispatch,
+                    )
+              }
+              disabled={filesCountTotal === 0}
+              classNames={{ label: "font-medium text-sm" }}
+            >
+              {!isAllFilesInCart
+                ? "Add all files to the cart"
+                : "Remove all files from the cart"}
+            </Button>
+          </Tooltip>
         }
         rightElement={
-          <div className="flex items-center gap-2 text-2xl text-base-lightest leading-4 font-montserrat uppercase">
+          <div className="flex items-center gap-4 text-xl text-base-lightest font-medium leading-6 font-montserrat uppercase">
             Total of {Files} {Annotations}
           </div>
         }
         isModal={isModal}
       />
 
-      <div className={`${!isModal && "mt-32"} mx-4`}>
-        <div className="mt-8">
-          <div data-testid="table-summary-case-summary" className="flex">
-            <div className="basis-1/2">
-              <SummaryCard tableData={formatDataForCaseSummary().slice(0, 4)} />
-            </div>
-            <div className="basis-1/2">
+      <div className={`${!isModal ? "mt-6" : "mt-4"} mx-4`}>
+        <div data-testid="table-summary-case-summary" className="flex">
+          <div className="basis-full lg:basis-1/2">
+            <SummaryCard
+              tableData={width >= LG_BREAKPOINT ? leftColumnData : summaryData}
+              ref={leftSummaryTableRef}
+              enableSync={true}
+            />
+          </div>
+          {width >= LG_BREAKPOINT && (
+            <div className="basis-1/2 h-full">
               <SummaryCard
-                tableData={formatDataForCaseSummary().slice(
-                  4,
-                  formatDataForCaseSummary().length,
-                )}
+                tableData={rightColumnData}
                 title=""
+                ref={rightSummaryTableRef}
+                enableSync={true}
               />
             </div>
-          </div>
+          )}
+        </div>
 
-          {(data.summary.data_categories ||
-            data.summary.experimental_strategies) && (
-            <div className="flex gap-4 mt-8 mb-14">
-              {data.summary.data_categories && (
+        {(data.summary.data_categories ||
+          data.summary.experimental_strategies) && (
+          <div className="flex flex-col lg:flex-row gap-8 mt-8">
+            {data.summary.data_categories && (
+              <div className="basis-1/2">
                 <CategoryTableSummary
                   customDataTestID="table-data-category-case-summary"
                   title="File Counts by Data Category"
@@ -325,8 +358,10 @@ export const CaseView: React.FC<CaseViewProps> = ({
                     "A detailed list of the files is located in the Files section of this page."
                   }
                 />
-              )}
-              {data.summary.experimental_strategies && (
+              </div>
+            )}
+            {data.summary.experimental_strategies && (
+              <div className="basis-1/2">
                 <CategoryTableSummary
                   customDataTestID="table-experimental-strategy-case-summary"
                   title="File Counts by Experimental Strategy"
@@ -338,20 +373,12 @@ export const CaseView: React.FC<CaseViewProps> = ({
                     "A detailed list of the files is located in the Files section of this page."
                   }
                 />
-              )}
-            </div>
-          )}
-        </div>
+              </div>
+            )}
+          </div>
+        )}
 
-        <div
-          data-testid="table-clinical-case-summary"
-          className={`${
-            !(
-              data.summary.data_categories ||
-              data.summary.experimental_strategies
-            ) && "mt-14"
-          }`}
-        >
+        <div data-testid="table-clinical-case-summary" className="mt-8">
           <ClinicalSummary
             diagnoses={diagnoses}
             follow_ups={follow_ups}
@@ -368,7 +395,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
           data-testid="table-biospecimen-case-summary"
           ref={targetRef}
           id="biospecimen"
-          className="mb-8"
+          className="mt-8"
         >
           <Biospecimen
             caseId={case_id}
@@ -379,13 +406,13 @@ export const CaseView: React.FC<CaseViewProps> = ({
           />
         </div>
         <div
-          className={`mb-8 ${isModal ? "scroll-mt-36" : "scroll-mt-72"}`}
+          className={`mt-8 ${isModal ? "scroll-mt-36" : "scroll-mt-72"}`}
           id="files"
         >
           <FilesTable caseId={case_id} />
         </div>
 
-        <div className="mb-16">
+        <div className={`mt-8 ${annotationCountData === 0 ? "mb-16" : ""}`}>
           <SMTableContainer
             projectId={data.project.project_id}
             case_id={case_id}
@@ -395,16 +422,17 @@ export const CaseView: React.FC<CaseViewProps> = ({
             inModal={isModal}
           />
         </div>
+        {annotationCountData > 0 && (
+          <div
+            className={`mt-8 mb-16 ${
+              isModal ? "scroll-mt-36" : "scroll-mt-72"
+            }`}
+            id="annotations"
+          >
+            <AnnotationsTable case_id={case_id} />
+          </div>
+        )}
       </div>
-
-      {annotationCountData > 0 && (
-        <div
-          className={`mb-16 mx-4 ${isModal ? "scroll-mt-36" : "scroll-mt-72"}`}
-          id="annotations"
-        >
-          <AnnotationsTable case_id={case_id} />
-        </div>
-      )}
     </>
   );
 };

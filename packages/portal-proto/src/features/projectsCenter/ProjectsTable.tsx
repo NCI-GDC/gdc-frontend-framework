@@ -15,7 +15,7 @@ import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
 import ProjectsCohortButton from "./ProjectsCohortButton";
 import download from "src/utils/download";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
-import { convertDateToString } from "src/utils/date";
+import { getFormattedTimestamp } from "src/utils/date";
 import { extractToArray, statusBooleansToDataStatus } from "src/utils";
 import { ArraySeparatedSpan } from "@/components/ArraySeparatedSpan/ArraySeparatedSpan";
 import { SummaryModalContext } from "src/utils/contexts";
@@ -35,6 +35,7 @@ import { isEqual } from "lodash";
 import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
 import { HandleChangeInput } from "@/components/Table/types";
 import SubrowPrimarySiteDiseaseType from "@/components/SubrowPrimarySiteDiseaseType/SubrowPrimarySiteDiseaseType";
+import TotalItems from "@/components/Table/TotalItem";
 
 type ProjectDataType = {
   project: string;
@@ -56,27 +57,28 @@ const ProjectsTable: React.FC = () => {
   const [sortBy, setSortBy] = useState<SortBy[]>([
     { field: "summary.case_count", direction: "desc" },
   ]);
-
+  const [jsonDownloadInProgress, setJsonDownloadInProgress] = useState(false);
   const { setEntityMetadata } = useContext(SummaryModalContext);
 
   const projectFilters = useAppSelector((state) => selectFilters(state));
+  const tableFilters =
+    searchTerm.length > 0
+      ? buildCohortGqlOperator(
+          joinFilters(projectFilters, {
+            mode: "and",
+            root: {
+              "projects.project_id": {
+                operator: "includes",
+                field: "projects.project_id",
+                operands: [`*${searchTerm}*`],
+              },
+            },
+          }),
+        )
+      : buildCohortGqlOperator(projectFilters);
 
   const { data, isSuccess, isFetching, isError } = useGetProjectsQuery({
-    filters:
-      searchTerm.length > 0
-        ? buildCohortGqlOperator(
-            joinFilters(projectFilters, {
-              mode: "and",
-              root: {
-                "projects.project_id": {
-                  operator: "includes",
-                  field: "projects.project_id",
-                  operands: [`*${searchTerm}*`],
-                },
-              },
-            }),
-          )
-        : buildCohortGqlOperator(projectFilters),
+    filters: tableFilters,
     expand: [
       "summary",
       "summary.experimental_strategies",
@@ -318,11 +320,12 @@ const ProjectsTable: React.FC = () => {
   };
 
   const handleDownloadJSON = async () => {
+    setJsonDownloadInProgress(true);
     await download({
       endpoint: "projects",
       method: "POST",
       params: {
-        filters: buildCohortGqlOperator(projectFilters) ?? {},
+        filters: tableFilters,
         size: 10000,
         attachment: true,
         format: "JSON",
@@ -339,16 +342,17 @@ const ProjectsTable: React.FC = () => {
         ].join(","),
       },
       dispatch: coreDispatch,
+      done: () => setJsonDownloadInProgress(false),
     });
   };
 
-  const handleDownloadTSV = () => {
-    downloadTSV({
+  const handleDownloadTSV = async () => {
+    await downloadTSV({
       tableData: formattedTableData,
       columnOrder,
       columnVisibility,
       columns: projectsTableDefaultColumns,
-      fileName: `projects-table.${convertDateToString(new Date())}.tsv`,
+      fileName: `projects-table.${getFormattedTimestamp()}.tsv`,
       option: { blacklist: ["select"] },
     });
   };
@@ -369,11 +373,8 @@ const ProjectsTable: React.FC = () => {
 
   return (
     <VerticalTable
-      tableTitle={
-        <>
-          Total of <b>{data?.pagination?.total?.toLocaleString()}</b>{" "}
-          {data?.pagination?.total > 1 ? "Projects" : "Project"}
-        </>
+      tableTotalDetail={
+        <TotalItems total={data?.pagination?.total} itemName="project" />
       }
       additionalControls={
         <div className="flex gap-2">
@@ -382,6 +383,8 @@ const ProjectsTable: React.FC = () => {
             data-testid="button-json-projects-table"
             onClick={handleDownloadJSON}
             disabled={isFetching}
+            isDownload
+            isActive={jsonDownloadInProgress}
           >
             JSON
           </FunctionButton>
@@ -399,7 +402,7 @@ const ProjectsTable: React.FC = () => {
       showControls={true}
       pagination={{
         ...tempPagination,
-        label: "projects",
+        label: "project",
       }}
       search={{
         enabled: true,

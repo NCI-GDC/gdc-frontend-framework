@@ -1,22 +1,24 @@
 import { waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import * as core from "@gff/core";
 import InputEntityList from "./InputEntityList";
 import { UserInputContext } from "@/components/Modals/UserInputModal";
 import UpdateCohortButton from "@/components/Modals/SetModals/UpdateFiltersButton";
 import SaveSetButton from "../SaveSetButton";
 import { render } from "test-utils";
 
-jest.spyOn(core, "useCoreDispatch").mockReturnValue(jest.fn());
-jest.spyOn(core, "useCoreSelector").mockReturnValue(jest.fn());
-jest.spyOn(core, "fetchGdcEntities").mockResolvedValue({
-  data: {
-    hits: [
-      { ssm_id: "7890-123", genomic_dna_change: "crg1:6" },
-      { ssm_id: "6013-009", genomic_dna_change: "crg7:0" },
-    ],
-  },
-} as any);
+jest.mock("@gff/core", () => ({
+  ...jest.requireActual("@gff/core"),
+  useCoreDispatch: jest.fn().mockReturnValue(jest.fn()),
+  useCoreSelector: jest.fn().mockReturnValue(jest.fn()),
+  fetchGdcEntities: jest.fn().mockResolvedValue({
+    data: {
+      hits: [
+        { ssm_id: "7890-123", genomic_dna_change: "crg1:6" },
+        { ssm_id: "6013-009", genomic_dna_change: "crg7:0" },
+      ],
+    },
+  }),
+}));
 
 const createSet = jest.fn();
 const createSetHook = jest.fn().mockReturnValue([createSet, {}]);

@@ -1,5 +1,6 @@
 import {
   Cohort,
+  type CohortId,
   addNewDefaultUnsavedCohort,
   updateCohortName,
   setCurrentCohortId,
@@ -12,16 +13,15 @@ import {
   availableCohortsReducer,
   addNewUnsavedCohort,
   divideCurrentCohortFilterSetFilterByPrefix,
-  selectCohortById,
-  selectMultipleCohortsById,
+  selectCohortByIdOrName,
+  selectMultipleCohortsByIdOrName,
 } from "../availableCohortsSlice";
-import { NullCountsData } from "../cohortCountsQuery";
 import * as cohortSlice from "../availableCohortsSlice";
-import { Dictionary, EntityState } from "@reduxjs/toolkit";
+import { EntityState } from "@reduxjs/toolkit";
 import { MOCK_COHORTS } from "./mockData";
 import { FilterSet } from "../filters";
 import { getInitialCoreState } from "src/store.unit.test";
-import { DataStatus } from "src/dataAccess";
+import { NullCountsData } from "../type";
 
 const state = getInitialCoreState();
 
@@ -37,10 +37,8 @@ const INITIAL_STATE = {
   ids: INITIAL_IDS,
   entities: INITIAL_ENTITIES,
   currentCohort: "ALL-GDC-COHORT",
-  message: undefined,
-} as EntityState<Cohort> & {
+} as EntityState<Cohort, CohortId> & {
   currentCohort: string;
-  message: string[] | undefined;
 };
 
 const APP_INITIAL_STATE = {
@@ -119,12 +117,11 @@ describe("test setting/getting currentCohortId", () => {
   const INITIAL_STATE = {
     ids: INITIAL_IDS,
     entities: INITIAL_ENTITIES,
-  } as EntityState<Cohort>;
+  } as EntityState<Cohort, CohortId>;
   const cohortState = {
     availableCohorts: {
       ...INITIAL_STATE,
       currentCohort: "asdf",
-      message: undefined,
     },
     counts: {
       ...NullCountsData,
@@ -143,7 +140,7 @@ describe("test setting/getting currentCohortId", () => {
 
   test("should set the current cohort id", () => {
     const newState = availableCohortsReducer(
-      { ...INITIAL_STATE, currentCohort: "asdf", message: undefined },
+      { ...INITIAL_STATE, currentCohort: "asdf" },
       setCurrentCohortId("1111-2222-3333-4444"),
     );
     const currentCohortId = selectCurrentCohortId({
@@ -311,7 +308,6 @@ describe("filter by prefix", () => {
         ...state.cohort,
         availableCohorts: {
           currentCohort: "000-000-000-1",
-          message: ["newCohort|New Cohort"],
           ids: ["000-000-000-1"],
           entities: {
             "000-000-000-1": {
@@ -332,7 +328,7 @@ describe("filter by prefix", () => {
               modified: false,
               saved: false,
             },
-          } as Dictionary<Cohort>,
+          } as Record<CohortId, Cohort>,
         },
       },
     };
@@ -394,12 +390,11 @@ describe("add, update, and remove cohort", () => {
 
   test("should add new cohort to available cohorts", () => {
     const availableCohorts = availableCohortsReducer(
-      { ids: [], entities: {}, currentCohort: "", message: undefined },
+      { ids: [], entities: {}, currentCohort: "" },
       addNewDefaultUnsavedCohort(),
     );
     expect(availableCohorts).toEqual({
       currentCohort: "000-000-000-1",
-      message: ["newCohort|Unsaved_Cohort|000-000-000-1"],
       ids: ["000-000-000-1"],
       entities: {
         "000-000-000-1": {
@@ -422,11 +417,10 @@ describe("add, update, and remove cohort", () => {
     });
   });
 
-  test("should add new cohort with filter and message", () => {
+  test("should add new cohort with filter", () => {
     const availableCohorts = availableCohortsReducer(
       {
         currentCohort: "000-000-000-1",
-        message: undefined,
         ids: ["000-000-000-1"],
         entities: {
           "000-000-000-1": {
@@ -457,14 +451,12 @@ describe("add, update, and remove cohort", () => {
             },
           },
         },
-        message: "newProjectsCohort",
         name: "New Cohort 2",
         replace: true,
       }),
     );
     expect(availableCohorts).toEqual({
       currentCohort: "000-000-000-2",
-      message: ["newProjectsCohort|New Cohort 2|000-000-000-2"],
       ids: ["000-000-000-1", "000-000-000-2"],
       entities: {
         "000-000-000-1": {
@@ -514,7 +506,6 @@ describe("add, update, and remove cohort", () => {
     const availableCohorts = availableCohortsReducer(
       {
         currentCohort: "000-000-000-1",
-        message: undefined,
         ids: ["000-000-000-1"],
         entities: {
           "000-000-000-1": {
@@ -538,7 +529,6 @@ describe("add, update, and remove cohort", () => {
     );
     expect(availableCohorts).toEqual({
       currentCohort: "000-000-000-3",
-      message: ["newCohort|Unsaved_Cohort|000-000-000-3"],
       ids: ["000-000-000-1", "000-000-000-3"],
       entities: {
         "000-000-000-1": {
@@ -580,7 +570,6 @@ describe("add, update, and remove cohort", () => {
       availableCohortsReducer(
         {
           currentCohort: "000-000-000-1",
-          message: undefined,
           ids: ["000-000-000-1"],
           entities: {
             "000-000-000-1": {
@@ -612,7 +601,6 @@ describe("add, update, and remove cohort", () => {
       availableCohortsReducer(
         {
           currentCohort: "000-000-000-1",
-          message: undefined,
           ids: ["000-000-000-1"],
           entities: {
             "000-000-000-1": {
@@ -643,7 +631,6 @@ describe("add, update, and remove cohort", () => {
               },
             },
           },
-          message: "newProjectsCohort",
           name: "New Cohort 2",
         }),
       ),
@@ -656,7 +643,6 @@ describe("add, update, and remove cohort", () => {
     const availableCohorts = availableCohortsReducer(
       {
         currentCohort: "000-000-000-1",
-        message: undefined,
         ids: ["000-000-000-1"],
         entities: {
           "000-000-000-1": {
@@ -694,7 +680,6 @@ describe("add, update, and remove cohort", () => {
           modified_datetime: "2020-11-01T00:00:00.000Z",
         },
       },
-      message: undefined,
     });
   });
 
@@ -702,7 +687,6 @@ describe("add, update, and remove cohort", () => {
     const availableCohorts = availableCohortsReducer(
       {
         currentCohort: "000-000-000-2",
-        message: undefined,
         ids: ["000-000-000-1", "000-000-000-2"],
         entities: {
           "000-000-000-1": {
@@ -733,11 +717,10 @@ describe("add, update, and remove cohort", () => {
           },
         },
       },
-      removeCohort({ shouldShowMessage: true }),
+      removeCohort({}),
     );
     expect(availableCohorts).toEqual({
       currentCohort: "000-000-000-1",
-      message: ["deleteCohort|New Cohort 2|000-000-000-2"],
       ids: ["000-000-000-1"],
       entities: {
         "000-000-000-1": {
@@ -757,46 +740,10 @@ describe("add, update, and remove cohort", () => {
     });
   });
 
-  test("should create new unsaved cohort when removing last cohort", () => {
-    const removeState = {
-      currentCohort: "000-000-000-1",
-      message: ["deleteCohort|New Cohort 2|000-000-000-1"],
-      ids: ["000-000-000-1"],
-      entities: {
-        "000-000-000-1": {
-          name: "New Cohort",
-          filters: { mode: "and", root: {} },
-          id: "000-000-000-1",
-          caseSet: {
-            caseSetId: {
-              mode: "and",
-              root: {},
-            },
-            status: "uninitialized" as DataStatus,
-          },
-          counts: {
-            ...NullCountsData,
-          },
-          modified: false,
-          modified_datetime: new Date().toISOString(),
-        },
-      },
-    };
-
-    const availableCohorts = availableCohortsReducer(
-      removeState,
-      removeCohort({ shouldShowMessage: true }),
-    );
-    expect(Object.values(availableCohorts.entities)[0]?.name).toEqual(
-      "Unsaved_Cohort",
-    );
-  });
-
   test("should removed prior unsaved cohort when adding new one", () => {
     const availableCohorts = availableCohortsReducer(
       {
         currentCohort: "000-000-000-1",
-        message: undefined,
         ids: ["000-000-000-1"],
         entities: {
           "000-000-000-1": {
@@ -826,14 +773,12 @@ describe("add, update, and remove cohort", () => {
             },
           },
         },
-        message: "newProjectsCohort",
         name: "New Cohort 2",
         replace: true,
       }),
     );
     expect(availableCohorts).toEqual({
       currentCohort: "000-000-000-4",
-      message: ["newProjectsCohort|New Cohort 2|000-000-000-4"],
       ids: ["000-000-000-4"],
       entities: {
         "000-000-000-4": {
@@ -867,21 +812,32 @@ describe("add, update, and remove cohort", () => {
 
 describe("selecting cohorts", () => {
   test("should return cohort by id", () => {
-    const cohort = selectCohortById(APP_INITIAL_STATE, "0000-0000-1003-0000");
+    const cohort = selectCohortByIdOrName(
+      APP_INITIAL_STATE,
+      "0000-0000-1003-0000",
+    );
     expect(cohort).toEqual(MOCK_COHORTS[4]);
   });
 
   test("should return cohort by its unsaved id", () => {
-    const cohort = selectCohortById(APP_INITIAL_STATE, "abc-def");
+    const cohort = selectCohortByIdOrName(APP_INITIAL_STATE, "abc-def");
     expect(cohort).toEqual(MOCK_COHORTS[6]);
   });
 
   test("should return multiple cohorts", () => {
-    const cohorts = selectMultipleCohortsById(APP_INITIAL_STATE, [
-      "0000-0000-1000-0000",
-      "abc-def",
-      "made-up-one",
+    const cohorts = selectMultipleCohortsByIdOrName(APP_INITIAL_STATE, [
+      { id: "0000-0000-1000-0000" },
+      { id: "abc-def" },
+      { id: "made-up-one" },
     ]);
     expect(cohorts).toEqual([MOCK_COHORTS[1], MOCK_COHORTS[6]]);
+  });
+
+  test("should return cohort by name", () => {
+    const cohorts = selectMultipleCohortsByIdOrName(APP_INITIAL_STATE, [
+      { id: "0000-0000-1000-0000", name: "Baily's Cohort" },
+      { id: "a-new-id", name: "Pancreas" },
+    ]);
+    expect(cohorts).toEqual([MOCK_COHORTS[1], MOCK_COHORTS[2]]);
   });
 });

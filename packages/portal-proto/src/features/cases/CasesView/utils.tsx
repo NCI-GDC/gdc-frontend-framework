@@ -1,19 +1,26 @@
-import { AnnotationDefaults, CartFile, useCoreDispatch } from "@gff/core";
+import Link from "next/link";
+import {
+  AnnotationDefaults,
+  CartFile,
+  Union,
+  useCoreDispatch,
+} from "@gff/core";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Dispatch, SetStateAction, useMemo } from "react";
-import { Button, Checkbox, Menu } from "@mantine/core";
-import { FaShoppingCart as CartIcon } from "react-icons/fa";
-import { IoMdArrowDropdown as Dropdown } from "react-icons/io";
-import { BiAddToQueue } from "react-icons/bi";
-import { BsTrash } from "react-icons/bs";
+import { Button, Checkbox, Menu, Tooltip } from "@mantine/core";
 import { allFilesInCart } from "@/utils/index";
 import { addToCart, removeFromCart } from "@/features/cart/updateCart";
-import Link from "next/link";
 import { ImageSlideCount } from "@/components/ImageSlideCount";
 import OverflowTooltippedLabel from "@/components/OverflowTooltippedLabel";
 import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
 import { entityMetadataType } from "@/utils/contexts";
 import { ArraySeparatedSpan } from "@/components/ArraySeparatedSpan/ArraySeparatedSpan";
+import {
+  CartIcon,
+  DropdownIcon,
+  TrashIcon,
+  AddToQueueIcon,
+} from "@/utils/icons";
 
 export type casesTableDataType = {
   case_uuid: string;
@@ -64,6 +71,7 @@ export const useGenerateCasesTableColumns = ({
         id: "select",
         header: ({ table }) => (
           <Checkbox
+            data-testid="checkbox-select-all-cases-table"
             size="xs"
             classNames={{
               input: "checked:bg-accent checked:border-accent",
@@ -78,6 +86,7 @@ export const useGenerateCasesTableColumns = ({
         ),
         cell: ({ row }) => (
           <Checkbox
+            data-testid="checkbox-select-cases-table"
             size="xs"
             classNames={{
               input: "checked:bg-accent checked:border-accent",
@@ -104,48 +113,54 @@ export const useGenerateCasesTableColumns = ({
               ),
             )
             .filter((item) => item.length > 0).length;
+          const isDisabled = row.original.files_count === 0;
           const isPlural = row.original.files_count > 1;
           return (
             <Menu position="bottom-start" zIndex={300}>
               <Menu.Target>
-                <Button
-                  aria-label={`${
-                    isAllFilesInCart ? "remove" : "add"
-                  } all files ${isAllFilesInCart ? "from" : "to"} the cart`}
-                  leftSection={
-                    <div className="mr-2">
-                      <CartIcon
-                        className={
-                          isAllFilesInCart && "text-primary-contrast-darkest"
-                        }
-                        aria-hidden="true"
-                      />
-                    </div>
-                  }
-                  rightSection={
-                    <div className="border-l">
-                      <Dropdown
-                        className={
-                          isAllFilesInCart && "text-primary-contrast-darkest"
-                        }
-                        size={18}
-                        aria-hidden="true"
-                      />
-                    </div>
-                  }
-                  variant="outline"
-                  classNames={{
-                    root: "w-12 pr-0",
-                    section: "m-0",
-                  }}
-                  size="compact-xs"
-                  className={`${isAllFilesInCart && "bg-primary-darkest"}`}
-                />
+                <Tooltip label="No files to add to Cart" disabled={!isDisabled}>
+                  <Button
+                    data-testid="button-add-remove-cases-table"
+                    aria-label={`${
+                      isAllFilesInCart ? "remove" : "add"
+                    } all files ${isAllFilesInCart ? "from" : "to"} the cart`}
+                    leftSection={
+                      <div className="mr-2">
+                        <CartIcon
+                          className={
+                            isAllFilesInCart && "text-primary-contrast-darkest"
+                          }
+                          aria-hidden="true"
+                        />
+                      </div>
+                    }
+                    rightSection={
+                      <div className="border-l">
+                        <DropdownIcon
+                          className={
+                            isAllFilesInCart && "text-primary-contrast-darkest"
+                          }
+                          size={18}
+                          aria-hidden="true"
+                        />
+                      </div>
+                    }
+                    variant="outline"
+                    classNames={{
+                      root: "w-12 pr-0 bg-base-max text-primary disabled:border disabled:bg-base-lightest disabled:opacity-50 disabled:border-primary",
+                      section: "m-0",
+                    }}
+                    size="compact-xs"
+                    className={`${isAllFilesInCart && "bg-primary-darkest"}`}
+                    disabled={isDisabled}
+                  />
+                </Tooltip>
               </Menu.Target>
               <Menu.Dropdown>
                 {numberOfFilesToRemove < row.original.files_count && (
                   <Menu.Item
-                    leftSection={<BiAddToQueue />}
+                    data-testid="button-add-files-to-cart-cases-table"
+                    leftSection={<AddToQueueIcon />}
                     onClick={() => {
                       addToCart(row.original.files, currentCart, dispatch);
                     }}
@@ -157,7 +172,8 @@ export const useGenerateCasesTableColumns = ({
 
                 {numberOfFilesToRemove > 0 && (
                   <Menu.Item
-                    leftSection={<BsTrash />}
+                    data-testid="button-remove-files-from-cart-cases-table"
+                    leftSection={<TrashIcon />}
                     onClick={() => {
                       removeFromCart(row.original.files, currentCart, dispatch);
                     }}
@@ -294,6 +310,29 @@ export const useGenerateCasesTableColumns = ({
   );
 
   return CasesTableDefaultColumns;
+};
+
+export const buildCasesTableSearchFilters = (
+  term?: string,
+): Union | undefined => {
+  if (term !== undefined && term.length > 0) {
+    return {
+      operator: "or",
+      operands: [
+        {
+          operator: "includes",
+          field: "cases.case_id", // case insensitive
+          operands: [`*${term}*`],
+        },
+        {
+          operator: "includes",
+          field: "cases.submitter_id", // case sensitive
+          operands: [`*${term}*`],
+        },
+      ],
+    };
+  }
+  return undefined;
 };
 
 export const MAX_CASE_IDS = 100000;

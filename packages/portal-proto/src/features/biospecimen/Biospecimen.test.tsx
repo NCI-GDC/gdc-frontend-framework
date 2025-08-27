@@ -1,49 +1,25 @@
 import { render } from "test-utils";
 import { Biospecimen } from "./Biospecimen";
-import * as func from "@gff/core";
+import { useBiospecimenDataQuery, useCoreSelector } from "@gff/core";
 
 jest.mock("next/router", () => ({
   useRouter: jest.fn(),
 }));
 
-const mockResponse = {
-  composition: null,
-  current_weight: null,
-  days_to_collection: null,
-  days_to_sample_procurement: 0,
-  freezing_method: null,
-  initial_weight: null,
-  intermediate_dimension: null,
-  is_ffpe: "true",
-  longest_dimension: null,
-  oct_embedded: "No",
-  pathology_report_uuid: null,
-  portions: {
-    hits: { edges: [{ node: { portion_id: "afadfkldjls" } }], total: 1 },
-  },
-  preservation_method: "FFPE",
-  sample_id: "55864d86-dab8-47bb-a3e3-8cfb198b06c1",
-  sample_type: "Primary Tumor",
-  sample_type_id: "01",
-  shortest_dimension: null,
-  submitter_id: "TCGA-BH-A0EA-01Z",
-  time_between_clamping_and_freezing: null,
-  time_between_excision_and_freezing: null,
-  tissue_type: "Not Reported",
-  tumor_code: null,
-  tumor_code_id: null,
-  tumor_descriptor: null,
-};
+jest.mock("@gff/core", () => ({
+  ...jest.requireActual("@gff/core"),
+  useCoreDispatch: jest.fn(),
+  useCoreSelector: jest.fn(),
+  useBiospecimenDataQuery: jest.fn(),
+}));
 
 describe("<Biospecimen />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(func, "useCoreSelector").mockImplementation(jest.fn());
-    jest.spyOn(func, "useCoreDispatch").mockImplementation(jest.fn());
   });
 
   it("should show Loading Overlay when fetching", () => {
-    jest.spyOn(func, "useBiospecimenDataQuery").mockReturnValue({
+    jest.mocked(useBiospecimenDataQuery).mockReturnValueOnce({
       data: {
         files: { hits: { edges: [] } },
         samples: {
@@ -57,6 +33,7 @@ describe("<Biospecimen />", () => {
       isSuccess: true,
       isUninitialized: false,
     } as any);
+
     const { getByTestId } = render(
       <Biospecimen
         caseId="testId"
@@ -70,12 +47,41 @@ describe("<Biospecimen />", () => {
   });
 
   it("should not show error text when the results are NOT empty and should render a Biotree comp with given data", () => {
-    jest.spyOn(func, "useBiospecimenDataQuery").mockReturnValue({
+    const mockResponse = {
+      node: {
+        current_weight: null,
+        days_to_collection: null,
+        days_to_sample_procurement: 0,
+        freezing_method: null,
+        initial_weight: null,
+        intermediate_dimension: null,
+        longest_dimension: null,
+        pathology_report_uuid: null,
+        portions: {
+          hits: {
+            edges: [{ node: { portion_id: "afadfkldjls" } }],
+            total: 1,
+          },
+        },
+        preservation_method: "FFPE",
+        sample_id: "55864d86-dab8-47bb-a3e3-8cfb198b06c1",
+        shortest_dimension: null,
+        submitter_id: "TCGA-BH-A0EA-01Z",
+        time_between_clamping_and_freezing: null,
+        time_between_excision_and_freezing: null,
+        tissue_type: "Not Reported",
+        tumor_code_id: null,
+        tumor_descriptor: "Not Applicable",
+        specimen_type: "Peripheral Blood NOS",
+      },
+    };
+    jest.mocked(useCoreSelector).mockReturnValue(["test1id", "test2id"]);
+    jest.mocked(useBiospecimenDataQuery).mockReturnValue({
       data: {
         files: { hits: { edges: [] } },
         samples: {
           hits: {
-            edges: [{ node: mockResponse }],
+            edges: [mockResponse],
           },
         },
       },
@@ -84,7 +90,7 @@ describe("<Biospecimen />", () => {
       isSuccess: true,
       isUninitialized: false,
     } as any);
-    jest.spyOn(func, "useCoreSelector").mockReturnValue(["test1id", "test2id"]);
+
     const { queryByLabelText, getAllByRole, getByText } = render(
       <Biospecimen
         caseId="testId"
@@ -96,6 +102,6 @@ describe("<Biospecimen />", () => {
 
     expect(queryByLabelText("Case ID not found")).toBeNull();
     expect(getAllByRole("button")).toBeDefined();
-    expect(getByText("Primary Tumor")).toBeInTheDocument();
+    expect(getByText(/Peripheral Blood NOS/i)).toBeInTheDocument();
   });
 });

@@ -1,7 +1,7 @@
-import { Tabs } from "@mantine/core";
+import { Tabs, TabsProps } from "@mantine/core";
 import tw from "tailwind-styled-components";
 
-export const StyledTab = tw(Tabs.Tab)`
+export const StyledTab = tw(Tabs.Tab)<TabsProps>`
 text-base-content
 font-heading
 data-[active]:font-bold

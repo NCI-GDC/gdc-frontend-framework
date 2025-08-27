@@ -1,7 +1,7 @@
 import { Reducer } from "@reduxjs/toolkit";
-
-import { endpointSlice, GdcApiRequest, GdcApiResponse } from "../gdcapi/gdcapi";
+import { GdcApiRequest, GdcApiResponse } from "../gdcapi/types";
 import { ProjectDefaults } from "../gdcapi/types";
+import { endpointSlice } from "../gdcapi";
 
 /**
  *  RTK Query endpoint to fetch clinical analysis data using case_filter with the cases endpoint
@@ -15,8 +15,15 @@ export const clinicalAnalysisApiSlice = endpointSlice.injectEndpoints({
         endpoint: "cases",
         fetchAll: false,
       }),
-      transformResponse: (response: GdcApiResponse<ProjectDefaults>) => {
-        if (response.data.aggregations) return response.data.aggregations;
+      transformResponse: (
+        response: GdcApiResponse<{ data: ProjectDefaults; total: number }>,
+      ) => {
+        if (response.data.aggregations) {
+          return {
+            data: response.data.aggregations,
+            total: response.data.pagination.total,
+          };
+        }
         return {};
       },
     }),

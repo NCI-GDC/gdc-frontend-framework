@@ -8,7 +8,7 @@ import {
   useFacetDictionary,
   useGetSurvivalPlotQuery,
 } from "@gff/core";
-import { convertDateToString } from "@/utils/date";
+import { getFormattedTimestamp } from "@/utils/date";
 import SurvivalPlot from "../charts/SurvivalPlot/SurvivalPlot";
 import CDaveCard from "./CDaveCard/CDaveCard";
 import { useDeepCompareMemo } from "use-deep-compare";
@@ -19,7 +19,7 @@ interface DashboardProps {
   readonly activeFields: string[];
   readonly results: Record<string, Buckets | Stats>;
   readonly updateFields: (field: string) => void;
-  readonly controlsExpanded: boolean;
+  readonly yTotal: number;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({
@@ -27,7 +27,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   activeFields,
   results,
   updateFields,
-  controlsExpanded,
+  yTotal,
 }: DashboardProps) => {
   const initialDashboardRender = useRef(true);
   const lastDashboardRender = usePrevious(initialDashboardRender);
@@ -51,52 +51,37 @@ const Dashboard: React.FC<DashboardProps> = ({
     }
   });
 
-  const [colCountInLastRow, colSpanInLastRow] = useDeepCompareMemo(() => {
-    const colCount = activeFields.length + 1;
-    const colCountInRow = controlsExpanded ? 2 : 3;
-    const colCountInLastRow = colCount % colCountInRow;
-    const colSpanInLastRow = colCountInLastRow
-      ? 12 / colCountInLastRow
-      : 12 / colCountInRow;
-    return [colCountInLastRow, colSpanInLastRow];
-  }, [activeFields, controlsExpanded]);
-
   return (
-    <Grid className="w-full m-0">
-      <Grid.Col span={controlsExpanded ? 6 : 4}>
+    <Grid gutter={24} overflow="hidden" className="flex-grow">
+      <Grid.Col span={{ base: 12, lg: 6 }}>
         <div
           data-testid="overall-survival-plot"
-          className="h-full shadow-md rounded-lg p-2"
+          className="h-full border-1 border-base-lighter p-4"
         >
-          <h2 className="font-heading font-medium">Overall Survival</h2>
           {isError ? (
-            <Alert>{"Something's gone wrong"}</Alert>
+            <Alert>Something&pos;s gone wrong</Alert>
           ) : isFetching || isUninitialized ? (
             <Loader />
           ) : (
             <SurvivalPlot
               data={survivalData}
-              title=""
+              title="Overall Survival"
               plotType={SurvivalPlotTypes.overall}
-              downloadFileName={`overall-survival-plot.${convertDateToString(
-                new Date(),
-              )}`}
+              downloadFileName={`overall-survival-plot.${getFormattedTimestamp()}`}
             />
           )}
         </div>
       </Grid.Col>
-      {activeFields.map((field, index) => {
-        const isLastRow = index >= activeFields.length - colCountInLastRow;
-        const colSpan = isLastRow ? colSpanInLastRow : controlsExpanded ? 6 : 4;
-
+      {activeFields.map((field) => {
         return (
-          <Grid.Col span={colSpan} key={field}>
+          <Grid.Col span={{ base: 12, lg: 6 }} key={field}>
             <CDaveCard
               field={field}
               data={results[field]}
               updateFields={updateFields}
               initialDashboardRender={initialDashboardRender.current}
               cohortFilters={cohortFilters}
+              yTotal={yTotal}
             />
           </Grid.Col>
         );

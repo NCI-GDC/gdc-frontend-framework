@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Test Cohort Builder - category and facet presence
 Test-case       : PEAR-796
 
-tags: gdc-data-portal-v2, cohort-builder, facet-cards
+tags: gdc-data-portal-v2, cohort-builder, facet-cards, regression
 
 ## Navigate to Cohort Builder
 
@@ -23,6 +23,7 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards
   |Tissue or Organ of Origin  |
   |Disease Type               |
   |Primary Diagnosis          |
+  |Case ID                    |
 
 * Validate presence of facet cards on the "Demographic" tab on the Cohort Builder page
   |facet_name                 |
@@ -36,9 +37,15 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards
 * Validate presence of facet cards on the "General Diagnosis" tab on the Cohort Builder page
   |facet_name                 |
   |---------------------------|
+  |Ajcc Clinical Stage        |
+  |Ajcc Pathologic Stage      |
+  |Uicc Clinical Stage        |
+  |Uicc Pathologic Stage      |
+  |Tumor Grade                |
   |Morphology                 |
   |Year of Diagnosis          |
   |Site of Resection or Biopsy|
+  |Sites of Involvement       |
   |Laterality                 |
 
 * Validate presence of facet cards on the "Disease Status and History" tab on the Cohort Builder page
@@ -49,37 +56,30 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards
   |Synchronous Malignancy     |
   |Progression or Recurrence  |
   |Residual Disease           |
+  |Child Pugh Classification  |
+  |Ishak Fibrosis Score       |
 
-* Validate presence of facet cards on the "Stage Classification" tab on the Cohort Builder page
+* Validate presence of facet cards on the "Disease Specific Classifications" tab on the Cohort Builder page
   |facet_name                 |
   |---------------------------|
-  |Ajcc Clinical Stage        |
-  |Ajcc Pathologic Stage      |
   |Ann Arbor Clinical Stage   |
   |Ann Arbor Pathologic Stage |
   |Cog Renal Stage            |
-  |Enneking Msts Stage        |
   |Figo Stage                 |
   |Igcccg Stage               |
+  |Inrg Stage                 |
   |Inss Stage                 |
   |Iss Stage                  |
   |Masaoka Stage              |
-
-* Validate presence of facet cards on the "Grade Classification" tab on the Cohort Builder page
-  |facet_name                 |
-  |---------------------------|
   |Inpc Grade                 |
-  |Tumor Grade                |
   |Who Cns Grade              |
-
-* Validate presence of facet cards on the "Other Classification" tab on the Cohort Builder page
-  |facet_name                     |
-  |-------------------------------|
   |Cog Neuroblastoma Risk Group   |
   |Cog Rhabdomyosarcoma Risk Group|
   |International Prognostic Index |
   |Eln Risk Classification        |
+  |Medulloblastoma Molecular Classification|
   |Wilms Tumor Histologic Subtype |
+  |Weiss Assessment Score     |
 
 * Validate presence of facet cards on the "Treatment" tab on the Cohort Builder page
   |facet_name                 |
@@ -100,16 +100,33 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards
   |Pack Years Smoked          |
   |Tobacco Smoking Onset Year |
 
+* Validate presence of facet cards on the "Other Clinical Attributes" tab on the Cohort Builder page
+  |facet_name                 |
+  |---------------------------|
+  |Bmi                        |
+  |Weight                     |
+  |Height                     |
+  |Risk Factors               |
+  |Menopause Status           |
+  |Comorbidities              |
+  |Pregnancy Outcome          |
+  |Number of Pregnancies      |
+
 * Validate presence of facet cards on the "Biospecimen" tab on the Cohort Builder page
   |facet_name                 |
   |---------------------------|
   |Tissue Type                |
   |Biospecimen Anatomic Site  |
-  |Composition                |
+  |Specimen Type              |
   |Preservation Method        |
-  |Tumor Code                 |
   |Tumor Descriptor           |
   |Analyte Type               |
+
+* Validate presence of facet cards on the "Genomic Filters" tab on the Cohort Builder page
+  |facet_name                 |
+  |---------------------------|
+  |Mutated Gene               |
+  |Somatic Mutation           |
 
 * Validate presence of facet cards on the "Available Data" tab on the Cohort Builder page
   |facet_name                 |

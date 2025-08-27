@@ -6,12 +6,15 @@ import {
   FilterSet,
   selectCurrentCohortFilters,
   Cohort,
-  selectCohortFilterSetById,
+  selectCohortByIdOrName,
   selectCurrentCohortId,
+  selectAllCohorts,
 } from "@gff/core";
-import { SelectionScreenContext } from "@/features/user-flow/workflow/AnalysisWorkspace";
+import { SelectionScreenContext } from "@gff/portal-components";
 import CohortComparison from "../cohortComparison/CohortComparison";
 import AdditionalCohortSelection from "@/features/cohortComparison/AdditionalCohortSelection";
+import { useDeepCompareEffect } from "use-deep-compare";
+import { usePrevious } from "@mantine/hooks";
 
 export const cohortComparisonDemo1: {
   filter: FilterSet;
@@ -71,6 +74,9 @@ const CohortComparisonApp: React.FC = () => {
   const { selectionScreenOpen, setSelectionScreenOpen, app, setActiveApp } =
     useContext(SelectionScreenContext);
 
+  const allCohorts = useCoreSelector(selectAllCohorts);
+  const allCohortsIds = Object.keys(allCohorts);
+
   /* Primary Cohort Details */
   const primaryCohortName = useCoreSelector((state) =>
     selectCurrentCohortName(state),
@@ -85,9 +91,11 @@ const CohortComparisonApp: React.FC = () => {
 
   /* Comparison Cohort Details */
   const [comparisonCohort, setComparisonCohort] = useState<Cohort>();
-  const comparisonCohortFilter = useCoreSelector((state) =>
-    selectCohortFilterSetById(state, comparisonCohort?.id),
+  const comparisonCohortId = comparisonCohort?.id;
+  const comparisonCohortObj: Cohort = useCoreSelector((state) =>
+    selectCohortByIdOrName(state, comparisonCohort?.id, comparisonCohort?.name),
   );
+  const comparisonCohortFilter = comparisonCohortObj?.filters;
   /* Comparison Cohort Details End */
 
   const cohorts = isDemoMode
@@ -107,6 +115,27 @@ const CohortComparisonApp: React.FC = () => {
           id: comparisonCohort?.id,
         },
       };
+
+  const prevPrimaryCohortId = usePrevious(primaryCohortId);
+  const prevComparisonCohortId = usePrevious(comparisonCohortId);
+
+  useDeepCompareEffect(() => {
+    if (
+      !isDemoMode &&
+      ((prevPrimaryCohortId !== undefined &&
+        !allCohortsIds.includes(prevPrimaryCohortId)) ||
+        (prevComparisonCohortId !== undefined &&
+          !allCohortsIds.includes(prevComparisonCohortId)))
+    ) {
+      setSelectionScreenOpen(true);
+    }
+  }, [
+    isDemoMode,
+    allCohortsIds,
+    prevPrimaryCohortId,
+    prevComparisonCohortId,
+    setSelectionScreenOpen,
+  ]);
 
   return selectionScreenOpen ? (
     <AdditionalCohortSelection

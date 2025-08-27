@@ -7,7 +7,7 @@ import {
   useCohortFacetsQuery,
   useCreateCaseSetFromFiltersMutation,
 } from "@gff/core";
-import CohortCard from "./CohortCard";
+import CohortCard from "./CohortCard/CohortCard";
 import SurvivalCard from "./SurvivalCard";
 import FacetCard from "./FacetCard";
 import { DemoText } from "@/components/tailwindComponents";
@@ -31,6 +31,15 @@ interface CohortComparisonProps {
   readonly demoMode: boolean;
 }
 
+const fields = {
+  survival: "Survival",
+  ethnicity: "demographic.ethnicity",
+  gender: "demographic.gender",
+  race: "demographic.race",
+  vital_status: "demographic.vital_status",
+  age_at_diagnosis: "diagnoses.age_at_diagnosis",
+};
+
 const CohortComparison: React.FC<CohortComparisonProps> = ({
   cohorts,
   demoMode = false,
@@ -45,16 +54,6 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
   } as Record<string, boolean>);
 
   const [survivalPlotSelectable, setSurvivalPlotSelectable] = useState(true);
-
-  const fields = {
-    survival: "Survival",
-    ethnicity: "demographic.ethnicity",
-    gender: "demographic.gender",
-    race: "demographic.race",
-    vital_status: "demographic.vital_status",
-    age_at_diagnosis: "diagnoses.age_at_diagnosis",
-  };
-
   const fieldsToQuery = Object.values(fields).filter((v) => v !== "Survival");
 
   const [createPrimaryCaseSet, primarySetResponse] =
@@ -62,7 +61,12 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
   const [createComparisonCaseSet, comparisonSetResponse] =
     useCreateCaseSetFromFiltersMutation();
 
-  const { data, isFetching } = useCohortFacetsQuery(
+  const {
+    data: cohortFacetsData,
+    isFetching: cohortFacetsFetching,
+    isLoading: cohortFacetsLoading,
+    isUninitialized: cohortFacetsUninitialized,
+  } = useCohortFacetsQuery(
     {
       facetFields: fieldsToQuery,
       primaryCohortSetId: primarySetResponse.data,
@@ -75,7 +79,7 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
     },
   );
 
-  const counts = data?.caseCounts || [];
+  const counts = cohortFacetsData?.caseCounts || [];
 
   useDeepCompareEffect(() => {
     createPrimaryCaseSet({
@@ -95,74 +99,71 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
     createPrimaryCaseSet,
   ]);
 
-  const loading =
+  const isSetsloading =
     primarySetResponse.isUninitialized ||
     primarySetResponse.isLoading ||
     comparisonSetResponse.isUninitialized ||
     comparisonSetResponse.isLoading;
+
   const caseSetIds =
     primarySetResponse.isSuccess && comparisonSetResponse.isSuccess
       ? [primarySetResponse.data, comparisonSetResponse.data]
       : [];
 
   return (
-    <>
+    <div className="mt-6 px-4 mb-16">
       {demoMode && (
         <DemoText>
           Demo showing cases with low grade gliomas with and without mutations
           in the genes IDH1 and IDH2.
         </DemoText>
       )}
-      <div className="flex gap-4 pt-2">
-        <div className="p-1 flex basis-7/12 flex-col gap-4">
-          {loading ? (
-            <div className="min-w-[600px] min-h-[400px] relative">
-              <LoadingOverlay
-                vdata-testid="loading-spinner"
-                visible={isFetching}
-                zIndex={0}
-              />
-            </div>
-          ) : (
-            selectedCards.survival && (
+
+      <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-5">
+        <div className="flex flex-col gap-y-4 lg:col-span-3 order-2 lg:order-1">
+          {selectedCards.survival && (
+            <div className="border-1 border-base-lighter">
               <SurvivalCard
                 cohorts={cohorts}
                 counts={counts}
                 caseSetIds={caseSetIds}
                 setSurvivalPlotSelectable={setSurvivalPlotSelectable}
+                isSetsloading={isSetsloading}
               />
-            )
+            </div>
           )}
           {Object.keys(
             pickBy(selectedCards, (v, k) => v && k !== "survival"),
-          ).map((selectedCard) =>
-            isFetching ? (
-              <div
-                className="min-w-[600px] min-h-[400px] relative"
-                key={selectedCard}
-              >
-                <LoadingOverlay
-                  data-testid="loading-spinner"
-                  visible={isFetching}
-                  zIndex={0}
-                />
-              </div>
-            ) : (
+          ).map((selectedCard) => (
+            <div
+              className="relative border-1 border-base-lighter"
+              key={selectedCard}
+            >
+              <LoadingOverlay
+                data-testid="loading-spinner"
+                visible={
+                  cohortFacetsFetching ||
+                  cohortFacetsUninitialized ||
+                  cohortFacetsLoading
+                }
+                zIndex={1} // need z-index 1
+              />
               <FacetCard
-                key={selectedCard}
                 data={
-                  data?.aggregations
-                    ? data.aggregations.map((d) => d[fields[selectedCard]])
+                  cohortFacetsData?.aggregations
+                    ? cohortFacetsData.aggregations.map(
+                        (d) => d[fields[selectedCard]],
+                      )
                     : []
                 }
                 field={fields[selectedCard]}
                 counts={counts}
                 cohorts={cohorts}
               />
-            ),
-          )}
+            </div>
+          ))}
         </div>
-        <div className="p-1 flex basis-1/4">
+        <div className="lg:col-span-2 order-1 lg:order-2">
           <CohortCard
             selectedCards={selectedCards}
             setSelectedCards={setSelectedCards}
@@ -171,11 +172,11 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
             options={fields}
             survivalPlotSelectable={survivalPlotSelectable}
             caseSetIds={caseSetIds}
-            casesFetching={isFetching}
+            casesFetching={cohortFacetsFetching}
           />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

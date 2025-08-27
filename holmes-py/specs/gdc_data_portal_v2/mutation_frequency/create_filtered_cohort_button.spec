@@ -3,7 +3,7 @@ Date Created   : 09/17/2023
 Version			   : 1.0
 Owner		       : GDC QA
 Description		 : Create a Filtered Cohort Using Different Table Buttons
-Test-Case      : PEAR-1510
+Test-Case      : PEAR-1510, PEAR-2458
 
 tags: gdc-data-portal-v2, mutation-frequency, regression
 
@@ -37,6 +37,13 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |expected_text|row  |column |
   |-------------|-----|-------|
   |PTEN         |1    |4      |
+Note: This is to resolve flaky test
+* Select value from table "Genes" by row and column
+  |row   |column|
+  |------|------|
+  |1     |1     |
+  |1     |1     |
+* Pause "1" seconds
 * Collect button labels in table for comparison
   |button_label                         |row  |column |
   |-------------------------------------|-----|-------|
@@ -69,6 +76,13 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |expected_text|row  |column |
   |-------------|-----|-------|
   |APC          |1    |4      |
+Note: This is to resolve flaky test
+* Select value from table "Genes" by row and column
+  |row   |column|
+  |------|------|
+  |1     |1     |
+  |1     |1     |
+* Pause "1" seconds
 * Collect button labels in table for comparison
   |button_label                         |row  |column |
   |-------------------------------------|-----|-------|
@@ -89,59 +103,73 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
 * Search the table for ""
 
-## Genes - CNV Gain
+## Genes - CNV Amplifications
 * Switch cohort to "Blank - Mutation Frequency" from the Cohort Bar dropdown list
 * "Blank - Mutation Frequency" should be the active cohort
-* Search the table for "CSMD3"
+* Search the table for "PTCH1"
 * Wait for table body text to appear
   |expected_text|row  |column |
   |-------------|-----|-------|
-  |CSMD3        |1    |4      |
+  |PTCH1        |1    |4      |
+Note: This is to resolve flaky test
+* Select value from table "Genes" by row and column
+  |row   |column|
+  |------|------|
+  |1     |1     |
+  |1     |1     |
+* Pause "1" seconds
 * Collect button labels in table for comparison
   |button_label                         |row  |column |
   |-------------------------------------|-----|-------|
-  |CSMD3 CNV Gain                       |1    |8      |
+  |PTCH1 CNV Amplifications             |1    |8      |
 * Select value from table by row and column
   |row   |column|
   |------|------|
   |1     |8     |
-* Name the cohort "CSMD3 CNV Gain" in the Cohort Bar section
+* Name the cohort "PTCH1 CNV Amplifications" in the Cohort Bar section
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                            |Keep or Remove Modal|
   |-----------------|-----------------------------------------------------|--------------------|
-  |Save             |CSMD3 CNV Gain has been saved                        |Remove Modal        |
-* Switch cohort to "CSMD3 CNV Gain" from the Cohort Bar dropdown list
-* "CSMD3 CNV Gain" should be the active cohort
+  |Save             |PTCH1 CNV Amplifications has been saved              |Remove Modal        |
+* Switch cohort to "PTCH1 CNV Amplifications" from the Cohort Bar dropdown list
+* "PTCH1 CNV Amplifications" should be the active cohort
 * Collect Cohort Bar Case Count for comparison
-* Verify "Cohort Bar Case Count" and "CSMD3 CNV Gain" are "Equal"
+* Verify "Cohort Bar Case Count" and "PTCH1 CNV Amplifications" are "Equal"
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
 * Search the table for ""
 
-## Genes - CNV Loss
+## Genes - CNV Homozygous Deletions
 * Switch cohort to "Blank - Mutation Frequency" from the Cohort Bar dropdown list
 * "Blank - Mutation Frequency" should be the active cohort
-* Search the table for "ZFHX3"
+* Search the table for "NF1"
 * Wait for table body text to appear
   |expected_text|row  |column |
   |-------------|-----|-------|
-  |ZFHX3        |1    |4      |
+  |NF1          |1    |4      |
+Note: This is to resolve flaky test
+* Select value from table "Genes" by row and column
+  |row   |column|
+  |------|------|
+  |1     |1     |
+  |1     |1     |
+* Pause "1" seconds
 * Collect button labels in table for comparison
   |button_label                         |row  |column |
   |-------------------------------------|-----|-------|
-  |ZFHX3 CNV Loss                       |1    |9      |
+  |NF1 CNV Homozygous Deletions         |1    |9      |
 * Select value from table by row and column
   |row   |column|
   |------|------|
   |1     |9     |
-* Name the cohort "ZFHX3 CNV Loss" in the Cohort Bar section
+* Name the cohort "NF1 CNV Homozygous Deletions" in the Cohort Bar section
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                            |Keep or Remove Modal|
   |-----------------|-----------------------------------------------------|--------------------|
-  |Save             |ZFHX3 CNV Loss has been saved                        |Remove Modal        |
-* Switch cohort to "ZFHX3 CNV Loss" from the Cohort Bar dropdown list
-* "ZFHX3 CNV Loss" should be the active cohort
+  |Save             |NF1 CNV Homozygous Deletions has been saved          |Remove Modal        |
+* Switch cohort to "NF1 CNV Homozygous Deletions" from the Cohort Bar dropdown list
+* "NF1 CNV Homozygous Deletions" should be the active cohort
 * Collect Cohort Bar Case Count for comparison
-* Verify "Cohort Bar Case Count" and "ZFHX3 CNV Loss" are "Equal"
+* Verify "Cohort Bar Case Count" and "NF1 CNV Homozygous Deletions" are "Equal"
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
 * Search the table for ""
 
@@ -155,6 +183,13 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |expected_text      |row  |column |
   |-------------------|-----|-------|
   |chr1:g.6197725delT |1    |4      |
+Note: This is to resolve flaky test
+* Select value from table "Most Frequent Somatic Mutations" by row and column
+  |row   |column|
+  |------|------|
+  |1     |1     |
+  |1     |1     |
+* Pause "1" seconds
 * Collect button labels in table for comparison
   |button_label                                 |row  |column |
   |---------------------------------------------|-----|-------|
@@ -174,3 +209,59 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Verify "Cohort Bar Case Count" and "chr1:g.6197725delT Affected Cases in Cohort" are "Equal"
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
 * Search the table for ""
+
+## Mutations - Replace with Affected Cases in Cohort
+* Switch cohort to "Blank - Mutation Frequency" from the Cohort Bar dropdown list
+* "Blank - Mutation Frequency" should be the active cohort
+Note: This is to resolve flaky test
+* Select value from table "Most Frequent Somatic Mutations" by row and column
+  |row   |column|
+  |------|------|
+  |1     |1     |
+  |1     |1     |
+* Pause "1" seconds
+* Collect button labels in table for comparison
+  |button_label                                 |row  |column |
+  |---------------------------------------------|-----|-------|
+  |First Row Affected Cases in Cohort           |1    |8      |
+* Select value from table by row and column
+  |row   |column|
+  |------|------|
+  |1     |8     |
+* Name the cohort "Blank - Mutation Frequency" in the Cohort Bar section
+* Select button "Save Name"
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
+  |-----------------|-------------------------------------------|--------------------|
+  |Replace          |Cohort has been saved                      |Remove Modal        |
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "First Row Affected Cases in Cohort" are "Equal"
+* Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
+
+## Genes - Replace with Affected Cases in Cohort
+* Switch to "Genes" tab in the Mutation Frequency app
+* Is text "Distribution of Most Frequently Mutated Genes" present on the page
+Note: This is to resolve flaky test
+* Select value from table "Genes" by row and column
+  |row   |column|
+  |------|------|
+  |1     |1     |
+  |1     |1     |
+* Pause "1" seconds
+* Collect button labels in table for comparison
+  |button_label                         |row  |column |
+  |-------------------------------------|-----|-------|
+  |First Row SSM Affected Cases in Cohort|1    |6      |
+* Select value from table by row and column
+  |row   |column|
+  |------|------|
+  |1     |6     |
+* Name the cohort "Blank - Mutation Frequency" in the Cohort Bar section
+* Select button "Save Name"
+* Perform action and validate modal text
+  |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
+  |-----------------|-------------------------------------------|--------------------|
+  |Replace          |Cohort has been saved                      |Remove Modal        |
+* Collect Cohort Bar Case Count for comparison
+* Verify "Cohort Bar Case Count" and "First Row SSM Affected Cases in Cohort" are "Equal"
+* Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"

@@ -260,6 +260,7 @@ const EnumBarChart: React.FC<BarChartProps> = ({
 
       <VictoryStack>
         <VictoryBar
+          data-testid="chart-card-cases-table"
           horizontal
           labels={() => ""}
           labelComponent={

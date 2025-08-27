@@ -1,6 +1,6 @@
 import { graphqlAPISlice } from "../gdcapi/gdcgraphql";
-import { buildCohortGqlOperator } from "../cohort";
-import { GenomicTableProps } from "./types";
+import { buildCohortGqlOperator, FilterSet } from "../cohort";
+import { TablePageOffsetProps } from "../gdcapi/gdcgraphql";
 
 const GeneMutationFrequencyQuery = `
     query GeneMutationFrequencyChart (
@@ -38,6 +38,11 @@ const GeneMutationFrequencyQuery = `
     }
 `;
 
+export interface GeneFrequencyTableProps extends TablePageOffsetProps {
+  genomicFilters: FilterSet;
+  cohortFilters: FilterSet;
+}
+
 interface GeneFrequencyEntry {
   readonly gene_id: string;
   readonly numCases: number;
@@ -52,7 +57,10 @@ export interface GenesFrequencyChart {
 
 const geneFrequencyChartSlice = graphqlAPISlice.injectEndpoints({
   endpoints: (builder) => ({
-    geneFrequencyChart: builder.query<GenesFrequencyChart, GenomicTableProps>({
+    geneFrequencyChart: builder.query<
+      GenesFrequencyChart,
+      GeneFrequencyTableProps
+    >({
       query: ({ cohortFilters, genomicFilters, pageSize = 20, offset = 0 }) => {
         const caseFilters = buildCohortGqlOperator(cohortFilters);
         const cohortFiltersContent = caseFilters?.content

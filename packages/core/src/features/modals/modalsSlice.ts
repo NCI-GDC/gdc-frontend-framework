@@ -20,6 +20,7 @@ export enum Modals {
   "LocalMutationSetModal" = "LocalMutationSetModal",
   "ImportCohortModal" = "ImportCohortModal",
   "SaveCohortErrorModal" = "SaveCohortErrorModal",
+  "SaveSetErrorModal" = "SaveSetErrorModal",
 }
 
 export interface ModalState {

@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Operation, FilterSet } from "@gff/core";
+import { isEqual } from "lodash";
+import { Operation, FilterSet, isOperandsType, Includes } from "@gff/core";
 import { AppState } from "./appApi";
+import { GENE_AND_MUTATION_FIELDS } from "./constants";
 
 const initialState: FilterSet = {
   mode: "and",
@@ -21,11 +23,36 @@ const slice = createSlice({
       state,
       action: PayloadAction<{ field: string; operation: Operation }>,
     ) => {
+      const { field, operation } = action.payload;
+      let removeNonSetFilters = false;
+
+      if (GENE_AND_MUTATION_FIELDS.includes(field)) {
+        // we are adding new gene/ssm set filters, clear filters
+        if (state.root?.[field] === undefined) {
+          removeNonSetFilters = true;
+        } else {
+          const diffOperands = (operation as Includes).operands.filter((o) =>
+            (state.root?.[field] as Includes).operands.includes(o),
+          );
+          // we are adding a new value, clear filters
+          removeNonSetFilters =
+            (operation as Includes).operands.length > diffOperands.length;
+        }
+      }
+
+      const restOfFilters = removeNonSetFilters
+        ? Object.fromEntries(
+            Object.entries(state.root).filter(([key]) =>
+              GENE_AND_MUTATION_FIELDS.includes(key),
+            ),
+          )
+        : state.root;
+
       return {
         mode: "and",
         root: {
-          ...state.root,
-          [action.payload.field]: action.payload.operation,
+          ...restOfFilters,
+          [field]: action.payload.operation,
         },
       };
     },
@@ -59,6 +86,19 @@ export const selectGeneAndSSMFiltersByName = (
   name: string,
 ): Operation | undefined => {
   return state.filters.root?.[name];
+};
+
+export const selectFiltersAppliedCount = (state: AppState): number => {
+  const appliedFilterCount = Object.values(state.filters.root)
+    .filter(
+      (f) => !isEqual(f, initialState.root["genes.is_cancer_gene_census"]),
+    )
+    .reduce((a, b) => (isOperandsType(b) ? b?.operands.length : 1) + a, 0);
+
+  // If cancer_gene_census filter isn't present, count that as one since the filter starts out true
+  return state.filters.root["genes.is_cancer_gene_census"]
+    ? appliedFilterCount
+    : appliedFilterCount + 1;
 };
 
 export const selectGeneAndSSMFiltersByNames = (

@@ -3,17 +3,18 @@ import {
   useCreateSsmsSetFromFiltersMutation,
   useCreateGeneSetFromFiltersMutation,
   useCreateCaseSetFromFiltersMutation,
-  GqlOperation,
   FilterSet,
+  GqlUnion,
+  GqlIntersection,
 } from "@gff/core";
 import { SetOperationEntityType } from "@/features/set-operations/types";
-import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionModal";
+import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionAsSetModal";
 import { Loader, Tooltip } from "@mantine/core";
-import { FaPlus as PlusIcon } from "react-icons/fa";
 import CohortCreationButton, {
   CohortCreationStyledButton,
   IconWrapperTW,
 } from "@/components/CohortCreationButton";
+import { PlusIcon } from "@/utils/icons";
 
 export const CreateFromCountButton = ({
   tooltipLabel,
@@ -59,7 +60,7 @@ export const CreateFromCountButton = ({
 
 interface CountButtonWrapperForSetProps {
   readonly count: number | undefined;
-  readonly filters: GqlOperation;
+  readonly filters: GqlUnion | GqlIntersection;
   readonly entityType?: SetOperationEntityType;
 }
 
@@ -80,7 +81,6 @@ const CountButtonWrapperForSet: React.FC<CountButtonWrapperForSetProps> = ({
         opened={showSaveModal && entityType === "mutations"}
         filters={filters}
         sort="occurrence.case.project.project_id"
-        initialSetName="Custom Mutation Selection"
         saveCount={count}
         setType="ssms"
         setTypeLabel="mutation"
@@ -91,7 +91,6 @@ const CountButtonWrapperForSet: React.FC<CountButtonWrapperForSetProps> = ({
       <SaveSelectionAsSetModal
         opened={showSaveModal && entityType === "genes"}
         filters={filters}
-        initialSetName={"Custom Gene Selection"}
         sort="case.project.project_id"
         saveCount={count}
         setType="genes"
@@ -137,8 +136,8 @@ const CountButtonWrapperForSetsAndCases: React.FC<
   const createCohort = async () => {
     return await createSet({
       filters: filters,
-      intent: entityType == "cohort" ? "portal" : "user",
-      set_type: entityType == "cohort" ? "frozen" : "mutable",
+      intent: "portal",
+      set_type: "frozen",
     })
       .unwrap()
       .then((setId) => {

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { UseMutation } from "@reduxjs/toolkit/dist/query/react/buildHooks";
-import { MutationDefinition } from "@reduxjs/toolkit/dist/query";
+import { TypedUseMutation } from "@reduxjs/toolkit/query/react";
 import {
   selectSetsByType,
   useCoreDispatch,
@@ -9,17 +8,18 @@ import {
   SetTypes,
   hideModal,
   CreateSetValueArgs,
+  showModal,
+  Modals,
 } from "@gff/core";
 import { showNotification } from "@mantine/notifications";
 import { SaveOrCreateEntityModal } from "@/components/Modals/SaveOrCreateEntityModal";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
+import { Loader } from "@mantine/core";
 interface SaveSetButttonProps {
   readonly disabled: boolean;
   readonly ids: string[];
   readonly hooks: {
-    createSet: UseMutation<
-      MutationDefinition<CreateSetValueArgs, any, any, any>
-    >;
+    createSet: TypedUseMutation<any, CreateSetValueArgs, any>;
   };
   readonly setType: SetTypes;
   readonly buttonText?: string;
@@ -52,11 +52,7 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
       }
       setSetName(null);
     } else if (response.isError) {
-      showNotification({
-        message: "Problem saving set.",
-        color: "red",
-        closeButtonProps: { "aria-label": "Close notification" },
-      });
+      dispatch(showModal({ modal: Modals.SaveSetErrorModal }));
     }
   }, [
     response.isSuccess,
@@ -83,8 +79,12 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
         additionalDuplicateMessage="This will overwrite it."
       />
       <DarkFunctionButton
+        data-testid="button-save-set"
         disabled={disabled}
         onClick={() => setShowSaveModal(true)}
+        leftSection={
+          response?.isLoading ? <Loader size="sm" color="white" /> : undefined
+        }
       >
         {buttonText}
       </DarkFunctionButton>
@@ -94,6 +94,13 @@ const SaveSetButton: React.FC<SaveSetButttonProps> = ({
 
 export const SubmitSaveSetButton: React.FC<SaveSetButttonProps> = (
   props: SaveSetButttonProps,
-) => <SaveSetButton {...props} buttonText="Submit" dismissModal />;
+) => (
+  <SaveSetButton
+    {...props}
+    data-testid="button-submit"
+    buttonText="Submit"
+    dismissModal
+  />
+);
 
 export default SaveSetButton;

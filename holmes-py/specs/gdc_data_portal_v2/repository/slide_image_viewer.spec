@@ -17,10 +17,14 @@ tags: gdc-data-portal-v2, repository, regression, slide-image-viewer
 * Verify the slide image viewer is showing "10" cases
 * Select "Show More" on the Image Viewer page
 * Verify the slide image viewer is showing "20" cases
+* Is text "Slide Image Viewer" present on the page
+* Pause "2" seconds
 
 ## Search for a Slide and Validate its contents
 * Select "Search Icon" on the Image Viewer page
+* Pause "1" seconds
 * Search for "TCGA-E2-A14N*" on the Image Viewer page
+* Pause "1" seconds
 * Select "Go" on the Image Viewer page
 * Select case or slide "TCGA-E2-A14N-01Z-00-DX1" on the Image Viewer page
 * Select "Details" on the Image Viewer page
@@ -74,4 +78,4 @@ tags: gdc-data-portal-v2, repository, regression, slide-image-viewer
 
 ## Go Back to the Repository Page
 * Select "Back" on the Image Viewer page
-* Wait for "Filters Facets" to be present on the page
+* Is text "Add All Files to Cart" present on the page

@@ -50,7 +50,7 @@ const EChartWrapper: React.FC<EChartWrapperProps> = ({
             }
           : undefined
       }
-      style={{ height, width }}
+      style={{ height, width, margin: "0 auto" }}
       role="img"
     />
   );

@@ -16,11 +16,10 @@ import {
   FileCaseType,
   FileAnnotationsType,
 } from "@gff/core";
-import { MdSave, MdPerson } from "react-icons/md";
 import { useAppSelector } from "@/features/repositoryApp/appApi";
 import { selectFilters } from "@/features/repositoryApp/repositoryFiltersSlice";
 import FunctionButton from "@/components/FunctionButton";
-import { convertDateToString } from "src/utils/date";
+import { getFormattedTimestamp } from "src/utils/date";
 import download from "src/utils/download";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
 import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
@@ -39,8 +38,9 @@ import {
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { downloadTSV } from "@/components/Table/utils";
-import { statusBooleansToDataStatus } from "src/utils";
+import { REPO_BREAKPOINT, statusBooleansToDataStatus } from "src/utils";
 import { useDeepCompareEffect } from "use-deep-compare";
+import { PersonIcon, SaveIcon } from "@/utils/icons";
 
 export type FilesTableDataType = {
   file: GdcFile;
@@ -67,6 +67,7 @@ const FilesTables: React.FC = () => {
   const [pageSize, setPageSize] = useState(20);
   const [offset, setOffset] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
+  const [jsonDownloadInProgress, setJsonDownloadInProgress] = useState(false);
 
   const repositoryFilters = useAppSelector((state) => selectFilters(state));
   const cohortFilters = useCoreSelector((state) =>
@@ -340,6 +341,7 @@ const FilesTables: React.FC = () => {
   };
 
   const handleDownloadJSON = async () => {
+    setJsonDownloadInProgress(true);
     await download({
       endpoint: "files",
       method: "POST",
@@ -368,6 +370,7 @@ const FilesTables: React.FC = () => {
         ].join(","),
       },
       dispatch: coreDispatch,
+      done: () => setJsonDownloadInProgress(false),
     });
   };
 
@@ -387,7 +390,7 @@ const FilesTables: React.FC = () => {
       columnOrder,
       columnVisibility,
       columns: filesTableDefaultColumns,
-      fileName: `files-table.${convertDateToString(new Date())}.tsv`,
+      fileName: `files-table.${getFormattedTimestamp()}.tsv`,
       option: {
         blacklist: ["cart"],
         overwrite: {
@@ -426,24 +429,22 @@ const FilesTables: React.FC = () => {
   }
 
   const Stats = () => (
-    <div className="flex gap-1 text-xl items-center uppercase">
+    <div className="flex gap-1 text-xl items-center uppercase flex-wrap">
       <div>
         Total of{" "}
         <strong>{tempPagination?.total?.toLocaleString() || "--"}</strong>{" "}
-        {tempPagination?.total > 1 || tempPagination?.total === 0
-          ? "Files"
-          : "File"}
+        {tempPagination?.total !== 1 ? "Files" : "File"}
       </div>
       <div>
-        <MdPerson className="ml-2 mr-1 mb-1 inline-block" aria-hidden="true" />
+        <PersonIcon
+          className="ml-2 mr-1 mb-1 inline-block"
+          aria-hidden="true"
+        />
         <strong className="mr-1">{totalCaseCount}</strong>
-        {fileSizeSliceData?.data?.total_case_count > 1 ||
-        fileSizeSliceData?.data?.total_case_count === 0
-          ? "Cases"
-          : "Case"}
+        {fileSizeSliceData?.data?.total_case_count !== 1 ? "Cases" : "Case"}
       </div>
       <div>
-        <MdSave className="ml-2 mr-1 mb-1 inline-block" aria-hidden="true" />
+        <SaveIcon className="ml-2 mr-1 mb-1 inline-block" aria-hidden="true" />
         {totalFileSize}
       </div>
     </div>
@@ -451,60 +452,56 @@ const FilesTables: React.FC = () => {
 
   return (
     <>
-      <div className="flex xl:justify-end Custom-Repo-Width:hidden">
-        <Stats />
-      </div>
-      <div className="">
-        <VerticalTable
-          additionalControls={
-            <div className="flex gap-2 items-center justify-between">
-              <FunctionButton
-                onClick={handleDownloadJSON}
-                data-testid="button-json-files-table"
-                disabled={isFetching}
-              >
-                JSON
-              </FunctionButton>
-              <FunctionButton
-                onClick={handleDownloadTSV}
-                data-testid="button-tsv-files-table"
-                disabled={isFetching}
-              >
-                TSV
-              </FunctionButton>
-            </div>
-          }
-          tableTitle={
-            <div
-              data-testid="text-counts-files-table"
-              className="hidden Custom-Repo-Width:block"
+      <VerticalTable
+        additionalControls={
+          <div className="flex gap-2 items-center justify-between">
+            <FunctionButton
+              onClick={handleDownloadJSON}
+              data-testid="button-json-files-table"
+              disabled={isFetching}
+              isActive={jsonDownloadInProgress}
+              isDownload
             >
-              <Stats />
-            </div>
-          }
-          data={formattedTableData}
-          columns={filesTableDefaultColumns}
-          pagination={{
-            ...tempPagination,
-            label: "files",
-          }}
-          status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
-          handleChange={handleChange}
-          search={{
-            enabled: true,
-            tooltip:
-              "e.g. HCM-CSHL-0062-C18.json, 4b5f5ba0-3010-4449-99d4-7bd7a6d73422, HCM-CSHL-0062-C18",
-          }}
-          showControls={true}
-          setColumnVisibility={setColumnVisibility}
-          columnVisibility={columnVisibility}
-          columnOrder={columnOrder}
-          columnSorting="manual"
-          sorting={sorting}
-          setSorting={setSorting}
-          setColumnOrder={setColumnOrder}
-        />
-      </div>
+              JSON
+            </FunctionButton>
+
+            <FunctionButton
+              onClick={handleDownloadTSV}
+              data-testid="button-tsv-files-table"
+              disabled={isFetching}
+            >
+              TSV
+            </FunctionButton>
+          </div>
+        }
+        tableTotalDetail={
+          <div data-testid="text-counts-files-table">
+            <Stats />
+          </div>
+        }
+        data={formattedTableData}
+        columns={filesTableDefaultColumns}
+        pagination={{
+          ...tempPagination,
+          label: "file",
+        }}
+        status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
+        handleChange={handleChange}
+        search={{
+          enabled: true,
+          tooltip:
+            "e.g. HCM-CSHL-0062-C18.json, 4b5f5ba0-3010-4449-99d4-7bd7a6d73422, HCM-CSHL-0062-C18",
+        }}
+        showControls={true}
+        setColumnVisibility={setColumnVisibility}
+        columnVisibility={columnVisibility}
+        columnOrder={columnOrder}
+        columnSorting="manual"
+        sorting={sorting}
+        setSorting={setSorting}
+        setColumnOrder={setColumnOrder}
+        customBreakpoint={REPO_BREAKPOINT}
+      />
     </>
   );
 };

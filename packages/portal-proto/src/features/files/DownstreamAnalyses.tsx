@@ -8,6 +8,8 @@ import { mapGdcFileToCartFile } from "./utils";
 import { TableActionButtons } from "@/components/TableActionButtons";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { FileAccessBadge } from "@/components/FileAccessBadge";
+import TotalItems from "@/components/Table/TotalItem";
+import { HeaderTitle } from "@/components/tailwindComponents";
 
 const DownstreamAnalyses = ({
   downstream_analyses,
@@ -34,7 +36,7 @@ const DownstreamAnalyses = ({
 
   downstream_analyses?.forEach((byWorkflowType) => {
     if (byWorkflowType?.output_files) {
-      byWorkflowType?.output_files?.forEach((outputFile) => {
+      byWorkflowType?.output_files?.forEach((outputFile: GdcCartFile) => {
         const transformedFile = {
           access: outputFile.access,
           file_name: outputFile.file_name,
@@ -120,6 +122,10 @@ const DownstreamAnalyses = ({
     <VerticalTable
       data={downstreamTableData}
       columns={downstremAnalysesDefaultColumns}
+      tableTotalDetail={
+        <TotalItems total={downstreamTableData?.length} itemName="file" />
+      }
+      tableTitle={<HeaderTitle>Downstream Analyses Files</HeaderTitle>}
     />
   );
 };

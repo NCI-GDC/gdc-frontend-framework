@@ -18,6 +18,9 @@ class AnalysisCenterLocators:
     TEXT_DESCRIPTION_TOOL = (
         lambda tool_name: f'[data-testid="{tool_name}-tool"] >> [data-testid="text-description-tool"]'
     )
+    TEXT_CASES_COUNT_ON_TOOL_CARD = (
+        lambda tool_name: f'[data-testid="{tool_name}-tool"] >> [data-testid="text-case-count-tool"]'
+    )
     TOOLTIP_ZERO_CASES_ON_TOOL_CARD = (
         lambda tool_name: f'[data-testid="{tool_name}-tool"] [data-testid="text-case-count-tool"] svg'
     )
@@ -28,6 +31,9 @@ class AnalysisCenterLocators:
 
     ANALYSIS_CENTER_HEADER = '[data-testid="button-header-analysis"]'
 
+    COHORT_COMPARISON_SELECTION_SCREEN_WAIT_FOR_ELEMENT = (
+        '[data-testid="button-run-cohort-comparison"]'
+    )
     MUTATION_FREQUENCY_WAIT_FOR_ELEMENT = "[data-testid='button-mutations-tab']"
     CLINICAL_DATA_ANALYSIS_WAIT_FOR_ELEMENT = "[data-testid='Gender-card']"
 
@@ -59,6 +65,24 @@ class AnalysisCenterPage(BasePage):
         """After an analysis tool description is made visible, this returns the description"""
         locator = AnalysisCenterLocators.TEXT_DESCRIPTION_TOOL(tool_name)
         return self.get_text(locator)
+
+    def get_analysis_tool_cases_count(self, tool_name):
+        """Returns case count on given analysis tool"""
+        self.wait_for_loading_spinner_to_detatch()
+        locator = AnalysisCenterLocators.TEXT_CASES_COUNT_ON_TOOL_CARD(tool_name)
+        # If we get " " or " Cases" on return, that means the analysis card is still loading information. We wait until
+        # it fully loads or 10 seconds elapses before returning text.
+        retry_counter = 0
+        while ((self.get_text(locator) == " ") or (self.get_text(locator) == " Cases")):
+            time.sleep(1)
+            retry_counter = retry_counter + 1
+            if retry_counter >= 10:
+                break
+        cases_count = self.get_text(locator)
+        # Remove the "Cases" part of the string. We do not need that for comparison.
+        cases_count = cases_count.replace("Cases", "")
+        cases_count = cases_count.replace(" ", "")
+        return cases_count
 
     def get_analysis_tool_tooltip_text(self, tool_name, tooltip_text):
         """
@@ -127,6 +151,16 @@ class AnalysisCenterPage(BasePage):
                     AnalysisCenterLocators.MUTATION_FREQUENCY_WAIT_FOR_ELEMENT, 30000
                 )
 
+        if page_to_load == "cohort comparison":
+            try:
+                self.wait_for_selector(
+                    AnalysisCenterLocators.COHORT_COMPARISON_SELECTION_SCREEN_WAIT_FOR_ELEMENT, 30000
+                )
+                self.wait_for_loading_spinner_to_detatch()
+            except:
+                self.wait_for_loading_spinner_to_detatch()
+
+
         if page_to_load == "cohort comparison demo":
             # Need to wait for loading spinners to be present, for them to disappear,
             # and wait for a special loading spinner attached to the survival plot to disappear
@@ -143,7 +177,7 @@ class AnalysisCenterPage(BasePage):
         if page_to_load == "set operations demo":
             # Need to wait for loading spinners to be present, for them to disappear
             try:
-                self.wait_for_loading_spinner_to_be_visible(7500)
+                self.wait_for_loading_spinner_to_be_visible(10000)
                 self.wait_for_loading_spinner_to_detatch()
             except:
                 self.wait_for_loading_spinner_to_detatch()

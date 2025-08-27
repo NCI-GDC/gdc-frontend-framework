@@ -1,7 +1,7 @@
+import React from "react";
+import { CircleIcon } from "@/utils/icons";
 import { animated, useSpring } from "@react-spring/web";
 import { Row } from "@tanstack/react-table";
-import React from "react";
-import { FaCircle as Circle } from "react-icons/fa";
 import { useMeasure } from "react-use";
 
 function SubrowPrimarySiteDiseaseType<T>({
@@ -38,7 +38,10 @@ function SubrowPrimarySiteDiseaseType<T>({
         <div className="columns-4 font-content text-sm">
           {values.map((value) => (
             <div className="flex items-center" key={value}>
-              <Circle size="0.65em" className="text-primary shrink-0" />
+              <CircleIcon
+                size="0.65em"
+                className="text-primary shrink-0 self-start mt-1.5"
+              />
               <p className="pl-2">{value}</p>
             </div>
           ))}

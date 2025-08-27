@@ -6,8 +6,7 @@ from ....base.base_page import GenericLocators
 
 class RepositoryPageLocators:
     TITLE = lambda title_name: f'[data-testid="{title_name}-title"]'
-    FILTERS_FACETS = '//div[@data-testid="filters-facets"]/div/div'
-    FACET_BY_NAME = '//div[@data-testid="filters-facets"]//div[text()="Data Category"]/../../..//input[@value="biospecimen"]'
+    FILTERS_FACETS = '[data-testid="filters-facets"] > div'
     FILTER_BUTTON_IDENT = lambda button_name: f"[data-testid='button-{button_name}']"
     REPO_BUTTON_IDENT = (
         lambda button_name: f"[data-testid='button-{button_name}-files-table']"
@@ -16,16 +15,12 @@ class RepositoryPageLocators:
     LIST_IDENT = lambda list_name: f"//div[@data-testid='list-{list_name}']"
     FILE_FILTER_SEARCH_BOX = '[data-testid="textbox-search-for-a-property"]'
 
-    FILTER_GROUP_SELECTION_IDENT = (
-        lambda group_name, selection: f'[data-testid="filters-facets"] >> div >> div:has-text("{group_name}") >> [data-testid="checkbox-{selection}"]'
-    )
-    FILTER_GROUP_ACTION_IDENT = (
-        lambda group_name, action: f'[data-testid="filters-facets"] >> div >> div:has-text("{group_name}") >> button[aria-label="{action}"]'
-    )
     FILTER_GROUP_SHOW_MORE_LESS_IDENT = (
-        lambda group_name, more_or_less: f'[data-testid="filters-facets"] >> div >> div:has-text("{group_name}") >> button[data-testid="{more_or_less}"]'
+        lambda group_name, more_or_less: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> button[data-testid="{more_or_less}"]'
     )
-
+    FACET_GROUP_FILTER_TEXT_CASE_COUNT = (
+        lambda group_name, selection: f'[data-testid="filters-facets"] >> div:has-text("{group_name}") >> [data-testid="text-{selection}"]'
+    )
     IMAGE_VIEWER_IDENT = (
         lambda data_testid: f"[data-testid='{data_testid}-image-viewer']"
     )
@@ -84,6 +79,15 @@ class RepositoryPage(BasePage):
         locator = RepositoryPageLocators.TEXT_REPO_TABLE_ITEM_COUNT(item_position)
         return self.get_text(locator)
 
+    def get_file_count_from_filter_within_facet_group(
+        self, facet_group_name, filter_name
+    ):
+        """Returns the file count of a filter on a given facet card"""
+        locator = RepositoryPageLocators.FACET_GROUP_FILTER_TEXT_CASE_COUNT(
+            facet_group_name, filter_name
+        )
+        return self.get_text(locator)
+
     def get_title(self, title_name):
         """Gets the text content of the title"""
         return self.driver.locator(
@@ -106,21 +110,14 @@ class RepositoryPage(BasePage):
             filter_names.append(nth_inner_element)
         return filter_names
 
-    def make_selection_within_filter_group_repository(
-        self, filter_group_name, selection
+    # Returns if the show more or show less button is visible on a facet card
+    def is_show_more_or_show_less_button_visible_within_filter_card_repository(
+        self, facet_group_name, label
     ):
-        """Clicks a checkbox within a filter group"""
-        locator = RepositoryPageLocators.FILTER_GROUP_SELECTION_IDENT(
-            filter_group_name, selection
+        locator = RepositoryPageLocators.FILTER_GROUP_SHOW_MORE_LESS_IDENT(
+            facet_group_name, label
         )
-        self.click(locator)
-
-    def perform_action_within_filter_card_repository(self, filter_group_name, action):
-        """Performs an action in a filter group e.g sorting, resetting, flipping the chart, etc."""
-        locator = RepositoryPageLocators.FILTER_GROUP_ACTION_IDENT(
-            filter_group_name, action
-        )
-        self.click(locator)
+        return self.is_visible(locator)
 
     def click_show_more_less_within_filter_card_repository(
         self, filter_group_name, label

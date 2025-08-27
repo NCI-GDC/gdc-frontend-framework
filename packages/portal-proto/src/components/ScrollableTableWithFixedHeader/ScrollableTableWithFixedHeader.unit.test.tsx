@@ -14,6 +14,7 @@ test("renders correctly on mount", () => {
   render(
     <ScrollableTableWithFixedHeader
       tableData={tableData}
+      customDataTestID="test"
       maxRowsBeforeScroll={maxRowsBeforeScroll}
     />,
   );

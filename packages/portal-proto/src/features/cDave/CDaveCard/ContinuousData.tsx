@@ -75,11 +75,11 @@ const toBucketDisplayName = (
     ),
     field,
     hasCustomBins,
-  )} to <${roundContinuousValue(
+  )?.toLocaleString()} to <${roundContinuousValue(
     convertDataDimension(Number(toValue), originalDataDimension, dataDimension),
     field,
     hasCustomBins,
-  )}`;
+  )?.toLocaleString()}`;
 };
 
 interface ContinuousDataProps {
@@ -90,6 +90,7 @@ interface ContinuousDataProps {
   readonly noData: boolean;
   readonly cohortFilters: GqlOperation;
   readonly dataDimension?: DataDimension;
+  readonly yTotal: number;
 }
 
 const ContinuousData: React.FC<ContinuousDataProps> = ({
@@ -100,6 +101,7 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
   noData,
   cohortFilters,
   dataDimension,
+  yTotal,
 }: ContinuousDataProps) => {
   const [customBinnedData, setCustomBinnedData] = useState<
     CustomInterval | NamedFromTo[]
@@ -109,7 +111,6 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
     [],
   );
   const [selectedFacets, setSelectedFacets] = useState<SelectedFacet[]>([]);
-  const [yTotal, setYTotal] = useState(0);
   const dataDimensionRef = useRef(dataDimension);
   const hasCustomBins = customBinnedData !== null;
 
@@ -131,10 +132,9 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
   );
 
   const { data, isFetching, isSuccess } = useRangeFacet(
-    "cases",
-    "repository",
     field,
     ranges,
+    { docType: "cases", indexType: "repository" },
     cohortFilters,
   );
   const { data: statsData } = useGetContinuousDataStatsQuery({
@@ -175,10 +175,6 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
           .map(({ key }) => key)
           .slice(0, 2),
       );
-    }
-
-    if (customBinnedData === null) {
-      setYTotal(displayedData.reduce((a, b) => a + b.count, 0));
     }
 
     setSelectedFacets([]);

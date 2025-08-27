@@ -7,9 +7,7 @@ import {
   useCoreSelector,
   selectCurrentCohortFilters,
   usePrevious,
-  joinFilters,
   NumericFromTo,
-  selectRangeFacetByField,
   FetchDataActionCreator,
   selectCurrentCohortId,
   UseAppDataHook,
@@ -17,18 +15,16 @@ import {
   buildCohortGqlOperator,
 } from "@gff/core";
 import { useCallback, useEffect } from "react";
+import { useDeepCompareEffect } from "use-deep-compare";
 import { ThunkDispatch, AnyAction } from "@reduxjs/toolkit";
 import isEqual from "lodash/isEqual";
-import {
-  ClearFacetFunction,
-  EnumFacetResponse,
-  FacetResponse,
-  UpdateFacetFilterFunction,
-} from "@/features/facets/types";
-import { ActionCreatorWithPayload } from "@reduxjs/toolkit/dist/createAction";
+import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { extractValue } from "@/features/facets/hooks";
 import { AppDataSelector, AppState } from "@/features/repositoryApp/appApi";
-import { fetchRepositoryFacetContinuousAggregation } from "@/features/repositoryApp/repositoryRangeFacet";
+import {
+  fetchRepositoryFacetContinuousAggregation,
+  selectRangeFacetByField,
+} from "@/features/repositoryApp/repositoryRangeFacet";
 import {
   fetchRepositoryFacetsGQL,
   selectRepositoryFacets,
@@ -45,6 +41,12 @@ import {
   removeRepositoryFilter,
   clearRepositoryFilters,
 } from "@/features/repositoryApp/repositoryFiltersSlice";
+import {
+  toggleFilter,
+  toggleAllFilters,
+  selectFilterExpanded,
+  selectAllFiltersCollapsed,
+} from "./repositoryFilterExpandedSlice";
 
 /**
  * Selector for the facet values (if any) from the current cohort
@@ -65,7 +67,7 @@ export const useRepositoryFilters = (): FilterSet => {
 /**
  * removes the filter from the repository current/active filters
  */
-export const useClearRepositoryFilters = (): ClearFacetFunction => {
+export const useClearRepositoryFilters = () => {
   const dispatch = useAppDispatch();
   return (field: string) => {
     dispatch(removeRepositoryFilter(field));
@@ -77,6 +79,28 @@ export const useClearAllRepositoryFilters = () => {
   return useCallback(() => {
     dispatch(clearRepositoryFilters());
   }, [dispatch]);
+};
+
+export const useToggleExpandFilter = () => {
+  const dispatch = useAppDispatch();
+  return (field: string, expanded: boolean) => {
+    dispatch(toggleFilter({ field, expanded }));
+  };
+};
+
+export const useToggleAllProjectFilters = () => {
+  const dispatch = useAppDispatch();
+  return (expanded: boolean) => {
+    dispatch(toggleAllFilters(expanded));
+  };
+};
+
+export const useFilterExpandedState = (field: string) => {
+  return useAppSelector((state) => selectFilterExpanded(state, field));
+};
+
+export const useAllFiltersCollapsed = () => {
+  return useAppSelector((state) => selectAllFiltersCollapsed(state));
 };
 
 type updateEnumFiltersFunc = (
@@ -135,7 +159,7 @@ export const useLocalFilters = (
   field: string,
   selectFieldEnumValues: (field: string) => OperandValue,
   selectLocalFilters: () => FilterSet,
-): EnumFacetResponse => {
+) => {
   const appDispatch = useAppDispatch();
 
   const facet: FacetBuckets = useAppSelector((state: AppState) =>
@@ -195,9 +219,9 @@ export const useLocalFilters = (
 export const useRepositoryRangeFacet = (
   field: string,
   ranges: ReadonlyArray<NumericFromTo>,
-): FacetResponse => {
+) => {
   const appDispatch = useAppDispatch();
-  const facet: FacetBuckets = useCoreSelector((state) =>
+  const facet: FacetBuckets = useAppSelector((state) =>
     selectRangeFacetByField(state, field),
   );
   const localFilters = useRepositoryFilters();
@@ -205,16 +229,8 @@ export const useRepositoryRangeFacet = (
     selectCurrentCohortFilters(state),
   );
 
-  const allFilters = joinFilters(cohortFilters, localFilters);
-  const prevAllFilters = usePrevious(allFilters);
-  const prevRanges = usePrevious(ranges);
-
-  useEffect(() => {
-    if (
-      !facet ||
-      !isEqual(prevAllFilters, allFilters) ||
-      !isEqual(ranges, prevRanges)
-    ) {
+  useDeepCompareEffect(() => {
+    if (!facet) {
       appDispatch(
         fetchRepositoryFacetContinuousAggregation({
           field: field,
@@ -224,17 +240,7 @@ export const useRepositoryRangeFacet = (
         }),
       );
     }
-  }, [
-    appDispatch,
-    facet,
-    field,
-    cohortFilters,
-    prevAllFilters,
-    ranges,
-    prevRanges,
-    allFilters,
-    localFilters,
-  ]);
+  }, [appDispatch, facet, field, cohortFilters, ranges, localFilters]);
 
   return {
     data: facet?.buckets,
@@ -246,7 +252,7 @@ export const useRepositoryRangeFacet = (
   };
 };
 
-export const useUpdateRepositoryFacetFilter = (): UpdateFacetFilterFunction => {
+export const useUpdateRepositoryFacetFilter = () => {
   const dispatch = useAppDispatch();
   // update the filter for this facet
   return useCallback(
@@ -257,7 +263,7 @@ export const useUpdateRepositoryFacetFilter = (): UpdateFacetFilterFunction => {
   );
 };
 
-export const useRemoveRepositoryFacetFilter = (): ClearFacetFunction => {
+export const useRemoveRepositoryFacetFilter = () => {
   const dispatch = useAppDispatch();
   // update the filter for this facet
   return useCallback(

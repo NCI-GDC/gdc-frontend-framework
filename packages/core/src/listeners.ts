@@ -1,4 +1,8 @@
-import { createListenerMiddleware, isAnyOf } from "@reduxjs/toolkit";
+import {
+  createListenerMiddleware,
+  isAnyOf,
+  type PayloadAction,
+} from "@reduxjs/toolkit";
 import type { TypedStartListening } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
 import { CoreDispatch } from "./store";
@@ -16,9 +20,21 @@ import {
   removeCohort,
   selectCurrentCohort,
   setIsLoggedIn,
+  fetchCohortCaseCounts,
 } from "./features/cohort/availableCohortsSlice";
-import { fetchCohortCaseCounts } from "./features/cohort/cohortCountsQuery";
 import { cohortApiSlice } from "./features/api/cohortApiSlice";
+
+const isPayloadActionWithObject = (
+  action: unknown,
+): action is PayloadAction<Record<string, unknown>> => {
+  return (
+    typeof action === "object" &&
+    action !== null &&
+    "type" in action &&
+    "payload" in action &&
+    typeof action.payload === "object"
+  );
+};
 
 /**
  * Defines coreListeners for adding middleware.
@@ -70,7 +86,11 @@ startCoreListening({
   effect: async (_, listenerApi) => {
     // the last cohort added is the one we want to get the case count for
     const cohorts = selectAvailableCohorts(listenerApi.getState()).sort(
-      (a, b) => (a.modified_datetime <= b.modified_datetime ? 1 : -1),
+      (a, b) => {
+        const dateA = new Date(a.modified_datetime);
+        const dateB = new Date(b.modified_datetime);
+        return dateB.getTime() - dateA.getTime();
+      },
     );
     const latestCohortId = cohorts[0]?.id;
     listenerApi.dispatch(fetchCohortCaseCounts(latestCohortId));
@@ -103,12 +123,13 @@ startCoreListening({
   ),
   effect: async (action, listenerApi) => {
     // the last cohort added is the one we want to get the case count for
-
-    const cohortId = action?.payload?.id;
-    if (cohortId === undefined) {
-      console.error("Listener: cohortId is undefined");
+    if (isPayloadActionWithObject(action)) {
+      if ("id" in action.payload && typeof action.payload.id === "string") {
+        listenerApi.dispatch(fetchCohortCaseCounts(action.payload.id));
+      } else {
+        console.error("Listener: cohortId is undefined");
+      }
     }
-    listenerApi.dispatch(fetchCohortCaseCounts(cohortId));
   },
 });
 startCoreListening({
@@ -141,7 +162,7 @@ startCoreListening({
     if (!Cookies.get("gdc_context_id")) {
       const contextId = localStorage.getItem("gdc_context_id");
       if (contextId) {
-        Cookies.set("gdc_context_id", contextId, { domain: ".gdc.cancer.gov" });
+        Cookies.set("gdc_context_id", contextId);
       }
     }
   },

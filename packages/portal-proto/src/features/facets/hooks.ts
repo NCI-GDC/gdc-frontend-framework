@@ -1,3 +1,6 @@
+import { useEffect, useMemo } from "react";
+import { UnknownAction, ThunkDispatch } from "@reduxjs/toolkit";
+import { useDeepCompareEffect } from "use-deep-compare";
 import {
   Operation,
   EnumValueExtractorHandler,
@@ -27,16 +30,12 @@ import {
   selectCurrentCohortFilters,
   useCurrentCohortFilters,
   CoreState,
+  selectCohortBuilderConfig,
+  selectFacetDefinition,
+  TotalCounts,
 } from "@gff/core";
-import { useEffect, useMemo } from "react";
 import isEqual from "lodash/isEqual";
-import {
-  ClearFacetFunction,
-  EnumFacetResponse,
-  FacetResponse,
-  UpdateFacetFilterFunction,
-} from "@/features/facets/types";
-import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
+import { getFacetInfo } from "@/features/cohortBuilder/utils";
 
 /**
  * Filter selector for all the facet filters
@@ -78,10 +77,9 @@ const useEnumFiltersByNames = (
  *  Facet Selector using GQL which will refresh when filters/enum values changes.
  */
 export const useEnumFacet = (
-  docType: GQLDocType,
-  indexType: GQLIndexType,
   field: string,
-): EnumFacetResponse => {
+  { docType, indexType }: { docType: GQLDocType; indexType: GQLIndexType },
+) => {
   const coreDispatch = useCoreDispatch();
 
   const facet: FacetBuckets = useCoreSelector((state) =>
@@ -122,7 +120,6 @@ export const useEnumFacet = (
 
   return {
     data: facet?.buckets,
-    enumFilters: (enumValues as EnumOperandValue)?.map((x) => x.toString()),
     error: facet?.error,
     isUninitialized: facet === undefined,
     isFetching: facet?.status === "pending",
@@ -139,9 +136,8 @@ export const useEnumFacet = (
  * @param fields - list of fields.
  */
 export const useEnumFacets = (
-  docType: GQLDocType,
-  indexType: GQLIndexType,
   fields: ReadonlyArray<string>,
+  { docType, indexType }: { docType: GQLDocType; indexType: GQLIndexType },
 ): void => {
   const facet: ReadonlyArray<FacetBuckets> = useCoreSelector((state) =>
     selectMultipleFacetsByDocTypeAndField(state, docType, fields),
@@ -185,8 +181,41 @@ export const useEnumFacets = (
   ]);
 };
 
+export const useAllEnumFacets = () => {
+  const tabsConfig = useCoreSelector((state) =>
+    selectCohortBuilderConfig(state),
+  );
+  const facets = useCoreSelector((state) => selectFacetDefinition(state));
+
+  const coreDispatch = useCoreDispatch();
+  const currentCohortFilters = useCurrentCohortFilters();
+
+  useDeepCompareEffect(() => {
+    Object.entries(tabsConfig).map(([, tabEntry]) => {
+      const facetList = getFacetInfo(tabEntry.facets, {
+        ...(facets.data || {}),
+      });
+
+      const enumFacets = facetList
+        .filter((x) => x.facet_type === "enum")
+        .map((x) => x.field);
+
+      if (enumFacets.length > 0) {
+        coreDispatch(
+          fetchFacetByNameGQL({
+            field: enumFacets,
+            docType: tabEntry.queryOptions.docType as GQLDocType,
+            index: tabEntry.queryOptions.indexType as GQLIndexType,
+            caseFilterSelector: selectCurrentCohortFilters,
+          }),
+        );
+      }
+    });
+  }, [tabsConfig, facets, currentCohortFilters, coreDispatch]);
+};
+
 type UpdateEnumFiltersFunc = (
-  dispatch: ThunkDispatch<any, undefined, AnyAction>,
+  dispatch: ThunkDispatch<any, undefined, UnknownAction>,
   field: string,
   enumerationFilters: EnumOperandValue,
 ) => void;
@@ -198,7 +227,7 @@ type UpdateEnumFiltersFunc = (
  * @param field - field to update
  */
 export const updateEnumFilters: UpdateEnumFiltersFunc = (
-  dispatch: ThunkDispatch<any, undefined, AnyAction>,
+  dispatch: ThunkDispatch<any, undefined, UnknownAction>,
   field: string,
   enumerationFilters: EnumOperandValue,
 ) => {
@@ -222,12 +251,11 @@ export const updateEnumFilters: UpdateEnumFiltersFunc = (
 };
 
 export const useRangeFacet = (
-  docType: GQLDocType,
-  indexType: GQLIndexType,
   field: string,
   ranges: ReadonlyArray<NumericFromTo>,
+  { docType, indexType }: { docType: GQLDocType; indexType: GQLIndexType },
   overrideCohortFilters?: GqlOperation,
-): FacetResponse => {
+) => {
   const coreDispatch = useCoreDispatch();
   const facet: FacetBuckets = useCoreSelector((state) =>
     selectRangeFacetByField(state, field),
@@ -291,7 +319,7 @@ export const useSelectFieldFilter = (field: string): Operation => {
 };
 
 // Update filter hook
-export const useUpdateFacetFilter = (): UpdateFacetFilterFunction => {
+export const useUpdateFacetFilter = () => {
   const dispatch = useCoreDispatch();
   // update the filter for this facet
   return (field: string, operation: Operation) => {
@@ -300,7 +328,7 @@ export const useUpdateFacetFilter = (): UpdateFacetFilterFunction => {
 };
 
 // Core ClearFilters hook
-export const useClearFilters = (): ClearFacetFunction => {
+export const useClearFilters = () => {
   const dispatch = useCoreDispatch();
   return (field: string) => {
     dispatch(removeCohortFilter(field));
@@ -308,14 +336,14 @@ export const useClearFilters = (): ClearFacetFunction => {
 };
 
 export const useEnumFacetValues = (
-  docType: GQLDocType,
-  indexType: GQLIndexType,
   field: string,
-): EnumFacetResponse => {
+  queryOptions: { docType: GQLDocType },
+) => {
   // facet data is store in core
   const facet: FacetBuckets = useCoreSelector((state) =>
-    selectFacetByDocTypeAndField(state, docType, field),
+    selectFacetByDocTypeAndField(state, queryOptions.docType, field),
   );
+
   const enumValues = useCohortFacetFilterByName(field);
   return {
     data: facet?.buckets,
@@ -328,16 +356,27 @@ export const useEnumFacetValues = (
   };
 };
 
-export const useTotalCounts = (name: string): number => {
-  return useCoreSelector((state) => selectTotalCountsByName(state, name));
+export const useTotalCounts = ({
+  docType,
+}: {
+  docType: GQLDocType;
+}): number => {
+  const caseCountName = FacetDocTypeToCountsIndexMap[docType];
+  return useCoreSelector((state) =>
+    selectTotalCountsByName(state, caseCountName),
+  );
 };
 
-export const FacetDocTypeToCountsIndexMap = {
+export const FacetDocTypeToCountsIndexMap: Record<
+  GQLDocType,
+  keyof TotalCounts
+> = {
   cases: "caseCounts",
   files: "fileCounts",
   genes: "genesCounts",
   ssms: "mutationCounts",
-  projects: "projectCounts",
+  projects: "projectsCounts",
+  annotations: "annotationCounts",
 };
 
 export const FacetDocTypeToLabelsMap = {
@@ -346,6 +385,7 @@ export const FacetDocTypeToLabelsMap = {
   genes: "Genes",
   ssms: "Mutations",
   projects: "Projects",
+  annotations: "Annotations",
 };
 
 export const useLocalFilters = (
@@ -354,7 +394,7 @@ export const useLocalFilters = (
   selectFieldEnumValues: (field: string) => OperandValue,
   selectLocalFilters: () => FilterSet,
   facetSelector: (state: CoreState, field: string) => FacetBuckets,
-): EnumFacetResponse => {
+) => {
   const coreDispatch = useCoreDispatch();
 
   const facet: FacetBuckets = useCoreSelector((state) =>

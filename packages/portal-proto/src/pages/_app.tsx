@@ -20,7 +20,9 @@ import "@nci-gdc/sapien/dist/bodyplot.css";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
 // ReactModal needs the app element set for a11y reasons.
 // It hides the main application from screen readers while modals are open.
 import ReactModal from "react-modal";
@@ -33,24 +35,43 @@ import {
 } from "src/utils/contexts";
 import { Notifications } from "@mantine/notifications";
 import "@mantine/notifications/styles.css";
+import { AppContext, CohortNotificationProvider } from "@gff/portal-components";
+import type {
+  ImageComponentType,
+  LinkComponentType,
+} from "@gff/portal-components";
+import { useSetActiveCohort } from "@/features/cohortBuilder/CohortManager/cohortActionHooks";
 
 if (process.env.NODE_ENV !== "test") ReactModal.setAppElement("#__next");
+
+// Adds axe accessibility plugin in development/testing environments
+if (typeof window !== "undefined" && process.env.NODE_ENV !== "production") {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const ReactDOM = require("react-dom");
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const axe = require("@axe-core/react");
+  axe(React, ReactDOM, 1000);
+}
 
 if (process.env.NEXT_PUBLIC_DD_ENABLED) {
   datadogRum.init({
     applicationId: "3faf9c0a-311f-4935-a596-3347666ef35d",
     clientToken: "pub9f7e31eaacd4afa71ac5161cbd5b0c11",
     site: "datadoghq.com",
-    service: "portal-2.0",
+    service: "portal2",
     sessionSampleRate: 100,
     sessionReplaySampleRate: 0,
     trackUserInteractions: true,
-    trackFrustrations: true,
     trackResources: true,
     trackLongTasks: true,
     trackViewsManually: true,
     defaultPrivacyLevel: "mask",
     version: `v${PUBLIC_APP_INFO?.version}-${PUBLIC_APP_INFO?.hash}`,
+    allowedTracingUrls: [
+      "https://gdc.cancer.gov",
+      // Matches any subdomain of cancer.gov, such as https://portal.gdc.cancer.gov
+      /^https:\/\/[^]+\.cancer\.gov/,
+    ],
   });
 }
 
@@ -120,10 +141,11 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
     primaryShade: { light: 4, dark: 7 },
     breakpoints: {
       xs: "31.25em",
-      sm: "50em",
-      md: "62.5em",
-      lg: "80em",
-      xl: "112.5em",
+      sm: "40em",
+      md: "48em",
+      lg: "64em",
+      xl: "80em",
+      "2xl": "96em",
     },
     components: {
       TextInput: {
@@ -266,15 +288,29 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                 setEntityMetadata,
               }}
             >
-              <Notifications position="top-center" />
-              <Component {...pageProps} />
+              <AppContext.Provider
+                value={{
+                  Link: Link as LinkComponentType,
+                  Image: Image as ImageComponentType,
+                  path: router.pathname,
+                  theme,
+                }}
+              >
+                <CohortNotificationProvider
+                  useSetActiveCohort={useSetActiveCohort}
+                >
+                  <Notifications position="top-center" />
+                  <Component {...pageProps} />
+                </CohortNotificationProvider>
+              </AppContext.Provider>
             </SummaryModalContext.Provider>
           </URLContext.Provider>
           <Head>
-            <script src="https://assets.adobedtm.com/6a4249cd0a2c/073fd0859f8f/launch-39d47c17b228.min.js" />
+            <script
+              src="https://assets.adobedtm.com/6a4249cd0a2c/785de09de161/launch-70d67a6a40a8.min.js"
+              async
+            />
           </Head>
-
-          <script>{`_satellite.pageBottom()`}</script>
         </div>
       </MantineProvider>
     </CoreProvider>

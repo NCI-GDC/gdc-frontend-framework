@@ -13,11 +13,12 @@ import {
 import { useAppDispatch } from "@/features/genomic/appApi";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
 import { clearGeneAndSSMFilters } from "@/features/genomic/geneAndSSMFiltersSlice";
-import GeneAndSSMFilterPanel from "@/features/genomic/FilterPanel";
+import GeneAndSSMFilterPanel from "@/features/genomic/GeneAndSSMFilterPanel";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { DemoText } from "@/components/tailwindComponents";
 import { GenesPanel } from "@/features/genomic/GenesPanel";
 import { SSMSPanel } from "@/features/genomic/SSMSPanel";
+import { TableXPositionContext } from "@/components/Table/VerticalTable";
 import { ComparativeSurvival, AppModeState } from "./types";
 import { useTopGeneSsms } from "./hooks";
 
@@ -131,8 +132,9 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     (tabKey: string) => {
       setAppMode(tabKey as AppModeState);
       setComparativeSurvival(undefined);
-      (searchTermsForGeneId.geneId || searchTermsForGeneId.geneSymbol) &&
+      if (searchTermsForGeneId.geneId || searchTermsForGeneId.geneSymbol) {
         setSearchTermsForGeneId({ geneId: undefined, geneSymbol: undefined });
+      }
     },
     [searchTermsForGeneId.geneId, searchTermsForGeneId.geneSymbol],
   );
@@ -150,6 +152,8 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     setSearchTermsForGeneId({ geneId: undefined, geneSymbol: undefined });
   }, [setSearchTermsForGeneId]);
 
+  const [tableXPosition, setTableXPosition] = useState<number>(undefined);
+
   return (
     <>
       <>
@@ -159,49 +163,53 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
           </DemoText>
         )}
       </>
-      <div className="flex flex-row gap-4 m-4">
-        <GeneAndSSMFilterPanel isDemoMode={isDemoMode} />
-        <Tabs
-          variant="pills"
-          value={appMode}
-          defaultValue="genes"
-          classNames={{
-            tab: SecondaryTabStyle,
-            list: "px-2 mt-2 border-0 gap-0",
-            root: "bg-base-max border-0 w-full overflow-x-hidden",
-          }}
-          onChange={handleTabChanged}
-          keepMounted={false}
-        >
-          <Tabs.List>
-            <Tabs.Tab data-testid="button-genes-tab" value="genes">
-              Genes
-            </Tabs.Tab>
-            <Tabs.Tab data-testid="button-mutations-tab" value="ssms">
-              Mutations
-            </Tabs.Tab>
-          </Tabs.List>
-          <Tabs.Panel value="genes" pt="xs">
-            <GenesPanel
-              topGeneSSMSSuccess={topGeneSSMSSuccess}
-              comparativeSurvival={comparativeSurvival}
-              handleSurvivalPlotToggled={handleSurvivalPlotToggled}
-              handleGeneAndSSmToggled={handleGeneAndSSmToggled}
-              handleMutationCountClick={handleMutationCountClick}
-            />
-          </Tabs.Panel>
-          <Tabs.Panel value="ssms" pt="xs">
-            <SSMSPanel
-              topGeneSSMSSuccess={topGeneSSMSSuccess}
-              comparativeSurvival={comparativeSurvival}
-              handleSurvivalPlotToggled={handleSurvivalPlotToggled}
-              handleGeneAndSSmToggled={handleGeneAndSSmToggled}
-              searchTermsForGene={searchTermsForGeneId}
-              clearSearchTermsForGene={clearSearchTermsForGene}
-            />
-          </Tabs.Panel>
-        </Tabs>
-      </div>
+      <TableXPositionContext.Provider
+        value={{ xPosition: tableXPosition, setXPosition: setTableXPosition }}
+      >
+        <div className="flex gap-4 m-4">
+          <GeneAndSSMFilterPanel isDemoMode={isDemoMode} />
+          <Tabs
+            variant="pills"
+            value={appMode}
+            defaultValue="genes"
+            classNames={{
+              tab: SecondaryTabStyle,
+              list: "mt-2 border-0 gap-0 mb-2",
+              root: "bg-base-max border-0 w-full overflow-x-hidden",
+            }}
+            onChange={handleTabChanged}
+            keepMounted={false}
+          >
+            <Tabs.List>
+              <Tabs.Tab data-testid="button-genes-tab" value="genes">
+                Genes
+              </Tabs.Tab>
+              <Tabs.Tab data-testid="button-mutations-tab" value="ssms">
+                Mutations
+              </Tabs.Tab>
+            </Tabs.List>
+            <Tabs.Panel value="genes" pt="xs">
+              <GenesPanel
+                topGeneSSMSSuccess={topGeneSSMSSuccess}
+                comparativeSurvival={comparativeSurvival}
+                handleSurvivalPlotToggled={handleSurvivalPlotToggled}
+                handleGeneAndSSmToggled={handleGeneAndSSmToggled}
+                handleMutationCountClick={handleMutationCountClick}
+              />
+            </Tabs.Panel>
+            <Tabs.Panel value="ssms" pt="xs">
+              <SSMSPanel
+                topGeneSSMSSuccess={topGeneSSMSSuccess}
+                comparativeSurvival={comparativeSurvival}
+                handleSurvivalPlotToggled={handleSurvivalPlotToggled}
+                handleGeneAndSSmToggled={handleGeneAndSSmToggled}
+                searchTermsForGene={searchTermsForGeneId}
+                clearSearchTermsForGene={clearSearchTermsForGene}
+              />
+            </Tabs.Panel>
+          </Tabs>
+        </div>
+      </TableXPositionContext.Provider>
     </>
   );
 };

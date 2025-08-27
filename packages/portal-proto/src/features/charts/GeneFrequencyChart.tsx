@@ -1,25 +1,20 @@
-import React from "react";
+import React, { useState, useTransition } from "react";
 import { LoadingOverlay } from "@mantine/core";
-
 import dynamic from "next/dynamic";
 import {
   GenesFrequencyChart,
   useGeneFrequencyChartQuery,
   FilterSet,
 } from "@gff/core";
-
 import ChartTitleBar from "./ChartTitleBar";
 import { BarChartData } from "./BarChart";
+import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
 
 const CHART_NAME = "most-frequently-mutated-genes-bar-chart";
 
 const BarChart = dynamic(() => import("./BarChart"), {
   ssr: false,
 });
-
-// const DownloadOptions = dynamic(() => import("./DownloadOptions"), {
-//   ssr: false,
-// });
 
 const hovertemplate =
   "<b>%{x}</b> <br />%{customdata[0]} Cases Affected in Cohort<br />%{customdata[0]} / %{customdata[1]} (%{y:.2f}%)<extra></extra>";
@@ -49,8 +44,8 @@ const processChartData = (
         },
         hovertemplate: hovertemplate,
         customdata: chartData.geneCounts.map((d) => [
-          d.numCases,
-          chartData.casesTotal,
+          d.numCases?.toLocaleString(),
+          chartData.casesTotal?.toLocaleString(),
         ]),
       },
     ],
@@ -83,12 +78,38 @@ export const GeneFrequencyChart: React.FC<GeneFrequencyChartProps> = ({
   orientation = "v",
   cohortFilters = undefined,
 }: GeneFrequencyChartProps) => {
-  const { data, isSuccess } = useGeneFrequencyChartQuery({
-    pageSize: maxBins,
-    offset: 0,
-    genomicFilters: genomicFilters,
-    cohortFilters: cohortFilters,
-  });
+  const [isPending, startTransition] = useTransition();
+  const [isChartRendering, setIsChartRendering] = useState(true);
+
+  const queryParams = useDeepCompareMemo(
+    () => ({
+      pageSize: maxBins,
+      offset: 0,
+      genomicFilters,
+      cohortFilters,
+    }),
+    [maxBins, genomicFilters, cohortFilters],
+  );
+
+  const { data, isFetching, isLoading } =
+    useGeneFrequencyChartQuery(queryParams);
+
+  const processedData = useDeepCompareMemo(
+    () => processChartData(data),
+    [data],
+  );
+
+  useDeepCompareEffect(() => {
+    if (data) {
+      startTransition(() => {
+        setIsChartRendering(true);
+      });
+    }
+  }, [data]);
+
+  const handlePlotlyAfterPlot = () => {
+    setIsChartRendering(false);
+  };
 
   const jsonData = data?.geneCounts?.map((gene) => ({
     label: gene.symbol,
@@ -96,7 +117,7 @@ export const GeneFrequencyChart: React.FC<GeneFrequencyChartProps> = ({
   }));
 
   return (
-    <div className="relative pr-2 border-r-2">
+    <div className="relative pr-2">
       {title ? (
         <ChartTitleBar
           title={title}
@@ -105,19 +126,20 @@ export const GeneFrequencyChart: React.FC<GeneFrequencyChartProps> = ({
           jsonData={jsonData}
         />
       ) : null}
-      <div className="w-100 h-100 relative">
+      <div className="w-100 h-100 relative mt-10">
         <LoadingOverlay
           data-testid="loading-spinner"
-          visible={!isSuccess}
+          visible={isFetching || isLoading || isPending || isChartRendering}
           zIndex={1}
         />
         <BarChart
-          data={processChartData(data)}
+          data={processedData}
           marginBottom={marginBottom}
           marginTop={0}
           height={height}
           orientation={orientation}
           divId={CHART_NAME}
+          onAfterPlot={handlePlotlyAfterPlot}
         />
       </div>
     </div>

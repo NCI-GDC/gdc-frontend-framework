@@ -87,7 +87,7 @@ describe("<SaveOrCreateEntityBody />", () => {
       />,
     );
 
-    await userEvent.click(getByTestId("action-button"));
+    await userEvent.click(getByTestId("button-save-name"));
 
     expect(mockActionClick).not.toBeCalled();
   });
@@ -105,7 +105,7 @@ describe("<SaveOrCreateEntityBody />", () => {
       />,
     );
 
-    await userEvent.click(getByTestId("action-button"));
+    await userEvent.click(getByTestId("button-save-name"));
 
     expect(mockActionClick).toBeCalled();
   });
@@ -127,7 +127,7 @@ describe("<SaveOrCreateEntityBody />", () => {
 
     const inputField = getByTestId("textbox-name-input-field");
     await userEvent.type(inputField, "disallowed_test_name");
-    await userEvent.click(getByTestId("action-button"));
+    await userEvent.click(getByTestId("button-save-name"));
     expect(
       getByText(
         "disallowed_test_name is not a valid name for a saved test. Please try another name.",
@@ -153,7 +153,7 @@ describe("<SaveOrCreateEntityBody />", () => {
 
     const inputField = getByTestId("textbox-name-input-field");
     await userEvent.type(inputField, "  disallowed_test_name  ");
-    await userEvent.click(getByTestId("action-button"));
+    await userEvent.click(getByTestId("button-save-name"));
     expect(
       getByText(
         "disallowed_test_name is not a valid name for a saved test. Please try another name.",
@@ -179,7 +179,7 @@ describe("<SaveOrCreateEntityBody />", () => {
 
     const inputField = getByTestId("textbox-name-input-field");
     await userEvent.type(inputField, "disaLLOwed_test_name");
-    await userEvent.click(getByTestId("action-button"));
+    await userEvent.click(getByTestId("button-save-name"));
     expect(
       getByText(
         "disaLLOwed_test_name is not a valid name for a saved test. Please try another name.",
@@ -205,7 +205,7 @@ describe("<SaveOrCreateEntityBody />", () => {
 
     const inputField = getByTestId("textbox-name-input-field");
     await userEvent.type(inputField, "DISALLOWED_TEST_NAME");
-    await userEvent.click(getByTestId("action-button"));
+    await userEvent.click(getByTestId("button-save-name"));
     expect(
       getByText(
         "DISALLOWED_TEST_NAME is not a valid name for a saved test. Please try another name.",

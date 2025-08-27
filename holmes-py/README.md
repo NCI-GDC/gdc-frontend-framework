@@ -17,7 +17,7 @@ _Detects and reports UI defects_
 This project uses
 
 - [Gauge](http://gauge.org/)
-- [Python 3.8.x or above](https://docs.python.org/3/index.html)
+- [Python 3.9.x or above](https://docs.python.org/3/index.html)
 - [Playwright](https://playwright.dev/python/docs/library#macos)
 
 ## Concepts covered
@@ -31,7 +31,7 @@ This project uses
 # Prerequisites
 
 - [Install Gauge](https://docs.gauge.org/getting_started/installing-gauge.html?os=macos&language=python&ide=vscode)
-- [Install Python 3.8.x or above](https://www.python.org/downloads/)
+- [Install Python 3.9.x or above](https://www.python.org/downloads/)
 - [Install Gauge-Python plugin](https://github.com/kashishm/gauge-python/wiki/User-Documentation) by running
 
   ````bash
@@ -51,7 +51,7 @@ This project uses
 Ensure that you either create a virtual environment or are working in a Docker container.
 Make sure to create the environment in the holmes-py folder.
 
-_Creating a virtual environment:_ (Minimum python version 3.8.x)
+_Creating a virtual environment:_ (Minimum python version 3.9.x)
 
 ```bash
 python3 -m venv venv
@@ -79,10 +79,10 @@ deactivate
 
 ##### Minimum versions:
 ```bash
-Python: 3.8.x
-getgauge: 0.3.17
+Python: 3.9.x
+getgauge: 0.4.9
 playwright: 1.23.1
-protobuf: 3.20.1
+protobuf: 3.20.2
 ```
 Upgrade pip before attempting to install dependencies
 ````bash
@@ -141,6 +141,43 @@ gauge run [args] [flags]
 ````bash
 PWDEBUG=1 gauge run specs
 ````
+
+### Execute Tests in Parallel
+Let gauge choose number of execution streams (depends on the number of CPU cores available):
+````bash
+gauge run --parallel specs
+````
+OR, choose number of streams:
+````bash
+gauge run --parallel -n=number_here specs
+````
+
+Note: On my local machine, I found that 6 streams strikes the balance between execution time and
+consistency of test results. Anymore than 6, and there would be some flakey test results.
+
+If a test does fail, rerun them individually before reporting results.
+
+### How to Execute Each Type of Test Suite
+The tests should be ran by tag. We have open-access and controlled-access tests that are not compatible to be ran together.
+The controlled-access tests require you to manually login when prompted. The other tests do not have to be interacted with
+once execution begins. Any of the commands below can also be ran in parallel or with de-bug mode. See above for commands.
+
+#### Regression Test
+````
+gauge run specs --tags "regression"
+````
+
+#### Data Test
+````
+gauge run specs --tags "data-release"
+````
+
+#### Controlled Access Test
+````
+gauge run specs --tags "controlled-access"
+````
+
+### Gauge Execution Documentation
 See [Run Gauge Specifications](https://docs.gauge.org/execution.html?os=macos&language=python&ide=vscode)
 
 This will also compile all the supporting code implementations.

@@ -10,7 +10,10 @@ import {
   PURGE,
   REGISTER,
   createTransform,
+  PersistConfig,
+  PersistState,
 } from "redux-persist";
+import type { Action, Reducer } from "redux";
 import Cookies from "js-cookie";
 import { reducers } from "./reducers";
 import { allFilesApiSliceMiddleware } from "./features/files/allFilesMutation";
@@ -18,7 +21,7 @@ import { cohortApiSliceMiddleware } from "./features/api/cohortApiSlice";
 import { coreStoreListenerMiddleware } from "./listeners";
 import { survivalApiSliceMiddleware } from "./features/survival/survivalApiSlice";
 import { graphqlAPISliceMiddleware } from "./features/gdcapi/gdcgraphql";
-import { endpointSliceMiddleware } from "./features/gdcapi/gdcapi";
+import { endpointSliceMiddleware } from "./features/gdcapi";
 import { projectApiSliceMiddleware } from "./features/projects/projectsSlice";
 import { filesApiSliceMiddleware } from "./features/files/filesSlice";
 import { historyApiSliceMiddleware } from "./features/history/historySlice";
@@ -27,6 +30,20 @@ import { userAuthApiMiddleware } from "./features/users/usersSlice";
 import { bannerNotificationApiSliceMiddleware } from "./features/bannerNotification/bannerNotificationSlice";
 import { imageDetailsApiMiddleware } from "./features/imageDetails/imageDetailsSlice";
 import storage from "./storage-persist";
+
+/**
+ * Update declaration of persistReducer to support redux v5
+ */
+declare module "redux-persist" {
+  export function persistReducer<S, A extends Action = Action, P = S>(
+    config: PersistConfig<S>,
+    baseReducer: Reducer<S, A, P>,
+  ): Reducer<
+    S & { _persist: PersistState },
+    A,
+    P & { _persist?: PersistState }
+  >;
+}
 
 const persistConfig = {
   key: "root",
@@ -42,10 +59,8 @@ const persistConfig = {
         // Retrieve context id from local storage when rehydrating the store
         const contextId = localStorage.getItem("gdc_context_id");
         if (contextId) {
-          Cookies.remove("gdc_context_id");
-          Cookies.set("gdc_context_id", contextId, {
-            domain: ".gdc.cancer.gov",
-          });
+          Cookies.remove("gdc_context_id", { domain: ".gdc.cancer.gov" });
+          Cookies.set("gdc_context_id", contextId);
         }
         return outboundState;
       },

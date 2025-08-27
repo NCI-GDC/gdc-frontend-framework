@@ -69,8 +69,9 @@ const repositoryRangeFacetAggregation = createSlice({
           } else {
             const aggregations =
               Object(response).data.viewer["repository"]["files"].aggregations;
-            aggregations &&
+            if (aggregations) {
               processRangeResults(action.meta.requestId, aggregations, state);
+            }
           }
         },
       )

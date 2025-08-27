@@ -9,7 +9,7 @@ from step_impl.apps.gdc_data_portal_v2.pages.analysis_center_page import (
 from step_impl.apps.gdc_data_portal_v2.pages.clinical_data_analysis import (
     ClinicalDataAnalysisPage,
 )
-from step_impl.apps.gdc_data_portal_v2.pages.warning_modal import WarningModal
+from step_impl.apps.gdc_data_portal_v2.pages.modal import Modal
 from ..gdc_data_portal_v2.pages.repository_page import RepositoryPage
 from ..gdc_data_portal_v2.pages.cohort_builder_page import CohortBuilderPage
 from ..gdc_data_portal_v2.pages.file_summary_page import FileSummaryPage
@@ -21,6 +21,12 @@ from ..gdc_data_portal_v2.pages.manage_sets_page import ManageSetsPage
 from ..gdc_data_portal_v2.pages.cohort_comparison_page import CohortComparisonPage
 from ..gdc_data_portal_v2.pages.project_summary_page import ProjectSummaryPage
 from ..gdc_data_portal_v2.pages.set_operations_page import SetOperationsPage
+from ..gdc_data_portal_v2.pages.cohort_case_view import CohortCaseViewPage
+from ..gdc_data_portal_v2.pages.cart_page import CartPage
+from ..gdc_data_portal_v2.pages.gene_summary_page import GeneSummaryPage
+from ..gdc_data_portal_v2.pages.mutation_summary_page import MutationSummaryPage
+from ..gdc_data_portal_v2.pages.browse_annotations import BrowseAnnotationPage
+
 
 class GDCDataPortalV2App:
     def __init__(self, webdriver):  # webdriver is page now.
@@ -42,7 +48,7 @@ class GDCDataPortalV2App:
         # It uses the code contained in base_page.py
         self.shared = Shared(self.driver)
         self.header_section = HeaderSection(self.driver, self.URL)
-        self.warning_modal = WarningModal(self.driver, self.URL)
+        self.modal = Modal(self.driver, self.URL)
         self.home_page = HomePage(self.driver, self.URL)
         self.repository_page = RepositoryPage(self.driver, self.URL)
         self.cohort_builder_page = CohortBuilderPage(self.driver, self.URL)
@@ -57,3 +63,8 @@ class GDCDataPortalV2App:
         self.cohort_comparison_page = CohortComparisonPage(self.driver, self.URL)
         self.project_summary_page = ProjectSummaryPage(self.driver, self.URL)
         self.set_operations_page = SetOperationsPage(self.driver, self.URL)
+        self.cohort_case_view_page = CohortCaseViewPage(self.driver, self.URL)
+        self.cart_page = CartPage(self.driver, self.URL)
+        self.gene_summary_page = GeneSummaryPage(self.driver, self.URL)
+        self.mutation_summary_page = MutationSummaryPage(self.driver, self.URL)
+        self.browse_annotations = BrowseAnnotationPage(self.driver, self.URL)

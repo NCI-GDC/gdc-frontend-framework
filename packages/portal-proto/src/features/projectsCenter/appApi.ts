@@ -3,6 +3,7 @@ import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { createAppStore } from "@gff/core";
 import { projectCenterFiltersReducer } from "./projectCenterFiltersSlice";
+import { projectCenterExpandedReducer } from "./projectCenterFilterExpandSlice";
 
 const PROJECT_APP_NAME = "ProjectCenter";
 
@@ -10,7 +11,7 @@ const persistConfig = {
   key: PROJECT_APP_NAME,
   version: 1,
   storage,
-  whitelist: ["projectApp"],
+  whitelist: ["projectApp", "projectExpandedState"],
 };
 
 // create the store, context and selector for the ProjectsCenter
@@ -19,6 +20,7 @@ const persistConfig = {
 
 const reducers = combineReducers({
   projectApp: projectCenterFiltersReducer,
+  projectExpandedState: projectCenterExpandedReducer,
 });
 
 export const { id, AppStore, AppContext, useAppSelector, useAppDispatch } =

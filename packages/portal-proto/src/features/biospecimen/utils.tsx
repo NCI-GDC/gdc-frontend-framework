@@ -1,10 +1,8 @@
 // Credits to https://github.com/NCI-GDC/portal-ui/blob/develop/src/packages/%40ncigdc/modern_components/BiospecimenCard/utils.js for useful utilities functions
-
 import {
   formatDataForHorizontalTable,
   mapGdcFileToCartFile,
 } from "../files/utils";
-import { FaShoppingCart } from "react-icons/fa";
 import { ActionIcon, Tooltip } from "@mantine/core";
 import Link from "next/link";
 import {
@@ -19,7 +17,7 @@ import { get } from "lodash";
 import { entityTypes } from "@/components/BioTree/types";
 import { humanify, fileInCart, ageDisplay } from "src/utils";
 import { DownloadFile } from "@/components/DownloadButtons";
-import { GiMicroscope } from "react-icons/gi";
+import { CartIcon, MicroscopeIcon } from "@/utils/icons";
 
 export const match = (query: string, entity: Record<string, any>): boolean =>
   Object.keys(entity).some((k) => {
@@ -127,7 +125,7 @@ export const formatEntityInfo = (
             <Link
               href={`/image-viewer/MultipleImageViewerPage?caseId=${caseId}&selectedId=${selectedSlide[0]?.file_id}`}
             >
-              <GiMicroscope size={17} />
+              <MicroscopeIcon size={17} />
             </Link>
           </ActionIcon>
         </Tooltip>
@@ -147,20 +145,22 @@ export const formatEntityInfo = (
                 : "text-primary bg-base-max"
             }`}
             onClick={() => {
-              isFileInCart
-                ? removeFromCart(
-                    mapGdcFileToCartFile(mapFileData(selectedSlide)),
-                    currentCart,
-                    dispatch,
-                  )
-                : addToCart(
-                    mapGdcFileToCartFile(mapFileData(selectedSlide)),
-                    currentCart,
-                    dispatch,
-                  );
+              if (isFileInCart) {
+                removeFromCart(
+                  mapGdcFileToCartFile(mapFileData(selectedSlide)),
+                  currentCart,
+                  dispatch,
+                );
+              } else {
+                addToCart(
+                  mapGdcFileToCartFile(mapFileData(selectedSlide)),
+                  currentCart,
+                  dispatch,
+                );
+              }
             }}
           >
-            <FaShoppingCart size={16} />
+            <CartIcon size={16} />
           </ActionIcon>
         </Tooltip>
 
@@ -168,7 +168,6 @@ export const formatEntityInfo = (
           <div data-testid="button-download-slide-biospecimen">
             <DownloadFile
               file={mapFileData(selectedSlide)[0]}
-              showLoading={false}
               displayVariant="icon"
             />
           </div>
@@ -198,26 +197,21 @@ const getOrder = (type) => {
   const sampleOrder = [
     "submitter_id",
     "sample_id",
-    "sample_type",
-    "sample_type_id",
     "tissue_type",
-    "tumor_code",
+    "tumor_descriptor",
+    "specimen_type",
+    "preservation_method",
     "tumor_code_id",
-    "oct_embedded",
     "shortest_dimension",
     "intermediate_dimension",
     "longest_dimension",
-    "is_ffpe",
     "pathology_report_uuid",
-    "tumor_descriptor",
     "current_weight",
     "initial_weight",
-    "composition",
     "time_between_clamping_and_freezing",
     "time_between_excision_and_freezing",
     "days_to_sample_procurement",
     "freezing_method",
-    "preservation_method",
     "days_to_collection",
     "portions",
   ];
@@ -236,7 +230,6 @@ const getOrder = (type) => {
     "submitter_id",
     "analyte_id",
     "analyte_type",
-    "analyte_type_id",
     "well_number",
     "amount",
     "a260_a280_ratio",
@@ -270,7 +263,6 @@ const getOrder = (type) => {
     "amount",
     "concentration",
     "analyte_type",
-    "analyte_type_id",
   ];
 
   let order;

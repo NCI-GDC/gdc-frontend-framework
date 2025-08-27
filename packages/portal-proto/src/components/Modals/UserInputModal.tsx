@@ -62,9 +62,11 @@ const UserInputModal: React.FC<UserInputModalProps> = ({
           <DiscardChangesModal
             openModal={showDiscardModal !== null}
             action={() => {
-              showDiscardModal === "close"
-                ? dispatch(hideModal())
-                : setActiveTab(activeTabInWaiting);
+              if (showDiscardModal === "close") {
+                dispatch(hideModal());
+              } else {
+                setActiveTab(activeTabInWaiting);
+              }
             }}
             onClose={() => setShowDiscardModal(null)}
           />
@@ -77,7 +79,7 @@ const UserInputModal: React.FC<UserInputModalProps> = ({
                 keepMounted={false}
                 onChange={onTabChange}
               >
-                <Tabs.List>
+                <Tabs.List data-testid="modal-tab-list">
                   {tabs.map((tab) => (
                     <StyledTab value={tab.value} key={tab.value}>
                       {tab.label}

@@ -25,12 +25,14 @@ export interface SurvivalPlotProps {
   readonly names?: ReadonlyArray<string>;
   readonly plotType?: SurvivalPlotTypes;
   readonly title?: string;
+  readonly showTitleOnlyOnDownload?: boolean;
   readonly hideLegend?: boolean;
   readonly height?: number;
   readonly field?: string;
   readonly downloadFileName?: string;
   readonly tableTooltip?: boolean;
   readonly noDataMessage?: string;
+  readonly isLoading?: boolean;
 }
 
 export interface SurvivalPlotLegend {

@@ -3,7 +3,7 @@ import { useSsmPlotQuery } from "./ssmPlot";
 import {
   useGetGeneCancerDistributionTableQuery,
   useGetSSMSCancerDistributionTableQuery,
-  CancerDistributionTableData,
+  type CancerDistributionTableData,
 } from "./cancerDistributionTable";
 
 export {

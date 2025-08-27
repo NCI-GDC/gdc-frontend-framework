@@ -1,3 +1,143 @@
+import { GqlOperation } from "./filters";
+
+export type UnknownJson = Record<string, unknown>;
+export interface GdcApiResponse<H = UnknownJson> {
+  readonly data: GdcApiData<H>;
+  readonly warnings: Record<string, string>;
+}
+
+export interface GdcApiData<H> {
+  readonly hits: ReadonlyArray<H>;
+  readonly aggregations?: Record<string, Buckets | Stats>;
+  readonly pagination: Pagination;
+}
+
+export interface Buckets {
+  readonly buckets: ReadonlyArray<Bucket>;
+}
+
+export interface Bucket {
+  readonly doc_count: number;
+  readonly key: string;
+}
+
+export interface Stats {
+  readonly stats: Statistics;
+}
+
+export interface Statistics {
+  readonly count: number;
+  readonly min?: number;
+  readonly max?: number;
+  readonly avg?: number;
+  readonly sum: number;
+}
+
+export interface Pagination {
+  readonly count: number;
+  readonly total: number;
+  readonly size: number;
+  readonly from: number;
+  readonly sort: string;
+  readonly page: number;
+  readonly pages: number;
+}
+
+export type gdcEndpoint =
+  | "annotations"
+  | "history"
+  | "case_ssms"
+  | "cases"
+  | "cnv_occurrences"
+  | "cnvs"
+  | "files"
+  | "genes"
+  | "projects"
+  | "ssm_occurrences"
+  | "ssms";
+
+/**
+ * The request for requesting data from the GDC API
+ * @property filters - A FilterSet object
+ * @property case_filters - A FilterSet object
+ * @property fields - An array of fields to return
+ * @property expand - An array of fields to expand
+ * @property format - The format of the response
+ * @property size - The number of cases to return
+ * @property from - The offset from which to return cases
+ * @property sortBy - An array of fields to sort by
+ * @property facets - An array of fields to facet by
+ * @category GDC API
+ */
+export interface GdcApiRequest {
+  readonly filters?: GqlOperation;
+  readonly case_filters?: GqlOperation;
+  readonly fields?: ReadonlyArray<string>;
+  readonly expand?: ReadonlyArray<string>;
+  readonly format?: "JSON" | "TSV" | "XML";
+  readonly size?: number;
+  readonly from?: number;
+  readonly sortBy?: ReadonlyArray<SortBy>;
+  readonly facets?: ReadonlyArray<string>;
+}
+
+export interface SortBy {
+  readonly field: string;
+  readonly direction: "asc" | "desc";
+}
+
+export interface GdcApiMapping {
+  readonly _mapping: Record<string, FieldDetails>;
+  readonly defaults: ReadonlyArray<string>;
+  readonly expand: ReadonlyArray<string>;
+  readonly fields: ReadonlyArray<string>;
+  readonly multi: ReadonlyArray<string>;
+  readonly nested: ReadonlyArray<string>;
+}
+
+export const FieldTypes = [
+  "boolean",
+  "double",
+  "float",
+  "id",
+  "keyword",
+  "long",
+  "text",
+] as const;
+export type FieldType = (typeof FieldTypes)[number];
+
+export interface FieldDetails {
+  readonly description: string;
+  readonly doc_type:
+    | "annotations"
+    | "history"
+    | "case_centrics"
+    | "cases"
+    | "cnv_centrics"
+    | "cnv_occurrence_centrics"
+    | "files"
+    | "gene_centric"
+    | "projects"
+    | "ssm_centrics"
+    | "ssm_occurrence_centrics";
+  readonly field: string;
+  readonly full: string;
+  readonly type: FieldType;
+}
+
+export interface FetchError {
+  readonly url: string;
+  readonly status: number;
+  readonly statusText: string;
+  readonly text: string;
+  readonly gdcApiReq?: GdcApiRequest;
+}
+
+export interface EndpointRequestProps {
+  readonly request: GdcApiRequest;
+  readonly fetchAll?: boolean;
+}
+
 export interface caseFileType {
   readonly access: "open" | "controlled";
   readonly acl: Array<string>;
@@ -65,13 +205,10 @@ export interface FamilyHistories {
 }
 
 export interface FollowUps {
-  readonly bmi: number | null;
-  readonly comorbidity: number | null;
   readonly days_to_follow_up: number | null;
   readonly disease_response: string | null;
   readonly ecog_performance_status: string | null;
   readonly follow_up_id: string | null;
-  readonly height: number | null;
   readonly karnofsky_performance_status: number | null;
   readonly molecular_tests?: ReadonlyArray<{
     readonly aa_change: string | null;
@@ -90,13 +227,20 @@ export interface FollowUps {
     readonly test_value: number | null;
     readonly variant_type: string | null;
   }>;
+  readonly other_clinical_attributes?: ReadonlyArray<{
+    readonly submitter_id: string;
+    readonly other_clinical_attribute_id: string;
+    readonly timepoint_category?: string;
+    readonly nononcologic_therapeutic_agents?: string;
+    readonly treatment_frequency?: number;
+    readonly weight?: number;
+    readonly height?: number;
+    readonly bmi?: number;
+  }>;
   readonly progression_or_recurrence: number | null;
   readonly progression_or_recurrence_anatomic_site: number | null;
   readonly progression_or_recurrence_type: number | null;
-  readonly reflux_treatment_type: number | null;
-  readonly risk_factor: number | null;
   readonly submitter_id: string | null;
-  readonly weight: number | null;
 }
 
 export interface Exposures {
@@ -288,6 +432,22 @@ export interface FileDefaults {
   readonly type: string;
   readonly version?: string;
   readonly experimental_strategy?: string;
+  readonly total_reads?: number;
+  readonly average_base_quality?: number;
+  readonly average_insert_size?: number;
+  readonly average_read_length?: number;
+  readonly mean_coverage?: number;
+  readonly pairs_on_diff_chr?: number;
+  readonly contamination?: number;
+  readonly contamination_error?: number;
+  readonly proportion_reads_mapped?: number;
+  readonly proportion_reads_duplicated?: number;
+  readonly proportion_base_mismatch?: number;
+  readonly proportion_targets_no_coverage?: number;
+  readonly proportion_coverage_10x?: number;
+  readonly proportion_coverage_30x?: number;
+  readonly msi_score?: number;
+  readonly msi_status?: number;
   readonly annotations?: ReadonlyArray<{
     readonly annotation_id: string;
     readonly category: string;
@@ -319,8 +479,8 @@ export interface FileDefaults {
     };
     readonly samples?: ReadonlyArray<{
       readonly sample_id: string;
-      readonly sample_type: string;
       readonly tissue_type: string;
+      readonly tumor_descriptor: string;
       readonly submitter_id: string;
       readonly portions?: ReadonlyArray<{
         readonly submitter_id: string;

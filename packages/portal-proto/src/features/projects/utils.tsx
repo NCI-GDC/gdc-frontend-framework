@@ -46,6 +46,7 @@ export const formatDataForSummary = (
         href={`https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=${dbGaP_study_accession}`}
         className="underline text-utility-link"
         target="_blank"
+        rel="noreferrer"
       >
         {dbGaP_study_accession}
       </Link>
@@ -103,7 +104,7 @@ export const formatDataForDataCategoryTable = (
   );
 
   const dataCategoryTableColumnHelper =
-    createColumnHelper<typeof sortedDataCategories[0]>();
+    createColumnHelper<(typeof sortedDataCategories)[0]>();
 
   const dataCategoryTableColumns = [
     dataCategoryTableColumnHelper.display({
@@ -190,7 +191,7 @@ export const formatDataForExpCategoryTable = (
   );
 
   const expStrategiesTableColumnHelper =
-    createColumnHelper<typeof sortedExpStrategies[0]>();
+    createColumnHelper<(typeof sortedExpStrategies)[0]>();
 
   const expCategoryTableColumns = [
     expStrategiesTableColumnHelper.display({

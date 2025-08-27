@@ -8,7 +8,7 @@ import {
   selectCurrentCohortFilters,
 } from "@gff/core";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
-import Controls from "./Controls";
+import Controls from "./Controls/Controls";
 import Dashboard from "./Dashboard";
 import { DEFAULT_FIELDS, DEMO_COHORT_FILTERS, FACET_SORT } from "./constants";
 import { filterUsefulFacets, parseFieldName } from "./utils";
@@ -50,15 +50,16 @@ const ClinicalDataAnalysis: React.FC = () => {
     [cDaveFields],
   );
 
-  const {
-    data: cDaveResult,
-    isFetching,
-    isSuccess,
-  } = useGetClinicalAnalysisQuery({
-    case_filters: cohortFilters,
-    facets,
-    size: 0,
-  });
+  const { data, isFetching, isSuccess } = useGetClinicalAnalysisQuery(
+    {
+      case_filters: cohortFilters,
+      facets,
+      size: 0,
+    },
+    { skip: facets.length === 0 },
+  );
+
+  const cDaveResult = data?.data || {};
 
   const updateFields = useDeepCompareCallback(
     (field: string) => {
@@ -88,7 +89,7 @@ const ClinicalDataAnalysis: React.FC = () => {
         </DemoText>
       )}
 
-      <div className="flex gap-4">
+      <div className="flex gap-4 pt-4 pb-16 px-4 w-full">
         <Controls
           updateFields={updateFields}
           cDaveFields={cDaveFields}
@@ -103,7 +104,7 @@ const ClinicalDataAnalysis: React.FC = () => {
             cohortFilters={cohortFilters}
             results={cDaveResult}
             updateFields={updateFields}
-            controlsExpanded={controlsExpanded}
+            yTotal={data.total}
           />
         )}
       </div>

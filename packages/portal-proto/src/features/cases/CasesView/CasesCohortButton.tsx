@@ -5,19 +5,24 @@ import {
   useCreateCaseSetFromFiltersMutation,
   GqlOperation,
   useGetCasesQuery,
+  useCoreDispatch,
+  showModal,
+  Modals,
 } from "@gff/core";
 import {
   SelectCohortsModal,
   WithOrWithoutCohortType,
 } from "./SelectCohortsModal";
-import SaveCohortModal from "@/components/Modals/SaveCohortModal";
+import { SaveCohortModal } from "@gff/portal-components";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { CountsIcon } from "@/components/tailwindComponents";
 import { Tooltip } from "@mantine/core";
+import { cohortActionsHooks } from "@/features/cohortBuilder/CohortManager/cohortActionHooks";
+import { INVALID_COHORT_NAMES } from "@/features/cohortBuilder/utils";
 
 interface CasesCohortButtonProps {
   readonly onCreateSet: () => void;
-  readonly response: { isSuccess: boolean; data?: string };
+  readonly response: { isSuccess: boolean; isError: boolean; data?: string };
   readonly cases: readonly string[];
   readonly numCases: number;
   readonly fetchingCases?: boolean;
@@ -34,14 +39,19 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
   const [showSaveCohort, setShowSaveCohort] = useState(false);
   const [withOrWithoutCohort, setWithOrWithoutCohort] =
     useState<WithOrWithoutCohortType>(undefined);
+  const dispatch = useCoreDispatch();
 
   useEffect(() => {
     if (response.isSuccess) {
       setShowSaveCohort(true);
+    } else if (response.isError) {
+      dispatch(showModal({ modal: Modals.SaveCohortErrorModal }));
     }
-  }, [response.isSuccess]);
+  }, [response.isSuccess, response.isError, dispatch]);
+
   const dropDownIcon = (
     <DropdownWithIcon
+      customTargetButtonDataTestId="button-save-new-cohort-cases-table"
       dropdownElements={
         fetchingCases
           ? [{ title: "Loading..." }]
@@ -73,6 +83,7 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
             ]
       }
       TargetButtonChildren="Save New Cohort"
+      targetButtonTooltip="Save a new cohort based on selection"
       disableTargetWidth={true}
       targetButtonDisabled={numCases === 0}
       LeftSection={
@@ -84,7 +95,6 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
         ${numCases > 1 ? " Cases" : " Case"}`}
       menuLabelCustomClass="bg-primary text-primary-contrast font-heading font-bold mb-2"
       customPosition="bottom-start"
-      tooltip={"Save a new cohort based on selection"}
     />
   );
   return (
@@ -119,6 +129,8 @@ export const CasesCohortButton: React.FC<CasesCohortButtonProps> = ({
             },
           },
         }}
+        hooks={cohortActionsHooks}
+        invalidCohortNames={INVALID_COHORT_NAMES}
       />
     </>
   );
@@ -169,7 +181,7 @@ export const CasesCohortButtonFromFilters: React.FC<
     [case_filters, createSet, filters],
   );
   const { data, isSuccess, isLoading } = useGetCasesQuery(
-    { request: { filters, fields: ["case_id"], size: 50000 } },
+    { request: { filters, case_filters, fields: ["case_id"], size: 50000 } },
     { skip: filters === undefined },
   );
 

@@ -1,5 +1,5 @@
 import { render } from "@testing-library/react";
-import { GeneExpressionWrapper } from "./GeneExpressionWrapper";
+import { MatrixWrapper, demoFilter } from "./MatrixWrapper";
 import { MantineProvider } from "@mantine/core";
 
 const filter = {};
@@ -22,18 +22,37 @@ jest.mock("@gff/core", () => ({
     resultsCreateCaseSet,
   ],
   useLazyGetCohortByIdQuery: jest.fn().mockReturnValue([jest.fn()]),
-  useGetCohortsByContextIdQuery: jest.fn().mockReturnValue([jest.fn()]),
+  useLazyGetCohortsByContextIdQuery: jest.fn().mockReturnValue([
+    jest.fn().mockReturnValue({ unwrap: jest.fn() }),
+    {
+      isSuccess: false,
+      isLoading: false,
+    },
+  ] as any),
   useCreateCaseSetFromFiltersMutation: jest.fn().mockReturnValue([jest.fn()]),
+  useGetGenesQuery: jest.fn().mockReturnValue({
+    data: {
+      hits: [],
+    },
+    isFetching: false,
+    requestId: "abc123",
+  }),
+  showModal: jest.fn(() => nullFunction()),
+  hideModal: jest.fn(() => nullFunction()),
+  Modals: jest.fn().mockReturnValue({}),
+  selectCurrentModal: jest.fn(() => nullFunction()),
 }));
 
 jest.mock("@/hooks/useIsDemoApp", () => ({
   useIsDemoApp: jest.fn(() => isDemoMode),
 }));
 
+jest.mock("@gff/portal-components");
+
 jest.mock("@sjcrh/proteinpaint-client", () => ({
   __esModule: true,
-  runproteinpaint: jest.fn(async (arg) => {
-    runpparg = arg;
+  bindProteinPaint: jest.fn(async (arg) => {
+    runpparg = Object.assign({}, arg.initArgs, arg.updateArgs || {});
     return {};
   }),
 }));
@@ -48,7 +67,7 @@ test("GeneExpression arguments", () => {
         },
       }}
     >
-      <GeneExpressionWrapper />
+      <MatrixWrapper chartType="hierCluster" />
     </MantineProvider>,
   );
   expect(typeof runpparg).toBe("object");
@@ -69,12 +88,12 @@ test("GeneExpression arguments", () => {
         },
       }}
     >
-      <GeneExpressionWrapper />
+      <MatrixWrapper chartType="hierCluster" />
     </MantineProvider>,
   );
   // there should be only one runpp instance when switching to this tool,
   // so the arg key-values should not change on rerender
-  expect(runpparg.filter0).toEqual(filter);
+  expect(runpparg.filter0).toEqual(demoFilter);
   unmount();
 });
 
@@ -89,7 +108,7 @@ test("GeneExpression demo filter0", () => {
         },
       }}
     >
-      <GeneExpressionWrapper />
+      <MatrixWrapper chartType="hierCluster" />
     </MantineProvider>,
   );
   expect(runpparg.filter0).not.toEqual(filter);

@@ -1,9 +1,9 @@
 import {
-  FilterSet,
-  EnumOperandValue,
-  RangeOperandValue,
-  SetOperandValue,
-  OperandValue,
+  type FilterSet,
+  type EnumOperandValue,
+  type RangeOperandValue,
+  type SetOperandValue,
+  type OperandValue,
   EnumValueExtractorHandler,
   joinFilters,
   buildCohortGqlOperator,
@@ -13,7 +13,7 @@ import {
 } from "./filters";
 
 import {
-  Cohort,
+  type Cohort,
   addNewDefaultUnsavedCohort,
   addNewUnsavedCohort,
   removeCohort,
@@ -35,22 +35,18 @@ import {
   selectCurrentCohortFiltersByName,
   selectCurrentCohortCaseSet,
   selectCurrentCohortModified,
-  selectCohortMessage,
   selectCohortIsLoggedIn,
-  selectCohortById,
-  clearCohortMessage,
+  selectCohortByIdOrName,
   selectCurrentCohort,
   setCohortList,
   selectCurrentCohortSaved,
   discardCohortChanges,
-  setCohortMessage,
   setIsLoggedIn,
   useCurrentCohortFilters,
   updateActiveCohortFilter,
   setActiveCohort,
   discardActiveCohortChanges,
   setActiveCohortList,
-  removeCohortSet,
   selectCohortFilterSetById,
   selectCohortNameById,
   selectCurrentCohortFiltersByNames,
@@ -62,11 +58,12 @@ import {
   selectHasUnsavedCohorts,
   selectUnsavedCohortName,
   UNSAVED_COHORT_NAME,
-  selectMultipleCohortsById,
+  selectMultipleCohortsByIdOrName,
+  fetchCohortCaseCounts,
 } from "./availableCohortsSlice";
 
 import {
-  CohortBuilderCategoryConfig,
+  type CohortBuilderCategoryConfig,
   addFilterToCohortBuilder,
   removeFilterFromCohortBuilder,
   resetCohortBuilderToDefault,
@@ -75,11 +72,7 @@ import {
   selectCohortBuilderConfigCategory,
 } from "./cohortBuilderConfigSlice";
 
-import {
-  CountsData,
-  NullCountsData,
-  fetchCohortCaseCounts,
-} from "./cohortCountsQuery";
+import { type CountsData, NullCountsData } from "./type";
 
 import {
   defaultCohortNameGenerator,
@@ -122,7 +115,7 @@ export {
   selectCurrentCohortId,
   selectCurrentCohortName,
   selectCurrentCohortCaseCount,
-  selectCohortById,
+  selectCohortByIdOrName,
   selectCohortNameById,
   selectAvailableCohortByName,
   selectCurrentCohortFilters,
@@ -130,23 +123,19 @@ export {
   selectCurrentCohortFiltersByName,
   selectCurrentCohortCaseSet,
   selectCurrentCohortModified,
-  selectCohortMessage,
   selectCohortIsLoggedIn,
-  clearCohortMessage,
   selectCurrentCohort,
   setCohortList,
   copyToSavedCohort,
   buildGqlOperationToFilterSet,
   selectCurrentCohortSaved,
   discardCohortChanges,
-  setCohortMessage,
   setIsLoggedIn,
   useCurrentCohortFilters,
   updateActiveCohortFilter,
   setActiveCohort,
   discardActiveCohortChanges,
   setActiveCohortList,
-  removeCohortSet,
   selectCohortFilterSetById,
   selectCurrentCohortFiltersByNames,
   CountsData,
@@ -159,5 +148,5 @@ export {
   selectHasUnsavedCohorts,
   selectUnsavedCohortName,
   UNSAVED_COHORT_NAME,
-  selectMultipleCohortsById,
+  selectMultipleCohortsByIdOrName,
 };

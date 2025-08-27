@@ -51,12 +51,7 @@ tags: gdc-data-portal-v2, set-operations, regression
 * Verify that "S1 minus S2 union S3 from Set Operations" has expected information
   |required_info                        |
   |-------------------------------------|
-  |0410c77e-dd45-5003-b8bf-51a9b2e5373e |
-  |1fcc71f5-f8cd-5f26-ab4e-07a69c3b26f3 |
-  |617dab9b-0998-50a6-b63b-da6640af6615 |
-  |992bf3de-6450-549d-afb7-69d55c432a92 |
-  |ced257f0-a04b-5994-9520-0beeea8d1ab4 |
-  |fc0ca9e7-0e8d-5424-8e77-3e824a060b1b |
+  |e3b0ea98-335c-5b54-b44b-662ed017c8c5 |
 * Verify that "S1 minus S2 union S3 from Set Operations" does not contain specified information
   |required_info                        |
   |-------------------------------------|
@@ -68,7 +63,12 @@ tags: gdc-data-portal-v2, set-operations, regression
   |ebb376ce-e22b-5506-9e94-05bc7d5871c9 |
   |f5e8c2b3-5abf-542c-ba08-312ebccbf240 |
   |fff93173-8575-5fc8-a42c-8c712f9e96ed |
-
+  |0410c77e-dd45-5003-b8bf-51a9b2e5373e |
+  |1fcc71f5-f8cd-5f26-ab4e-07a69c3b26f3 |
+  |617dab9b-0998-50a6-b63b-da6640af6615 |
+  |992bf3de-6450-549d-afb7-69d55c432a92 |
+  |ced257f0-a04b-5994-9520-0beeea8d1ab4 |
+  |fc0ca9e7-0e8d-5424-8e77-3e824a060b1b |
 ## Set Creation
 * Select set "S2 minus S1 union S3" to save as a new set in the Set Operations analysis screen
 * Name set "Demo-S2 minus S1 union S3 Mutation Set" in Save Set modal

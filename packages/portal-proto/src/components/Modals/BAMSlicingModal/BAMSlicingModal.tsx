@@ -113,11 +113,11 @@ export const BAMSlicingModal = ({
       size="60%"
       openModal={openModal}
       buttons={[
-        { title: "Cancel", dataTestId: "button-download-sliced-bam-cancel" },
+        { title: "Cancel", dataTestId: "button-cancel" },
         {
           onClick: buttonOnClick,
           title: "Download",
-          dataTestId: "button-download-sliced-bam",
+          dataTestId: "button-download-bam-slice",
         },
       ]}
     >
@@ -144,6 +144,7 @@ export const BAMSlicingModal = ({
           on this file.
         </label>
         <Textarea
+          data-testid="textbox-genome-coordinates"
           id="textarea"
           required
           minRows={4}

@@ -3,9 +3,9 @@ import { CoreDispatch, GDC_APP_API_AUTH, Modals, showModal } from "@gff/core";
 import { Button } from "@mantine/core";
 import { cleanNotifications, showNotification } from "@mantine/notifications";
 import { includes, isPlainObject, reduce, uniqueId } from "lodash";
-import { RiCloseCircleLine as CloseIcon } from "react-icons/ri";
 import { theme } from "tailwind.config";
 import urlJoin from "url-join";
+import { CloseCircleIcon } from "./icons";
 
 const hashString = (s: string) =>
   s.split("").reduce((acc, c) => (acc << 5) - acc + c.charCodeAt(0), 0);
@@ -37,7 +37,7 @@ const DownloadNotification = ({ onClick }: { onClick: () => void }) => {
       <p>Download preparation in progress. Please wait...</p>
       <Button
         variant="white"
-        leftSection={<CloseIcon aria-hidden="true" />}
+        leftSection={<CloseCircleIcon aria-hidden="true" />}
         style={{ color: "#155276", cursor: "pointer" }}
         onClick={onClick}
       >
@@ -164,6 +164,7 @@ const download = async ({
   const fields = reduce(
     {
       ...params,
+      filters: params.filters ?? {},
       downloadCookieKey: cookieKey,
       downloadCookiePath: "/",
       attachment: params?.attachment ?? true,

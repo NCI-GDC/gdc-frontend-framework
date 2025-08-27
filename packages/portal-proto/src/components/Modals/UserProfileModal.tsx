@@ -1,6 +1,6 @@
+import { CheckIcon } from "@/utils/icons";
 import { useFetchUserDetailsQuery } from "@gff/core";
 import { Text } from "@mantine/core";
-import { FaCheck } from "react-icons/fa";
 import { ScrollableTableWithFixedHeader } from "../ScrollableTableWithFixedHeader/ScrollableTableWithFixedHeader";
 import { BaseModal } from "./BaseModal";
 import { SessionExpireModal } from "./SessionExpireModal";
@@ -41,7 +41,7 @@ export const UserProfileModal = ({
           ...acc,
           [v]: gdc_ids[projectId].includes(v) ? (
             <span>
-              <FaCheck
+              <CheckIcon
                 aria-label="permission given"
                 aria-hidden
                 key={projectId}
@@ -72,11 +72,12 @@ export const UserProfileModal = ({
       }
       openModal={openModal}
       size="60%"
-      buttons={[{ title: "Done", dataTestId: "button-user-profile-done" }]}
+      buttons={[{ title: "Close", dataTestId: "button-close" }]}
     >
       <div className={`${!data ? "py-4" : "py-2"}`}>
         {data?.length > 0 ? (
           <ScrollableTableWithFixedHeader
+            customDataTestID="table-user-profile-access"
             tableData={{
               headers: headings,
               tableRows: data,

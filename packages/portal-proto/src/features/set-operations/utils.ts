@@ -3,6 +3,7 @@ import {
   useCreateSsmsSetFromFiltersMutation,
   useCreateGeneSetFromFiltersMutation,
   useCreateCaseSetFromFiltersMutation,
+  GqlIntersection,
 } from "@gff/core";
 
 const ENTITY_TYPE_TO_FIELD = {
@@ -15,7 +16,7 @@ export const createSetFiltersByKey = (
   key: string,
   entityType: SetOperationEntityType,
   sets: SelectedEntities,
-) => {
+): GqlIntersection => {
   let filters;
 
   const set1Filters = {

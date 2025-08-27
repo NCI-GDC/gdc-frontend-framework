@@ -21,12 +21,6 @@ import {
   GqlOperation,
   useCurrentCohortCounts,
 } from "@gff/core";
-import { MdFilterAlt as CohortFilterIcon } from "react-icons/md";
-import {
-  MdDownload as DownloadIcon,
-  MdInsertChartOutlined as SummaryChartIcon,
-  MdOutlineViewComfy as TableIcon,
-} from "react-icons/md";
 import download from "src/utils/download";
 import SummaryFacets from "./SummaryFacets";
 import { SecondaryTabStyle } from "@/features/cohortBuilder/style";
@@ -41,13 +35,22 @@ import {
 } from "./utils";
 import StickyControl from "./StickyControl";
 import { useViewportSize } from "@mantine/hooks";
+import {
+  SummaryChartIcon,
+  TableIcon,
+  CohortFilterIcon,
+  DownloadIcon,
+} from "@/utils/icons";
+import { getFormattedTimestamp } from "@/utils/date";
 
 const ContextBar = ({
   handleIsSticky,
   isSticky,
+  isFetchingCohorts,
 }: {
   handleIsSticky: (isSticky: boolean) => void;
   isSticky: boolean;
+  isFetchingCohorts: boolean;
 }): JSX.Element => {
   const coreDispatch = useCoreDispatch();
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
@@ -61,9 +64,14 @@ const ContextBar = ({
   const [downloadMetadataActive, setDownloadMetadataActive] = useState(false);
   const [downloadSampleSheetActive, setDownloadSampleSheetActive] =
     useState(false);
-  const [biospecimenDownloadActive, setBiospecimenDownloadActive] =
+  const [biospecimenDownloadActiveJSON, setBiospecimenDownloadActiveJSON] =
     useState(false);
-  const [clinicalDownloadActive, setClinicalDownloadActive] = useState(false);
+  const [biospecimenDownloadActiveTSV, setBiospecimenDownloadActiveTSV] =
+    useState(false);
+  const [clinicalDownloadActiveJSON, setClinicalDownloadActiveJSON] =
+    useState(false);
+  const [clinicalDownloadActiveTSV, setClinicalDownloadActiveTSV] =
+    useState(false);
   /* download active end */
 
   const currentCohortId = useCoreSelector((state) =>
@@ -107,7 +115,7 @@ const ContextBar = ({
       method: "POST",
       dispatch: coreDispatch,
       params: {
-        filters: downloadFilter,
+        case_filters: downloadFilter,
         fields: METADATA_FIELDS.join(","),
         format: "JSON",
         pretty: "True",
@@ -131,6 +139,9 @@ const ContextBar = ({
         case_filters: downloadFilter,
         return_type: "manifest",
         size: 10000,
+        filename: `gdc_manifest.${getFormattedTimestamp({
+          includeTimes: true,
+        })}.txt`,
       },
       done: () => setDownloadManifestActive(false),
     });
@@ -158,7 +169,7 @@ const ContextBar = ({
   };
 
   const handleClinicalTSVDownload = () => {
-    setClinicalDownloadActive(true);
+    setClinicalDownloadActiveTSV(true);
     download({
       endpoint: "clinical_tar",
       method: "POST",
@@ -170,12 +181,12 @@ const ContextBar = ({
         case_filters: downloadFilter,
         size: caseCounts,
       },
-      done: () => setClinicalDownloadActive(false),
+      done: () => setClinicalDownloadActiveTSV(false),
     });
   };
 
   const handleClinicalJSONDownload = () => {
-    setClinicalDownloadActive(true);
+    setClinicalDownloadActiveJSON(true);
     download({
       endpoint: "clinical_tar",
       method: "POST",
@@ -189,12 +200,12 @@ const ContextBar = ({
         filters: downloadFilter,
         size: caseCounts,
       },
-      done: () => setClinicalDownloadActive(false),
+      done: () => setClinicalDownloadActiveJSON(false),
     });
   };
 
   const handleBiospeciemenTSVDownload = () => {
-    setBiospecimenDownloadActive(true);
+    setBiospecimenDownloadActiveTSV(true); // separate these out into tsv and json
     download({
       endpoint: "biospecimen_tar",
       method: "POST",
@@ -206,12 +217,12 @@ const ContextBar = ({
         filters: downloadFilter,
         size: caseCounts,
       },
-      done: () => setBiospecimenDownloadActive(false),
+      done: () => setBiospecimenDownloadActiveTSV(false),
     });
   };
 
   const handleBiospeciemenJSONDownload = () => {
-    setBiospecimenDownloadActive(true);
+    setBiospecimenDownloadActiveJSON(true);
     download({
       endpoint: "biospecimen_tar",
       method: "POST",
@@ -225,13 +236,13 @@ const ContextBar = ({
         filters: downloadFilter,
         size: caseCounts,
       },
-      done: () => setBiospecimenDownloadActive(false),
+      done: () => setBiospecimenDownloadActiveJSON(false),
     });
   };
 
   return (
     <CollapsibleContainer
-      Top={<CohortManager />}
+      Top={<CohortManager isFetchingCohorts={isFetchingCohorts} />}
       isCollapsed={isGroupCollapsed}
       toggle={() => setIsGroupCollapsed(!isGroupCollapsed)}
       onlyIcon={false}
@@ -243,16 +254,26 @@ const ContextBar = ({
       }
       tooltipPosition="left"
       TargetElement={
-        <CohortCountButton countName="caseCount" label="CASES" bold />
+        <CohortCountButton
+          customDataTestID="button-cases-cohort-bar"
+          countName="caseCount"
+          singularLabel="case"
+          bold
+          capitalize
+        />
       }
       ExtraControl={
         <StickyControl isSticky={isSticky} handleIsSticky={handleIsSticky} />
       }
     >
-      <div className="bg-nci-violet-lightest">
+      <div
+        className={`bg-nci-violet-lightest ${isGroupCollapsed && "invisible"}`}
+        aria-hidden={isGroupCollapsed}
+      >
         <div className="relative p-4">
           <div className="flex gap-1 pb-4 relative lg:absolute lg:pb-0">
             <DropdownWithIcon
+              customTargetButtonDataTestId="button-files-cases-summary"
               dropdownElements={[
                 {
                   title: "Add to Cart",
@@ -271,6 +292,7 @@ const ContextBar = ({
                   icon: downloadManifestActive ? (
                     <Loader size={14} />
                   ) : undefined,
+                  isLoading: downloadManifestActive,
                 },
                 {
                   title: "Metadata",
@@ -278,6 +300,7 @@ const ContextBar = ({
                   icon: downloadMetadataActive ? (
                     <Loader size={14} />
                   ) : undefined,
+                  isLoading: downloadMetadataActive,
                 },
                 {
                   title: "Sample Sheet",
@@ -285,10 +308,16 @@ const ContextBar = ({
                   icon: downloadSampleSheetActive ? (
                     <Loader size={14} />
                   ) : undefined,
+                  isLoading: downloadSampleSheetActive,
                 },
               ]}
               TargetButtonChildren={
-                <CohortCountButton countName="fileCount" label="Files" />
+                <CohortCountButton countName="fileCount" singularLabel="file" />
+              }
+              targetButtonTooltip={
+                cohortCounts?.data?.fileCount === 0
+                  ? "No files in current cohort"
+                  : undefined
               }
               LeftSection={
                 <DownloadIcon
@@ -297,10 +326,15 @@ const ContextBar = ({
                   className="hidden md:block"
                 />
               }
-              targetButtonDisabled={cohortCounts.status !== "fulfilled"}
+              closeOnItemClick={false}
+              targetButtonDisabled={
+                cohortCounts.status !== "fulfilled" ||
+                cohortCounts?.data?.fileCount === 0
+              }
             />
 
             <DropdownWithIcon
+              customTargetButtonDataTestId="button-custom-filters-cases-summary"
               dropdownElements={[
                 {
                   title: "Cases",
@@ -310,14 +344,14 @@ const ContextBar = ({
                     ),
                 },
                 {
-                  title: "Genes",
+                  title: "Mutated Genes",
                   onClick: () =>
                     coreDispatch(
                       showModal({ modal: Modals.GlobalGeneSetModal }),
                     ),
                 },
                 {
-                  title: "Mutations",
+                  title: "Somatic Mutations",
                   onClick: () =>
                     coreDispatch(
                       showModal({ modal: Modals.GlobalMutationSetModal }),
@@ -340,64 +374,77 @@ const ContextBar = ({
             {activeTab === "summary" && (
               <>
                 <DropdownWithIcon
+                  customTargetButtonDataTestId="button-biospecimen-cases-summary"
                   dropdownElements={[
                     {
                       title: "JSON ",
                       onClick: handleBiospeciemenJSONDownload,
-                      icon: <DownloadIcon aria-label="Download" />,
+                      icon: biospecimenDownloadActiveJSON ? (
+                        <Loader size={16} />
+                      ) : (
+                        <DownloadIcon aria-label="Download" />
+                      ),
+                      isLoading: biospecimenDownloadActiveJSON,
                     },
                     {
                       title: "TSV",
                       onClick: handleBiospeciemenTSVDownload,
-                      icon: <DownloadIcon aria-label="Download" />,
+                      icon: biospecimenDownloadActiveTSV ? (
+                        <Loader size={16} />
+                      ) : (
+                        <DownloadIcon aria-label="Download" />
+                      ),
+                      isLoading: biospecimenDownloadActiveTSV,
                     },
                   ]}
-                  TargetButtonChildren={
-                    biospecimenDownloadActive ? "Processing" : "Biospecimen"
-                  }
+                  TargetButtonChildren="Biospecimen"
                   LeftSection={
                     <span className="hidden md:block">
-                      {biospecimenDownloadActive ? (
-                        <Loader size={20} />
-                      ) : (
-                        <DownloadIcon size="1rem" aria-hidden="true" />
-                      )}
+                      <DownloadIcon size="1rem" aria-hidden="true" />
                     </span>
                   }
                   targetButtonDisabled={cohortCounts.status !== "fulfilled"}
+                  closeOnItemClick={false}
                 />
 
                 <DropdownWithIcon
+                  customTargetButtonDataTestId="button-clinical-cases-summary"
                   dropdownElements={[
                     {
                       title: "JSON",
                       onClick: handleClinicalJSONDownload,
-                      icon: <DownloadIcon aria-label="Download" />,
+                      icon: clinicalDownloadActiveJSON ? (
+                        <Loader size={16} />
+                      ) : (
+                        <DownloadIcon aria-label="Download" />
+                      ),
+                      isLoading: clinicalDownloadActiveJSON,
                     },
                     {
                       title: "TSV",
                       onClick: handleClinicalTSVDownload,
-                      icon: <DownloadIcon aria-label="Download" />,
+                      icon: clinicalDownloadActiveTSV ? (
+                        <Loader size={16} />
+                      ) : (
+                        <DownloadIcon aria-label="Download" />
+                      ),
+                      isLoading: clinicalDownloadActiveTSV,
                     },
                   ]}
-                  TargetButtonChildren={
-                    clinicalDownloadActive ? "Processing" : "Clinical"
-                  }
+                  TargetButtonChildren="Clinical"
                   LeftSection={
                     <span className="hidden md:block">
-                      {biospecimenDownloadActive ? (
-                        <Loader size={20} />
-                      ) : (
-                        <DownloadIcon size="1rem" aria-hidden="true" />
-                      )}
+                      <DownloadIcon size="1rem" aria-hidden="true" />
                     </span>
                   }
                   targetButtonDisabled={cohortCounts.status !== "fulfilled"}
+                  closeOnItemClick={false}
                 />
               </>
             )}
           </div>
           <Tabs
+            data-testid="filters-facets-summary-view"
             variant="pills"
             classNames={{
               tab: SecondaryTabStyle,
@@ -413,6 +460,7 @@ const ContextBar = ({
           >
             <Tabs.List justify={width < 1024 ? "flex-start" : "flex-end"}>
               <Tabs.Tab
+                data-testid="button-summary-view"
                 data-tour="cohort_summary_charts"
                 value="summary"
                 leftSection={<SummaryChartIcon aria-hidden="true" />}
@@ -421,6 +469,7 @@ const ContextBar = ({
               </Tabs.Tab>
 
               <Tabs.Tab
+                data-testid="button-table-view"
                 data-tour="cohort_summary_table"
                 value="table"
                 leftSection={<TableIcon aria-hidden="true" />}

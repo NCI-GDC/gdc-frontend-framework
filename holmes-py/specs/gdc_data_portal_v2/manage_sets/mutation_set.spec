@@ -20,6 +20,7 @@ tags: gdc-data-portal-v2, manage-sets, regression
 * Select "Save"
 * Is text "Set has been saved." present on the page
 * Pause "3" seconds
+* Change number of entries shown in the table "Manage Sets" to "100"
 
 ## Edit Set Name
 * Select "Edit Set Name" for set "Most Frequent Mutations" on Manage Sets page

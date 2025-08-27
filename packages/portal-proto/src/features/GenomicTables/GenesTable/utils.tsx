@@ -1,14 +1,11 @@
 // This table can be found at /analysis_page?app=MutationFrequencyApp
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
-import { Gene, GeneToggledHandler, columnFilterType } from "./types";
-import { Dispatch, SetStateAction, useMemo, useId } from "react";
+import { Gene, GeneToggledHandler } from "./types";
+import { Dispatch, SetStateAction, useId } from "react";
+import { useDeepCompareMemo } from "use-deep-compare";
 import { Checkbox, Tooltip } from "@mantine/core";
-import {
-  IoIosArrowDropdownCircle as DownIcon,
-  IoIosArrowDropupCircle as UpIcon,
-} from "react-icons/io";
 import { entityMetadataType } from "@/utils/contexts";
-import { FilterSet, GeneRowInfo } from "@gff/core";
+import { FilterSet, GeneRowInfo, CnvChange } from "@gff/core";
 import { CountButton } from "@/components/CountButton/CountButton";
 import { HeaderTooltip } from "@/components/Table/HeaderTooltip";
 import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
@@ -18,6 +15,9 @@ import NumeratorDenominator from "@/components/NumeratorDenominator";
 import AnnotationsIcon from "./AnnotationsIcon";
 import RatioWithSpring from "@/components/RatioWithSpring";
 import { ComparativeSurvival } from "@/features/genomic/types";
+import { CollapseCircleIcon, ExpandCircleIcon } from "@/utils/icons";
+
+const genesTableColumnHelper = createColumnHelper<Gene>();
 
 export const useGenerateGenesTableColumns = ({
   handleSurvivalPlotToggled,
@@ -43,15 +43,14 @@ export const useGenerateGenesTableColumns = ({
   setEntityMetadata: Dispatch<SetStateAction<entityMetadataType>>;
   cohortFilters: FilterSet;
   genomicFilters: FilterSet;
-  generateFilters: (type: columnFilterType, geneId: string) => FilterSet;
+  generateFilters: (cnvType: CnvChange, geneId: string) => FilterSet;
   handleMutationCountClick: (geneId: string, geneSymbol: string) => void;
   currentPage: number;
   totalPages: number;
 }): ColumnDef<Gene>[] => {
   const componentId = useId();
-  const genesTableColumnHelper = useMemo(() => createColumnHelper<Gene>(), []);
 
-  const genesTableDefaultColumns = useMemo<ColumnDef<Gene>[]>(
+  const genesTableDefaultColumns = useDeepCompareMemo<ColumnDef<Gene>[]>(
     () => [
       genesTableColumnHelper.display({
         id: "select",
@@ -191,7 +190,7 @@ export const useGenerateGenesTableColumns = ({
               />
             }
             numCases={row.original["#_ssm_affected_cases_in_cohort"].numerator}
-            filters={generateFilters("ssmaffected", row.original.gene_id)}
+            filters={generateFilters(undefined, row.original.gene_id)}
             caseFilters={cohortFilters}
             createStaticCohort
           />
@@ -220,9 +219,9 @@ export const useGenerateGenesTableColumns = ({
               {numerator !== 0 && row.getCanExpand() && (
                 <div className="flex items-center">
                   {!row.getIsExpanded() ? (
-                    <DownIcon size="1.25em" className="text-accent" />
+                    <ExpandCircleIcon size="1.25em" className="text-accent" />
                   ) : (
-                    <UpIcon size="1.25em" className="text-accent" />
+                    <CollapseCircleIcon size="1.25em" className="text-accent" />
                   )}
                 </div>
               )}
@@ -234,17 +233,19 @@ export const useGenerateGenesTableColumns = ({
         },
       }),
       genesTableColumnHelper.display({
-        id: "#_cnv_gain",
+        id: "#_cnv_amplifications",
         header: () => (
           <HeaderTooltip
-            title="# CNV Gain"
+            title="# CNV Amplifications"
             tooltip={
-              "# Cases where CNV gain events are observed in Gene / # Cases tested for Copy Number Alterations in Gene"
+              "# Cases where CNV amplifications are observed in Gene / # Cases tested for Copy Number Variations in Gene"
             }
           />
         ),
         cell: ({ row }) => {
-          const { numerator, denominator } = row.original["#_cnv_gain"] ?? {
+          const { numerator, denominator } = row.original[
+            "#_cnv_amplifications"
+          ] ?? {
             numerator: 0,
             denominator: 1,
           };
@@ -258,7 +259,7 @@ export const useGenerateGenesTableColumns = ({
                 />
               }
               numCases={numerator}
-              filters={generateFilters("cnvgain", row.original.gene_id)}
+              filters={generateFilters("Amplification", row.original.gene_id)}
               caseFilters={cohortFilters}
               createStaticCohort
             />
@@ -266,17 +267,17 @@ export const useGenerateGenesTableColumns = ({
         },
       }),
       genesTableColumnHelper.display({
-        id: "#_cnv_loss",
+        id: "#_cnv_gains",
         header: () => (
           <HeaderTooltip
-            title="# CNV Loss"
+            title="# CNV Gains"
             tooltip={
-              "# Cases where CNV loss events are observed in Gene / # Cases tested for Copy Number Alterations in Gene"
+              "# Cases where CNV gains are observed in Gene / # Cases tested for Copy Number Variations in Gene"
             }
           />
         ),
         cell: ({ row }) => {
-          const { numerator, denominator } = row.original["#_cnv_loss"] ?? {
+          const { numerator, denominator } = row.original["#_cnv_gains"] ?? {
             numerator: 0,
             denominator: 1,
           };
@@ -290,7 +291,78 @@ export const useGenerateGenesTableColumns = ({
                 />
               }
               numCases={numerator}
-              filters={generateFilters("cnvloss", row.original.gene_id)}
+              filters={generateFilters("Gain", row.original.gene_id)}
+              caseFilters={cohortFilters}
+              createStaticCohort
+            />
+          );
+        },
+      }),
+      genesTableColumnHelper.display({
+        id: "#_cnv_heterozygous_deletions",
+        header: () => (
+          <HeaderTooltip
+            title="# CNV Heterozygous Deletions"
+            tooltip={
+              "# Cases where CNV heterozygous deletions are observed in Gene / # Cases tested for Copy Number Variations in Gene"
+            }
+          />
+        ),
+        cell: ({ row }) => {
+          const { numerator, denominator } = row.original[
+            "#_cnv_heterozygous_deletions"
+          ] ?? {
+            numerator: 0,
+            denominator: 1,
+          };
+          return (
+            <CohortCreationButton
+              label={
+                <NumeratorDenominator
+                  numerator={numerator}
+                  denominator={denominator}
+                  boldNumerator={true}
+                />
+              }
+              numCases={numerator}
+              filters={generateFilters("Loss", row.original.gene_id)}
+              caseFilters={cohortFilters}
+              createStaticCohort
+            />
+          );
+        },
+      }),
+      genesTableColumnHelper.display({
+        id: "#_cnv_homozygous_deletions",
+        header: () => (
+          <HeaderTooltip
+            title="# CNV Homozygous Deletions"
+            tooltip={
+              "# Cases where CNV homozygous deletions are observed in Gene / # Cases tested for Copy Number Variations in Gene"
+            }
+          />
+        ),
+        cell: ({ row }) => {
+          const { numerator, denominator } = row.original[
+            "#_cnv_homozygous_deletions"
+          ] ?? {
+            numerator: 0,
+            denominator: 1,
+          };
+          return (
+            <CohortCreationButton
+              label={
+                <NumeratorDenominator
+                  numerator={numerator}
+                  denominator={denominator}
+                  boldNumerator={true}
+                />
+              }
+              numCases={numerator}
+              filters={generateFilters(
+                "Homozygous Deletion",
+                row.original.gene_id,
+              )}
               caseFilters={cohortFilters}
               createStaticCohort
             />
@@ -342,7 +414,6 @@ export const useGenerateGenesTableColumns = ({
       }),
     ],
     [
-      genesTableColumnHelper,
       setEntityMetadata,
       genomicFilters,
       handleGeneToggled,
@@ -392,12 +463,20 @@ export const getGene = (
       numerator: g.ssm_case,
       denominator: cases,
     },
-    "#_cnv_gain": {
+    "#_cnv_amplifications": {
+      numerator: g.case_cnv_amplification,
+      denominator: cnvCases,
+    },
+    "#_cnv_gains": {
       numerator: g.case_cnv_gain,
       denominator: cnvCases,
     },
-    "#_cnv_loss": {
+    "#_cnv_heterozygous_deletions": {
       numerator: g.case_cnv_loss,
+      denominator: cnvCases,
+    },
+    "#_cnv_homozygous_deletions": {
+      numerator: g.case_cnv_homozygous_deletion,
       denominator: cnvCases,
     },
     "#_mutations": mutationCounts[g.gene_id],

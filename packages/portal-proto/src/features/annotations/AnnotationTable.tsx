@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect, useCallback } from "react";
-import { useDeepCompareMemo } from "use-deep-compare";
+import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
 import {
   VisibilityState,
   ColumnOrderState,
@@ -14,10 +14,11 @@ import {
   SortBy,
   Pagination,
   useCoreDispatch,
+  GqlOperation,
 } from "@gff/core";
 import { createColumnHelper, SortingState } from "@tanstack/react-table";
 import { statusBooleansToDataStatus } from "src/utils";
-import { convertDateToString } from "src/utils/date";
+import { getFormattedTimestamp } from "src/utils/date";
 import FunctionButton from "@/components/FunctionButton";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { HandleChangeInput } from "@/components/Table/types";
@@ -25,6 +26,7 @@ import { downloadTSV } from "@/components/Table/utils";
 import download from "src/utils/download";
 import { useAppSelector } from "./appApi";
 import { selectFilters } from "./annotationBrowserFilterSlice";
+import TotalItems from "@/components/Table/TotalItem";
 
 type AnnotationTableData =
   | Pick<
@@ -110,6 +112,7 @@ const AnnnotationTable: React.FC = () => {
     status: false,
     notes: false,
   });
+  const [jsonDownloadInProgress, setJsonDownloadInProgress] = useState(false);
 
   const sortByActions = useCallback((sorting: SortingState) => {
     setSortBy(
@@ -128,19 +131,25 @@ const AnnnotationTable: React.FC = () => {
 
   const filters = useAppSelector((state) => selectFilters(state));
 
+  const tableFilters: GqlOperation = searchTerm
+    ? buildCohortGqlOperator(filters)
+      ? {
+          op: "and",
+          content: [
+            buildSearchFilters(searchTerm),
+            buildCohortGqlOperator(filters),
+          ],
+        }
+      : buildSearchFilters(searchTerm)
+    : buildCohortGqlOperator(filters);
+
+  useDeepCompareEffect(() => {
+    setActivePage(1);
+  }, [filters]);
+
   const { data, isSuccess, isFetching, isError } = useGetAnnotationsQuery({
     request: {
-      filters: searchTerm
-        ? buildCohortGqlOperator(filters)
-          ? {
-              op: "and",
-              content: [
-                buildSearchFilters(searchTerm),
-                buildCohortGqlOperator(filters),
-              ],
-            }
-          : buildSearchFilters(searchTerm)
-        : buildCohortGqlOperator(filters),
+      filters: tableFilters,
       expand: ["project", "project.program"],
       size: pageSize,
       from: (activePage - 1) * pageSize,
@@ -294,11 +303,12 @@ const AnnnotationTable: React.FC = () => {
   const coreDispatch = useCoreDispatch();
 
   const handleDownloadJSON = async () => {
+    setJsonDownloadInProgress(true);
     await download({
       endpoint: "annotations",
       method: "POST",
       params: {
-        filters: buildCohortGqlOperator(filters) ?? {},
+        filters: tableFilters,
         attachment: true,
         format: "JSON",
         pretty: true,
@@ -319,35 +329,32 @@ const AnnnotationTable: React.FC = () => {
         ].join(","),
       },
       dispatch: coreDispatch,
+      done: () => setJsonDownloadInProgress(false),
     });
   };
 
-  const handleDownloadTSV = () => {
-    downloadTSV<AnnotationTableData>({
+  const handleDownloadTSV = async () => {
+    await downloadTSV<AnnotationTableData>({
       tableData: formattedTableData,
       columnOrder,
       columnVisibility,
       columns,
-      fileName: `annotations-table.${convertDateToString(new Date())}.tsv`,
+      fileName: `annotations-table.${getFormattedTimestamp()}.tsv`,
     });
   };
 
   return (
     <VerticalTable
-      tableTitle={
-        <>
-          Total of{" "}
-          <b>
-            {data?.pagination ? data.pagination.total.toLocaleString() : "--"}
-          </b>{" "}
-          Annotations
-        </>
+      tableTotalDetail={
+        <TotalItems total={data?.pagination?.total} itemName="annotation" />
       }
       additionalControls={
         <div className="flex gap-2">
           <FunctionButton
             data-testid="button-json-projects-table"
             onClick={handleDownloadJSON}
+            isDownload
+            isActive={jsonDownloadInProgress}
           >
             JSON
           </FunctionButton>
@@ -369,7 +376,7 @@ const AnnnotationTable: React.FC = () => {
       }}
       status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
       pagination={{
-        label: "annotations",
+        label: "annotation",
         ...pagination,
       }}
       handleChange={handleChange}

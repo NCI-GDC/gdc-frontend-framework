@@ -12,9 +12,9 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Navigate to "Analysis" from "Header" "section"
 * Navigate to "Mutation Frequency" from "Analysis" "app"
 
-## Validate Custom Gene Filters
+## Validate Gene Table TSV
 * Is text "Overall Survival Plot" present on the page
-* Select "Custom Gene Filters" in the Mutation Frequency app
+* Select "Mutated Gene" in the Mutation Frequency app
 * Upload "Gene FAT4" "txt" from "Mutation Frequency" in "Mutation Frequency Custom Filter" through "Browse"
 * Pause "5" seconds
 * Is text "1 submitted gene identifier mapped to 1 unique GDC gene" present on the page
@@ -44,11 +44,17 @@ but it usually requires a wait. So I've put 5 seconds.
   |num_gdc_ssm_cases                  |
   |gdc_ssm_affected_cases_percentage  |
   |num_cohort_cnv_cases               |
+  |num_cohort_cnv_amplification_cases |
+  |cohort_cnv_amplification_cases_percentage|
   |num_cohort_cnv_gain_cases          |
   |cohort_cnv_gain_cases_percentage   |
-  |num_cohort_cnv_loss_cases          |
-  |cohort_cnv_loss_cases_percentage   |
+  |num_cohort_cnv_heterozygous_deletion_cases|
+  |cohort_cnv_heterozygous_deletion_cases_percentage|
+  |num_cohort_cnv_homozygous_deletion_cases|
+  |cohort_cnv_homozygous_deletion_cases_percentage|
   |num_mutations                      |
+  |annotations                        |
+
 * Verify that "TSV from Mutation Frequency" does not contain specified information
   |required_info                          |
   |---------------------------------------|
@@ -59,15 +65,17 @@ but it usually requires a wait. So I've put 5 seconds.
   |MUC16                                  |
   |FAT3                                   |
   |MUC16                                  |
+  |num_cohort_cnv_loss_cases              |
+  |cohort_cnv_loss_cases_percentage       |
 * Perform the following actions on a filter card
   |filter_name          |action               |
   |---------------------|---------------------|
-  |Custom Gene Filters  |clear selection      |
+  |Mutated Gene         |clear selection      |
 
-## Validate Custom Mutation Filters
+## Validate Mutation Table TSV
 * Switch to "Mutations" tab in the Mutation Frequency app
 * Wait for table loading spinner
-* Select "Custom Mutation Filters" in the Mutation Frequency app
+* Select "Somatic Mutation" in the Mutation Frequency app
 * Upload "Mutation PIK3CA" "txt" from "Mutation Frequency" in "Mutation Frequency Custom Filter" through "Browse"
 * Pause "5" seconds
 * Is text "1 submitted mutation identifier mapped to 1 unique GDC mutation" present on the page
@@ -113,4 +121,4 @@ but it usually requires a wait. So I've put 3 seconds.
 * Perform the following actions on a filter card
   |filter_name              |action               |
   |-------------------------|---------------------|
-  |Custom Mutation Filters  |clear selection      |
+  |Somatic Mutations        |clear selection      |

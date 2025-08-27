@@ -77,8 +77,9 @@ export const repositoryFacetsGQLSlice = createSlice({
         } else {
           const aggregations =
             Object(response).data.viewer["repository"]["files"].aggregations;
-          aggregations &&
+          if (aggregations) {
             processBuckets(action.meta.requestId, aggregations, state);
+          }
         }
       })
       .addCase(fetchRepositoryFacetsGQL.pending, (state, action) => {

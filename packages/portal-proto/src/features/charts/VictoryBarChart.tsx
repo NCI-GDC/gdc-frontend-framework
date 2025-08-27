@@ -99,6 +99,7 @@ interface VictoryBarChartProps {
   };
   readonly hideYTicks?: boolean;
   readonly hideXTicks?: boolean;
+  readonly yAxisFormatAsInteger?: boolean;
   readonly chartRef?: React.MutableRefObject<HTMLElement>;
   readonly truncateLabels?: boolean;
 }
@@ -115,10 +116,11 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
   chartPadding,
   hideYTicks = false,
   hideXTicks = false,
+  yAxisFormatAsInteger = false,
   chartRef = undefined,
   truncateLabels = false,
 }: VictoryBarChartProps) => {
-  const padding = chartPadding ?? { left: 80, right: 80, bottom: 80, top: 10 };
+  const padding = chartPadding ?? { left: 130, right: 80, bottom: 80, top: 10 };
 
   return (
     <VictoryChart
@@ -159,6 +161,11 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
           grid: { stroke: "#F5F5F5", strokeWidth: 1 },
           axisLabel: { fontSize: 25, fontFamily: "Noto Sans" },
         }}
+        tickFormat={
+          yAxisFormatAsInteger
+            ? (t) => (Number.isInteger(t) ? t.toLocaleString() : null)
+            : undefined
+        }
       />
       <VictoryAxis
         style={{

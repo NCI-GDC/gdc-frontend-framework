@@ -1,38 +1,35 @@
+import React from "react";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import { HorizontalTable, HorizontalTableProps } from "../HorizontalTable";
 
 export interface SummaryCardProps {
   readonly title?: string;
-  readonly message?: JSX.Element;
   readonly tableData: HorizontalTableProps["tableData"];
   readonly customDataTestID?: string;
+  readonly enableSync?: boolean;
+  readonly ref?: React.Ref<HTMLTableElement>;
 }
 
-export const SummaryCard = ({
-  title = "Summary",
-  message,
-  tableData,
-  customDataTestID,
-}: SummaryCardProps): JSX.Element => {
-  return (
-    <div>
-      <div
-        className={`p-2 pl-0 pb-0 ${
-          title.length === 0 && !message && "mb-7"
-        } flex justify-between`}
-      >
-        <HeaderTitle className={`${!title && "invisible"}`}>
-          {title}
-        </HeaderTitle>
-        {message && <div className="text-sm">{message}</div>}
-      </div>
+export const SummaryCard = React.forwardRef<HTMLTableElement, SummaryCardProps>(
+  (
+    { title = "Summary", tableData, customDataTestID, enableSync = false },
+    ref,
+  ): JSX.Element => {
+    return (
+      <div className="flex flex-col gap-2 flex-grow">
+        {title !== "" ? (
+          <HeaderTitle>{title}</HeaderTitle>
+        ) : (
+          <div className="h-7" />
+        )}
 
-      <div className={message && "mt-2"}>
         <HorizontalTable
           customDataTestID={customDataTestID}
           tableData={tableData}
+          enableSync={enableSync}
+          ref={ref}
         />
       </div>
-    </div>
-  );
-};
+    );
+  },
+);

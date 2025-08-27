@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { BioTree } from "@/components/BioTree/BioTree";
-import { MdOutlineSearch, MdOutlineClear } from "react-icons/md";
 import {
   Button,
   Input,
@@ -20,11 +19,11 @@ import { formatEntityInfo, searchForStringInNode } from "./utils";
 import { trimEnd, find, flatten, escapeRegExp } from "lodash";
 import { useRouter } from "next/router";
 import { entityTypes, overrideMessage } from "@/components/BioTree/types";
-import { FiDownload as DownloadIcon } from "react-icons/fi";
-import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import download from "@/utils/download";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import { useDeepCompareEffect } from "use-deep-compare";
+import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
+import { ClearIcon, DownloadIcon, SearchIcon } from "@/utils/icons";
 
 interface BiospecimenProps {
   readonly caseId: string;
@@ -42,7 +41,9 @@ export const Biospecimen = ({
   submitter_id,
 }: BiospecimenProps): JSX.Element => {
   const router = useRouter();
-  const [biospecimenDownloadActive, setBiospecimenDownloadActive] =
+  const [biospecimenDownloadActiveTSV, setBiospecimenDownloadActiveTSV] =
+    useState(false);
+  const [biospecimenDownloadActiveJSON, setBiospecimenDownloadActiveJSON] =
     useState(false);
   const [treeStatusOverride, setTreeStatusOverride] =
     useState<overrideMessage | null>(null);
@@ -129,7 +130,7 @@ export const Biospecimen = ({
   });
 
   const handleBiospeciemenTSVDownload = () => {
-    setBiospecimenDownloadActive(true);
+    setBiospecimenDownloadActiveTSV(true);
     download({
       endpoint: "biospecimen_tar",
       method: "POST",
@@ -146,12 +147,12 @@ export const Biospecimen = ({
           },
         },
       },
-      done: () => setBiospecimenDownloadActive(false),
+      done: () => setBiospecimenDownloadActiveTSV(false),
     });
   };
 
   const handleBiospeciemenJSONDownload = () => {
-    setBiospecimenDownloadActive(true);
+    setBiospecimenDownloadActiveJSON(true);
     download({
       endpoint: "biospecimen_tar",
       method: "POST",
@@ -170,13 +171,13 @@ export const Biospecimen = ({
           },
         },
       },
-      done: () => setBiospecimenDownloadActive(false),
+      done: () => setBiospecimenDownloadActiveJSON(false),
     });
   };
 
   // TODO:  Need to add error message in place after this is moved to the Case Summary page for invalid case ids
   return (
-    <div className="mt-14">
+    <>
       {isBiospecimentDataFetching ? (
         <LoadingOverlay visible data-testid="loading-spinner" />
       ) : selectedEntity &&
@@ -191,33 +192,34 @@ export const Biospecimen = ({
             dropdownElements={[
               {
                 title: "TSV",
-                icon: <DownloadIcon size={16} aria-label="download" />,
+                icon: biospecimenDownloadActiveTSV ? (
+                  <Loader size={16} color="currentColor" />
+                ) : (
+                  <DownloadIcon size={16} aria-label="download" />
+                ),
                 onClick: handleBiospeciemenTSVDownload,
               },
               {
                 title: "JSON",
-                icon: <DownloadIcon size={16} aria-label="download" />,
+                icon: biospecimenDownloadActiveJSON ? (
+                  <Loader size={16} color="currentColor" />
+                ) : (
+                  <DownloadIcon size={16} aria-label="download" />
+                ),
                 onClick: handleBiospeciemenJSONDownload,
               },
             ]}
-            TargetButtonChildren={
-              biospecimenDownloadActive ? "Processing" : "Download"
-            }
-            LeftSection={
-              biospecimenDownloadActive ? (
-                <Loader size={20} />
-              ) : (
-                <DownloadIcon size="1rem" aria-label="download" />
-              )
-            }
+            TargetButtonChildren="Download"
+            LeftSection={<DownloadIcon size="1rem" aria-label="download" />}
+            closeOnItemClick={false}
           />
 
           <div className="flex mt-2 gap-4">
-            <div className="basis-4/12">
-              <div className="flex mb-4 gap-4">
+            <div className="basis-2/5 lg:basis-1/3">
+              <div className="flex flex-col lg:flex-row gap-2 mb-4 ">
                 <Input
                   data-testid="textbox-biospecimen-search-bar"
-                  leftSection={<MdOutlineSearch size={24} aria-hidden="true" />}
+                  leftSection={<SearchIcon size={24} aria-hidden="true" />}
                   placeholder="Search"
                   classNames={{
                     wrapper: "basis-5/6",
@@ -231,7 +233,9 @@ export const Biospecimen = ({
                         shallow: true,
                       });
                     }
-                    setEntityClicked && setEntityClicked(false);
+                    if (setEntityClicked) {
+                      setEntityClicked(false);
+                    }
                     setSearchText(e.target.value);
                   }}
                   value={searchText}
@@ -244,13 +248,15 @@ export const Biospecimen = ({
                           setExpandedCount(0);
                           setTreeStatusOverride(overrideMessage.Expanded);
                           setSearchText("");
-                          setEntityClicked && setEntityClicked(false);
+                          if (setEntityClicked) {
+                            setEntityClicked(false);
+                          }
                           router.replace(`/cases/${caseId}`, undefined, {
                             shallow: true,
                           });
                         }}
                       >
-                        <MdOutlineClear aria-label="clear search" />
+                        <ClearIcon aria-label="clear search" />
                       </ActionIcon>
                     )
                   }
@@ -264,7 +270,7 @@ export const Biospecimen = ({
                     );
                     setExpandedCount(0);
                   }}
-                  className="flex-none text-primary hover:enabled:bg-primary-darker hover:enabled:text-base-lightest"
+                  className="flex-none text-primary hover:enabled:bg-primary-darker hover:enabled:text-base-lightest font-medium"
                   disabled={searchText.length > 0}
                   variant="outline"
                 >
@@ -292,7 +298,7 @@ export const Biospecimen = ({
                   />
                 )}
             </div>
-            <div className="basis-3/4">
+            <div className="basis-3/5 lg:basis-2/3">
               <HorizontalTable
                 customDataTestID="table-selection-information-biospecimen"
                 tableData={formatEntityInfo(
@@ -308,6 +314,6 @@ export const Biospecimen = ({
           </div>
         </>
       ) : null}
-    </div>
+    </>
   );
 };

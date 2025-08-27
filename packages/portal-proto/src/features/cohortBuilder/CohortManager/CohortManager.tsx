@@ -1,109 +1,70 @@
-import React, { useEffect, useState } from "react";
-import { Tooltip } from "@mantine/core";
-import { useRouter } from "next/router";
+import React from "react";
+import { useDeepCompareCallback } from "use-deep-compare";
 import {
-  selectCurrentCohortModified,
-  useCoreDispatch,
   useCoreSelector,
-  selectCurrentCohortSaved,
-  addNewUnsavedCohort,
-  FilterSet,
+  selectCurrentModal,
+  Modals,
+  UNSAVED_COHORT_NAME,
+  Operation,
+  updateActiveCohortFilter,
+  useCoreDispatch,
 } from "@gff/core";
-import { FaUndo as DiscardIcon } from "react-icons/fa";
-import { removeQueryParamsFromRouter } from "./cohortUtils";
-import CohortActions from "./CohortActions";
-import CohortSelector from "./CohortSelector";
-import { CohortModals } from "./CohortModals";
-import { CohortGroupButton } from "../style";
+import { CohortManager as CommonCohortManager } from "@gff/portal-components";
+import CaseSetModal from "@/components/Modals/SetModals/CaseSetModal";
+import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
+import MutationSetModal from "@/components/Modals/SetModals/MutationSetModal";
+import ImportCohortModal from "../Modals/ImportCohortModal";
+import { cohortActionsHooks } from "./cohortActionHooks";
+import { INVALID_COHORT_NAMES, useCohortFacetFilters } from "../utils";
 
-const CohortManager: React.FC = () => {
+interface CohortManagerProps {
+  readonly isFetchingCohorts: boolean;
+}
+
+const CohortManager: React.FC<CohortManagerProps> = ({ isFetchingCohorts }) => {
+  const modal = useCoreSelector(selectCurrentModal);
   const coreDispatch = useCoreDispatch();
-  const router = useRouter();
 
-  const currentCohortSaved = useCoreSelector(selectCurrentCohortSaved);
-  const currentCohortModified = useCoreSelector(selectCurrentCohortModified);
-
-  const [showDelete, setShowDelete] = useState(false);
-  const [showDiscard, setShowDiscard] = useState(false);
-  const [showSaveCohort, setShowSaveCohort] = useState(false);
-  const [showSaveAsCohort, setShowSaveAsCohort] = useState(false);
-  const [showUpdateCohort, setShowUpdateCohort] = useState(false);
-
-  useEffect(() => {
-    const {
-      operation,
-      filters: createCohortFilters,
-      name: createCohortName,
-    } = router.query;
-
-    if (operation == "createCohort") {
-      const cohortFilters = JSON.parse(
-        createCohortFilters as string,
-      ) as FilterSet;
-      coreDispatch(
-        addNewUnsavedCohort({
-          filters: cohortFilters,
-          name: (createCohortName as string).replace(/-/g, " "),
-          replace: true,
-          message: "newCohort",
-        }),
-      );
-
-      removeQueryParamsFromRouter(router, ["operation", "filters", "name"]);
-    }
-    // Only run on mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const updateCohortFilters = useDeepCompareCallback(
+    (field: string, operation: Operation) => {
+      coreDispatch(updateActiveCohortFilter({ field, operation }));
+    },
+    [coreDispatch],
+  );
 
   return (
-    <div
-      data-tour="cohort_management_bar"
-      className="flex flex-row items-center justify-start gap-6 px-4 h-18 shadow-lg bg-primary"
-    >
-      <div className="border-opacity-0">
-        <div className="flex flex-wrap gap-2 lg:gap-4">
-          <div className="flex justify-center items-center">
-            <Tooltip label="Discard Changes" position="bottom" withArrow>
-              <span>
-                <CohortGroupButton
-                  data-testid="discardButton"
-                  onClick={() => setShowDiscard(true)}
-                  disabled={!currentCohortModified}
-                  $isDiscard={true}
-                  aria-label="Discard cohort changes"
-                >
-                  <DiscardIcon aria-hidden="true" />
-                </CohortGroupButton>
-              </span>
-            </Tooltip>
-
-            <CohortSelector />
-          </div>
-          <CohortActions
-            onSave={() =>
-              currentCohortSaved
-                ? setShowUpdateCohort(true)
-                : setShowSaveCohort(true)
-            }
-            onSaveAs={() => setShowSaveAsCohort(true)}
-            onDelete={() => setShowDelete(true)}
-          />
-        </div>
-      </div>
-
-      <CohortModals
-        showDelete={showDelete}
-        showDiscard={showDiscard}
-        showSaveCohort={showSaveCohort}
-        showSaveAsCohort={showSaveAsCohort}
-        showUpdateCohort={showUpdateCohort}
-        onSetShowDelete={setShowDelete}
-        onSetShowDiscard={setShowDiscard}
-        onSetShowSaveCohort={setShowSaveCohort}
-        onSetShowSaveAsCohort={setShowSaveAsCohort}
-        onSetShowUpdateCohort={setShowUpdateCohort}
+    <>
+      <CommonCohortManager
+        hooks={cohortActionsHooks}
+        invalidCohortNames={INVALID_COHORT_NAMES}
+        defaultCohortName={UNSAVED_COHORT_NAME}
+        isFetchingCohorts={isFetchingCohorts}
       />
-    </div>
+      <ImportCohortModal opened={modal === Modals.ImportCohortModal} />
+      <CaseSetModal
+        updateFilters={updateCohortFilters}
+        existingFiltersHook={useCohortFacetFilters}
+        opened={modal === Modals.GlobalCaseSetModal}
+      />
+
+      <GeneSetModal
+        opened={modal === Modals.GlobalGeneSetModal}
+        modalTitle="Filter Current Cohort by Mutated Genes"
+        inputInstructions="Enter one or more gene identifiers in the field below or upload a file to filter your cohort. Your filtered cohort will consist of cases that have mutations in any of these genes."
+        selectSetInstructions="Select one or more sets below to filter your cohort."
+        updateFilters={updateCohortFilters}
+        existingFiltersHook={useCohortFacetFilters}
+      />
+
+      <MutationSetModal
+        opened={modal === Modals.GlobalMutationSetModal}
+        modalTitle="Filter Current Cohort by Somatic Mutations"
+        inputInstructions="Enter one or more mutation identifiers in the field below or upload a file to filter your cohort. Your filtered cohort will consist of cases that have any of these mutations."
+        selectSetInstructions="Select one or more sets below to filter your cohort."
+        updateFilters={updateCohortFilters}
+        existingFiltersHook={useCohortFacetFilters}
+      />
+    </>
   );
 };
 

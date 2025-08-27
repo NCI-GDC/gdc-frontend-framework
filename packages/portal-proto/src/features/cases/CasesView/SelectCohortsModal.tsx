@@ -1,5 +1,5 @@
 import FunctionButton from "@/components/FunctionButton";
-import SaveCohortModal from "@/components/Modals/SaveCohortModal";
+import { SaveCohortModal } from "@gff/portal-components";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import {
@@ -17,6 +17,8 @@ import { MAX_CASE_IDS } from "./utils";
 import { createColumnHelper } from "@tanstack/react-table";
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
+import { cohortActionsHooks } from "@/features/cohortBuilder/CohortManager/cohortActionHooks";
+import { INVALID_COHORT_NAMES } from "@/features/cohortBuilder/utils";
 
 export type WithOrWithoutCohortType = "with" | "without" | undefined;
 export const SelectCohortsModal = ({
@@ -55,7 +57,7 @@ export const SelectCohortsModal = ({
   );
 
   const cohortListTableColumnHelper =
-    createColumnHelper<typeof cohortListData[0]>();
+    createColumnHelper<(typeof cohortListData)[0]>();
 
   const cohortListTableColumn = useMemo(
     () => [
@@ -64,6 +66,7 @@ export const SelectCohortsModal = ({
         header: "Select",
         cell: ({ row }) => (
           <Radio
+            data-testid={`radio-${row.original.name}`}
             value={row.original.cohort_id}
             checked={checkedValue === row.original.cohort_id}
             onChange={(event) => {
@@ -75,22 +78,43 @@ export const SelectCohortsModal = ({
       cohortListTableColumnHelper.accessor("name", {
         id: "name",
         header: "Name",
+        cell: ({ getValue, row }) => (
+          <span data-testid={`text-${row.original.name}-cohort-name`}>
+            {getValue()}
+          </span>
+        ),
       }),
       cohortListTableColumnHelper.accessor("num_cases", {
         id: "num_cases",
         header: "# Cases",
+        cell: ({ getValue, row }) => (
+          <span data-testid={`text-${row.original.name}-cohort-count`}>
+            {getValue()}
+          </span>
+        ),
       }),
     ],
     [cohortListTableColumnHelper, checkedValue],
   );
 
-  const { handlePageChange, page, pages, size, from, total, displayedData } =
-    useStandardPagination(cohortListData);
+  const {
+    handlePageChange,
+    handlePageSizeChange,
+    page,
+    pages,
+    size,
+    from,
+    total,
+    displayedData,
+  } = useStandardPagination(cohortListData);
 
   const handleChange = (obj: HandleChangeInput) => {
     switch (Object.keys(obj)?.[0]) {
       case "newPageNumber":
         handlePageChange(obj.newPageNumber);
+        break;
+      case "newPageSize":
+        handlePageSizeChange(obj.newPageSize);
         break;
     }
   };
@@ -106,6 +130,7 @@ export const SelectCohortsModal = ({
         size: MAX_CASE_IDS,
       });
       resCases = res.data.hits.map((hit) => hit.case_id);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       // TODO: how to handle this situation?
       // maybe show a modal and ask user to redo the task
@@ -199,12 +224,15 @@ export const SelectCohortsModal = ({
           }}
           opened={showSaveCohort}
           filters={saveCohortFilters}
+          hooks={cohortActionsHooks}
+          invalidCohortNames={INVALID_COHORT_NAMES}
         />
 
         <div className="px-4">
-          <Text className="text-xs mb-4 block">{description}</Text>
+          <Text className="text-sm mb-4 block font-content">{description}</Text>
 
           <VerticalTable
+            customDataTestID="table-select-cohort"
             data={displayedData}
             columns={cohortListTableColumn}
             status="fulfilled"
@@ -214,18 +242,20 @@ export const SelectCohortsModal = ({
               size,
               from,
               total,
-              label: "cohorts",
+              label: "cohort",
             }}
             handleChange={handleChange}
-            disablePageSize={true}
           />
         </div>
         <div
           data-testid="modal-button-container"
           className="bg-base-lightest flex p-4 gap-4 justify-end mt-4 rounded-b-lg sticky"
         >
-          <FunctionButton onClick={onClose}>Cancel</FunctionButton>
+          <FunctionButton data-testid="button-cancel" onClick={onClose}>
+            Cancel
+          </FunctionButton>
           <DarkFunctionButton
+            data-testid="button-submit"
             disabled={!checkedValue}
             loading={loading}
             leftSection={

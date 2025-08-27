@@ -22,9 +22,13 @@ jest.mock("@gff/core", () => ({
     nullFunction,
     resultsCreateCaseSet,
   ],
-  useGetCohortsByContextIdQuery: jest
-    .fn()
-    .mockReturnValue({ data: [], isSuccess: true, isLoading: false }),
+  useLazyGetCohortsByContextIdQuery: jest.fn().mockReturnValue([
+    jest.fn().mockReturnValue({ unwrap: jest.fn() }),
+    {
+      isSuccess: true,
+      isLoading: false,
+    },
+  ] as any),
   useLazyGetCohortByIdQuery: jest.fn().mockReturnValue([jest.fn()]),
   useCreateCaseSetFromFiltersMutation: jest.fn().mockReturnValue([jest.fn()]),
 }));
@@ -33,10 +37,12 @@ jest.mock("@/hooks/useIsDemoApp", () => ({
   useIsDemoApp: jest.fn(() => isDemoMode),
 }));
 
+jest.mock("@gff/portal-components");
+
 jest.mock("@sjcrh/proteinpaint-client", () => ({
   __esModule: true,
-  runproteinpaint: jest.fn(async (arg) => {
-    runpparg = arg;
+  bindProteinPaint: jest.fn(async (arg) => {
+    runpparg = Object.assign({}, arg.initArgs, arg.updateArgs || {});
     return {};
   }),
 }));
@@ -60,21 +66,13 @@ test("SSM lolliplot arguments", () => {
   expect(runpparg.noheader).toEqual(true);
   expect(runpparg.nobox).toEqual(true);
   expect(runpparg.holder instanceof HTMLElement).toBe(true);
-  expect(runpparg.genome).toEqual("hg38");
-  expect(runpparg.tracks).toEqual([
-    {
-      type: "mds3",
-      dslabel: "GDC",
-      filter0: { abc: "xyz" },
-      allow2selectSamples: {
-        buttonText: "Create Cohort",
-        attributes: [{ from: "sample_id", to: "cases.case_id", convert: true }],
-        callback: runpparg.tracks[0]?.allow2selectSamples?.callback,
-      },
-    },
-  ]);
+  expect(runpparg.filter0).toEqual(filter);
+  expect(runpparg.allow2selectSamples).toEqual({
+    buttonText: "Create Cohort",
+    attributes: [{ from: "sample_id", to: "cases.case_id", convert: true }],
+    callback: runpparg.allow2selectSamples?.callback,
+  });
   expect(runpparg.geneSearch4GDCmds3).toEqual(true);
-  expect(runpparg.tracks?.[0].filter0).toEqual(filter);
   isDemoMode = true;
   rerender(
     <MantineProvider
@@ -88,6 +86,6 @@ test("SSM lolliplot arguments", () => {
       <ProteinPaintWrapper />
     </MantineProvider>,
   );
-  expect(runpparg.tracks?.[0].filter0).not.toEqual(filter);
+  expect(runpparg.filter0).not.toEqual(filter);
   unmount();
 });

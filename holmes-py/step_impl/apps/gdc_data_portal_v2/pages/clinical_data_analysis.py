@@ -7,11 +7,11 @@ from ....base.base_page import BasePage
 class ClinicalDataAnalysisLocators:
     PLEASE_WAIT_SPINNER = "svg[data-testid='please_wait_spinner']"
 
-    GROUP_TABLE = lambda group: f"div[id=cdave-control-group-{group}]"
+    GROUP_TABLE = lambda group: f'div[id="cdave-control-group-{group}"]'
     GROUP_TABLE_PLUS_BUTTON = (
-        lambda group: f"div[id='cdave-control-group-{group}'] >> button[data-testid='plus-icon']"
+        lambda group: f'div[id="cdave-control-group-{group}"] >> button[data-testid="plus-icon"]'
     )
-    PROPERTY_ROW = lambda property: f"text='{property}'"
+    PROPERTY_ROW = lambda property: f'text="{property}"'
     FIELD_SELECT_SWITCH_IDENT = (
         lambda field_name: f'[data-testid="row-field-{field_name}-cdave"] >> text={field_name}'
     )
@@ -20,8 +20,17 @@ class ClinicalDataAnalysisLocators:
     BUTTON_ON_ANALYSIS_CARD = (
         lambda card_name, button_name: f"[data-testid='{card_name}-card'] >> [data-testid='button-{button_name}']"
     )
+    BUTTON_UNIT_ON_ANALYSIS_CARD = (
+        lambda card_name, unit_type: f"[data-testid='{card_name}-card'] >> label:has-text('{unit_type}')"
+    )
+    BUTTON_TSV_ANALYSIS_CARD = (
+        lambda card_name: f"[data-testid='{card_name}-card'] >> [data-testid='button-tsv-cdave-card']"
+    )
     TEXT_IN_TABLE_ON_ANALYSIS_CARD = (
         lambda card_name, table_value: f"[data-testid='{card_name}-card'] >> [data-testid='table-card'] >> text='{table_value}'"
+    )
+    TABLE_ON_ANALYSIS_CARD_ROW_COLUMN = (
+        lambda card_name, row, column: f"[data-testid='{card_name}-card'] >> [data-testid='table-card'] >> tr:nth-child({row}) > td:nth-child({column})"
     )
 
     BUTTON_CATEGORICAL_MODAL = (
@@ -116,6 +125,12 @@ class ClinicalDataAnalysisPage(BasePage):
         self.click(ClinicalDataAnalysisLocators.GROUP_TABLE_PLUS_BUTTON("Diagnosis"))
         self.click(ClinicalDataAnalysisLocators.GROUP_TABLE_PLUS_BUTTON("Treatment"))
         self.click(ClinicalDataAnalysisLocators.GROUP_TABLE_PLUS_BUTTON("Exposures"))
+        if self.is_visible(ClinicalDataAnalysisLocators.GROUP_TABLE_PLUS_BUTTON("Other Clinical Attribute")):
+            self.click(ClinicalDataAnalysisLocators.GROUP_TABLE_PLUS_BUTTON("Other Clinical Attribute"))
+
+    def get_analysis_card_table_data_by_row_column(self, analysis_card_name, row, column):
+        locator = ClinicalDataAnalysisLocators.TABLE_ON_ANALYSIS_CARD_ROW_COLUMN(analysis_card_name, row, column)
+        return self.get_text(locator)
 
     def validate_property_table(self, table):
         # Grab the group value
@@ -157,6 +172,25 @@ class ClinicalDataAnalysisPage(BasePage):
         button_locator = ClinicalDataAnalysisLocators.BUTTON_ON_ANALYSIS_CARD(
             analysis_card_name, button_name
         )
+        self.click(button_locator)
+
+    def click_analysis_card_table_data_by_row_column(self, analysis_card_name, row, column, what_to_click):
+        table_locator_to_select = ClinicalDataAnalysisLocators.TABLE_ON_ANALYSIS_CARD_ROW_COLUMN(analysis_card_name, row, column)
+        # Need to be specific on what to click on. The cell is too big to click the center for it to work.
+        if what_to_click.lower() == "button":
+            table_locator_to_select = table_locator_to_select + ">> button"
+        elif what_to_click.lower() == "checkbox":
+            table_locator_to_select = table_locator_to_select + ">> input"
+        self.hover(table_locator_to_select)
+        self.click(table_locator_to_select, True)
+
+    def click_unit_on_analysis_card(self, analysis_card_name, unit_type):
+        locator = ClinicalDataAnalysisLocators.BUTTON_UNIT_ON_ANALYSIS_CARD(analysis_card_name, unit_type)
+        self.click(locator)
+
+    def click_tsv_button_on_analysis_card(self, analysis_card_name):
+        """Clicks tsv download button on given analysis card"""
+        button_locator = ClinicalDataAnalysisLocators.BUTTON_TSV_ANALYSIS_CARD(analysis_card_name)
         self.click(button_locator)
 
     def click_button_categorical_modal(self, button_name):

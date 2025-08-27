@@ -1,19 +1,20 @@
 import { useState, useRef, useContext, useEffect } from "react";
 import { ActionIcon, Radio, Group, Loader, Menu, Tooltip } from "@mantine/core";
-import { FiDownload as DownloadIcon } from "react-icons/fi";
 import tailwindConfig from "tailwind.config";
 import OffscreenWrapper from "@/components/OffscreenWrapper";
 import { handleDownloadPNG, handleDownloadSVG } from "@/features/charts/utils";
-import { convertDateToString } from "@/utils/date";
+import { getFormattedTimestamp } from "@/utils/date";
 import {
   DashboardDownloadContext,
   DownloadProgressContext,
-} from "@/utils/contexts";
+} from "@gff/portal-components";
 import VictoryBarChart from "../../charts/VictoryBarChart";
 import { COLOR_MAP } from "../constants";
 import { toDisplayName } from "../utils";
 import { DisplayData } from "../types";
 import { useDeepCompareMemo } from "use-deep-compare";
+import { DownloadIcon } from "@/utils/icons";
+import { ADDITIONAL_DOWNLOAD_MESSAGE } from "@/utils/constants";
 
 const formatBarChartData = (
   data: DisplayData,
@@ -51,7 +52,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
 }: HistogramProps) => {
   const [displayPercent, setDisplayPercent] = useState(false);
   const downloadChartRef = useRef<HTMLElement>();
-  const { downloadInProgress, setDownloadInProgress } = useContext(
+  const { downloadInProgress, downloadType, setDownloadProgress } = useContext(
     DownloadProgressContext,
   );
 
@@ -60,14 +61,17 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
     [data, yTotal, displayPercent],
   );
 
+  const fieldType = field.split(".").at(-2);
+  const variant =
+    fieldType === "other_clinical_attributes" ? "darker" : "DEFAULT";
   const color =
-    tailwindConfig.theme.extend.colors[COLOR_MAP[field.split(".").at(-2)]]
-      ?.DEFAULT;
+    tailwindConfig.theme.extend.colors[COLOR_MAP[fieldType]]?.[variant];
+
   const hideXTicks = barChartData.length > 20;
   const fieldName = toDisplayName(field);
   const downloadFileName = `${field
     .split(".")
-    .at(-1)}-bar-chart.${convertDateToString(new Date())}`;
+    .at(-1)}-bar-chart.${getFormattedTimestamp()}`;
   const jsonData = barChartData.map((b) => ({ label: b.fullName, value: b.y }));
 
   const { dispatch } = useContext(DashboardDownloadContext);
@@ -88,7 +92,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
         </div>
       ) : (
         <>
-          <div className="flex flex-row justify-between pl-2 pr-0">
+          <div className="flex justify-between pl-2 pr-0">
             <Radio.Group
               size="sm"
               onChange={(value) => setDisplayPercent(value === "percent")}
@@ -111,13 +115,13 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                 />
               </Group>
             </Radio.Group>
-            <Menu>
+            <Menu closeOnItemClick={false}>
               <Menu.Target>
                 <Tooltip
                   label="Download image or data"
                   withArrow
                   withinPortal
-                  position={"left"}
+                  position="left"
                 >
                   <ActionIcon
                     data-testid="button-histogram-download"
@@ -125,40 +129,57 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                     className="bg-base-max border-primary"
                     aria-label="Download image or data"
                   >
-                    {downloadInProgress ? (
-                      <Loader size={16} />
-                    ) : (
-                      <DownloadIcon className="text-primary" aria-hidden />
-                    )}
+                    <DownloadIcon className="text-primary" aria-hidden />
                   </ActionIcon>
                 </Tooltip>
               </Menu.Target>
 
-              <Menu.Dropdown>
-                <Menu.Item
-                  onClick={async () => {
-                    setDownloadInProgress(true);
-                    await handleDownloadSVG(
-                      downloadChartRef,
-                      `${downloadFileName}.svg`,
-                    );
-                    setDownloadInProgress(false);
-                  }}
+              <Menu.Dropdown data-testid="dropdown-menu-options">
+                <Tooltip
+                  label={ADDITIONAL_DOWNLOAD_MESSAGE}
+                  disabled={!downloadInProgress || downloadType !== "svg"}
                 >
-                  SVG
-                </Menu.Item>
-                <Menu.Item
-                  onClick={async () => {
-                    setDownloadInProgress(true);
-                    await handleDownloadPNG(
-                      downloadChartRef,
-                      `${downloadFileName}.png`,
-                    );
-                    setDownloadInProgress(false);
-                  }}
+                  <Menu.Item
+                    onClick={async () => {
+                      setDownloadProgress(true, "svg");
+                      await handleDownloadSVG(
+                        downloadChartRef,
+                        `${downloadFileName}.svg`,
+                      );
+                      setDownloadProgress(false, null);
+                    }}
+                    leftSection={
+                      downloadInProgress && downloadType === "svg" ? (
+                        <Loader size={16} />
+                      ) : null
+                    }
+                  >
+                    SVG
+                  </Menu.Item>
+                </Tooltip>
+
+                <Tooltip
+                  label={ADDITIONAL_DOWNLOAD_MESSAGE}
+                  disabled={!downloadInProgress || downloadType !== "png"}
                 >
-                  PNG
-                </Menu.Item>
+                  <Menu.Item
+                    onClick={async () => {
+                      setDownloadProgress(true, "png");
+                      await handleDownloadPNG(
+                        downloadChartRef,
+                        `${downloadFileName}.png`,
+                      );
+                      setDownloadProgress(false, null);
+                    }}
+                    leftSection={
+                      downloadInProgress && downloadType === "png" ? (
+                        <Loader size={16} />
+                      ) : null
+                    }
+                  >
+                    PNG
+                  </Menu.Item>
+                </Tooltip>
                 <Menu.Item
                   component="a"
                   href={`data:text/json;charset=utf-8, ${encodeURIComponent(
@@ -187,6 +208,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                   : undefined
               }
               truncateLabels
+              yAxisFormatAsInteger={!displayPercent}
             />
           </div>
           <OffscreenWrapper>
@@ -206,6 +228,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                   : undefined
               }
               chartRef={downloadChartRef}
+              yAxisFormatAsInteger={!displayPercent}
             />
           </OffscreenWrapper>
         </>

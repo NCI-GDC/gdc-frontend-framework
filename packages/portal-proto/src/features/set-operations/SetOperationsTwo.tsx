@@ -13,18 +13,19 @@ export const SetOperationsTwo: React.FC<SetOperationsExternalProps> = ({
     entityType,
     sets,
   );
-  const { data: intersectionData } = queryHook({
-    filters: {
-      filters: intersectionFilters,
-    },
-  });
+  const { data: intersectionData, isLoading: isIntersectionLoading } =
+    queryHook({
+      filters: {
+        filters: intersectionFilters,
+      },
+    });
 
   const s1MinusS2Filters = createSetFiltersByKey(
     "S1_minus_S2",
     entityType,
     sets,
   );
-  const { data: s1MinusS2Data } = queryHook({
+  const { data: s1MinusS2Data, isLoading: isS1MinusS2Loading } = queryHook({
     filters: {
       filters: s1MinusS2Filters,
     },
@@ -35,11 +36,14 @@ export const SetOperationsTwo: React.FC<SetOperationsExternalProps> = ({
     entityType,
     sets,
   );
-  const { data: s2MinusS1Data } = queryHook({
+  const { data: s2MinusS1Data, isLoading: isS2MinusS1Loading } = queryHook({
     filters: {
       filters: s2MinusS1Filters,
     },
   });
+
+  const isLoading =
+    isIntersectionLoading || isS1MinusS2Loading || isS2MinusS1Loading;
 
   const data = [
     {
@@ -66,6 +70,7 @@ export const SetOperationsTwo: React.FC<SetOperationsExternalProps> = ({
       data={data}
       queryHook={queryHook}
       countHook={countHook}
+      isLoading={isLoading}
     />
   );
 };
