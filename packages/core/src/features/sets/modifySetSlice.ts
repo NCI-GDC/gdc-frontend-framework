@@ -192,7 +192,14 @@ export const modifySetSlice = graphqlAPISlice
         string,
         ModifySetFilterArgs
       >({
-        queryFn: async ({ case_filters, filters, score, size, setId }) => {
+        queryFn: async ({
+          case_filters,
+          filters,
+          score,
+          sort,
+          size,
+          setId,
+        }) => {
           let results: GraphQLApiResponse<any>;
 
           // get the top N ssms listed by score
@@ -202,6 +209,7 @@ export const modifySetSlice = graphqlAPISlice
               filters,
               size,
               score,
+              sort,
             });
           } catch (e) {
             return { error: e as GraphQLFetchError };

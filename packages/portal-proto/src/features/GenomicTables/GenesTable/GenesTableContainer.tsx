@@ -336,7 +336,7 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
                 ? convertFilterToGqlFilter(operationSetFilters)
                 : undefined
             }
-            sort="case.project.project_id"
+            score="case.project.project_id"
             isManualSelection={selectedGenes.length > 0}
             saveCount={
               selectedGenes.length === 0
@@ -367,7 +367,7 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
             countHook={useGeneSetCountsQuery}
             appendSetHook={useAppendToGeneSetMutation}
             field={"genes.gene_id"}
-            sort="case.project.project_id"
+            score="case.project.project_id"
           />
 
           <RemoveFromSetModal
