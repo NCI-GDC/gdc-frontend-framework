@@ -408,7 +408,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                 e.target.checked ? setBinMethod("ranges") : undefined
               }
             />
-            <span className="font-content text-sm">Custom ranges:</span>
+            <span className="font-content text-sm">Custom ranges</span>
           </div>
 
           {/* This switches the bin method when a user clicks on the "area", no keyboard equivalent is needed to accessibly navigate the form */}
