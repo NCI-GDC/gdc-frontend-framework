@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Cohort End to End Test with Multiple Types of Filters
 Test-case       : PEAR-1448
 
-tags: gdc-data-portal-v2, end-to-end, regression
+tags: gdc-data-portal-v2, end-to-end, regression, gitlab
 
 ## Save a cohort with multiple types of filters
 * On GDC Data Portal V2 app

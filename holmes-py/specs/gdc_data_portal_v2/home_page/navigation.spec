@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Test Home Page - Navigation
 Test-case       : PEAR-939
 
-tags: gdc-data-portal-v2, regression, home-page, navigation
+tags: gdc-data-portal-v2, regression, home-page, navigation, gitlab
 
 ## Navigate to Home Page
 * On GDC Data Portal V2 app

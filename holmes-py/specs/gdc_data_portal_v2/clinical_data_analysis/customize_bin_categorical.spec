@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description     : cDAVE customize bin categorical values
 Test-Case       : PEAR-606
 
-tags: gdc-data-portal-v2, clinical-data-analysis, regression
+tags: gdc-data-portal-v2, clinical-data-analysis, regression, gitlab
 
 ## Navigate to Clinical Data Analysis
 * On GDC Data Portal V2 app

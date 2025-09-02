@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Test Footer - Links
 Test-case       : PEAR-942
 
-tags: gdc-data-portal-v2, regression, footer, navigation
+tags: gdc-data-portal-v2, regression, footer, navigation, gitlab
 
 ## Navigate to Home Page
 * On GDC Data Portal V2 app

@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		    : Validate Cohort Table
 Test-Case           : PEAR-1052
 
-tags: gdc-data-portal-v2, regression, cohort-bar, case-view
+tags: gdc-data-portal-v2, regression, cohort-bar, case-view, gitlab
 
 ## Navigate to Table View
 * On GDC Data Portal V2 app

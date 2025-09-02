@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Test Cohort Bar - exporting a cohort
 Test-case       : PEAR-501
 
-tags: gdc-data-portal-v2, regression, cohort-bar, download
+tags: gdc-data-portal-v2, regression, cohort-bar, download, gitlab
 
 ## Navigate to Cohort Builder
 * On GDC Data Portal V2 app

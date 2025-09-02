@@ -5,7 +5,7 @@ Owner		      : GDC QA
 Description	  : Save New Cohort with Dropdown Options
 Test-Case     : PEAR-620
 
-tags: gdc-data-portal-v2, clinical-data-analysis, regression
+tags: gdc-data-portal-v2, clinical-data-analysis, regression, gitlab
 
 ## Create Cohort for Test
 * On GDC Data Portal V2 app

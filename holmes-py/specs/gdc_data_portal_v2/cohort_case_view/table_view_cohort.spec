@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		    : Save New Cohort Button with Dropdown Options
 Test-Case           : PEAR-1013
 
-tags: gdc-data-portal-v2, regression, cohort-bar, case-view
+tags: gdc-data-portal-v2, regression, cohort-bar, case-view, gitlab
 
 ## Make Blank Cohort
 * On GDC Data Portal V2 app

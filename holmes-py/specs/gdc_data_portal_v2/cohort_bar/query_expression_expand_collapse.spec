@@ -5,7 +5,7 @@ Owner		    : GDC QA
 Description		: Cohort Query Expression Area Expand/Collapse Rows and Filters
 Test-case       : PEAR-2270
 
-tags: gdc-data-portal-v2, regression, cohort-bar
+tags: gdc-data-portal-v2, regression, cohort-bar, gitlab
 
 
 ## Navigate to Cohort Builder

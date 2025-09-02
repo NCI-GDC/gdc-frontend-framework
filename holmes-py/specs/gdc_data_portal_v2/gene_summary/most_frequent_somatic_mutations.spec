@@ -5,7 +5,7 @@ Owner		      : GDC QA
 Description		: Validate Most Frequent Somatic Mutations Table
 Test-Case     : PEAR-2286
 
-tags: gdc-data-portal-v2, regression, gene-summary
+tags: gdc-data-portal-v2, regression, gene-summary, gitlab
 
 ## Navigate to Gene Summary Page: RDH14
 * On GDC Data Portal V2 app

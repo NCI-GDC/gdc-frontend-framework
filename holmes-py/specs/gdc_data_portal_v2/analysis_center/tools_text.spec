@@ -5,7 +5,7 @@ Owner		    : GDC QA
 Description		: Analysis Tool and Core Tool text
 Test-Case       : PEAR-475
 
-tags: gdc-data-portal-v2, navigation, analysis-center, regression
+tags: gdc-data-portal-v2, navigation, analysis-center, regression, gitlab
 
 ## Tool Text Test Begin
 * On GDC Data Portal V2 app

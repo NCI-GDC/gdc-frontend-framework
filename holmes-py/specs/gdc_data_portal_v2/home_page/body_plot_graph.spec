@@ -5,7 +5,7 @@ Owner		    : GDC QA
 Description		: Home Page - Create Cohorts using Body Plot Graph
 Test-case       : PEAR-1104
 
-tags: gdc-data-portal-v2, regression, home-page, cohort-bar
+tags: gdc-data-portal-v2, regression, home-page, cohort-bar, gitlab
 
 ## Navigate to Home Page
 * On GDC Data Portal V2 app

@@ -5,7 +5,7 @@ Owner		       : GDC QA
 Description		 : Save/Edit Gene Button
 Test-Case      : PEAR-2236
 
-tags: gdc-data-portal-v2, regression, mutation-frequency
+tags: gdc-data-portal-v2, regression, mutation-frequency, gitlab
 
 ## Navigate to Mutation Frequency App
 * On GDC Data Portal V2 app

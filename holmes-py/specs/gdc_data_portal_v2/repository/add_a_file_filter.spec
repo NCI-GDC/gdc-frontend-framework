@@ -4,7 +4,7 @@ Version			: 1.0
 Owner		    : GDC QA
 Description		: Test Repository Filters
 
-tags: gdc-data-portal-v2, repository, repository_filters, smoke-test
+tags: gdc-data-portal-v2, repository, repository_filters, smoke-test, gitlab
 
 ## Repository Filters
 

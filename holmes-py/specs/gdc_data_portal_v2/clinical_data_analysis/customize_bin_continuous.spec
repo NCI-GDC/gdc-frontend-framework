@@ -5,7 +5,7 @@ Owner		         : GDC QA
 Description       : cDAVE continuous bin continuous values
 Test-Case         : PEAR-610
 
-tags: gdc-data-portal-v2, clinical-data-analysis, regression
+tags: gdc-data-portal-v2, clinical-data-analysis, regression, gitlab
 
 ## Navigate to Clinical Data Analysis
 * On GDC Data Portal V2 app

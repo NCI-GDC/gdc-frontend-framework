@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		    : Instructions Description and Empty Cart Page
 Test-Case           : PEAR-2245
 
-tags: gdc-data-portal-v2, regression, cart
+tags: gdc-data-portal-v2, regression, cart, gitlab
 
 ## Add Files to Cart
 * On GDC Data Portal V2 app
