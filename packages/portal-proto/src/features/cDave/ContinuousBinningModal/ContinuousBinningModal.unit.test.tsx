@@ -46,7 +46,7 @@ describe("<ContinuousBinningModal />", () => {
   });
 
   it("populates interval values", () => {
-    const { getByLabelText } = render(
+    const { getByTestId } = render(
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
@@ -57,13 +57,13 @@ describe("<ContinuousBinningModal />", () => {
       />,
     );
 
-    expect(getByLabelText("A set interval of")).toHaveDisplayValue("0.5");
-    expect(getByLabelText("with values from")).toHaveDisplayValue("0");
-    expect(getByLabelText("to less than")).toHaveDisplayValue("2");
+    expect(getByTestId("textbox-set-interval-size")).toHaveDisplayValue("0.5");
+    expect(getByTestId("textbox-set-interval-min")).toHaveDisplayValue("0");
+    expect(getByTestId("textbox-set-interval-max")).toHaveDisplayValue("2");
   });
 
   it("shows custom interval if one already set", () => {
-    const { getByLabelText } = render(
+    const { getByTestId } = render(
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
@@ -74,13 +74,13 @@ describe("<ContinuousBinningModal />", () => {
       />,
     );
 
-    expect(getByLabelText("A set interval of")).toHaveDisplayValue("5");
-    expect(getByLabelText("with values from")).toHaveDisplayValue("0");
-    expect(getByLabelText("to less than")).toHaveDisplayValue("10");
+    expect(getByTestId("textbox-set-interval-size")).toHaveDisplayValue("5");
+    expect(getByTestId("textbox-set-interval-min")).toHaveDisplayValue("0");
+    expect(getByTestId("textbox-set-interval-max")).toHaveDisplayValue("10");
   });
 
   it("validates intervals", async () => {
-    const { getByLabelText, getByText } = render(
+    const { getByTestId, getByText } = render(
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
@@ -91,14 +91,14 @@ describe("<ContinuousBinningModal />", () => {
       />,
     );
 
-    const input = getByLabelText("A set interval of");
+    const input = getByTestId("textbox-set-interval-size");
     await userEvent.clear(input);
     await userEvent.type(input, "mmm");
     expect(getByText("mmm is not a valid number")).toBeInTheDocument();
   });
 
   it("shows an empty range row to start", () => {
-    const { getByLabelText } = render(
+    const { getByTestId } = render(
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
@@ -109,13 +109,13 @@ describe("<ContinuousBinningModal />", () => {
       />,
     );
 
-    expect(getByLabelText("range name")).toHaveDisplayValue("");
-    expect(getByLabelText("range from")).toHaveDisplayValue("");
-    expect(getByLabelText("range to")).toHaveDisplayValue("");
+    expect(getByTestId("textbox-range-name")).toHaveDisplayValue("");
+    expect(getByTestId("textbox-range-from")).toHaveDisplayValue("");
+    expect(getByTestId("textbox-range-to")).toHaveDisplayValue("");
   });
 
   it("shows custom ranges to start if available", () => {
-    const { getAllByLabelText } = render(
+    const { getAllByTestId } = render(
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
@@ -129,21 +129,21 @@ describe("<ContinuousBinningModal />", () => {
       />,
     );
 
-    const rangeNames = getAllByLabelText("range name");
+    const rangeNames = getAllByTestId("textbox-range-name");
     expect(rangeNames[0]).toHaveDisplayValue("bin 1");
     expect(rangeNames[1]).toHaveDisplayValue("bin 2");
 
-    const rangeFrom = getAllByLabelText("range from");
+    const rangeFrom = getAllByTestId("textbox-range-from");
     expect(rangeFrom[0]).toHaveDisplayValue("0");
     expect(rangeFrom[1]).toHaveDisplayValue("10");
 
-    const rangeTo = getAllByLabelText("range to");
+    const rangeTo = getAllByTestId("textbox-range-to");
     expect(rangeTo[0]).toHaveDisplayValue("10");
     expect(rangeTo[1]).toHaveDisplayValue("20");
   });
 
   it("validates row on add", async () => {
-    const { getByLabelText, getByText } = render(
+    const { getByTestId, getByText } = render(
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
@@ -154,19 +154,19 @@ describe("<ContinuousBinningModal />", () => {
       />,
     );
 
-    await userEvent.type(getByLabelText("range name"), "bin 1");
-    await userEvent.type(getByLabelText("range from"), "10");
+    await userEvent.type(getByTestId("textbox-range-name"), "bin 1");
+    await userEvent.type(getByTestId("textbox-range-from"), "10");
 
-    expect(getByText("Add").closest("button")).toBeDisabled();
+    expect(getByTestId("button-range-add")).toBeDisabled();
 
-    await userEvent.type(getByLabelText("range to"), "5");
-    await userEvent.click(getByText("Add"));
+    await userEvent.type(getByTestId("textbox-range-to"), "5");
+    await userEvent.click(getByTestId("button-range-add"));
 
     expect(getByText("Must be greater than 10")).toBeInTheDocument();
   });
 
   it("can delete row", async () => {
-    const { getByLabelText, getAllByLabelText, getByText } = render(
+    const { getByTestId, getAllByTestId } = render(
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
@@ -177,21 +177,21 @@ describe("<ContinuousBinningModal />", () => {
       />,
     );
 
-    await userEvent.type(getByLabelText("range name"), "bin 1");
-    await userEvent.type(getByLabelText("range from"), "10");
-    await userEvent.type(getByLabelText("range to"), "20");
-    await userEvent.click(getByText("Add"));
+    await userEvent.type(getByTestId("textbox-range-name"), "bin 1");
+    await userEvent.type(getByTestId("textbox-range-from"), "10");
+    await userEvent.type(getByTestId("textbox-range-to"), "20");
+    await userEvent.click(getByTestId("button-range-add"));
 
-    expect(getAllByLabelText("range name")[0]).toHaveDisplayValue("bin 1");
+    expect(getAllByTestId("textbox-range-name")[0]).toHaveDisplayValue("bin 1");
     // New blank row added
-    expect(getAllByLabelText("range name")[1]).toHaveDisplayValue("");
-    await userEvent.click(getByLabelText("delete row"));
-    expect(getAllByLabelText("range name")[0]).toHaveDisplayValue("");
+    expect(getAllByTestId("textbox-range-name")[1]).toHaveDisplayValue("");
+    await userEvent.click(getByTestId("button-range-delete"));
+    expect(getAllByTestId("textbox-range-name")[0]).toHaveDisplayValue("");
   });
 
   it("can save custom interval", async () => {
     const mockSave = jest.fn();
-    const { getByLabelText, getByRole } = render(
+    const { getByTestId } = render(
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
@@ -202,9 +202,9 @@ describe("<ContinuousBinningModal />", () => {
       />,
     );
 
-    const intervalInput = getByLabelText("A set interval of");
-    const fromInput = getByLabelText("with values from");
-    const toInput = getByLabelText("to less than");
+    const intervalInput = getByTestId("textbox-set-interval-size");
+    const fromInput = getByTestId("textbox-set-interval-min");
+    const toInput = getByTestId("textbox-set-interval-max");
 
     await userEvent.clear(intervalInput);
     await userEvent.type(intervalInput, "1");
@@ -213,14 +213,14 @@ describe("<ContinuousBinningModal />", () => {
     await userEvent.clear(toInput);
     await userEvent.type(toInput, "10");
 
-    await userEvent.click(getByRole("button", { name: "Save Bins" }));
+    await userEvent.click(getByTestId("button-custom-bins-save"));
 
     expect(mockSave).toBeCalledWith({ interval: 1, min: 5, max: 10 });
   });
 
   it("can save custom ranges", async () => {
     const mockSave = jest.fn();
-    const { getByLabelText, getByRole } = render(
+    const { getByTestId } = render(
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
@@ -230,19 +230,19 @@ describe("<ContinuousBinningModal />", () => {
         customBins={null}
       />,
     );
-    await userEvent.type(getByLabelText("range name"), "bin 1");
-    await userEvent.type(getByLabelText("range from"), "5");
-    expect(getByRole("button", { name: "Save Bins" })).toBeDisabled();
+    await userEvent.type(getByTestId("textbox-range-name"), "bin 1");
+    await userEvent.type(getByTestId("textbox-range-from"), "5");
+    expect(getByTestId("button-custom-bins-save")).toBeDisabled();
 
-    await userEvent.type(getByLabelText("range to"), "10");
-    await userEvent.click(getByRole("button", { name: "Add" }));
+    await userEvent.type(getByTestId("textbox-range-to"), "10");
+    await userEvent.click(getByTestId("button-range-add"));
 
-    await userEvent.click(getByRole("button", { name: "Save Bins" }));
+    await userEvent.click(getByTestId("button-custom-bins-save"));
     expect(mockSave).toBeCalledWith([{ name: "bin 1", from: 5, to: 10 }]);
   });
 
   it("reset to default values", async () => {
-    const { getByLabelText } = render(
+    const { getByTestId } = render(
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
@@ -253,19 +253,19 @@ describe("<ContinuousBinningModal />", () => {
       />,
     );
 
-    expect(getByLabelText("reset bins")).toBeDisabled();
-    const input = getByLabelText("A set interval of");
+    expect(getByTestId("button-reset-bins")).toBeDisabled();
+    const input = getByTestId("textbox-set-interval-size");
     await userEvent.clear(input);
     await userEvent.type(input, ".75");
     expect(input).toHaveDisplayValue(".75");
 
-    await userEvent.click(getByLabelText("reset bins"));
+    await userEvent.click(getByTestId("button-reset-bins"));
 
     expect(input).toHaveDisplayValue("0.5");
   });
 
   it("reset button available when starting with custom bins", async () => {
-    const { getByLabelText } = render(
+    const { getByTestId } = render(
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
@@ -276,8 +276,8 @@ describe("<ContinuousBinningModal />", () => {
       />,
     );
 
-    const input = getByLabelText("A set interval of");
-    const resetButton = getByLabelText("reset bins");
+    const input = getByTestId("textbox-set-interval-size");
+    const resetButton = getByTestId("button-reset-bins");
     expect(resetButton).toBeEnabled();
     await userEvent.click(resetButton);
 
@@ -287,7 +287,7 @@ describe("<ContinuousBinningModal />", () => {
 
   it("can save changes to custom bins", async () => {
     const saveBins = jest.fn();
-    const { getAllByLabelText, getByRole } = render(
+    const { getAllByTestId, getByTestId } = render(
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
@@ -301,10 +301,10 @@ describe("<ContinuousBinningModal />", () => {
       />,
     );
 
-    const rangeName = getAllByLabelText("range name")[0];
+    const rangeName = getAllByTestId("textbox-range-name")[0];
     await userEvent.clear(rangeName);
     await userEvent.type(rangeName, "bin 1000");
-    await userEvent.click(getByRole("button", { name: "Save Bins" }));
+    await userEvent.click(getByTestId("button-custom-bins-save"));
 
     expect(saveBins).toHaveBeenCalledWith([
       { name: "bin 1000", from: 0, to: 10 },
@@ -313,7 +313,7 @@ describe("<ContinuousBinningModal />", () => {
   });
 
   it("changes to range inputs validates overlapping bins", async () => {
-    const { getAllByLabelText, getByText } = render(
+    const { getAllByTestId, getByText } = render(
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
@@ -327,7 +327,7 @@ describe("<ContinuousBinningModal />", () => {
       />,
     );
 
-    const rangeFrom = getAllByLabelText("range from")[1];
+    const rangeFrom = getAllByTestId("textbox-range-from")[1];
     await userEvent.clear(rangeFrom);
     await userEvent.type(rangeFrom, "5");
     await userEvent.click(document.body);
