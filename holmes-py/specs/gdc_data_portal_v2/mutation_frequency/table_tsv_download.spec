@@ -5,7 +5,7 @@ Owner		      : GDC QA
 Description		: Download Table TSV on Genes and Mutations Tab
 Test-Case     : PEAR-909, PEAR-911
 
-tags: gdc-data-portal-v2, mutation-frequency, regression, gitlab
+tags: gdc-data-portal-v2, mutation-frequency, regression
 
 ## Navigate to Mutation Frequency App
 * On GDC Data Portal V2 app
