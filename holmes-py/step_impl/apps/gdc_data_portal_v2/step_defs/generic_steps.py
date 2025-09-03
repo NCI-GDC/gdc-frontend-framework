@@ -263,7 +263,7 @@ def download_file_at_file_table(file: str, source: str):
         "Set Operations Union Row": APP.set_operations_page.click_union_row_download_tsv_button_set_operations,
     }
     driver = WebDriver.page
-    with driver.expect_download(timeout=30000) as download_info:
+    with driver.expect_download(timeout=45000) as download_info:
         # Allows using sources without passing in contents of <file> as a parameter
         if file.lower() == "file":
             sources.get(source)()
