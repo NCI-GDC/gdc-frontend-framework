@@ -46,14 +46,16 @@ class WebDriver:
     def start_page(self):
         if getenv("IS_DOCKER") == "1":
             ignore_https_errors = True
+            WebDriver.context = WebDriver.instance.new_context(
+                ignore_https_errors=ignore_https_errors,viewport={"width": 2000, "height": 1300}
+            )
+            WebDriver.page = WebDriver.context.new_page()
         else:
             ignore_https_errors = False
-        WebDriver.context = WebDriver.instance.new_context(
-            ignore_https_errors=ignore_https_errors
-        )
-        WebDriver.page = WebDriver.context.new_page()
-        # Try/except around this screensize step as a workaround to this not working within Docker runs
-        if not getenv("IS_DOCKER"):
+            WebDriver.context = WebDriver.instance.new_context(
+                ignore_https_errors=ignore_https_errors
+            )
+            WebDriver.page = WebDriver.context.new_page()
             screen_size = Utility.get_screen_size()
             if screen_size:
                 screen_width = screen_size["width"]
