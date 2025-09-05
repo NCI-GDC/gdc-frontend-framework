@@ -21,7 +21,7 @@ const EChartWrapperResponsive: React.FC<EChartWrapperResponsiveProps> = ({
 
   useEffect(() => {
     const node = containerRef.current;
-    if (!node) return;
+    if (!node || !node.clientHeight) return;
 
     const chart = init(node, null, { renderer: "svg" });
     chartInstanceRef.current = chart;
