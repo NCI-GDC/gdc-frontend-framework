@@ -26,7 +26,7 @@
     "build:clean": "npm run clean && npm run build",
     "start": "next start",
     "compile": "tsc",
-    "test": "jest unit",
+    "test": "jest unit --passWithNoTests",
     "test:watch": "jest unit --watch",
     "test:int": "echo No integrations tests yet",
     "test:all": "jest --passWithNoTests"
