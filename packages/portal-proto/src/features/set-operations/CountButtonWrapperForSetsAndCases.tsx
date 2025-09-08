@@ -80,7 +80,7 @@ const CountButtonWrapperForSet: React.FC<CountButtonWrapperForSetProps> = ({
       <SaveSelectionAsSetModal
         opened={showSaveModal && entityType === "mutations"}
         filters={filters}
-        sort="occurrence.case.project.project_id"
+        score="occurrence.case.project.project_id"
         saveCount={count}
         setType="ssms"
         setTypeLabel="mutation"
@@ -91,7 +91,7 @@ const CountButtonWrapperForSet: React.FC<CountButtonWrapperForSetProps> = ({
       <SaveSelectionAsSetModal
         opened={showSaveModal && entityType === "genes"}
         filters={filters}
-        sort="case.project.project_id"
+        score="case.project.project_id"
         saveCount={count}
         setType="genes"
         setTypeLabel="gene"

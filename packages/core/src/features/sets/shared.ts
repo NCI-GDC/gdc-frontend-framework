@@ -1,15 +1,16 @@
 import { GqlOperation } from "../gdcapi/filters";
+import { SortOption } from "../gdcapi/gdcgraphql";
 
 export const createTopNQuery = (
   index: "genes" | "ssms",
   field: "gene_id" | "ssm_id",
 ) => {
   return `query topN${index}Query($case_filters: FiltersArgument,
-    $filters: FiltersArgument, $score: String, $size: Int) {
+    $filters: FiltersArgument, $score: String, $size: Int, $sort: [Sort]) {
     viewer {
       explore {
         ${index}  {
-          hits(filters: $filters, case_filters: $case_filters, score:$score, first: $size) {
+          hits(filters: $filters, case_filters: $case_filters, score:$score, first: $size, sort:$sort) {
             edges {
               node {
                   ${field}
@@ -30,6 +31,7 @@ export interface CreateSetFilterArgs {
   filters?: GqlOperation | Record<string, never>;
   size?: number;
   score?: string;
+  sort?: SortOption[];
   set_id?: string;
   set_type: SetCreationType;
   intent: SetIntent;
@@ -40,6 +42,7 @@ export interface ModifySetFilterArgs {
   filters?: GqlOperation | Record<string, never>;
   size?: number;
   score?: string;
+  sort?: SortOption[];
   setId?: string;
 }
 

@@ -47,6 +47,17 @@ import TotalItems from "@/components/Table/TotalItem";
 import { SET_COUNT_LIMIT } from "@/components/Modals/SetModals/constants";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionAsSetModal";
 
+const TABLE_SORT = [
+  {
+    field: "_score",
+    order: "desc",
+  },
+  {
+    field: "_uid",
+    order: "asc",
+  },
+];
+
 export interface SMTableContainerProps {
   readonly selectedSurvivalPlot?: ComparativeSurvival;
   handleSurvivalPlotToggled?: (
@@ -420,7 +431,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                     ? convertFilterToGqlFilter(operationSetFilters)
                     : undefined
                 }
-                sort="occurrence.case.project.project_id"
+                score="occurrence.case.project.project_id"
+                sort={TABLE_SORT}
                 isManualSelection={selectedMutations.length > 0}
                 saveCount={
                   selectedMutations.length === 0
@@ -455,7 +467,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 appendSetHook={useAppendToSsmSetMutation}
                 closeModal={handleAddToSetModalClose}
                 field={"ssms.ssm_id"}
-                sort="occurrence.case.project.project_id"
+                score="occurrence.case.project.project_id"
+                sort={TABLE_SORT}
               />
 
               <RemoveFromSetModal
@@ -479,7 +492,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                     : useRemoveFromSsmSetMutation
                 }
                 isManualSelection={selectedMutations.length > 0}
-                sort="occurrence.case.project.project_id"
+                score="occurrence.case.project.project_id"
+                sort={TABLE_SORT}
               />
             </>
           )}

@@ -196,6 +196,7 @@ export const createSetSlice = graphqlAPISlice
           case_filters,
           filters,
           score,
+          sort,
           size,
           intent,
           set_type,
@@ -208,6 +209,7 @@ export const createSetSlice = graphqlAPISlice
               filters,
               size,
               score,
+              sort,
             });
           } catch (e) {
             return { error: e as GraphQLFetchError };
@@ -284,6 +286,7 @@ export const createSetSlice = graphqlAPISlice
           case_filters,
           filters,
           score,
+          sort,
           size,
           intent,
           set_type,
@@ -296,6 +299,7 @@ export const createSetSlice = graphqlAPISlice
               filters,
               size,
               score,
+              sort,
             });
           } catch (e) {
             return { error: e as GraphQLFetchError };

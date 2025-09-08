@@ -12,6 +12,7 @@ import {
   useAppendToGeneSetMutation,
   showModal,
   Modals,
+  SortOption,
 } from "@gff/core";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
@@ -28,7 +29,8 @@ interface AddToSetModalProps {
   readonly setType: SetTypes;
   readonly setTypeLabel: string;
   readonly field: string;
-  readonly sort?: string;
+  readonly score?: string;
+  readonly sort?: SortOption[];
   readonly closeModal: () => void;
   readonly singleCountHook: typeof useGeneSetCountQuery;
   readonly countHook: typeof useGeneSetCountsQuery;
@@ -43,6 +45,7 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
   setType,
   setTypeLabel,
   field,
+  score,
   sort,
   closeModal,
   singleCountHook,
@@ -148,7 +151,8 @@ const AddToSetModal: React.FC<AddToSetModalProps> = ({
                 op: "and",
               },
               size: SET_COUNT_LIMIT - setCount,
-              score: sort,
+              score,
+              sort,
             })
               .unwrap()
               .then((response) => {

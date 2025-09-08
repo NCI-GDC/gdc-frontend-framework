@@ -13,6 +13,7 @@ import {
   GqlOperation,
   showModal,
   Modals,
+  SortOption,
 } from "@gff/core";
 import FunctionButton from "@/components/FunctionButton";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
@@ -33,7 +34,8 @@ interface SaveSelectionAsSetModalProps {
     | typeof useCreateTopNGeneSetFromFiltersMutation
     | typeof useCreateGeneSetFromFiltersMutation;
   readonly closeModal: () => void;
-  readonly sort?: string;
+  readonly score?: string;
+  readonly sort?: SortOption[];
   readonly opened: boolean;
 }
 
@@ -45,6 +47,7 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
   setTypeLabel,
   createSetHook,
   closeModal,
+  score,
   sort,
   opened,
   isManualSelection = false,
@@ -91,7 +94,8 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
       case_filters: cohortFilters,
       filters,
       size: form.values.top,
-      score: sort,
+      score,
+      sort,
       set_type: "mutable",
       intent: "user",
     })
