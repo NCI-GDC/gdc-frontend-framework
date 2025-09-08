@@ -326,7 +326,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
               htmlFor="continuous-bin-modal-interval-size"
               className="font-content"
             >
-              A set interval of
+              A set interval
             </label>
           </div>
 
