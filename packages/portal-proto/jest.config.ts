@@ -48,6 +48,7 @@ const config: JestConfigWithTsJest = {
     "node_modules/(?!@sjcrh|react-dnd|dnd-core|@react-dnd|react-dnd-html5-backend|uuid)/",
     "!proteinpaint",
   ],
+  modulePathIgnorePatterns: ["<rootDir>/.next/", "<rootDir>/node_modules/"],
   testTimeout: 50000,
 };
 

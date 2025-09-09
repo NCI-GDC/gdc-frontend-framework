@@ -8,6 +8,7 @@ const config: JestConfigWithTsJest = {
       tsconfig: "tsconfig.test.json",
     },
   },
+  modulePathIgnorePatterns: ["<rootDir>/.next/", "<rootDir>/node_modules/"],
   testEnvironment: "jsdom",
 };
 
