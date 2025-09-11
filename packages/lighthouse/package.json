@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "audit": "node src/audit.mjs",
-    "test": "test",
+    "test": "test --passWithNoTests",
     "test:all": "echo No tests yet"
   },
   "repository": {

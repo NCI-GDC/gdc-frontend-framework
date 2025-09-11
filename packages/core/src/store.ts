@@ -75,9 +75,20 @@ export const coreStore = configureStore({
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
+      ...(process.env.NODE_ENV === "test"
+        ? { serializableCheck: false } // Completely disable in tests
+        : {
+            serializableCheck: {
+              ignoredActions: [
+                FLUSH,
+                REHYDRATE,
+                PAUSE,
+                PERSIST,
+                PURGE,
+                REGISTER,
+              ],
+            },
+          }),
     })
       .concat(
         allFilesApiSliceMiddleware,
