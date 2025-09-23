@@ -14,7 +14,7 @@ import {
   Tooltip,
   ActionIcon,
 } from "@mantine/core";
-import { fieldNameToTitle, GQLDocType } from "@gff/core";
+import { fieldNameToTitle } from "@gff/core";
 import {
   createFacetCards,
   FacetSelection,
@@ -28,7 +28,7 @@ import {
   DoubleRightIcon,
   UndoIcon,
 } from "@/utils/icons";
-import { CustomConfig } from "./types";
+import { CustomConfig, FacetQueryOptions } from "./types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
 import { useAvailableCustomFacets } from "../cohortBuilder/hooks";
 import { showNotification } from "@mantine/notifications";
@@ -40,13 +40,13 @@ interface FilterPanelProps {
   readonly app: string;
   readonly toggleAllFiltersExpanded: (expanded: boolean) => void;
   readonly allFiltersCollapsed: boolean;
+  readonly queryOptions: FacetQueryOptions;
   readonly customConfig?: CustomConfig;
   readonly filtersAppliedCount?: number;
   readonly handleClearAll: () => void;
   readonly hideIfEmpty?: boolean;
   readonly showPercent?: boolean;
   readonly isLoading?: boolean;
-  readonly docType?: GQLDocType;
 }
 
 /**
@@ -70,7 +70,7 @@ const FilterPanel = ({
   facetHooks,
   valueLabel,
   app,
-  docType,
+  queryOptions,
   toggleAllFiltersExpanded,
   allFiltersCollapsed,
   customConfig = undefined,
@@ -207,7 +207,7 @@ const FilterPanel = ({
                     setOpened(false);
                   }}
                   useAvailableCustomFacets={useAvailableCustomFacets}
-                  queryOptions={customConfig.queryOptions}
+                  queryOptions={queryOptions}
                   usedFacets={customConfig.usedFacets}
                 />
               </div>
@@ -236,7 +236,7 @@ const FilterPanel = ({
               return fieldNameToTitle(field, 2);
             },
             Chart: EnumFacetChart,
-            queryOptions: { docType: docType ?? "cases" },
+            queryOptions,
           })}
           {createFacetCards({
             facets: defaultFacetDefinitions,
@@ -247,7 +247,7 @@ const FilterPanel = ({
             showPercent,
             facetNameFormatter: fieldNameToTitle,
             Chart: EnumFacetChart,
-            queryOptions: { docType: docType ?? "cases" },
+            queryOptions,
           })}
         </div>
       </div>

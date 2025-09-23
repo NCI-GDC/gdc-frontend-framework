@@ -32,9 +32,6 @@ jest.mock("next/router", () => ({
 
 beforeEach(() => {
   jest.spyOn(genomicHook, "useGenesFacets").mockImplementation(jest.fn());
-  jest
-    .spyOn(genomicHook, "useTotalGenomicCounts")
-    .mockImplementation(jest.fn());
   jest.spyOn(genomicReducer, "useAppDispatch").mockReturnValue(jest.fn());
   jest.spyOn(genomicReducer, "useAppSelector").mockImplementation(jest.fn());
   jest.clearAllMocks();

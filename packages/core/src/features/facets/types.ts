@@ -20,6 +20,7 @@ export type GQLDocType =
   | "ssms"
   | "projects"
   | "annotations";
+export type FacetDefinitionType = "cases" | "files";
 export type GQLIndexType = "explore" | "repository";
 
 export interface AllowableRange {

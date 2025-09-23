@@ -12,10 +12,12 @@ import {
   useToggleAllFilters,
   useToggleExpandFilter,
   useFilterExpandedState,
-  useTotalGenomicCounts,
   useClearAllGenomicFilters,
 } from "@/features/genomic/hooks";
-import { FacetDocTypeToLabelsMap } from "@/features/facets/hooks";
+import {
+  FacetDocTypeToLabelsMap,
+  useTotalCounts,
+} from "@/features/facets/hooks";
 import GeneSetModal from "@/components/Modals/SetModals/GeneSetModal";
 import MutationSetModal from "@/components/Modals/SetModals/MutationSetModal";
 import FilterPanel from "@/features/facets/FilterPanel";
@@ -31,11 +33,14 @@ import {
   useOpenUploadModal,
   useUploadFilterItems,
 } from "@/features/genomic/hooks";
+import { AppModeState } from "./types";
 
 const GeneAndSSMFilterPanel = ({
   isDemoMode,
+  appMode,
 }: {
   isDemoMode: boolean;
+  appMode: AppModeState;
 }): JSX.Element => {
   const modal = useCoreSelector((state) => selectCurrentModal(state));
   const updateFilters = useUpdateGenomicEnumFacetFilter();
@@ -66,7 +71,7 @@ const GeneAndSSMFilterPanel = ({
     useGetEnumFacetData: useGenesFacetValues,
     useUpdateFacetFilters: useUpdateGenomicEnumFacetFilter,
     useClearFilter: useClearGenomicFilters,
-    useTotalCounts: useTotalGenomicCounts,
+    useTotalCounts: useTotalCounts,
     useGetFacetFilters: useGenomicFilterByName,
     useToggleExpandFilter: useToggleExpandFilter,
     useFilterExpanded: useFilterExpandedState,
@@ -109,6 +114,7 @@ const GeneAndSSMFilterPanel = ({
         showPercent={false}
         filtersAppliedCount={filtersAppliedCount}
         handleClearAll={clearAllFilters}
+        queryOptions={{ docType: appMode === "genes" ? "genes" : "ssms" }}
       />
     </>
   );

@@ -1,8 +1,7 @@
-import { FacetDefinitionType, GQLDocType, GQLIndexType } from "@gff/core";
+import { FacetDefinitionType, GQLDocType } from "@gff/core";
 
 export type FacetQueryOptions = {
-  readonly docType?: GQLDocType;
-  readonly indexType?: GQLIndexType;
+  readonly docType: GQLDocType;
   readonly facetType?: FacetDefinitionType;
 };
 
@@ -12,5 +11,4 @@ export interface CustomConfig {
   readonly handleCustomFilterSelected: (filter: string) => void;
   readonly handleResetCustomFilters: () => void;
   readonly defaultFilters: string[];
-  readonly queryOptions?: FacetQueryOptions;
 }

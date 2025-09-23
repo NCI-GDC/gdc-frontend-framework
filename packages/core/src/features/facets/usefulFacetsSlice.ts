@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { GraphQLFetchError } from "../gdcapi/gdcgraphql";
-import { FacetDefinition, FacetBuckets } from "./types";
+import { FacetDefinition, FacetBuckets, FacetDefinitionType } from "./types";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import {
@@ -12,7 +12,6 @@ import { isBucketsAggregation, isStatsAggregation } from "../gdcapi/utils";
 import { GdcApiResponse } from "../gdcapi/types";
 import { selectFacetDefinition } from "./facetDictionarySlice";
 import { GDC_APP_API_AUTH } from "../../constants";
-export type FacetDefinitionType = "cases" | "files";
 
 const buildFacetListByType = (
   facetType: FacetDefinitionType,

@@ -4,13 +4,13 @@ import { CoreState } from "../../reducers";
 import { fetchGdcCases, fetchGdcFiles } from "../gdcapi";
 import { GdcApiResponse } from "../gdcapi/types";
 import { isBucketsAggregation } from "../gdcapi/utils";
-import { FacetDefinitionType } from "./usefulFacetsSlice";
 import { GqlOperation } from "../gdcapi/filters";
 import {
   CoreDataSelectorResponse,
   createUseCoreDataHook,
   DataStatus,
 } from "../../dataAccess";
+import { FacetDefinitionType } from "./types";
 
 /**
  *
