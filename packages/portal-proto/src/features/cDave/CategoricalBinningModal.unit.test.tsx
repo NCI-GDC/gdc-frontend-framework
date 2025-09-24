@@ -1,4 +1,4 @@
-import { render } from "test-utils";
+import { render, waitFor } from "test-utils";
 import userEvent from "@testing-library/user-event";
 import CategoricalBinningModal from "./CategoricalBinningModal";
 
@@ -138,6 +138,7 @@ describe("<CategoricalBinningModal />", () => {
         .contains(queryByText("female (10)")),
     ).toBeTruthy();
   });
+
   it("add to existing group", async () => {
     const { queryByText } = render(
       <CategoricalBinningModal
@@ -162,6 +163,7 @@ describe("<CategoricalBinningModal />", () => {
         .contains(queryByText("missing (20)")),
     ).toBeTruthy();
   });
+
   it("ungroup one value", async () => {
     const { queryByText } = render(
       <CategoricalBinningModal
@@ -408,5 +410,162 @@ describe("<CategoricalBinningModal />", () => {
       "selected value 1": { female: 10, male: 90 },
       missing: 20,
     });
+  });
+
+  it("resets modal state when opened after unsaved changes", async () => {
+    const { rerender, queryByText } = render(
+      <CategoricalBinningModal
+        opened={true}
+        setModalOpen={jest.fn()}
+        field={"Gender"}
+        results={{ female: 10, male: 90, missing: 20 }}
+        customBins={null}
+        updateBins={jest.fn()}
+      />,
+    );
+
+    // Make changes but don't save
+    await createGroup(queryByText);
+    expect(queryByText("selected value 1")).toBeInTheDocument();
+
+    // Close modal
+    rerender(
+      <CategoricalBinningModal
+        opened={false}
+        setModalOpen={jest.fn()}
+        field={"Gender"}
+        results={{ female: 10, male: 90, missing: 20 }}
+        customBins={null}
+        updateBins={jest.fn()}
+      />,
+    );
+
+    // Reopen modal - should show original state
+    rerender(
+      <CategoricalBinningModal
+        opened={true}
+        setModalOpen={jest.fn()}
+        field={"Gender"}
+        results={{ female: 10, male: 90, missing: 20 }}
+        customBins={null}
+        updateBins={jest.fn()}
+      />,
+    );
+
+    // Should not have the unsaved group
+    expect(queryByText("selected value 1")).not.toBeInTheDocument();
+    expect(queryByText("female (10)")).toBeInTheDocument();
+    expect(queryByText("male (90)")).toBeInTheDocument();
+  });
+
+  it("show button disabled when no hidden values selected after reset", async () => {
+    const { queryByText, queryByLabelText, queryByRole } = render(
+      <CategoricalBinningModal
+        opened
+        setModalOpen={jest.fn()}
+        field={"Gender"}
+        results={{ female: 10, male: 90, missing: 20 }}
+        customBins={null}
+        updateBins={jest.fn()}
+      />,
+    );
+
+    // Hide a value
+    await userEvent.click(queryByText("female (10)"));
+    await userEvent.click(queryByText("Hide"));
+
+    // Select the hidden value
+    await userEvent.click(queryByText("female (10)"));
+    expect(queryByRole("button", { name: "Show" })).not.toBeDisabled();
+
+    // Reset - should clear selections and disable Show button
+    await userEvent.click(queryByLabelText("reset groups"));
+
+    // Show button should now be disabled
+    expect(queryByRole("button", { name: "Show" })).toBeDisabled();
+  });
+
+  it("resets modal when customBins prop changes externally", async () => {
+    const { rerender, queryByText } = render(
+      <CategoricalBinningModal
+        opened={true}
+        setModalOpen={jest.fn()}
+        field={"Gender"}
+        results={{ female: 10, male: 90, missing: 20 }}
+        customBins={{ "existing group": { female: 10, male: 90 } }}
+        updateBins={jest.fn()}
+      />,
+    );
+
+    // Should show existing custom bins
+    expect(queryByText("existing group")).toBeInTheDocument();
+
+    // Make some changes in the modal (hide the missing value)
+    await userEvent.click(queryByText("missing (20)"));
+    await userEvent.click(queryByText("Hide"));
+
+    // External reset - customBins becomes null
+    rerender(
+      <CategoricalBinningModal
+        opened={true}
+        setModalOpen={jest.fn()}
+        field={"Gender"}
+        results={{ female: 10, male: 90, missing: 20 }}
+        customBins={null}
+        updateBins={jest.fn()}
+      />,
+    );
+
+    await waitFor(() => {
+      // Should show default state, not the modified state
+      expect(queryByText("existing group")).not.toBeInTheDocument();
+      expect(queryByText("female (10)")).toBeInTheDocument();
+      expect(queryByText("male (90)")).toBeInTheDocument();
+      expect(queryByText("missing (20)")).toBeInTheDocument();
+    });
+  });
+
+  it("maintains state correctly when reopened with same customBins", async () => {
+    const customBins = { "saved group": { female: 10, male: 90 } };
+
+    const { rerender, queryByText } = render(
+      <CategoricalBinningModal
+        opened={true}
+        setModalOpen={jest.fn()}
+        field={"Gender"}
+        results={{ female: 10, male: 90, missing: 20 }}
+        customBins={customBins}
+        updateBins={jest.fn()}
+      />,
+    );
+
+    // Should show existing custom bins
+    expect(queryByText("saved group")).toBeInTheDocument();
+
+    // Close modal
+    rerender(
+      <CategoricalBinningModal
+        opened={false}
+        setModalOpen={jest.fn()}
+        field={"Gender"}
+        results={{ female: 10, male: 90, missing: 20 }}
+        customBins={customBins}
+        updateBins={jest.fn()}
+      />,
+    );
+
+    // Reopen with same customBins - should maintain the saved state
+    rerender(
+      <CategoricalBinningModal
+        opened={true}
+        setModalOpen={jest.fn()}
+        field={"Gender"}
+        results={{ female: 10, male: 90, missing: 20 }}
+        customBins={customBins}
+        updateBins={jest.fn()}
+      />,
+    );
+
+    expect(queryByText("saved group")).toBeInTheDocument();
   });
 });
