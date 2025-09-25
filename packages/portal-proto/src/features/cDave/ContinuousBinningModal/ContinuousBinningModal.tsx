@@ -345,10 +345,10 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                     Bin size
                   </th>
                   <th className="p-2" id="interval-from-label">
-                    From <span className="sr-only">(Interval)</span>
+                    From
                   </th>
                   <th className="p-2" id="interval-to-label">
-                    To less than <span className="sr-only">(Interval)</span>
+                    To less than
                   </th>
                 </tr>
               </thead>
@@ -433,10 +433,10 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                     Bin name
                   </th>
                   <th className="p-2" id="range-from-label">
-                    From <span className="sr-only">(Range)</span>
+                    From
                   </th>
                   <th className="p-2" id="range-to-label">
-                    To less than <span className="sr-only">(Range)</span>
+                    To less than
                   </th>
                   <th className="p-2">Actions</th>
                 </tr>

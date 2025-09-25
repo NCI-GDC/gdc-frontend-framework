@@ -46,7 +46,7 @@ describe("<ContinuousBinningModal />", () => {
   });
 
   it("populates interval values", () => {
-    const { getByLabelText } = render(
+    const { getByLabelText, getAllByLabelText } = render(
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
@@ -58,12 +58,12 @@ describe("<ContinuousBinningModal />", () => {
     );
 
     expect(getByLabelText("Bin size")).toHaveDisplayValue("0.5");
-    expect(getByLabelText("From (Interval)")).toHaveDisplayValue("0");
-    expect(getByLabelText("To less than (Interval)")).toHaveDisplayValue("2");
+    expect(getAllByLabelText("From")[0]).toHaveDisplayValue("0");
+    expect(getAllByLabelText("To less than")[0]).toHaveDisplayValue("2");
   });
 
   it("shows custom interval if one already set", () => {
-    const { getByLabelText } = render(
+    const { getByLabelText, getAllByLabelText } = render(
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
@@ -75,8 +75,8 @@ describe("<ContinuousBinningModal />", () => {
     );
 
     expect(getByLabelText("Bin size")).toHaveDisplayValue("5");
-    expect(getByLabelText("From (Interval)")).toHaveDisplayValue("0");
-    expect(getByLabelText("To less than (Interval)")).toHaveDisplayValue("10");
+    expect(getAllByLabelText("From")[0]).toHaveDisplayValue("0");
+    expect(getAllByLabelText("To less than")[0]).toHaveDisplayValue("10");
   });
 
   it("validates intervals", async () => {
@@ -98,7 +98,7 @@ describe("<ContinuousBinningModal />", () => {
   });
 
   it("shows an empty range row to start", () => {
-    const { getByLabelText } = render(
+    const { getByLabelText, getAllByLabelText } = render(
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
@@ -110,8 +110,8 @@ describe("<ContinuousBinningModal />", () => {
     );
 
     expect(getByLabelText("Bin name")).toHaveDisplayValue("");
-    expect(getByLabelText("From (Range)")).toHaveDisplayValue("");
-    expect(getByLabelText("To less than (Range)")).toHaveDisplayValue("");
+    expect(getAllByLabelText("From")[1]).toHaveDisplayValue("");
+    expect(getAllByLabelText("To less than")[1]).toHaveDisplayValue("");
   });
 
   it("shows custom ranges to start if available", () => {
@@ -133,17 +133,17 @@ describe("<ContinuousBinningModal />", () => {
     expect(rangeNames[0]).toHaveDisplayValue("bin 1");
     expect(rangeNames[1]).toHaveDisplayValue("bin 2");
 
-    const rangeFrom = getAllByLabelText("From (Range)");
-    expect(rangeFrom[0]).toHaveDisplayValue("0");
-    expect(rangeFrom[1]).toHaveDisplayValue("10");
+    const rangeFrom = getAllByLabelText("From");
+    expect(rangeFrom[1]).toHaveDisplayValue("0");
+    expect(rangeFrom[2]).toHaveDisplayValue("10");
 
-    const rangeTo = getAllByLabelText("To less than (Range)");
-    expect(rangeTo[0]).toHaveDisplayValue("10");
-    expect(rangeTo[1]).toHaveDisplayValue("20");
+    const rangeTo = getAllByLabelText("To less than");
+    expect(rangeTo[1]).toHaveDisplayValue("10");
+    expect(rangeTo[2]).toHaveDisplayValue("20");
   });
 
   it("validates row on add", async () => {
-    const { getByLabelText, getByText, getByRole } = render(
+    const { getByLabelText, getByText, getByRole, getAllByLabelText } = render(
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
@@ -155,11 +155,11 @@ describe("<ContinuousBinningModal />", () => {
     );
 
     await userEvent.type(getByLabelText("Bin name"), "bin 1");
-    await userEvent.type(getByLabelText("From (Range)"), "10");
+    await userEvent.type(getAllByLabelText("From")[1], "10");
 
     expect(getByRole("button", { name: "Add range" })).toBeDisabled();
 
-    await userEvent.type(getByLabelText("To less than (Range)"), "5");
+    await userEvent.type(getAllByLabelText("To less than")[1], "5");
     await userEvent.click(getByRole("button", { name: "Add range" }));
 
     expect(getByText("Must be greater than 10")).toBeInTheDocument();
@@ -178,8 +178,8 @@ describe("<ContinuousBinningModal />", () => {
     );
 
     await userEvent.type(getByLabelText("Bin name"), "bin 1");
-    await userEvent.type(getByLabelText("From (Range)"), "10");
-    await userEvent.type(getByLabelText("To less than (Range)"), "20");
+    await userEvent.type(getAllByLabelText("From")[1], "10");
+    await userEvent.type(getAllByLabelText("To less than")[1], "20");
     await userEvent.click(getByRole("button", { name: "Add range" }));
 
     expect(getAllByLabelText("Bin name")[0]).toHaveDisplayValue("bin 1");
@@ -191,7 +191,7 @@ describe("<ContinuousBinningModal />", () => {
 
   it("can save custom interval", async () => {
     const mockSave = jest.fn();
-    const { getByLabelText, getByRole } = render(
+    const { getByLabelText, getByRole, getAllByLabelText } = render(
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
@@ -203,8 +203,8 @@ describe("<ContinuousBinningModal />", () => {
     );
 
     const intervalInput = getByLabelText("Bin size");
-    const fromInput = getByLabelText("From (Interval)");
-    const toInput = getByLabelText("To less than (Interval)");
+    const fromInput = getAllByLabelText("From")[0];
+    const toInput = getAllByLabelText("To less than")[0];
 
     await userEvent.clear(intervalInput);
     await userEvent.type(intervalInput, "1");
@@ -220,7 +220,7 @@ describe("<ContinuousBinningModal />", () => {
 
   it("can save custom ranges", async () => {
     const mockSave = jest.fn();
-    const { getByLabelText, getByRole } = render(
+    const { getByLabelText, getByRole, getAllByLabelText } = render(
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
@@ -231,10 +231,10 @@ describe("<ContinuousBinningModal />", () => {
       />,
     );
     await userEvent.type(getByLabelText("Bin name"), "bin 1");
-    await userEvent.type(getByLabelText("From (Range)"), "5");
+    await userEvent.type(getAllByLabelText("From")[1], "5");
     expect(getByRole("button", { name: "Save Bins" })).toBeDisabled();
 
-    await userEvent.type(getByLabelText("To less than (Range)"), "10");
+    await userEvent.type(getAllByLabelText("To less than")[1], "10");
     await userEvent.click(getByRole("button", { name: "Add range" }));
 
     await userEvent.click(getByRole("button", { name: "Save Bins" }));
@@ -327,7 +327,7 @@ describe("<ContinuousBinningModal />", () => {
       />,
     );
 
-    const rangeFrom = getAllByLabelText("From (Range)")[1];
+    const rangeFrom = getAllByLabelText("From")[2];
     await userEvent.clear(rangeFrom);
     await userEvent.type(rangeFrom, "5");
     await userEvent.click(document.body);
