@@ -341,9 +341,15 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
             <table className="w-full border-1 border-base-lighter">
               <thead className="font-bold text-left border-b-4 border-b-base-lighter">
                 <tr>
-                  <th className="p-2">Bin size</th>
-                  <th className="p-2">From</th>
-                  <th className="p-2">To less than</th>
+                  <th className="p-2" id="bin-size-label">
+                    Bin size
+                  </th>
+                  <th className="p-2" id="interval-from-label">
+                    From <span className="sr-only">(Interval)</span>
+                  </th>
+                  <th className="p-2" id="interval-to-label">
+                    To less than <span className="sr-only">(Interval)</span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -359,6 +365,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                             : undefined,
                       }}
                       data-testid="textbox-set-interval-size"
+                      aria-labelledby="bin-size-label"
                     />
                   </td>
                   <td className="p-2">
@@ -372,6 +379,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                             : undefined,
                       }}
                       data-testid="textbox-set-interval-min"
+                      aria-labelledby="interval-from-label"
                     />
                   </td>
                   <td className="p-2">
@@ -385,6 +393,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                             : undefined,
                       }}
                       data-testid="textbox-set-interval-max"
+                      aria-labelledby="interval-to-label"
                     />
                   </td>
                 </tr>
@@ -420,9 +429,15 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
             <table className="w-full border-1 border-base-lighter">
               <thead className="font-bold text-left border-b-4 border-b-base-lighter">
                 <tr>
-                  <th className="p-2">Bin Name</th>
-                  <th className="p-2">From</th>
-                  <th className="p-2">To less than</th>
+                  <th className="p-2" id="range-name-label">
+                    Bin name
+                  </th>
+                  <th className="p-2" id="range-from-label">
+                    From <span className="sr-only">(Range)</span>
+                  </th>
+                  <th className="p-2" id="range-to-label">
+                    To less than <span className="sr-only">(Range)</span>
+                  </th>
                   <th className="p-2">Actions</th>
                 </tr>
               </thead>
@@ -433,7 +448,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                       <TextInput
                         {...rangeForm.getInputProps(`ranges.${idx}.name`)}
                         data-testid="textbox-range-name"
-                        aria-label="range name"
+                        aria-labelledby="range-name-label"
                         classNames={{
                           input:
                             binMethod === "interval"
@@ -452,7 +467,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                       <TextInput
                         {...rangeForm.getInputProps(`ranges.${idx}.from`)}
                         data-testid="textbox-range-from"
-                        aria-label="range from"
+                        aria-labelledby="range-from-label"
                         classNames={{
                           input:
                             binMethod === "interval"
@@ -470,7 +485,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                       <TextInput
                         {...rangeForm.getInputProps(`ranges.${idx}.to`)}
                         data-testid="textbox-range-to"
-                        aria-label="range to"
+                        aria-labelledby="range-to-label"
                         classNames={{
                           input:
                             binMethod === "interval"
@@ -489,6 +504,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
                         <FunctionButton
                           data-testid="button-range-add"
                           leftSection={<CirclePlusIcon aria-hidden="true" />}
+                          aria-label="Add range"
                           onClick={() => {
                             const result = rangeForm.validate();
                             if (!result.hasErrors) {
