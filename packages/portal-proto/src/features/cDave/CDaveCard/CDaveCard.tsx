@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Card, ActionIcon, Tooltip, SegmentedControlItem } from "@mantine/core";
 import { useScrollIntoView } from "@mantine/hooks";
 import {
@@ -10,8 +10,8 @@ import {
 } from "@gff/core";
 import {
   DownloadProgressContext,
-  DownloadType,
   SegmentedControl,
+  useDownloadProgress,
 } from "@gff/portal-components";
 import ContinuousData from "./ContinuousData";
 import CategoricalData from "./CategoricalData";
@@ -47,9 +47,9 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
   cohortFilters,
   yTotal,
 }: CDaveCardProps) => {
+  const { activeDownloads, startDownload, finishDownload, isDownloading } =
+    useDownloadProgress();
   const [chartType, setChartType] = useState<ChartTypes>("histogram");
-  const [downloadInProgress, setDownloadInProgress] = useState(false);
-  const [downloadType, setDownloadType] = useState<DownloadType>(null);
   const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>();
   const displayDataDimension = useDataDimension(field);
   const facet = useCoreSelector((state) =>
@@ -76,14 +76,6 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
     // this should only happen on initial component mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const setDownloadProgress = useCallback(
-    (inProgress: boolean, type: DownloadType) => {
-      setDownloadInProgress(inProgress);
-      setDownloadType(type);
-    },
-    [],
-  );
 
   const chartButtons: SegmentedControlItem[] = [
     {
@@ -156,14 +148,14 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
                 DATA_DIMENSIONS?.[field]?.unit,
               ]}
               onChange={(d) => setDataDimension(d as DataDimension)}
-              disabled={noData || downloadInProgress}
+              disabled={noData || activeDownloads.size > 0}
               padding={1}
             />
           )}
           <SegmentedControl
             data={chartButtons}
             onChange={(c) => setChartType(c as ChartTypes)}
-            disabled={noData || downloadInProgress}
+            disabled={noData || activeDownloads.size > 0}
             padding={1}
           />
           <Tooltip
@@ -188,7 +180,12 @@ const CDaveCard: React.FC<CDaveCardProps> = ({
         </div>
       </div>
       <DownloadProgressContext.Provider
-        value={{ downloadInProgress, downloadType, setDownloadProgress }}
+        value={{
+          activeDownloads,
+          startDownload,
+          finishDownload,
+          isDownloading,
+        }}
       >
         {noData ? (
           <div className="h-[32.1rem] w-full flex flex-col justify-start">
