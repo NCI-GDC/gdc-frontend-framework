@@ -3,11 +3,7 @@ import { GraphQLFetchError } from "../gdcapi/gdcgraphql";
 import { FacetDefinition, FacetBuckets, FacetDefinitionType } from "./types";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
-import {
-  CoreDataSelectorResponse,
-  createUseCoreDataHook,
-  DataStatus,
-} from "../../dataAccess";
+import { CoreDataSelectorResponse, DataStatus } from "../../dataAccess";
 import { isBucketsAggregation, isStatsAggregation } from "../gdcapi/utils";
 import { GdcApiResponse } from "../gdcapi/types";
 import { selectFacetDefinition } from "./facetDictionarySlice";
@@ -136,33 +132,3 @@ export const selectUsefulFacets = (
     error: state.facetsGQL.usefulFacets.error,
   };
 };
-
-export const selectUsefulCaseFacets = (
-  state: CoreState,
-): CoreDataSelectorResponse<ReadonlyArray<string>> => {
-  return {
-    data: state.facetsGQL.usefulFacets.entries["cases"],
-    status: state.facetsGQL.usefulFacets.status["cases"],
-    error: state.facetsGQL.usefulFacets.error,
-  };
-};
-
-export const selectUsefulFileFacets = (
-  state: CoreState,
-): CoreDataSelectorResponse<ReadonlyArray<string>> => {
-  return {
-    data: state.facetsGQL.usefulFacets.entries["files"],
-    status: state.facetsGQL.usefulFacets.status["files"],
-    error: state.facetsGQL.usefulFacets.error,
-  };
-};
-
-export const useUsefulCaseFacets = createUseCoreDataHook(
-  fetchFacetsWithValues,
-  selectUsefulCaseFacets,
-);
-
-export const useUsefulFilesFacets = createUseCoreDataHook(
-  fetchFacetsWithValues,
-  selectUsefulFileFacets,
-);

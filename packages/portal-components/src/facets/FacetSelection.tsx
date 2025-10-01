@@ -161,12 +161,12 @@ interface FacetSelectionModalProps {
   readonly useAvailableCustomFacets: (
     usedFacets: readonly string[],
     onlyFiltersWithValues: boolean,
-    queryOptions?: QueryOptions,
+    queryOptions: QueryOptions,
   ) => {
     data: Record<string, FacetCardDefinition>;
   };
   readonly handleFilterSelected: (field: string) => void;
-  readonly queryOptions?: QueryOptions;
+  readonly queryOptions: QueryOptions;
 }
 
 /**

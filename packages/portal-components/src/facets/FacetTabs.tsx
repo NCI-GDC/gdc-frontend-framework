@@ -98,7 +98,7 @@ interface CustomFacetGroupProps {
   readonly hooks: FacetRequiredHooks;
   readonly customFacetHooks: CustomFacetHooks;
   readonly usedFacets: string[];
-  readonly queryOptions?: QueryOptions;
+  readonly queryOptions: QueryOptions;
   readonly getFacetLabel?: (queryOptions?: QueryOptions) => string;
   readonly cardScrollMargin?: number;
   readonly Chart?: React.FC<any>;

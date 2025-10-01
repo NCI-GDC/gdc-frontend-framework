@@ -245,7 +245,7 @@ export interface AllowableRange {
 export interface CohortBuilderCategoryConfig {
   readonly label: string;
   readonly facets: ReadonlyArray<string>;
-  readonly queryOptions?: QueryOptions;
+  readonly queryOptions: QueryOptions;
 }
 
 export interface SortType {

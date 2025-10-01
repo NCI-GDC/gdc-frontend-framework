@@ -25,10 +25,12 @@ describe("<FacetTabs />", () => {
           custom: {
             facets: [],
             label: "Custom",
+            queryOptions: {},
           },
           general: {
             facets: [],
             label: "General",
+            queryOptions: {},
           },
         }}
         usedFacets={[]}
@@ -68,6 +70,7 @@ describe("<FacetTabs />", () => {
           general: {
             facets: [],
             label: "General",
+            queryOptions: {},
           },
         }}
         getFacetLabel={jest.fn()}

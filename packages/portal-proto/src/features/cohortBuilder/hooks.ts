@@ -129,7 +129,7 @@ export const useCustomFacets = () => {
 export const useAvailableCustomFacets = (
   usedFacets: ReadonlyArray<string>,
   onlyFiltersWithValues: boolean,
-  queryOptions?: FacetQueryOptions,
+  queryOptions: FacetQueryOptions,
 ) => {
   // get the current list of cohort filters
   const { data: dictionaryData, isSuccess: isDictionaryReady } =
