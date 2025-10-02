@@ -23,7 +23,7 @@ tags: gdc-data-portal-v2, regression, header, navigation
   |-------------------------------------------|---------------------------------------------------------------|
   |Website                                    |The GDC supports several cancer genome programs at the NCI     |
   |API                                        |The GDC Application Programming Interface (API)                |
-  |Data Transfer Tool                         |Raw sequence data                      |
+  |Data Transfer Tool                         |The GDC Data Transfer Tool (DTT) provides                      |
   |Documentation                              |A place where researchers, data submitters and developers can  |
   |Data Submission Portal                     |The GDC Data Submission Portal is a web-based system           |
   |Publications                               |The GDC provides access to information and supplementary files from publications|
