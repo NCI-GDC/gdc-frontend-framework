@@ -108,7 +108,6 @@ export const FileFacetPanel = (): JSX.Element => {
       handleRemoveFilter,
       handleCustomFilterSelected: handleFilterSelected,
       defaultFilters,
-      queryOptions: { facetType: "files" },
     }),
     [
       facetsConfig,
@@ -131,6 +130,7 @@ export const FileFacetPanel = (): JSX.Element => {
       filtersAppliedCount={appliedFilterCount}
       customConfig={customConfig}
       isLoading={!isDictionaryReady}
+      queryOptions={{ facetType: "files", docType: "files" }}
     />
   );
 };
