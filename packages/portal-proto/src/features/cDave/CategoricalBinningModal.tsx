@@ -15,6 +15,7 @@ import {
   ShowIcon,
   UngroupIcon,
 } from "@/utils/icons";
+import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 
 const DEFAULT_GROUP_NAME_PREFIX = "selected value ";
 
@@ -175,159 +176,164 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
     <Modal
       opened={opened}
       onClose={() => setModalOpen(false)}
-      size={800}
+      size={900}
       zIndex={400}
       title={`Create Custom Bins: ${field}`}
-      classNames={{
-        header: "text-xl !m-0 !px-0",
-        content: "p-4",
-      }}
     >
-      <p className="font-content">
-        Organize values into groups of your choosing. Click <b>Save Bins</b> to
-        update the analysis plots.
-      </p>
-      <div
-        data-testid="cat-bin-modal-values"
-        className="border-base-lightest border-solid border-1 mt-2"
-      >
-        <div className="flex justify-between bg-base-lightest p-2">
-          <h3 className="font-bold my-auto">Values</h3>
-          <div className="gap-1 flex">
+      <div className="px-4 pb-4">
+        <p className="mb-2 text-sm font-content">
+          Organize values into groups of your choosing. Click <b>Save Bins</b>{" "}
+          to update the analysis plots.
+        </p>
+        <div data-testid="cat-bin-modal-values" className="mt-2">
+          <div className="flex justify-between py-2">
+            <h3 className="font-bold mt-auto">Values</h3>
+            <div className="gap-1 flex">
+              <FunctionButton
+                data-testid="button-custom-bins-reset-group"
+                onClick={() => {
+                  setEditField(undefined);
+                  setHiddenValues({});
+                  setValues(results);
+                  setSelectedValues({});
+                  setErrorMessage("");
+                }}
+                disabled={isEqual(results, values)}
+                aria-label="reset groups"
+              >
+                <ReplayIcon size={20} />
+              </FunctionButton>
+              <FunctionButton
+                data-testid="button-custom-bins-group-values"
+                onClick={group}
+                classNames={{
+                  section: "mr-1",
+                }}
+                disabled={
+                  Object.entries(values).filter(([k, v]) =>
+                    v instanceof Object
+                      ? Object.keys(v).some((k) => selectedValues?.[k])
+                      : selectedValues?.[k],
+                  ).length < 2
+                }
+                leftSection={<GroupIcon aria-hidden="true" />}
+              >
+                Group
+              </FunctionButton>
+              <FunctionButton
+                data-testid="button-custom-bins-ungroup-values"
+                onClick={() => {
+                  setEditField(undefined);
+                  setValues({
+                    ...filterOutSelected(values, selectedValues),
+                    ...selectedValues,
+                  });
+                  setSelectedValues({});
+                }}
+                classNames={{
+                  section: "mr-1",
+                }}
+                disabled={
+                  !Object.entries(values).some(
+                    ([, v]) =>
+                      v instanceof Object &&
+                      Object.keys(v).some(
+                        (groupedValue) => selectedValues?.[groupedValue],
+                      ),
+                  )
+                }
+                leftSection={<UngroupIcon aria-hidden="true" />}
+              >
+                Ungroup
+              </FunctionButton>
+              <FunctionButton
+                data-testid="button-custom-bins-hide-values"
+                classNames={{
+                  section: "mr-1",
+                }}
+                onClick={hideValues}
+                disabled={Object.keys(selectedValues).length === 0}
+                leftSection={<HideIcon aria-hidden="true" />}
+              >
+                Hide
+              </FunctionButton>
+            </div>
+          </div>
+          <ul className="border-1 border-base-light rounded p-2 max-h-[200px] overflow-y-auto">
+            {sortedValues
+              .sort((a, b) => sortBins(a[1], b[1]))
+              .map(([k, value], idx) =>
+                value instanceof Object ? (
+                  <GroupInput
+                    groupName={k}
+                    groupValues={value}
+                    otherGroups={sortedValues
+                      .map((v) => v[0])
+                      .filter((_, i) => idx !== i)}
+                    updateGroupName={updateGroupName}
+                    selectedValues={selectedValues}
+                    setSelectedValues={setSelectedValues}
+                    clearOtherValues={() => setSelectedHiddenValues({})}
+                    editing={k === editField}
+                    setEditField={setEditField}
+                    key={k}
+                  />
+                ) : (
+                  <ListValue
+                    name={k}
+                    count={value}
+                    selectedValues={selectedValues}
+                    setSelectedValues={setSelectedValues}
+                    clearOtherValues={() => setSelectedHiddenValues({})}
+                    key={k}
+                  />
+                ),
+              )}
+          </ul>
+        </div>
+        <div data-testid="cat-bin-modal-hidden-values" className="mt-2">
+          <div className="flex justify-between py-2">
+            <h3 className="font-bold mt-auto">Hidden Values</h3>
             <FunctionButton
-              data-testid="button-custom-bins-reset-group"
+              data-testid="button-custom-bins-show-values"
+              disabled={Object.keys(selectedHiddenValues).length === 0}
               onClick={() => {
                 setEditField(undefined);
-                setHiddenValues({});
-                setValues(results);
-                setSelectedValues({});
-                setErrorMessage("");
+                setValues({ ...values, ...selectedHiddenValues });
+                setHiddenValues(
+                  pickBy(
+                    hiddenValues,
+                    (_, k) => selectedHiddenValues?.[k] === undefined,
+                  ),
+                );
+                setSelectedHiddenValues({});
               }}
-              disabled={isEqual(results, values)}
-              aria-label="reset groups"
-            >
-              <ReplayIcon size={20} />
-            </FunctionButton>
-            <FunctionButton
-              data-testid="button-custom-bins-group-values"
-              onClick={group}
-              disabled={
-                Object.entries(values).filter(([k, v]) =>
-                  v instanceof Object
-                    ? Object.keys(v).some((k) => selectedValues?.[k])
-                    : selectedValues?.[k],
-                ).length < 2
-              }
-              leftSection={<GroupIcon aria-hidden="true" />}
-            >
-              Group
-            </FunctionButton>
-            <FunctionButton
-              data-testid="button-custom-bins-ungroup-values"
-              onClick={() => {
-                setEditField(undefined);
-                setValues({
-                  ...filterOutSelected(values, selectedValues),
-                  ...selectedValues,
-                });
-                setSelectedValues({});
+              classNames={{
+                section: "mr-1",
               }}
-              disabled={
-                !Object.entries(values).some(
-                  ([, v]) =>
-                    v instanceof Object &&
-                    Object.keys(v).some(
-                      (groupedValue) => selectedValues?.[groupedValue],
-                    ),
-                )
-              }
-              leftSection={<UngroupIcon aria-hidden="true" />}
+              leftSection={<ShowIcon aria-hidden="true" />}
             >
-              Ungroup
-            </FunctionButton>
-            <FunctionButton
-              data-testid="button-custom-bins-hide-values"
-              onClick={hideValues}
-              disabled={Object.keys(selectedValues).length === 0}
-              leftSection={<HideIcon aria-hidden="true" />}
-            >
-              Hide
+              Show
             </FunctionButton>
           </div>
-        </div>
-        <ul className="p-2">
-          {sortedValues
-            .sort((a, b) => sortBins(a[1], b[1]))
-            .map(([k, value], idx) =>
-              value instanceof Object ? (
-                <GroupInput
-                  groupName={k}
-                  groupValues={value}
-                  otherGroups={sortedValues
-                    .map((v) => v[0])
-                    .filter((_, i) => idx !== i)}
-                  updateGroupName={updateGroupName}
-                  selectedValues={selectedValues}
-                  setSelectedValues={setSelectedValues}
-                  clearOtherValues={() => setSelectedHiddenValues({})}
-                  editing={k === editField}
-                  setEditField={setEditField}
-                  key={k}
-                />
-              ) : (
+
+          <ul className="min-h-[100px] overflow-y-auto p-2 border-1 border-base-light rounded">
+            {Object.entries(hiddenValues)
+              .sort((a, b) => b[1] - a[1])
+              .map(([k, v]) => (
                 <ListValue
                   name={k}
-                  count={value}
-                  selectedValues={selectedValues}
-                  setSelectedValues={setSelectedValues}
-                  clearOtherValues={() => setSelectedHiddenValues({})}
+                  count={v}
+                  selectedValues={selectedHiddenValues}
+                  setSelectedValues={setSelectedHiddenValues}
+                  clearOtherValues={() => setSelectedValues({})}
                   key={k}
                 />
-              ),
-            )}
-        </ul>
-      </div>
-      <div
-        data-testid="cat-bin-modal-hidden-values"
-        className="border-base-lightest border-solid border-1 mt-2"
-      >
-        <div className="flex justify-between bg-base-lightest p-2">
-          <h3 className="font-bold my-auto">Hidden Values</h3>
-          <FunctionButton
-            data-testid="button-custom-bins-show-values"
-            disabled={Object.keys(selectedHiddenValues).length === 0}
-            onClick={() => {
-              setEditField(undefined);
-              setValues({ ...values, ...selectedHiddenValues });
-              setHiddenValues(
-                pickBy(
-                  hiddenValues,
-                  (_, k) => selectedHiddenValues?.[k] === undefined,
-                ),
-              );
-              setSelectedHiddenValues({});
-            }}
-            leftSection={<ShowIcon aria-hidden="true" />}
-          >
-            Show
-          </FunctionButton>
+              ))}
+          </ul>
         </div>
-        <ul className="min-h-[100px] p-2">
-          {Object.entries(hiddenValues)
-            .sort((a, b) => b[1] - a[1])
-            .map(([k, v]) => (
-              <ListValue
-                name={k}
-                count={v}
-                selectedValues={selectedHiddenValues}
-                setSelectedValues={setSelectedHiddenValues}
-                clearOtherValues={() => setSelectedValues({})}
-                key={k}
-              />
-            ))}
-        </ul>
       </div>
-      <div className="mt-2 flex gap-2 justify-end">
+      <div className="mt-2 flex gap-2 justify-end bg-base-lightest p-4">
         {errorMessage && (
           <Group className="grow" gap={8} justify="center">
             <AlertIcon color="red" />
@@ -339,13 +345,12 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
             data-testid="button-custom-bins-cancel"
             onClick={() => setModalOpen(false)}
             variant="outline"
-            color="primary.5"
+            className="bg-base-max"
           >
             Cancel
           </Button>
-          <Button
+          <DarkFunctionButton
             data-testid="button-custom-bins-save"
-            className="bg-primary-darkest"
             onClick={() => {
               setEditField(undefined);
               if (!isEqual(values, results)) {
@@ -357,7 +362,7 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
             }}
           >
             Save Bins
-          </Button>
+          </DarkFunctionButton>
         </Group>
       </div>
     </Modal>

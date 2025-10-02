@@ -46,7 +46,7 @@ describe("<ContinuousBinningModal />", () => {
   });
 
   it("populates interval values", () => {
-    const { getByLabelText } = render(
+    const { getByLabelText, getAllByLabelText } = render(
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
@@ -57,13 +57,13 @@ describe("<ContinuousBinningModal />", () => {
       />,
     );
 
-    expect(getByLabelText("A set interval of")).toHaveDisplayValue("0.5");
-    expect(getByLabelText("with values from")).toHaveDisplayValue("0");
-    expect(getByLabelText("to less than")).toHaveDisplayValue("2");
+    expect(getByLabelText("Bin size")).toHaveDisplayValue("0.5");
+    expect(getAllByLabelText("From")[0]).toHaveDisplayValue("0");
+    expect(getAllByLabelText("To less than")[0]).toHaveDisplayValue("2");
   });
 
   it("shows custom interval if one already set", () => {
-    const { getByLabelText } = render(
+    const { getByLabelText, getAllByLabelText } = render(
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
@@ -74,9 +74,9 @@ describe("<ContinuousBinningModal />", () => {
       />,
     );
 
-    expect(getByLabelText("A set interval of")).toHaveDisplayValue("5");
-    expect(getByLabelText("with values from")).toHaveDisplayValue("0");
-    expect(getByLabelText("to less than")).toHaveDisplayValue("10");
+    expect(getByLabelText("Bin size")).toHaveDisplayValue("5");
+    expect(getAllByLabelText("From")[0]).toHaveDisplayValue("0");
+    expect(getAllByLabelText("To less than")[0]).toHaveDisplayValue("10");
   });
 
   it("validates intervals", async () => {
@@ -91,14 +91,14 @@ describe("<ContinuousBinningModal />", () => {
       />,
     );
 
-    const input = getByLabelText("A set interval of");
+    const input = getByLabelText("Bin size");
     await userEvent.clear(input);
     await userEvent.type(input, "mmm");
     expect(getByText("mmm is not a valid number")).toBeInTheDocument();
   });
 
   it("shows an empty range row to start", () => {
-    const { getByLabelText } = render(
+    const { getByLabelText, getAllByLabelText } = render(
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
@@ -109,9 +109,9 @@ describe("<ContinuousBinningModal />", () => {
       />,
     );
 
-    expect(getByLabelText("range name")).toHaveDisplayValue("");
-    expect(getByLabelText("range from")).toHaveDisplayValue("");
-    expect(getByLabelText("range to")).toHaveDisplayValue("");
+    expect(getByLabelText("Bin name")).toHaveDisplayValue("");
+    expect(getAllByLabelText("From")[1]).toHaveDisplayValue("");
+    expect(getAllByLabelText("To less than")[1]).toHaveDisplayValue("");
   });
 
   it("shows custom ranges to start if available", () => {
@@ -129,21 +129,21 @@ describe("<ContinuousBinningModal />", () => {
       />,
     );
 
-    const rangeNames = getAllByLabelText("range name");
+    const rangeNames = getAllByLabelText("Bin name");
     expect(rangeNames[0]).toHaveDisplayValue("bin 1");
     expect(rangeNames[1]).toHaveDisplayValue("bin 2");
 
-    const rangeFrom = getAllByLabelText("range from");
-    expect(rangeFrom[0]).toHaveDisplayValue("0");
-    expect(rangeFrom[1]).toHaveDisplayValue("10");
+    const rangeFrom = getAllByLabelText("From");
+    expect(rangeFrom[1]).toHaveDisplayValue("0");
+    expect(rangeFrom[2]).toHaveDisplayValue("10");
 
-    const rangeTo = getAllByLabelText("range to");
-    expect(rangeTo[0]).toHaveDisplayValue("10");
-    expect(rangeTo[1]).toHaveDisplayValue("20");
+    const rangeTo = getAllByLabelText("To less than");
+    expect(rangeTo[1]).toHaveDisplayValue("10");
+    expect(rangeTo[2]).toHaveDisplayValue("20");
   });
 
   it("validates row on add", async () => {
-    const { getByLabelText, getByText } = render(
+    const { getByLabelText, getByText, getByRole, getAllByLabelText } = render(
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
@@ -154,19 +154,19 @@ describe("<ContinuousBinningModal />", () => {
       />,
     );
 
-    await userEvent.type(getByLabelText("range name"), "bin 1");
-    await userEvent.type(getByLabelText("range from"), "10");
+    await userEvent.type(getByLabelText("Bin name"), "bin 1");
+    await userEvent.type(getAllByLabelText("From")[1], "10");
 
-    expect(getByText("Add").closest("button")).toBeDisabled();
+    expect(getByRole("button", { name: "Add range" })).toBeDisabled();
 
-    await userEvent.type(getByLabelText("range to"), "5");
-    await userEvent.click(getByText("Add"));
+    await userEvent.type(getAllByLabelText("To less than")[1], "5");
+    await userEvent.click(getByRole("button", { name: "Add range" }));
 
     expect(getByText("Must be greater than 10")).toBeInTheDocument();
   });
 
   it("can delete row", async () => {
-    const { getByLabelText, getAllByLabelText, getByText } = render(
+    const { getByLabelText, getAllByLabelText, getByRole } = render(
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
@@ -177,21 +177,21 @@ describe("<ContinuousBinningModal />", () => {
       />,
     );
 
-    await userEvent.type(getByLabelText("range name"), "bin 1");
-    await userEvent.type(getByLabelText("range from"), "10");
-    await userEvent.type(getByLabelText("range to"), "20");
-    await userEvent.click(getByText("Add"));
+    await userEvent.type(getByLabelText("Bin name"), "bin 1");
+    await userEvent.type(getAllByLabelText("From")[1], "10");
+    await userEvent.type(getAllByLabelText("To less than")[1], "20");
+    await userEvent.click(getByRole("button", { name: "Add range" }));
 
-    expect(getAllByLabelText("range name")[0]).toHaveDisplayValue("bin 1");
+    expect(getAllByLabelText("Bin name")[0]).toHaveDisplayValue("bin 1");
     // New blank row added
-    expect(getAllByLabelText("range name")[1]).toHaveDisplayValue("");
-    await userEvent.click(getByLabelText("delete row"));
-    expect(getAllByLabelText("range name")[0]).toHaveDisplayValue("");
+    expect(getAllByLabelText("Bin name")[1]).toHaveDisplayValue("");
+    await userEvent.click(getByRole("button", { name: "delete row" }));
+    expect(getAllByLabelText("Bin name")[0]).toHaveDisplayValue("");
   });
 
   it("can save custom interval", async () => {
     const mockSave = jest.fn();
-    const { getByLabelText, getByRole } = render(
+    const { getByLabelText, getByRole, getAllByLabelText } = render(
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
@@ -202,9 +202,9 @@ describe("<ContinuousBinningModal />", () => {
       />,
     );
 
-    const intervalInput = getByLabelText("A set interval of");
-    const fromInput = getByLabelText("with values from");
-    const toInput = getByLabelText("to less than");
+    const intervalInput = getByLabelText("Bin size");
+    const fromInput = getAllByLabelText("From")[0];
+    const toInput = getAllByLabelText("To less than")[0];
 
     await userEvent.clear(intervalInput);
     await userEvent.type(intervalInput, "1");
@@ -220,7 +220,7 @@ describe("<ContinuousBinningModal />", () => {
 
   it("can save custom ranges", async () => {
     const mockSave = jest.fn();
-    const { getByLabelText, getByRole } = render(
+    const { getByLabelText, getByRole, getAllByLabelText } = render(
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
@@ -230,19 +230,19 @@ describe("<ContinuousBinningModal />", () => {
         customBins={null}
       />,
     );
-    await userEvent.type(getByLabelText("range name"), "bin 1");
-    await userEvent.type(getByLabelText("range from"), "5");
+    await userEvent.type(getByLabelText("Bin name"), "bin 1");
+    await userEvent.type(getAllByLabelText("From")[1], "5");
     expect(getByRole("button", { name: "Save Bins" })).toBeDisabled();
 
-    await userEvent.type(getByLabelText("range to"), "10");
-    await userEvent.click(getByRole("button", { name: "Add" }));
+    await userEvent.type(getAllByLabelText("To less than")[1], "10");
+    await userEvent.click(getByRole("button", { name: "Add range" }));
 
     await userEvent.click(getByRole("button", { name: "Save Bins" }));
     expect(mockSave).toBeCalledWith([{ name: "bin 1", from: 5, to: 10 }]);
   });
 
   it("reset to default values", async () => {
-    const { getByLabelText } = render(
+    const { getByLabelText, getByRole } = render(
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
@@ -253,19 +253,19 @@ describe("<ContinuousBinningModal />", () => {
       />,
     );
 
-    expect(getByLabelText("reset bins")).toBeDisabled();
-    const input = getByLabelText("A set interval of");
+    expect(getByRole("button", { name: "reset bins" })).toBeDisabled();
+    const input = getByLabelText("Bin size");
     await userEvent.clear(input);
     await userEvent.type(input, ".75");
     expect(input).toHaveDisplayValue(".75");
 
-    await userEvent.click(getByLabelText("reset bins"));
+    await userEvent.click(getByRole("button", { name: "reset bins" }));
 
     expect(input).toHaveDisplayValue("0.5");
   });
 
   it("reset button available when starting with custom bins", async () => {
-    const { getByLabelText } = render(
+    const { getByLabelText, getByRole } = render(
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
@@ -276,8 +276,8 @@ describe("<ContinuousBinningModal />", () => {
       />,
     );
 
-    const input = getByLabelText("A set interval of");
-    const resetButton = getByLabelText("reset bins");
+    const input = getByLabelText("Bin size");
+    const resetButton = getByRole("button", { name: "reset bins" });
     expect(resetButton).toBeEnabled();
     await userEvent.click(resetButton);
 
@@ -301,7 +301,7 @@ describe("<ContinuousBinningModal />", () => {
       />,
     );
 
-    const rangeName = getAllByLabelText("range name")[0];
+    const rangeName = getAllByLabelText("Bin name")[0];
     await userEvent.clear(rangeName);
     await userEvent.type(rangeName, "bin 1000");
     await userEvent.click(getByRole("button", { name: "Save Bins" }));
@@ -327,7 +327,7 @@ describe("<ContinuousBinningModal />", () => {
       />,
     );
 
-    const rangeFrom = getAllByLabelText("range from")[1];
+    const rangeFrom = getAllByLabelText("From")[2];
     await userEvent.clear(rangeFrom);
     await userEvent.type(rangeFrom, "5");
     await userEvent.click(document.body);
