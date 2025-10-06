@@ -389,11 +389,14 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
           </ul>
         </div>
         <div data-testid="cat-bin-modal-hidden-values" className="mt-2">
-          <div className="flex justify-between p-2">
-            <h3 className="font-bold my-auto">Hidden Values</h3>
+          <div className="flex justify-between py-2">
+            <h3 className="font-bold mt-auto">Hidden Values</h3>
             <FunctionButton
               data-testid="button-custom-bins-show-values"
               disabled={Object.keys(selectedHiddenValues).length === 0}
+              classNames={{
+                section: "mr-1",
+              }}
               onClick={showHiddenValues}
               leftSection={<ShowIcon aria-hidden="true" />}
             >
