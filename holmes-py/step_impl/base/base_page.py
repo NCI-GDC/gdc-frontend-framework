@@ -77,6 +77,7 @@ class GenericLocators:
     BUTTON_A_BY_TEXT_IDENT = (
         lambda button_text_name: f'a:has-text("{button_text_name}") >> nth=0'
     )
+    BUTTON_IN_HEADER = lambda button_name: f"[data-testid='button-header-{button_name}']"
     BUTTON_IN_FOOTER_BY_TEXT_IDENT = (
         lambda button_text_name: f'footer >> a:has-text("{button_text_name}") >> nth=0'
     )
@@ -667,6 +668,12 @@ class BasePage:
         locator = GenericLocators.BUTTON_A_BY_TEXT_IDENT(button_text_name)
         self.click(locator)
 
+    def click_header_button(self, button_name):
+        """Clicks a button in the header from it's data-testid"""
+        button_name = self.normalize_button_identifier(button_name)
+        locator = GenericLocators.BUTTON_IN_HEADER(button_name)
+        self.click(locator)
+
     def click_footer_button_ident_with_displayed_text_name(self, button_text_name):
         """Clicks a button in the footer based on its displayed text"""
         locator = GenericLocators.BUTTON_IN_FOOTER_BY_TEXT_IDENT(button_text_name)
@@ -948,9 +955,10 @@ class BasePage:
         :return: a page object for the new tab that has been opened
         """
         sources = {
-            "Home Page": self.click_button_ident_a_with_displayed_text_name,
-            "Footer": self.click_footer_button_ident_with_displayed_text_name,
             "Cart": self.click_link_data_testid,
+            "Footer": self.click_footer_button_ident_with_displayed_text_name,
+            "Header": self.click_header_button,
+            "Home Page": self.click_button_ident_a_with_displayed_text_name,
         }
         driver = WebDriver.page
         with driver.context.expect_page() as tab:
