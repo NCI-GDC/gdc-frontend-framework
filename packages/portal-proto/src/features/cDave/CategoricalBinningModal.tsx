@@ -389,103 +389,32 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
           </ul>
         </div>
         <div data-testid="cat-bin-modal-hidden-values" className="mt-2">
-          <div className="flex justify-between py-2">
-            <h3 className="font-bold mt-auto">Hidden Values</h3>
+          <div className="flex justify-between p-2">
+            <h3 className="font-bold my-auto">Hidden Values</h3>
             <FunctionButton
-              data-testid="button-custom-bins-reset-group"
-              onClick={resetToDefault}
-              disabled={isResetDisabled}
-              aria-label="reset groups"
-            >
-              <ReplayIcon size={20} />
-            </FunctionButton>
-            <FunctionButton
-              data-testid="button-custom-bins-group-values"
-              onClick={group}
-              disabled={isGroupDisabled}
-              leftSection={<GroupIcon aria-hidden="true" />}
-            >
-              Group
-            </FunctionButton>
-            <FunctionButton
-              data-testid="button-custom-bins-ungroup-values"
-              onClick={ungroupValues}
-              disabled={isUngroupDisabled}
-              leftSection={<UngroupIcon aria-hidden="true" />}
+              data-testid="button-custom-bins-show-values"
+              disabled={Object.keys(selectedHiddenValues).length === 0}
+              onClick={showHiddenValues}
+              leftSection={<ShowIcon aria-hidden="true" />}
             >
               Show
             </FunctionButton>
           </div>
+          <ul className="border-1 border-base-light rounded p-2 min-h-[100px] max-h-[200px] overflow-y-auto">
+            {sortedHiddenValues.map(([k, v]) => (
+              <ListValue
+                name={k}
+                count={v}
+                selectedValues={selectedHiddenValues}
+                setSelectedValues={(newSelected) =>
+                  updateState({ selectedHiddenValues: newSelected })
+                }
+                clearOtherValues={() => updateState({ selectedValues: {} })}
+                key={k}
+              />
+            ))}
+          </ul>
         </div>
-        <ul className="p-2">
-          {sortedValues
-            .sort((a, b) => sortBins(a[1], b[1]))
-            .map(([k, value], idx) =>
-              value instanceof Object ? (
-                <GroupInput
-                  groupName={k}
-                  groupValues={value}
-                  otherGroups={sortedValues
-                    .map((v) => v[0])
-                    .filter((_, i) => idx !== i)}
-                  updateGroupName={updateGroupName}
-                  selectedValues={selectedValues}
-                  setSelectedValues={(newSelected) =>
-                    updateState({ selectedValues: newSelected })
-                  }
-                  clearOtherValues={() =>
-                    updateState({ selectedHiddenValues: {} })
-                  }
-                  editing={k === editField}
-                  setEditField={(field) => updateState({ editField: field })}
-                  key={k}
-                />
-              ) : (
-                <ListValue
-                  name={k}
-                  count={value}
-                  selectedValues={selectedValues}
-                  setSelectedValues={(newSelected) =>
-                    updateState({ selectedValues: newSelected })
-                  }
-                  clearOtherValues={() =>
-                    updateState({ selectedHiddenValues: {} })
-                  }
-                  key={k}
-                />
-              ),
-            )}
-        </ul>
-      </div>
-      <div
-        data-testid="cat-bin-modal-hidden-values"
-        className="border-base-lightest border-solid border-1 mt-2"
-      >
-        <div className="flex justify-between bg-base-lightest p-2">
-          <h3 className="font-bold my-auto">Hidden Values</h3>
-          <FunctionButton
-            data-testid="button-custom-bins-show-values"
-            disabled={Object.keys(selectedHiddenValues).length === 0}
-            onClick={showHiddenValues}
-            leftSection={<ShowIcon aria-hidden="true" />}
-          >
-            Show
-          </FunctionButton>
-        </div>
-        <ul className="min-h-[100px] p-2">
-          {sortedHiddenValues.map(([k, v]) => (
-            <ListValue
-              name={k}
-              count={v}
-              selectedValues={selectedHiddenValues}
-              setSelectedValues={(newSelected) =>
-                updateState({ selectedHiddenValues: newSelected })
-              }
-              clearOtherValues={() => updateState({ selectedValues: {} })}
-              key={k}
-            />
-          ))}
-        </ul>
       </div>
       <div className="mt-2 flex gap-2 justify-end bg-base-lightest p-4">
         {errorMessage && (
