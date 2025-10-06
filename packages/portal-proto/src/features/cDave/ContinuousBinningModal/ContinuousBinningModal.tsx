@@ -15,6 +15,7 @@ import FunctionButton from "@/components/FunctionButton";
 import { DATA_DIMENSIONS } from "../constants";
 import { useDeepCompareEffect } from "use-deep-compare";
 import { CirclePlusIcon, ReplayIcon, TrashIcon } from "@/utils/icons";
+import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 
 interface ContinuousBinningModalProps {
   readonly setModalOpen: (open: boolean) => void;
@@ -256,271 +257,304 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
       zIndex={400}
       title={`Create Custom Bins: ${toDisplayName(field)}`}
       classNames={{
-        header: "text-xl !m-0 !px-0",
-        content: "p-4",
+        header: "!p-4 !mx-0",
       }}
     >
-      <p className="font-content">
-        Configure your bins, then click <b>Save Bins</b> to update the analysis
-        plots.
-      </p>
-      <div
-        data-testid="text-available-bin-values"
-        className="flex h-10 items-center border-base-lightest border-solid border-1 p-2 mb-4 mt-2 font-content"
-      >
-        <p>
-          Available values from <b>{formattedStats.min?.toLocaleString()}</b> to{" "}
-          <b>
-            {"<"} {formattedStats.max?.toLocaleString()}
-          </b>
+      <div className="px-4 pb-4">
+        <p className="mb-2 text-sm font-content">
+          Configure your bins, then click <b>Save Bins</b> to update the
+          analysis plots.
         </p>
-        <Divider orientation="vertical" className="mx-4 my-auto h-3/4" />
-        <p>
-          Bin size in quarters: <b>{binSize?.toLocaleString()}</b>
-        </p>
-      </div>
-      <div className="bg-base-lightest p-4 flex flex-col">
-        <div className="flex">
-          <div className="flex-grow">
-            <span className="font-content" id="continuous-bin-modal-form-label">
+        <div
+          data-testid="text-available-bin-values"
+          className="flex h-10 items-center border-base-lightest border-solid border-1 p-2 mb-4 mt-2 font-content bg-base-lightest text-sm"
+        >
+          <p>
+            Available values from <b>{formattedStats.min?.toLocaleString()}</b>{" "}
+            to{" "}
+            <b>
+              {"<"} {formattedStats.max?.toLocaleString()}
+            </b>
+          </p>
+          <Divider orientation="vertical" className="mx-4 my-auto h-3/4" />
+          <p>
+            Bin size in quarters: <b>{binSize?.toLocaleString()}</b>
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <div className="flex justify-between items-center">
+            <span
+              className="font-content font-bold"
+              id="continuous-bin-modal-form-label"
+            >
               Define bins{" "}
               {displayDataDimension
                 ? `in ${dataDimension.toLocaleLowerCase()}`
                 : "by"}
               :
             </span>
-
-            {/* This switches the bin method when a user clicks on the "area", no keyboard equivalent is needed to accessibly navigate the form */}
-            {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
-            <div
-              onClick={() => setBinMethod("interval")}
-              className="flex mt-4 items-start text-sm"
-              role="group"
-              aria-labelledby="continuous-bin-modal-form-label"
+            <FunctionButton
+              data-testid="button-reset-bins"
+              aria-label="reset bins"
+              size="sm"
+              onClick={() => {
+                resetFields();
+                setSavedRangeRows([]);
+                setBinMethod("interval");
+                setHasReset(true);
+              }}
+              disabled={intervalFormAtDefault && rangeFormAtDefault}
             >
-              <Radio
-                data-testid="button-select-set-interval"
-                className="px-2"
-                value="interval"
-                name="binMethod"
-                aria-label="select interval"
-                color="blue"
-                checked={binMethod === "interval"}
-                onChange={(e) =>
-                  e.target.checked ? setBinMethod("interval") : undefined
-                }
-              />
-              <label
-                htmlFor="continuous-bin-modal-interval-size"
-                className="font-content"
-              >
-                A set interval of
-              </label>
-              <TextInput
-                {...intervalForm.getInputProps("setIntervalSize")}
-                id={"continuous-bin-modal-interval-size"}
-                classNames={{
-                  wrapper: `px-2`,
-                  input:
-                    binMethod === "ranges" ? "bg-base-lightest" : undefined,
-                }}
-                data-testid="textbox-set-interval-size"
-              />
-              <label
-                htmlFor="continuous-bin-modal-interval-min"
-                className="font-content"
-              >
-                with values from
-              </label>
-              <TextInput
-                {...intervalForm.getInputProps("setIntervalMin")}
-                id={"continuous-bin-modal-interval-min"}
-                classNames={{
-                  wrapper: `px-2`,
-                  input:
-                    binMethod === "ranges" ? "bg-base-lightest" : undefined,
-                }}
-                data-testid="textbox-set-interval-min"
-              />
-              <label
-                htmlFor="continuous-bin-modal-interval-max"
-                className="font-content"
-              >
-                to less than
-              </label>
-              <TextInput
-                {...intervalForm.getInputProps("setIntervalMax")}
-                id={"continuous-bin-modal-interval-max"}
-                classNames={{
-                  wrapper: `px-2`,
-                  input:
-                    binMethod === "ranges" ? "bg-base-lightest" : undefined,
-                }}
-                data-testid="textbox-set-interval-max"
-              />
-            </div>
+              <ReplayIcon size={20} />
+            </FunctionButton>
           </div>
-          <FunctionButton
-            data-testid="button-reset-bins"
-            aria-label="reset bins"
-            className="p-2"
-            onClick={() => {
-              resetFields();
-              setSavedRangeRows([]);
-              setBinMethod("interval");
-              setHasReset(true);
-            }}
-            disabled={intervalFormAtDefault && rangeFormAtDefault}
+
+          <div className="flex items-center text-sm gap-2">
+            <Radio
+              data-testid="button-select-set-interval"
+              value="interval"
+              name="binMethod"
+              aria-label="select interval"
+              color="accent"
+              checked={binMethod === "interval"}
+              onChange={(e) =>
+                e.target.checked ? setBinMethod("interval") : undefined
+              }
+            />
+            <label
+              htmlFor="continuous-bin-modal-interval-size"
+              className="font-content"
+            >
+              A set interval
+            </label>
+          </div>
+
+          {/* This switches the bin method when a user clicks on the "area", no keyboard equivalent is needed to accessibly navigate the form */}
+          {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
+          <div
+            onClick={() => setBinMethod("interval")}
+            className="flex items-start text-sm mt-2"
+            role="group"
+            aria-labelledby="continuous-bin-modal-form-label"
           >
-            <ReplayIcon size={20} />
-          </FunctionButton>
+            <table className="w-full border-1 border-base-lighter">
+              <thead className="font-bold text-left border-b-4 border-b-base-lighter">
+                <tr>
+                  <th className="p-2" id="bin-size-label">
+                    Bin size
+                  </th>
+                  <th className="p-2" id="interval-from-label">
+                    From
+                  </th>
+                  <th className="p-2" id="interval-to-label">
+                    To less than
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="p-2">
+                    <TextInput
+                      {...intervalForm.getInputProps("setIntervalSize")}
+                      id={"continuous-bin-modal-interval-size"}
+                      classNames={{
+                        input:
+                          binMethod === "ranges"
+                            ? "bg-base-lightest"
+                            : undefined,
+                      }}
+                      data-testid="textbox-set-interval-size"
+                      aria-labelledby="bin-size-label"
+                    />
+                  </td>
+                  <td className="p-2">
+                    <TextInput
+                      {...intervalForm.getInputProps("setIntervalMin")}
+                      id={"continuous-bin-modal-interval-min"}
+                      classNames={{
+                        input:
+                          binMethod === "ranges"
+                            ? "bg-base-lightest"
+                            : undefined,
+                      }}
+                      data-testid="textbox-set-interval-min"
+                      aria-labelledby="interval-from-label"
+                    />
+                  </td>
+                  <td className="p-2">
+                    <TextInput
+                      {...intervalForm.getInputProps("setIntervalMax")}
+                      id={"continuous-bin-modal-interval-max"}
+                      classNames={{
+                        input:
+                          binMethod === "ranges"
+                            ? "bg-base-lightest"
+                            : undefined,
+                      }}
+                      data-testid="textbox-set-interval-max"
+                      aria-labelledby="interval-to-label"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-        {/* This switches the bin method when a user clicks on the "area", no keyboard equivalent is needed to accessibly navigate the form */}
-        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-        <div
-          className="flex flex-col text-sm mt-4"
-          onClick={() => setBinMethod("ranges")}
-        >
-          <div className="flex mb-4">
+
+        <div className="flex flex-col gap-1 mt-4">
+          <div className="flex gap-2">
             <Radio
               data-testid="button-select-custom-interval"
               value="ranges"
               name="binMethod"
               aria-label="select range"
               checked={binMethod === "ranges"}
-              className="px-2"
               classNames={{ label: "font-content" }}
-              color="blue"
+              color="accent"
+              size="sm"
               onChange={(e) =>
                 e.target.checked ? setBinMethod("ranges") : undefined
               }
             />
-            <span className="font-content">Custom ranges:</span>
+            <span className="font-content text-sm">Custom ranges</span>
           </div>
-          <table
-            className="border-separate"
-            style={{ borderSpacing: "0 10px" }}
-          >
-            <thead className="bg-base-lighter font-bold mb-2 text-left">
-              <tr>
-                <th className="p-1">Bin Name</th>
-                <th className="p-1">From</th>
-                <th className="p-1">To less than</th>
-                <th className="pr-2 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rangeForm.getValues().ranges.map((_, idx) => (
-                <tr key={idx} className="h-16 align-top">
-                  <td>
-                    <TextInput
-                      {...rangeForm.getInputProps(`ranges.${idx}.name`)}
-                      data-testid="textbox-range-name"
-                      aria-label="range name"
-                      classNames={{
-                        wrapper: "w-11/12",
-                        input:
-                          binMethod === "interval"
-                            ? "bg-base-lightest"
-                            : undefined,
-                      }}
-                      onBlur={() =>
-                        idx !== rangeForm.getValues().ranges.length - 1
-                          ? rangeForm.validateField(`ranges.${idx}.name`)
-                          : undefined
-                      }
-                      maxLength={100}
-                    />
-                  </td>
-                  <td>
-                    <TextInput
-                      {...rangeForm.getInputProps(`ranges.${idx}.from`)}
-                      data-testid="textbox-range-from"
-                      aria-label="range from"
-                      classNames={{
-                        wrapper: "w-11/12",
-                        input:
-                          binMethod === "interval"
-                            ? "bg-base-lightest"
-                            : undefined,
-                      }}
-                      onBlur={() =>
-                        idx !== rangeForm.getValues().ranges.length - 1
-                          ? validateRangeField("from", idx)
-                          : undefined
-                      }
-                    />
-                  </td>
-                  <td>
-                    <TextInput
-                      {...rangeForm.getInputProps(`ranges.${idx}.to`)}
-                      data-testid="textbox-range-to"
-                      aria-label="range to"
-                      classNames={{
-                        wrapper: "w-11/12",
-                        input:
-                          binMethod === "interval"
-                            ? "bg-base-lightest"
-                            : undefined,
-                      }}
-                      onBlur={() =>
-                        idx !== rangeForm.getValues().ranges.length - 1
-                          ? validateRangeField("to", idx)
-                          : undefined
-                      }
-                    />
-                  </td>
-                  <td className="float-right">
-                    {idx === rangeForm.getValues().ranges.length - 1 ? (
-                      <FunctionButton
-                        data-testid="button-range-add"
-                        leftSection={<CirclePlusIcon aria-hidden="true" />}
-                        onClick={() => {
-                          const result = rangeForm.validate();
-                          if (!result.hasErrors) {
-                            setSavedRangeRows(rangeForm.getValues().ranges);
 
-                            rangeForm.setFieldValue(
-                              `ranges.${idx}.name`,
-                              rangeForm.getValues().ranges[idx].name.trim(),
-                            );
-                            rangeForm.insertListItem("ranges", {
-                              name: "",
-                              from: "",
-                              to: "",
-                            });
-                          }
-                        }}
-                        disabled={
-                          rangeForm.getValues().ranges[idx].name === "" ||
-                          rangeForm.getValues().ranges[idx].from === "" ||
-                          rangeForm.getValues().ranges[idx].to === ""
-                        }
-                      >
-                        Add
-                      </FunctionButton>
-                    ) : (
-                      <FunctionButton
-                        data-testid="button-range-delete"
-                        onClick={() => {
-                          rangeForm.removeListItem("ranges", idx);
-                          setSavedRangeRows(
-                            savedRangeRows.filter((_, i) => idx !== i),
-                          );
-                        }}
-                        aria-label="delete row"
-                      >
-                        <TrashIcon size={16} />
-                      </FunctionButton>
-                    )}
-                  </td>
+          {/* This switches the bin method when a user clicks on the "area", no keyboard equivalent is needed to accessibly navigate the form */}
+          {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+          <div
+            className="flex flex-col text-sm mt-2"
+            onClick={() => setBinMethod("ranges")}
+          >
+            <table className="w-full border-1 border-base-lighter">
+              <thead className="font-bold text-left border-b-4 border-b-base-lighter">
+                <tr>
+                  <th className="p-2" id="range-name-label">
+                    Bin name
+                  </th>
+                  <th className="p-2" id="range-from-label">
+                    From
+                  </th>
+                  <th className="p-2" id="range-to-label">
+                    To less than
+                  </th>
+                  <th className="p-2">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {rangeForm.getValues().ranges.map((_, idx) => (
+                  <tr key={idx} className="align-top">
+                    <td className="p-2">
+                      <TextInput
+                        {...rangeForm.getInputProps(`ranges.${idx}.name`)}
+                        data-testid="textbox-range-name"
+                        aria-labelledby="range-name-label"
+                        classNames={{
+                          input:
+                            binMethod === "interval"
+                              ? "bg-base-lightest"
+                              : undefined,
+                        }}
+                        onBlur={() =>
+                          idx !== rangeForm.getValues().ranges.length - 1
+                            ? rangeForm.validateField(`ranges.${idx}.name`)
+                            : undefined
+                        }
+                        maxLength={100}
+                      />
+                    </td>
+                    <td className="p-2">
+                      <TextInput
+                        {...rangeForm.getInputProps(`ranges.${idx}.from`)}
+                        data-testid="textbox-range-from"
+                        aria-labelledby="range-from-label"
+                        classNames={{
+                          input:
+                            binMethod === "interval"
+                              ? "bg-base-lightest"
+                              : undefined,
+                        }}
+                        onBlur={() =>
+                          idx !== rangeForm.getValues().ranges.length - 1
+                            ? validateRangeField("from", idx)
+                            : undefined
+                        }
+                      />
+                    </td>
+                    <td className="p-2">
+                      <TextInput
+                        {...rangeForm.getInputProps(`ranges.${idx}.to`)}
+                        data-testid="textbox-range-to"
+                        aria-labelledby="range-to-label"
+                        classNames={{
+                          input:
+                            binMethod === "interval"
+                              ? "bg-base-lightest"
+                              : undefined,
+                        }}
+                        onBlur={() =>
+                          idx !== rangeForm.getValues().ranges.length - 1
+                            ? validateRangeField("to", idx)
+                            : undefined
+                        }
+                      />
+                    </td>
+                    <td className="p-2">
+                      {idx === rangeForm.getValues().ranges.length - 1 ? (
+                        <FunctionButton
+                          data-testid="button-range-add"
+                          leftSection={<CirclePlusIcon aria-hidden="true" />}
+                          aria-label="Add range"
+                          onClick={() => {
+                            const result = rangeForm.validate();
+                            if (!result.hasErrors) {
+                              setSavedRangeRows(rangeForm.getValues().ranges);
+
+                              rangeForm.setFieldValue(
+                                `ranges.${idx}.name`,
+                                rangeForm.getValues().ranges[idx].name.trim(),
+                              );
+                              rangeForm.insertListItem("ranges", {
+                                name: "",
+                                from: "",
+                                to: "",
+                              });
+                            }
+                          }}
+                          disabled={
+                            rangeForm.getValues().ranges[idx].name === "" ||
+                            rangeForm.getValues().ranges[idx].from === "" ||
+                            rangeForm.getValues().ranges[idx].to === ""
+                          }
+                          classNames={{
+                            section: "mr-1",
+                          }}
+                        >
+                          Add
+                        </FunctionButton>
+                      ) : (
+                        <FunctionButton
+                          data-testid="button-range-delete"
+                          onClick={() => {
+                            rangeForm.removeListItem("ranges", idx);
+                            setSavedRangeRows(
+                              savedRangeRows.filter((_, i) => idx !== i),
+                            );
+                          }}
+                          aria-label="delete row"
+                        >
+                          <TrashIcon size={16} />
+                        </FunctionButton>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-      <div className="mt-2 flex gap-2 justify-end">
+      <div className="mt-2 flex gap-2 justify-end bg-base-lightest p-4">
         <Button
           data-testid="button-custom-bins-cancel"
           variant="outline"
@@ -529,9 +563,8 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
         >
           Cancel
         </Button>
-        <Button
+        <DarkFunctionButton
           data-testid="button-custom-bins-save"
-          className="bg-primary-darkest text-primary-contrast-darkest disabled:bg-opacity-60 disabled:text-opacity-60"
           onClick={saveBins}
           disabled={
             binMethod === "interval"
@@ -541,7 +574,7 @@ const ContinuousBinningModal: React.FC<ContinuousBinningModalProps> = ({
           }
         >
           Save Bins
-        </Button>
+        </DarkFunctionButton>
       </div>
     </Modal>
   );

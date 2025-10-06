@@ -41,7 +41,10 @@ const ExternalAppMenu: React.FC<ExternalAppMenuProps> = ({
         </button>
       </Menu.Target>
       <Menu.Dropdown>
-        <div className="grid grid-cols-2 p-1 gap-2 font-medium">
+        <div
+          data-testid="menu-header-gdc-apps"
+          className="grid grid-cols-2 p-1 gap-2 font-medium"
+        >
           {externalAppLinks.map((linkProps) => (
             <MenuItem className={appMenuClass} key={linkProps.customDataTestID}>
               <HeaderLink {...linkProps} variant="menu" />

@@ -124,6 +124,7 @@ const Header: React.FC<HeaderProps> = ({
               {controlledDataLink && (
                 <>
                   <a
+                    data-testid="button-header-obtaining-access-to-controlled-data"
                     className="text-primary font-bold flex-shrink cursor-pointer text-right"
                     href={controlledDataLink.href}
                     target="_blank"

@@ -42,7 +42,7 @@ ${(p: FunctionButtonProps) =>
     ? "border-none"
     : "border border-solid border-primary"}
 ${(p: FunctionButtonProps) =>
-  p.loading !== true
+  !p.disabled && !p.loading
     ? (p.$variant === "filled"
         ? "hover:bg-primary-darker"
         : p.$variant === "header" || p.$variant === "header-subtle"
