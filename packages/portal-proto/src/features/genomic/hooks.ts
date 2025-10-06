@@ -27,7 +27,7 @@ import {
 } from "@gff/core";
 import { useDeepCompareEffect } from "use-deep-compare";
 import isEqual from "lodash/isEqual";
-import { extractValue, useTotalCounts } from "@/features/facets/hooks";
+import { extractValue } from "@/features/facets/hooks";
 import { useAppDispatch, useAppSelector } from "@/features/genomic/appApi";
 import {
   updateGeneAndSSMFilter,
@@ -132,10 +132,6 @@ export const useFilterExpandedState = (field: string) => {
 
 export const useAllFiltersCollapsed = () => {
   return useAppSelector((state) => selectAllFiltersCollapsed(state));
-};
-
-export const useTotalGenomicCounts = ({ docType }: { docType: GQLDocType }) => {
-  return useTotalCounts({ docType });
 };
 
 export const useGenesFacetValues = (field: string) => {
