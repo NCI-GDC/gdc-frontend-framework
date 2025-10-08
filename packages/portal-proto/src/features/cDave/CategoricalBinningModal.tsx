@@ -89,9 +89,6 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
   updateBins,
   opened,
 }: CategoricalBinningModalProps) => {
-  // Ref to track the last saved customBins value to detect external changes
-  const lastSavedCustomBins = useRef(customBins);
-
   const getInitialState = useDeepCompareCallback(
     () => ({
       values: customBins !== null ? customBins : results,
@@ -107,18 +104,11 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
 
   const [state, setState] = useState(getInitialState);
 
-  // Reset state when modal opens OR when customBins changes externally
   useEffect(() => {
-    const hasCustomBinsChanged = !isEqual(
-      customBins,
-      lastSavedCustomBins.current,
-    );
-
-    if (opened || hasCustomBinsChanged) {
+    if (opened) {
       setState(getInitialState());
-      lastSavedCustomBins.current = customBins;
     }
-  }, [opened, customBins, results, getInitialState]);
+  }, [opened, getInitialState]);
 
   const {
     values,
@@ -284,7 +274,6 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
     } else {
       updateBins(null);
     }
-    lastSavedCustomBins.current = values;
     setModalOpen(false);
   }, [values, results, hiddenValues, updateBins, setModalOpen, updateState]);
 
