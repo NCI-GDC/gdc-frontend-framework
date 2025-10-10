@@ -182,9 +182,11 @@ describe("<Controls />", () => {
       />,
     );
 
-    expect(getByTestId("no-data-message-diagnosis")).toBeInTheDocument();
     expect(
-      getByTestId("no-data-message-other-clinical-attribute"),
+      getByTestId("text-no-properties-with-data-diagnosis"),
+    ).toBeInTheDocument();
+    expect(
+      getByTestId("text-no-properties-with-data-other-clinical-attribute"),
     ).toBeInTheDocument();
   });
 
