@@ -127,6 +127,7 @@ const FilterPanel = ({
         label={filtersExpanded ? "Hide Filters Panel" : "Show Filters Panel"}
       >
         <ActionIcon
+          data-testid="button-hide-show-filters-panel"
           onClick={() => setFiltersExpanded(!filtersExpanded)}
           aria-label="Collapse/Expand filter panel"
           aria-controls="filters-panel"
@@ -148,7 +149,7 @@ const FilterPanel = ({
         <div className="flex flex-col flex-wrap">
           <div className="flex flex-wrap justify-between text-primary-content-darker">
             <button
-              data-testid="button-expand-collapse-files-table"
+              data-testid="button-expand-collapse-filters"
               onClick={() => toggleAllFiltersExpanded(allFiltersCollapsed)}
             >
               {allFiltersCollapsed ? "Expand All" : "Collapse All"}

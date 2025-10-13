@@ -77,6 +77,7 @@ const Controls: React.FC<ControlsProps> = ({
         label={controlsExpanded ? "Hide Control Panel" : "Show Control Panel"}
       >
         <ActionIcon
+          data-testid="button-hide-show-filters-panel"
           onClick={() => setControlsExpanded(!controlsExpanded)}
           aria-label="Collapse/Expand controls"
           aria-controls="cdave-control-panel"
@@ -121,6 +122,7 @@ const Controls: React.FC<ControlsProps> = ({
           <strong>{cDaveFields.length}</strong> properties with data
         </p>
         <Checkbox
+          data-testid="checkbox-only-show-properties-with-data"
           checked={onlyDataChecked}
           onChange={(event) => setOnlyDataChecked(event.currentTarget.checked)}
           label="Only show properties with data"
