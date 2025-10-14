@@ -6,3 +6,4 @@ export * from "./cohort";
 export * from "./modals";
 export * from "./facets";
 export * from "./common";
+export * from "./hooks";
