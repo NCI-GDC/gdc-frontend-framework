@@ -524,6 +524,11 @@ class BasePage:
             return False
         return True
 
+    def is_text_id_present(self, text_id):
+        text_id = self.normalize_button_identifier(text_id)
+        locator = GenericLocators.DATA_TESTID_TEXT_IDENT(text_id)
+        return self.is_visible(locator)
+
     def is_message_id_text_present(self, message_id, text):
         message_id = self.normalize_button_identifier(message_id)
         locator = GenericLocators.DATA_TESTID_TEXT_IDENT(message_id)

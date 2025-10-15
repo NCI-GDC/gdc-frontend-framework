@@ -752,6 +752,12 @@ def is_text_present_on_the_page(expected_text: str):
     is_text_present = APP.shared.is_text_present(expected_text)
     assert is_text_present, f"The text '{expected_text}' is NOT present"
 
+@step("Is text ID <text_id> present on the page")
+def is_text_id_present_on_the_page(text_id:str):
+    """Verifies if text data-testid is present on the page"""
+    is_text_id_present = APP.shared.is_text_id_present(text_id)
+    assert is_text_id_present, f"The text id '{text_id}' is NOT present"
+
 
 @step("Is text <expected_text> not present on the page")
 def is_text_present_on_the_page(expected_text: str):
