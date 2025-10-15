@@ -10,6 +10,7 @@ import CohortSelector from "./CohortSelector";
 import { actionButtonVariant, darkFunctionVariant } from "./style";
 import { CohortHooks, CohortNotificationCommandNoParam } from "./types";
 import { CohortNotificationContext } from "./CohortNotificationProvider";
+import { modals } from "@mantine/modals";
 
 interface CohortManagerProps {
   readonly hooks: CohortHooks;
@@ -162,11 +163,14 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                         },
                       ]);
                   })
-                  .catch(
-                    () =>
-                      setCohortMessage &&
-                      setCohortMessage([{ cmd: "error", param1: "deleting" }]),
-                  );
+                  .catch(() => {
+                    modals.openContextModal({
+                      modal: "deleteCohortError",
+                      title: "Delete Cohort Error",
+                      innerProps: {},
+                      zIndex: 400,
+                    });
+                  });
               }}
             />
 
@@ -189,13 +193,14 @@ const CohortManager: React.FC<CohortManagerProps> = ({
                       setCohortMessage &&
                       setCohortMessage([{ cmd: "discardChanges" }]),
                   )
-                  .catch(
-                    () =>
-                      setCohortMessage &&
-                      setCohortMessage([
-                        { cmd: "error", param1: "discarding" },
-                      ]),
-                  );
+                  .catch(() => {
+                    modals.openContextModal({
+                      modal: "discardChangesError",
+                      title: "Discard Changes Error",
+                      innerProps: {},
+                      zIndex: 400,
+                    });
+                  });
               }}
             />
 
