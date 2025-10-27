@@ -157,6 +157,13 @@ class ClinicalDataAnalysisPage(BasePage):
         # If we find all values in the table, it passes the test
         return True
 
+    def is_field_switch_present(self, field_switch):
+        """On the left panel, returns if a field switch is present or not"""
+        field_switch_locator = ClinicalDataAnalysisLocators.FIELD_SELECT_SWITCH_IDENT(
+            field_switch
+        )
+        return self.is_visible(field_switch_locator)
+
     def is_table_value_on_analysis_card_present(self, analysis_card_name, table_value):
         """On the given analysis card, returns if specified value is present on the card's table"""
         text_table_locator = (

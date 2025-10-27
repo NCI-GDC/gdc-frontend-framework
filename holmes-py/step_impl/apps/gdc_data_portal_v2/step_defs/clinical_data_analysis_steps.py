@@ -51,6 +51,26 @@ def switch_analysis_card_unit(analysis_card, unit_type):
     APP.clinical_data_analysis.click_unit_on_analysis_card(analysis_card, unit_type)
     time.sleep(1)
 
+@step("Validate these field switches are not present on the Clinical Data Analysis page <table>")
+def validate_field_switch_are_not_present(table):
+    for k, v in enumerate(table):
+        is_field_switch_present = (
+            APP.clinical_data_analysis.is_field_switch_present(v[0])
+        )
+        assert (
+            is_field_switch_present == False
+        ), f"The field switch '{v[0]}' is present when it should NOT be"
+
+@step("Validate these field switches are present on the Clinical Data Analysis page <table>")
+def validate_field_switch_are_not_present(table):
+    for k, v in enumerate(table):
+        is_field_switch_present = (
+            APP.clinical_data_analysis.is_field_switch_present(v[0])
+        )
+        assert (
+            is_field_switch_present
+        ), f"The field switch '{v[0]}' is NOT present when it should be"
+
 @step(
     "Validate all expected analysis cards are present on the Clinical Data Analysis page <table>"
 )
