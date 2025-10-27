@@ -28,5 +28,4 @@ tags: gdc-data-portal-v2, file-summary, cart, file-download, smoke-test, sanity-
   |50220                                  |
 Checks the UUID, MD5 Checksum, and file size values in the metadata file
 
-## Fake failure step
 * Is text "fake text here" present on the page
