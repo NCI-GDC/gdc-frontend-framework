@@ -10,11 +10,22 @@ run_ui_tests:
   image: docker:${DOCKER_VERSION}-dind
   script:
     - docker pull $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
-    - docker run -v $(pwd):/app --name holmes-py --add-host portal.gdc.cancer.gov:172.28.6.156 -v $(pwd)/holmes-py/custom-nsswitch.conf:/etc/nsswitch.conf:ro -v $(pwd)/holmes-py/custom-gai.conf:/etc/gai.conf:ro --env APP_ENVIRONMENT=QA_INT --env browser="headless firefox" -e PATH="$PATH:/usr/local/bin" "$DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}" gauge run ./holmes-py/specs/gdc_data_portal_v2/file_summary/cart_file_download.spec
-    - docker cp holmes-py:/app/holmes-py/.gauge holmes-py/.gauge
-    - docker cp holmes-py:/app/holmes-py/downloads holmes-py/downloads
-    - docker cp holmes-py:/app/holmes-py/logs holmes-py/logs
-    - docker cp holmes-py:/app/holmes-py/reports holmes-py/reports
+    # Start container in background so we can run diagnostics inside the same instance
+    - docker run -d --name holmes-py -v $(pwd):/app --add-host portal.gdc.cancer.gov:172.28.6.156 -v $(pwd)/holmes-py/custom-nsswitch.conf:/etc/nsswitch.conf:ro -v $(pwd)/holmes-py/custom-gai.conf:/etc/gai.conf:ro --env APP_ENVIRONMENT=QA_INT --env browser="headless firefox" -e PATH="$PATH:/usr/local/bin" "$DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}" tail -f /dev/null
+    # Debug: inspect hosts and name resolution inside the running container
+    - docker exec holmes-py cat /etc/hosts
+    - docker exec holmes-py getent hosts portal.gdc.cancer.gov || true
+    - docker exec holmes-py getent ahosts portal.gdc.cancer.gov || true
+    - docker exec holmes-py cat /etc/nsswitch.conf || true
+    - docker exec holmes-py cat /etc/gai.conf || true
+    # Run the tests inside the same container
+    - docker exec holmes-py gauge run ./holmes-py/specs/gdc_data_portal_v2/file_summary/cart_file_download.spec
+    # Copy artifacts and cleanup
+    - docker cp holmes-py:/app/holmes-py/.gauge holmes-py/.gauge || true
+    - docker cp holmes-py:/app/holmes-py/downloads holmes-py/downloads || true
+    - docker cp holmes-py:/app/holmes-py/logs holmes-py/logs || true
+    - docker cp holmes-py:/app/holmes-py/reports holmes-py/reports || true
+    - docker rm -f holmes-py || true
   artifacts:
     when: always
     paths:
