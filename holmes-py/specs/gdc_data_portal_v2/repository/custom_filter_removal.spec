@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Validate custom filters that have been removed are not present
 Test-case       : PEAR-2269
 
-tags: gdc-data-portal-v2, repository, regression, gitlab
+tags: gdc-data-portal-v2, repository, regression
 
 ## Navigate to Cohort Builder
 * On GDC Data Portal V2 app

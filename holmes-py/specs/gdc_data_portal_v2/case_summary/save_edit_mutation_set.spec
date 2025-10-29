@@ -5,7 +5,7 @@ Owner		            : GDC QA
 Description		      : Most Frequent Somatic Mutations Table - Save/Edit Mutation Set
 Test-Case           : PEAR-464
 
-tags: gdc-data-portal-v2, regression, case-summary, mutations, gitlab
+tags: gdc-data-portal-v2, regression, case-summary, mutations
 
 ## Navigate to Case Summary Page: 3ea880f4-7a78-4cb7-bfe4-54b3c30a812e
 * On GDC Data Portal V2 app

@@ -5,7 +5,7 @@ Owner		            : GDC QA
 Description		      : Replace Cohort with Various Filtered Cohort Buttons
 Test-case           : PEAR-2458
 
-tags: gdc-data-portal-v2, end-to-end, regression, gitlab
+tags: gdc-data-portal-v2, end-to-end, regression
 
 ## Create Initial Cohorts
 * On GDC Data Portal V2 app

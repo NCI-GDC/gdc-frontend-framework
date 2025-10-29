@@ -5,7 +5,7 @@ Owner		          : GDC QA
 Description		    : Cohort Bar - Enforce there can only be one unsaved cohort at a time
 Test-case         : PEAR-1748
 
-tags: gdc-data-portal-v2, regression, cohort-bar, gitlab
+tags: gdc-data-portal-v2, regression, cohort-bar
 
 ## Add an Unsaved Cohort
 * On GDC Data Portal V2 app

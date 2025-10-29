@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Test Cohort Builder - category and facet presence
 Test-case       : PEAR-796
 
-tags: gdc-data-portal-v2, cohort-builder, facet-cards, regression, gitlab
+tags: gdc-data-portal-v2, cohort-builder, facet-cards, regression
 
 ## Navigate to Cohort Builder
 

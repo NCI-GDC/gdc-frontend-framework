@@ -5,7 +5,7 @@ Owner		       : GDC QA
 Description		 : Save a cohort with genes, mutations, and both filters
 Test-Case      : PEAR-1510
 
-tags: gdc-data-portal-v2, mutation-frequency, regression, gitlab
+tags: gdc-data-portal-v2, mutation-frequency, regression
 
 ## Navigate to Mutation Frequency App
 * On GDC Data Portal V2 app

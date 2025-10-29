@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Verify Filters Expected Access Level
 Test-Case       : PEAR-2347
 
-tags: gdc-data-portal-v2, repository, data-release, acl-validation, gitlab
+tags: gdc-data-portal-v2, repository, data-release, acl-validation
 
 ## Navigate to Repository Page
 * On GDC Data Portal V2 app

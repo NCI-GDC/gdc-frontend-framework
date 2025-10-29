@@ -5,7 +5,7 @@ Owner		      : GDC QA
 Description		: Custom Filtering on the Mutation Frequency App
 Test-Case     : PEAR-732
 
-tags: gdc-data-portal-v2, mutation-frequency, regression, gitlab
+tags: gdc-data-portal-v2, mutation-frequency, regression
 
 ## Navigate to Manage Sets
 * On GDC Data Portal V2 app

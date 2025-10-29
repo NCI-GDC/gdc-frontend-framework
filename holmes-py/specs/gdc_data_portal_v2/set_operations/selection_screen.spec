@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Set Operations - Selection Screen
 Test-Case       : PEAR-1231
 
-tags: gdc-data-portal-v2, set-operations, regression, gitlab
+tags: gdc-data-portal-v2, set-operations, regression
 
 ## Navigate to Manage Sets
 * On GDC Data Portal V2 app

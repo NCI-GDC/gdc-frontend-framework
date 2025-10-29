@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Test Cohort Builder - Filter by Case, Gene, Mutation Identifier
 Test-case       : PEAR-792
 
-tags: gdc-data-portal-v2, cohort-builder, filter-card, regression, gitlab
+tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
 
 ## Navigate to Cohort Builder
 * On GDC Data Portal V2 app
