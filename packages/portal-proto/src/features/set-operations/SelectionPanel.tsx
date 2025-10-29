@@ -323,8 +323,8 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
                 selectedEntityType,
                 selectedEntities,
               )
-                ? "text-base-lighter"
-                : undefined
+                ? "text-base-lighter whitespace-pre"
+                : "whitespace-pre"
             }
           >
             {getValue()}

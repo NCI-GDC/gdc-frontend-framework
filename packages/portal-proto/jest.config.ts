@@ -1,6 +1,6 @@
-import type { InitialOptionsTsJest } from "ts-jest/dist/types";
+import type { JestConfigWithTsJest } from "ts-jest/dist/types";
 
-const config: InitialOptionsTsJest = {
+const config: JestConfigWithTsJest = {
   preset: "ts-jest",
   setupFilesAfterEnv: ["<rootDir>/setupTests.ts"],
   transform: {
@@ -8,7 +8,6 @@ const config: InitialOptionsTsJest = {
       "ts-jest",
       {
         tsconfig: "tsconfig.test.json",
-        isolatedModules: true,
       },
     ],
     "@sjcrh": [
@@ -49,6 +48,7 @@ const config: InitialOptionsTsJest = {
     "node_modules/(?!@sjcrh|react-dnd|dnd-core|@react-dnd|react-dnd-html5-backend|uuid)/",
     "!proteinpaint",
   ],
+  modulePathIgnorePatterns: ["<rootDir>/.next/", "<rootDir>/node_modules/"],
   testTimeout: 50000,
 };
 

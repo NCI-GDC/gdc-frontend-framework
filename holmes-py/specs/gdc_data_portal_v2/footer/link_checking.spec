@@ -21,7 +21,7 @@ tags: gdc-data-portal-v2, regression, footer, navigation
   |Data Portal                                |A repository and computational platform for cancer researchers |
   |Website                                    |The NCI's Genomic Data Commons                                 |
   |API                                        |The GDC Application Programming Interface (API)                |
-  |Data Transfer Tool                         |The GDC Data Transfer Tool provides an optimized method        |
+  |Data Transfer Tool                         |The GDC Data Transfer Tool (DTT) provides an optimized         |
   |Documentation                              |can find detailed information on GDC processes and tools       |
   |Data Submission Portal                     |The GDC Data Submission Portal is a web-based system           |
   |Publications                               |To request a publication page that meets the above criteria    |
@@ -31,7 +31,7 @@ tags: gdc-data-portal-v2, regression, footer, navigation
   |Disclaimer                                 |NCI urges users to consult with a qualified physician          |
   |FOIA                                       |provides individuals with a right to access to records         |
   |HHS Vulnerability Disclosure               |If you make a good faith effort to comply with this policy     |
-  |U.S. Department of Health and Human Services|Receive the latest updates from the Secretary and Press Releases.|
+  |U.S. Department of Health and Human Services|200 Independence Avenue, S.W.                                 |
   |National Institutes of Health              |9000 Rockville Pike Bethesda, Maryland 20892                   |
   |National Cancer Institute                  |National Cancer Institute                                      |
   |USA.gov                                    |USA.gov helps you locate a                                     |

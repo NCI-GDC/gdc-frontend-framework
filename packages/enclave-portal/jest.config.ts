@@ -1,6 +1,6 @@
-import type { InitialOptionsTsJest } from "ts-jest/dist/types";
+import type { JestConfigWithTsJest } from "ts-jest/dist/types";
 
-const config: InitialOptionsTsJest = {
+const config: JestConfigWithTsJest = {
   preset: "ts-jest",
   setupFilesAfterEnv: ["<rootDir>/setupTests.ts"],
   globals: {
@@ -8,6 +8,7 @@ const config: InitialOptionsTsJest = {
       tsconfig: "tsconfig.test.json",
     },
   },
+  modulePathIgnorePatterns: ["<rootDir>/.next/", "<rootDir>/node_modules/"],
   testEnvironment: "jsdom",
 };
 

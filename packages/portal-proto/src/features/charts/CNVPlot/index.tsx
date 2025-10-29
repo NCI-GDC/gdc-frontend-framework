@@ -15,6 +15,7 @@ import {
 } from "./utils";
 import { PlotMouseEvent } from "plotly.js";
 import { useDeepCompareMemo } from "use-deep-compare";
+import OffscreenWrapper from "@/components/OffscreenWrapper";
 
 const BarChart = dynamic(() => import("../BarChart"), {
   ssr: false,
@@ -126,13 +127,19 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
     }
     return Object.entries(cnvMapping)
       .filter(([key]) => checkboxState[key])
-      .map(([_, { prop, color }]) => ({
-        y: top20ChartData.map((d) => (d[prop] / d.total) * 100),
-        x: top20ChartData.map((d) => d.project),
-        hovertemplate,
-        customdata: top20ChartData.map((d) => [d[prop], d.total]),
-        marker: { color },
-      }));
+      .map(([key, { prop, color }]) => {
+        const checkboxConfig = checkboxConfigs.find(
+          (config) => config.key === key,
+        );
+        return {
+          y: top20ChartData.map((d) => (d[prop] / d.total) * 100),
+          x: top20ChartData.map((d) => d.project),
+          hovertemplate,
+          customdata: top20ChartData.map((d) => [d[prop], d.total]),
+          marker: { color },
+          name: checkboxConfig.label,
+        };
+      });
   }, [checkboxState, top20ChartData, anyCheckboxSelected]);
 
   const chartConfig = useDeepCompareMemo(
@@ -198,7 +205,7 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
           <ChartTitleBar
             title={title}
             filename="cancer-distribution-bar-chart"
-            divId={chartDivId}
+            divId={`${chartDivId}-download`}
             jsonData={jsonData}
           />
         </div>
@@ -212,6 +219,16 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
             onAfterPlot={handleOnAfterPlot}
           />
         </div>
+        <OffscreenWrapper>
+          <BarChart
+            divId={`${chartDivId}-download`}
+            data={chartConfig}
+            height={height}
+            stacked
+            onAfterPlot={handleOnAfterPlot}
+            showLegend={anyCheckboxSelected}
+          />
+        </OffscreenWrapper>
 
         {/* checkboxes */}
         <div className="justify-center text-sm flex flex-wrap gap-4">

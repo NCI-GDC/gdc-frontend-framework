@@ -86,7 +86,7 @@ const externalAppLinks: HeaderLinkItem[] = [
   },
   {
     customDataTestID: "button-header-data-transfer-tool",
-    href: "https://docs.gdc.cancer.gov/Data_Transfer_Tool/Users_Guide/Getting_Started/?utm_source=dataportal&utm_medium=apps",
+    href: "https://gdc.cancer.gov/access-data/gdc-data-transfer-tool?utm_source=dataportal&utm_medium=apps",
     image: (
       <Image
         src={"/user-flow/icons/gdc-app-data-transfer-tool.svg"}

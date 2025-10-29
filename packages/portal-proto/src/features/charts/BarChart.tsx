@@ -20,6 +20,7 @@ export interface BarChartData {
  * @property marginTop - margin top of the chart
  * @property padding - padding of the chart
  * @property orientation - orientation of the chart
+ * @property showLegend - whether to display the chart legend
  * @property onClickHandler - callback function for click event
  * @property stacked - whether the chart is stacked
  * @property divId - id of the div
@@ -35,6 +36,7 @@ interface BarChartProps {
   readonly marginTop?: number;
   readonly padding?: number;
   readonly orientation?: string;
+  readonly showLegend?: boolean;
   readonly onClickHandler?: (mouseEvent: PlotMouseEvent) => void;
   readonly stacked?: boolean;
   readonly divId: string;
@@ -48,6 +50,7 @@ interface BarChartProps {
  * @param marginTop - margin top of the chart
  * @param padding - padding of the chart
  * @param orientation   - orientation of the chart
+ * @param showLegend - whether to display the chart legend
  * @param onClickHandler  - callback function for click event
  * @param divId - id of the div
  * @param stacked - whether the chart is stacked
@@ -59,6 +62,7 @@ const BarChart: React.FC<BarChartProps> = ({
   marginTop = 30,
   padding = 4,
   orientation = "v",
+  showLegend = false,
   onClickHandler,
   divId,
   stacked = false,
@@ -73,7 +77,8 @@ const BarChart: React.FC<BarChartProps> = ({
     hovertemplate: dataset.hovertemplate,
     customdata: dataset.customdata,
     textposition: "none",
-    showlegend: false,
+    name: dataset?.name,
+    showlegend: showLegend,
     uniformtext_mode: "hide",
     title: null,
     marker: {
@@ -93,7 +98,7 @@ const BarChart: React.FC<BarChartProps> = ({
       ? {
           xaxis: {
             // (bars are vertical)
-            automargin: false,
+            automargin: true,
             ticks: "outside",
             tickwidth: 2,
             tickcolor: "#aaaaaa",
@@ -132,11 +137,15 @@ const BarChart: React.FC<BarChartProps> = ({
             duration: 500,
             easing: "cubic-in-out",
           },
+          legend: {
+            orientation: "h",
+            y: -0.3,
+          },
         }
       : {
           // (bars are horizontal)
           yaxis: {
-            automargin: false,
+            automargin: true,
             ticks: "outside",
             tickwidth: 2,
             tickcolor: "#aaaaaa",

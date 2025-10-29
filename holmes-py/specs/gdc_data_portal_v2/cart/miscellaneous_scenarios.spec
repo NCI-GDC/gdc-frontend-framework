@@ -24,7 +24,7 @@ tags: gdc-data-portal-v2, regression, cart
 * These links on the "Cart" should take the user to correct page in a new tab
   |button_text                                |text_on_expected_page                                    |
   |-------------------------------------------|---------------------------------------------------------|
-  |GDC Data Transfer Tool                     |The GDC Data Transfer Tool provides an optimized method  |
+  |GDC Data Transfer Tool                     |The GDC Data Transfer Tool (DTT) provides an optimized   |
   |GDC Reference Files                        |Reference files used by the GDC data harmonization       |
 
 ## No Files in Cart Message

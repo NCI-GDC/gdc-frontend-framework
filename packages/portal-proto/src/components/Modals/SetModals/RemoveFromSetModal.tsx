@@ -13,6 +13,7 @@ import {
   Modals,
   useRemoveFromSsmSetMutation,
   useRemoveTopNSsmsSetFromFiltersMutation,
+  SortOption,
 } from "@gff/core";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
@@ -35,7 +36,8 @@ interface RemoveFromSetModalProps {
   readonly countHook: typeof useGeneSetCountsQuery;
   readonly removeFromSetHook: RemoveFromSetMutationHook;
   readonly opened: boolean;
-  readonly sort?: string;
+  readonly score?: string;
+  readonly sort?: SortOption[];
   readonly isManualSelection?: boolean;
 }
 
@@ -49,6 +51,7 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
   countHook,
   removeFromSetHook,
   opened,
+  score,
   sort,
   isManualSelection,
 }: RemoveFromSetModalProps) => {
@@ -73,7 +76,8 @@ const RemoveFromSetModal: React.FC<RemoveFromSetModalProps> = ({
           : {},
         case_filters: buildCohortGqlOperator(cohortFilters) ?? {},
         size: max,
-        score: sort,
+        score,
+        sort,
       })
         .unwrap()
         .then((newSetId) => {

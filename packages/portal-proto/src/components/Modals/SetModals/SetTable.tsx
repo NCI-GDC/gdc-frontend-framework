@@ -142,6 +142,7 @@ const SetTable: React.FC<SetTableProps> = ({
           <span
             data-testid={`text-${row.original.name}-set-name`}
             id={`${componentId}-set-table-${row.original.set[0]}`}
+            className="whitespace-pre"
           >
             {getValue()}
           </span>

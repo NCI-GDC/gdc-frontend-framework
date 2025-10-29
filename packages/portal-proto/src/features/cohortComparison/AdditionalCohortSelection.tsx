@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Tooltip } from "@mantine/core";
+import { LoadingOverlay, Tooltip } from "@mantine/core";
 import {
   useCoreSelector,
   selectCurrentCohort,
@@ -79,7 +79,9 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
             data-testid="text-cohort-name-cohort-comparison"
             htmlFor={row.original.id}
             className={
-              !row.original.counts.caseCount ? "text-base-lighter" : undefined
+              !row.original.counts.caseCount
+                ? "text-base-lighter whitespace-pre"
+                : "whitespace-pre"
             }
           >
             {row.original.name}
@@ -127,10 +129,11 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
   };
 
   return (
-    <div className="bg-base-max">
+    <div className="bg-base-max relative">
+      <LoadingOverlay visible={primaryCohort === undefined} />
       <div className="p-4 w-full xl:w-3/4">
         <h2 className="font-heading text-lg font-bold py-2 text-primary-content-darkest">
-          Select a cohort to compare with {primaryCohort.name}
+          Select a cohort to compare with {primaryCohort?.name}
         </h2>
         <p className="font-content pb-2">
           Display the survival analysis of your cohorts and compare

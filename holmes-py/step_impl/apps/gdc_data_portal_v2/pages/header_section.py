@@ -8,6 +8,7 @@ class HeaderSectionLocators:
     BUTTON_IDENT = lambda button_name: f"[data-testid='button-header-{button_name}']"
     BUTTON_LOGIN = "[data-testid='button-header-login'] >> nth=1"
     BUTTON_USERNAME = "[data-testid='button-header-username'] >> nth=1"
+    BUTTON_APPS_MENU = "[data-testid='button-header-gdc-apps']"
 
     # These are all locators that only appear when the respective page has fully loaded
     ANALYSIS_CENTER_WAIT_FOR_ELEMENT = "[data-testid='Clinical Data Analysis-tool']"
@@ -24,6 +25,10 @@ class HeaderSectionLocators:
 class HeaderSection(BasePage):
     def __init__(self, driver: Page, url):
         self.driver = driver  # driver is PW page
+
+    def navigate_with_apps_menu(self, apps_link:str):
+       self.click(HeaderSectionLocators.BUTTON_APPS_MENU)
+       self.click_header_button(apps_link)
 
     def navigate_to_main_pages(self, button_name: str):
         button_name = self.normalize_button_identifier(button_name)

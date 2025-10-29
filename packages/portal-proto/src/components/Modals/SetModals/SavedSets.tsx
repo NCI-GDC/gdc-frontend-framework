@@ -108,7 +108,10 @@ const SavedSets: React.FC<SavedSetsProps> = ({
         id: "name",
         header: "Name",
         cell: ({ row }) => (
-          <div data-testid={`text-${row.original.name}-set-name`}>
+          <div
+            data-testid={`text-${row.original.name}-set-name`}
+            className="whitespace-pre"
+          >
             {row.original.name}
           </div>
         ),

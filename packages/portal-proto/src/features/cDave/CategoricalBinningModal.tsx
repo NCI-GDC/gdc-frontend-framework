@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { pickBy, mapKeys, isEqual, isEmpty } from "lodash";
 import { Button, Group, Modal, Text, TextInput } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
@@ -15,6 +15,8 @@ import {
   ShowIcon,
   UngroupIcon,
 } from "@/utils/icons";
+import { useDeepCompareCallback } from "use-deep-compare";
+import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 
 const DEFAULT_GROUP_NAME_PREFIX = "selected value ";
 
@@ -73,7 +75,7 @@ const sortBins = (
 interface CategoricalBinningModalProps {
   readonly setModalOpen: (open: boolean) => void;
   readonly field: string;
-  readonly results: Record<string, number>;
+  readonly results: CategoricalBins;
   readonly customBins: CategoricalBins;
   readonly updateBins: (bin: CategoricalBins) => void;
   readonly opened: boolean;
@@ -87,23 +89,42 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
   updateBins,
   opened,
 }: CategoricalBinningModalProps) => {
-  const [values, setValues] = useState<CategoricalBins>(
-    customBins !== null ? customBins : results,
+  const getInitialState = useDeepCompareCallback(
+    () => ({
+      values: customBins !== null ? customBins : results,
+      selectedValues: {},
+      hiddenValues:
+        customBins !== null ? getHiddenValues(results, customBins) : {},
+      selectedHiddenValues: {},
+      editField: undefined,
+      errorMessage: "",
+    }),
+    [customBins, results],
   );
-  const [selectedValues, setSelectedValues] = useState<Record<string, number>>(
-    {},
-  );
-  const [hiddenValues, setHiddenValues] = useState<Record<string, number>>(
-    customBins !== null ? getHiddenValues(results, customBins) : {},
-  );
-  const [selectedHiddenValues, setSelectedHiddenValues] = useState<
-    Record<string, number>
-  >({});
-  const [editField, setEditField] = useState(undefined);
-  const [errorMessage, setErrorMessage] = useState("");
 
-  const group = () => {
-    setEditField(undefined);
+  const [state, setState] = useState(getInitialState);
+
+  useEffect(() => {
+    if (opened) {
+      setState(getInitialState());
+    }
+  }, [opened, getInitialState]);
+
+  const {
+    values,
+    selectedValues,
+    hiddenValues,
+    selectedHiddenValues,
+    editField,
+    errorMessage,
+  } = state;
+
+  const updateState = useCallback((updates: Partial<typeof state>) => {
+    setState((prev) => ({ ...prev, ...updates }));
+  }, []);
+
+  const group = useCallback(() => {
+    updateState({ editField: undefined });
 
     const existingGroups = Object.entries(values).filter(
       ([, v]) =>
@@ -112,12 +133,16 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
     );
 
     if (existingGroups.length === 1) {
-      setValues({
-        ...filterOutSelected(values, selectedValues),
-        [existingGroups[0][0]]: {
-          ...(existingGroups[0][1] as Record<string, number>),
-          ...selectedValues,
+      updateState({
+        values: {
+          ...filterOutSelected(values, selectedValues),
+          [existingGroups[0][0]]: {
+            ...(existingGroups[0][1] as Record<string, number>),
+            ...selectedValues,
+          },
         },
+        selectedValues: {},
+        errorMessage: "",
       });
     } else {
       const valueCount = Object.keys(values).length;
@@ -131,203 +156,259 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
 
       const newGroupName = DEFAULT_GROUP_NAME_PREFIX + index;
 
-      setValues({
-        ...filterOutSelected(values, selectedValues),
-        [newGroupName]: selectedValues,
+      updateState({
+        values: {
+          ...filterOutSelected(values, selectedValues),
+          [newGroupName]: selectedValues,
+        },
+        selectedValues: {},
+        editField: newGroupName,
+        errorMessage: "",
       });
-
-      setEditField(newGroupName);
     }
-    setSelectedValues({});
-    setErrorMessage("");
-  };
+  }, [values, selectedValues, updateState]);
 
-  const updateGroupName = (oldName: string, newName: string) => {
-    setValues(mapKeys(values, (_, key) => (key === oldName ? newName : key)));
-    setErrorMessage("");
-  };
+  const updateGroupName = useCallback(
+    (oldName: string, newName: string) => {
+      updateState({
+        values: mapKeys(values, (_, key) => (key === oldName ? newName : key)),
+        errorMessage: "",
+      });
+    },
+    [values, updateState],
+  );
 
-  const hideValues = () => {
+  const hideValues = useCallback(() => {
     const restValues = filterOutSelected(values, selectedValues);
 
     if (isEmpty(restValues)) {
-      setErrorMessage("At least one bin must be displayed.");
+      updateState({ errorMessage: "At least one bin must be displayed." });
       return;
     }
 
-    setErrorMessage("");
-    setEditField(undefined);
-    setHiddenValues({
-      ...hiddenValues,
-      ...selectedValues,
+    updateState({
+      errorMessage: "",
+      editField: undefined,
+      hiddenValues: {
+        ...hiddenValues,
+        ...selectedValues,
+      },
+      values: restValues,
+      selectedValues: {},
     });
+  }, [values, selectedValues, hiddenValues, updateState]);
 
-    setValues(restValues);
+  const resetToDefault = useCallback(() => {
+    updateState({
+      editField: undefined,
+      hiddenValues: {},
+      values: results,
+      selectedValues: {},
+      selectedHiddenValues: {},
+      errorMessage: "",
+    });
+  }, [results, updateState]);
 
-    setSelectedValues({});
-  };
+  const ungroupValues = useCallback(() => {
+    updateState({
+      editField: undefined,
+      values: {
+        ...filterOutSelected(values, selectedValues),
+        ...selectedValues,
+      },
+      selectedValues: {},
+    });
+  }, [values, selectedValues, updateState]);
 
-  const sortedValues = Object.entries(values).sort((a, b) =>
-    sortBins(a[1], b[1]),
+  const showHiddenValues = useCallback(() => {
+    updateState({
+      editField: undefined,
+      values: { ...values, ...selectedHiddenValues },
+      hiddenValues: pickBy(
+        hiddenValues,
+        (_, k) => selectedHiddenValues?.[k] === undefined,
+      ),
+      selectedHiddenValues: {},
+    });
+  }, [values, selectedHiddenValues, hiddenValues, updateState]);
+
+  const sortedValues = useMemo(
+    () => Object.entries(values).sort((a, b) => sortBins(a[1], b[1])),
+    [values],
   );
+
+  const sortedHiddenValues = useMemo(
+    () => Object.entries(hiddenValues).sort((a, b) => b[1] - a[1]),
+    [hiddenValues],
+  );
+
+  const isResetDisabled = useMemo(
+    () => isEqual(results, values) && isEmpty(hiddenValues),
+    [results, values, hiddenValues],
+  );
+
+  const isGroupDisabled = useMemo(
+    () =>
+      Object.entries(values).filter(([k, v]) =>
+        v instanceof Object
+          ? Object.keys(v).some((k) => selectedValues?.[k])
+          : selectedValues?.[k],
+      ).length < 2,
+    [values, selectedValues],
+  );
+
+  const isUngroupDisabled = useMemo(
+    () =>
+      !Object.entries(values).some(
+        ([, v]) =>
+          v instanceof Object &&
+          Object.keys(v).some((groupedValue) => selectedValues?.[groupedValue]),
+      ),
+    [values, selectedValues],
+  );
+
+  const handleSave = useCallback(() => {
+    updateState({ editField: undefined });
+    if (!isEqual(values, results) || !isEmpty(hiddenValues)) {
+      updateBins(values);
+    } else {
+      updateBins(null);
+    }
+    setModalOpen(false);
+  }, [values, results, hiddenValues, updateBins, setModalOpen, updateState]);
 
   return (
     <Modal
       opened={opened}
       onClose={() => setModalOpen(false)}
-      size={800}
+      size={900}
       zIndex={400}
       title={`Create Custom Bins: ${field}`}
-      classNames={{
-        header: "text-xl !m-0 !px-0",
-        content: "p-4",
-      }}
     >
-      <p className="font-content">
-        Organize values into groups of your choosing. Click <b>Save Bins</b> to
-        update the analysis plots.
-      </p>
-      <div
-        data-testid="cat-bin-modal-values"
-        className="border-base-lightest border-solid border-1 mt-2"
-      >
-        <div className="flex justify-between bg-base-lightest p-2">
-          <h3 className="font-bold my-auto">Values</h3>
-          <div className="gap-1 flex">
+      <div className="px-4 pb-4">
+        <p className="mb-2 text-sm font-content">
+          Organize values into groups of your choosing. Click <b>Save Bins</b>{" "}
+          to update the analysis plots.
+        </p>
+        <div data-testid="cat-bin-modal-values" className="mt-2">
+          <div className="flex justify-between py-2">
+            <h3 className="font-bold mt-auto">Values</h3>
+            <div className="gap-1 flex">
+              <FunctionButton
+                data-testid="button-custom-bins-reset-group"
+                onClick={resetToDefault}
+                disabled={isResetDisabled}
+                aria-label="reset groups"
+              >
+                <ReplayIcon size={20} />
+              </FunctionButton>
+              <FunctionButton
+                data-testid="button-custom-bins-group-values"
+                onClick={group}
+                classNames={{
+                  section: "mr-1",
+                }}
+                disabled={isGroupDisabled}
+                leftSection={<GroupIcon aria-hidden="true" />}
+              >
+                Group
+              </FunctionButton>
+              <FunctionButton
+                data-testid="button-custom-bins-ungroup-values"
+                onClick={ungroupValues}
+                disabled={isUngroupDisabled}
+                classNames={{
+                  section: "mr-1",
+                }}
+                leftSection={<UngroupIcon aria-hidden="true" />}
+              >
+                Ungroup
+              </FunctionButton>
+              <FunctionButton
+                data-testid="button-custom-bins-hide-values"
+                classNames={{
+                  section: "mr-1",
+                }}
+                onClick={hideValues}
+                disabled={Object.keys(selectedValues).length === 0}
+                leftSection={<HideIcon aria-hidden="true" />}
+              >
+                Hide
+              </FunctionButton>
+            </div>
+          </div>
+          <ul className="border-1 border-base-light rounded p-2 max-h-[200px] overflow-y-auto">
+            {sortedValues
+              .sort((a, b) => sortBins(a[1], b[1]))
+              .map(([k, value], idx) =>
+                value instanceof Object ? (
+                  <GroupInput
+                    groupName={k}
+                    groupValues={value}
+                    otherGroups={sortedValues
+                      .map((v) => v[0])
+                      .filter((_, i) => idx !== i)}
+                    updateGroupName={updateGroupName}
+                    selectedValues={selectedValues}
+                    setSelectedValues={(newSelected) =>
+                      updateState({ selectedValues: newSelected })
+                    }
+                    clearOtherValues={() =>
+                      updateState({ selectedHiddenValues: {} })
+                    }
+                    editing={k === editField}
+                    setEditField={(field) => updateState({ editField: field })}
+                    key={k}
+                  />
+                ) : (
+                  <ListValue
+                    name={k}
+                    count={value}
+                    selectedValues={selectedValues}
+                    setSelectedValues={(newSelected) =>
+                      updateState({ selectedValues: newSelected })
+                    }
+                    clearOtherValues={() =>
+                      updateState({ selectedHiddenValues: {} })
+                    }
+                    key={k}
+                  />
+                ),
+              )}
+          </ul>
+        </div>
+        <div data-testid="cat-bin-modal-hidden-values" className="mt-2">
+          <div className="flex justify-between py-2">
+            <h3 className="font-bold mt-auto">Hidden Values</h3>
             <FunctionButton
-              data-testid="button-custom-bins-reset-group"
-              onClick={() => {
-                setEditField(undefined);
-                setHiddenValues({});
-                setValues(results);
-                setSelectedValues({});
-                setErrorMessage("");
+              data-testid="button-custom-bins-show-values"
+              disabled={Object.keys(selectedHiddenValues).length === 0}
+              classNames={{
+                section: "mr-1",
               }}
-              disabled={isEqual(results, values)}
-              aria-label="reset groups"
+              onClick={showHiddenValues}
+              leftSection={<ShowIcon aria-hidden="true" />}
             >
-              <ReplayIcon size={20} />
-            </FunctionButton>
-            <FunctionButton
-              data-testid="button-custom-bins-group-values"
-              onClick={group}
-              disabled={
-                Object.entries(values).filter(([k, v]) =>
-                  v instanceof Object
-                    ? Object.keys(v).some((k) => selectedValues?.[k])
-                    : selectedValues?.[k],
-                ).length < 2
-              }
-              leftSection={<GroupIcon aria-hidden="true" />}
-            >
-              Group
-            </FunctionButton>
-            <FunctionButton
-              data-testid="button-custom-bins-ungroup-values"
-              onClick={() => {
-                setEditField(undefined);
-                setValues({
-                  ...filterOutSelected(values, selectedValues),
-                  ...selectedValues,
-                });
-                setSelectedValues({});
-              }}
-              disabled={
-                !Object.entries(values).some(
-                  ([, v]) =>
-                    v instanceof Object &&
-                    Object.keys(v).some(
-                      (groupedValue) => selectedValues?.[groupedValue],
-                    ),
-                )
-              }
-              leftSection={<UngroupIcon aria-hidden="true" />}
-            >
-              Ungroup
-            </FunctionButton>
-            <FunctionButton
-              data-testid="button-custom-bins-hide-values"
-              onClick={hideValues}
-              disabled={Object.keys(selectedValues).length === 0}
-              leftSection={<HideIcon aria-hidden="true" />}
-            >
-              Hide
+              Show
             </FunctionButton>
           </div>
-        </div>
-        <ul className="p-2">
-          {sortedValues
-            .sort((a, b) => sortBins(a[1], b[1]))
-            .map(([k, value], idx) =>
-              value instanceof Object ? (
-                <GroupInput
-                  groupName={k}
-                  groupValues={value}
-                  otherGroups={sortedValues
-                    .map((v) => v[0])
-                    .filter((_, i) => idx !== i)}
-                  updateGroupName={updateGroupName}
-                  selectedValues={selectedValues}
-                  setSelectedValues={setSelectedValues}
-                  clearOtherValues={() => setSelectedHiddenValues({})}
-                  editing={k === editField}
-                  setEditField={setEditField}
-                  key={k}
-                />
-              ) : (
-                <ListValue
-                  name={k}
-                  count={value}
-                  selectedValues={selectedValues}
-                  setSelectedValues={setSelectedValues}
-                  clearOtherValues={() => setSelectedHiddenValues({})}
-                  key={k}
-                />
-              ),
-            )}
-        </ul>
-      </div>
-      <div
-        data-testid="cat-bin-modal-hidden-values"
-        className="border-base-lightest border-solid border-1 mt-2"
-      >
-        <div className="flex justify-between bg-base-lightest p-2">
-          <h3 className="font-bold my-auto">Hidden Values</h3>
-          <FunctionButton
-            data-testid="button-custom-bins-show-values"
-            disabled={Object.keys(selectedHiddenValues).length === 0}
-            onClick={() => {
-              setEditField(undefined);
-              setValues({ ...values, ...selectedHiddenValues });
-              setHiddenValues(
-                pickBy(
-                  hiddenValues,
-                  (_, k) => selectedHiddenValues?.[k] === undefined,
-                ),
-              );
-              setSelectedHiddenValues({});
-            }}
-            leftSection={<ShowIcon aria-hidden="true" />}
-          >
-            Show
-          </FunctionButton>
-        </div>
-        <ul className="min-h-[100px] p-2">
-          {Object.entries(hiddenValues)
-            .sort((a, b) => b[1] - a[1])
-            .map(([k, v]) => (
+          <ul className="border-1 border-base-light rounded p-2 min-h-[100px] max-h-[200px] overflow-y-auto">
+            {sortedHiddenValues.map(([k, v]) => (
               <ListValue
                 name={k}
                 count={v}
                 selectedValues={selectedHiddenValues}
-                setSelectedValues={setSelectedHiddenValues}
-                clearOtherValues={() => setSelectedValues({})}
+                setSelectedValues={(newSelected) =>
+                  updateState({ selectedHiddenValues: newSelected })
+                }
+                clearOtherValues={() => updateState({ selectedValues: {} })}
                 key={k}
               />
             ))}
-        </ul>
+          </ul>
+        </div>
       </div>
-      <div className="mt-2 flex gap-2 justify-end">
+      <div className="mt-2 flex gap-2 justify-end bg-base-lightest p-4">
         {errorMessage && (
           <Group className="grow" gap={8} justify="center">
             <AlertIcon color="red" />
@@ -339,25 +420,17 @@ const CategoricalBinningModal: React.FC<CategoricalBinningModalProps> = ({
             data-testid="button-custom-bins-cancel"
             onClick={() => setModalOpen(false)}
             variant="outline"
-            color="primary.5"
+            className="bg-base-max"
           >
             Cancel
           </Button>
-          <Button
+          <DarkFunctionButton
             data-testid="button-custom-bins-save"
             className="bg-primary-darkest"
-            onClick={() => {
-              setEditField(undefined);
-              if (!isEqual(values, results)) {
-                updateBins(values);
-              } else {
-                updateBins(null);
-              }
-              setModalOpen(false);
-            }}
+            onClick={handleSave}
           >
             Save Bins
-          </Button>
+          </DarkFunctionButton>
         </Group>
       </div>
     </Modal>
@@ -379,13 +452,21 @@ const ListValue: React.FC<ListValueProps> = ({
   setSelectedValues,
   clearOtherValues,
 }: ListValueProps) => {
-  const updateSelectedValues = (name: string, count: number) => {
-    if (Object.keys(selectedValues).includes(name)) {
-      setSelectedValues(pickBy(selectedValues, (_, k) => k !== name));
-    } else {
-      setSelectedValues({ ...selectedValues, [name]: count });
-    }
-  };
+  const updateSelectedValues = useCallback(
+    (name: string, count: number) => {
+      if (Object.keys(selectedValues).includes(name)) {
+        setSelectedValues(pickBy(selectedValues, (_, k) => k !== name));
+      } else {
+        setSelectedValues({ ...selectedValues, [name]: count });
+      }
+    },
+    [selectedValues, setSelectedValues],
+  );
+
+  const handleClick = useCallback(() => {
+    updateSelectedValues(name, count);
+    clearOtherValues();
+  }, [updateSelectedValues, name, count, clearOtherValues]);
 
   return (
     <li
@@ -394,14 +475,8 @@ const ListValue: React.FC<ListValueProps> = ({
       } cursor-pointer list-inside font-content`}
     >
       <div
-        onClick={() => {
-          updateSelectedValues(name, count);
-          clearOtherValues();
-        }}
-        onKeyDown={createKeyboardAccessibleFunction(() => {
-          updateSelectedValues(name, count);
-          clearOtherValues();
-        })}
+        onClick={handleClick}
+        onKeyDown={createKeyboardAccessibleFunction(handleClick)}
         tabIndex={0}
         role="button"
         className="inline"
@@ -424,7 +499,7 @@ interface GroupInputProps {
   readonly setEditField: (field: string) => void;
 }
 
-const GroupInput: React.FC<GroupInputProps> = ({
+const GroupInput = ({
   groupName,
   groupValues,
   otherGroups,
@@ -450,18 +525,24 @@ const GroupInput: React.FC<GroupInputProps> = ({
     },
   });
 
-  const closeInput = () => {
+  const closeInput = useCallback(() => {
     if (Object.keys(form.errors).length === 0) {
       updateGroupName(groupName, form.values.group.trim());
       setEditField(undefined);
     }
-  };
+  }, [
+    form.errors,
+    form.values.group,
+    updateGroupName,
+    groupName,
+    setEditField,
+  ]);
 
   const ref = useClickOutside(() => {
     closeInput();
   });
 
-  const updateSelectedValues = () => {
+  const updateSelectedValues = useCallback(() => {
     clearOtherValues();
 
     if (Object.keys(groupValues).every((k) => selectedValues?.[k])) {
@@ -471,7 +552,25 @@ const GroupInput: React.FC<GroupInputProps> = ({
     } else {
       setSelectedValues({ ...selectedValues, ...groupValues });
     }
-  };
+  }, [groupValues, selectedValues, setSelectedValues, clearOtherValues]);
+
+  const handleEdit = useCallback(
+    (e) => {
+      e.stopPropagation();
+      setEditField(groupName);
+    },
+    [setEditField, groupName],
+  );
+
+  const isSelected = useMemo(
+    () => Object.keys(groupValues).every((k) => selectedValues?.[k]),
+    [groupValues, selectedValues],
+  );
+
+  const sortedGroupValues = useMemo(
+    () => Object.entries(groupValues).sort((a, b) => b[1] - a[1]),
+    [groupValues],
+  );
 
   useEffect(() => {
     if (!editing) {
@@ -500,36 +599,29 @@ const GroupInput: React.FC<GroupInputProps> = ({
           tabIndex={0}
           role="button"
           className={`${
-            Object.keys(groupValues).every((k) => selectedValues?.[k])
-              ? "bg-accent-warm-light"
-              : ""
+            isSelected ? "bg-accent-warm-light" : ""
           } cursor-pointer flex items-center`}
         >
           {groupName}{" "}
           <PencilIcon
             data-testid="button-custom-bins-edit-group-name"
             className="ml-2 shrink-0"
-            onClick={(e) => {
-              e.stopPropagation();
-              setEditField(groupName);
-            }}
+            onClick={handleEdit}
             aria-label="edit group name"
           />
         </div>
       )}
       <ul className="list-disc">
-        {Object.entries(groupValues)
-          .sort((a, b) => b[1] - a[1])
-          .map(([k, v]) => (
-            <ListValue
-              name={k}
-              count={v}
-              selectedValues={selectedValues}
-              setSelectedValues={setSelectedValues}
-              clearOtherValues={clearOtherValues}
-              key={k}
-            />
-          ))}
+        {sortedGroupValues.map(([k, v]) => (
+          <ListValue
+            name={k}
+            count={v}
+            selectedValues={selectedValues}
+            setSelectedValues={setSelectedValues}
+            clearOtherValues={clearOtherValues}
+            key={k}
+          />
+        ))}
       </ul>
     </li>
   );

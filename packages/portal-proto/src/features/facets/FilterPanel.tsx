@@ -14,7 +14,7 @@ import {
   Tooltip,
   ActionIcon,
 } from "@mantine/core";
-import { fieldNameToTitle, GQLDocType } from "@gff/core";
+import { fieldNameToTitle } from "@gff/core";
 import {
   createFacetCards,
   FacetSelection,
@@ -28,7 +28,7 @@ import {
   DoubleRightIcon,
   UndoIcon,
 } from "@/utils/icons";
-import { CustomConfig } from "./types";
+import { CustomConfig, FacetQueryOptions } from "./types";
 import { EnumFacetChart } from "../charts/EnumFacetChart";
 import { useAvailableCustomFacets } from "../cohortBuilder/hooks";
 import { showNotification } from "@mantine/notifications";
@@ -36,7 +36,7 @@ import { showNotification } from "@mantine/notifications";
 interface FilterPanelProps {
   readonly facetDefinitions: FacetCardDefinition[];
   readonly facetHooks: FacetRequiredHooks;
-  readonly valueLabel: string | ((queryOptions) => string);
+  readonly valueLabel: string | ((queryOptions: FacetQueryOptions) => string);
   readonly app: string;
   readonly toggleAllFiltersExpanded: (expanded: boolean) => void;
   readonly allFiltersCollapsed: boolean;
@@ -46,7 +46,7 @@ interface FilterPanelProps {
   readonly hideIfEmpty?: boolean;
   readonly showPercent?: boolean;
   readonly isLoading?: boolean;
-  readonly docType?: GQLDocType;
+  readonly queryOptions: FacetQueryOptions;
 }
 
 /**
@@ -63,6 +63,7 @@ interface FilterPanelProps {
  * @param hideIfEmpty - hide facets if they do not have data
  * @param showPercent - whether to show the count percent of whole
  * @param isLoading - whether the filter defintions are loading
+ * @param queryOptions - needed to get correct total count based on different docType
  */
 
 const FilterPanel = ({
@@ -70,7 +71,7 @@ const FilterPanel = ({
   facetHooks,
   valueLabel,
   app,
-  docType,
+  queryOptions,
   toggleAllFiltersExpanded,
   allFiltersCollapsed,
   customConfig = undefined,
@@ -126,6 +127,7 @@ const FilterPanel = ({
         label={filtersExpanded ? "Hide Filters Panel" : "Show Filters Panel"}
       >
         <ActionIcon
+          data-testid="button-hide-show-filters-panel"
           onClick={() => setFiltersExpanded(!filtersExpanded)}
           aria-label="Collapse/Expand filter panel"
           aria-controls="filters-panel"
@@ -147,7 +149,7 @@ const FilterPanel = ({
         <div className="flex flex-col flex-wrap">
           <div className="flex flex-wrap justify-between text-primary-content-darker">
             <button
-              data-testid="button-expand-collapse-files-table"
+              data-testid="button-expand-collapse-filters"
               onClick={() => toggleAllFiltersExpanded(allFiltersCollapsed)}
             >
               {allFiltersCollapsed ? "Expand All" : "Collapse All"}
@@ -207,7 +209,7 @@ const FilterPanel = ({
                     setOpened(false);
                   }}
                   useAvailableCustomFacets={useAvailableCustomFacets}
-                  queryOptions={customConfig.queryOptions}
+                  queryOptions={queryOptions}
                   usedFacets={customConfig.usedFacets}
                 />
               </div>
@@ -236,7 +238,7 @@ const FilterPanel = ({
               return fieldNameToTitle(field, 2);
             },
             Chart: EnumFacetChart,
-            queryOptions: { docType: docType ?? "cases" },
+            queryOptions,
           })}
           {createFacetCards({
             facets: defaultFacetDefinitions,
@@ -247,7 +249,7 @@ const FilterPanel = ({
             showPercent,
             facetNameFormatter: fieldNameToTitle,
             Chart: EnumFacetChart,
-            queryOptions: { docType: docType ?? "cases" },
+            queryOptions,
           })}
         </div>
       </div>

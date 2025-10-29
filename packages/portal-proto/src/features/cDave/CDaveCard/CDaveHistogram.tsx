@@ -52,7 +52,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
 }: HistogramProps) => {
   const [displayPercent, setDisplayPercent] = useState(false);
   const downloadChartRef = useRef<HTMLElement>();
-  const { downloadInProgress, downloadType, setDownloadProgress } = useContext(
+  const { startDownload, finishDownload, isDownloading } = useContext(
     DownloadProgressContext,
   );
 
@@ -137,21 +137,19 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
               <Menu.Dropdown data-testid="dropdown-menu-options">
                 <Tooltip
                   label={ADDITIONAL_DOWNLOAD_MESSAGE}
-                  disabled={!downloadInProgress || downloadType !== "svg"}
+                  disabled={!isDownloading("svg")}
                 >
                   <Menu.Item
                     onClick={async () => {
-                      setDownloadProgress(true, "svg");
+                      startDownload("svg");
                       await handleDownloadSVG(
                         downloadChartRef,
                         `${downloadFileName}.svg`,
                       );
-                      setDownloadProgress(false, null);
+                      finishDownload("svg");
                     }}
                     leftSection={
-                      downloadInProgress && downloadType === "svg" ? (
-                        <Loader size={16} />
-                      ) : null
+                      isDownloading("svg") ? <Loader size={16} /> : null
                     }
                   >
                     SVG
@@ -160,21 +158,19 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
 
                 <Tooltip
                   label={ADDITIONAL_DOWNLOAD_MESSAGE}
-                  disabled={!downloadInProgress || downloadType !== "png"}
+                  disabled={!isDownloading("png")}
                 >
                   <Menu.Item
                     onClick={async () => {
-                      setDownloadProgress(true, "png");
+                      startDownload("png");
                       await handleDownloadPNG(
                         downloadChartRef,
                         `${downloadFileName}.png`,
                       );
-                      setDownloadProgress(false, null);
+                      finishDownload("png");
                     }}
                     leftSection={
-                      downloadInProgress && downloadType === "png" ? (
-                        <Loader size={16} />
-                      ) : null
+                      isDownloading("png") ? <Loader size={16} /> : null
                     }
                   >
                     PNG

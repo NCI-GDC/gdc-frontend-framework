@@ -1,10 +1,4 @@
-import React, {
-  useContext,
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-} from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { Box, Menu, Tooltip, Loader, ActionIcon } from "@mantine/core";
 import isNumber from "lodash/isNumber";
 import { useMouse } from "@mantine/hooks";
@@ -13,7 +7,7 @@ import { SummaryModalContext } from "src/utils/contexts";
 import {
   DashboardDownloadContext,
   DownloadProgressContext,
-  DownloadType,
+  useDownloadProgress,
 } from "@gff/portal-components";
 import OffscreenWrapper from "@/components/OffscreenWrapper";
 import {
@@ -208,7 +202,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
     return () => dispatch({ type: "remove", payload: charts });
   }, [dispatch, downloadFileName]);
 
-  const { downloadInProgress, downloadType, setDownloadProgress } = useContext(
+  const { startDownload, finishDownload, isDownloading } = useContext(
     DownloadProgressContext,
   );
 
@@ -244,35 +238,27 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
             <Menu.Dropdown data-testid="dropdown-menu-options">
               <Menu.Item
                 onClick={async () => {
-                  setDownloadProgress(true, "svg");
+                  startDownload("svg");
                   await handleDownloadSVG(
                     downloadRef,
                     `${downloadFileName}.svg`,
                   );
-                  setDownloadProgress(false, null);
+                  finishDownload("svg");
                 }}
-                leftSection={
-                  downloadInProgress && downloadType === "svg" ? (
-                    <Loader size={16} />
-                  ) : null
-                }
+                leftSection={isDownloading("svg") ? <Loader size={16} /> : null}
               >
                 SVG
               </Menu.Item>
               <Menu.Item
                 onClick={async () => {
-                  setDownloadProgress(true, "png");
+                  startDownload("png");
                   await handleDownloadPNG(
                     downloadRef,
                     `${downloadFileName}.png`,
                   );
-                  setDownloadProgress(false, null);
+                  finishDownload("png");
                 }}
-                leftSection={
-                  downloadInProgress && downloadType === "png" ? (
-                    <Loader size={16} />
-                  ) : null
-                }
+                leftSection={isDownloading("png") ? <Loader size={16} /> : null}
               >
                 PNG
               </Menu.Item>
@@ -378,20 +364,12 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
 };
 
 const SurvivalPlot = (props: SurvivalPlotProps) => {
-  const [downloadInProgress, setDownloadInProgress] = useState(false);
-  const [downloadType, setDownloadType] = useState<DownloadType>(null);
-
-  const setDownloadProgress = useCallback(
-    (inProgress: boolean, type: DownloadType) => {
-      setDownloadInProgress(inProgress);
-      setDownloadType(type);
-    },
-    [],
-  );
+  const { activeDownloads, startDownload, finishDownload, isDownloading } =
+    useDownloadProgress();
 
   return (
     <DownloadProgressContext.Provider
-      value={{ downloadInProgress, downloadType, setDownloadProgress }}
+      value={{ activeDownloads, startDownload, finishDownload, isDownloading }}
     >
       <ExternalDownloadStateSurvivalPlot {...props} />
     </DownloadProgressContext.Provider>

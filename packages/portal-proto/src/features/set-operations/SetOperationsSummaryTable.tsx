@@ -59,6 +59,9 @@ export const SetOperationsSummaryTable = ({
         id: "name",
         header: "Name",
         enableSorting: false,
+        cell: ({ getValue }) => (
+          <span className="whitespace-pre">{getValue()}</span>
+        ),
       }),
       summaryTableColumnsHelper.accessor("count", {
         header: "# Items",
