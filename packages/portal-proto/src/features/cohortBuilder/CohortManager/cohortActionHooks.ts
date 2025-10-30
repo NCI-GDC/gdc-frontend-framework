@@ -403,6 +403,8 @@ export const useSaveCohort = () => {
             "Bad Request: Name must be unique (case-insensitive)"
           ) {
             result = { cohortAlreadyExists: true, newCohortId: undefined };
+          } else {
+            throw e;
           }
         });
 
@@ -452,6 +454,9 @@ export const useReplaceCohort = () => {
         .then((payload) => {
           updateCohortState({ payload, newName, cohortId, saveAs });
           result = { newCohortId: payload.id };
+        })
+        .catch((e) => {
+          throw e;
         });
 
       await fetchCohortList()
@@ -468,6 +473,9 @@ export const useReplaceCohort = () => {
           outdatedCohortsIds.forEach((id) => {
             coreDispatch(removeCohort({ id }));
           });
+        })
+        .catch((e) => {
+          throw e;
         });
 
       return result;
