@@ -34,9 +34,9 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download, regressio
 * Verify details fields and values
   |field_name                       |value                                  |
   |---------------------------------|---------------------------------------|
-  |File_id                          |010fc715-0098-4967-a36f-a8922c03e40e   |
-  |Submitter_id                     |TCGA-13-0920-01A-01-BS1                |
-  |Slide_id                         |b7b9daea-d790-433c-93b2-db5e26827f30   |
+  |File_id                          |5b9ccda8-256d-4ff1-bd38-35ce8bd0a92c   |
+  |Submitter_id                     |TCGA-13-0920-01A-01-TS1                |
+  |Slide_id                         |865199e6-7b94-40ef-82e8-e65aa9377818   |
 
 ## Navigate Back To Case Summary Page: TCGA-13-0920
 * Quick search for "85a85a11-7200-4e96-97af-6ba26d680d59" and go to its page
@@ -111,7 +111,7 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download, regressio
     |C3N-03018-EXP                          |
     |f1416551-58ec-43bb-a1f0-78658dae0794   |
     |Yes                                    |
-    |Occasional Drinker                     |
+    |Not Heavy Drinker                      |
     |Current Reformed Smoker for > 15 yrs   |
 ## Clinical Table - TSV Download: Exposure, Pathological Detail
 * Download "TSV" from "Case Summary Clinical Table"
@@ -602,7 +602,6 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download, regressio
   |case_id	                                |
   |project.project_id                       |
   |submitter_id	                            |
-  |samples.sample_type_id	                  |
   |samples.portions.portion_id              |
   |samples.portions.analytes.analyte_id     |
   |samples.pathology_report_uuid	          |

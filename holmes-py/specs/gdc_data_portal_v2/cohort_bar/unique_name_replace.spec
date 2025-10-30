@@ -33,6 +33,10 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * Select "Add" from the Cohort Bar
 * Is modal with text "Unsaved_Cohort has been created" present on the page and "Remove Modal"
 * "Unsaved_Cohort" should be the active cohort
+* Expand or contract a facet from "General" tab on the Cohort Builder page
+  |facet_name               |selection                    |
+  |-------------------------|-----------------------------|
+  |Program                  |plus-icon                    |
 * Make the following selections from "General" tab on the Cohort Builder page
   |facet_name       |selection            |
   |-----------------|---------------------|

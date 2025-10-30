@@ -58,9 +58,9 @@ tags: gdc-data-portal-v2, regression, mutation-summary
     |Lymphoid Leukemias                     |
     |Acute Lymphoblastic Leukemia           |
     |CPTAC-3                                |
-    |1                                      |
-    |1317                                   |
-    |0.07593014426727411                    |
+    |3                                      |
+    |512                                    |
+    |0.5859375                              |
 
 * Verify that "JSON from Mutation Summary Cancer Distribution" does not contain specified information
     |required_info                          |
@@ -118,7 +118,7 @@ tags: gdc-data-portal-v2, regression, mutation-summary
     |TARGET-AML                             |
     |18.181818181818183                     |
     |CPTAC-3                                |
-    |0.07593014426727411                    |
+    |0.7092198581560284                     |
     |TCGA-TGCT                              |
 
 ## Save New Cohort: SSM Affected Cases

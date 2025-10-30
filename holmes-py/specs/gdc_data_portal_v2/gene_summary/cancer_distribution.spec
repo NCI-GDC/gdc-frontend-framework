@@ -141,7 +141,7 @@ tags: gdc-data-portal-v2, regression, gene-summary
     |0 / 454 (0.00 %)                       |
     |6 / 167 (3.59 %)                       |
     |58 / 402 (14.43 %)                     |
-    |3 / 1290 (0.23 %)                      |
+    |3 / 1487 (0.20 %)                      |
     |MP2PRT-ALL                             |
     |TCGA-LGG                               |
     |CPTAC-3                                |
