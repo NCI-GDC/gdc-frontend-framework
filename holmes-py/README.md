@@ -35,7 +35,7 @@ This project uses
 - [Install Gauge-Python plugin](https://github.com/kashishm/gauge-python/wiki/User-Documentation) by running
 
   ````bash
-  gauge install python
+  gauge install python --version 0.4.9
   ````
 
 ## System(s) Under Test (SUT)
