@@ -22,7 +22,7 @@ stages:
   - "tag image"
   - build_ui_tests_image
   - deploy
-  - .trigger_ui_tests
+  - trigger_ui_tests
 
 image: docker.osdc.io/ncigdc/nodejs20:3.0.6
 
@@ -150,8 +150,11 @@ Push tagged image:
     - docker tag $BASE_CONTAINER_REGISTRY/$CI_PROJECT_NAME:$CI_COMMIT_SHA $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:${CI_COMMIT_TAG}
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME:${CI_COMMIT_TAG}
 
-Build UI tests Docker image:
+Build UI Tests Docker image:
   stage: build_ui_tests_image
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $RUN_UI_TESTS_ONLY == "true"'
+      when: always
   services:
     - docker:${DOCKER_VERSION}-dind
   tags:
@@ -161,20 +164,11 @@ Build UI tests Docker image:
     - docker build -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} -f ./holmes-py/Dockerfile ./holmes-py
     - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
 
-.trigger_ui_tests:
-  stage: .trigger_ui_tests
-  parallel:
-    matrix:
-      - BROWSER: ["headless chrome", "headless firefox", "headless safari"]
-
-trigger_ui_tests_scheduled:
-  extends: .trigger_ui_tests
+Trigger Holmes-py Tests:
+  stage: trigger_ui_tests
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule" && $RUN_UI_TESTS_ONLY == "true"'
       when: always
-  parallel:
-    matrix:
-      - APP_ENVIRONMENT: ["QA_INT"]
   services:
     - docker:${DOCKER_VERSION}-dind
   tags:
