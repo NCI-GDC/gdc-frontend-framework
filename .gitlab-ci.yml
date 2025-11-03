@@ -163,6 +163,11 @@ Build UI tests Docker image:
 
 .trigger_ui_tests:
   stage: .trigger_ui_tests
+  variables:
+    PORTAL_REV_PROXY_IP_ADDRESS: $PORTAL_REV_PROXY_IP_ADDRESS
+    $PORTAL_REV_PROXY_IP_ADDRESS: $PORTAL_REV_PROXY_IP_ADDRESS
+    TESTER_VARIABLE_1: $TESTER_VARIABLE_1
+    TESTER_VARIABLE_2: $TESTER_VARIABLE_2
   trigger:
     include:
       - local: 'holmes-py/.gitlab-ci-holmes-py.yml'
