@@ -46,6 +46,7 @@ class WebDriver:
     def start_page(self):
         if getenv("IS_DOCKER") == "1":
             ignore_https_errors = False
+            # Directly set viewport size if using Docker/Gitlab
             WebDriver.context = WebDriver.instance.new_context(
                 ignore_https_errors=ignore_https_errors,viewport={"width": 2000, "height": 1300}
             )

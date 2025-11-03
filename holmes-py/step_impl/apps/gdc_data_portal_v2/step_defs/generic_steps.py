@@ -21,18 +21,14 @@ def pause_10_seconds(sleep_time):
 
 @before_suite
 def start_app():
-    print("app setup - 1")
     global APP
-    print("app setup - 2")
     APP = GDCDataPortalV2App(WebDriver.page)
-    print("app setup - 3")
+
 
 @before_suite
 def navigate_to_app():
-    print("first setup execution - 1")
     APP.navigate()
-    print("first setup execution - 2")
-    print("first setup execution - 3")
+
     APP.modal.accept_warning()
     time.sleep(2)
 
@@ -46,36 +42,20 @@ def setup_test_run():
     the initial one has been saved. This function saves that initial cohort so subsequent tests can run, as some
     depend on a starting condition that they be able to create a cohort.
     """
-    locator = '[data-testid="addButton"]'
-    print("setup execution")
-    APP.header_section.navigate_to_main_pages("analysis")
-    print("setup execution - 1")
+    APP.analysis_center_page.visit()
     APP.header_section.wait_for_page_to_load("analysis")
-    print("setup execution - 2")
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
-    print("setup execution - 3")
-    print("is add button enabled:")
-    print(APP.shared.is_enabled(locator))
     time.sleep(2)
     APP.cohort_bar.click_cohort_bar_button("Save")
-    print("setup execution - 4")
     APP.shared.click_text_option_from_dropdown_menu("Save")
-    print("setup execution - 5")
     APP.shared.send_text_into_text_box("never_use_this_cohort_name", "Name Input Field")
-    print("setup execution - 6")
 
     APP.shared.click_button_in_modal_with_displayed_text_name("Save")
-    print("setup execution - 7")
     APP.cohort_bar.wait_for_text_in_temporary_message(
         "Cohort has been saved", "Remove Modal"
     )
-    print("setup execution - 8")
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
-    print("setup execution - 9")
-    print("is add button enabled:")
-    print(APP.shared.is_enabled(locator))
-    time.sleep(3)
-
+    time.sleep(2)
 
 @before_spec("<controlled-access>")
 def before_spec_hook():
@@ -102,16 +82,11 @@ def setup_next_spec_run():
     If not, we click the 'Clear All' button to remove the active cohort filters.
     Finally, we wait to see the the text confirming there are no active cohort filters present.
     """
-    print("cleanup execution")
-    APP.header_section.navigate_to_main_pages("analysis")
-    print("cleanup execution - 2")
+    APP.analysis_center_page.visit()
     APP.header_section.wait_for_page_to_load("analysis")
-    print("cleanup execution - 3")
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
-    print("cleanup execution - 4")
     if not APP.shared.is_no_active_cohort_filter_text_present():
         APP.shared.clear_active_cohort_filters()
-        print("cleanup execution - 5")
 
 @after_spec
 def save_cohort_if_needed():
@@ -263,7 +238,7 @@ def download_file_at_file_table(file: str, source: str):
         "Set Operations Union Row": APP.set_operations_page.click_union_row_download_tsv_button_set_operations,
     }
     driver = WebDriver.page
-    with driver.expect_download(timeout=45000) as download_info:
+    with driver.expect_download(timeout=90000) as download_info:
         # Allows using sources without passing in contents of <file> as a parameter
         if file.lower() == "file":
             sources.get(source)()
