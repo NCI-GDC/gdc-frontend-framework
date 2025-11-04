@@ -90,6 +90,7 @@ export const UserFlowVariedPages = ({
             opened={modal === Modals.SaveCohortErrorModal}
             onClose={() => dispatch(hideModal())}
             title="Save Cohort Error"
+            zIndex={500}
           >
             <p className="py-2 px-4">There was a problem saving the cohort.</p>
             <ModalButtonContainer data-testid="modal-button-container">

@@ -39,6 +39,36 @@ const SaveCohortErrorModal = ({ context, id }: ContextModalProps) => (
   </>
 );
 
+const DiscardChangesErrorModal = ({ context, id }: ContextModalProps) => (
+  <>
+    <p className="py-2 px-4">
+      There was a problem discarding the unsaved changes.
+    </p>
+    <div
+      className="bg-base-lightest flex p-4 gap-4 justify-end mt-4 rounded-b-lg sticky"
+      data-testid="modal-button-container"
+    >
+      <Button onClick={() => context.closeModal(id)} variant="darkFunction">
+        OK
+      </Button>
+    </div>
+  </>
+);
+
+const DeleteCohortErrorModal = ({ context, id }: ContextModalProps) => (
+  <>
+    <p className="py-2 px-4">There was a problem deleting the cohort.</p>
+    <div
+      className="bg-base-lightest flex p-4 gap-4 justify-end mt-4 rounded-b-lg sticky"
+      data-testid="modal-button-container"
+    >
+      <Button onClick={() => context.closeModal(id)} variant="darkFunction">
+        OK
+      </Button>
+    </div>
+  </>
+);
+
 const cohortMessageReducer = (
   state: CohortNotificationCommand[],
   action:
@@ -212,7 +242,13 @@ const CohortNotificationProvider: React.FC<CohortNotificationWrapperProps> = ({
 
   return (
     <MantineProvider theme={theme}>
-      <ModalsProvider modals={{ saveCohortError: SaveCohortErrorModal }}>
+      <ModalsProvider
+        modals={{
+          saveCohortError: SaveCohortErrorModal,
+          discardChangesError: DiscardChangesErrorModal,
+          deleteCohortError: DeleteCohortErrorModal,
+        }}
+      >
         <CohortNotificationContext.Provider value={updateCohortMessage}>
           <Notifications position="top-center" />
           {children}

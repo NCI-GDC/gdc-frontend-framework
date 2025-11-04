@@ -101,7 +101,6 @@ tags: gdc-data-portal-v2, regression, project-summary, clinical-biospecimen-down
     |case_id                                |
     |project.project_id                     |
     |submitter_id	                        |
-    |samples.sample_type                    |
     |samples.portions.portion_id            |
     |samples.portions.analytes.analyte_id	|
     |samples.portions.analytes.aliquots.aliquot_id|

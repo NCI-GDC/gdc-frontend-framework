@@ -38,11 +38,11 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
 * On the "Gender" card's table, select value by row and column on the Clinical Data Analysis page
     |row   |column|button_or_checkbox   |
     |------|------|---------------------|
-    |1     |1     |checkbox             |
+    |2     |1     |checkbox             |
 * Collect analysis card table data for comparison on the Clinical Data Analysis page
   |button_label                         |analysis_card               |row  |column |do_not_trim_content|
   |-------------------------------------|----------------------------|-----|-------|-------------------|
-  |Gender_male_R1_C3                    |Gender                      |1    |3      |False              |
+  |Gender_male_R1_C3                    |Gender                      |2    |3      |False              |
 * Verify "Gender_male_R1_C3" and "Gender_male_cDAVE_Apollo Count" are "Equal"
 * On the "Gender" card, select "Save New Cohort Cases Table" button on the Clinical Data Analysis page
 * Select "Only Selected Cases" from dropdown menu
@@ -81,7 +81,7 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
 * On the "Gender" card's table, select value by row and column on the Clinical Data Analysis page
     |row   |column|button_or_checkbox   |
     |------|------|---------------------|
-    |1     |1     |checkbox             |
+    |2     |1     |checkbox             |
 
 * On the "Gender" card, select "Save New Cohort Cases Table" button on the Clinical Data Analysis page
 * Select "Existing Cohort Without Selected Cases" from dropdown menu

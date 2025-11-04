@@ -95,14 +95,11 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
   |case_id	                                |
   |project.project_id                       |
   |submitter_id                             |
-  |samples.sample_type_id	                  |
   |samples.tumor_descriptor                 |
   |samples.sample_id                        |
-  |samples.sample_type                      |
   |samples.specimen_type                    |
   |samples.updated_datetime                 |
   |samples.state                            |
-  |samples.is_ffpe                          |
   |samples.preservation_method              |
   |samples.tissue_type                      |
   |samples.portions.slides.updated_datetime |
