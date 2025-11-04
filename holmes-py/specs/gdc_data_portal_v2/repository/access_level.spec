@@ -76,6 +76,7 @@ tags: gdc-data-portal-v2, repository, data-release, acl-validation
   |-----------------------|---------------------|-------------------------------|
   |General                |Program              |APOLLO                         |
   |General                |Program              |BEATAML1.0                     |
+  |General                |Program              |CCDI                           |
   |General                |Program              |CDDP_EAGLE                     |
   |General                |Program              |CGCI                           |
   |General                |Program              |CMI                            |
@@ -105,7 +106,7 @@ tags: gdc-data-portal-v2, repository, data-release, acl-validation
   |Data Type            |Clinical Supplement                |open         |
   |Data Type            |Gene Expression Quantification     |open         |
 
-## No MATCH Cohort - Masked Somatic Mutation (Tumor-Only)
+## No MATCH Cohort - Masked Somatic Mutation (Aliquot Ensemble + Tumor-Only)
 * Perform the following actions on a filter card
   |filter_name      |action               |
   |-----------------|---------------------|
@@ -121,6 +122,20 @@ tags: gdc-data-portal-v2, repository, data-release, acl-validation
   |Workflow Type        |Tumor-Only Somatic Variant Merging and Masking|
   |Access               |controlled                           |
 * Verify "Workflow Type_Tumor-Only Somatic Variant Merging and Masking_No_MATCH Count" and "Access_controlled_No_MATCH Count" are "Equal"
+* Perform the following actions on a filter card
+  |filter_name      |action               |
+  |-----------------|---------------------|
+  |Workflow Type   |clear selection       |
+* Make the following selections on a filter card
+  |facet_name           |selection                            |
+  |---------------------|-------------------------------------|
+  |Workflow Type        |Aliquot Ensemble Somatic Variant Merging and Masking|
+* Collect case counts for the following filters for cohort "No_MATCH"
+  |facet_name           |selection                            |
+  |---------------------|-------------------------------------|
+  |Workflow Type        |Aliquot Ensemble Somatic Variant Merging and Masking|
+  |Access               |open                                 |
+
 
 ## Only MATCH Cohort
 * Navigate to "Cohort" from "Header" "section"

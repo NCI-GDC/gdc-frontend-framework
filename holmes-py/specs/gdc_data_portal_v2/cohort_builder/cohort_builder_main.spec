@@ -16,6 +16,10 @@ tags: regression, smoke, cohort-builder
 
 ## Cohort Builder - General Card Functions
 tags: cohort-selections
+* Expand or contract a facet from "General Diagnosis" tab on the Cohort Builder page
+  |facet_name               |selection                    |
+  |-------------------------|-----------------------------|
+  |Morphology               |plus-icon                    |
 * Make the following selections from "General Diagnosis" tab on the Cohort Builder page
   |facet_name       |selection            |
   |-----------------|---------------------|

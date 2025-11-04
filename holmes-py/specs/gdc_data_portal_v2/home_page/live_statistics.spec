@@ -16,9 +16,9 @@ tags: gdc-data-portal-v2, regression, home-page
 * Live statistics should display correct values
   |category       |expected_statistic |
   |---------------|-------------------|
-  |Projects       |86                 |
+  |Projects       |88                 |
   |Primary Sites  |69                 |
-  |Cases          |45,087             |
-  |Files          |1,189,760          |
-  |Genes          |22,565             |
-  |Mutations      |3,019,319          |
+  |Cases          |48,763             |
+  |Files          |1,223,539          |
+  |Genes          |22,580             |
+  |Mutations      |3,082,397          |

@@ -286,7 +286,6 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |MMRF_2017_1_BM_CD138pos              |
     |state	                              |
     |preservation_method	              |
-    |sample_type	                      |
     |Primary Blood Derived Cancer - Bone Marrow|
     |tissue_type	                      |
     |Normal                               |
@@ -296,8 +295,6 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |e737adb3-5810-5cd2-9750-3a9e39ee4d16 |
     |slide_id	                          |
     |1f4c3265-eee0-4752-afb4-4446dbd521ee |
-    |sample_type_id	                      |
-    |is_ffpe	                          |
     |analyte_id	                          |
     |56524bc-4a40-4f58-b157-59490275578b  |
     |aliquot_id	                          |
@@ -305,7 +302,6 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |center_id	                          |
     |61d634b8-e8dd-58bf-9a65-1233dc7c8c6a |
     |concentration                        |
-    |analyte_type_id	                  |
     |5341a8a5-acac-5a24-a963-d27dbecc5db2 |
     |3df88b48-da53-4014-9507-de070223d1dd |
     |91e73c21-abd7-4c20-ac1e-81f4dabc7511 |
