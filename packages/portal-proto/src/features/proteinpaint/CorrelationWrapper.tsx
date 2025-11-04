@@ -23,8 +23,8 @@ interface PpProps {
 export const demoFilter = Object.freeze({
   op: "in",
   content: Object.freeze({
-    field: "cases.disease_type",
-    value: Object.freeze(["Gliomas"]),
+    field: "cases.project.project_id",
+    value: Object.freeze(["TCGA-LGG"]),
   }),
 });
 
@@ -32,7 +32,7 @@ export const CorrelationWrapper: FC<PpProps> = (props: PpProps) => {
   const isDemoMode = useIsDemoApp();
   const demoFilter = {
     op: "in",
-    content: { field: "cases.disease_type", value: ["Gliomas"] },
+    content: { field: "cases.project.project_id", value: ["TCGA-LGG"] },
   };
   const currentCohort = useCoreSelector(selectCurrentCohortFilters);
   const filter0 = isDemoMode
@@ -122,8 +122,8 @@ export const CorrelationWrapper: FC<PpProps> = (props: PpProps) => {
     <div className="relative">
       {isDemoMode && (
         <DemoText>
-          Demo showing correlation of survival with IDH1 mutations/CNV, for
-          cases with Gliomas.
+          Demo showing correlation of survival with IDH1 Mutation/CNV (TCGA-LGG
+          project).
         </DemoText>
       )}
       <div
