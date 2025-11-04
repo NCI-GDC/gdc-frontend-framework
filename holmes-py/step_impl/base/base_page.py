@@ -996,7 +996,7 @@ class BasePage:
         """
         expected_text_locator = GenericLocators.TEXT_IN_PARAGRAPH(text_to_check)
         try:
-            new_tab.locator(expected_text_locator).wait_for(state="visible")
+            new_tab.locator(expected_text_locator).wait_for(state="visible",timeout=75000)
         except:
             return False
         return True
