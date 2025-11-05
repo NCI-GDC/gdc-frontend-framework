@@ -196,7 +196,7 @@ Here's how to build/run this repo inside a Docker container.
 
 ```bash
 Copy code
-docker run --rm --env APP_ENVIRONMENT=qayellow --env browser="headless firefox" --env APP_ENVIRONMENT=QA_YELLOW .
+docker run --rm --env APP_ENVIRONMENT=PROD --env browser="headless firefox"
 ```
 Set the environment variable APP_ENVIRONMENT to the desired test environment (e.g., QA_YELLOW, QA_UAT, PROD_UAT).
 
@@ -212,13 +212,17 @@ docker-compose up [--build]
 
 # GitLab CI/CD Pipeline
 
-The GitLab CI/CD pipeline configured using the `.gitlab-ci.yml` file has been  updated to include the `build_and_run_ui_tests` stage, which is responsible for building and running these Playwright UI tests.
+The GitLab CI/CD pipeline configured using the `.gitlab-ci.yml` file. Our steps are 'Build UI Tests Docker Image' and 'Trigger Holmes-py Tests' which build the docker image and then
+execute the holmes-py regression test suite.
 
 ## Build and Run UI Tests Stage
 
 ```yaml
-Build and run UI tests:
-  stage: build_and_run_ui_tests
+Build UI Tests Docker Image:
+  stage: build_ui_tests_image
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $RUN_UI_TESTS_ONLY == "true"'
+      when: always
   services:
     - docker:${DOCKER_VERSION}-dind
   tags:
@@ -226,38 +230,52 @@ Build and run UI tests:
   image: docker:${DOCKER_VERSION}-dind
   script:
     - docker build -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} -f ./holmes-py/Dockerfile ./holmes-py
-    - docker run -v $(pwd):/app --name holmes-py --env APP_ENVIRONMENT=QA_YELLOW --env browser="headless chrome" -e PATH="$PATH:/usr/local/bin" "$DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}" gauge run ./holmes-py/specs/gdc_data_portal_v2/
-    - docker cp holmes-py:/app/holmes-py/.gauge .gauge
-    - docker cp holmes-py:/app/holmes-py/downloads downloads
-    - docker cp holmes-py:/app/holmes-py/logs logs
-    - docker cp holmes-py:/app/holmes-py/reports reports
+    - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
+
+Trigger Holmes-py Tests:
+  stage: trigger_ui_tests
   rules:
-    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
-      when: on_success
-      allow_failure: true
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $RUN_UI_TESTS_ONLY == "true"'
+      when: always
+  services:
+    - docker:${DOCKER_VERSION}-dind
+  tags:
+    - dind
+  image: docker:${DOCKER_VERSION}-dind
+  script:
+    - docker pull $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
+    - docker run -v $(pwd):/app --name holmes-py --add-host portal.gdc.cancer.gov:$PORTAL_REV_PROXY_IP_ADDRESS --env APP_ENVIRONMENT=PROD --env browser="headless chrome" -e PATH="$PATH:/usr/local/bin" -e no_proxy="portal.gdc.cancer.gov,localhost,127.0.0.1" "$DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}" gauge run -p -n=6 ./holmes-py/specs/gdc_data_portal_v2/ --tags "regression"
+    - docker cp holmes-py:/app/holmes-py/.gauge holmes-py/.gauge || true
+    - docker cp holmes-py:/app/holmes-py/downloads holmes-py/downloads || true
+    - docker cp holmes-py:/app/holmes-py/logs holmes-py/logs || true
+    - docker cp holmes-py:/app/holmes-py/reports holmes-py/reports || true
+    - docker rm -f holmes-py || true
   artifacts:
     when: always
     paths:
       - holmes-py/.gauge
       - holmes-py/downloads
       - holmes-py/logs
-      - holmes-py/reports
+      - holmes-py/reports*
     expire_in: 3 months
 ```
 
-The `Build and run UI tests` stage is designed to run after the `deploy` stage has been successfully completed. This stage will run the UI tests using the Holmes test automation framework within a Docker container.
+The Gitlab CI/CD Pipeline Flow:
 
-When a pipeline is executed, it follows the order of the stages defined in the `stages` list. If a stage is set to `manual`, the pipeline will pause and wait for a user to manually trigger it. In our case, the pipeline will wait for the `deploy` stage to be manually triggered and successfully completed.
+1. Runs on a schedule at [this URL](https://gitlab.datacommons.io/nci-gdc/front-end/gdc-frontend-framework/-/pipeline_schedules)
+2. Pick which environment to execute the tests in using a variable inside the schedule. This is done with variable PORTAL_REV_PROXY_IP_ADDRESS which can be set to different environments by having a value of
 
-Once the `deploy` stage has been manually triggered and completed, the pipeline will automatically proceed to the `Build and run UI tests` stage. This ensures that the UI tests are only run after the deployment has been completed, providing an extra layer of validation for the deployed application.
+    A. $QA_INT_PORTAL_REV_PROXY_IP
 
-In this stage, the pipeline:
+    B. $QA_ORANGE_PORTAL_REV_PROXY_IP
 
-1. Builds a Docker image using the holmes-py/Dockerfile.
-2. Runs the Docker container with the built image, setting the environment variables APP_ENVIRONMENT and browser for the Playwright UI tests as desired.
-3. Executes all Playwright UI tests using Gauge within the ./holmes-py/specs/gdc_data_portal_v2/ directory.
-4. Copies the test artifacts from the Docker container to the host, including Gauge files, downloads, logs, and reports.
+    C. $QA_PINK_PORTAL_REV_PROXY_IP
 
-The rules section added specifies that this stage will run only when the target branch of the merge request is develop.
+    D. $QA_YELLOW_PORTAL_REV_PROXY_IP
 
-The artifacts section defines the paths to the test artifacts to be archived by gitlab, and is set to expire the artifacts after 3 months
+3. The pipeline executes on a schedule or on demand using the 'play' button
+4. Pipeline is started
+4. Dockerfile is built
+5. Dockerfile executes Holmes-py regression test
+6. Copies the test artifacts from the Docker container to the host, including Gauge files, downloads, logs, and report.
+7. To download the artifact, go to the job step 'Trigger Holmes-py Tests'. On the right-hand side there will be a section that says 'Job artifacts' and click the 'Download' button. The artifacts will be stored in Gitlab for 3 months.
