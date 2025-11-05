@@ -23,17 +23,17 @@ interface PpProps {
 export const demoFilter = Object.freeze({
   op: "in",
   content: Object.freeze({
-    field: "cases.disease_type",
-    value: Object.freeze(["Gliomas"]),
+    field: "cases.project.project_id",
+    value: Object.freeze(["TCGA-LGG"]),
   }),
 });
 
 export const CorrelationWrapper: FC<PpProps> = (props: PpProps) => {
   const isDemoMode = useIsDemoApp();
-  // const demoFilter = {
-  //   op: "in",
-  //   content: { field: "cases.disease_type", value: ["Gliomas"] },
-  // };
+  const demoFilter = {
+    op: "in",
+    content: { field: "cases.project.project_id", value: ["TCGA-LGG"] },
+  };
   const currentCohort = useCoreSelector(selectCurrentCohortFilters);
   const filter0 = isDemoMode
     ? cloneDeep(demoFilter)
@@ -53,7 +53,12 @@ export const CorrelationWrapper: FC<PpProps> = (props: PpProps) => {
     "error.gdcCorrelation": hideLoadingOverlay,
     "postRender.gdcCorrelation": hideLoadingOverlay,
   };
-  const initArgs = getCorrelationTrack(props, matrixCallbacks, appCallbacks);
+  const initArgs = getCorrelationTrack(
+    props,
+    matrixCallbacks,
+    appCallbacks,
+    isDemoMode,
+  );
 
   useDeepCompareEffect(
     () => {
@@ -115,7 +120,12 @@ export const CorrelationWrapper: FC<PpProps> = (props: PpProps) => {
   const divRef = useRef();
   return (
     <div className="relative">
-      {isDemoMode && <DemoText>Demo showing cases with Gliomas.</DemoText>}
+      {isDemoMode && (
+        <DemoText>
+          Demo showing correlation of survival with IDH1 Mutation/CNV (TCGA-LGG
+          project).
+        </DemoText>
+      )}
       <div
         ref={divRef}
         className="sjpp-wrapper-root-div"
@@ -153,6 +163,7 @@ function getCorrelationTrack(
   props: PpProps,
   matrixCallbacks?: RxComponentCallbacks,
   appCallbacks?: RxComponentCallbacks,
+  isDemoMode?: boolean,
 ): CorrelationArg {
   const arg: CorrelationArg = {
     // host in gdc is just a relative url path,
@@ -165,6 +176,29 @@ function getCorrelationTrack(
       },
     },
   };
+
+  if (isDemoMode) {
+    arg.state = {
+      plots: [
+        {
+          chartType: "survival",
+          term: {
+            term: {
+              id: "Overall Survival",
+              type: "survival",
+            },
+          },
+          term2: {
+            term: {
+              type: "geneVariant",
+              id: "IDH1",
+              name: "IDH1",
+            },
+          },
+        },
+      ],
+    };
+  }
 
   return arg;
 }

@@ -307,7 +307,7 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
       />
     ),
     tags: ["variantAnalysis"],
-    //hasDemo: true,
+    hasDemo: true,
     description:
       "Visualize correlations between clinical and genomic variables.",
     id: "Correlation",
