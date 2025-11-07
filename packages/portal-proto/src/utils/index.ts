@@ -78,6 +78,7 @@ export const externalLinkNames = {
   hgnc: "HGNC",
   omim_gene: "OMIM",
   uniprotkb_swissprot: "UniProtKB Swiss-Prot",
+  genecards: "GeneCards",
 };
 
 export const geneExternalLinkNames = {
@@ -86,6 +87,7 @@ export const geneExternalLinkNames = {
   hgnc: "HGNC",
   omim_gene: "OMIM",
   uniprotkb_swissprot: "UniProtKB Swiss-Prot",
+  genecards: "GeneCards",
 };
 
 export const externalLinks = {
@@ -100,6 +102,8 @@ export const externalLinks = {
   ensembl: (id: string): string =>
     `http://nov2020.archive.ensembl.org/Homo_sapiens/Gene/Summary?db=core;g=${id}`,
   entrez_gene: (id: string): string => `http://www.ncbi.nlm.nih.gov/gene/${id}`,
+  genecards: (id: string): string =>
+    `https://www.genecards.org/cgi-bin/carddisp.pl?gene=${id}`,
   hgnc: (id: string): string =>
     `https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/${id}`,
   omim_gene: (id: string): string => `http://omim.org/entry/${id}`,
