@@ -244,7 +244,7 @@ Trigger Holmes-py Tests:
   image: docker:${DOCKER_VERSION}-dind
   script:
     - docker pull $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
-    - docker run -v $(pwd):/app --name holmes-py --add-host portal.gdc.cancer.gov:$PORTAL_REV_PROXY_IP_ADDRESS --env APP_ENVIRONMENT=PROD --env browser="headless chrome" -e PATH="$PATH:/usr/local/bin" -e no_proxy="portal.gdc.cancer.gov,localhost,127.0.0.1" "$DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}" gauge run -p -n=6 ./holmes-py/specs/gdc_data_portal_v2/ --tags "regression"
+    - docker run -v $(pwd):/app --name holmes-py --add-host portal.gdc.cancer.gov:$PORTAL_REV_PROXY_IP_ADDRESS --env APP_ENVIRONMENT=PROD --env browser="headless chrome" -e PATH="$PATH:/usr/local/bin" -e no_proxy="portal.gdc.cancer.gov,localhost,127.0.0.1" "$DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}" gauge run -p -n=6 ./holmes-py/specs/gdc_data_portal_v2/ --tags "$TAG_TEST_TYPE"
     - docker cp holmes-py:/app/holmes-py/.gauge holmes-py/.gauge || true
     - docker cp holmes-py:/app/holmes-py/downloads holmes-py/downloads || true
     - docker cp holmes-py:/app/holmes-py/logs holmes-py/logs || true
@@ -263,7 +263,7 @@ Trigger Holmes-py Tests:
 The Gitlab CI/CD Pipeline Flow:
 
 1. Runs on a schedule at [this URL](https://gitlab.datacommons.io/nci-gdc/front-end/gdc-frontend-framework/-/pipeline_schedules)
-2. Pick which environment to execute the tests in using a variable inside the schedule. This is done with variable PORTAL_REV_PROXY_IP_ADDRESS which can be set to different environments by having a value of
+2. Edit the variable PORTAL_REV_PROXY_IP_ADDRESS in the schedule to pick which environment to execute the tests in. Some choices are:
 
     A. $QA_INT_PORTAL_REV_PROXY_IP
 
@@ -273,9 +273,17 @@ The Gitlab CI/CD Pipeline Flow:
 
     D. $QA_YELLOW_PORTAL_REV_PROXY_IP
 
-3. The pipeline executes on a schedule or on demand using the 'play' button
-4. Pipeline is started
-4. Dockerfile is built
-5. Dockerfile executes Holmes-py regression test
-6. Copies the test artifacts from the Docker container to the host, including Gauge files, downloads, logs, and report.
-7. To download the artifact, go to the job step 'Trigger Holmes-py Tests'. On the right-hand side there will be a section that says 'Job artifacts' and click the 'Download' button. The artifacts will be stored in Gitlab for 3 months.
+3. Edit the variable TAG_TEST_TYPE in the schedule to pick test tag should run. Some choices are:
+
+    A. regression
+
+    B. smoke-test
+
+    C. data-release
+
+4. The pipeline executes on a schedule or on demand using the 'play' button
+5. Pipeline is started
+6. Dockerfile is built
+7. Dockerfile executes Holmes-py regression test
+8. Copies the test artifacts from the Docker container to the host, including Gauge files, downloads, logs, and report.
+9. To download the artifact, go to the job step 'Trigger Holmes-py Tests'. On the right-hand side there will be a section that says 'Job artifacts' and click the 'Download' button. The artifacts will be stored in Gitlab for 3 months.
