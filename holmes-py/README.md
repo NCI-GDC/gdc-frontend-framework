@@ -212,55 +212,9 @@ docker-compose up [--build]
 
 # GitLab CI/CD Pipeline
 
-The GitLab CI/CD pipeline configured using the `.gitlab-ci.yml` file. Our steps are 'Build UI Tests Docker Image' and 'Trigger Holmes-py Tests' which build the docker image and then
-execute the holmes-py regression test suite.
+The GitLab CI/CD pipeline configured using the `.gitlab-ci.yml` file. Our steps are 'Build UI Tests Docker Image' and 'Trigger Holmes-py Tests' which build the docker image and then execute the holmes-py tests.
 
-## Build and Run UI Tests Stage
-
-```yaml
-Build UI Tests Docker Image:
-  stage: build_ui_tests_image
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule" && $RUN_UI_TESTS_ONLY == "true"'
-      when: always
-  services:
-    - docker:${DOCKER_VERSION}-dind
-  tags:
-    - dind
-  image: docker:${DOCKER_VERSION}-dind
-  script:
-    - docker build -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} -f ./holmes-py/Dockerfile ./holmes-py
-    - docker push $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
-
-Trigger Holmes-py Tests:
-  stage: trigger_ui_tests
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule" && $RUN_UI_TESTS_ONLY == "true"'
-      when: always
-  services:
-    - docker:${DOCKER_VERSION}-dind
-  tags:
-    - dind
-  image: docker:${DOCKER_VERSION}-dind
-  script:
-    - docker pull $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}
-    - docker run -v $(pwd):/app --name holmes-py --add-host portal.gdc.cancer.gov:$PORTAL_REV_PROXY_IP_ADDRESS --env APP_ENVIRONMENT=PROD --env browser="headless chrome" -e PATH="$PATH:/usr/local/bin" -e no_proxy="portal.gdc.cancer.gov,localhost,127.0.0.1" "$DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}" gauge run -p -n=6 ./holmes-py/specs/gdc_data_portal_v2/ --tags "$TAG_TEST_TYPE"
-    - docker cp holmes-py:/app/holmes-py/.gauge holmes-py/.gauge || true
-    - docker cp holmes-py:/app/holmes-py/downloads holmes-py/downloads || true
-    - docker cp holmes-py:/app/holmes-py/logs holmes-py/logs || true
-    - docker cp holmes-py:/app/holmes-py/reports holmes-py/reports || true
-    - docker rm -f holmes-py || true
-  artifacts:
-    when: always
-    paths:
-      - holmes-py/.gauge
-      - holmes-py/downloads
-      - holmes-py/logs
-      - holmes-py/reports*
-    expire_in: 3 months
-```
-
-The Gitlab CI/CD Pipeline Flow:
+### The Gitlab CI/CD Pipeline Flow:
 
 1. Runs on a schedule at [this URL](https://gitlab.datacommons.io/nci-gdc/front-end/gdc-frontend-framework/-/pipeline_schedules)
 2. Edit the variable PORTAL_REV_PROXY_IP_ADDRESS in the schedule to pick which environment to execute the tests in. Some choices are:
