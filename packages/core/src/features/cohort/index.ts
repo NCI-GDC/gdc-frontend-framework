@@ -79,6 +79,13 @@ import {
   extractFiltersWithPrefixFromFilterSet,
 } from "./utils";
 
+import {
+  addCohortWarning,
+  dismissWarningBanner,
+  selectAllCohortsWithWarnings,
+  selectCohortWarning,
+} from "./cohortWarningSlice";
+
 export {
   Cohort,
   EnumOperandValue,
@@ -149,4 +156,8 @@ export {
   selectUnsavedCohortName,
   UNSAVED_COHORT_NAME,
   selectMultipleCohortsByIdOrName,
+  addCohortWarning,
+  dismissWarningBanner,
+  selectAllCohortsWithWarnings,
+  selectCohortWarning,
 };

@@ -4,6 +4,8 @@ import QueryExpressionSection from "./QueryExpressionSection";
 
 const hooks = {
   useSelectCurrentCohort: jest.fn().mockReturnValue({}),
+  useSelectCohortWarnings: jest.fn(),
+  useDismissWarning: jest.fn(),
   useClearCohortFilters: jest.fn(),
   useRemoveCohortFilter: jest.fn(),
   useUpdateCohortFilter: jest.fn(),
@@ -19,6 +21,7 @@ describe("<QueryExpressionSection />", () => {
       <QueryExpressionSection
         filters={{ mode: "and", root: {} }}
         hooks={hooks}
+        warningText="oh no!"
       />,
     );
 
@@ -54,6 +57,7 @@ describe("<QueryExpressionSection />", () => {
           },
         }}
         hooks={hooks}
+        warningText="oh no!"
       />,
     );
 

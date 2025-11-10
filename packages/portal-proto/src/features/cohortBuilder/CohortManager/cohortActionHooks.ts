@@ -462,7 +462,9 @@ export const useReplaceCohort = () => {
       await fetchCohortList()
         .unwrap()
         .then((payload) => {
-          const updatedCohortIds = (payload || []).map((cohort) => cohort.id);
+          const updatedCohortIds = (payload.data || []).map(
+            (cohort) => cohort.id,
+          );
 
           // Find outdated cohorts
           const outdatedCohortsIds = cohorts

@@ -6,7 +6,6 @@ import { AnchorLink } from "@/components/AnchorLink";
 import { CountButton } from "@/components/CountButton/CountButton";
 import Highlight from "@/components/Highlight";
 import VerticalTable from "@/components/Table/VerticalTable";
-import Banner from "@/components/Banner";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { ButtonTooltip } from "@/components/ButtonTooltip";
 import CohortCreationButton from "@/components/CohortCreationButton";
@@ -29,7 +28,6 @@ export {
   VerticalTable,
   DropdownWithIcon,
   Highlight,
-  Banner,
   ButtonTooltip,
   CohortCreationButton,
   CollapsibleContainer,

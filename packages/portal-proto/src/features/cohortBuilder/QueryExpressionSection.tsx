@@ -10,6 +10,9 @@ const QueryExpressionSection = () => {
     <CommonQueryExpressionSection
       filters={filters}
       hooks={queryExpressionHooks}
+      warningText={
+        "This cohort has deprecated properties and/or properties that no longer exist in the GDC. This may affect the cases in your cohort. Click here for more information."
+      }
     />
   );
 };

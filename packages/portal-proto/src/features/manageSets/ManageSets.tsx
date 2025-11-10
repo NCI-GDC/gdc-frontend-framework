@@ -10,7 +10,7 @@ import {
   useCoreDispatch,
   removeSets,
 } from "@gff/core";
-import { WarningBanner } from "@/components/WarningBanner";
+import { WarningBanner } from "@gff/portal-components";
 import { CountsIcon } from "@/components/tailwindComponents";
 import { getFormattedTimestamp } from "src/utils/date";
 import download from "@/utils/download";

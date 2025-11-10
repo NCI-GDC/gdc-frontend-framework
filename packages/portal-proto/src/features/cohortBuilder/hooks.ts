@@ -26,6 +26,8 @@ import {
   showModal,
   Includes,
   FacetDefinitionType,
+  addCohortWarning,
+  selectAllCohortsWithWarnings,
 } from "@gff/core";
 import { FacetCardDefinition } from "@gff/portal-components";
 import { useEnumFacets } from "@/features/facets/hooks";
@@ -36,39 +38,59 @@ import { FacetQueryOptions } from "../facets/types";
 export const useSetupInitialCohorts = (): boolean => {
   const [fetched, setFetched] = useState(false);
   const {
-    data: cohortsListData,
+    data: cohortsData,
     isSuccess,
     isError,
   } = useGetCohortsByContextIdQuery(null, { skip: fetched });
 
   const coreDispatch = useCoreDispatch();
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
+  const cohortWarnings = useCoreSelector((state) =>
+    selectAllCohortsWithWarnings(state),
+  );
 
-  const updatedCohortIds = (cohortsListData || []).map((cohort) => cohort.id);
+  const updatedCohortIds = (cohortsData?.data || []).map((cohort) => cohort.id);
   const outdatedCohortsIds = cohorts
     .filter((c) => c.saved && !updatedCohortIds.includes(c.id))
     .map((c) => c.id);
 
   useDeepCompareEffect(() => {
     if ((isSuccess || isError) && !fetched) {
-      const updatedList: Cohort[] = (cohortsListData || []).map((data) => {
+      const updatedList: Cohort[] = (cohortsData?.data || []).map((data) => {
         const existingCohort = cohorts.find((c) => c.id === data.id);
+        const cohortData = {
+          id: data.id,
+          name: data.name,
+          filters: buildGqlOperationToFilterSet(data.filters),
+          caseSet: {
+            ...(existingCohort?.caseSet ?? { status: "uninitialized" }),
+          },
+          counts: {
+            ...NullCountsData,
+          },
+          modified_datetime: data.modified_datetime,
+          saved: true,
+          modified: false,
+          deprecatedFields: cohortsData?.warnings?.[data.id],
+          nonexistentFields: cohortsData?.errors?.[data.id],
+        };
+
+        if (
+          (!cohortWarnings.includes(cohortData.id) &&
+            cohortData?.deprecatedFields) ||
+          cohortData?.nonexistentFields
+        ) {
+          const warnings = {
+            deprecated: cohortData?.deprecatedFields,
+            nonexistent: cohortData?.nonexistentFields,
+          };
+          coreDispatch(addCohortWarning({ cohortId: cohortData.id, warnings }));
+        }
+
+        // Override with local changes to cohort if they exist
         return existingCohort?.modified
-          ? existingCohort
-          : {
-              id: data.id,
-              name: data.name,
-              filters: buildGqlOperationToFilterSet(data.filters),
-              caseSet: {
-                ...(existingCohort?.caseSet ?? { status: "uninitialized" }),
-              },
-              counts: {
-                ...NullCountsData,
-              },
-              modified_datetime: data.modified_datetime,
-              saved: true,
-              modified: false,
-            };
+          ? { ...cohortData, ...existingCohort }
+          : cohortData;
       });
 
       coreDispatch(setActiveCohortList(updatedList)); // will create caseSet if needed
@@ -80,7 +102,7 @@ export const useSetupInitialCohorts = (): boolean => {
       setFetched(true);
     }
   }, [
-    cohortsListData,
+    cohortsData,
     isSuccess,
     isError,
     cohorts,
@@ -88,6 +110,7 @@ export const useSetupInitialCohorts = (): boolean => {
     setFetched,
     coreDispatch,
     outdatedCohortsIds,
+    cohortWarnings,
   ]);
 
   return fetched;

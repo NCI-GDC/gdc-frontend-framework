@@ -35,6 +35,7 @@ import {
   FaUndo as UndoIcon,
   FaPlus as PlusIcon,
   FaMinus as MinusIcon,
+  FaExclamationCircle as AlertIcon,
 } from "react-icons/fa";
 import { RiErrorWarningFill as WarningMessageIcon } from "react-icons/ri";
 import { FaCircle as CircleIcon } from "react-icons/fa";
@@ -86,4 +87,5 @@ export {
   CalendarIcon,
   PlusIcon,
   MinusIcon,
+  AlertIcon,
 };

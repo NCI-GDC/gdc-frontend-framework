@@ -14,11 +14,18 @@ export const cohortApiSlice = coreCreateApi({
   }),
   tagTypes: ["Cohort"],
   endpoints: (builder) => ({
-    getCohortsByContextId: builder.query<CohortModel[], void>({
+    getCohortsByContextId: builder.query<
+      {
+        data: CohortModel[];
+        warnings?: Record<string, string>;
+        errors?: Record<string, string>;
+      },
+      void
+    >({
       query: () => "/cohorts?include_case_ids=true",
-      providesTags: (result = []) => [
+      providesTags: (result = { data: [] }) => [
         { type: "Cohort", id: "LIST" },
-        ...result.map(({ id }) => ({ type: "Cohort" as const, id })),
+        ...result.data.map(({ id }) => ({ type: "Cohort" as const, id })),
       ],
     }),
     getCohortById: builder.query<CohortModel, string>({
