@@ -81,15 +81,6 @@ export const externalLinkNames = {
   genecards: "GeneCards",
 };
 
-export const geneExternalLinkNames = {
-  civic: "CIViC",
-  entrez_gene: "NCBI Gene",
-  hgnc: "HGNC",
-  omim_gene: "OMIM",
-  uniprotkb_swissprot: "UniProtKB Swiss-Prot",
-  genecards: "GeneCards",
-};
-
 export const externalLinks = {
   civic: (id: string): string => `https://civicdb.org/links/gene/${id}`,
   civicMutaton: (id: string): string =>
