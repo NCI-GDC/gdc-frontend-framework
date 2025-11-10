@@ -214,6 +214,8 @@ docker-compose up [--build]
 
 The GitLab CI/CD pipeline configured using the `.gitlab-ci.yml` file. Our steps are 'Build UI Tests Docker Image' and 'Trigger Holmes-py Tests' which build the docker image and then execute the holmes-py tests.
 
+This pipeline should be used to test the latest front-end code. Whether that's in qa-int or the QA environment during a software release. To test production level code, use the [holmes-py pipelines](https://gitlab.datacommons.io/nci-gdc/qa/holmes-py/-/pipeline_schedules)
+
 ### The Gitlab CI/CD Pipeline Flow:
 
 1. Runs on a schedule at [this URL](https://gitlab.datacommons.io/nci-gdc/front-end/gdc-frontend-framework/-/pipeline_schedules)
