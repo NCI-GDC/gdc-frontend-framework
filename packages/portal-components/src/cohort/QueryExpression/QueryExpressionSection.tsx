@@ -269,12 +269,12 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                 </>
               </div>
               <div>
-                {!warnings?.bannerDismissed && (
+                {warnings && !warnings?.bannerDismissed ? (
                   <WarningBanner
                     text={warningText}
                     dismissBanner={dismissBanner}
                   />
-                )}
+                ) : null}
                 <div
                   className="flex flex-wrap bg-base-max w-full overflow-x-hidden p-2"
                   style={
