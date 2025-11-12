@@ -162,6 +162,7 @@ const GeneView = ({
       external_db_ids: { entrez_gene, uniprotkb_swissprot, hgnc, omim_gene },
       gene_id,
       civic,
+      symbol,
     } = data;
 
     const externalLinksObj = {
@@ -171,6 +172,7 @@ const GeneView = ({
       omim_gene,
       ensembl: gene_id,
       civic,
+      genecards: symbol,
     };
 
     let externalReferenceLinksobj = {};
