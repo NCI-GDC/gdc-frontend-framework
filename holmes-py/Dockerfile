@@ -25,12 +25,13 @@ RUN ln -fs /usr/bin/python3.9 /usr/bin/python3
 RUN curl -SsL https://downloads.gauge.org/stable | sh
 
 COPY . /app
+
 RUN pip install -r /app/docker-requirements.txt
 
 RUN npm install -g --force playwright@1.23.1 && \
     playwright install --with-deps
 
-RUN gauge install python
+RUN gauge install python --version 0.4.9
 RUN gauge install screenshot
 RUN gauge install html-report
 

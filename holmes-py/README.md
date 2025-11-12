@@ -35,7 +35,7 @@ This project uses
 - [Install Gauge-Python plugin](https://github.com/kashishm/gauge-python/wiki/User-Documentation) by running
 
   ````bash
-  gauge install python
+  gauge install python --version 0.4.9
   ````
 
 ## System(s) Under Test (SUT)
@@ -196,7 +196,7 @@ Here's how to build/run this repo inside a Docker container.
 
 ```bash
 Copy code
-docker run --rm --env APP_ENVIRONMENT=qayellow --env browser="headless firefox" --env APP_ENVIRONMENT=QA_YELLOW .
+docker run --rm --env APP_ENVIRONMENT=PROD --env browser="headless firefox"
 ```
 Set the environment variable APP_ENVIRONMENT to the desired test environment (e.g., QA_YELLOW, QA_UAT, PROD_UAT).
 
@@ -212,52 +212,34 @@ docker-compose up [--build]
 
 # GitLab CI/CD Pipeline
 
-The GitLab CI/CD pipeline configured using the `.gitlab-ci.yml` file has been  updated to include the `build_and_run_ui_tests` stage, which is responsible for building and running these Playwright UI tests.
+The GitLab CI/CD pipeline configured using the `.gitlab-ci.yml` file. Our steps are 'Build UI Tests Docker Image' and 'Trigger Holmes-py Tests' which build the docker image and then execute the holmes-py tests.
 
-## Build and Run UI Tests Stage
+This pipeline should be used to test the latest front-end code. Whether that's in qa-int or the QA environment during a software release. To test production level code, use the [holmes-py pipelines](https://gitlab.datacommons.io/nci-gdc/qa/holmes-py/-/pipeline_schedules)
 
-```yaml
-Build and run UI tests:
-  stage: build_and_run_ui_tests
-  services:
-    - docker:${DOCKER_VERSION}-dind
-  tags:
-    - dind
-  image: docker:${DOCKER_VERSION}-dind
-  script:
-    - docker build -t $DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA} -f ./holmes-py/Dockerfile ./holmes-py
-    - docker run -v $(pwd):/app --name holmes-py --env APP_ENVIRONMENT=QA_YELLOW --env browser="headless chrome" -e PATH="$PATH:/usr/local/bin" "$DOCKER_RELEASE_REGISTRY/ncigdc/$CI_PROJECT_NAME-holmes-py:$CI_COMMIT_REF_SLUG-${CI_COMMIT_SHORT_SHA}" gauge run ./holmes-py/specs/gdc_data_portal_v2/
-    - docker cp holmes-py:/app/holmes-py/.gauge .gauge
-    - docker cp holmes-py:/app/holmes-py/downloads downloads
-    - docker cp holmes-py:/app/holmes-py/logs logs
-    - docker cp holmes-py:/app/holmes-py/reports reports
-  rules:
-    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
-      when: on_success
-      allow_failure: true
-  artifacts:
-    when: always
-    paths:
-      - holmes-py/.gauge
-      - holmes-py/downloads
-      - holmes-py/logs
-      - holmes-py/reports
-    expire_in: 3 months
-```
+### The Gitlab CI/CD Pipeline Flow:
 
-The `Build and run UI tests` stage is designed to run after the `deploy` stage has been successfully completed. This stage will run the UI tests using the Holmes test automation framework within a Docker container.
+1. Runs on a schedule at [this URL](https://gitlab.datacommons.io/nci-gdc/front-end/gdc-frontend-framework/-/pipeline_schedules)
+2. Edit the variable PORTAL_REV_PROXY_IP_ADDRESS in the schedule to pick which environment to execute the tests in. Some choices are:
 
-When a pipeline is executed, it follows the order of the stages defined in the `stages` list. If a stage is set to `manual`, the pipeline will pause and wait for a user to manually trigger it. In our case, the pipeline will wait for the `deploy` stage to be manually triggered and successfully completed.
+    A. $QA_INT_PORTAL_REV_PROXY_IP
 
-Once the `deploy` stage has been manually triggered and completed, the pipeline will automatically proceed to the `Build and run UI tests` stage. This ensures that the UI tests are only run after the deployment has been completed, providing an extra layer of validation for the deployed application.
+    B. $QA_ORANGE_PORTAL_REV_PROXY_IP
 
-In this stage, the pipeline:
+    C. $QA_PINK_PORTAL_REV_PROXY_IP
 
-1. Builds a Docker image using the holmes-py/Dockerfile.
-2. Runs the Docker container with the built image, setting the environment variables APP_ENVIRONMENT and browser for the Playwright UI tests as desired.
-3. Executes all Playwright UI tests using Gauge within the ./holmes-py/specs/gdc_data_portal_v2/ directory.
-4. Copies the test artifacts from the Docker container to the host, including Gauge files, downloads, logs, and reports.
+    D. $QA_YELLOW_PORTAL_REV_PROXY_IP
 
-The rules section added specifies that this stage will run only when the target branch of the merge request is develop.
+3. Edit the variable TAG_TEST_TYPE in the schedule to pick test tag should run. Some choices are:
 
-The artifacts section defines the paths to the test artifacts to be archived by gitlab, and is set to expire the artifacts after 3 months
+    A. regression
+
+    B. smoke-test
+
+    C. data-release
+
+4. The pipeline executes on a schedule or on demand using the 'play' button
+5. Pipeline is started
+6. Dockerfile is built
+7. Dockerfile executes Holmes-py regression test
+8. Copies the test artifacts from the Docker container to the host, including Gauge files, downloads, logs, and report.
+9. To download the artifact, go to the job step 'Trigger Holmes-py Tests'. On the right-hand side there will be a section that says 'Job artifacts' and click the 'Download' button. The artifacts will be stored in Gitlab for 3 months.
