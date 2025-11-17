@@ -71,4 +71,79 @@ describe("<QueryExpressionSection />", () => {
       ).not.toBeDisabled(),
     );
   });
+
+  it("Display warning banner", () => {
+    const { queryByText, rerender } = render(
+      <QueryExpressionSection
+        filters={{
+          mode: "and",
+          root: {
+            "cases.primary_site": {
+              field: "cases.primary_site",
+              operands: ["pancreas"],
+              operator: "includes",
+            },
+          },
+        }}
+        hooks={hooks}
+        warningText="oh no!"
+      />,
+    );
+
+    expect(queryByText("oh no!")).not.toBeInTheDocument();
+
+    const hooksWithWarning = {
+      ...hooks,
+      useSelectCohortWarnings: jest
+        .fn()
+        .mockReturnValue({ bannerDismissed: false }),
+    };
+
+    rerender(
+      <QueryExpressionSection
+        filters={{
+          mode: "and",
+          root: {
+            "cases.primary_site": {
+              field: "cases.primary_site",
+              operands: ["pancreas"],
+              operator: "includes",
+            },
+          },
+        }}
+        hooks={hooksWithWarning}
+        warningText="oh no!"
+      />,
+    );
+
+    expect(queryByText("oh no!")).toBeInTheDocument();
+  });
+
+  it("Hide dismissed warning banner", () => {
+    const hooksWithWarning = {
+      ...hooks,
+      useSelectCohortWarnings: jest
+        .fn()
+        .mockReturnValue({ bannerDismissed: true }),
+    };
+
+    const { queryByText } = render(
+      <QueryExpressionSection
+        filters={{
+          mode: "and",
+          root: {
+            "cases.primary_site": {
+              field: "cases.primary_site",
+              operands: ["pancreas"],
+              operator: "includes",
+            },
+          },
+        }}
+        hooks={hooksWithWarning}
+        warningText="oh no!"
+      />,
+    );
+
+    expect(queryByText("oh no!")).not.toBeInTheDocument();
+  });
 });
