@@ -23,7 +23,7 @@ interface CaseSliceResponseData {
   age_at_diagnosis?: number | null;
   vital_status?: null | string;
   days_to_death?: number | null;
-  gender?: null | string;
+  sex_at_birth?: null | string;
   race?: null | string;
   ethnicity?: null | string;
   filesCount: number;
@@ -178,7 +178,7 @@ const slice = createSlice({
           age_at_diagnosis: datum.diagnoses?.[0]?.age_at_diagnosis,
           vital_status: datum?.demographic?.vital_status,
           days_to_death: datum?.demographic?.days_to_death,
-          gender: datum.demographic?.gender,
+          sex_at_birth: datum.demographic?.sex_at_birth,
           race: datum.demographic?.race,
           ethnicity: datum.demographic?.ethnicity,
           filesCount: datum.summary.file_count,

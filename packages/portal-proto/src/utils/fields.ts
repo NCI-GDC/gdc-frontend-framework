@@ -1,5 +1,5 @@
 export const FIELD_LABELS = {
-  "demographic.gender": "Gender",
+  "demographic.sex_at_birth": "Sex at Birth",
   "demographic.ethnicity": "Ethnicity",
   "demographic.race": "Race",
   "demographic.vital_status": "Vital Status",

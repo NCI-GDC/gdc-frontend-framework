@@ -34,7 +34,7 @@ interface CohortComparisonProps {
 const fields = {
   survival: "Survival",
   ethnicity: "demographic.ethnicity",
-  gender: "demographic.gender",
+  sex_at_birth: "demographic.sex_at_birth",
   race: "demographic.race",
   vital_status: "demographic.vital_status",
   age_at_diagnosis: "diagnoses.age_at_diagnosis",
@@ -47,7 +47,7 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
   const [selectedCards, setSelectedCards] = useState({
     survival: true,
     ethnicity: false,
-    gender: true,
+    sex_at_birth: true,
     race: false,
     vital_status: true,
     age_at_diagnosis: true,

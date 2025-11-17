@@ -159,7 +159,7 @@ export interface caseFileType {
 export interface Demographic {
   readonly demographic_id: string | null;
   readonly ethnicity: string | null;
-  readonly gender: string | null;
+  readonly sex_at_birth: string | null;
   readonly race: string | null;
   readonly submitter_id: string | null;
   readonly vital_status: string | null;
@@ -197,7 +197,7 @@ export interface Diagnoses {
 export interface FamilyHistories {
   readonly family_history_id: string | null;
   readonly relationship_age_at_diagnosis: number | null;
-  readonly relationship_gender: string | null;
+  readonly relationship_sex_at_birth: string | null;
   readonly relationship_primary_diagnosis: string | null;
   readonly relationship_type: string | null;
   readonly relative_with_cancer_history: string | null;

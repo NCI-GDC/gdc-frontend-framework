@@ -170,8 +170,8 @@ export const INITIAL_SUMMARY_FIELDS = [
     indexType: "explore",
   },
   {
-    field: "cases.demographic.gender",
-    name: "Gender",
+    field: "cases.demographic.sex_at_birth",
+    name: "Sex at Birth",
     docType: "cases",
     indexType: "explore",
   },

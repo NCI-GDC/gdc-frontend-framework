@@ -13,7 +13,7 @@ export const DEMO_COHORT_FILTERS: FilterSet = {
 };
 
 export const DEFAULT_FIELDS = [
-  "demographic.gender",
+  "demographic.sex_at_birth",
   "demographic.race",
   "demographic.ethnicity",
   "diagnoses.age_at_diagnosis",
@@ -74,7 +74,7 @@ export const SPECIAL_CASE_FIELDS = {
 
 export const FACET_SORT = {
   demographic: [
-    "gender",
+    "sex_at_birth",
     "race",
     "ethnicity",
     "vital_status",

@@ -127,7 +127,7 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
     id: "CohortComparisonApp",
     countsField: "caseCount",
     description:
-      "Display the survival analysis of your cohorts and compare characteristics such as gender, vital status and age at diagnosis.",
+      "Display the survival analysis of your cohorts and compare characteristics such as sex at birth, vital status and age at diagnosis.",
     noDataTooltip:
       "Current cohort does not have cases available for visualization.",
     selectionScreen: AdditionalCohortSelection,
