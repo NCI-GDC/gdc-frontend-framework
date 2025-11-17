@@ -13,8 +13,8 @@ describe("<Controls />", () => {
         cDaveFields={
           [
             {
-              field_name: "gender",
-              full: "demographic.gender",
+              field_name: "sex_at_birth",
+              full: "demographic.sex_at_birth",
               field_type: "demographic",
             },
             {
@@ -30,7 +30,7 @@ describe("<Controls />", () => {
           ] as any[]
         }
         fieldsWithData={{
-          "demographic.gender": {} as Stats,
+          "demographic.sex_at_birth": {} as Stats,
           "exposures.alcohol_history": {} as Stats,
           "treatments.treatment_type": {} as Stats,
         }}
@@ -56,8 +56,8 @@ describe("<Controls />", () => {
         cDaveFields={
           [
             {
-              field_name: "gender",
-              full: "demographic.gender",
+              field_name: "sex_at_birth",
+              full: "demographic.sex_at_birth",
               field_type: "demographic",
             },
             {
@@ -73,7 +73,7 @@ describe("<Controls />", () => {
           ] as any[]
         }
         fieldsWithData={{
-          "demographic.gender": {} as Stats,
+          "demographic.sex_at_birth": {} as Stats,
           "exposures.alcohol_history": {} as Stats,
           "treatments.treatment_type": {} as Stats,
         }}
@@ -81,7 +81,7 @@ describe("<Controls />", () => {
       />,
     );
 
-    expect(await findByText("Gender")).toBeInTheDocument();
+    expect(await findByText("Sex At Birth")).toBeInTheDocument();
     expect(await findByText("Alcohol History")).toBeInTheDocument();
     expect(await findByText("Treatment Type")).toBeInTheDocument();
   });
@@ -115,12 +115,12 @@ describe("<Controls />", () => {
         setControlsExpanded={jest.fn()}
         cDaveFields={
           [
-            { field_name: "gender" },
+            { field_name: "sex_at_birth" },
             { field_name: "race" },
             { field_name: "ethnicity" },
           ] as any[]
         }
-        fieldsWithData={{ gender: [] as any, race: {} as any }}
+        fieldsWithData={{ sex_at_birth: [] as any, race: {} as any }}
         activeFields={[]}
       />,
     );
@@ -140,8 +140,8 @@ describe("<Controls />", () => {
         cDaveFields={
           [
             {
-              field_name: "gender",
-              full: "demographic.gender",
+              field_name: "sex_at_birth",
+              full: "demographic.sex_at_birth",
               field_type: "demographic",
             },
             {
@@ -152,11 +152,11 @@ describe("<Controls />", () => {
           ] as any[]
         }
         fieldsWithData={{}}
-        activeFields={["demographic.gender"]}
+        activeFields={["demographic.sex_at_birth"]}
       />,
     );
 
-    expect(getByLabelText("Gender")).toBeChecked();
+    expect(getByLabelText("Sex At Birth")).toBeChecked();
     expect(getByLabelText("Race")).not.toBeChecked();
   });
 
@@ -169,14 +169,14 @@ describe("<Controls />", () => {
         cDaveFields={
           [
             {
-              field_name: "gender",
-              full: "demographic.gender",
+              field_name: "sex_at_birth",
+              full: "demographic.sex_at_birth",
               field_type: "demographic",
             },
           ] as any[]
         }
         fieldsWithData={{
-          "demographic.gender": {} as Stats,
+          "demographic.sex_at_birth": {} as Stats,
         }}
         activeFields={[]}
       />,
@@ -199,8 +199,8 @@ describe("<Controls />", () => {
         cDaveFields={
           [
             {
-              field_name: "gender",
-              full: "demographic.gender",
+              field_name: "sex_at_birth",
+              full: "demographic.sex_at_birth",
               field_type: "demographic",
             },
             {
@@ -221,14 +221,14 @@ describe("<Controls />", () => {
           ] as any[]
         }
         fieldsWithData={{
-          "demographic.gender": {} as Stats,
+          "demographic.sex_at_birth": {} as Stats,
           "exposures.alcohol_history": {} as Stats,
         }}
         activeFields={[]}
       />,
     );
 
-    expect(await findByText("Gender")).toBeInTheDocument();
+    expect(await findByText("Sex At Birth")).toBeInTheDocument();
     expect(await findByText("Race")).toBeInTheDocument();
     expect(await findByText("Alcohol History")).toBeInTheDocument();
     expect(await findByText("Smoking History")).toBeInTheDocument();
@@ -238,7 +238,7 @@ describe("<Controls />", () => {
     });
     fireEvent.click(checkbox);
 
-    expect(await findByText("Gender")).toBeInTheDocument();
+    expect(await findByText("Sex At Birth")).toBeInTheDocument();
     expect(await findByText("Alcohol History")).toBeInTheDocument();
 
     expect(queryByText("Race")).not.toBeInTheDocument();
@@ -254,8 +254,8 @@ describe("<Controls />", () => {
         cDaveFields={
           [
             {
-              field_name: "gender",
-              full: "demographic.gender",
+              field_name: "sex_at_birth",
+              full: "demographic.sex_at_birth",
               field_type: "demographic",
             },
             {
@@ -271,7 +271,7 @@ describe("<Controls />", () => {
           ] as any[]
         }
         fieldsWithData={{
-          "demographic.gender": {} as Stats,
+          "demographic.sex_at_birth": {} as Stats,
           "exposures.alcohol_history": {} as Stats,
         }}
         activeFields={[]}
@@ -291,8 +291,8 @@ describe("<Controls />", () => {
         cDaveFields={
           [
             {
-              field_name: "gender",
-              full: "demographic.gender",
+              field_name: "sex_at_birth",
+              full: "demographic.sex_at_birth",
               field_type: "demographic",
             },
             {
@@ -344,8 +344,8 @@ describe("<Controls />", () => {
         cDaveFields={
           [
             {
-              field_name: "gender",
-              full: "demographic.gender",
+              field_name: "sex_at_birth",
+              full: "demographic.sex_at_birth",
               field_type: "demographic",
               description: "a type of filter",
             },
@@ -370,7 +370,7 @@ describe("<Controls />", () => {
     expect(
       queryByRole("button", { name: "Demographic" }),
     ).not.toBeInTheDocument();
-    expect(queryByText("Gender")).not.toBeInTheDocument();
+    expect(queryByText("Sex At Birth")).not.toBeInTheDocument();
   });
 
   it("search description", async () => {
@@ -382,8 +382,8 @@ describe("<Controls />", () => {
         cDaveFields={
           [
             {
-              field_name: "gender",
-              full: "demographic.gender",
+              field_name: "sex_at_birth",
+              full: "demographic.sex_at_birth",
               field_type: "demographic",
               description: "assemblage of properties",
             },
@@ -410,7 +410,7 @@ describe("<Controls />", () => {
     await userEvent.type(input, "Prop");
 
     expect(queryByText("Treatment Type")).toBeInTheDocument();
-    expect(queryByText("Gender")).toBeInTheDocument();
+    expect(queryByText("Sex At Birth")).toBeInTheDocument();
     expect(queryByText("Race")).not.toBeInTheDocument();
   });
 });

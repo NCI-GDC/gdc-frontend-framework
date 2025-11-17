@@ -12,7 +12,7 @@ import CohortBuilderDefaultConfig from "../data/cohort_builder.json";
 
 const defaultState = {
   customFacets: [
-    "demographic.gender",
+    "demographic.sex_at_birth",
     "demographic.race",
     "demographic.ethnicity",
     "diagnoses.age_at_diagnosis",
@@ -22,7 +22,7 @@ const defaultState = {
 
 const alteredConfig = {
   customFacets: [
-    "demographic.gender",
+    "demographic.sex_at_birth",
     "demographic.race",
     "demographic.ethnicity",
     "diagnoses.age_at_diagnosis",
@@ -71,7 +71,7 @@ describe("cohortConfig reducer", () => {
   test("removeFilterFromCohortBuilder action should remove field", () => {
     const expected = {
       customFacets: [
-        "demographic.gender",
+        "demographic.sex_at_birth",
         "demographic.race",
         "demographic.ethnicity",
         "diagnoses.age_at_diagnosis",
@@ -153,7 +153,7 @@ describe("cohortConfig reducer", () => {
       "cases.primary_site",
       "cases.diagnoses.tissue_or_organ_of_origin",
       "cases.upload.case_id",
-      "cases.demographic.gender",
+      "cases.demographic.sex_at_birth",
       "cases.demographic.race",
       "cases.demographic.ethnicity",
       "cases.diagnoses.age_at_diagnosis",

@@ -15,13 +15,13 @@ describe("<CategoricalBinningModal />", () => {
       <CategoricalBinningModal
         opened
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"Sex At Birth"}
         results={{}}
         customBins={null}
         updateBins={jest.fn()}
       />,
     );
-    expect(getByText("Create Custom Bins: Gender")).toBeInTheDocument();
+    expect(getByText("Create Custom Bins: Sex At Birth")).toBeInTheDocument();
   });
 
   it("shows results if no existing custom bins", () => {
@@ -29,7 +29,7 @@ describe("<CategoricalBinningModal />", () => {
       <CategoricalBinningModal
         opened
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"Sex At Birth"}
         results={{ female: 10, male: 90 }}
         customBins={null}
         updateBins={jest.fn()}
@@ -45,7 +45,7 @@ describe("<CategoricalBinningModal />", () => {
       <CategoricalBinningModal
         opened
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"Sex At Birth"}
         results={{ female: 10, male: 90, missing: 200 }}
         customBins={{ "custom bin": { female: 10, male: 100 } }}
         updateBins={jest.fn()}
@@ -70,7 +70,7 @@ describe("<CategoricalBinningModal />", () => {
       <CategoricalBinningModal
         opened
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"Sex At Birth"}
         results={{ female: 10, male: 90 }}
         customBins={null}
         updateBins={jest.fn()}
@@ -115,7 +115,7 @@ describe("<CategoricalBinningModal />", () => {
       <CategoricalBinningModal
         opened
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"Sex At Birth"}
         results={{ female: 10, male: 90 }}
         customBins={null}
         updateBins={jest.fn()}
@@ -144,7 +144,7 @@ describe("<CategoricalBinningModal />", () => {
       <CategoricalBinningModal
         opened
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"Sex At Birth"}
         results={{ female: 10, male: 90, missing: 20 }}
         customBins={null}
         updateBins={jest.fn()}
@@ -169,7 +169,7 @@ describe("<CategoricalBinningModal />", () => {
       <CategoricalBinningModal
         opened
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"Sex At Birth"}
         results={{ female: 10, male: 90, missing: 20 }}
         customBins={null}
         updateBins={jest.fn()}
@@ -195,7 +195,7 @@ describe("<CategoricalBinningModal />", () => {
       <CategoricalBinningModal
         opened
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"Sex At Birth"}
         results={{ female: 10, male: 90, missing: 20 }}
         customBins={null}
         updateBins={jest.fn()}
@@ -216,7 +216,7 @@ describe("<CategoricalBinningModal />", () => {
       <CategoricalBinningModal
         opened
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"Sex At Birth"}
         results={{ female: 10, male: 90, missing: 20 }}
         customBins={null}
         updateBins={jest.fn()}
@@ -242,7 +242,7 @@ describe("<CategoricalBinningModal />", () => {
       <CategoricalBinningModal
         opened
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"Sex At Birth"}
         results={{ female: 10, male: 90, missing: 20 }}
         customBins={null}
         updateBins={jest.fn()}
@@ -265,7 +265,7 @@ describe("<CategoricalBinningModal />", () => {
       <CategoricalBinningModal
         opened
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"Sex At Birth"}
         results={{ female: 10, male: 90, missing: 20 }}
         customBins={null}
         updateBins={jest.fn()}
@@ -285,7 +285,7 @@ describe("<CategoricalBinningModal />", () => {
       <CategoricalBinningModal
         opened
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"Sex At Birth"}
         results={{ female: 10, male: 90, missing: 20 }}
         customBins={null}
         updateBins={jest.fn()}
@@ -308,7 +308,7 @@ describe("<CategoricalBinningModal />", () => {
       <CategoricalBinningModal
         opened
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"Sex At Birth"}
         results={{ female: 10, male: 90, missing: 20 }}
         customBins={null}
         updateBins={jest.fn()}
@@ -333,7 +333,7 @@ describe("<CategoricalBinningModal />", () => {
       <CategoricalBinningModal
         opened
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"Sex At Birth"}
         results={{ female: 10, male: 90, missing: 20 }}
         customBins={null}
         updateBins={jest.fn()}
@@ -354,7 +354,7 @@ describe("<CategoricalBinningModal />", () => {
       <CategoricalBinningModal
         opened
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"Sex At Birth"}
         results={{ female: 10, male: 90, missing: 20 }}
         customBins={{ female: 10 }}
         updateBins={jest.fn()}
@@ -373,7 +373,7 @@ describe("<CategoricalBinningModal />", () => {
       <CategoricalBinningModal
         opened
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"Sex At Birth"}
         results={{ female: 10, male: 90, missing: 20, other: 10 }}
         customBins={null}
         updateBins={jest.fn()}
@@ -395,7 +395,7 @@ describe("<CategoricalBinningModal />", () => {
       <CategoricalBinningModal
         opened
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"Sex At Birth"}
         results={{ female: 10, male: 90, missing: 20 }}
         customBins={null}
         updateBins={mockSave}
@@ -417,7 +417,7 @@ describe("<CategoricalBinningModal />", () => {
       <CategoricalBinningModal
         opened={true}
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"Sex At Birth"}
         results={{ female: 10, male: 90, missing: 20 }}
         customBins={null}
         updateBins={jest.fn()}
@@ -433,7 +433,7 @@ describe("<CategoricalBinningModal />", () => {
       <CategoricalBinningModal
         opened={false}
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"Sex At Birth"}
         results={{ female: 10, male: 90, missing: 20 }}
         customBins={null}
         updateBins={jest.fn()}
@@ -445,7 +445,7 @@ describe("<CategoricalBinningModal />", () => {
       <CategoricalBinningModal
         opened={true}
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"Sex At Birth"}
         results={{ female: 10, male: 90, missing: 20 }}
         customBins={null}
         updateBins={jest.fn()}
@@ -463,7 +463,7 @@ describe("<CategoricalBinningModal />", () => {
       <CategoricalBinningModal
         opened
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"Sex At Birth"}
         results={{ female: 10, male: 90, missing: 20 }}
         customBins={null}
         updateBins={jest.fn()}
@@ -490,7 +490,7 @@ describe("<CategoricalBinningModal />", () => {
       <CategoricalBinningModal
         opened={true}
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"Sex At Birth"}
         results={{ female: 10, male: 90, missing: 20 }}
         customBins={{ "existing group": { female: 10, male: 90 } }}
         updateBins={jest.fn()}
@@ -509,7 +509,7 @@ describe("<CategoricalBinningModal />", () => {
       <CategoricalBinningModal
         opened={true}
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"Sex At Birth"}
         results={{ female: 10, male: 90, missing: 20 }}
         customBins={null}
         updateBins={jest.fn()}
@@ -532,7 +532,7 @@ describe("<CategoricalBinningModal />", () => {
       <CategoricalBinningModal
         opened={true}
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"Sex At Birth"}
         results={{ female: 10, male: 90, missing: 20 }}
         customBins={customBins}
         updateBins={jest.fn()}
@@ -547,7 +547,7 @@ describe("<CategoricalBinningModal />", () => {
       <CategoricalBinningModal
         opened={false}
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"Sex At Birth"}
         results={{ female: 10, male: 90, missing: 20 }}
         customBins={customBins}
         updateBins={jest.fn()}
@@ -559,7 +559,7 @@ describe("<CategoricalBinningModal />", () => {
       <CategoricalBinningModal
         opened={true}
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"Sex At Birth"}
         results={{ female: 10, male: 90, missing: 20 }}
         customBins={customBins}
         updateBins={jest.fn()}

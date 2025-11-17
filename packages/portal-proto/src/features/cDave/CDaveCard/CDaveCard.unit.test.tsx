@@ -27,7 +27,7 @@ describe("CDaveCard", () => {
     jest.mocked(selectFacetDefinitionByName).mockImplementation(
       () =>
         ({
-          field: "demographic.gender",
+          field: "demographic.sex_at_birth",
           type: "keyword",
         } as any),
     );
@@ -41,7 +41,7 @@ describe("CDaveCard", () => {
     const { getByRole } = render(
       <CDaveCard
         data={data}
-        field={"demographic.gender"}
+        field={"demographic.sex_at_birth"}
         updateFields={jest.fn()}
         initialDashboardRender
         cohortFilters={undefined}
@@ -60,7 +60,7 @@ describe("CDaveCard", () => {
     jest.mocked(selectFacetDefinitionByName).mockImplementation(
       () =>
         ({
-          field: "demographic.gender",
+          field: "demographic.sex_at_birth",
           type: "keyword",
         } as any),
     );
@@ -71,7 +71,7 @@ describe("CDaveCard", () => {
     const { getByText } = render(
       <CDaveCard
         data={data}
-        field={"demographic.gender"}
+        field={"demographic.sex_at_birth"}
         updateFields={jest.fn()}
         initialDashboardRender
         cohortFilters={undefined}
@@ -86,7 +86,7 @@ describe("CDaveCard", () => {
     jest.mocked(selectFacetDefinitionByName).mockImplementation(
       () =>
         ({
-          field: "demographic.gender",
+          field: "demographic.sex_at_birth",
           type: "keyword",
         } as any),
     );
@@ -100,7 +100,7 @@ describe("CDaveCard", () => {
     const { getByRole } = render(
       <CDaveCard
         data={data}
-        field={"demographic.gender"}
+        field={"demographic.sex_at_birth"}
         updateFields={jest.fn()}
         initialDashboardRender
         cohortFilters={undefined}
@@ -119,7 +119,7 @@ describe("CDaveCard", () => {
     jest.mocked(selectFacetDefinitionByName).mockImplementation(
       () =>
         ({
-          field: "demographic.gender",
+          field: "demographic.sex_at_birth",
           type: "keyword",
         } as any),
     );
@@ -133,7 +133,7 @@ describe("CDaveCard", () => {
     const { getAllByRole } = render(
       <CDaveCard
         data={data}
-        field={"demographic.gender"}
+        field={"demographic.sex_at_birth"}
         updateFields={jest.fn()}
         initialDashboardRender
         cohortFilters={undefined}
