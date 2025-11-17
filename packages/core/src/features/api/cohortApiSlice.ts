@@ -17,8 +17,8 @@ export const cohortApiSlice = coreCreateApi({
     getCohortsByContextId: builder.query<
       {
         data: CohortModel[];
-        warnings?: Record<string, string>;
-        errors?: Record<string, string>;
+        warnings?: Record<string, string[]>;
+        errors?: Record<string, string[]>;
       },
       void
     >({
