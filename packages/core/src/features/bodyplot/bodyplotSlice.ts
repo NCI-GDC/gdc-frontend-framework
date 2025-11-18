@@ -24,15 +24,21 @@ export const processData = (casesBuckets: Bucket[]): BodyplotData[] => {
 
   casesBuckets.map((bucket) => {
     const primarySiteGroups = HUMAN_BODY_SITES_MAP[bucket.key];
-    for (const primarySiteGroup of primarySiteGroups) {
-      if (groupedResults[primarySiteGroup]) {
-        groupedResults[primarySiteGroup] = [
-          ...(groupedResults[primarySiteGroup] || []),
-          bucket,
-        ];
-      } else {
-        groupedResults[primarySiteGroup] = [bucket];
+    if (primarySiteGroups) {
+      for (const primarySiteGroup of primarySiteGroups) {
+        if (groupedResults[primarySiteGroup]) {
+          groupedResults[primarySiteGroup] = [
+            ...(groupedResults[primarySiteGroup] || []),
+            bucket,
+          ];
+        } else {
+          groupedResults[primarySiteGroup] = [bucket];
+        }
       }
+    } else {
+      console.warn(
+        `Received primary site '${bucket.key}' but it is missing from from Body Plot mappings`,
+      );
     }
   });
 
