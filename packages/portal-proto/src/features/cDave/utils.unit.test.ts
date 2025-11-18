@@ -13,7 +13,7 @@ describe("filterUsefulFacets", () => {
   it("remove empty bucket fields", () => {
     expect(
       filterUsefulFacets({
-        "demographic.gender": {
+        "demographic.sex_at_birth": {
           buckets: [
             { doc_count: 10, key: "female" },
             { doc_count: 25, key: "male" },
@@ -22,7 +22,7 @@ describe("filterUsefulFacets", () => {
         "demographic.race": { buckets: [{ key: "_missing", doc_count: 35 }] },
       }),
     ).toEqual({
-      "demographic.gender": {
+      "demographic.sex_at_birth": {
         buckets: [
           { doc_count: 10, key: "female" },
           { doc_count: 25, key: "male" },
@@ -90,10 +90,10 @@ describe("toDisplayName", () => {
 
 describe("parseFieldName", () => {
   it("demographic field", () => {
-    expect(parseFieldName("demographic__gender")).toEqual({
-      field_name: "gender",
+    expect(parseFieldName("demographic__sex_at_birth")).toEqual({
+      field_name: "sex_at_birth",
       field_type: "demographic",
-      full: "demographic.gender",
+      full: "demographic.sex_at_birth",
     });
   });
 
