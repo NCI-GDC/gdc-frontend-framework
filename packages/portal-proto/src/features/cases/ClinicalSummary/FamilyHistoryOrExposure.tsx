@@ -27,8 +27,8 @@ export const FamilyHistoryOrExposure = ({
         submitter_id: family_history_id,
         family_history_id: family_history_uuid,
         relationship_age_at_diagnosis,
-        relationship_sex_at_birth,
         relationship_primary_diagnosis,
+        relationship_sex_at_birth,
         relationship_type,
         relative_with_cancer_history,
       } = data;
@@ -37,8 +37,8 @@ export const FamilyHistoryOrExposure = ({
         family_history_id,
         family_history_uuid,
         relationship_age_at_diagnosis,
-        relationship_sex_at_birth,
         relationship_primary_diagnosis,
+        relationship_sex_at_birth,
         relationship_type,
         relative_with_cancer_history,
       };

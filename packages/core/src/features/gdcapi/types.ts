@@ -197,8 +197,8 @@ export interface Diagnoses {
 export interface FamilyHistories {
   readonly family_history_id: string | null;
   readonly relationship_age_at_diagnosis: number | null;
-  readonly relationship_sex_at_birth: string | null;
   readonly relationship_primary_diagnosis: string | null;
+  readonly relationship_sex_at_birth: string | null;
   readonly relationship_type: string | null;
   readonly relative_with_cancer_history: string | null;
   readonly submitter_id: string | null;
