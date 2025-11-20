@@ -323,7 +323,7 @@ export const QueryElement = ({
     >
       <div className="flex flex-row items-center font-heading font-medium text-sm rounded-md border-[1.5px] mr-1 mb-2 border-secondary-darkest w-inherit">
         {(isDeprecated || isNonexistent) && (
-          <div className="flex bg-warningColor h-full p-1 rounded-l-md">
+          <div className="flex bg-warningColor h-full p-1 rounded-l-sm">
             <AlertIcon color="white" className="m-auto" size="1em" />
           </div>
         )}
