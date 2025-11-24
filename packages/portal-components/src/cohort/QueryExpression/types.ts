@@ -2,7 +2,7 @@ import { Cohort } from "../types";
 
 export interface QueryExpressionHooks {
   useSelectCurrentCohort: () => Cohort;
-  useSelectCohortWarnings: (cohortId: string) => CohortWarnings | undefined;
+  useSelectDisplayCohortWarning: (cohortId: string) => boolean;
   useDismissWarning: () => (cohortId: string) => void;
   useClearCohortFilters: () => () => void;
   useRemoveCohortFilter: () => (field: string) => void;
@@ -186,13 +186,3 @@ export type OperandValue =
   | RangeOperandValue
   | SetOperandValue
   | undefined;
-
-interface FieldWarnings {
-  readonly deprecated: string[];
-  readonly nonexistent: string[];
-}
-
-export interface CohortWarnings {
-  readonly bannerDismissed: boolean;
-  readonly warnings: FieldWarnings;
-}

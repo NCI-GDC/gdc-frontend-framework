@@ -71,17 +71,14 @@ export const useSetupInitialCohorts = (): boolean => {
           modified_datetime: data.modified_datetime,
           saved: true,
           modified: false,
-          nonexistentFields: data?.nonexistent_fields,
+          nonexistent_fields: data?.nonexistent_fields,
         };
 
         if (
           !cohortWarnings.includes(cohortData.id) &&
-          cohortData?.nonexistentFields
+          cohortData?.nonexistent_fields
         ) {
-          const warnings = {
-            nonexistent: cohortData?.nonexistentFields,
-          };
-          coreDispatch(addCohortWarning({ cohortId: cohortData.id, warnings }));
+          coreDispatch(addCohortWarning(cohortData.id));
         }
 
         // Override with local changes to cohort if they exist

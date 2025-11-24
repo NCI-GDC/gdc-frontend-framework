@@ -292,7 +292,6 @@ export const QueryElement = ({
   const removeCohortFilter = hooks.useRemoveCohortFilter();
   const fieldNameToTitle = hooks.useFieldNameToTitle();
   const fieldName = fieldNameToTitle(field);
-  const fieldWarnings = hooks.useSelectCohortWarnings(currentCohort.id);
 
   const handleRemoveFilter = () => {
     removeCohortFilter(field);
@@ -304,31 +303,22 @@ export const QueryElement = ({
       });
   };
 
-  const isDeprecated =
-    fieldWarnings?.warnings &&
-    fieldWarnings.warnings?.deprecated?.includes(field);
-  const isNonexistent =
-    fieldWarnings?.warnings &&
-    fieldWarnings.warnings?.nonexistent?.includes(field);
+  const isNonexistent = currentCohort.nonexistent_fields?.includes(field);
 
   return (
     <Tooltip
-      label={
-        isDeprecated
-          ? "Property has been deprecated"
-          : "Property no longer exists"
-      }
-      disabled={!isDeprecated && !isNonexistent}
+      label={"Property no longer exists"}
+      disabled={!isNonexistent}
       withArrow
     >
       <div className="flex flex-row items-center font-heading font-medium text-sm rounded-md border-[1.5px] mr-1 mb-2 border-secondary-darkest w-inherit">
-        {(isDeprecated || isNonexistent) && (
+        {isNonexistent && (
           <div className="flex bg-warningColor h-full p-1 rounded-l-sm">
             <AlertIcon color="white" className="m-auto" size="1em" />
           </div>
         )}
         <QueryContainer>
-          <QueryFieldLabel rounded={!isDeprecated && !isNonexistent}>
+          <QueryFieldLabel rounded={!isNonexistent}>
             {operator === "excludeifany" ? "EXCLUDES IF ANY" : fieldName}
           </QueryFieldLabel>
           {children}

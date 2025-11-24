@@ -7,6 +7,7 @@ export interface Cohort {
   readonly modified?: boolean;
   readonly modified_datetime: string;
   readonly saved?: boolean;
+  readonly nonexistent_fields?: string[];
 }
 
 export type NotificationTypes =

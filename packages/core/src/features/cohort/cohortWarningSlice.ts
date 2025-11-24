@@ -7,16 +7,16 @@ const cohortWarningSlice = createSlice({
   name: "cohortWarning",
   initialState,
   reducers: {
-    addCohortWarning: (state, action: PayloadAction<{ cohortId: string }>) => {
+    addCohortWarning: (state, action: PayloadAction<string>) => {
       return {
         ...state,
-        [action.payload.cohortId]: false,
+        [action.payload]: true,
       };
     },
     dismissWarningBanner: (state, action: PayloadAction<string>) => {
       return {
         ...state,
-        [action.payload]: true,
+        [action.payload]: false,
       };
     },
   },
@@ -25,12 +25,11 @@ const cohortWarningSlice = createSlice({
 export const selectAllCohortsWithWarnings = (state: CoreState): string[] =>
   Object.keys(state.cohort.cohortWarnings);
 
-export const selectCohortWarning = (
+export const selectDisplayCohortWarning = (
   state: CoreState,
   cohortId: string,
 ): boolean | undefined => {
-  const warningState = state.cohort.cohortWarnings?.[cohortId];
-  return warningState;
+  return state.cohort.cohortWarnings?.[cohortId];
 };
 
 export const cohortWarningReducer = cohortWarningSlice.reducer;

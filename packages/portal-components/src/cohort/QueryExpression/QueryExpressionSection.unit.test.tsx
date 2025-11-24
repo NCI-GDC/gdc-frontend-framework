@@ -4,7 +4,7 @@ import QueryExpressionSection from "./QueryExpressionSection";
 
 const hooks = {
   useSelectCurrentCohort: jest.fn().mockReturnValue({}),
-  useSelectCohortWarnings: jest.fn(),
+  useSelectDisplayCohortWarning: jest.fn(),
   useDismissWarning: jest.fn(),
   useClearCohortFilters: jest.fn(),
   useRemoveCohortFilter: jest.fn(),

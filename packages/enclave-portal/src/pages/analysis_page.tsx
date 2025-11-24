@@ -108,7 +108,7 @@ const AnalysisCenter: NextPage = () => {
         hooks={{
           useSelectCurrentCohort: () =>
             cohorts.find((c) => c.id === currentCohort) || cohorts[0],
-          useSelectCohortWarnings: () => undefined,
+          useSelectDisplayCohortWarning: () => false,
           useDismissWarning: () => () => {},
           useClearCohortFilters: () => () => {},
           useRemoveCohortFilter: () => () => {},

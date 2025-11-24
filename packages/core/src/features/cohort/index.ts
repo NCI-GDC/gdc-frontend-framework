@@ -83,7 +83,7 @@ import {
   addCohortWarning,
   dismissWarningBanner,
   selectAllCohortsWithWarnings,
-  selectCohortWarning,
+  selectDisplayCohortWarning,
 } from "./cohortWarningSlice";
 
 export {
@@ -159,5 +159,5 @@ export {
   addCohortWarning,
   dismissWarningBanner,
   selectAllCohortsWithWarnings,
-  selectCohortWarning,
+  selectDisplayCohortWarning,
 };

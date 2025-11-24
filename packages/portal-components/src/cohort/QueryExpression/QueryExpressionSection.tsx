@@ -109,7 +109,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
 
   const currentCohort = hooks.useSelectCurrentCohort();
   const clearCohortFilters = hooks.useClearCohortFilters();
-  const warnings = hooks.useSelectCohortWarnings(currentCohort?.id);
+  const displayWarning = hooks.useSelectDisplayCohortWarning(currentCohort?.id);
   const dismissWarning = hooks.useDismissWarning();
   const dismissBanner = useCallback(() => {
     dismissWarning(currentCohort.id);
@@ -269,7 +269,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                 </>
               </div>
               <div>
-                {warnings && !warnings?.bannerDismissed ? (
+                {displayWarning ? (
                   <WarningBanner
                     text={warningText}
                     dismissBanner={dismissBanner}

@@ -13,7 +13,7 @@ import {
   useLazyGeneSetCountQuery,
   useLazySsmSetCountQuery,
   useLazyCaseSetCountQuery,
-  selectCohortWarning,
+  selectDisplayCohortWarning,
   Operation,
   dismissWarningBanner,
 } from "@gff/core";
@@ -129,8 +129,10 @@ export const useFormatValue = () => {
   return formatValue;
 };
 
-const useSelectCohortWarnings = (cohortId: string) => {
-  return useCoreSelector((state) => selectCohortWarning(state, cohortId));
+const useSelectDisplayCohortWarning = (cohortId: string) => {
+  return useCoreSelector((state) =>
+    selectDisplayCohortWarning(state, cohortId),
+  );
 };
 
 const useDismissWarning = () => {
@@ -146,7 +148,7 @@ const useDismissWarning = () => {
 
 const queryExpressionHooks = {
   useSelectCurrentCohort,
-  useSelectCohortWarnings,
+  useSelectDisplayCohortWarning,
   useDismissWarning,
   useClearCohortFilters,
   useRemoveCohortFilter,
