@@ -1,9 +1,9 @@
-FROM mcr.microsoft.com/playwright:v1.23.1-focal
+FROM mcr.microsoft.com/playwright:v1.39.0-focal
 
 RUN apt-get update && apt-get install -y \
-    python3.9 \
+    python3.12 \
     python3-pip \
-    python3.9-dev \
+    python3.12-dev \
     python3-tk \
     scrot \
     unzip \
@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN ln -fs /usr/bin/python3.9 /usr/bin/python3
+RUN ln -fs /usr/bin/python3.12 /usr/bin/python3
 
 RUN curl -SsL https://downloads.gauge.org/stable | sh
 
@@ -28,7 +28,7 @@ COPY . /app
 
 RUN pip install -r /app/docker-requirements.txt
 
-RUN npm install -g --force playwright@1.23.1 && \
+RUN npm install -g --force playwright@1.39.0 && \
     playwright install --with-deps
 
 RUN gauge install python --version 0.4.9
