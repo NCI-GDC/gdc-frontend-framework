@@ -1,38 +1,22 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CoreState } from "src/reducers";
 
-interface CohortWarnings {
-  readonly deprecated: string[];
-  readonly nonexistent: string[];
-}
-
-export interface CohortWarningState {
-  readonly warnings: CohortWarnings;
-  readonly bannerDismissed: boolean;
-}
-
-const initialState: Record<string, CohortWarningState> = {};
+const initialState: Record<string, boolean> = {};
 
 const cohortWarningSlice = createSlice({
   name: "cohortWarning",
   initialState,
   reducers: {
-    addCohortWarning: (
-      state,
-      action: PayloadAction<{ cohortId: string; warnings: CohortWarnings }>,
-    ) => {
+    addCohortWarning: (state, action: PayloadAction<{ cohortId: string }>) => {
       return {
         ...state,
-        [action.payload.cohortId]: {
-          bannerDismissed: false,
-          warnings: action.payload.warnings,
-        },
+        [action.payload.cohortId]: false,
       };
     },
     dismissWarningBanner: (state, action: PayloadAction<string>) => {
       return {
         ...state,
-        [action.payload]: { ...state[action.payload], bannerDismissed: true },
+        [action.payload]: true,
       };
     },
   },
@@ -44,7 +28,7 @@ export const selectAllCohortsWithWarnings = (state: CoreState): string[] =>
 export const selectCohortWarning = (
   state: CoreState,
   cohortId: string,
-): CohortWarningState | undefined => {
+): boolean | undefined => {
   const warningState = state.cohort.cohortWarnings?.[cohortId];
   return warningState;
 };

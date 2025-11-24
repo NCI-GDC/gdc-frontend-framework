@@ -38,7 +38,7 @@ import { FacetQueryOptions } from "../facets/types";
 export const useSetupInitialCohorts = (): boolean => {
   const [fetched, setFetched] = useState(false);
   const {
-    data: cohortsData,
+    data: cohortsListData,
     isSuccess,
     isError,
   } = useGetCohortsByContextIdQuery(null, { skip: fetched });
@@ -49,14 +49,14 @@ export const useSetupInitialCohorts = (): boolean => {
     selectAllCohortsWithWarnings(state),
   );
 
-  const updatedCohortIds = (cohortsData?.data || []).map((cohort) => cohort.id);
+  const updatedCohortIds = (cohortsListData || []).map((cohort) => cohort.id);
   const outdatedCohortsIds = cohorts
     .filter((c) => c.saved && !updatedCohortIds.includes(c.id))
     .map((c) => c.id);
 
   useDeepCompareEffect(() => {
     if ((isSuccess || isError) && !fetched) {
-      const updatedList: Cohort[] = (cohortsData?.data || []).map((data) => {
+      const updatedList: Cohort[] = (cohortsListData || []).map((data) => {
         const existingCohort = cohorts.find((c) => c.id === data.id);
         const cohortData = {
           id: data.id,
@@ -71,17 +71,14 @@ export const useSetupInitialCohorts = (): boolean => {
           modified_datetime: data.modified_datetime,
           saved: true,
           modified: false,
-          deprecatedFields: cohortsData?.warnings?.[data.id],
-          nonexistentFields: cohortsData?.errors?.[data.id],
+          nonexistentFields: data?.nonexistent_fields,
         };
 
         if (
-          (!cohortWarnings.includes(cohortData.id) &&
-            cohortData?.deprecatedFields) ||
+          !cohortWarnings.includes(cohortData.id) &&
           cohortData?.nonexistentFields
         ) {
           const warnings = {
-            deprecated: cohortData?.deprecatedFields,
             nonexistent: cohortData?.nonexistentFields,
           };
           coreDispatch(addCohortWarning({ cohortId: cohortData.id, warnings }));
@@ -102,7 +99,7 @@ export const useSetupInitialCohorts = (): boolean => {
       setFetched(true);
     }
   }, [
-    cohortsData,
+    cohortsListData,
     isSuccess,
     isError,
     cohorts,
