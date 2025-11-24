@@ -110,6 +110,11 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
   const currentCohort = hooks.useSelectCurrentCohort();
   const clearCohortFilters = hooks.useClearCohortFilters();
   const displayWarning = hooks.useSelectDisplayCohortWarning(currentCohort?.id);
+  // Since we can locally modify filters, check if any of the warning fields are in the current filters
+  const fieldsInFilters = Object.keys(filters?.root || {});
+  const isWarningFieldInFilters = (currentCohort.nonexistent_fields || []).some(
+    (field) => fieldsInFilters.includes(field),
+  );
   const dismissWarning = hooks.useDismissWarning();
   const dismissBanner = useCallback(() => {
     dismissWarning(currentCohort.id);
@@ -269,7 +274,7 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                 </>
               </div>
               <div>
-                {displayWarning ? (
+                {displayWarning && isWarningFieldInFilters ? (
                   <WarningBanner
                     text={warningText}
                     dismissBanner={dismissBanner}

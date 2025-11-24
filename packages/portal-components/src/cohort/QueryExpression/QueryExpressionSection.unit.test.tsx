@@ -3,7 +3,9 @@ import { render, waitFor } from "@testing-library/react";
 import QueryExpressionSection from "./QueryExpressionSection";
 
 const hooks = {
-  useSelectCurrentCohort: jest.fn().mockReturnValue({}),
+  useSelectCurrentCohort: jest
+    .fn()
+    .mockReturnValue({ nonexistent_fields: ["cases.primary_site"] }),
   useSelectDisplayCohortWarning: jest.fn(),
   useDismissWarning: jest.fn(),
   useClearCohortFilters: jest.fn(),
@@ -94,9 +96,7 @@ describe("<QueryExpressionSection />", () => {
 
     const hooksWithWarning = {
       ...hooks,
-      useSelectCohortWarnings: jest
-        .fn()
-        .mockReturnValue({ bannerDismissed: false }),
+      useSelectDisplayCohortWarning: jest.fn().mockReturnValue(true),
     };
 
     rerender(
@@ -122,9 +122,7 @@ describe("<QueryExpressionSection />", () => {
   it("Hide dismissed warning banner", () => {
     const hooksWithWarning = {
       ...hooks,
-      useSelectCohortWarnings: jest
-        .fn()
-        .mockReturnValue({ bannerDismissed: true }),
+      useSelectDisplayCohortWarning: jest.fn().mockReturnValue(false),
     };
 
     const { queryByText } = render(
@@ -135,6 +133,32 @@ describe("<QueryExpressionSection />", () => {
             "cases.primary_site": {
               field: "cases.primary_site",
               operands: ["pancreas"],
+              operator: "includes",
+            },
+          },
+        }}
+        hooks={hooksWithWarning}
+        warningText="oh no!"
+      />,
+    );
+
+    expect(queryByText("oh no!")).not.toBeInTheDocument();
+  });
+
+  it("Hide banner if warning fields are not in filters", () => {
+    const hooksWithWarning = {
+      ...hooks,
+      useSelectDisplayCohortWarning: jest.fn().mockReturnValue(true),
+    };
+
+    const { queryByText } = render(
+      <QueryExpressionSection
+        filters={{
+          mode: "and",
+          root: {
+            "cases.project.program.name": {
+              field: "cases.project.program.name",
+              operands: ["APOLLO"],
               operator: "includes",
             },
           },
