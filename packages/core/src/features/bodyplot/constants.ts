@@ -353,7 +353,7 @@ export const HUMAN_BODY_MAPPINGS: BodyPlotData = {
     ],
   },
   "Not Reported": {
-    byPrimarySite: ["Not Reported", "unknown"],
+    byPrimarySite: ["Not Reported", "unknown", "Not Applicable"],
     byTissueOrOrganOfOrigin: ["Not Reported", "unknown"],
   },
   "Other and Ill-defined Sites": {

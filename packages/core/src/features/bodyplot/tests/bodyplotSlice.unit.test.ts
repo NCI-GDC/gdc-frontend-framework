@@ -15,6 +15,19 @@ describe("test processData for Bodyplot response", () => {
   });
 });
 
+describe("test that unknown primary site gives a warning", () => {
+  test("warning", () => {
+    const warnSpy = jest.spyOn(console, "warn");
+    const unmappedPrimarySiteData = [{ key: "not mapped", doc_count: 100 }];
+
+    const results = processData(unmappedPrimarySiteData);
+    expect(results).toEqual([]);
+    expect(warnSpy).toHaveBeenCalledWith(
+      "Received primary site 'not mapped' but it is missing from from Body Plot mappings",
+    );
+  });
+});
+
 describe("test indexing human body mapper", () => {
   test("indexing human body mapper byPrimarySite", () => {
     expect(HUMAN_BODY_MAPPER("byPrimarySite")).toEqual({
@@ -53,6 +66,7 @@ describe("test indexing human body mapper", () => {
       "nasal cavity and middle ear": ["Head and Neck"],
       nasopharynx: ["Head and Neck"],
       "not reported": ["Not Reported"],
+      "not applicable": ["Not Reported"],
       oropharynx: ["Head and Neck"],
       "other and ill-defined digestive organs": ["Other and Ill-defined Sites"],
       "other and ill-defined sites": ["Other and Ill-defined Sites"],
