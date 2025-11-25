@@ -1,9 +1,10 @@
-FROM mcr.microsoft.com/playwright:v1.39.0-focal
+ARG BASE_CONTAINER_VERSION=3.0.6
+ARG BASE_CONTAINER_REGISTRY=docker.osdc.io/ncigdc
+
+FROM ${BASE_CONTAINER_REGISTRY}/python3.12-builder:${BASE_CONTAINER_VERSION}
 
 RUN apt-get update && apt-get install -y \
-    python3.12 \
     python3-pip \
-    python3.12-dev \
     python3-tk \
     scrot \
     unzip \
