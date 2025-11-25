@@ -33,7 +33,7 @@ export type casesTableDataType = {
   age_at_diagnosis: string;
   vital_status: string;
   days_to_death: string;
-  gender: string;
+  sex_at_birth: string;
   race: string;
   ethnicity: string;
   slide_count: number;
@@ -275,9 +275,9 @@ export const useGenerateCasesTableColumns = ({
         id: "days_to_death",
         header: "Days To Death",
       }),
-      casesDataColumnHelper.accessor("gender", {
-        id: "gender",
-        header: "Gender",
+      casesDataColumnHelper.accessor("sex_at_birth", {
+        id: "sex_at_birth",
+        header: "Sex At Birth",
       }),
       casesDataColumnHelper.accessor("race", {
         id: "race",

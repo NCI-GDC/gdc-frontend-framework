@@ -19,7 +19,7 @@
     "demographic": {
       "label": "Demographic",
       "facets": [
-        "cases.demographic.gender",
+        "cases.demographic.sex_at_birth",
         "cases.demographic.race",
         "cases.demographic.ethnicity",
         "cases.diagnoses.age_at_diagnosis",

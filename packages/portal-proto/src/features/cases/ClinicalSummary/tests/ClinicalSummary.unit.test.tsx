@@ -10,7 +10,7 @@ import { Demographic } from "@gff/core";
 
 const demographic = {
   race: "asian",
-  gender: "male",
+  sex_at_birth: "male",
   ethnicity: "not hispanic or latino",
   vital_status: "Alive",
   demographic_id: "8479a889-1f10-4b8b-b97f-6fb63c046779",

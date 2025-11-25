@@ -137,8 +137,8 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
         </h2>
         <p className="font-content pb-2">
           Display the survival analysis of your cohorts and compare
-          characteristics such as gender, vital status and age at diagnosis.
-          Create cohorts in the Analysis Center.
+          characteristics such as sex at birth, vital status and age at
+          diagnosis. Create cohorts in the Analysis Center.
         </p>
         <VerticalTable
           data={displayedData}

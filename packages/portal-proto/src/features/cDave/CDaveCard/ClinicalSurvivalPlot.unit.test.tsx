@@ -41,7 +41,7 @@ describe("ClinicalSurvivalPlot", () => {
   it("creates filters for categorical data", () => {
     render(
       <ClinicalSurvivalPlot
-        field={"demographic.gender"}
+        field={"demographic.sex_at_birth"}
         continuous={false}
         customBinnedData={null}
         selectedSurvivalPlots={["male", "female"]}
@@ -56,7 +56,7 @@ describe("ClinicalSurvivalPlot", () => {
             {
               op: "=",
               content: {
-                field: "demographic.gender",
+                field: "demographic.sex_at_birth",
                 value: "male",
               },
             },
@@ -68,7 +68,7 @@ describe("ClinicalSurvivalPlot", () => {
             {
               op: "=",
               content: {
-                field: "demographic.gender",
+                field: "demographic.sex_at_birth",
                 value: "female",
               },
             },
@@ -96,7 +96,7 @@ describe("ClinicalSurvivalPlot", () => {
 
     render(
       <ClinicalSurvivalPlot
-        field={"demographic.gender"}
+        field={"demographic.sex_at_birth"}
         continuous={false}
         customBinnedData={null}
         selectedSurvivalPlots={["male", "female"]}
@@ -123,7 +123,7 @@ describe("ClinicalSurvivalPlot", () => {
             {
               op: "=",
               content: {
-                field: "demographic.gender",
+                field: "demographic.sex_at_birth",
                 value: "male",
               },
             },
@@ -147,7 +147,7 @@ describe("ClinicalSurvivalPlot", () => {
             {
               op: "=",
               content: {
-                field: "demographic.gender",
+                field: "demographic.sex_at_birth",
                 value: "female",
               },
             },
@@ -168,7 +168,7 @@ describe("ClinicalSurvivalPlot", () => {
 
     render(
       <ClinicalSurvivalPlot
-        field={"demographic.gender"}
+        field={"demographic.sex_at_birth"}
         continuous={false}
         customBinnedData={null}
         selectedSurvivalPlots={["male", "female"]}
@@ -195,7 +195,7 @@ describe("ClinicalSurvivalPlot", () => {
             {
               op: "=",
               content: {
-                field: "demographic.gender",
+                field: "demographic.sex_at_birth",
                 value: "male",
               },
             },
@@ -219,7 +219,7 @@ describe("ClinicalSurvivalPlot", () => {
             {
               op: "=",
               content: {
-                field: "demographic.gender",
+                field: "demographic.sex_at_birth",
                 value: "female",
               },
             },
@@ -232,7 +232,7 @@ describe("ClinicalSurvivalPlot", () => {
   it("creates filters for custom binned data", () => {
     render(
       <ClinicalSurvivalPlot
-        field={"demographic.gender"}
+        field={"demographic.sex_at_birth"}
         continuous={false}
         customBinnedData={{ bucket1: { male: 20, female: 80 }, missing: 100 }}
         selectedSurvivalPlots={["bucket1", "missing"]}
@@ -247,7 +247,7 @@ describe("ClinicalSurvivalPlot", () => {
             {
               op: "=",
               content: {
-                field: "demographic.gender",
+                field: "demographic.sex_at_birth",
                 value: ["male", "female"],
               },
             },
@@ -259,7 +259,7 @@ describe("ClinicalSurvivalPlot", () => {
             {
               op: "=",
               content: {
-                field: "demographic.gender",
+                field: "demographic.sex_at_birth",
                 value: "missing",
               },
             },

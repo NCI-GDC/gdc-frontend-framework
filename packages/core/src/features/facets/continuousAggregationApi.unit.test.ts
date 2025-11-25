@@ -177,7 +177,7 @@ describe("continuous range slice tests", () => {
           {
             op: "in",
             content: {
-              field: "cases.demographic.gender",
+              field: "cases.demographic.sex_at_birth",
               value: ["female"],
             },
           },
@@ -215,7 +215,7 @@ describe("continuous range slice tests", () => {
     expect(spyFetch).toHaveBeenCalledWith(
       "https://portal.gdc.cancer.gov/auth/api/v0/graphql",
       {
-        body: '{"query":"\\n  query ContinuousAggregationQuery($caseFilters: FiltersArgument, $filters: FiltersArgument, $filters2: FiltersArgument) {\\n  viewer {\\n    explore {\\n      cases {\\n        aggregations(case_filters: $caseFilters, filters: $filters) {\\n          diagnoses__age_at_diagnosis : diagnoses__age_at_diagnosis {\\n           stats {\\n                Min : min\\n                Max: max\\n                Mean: avg\\n                SD: std_deviation\\n                count\\n            }\\n            range(ranges: $filters2) {\\n              buckets {\\n                doc_count\\n                key\\n              }\\n            }\\n          }\\n        }\\n      }\\n    }\\n  }\\n}\\n","variables":{"caseFilters":{"op":"and","content":[{"op":"in","content":{"field":"cases.demographic.gender","value":["female"]}}]},"filters":{},"filters2":{"op":"range","content":[{"ranges":[{"from":0,"to":6574.4},{"from":6574.4,"to":13148.8},{"from":13148.8,"to":19723.199999999997},{"from":19723.199999999997,"to":26297.6},{"from":26297.6,"to":32873}]}]}}}',
+        body: '{"query":"\\n  query ContinuousAggregationQuery($caseFilters: FiltersArgument, $filters: FiltersArgument, $filters2: FiltersArgument) {\\n  viewer {\\n    explore {\\n      cases {\\n        aggregations(case_filters: $caseFilters, filters: $filters) {\\n          diagnoses__age_at_diagnosis : diagnoses__age_at_diagnosis {\\n           stats {\\n                Min : min\\n                Max: max\\n                Mean: avg\\n                SD: std_deviation\\n                count\\n            }\\n            range(ranges: $filters2) {\\n              buckets {\\n                doc_count\\n                key\\n              }\\n            }\\n          }\\n        }\\n      }\\n    }\\n  }\\n}\\n","variables":{"caseFilters":{"op":"and","content":[{"op":"in","content":{"field":"cases.demographic.sex_at_birth","value":["female"]}}]},"filters":{},"filters2":{"op":"range","content":[{"ranges":[{"from":0,"to":6574.4},{"from":6574.4,"to":13148.8},{"from":13148.8,"to":19723.199999999997},{"from":19723.199999999997,"to":26297.6},{"from":26297.6,"to":32873}]}]}}}',
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -241,7 +241,7 @@ describe("continuous range slice tests", () => {
           {
             op: "in",
             content: {
-              field: "cases.demographic.gender",
+              field: "cases.demographic.sex_at_birth",
               value: ["female"],
             },
           },

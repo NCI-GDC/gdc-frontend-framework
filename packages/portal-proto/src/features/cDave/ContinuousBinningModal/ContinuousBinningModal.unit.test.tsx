@@ -67,7 +67,7 @@ describe("<ContinuousBinningModal />", () => {
       <ContinuousBinningModal
         opened
         setModalOpen={jest.fn()}
-        field={"Gender"}
+        field={"Sex At Birth"}
         stats={{ min: 0, max: 1 } as Statistics}
         updateBins={jest.fn()}
         customBins={{ interval: 5, min: 0, max: 10 }}
