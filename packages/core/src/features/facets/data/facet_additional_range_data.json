@@ -256,7 +256,7 @@
   },
   "exposures.age_at_onset": {
     "minimum": 0,
-    "maximum": 89
+    "maximum": 32507
   },
   "exposures.alcohol_days_per_week": {
     "minimum": 0,
