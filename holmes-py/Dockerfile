@@ -9,8 +9,7 @@ COPY . /app
 
 RUN pip install -r /app/docker-requirements.txt
 
-RUN npm install -g --force playwright@1.53.0 && \
-    playwright install --with-deps
+RUN playwright install
 
 RUN gauge install python --version 0.4.9
 RUN gauge install screenshot
