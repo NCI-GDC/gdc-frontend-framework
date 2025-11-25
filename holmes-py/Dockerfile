@@ -11,7 +11,6 @@ COPY . /app
 
 RUN pip install -r /app/docker-requirements.txt
 
-RUN playwright install-deps
 RUN playwright install
 
 RUN gauge install python --version 0.4.9
