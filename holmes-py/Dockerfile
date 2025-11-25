@@ -3,7 +3,21 @@ ARG BASE_CONTAINER_REGISTRY=docker.osdc.io/ncigdc
 
 FROM ${BASE_CONTAINER_REGISTRY}/python3.12-builder:${BASE_CONTAINER_VERSION}
 
-RUN ln -fs /usr/bin/python3.12 /usr/bin/python3
+RUN apk update && apk add \
+    libnss3 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libxkbcommon0 \
+    libatspi2.0-0\
+    libxcomposite1\
+    libxdamage1\
+    libxfixes3\
+    libxrandr2\
+    libgbm1\
+    libasound2\
+
+
+RUN ln -fs /usr/bin/python3.12-builder /usr/bin/python3
 
 RUN curl -SsL https://downloads.gauge.org/stable | sh
 
