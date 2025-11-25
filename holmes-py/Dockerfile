@@ -3,6 +3,8 @@ ARG BASE_CONTAINER_REGISTRY=docker.osdc.io/ncigdc
 
 FROM ${BASE_CONTAINER_REGISTRY}/python3.12-builder:${BASE_CONTAINER_VERSION}
 
+RUN ln -fs /usr/bin/python3.12 /usr/bin/python3
+
 RUN curl -SsL https://downloads.gauge.org/stable | sh
 
 COPY . /app
