@@ -1,0 +1,3556 @@
+{
+  "demographic.age_at_index": {
+    "facet_filter": "demographic.age_at_index",
+    "facet_type": "years",
+    "label": "Age at Index",
+    "oneOf": {
+      "type": "integer",
+      "maximum": 32507,
+      "minimum": 0
+    },
+    "minimum": 0,
+    "maximum": 32507,
+    "property_type": "integer"
+  },
+  "demographic.age_is_obfuscated": {
+    "facet_filter": "demographic.age_is_obfuscated",
+    "facet_type": "boolean",
+    "label": "Age Is Obfuscated",
+    "property_type": "boolean"
+  },
+  "demographic.days_to_birth": {
+    "facet_filter": "demographic.days_to_birth",
+    "facet_type": "days",
+    "label": "Days To Birth",
+    "minimum": -32872,
+    "maximum": 0,
+    "property_type": "integer"
+  },
+  "demographic.days_to_death": {
+    "facet_filter": "demographic.days_to_death",
+    "facet_type": "days",
+    "label": "Days To Death",
+    "minimum": -32872,
+    "maximum": 32872,
+    "property_type": "integer"
+  },
+  "demographic.occupation_duration_years": {
+    "facet_filter": "demographic.occupation_duration_years",
+    "facet_type": "integer",
+    "label": "Occupation Duration Years",
+    "minimum": 0,
+    "maximum": 89,
+    "property_type": "integer"
+  },
+  "demographic.weeks_gestation_at_birth": {
+    "facet_filter": "demographic.weeks_gestation_at_birth",
+    "facet_type": "number",
+    "label": "Weeks Gestation at Birth",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "demographic.year_of_birth": {
+    "facet_filter": "demographic.year_of_birth",
+    "facet_type": "year",
+    "label": "Year of Birth",
+    "oneOf": {
+      "type": "integer",
+      "minimum": 1900
+    },
+    "minimum": 1900,
+    "property_type": "integer"
+  },
+  "demographic.year_of_death": {
+    "facet_filter": "demographic.year_of_death",
+    "facet_type": "year",
+    "label": "Year of Death",
+    "minimum": 1900,
+    "property_type": "integer"
+  },
+  "demographic.type": {
+    "facet_filter": "demographic.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "demographic.id": {
+    "facet_filter": "demographic.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "demographic.submitter_id": {
+    "facet_filter": "demographic.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "demographic.batch_id": {
+    "facet_filter": "demographic.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "demographic.project_id": {
+    "facet_filter": "demographic.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "portions.creation_datetime": {
+    "facet_filter": "portions.creation_datetime",
+    "facet_type": "number",
+    "label": "Creation Datetime",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "portions.is_ffpe": {
+    "facet_filter": "portions.is_ffpe",
+    "facet_type": "boolean",
+    "label": "Is Ffpe",
+    "property_type": "boolean"
+  },
+  "portions.portion_number": {
+    "facet_filter": "portions.portion_number",
+    "facet_type": "string",
+    "label": "Portion Number",
+    "property_type": "string"
+  },
+  "portions.weight": {
+    "facet_filter": "portions.weight",
+    "facet_type": "number",
+    "label": "Weight",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "portions.type": {
+    "facet_filter": "portions.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "portions.id": {
+    "facet_filter": "portions.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "portions.submitter_id": {
+    "facet_filter": "portions.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "portions.batch_id": {
+    "facet_filter": "portions.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "portions.project_id": {
+    "facet_filter": "portions.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "samples.portions.analytes.aliquots.aliquot_quantity": {
+    "facet_filter": "samples.portions.analytes.aliquots.aliquot_quantity",
+    "facet_type": "number",
+    "label": "Aliquot Quantity",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "samples.portions.analytes.aliquots.aliquot_volume": {
+    "facet_filter": "samples.portions.analytes.aliquots.aliquot_volume",
+    "facet_type": "number",
+    "label": "Aliquot Volume",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "samples.portions.analytes.aliquots.amount": {
+    "facet_filter": "samples.portions.analytes.aliquots.amount",
+    "facet_type": "number",
+    "label": "Amount",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "samples.portions.analytes.aliquots.concentration": {
+    "facet_filter": "samples.portions.analytes.aliquots.concentration",
+    "facet_type": "number",
+    "label": "Concentration",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "samples.portions.analytes.aliquots.no_matched_normal_low_pass_wgs": {
+    "facet_filter": "samples.portions.analytes.aliquots.no_matched_normal_low_pass_wgs",
+    "facet_type": "boolean",
+    "label": "No Matched Normal Low Pass Wgs",
+    "property_type": "boolean"
+  },
+  "samples.portions.analytes.aliquots.no_matched_normal_targeted_sequencing": {
+    "facet_filter": "samples.portions.analytes.aliquots.no_matched_normal_targeted_sequencing",
+    "facet_type": "boolean",
+    "label": "No Matched Normal Targeted Sequencing",
+    "property_type": "boolean"
+  },
+  "samples.portions.analytes.aliquots.no_matched_normal_wgs": {
+    "facet_filter": "samples.portions.analytes.aliquots.no_matched_normal_wgs",
+    "facet_type": "boolean",
+    "label": "No Matched Normal Wgs",
+    "property_type": "boolean"
+  },
+  "samples.portions.analytes.aliquots.no_matched_normal_wxs": {
+    "facet_filter": "samples.portions.analytes.aliquots.no_matched_normal_wxs",
+    "facet_type": "boolean",
+    "label": "No Matched Normal Wxs",
+    "property_type": "boolean"
+  },
+  "samples.portions.analytes.aliquots.source_center": {
+    "facet_filter": "samples.portions.analytes.aliquots.source_center",
+    "facet_type": "string",
+    "label": "Source Center",
+    "property_type": "string"
+  },
+  "samples.portions.analytes.aliquots.selected_normal_wxs": {
+    "facet_filter": "samples.portions.analytes.aliquots.selected_normal_wxs",
+    "facet_type": "boolean",
+    "label": "Selected Normal Wxs",
+    "property_type": "boolean"
+  },
+  "samples.portions.analytes.aliquots.selected_normal_wgs": {
+    "facet_filter": "samples.portions.analytes.aliquots.selected_normal_wgs",
+    "facet_type": "boolean",
+    "label": "Selected Normal Wgs",
+    "property_type": "boolean"
+  },
+  "samples.portions.analytes.aliquots.selected_normal_targeted_sequencing": {
+    "facet_filter": "samples.portions.analytes.aliquots.selected_normal_targeted_sequencing",
+    "facet_type": "boolean",
+    "label": "Selected Normal Targeted Sequencing",
+    "property_type": "boolean"
+  },
+  "samples.portions.analytes.aliquots.selected_normal_low_pass_wgs": {
+    "facet_filter": "samples.portions.analytes.aliquots.selected_normal_low_pass_wgs",
+    "facet_type": "boolean",
+    "label": "Selected Normal Low Pass Wgs",
+    "property_type": "boolean"
+  },
+  "samples.portions.analytes.aliquots.type": {
+    "facet_filter": "samples.portions.analytes.aliquots.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "samples.portions.analytes.aliquots.id": {
+    "facet_filter": "samples.portions.analytes.aliquots.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "samples.portions.analytes.aliquots.submitter_id": {
+    "facet_filter": "samples.portions.analytes.aliquots.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "samples.portions.analytes.aliquots.batch_id": {
+    "facet_filter": "samples.portions.analytes.aliquots.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "samples.portions.analytes.aliquots.project_id": {
+    "facet_filter": "samples.portions.analytes.aliquots.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "submitted_unaligned_reads.file_name": {
+    "facet_filter": "submitted_unaligned_reads.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "submitted_unaligned_reads.file_size": {
+    "facet_filter": "submitted_unaligned_reads.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "submitted_unaligned_reads.md5sum": {
+    "facet_filter": "submitted_unaligned_reads.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "submitted_unaligned_reads.state_comment": {
+    "facet_filter": "submitted_unaligned_reads.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "submitted_unaligned_reads.type": {
+    "facet_filter": "submitted_unaligned_reads.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "submitted_unaligned_reads.id": {
+    "facet_filter": "submitted_unaligned_reads.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "submitted_unaligned_reads.submitter_id": {
+    "facet_filter": "submitted_unaligned_reads.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "submitted_unaligned_reads.batch_id": {
+    "facet_filter": "submitted_unaligned_reads.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "submitted_unaligned_reads.project_id": {
+    "facet_filter": "submitted_unaligned_reads.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "mirna_expression.file_name": {
+    "facet_filter": "mirna_expression.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "mirna_expression.file_size": {
+    "facet_filter": "mirna_expression.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "mirna_expression.md5sum": {
+    "facet_filter": "mirna_expression.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "mirna_expression.state_comment": {
+    "facet_filter": "mirna_expression.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "mirna_expression.type": {
+    "facet_filter": "mirna_expression.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "mirna_expression.id": {
+    "facet_filter": "mirna_expression.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "mirna_expression.submitter_id": {
+    "facet_filter": "mirna_expression.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "mirna_expression.batch_id": {
+    "facet_filter": "mirna_expression.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "mirna_expression.project_id": {
+    "facet_filter": "mirna_expression.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "project.type": {
+    "facet_filter": "project.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "project.id": {
+    "facet_filter": "project.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "project.awg_review": {
+    "facet_filter": "project.awg_review",
+    "facet_type": "boolean",
+    "label": "Awg Review",
+    "property_type": "boolean"
+  },
+  "project.code": {
+    "facet_filter": "project.code",
+    "facet_type": "string",
+    "label": "Code",
+    "property_type": "string"
+  },
+  "project.dbgap_accession_number": {
+    "facet_filter": "project.dbgap_accession_number",
+    "facet_type": "string",
+    "label": "Dbgap Accession Number",
+    "property_type": "string"
+  },
+  "project.disease_type": {
+    "facet_filter": "project.disease_type",
+    "facet_type": "string",
+    "label": "Disease Type",
+    "property_type": "string"
+  },
+  "project.in_review": {
+    "facet_filter": "project.in_review",
+    "facet_type": "boolean",
+    "label": "In Review",
+    "property_type": "boolean"
+  },
+  "project.is_legacy": {
+    "facet_filter": "project.is_legacy",
+    "facet_type": "boolean",
+    "label": "Is Legacy",
+    "property_type": "boolean"
+  },
+  "project.name": {
+    "facet_filter": "project.name",
+    "facet_type": "string",
+    "label": "Name",
+    "property_type": "string"
+  },
+  "project.primary_site": {
+    "facet_filter": "project.primary_site",
+    "facet_type": "string",
+    "label": "Primary Site",
+    "property_type": "string"
+  },
+  "project.release_requested": {
+    "facet_filter": "project.release_requested",
+    "facet_type": "boolean",
+    "label": "Release Requested",
+    "property_type": "boolean"
+  },
+  "project.released": {
+    "facet_filter": "project.released",
+    "facet_type": "boolean",
+    "label": "Released",
+    "property_type": "boolean"
+  },
+  "project.releasable": {
+    "facet_filter": "project.releasable",
+    "facet_type": "boolean",
+    "label": "Releasable",
+    "property_type": "boolean"
+  },
+  "project.request_submission": {
+    "facet_filter": "project.request_submission",
+    "facet_type": "boolean",
+    "label": "Request Submission",
+    "property_type": "boolean"
+  },
+  "project.submission_enabled": {
+    "facet_filter": "project.submission_enabled",
+    "facet_type": "boolean",
+    "label": "Submission Enabled",
+    "property_type": "boolean"
+  },
+  "family_histories.relationship_age_at_diagnosis": {
+    "facet_filter": "family_histories.relationship_age_at_diagnosis",
+    "facet_type": "age",
+    "label": "Relationship Age at Diagnosis",
+    "property_type": "number"
+  },
+  "family_histories.relatives_with_cancer_history_count": {
+    "facet_filter": "family_histories.relatives_with_cancer_history_count",
+    "facet_type": "integer",
+    "label": "Relatives With Cancer History Count",
+    "minimum": 0,
+    "property_type": "integer"
+  },
+  "family_histories.type": {
+    "facet_filter": "family_histories.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "family_histories.id": {
+    "facet_filter": "family_histories.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "family_histories.submitter_id": {
+    "facet_filter": "family_histories.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "family_histories.batch_id": {
+    "facet_filter": "family_histories.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "family_histories.project_id": {
+    "facet_filter": "family_histories.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "archive.revision": {
+    "facet_filter": "archive.revision",
+    "facet_type": "number",
+    "label": "Revision",
+    "property_type": "number"
+  },
+  "archive.file_name": {
+    "facet_filter": "archive.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "archive.file_size": {
+    "facet_filter": "archive.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "archive.md5sum": {
+    "facet_filter": "archive.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "archive.state_comment": {
+    "facet_filter": "archive.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "archive.type": {
+    "facet_filter": "archive.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "archive.id": {
+    "facet_filter": "archive.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "archive.submitter_id": {
+    "facet_filter": "archive.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "archive.batch_id": {
+    "facet_filter": "archive.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "archive.project_id": {
+    "facet_filter": "archive.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "submitted_aligned_reads.file_name": {
+    "facet_filter": "submitted_aligned_reads.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "submitted_aligned_reads.file_size": {
+    "facet_filter": "submitted_aligned_reads.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "submitted_aligned_reads.md5sum": {
+    "facet_filter": "submitted_aligned_reads.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "submitted_aligned_reads.state_comment": {
+    "facet_filter": "submitted_aligned_reads.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "submitted_aligned_reads.type": {
+    "facet_filter": "submitted_aligned_reads.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "submitted_aligned_reads.id": {
+    "facet_filter": "submitted_aligned_reads.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "submitted_aligned_reads.submitter_id": {
+    "facet_filter": "submitted_aligned_reads.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "submitted_aligned_reads.batch_id": {
+    "facet_filter": "submitted_aligned_reads.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "submitted_aligned_reads.project_id": {
+    "facet_filter": "submitted_aligned_reads.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "tissue_source_site.type": {
+    "facet_filter": "tissue_source_site.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "tissue_source_site.id": {
+    "facet_filter": "tissue_source_site.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "tissue_source_site.name": {
+    "facet_filter": "tissue_source_site.name",
+    "facet_type": "string",
+    "label": "Name",
+    "property_type": "string"
+  },
+  "tissue_source_site.code": {
+    "facet_filter": "tissue_source_site.code",
+    "facet_type": "string",
+    "label": "Code",
+    "property_type": "string"
+  },
+  "tissue_source_site.project": {
+    "facet_filter": "tissue_source_site.project",
+    "facet_type": "string",
+    "label": "Project",
+    "property_type": "string"
+  },
+  "tissue_source_site.bcr_id": {
+    "facet_filter": "tissue_source_site.bcr_id",
+    "facet_type": "string",
+    "label": "Bcr Id",
+    "property_type": "string"
+  },
+  "samples.portions.slides.number_proliferating_cells": {
+    "facet_filter": "samples.portions.slides.number_proliferating_cells",
+    "facet_type": "integer",
+    "label": "Number Proliferating Cells",
+    "minimum": 0,
+    "property_type": "integer"
+  },
+  "samples.portions.slides.percent_follicular_component": {
+    "facet_filter": "samples.portions.slides.percent_follicular_component",
+    "facet_type": "percent",
+    "label": "Percent Follicular Component",
+    "minimum": 0,
+    "maximum": 100,
+    "property_type": "number"
+  },
+  "samples.portions.slides.percent_rhabdoid_features": {
+    "facet_filter": "samples.portions.slides.percent_rhabdoid_features",
+    "facet_type": "percent",
+    "label": "Percent Rhabdoid Features",
+    "minimum": 0,
+    "maximum": 100,
+    "property_type": "number"
+  },
+  "samples.portions.slides.percent_sarcomatoid_features": {
+    "facet_filter": "samples.portions.slides.percent_sarcomatoid_features",
+    "facet_type": "percent",
+    "label": "Percent Sarcomatoid Features",
+    "minimum": 0,
+    "maximum": 100,
+    "property_type": "number"
+  },
+  "samples.portions.slides.percent_tumor_cells": {
+    "facet_filter": "samples.portions.slides.percent_tumor_cells",
+    "facet_type": "percent",
+    "label": "Percent Tumor Cells",
+    "minimum": 0,
+    "maximum": 100,
+    "property_type": "number"
+  },
+  "samples.portions.slides.percent_tumor_nuclei": {
+    "facet_filter": "samples.portions.slides.percent_tumor_nuclei",
+    "facet_type": "percent",
+    "label": "Percent Tumor Nuclei",
+    "minimum": 0,
+    "maximum": 100,
+    "property_type": "number"
+  },
+  "samples.portions.slides.percent_normal_cells": {
+    "facet_filter": "samples.portions.slides.percent_normal_cells",
+    "facet_type": "percent",
+    "label": "Percent Normal Cells",
+    "minimum": 0,
+    "maximum": 100,
+    "property_type": "number"
+  },
+  "samples.portions.slides.percent_necrosis": {
+    "facet_filter": "samples.portions.slides.percent_necrosis",
+    "facet_type": "percent",
+    "label": "Percent Necrosis",
+    "minimum": 0,
+    "maximum": 100,
+    "property_type": "number"
+  },
+  "samples.portions.slides.percent_stromal_cells": {
+    "facet_filter": "samples.portions.slides.percent_stromal_cells",
+    "facet_type": "percent",
+    "label": "Percent Stromal Cells",
+    "minimum": 0,
+    "maximum": 100,
+    "property_type": "number"
+  },
+  "samples.portions.slides.percent_inflam_infiltration": {
+    "facet_filter": "samples.portions.slides.percent_inflam_infiltration",
+    "facet_type": "percent",
+    "label": "Percent Inflam Infiltration",
+    "minimum": 0,
+    "maximum": 100,
+    "property_type": "number"
+  },
+  "samples.portions.slides.percent_lymphocyte_infiltration": {
+    "facet_filter": "samples.portions.slides.percent_lymphocyte_infiltration",
+    "facet_type": "percent",
+    "label": "Percent Lymphocyte Infiltration",
+    "minimum": 0,
+    "maximum": 100,
+    "property_type": "number"
+  },
+  "samples.portions.slides.percent_monocyte_infiltration": {
+    "facet_filter": "samples.portions.slides.percent_monocyte_infiltration",
+    "facet_type": "percent",
+    "label": "Percent Monocyte Infiltration",
+    "minimum": 0,
+    "maximum": 100,
+    "property_type": "number"
+  },
+  "samples.portions.slides.percent_granulocyte_infiltration": {
+    "facet_filter": "samples.portions.slides.percent_granulocyte_infiltration",
+    "facet_type": "percent",
+    "label": "Percent Granulocyte Infiltration",
+    "minimum": 0,
+    "maximum": 100,
+    "property_type": "number"
+  },
+  "samples.portions.slides.percent_neutrophil_infiltration": {
+    "facet_filter": "samples.portions.slides.percent_neutrophil_infiltration",
+    "facet_type": "percent",
+    "label": "Percent Neutrophil Infiltration",
+    "minimum": 0,
+    "maximum": 100,
+    "property_type": "number"
+  },
+  "samples.portions.slides.percent_eosinophil_infiltration": {
+    "facet_filter": "samples.portions.slides.percent_eosinophil_infiltration",
+    "facet_type": "percent",
+    "label": "Percent Eosinophil Infiltration",
+    "minimum": 0,
+    "maximum": 100,
+    "property_type": "number"
+  },
+  "samples.portions.slides.prostatic_chips_positive_count": {
+    "facet_filter": "samples.portions.slides.prostatic_chips_positive_count",
+    "facet_type": "number",
+    "label": "Prostatic Chips Positive Count",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "samples.portions.slides.prostatic_chips_total_count": {
+    "facet_filter": "samples.portions.slides.prostatic_chips_total_count",
+    "facet_type": "number",
+    "label": "Prostatic Chips Total Count",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "samples.portions.slides.prostatic_involvement_percent": {
+    "facet_filter": "samples.portions.slides.prostatic_involvement_percent",
+    "facet_type": "percent",
+    "label": "Prostatic Involvement Percent",
+    "minimum": 0,
+    "maximum": 100,
+    "property_type": "number"
+  },
+  "samples.portions.slides.section_location": {
+    "facet_filter": "samples.portions.slides.section_location",
+    "facet_type": "string",
+    "label": "Section Location",
+    "property_type": "string"
+  },
+  "samples.portions.slides.tissue_microarray_coordinates": {
+    "facet_filter": "samples.portions.slides.tissue_microarray_coordinates",
+    "facet_type": "string",
+    "label": "Tissue Microarray Coordinates",
+    "property_type": "string"
+  },
+  "samples.portions.slides.type": {
+    "facet_filter": "samples.portions.slides.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "samples.portions.slides.id": {
+    "facet_filter": "samples.portions.slides.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "samples.portions.slides.submitter_id": {
+    "facet_filter": "samples.portions.slides.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "samples.portions.slides.batch_id": {
+    "facet_filter": "samples.portions.slides.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "samples.portions.slides.project_id": {
+    "facet_filter": "samples.portions.slides.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "annotated_somatic_mutation.file_name": {
+    "facet_filter": "annotated_somatic_mutation.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "annotated_somatic_mutation.file_size": {
+    "facet_filter": "annotated_somatic_mutation.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "annotated_somatic_mutation.md5sum": {
+    "facet_filter": "annotated_somatic_mutation.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "annotated_somatic_mutation.state_comment": {
+    "facet_filter": "annotated_somatic_mutation.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "annotated_somatic_mutation.type": {
+    "facet_filter": "annotated_somatic_mutation.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "annotated_somatic_mutation.id": {
+    "facet_filter": "annotated_somatic_mutation.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "annotated_somatic_mutation.submitter_id": {
+    "facet_filter": "annotated_somatic_mutation.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "annotated_somatic_mutation.batch_id": {
+    "facet_filter": "annotated_somatic_mutation.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "annotated_somatic_mutation.project_id": {
+    "facet_filter": "annotated_somatic_mutation.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "submitted_tangent_copy_number.file_name": {
+    "facet_filter": "submitted_tangent_copy_number.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "submitted_tangent_copy_number.file_size": {
+    "facet_filter": "submitted_tangent_copy_number.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "submitted_tangent_copy_number.md5sum": {
+    "facet_filter": "submitted_tangent_copy_number.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "submitted_tangent_copy_number.state_comment": {
+    "facet_filter": "submitted_tangent_copy_number.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "submitted_tangent_copy_number.type": {
+    "facet_filter": "submitted_tangent_copy_number.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "submitted_tangent_copy_number.id": {
+    "facet_filter": "submitted_tangent_copy_number.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "submitted_tangent_copy_number.submitter_id": {
+    "facet_filter": "submitted_tangent_copy_number.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "submitted_tangent_copy_number.batch_id": {
+    "facet_filter": "submitted_tangent_copy_number.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "submitted_tangent_copy_number.project_id": {
+    "facet_filter": "submitted_tangent_copy_number.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "filtered_copy_number_segment.file_name": {
+    "facet_filter": "filtered_copy_number_segment.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "filtered_copy_number_segment.file_size": {
+    "facet_filter": "filtered_copy_number_segment.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "filtered_copy_number_segment.md5sum": {
+    "facet_filter": "filtered_copy_number_segment.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "filtered_copy_number_segment.state_comment": {
+    "facet_filter": "filtered_copy_number_segment.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "filtered_copy_number_segment.type": {
+    "facet_filter": "filtered_copy_number_segment.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "filtered_copy_number_segment.id": {
+    "facet_filter": "filtered_copy_number_segment.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "filtered_copy_number_segment.submitter_id": {
+    "facet_filter": "filtered_copy_number_segment.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "filtered_copy_number_segment.batch_id": {
+    "facet_filter": "filtered_copy_number_segment.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "filtered_copy_number_segment.project_id": {
+    "facet_filter": "filtered_copy_number_segment.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "methylation_beta_value.file_name": {
+    "facet_filter": "methylation_beta_value.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "methylation_beta_value.file_size": {
+    "facet_filter": "methylation_beta_value.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "methylation_beta_value.md5sum": {
+    "facet_filter": "methylation_beta_value.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "methylation_beta_value.state_comment": {
+    "facet_filter": "methylation_beta_value.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "methylation_beta_value.type": {
+    "facet_filter": "methylation_beta_value.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "methylation_beta_value.id": {
+    "facet_filter": "methylation_beta_value.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "methylation_beta_value.submitter_id": {
+    "facet_filter": "methylation_beta_value.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "methylation_beta_value.batch_id": {
+    "facet_filter": "methylation_beta_value.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "methylation_beta_value.project_id": {
+    "facet_filter": "methylation_beta_value.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "copy_number_estimate.file_name": {
+    "facet_filter": "copy_number_estimate.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "copy_number_estimate.file_size": {
+    "facet_filter": "copy_number_estimate.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "copy_number_estimate.md5sum": {
+    "facet_filter": "copy_number_estimate.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "copy_number_estimate.state_comment": {
+    "facet_filter": "copy_number_estimate.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "copy_number_estimate.type": {
+    "facet_filter": "copy_number_estimate.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "copy_number_estimate.id": {
+    "facet_filter": "copy_number_estimate.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "copy_number_estimate.submitter_id": {
+    "facet_filter": "copy_number_estimate.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "copy_number_estimate.batch_id": {
+    "facet_filter": "copy_number_estimate.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "copy_number_estimate.project_id": {
+    "facet_filter": "copy_number_estimate.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "simple_somatic_mutation.file_name": {
+    "facet_filter": "simple_somatic_mutation.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "simple_somatic_mutation.file_size": {
+    "facet_filter": "simple_somatic_mutation.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "simple_somatic_mutation.md5sum": {
+    "facet_filter": "simple_somatic_mutation.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "simple_somatic_mutation.state_comment": {
+    "facet_filter": "simple_somatic_mutation.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "simple_somatic_mutation.type": {
+    "facet_filter": "simple_somatic_mutation.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "simple_somatic_mutation.id": {
+    "facet_filter": "simple_somatic_mutation.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "simple_somatic_mutation.submitter_id": {
+    "facet_filter": "simple_somatic_mutation.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "simple_somatic_mutation.batch_id": {
+    "facet_filter": "simple_somatic_mutation.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "simple_somatic_mutation.project_id": {
+    "facet_filter": "simple_somatic_mutation.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "program.type": {
+    "facet_filter": "program.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "program.id": {
+    "facet_filter": "program.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "program.name": {
+    "facet_filter": "program.name",
+    "facet_type": "string",
+    "label": "Name",
+    "property_type": "string"
+  },
+  "program.dbgap_accession_number": {
+    "facet_filter": "program.dbgap_accession_number",
+    "facet_type": "string",
+    "label": "Dbgap Accession Number",
+    "property_type": "string"
+  },
+  "follow_ups.body_surface_area": {
+    "facet_filter": "follow_ups.body_surface_area",
+    "facet_type": "number",
+    "label": "Body Surface Area",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "follow_ups.bmi": {
+    "facet_filter": "follow_ups.bmi",
+    "facet_type": "number",
+    "label": "Bmi",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "follow_ups.cause_of_response": {
+    "facet_filter": "follow_ups.cause_of_response",
+    "facet_type": "string",
+    "label": "Cause of Response",
+    "property_type": "string"
+  },
+  "follow_ups.cd4_count": {
+    "facet_filter": "follow_ups.cd4_count",
+    "facet_type": "number",
+    "label": "Cd4 Count",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "follow_ups.days_to_adverse_event": {
+    "facet_filter": "follow_ups.days_to_adverse_event",
+    "facet_type": "days",
+    "label": "Days To Adverse Event",
+    "minimum": -32872,
+    "maximum": 32872,
+    "property_type": "integer"
+  },
+  "follow_ups.days_to_comorbidity": {
+    "facet_filter": "follow_ups.days_to_comorbidity",
+    "facet_type": "days",
+    "label": "Days To Comorbidity",
+    "minimum": -32872,
+    "maximum": 32872,
+    "property_type": "integer"
+  },
+  "follow_ups.days_to_follow_up": {
+    "facet_filter": "follow_ups.days_to_follow_up",
+    "facet_type": "days",
+    "label": "Days To Follow Up",
+    "oneOf": {
+      "type": "integer",
+      "maximum": 32872,
+      "minimum": -32872
+    },
+    "minimum": -32872,
+    "maximum": 32872,
+    "property_type": "integer"
+  },
+  "follow_ups.days_to_imaging": {
+    "facet_filter": "follow_ups.days_to_imaging",
+    "facet_type": "days",
+    "label": "Days To Imaging",
+    "minimum": -32872,
+    "maximum": 32872,
+    "property_type": "integer"
+  },
+  "follow_ups.days_to_progression": {
+    "facet_filter": "follow_ups.days_to_progression",
+    "facet_type": "days",
+    "label": "Days To Progression",
+    "minimum": -32872,
+    "maximum": 32872,
+    "property_type": "integer"
+  },
+  "follow_ups.days_to_progression_free": {
+    "facet_filter": "follow_ups.days_to_progression_free",
+    "facet_type": "days",
+    "label": "Days To Progression Free",
+    "minimum": -32872,
+    "maximum": 32872,
+    "property_type": "integer"
+  },
+  "follow_ups.days_to_recurrence": {
+    "facet_filter": "follow_ups.days_to_recurrence",
+    "facet_type": "days",
+    "label": "Days To Recurrence",
+    "minimum": -32872,
+    "maximum": 32872,
+    "property_type": "integer"
+  },
+  "follow_ups.dlco_ref_predictive_percent": {
+    "facet_filter": "follow_ups.dlco_ref_predictive_percent",
+    "facet_type": "percent",
+    "label": "Dlco Ref Predictive Percent",
+    "minimum": 0,
+    "maximum": 100,
+    "property_type": "number"
+  },
+  "follow_ups.fev1_ref_post_bronch_percent": {
+    "facet_filter": "follow_ups.fev1_ref_post_bronch_percent",
+    "facet_type": "percent",
+    "label": "Fev1 Ref Post Bronch Percent",
+    "minimum": 0,
+    "maximum": 100,
+    "property_type": "number"
+  },
+  "follow_ups.fev1_ref_pre_bronch_percent": {
+    "facet_filter": "follow_ups.fev1_ref_pre_bronch_percent",
+    "facet_type": "percent",
+    "label": "Fev1 Ref Pre Bronch Percent",
+    "minimum": 0,
+    "maximum": 100,
+    "property_type": "number"
+  },
+  "follow_ups.fev1_fvc_pre_bronch_percent": {
+    "facet_filter": "follow_ups.fev1_fvc_pre_bronch_percent",
+    "facet_type": "percent",
+    "label": "Fev1 Fvc Pre Bronch Percent",
+    "minimum": 0,
+    "maximum": 100,
+    "property_type": "number"
+  },
+  "follow_ups.fev1_fvc_post_bronch_percent": {
+    "facet_filter": "follow_ups.fev1_fvc_post_bronch_percent",
+    "facet_type": "percent",
+    "label": "Fev1 Fvc Post Bronch Percent",
+    "minimum": 0,
+    "maximum": 100,
+    "property_type": "number"
+  },
+  "follow_ups.height": {
+    "facet_filter": "follow_ups.height",
+    "facet_type": "number",
+    "label": "Height",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "follow_ups.hiv_viral_load": {
+    "facet_filter": "follow_ups.hiv_viral_load",
+    "facet_type": "number",
+    "label": "Hiv Viral Load",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "follow_ups.nadir_cd4_count": {
+    "facet_filter": "follow_ups.nadir_cd4_count",
+    "facet_type": "number",
+    "label": "Nadir Cd4 Count",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "follow_ups.pancreatitis_onset_year": {
+    "facet_filter": "follow_ups.pancreatitis_onset_year",
+    "facet_type": "year",
+    "label": "Pancreatitis Onset Year",
+    "minimum": 1900,
+    "property_type": "integer"
+  },
+  "follow_ups.recist_targeted_regions_number": {
+    "facet_filter": "follow_ups.recist_targeted_regions_number",
+    "facet_type": "integer",
+    "label": "Recist Targeted Regions Number",
+    "minimum": 0,
+    "property_type": "integer"
+  },
+  "follow_ups.recist_targeted_regions_sum": {
+    "facet_filter": "follow_ups.recist_targeted_regions_sum",
+    "facet_type": "number",
+    "label": "Recist Targeted Regions Sum",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "follow_ups.undescended_testis_corrected_age": {
+    "facet_filter": "follow_ups.undescended_testis_corrected_age",
+    "facet_type": "age",
+    "label": "Undescended Testis Corrected Age",
+    "minimum": 0,
+    "property_type": "integer"
+  },
+  "follow_ups.weight": {
+    "facet_filter": "follow_ups.weight",
+    "facet_type": "number",
+    "label": "Weight",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "follow_ups.type": {
+    "facet_filter": "follow_ups.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "follow_ups.id": {
+    "facet_filter": "follow_ups.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "follow_ups.submitter_id": {
+    "facet_filter": "follow_ups.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "follow_ups.batch_id": {
+    "facet_filter": "follow_ups.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "follow_ups.project_id": {
+    "facet_filter": "follow_ups.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "masked_methylation_array.chip_id": {
+    "facet_filter": "masked_methylation_array.chip_id",
+    "facet_type": "string",
+    "label": "Chip Id",
+    "property_type": "string"
+  },
+  "masked_methylation_array.chip_position": {
+    "facet_filter": "masked_methylation_array.chip_position",
+    "facet_type": "string",
+    "label": "Chip Position",
+    "property_type": "string"
+  },
+  "masked_methylation_array.plate_name": {
+    "facet_filter": "masked_methylation_array.plate_name",
+    "facet_type": "string",
+    "label": "Plate Name",
+    "property_type": "string"
+  },
+  "masked_methylation_array.plate_well": {
+    "facet_filter": "masked_methylation_array.plate_well",
+    "facet_type": "string",
+    "label": "Plate Well",
+    "property_type": "string"
+  },
+  "masked_methylation_array.file_name": {
+    "facet_filter": "masked_methylation_array.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "masked_methylation_array.file_size": {
+    "facet_filter": "masked_methylation_array.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "masked_methylation_array.md5sum": {
+    "facet_filter": "masked_methylation_array.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "masked_methylation_array.state_comment": {
+    "facet_filter": "masked_methylation_array.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "masked_methylation_array.type": {
+    "facet_filter": "masked_methylation_array.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "masked_methylation_array.id": {
+    "facet_filter": "masked_methylation_array.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "masked_methylation_array.submitter_id": {
+    "facet_filter": "masked_methylation_array.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "masked_methylation_array.batch_id": {
+    "facet_filter": "masked_methylation_array.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "masked_methylation_array.project_id": {
+    "facet_filter": "masked_methylation_array.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "masked_somatic_mutation.file_name": {
+    "facet_filter": "masked_somatic_mutation.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "masked_somatic_mutation.file_size": {
+    "facet_filter": "masked_somatic_mutation.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "masked_somatic_mutation.md5sum": {
+    "facet_filter": "masked_somatic_mutation.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "masked_somatic_mutation.state_comment": {
+    "facet_filter": "masked_somatic_mutation.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "masked_somatic_mutation.type": {
+    "facet_filter": "masked_somatic_mutation.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "masked_somatic_mutation.id": {
+    "facet_filter": "masked_somatic_mutation.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "masked_somatic_mutation.submitter_id": {
+    "facet_filter": "masked_somatic_mutation.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "masked_somatic_mutation.batch_id": {
+    "facet_filter": "masked_somatic_mutation.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "masked_somatic_mutation.project_id": {
+    "facet_filter": "masked_somatic_mutation.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "file.file_name": {
+    "facet_filter": "file.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "file.file_size": {
+    "facet_filter": "file.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "file.md5sum": {
+    "facet_filter": "file.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "file.state_comment": {
+    "facet_filter": "file.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "file.type": {
+    "facet_filter": "file.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "file.id": {
+    "facet_filter": "file.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "file.submitter_id": {
+    "facet_filter": "file.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "file.batch_id": {
+    "facet_filter": "file.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "file.project_id": {
+    "facet_filter": "file.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "submitted_methylation_beta_value.file_name": {
+    "facet_filter": "submitted_methylation_beta_value.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "submitted_methylation_beta_value.file_size": {
+    "facet_filter": "submitted_methylation_beta_value.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "submitted_methylation_beta_value.md5sum": {
+    "facet_filter": "submitted_methylation_beta_value.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "submitted_methylation_beta_value.state_comment": {
+    "facet_filter": "submitted_methylation_beta_value.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "submitted_methylation_beta_value.type": {
+    "facet_filter": "submitted_methylation_beta_value.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "submitted_methylation_beta_value.id": {
+    "facet_filter": "submitted_methylation_beta_value.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "submitted_methylation_beta_value.submitter_id": {
+    "facet_filter": "submitted_methylation_beta_value.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "submitted_methylation_beta_value.batch_id": {
+    "facet_filter": "submitted_methylation_beta_value.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "submitted_methylation_beta_value.project_id": {
+    "facet_filter": "submitted_methylation_beta_value.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "samples.catalog_reference": {
+    "facet_filter": "samples.catalog_reference",
+    "facet_type": "string",
+    "label": "Catalog Reference",
+    "property_type": "string"
+  },
+  "samples.current_weight": {
+    "facet_filter": "samples.current_weight",
+    "facet_type": "number",
+    "label": "Current Weight",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "samples.days_to_collection": {
+    "facet_filter": "samples.days_to_collection",
+    "facet_type": "days",
+    "label": "Days To Collection",
+    "minimum": -32872,
+    "maximum": 32872,
+    "property_type": "integer"
+  },
+  "samples.days_to_sample_procurement": {
+    "facet_filter": "samples.days_to_sample_procurement",
+    "facet_type": "days",
+    "label": "Days To Sample Procurement",
+    "minimum": -32872,
+    "maximum": 32872,
+    "property_type": "integer"
+  },
+  "samples.distributor_reference": {
+    "facet_filter": "samples.distributor_reference",
+    "facet_type": "string",
+    "label": "Distributor Reference",
+    "property_type": "string"
+  },
+  "samples.freezing_method": {
+    "facet_filter": "samples.freezing_method",
+    "facet_type": "string",
+    "label": "Freezing Method",
+    "property_type": "string"
+  },
+  "samples.growth_rate": {
+    "facet_filter": "samples.growth_rate",
+    "facet_type": "integer",
+    "label": "Growth Rate",
+    "minimum": 0,
+    "property_type": "integer"
+  },
+  "samples.initial_weight": {
+    "facet_filter": "samples.initial_weight",
+    "facet_type": "number",
+    "label": "Initial Weight",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "samples.intermediate_dimension": {
+    "facet_filter": "samples.intermediate_dimension",
+    "facet_type": "number",
+    "label": "Intermediate Dimension",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "samples.is_ffpe": {
+    "facet_filter": "samples.is_ffpe",
+    "facet_type": "boolean",
+    "label": "Is Ffpe",
+    "property_type": "boolean"
+  },
+  "samples.longest_dimension": {
+    "facet_filter": "samples.longest_dimension",
+    "facet_type": "number",
+    "label": "Longest Dimension",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "samples.oct_embedded": {
+    "facet_filter": "samples.oct_embedded",
+    "facet_type": "string",
+    "label": "Oct Embedded",
+    "property_type": "string"
+  },
+  "samples.pathology_report_uuid": {
+    "facet_filter": "samples.pathology_report_uuid",
+    "facet_type": "string",
+    "label": "Pathology Report Uuid",
+    "property_type": "string"
+  },
+  "samples.passage_count": {
+    "facet_filter": "samples.passage_count",
+    "facet_type": "integer",
+    "label": "Passage Count",
+    "minimum": 0,
+    "property_type": "integer"
+  },
+  "samples.sample_ordinal": {
+    "facet_filter": "samples.sample_ordinal",
+    "facet_type": "integer",
+    "label": "Sample ordinal",
+    "minimum": 1,
+    "property_type": "integer"
+  },
+  "samples.shortest_dimension": {
+    "facet_filter": "samples.shortest_dimension",
+    "facet_type": "number",
+    "label": "Shortest Dimension",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "samples.time_between_clamping_and_freezing": {
+    "facet_filter": "samples.time_between_clamping_and_freezing",
+    "facet_type": "number",
+    "label": "Time Between Clamping and Freezing",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "samples.time_between_excision_and_freezing": {
+    "facet_filter": "samples.time_between_excision_and_freezing",
+    "facet_type": "number",
+    "label": "Time Between Excision and Freezing",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "samples.type": {
+    "facet_filter": "samples.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "samples.id": {
+    "facet_filter": "samples.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "samples.submitter_id": {
+    "facet_filter": "samples.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "samples.batch_id": {
+    "facet_filter": "samples.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "samples.project_id": {
+    "facet_filter": "samples.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "submitted_genotyping_array.file_name": {
+    "facet_filter": "submitted_genotyping_array.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "submitted_genotyping_array.file_size": {
+    "facet_filter": "submitted_genotyping_array.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "submitted_genotyping_array.md5sum": {
+    "facet_filter": "submitted_genotyping_array.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "submitted_genotyping_array.state_comment": {
+    "facet_filter": "submitted_genotyping_array.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "submitted_genotyping_array.type": {
+    "facet_filter": "submitted_genotyping_array.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "submitted_genotyping_array.id": {
+    "facet_filter": "submitted_genotyping_array.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "submitted_genotyping_array.submitter_id": {
+    "facet_filter": "submitted_genotyping_array.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "submitted_genotyping_array.batch_id": {
+    "facet_filter": "submitted_genotyping_array.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "submitted_genotyping_array.project_id": {
+    "facet_filter": "submitted_genotyping_array.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "submitted_genomic_profile.type": {
+    "facet_filter": "submitted_genomic_profile.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "submitted_genomic_profile.file_name": {
+    "facet_filter": "submitted_genomic_profile.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "submitted_genomic_profile.file_size": {
+    "facet_filter": "submitted_genomic_profile.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "submitted_genomic_profile.md5sum": {
+    "facet_filter": "submitted_genomic_profile.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "submitted_genomic_profile.state_comment": {
+    "facet_filter": "submitted_genomic_profile.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "submitted_genomic_profile.id": {
+    "facet_filter": "submitted_genomic_profile.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "submitted_genomic_profile.submitter_id": {
+    "facet_filter": "submitted_genomic_profile.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "submitted_genomic_profile.batch_id": {
+    "facet_filter": "submitted_genomic_profile.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "submitted_genomic_profile.project_id": {
+    "facet_filter": "submitted_genomic_profile.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "samples.portions.analytes.a260_a280_ratio": {
+    "facet_filter": "samples.portions.analytes.a260_a280_ratio",
+    "facet_type": "number",
+    "label": "A260 A280 Ratio",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "samples.portions.analytes.amount": {
+    "facet_filter": "samples.portions.analytes.amount",
+    "facet_type": "number",
+    "label": "Amount",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "samples.portions.analytes.analyte_quantity": {
+    "facet_filter": "samples.portions.analytes.analyte_quantity",
+    "facet_type": "number",
+    "label": "Analyte Quantity",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "samples.portions.analytes.analyte_volume": {
+    "facet_filter": "samples.portions.analytes.analyte_volume",
+    "facet_type": "number",
+    "label": "Analyte Volume",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "samples.portions.analytes.concentration": {
+    "facet_filter": "samples.portions.analytes.concentration",
+    "facet_type": "number",
+    "label": "Concentration",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "samples.portions.analytes.ribosomal_rna_28s_16s_ratio": {
+    "facet_filter": "samples.portions.analytes.ribosomal_rna_28s_16s_ratio",
+    "facet_type": "number",
+    "label": "Ribosomal Rna 28S 16S Ratio",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "samples.portions.analytes.rna_integrity_number": {
+    "facet_filter": "samples.portions.analytes.rna_integrity_number",
+    "facet_type": "number",
+    "label": "Rna Integrity Number",
+    "maximum": 10,
+    "property_type": "number"
+  },
+  "samples.portions.analytes.spectrophotometer_method": {
+    "facet_filter": "samples.portions.analytes.spectrophotometer_method",
+    "facet_type": "string",
+    "label": "Spectrophotometer Method",
+    "property_type": "string"
+  },
+  "samples.portions.analytes.well_number": {
+    "facet_filter": "samples.portions.analytes.well_number",
+    "facet_type": "string",
+    "label": "Well Number",
+    "property_type": "string"
+  },
+  "samples.portions.analytes.type": {
+    "facet_filter": "samples.portions.analytes.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "samples.portions.analytes.id": {
+    "facet_filter": "samples.portions.analytes.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "samples.portions.analytes.submitter_id": {
+    "facet_filter": "samples.portions.analytes.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "samples.portions.analytes.batch_id": {
+    "facet_filter": "samples.portions.analytes.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "samples.portions.analytes.project_id": {
+    "facet_filter": "samples.portions.analytes.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "slide_image.magnification": {
+    "facet_filter": "slide_image.magnification",
+    "facet_type": "number",
+    "label": "Magnification",
+    "property_type": "number"
+  },
+  "slide_image.file_name": {
+    "facet_filter": "slide_image.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "slide_image.file_size": {
+    "facet_filter": "slide_image.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "slide_image.md5sum": {
+    "facet_filter": "slide_image.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "slide_image.state_comment": {
+    "facet_filter": "slide_image.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "slide_image.type": {
+    "facet_filter": "slide_image.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "slide_image.id": {
+    "facet_filter": "slide_image.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "slide_image.submitter_id": {
+    "facet_filter": "slide_image.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "slide_image.batch_id": {
+    "facet_filter": "slide_image.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "slide_image.project_id": {
+    "facet_filter": "slide_image.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "exposures.age_at_onset": {
+    "facet_filter": "exposures.age_at_onset",
+    "facet_type": "age",
+    "label": "Age at Onset",
+    "minimum": 0,
+    "maximum": 89,
+    "property_type": "integer"
+  },
+  "exposures.alcohol_days_per_week": {
+    "facet_filter": "exposures.alcohol_days_per_week",
+    "facet_type": "days",
+    "label": "Alcohol Days Per Week",
+    "minimum": 0,
+    "maximum": 7,
+    "property_type": "number"
+  },
+  "exposures.alcohol_drinks_per_day": {
+    "facet_filter": "exposures.alcohol_drinks_per_day",
+    "facet_type": "number",
+    "label": "Alcohol Drinks Per Day",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "exposures.cigarettes_per_day": {
+    "facet_filter": "exposures.cigarettes_per_day",
+    "facet_type": "number",
+    "label": "Cigarettes Per Day",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "exposures.exposure_duration_years": {
+    "facet_filter": "exposures.exposure_duration_years",
+    "facet_type": "integer",
+    "label": "Exposure Duration Years",
+    "minimum": 0,
+    "property_type": "integer"
+  },
+  "exposures.pack_years_smoked": {
+    "facet_filter": "exposures.pack_years_smoked",
+    "facet_type": "number",
+    "label": "Pack Years Smoked",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "exposures.tobacco_smoking_onset_year": {
+    "facet_filter": "exposures.tobacco_smoking_onset_year",
+    "facet_type": "year",
+    "label": "Tobacco Smoking Onset Year",
+    "minimum": 1900,
+    "maximum": 2050,
+    "property_type": "integer"
+  },
+  "exposures.tobacco_smoking_quit_year": {
+    "facet_filter": "exposures.tobacco_smoking_quit_year",
+    "facet_type": "year",
+    "label": "Tobacco Smoking Quit Year",
+    "minimum": 1900,
+    "maximum": 2050,
+    "property_type": "integer"
+  },
+  "exposures.years_smoked": {
+    "facet_filter": "exposures.years_smoked",
+    "facet_type": "number",
+    "label": "Years Smoked",
+    "minimum": 0,
+    "maximum": 89,
+    "property_type": "number"
+  },
+  "exposures.type": {
+    "facet_filter": "exposures.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "exposures.id": {
+    "facet_filter": "exposures.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "exposures.submitter_id": {
+    "facet_filter": "exposures.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "exposures.batch_id": {
+    "facet_filter": "exposures.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "exposures.project_id": {
+    "facet_filter": "exposures.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "simple_germline_variation.file_name": {
+    "facet_filter": "simple_germline_variation.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "simple_germline_variation.file_size": {
+    "facet_filter": "simple_germline_variation.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "simple_germline_variation.md5sum": {
+    "facet_filter": "simple_germline_variation.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "simple_germline_variation.state_comment": {
+    "facet_filter": "simple_germline_variation.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "simple_germline_variation.type": {
+    "facet_filter": "simple_germline_variation.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "simple_germline_variation.id": {
+    "facet_filter": "simple_germline_variation.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "simple_germline_variation.submitter_id": {
+    "facet_filter": "simple_germline_variation.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "simple_germline_variation.batch_id": {
+    "facet_filter": "simple_germline_variation.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "simple_germline_variation.project_id": {
+    "facet_filter": "simple_germline_variation.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "clinical_supplement.file_name": {
+    "facet_filter": "clinical_supplement.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "clinical_supplement.file_size": {
+    "facet_filter": "clinical_supplement.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "clinical_supplement.md5sum": {
+    "facet_filter": "clinical_supplement.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "clinical_supplement.state_comment": {
+    "facet_filter": "clinical_supplement.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "clinical_supplement.type": {
+    "facet_filter": "clinical_supplement.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "clinical_supplement.id": {
+    "facet_filter": "clinical_supplement.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "clinical_supplement.submitter_id": {
+    "facet_filter": "clinical_supplement.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "clinical_supplement.batch_id": {
+    "facet_filter": "clinical_supplement.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "clinical_supplement.project_id": {
+    "facet_filter": "clinical_supplement.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "structural_variation.file_name": {
+    "facet_filter": "structural_variation.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "structural_variation.file_size": {
+    "facet_filter": "structural_variation.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "structural_variation.md5sum": {
+    "facet_filter": "structural_variation.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "structural_variation.state_comment": {
+    "facet_filter": "structural_variation.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "structural_variation.type": {
+    "facet_filter": "structural_variation.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "structural_variation.id": {
+    "facet_filter": "structural_variation.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "structural_variation.submitter_id": {
+    "facet_filter": "structural_variation.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "structural_variation.batch_id": {
+    "facet_filter": "structural_variation.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "structural_variation.project_id": {
+    "facet_filter": "structural_variation.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "diagnoses.pathology_details.breslow_thickness": {
+    "facet_filter": "diagnoses.pathology_details.breslow_thickness",
+    "facet_type": "number",
+    "label": "Breslow Thickness",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "diagnoses.pathology_details.circumferential_resection_margin": {
+    "facet_filter": "diagnoses.pathology_details.circumferential_resection_margin",
+    "facet_type": "number",
+    "label": "Circumferential Resection Margin",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "diagnoses.pathology_details.greatest_tumor_dimension": {
+    "facet_filter": "diagnoses.pathology_details.greatest_tumor_dimension",
+    "facet_type": "number",
+    "label": "Greatest Tumor Dimension",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "diagnoses.pathology_details.gross_tumor_weight": {
+    "facet_filter": "diagnoses.pathology_details.gross_tumor_weight",
+    "facet_type": "number",
+    "label": "Gross Tumor Weight",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "diagnoses.pathology_details.lymph_nodes_positive": {
+    "facet_filter": "diagnoses.pathology_details.lymph_nodes_positive",
+    "facet_type": "integer",
+    "label": "Lymph Nodes Positive",
+    "minimum": 0,
+    "property_type": "integer"
+  },
+  "diagnoses.pathology_details.lymph_nodes_tested": {
+    "facet_filter": "diagnoses.pathology_details.lymph_nodes_tested",
+    "facet_type": "integer",
+    "label": "Lymph Nodes Tested",
+    "minimum": 0,
+    "property_type": "integer"
+  },
+  "diagnoses.pathology_details.necrosis_percent": {
+    "facet_filter": "diagnoses.pathology_details.necrosis_percent",
+    "facet_type": "percent",
+    "label": "Necrosis Percent",
+    "minimum": 0,
+    "maximum": 100,
+    "property_type": "number"
+  },
+  "diagnoses.pathology_details.number_proliferating_cells": {
+    "facet_filter": "diagnoses.pathology_details.number_proliferating_cells",
+    "facet_type": "integer",
+    "label": "Number Proliferating Cells",
+    "minimum": 0,
+    "property_type": "integer"
+  },
+  "diagnoses.pathology_details.percent_tumor_invasion": {
+    "facet_filter": "diagnoses.pathology_details.percent_tumor_invasion",
+    "facet_type": "percent",
+    "label": "Percent Tumor Invasion",
+    "minimum": 0,
+    "maximum": 100,
+    "property_type": "number"
+  },
+  "diagnoses.pathology_details.peripancreatic_lymph_nodes_tested": {
+    "facet_filter": "diagnoses.pathology_details.peripancreatic_lymph_nodes_tested",
+    "facet_type": "integer",
+    "label": "Peripancreatic Lymph Nodes Tested",
+    "minimum": 0,
+    "property_type": "integer"
+  },
+  "diagnoses.pathology_details.prostatic_chips_positive_count": {
+    "facet_filter": "diagnoses.pathology_details.prostatic_chips_positive_count",
+    "facet_type": "number",
+    "label": "Prostatic Chips Positive Count",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "diagnoses.pathology_details.prostatic_chips_total_count": {
+    "facet_filter": "diagnoses.pathology_details.prostatic_chips_total_count",
+    "facet_type": "number",
+    "label": "Prostatic Chips Total Count",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "diagnoses.pathology_details.prostatic_involvement_percent": {
+    "facet_filter": "diagnoses.pathology_details.prostatic_involvement_percent",
+    "facet_type": "percent",
+    "label": "Prostatic Involvement Percent",
+    "minimum": 0,
+    "maximum": 100,
+    "property_type": "number"
+  },
+  "diagnoses.pathology_details.rhabdoid_percent": {
+    "facet_filter": "diagnoses.pathology_details.rhabdoid_percent",
+    "facet_type": "percent",
+    "label": "Rhabdoid Percent",
+    "minimum": 0,
+    "maximum": 100,
+    "property_type": "number"
+  },
+  "diagnoses.pathology_details.sarcomatoid_percent": {
+    "facet_filter": "diagnoses.pathology_details.sarcomatoid_percent",
+    "facet_type": "percent",
+    "label": "Sarcomatoid Percent",
+    "minimum": 0,
+    "maximum": 100,
+    "property_type": "number"
+  },
+  "diagnoses.pathology_details.size_extraocular_nodule": {
+    "facet_filter": "diagnoses.pathology_details.size_extraocular_nodule",
+    "facet_type": "number",
+    "label": "Size Extraocular Nodule",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "diagnoses.pathology_details.tumor_largest_dimension_diameter": {
+    "facet_filter": "diagnoses.pathology_details.tumor_largest_dimension_diameter",
+    "facet_type": "number",
+    "label": "Tumor Largest Dimension Diameter",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "diagnoses.pathology_details.tumor_thickness": {
+    "facet_filter": "diagnoses.pathology_details.tumor_thickness",
+    "facet_type": "number",
+    "label": "Tumor Thickness",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "diagnoses.pathology_details.type": {
+    "facet_filter": "diagnoses.pathology_details.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "diagnoses.pathology_details.id": {
+    "facet_filter": "diagnoses.pathology_details.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "diagnoses.pathology_details.submitter_id": {
+    "facet_filter": "diagnoses.pathology_details.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "diagnoses.pathology_details.batch_id": {
+    "facet_filter": "diagnoses.pathology_details.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "diagnoses.pathology_details.project_id": {
+    "facet_filter": "diagnoses.pathology_details.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "copy_number_segment.file_name": {
+    "facet_filter": "copy_number_segment.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "copy_number_segment.file_size": {
+    "facet_filter": "copy_number_segment.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "copy_number_segment.md5sum": {
+    "facet_filter": "copy_number_segment.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "copy_number_segment.state_comment": {
+    "facet_filter": "copy_number_segment.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "copy_number_segment.type": {
+    "facet_filter": "copy_number_segment.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "copy_number_segment.id": {
+    "facet_filter": "copy_number_segment.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "copy_number_segment.submitter_id": {
+    "facet_filter": "copy_number_segment.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "copy_number_segment.batch_id": {
+    "facet_filter": "copy_number_segment.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "copy_number_segment.project_id": {
+    "facet_filter": "copy_number_segment.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "gene_expression.file_name": {
+    "facet_filter": "gene_expression.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "gene_expression.file_size": {
+    "facet_filter": "gene_expression.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "gene_expression.md5sum": {
+    "facet_filter": "gene_expression.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "gene_expression.state_comment": {
+    "facet_filter": "gene_expression.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "gene_expression.type": {
+    "facet_filter": "gene_expression.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "gene_expression.id": {
+    "facet_filter": "gene_expression.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "gene_expression.submitter_id": {
+    "facet_filter": "gene_expression.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "gene_expression.batch_id": {
+    "facet_filter": "gene_expression.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "gene_expression.project_id": {
+    "facet_filter": "gene_expression.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "diagnoses.age_at_diagnosis": {
+    "facet_filter": "diagnoses.age_at_diagnosis",
+    "facet_type": "age",
+    "label": "Age at Diagnosis",
+    "oneOf": {
+      "type": "integer",
+      "maximum": 32872,
+      "minimum": 0
+    },
+    "minimum": 0,
+    "maximum": 32872,
+    "property_type": "integer"
+  },
+  "diagnoses.days_to_best_overall_response": {
+    "facet_filter": "diagnoses.days_to_best_overall_response",
+    "facet_type": "days",
+    "label": "Days To Best Overall Response",
+    "minimum": -32872,
+    "maximum": 32872,
+    "property_type": "integer"
+  },
+  "diagnoses.days_to_diagnosis": {
+    "facet_filter": "diagnoses.days_to_diagnosis",
+    "facet_type": "days",
+    "label": "Days To Diagnosis",
+    "minimum": -32872,
+    "maximum": 32872,
+    "property_type": "integer"
+  },
+  "diagnoses.days_to_last_follow_up": {
+    "facet_filter": "diagnoses.days_to_last_follow_up",
+    "facet_type": "days",
+    "label": "Days To Last Follow Up",
+    "oneOf": {
+      "type": "number",
+      "maximum": 32872,
+      "minimum": -32872
+    },
+    "minimum": -32872,
+    "maximum": 32872,
+    "property_type": "number"
+  },
+  "diagnoses.days_to_last_known_disease_status": {
+    "facet_filter": "diagnoses.days_to_last_known_disease_status",
+    "facet_type": "days",
+    "label": "Days To Last Known Disease Status",
+    "oneOf": {
+      "type": "number",
+      "maximum": 32872,
+      "minimum": -32872
+    },
+    "minimum": -32872,
+    "maximum": 32872,
+    "property_type": "number"
+  },
+  "diagnoses.days_to_recurrence": {
+    "facet_filter": "diagnoses.days_to_recurrence",
+    "facet_type": "days",
+    "label": "Days To Recurrence",
+    "oneOf": {
+      "type": "number",
+      "maximum": 32872,
+      "minimum": -32872
+    },
+    "minimum": -32872,
+    "maximum": 32872,
+    "property_type": "number"
+  },
+  "diagnoses.diagnosis_is_primary_disease": {
+    "facet_filter": "diagnoses.diagnosis_is_primary_disease",
+    "facet_type": "boolean",
+    "label": "Diagnosis Is Primary Disease",
+    "property_type": "boolean"
+  },
+  "diagnoses.gleason_patterns_percent": {
+    "facet_filter": "diagnoses.gleason_patterns_percent",
+    "facet_type": "percent",
+    "label": "Gleason Patterns Percent",
+    "minimum": 0,
+    "maximum": 100,
+    "property_type": "integer"
+  },
+  "diagnoses.icd_10_code": {
+    "facet_filter": "diagnoses.icd_10_code",
+    "facet_type": "string",
+    "label": "Icd 10 Code",
+    "property_type": "string"
+  },
+  "diagnoses.margin_distance": {
+    "facet_filter": "diagnoses.margin_distance",
+    "facet_type": "number",
+    "label": "Margin Distance",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "diagnoses.mitotic_count": {
+    "facet_filter": "diagnoses.mitotic_count",
+    "facet_type": "integer",
+    "label": "Mitotic Count",
+    "minimum": 0,
+    "property_type": "integer"
+  },
+  "diagnoses.primary_disease": {
+    "facet_filter": "diagnoses.primary_disease",
+    "facet_type": "boolean",
+    "label": "Primary Disease",
+    "property_type": "boolean"
+  },
+  "diagnoses.sites_of_involvement": {
+    "facet_filter": "diagnoses.sites_of_involvement",
+    "facet_type": "array",
+    "label": "Sites of Involvement",
+    "property_type": "array"
+  },
+  "diagnoses.tumor_depth": {
+    "facet_filter": "diagnoses.tumor_depth",
+    "facet_type": "number",
+    "label": "Tumor Depth",
+    "property_type": "number"
+  },
+  "diagnoses.year_of_diagnosis": {
+    "facet_filter": "diagnoses.year_of_diagnosis",
+    "facet_type": "year",
+    "label": "Year of Diagnosis",
+    "oneOf": {
+      "type": "integer",
+      "maximum": 2050,
+      "minimum": 1900
+    },
+    "minimum": 1900,
+    "maximum": 2050,
+    "property_type": "integer"
+  },
+  "diagnoses.type": {
+    "facet_filter": "diagnoses.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "diagnoses.id": {
+    "facet_filter": "diagnoses.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "diagnoses.submitter_id": {
+    "facet_filter": "diagnoses.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "diagnoses.batch_id": {
+    "facet_filter": "diagnoses.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "diagnoses.project_id": {
+    "facet_filter": "diagnoses.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "center.type": {
+    "facet_filter": "center.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "center.id": {
+    "facet_filter": "center.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "center.code": {
+    "facet_filter": "center.code",
+    "facet_type": "string",
+    "label": "Code",
+    "property_type": "string"
+  },
+  "center.namespace": {
+    "facet_filter": "center.namespace",
+    "facet_type": "string",
+    "label": "Namespace",
+    "property_type": "string"
+  },
+  "center.name": {
+    "facet_filter": "center.name",
+    "facet_type": "string",
+    "label": "Name",
+    "property_type": "string"
+  },
+  "center.short_name": {
+    "facet_filter": "center.short_name",
+    "facet_type": "string",
+    "label": "Short Name",
+    "property_type": "string"
+  },
+  "center.center_type": {
+    "facet_filter": "center.center_type",
+    "facet_type": "string",
+    "label": "Center Type",
+    "property_type": "string"
+  },
+  "diagnoses.treatments.days_to_treatment_end": {
+    "facet_filter": "diagnoses.treatments.days_to_treatment_end",
+    "facet_type": "days",
+    "label": "Days To Treatment End",
+    "minimum": -32872,
+    "maximum": 32872,
+    "property_type": "integer"
+  },
+  "diagnoses.treatments.days_to_treatment_start": {
+    "facet_filter": "diagnoses.treatments.days_to_treatment_start",
+    "facet_type": "days",
+    "label": "Days To Treatment Start",
+    "minimum": -32872,
+    "maximum": 32872,
+    "property_type": "integer"
+  },
+  "diagnoses.treatments.number_of_cycles": {
+    "facet_filter": "diagnoses.treatments.number_of_cycles",
+    "facet_type": "integer",
+    "label": "Number of Cycles",
+    "minimum": 0,
+    "property_type": "integer"
+  },
+  "diagnoses.treatments.regimen_or_line_of_therapy": {
+    "facet_filter": "diagnoses.treatments.regimen_or_line_of_therapy",
+    "facet_type": "string",
+    "label": "Regimen or Line of Therapy",
+    "property_type": "string"
+  },
+  "diagnoses.treatments.treatment_dose": {
+    "facet_filter": "diagnoses.treatments.treatment_dose",
+    "facet_type": "integer",
+    "label": "Treatment Dose",
+    "minimum": 0,
+    "property_type": "integer"
+  },
+  "diagnoses.treatments.type": {
+    "facet_filter": "diagnoses.treatments.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "diagnoses.treatments.id": {
+    "facet_filter": "diagnoses.treatments.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "diagnoses.treatments.submitter_id": {
+    "facet_filter": "diagnoses.treatments.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "diagnoses.treatments.batch_id": {
+    "facet_filter": "diagnoses.treatments.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "diagnoses.treatments.project_id": {
+    "facet_filter": "diagnoses.treatments.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "raw_methylation_array.chip_id": {
+    "facet_filter": "raw_methylation_array.chip_id",
+    "facet_type": "string",
+    "label": "Chip Id",
+    "property_type": "string"
+  },
+  "raw_methylation_array.chip_position": {
+    "facet_filter": "raw_methylation_array.chip_position",
+    "facet_type": "string",
+    "label": "Chip Position",
+    "property_type": "string"
+  },
+  "raw_methylation_array.plate_name": {
+    "facet_filter": "raw_methylation_array.plate_name",
+    "facet_type": "string",
+    "label": "Plate Name",
+    "property_type": "string"
+  },
+  "raw_methylation_array.plate_well": {
+    "facet_filter": "raw_methylation_array.plate_well",
+    "facet_type": "string",
+    "label": "Plate Well",
+    "property_type": "string"
+  },
+  "raw_methylation_array.file_name": {
+    "facet_filter": "raw_methylation_array.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "raw_methylation_array.file_size": {
+    "facet_filter": "raw_methylation_array.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "raw_methylation_array.md5sum": {
+    "facet_filter": "raw_methylation_array.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "raw_methylation_array.state_comment": {
+    "facet_filter": "raw_methylation_array.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "raw_methylation_array.type": {
+    "facet_filter": "raw_methylation_array.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "raw_methylation_array.id": {
+    "facet_filter": "raw_methylation_array.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "raw_methylation_array.submitter_id": {
+    "facet_filter": "raw_methylation_array.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "raw_methylation_array.batch_id": {
+    "facet_filter": "raw_methylation_array.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "raw_methylation_array.project_id": {
+    "facet_filter": "raw_methylation_array.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "days_to_consent": {
+    "facet_filter": "days_to_consent",
+    "facet_type": "days",
+    "label": "Days To Consent",
+    "property_type": "integer"
+  },
+  "days_to_lost_to_followup": {
+    "facet_filter": "days_to_lost_to_followup",
+    "facet_type": "days",
+    "label": "Days To Lost To Followup",
+    "minimum": -32872,
+    "maximum": 32872,
+    "property_type": "integer"
+  },
+  "type": {
+    "facet_filter": "type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "id": {
+    "facet_filter": "id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "submitter_id": {
+    "facet_filter": "submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "batch_id": {
+    "facet_filter": "batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "project_id": {
+    "facet_filter": "project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "pathology_report.file_name": {
+    "facet_filter": "pathology_report.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "pathology_report.file_size": {
+    "facet_filter": "pathology_report.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "pathology_report.md5sum": {
+    "facet_filter": "pathology_report.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "pathology_report.state_comment": {
+    "facet_filter": "pathology_report.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "pathology_report.type": {
+    "facet_filter": "pathology_report.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "pathology_report.id": {
+    "facet_filter": "pathology_report.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "pathology_report.submitter_id": {
+    "facet_filter": "pathology_report.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "pathology_report.batch_id": {
+    "facet_filter": "pathology_report.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "pathology_report.project_id": {
+    "facet_filter": "pathology_report.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "biospecimen_supplement.file_name": {
+    "facet_filter": "biospecimen_supplement.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "biospecimen_supplement.file_size": {
+    "facet_filter": "biospecimen_supplement.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "biospecimen_supplement.md5sum": {
+    "facet_filter": "biospecimen_supplement.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "biospecimen_supplement.state_comment": {
+    "facet_filter": "biospecimen_supplement.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "biospecimen_supplement.type": {
+    "facet_filter": "biospecimen_supplement.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "biospecimen_supplement.id": {
+    "facet_filter": "biospecimen_supplement.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "biospecimen_supplement.submitter_id": {
+    "facet_filter": "biospecimen_supplement.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "biospecimen_supplement.batch_id": {
+    "facet_filter": "biospecimen_supplement.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "biospecimen_supplement.project_id": {
+    "facet_filter": "biospecimen_supplement.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "protein_expression.file_name": {
+    "facet_filter": "protein_expression.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "protein_expression.file_size": {
+    "facet_filter": "protein_expression.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "protein_expression.md5sum": {
+    "facet_filter": "protein_expression.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "protein_expression.state_comment": {
+    "facet_filter": "protein_expression.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "protein_expression.type": {
+    "facet_filter": "protein_expression.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "protein_expression.id": {
+    "facet_filter": "protein_expression.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "protein_expression.submitter_id": {
+    "facet_filter": "protein_expression.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "protein_expression.batch_id": {
+    "facet_filter": "protein_expression.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "protein_expression.project_id": {
+    "facet_filter": "protein_expression.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "follow_ups.molecular_tests.aa_change": {
+    "facet_filter": "follow_ups.molecular_tests.aa_change",
+    "facet_type": "string",
+    "label": "Aa Change",
+    "property_type": "string"
+  },
+  "follow_ups.molecular_tests.biospecimen_volume": {
+    "facet_filter": "follow_ups.molecular_tests.biospecimen_volume",
+    "facet_type": "number",
+    "label": "Biospecimen Volume",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "follow_ups.molecular_tests.blood_test_normal_range_lower": {
+    "facet_filter": "follow_ups.molecular_tests.blood_test_normal_range_lower",
+    "facet_type": "number",
+    "label": "Blood Test Normal Range Lower",
+    "property_type": "number"
+  },
+  "follow_ups.molecular_tests.blood_test_normal_range_upper": {
+    "facet_filter": "follow_ups.molecular_tests.blood_test_normal_range_upper",
+    "facet_type": "number",
+    "label": "Blood Test Normal Range Upper",
+    "property_type": "number"
+  },
+  "follow_ups.molecular_tests.cell_count": {
+    "facet_filter": "follow_ups.molecular_tests.cell_count",
+    "facet_type": "integer",
+    "label": "Cell Count",
+    "minimum": 0,
+    "property_type": "integer"
+  },
+  "follow_ups.molecular_tests.copy_number": {
+    "facet_filter": "follow_ups.molecular_tests.copy_number",
+    "facet_type": "number",
+    "label": "Copy Number",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "follow_ups.molecular_tests.cytoband": {
+    "facet_filter": "follow_ups.molecular_tests.cytoband",
+    "facet_type": "string",
+    "label": "Cytoband",
+    "property_type": "string"
+  },
+  "follow_ups.molecular_tests.days_to_test": {
+    "facet_filter": "follow_ups.molecular_tests.days_to_test",
+    "facet_type": "days",
+    "label": "Days To Test",
+    "minimum": -32872,
+    "maximum": 32872,
+    "property_type": "integer"
+  },
+  "follow_ups.molecular_tests.exon": {
+    "facet_filter": "follow_ups.molecular_tests.exon",
+    "facet_type": "string",
+    "label": "Exon",
+    "property_type": "string"
+  },
+  "follow_ups.molecular_tests.intron": {
+    "facet_filter": "follow_ups.molecular_tests.intron",
+    "facet_type": "string",
+    "label": "Intron",
+    "property_type": "string"
+  },
+  "follow_ups.molecular_tests.loci_abnormal_count": {
+    "facet_filter": "follow_ups.molecular_tests.loci_abnormal_count",
+    "facet_type": "integer",
+    "label": "Loci Abnormal Count",
+    "minimum": 0,
+    "property_type": "integer"
+  },
+  "follow_ups.molecular_tests.loci_count": {
+    "facet_filter": "follow_ups.molecular_tests.loci_count",
+    "facet_type": "integer",
+    "label": "Loci Count",
+    "minimum": 0,
+    "property_type": "integer"
+  },
+  "follow_ups.molecular_tests.locus": {
+    "facet_filter": "follow_ups.molecular_tests.locus",
+    "facet_type": "string",
+    "label": "Locus",
+    "property_type": "string"
+  },
+  "follow_ups.molecular_tests.mitotic_count": {
+    "facet_filter": "follow_ups.molecular_tests.mitotic_count",
+    "facet_type": "number",
+    "label": "Mitotic Count",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "follow_ups.molecular_tests.mitotic_total_area": {
+    "facet_filter": "follow_ups.molecular_tests.mitotic_total_area",
+    "facet_type": "number",
+    "label": "Mitotic Total Area",
+    "minimum": 0,
+    "property_type": "number"
+  },
+  "follow_ups.molecular_tests.second_exon": {
+    "facet_filter": "follow_ups.molecular_tests.second_exon",
+    "facet_type": "string",
+    "label": "Second Exon",
+    "property_type": "string"
+  },
+  "follow_ups.molecular_tests.specialized_molecular_test": {
+    "facet_filter": "follow_ups.molecular_tests.specialized_molecular_test",
+    "facet_type": "string",
+    "label": "Specialized Molecular Test",
+    "property_type": "string"
+  },
+  "follow_ups.molecular_tests.test_value": {
+    "facet_filter": "follow_ups.molecular_tests.test_value",
+    "facet_type": "number",
+    "label": "Test Value",
+    "property_type": "number"
+  },
+  "follow_ups.molecular_tests.transcript": {
+    "facet_filter": "follow_ups.molecular_tests.transcript",
+    "facet_type": "string",
+    "label": "Transcript",
+    "property_type": "string"
+  },
+  "follow_ups.molecular_tests.type": {
+    "facet_filter": "follow_ups.molecular_tests.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "follow_ups.molecular_tests.id": {
+    "facet_filter": "follow_ups.molecular_tests.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "follow_ups.molecular_tests.submitter_id": {
+    "facet_filter": "follow_ups.molecular_tests.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "follow_ups.molecular_tests.batch_id": {
+    "facet_filter": "follow_ups.molecular_tests.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "follow_ups.molecular_tests.project_id": {
+    "facet_filter": "follow_ups.molecular_tests.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "aligned_reads.average_base_quality": {
+    "facet_filter": "aligned_reads.average_base_quality",
+    "facet_type": "number",
+    "label": "Average Base Quality",
+    "property_type": "number"
+  },
+  "aligned_reads.average_insert_size": {
+    "facet_filter": "aligned_reads.average_insert_size",
+    "facet_type": "integer",
+    "label": "Average Insert Size",
+    "property_type": "integer"
+  },
+  "aligned_reads.average_read_length": {
+    "facet_filter": "aligned_reads.average_read_length",
+    "facet_type": "integer",
+    "label": "Average Read Length",
+    "property_type": "integer"
+  },
+  "aligned_reads.contamination": {
+    "facet_filter": "aligned_reads.contamination",
+    "facet_type": "number",
+    "label": "Contamination",
+    "property_type": "number"
+  },
+  "aligned_reads.contamination_error": {
+    "facet_filter": "aligned_reads.contamination_error",
+    "facet_type": "number",
+    "label": "Contamination Error",
+    "property_type": "number"
+  },
+  "aligned_reads.mean_coverage": {
+    "facet_filter": "aligned_reads.mean_coverage",
+    "facet_type": "number",
+    "label": "Mean Coverage",
+    "property_type": "number"
+  },
+  "aligned_reads.msi_score": {
+    "facet_filter": "aligned_reads.msi_score",
+    "facet_type": "number",
+    "label": "Msi Score",
+    "property_type": "number"
+  },
+  "aligned_reads.pairs_on_diff_chr": {
+    "facet_filter": "aligned_reads.pairs_on_diff_chr",
+    "facet_type": "integer",
+    "label": "Pairs On Diff Chr",
+    "property_type": "integer"
+  },
+  "aligned_reads.proportion_base_mismatch": {
+    "facet_filter": "aligned_reads.proportion_base_mismatch",
+    "facet_type": "number",
+    "label": "Proportion Base Mismatch",
+    "property_type": "number"
+  },
+  "aligned_reads.proportion_coverage_10x": {
+    "facet_filter": "aligned_reads.proportion_coverage_10x",
+    "facet_type": "number",
+    "label": "Proportion Coverage 10X",
+    "property_type": "number"
+  },
+  "aligned_reads.proportion_coverage_30x": {
+    "facet_filter": "aligned_reads.proportion_coverage_30x",
+    "facet_type": "number",
+    "label": "Proportion Coverage 30X",
+    "property_type": "number"
+  },
+  "aligned_reads.proportion_reads_duplicated": {
+    "facet_filter": "aligned_reads.proportion_reads_duplicated",
+    "facet_type": "number",
+    "label": "Proportion Reads Duplicated",
+    "property_type": "number"
+  },
+  "aligned_reads.proportion_reads_mapped": {
+    "facet_filter": "aligned_reads.proportion_reads_mapped",
+    "facet_type": "number",
+    "label": "Proportion Reads Mapped",
+    "property_type": "number"
+  },
+  "aligned_reads.proportion_targets_no_coverage": {
+    "facet_filter": "aligned_reads.proportion_targets_no_coverage",
+    "facet_type": "number",
+    "label": "Proportion Targets No Coverage",
+    "property_type": "number"
+  },
+  "aligned_reads.tumor_ploidy": {
+    "facet_filter": "aligned_reads.tumor_ploidy",
+    "facet_type": "number",
+    "label": "Tumor Ploidy",
+    "property_type": "number"
+  },
+  "aligned_reads.tumor_purity": {
+    "facet_filter": "aligned_reads.tumor_purity",
+    "facet_type": "number",
+    "label": "Tumor Purity",
+    "property_type": "number"
+  },
+  "aligned_reads.total_reads": {
+    "facet_filter": "aligned_reads.total_reads",
+    "facet_type": "integer",
+    "label": "Total Reads",
+    "property_type": "integer"
+  },
+  "aligned_reads.file_name": {
+    "facet_filter": "aligned_reads.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "aligned_reads.file_size": {
+    "facet_filter": "aligned_reads.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "aligned_reads.md5sum": {
+    "facet_filter": "aligned_reads.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "aligned_reads.state_comment": {
+    "facet_filter": "aligned_reads.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "aligned_reads.type": {
+    "facet_filter": "aligned_reads.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "aligned_reads.id": {
+    "facet_filter": "aligned_reads.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "aligned_reads.submitter_id": {
+    "facet_filter": "aligned_reads.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "aligned_reads.batch_id": {
+    "facet_filter": "aligned_reads.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "aligned_reads.project_id": {
+    "facet_filter": "aligned_reads.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "aggregated_somatic_mutation.file_name": {
+    "facet_filter": "aggregated_somatic_mutation.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "aggregated_somatic_mutation.file_size": {
+    "facet_filter": "aggregated_somatic_mutation.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "aggregated_somatic_mutation.md5sum": {
+    "facet_filter": "aggregated_somatic_mutation.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "aggregated_somatic_mutation.state_comment": {
+    "facet_filter": "aggregated_somatic_mutation.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "aggregated_somatic_mutation.type": {
+    "facet_filter": "aggregated_somatic_mutation.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "aggregated_somatic_mutation.id": {
+    "facet_filter": "aggregated_somatic_mutation.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "aggregated_somatic_mutation.submitter_id": {
+    "facet_filter": "aggregated_somatic_mutation.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "aggregated_somatic_mutation.batch_id": {
+    "facet_filter": "aggregated_somatic_mutation.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "aggregated_somatic_mutation.project_id": {
+    "facet_filter": "aggregated_somatic_mutation.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  },
+  "secondary_expression_analysis.file_name": {
+    "facet_filter": "secondary_expression_analysis.file_name",
+    "facet_type": "string",
+    "label": "File Name",
+    "property_type": "string"
+  },
+  "secondary_expression_analysis.file_size": {
+    "facet_filter": "secondary_expression_analysis.file_size",
+    "facet_type": "integer",
+    "label": "File Size",
+    "property_type": "integer"
+  },
+  "secondary_expression_analysis.md5sum": {
+    "facet_filter": "secondary_expression_analysis.md5sum",
+    "facet_type": "string",
+    "label": "Md5Sum",
+    "property_type": "string"
+  },
+  "secondary_expression_analysis.state_comment": {
+    "facet_filter": "secondary_expression_analysis.state_comment",
+    "facet_type": "string",
+    "label": "State Comment",
+    "property_type": "string"
+  },
+  "secondary_expression_analysis.type": {
+    "facet_filter": "secondary_expression_analysis.type",
+    "facet_type": "string",
+    "label": "Type",
+    "property_type": "string"
+  },
+  "secondary_expression_analysis.id": {
+    "facet_filter": "secondary_expression_analysis.id",
+    "facet_type": "string",
+    "label": "Id",
+    "property_type": "string"
+  },
+  "secondary_expression_analysis.submitter_id": {
+    "facet_filter": "secondary_expression_analysis.submitter_id",
+    "facet_type": "string",
+    "label": "Submitter Id",
+    "property_type": "string"
+  },
+  "secondary_expression_analysis.batch_id": {
+    "facet_filter": "secondary_expression_analysis.batch_id",
+    "facet_type": "integer",
+    "label": "Batch Id",
+    "property_type": "integer"
+  },
+  "secondary_expression_analysis.project_id": {
+    "facet_filter": "secondary_expression_analysis.project_id",
+    "facet_type": "string",
+    "label": "Project Id",
+    "property_type": "string"
+  }
+}
