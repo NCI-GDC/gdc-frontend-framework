@@ -23,7 +23,7 @@ RUN curl -SsL https://downloads.gauge.org/stable | sh
 
 COPY . /app
 
-RUN pip install -r /app/docker-requirements.txt
+RUN pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -r /app/docker-requirements.txt
 
 RUN playwright install
 
