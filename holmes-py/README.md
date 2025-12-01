@@ -17,7 +17,7 @@ _Detects and reports UI defects_
 This project uses
 
 - [Gauge](http://gauge.org/)
-- [Python 3.9.x or above](https://docs.python.org/3/index.html)
+- [Python 3.12.x or above](https://docs.python.org/3/index.html)
 - [Playwright](https://playwright.dev/python/docs/library#macos)
 
 ## Concepts covered
@@ -31,11 +31,11 @@ This project uses
 # Prerequisites
 
 - [Install Gauge](https://docs.gauge.org/getting_started/installing-gauge.html?os=macos&language=python&ide=vscode)
-- [Install Python 3.9.x or above](https://www.python.org/downloads/)
+- [Install Python 3.12.x or above](https://www.python.org/downloads/)
 - [Install Gauge-Python plugin](https://github.com/kashishm/gauge-python/wiki/User-Documentation) by running
 
   ````bash
-  gauge install python --version 0.4.9
+  gauge install python --version 0.4.11
   ````
 
 ## System(s) Under Test (SUT)
@@ -51,7 +51,7 @@ This project uses
 Ensure that you either create a virtual environment or are working in a Docker container.
 Make sure to create the environment in the holmes-py folder.
 
-_Creating a virtual environment:_ (Minimum python version 3.9.x)
+_Creating a virtual environment:_ (Minimum python version 3.12.x)
 
 ```bash
 python3 -m venv venv
@@ -79,8 +79,8 @@ deactivate
 
 ##### Minimum versions:
 ```bash
-Python: 3.9.x
-getgauge: 0.4.9
+Python: 3.12.x
+getgauge: 0.4.11
 playwright: 1.23.1
 protobuf: 3.20.2
 ```

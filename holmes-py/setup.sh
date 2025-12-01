@@ -27,7 +27,7 @@ cd $OUTPUT_DIR
 
 
 # Install gauge python
-gauge install python
+gauge install python --version 0.4.11
 
 # Update pip
 pip install --upgrade pip
