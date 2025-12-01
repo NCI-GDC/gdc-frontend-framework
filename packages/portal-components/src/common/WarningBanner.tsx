@@ -1,9 +1,9 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { ActionIcon } from "@mantine/core";
 import { AlertIcon, CloseIcon } from "src/commonIcons";
 
 interface WarningBannerProps {
-  readonly text: string;
+  readonly text: ReactNode;
   readonly dismissBanner?: () => void;
 }
 

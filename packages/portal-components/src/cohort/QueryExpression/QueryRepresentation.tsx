@@ -313,7 +313,7 @@ export const QueryElement = ({
     >
       <div className="flex flex-row items-center font-heading font-medium text-sm rounded-md border-[1.5px] mr-1 mb-2 border-secondary-darkest w-inherit">
         {isNonexistent && (
-          <div className="flex bg-warningColor h-full p-1 rounded-l-sm">
+          <div className="flex bg-warningColor h-full p-1 rounded-l">
             <AlertIcon color="white" className="m-auto" size="1em" />
           </div>
         )}
@@ -324,7 +324,7 @@ export const QueryElement = ({
           {children}
         </QueryContainer>
         <button
-          className="bg-accent-vivid p-0 m-0 h-full rounded-r-sm text-white hover:bg-accent-darker"
+          className="bg-accent-vivid p-0 m-0 h-full rounded-r text-white hover:bg-accent-darker"
           onClick={handleRemoveFilter}
           aria-label={`remove ${fieldNameToTitle(field)}`}
         >

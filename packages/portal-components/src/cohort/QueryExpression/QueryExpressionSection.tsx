@@ -4,6 +4,7 @@ import React, {
   useRef,
   useContext,
   useCallback,
+  ReactNode,
 } from "react";
 import { omit } from "lodash";
 import { useDeepCompareEffect } from "use-deep-compare";
@@ -90,7 +91,7 @@ const reducer = (
 interface QueryExpressionSectionProps {
   readonly filters: any;
   readonly hooks: QueryExpressionHooks;
-  readonly warningText: string;
+  readonly warningText: ReactNode;
 }
 
 export const QueryExpressionsExpandedContext = React.createContext<
