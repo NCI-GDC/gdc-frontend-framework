@@ -18,10 +18,9 @@ RUN rm -rf /var/lib/apt/lists/* \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
 COPY . /app
 
-RUN python3 -m pip install -r ./docker-requirements.txt
+RUN python3 -m pip install -r /app/docker-requirements.txt
 
 RUN playwright install --with-deps
 
@@ -32,5 +31,6 @@ RUN gauge install html-report
 
 ENV IS_DOCKER=1
 
+WORKDIR /app
 
 CMD [ "sh", "-c", "gauge run ./specs/gdc_data_portal_v2/" ]
