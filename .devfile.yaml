@@ -4,7 +4,6 @@ metadata:
   name: portal
   displayName: GDC Frontend Framework
   description: NodeJS application serving the portal for gdc.cancer.gov
-  icon:
   tags:
     - nodejs
   projectType: Node
