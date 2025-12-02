@@ -13,7 +13,7 @@ components:
     attributes:
       gl/inject-editor: true
     container:
-      image: docker.osdc.io/ncigdc/amzn2023-builder:0.1587825349.63
+      image: docker.osdc.io/ncigdc/amzn2023-builder:0.1587825349.64
       endpoints:
         - name: http
           targetPort: 3000
