@@ -41,7 +41,7 @@ const QueryFieldLabel: React.FC<PropsWithChildren<{ rounded: boolean }>> = ({
 }) => (
   <div
     className={`bg-accent-cool-content-lightest ${
-      rounded ? "rounded-l-md" : ""
+      rounded ? "rounded-l" : ""
     } text-base-darkest uppercase px-2 border-primary-darkest border-r-[1.5px] flex items-center`}
   >
     {children}
