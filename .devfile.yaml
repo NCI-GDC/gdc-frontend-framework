@@ -13,7 +13,7 @@ components:
     attributes:
       gl/inject-editor: true
     container:
-      image: docker.osdc.io/ncigdc/amzn2023-builder:0.1587825349.59
+      image: docker.osdc.io/ncigdc/amzn2023-builder:0.1587825349.62
       endpoints:
         - name: http
           targetPort: 3000
@@ -23,8 +23,8 @@ components:
       env:
         - name: DEBUG_PORT
           value: '9229'
-        - name: NODE_VER
-          value: '24.11.0'
+        - name: NODE_VERSION
+          value: '20.15.1'
         - name: npm_config_registry
           value: https://nexus.osdc.io/repository/npm-all/
         - name: npm_config_proxy
@@ -32,8 +32,17 @@ components:
         - name: npm_config_https_proxy
           value: http://cloud-proxy:3128
 commands:
+  - id: install-node
+    exec:
+      commandLine: source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION
+      workingDir: ${PROJECT_SOURCE}
+      component: nodejs-web
   - id: run-app
     exec:
       commandLine: npm run start
       workingDir: ${PROJECT_SOURCE}
       component: nodejs-web
+
+events:
+  postStart:
+    - install-node
