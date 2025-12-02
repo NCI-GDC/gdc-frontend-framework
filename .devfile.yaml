@@ -1,0 +1,50 @@
+---
+schemaVersion: 2.2.0
+metadata:
+  name: portal
+  displayName: GDC Frontend Framework
+  description: NodeJS application serving the portal for gdc.cancer.gov
+  icon:
+  tags:
+    - nodejs
+  projectType: Node
+  version: 0.0.1
+components:
+  - name: nodejs-web
+    attributes:
+      gl/inject-editor: true
+    container:
+      image: docker.osdc.io/ncigdc/nodejs20:0.1587825349.57
+      endpoints:
+        - name: http
+          targetPort: 3000
+        - exposure: none
+          name: debug
+          targetPort: 9229
+      env:
+        - name: DEBUG_PORT
+          value: '9229'
+        - name: NODE_VER
+          value: '20.19.6'
+        - name: npm_config_registry
+          value: https://nexus.osdc.io/repository/npm-all/
+        - name: npm_config_proxy
+          value: http://cloud-proxy:3128
+        - name: npm_config_https_proxy
+          value: http://cloud-proxy:3128
+commands:
+  - id: install-dependencies
+    exec:
+      commandLine: curl -sSL https://nexus.osdc.io/repository/misc/nodejs/node-${NODE_VER}-headers.tar.gz -o /tmp/node-headers.tgz &&
+        dnf install gcc-c++ make -y
+      workingDir: ${PROJECT_SOURCE}
+      component: nodejs-web
+  - id: run-app
+    exec:
+      commandLine: npm run start
+      workingDir: ${PROJECT_SOURCE}
+      component: nodejs-web
+
+events:
+  postStart:
+    - install-dependencies
