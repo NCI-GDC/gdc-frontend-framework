@@ -84,7 +84,7 @@ describe("test facet dictionary api functions", () => {
         facet_type: "age_in_years",
         range: {
           minimum: 0,
-          maximum: 32507,
+          maximum: 89,
         },
       },
       "cases.demographic.age_is_obfuscated": {

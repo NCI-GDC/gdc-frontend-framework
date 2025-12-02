@@ -1,4 +1,8 @@
 {
+  "demographic.age_at_index": {
+    "minimum": 0,
+    "maximum": 89
+  },
   "demographic.days_to_birth": {
     "minimum": -32872,
     "maximum": 0
@@ -249,6 +253,10 @@
   },
   "samples.portions.analytes.rna_integrity_number": {
     "maximum": 10
+  },
+  "exposures.age_at_onset": {
+    "minimum": 0,
+    "maximum": 89
   },
   "exposures.alcohol_days_per_week": {
     "minimum": 0,
