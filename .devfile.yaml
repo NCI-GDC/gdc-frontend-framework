@@ -23,8 +23,6 @@ components:
       env:
         - name: DEBUG_PORT
           value: '9229'
-        - name: NODE_VERSION
-          value: '20.15.1'
         - name: npm_config_registry
           value: https://nexus.osdc.io/repository/npm-all/
         - name: npm_config_proxy
@@ -34,7 +32,7 @@ components:
 commands:
   - id: install-node
     exec:
-      commandLine: nvm install $NODE_VERSION
+      commandLine: nvm install 20.15.1
       workingDir: ${PROJECT_SOURCE}
       component: nodejs-web
   - id: run-app
