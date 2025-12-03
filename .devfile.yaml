@@ -23,8 +23,6 @@ components:
       env:
         - name: NODE_ENV
           value: development
-        - name: PORT
-          PORT: '3000'
         - name: DEBUG_PORT
           value: '9229'
         - name: npm_config_registry
