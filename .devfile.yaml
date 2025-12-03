@@ -80,7 +80,6 @@ commands:
 events:
   postStart:
     - install-node
-    - update-npm
     - install-deps
     - install-packages
     - lerna-core-compile-build
