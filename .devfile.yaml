@@ -21,6 +21,10 @@ components:
           name: debug
           targetPort: 9229
       env:
+        - name: NODE_ENV
+          value: development
+        - name: PORT
+          PORT: '3000'
         - name: DEBUG_PORT
           value: '9229'
         - name: npm_config_registry
@@ -29,10 +33,42 @@ components:
           value: http://cloud-proxy-gdc.osdc.io:3128
         - name: npm_config_https_proxy
           value: http://cloud-proxy-gdc.osdc.io:3128
+        - name: npm_config_noproxy
+          value: *.osdc.io,*.datacommons.io,localhost,127.0.0.1
 commands:
   - id: install-node
     exec:
       commandLine: nvm install 20.15.1
+      workingDir: ${PROJECT_SOURCE}
+      component: nodejs-web
+  - id: install-deps
+    exec:
+      commandLine: npm install npm lerna@6.6.1
+      workingDir: ${PROJECT_SOURCE}
+      component: nodejs-web
+  - id: install-packages
+    exec:
+      commandLine: npm ci --include=dev
+      workingDir: ${PROJECT_SOURCE}
+      component: nodejs-web
+  - id: lerna-core-compile-build
+    exec:
+      commandLine: lerna run --scope @gff/core compile && lerna run --scope @gff/core build
+      workingDir: ${PROJECT_SOURCE}
+      component: nodejs-web
+  - id: lerna-sapien-compile-build
+    exec:
+      commandLine: lerna run --scope @nci-gdc/sapien compile && lerna run --scope @nci-gdc/sapien build
+      workingDir: ${PROJECT_SOURCE}
+      component: nodejs-web
+  - id: lerna-portal-components-compile-build
+    exec:
+      commandLine: lerna run --scope @gff/portal-components compile && lerna run --scope @gff/portal-components build
+      workingDir: ${PROJECT_SOURCE}
+      component: nodejs-web
+  - id: lerna-portal-proto-build
+    exec:
+      commandLine: lerna run --scope portal-proto build
       workingDir: ${PROJECT_SOURCE}
       component: nodejs-web
   - id: run-app
@@ -44,3 +80,10 @@ commands:
 events:
   postStart:
     - install-node
+    - update-npm
+    - install-deps
+    - install-packages
+    - lerna-core-compile-build
+    - lerna-sapien-compile-build
+    - lerna-portal-components-compile-build
+    - lerna-portal-proto-build
