@@ -87,3 +87,5 @@ jest.mock("dom-to-svg", () => ({
 jest.mock("url-join", () => ({
   urlJoin: jest.fn(),
 }));
+
+//global.fetch = jest.fn();

@@ -7,4 +7,5 @@ module.exports = {
   modulePaths: ["<rootDir>"],
   modulePathIgnorePatterns: ["<rootDir>/node_modules/"],
   testTimeout: 50000,
+  setupFilesAfterEnv: ["<rootDir>/setupTests.ts"],
 };
