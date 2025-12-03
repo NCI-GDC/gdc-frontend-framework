@@ -34,7 +34,7 @@ components:
         - name: npm_config_https_proxy
           value: http://cloud-proxy-gdc.osdc.io:3128
         - name: npm_config_noproxy
-          value: *.osdc.io,*.datacommons.io,localhost,127.0.0.1
+          value: "*.osdc.io,*.datacommons.io,localhost,127.0.0.1"
 commands:
   - id: install-node
     exec:
