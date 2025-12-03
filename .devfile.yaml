@@ -26,9 +26,9 @@ components:
         - name: npm_config_registry
           value: https://nexus.osdc.io/repository/npm-all/
         - name: npm_config_proxy
-          value: http://cloud-proxy:3128
+          value: http://cloud-proxy-gdc.osdc.io:3128
         - name: npm_config_https_proxy
-          value: http://cloud-proxy:3128
+          value: http://cloud-proxy-gdc.osdc.io:3128
 commands:
   - id: install-node
     exec:
