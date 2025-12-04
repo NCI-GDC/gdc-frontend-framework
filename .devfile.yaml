@@ -40,9 +40,9 @@ commands:
     exec:
       commandLine: sudo dnf install nodejs20 nodejs20-npm -y
       component: nodejs-web
-  - id: install-lerna
+  - id: install-global-lerna
     exec:
-      commandLine: sudo /usr/bin/npm install -g lerna@6
+      commandLine: sudo -E /usr/bin/npm install -g lerna@6
       component: nodejs-web
   - id: install-packages
     exec:
@@ -72,7 +72,7 @@ commands:
 events:
   postStart:
     - install-node
-    - install-lerna
+    - install-global-lerna
     - install-packages
     - lerna-core-compile-build
     - lerna-sapien-compile-build
