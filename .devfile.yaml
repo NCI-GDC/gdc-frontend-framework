@@ -14,6 +14,8 @@ components:
       gl/inject-editor: true
     container:
       image: docker.osdc.io/ncigdc/amzn2023-builder:0.1587825349.65
+      cpuLimit: 4
+      cpuRequest: 2
       endpoints:
         - name: http
           targetPort: 3000
@@ -36,11 +38,11 @@ components:
 commands:
   - id: install-node
     exec:
-      commandLine: nvm install 20.15.1
+      commandLine: source /home/gitlab-workspaces/.nvm/nvm.sh && nvm install
       component: nodejs-web
   - id: install-deps
     exec:
-      commandLine: npm install -g npm@10.8.2 lerna@6.6.1
+      commandLine: npm install -g npm@11.6.4 lerna@6.6.1
       component: nodejs-web
   - id: install-packages
     exec:
