@@ -17,8 +17,10 @@ components:
       cpuLimit: "4"
       cpuRequest: "2"
       endpoints:
-        - name: http
+        - name: http-3000
           targetPort: 3000
+        - name: http-3050
+          targetPort: 3050
         - exposure: none
           name: debug
           targetPort: 9229
@@ -62,7 +64,7 @@ commands:
       component: nodejs-web
   - id: run-app
     exec:
-      commandLine: npm run start
+      commandLine: npm run dev
       component: nodejs-web
 
 events:
@@ -73,3 +75,4 @@ events:
     - lerna-sapien-compile-build
     - lerna-portal-components-compile-build
     - lerna-portal-proto-build
+    - run-app
