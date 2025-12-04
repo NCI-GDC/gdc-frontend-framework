@@ -42,11 +42,11 @@ commands:
       component: nodejs-web
   - id: install-global-lerna
     exec:
-      commandLine: sudo -E /usr/bin/npm install -g lerna@6
+      commandLine: /usr/bin/npm install lerna@6 --verbose
       component: nodejs-web
   - id: install-packages
     exec:
-      commandLine: /usr/bin/npm ci --include=dev
+      commandLine: /usr/bin/npm ci --include=dev --verbose
       component: nodejs-web
   - id: lerna-core-compile-build
     exec:
