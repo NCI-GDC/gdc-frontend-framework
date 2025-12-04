@@ -40,29 +40,29 @@ commands:
     exec:
       commandLine: sudo dnf install nodejs20 nodejs20-npm -y
       component: nodejs-web
-  - id: install-deps
+  - id: install-lerna
     exec:
-      commandLine: sudo npm install -g lerna@6
+      commandLine: sudo /usr/bin/npm install -g lerna@6
       component: nodejs-web
   - id: install-packages
     exec:
-      commandLine: npm ci --include=dev
+      commandLine: /usr/bin/npm ci --include=dev
       component: nodejs-web
   - id: lerna-core-compile-build
     exec:
-      commandLine: lerna run --scope @gff/core compile && lerna run --scope @gff/core build
+      commandLine: /usr/bin/lerna run --scope @gff/core compile && /usr/bin/lerna run --scope @gff/core build
       component: nodejs-web
   - id: lerna-sapien-compile-build
     exec:
-      commandLine: lerna run --scope @nci-gdc/sapien compile && lerna run --scope @nci-gdc/sapien build
+      commandLine: /usr/bin/lerna run --scope @nci-gdc/sapien compile && /usr/bin/lerna run --scope @nci-gdc/sapien build
       component: nodejs-web
   - id: lerna-portal-components-compile-build
     exec:
-      commandLine: lerna run --scope @gff/portal-components compile && lerna run --scope @gff/portal-components build
+      commandLine: /usr/bin/lerna run --scope @gff/portal-components compile && /usr/bin/lerna run --scope @gff/portal-components build
       component: nodejs-web
   - id: lerna-portal-proto-build
     exec:
-      commandLine: lerna run --scope portal-proto build
+      commandLine: /usr/bin/lerna run --scope portal-proto build
       component: nodejs-web
   - id: run-app
     exec:
@@ -72,7 +72,7 @@ commands:
 events:
   postStart:
     - install-node
-    - install-deps
+    - install-lerna
     - install-packages
     - lerna-core-compile-build
     - lerna-sapien-compile-build
