@@ -38,7 +38,7 @@ components:
 commands:
   - id: install-node
     exec:
-      commandLine: source /home/gitlab-workspaces/.nvm/nvm.sh && nvm install
+      commandLine: sudo dnf install nodejs20 -y
       component: nodejs-web
   - id: install-deps
     exec:
