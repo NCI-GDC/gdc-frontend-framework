@@ -16,7 +16,7 @@ components:
       image: docker.osdc.io/ncigdc/amzn2023-builder:0.1587825349.69
       cpuRequest: "2"
       memoryRequest: "12Gi"
-      cpuLimit: "6"
+      cpuLimit: "4"
       memoryLimit: "16Gi"
       endpoints:
         - name: http-3000
