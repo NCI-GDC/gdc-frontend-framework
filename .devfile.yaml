@@ -14,8 +14,8 @@ components:
       gl/inject-editor: true
     container:
       image: docker.osdc.io/ncigdc/amzn2023-builder:0.1587825349.65
-      cpuLimit: 4
-      cpuRequest: 2
+      cpuLimit: "4"
+      cpuRequest: "2"
       endpoints:
         - name: http
           targetPort: 3000
