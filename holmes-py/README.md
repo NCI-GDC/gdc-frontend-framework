@@ -1,60 +1,72 @@
-# Holmes
+# Holmes-py
+
+## For Artillery Performance Tests, go [here](artillery/README.md)
+Artillery is our tool for data portal performance testing. The tests can be ran authenticated (logged in) or non authenticated.
+
+There are additional scripts to compare performance data, and generate graphs for data visualization.
+
 ## Docs specific to Data Portal V2 can be found [here](docs/README.md)
+Holmes-py is our tool for testing the behavior of the data portal. There are full regression and smoke tests, along with data release specific tests.
+
 ## BDD test automation framework
 _Detects and reports UI defects_
 
+<br>
+
 # Table of contents
-1. Framework
-   1.1 Concepts covered
-2. Prerequisites
-3. System(s) Under Test (SUT)
-4. Executing specs
-5. Docker Integration
-6. GitLab CI/CD Pipeline
+
+1. [Framework](#framework)
+2. [System(s) Under Test (SUT)](#systems-under-test-sut)
+3. [Installation Guide](#installation-guide)
+4. [Executing specs](#executing-specs)
+5. [Docker Integration](#docker-integration)
+6. [GitLab CI/CD Pipeline](#gitlab-cicd-pipeline)
+
+<br>
 
 # Framework
 
-This project uses
+This project uses Python, Gauge, and Playwright. Here are links for relevant documentation. Installation guide begins under [Installation Guide](#installation-guide)
 
 - [Gauge](http://gauge.org/)
-- [Python 3.12.x or above](https://docs.python.org/3/index.html)
-- [Playwright](https://playwright.dev/python/docs/library#macos)
+- [Python 3.12](https://docs.python.org/3.12/)
+- [Playwright](https://playwright.dev/python/)
 
-## Concepts covered
+<br>
 
-- Use [Playwright](https://playwright.dev/python/docs/writing-tests) as base of implementation
-- Specs
-- Table driven execution
-- File driven execution
-- Simple execution
+## System(s) Under Test (SUT)
+1. Download Reports Generator
+2. Data Portal 2.0
 
-# Prerequisites
+<br>
+
+# Installation Guide
+
+## Install Framework
 
 - [Install Gauge](https://docs.gauge.org/getting_started/installing-gauge.html?os=macos&language=python&ide=vscode)
-- [Install Python 3.12.x or above](https://www.python.org/downloads/)
-- [Install Gauge-Python plugin](https://github.com/kashishm/gauge-python/wiki/User-Documentation) by running
-
+- [Install Python 3.12](https://www.python.org/downloads/)
+- [Install Gauge-Python plugin](https://github.com/kashishm/gauge-python/wiki/User-Documentation) by running this command. It MUST be the version listed.
   ````bash
   gauge install python --version 0.4.11
   ````
 
-## System(s) Under Test (SUT)
-1. Download Reports Generator
-2. New Data Portal
 
-# Executing specs
-
-### Set up
-
-#### Virtual Environment
+## Virtual Environment
 
 Ensure that you either create a virtual environment or are working in a Docker container.
 Make sure to create the environment in the holmes-py folder.
 
-_Creating a virtual environment:_ (Minimum python version 3.12.x)
+_Creating a virtual environment:_ (python version 3.12.x)
+
+Set your local python to be the version of 3.12 you have installed on your machine
+```bash
+ pyenv local 3.12.x
+```
+Create the virtual environment
 
 ```bash
-python3 -m venv venv
+python -m venv venv
 ```
 
 _Activating the virtual environment:_
@@ -63,27 +75,8 @@ _Activating the virtual environment:_
 source venv/bin/activate
 ```
 
-_Deactivating the virtual environment:_
+## Install Requirements
 
-```bash
-source venv/bin/deactivate
-```
-
-or
-
-```bash
-deactivate
-```
-
-#### Install Requirements
-
-##### Minimum versions:
-```bash
-Python: 3.12.x
-getgauge: 0.4.11
-playwright: 1.23.1
-protobuf: 3.20.2
-```
 Upgrade pip before attempting to install dependencies
 ````bash
 pip install --upgrade pip
@@ -94,23 +87,31 @@ This project requires pip to install dependencies. To install dependencies run:
 pip install -r requirements.txt
 ````
 
-Playwright
+Install Playwright Browsers
 ````bash
 playwright install
 ````
+
+##### Correct versions:
+```bash
+Python: 3.12.x
+getgauge: 0.4.11
+playwright: 1.53.0
+```
 
 ### Properties
 On Windows: Please update the env/default/python.properties as bellow.
 ````bash
 GAUGE_PYTHON_COMMAND = python
 ````
-### Set APP Environment
-By default, the tests run on Production.
-To see all environments, visit this document specific to the data portal v2 [Test Framework](docs/test-framework.md).
-This command changes where the tests are pointed at.
-````bash
-export APP_ENVIRONMENT=ENVIRONMENT_NAME
-````
+### How to test different environments
+On your machine, VPN to the environment you want to run the tests against.
+
+<br><br>
+
+# Executing specs
+
+## Test Execution Commands
 
 ### All specs
 ````bash
@@ -124,7 +125,7 @@ gauge run <path_to_spec1> <path_to_spec2> <path_to_spec3>
 
 #### Run by tags
 ````bash
-gauge run --tags "Tag_Name" specs
+gauge run specs --tags "Tag_Name"
 ````
 
 #### Run a single scenario
@@ -177,10 +178,15 @@ gauge run specs --tags "data-release"
 gauge run specs --tags "controlled-access"
 ````
 
-### Gauge Execution Documentation
-See [Run Gauge Specifications](https://docs.gauge.org/execution.html?os=macos&language=python&ide=vscode)
+#### Example command: Run regression test with 6 threads
+````
+gauge run -p -n=6 specs --tags "regression"
+````
 
-This will also compile all the supporting code implementations.
+### Gauge Execution Documentation
+See [Run Gauge Specifications](https://docs.gauge.org/execution.html?os=macos&language=python&ide=vscode) for additional execution commands
+
+<br><br>
 
 # Docker Integration
 
@@ -196,9 +202,8 @@ Here's how to build/run this repo inside a Docker container.
 
 ```bash
 Copy code
-docker run --rm --env APP_ENVIRONMENT=PROD --env browser="headless firefox"
+docker run --rm --env browser="headless firefox" .
 ```
-Set the environment variable APP_ENVIRONMENT to the desired test environment (e.g., QA_YELLOW, QA_UAT, PROD_UAT).
 
 NOTE: The IS_DOCKER variable is used to indicate that tests are running within the Docker container, and is set to True within the Dockerfile
 
@@ -209,6 +214,9 @@ To run the tests locally using docker-compose, run:
 ```bash
 docker-compose up [--build]
 ```
+
+<br><br>
+
 
 # GitLab CI/CD Pipeline
 
