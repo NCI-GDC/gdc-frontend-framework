@@ -38,11 +38,11 @@ components:
 commands:
   - id: install-node
     exec:
-      commandLine: sudo dnf install nodejs20 -y
+      commandLine: sudo dnf install nodejs20 nodejs20-npm -y
       component: nodejs-web
   - id: install-deps
     exec:
-      commandLine: npm install -g npm@11.6.4 lerna@6.6.1
+      commandLine: sudo npm install -g lerna@6
       component: nodejs-web
   - id: install-packages
     exec:
