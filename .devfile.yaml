@@ -37,42 +37,34 @@ commands:
   - id: install-node
     exec:
       commandLine: nvm install 20.15.1
-      workingDir: ${PROJECT_SOURCE}
       component: nodejs-web
   - id: install-deps
     exec:
-      commandLine: npm install npm lerna@6.6.1
-      workingDir: ${PROJECT_SOURCE}
+      commandLine: npm install -g npm@10.8.2 lerna@6.6.1
       component: nodejs-web
   - id: install-packages
     exec:
       commandLine: npm ci --include=dev
-      workingDir: ${PROJECT_SOURCE}
       component: nodejs-web
   - id: lerna-core-compile-build
     exec:
       commandLine: lerna run --scope @gff/core compile && lerna run --scope @gff/core build
-      workingDir: ${PROJECT_SOURCE}
       component: nodejs-web
   - id: lerna-sapien-compile-build
     exec:
       commandLine: lerna run --scope @nci-gdc/sapien compile && lerna run --scope @nci-gdc/sapien build
-      workingDir: ${PROJECT_SOURCE}
       component: nodejs-web
   - id: lerna-portal-components-compile-build
     exec:
       commandLine: lerna run --scope @gff/portal-components compile && lerna run --scope @gff/portal-components build
-      workingDir: ${PROJECT_SOURCE}
       component: nodejs-web
   - id: lerna-portal-proto-build
     exec:
       commandLine: lerna run --scope portal-proto build
-      workingDir: ${PROJECT_SOURCE}
       component: nodejs-web
   - id: run-app
     exec:
       commandLine: npm run start
-      workingDir: ${PROJECT_SOURCE}
       component: nodejs-web
 
 events:
