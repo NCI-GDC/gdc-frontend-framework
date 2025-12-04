@@ -14,8 +14,8 @@ components:
       gl/inject-editor: true
     container:
       image: docker.osdc.io/ncigdc/amzn2023-builder:0.1587825349.69
-      cpuLimit: "4"
       cpuRequest: "2"
+      cpuLimit: "8"
       endpoints:
         - name: http-3000
           targetPort: 3000
@@ -40,7 +40,7 @@ components:
 commands:
   - id: install-node
     exec:
-      commandLine: sudo dnf install nodejs20 nodejs20-npm -y && sudo /usr/bin/npm install -g lerna@6 --verbose
+      commandLine: sudo dnf install nodejs20 nodejs20-npm -y && sudo -E /usr/bin/npm install -g lerna@6 --verbose
       component: nodejs-web
   - id: install-packages
     exec:
