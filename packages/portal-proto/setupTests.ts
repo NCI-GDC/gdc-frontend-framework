@@ -1,6 +1,7 @@
 import "@testing-library/jest-dom";
 import { loadEnvConfig } from "@next/env";
 import "@testing-library/jest-dom/extend-expect";
+import { configure } from "@testing-library/react";
 
 const { getComputedStyle } = window;
 window.getComputedStyle = (elt) => getComputedStyle(elt);
@@ -88,4 +89,6 @@ jest.mock("url-join", () => ({
   urlJoin: jest.fn(),
 }));
 
-//global.fetch = jest.fn();
+global.fetch = jest.fn();
+
+configure({ defaultHidden: true });
