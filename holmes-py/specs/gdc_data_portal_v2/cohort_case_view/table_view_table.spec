@@ -23,7 +23,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
     |Case ID                                |4      |
     |Project                                |5      |
     |Primary Site                           |6      |
-    |Gender                                 |7      |
+    |Sex At Birth                           |7      |
     |Files                                  |8      |
     |Annotations                            |9      |
 
@@ -56,7 +56,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
     |Age At Diagnosis                       |11     |
     |Vital Status                           |12     |
     |Days To Death                          |13     |
-    |Gender                                 |14     |
+    |Sex At Birth                           |14     |
     |Race                                   |15     |
     |Ethnicity                              |16     |
     |Files                                  |17     |
@@ -121,7 +121,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
     |Case ID                                |4      |
     |Project                                |5      |
     |Primary Site                           |6      |
-    |Gender                                 |7      |
+    |Sex At Birth                           |7      |
     |Files                                  |8      |
     |Annotations                            |9      |
 

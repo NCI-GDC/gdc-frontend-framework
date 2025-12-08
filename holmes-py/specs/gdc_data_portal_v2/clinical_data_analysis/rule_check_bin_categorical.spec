@@ -14,16 +14,16 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression, negative-test, neg
 * Wait for "Overall Survival Plot" to be present on the page
 
 ## Categorical Value Rule Check
-* On the "Gender" card, select "Customize Bins" button on the Clinical Data Analysis page
+* On the "Race" card, select "Customize Bins" button on the Clinical Data Analysis page
 * Select "Edit Bins"
-* Is text "Create Custom Bins: Gender" present on the page
+* Is text "Create Custom Bins: Race" present on the page
 * Select the following values in a categorical custom bin modal on the Clinical Data Analysis page
    |value                                   |
    |----------------------------------------|
-   |male                                    |
-   |missing                                  |
+   |white                                   |
+   |black or african american               |
 * Select "Group Values" in a categorical custom bin modal on the Clinical Data Analysis page
-* Name the group of values "female" in a categorical custom bin modal on the Clinical Data Analysis page
+* Name the group of values "black or african american" in a categorical custom bin modal on the Clinical Data Analysis page
 * Is text "The group name cannot be the same as the name of a value" present on the page
 * Name the group of values "" in a categorical custom bin modal on the Clinical Data Analysis page
 * Is text "Required field" present on the page

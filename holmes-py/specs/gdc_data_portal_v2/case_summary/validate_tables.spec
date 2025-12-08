@@ -167,7 +167,7 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download, regressio
     |Demographic ID                         |
     |Demographic UUID                       |
     |Ethnicity                              |
-    |Gender                                 |
+    |Sex At Birth                           |
     |Race                                   |
     |Days To Birth                          |
     |Days To Death                          |
@@ -224,7 +224,7 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download, regressio
     |Family History ID                      |
     |Family History UUID                    |
     |Relationship Age At Diagnosis          |
-    |Relationship Gender                    |
+    |Relationship Sex At Birth              |
     |Relationship Primary Diagnosis         |
     |Relationship Type                      |
     |Relative With Cancer History           |
@@ -297,7 +297,7 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download, regressio
     |pathology_details.zone_of_origin_prostate        |
     |family_histories.relative_smoker                 |
     |family_histories.relatives_with_cancer_history_count|
-    |family_histories.relationship_gender             |
+    |family_histories.relationship_sex_at_birth       |
     |3d5ebf3f-0cbd-458a-820d-65652e9682d7             |
     |MMRF_2081                                        |
     |pathology_details.additional_pathology_findings  |

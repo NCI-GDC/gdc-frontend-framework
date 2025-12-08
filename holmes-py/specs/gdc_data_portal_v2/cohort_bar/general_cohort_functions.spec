@@ -17,7 +17,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, smoke-test
 * Make the following selections from "Demographic" tab on the Cohort Builder page
   |facet_name       |selection            |
   |-----------------|---------------------|
-  |Gender           |female               |
+  |Sex at Birth     |female               |
   |Vital Status     |alive                |
 * Is text "Cohort not saved" present on the Cohort Bar
 * Select "Save" from the Cohort Bar
@@ -91,6 +91,6 @@ tags: gdc-data-portal-v2, regression, cohort-bar, smoke-test
 * Create and save a cohort named "quick_cohort_step_1" with these filters
   |tab_name               |facet_name           |selection            |
   |-----------------------|---------------------|---------------------|
-  |Demographic            |Gender               |female               |
+  |Demographic            |Sex at Birth         |female               |
   |General Diagnosis      |Ajcc Clinical Stage  |stage ivc            |
   |General                |Program              |TCGA                 |

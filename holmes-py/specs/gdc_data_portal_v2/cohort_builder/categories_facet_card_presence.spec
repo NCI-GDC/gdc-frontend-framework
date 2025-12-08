@@ -28,7 +28,7 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards, regression
 * Validate presence of facet cards on the "Demographic" tab on the Cohort Builder page
   |facet_name                 |
   |---------------------------|
-  |Gender                     |
+  |Sex at Birth               |
   |Race                       |
   |Ethnicity                  |
   |Age at Diagnosis           |

@@ -20,7 +20,7 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
 * Validate all expected analysis cards are present on the Clinical Data Analysis page
   |analysis_card        |
   |---------------------|
-  |Gender               |
+  |Sex At Birth         |
   |Race                 |
   |Ethnicity            |
   |Age At Diagnosis     |
@@ -37,7 +37,7 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
 * Validate all expected analysis cards are present on the Clinical Data Analysis page
   |analysis_card            |
   |-------------------------|
-  |Gender                   |
+  |Sex At Birth             |
   |Race                     |
   |Primary Diagnosis        |
   |Year Of Birth            |

@@ -18,11 +18,11 @@ tags: gdc-data-portal-v2, end-to-end, regression
 * Create and save a cohort named "replace_cohort_2" with these filters
   |tab_name               |facet_name           |selection                      |
   |-----------------------|---------------------|-------------------------------|
-  |Demographic            |Gender               |male                           |
+  |Demographic            |Sex at Birth         |male                     |
 * Create and save a cohort named "replace_cohort_1" with these filters
   |tab_name               |facet_name           |selection                      |
   |-----------------------|---------------------|-------------------------------|
-  |Demographic            |Gender               |female                         |
+  |Demographic            |Sex at Birth         |female                   |
 
 ## Set Operations Replace
 * Navigate to "Analysis" from "Header" "section"

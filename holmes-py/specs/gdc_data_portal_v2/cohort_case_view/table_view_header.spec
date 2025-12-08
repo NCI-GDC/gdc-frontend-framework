@@ -339,6 +339,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
     |TARGET-AML                             |
     |MATCH                                  |
     |TCGA                                   |
+    |gender                                 |
 
 ## Cohort Table - Validate JSON Fields
   |field_name                                       |
@@ -352,7 +353,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
   |project.program.name                             |
   |diagnoses.age_at_diagnosis                       |
   |demographic.race                                 |
-  |demographic.gender                               |
+  |demographic.sex_at_birth                         |
   |demographic.ethnicity                            |
   |demographic.vital_status                         |
   |demographic.days_to_death                        |

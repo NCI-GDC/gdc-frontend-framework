@@ -124,7 +124,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
   |facet_name           |selection            |
   |---------------------|---------------------|
   |Project              |MMRF-COMMPASS        |
-  |Gender               |female               |
+  |Sex at Birth         |female               |
 * Make the following selections from "Disease Specific Classifications" tab on the Cohort Builder page
   |facet_name           |selection            |
   |---------------------|---------------------|
@@ -401,7 +401,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
   |filter_name          |action               |
   |---------------------|---------------------|
   |Project              |Chart view           |
-  |Gender               |Chart view           |
+  |Sex at Birth         |Chart view           |
   |Disease Type         |Chart view           |
 
 ## Collapse Cohort Case View
