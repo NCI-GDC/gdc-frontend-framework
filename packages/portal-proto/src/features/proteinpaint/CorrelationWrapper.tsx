@@ -183,10 +183,7 @@ function getCorrelationTrack(
         {
           chartType: "survival",
           term: {
-            term: {
-              id: "Overall Survival",
-              type: "survival",
-            },
+            id: "Overall Survival",
           },
           term2: {
             term: {
