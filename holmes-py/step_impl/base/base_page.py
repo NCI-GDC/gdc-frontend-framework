@@ -969,6 +969,7 @@ class BasePage:
         with driver.context.expect_page() as tab:
             sources.get(source)(button)
         new_tab = tab.value
+        WebDriver.set_tab_viewport_size(new_tab)
         return new_tab
 
     def click_in_table_handle_new_tab(self, table_name, row, column):
@@ -985,6 +986,7 @@ class BasePage:
         with driver.context.expect_page() as tab:
             self.select_specified_table_by_row_column(table_name, row, column)
         new_tab = tab.value
+        WebDriver.set_tab_viewport_size(new_tab)
         return new_tab
 
     def is_text_visible_on_new_tab(self, new_tab, text_to_check):

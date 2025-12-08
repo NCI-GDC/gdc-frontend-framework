@@ -30,6 +30,7 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download, regressio
 * Select "Add Remove Files" on Case Summary page
 * Is modal with text "Removed 2 files from the cart." present on the page and "Remove Modal"
 * Select button "View Slide Images"
+* Select case or slide "TCGA-13-0920-01A-01-TS1" on the Image Viewer page
 * Select "Details" on the Image Viewer page
 * Verify details fields and values
   |field_name                       |value                                  |

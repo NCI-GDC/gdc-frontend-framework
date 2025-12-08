@@ -68,7 +68,7 @@ tags: gdc-data-portal-v2, regression, gene-summary
     |required_info                          |
     |---------------------------------------|
     |TCGA-UCEC                              |
-    |TCGA-PAAD                              |
+    |TCGA-STAD                              |
     |Adnexal and Skin Appendage Neoplasms   |
     |Fibroepithelial Neoplasms              |
     |Brain                                  |
@@ -170,7 +170,7 @@ tags: gdc-data-portal-v2, regression, gene-summary
     |TCGA-UCEC                              |
     |6.0546875                              |
     |CDDP_EAGLE-1                           |
-    |TCGA-PAAD                              |
+    |TCGA-STAD                              |
     |project                                |
     |affected_cases_percent                 |
 

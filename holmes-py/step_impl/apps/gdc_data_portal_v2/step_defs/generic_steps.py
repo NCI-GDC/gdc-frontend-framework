@@ -1274,6 +1274,7 @@ def click_nav_item_check_text_in_new_tab(page_name: str, table):
         new_tab = APP.shared.perform_action_handle_new_tab(page_name, v[0])
         is_text_visible = APP.shared.is_text_visible_on_new_tab(new_tab, v[1])
         new_tab.close()
+        time.sleep(0.4)
         assert (
             is_text_visible
         ), f"After click on '{v[0]}', the expected text '{v[1]}' in NOT present"
@@ -1292,6 +1293,9 @@ def click_table_by_row_column_check_text_in_new_tab(table_name: str, table):
     :param v[1]: Column number to click.
     :param v[2]: Text to check.
     """
+    # Banners can interfere with this test. Dismiss any banner before beginning.
+    if APP.shared.is_text_present("Dismiss"):
+        APP.shared.click_button_with_displayed_text_name("Dismiss")
     for k, v in enumerate(table):
         new_tab = APP.shared.click_in_table_handle_new_tab(table_name, v[0], v[1])
         is_text_visible = APP.shared.is_text_visible_on_new_tab(new_tab, v[2])
@@ -1299,6 +1303,7 @@ def click_table_by_row_column_check_text_in_new_tab(table_name: str, table):
             is_text_visible
         ), f"After click in table '{table_name}', row: '{v[0]}' and column: '{v[1]}' the expected text '{v[2]}' in NOT present"
         new_tab.close()
+        time.sleep(0.4)
 
 @step(
     "Check that <var_to_check> cookie is accessible using Javascript and that it's generated using uuid version <ver>"
