@@ -73,6 +73,8 @@ Build and test core and portal:
     - dnf install gcc-c++ make -y
     - npm ci
   script:
+    - cd ${CI_PROJECT_DIR}/packages/portal-proto
+    - npm run build:clean
     - cd ${CI_PROJECT_DIR}/packages/core
     - npm run build:clean
     - cd ${CI_PROJECT_DIR}/packages/portal-components
