@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { ActionIcon, Popover } from "@mantine/core";
 import { DateInput, DatePicker } from "@mantine/dates";
-import { getFormattedTimestamp } from "../utils";
 import { CalendarIcon, MinusIcon, PlusIcon } from "src/commonIcons";
 import { buildRangeOperator, extractRangeValues } from "../utils";
 import FacetControlsHeader from "./FacetControlsHeader";
@@ -11,17 +10,7 @@ type DateRangeFacetProps = Omit<
   FacetCardProps<ValueFacetHooks>,
   "showSearch" | "showFlip" | "showPercent" | "valueLabel"
 >;
-
-/**
- * converts a string of the form YYYY/MM/DD to a Date object
- * @param dateStr -
- */
-const convertStringToDate = (dateStr?: string): Date | null => {
-  if (dateStr === undefined) return null;
-  return new Date(dateStr.replaceAll("-", "/"));
-};
-
-type DateRange = [Date | null, Date | null];
+type DateRange = [string | null, string | null];
 
 /**
  * Facet card component for date range fields
@@ -50,16 +39,16 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
     [facetValue],
   );
   const dateRangeValue: DateRange = [
-    convertStringToDate(dateRange ? dateRange.from : undefined),
-    convertStringToDate(dateRange ? dateRange.to : undefined),
+    dateRange?.from ?? null,
+    dateRange?.to ?? null,
   ];
 
   const [opened, setOpened] = useState(false);
 
-  const setDateRangeValue = (d: [Date | null, Date | null]) => {
+  const setDateRangeValue = (d: [string | null, string | null]) => {
     const data: StringRange = {
-      from: getFormattedTimestamp({ date: d[0] }),
-      to: getFormattedTimestamp({ date: d[1] }),
+      from: d[0] ?? undefined,
+      to: d[1] ?? undefined,
       fromOp: ">=",
       toOp: "<=",
     };
@@ -92,7 +81,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
             className="px-1"
             maxDate={dateRangeValue[1] ?? undefined}
             valueFormat="YYYY-MM-DD"
-            onChange={(d: Date | null) =>
+            onChange={(d: string | null) =>
               setDateRangeValue([d, dateRangeValue[1]])
             }
             classNames={{ day: "hover:bg-primary hover:text-base-max" }}
@@ -110,7 +99,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
             valueFormat="YYYY-MM-DD"
             value={dateRangeValue[1]}
             minDate={dateRangeValue[0] ?? undefined}
-            onChange={(d: Date | null) =>
+            onChange={(d: string | null) =>
               setDateRangeValue([dateRangeValue[0], d])
             }
             classNames={{ day: "hover:bg-primary hover:text-base-max" }}
@@ -143,7 +132,7 @@ const DateRangeFacet: React.FC<DateRangeFacetProps> = ({
                 type="range"
                 allowSingleDateInRange={false}
                 value={dateRangeValue}
-                onChange={(d: [Date | null, Date | null]) =>
+                onChange={(d: [string | null, string | null]) =>
                   setDateRangeValue(d)
                 }
                 aria-label="date range picker"

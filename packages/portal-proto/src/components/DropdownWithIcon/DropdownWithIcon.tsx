@@ -1,6 +1,5 @@
 import { ReactNode, useRef } from "react";
-import { Button, Menu, Tooltip } from "@mantine/core";
-import { FloatingPosition } from "@mantine/core/lib/components/Floating/types";
+import { Button, Menu, MenuProps, Tooltip } from "@mantine/core";
 import { focusStyles } from "src/utils";
 import { DropdownIcon } from "@/utils/icons";
 import { ADDITIONAL_DOWNLOAD_MESSAGE } from "@/utils/constants";
@@ -48,7 +47,7 @@ interface DropdownWithIconProps {
   /**
    *    custom position for Menu
    */
-  customPosition?: FloatingPosition;
+  customPosition?: MenuProps["position"];
   /**
    *    whether the dropdown should fill the height of its parent
    */

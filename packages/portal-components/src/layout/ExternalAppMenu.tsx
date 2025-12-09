@@ -7,7 +7,7 @@ import { Menu, MenuItem } from "@mantine/core";
 import HeaderLink from "./Header/HeaderLink";
 import { HeaderLinkItem } from "./Header/types";
 
-const appMenuClass = "data-hovered:bg-primary-lightest p-0 m-0";
+const appMenuClass = "hover:bg-primary-lightest p-0 m-0";
 
 interface ExternalAppMenuProps {
   readonly externalAppLinks: ReadonlyArray<HeaderLinkItem>;
