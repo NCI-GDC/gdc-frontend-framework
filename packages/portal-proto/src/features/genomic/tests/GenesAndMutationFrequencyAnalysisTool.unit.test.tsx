@@ -1,5 +1,4 @@
 import GenesAndMutationFrequencyAnalysisTool from "../GenesAndMutationFrequencyAnalysisTool";
-import * as genomicHook from "src/features/genomic/hooks";
 import * as core from "@gff/core";
 import * as genomicReducer from "src/features/genomic/appApi";
 import { useIsDemoApp, useIsDemoAppType } from "@/hooks/useIsDemoApp";
