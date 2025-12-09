@@ -996,6 +996,9 @@ class BasePage:
         :param new_tab: The tab page to be checked.
         :param text_to_check: The <p> text to be searched for.
         """
+        # Some sites check to see if you are a human before the page loads. This mouse event is an action
+        # that triggers the rest of the page loading.
+        new_tab.mouse.up()
         expected_text_locator = GenericLocators.TEXT_IN_PARAGRAPH(text_to_check)
         try:
             new_tab.locator(expected_text_locator).wait_for(state="visible",timeout=75000)
