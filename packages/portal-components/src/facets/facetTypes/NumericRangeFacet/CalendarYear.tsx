@@ -3,7 +3,7 @@ import RangeInputWithPrefixedRanges from "./RangeInputWithPrefixedRanges";
 import { NumericFacetProps } from "./types";
 
 // Calendar Year
-const Year: React.FC<NumericFacetProps> = ({
+const CalendarYear: React.FC<NumericFacetProps> = ({
   field,
   hooks,
   valueLabel,
@@ -37,4 +37,4 @@ const Year: React.FC<NumericFacetProps> = ({
   );
 };
 
-export default Year;
+export default CalendarYear;
