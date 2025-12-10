@@ -82,7 +82,6 @@ Build and test core and portal:
     - cd ${CI_PROJECT_DIR}/packages/enclave-portal
     - npm run compile
     - cd ${CI_PROJECT_DIR}/packages/portal-proto
-    - npm run build:clean
     - npm run compile
     - cd ${CI_PROJECT_DIR}
     - npm run test:all
