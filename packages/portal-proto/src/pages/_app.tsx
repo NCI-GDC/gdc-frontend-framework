@@ -12,7 +12,13 @@ import {
   PUBLIC_APP_INFO,
   registerDefaultCountsHooks,
 } from "@gff/core";
-import { createTheme, MantineProvider, Modal, Button } from "@mantine/core";
+import {
+  createTheme,
+  MantineProvider,
+  Modal,
+  Button,
+  Switch,
+} from "@mantine/core";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import { useLocalStorage } from "@mantine/hooks";
@@ -268,6 +274,11 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
           }
 
           return tempButtonProps;
+        },
+      }),
+      Switch: Switch.extend({
+        defaultProps: {
+          withThumbIndicator: false,
         },
       }),
     },
