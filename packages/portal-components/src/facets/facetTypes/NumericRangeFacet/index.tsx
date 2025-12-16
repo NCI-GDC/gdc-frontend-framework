@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DaysOrYears from "./DaysOrYears";
-import Year from "./Year";
+import CalendarYear from "./CalendarYear";
 import Years from "./Years";
 import PercentRange from "./PercentRange";
 import NumericRangePanel from "./NumericRangePanel";
@@ -110,7 +110,7 @@ const NumericRangeFacet: React.FC<NumericFacetCardProps> = ({
               />
             ),
             year: (
-              <Year
+              <CalendarYear
                 valueLabel={valueLabel}
                 field={field}
                 hooks={{ ...hooks }}

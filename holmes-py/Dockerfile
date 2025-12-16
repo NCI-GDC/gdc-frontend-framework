@@ -1,37 +1,31 @@
-FROM mcr.microsoft.com/playwright:v1.23.1-focal
+FROM mcr.microsoft.com/playwright/python:v1.53.0-jammy
 
-RUN apt-get update && apt-get install -y \
-    python3.9 \
-    python3-pip \
-    python3.9-dev \
-    python3-tk \
-    scrot \
-    unzip \
-    libnss3 \
-    libatk1.0-0 \
-    libatk-bridge2.0-0 \
-    libdrm2 \
-    libxkbcommon0 \
-    libgtk-3-0 \
-    libxshmfence1 \
-    libgbm1 \
-    libasound2 \
-    libatspi2.0-0 \
+RUN rm -rf /var/lib/apt/lists/* \
+    && apt-get update \
+    && apt-get install -y \
+        scrot \
+        unzip \
+        libnss3 \
+        libatk1.0-0 \
+        libatk-bridge2.0-0 \
+        libdrm2 \
+        libxkbcommon0 \
+        libgtk-3-0 \
+        libxshmfence1 \
+        libgbm1 \
+        libasound2 \
+        libatspi2.0-0 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN ln -fs /usr/bin/python3.9 /usr/bin/python3
-
-RUN curl -SsL https://downloads.gauge.org/stable | sh
-
 COPY . /app
 
-RUN pip install -r /app/docker-requirements.txt
+RUN python3 -m pip install -r /app/docker-requirements.txt
 
-RUN npm install -g --force playwright@1.23.1 && \
-    playwright install --with-deps
+RUN playwright install --with-deps
 
-RUN gauge install python --version 0.4.9
+RUN curl -SsL https://downloads.gauge.org/stable | sh
+RUN gauge install python --version 0.4.11
 RUN gauge install screenshot
 RUN gauge install html-report
 

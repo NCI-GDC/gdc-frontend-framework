@@ -242,6 +242,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
                   await handleDownloadSVG(
                     downloadRef,
                     `${downloadFileName}.svg`,
+                    false,
                   );
                   finishDownload("svg");
                 }}
@@ -255,6 +256,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
                   await handleDownloadPNG(
                     downloadRef,
                     `${downloadFileName}.png`,
+                    false,
                   );
                   finishDownload("png");
                 }}
