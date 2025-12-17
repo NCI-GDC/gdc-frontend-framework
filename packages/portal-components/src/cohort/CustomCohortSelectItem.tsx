@@ -69,7 +69,9 @@ export const CustomCohortSelectItem = ({
   return (
     <div {...others} className="w-full">
       <span className="flex justify-between gap-2 items-center">
-        <span className="basis-11/12 break-all whitespace-pre">{label}</span>
+        <span className="basis-11/12 break-all whitespace-pre-wrap">
+          {label}
+        </span>
         <div className="basis-1/12 text-right leading-0">
           {!isSavedUnchanged && <UnsavedIcon label={cohortStatusMessage} />}
         </div>
