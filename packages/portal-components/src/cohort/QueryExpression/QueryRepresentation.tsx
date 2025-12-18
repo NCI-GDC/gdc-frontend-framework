@@ -3,7 +3,12 @@ import { get } from "lodash";
 import { ActionIcon, Divider, Group, Tooltip } from "@mantine/core";
 import { QueryExpressionsExpandedContext } from "./QueryExpressionSection";
 import FilterBadge from "@/common/FilterBadge";
-import { CloseIcon, RightArrowIcon, LeftArrowIcon } from "src/commonIcons";
+import {
+  CloseIcon,
+  RightArrowIcon,
+  LeftArrowIcon,
+  AlertIcon,
+} from "src/commonIcons";
 import {
   Equals,
   ExcludeIfAny,
@@ -30,8 +35,15 @@ const QueryRepresentationText: React.FC<PropsWithChildren> = ({ children }) => (
   </div>
 );
 
-const QueryFieldLabel: React.FC<PropsWithChildren> = ({ children }) => (
-  <div className="bg-accent-cool-content-lightest rounded-l-md text-base-darkest uppercase px-2 border-primary-darkest border-r-[1.5px] flex items-center">
+const QueryFieldLabel: React.FC<PropsWithChildren<{ rounded: boolean }>> = ({
+  rounded,
+  children,
+}) => (
+  <div
+    className={`bg-accent-cool-content-lightest ${
+      rounded ? "rounded-l" : ""
+    } text-base-darkest uppercase px-2 border-primary-darkest border-r-[1.5px] flex items-center`}
+  >
     {children}
   </div>
 );
@@ -98,9 +110,6 @@ const IncludeExcludeQueryElement: React.FC<IncludeExcludeQueryElementProps> = ({
 
   return (
     <QueryContainer>
-      <QueryFieldLabel>
-        {operator === "excludeifany" ? "EXCLUDES IF ANY" : fieldName}
-      </QueryFieldLabel>
       <ActionIcon
         variant="transparent"
         size={"xs"}
@@ -164,18 +173,15 @@ const IncludeExcludeQueryElement: React.FC<IncludeExcludeQueryElementProps> = ({
 interface ComparisonElementProps {
   operation: ComparisonOperation;
   hooks: QueryExpressionHooks;
-  readonly showLabel?: boolean;
 }
 
 const ComparisonElement: React.FC<ComparisonElementProps> = ({
   operation,
   hooks,
-  showLabel = true,
 }: ComparisonElementProps) => {
   const currentCohort = hooks.useSelectCurrentCohort();
   const updateActiveCohortFilter = hooks.useUpdateCohortFilter();
   const removeCohortFilter = hooks.useRemoveCohortFilter();
-  const fieldNameToTitle = hooks.useFieldNameToTitle();
 
   const handleRemove = (remove: ComparisonOperation) => {
     const fieldDetail = currentCohort.filters.root[remove.field];
@@ -206,9 +212,6 @@ const ComparisonElement: React.FC<ComparisonElementProps> = ({
 
   return (
     <>
-      {showLabel ? (
-        <QueryFieldLabel>{fieldNameToTitle(operation.field)}</QueryFieldLabel>
-      ) : null}
       <div className="flex flex-row items-center">
         <Tooltip label="Click to remove">
           <button
@@ -264,11 +267,7 @@ export const ClosedRangeQueryElement: React.FC<
               {op}
             </span>
           </div>
-          <ComparisonElement
-            operation={upper}
-            hooks={hooks}
-            showLabel={false}
-          />
+          <ComparisonElement operation={upper} hooks={hooks} />
         </QueryContainer>
       </QueryElement>
     </>
@@ -282,15 +281,17 @@ interface QueryElementProps {
 
 export const QueryElement = ({
   field,
+  operator,
   hooks,
   children,
-}: PropsWithChildren<QueryElementProps>) => {
+}: PropsWithChildren<QueryElementProps & Partial<Operation>>) => {
   const [, setQueryExpressionsExpanded] = useContext(
     QueryExpressionsExpandedContext,
   );
   const currentCohort = hooks.useSelectCurrentCohort();
   const removeCohortFilter = hooks.useRemoveCohortFilter();
   const fieldNameToTitle = hooks.useFieldNameToTitle();
+  const fieldName = fieldNameToTitle(field);
 
   const handleRemoveFilter = () => {
     removeCohortFilter(field);
@@ -302,17 +303,35 @@ export const QueryElement = ({
       });
   };
 
+  const isNonexistent = currentCohort.nonexistent_fields?.includes(field);
+
   return (
-    <div className="flex flex-row items-center font-heading font-medium text-sm rounded-md border-[1.5px] mr-1 mb-2 border-secondary-darkest w-inherit">
-      {children}
-      <button
-        className="bg-accent-vivid p-0 m-0 h-full rounded-r-sm text-white hover:bg-accent-darker"
-        onClick={handleRemoveFilter}
-        aria-label={`remove ${fieldNameToTitle(field)}`}
-      >
-        <CloseIcon size="1.5em" className="px-1" aria-hidden="true" />
-      </button>
-    </div>
+    <Tooltip
+      label={"Property no longer exists"}
+      disabled={!isNonexistent}
+      withArrow
+    >
+      <div className="flex flex-row items-center font-heading font-medium text-sm rounded-md border-[1.5px] mr-1 mb-2 border-secondary-darkest w-inherit">
+        {isNonexistent && (
+          <div className="flex bg-warningColor h-full p-1 rounded-l">
+            <AlertIcon color="white" className="m-auto" size="1em" />
+          </div>
+        )}
+        <QueryContainer>
+          <QueryFieldLabel rounded={!isNonexistent}>
+            {operator === "excludeifany" ? "EXCLUDES IF ANY" : fieldName}
+          </QueryFieldLabel>
+          {children}
+        </QueryContainer>
+        <button
+          className="bg-accent-vivid p-0 m-0 h-full rounded-r text-white hover:bg-accent-darker"
+          onClick={handleRemoveFilter}
+          aria-label={`remove ${fieldNameToTitle(field)}`}
+        >
+          <CloseIcon size="1.5em" className="px-1" aria-hidden="true" />
+        </button>
+      </div>
+    </Tooltip>
   );
 };
 

@@ -108,6 +108,8 @@ const AnalysisCenter: NextPage = () => {
         hooks={{
           useSelectCurrentCohort: () =>
             cohorts.find((c) => c.id === currentCohort) || cohorts[0],
+          useSelectDisplayCohortWarning: () => false,
+          useDismissWarning: () => () => {},
           useClearCohortFilters: () => () => {},
           useRemoveCohortFilter: () => () => {},
           useUpdateCohortFilter: () => () => {},
@@ -120,6 +122,7 @@ const AnalysisCenter: NextPage = () => {
               .join(" "),
           useFormatValue: () => (value) => Promise.resolve(value),
         }}
+        warningText=""
       />
       <AnalysisWorkspace
         registeredApps={REGISTERED_APPS}

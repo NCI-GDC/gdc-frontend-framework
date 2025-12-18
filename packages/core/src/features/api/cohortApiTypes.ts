@@ -12,6 +12,7 @@ export interface CohortModel {
   };
   created_datetime: string;
   modified_datetime: string;
+  nonexistent_fields: string[];
 }
 
 export type CohortAdd = {

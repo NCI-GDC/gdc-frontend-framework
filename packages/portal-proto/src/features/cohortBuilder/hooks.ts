@@ -26,6 +26,8 @@ import {
   showModal,
   Includes,
   FacetDefinitionType,
+  addCohortWarning,
+  selectAllCohortsWithWarnings,
 } from "@gff/core";
 import { FacetCardDefinition } from "@gff/portal-components";
 import { useEnumFacets } from "@/features/facets/hooks";
@@ -43,6 +45,9 @@ export const useSetupInitialCohorts = (): boolean => {
 
   const coreDispatch = useCoreDispatch();
   const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
+  const cohortWarnings = useCoreSelector((state) =>
+    selectAllCohortsWithWarnings(state),
+  );
 
   const updatedCohortIds = (cohortsListData || []).map((cohort) => cohort.id);
   const outdatedCohortsIds = cohorts
@@ -53,22 +58,33 @@ export const useSetupInitialCohorts = (): boolean => {
     if ((isSuccess || isError) && !fetched) {
       const updatedList: Cohort[] = (cohortsListData || []).map((data) => {
         const existingCohort = cohorts.find((c) => c.id === data.id);
+        const cohortData = {
+          id: data.id,
+          name: data.name,
+          filters: buildGqlOperationToFilterSet(data.filters),
+          caseSet: {
+            ...(existingCohort?.caseSet ?? { status: "uninitialized" }),
+          },
+          counts: {
+            ...NullCountsData,
+          },
+          modified_datetime: data.modified_datetime,
+          saved: true,
+          modified: false,
+          nonexistent_fields: data?.nonexistent_fields,
+        };
+
+        if (
+          !cohortWarnings.includes(cohortData.id) &&
+          cohortData?.nonexistent_fields
+        ) {
+          coreDispatch(addCohortWarning(cohortData.id));
+        }
+
+        // Override with local changes to cohort if they exist
         return existingCohort?.modified
-          ? existingCohort
-          : {
-              id: data.id,
-              name: data.name,
-              filters: buildGqlOperationToFilterSet(data.filters),
-              caseSet: {
-                ...(existingCohort?.caseSet ?? { status: "uninitialized" }),
-              },
-              counts: {
-                ...NullCountsData,
-              },
-              modified_datetime: data.modified_datetime,
-              saved: true,
-              modified: false,
-            };
+          ? { ...cohortData, ...existingCohort }
+          : cohortData;
       });
 
       coreDispatch(setActiveCohortList(updatedList)); // will create caseSet if needed
@@ -88,6 +104,7 @@ export const useSetupInitialCohorts = (): boolean => {
     setFetched,
     coreDispatch,
     outdatedCohortsIds,
+    cohortWarnings,
   ]);
 
   return fetched;

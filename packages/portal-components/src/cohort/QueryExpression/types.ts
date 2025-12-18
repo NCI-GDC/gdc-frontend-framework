@@ -2,6 +2,8 @@ import { Cohort } from "../types";
 
 export interface QueryExpressionHooks {
   useSelectCurrentCohort: () => Cohort;
+  useSelectDisplayCohortWarning: (cohortId: string) => boolean;
+  useDismissWarning: () => (cohortId: string) => void;
   useClearCohortFilters: () => () => void;
   useRemoveCohortFilter: () => (field: string) => void;
   useUpdateCohortFilter: () => (field: string, operation: Operation) => void;
