@@ -42,7 +42,7 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
 * Verify "CC_Selection_1 Case Count" and "CC_Selection_1 Selection Screen" are "equal"
 
 ## Validate Instruction Text
-* Is text "Display the survival analysis of your cohorts and compare characteristics such as gender, vital status and age at diagnosis. Create cohorts in the Analysis Center." present on the page
+* Is text "Display the survival analysis of your cohorts and compare characteristics such as sex at birth, vital status and age at diagnosis. Create cohorts in the Analysis Center." present on the page
 * Is text "Select a cohort to compare with CC_Selection_2" present on the page
 
 ## Validate Cancel Button on Selection Screen

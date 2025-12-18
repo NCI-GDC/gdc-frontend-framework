@@ -23,7 +23,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
   |Disease Type               |
   |Project                    |
   |Program                    |
-  |Gender                     |
+  |Sex at Birth               |
 
 ## Apply Filters
 * Make the following selections on a filter card in Cohort Summary View
@@ -32,7 +32,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
   |Disease Type         |plasma cell tumors   |
   |Disease Type         |gliomas              |
   |Primary Site         |spinal cord, cranial nerves, and other parts of central nervous system|
-  |Gender               |female               |
+  |Sex at Birth         |female               |
   |Project              |FM-AD                |
   |Program              |FM                   |
 
@@ -67,7 +67,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
   |General                |Project              |FM-AD                          |
   |General                |Program              |FM                             |
   |General                |Primary Site         |spinal cord, cranial nerves, and other parts of central nervous system|
-  |Demographic            |Gender               |female                         |
+  |Demographic            |Sex at Birth         |female                         |
 
 ## Custom Filters - Cases
 * Clear active cohort filters
@@ -132,7 +132,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view
   |Disease Type         |Chart view           |
   |Project              |Chart view           |
   |Program              |Chart view           |
-  |Gender               |Chart view           |
+  |Sex at Birth         |Chart view           |
 
 ## Collapse Cohort Case View
 * Expand or collapse the cohort bar

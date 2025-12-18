@@ -74,9 +74,11 @@ tags: gdc-data-portal-v2, repository, data-release, acl-validation
 * Create and save a cohort named "No_MATCH" with these filters
   |tab_name               |facet_name           |selection                      |
   |-----------------------|---------------------|-------------------------------|
+  |General                |Program              |ALCHEMIST                      |
   |General                |Program              |APOLLO                         |
   |General                |Program              |BEATAML1.0                     |
   |General                |Program              |CCDI                           |
+  |General                |Program              |CCG                            |
   |General                |Program              |CDDP_EAGLE                     |
   |General                |Program              |CGCI                           |
   |General                |Program              |CMI                            |
@@ -90,6 +92,7 @@ tags: gdc-data-portal-v2, repository, data-release, acl-validation
   |General                |Program              |NCICCR                         |
   |General                |Program              |OHSU                           |
   |General                |Program              |ORGANOID                       |
+  |General                |Program              |RC                             |
   |General                |Program              |REBC                           |
   |General                |Program              |TARGET                         |
   |General                |Program              |TCGA                           |

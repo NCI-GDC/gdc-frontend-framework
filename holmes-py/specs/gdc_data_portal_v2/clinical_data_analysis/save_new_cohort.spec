@@ -15,7 +15,7 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
   |tab_name               |facet_name           |selection                      |
   |-----------------------|---------------------|-------------------------------|
   |General                |Program              |APOLLO                         |
-  |Demographic            |Gender               |female                         |
+  |Demographic            |Sex at Birth         |female                         |
 * Collect "cDAVE_Apollo_Female" Case Count for comparison
 
 * Create and save a cohort named "cDAVE_Apollo" with these filters
@@ -25,8 +25,8 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
 * Collect case counts for the following filters on the Cohort Builder page for cohort "cDAVE_Apollo"
   |tab_name               |facet_name           |selection                      |
   |-----------------------|---------------------|-------------------------------|
-  |Demographic            |Gender               |female                         |
-  |Demographic            |Gender               |male                           |
+  |Demographic            |Sex at Birth         |female                         |
+  |Demographic            |Sex at Birth         |male                           |
 * Collect "cDAVE_Apollo" Case Count for comparison
 
 ## Navigate to Clinical Data Analysis
@@ -35,16 +35,16 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
 * Wait for "Overall Survival Plot" to be present on the page
 
 ## Only Selected Cases
-* On the "Gender" card's table, select value by row and column on the Clinical Data Analysis page
+* On the "Sex At Birth" card's table, select value by row and column on the Clinical Data Analysis page
     |row   |column|button_or_checkbox   |
     |------|------|---------------------|
     |2     |1     |checkbox             |
 * Collect analysis card table data for comparison on the Clinical Data Analysis page
   |button_label                         |analysis_card               |row  |column |do_not_trim_content|
   |-------------------------------------|----------------------------|-----|-------|-------------------|
-  |Gender_male_R1_C3                    |Gender                      |2    |3      |False              |
-* Verify "Gender_male_R1_C3" and "Gender_male_cDAVE_Apollo Count" are "Equal"
-* On the "Gender" card, select "Save New Cohort Cases Table" button on the Clinical Data Analysis page
+  |Sex At Birth_male_R1_C3              |Sex At Birth                |2    |3      |False              |
+* Verify "Sex At Birth_male_R1_C3" and "Sex at Birth_male_cDAVE_Apollo Count" are "Equal"
+* On the "Sex At Birth" card, select "Save New Cohort Cases Table" button on the Clinical Data Analysis page
 * Select "Only Selected Cases" from dropdown menu
 * Name the cohort "cDAVE_Apollo_Male" in the Cohort Bar section
 * Perform action and validate modal text
@@ -53,15 +53,15 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
   |Save             |cDAVE_Apollo_Male has been saved.                                  |Remove Modal        |
 * Switch cohort to "cDAVE_Apollo_Male" from the Cohort Bar dropdown list
 * Collect "cDAVE_Apollo_Male" Case Count for comparison
-* Verify "cDAVE_Apollo_Male Case Count" and "Gender_male_cDAVE_Apollo Count" are "Equal"
+* Verify "cDAVE_Apollo_Male Case Count" and "Sex at Birth_male_cDAVE_Apollo Count" are "Equal"
 
 ## Existing Cohort With Selected Cases
 * Switch cohort to "cDAVE_Apollo_Female" from the Cohort Bar dropdown list
-* On the "Gender" card's table, select value by row and column on the Clinical Data Analysis page
+* On the "Sex At Birth" card's table, select value by row and column on the Clinical Data Analysis page
     |row   |column|button_or_checkbox   |
     |------|------|---------------------|
     |1     |1     |checkbox             |
-* On the "Gender" card, select "Save New Cohort Cases Table" button on the Clinical Data Analysis page
+* On the "Sex At Birth" card, select "Save New Cohort Cases Table" button on the Clinical Data Analysis page
 * Select "Existing Cohort With Selected Cases" from dropdown menu
 
 * Change number of entries shown in the table "Select Cohort" to "100"
@@ -78,12 +78,12 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
 
 ## Existing Cohort Without Selected Cases
 * Switch cohort to "cDAVE_Apollo" from the Cohort Bar dropdown list
-* On the "Gender" card's table, select value by row and column on the Clinical Data Analysis page
+* On the "Sex At Birth" card's table, select value by row and column on the Clinical Data Analysis page
     |row   |column|button_or_checkbox   |
     |------|------|---------------------|
     |2     |1     |checkbox             |
 
-* On the "Gender" card, select "Save New Cohort Cases Table" button on the Clinical Data Analysis page
+* On the "Sex At Birth" card, select "Save New Cohort Cases Table" button on the Clinical Data Analysis page
 * Select "Existing Cohort Without Selected Cases" from dropdown menu
 * Change number of entries shown in the table "Select Cohort" to "100"
 * Select the radio button "cDAVE_Apollo_Female_added_Male"

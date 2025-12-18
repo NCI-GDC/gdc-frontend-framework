@@ -31,14 +31,14 @@ tags: gdc-data-portal-v2, cohort-builder, regression
 
 * Select "cohort-builder-add-a-custom-filter" a data-testid button
 
-* Enter "serological laboratory test" in the text box "Search For a Property"
+* Enter "Distributor reference number for cancer model" in the text box "Search For a Property"
 
-* Select "follow_ups.viral_hepatitis_serologies" a data-testid button
+* Select "samples.distributor_reference" a data-testid button
 
 * Perform the following actions from "Custom Filters" tab on the Cohort Builder page
   |facet_name                             |action               |
   |---------------------------------------|---------------------|
-  |Follow Ups Viral Hepatitis Serologies  |Remove the facet     |
+  |Samples Distributor Reference          |Remove the facet     |
 
 * Select "cohort-builder-add-a-custom-filter" a data-testid button
 

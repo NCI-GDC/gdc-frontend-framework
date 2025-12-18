@@ -19,20 +19,18 @@ tags: gdc-data-portal-v2, regression, cohort-comparison, cohort-comparison-downl
   |General                |Program              |TCGA                           |
   |General                |Program              |TARGET                         |
 
-* Create and save a cohort named "CC_Gender_1" with these filters
+* Create and save a cohort named "CC_Sex at Birth_1" with these filters
   |tab_name               |facet_name           |selection                      |
   |-----------------------|---------------------|-------------------------------|
-  |Demographic            |Gender               |female                         |
-  |Demographic            |Gender               |male                           |
-  |Demographic            |Gender               |not reported                   |
-  |Demographic            |Gender               |unknown                        |
-  |Demographic            |Gender               |unspecified                    |
+  |Demographic            |Sex at Birth         |female                         |
+  |Demographic            |Sex at Birth         |male                           |
+  |Demographic            |Sex at Birth         |unknown                        |
 
 ## Travel to cohort comparison selection screen
 * Navigate to "Analysis" from "Header" "section"
 * Navigate to "Cohort Comparison" from "Analysis" "app"
 * Change number of entries shown in the table to "100"
-* Is text "Select a cohort to compare with CC_Gender_1" present on the page
+* Is text "Select a cohort to compare with CC_Sex at Birth_1" present on the page
 
 ## Select cohort to compare with and run
 * Select cohort "CC_Program_1" for comparison on the cohort comparison selection screen
@@ -49,53 +47,43 @@ tags: gdc-data-portal-v2, regression, cohort-comparison, cohort-comparison-downl
   |-----------------------|---------------------------------|
   |analysis-survival      |Visible                          |
   |Ethnicity              |Visible                          |
-  |Gender                 |Visible                          |
+  |Sex At Birth           |Visible                          |
   |Race                   |Visible                          |
   |Vital Status           |Visible                          |
   |Age At Diagnosis       |Visible                          |
 
-## Validate TSV Download Information - Gender Card
+## Validate TSV Download Information - Sex At Birth Card
 * Collect case counts on save cohort buttons from an analysis card on Cohort Comparison
   |analysis_card          |Filter Row                       |Cohort Number  |Collect Case Count Name              |
   |-----------------------|---------------------------------|---------------|-------------------------------------|
-  |Gender                 |female                           |1              |CC_Gender_Female_1 Count             |
-  |Gender                 |male                             |1              |CC_Gender_Male_1 Count               |
-  |Gender                 |not reported                     |1              |CC_Gender_Not_Reported_1 Count       |
-  |Gender                 |unknown                          |1              |CC_Gender_Unknown_1 Count            |
-  |Gender                 |unspecified                      |1              |CC_Gender_Unspecified_1 Count        |
-  |Gender                 |female                           |2              |CC_Gender_Female_2 Count             |
-  |Gender                 |male                             |2              |CC_Gender_Male_2 Count               |
-  |Gender                 |not reported                     |2              |CC_Gender_Not_Reported_2 Count       |
-  |Gender                 |unknown                          |2              |CC_Gender_Unknown_2 Count            |
-  |Gender                 |unspecified                      |2              |CC_Gender_Unspecified_2 Count        |
-* Download "Gender" from "Cohort Comparison"
-* Read from "Gender from Cohort Comparison"
-* Verify that "Gender from Cohort Comparison" has expected information
+  |Sex At Birth                 |female                           |1              |CC_Sex At Birth_Female_1 Count             |
+  |Sex At Birth                 |male                             |1              |CC_Sex At Birth_Male_1 Count               |
+  |Sex At Birth                 |unknown                          |1              |CC_Sex At Birth_Unknown_1 Count            |
+  |Sex At Birth                 |female                           |2              |CC_Sex At Birth_Female_2 Count             |
+  |Sex At Birth                 |male                             |2              |CC_Sex At Birth_Male_2 Count               |
+  |Sex At Birth                 |unknown                          |2              |CC_Sex At Birth_Unknown_2 Count            |
+* Download "Sex At Birth" from "Cohort Comparison"
+* Read from "Sex At Birth from Cohort Comparison"
+* Verify that "Sex At Birth from Cohort Comparison" has expected information
   |required_info                          |
   |---------------------------------------|
-  |Gender                                 |
+  |Sex At Birth                                 |
   |male                                   |
-  |not reported                           |
   |unknown                                |
-  |unspecified                            |
   |missing                                |
   |# Cases S1                             |
   |% Cases S1                             |
   |# Cases S2                             |
   |% Cases S2                             |
-* Verify that "Gender from Cohort Comparison" has expected information from collected data
+* Verify that "Sex At Birth from Cohort Comparison" has expected information from collected data
   |collected_data                         |
   |---------------------------------------|
-  |CC_Gender_Female_1 Count               |
-  |CC_Gender_Male_1 Count                 |
-  |CC_Gender_Not_Reported_1 Count         |
-  |CC_Gender_Unknown_1 Count              |
-  |CC_Gender_Unspecified_1 Count          |
-  |CC_Gender_Female_2 Count               |
-  |CC_Gender_Male_2 Count                 |
-  |CC_Gender_Not_Reported_2 Count         |
-  |CC_Gender_Unknown_2 Count              |
-  |CC_Gender_Unspecified_2 Count          |
+  |CC_Sex At Birth_Female_1 Count               |
+  |CC_Sex At Birth_Male_1 Count                 |
+  |CC_Sex At Birth_Unknown_1 Count              |
+  |CC_Sex At Birth_Female_2 Count               |
+  |CC_Sex At Birth_Male_2 Count                 |
+  |CC_Sex At Birth_Unknown_2 Count              |
 
 ## Validate TSV Download Information - Age At Diagnosis Card
 * Collect case counts on save cohort buttons from an analysis card on Cohort Comparison
