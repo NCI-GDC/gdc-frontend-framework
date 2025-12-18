@@ -12,7 +12,13 @@ import {
   PUBLIC_APP_INFO,
   registerDefaultCountsHooks,
 } from "@gff/core";
-import { createTheme, MantineProvider, Modal, Button } from "@mantine/core";
+import {
+  createTheme,
+  MantineProvider,
+  Modal,
+  Button,
+  Switch,
+} from "@mantine/core";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import { useLocalStorage } from "@mantine/hooks";
@@ -195,7 +201,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
         defaultProps: {
           zIndex: 1,
           classNames: {
-            item: "text-base-min disabled:opacity-50 data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest",
+            item: "text-base-min disabled:opacity-50 hover:bg-accent-lightest hover:text-accent-contrast-lightest",
           },
           withinPortal: false,
         },
@@ -268,6 +274,11 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
           }
 
           return tempButtonProps;
+        },
+      }),
+      Switch: Switch.extend({
+        defaultProps: {
+          withThumbIndicator: false,
         },
       }),
     },

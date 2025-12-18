@@ -20,7 +20,6 @@ interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
   value: string;
   label: string;
   symbol?: string;
-  "data-hovered": boolean;
   obj: Record<string, any>;
   superseded?: boolean;
   entity?: QuickSearchEntities;

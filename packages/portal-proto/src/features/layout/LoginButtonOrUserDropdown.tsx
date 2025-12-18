@@ -96,8 +96,9 @@ const LoginButtonOrUserDropdown = () => {
           position="bottom-end"
           classNames={{
             dropdown: "border-primary-darker shadow-xl",
-            item: "text-base-darker data-hovered:bg-accent-lightest data-hovered:text-accent-contrast-lightest",
+            item: "text-base-darker hover:bg-accent-lightest hover:text-accent-contrast-lightest",
           }}
+          zIndex={400}
         >
           <Menu.Target data-testid="button-header-username">
             <Button

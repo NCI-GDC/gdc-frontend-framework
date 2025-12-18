@@ -25,6 +25,9 @@ export const TabbedTables = ({
           value={activeTab.toString()}
           onChange={onTabChange}
           data-testid="verticalTabs"
+          classNames={{
+            tabLabel: "text-left",
+          }}
         >
           <div className="max-h-[500px] overflow-y-auto overflow-x-hidden min-w-[200px] pr-2">
             <Tabs.List>
