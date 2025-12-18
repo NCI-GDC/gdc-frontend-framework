@@ -142,7 +142,7 @@ const FilterPanel = ({
           )}
         </ActionIcon>
       </Tooltip>
-      <div className={filtersExpanded ? "block" : "hidden"}>
+      <div className={filtersExpanded ? "flex flex-col gap-y-4" : "hidden"}>
         <Text size="lg" className="text-primary-content-darker font-bold">
           Filters
         </Text>
@@ -172,7 +172,7 @@ const FilterPanel = ({
         </div>
         {customConfig !== undefined && (
           <>
-            <div className="flex min-h-[36px] mt-3.5 w-full">
+            <div className="flex min-h-[36px] w-full">
               <Tooltip label="Remove all custom filters cards" offset={10}>
                 <button
                   data-testid="button-reset-custom-filters-files-table"
