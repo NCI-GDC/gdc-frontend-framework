@@ -68,6 +68,7 @@ export const DEPRECATED_FIELDS = [
   "cases.follow_ups.hormone_replacement_therapy_type",
   "cases.follow_ups.hpv_positive_type",
   "cases.follow_ups.hysterectomy_margins_involved",
+  "cases.follow_ups.hysterectomy_type",
   "cases.follow_ups.immunosuppressive_treatment_type",
   "cases.follow_ups.menopause_status",
   "cases.follow_ups.nadir_cd4_count",
