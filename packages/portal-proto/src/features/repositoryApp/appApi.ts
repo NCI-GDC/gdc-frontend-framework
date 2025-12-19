@@ -51,11 +51,26 @@ const migrations = {
       ),
     };
   },
+  4: (state) => {
+    return {
+      ...state,
+      facets: {
+        customFacets: state.facets.customFacets.filter(
+          (facet) => !DEPRECATED_FIELDS.includes(facet),
+        ),
+      },
+      filtersExpanded: Object.fromEntries(
+        Object.entries(state.filtersExpanded).filter(
+          ([k]) => !DEPRECATED_FIELDS.includes(k),
+        ),
+      ),
+    };
+  },
 };
 
 const persistConfig = {
   key: REPOSITORY_APP_NAME,
-  version: 3,
+  version: 4,
   storage,
   whitelist: ["facets", "filters", "filtersExpanded"],
   migrate: createMigrate(migrations),
