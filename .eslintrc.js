@@ -59,14 +59,6 @@ module.exports = {
       },
     ],
   },
-  overrides: [
-    {
-      files: ["next-env.d.ts"], // Apply this rule only to next-env.d.ts
-      rules: {
-        "@typescript-eslint/triple-slash-reference": "off", // Disable the specific rule
-      },
-    },
-  ],
   settings: {
     react: {
       version: "detect",
