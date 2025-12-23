@@ -163,7 +163,6 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
                 <Loader color="gray" size="xs" className="mr-2" /> Cases
               </span>
             ) : cohortCounts.isSuccess ? (
-              // <span>{`${caseCounts.toLocaleString()} Cases`}</span>
               <span>
                 {`${caseCounts.toLocaleString()}`}{" "}
                 {`${caseCounts === 1 ? "Case" : "Cases"}`}
