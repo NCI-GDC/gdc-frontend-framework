@@ -164,8 +164,9 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
               </span>
             ) : cohortCounts.isSuccess ? (
               <span>
-                {`${caseCounts.toLocaleString()}`}{" "}
-                {`${caseCounts === 1 ? "Case" : "Cases"}`}
+                {`${caseCounts.toLocaleString()} ${
+                  caseCounts === 1 ? "Case" : "Cases"
+                }`}
               </span>
             ) : (
               <span className="flex mr-2 items-center text-utility-error">
