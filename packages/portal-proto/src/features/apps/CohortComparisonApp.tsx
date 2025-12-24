@@ -1,20 +1,16 @@
 import React, { useContext, useState } from "react";
+import { useDeepCompareEffect } from "use-deep-compare";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import {
   useCoreSelector,
-  selectCurrentCohortName,
   FilterSet,
-  selectCurrentCohortFilters,
   Cohort,
   selectCohortByIdOrName,
-  selectCurrentCohortId,
-  selectAllCohorts,
+  selectCurrentCohort,
 } from "@gff/core";
 import { SelectionScreenContext } from "@gff/portal-components";
 import CohortComparison from "../cohortComparison/CohortComparison";
 import AdditionalCohortSelection from "@/features/cohortComparison/AdditionalCohortSelection";
-import { useDeepCompareEffect } from "use-deep-compare";
-import { usePrevious } from "@mantine/hooks";
 
 export const cohortComparisonDemo1: {
   filter: FilterSet;
@@ -73,30 +69,27 @@ const CohortComparisonApp: React.FC = () => {
   const isDemoMode = useIsDemoApp();
   const { selectionScreenOpen, setSelectionScreenOpen, app, setActiveApp } =
     useContext(SelectionScreenContext);
+  const [primaryCohort, setPrimaryCohort] = useState<Cohort>(undefined);
 
-  const allCohorts = useCoreSelector(selectAllCohorts);
-  const allCohortsIds = Object.keys(allCohorts);
-
-  /* Primary Cohort Details */
-  const primaryCohortName = useCoreSelector((state) =>
-    selectCurrentCohortName(state),
-  );
-  const primaryCohortId = useCoreSelector((state) =>
-    selectCurrentCohortId(state),
-  );
-  const primaryCohortFilter = useCoreSelector((state) =>
-    selectCurrentCohortFilters(state),
-  );
-  /* Primary Cohort Details End */
+  const currentCohort = useCoreSelector((state) => selectCurrentCohort(state));
 
   /* Comparison Cohort Details */
   const [comparisonCohort, setComparisonCohort] = useState<Cohort>();
-  const comparisonCohortId = comparisonCohort?.id;
   const comparisonCohortObj: Cohort = useCoreSelector((state) =>
     selectCohortByIdOrName(state, comparisonCohort?.id, comparisonCohort?.name),
   );
   const comparisonCohortFilter = comparisonCohortObj?.filters;
   /* Comparison Cohort Details End */
+
+  useDeepCompareEffect(() => {
+    if (primaryCohort?.removed || comparisonCohort?.removed) {
+      setSelectionScreenOpen(true);
+    }
+  }, [primaryCohort, comparisonCohort]);
+
+  useDeepCompareEffect(() => {
+    setPrimaryCohort(currentCohort);
+  }, [currentCohort]);
 
   const cohorts = isDemoMode
     ? {
@@ -105,9 +98,9 @@ const CohortComparisonApp: React.FC = () => {
       }
     : {
         primary_cohort: {
-          filter: primaryCohortFilter,
-          name: primaryCohortName,
-          id: primaryCohortId,
+          filter: primaryCohort?.filters,
+          name: primaryCohort?.name,
+          id: primaryCohort?.id,
         },
         comparison_cohort: {
           filter: comparisonCohortFilter,
@@ -115,27 +108,6 @@ const CohortComparisonApp: React.FC = () => {
           id: comparisonCohort?.id,
         },
       };
-
-  const prevPrimaryCohortId = usePrevious(primaryCohortId);
-  const prevComparisonCohortId = usePrevious(comparisonCohortId);
-
-  useDeepCompareEffect(() => {
-    if (
-      !isDemoMode &&
-      ((prevPrimaryCohortId !== undefined &&
-        !allCohortsIds.includes(prevPrimaryCohortId)) ||
-        (prevComparisonCohortId !== undefined &&
-          !allCohortsIds.includes(prevComparisonCohortId)))
-    ) {
-      setSelectionScreenOpen(true);
-    }
-  }, [
-    isDemoMode,
-    allCohortsIds,
-    prevPrimaryCohortId,
-    prevComparisonCohortId,
-    setSelectionScreenOpen,
-  ]);
 
   return selectionScreenOpen ? (
     <AdditionalCohortSelection

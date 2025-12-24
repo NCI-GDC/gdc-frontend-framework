@@ -5,7 +5,7 @@ import MiniSearch from "minisearch";
 import {
   useCoreDispatch,
   useCoreSelector,
-  selectAvailableCohorts,
+  selectAllCohorts,
   useGetCohortsByContextIdQuery,
   buildGqlOperationToFilterSet,
   setActiveCohortList,
@@ -44,15 +44,17 @@ export const useSetupInitialCohorts = (): boolean => {
   } = useGetCohortsByContextIdQuery(null, { skip: fetched });
 
   const coreDispatch = useCoreDispatch();
-  const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
+  const cohorts: Cohort[] = useCoreSelector((state) => selectAllCohorts(state));
   const cohortWarnings = useCoreSelector((state) =>
     selectAllCohortsWithWarnings(state),
   );
 
   const updatedCohortIds = (cohortsListData || []).map((cohort) => cohort.id);
   const outdatedCohortsIds = cohorts
-    .filter((c) => c.saved && !updatedCohortIds.includes(c.id))
+    .filter((c) => (c.saved && !updatedCohortIds.includes(c.id)) || c.removed)
     .map((c) => c.id);
+
+  console.log({ outdatedCohortsIds, cohorts });
 
   useDeepCompareEffect(() => {
     if ((isSuccess || isError) && !fetched) {

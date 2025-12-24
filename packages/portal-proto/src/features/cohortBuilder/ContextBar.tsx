@@ -9,7 +9,7 @@ import {
   useCoreDispatch,
   useCoreSelector,
   selectAvailableCohorts,
-  selectCurrentCohortId,
+  selectCurrentCohort,
   setActiveCohort,
   Modals,
   showModal,
@@ -20,6 +20,7 @@ import {
   selectCart,
   GqlOperation,
   useCurrentCohortCounts,
+  Cohort,
 } from "@gff/core";
 import download from "src/utils/download";
 import SummaryFacets from "./SummaryFacets";
@@ -74,15 +75,18 @@ const ContextBar = ({
     useState(false);
   /* download active end */
 
-  const currentCohortId = useCoreSelector((state) =>
-    selectCurrentCohortId(state),
+  const currentCohort: Cohort = useCoreSelector((state) =>
+    selectCurrentCohort(state),
   );
 
   useDeepCompareEffect(() => {
-    if (currentCohortId === undefined && cohorts.length > 0) {
+    if (
+      (currentCohort === undefined || currentCohort?.removed) &&
+      cohorts.length > 0
+    ) {
       coreDispatch(setActiveCohort(cohorts[0].id));
     }
-  }, [currentCohortId, cohorts, coreDispatch]);
+  }, [currentCohort, cohorts, coreDispatch]);
 
   const cohortFilters = useCoreSelector((state) =>
     selectCurrentCohortFilters(state),

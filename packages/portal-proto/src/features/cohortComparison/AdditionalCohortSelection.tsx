@@ -32,7 +32,7 @@ const AdditionalCohortSelection: React.FC<AdditionalCohortSelectionProps> = ({
   );
 
   const cohorts = useDeepCompareMemo(
-    () => availableCohorts.filter((cohort) => cohort.id !== primaryCohort.id),
+    () => availableCohorts.filter((cohort) => cohort.id !== primaryCohort?.id),
     [primaryCohort, availableCohorts],
   );
 

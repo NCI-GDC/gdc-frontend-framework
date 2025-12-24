@@ -33,6 +33,7 @@ import {
   updateCohortName,
   CohortModel,
   addNewUnsavedCohort,
+  queueCohortForRemoval,
 } from "@gff/core";
 import { useCohortFacetFilters } from "../utils";
 import { exportCohort, removeQueryParamsFromRouter } from "./cohortUtils";
@@ -74,7 +75,7 @@ export const useDeleteCohort = () => {
 
   const [deleteCohortFromBE] = useDeleteCohortMutation();
   const deleteCohort = useDeepCompareCallback(() => {
-    coreDispatch(removeCohort({}));
+    coreDispatch(queueCohortForRemoval({}));
     // fetch case counts is now handled in listener
   }, [coreDispatch]);
 
