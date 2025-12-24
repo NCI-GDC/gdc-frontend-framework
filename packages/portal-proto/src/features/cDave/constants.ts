@@ -225,7 +225,7 @@ export const TABS = {
   demographic: "Demographic",
   diagnoses: "Diagnosis",
   treatments: "Treatment",
-  exposures: "Exposures",
+  exposures: "Exposure",
   other_clinical_attributes: "Other Clinical Attribute",
 };
 
