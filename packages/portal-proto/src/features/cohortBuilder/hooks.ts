@@ -54,8 +54,6 @@ export const useSetupInitialCohorts = (): boolean => {
     .filter((c) => (c.saved && !updatedCohortIds.includes(c.id)) || c.removed)
     .map((c) => c.id);
 
-  console.log({ outdatedCohortsIds, cohorts });
-
   useDeepCompareEffect(() => {
     if ((isSuccess || isError) && !fetched) {
       const updatedList: Cohort[] = (cohortsListData || []).map((data) => {
