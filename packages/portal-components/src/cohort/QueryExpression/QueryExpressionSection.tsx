@@ -1,4 +1,11 @@
-import React, { useState, useReducer, useRef, useContext } from "react";
+import React, {
+  useState,
+  useReducer,
+  useRef,
+  useContext,
+  useCallback,
+  ReactNode,
+} from "react";
 import { omit } from "lodash";
 import { useDeepCompareEffect } from "use-deep-compare";
 import OverflowTooltippedLabel from "@/common/OverflowTooltippedLabel";
@@ -16,6 +23,7 @@ import {
   getCombinedClassesForRowCollapse,
 } from "../style";
 import { QueryExpressionHooks } from "./types";
+import WarningBanner from "@/common/WarningBanner";
 
 const MAX_HEIGHT_QE_SECTION = 120;
 
@@ -83,6 +91,7 @@ const reducer = (
 interface QueryExpressionSectionProps {
   readonly filters: any;
   readonly hooks: QueryExpressionHooks;
+  readonly warningText: ReactNode;
 }
 
 export const QueryExpressionsExpandedContext = React.createContext<
@@ -95,11 +104,22 @@ export const QueryExpressionsExpandedContext = React.createContext<
 const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
   filters,
   hooks,
+  warningText,
 }: QueryExpressionSectionProps) => {
   const { theme } = useContext(AppContext);
 
   const currentCohort = hooks.useSelectCurrentCohort();
   const clearCohortFilters = hooks.useClearCohortFilters();
+  const displayWarning = hooks.useSelectDisplayCohortWarning(currentCohort?.id);
+  // Since we can locally modify filters, check if any of the warning fields are in the current filters
+  const fieldsInFilters = Object.keys(filters?.root || {});
+  const isWarningFieldInFilters = (
+    currentCohort?.nonexistent_fields || []
+  ).some((field) => fieldsInFilters.includes(field));
+  const dismissWarning = hooks.useDismissWarning();
+  const dismissBanner = useCallback(() => {
+    dismissWarning(currentCohort.id);
+  }, [dismissWarning, currentCohort?.id]);
 
   const [expandedState, setExpandedState] = useReducer(reducer, {});
   const [filtersSectionCollapsed, setFiltersSectionCollapsed] = useState(true);
@@ -141,10 +161,10 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
           <QueryExpressionsExpandedContext.Provider
             value={[expandedState[currentCohort.id], setExpandedState]}
           >
-            <div className="flex flex-col w-full bg-primary">
+            <div className="flex flex-col w-full">
               <div
                 data-testid="text-cohort-filters-top-row"
-                className="flex flex-row py-2 items-center border-secondary-darkest border-b-1"
+                className="flex flex-row py-2 items-center bg-primary border-secondary-darkest border-b-1"
               >
                 <OverflowTooltippedLabel
                   label={currentCohort.name}
@@ -254,28 +274,39 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                   </div>
                 </>
               </div>
-              <div
-                data-testid="text-cohort-filters"
-                className="flex flex-wrap bg-base-max w-full p-2 overflow-x-hidden"
-                style={
-                  filtersSectionCollapsed
-                    ? { maxHeight: `${QESectionHeight}px`, overflowY: "scroll" }
-                    : undefined
-                }
-                ref={filtersRef}
-              >
-                {noFilters ? (
-                  <p
-                    data-testid="text-no-active-cohort-filter"
-                    className="font-content"
-                  >
-                    No filters currently applied.
-                  </p>
-                ) : (
-                  Object.keys(filters.root).map((k) => {
-                    return convertFilterToComponent(filters.root[k], hooks);
-                  })
-                )}
+              <div>
+                {displayWarning && isWarningFieldInFilters ? (
+                  <WarningBanner
+                    text={warningText}
+                    dismissBanner={dismissBanner}
+                  />
+                ) : null}
+                <div
+                  className="flex flex-wrap bg-base-max w-full overflow-x-hidden p-2"
+                  style={
+                    filtersSectionCollapsed
+                      ? {
+                          maxHeight: `${QESectionHeight}px`,
+                          overflowY: "scroll",
+                        }
+                      : undefined
+                  }
+                  ref={filtersRef}
+                  data-testid="text-cohort-filters"
+                >
+                  {noFilters ? (
+                    <p
+                      data-testid="text-no-active-cohort-filter"
+                      className="font-content"
+                    >
+                      No filters currently applied.
+                    </p>
+                  ) : (
+                    Object.keys(filters.root).map((k) => {
+                      return convertFilterToComponent(filters.root[k], hooks);
+                    })
+                  )}
+                </div>
               </div>
             </div>
           </QueryExpressionsExpandedContext.Provider>

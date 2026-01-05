@@ -74,6 +74,8 @@ tags: gdc-data-portal-v2, repository, regression, slide-image-viewer
 
 ## Remove Search
 * Remove search filter "TCGA-E2-A14N*" on the Image Viewer page
+* Pause "1" seconds
+* Wait for loading spinners to disappear
 * Verify the slide image viewer is showing "10" cases
 
 ## Go Back to the Repository Page

@@ -16,7 +16,7 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
 * Check clinical properties
    |property         |group      |
    |-----------------|-----------|
-   |Gender           |Demographic|
+   |Sex At Birth     |Demographic|
    |Race             |           |
    |Ethnicity        |           |
    |Vital Status     |           |

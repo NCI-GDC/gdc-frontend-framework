@@ -103,7 +103,7 @@ When the filters are fixed add tests for them - PEAR-1350
 * Validate all expected analysis cards are present on the Clinical Data Analysis page
   |analysis_card        |
   |---------------------|
-  |Gender               |
+  |Sex At Birth         |
   |Race                 |
   |Ethnicity            |
   |Age At Diagnosis     |
@@ -111,7 +111,7 @@ When the filters are fixed add tests for them - PEAR-1350
 * Select the following fields on the Clinical Data Analysis page
   |field_switch_selector      |
   |---------------------------|
-  |Gender                     |
+  |Sex At Birth               |
   |Year Of Death              |
   |Race                       |
   |COG Renal Stage            |
@@ -132,5 +132,5 @@ When the filters are fixed add tests for them - PEAR-1350
 * Validate these analysis cards are not present on the Clinical Data Analysis page
   |analysis_card            |
   |-------------------------|
-  |Gender                   |
+  |Sex At Birth             |
   |Race                     |

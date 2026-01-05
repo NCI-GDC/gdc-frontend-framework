@@ -1,6 +1,11 @@
 import React, { ReactNode, useContext, useRef } from "react";
-import { Button, MantineProvider, Menu, Tooltip } from "@mantine/core";
-import { FloatingPosition } from "@mantine/core/lib/components/Floating/types";
+import {
+  Button,
+  MantineProvider,
+  Menu,
+  MenuProps,
+  Tooltip,
+} from "@mantine/core";
 import { DropdownIcon } from "src/commonIcons";
 import { AppContext } from "src/context";
 
@@ -45,7 +50,7 @@ interface DropdownWithIconProps {
   /**
    *    custom position for Menu
    */
-  customPosition?: FloatingPosition;
+  customPosition?: MenuProps["position"];
   /**
    *    whether the dropdown should fill the height of its parent
    */

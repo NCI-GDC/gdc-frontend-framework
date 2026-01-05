@@ -47,6 +47,7 @@ tags: gdc-data-portal-v2, manage-sets, regression
 
 ## Validate Buttons Are Enabled
 * Select checkbox for set "Gene Set CSV" on Manage Sets page
+* Pause "2" seconds
 * Verify the button "Export Selected Set" is enabled
 * Verify the button "Delete Selected Set" is enabled
 

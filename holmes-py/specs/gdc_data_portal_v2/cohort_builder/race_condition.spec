@@ -90,7 +90,7 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
   |tab_name               |facet_name           |selection            |
   |-----------------------|---------------------|---------------------|
   |General                |Program              |CPTAC                |
-  |Demographic            |Gender               |female               |
+  |Demographic            |Sex at Birth         |female               |
   |General Diagnosis      |Morphology           |8380/3               |
   |Disease Status and History|Residual Disease  |r0                   |
   |Exposure               |Alcohol History      |not reported         |
@@ -105,7 +105,7 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
   |facet_name           |selections           |position in filter area  |
   |---------------------|---------------------|-------------------------|
   |Program              |CPTAC                |1                        |
-  |Gender               |female               |2                        |
+  |Sex At Birth         |female               |2                        |
   |Morphology           |8380/3               |3                        |
   |Residual Disease     |r0                   |4                        |
   |Alcohol History      |not reported         |5                        |

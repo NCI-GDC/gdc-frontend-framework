@@ -41,7 +41,7 @@ tags: gdc-data-portal-v2, navigation, analysis-center, regression
   |tool_name                |tool_description                                                                                                               |
   |-------------------------|-------------------------------------------------------------------------------------------------------------------------------|
   |Clinical Data Analysis   |Use clinical variables to perform basic statistical analysis of your cohort.                                                   |
-  |Cohort Comparison        |Display the survival analysis of your cohorts and compare characteristics such as gender, vital status and age at diagnosis.   |
+  |Cohort Comparison        |Display the survival analysis of your cohorts and compare characteristics such as sex at birth, vital status and age at diagnosis.|
   |Mutation Frequency       |Visualize most frequently mutated genes and somatic mutations.                                                                 |
   |OncoMatrix               |Visualize the top most mutated cases and genes affected by high impact mutations in your cohort.                               |
   |ProteinPaint             |Visualize mutations in protein-coding genes by consequence type and protein domain.                                            |

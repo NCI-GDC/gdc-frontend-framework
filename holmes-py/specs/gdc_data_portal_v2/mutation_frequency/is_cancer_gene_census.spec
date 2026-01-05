@@ -175,6 +175,7 @@ tags: gdc-data-portal-v2, regression, mutation-frequency, is-cancer-census-off
   |2     |1     |
   |3     |1     |
   |4     |1     |
+  |5     |1     |
 * Select button "Save Edit Mutation Set"
 * Select "Save as new mutation set" from dropdown menu
 * Enter "ICGC Off Mutation Set" in the text box "Set Name"
@@ -190,6 +191,7 @@ tags: gdc-data-portal-v2, regression, mutation-frequency, is-cancer-census-off
   |04590200-7de9-5088-ad9d-c0718120f064 |
   |24d80d1e-a5ca-5456-a470-f86a4c746c0d |
   |329a3a09-e607-54aa-9d85-2bb747a03d0b |
+  |3201315a-e4dd-5f02-a5c2-7760ad67e998 |
 * Close set panel
 
 ## Gene Filtering Check

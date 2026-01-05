@@ -134,7 +134,7 @@ tags: gdc-data-portal-v2, regression, project-summary, clinical-biospecimen-down
     |120.0                                  |
     |Current Reformed Smoker, Duration Not Specified|
     |AP-UG7J                                |
-    |family_histories.relationship_gender   |
+    |demographic.sex_at_birth               |
     |family_histories.relative_with_cancer_history|
     |family_histories.relative_deceased     |
     |diagnoses.ajcc_pathologic_m            |

@@ -22,39 +22,31 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
 * Wait for "Overall Survival Plot" to be present on the page
 
 ## Histogram TSV Download
-* Download "Gender" from "CDAVE Analysis Card TSV"
+* Download "Sex At Birth" from "CDAVE Analysis Card TSV"
 * Collect analysis card table data for comparison on the Clinical Data Analysis page
   |button_label                         |analysis_card|row  |column |do_not_trim_content|
   |-------------------------------------|-------------|-----|-------|-------------------|
-  |Gender_R1_C2                         |Gender       |1    |2      |True               |
-  |Gender_R1_C3                         |Gender       |1    |3      |True               |
-  |Gender_R2_C2                         |Gender       |2    |2      |True               |
-  |Gender_R2_C3                         |Gender       |2    |3      |True               |
-  |Gender_R3_C2                         |Gender       |3    |2      |True               |
-  |Gender_R3_C3                         |Gender       |3    |3      |True               |
-  |Gender_R4_C2                         |Gender       |4    |2      |True               |
-  |Gender_R4_C3                         |Gender       |4    |3      |True               |
-  |Gender_R5_C2                         |Gender       |5    |2      |True               |
-  |Gender_R5_C3                         |Gender       |5    |3      |True               |
-* Read from "Gender from CDAVE Analysis Card TSV"
-* Verify that "Gender from CDAVE Analysis Card TSV" has expected information
+  |Sex At Birth_R1_C2                   |Sex At Birth       |1    |2      |True               |
+  |Sex At Birth_R1_C3                   |Sex At Birth       |1    |3      |True               |
+  |Sex At Birth_R2_C2                   |Sex At Birth       |2    |2      |True               |
+  |Sex At Birth_R2_C3                   |Sex At Birth       |2    |3      |True               |
+  |Sex At Birth_R3_C2                   |Sex At Birth       |3    |2      |True               |
+  |Sex At Birth_R3_C3                   |Sex At Birth       |3    |3      |True               |
+* Read from "Sex At Birth from CDAVE Analysis Card TSV"
+* Verify that "Sex At Birth from CDAVE Analysis Card TSV" has expected information
   |required_info                          |
   |---------------------------------------|
-  |Gender                                 |
+  |Sex At Birth                                 |
   |# Cases                                |
-* Verify that "Gender from CDAVE Analysis Card TSV" has exact expected information from collected data
+* Verify that "Sex At Birth from CDAVE Analysis Card TSV" has exact expected information from collected data
   |collected_data                         |
   |---------------------------------------|
-  |Gender_R1_C2                           |
-  |Gender_R1_C3                           |
-  |Gender_R2_C2                           |
-  |Gender_R2_C3                           |
-  |Gender_R3_C2                           |
-  |Gender_R3_C3                           |
-  |Gender_R4_C2                           |
-  |Gender_R4_C3                           |
-  |Gender_R5_C2                           |
-  |Gender_R5_C3                           |
+  |Sex At Birth_R1_C2                     |
+  |Sex At Birth_R1_C3                     |
+  |Sex At Birth_R2_C2                     |
+  |Sex At Birth_R2_C3                     |
+  |Sex At Birth_R3_C2                     |
+  |Sex At Birth_R3_C3                     |
 
 
 ## Histogram Days TSV Download

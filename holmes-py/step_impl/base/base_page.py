@@ -969,6 +969,7 @@ class BasePage:
         with driver.context.expect_page() as tab:
             sources.get(source)(button)
         new_tab = tab.value
+        WebDriver.set_tab_viewport_size(new_tab)
         return new_tab
 
     def click_in_table_handle_new_tab(self, table_name, row, column):
@@ -985,6 +986,7 @@ class BasePage:
         with driver.context.expect_page() as tab:
             self.select_specified_table_by_row_column(table_name, row, column)
         new_tab = tab.value
+        WebDriver.set_tab_viewport_size(new_tab)
         return new_tab
 
     def is_text_visible_on_new_tab(self, new_tab, text_to_check):
@@ -994,6 +996,9 @@ class BasePage:
         :param new_tab: The tab page to be checked.
         :param text_to_check: The <p> text to be searched for.
         """
+        # Some sites check to see if you are a human before the page loads. This mouse event is an action
+        # that triggers the rest of the page loading.
+        new_tab.mouse.up()
         expected_text_locator = GenericLocators.TEXT_IN_PARAGRAPH(text_to_check)
         try:
             new_tab.locator(expected_text_locator).wait_for(state="visible",timeout=75000)

@@ -16,7 +16,7 @@ import CNVPlot from "../charts/CNVPlot";
 import SSMPlot from "../charts/SSMPlot";
 import { formatDataForHorizontalTable } from "../files/utils";
 import { LoadingOverlay } from "@mantine/core";
-import { WarningBanner } from "@/components/WarningBanner";
+import { WarningBanner } from "@gff/portal-components";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { overwritingDemoFilterMutationFrequency } from "../genomic/GenesAndMutationFrequencyAnalysisTool";

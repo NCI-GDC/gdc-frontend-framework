@@ -30,6 +30,7 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download, regressio
 * Select "Add Remove Files" on Case Summary page
 * Is modal with text "Removed 2 files from the cart." present on the page and "Remove Modal"
 * Select button "View Slide Images"
+* Select case or slide "TCGA-13-0920-01A-01-TS1" on the Image Viewer page
 * Select "Details" on the Image Viewer page
 * Verify details fields and values
   |field_name                       |value                                  |
@@ -166,7 +167,7 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download, regressio
     |Demographic ID                         |
     |Demographic UUID                       |
     |Ethnicity                              |
-    |Gender                                 |
+    |Sex At Birth                           |
     |Race                                   |
     |Days To Birth                          |
     |Days To Death                          |
@@ -223,7 +224,7 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download, regressio
     |Family History ID                      |
     |Family History UUID                    |
     |Relationship Age At Diagnosis          |
-    |Relationship Gender                    |
+    |Relationship Sex At Birth              |
     |Relationship Primary Diagnosis         |
     |Relationship Type                      |
     |Relative With Cancer History           |
@@ -296,7 +297,7 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download, regressio
     |pathology_details.zone_of_origin_prostate        |
     |family_histories.relative_smoker                 |
     |family_histories.relatives_with_cancer_history_count|
-    |family_histories.relationship_gender             |
+    |family_histories.relationship_sex_at_birth       |
     |3d5ebf3f-0cbd-458a-820d-65652e9682d7             |
     |MMRF_2081                                        |
     |pathology_details.additional_pathology_findings  |

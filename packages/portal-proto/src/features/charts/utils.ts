@@ -35,7 +35,10 @@ const isFontRule = (rule: CSSRule): rule is CSSFontFaceRule => {
  * @param ref - React element to create download from
  * @returns Blob containing the new SVG content
  */
-const createSVG = async (ref: MutableRefObject<HTMLElement>): Promise<Blob> => {
+const createSVG = async (
+  ref: MutableRefObject<HTMLElement>,
+  sizeFromSvg = true,
+): Promise<Blob> => {
   const svgElement = document.createElementNS(
     "http://www.w3.org/2000/svg",
     "svg",
@@ -83,14 +86,18 @@ const createSVG = async (ref: MutableRefObject<HTMLElement>): Promise<Blob> => {
     "http://www.w3.org/2000/svg",
     "foreignObject",
   );
-  chartWrapper.setAttribute(
-    "width",
-    `${Number(ref.current.getBoundingClientRect().width) + EXTRA_PADDING}`,
+  const width = Number(
+    sizeFromSvg
+      ? ref.current.querySelector("svg").getAttribute("width")
+      : ref.current.getBoundingClientRect().width,
   );
-  chartWrapper.setAttribute(
-    "height",
-    `${Number(ref.current.getBoundingClientRect().height) + EXTRA_PADDING}`,
+  const height = Number(
+    sizeFromSvg
+      ? ref.current.querySelector("svg").getAttribute("height")
+      : ref.current.getBoundingClientRect().height,
   );
+  chartWrapper.setAttribute("width", `${width + EXTRA_PADDING}`);
+  chartWrapper.setAttribute("height", `${height + EXTRA_PADDING}`);
   chartWrapper.append(document.importNode(ref.current, true));
   svgElement.append(chartWrapper);
 
@@ -112,9 +119,10 @@ const createSVG = async (ref: MutableRefObject<HTMLElement>): Promise<Blob> => {
 export const handleDownloadSVG = async (
   ref: MutableRefObject<HTMLElement>,
   filename: string,
+  sizeFromSvg = true,
 ): Promise<void> => {
   if (ref.current) {
-    const svgBlob = await createSVG(ref);
+    const svgBlob = await createSVG(ref, sizeFromSvg);
     const href = URL.createObjectURL(svgBlob);
     handleDownload(href, filename);
   }
@@ -124,17 +132,26 @@ export const handleDownloadSVG = async (
  * handles a request to save a chart as a PNG image with a white background.
  * @param ref - reference to the chart div
  * @param filename - name of file to save to, extension should be included e.g. chart1.png
+ * @param sizeFromSvg - whether to calculate the size based on just the chart SVG or the whole element
  */
 export const handleDownloadPNG = async (
   ref: MutableRefObject<HTMLElement>,
   filename: string,
+  sizeFromSvg = true,
 ): Promise<void> => {
-  const svgBlob = await createSVG(ref);
+  const svgBlob = await createSVG(ref, sizeFromSvg);
   const svgHref = URL.createObjectURL(svgBlob);
-  const svgImage = new Image(
-    Number(ref.current.getBoundingClientRect().width) + EXTRA_PADDING,
-    Number(ref.current.getBoundingClientRect().height) + EXTRA_PADDING,
+  const width = Number(
+    sizeFromSvg
+      ? ref.current.querySelector("svg").getAttribute("width")
+      : ref.current.getBoundingClientRect().width,
   );
+  const height = Number(
+    sizeFromSvg
+      ? ref.current.querySelector("svg").getAttribute("height")
+      : ref.current.getBoundingClientRect().height,
+  );
+  const svgImage = new Image(width + EXTRA_PADDING, height + EXTRA_PADDING);
   const canvas = document.createElement("canvas");
   const canvasCtx = canvas.getContext("2d");
 

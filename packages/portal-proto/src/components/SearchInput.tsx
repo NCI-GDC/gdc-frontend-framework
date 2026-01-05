@@ -50,7 +50,7 @@ export const SearchInput: React.FC = () => {
   const [page, setPage] = useState(1);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const router = useRouter();
-  const { ref } = useFocusWithin({
+  const { ref } = useFocusWithin<HTMLDivElement>({
     onBlur: () => {
       setDropdownOpen(false);
       setActivedescendant(undefined);
@@ -280,7 +280,7 @@ export const SearchInput: React.FC = () => {
             <ActionIcon
               onClick={() => {
                 clearSearch();
-                ref.current.focus();
+                textInputRef.current.focus();
               }}
               data-testid="search-input-clear-search"
               className="border-0"

@@ -1,8 +1,7 @@
 import { PropsWithChildren, ReactNode } from "react";
-import { Tooltip } from "@mantine/core";
+import { Tooltip, TooltipProps } from "@mantine/core";
 import { useElementSize } from "@mantine/hooks";
 import { ExpandLessIcon, ExpandMoreIcon } from "@/utils/icons";
-import { FloatingPosition } from "@mantine/core/lib/components/Floating/types";
 import { focusStyles } from "../utils";
 
 export interface CollapsibleContainerProps {
@@ -12,7 +11,7 @@ export interface CollapsibleContainerProps {
   readonly onlyIcon?: boolean;
   readonly isContextBar?: boolean;
   readonly tooltipText?: string;
-  readonly tooltipPosition?: FloatingPosition;
+  readonly tooltipPosition?: TooltipProps["position"];
   /*
    * Children for the Button when onlyIcon is false
    */

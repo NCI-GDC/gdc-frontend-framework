@@ -22,11 +22,9 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * Create and save a cohort named "CQE_Expand_Collapse" with these filters
   |tab_name               |facet_name           |selection                      |
   |-----------------------|---------------------|-------------------------------|
-  |Demographic            |Gender               |female                         |
-  |Demographic            |Gender               |male                           |
-  |Demographic            |Gender               |not reported                   |
-  |Demographic            |Gender               |unknown                        |
-  |Demographic            |Gender               |unspecified                    |
+  |Demographic            |Sex at Birth         |female                         |
+  |Demographic            |Sex at Birth         |male                           |
+  |Demographic            |Sex at Birth         |unknown                        |
   |Demographic            |Race                 |not reported                   |
   |Demographic            |Race                 |white                          |
   |Demographic            |Race                 |black or african american      |
@@ -82,7 +80,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * Validate the cohort query filter area has these filters
   |facet_name         |selections           |position in filter area |
   |-------------------|---------------------|------------------------|
-  |Gender             |5                    |1                       |
+  |Sex At Birth       |3                    |1                       |
   |Race               |4                    |2                       |
   |Ethnicity          |3                    |3                       |
   |Vital Status       |4                    |4                       |

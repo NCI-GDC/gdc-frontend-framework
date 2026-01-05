@@ -197,7 +197,7 @@ const buildRanges = (
   ) => RangeBucketElement,
 ): Record<string, RangeBucketElement> => {
   // build the range for the useRangeFacet call
-  return [...Array(numBuckets)]
+  return [...Array(Math.max(numBuckets, 1))]
     .map((_x, i) => {
       return rangeFunction(i, units, minimum, queryInYears);
     })

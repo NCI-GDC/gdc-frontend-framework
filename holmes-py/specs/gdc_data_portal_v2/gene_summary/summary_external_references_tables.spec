@@ -54,9 +54,11 @@ tags: gdc-data-portal-v2, regression, gene-summary
     |601728                                 |4    |2      |
     |ENSG00000171862                        |5    |2      |
     |41                                     |6    |2      |
+    |PTEN                                   |7    |2      |
 * In table "External References Gene Summary" these selections should take the user to correct page in a new tab
     |row  |column |expected_text                                                        |
     |-----|-------|---------------------------------------------------------------------|
     |2    |2      |This isoform has been chosen as the canonical sequence.              |
     |3    |2      |phosphatase and tensin homolog                                       |
-    |6    |2      |TEN is a multi-functional tumor suppressor that is very commonly     |
+    |6    |2      |PTEN is a multi-functional tumor suppressor that is very commonly    |
+    |7    |2      |PTEN (Phosphatase And Tensin Homolog) is a Protein Coding gene       |

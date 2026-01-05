@@ -35,7 +35,7 @@ class AnalysisCenterLocators:
         '[data-testid="button-run-cohort-comparison"]'
     )
     MUTATION_FREQUENCY_WAIT_FOR_ELEMENT = "[data-testid='button-mutations-tab']"
-    CLINICAL_DATA_ANALYSIS_WAIT_FOR_ELEMENT = "[data-testid='Gender-card']"
+    CLINICAL_DATA_ANALYSIS_WAIT_FOR_ELEMENT = "[data-testid='Sex At Birth-card-card']"
 
 
 class AnalysisCenterPage(BasePage):

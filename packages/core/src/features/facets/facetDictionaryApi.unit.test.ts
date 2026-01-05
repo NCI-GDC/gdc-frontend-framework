@@ -84,7 +84,7 @@ describe("test facet dictionary api functions", () => {
         facet_type: "age_in_years",
         range: {
           minimum: 0,
-          maximum: 32507,
+          maximum: 89,
         },
       },
       "cases.demographic.age_is_obfuscated": {
@@ -95,7 +95,6 @@ describe("test facet dictionary api functions", () => {
         full: "cases.demographic.age_is_obfuscated",
         type: "keyword",
         facet_type: "enum",
-        range: {},
       },
       "cases.demographic.cause_of_death": {
         description: "Text term to identify the cause of death for a patient.",

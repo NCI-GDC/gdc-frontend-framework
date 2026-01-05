@@ -83,6 +83,30 @@ class WebDriver:
                 """
                 )
 
+    def set_tab_viewport_size(new_tab):
+        if getenv("IS_DOCKER") == "1":
+            # Directly set viewport size if using Docker/Gitlab
+            new_tab.set_viewport_size({"width": 2000, "height": 1300})
+        else:
+            screen_size = Utility.get_screen_size()
+            if screen_size:
+                screen_width = screen_size["width"]
+                screen_height = screen_size["height"]
+                if (screen_width >= 2000) and (screen_height >= 1300):
+                    # This is the maximum size of a test automation window
+                    # to ensure consistent test results.
+                    new_tab.set_viewport_size({"width": 2000, "height": 1300})
+                elif (screen_width >= 2000) and (screen_height <= 1300):
+                    new_tab.set_viewport_size({"width": 2000, "height": screen_height})
+                elif (screen_width <= 2000) and (screen_height >= 1300):
+                    new_tab.set_viewport_size({"width": screen_width, "height": 1300})
+                else:
+                    # If both width and height of the user's screen is smaller than the max, we
+                    # set the automation window to the user's screen.
+                    new_tab.set_viewport_size(
+                        {"width": screen_width, "height": screen_height}
+                    )
+
     @after_suite
     def close_and_quit(self):
         WebDriver.instance.close()

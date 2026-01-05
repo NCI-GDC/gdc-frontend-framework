@@ -53,6 +53,8 @@ export interface Cohort {
   readonly saved?: boolean; // flag indicating if cohort has been saved.
   readonly counts: CountsDataAndStatus; //case, file, etc. counts of a cohort
   readonly unsavedCohortId?: string; // the id before cohort is saved, used for apps where the cohort can be saved while the user is operating the app
+  readonly deprecatedFields?: string[];
+  readonly nonexistentFields?: string[];
 }
 
 const cohortsAdapter = createEntityAdapter<Cohort, CohortId>({
