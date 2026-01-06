@@ -129,6 +129,7 @@ export const CorrelationWrapper: FC<PpProps> = (props: PpProps) => {
       <div
         ref={divRef}
         className="sjpp-wrapper-root-div"
+        style={{ minHeight: "440px" }}
         //userDetails={userDetails}
       />
 
