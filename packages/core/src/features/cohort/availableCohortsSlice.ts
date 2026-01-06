@@ -186,7 +186,8 @@ interface CopyCohortParams {
  * - clearCohortFilters(): removes all the filters by setting them to the default all GDC state
  * - setCurrentCohortId(id:string): set the id of the current cohort, used to switch between cohorts
  * - clearCaseSet(): resets the caseSet member to all GDC
- * - removeCohort(): removes the current cohort
+ * - removeCohortFromStore(): remove cohort from the store
+ * - deleteCohortUserAction(): user deletes cohort
  * - addNewCohortGroups(): adds groups of filters to the current cohort
  * - removeCohortGroup(): removes a group of filters from the current cohort
  * @category Cohort
@@ -256,12 +257,15 @@ const slice = createSlice({
         changes: { name: action.payload },
       });
     },
-    removeCohort: (
+    removeCohortFromStore: (
       state,
       action: PayloadAction<{
         id?: string;
       }>,
     ) => {
+      // Action for when we need to remove cohort from store. Used for replacing a cohort
+      // or saving an unsaved cohort or for clean up if a cohort has become outdated.
+
       cohortsAdapter.removeOne(
         state,
         action?.payload.id ?? getCurrentCohort(state),
@@ -276,8 +280,8 @@ const slice = createSlice({
         state.currentCohort = availableCohorts[0].id;
       }
     },
-    queueCohortForRemoval: (state, action: PayloadAction<{ id?: string }>) => {
-      // Apps can be actively using cohorts when they are deleted, so keep
+    deleteCohortUserAction: (state, action: PayloadAction<{ id?: string }>) => {
+      // Action for when the user deletes a cohort. Apps can be actively using cohorts when they are deleted, so keep
       // their information in the store for reference until the page is reloaded
       cohortsAdapter.updateOne(state, {
         id: action.payload.id ?? getCurrentCohort(state),
@@ -452,8 +456,8 @@ export const availableCohortsReducer = slice.reducer;
 export const {
   addNewDefaultUnsavedCohort,
   addNewUnsavedCohort,
-  removeCohort,
-  queueCohortForRemoval,
+  removeCohortFromStore,
+  deleteCohortUserAction,
   updateCohortName,
   addNewSavedCohort,
   setCurrentCohortId,

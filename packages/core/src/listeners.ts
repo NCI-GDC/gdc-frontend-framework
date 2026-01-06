@@ -17,11 +17,11 @@ import {
   discardCohortChanges,
   addNewSavedCohort,
   selectCurrentCohortId,
-  removeCohort,
+  removeCohortFromStore,
   selectCurrentCohort,
   setIsLoggedIn,
   fetchCohortCaseCounts,
-  queueCohortForRemoval,
+  deleteCohortUserAction,
 } from "./features/cohort/availableCohortsSlice";
 import { cohortApiSlice } from "./features/api/cohortApiSlice";
 
@@ -103,7 +103,7 @@ startCoreListening({
  *  so in this case we need to fetch the case counts for the new default cohort
  */
 startCoreListening({
-  matcher: isAnyOf(removeCohort, queueCohortForRemoval),
+  matcher: isAnyOf(removeCohortFromStore, deleteCohortUserAction),
   effect: async (_, listenerApi) => {
     const currentCohort = selectCurrentCohort(listenerApi.getState());
     if (currentCohort?.counts.status === "uninitialized") {

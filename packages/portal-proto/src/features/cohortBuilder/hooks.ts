@@ -10,7 +10,7 @@ import {
   buildGqlOperationToFilterSet,
   setActiveCohortList,
   Cohort,
-  removeCohort,
+  removeCohortFromStore,
   NullCountsData,
   useFacetDictionary,
   selectFacetDefinitionsByName,
@@ -90,7 +90,7 @@ export const useSetupInitialCohorts = (): boolean => {
       coreDispatch(setActiveCohortList(updatedList)); // will create caseSet if needed
       // A saved cohort that's not present in the API response has been deleted in another session
       for (const id of outdatedCohortsIds) {
-        coreDispatch(removeCohort({ id }));
+        coreDispatch(removeCohortFromStore({ id }));
       }
 
       setFetched(true);
