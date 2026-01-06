@@ -770,7 +770,7 @@ export const selectMultipleCohortsByIdOrName = (
 ) =>
   cohorts
     .map((cohort) => selectCohortByIdOrName(state, cohort.id, cohort.name))
-    .filter((cohort) => cohort !== undefined);
+    .filter((cohort) => cohort !== undefined && !cohort?.removed);
 
 /**
  * Returns an array of all the cohorts
