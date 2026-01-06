@@ -100,17 +100,17 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
               )?.[0];
               return {
                 ssm_id: ssm.ssm_id,
-                consequence: `${
-                  canonicalConsequence.transcript?.gene?.symbol
-                } ${
-                  canonicalConsequence.transcript?.aa_change
-                    ? canonicalConsequence.transcript?.aa_change
-                    : ""
-                } ${humanify({
-                  term: canonicalConsequence?.transcript.consequence_type
-                    ?.replace("_variant", "")
-                    .replace("_", " "),
-                })}`,
+                consequence: canonicalConsequence?.transcript
+                  ? `${canonicalConsequence.transcript?.gene?.symbol} ${
+                      canonicalConsequence.transcript?.aa_change
+                        ? canonicalConsequence.transcript?.aa_change
+                        : ""
+                    } ${humanify({
+                      term: canonicalConsequence?.transcript.consequence_type
+                        ?.replace("_variant", "")
+                        .replace("_", " "),
+                    })}`
+                  : "--",
               };
             })
           : [];
