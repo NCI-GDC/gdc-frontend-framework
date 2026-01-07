@@ -129,7 +129,7 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
       title={title}
       width={width}
       height={height}
-      domainPadding={includeDomainPadding ? 60 : 0}
+      domainPadding={{ x: 60, y: includeDomainPadding ? 60 : 0 }}
       padding={padding}
       containerComponent={
         <VictoryContainer
