@@ -130,36 +130,60 @@ const IDCViewerWrapper: FC = () => {
 
   const runMapping = useCallback(async () => {
     // Move the function declaration to the function body root (avoid inner declaration)
-    async function fetchGdcCases(limit = 1000) {
+    async function fetchGdcCases(limit = 5) {
       try {
-        const url = "https://api.gdc.cancer.gov/cases";
-        const params: any = { size: limit, fields: "submitter_id" };
+        const base = "https://api.gdc.cancer.gov/cases";
         const urlParams = new URLSearchParams(window.location.search);
         const primarySite = urlParams.get("primary_site");
-        let filters = null;
+
+        // Build filter object: op: "and" with optional primary_site constraint
+        const filterObj: any = { op: "and", content: [] };
         if (primarySite) {
-          filters = {
+          filterObj.content.push({
             op: "=",
             content: { field: "cases.primary_site", value: primarySite },
-          };
+          });
           addLog(`Filtering GDC cases by primary_site=${primarySite}`);
         }
-        const body = Object.assign(
-          { size: params.size },
-          filters ? { filters } : {},
-        );
+
+        const filtersEncoded = encodeURIComponent(JSON.stringify(filterObj));
+        const url =
+          base +
+          "?" +
+          "size=" +
+          encodeURIComponent(String(limit)) +
+          "&" +
+          "filters=" +
+          filtersEncoded +
+          "&pretty=true" +
+          "&expand=samples.portions.slides" +
+          "&fields=submitter_id,disease_type,primary_site";
+
+        addLog(`GDC GET URL: ${url}`);
         const resp = await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify(body),
+          method: "GET",
+          headers: { Accept: "application/json" },
         });
         if (!resp.ok) throw new Error(`GDC API error ${resp.status}`);
         const json = await resp.json();
         const hits = json?.data?.hits || [];
-        const submitterIds = hits
+
+        // optional local filtering to ensure slides exist
+        const filteredHits = hits.filter(
+          (hit: any) =>
+            hit.samples &&
+            hit.samples.some(
+              (s: any) =>
+                s.portions &&
+                s.portions.some((p: any) => p.slides && p.slides.length > 0),
+            ),
+        );
+
+        addLog(
+          `Fetched ${hits.length} hits; ${filteredHits.length} have slides`,
+        );
+
+        const submitterIds = filteredHits
           .map((h: any) => h.submitter_id)
           .filter((s: any) => typeof s === "string");
 
@@ -175,8 +199,8 @@ const IDCViewerWrapper: FC = () => {
       addLog("Fetching GDC cases from https://api.gdc.cancer.gov/cases");
 
       // fetch up to N cases to avoid overloading browser parsing
-      const fetchedSubmitterIds = await fetchGdcCases(1000);
-      const cases = fetchedSubmitterIds.slice(0, 1000);
+      const fetchedSubmitterIds = await fetchGdcCases(450);
+      const cases = fetchedSubmitterIds.slice(0, 450);
       const gdcCases = cases.map((c) => ({ submitter_id: c, case_id: c }));
       setGdcCount(gdcCases.length);
       addLog(`Retrieved ${gdcCases.length} GDC submitter_id(s) from GDC API`);
@@ -468,9 +492,6 @@ const IDCViewerWrapper: FC = () => {
                 }}
               >
                 <div style={{ fontWeight: 600 }}>{caseId}</div>
-                <div style={{ fontSize: 13, color: "#333" }}>
-                  Matches: {m.matches.length}
-                </div>
 
                 {isTargetCase && firstMatch && firstMatch.series_aws_url && (
                   <div style={{ marginTop: 8 }}>
@@ -499,24 +520,29 @@ const IDCViewerWrapper: FC = () => {
                 )}
 
                 {m.matches.length > 0 && (
-                  <ul style={{ margin: "6px 0 0 16px" }}>
-                    {m.matches.slice(0, 5).map((r: any, i: number) => (
-                      <li key={i}>
-                        PatientID: {r.PatientID ?? "(none)"}
-                        {r.StudyInstanceUID ? (
+                  <div style={{ marginTop: 6, marginBottom: 4 }}>
+                    <div style={{ fontSize: 13 }}>
+                      Matches: {m.matches.length}
+                    </div>
+                    {/* Render a single StudyInstanceUID link (first available) */}
+                    {(() => {
+                      const firstUID = m.matches.find(
+                        (x: any) => x && x.StudyInstanceUID,
+                      )?.StudyInstanceUID;
+                      return firstUID ? (
+                        <div style={{ marginTop: 6 }}>
                           <a
-                            href={buildSlimStudyURL(r.StudyInstanceUID)}
+                            href={buildSlimStudyURL(firstUID)}
                             target="_blank"
                             rel="noreferrer"
+                            style={{ wordBreak: "break-all" }}
                           >
-                            {r.StudyInstanceUID}
+                            StudyInstanceUID: {firstUID}
                           </a>
-                        ) : (
-                          "(none)"
-                        )}
-                      </li>
-                    ))}
-                  </ul>
+                        </div>
+                      ) : null;
+                    })()}
+                  </div>
                 )}
               </div>
             );
