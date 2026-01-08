@@ -5,12 +5,12 @@ import MiniSearch from "minisearch";
 import {
   useCoreDispatch,
   useCoreSelector,
-  selectAvailableCohorts,
+  selectAllCohorts,
   useGetCohortsByContextIdQuery,
   buildGqlOperationToFilterSet,
   setActiveCohortList,
   Cohort,
-  removeCohort,
+  removeCohortFromStore,
   NullCountsData,
   useFacetDictionary,
   selectFacetDefinitionsByName,
@@ -44,14 +44,14 @@ export const useSetupInitialCohorts = (): boolean => {
   } = useGetCohortsByContextIdQuery(null, { skip: fetched });
 
   const coreDispatch = useCoreDispatch();
-  const cohorts = useCoreSelector((state) => selectAvailableCohorts(state));
+  const cohorts: Cohort[] = useCoreSelector((state) => selectAllCohorts(state));
   const cohortWarnings = useCoreSelector((state) =>
     selectAllCohortsWithWarnings(state),
   );
 
   const updatedCohortIds = (cohortsListData || []).map((cohort) => cohort.id);
   const outdatedCohortsIds = cohorts
-    .filter((c) => c.saved && !updatedCohortIds.includes(c.id))
+    .filter((c) => (c.saved && !updatedCohortIds.includes(c.id)) || c.removed)
     .map((c) => c.id);
 
   useDeepCompareEffect(() => {
@@ -90,7 +90,7 @@ export const useSetupInitialCohorts = (): boolean => {
       coreDispatch(setActiveCohortList(updatedList)); // will create caseSet if needed
       // A saved cohort that's not present in the API response has been deleted in another session
       for (const id of outdatedCohortsIds) {
-        coreDispatch(removeCohort({ id }));
+        coreDispatch(removeCohortFromStore({ id }));
       }
 
       setFetched(true);

@@ -29,7 +29,7 @@ export const FacetCard: React.FC<FacetCardProps> = ({
   let formattedData = useDeepCompareMemo(
     () =>
       data.map((cohort) => {
-        const formattedCohort = cohort.buckets.map((facet) => {
+        const formattedCohort = (cohort?.buckets || []).map((facet) => {
           return {
             key: formatBucket(facet.key, field),
             count: facet.doc_count,
