@@ -68,10 +68,6 @@ const IDCViewerWrapper: FC = () => {
   const [mappings, setMappings] = useState<any[]>([]);
   const [gdcCount, setGdcCount] = useState<number | null>(null);
   const [idcCount, setIdcCount] = useState<number | null>(null);
-  const [studiesForPatient, setStudiesForPatient] = useState<any[] | null>(
-    null,
-  );
-  const [resolvedPatient, setResolvedPatient] = useState<string | null>(null);
   const divRef = useRef<HTMLDivElement | null>(null);
 
   const addLog = (s: string) => setLogs((l) => [...l, s]);
@@ -87,94 +83,6 @@ const IDCViewerWrapper: FC = () => {
     encodeURIComponent(studyInstanceUID) +
     "/series/" +
     encodeURIComponent(seriesInstanceUID);
-
-  // Helper: resolve case_id -> PatientID using parquet rows
-  function resolvePatientIdFromCaseId(
-    idc_rows: any[],
-    caseIdRaw?: string | null,
-  ) {
-    const caseId = (caseIdRaw || "").replace(/^['"]|['"]$/g, "");
-    if (!caseId) return null;
-
-    // 1) Direct PatientID match
-    const direct = idc_rows.find((r) => r.PatientID === caseId);
-    if (direct) return direct.PatientID;
-
-    // 2) Try common case-id-like columns
-    const probe = idc_rows[0] || {};
-    const keys = ["gdc_case_id", "case_id", "CaseID"];
-    const presentKey = keys.find((k) => k in probe);
-    if (presentKey) {
-      const via = idc_rows.find((r) => r[presentKey] === caseId);
-      if (via) return via.PatientID;
-    }
-    return null;
-  }
-
-  // getDicomStudiesJS: group filtered rows by StudyInstanceUID and return sorted studies similar to sample
-  function getDicomStudiesJS(
-    idc_data: any[],
-    patientId: string,
-    outputFormat = "dict",
-  ) {
-    const patientList = Array.isArray(patientId)
-      ? (patientId as string[])
-      : [patientId];
-    if (!patientList.every((p) => typeof p === "string")) {
-      throw new TypeError("patientId must be a string or list of strings");
-    }
-    if (!["dict", "df", "list"].includes(outputFormat)) {
-      throw new Error("outputFormat must be either 'dict' or 'df' or 'list'");
-    }
-
-    const filteredRows = idc_data.filter((row) =>
-      patientList.includes(row.PatientID),
-    );
-    if (filteredRows.length === 0) {
-      throw new Error("No matching patientId in index");
-    }
-
-    if (outputFormat === "list") {
-      const setUIDs = new Set(filteredRows.map((r) => r.StudyInstanceUID));
-      return Array.from(setUIDs);
-    }
-
-    const studyMap = new Map<
-      string,
-      {
-        StudyInstanceUID: string;
-        StudyDateSet: Set<string>;
-        StudyDescriptionSet: Set<string>;
-        SeriesSet: Set<string>;
-      }
-    >();
-    for (const row of filteredRows) {
-      const studyUID = row.StudyInstanceUID;
-      if (!studyMap.has(studyUID)) {
-        studyMap.set(studyUID, {
-          StudyInstanceUID: studyUID,
-          StudyDateSet: new Set(),
-          StudyDescriptionSet: new Set(),
-          SeriesSet: new Set(),
-        });
-      }
-      const agg = studyMap.get(studyUID)!;
-      if (row.StudyDate) agg.StudyDateSet.add(row.StudyDate);
-      if (row.StudyDescription)
-        agg.StudyDescriptionSet.add(row.StudyDescription);
-      if (row.SeriesInstanceUID) agg.SeriesSet.add(row.SeriesInstanceUID);
-    }
-
-    const studiesArr = Array.from(studyMap.values()).map((study) => ({
-      StudyInstanceUID: study.StudyInstanceUID,
-      StudyDate: Array.from(study.StudyDateSet).join(", "),
-      StudyDescription: Array.from(study.StudyDescriptionSet).join(", "),
-      SeriesCount: study.SeriesSet.size,
-      SeriesInstanceUIDs: Array.from(study.SeriesSet),
-    }));
-
-    return studiesArr;
-  }
 
   const runMapping = useCallback(async () => {
     // Move the function declaration to the function body root (avoid inner declaration)
