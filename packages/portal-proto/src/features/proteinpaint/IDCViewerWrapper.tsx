@@ -1,5 +1,5 @@
 // File: `packages/portal-proto/src/features/proteinpaint/IDCViewerWrapper.tsx`
-import React, { FC, useCallback, useState, useEffect, useRef } from "react";
+import React, { FC, useCallback, useEffect, useRef, useState } from "react";
 import { PROTEINPAINT_API } from "@gff/core";
 
 /**
@@ -139,11 +139,9 @@ const IDCViewerWrapper: FC = () => {
           `Fetched ${hits.length} hits; ${filteredHits.length} have slides`,
         );
 
-        const submitterIds = filteredHits
+        return filteredHits
           .map((h: any) => h.submitter_id)
           .filter((s: any) => typeof s === "string");
-
-        return submitterIds;
       } catch (e) {
         addLog(`Failed to fetch GDC cases: ${String(e)}`);
         return [];
@@ -324,9 +322,6 @@ const IDCViewerWrapper: FC = () => {
       <div style={{ fontSize: 13, marginBottom: 8 }}>
         <strong>Counts:</strong> GDC cases: {gdcCount ?? "n/a"} — IDC rows:{" "}
         {idcCount ?? "n/a"} {" — "}
-        <strong>Resolved patient:</strong> {resolvedPatient ?? "(none)"} {" — "}
-        <strong>Studies for patient:</strong>{" "}
-        {Array.isArray(studiesForPatient) ? studiesForPatient.length : "n/a"}
       </div>
 
       <div style={{ marginTop: 12 }}>
