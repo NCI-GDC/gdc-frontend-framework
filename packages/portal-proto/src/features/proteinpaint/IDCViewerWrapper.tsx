@@ -1,17 +1,66 @@
-// typescript
 // File: `packages/portal-proto/src/features/proteinpaint/IDCViewerWrapper.tsx`
 import React, { FC, useCallback, useState, useEffect, useRef } from "react";
 import { PROTEINPAINT_API } from "@gff/core";
 
 /**
  * Cleaned IDCViewerWrapper:
- *  - Hardcoded GDC cases: ["TCGA-FW-A3I3"]
  *  - Automatically runs mapping on mount (no button click required)
  *  - Caches parsed parquet results in Cache Storage (`idc_data.json`)
  */
 
 const SLIM_VIEWER_BASE =
   "https://viewer.imaging.datacommons.cancer.gov/slim/studies/";
+
+// Reusable columns list for IDC parquet reads
+const IDC_PARQUET_COLUMNS = [
+  "collection_id",
+  "PatientID",
+  "StudyInstanceUID",
+  "SeriesInstanceUID",
+  "series_aws_url",
+  "Modality",
+  "StudyDate",
+  "StudyDescription",
+];
+
+// Helper: read idc_data + collection_ids from a parquet file buffer
+async function readParquetIndex(
+  hyparquet: any,
+  idc_index_file: any,
+): Promise<{ idc_data: any[]; collection_ids: string[] }> {
+  const idc_data = await hyparquet.parquetReadObjects({
+    file: idc_index_file,
+    columns: IDC_PARQUET_COLUMNS,
+  });
+
+  const collectionQuery = await hyparquet.parquetReadObjects({
+    file: idc_index_file,
+    columns: ["collection_id"],
+  });
+  const colSet = new Set<string>();
+  collectionQuery.forEach((o: any) => colSet.add(o.collection_id));
+  const collection_ids = Array.from(colSet);
+
+  return { idc_data, collection_ids };
+}
+
+// Helper: cache parsed IDC metadata
+async function cacheIdcMetadata(
+  cache: Cache,
+  cacheRequest: Request,
+  collection_ids: string[],
+  idc_data: any[],
+  addLog: (s: string) => void,
+) {
+  try {
+    const jsonString = JSON.stringify({ collection_ids, idc_data });
+    const jsonBlob = new Blob([jsonString], { type: "application/json" });
+    await cache.put(cacheRequest, new Response(jsonBlob));
+    addLog("Downloaded IDC metadata and cached it");
+  } catch (cacheErr) {
+    addLog(`Failed to cache IDC metadata: ${String(cacheErr)}`);
+  }
+}
 
 const IDCViewerWrapper: FC = () => {
   const [progress, setProgress] = useState<string>("Idle");
@@ -29,6 +78,15 @@ const IDCViewerWrapper: FC = () => {
 
   const buildSlimStudyURL = (studyInstanceUID: string) =>
     SLIM_VIEWER_BASE + encodeURIComponent(studyInstanceUID);
+
+  const buildSlimSeriesURL = (
+    studyInstanceUID: string,
+    seriesInstanceUID: string,
+  ) =>
+    SLIM_VIEWER_BASE +
+    encodeURIComponent(studyInstanceUID) +
+    "/series/" +
+    encodeURIComponent(seriesInstanceUID);
 
   // Helper: resolve case_id -> PatientID using parquet rows
   function resolvePatientIdFromCaseId(
@@ -115,16 +173,6 @@ const IDCViewerWrapper: FC = () => {
       SeriesInstanceUIDs: Array.from(study.SeriesSet),
     }));
 
-    studiesArr.sort((a, b) => {
-      if (a.StudyDate < b.StudyDate) return -1;
-      if (a.StudyDate > b.StudyDate) return 1;
-      if (a.StudyDescription < b.StudyDescription) return -1;
-      if (a.StudyDescription > b.StudyDescription) return 1;
-      if (a.SeriesCount < b.SeriesCount) return -1;
-      if (a.SeriesCount > b.SeriesCount) return 1;
-      return 0;
-    });
-
     return studiesArr;
   }
 
@@ -195,10 +243,6 @@ const IDCViewerWrapper: FC = () => {
     }
 
     try {
-      setProgress("Resolving GDC cases (fetching from GDC API)...");
-      addLog("Fetching GDC cases from https://api.gdc.cancer.gov/cases");
-
-      // fetch up to N cases to avoid overloading browser parsing
       const fetchedSubmitterIds = await fetchGdcCases(450);
       const cases = fetchedSubmitterIds.slice(0, 450);
       const gdcCases = cases.map((c) => ({ submitter_id: c, case_id: c }));
@@ -263,41 +307,17 @@ const IDCViewerWrapper: FC = () => {
             );
           }
 
-          idc_data = await hyparquet.parquetReadObjects({
-            file: idc_index_file,
-            columns: [
-              "collection_id",
-              "PatientID",
-              "StudyInstanceUID",
-              "SeriesInstanceUID",
-              "series_aws_url",
-              "StudyDate",
-              "StudyDescription",
-              "gdc_case_id",
-              "case_id",
-            ],
-          });
-
-          // Build list of all collection_ids
-          const collectionQuery = await hyparquet.parquetReadObjects({
-            file: idc_index_file,
-            columns: ["collection_id"],
-          });
-          const colSet = new Set<string>();
-          collectionQuery.forEach((o: any) => colSet.add(o.collection_id));
-          collection_ids = Array.from(colSet);
-
-          // Cache result for next time
-          try {
-            const jsonString = JSON.stringify({ collection_ids, idc_data });
-            const jsonBlob = new Blob([jsonString], {
-              type: "application/json",
-            });
-            await cache.put(cacheRequest, new Response(jsonBlob));
-            addLog("Downloaded IDC metadata and cached it");
-          } catch (cacheErr) {
-            addLog(`Failed to cache IDC metadata: ${String(cacheErr)}`);
-          }
+          // Extracted: read idc_data + collection_ids and cache
+          const parsed = await readParquetIndex(hyparquet, idc_index_file);
+          idc_data = parsed.idc_data;
+          collection_ids = parsed.collection_ids;
+          await cacheIdcMetadata(
+            cache,
+            cacheRequest,
+            collection_ids,
+            idc_data,
+            addLog,
+          );
         }
       } catch (cacheErr) {
         addLog(
@@ -311,27 +331,9 @@ const IDCViewerWrapper: FC = () => {
         const idc_index_file = await hyparquet.asyncBufferFromUrl({
           url: idc_index_url,
         });
-        idc_data = await hyparquet.parquetReadObjects({
-          file: idc_index_file,
-          columns: [
-            "collection_id",
-            "PatientID",
-            "StudyInstanceUID",
-            "SeriesInstanceUID",
-            "series_aws_url",
-            "StudyDate",
-            "StudyDescription",
-            "gdc_case_id",
-            "case_id",
-          ],
-        });
-        const collectionQuery = await hyparquet.parquetReadObjects({
-          file: idc_index_file,
-          columns: ["collection_id"],
-        });
-        const colSet = new Set<string>();
-        collectionQuery.forEach((o: any) => colSet.add(o.collection_id));
-        collection_ids = Array.from(colSet);
+        const parsed = await readParquetIndex(hyparquet, idc_index_file);
+        idc_data = parsed.idc_data;
+        collection_ids = parsed.collection_ids;
       }
 
       setIdcCount(idc_data.length);
@@ -379,51 +381,6 @@ const IDCViewerWrapper: FC = () => {
 
       setMappings(resultsWithViewer);
 
-      // For the first (and only) hardcoded case, resolve a PatientID and compute studies
-      const firstResult =
-        resultsWithViewer.length > 0 ? resultsWithViewer[0] : results[0];
-      let patientIdForStudies: string | null = null;
-      if (
-        firstResult &&
-        firstResult.matches &&
-        firstResult.matches.length > 0
-      ) {
-        const anyRow =
-          firstResult.matches.find((r: any) => !!r.PatientID) ||
-          firstResult.matches[0];
-        patientIdForStudies =
-          anyRow?.PatientID ??
-          resolvePatientIdFromCaseId(idc_data, firstResult.gdcCase.case_id);
-      } else {
-        patientIdForStudies = resolvePatientIdFromCaseId(idc_data, cases[0]);
-      }
-
-      if (patientIdForStudies) {
-        setResolvedPatient(patientIdForStudies);
-        try {
-          const studies = getDicomStudiesJS(
-            idc_data,
-            patientIdForStudies,
-            "dict",
-          );
-          setStudiesForPatient(studies);
-          addLog(
-            `Resolved patient ${patientIdForStudies} → ${studies.length} studies`,
-          );
-        } catch (err: any) {
-          setStudiesForPatient([]);
-          addLog(
-            `No studies for resolved patient ${patientIdForStudies}: ${
-              err?.message ?? String(err)
-            }`,
-          );
-        }
-      } else {
-        setResolvedPatient(null);
-        setStudiesForPatient(null);
-        addLog("Could not resolve PatientID for the hardcoded case");
-      }
-
       setProgress("Ready");
     } catch (err: any) {
       addLog(`Error: ${err?.message ?? String(err)}`);
@@ -458,7 +415,10 @@ const IDCViewerWrapper: FC = () => {
 
       <div style={{ fontSize: 13, marginBottom: 8 }}>
         <strong>Counts:</strong> GDC cases: {gdcCount ?? "n/a"} — IDC rows:{" "}
-        {idcCount ?? "n/a"}
+        {idcCount ?? "n/a"} {" — "}
+        <strong>Resolved patient:</strong> {resolvedPatient ?? "(none)"} {" — "}
+        <strong>Studies for patient:</strong>{" "}
+        {Array.isArray(studiesForPatient) ? studiesForPatient.length : "n/a"}
       </div>
 
       <div style={{ marginTop: 12 }}>
@@ -479,9 +439,48 @@ const IDCViewerWrapper: FC = () => {
               m.gdcCase.case_id ??
               m.gdcCase.case_uuid ??
               "(no id)";
-            const isTargetCase = caseId === "TCGA-FW-A3I3";
-            const firstMatch =
-              m.matches && m.matches.length > 0 ? m.matches[0] : null;
+            // Build unique series list from matches
+            const seriesMap = new Map<string, any>();
+            if (Array.isArray(m.matches)) {
+              for (const row of m.matches) {
+                const sid = row?.SeriesInstanceUID;
+                if (!sid) continue;
+                const existing = seriesMap.get(sid);
+                if (!existing) {
+                  seriesMap.set(sid, {
+                    StudyInstanceUID: row?.StudyInstanceUID ?? null,
+                    SeriesInstanceUID: sid,
+                    series_aws_url: row?.series_aws_url ?? null,
+                    Modality: row?.Modality ?? row?.modality ?? null,
+                  });
+                } else {
+                  if (!existing.Modality && (row?.Modality || row?.modality)) {
+                    existing.Modality = row?.Modality ?? row?.modality;
+                  }
+                  if (!existing.series_aws_url && row?.series_aws_url) {
+                    existing.series_aws_url = row.series_aws_url;
+                  }
+                  if (!existing.StudyInstanceUID && row?.StudyInstanceUID) {
+                    existing.StudyInstanceUID = row.StudyInstanceUID;
+                  }
+                }
+              }
+            }
+            const seriesList = Array.from(seriesMap.values());
+
+            // Compute match count and a study-level StudyInstanceUID to link to Slim Viewer
+            const matchCount = Array.isArray(m.matches) ? m.matches.length : 0;
+            let studyUIDForLink: string | null = null;
+            if (seriesList.length > 0 && seriesList[0].StudyInstanceUID) {
+              studyUIDForLink = seriesList[0].StudyInstanceUID;
+            } else if (Array.isArray(m.matches)) {
+              const found = m.matches.find((r: any) => !!r.StudyInstanceUID);
+              studyUIDForLink = found?.StudyInstanceUID ?? null;
+            }
+            const studyUrl = studyUIDForLink
+              ? buildSlimStudyURL(studyUIDForLink)
+              : null;
+
             return (
               <div
                 key={idx}
@@ -493,117 +492,114 @@ const IDCViewerWrapper: FC = () => {
               >
                 <div style={{ fontWeight: 600 }}>{caseId}</div>
 
-                {isTargetCase && firstMatch && firstMatch.series_aws_url && (
-                  <div style={{ marginTop: 8 }}>
-                    <div
-                      style={{ fontSize: 12, color: "#666", marginBottom: 6 }}
-                    >
-                      WSI preview:
-                    </div>
-                    <a
-                      href={firstMatch.series_aws_url}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <img
-                        src={firstMatch.series_aws_url}
-                        alt={`WSI for ${caseId}`}
-                        style={{
-                          maxWidth: 320,
-                          maxHeight: 240,
-                          border: "1px solid #ddd",
-                          borderRadius: 4,
-                        }}
-                      />
-                    </a>
+                {/* Render compact match info + single study-level Slim Viewer link (if available) */}
+                {matchCount > 0 && (
+                  <div style={{ marginTop: 6, marginBottom: 4 }}>
+                    <div style={{ fontSize: 13 }}>Matches: {matchCount}</div>
+                    {studyUrl ? (
+                      <div style={{ marginTop: 8 }}>
+                        <a href={studyUrl} target="_blank" rel="noreferrer">
+                          <button>Open Study in Slim Viewer</button>
+                        </a>
+                        <div
+                          style={{
+                            fontSize: 12,
+                            color: "#666",
+                            marginTop: 6,
+                            wordBreak: "break-all",
+                          }}
+                        >
+                          StudyInstanceUID: {studyUIDForLink}
+                        </div>
+                      </div>
+                    ) : (
+                      <div style={{ marginTop: 6, color: "#666" }}>
+                        No StudyInstanceUID available for Slim Viewer
+                      </div>
+                    )}
                   </div>
                 )}
 
                 {m.matches.length > 0 && (
                   <div style={{ marginTop: 6, marginBottom: 4 }}>
-                    <div style={{ fontSize: 13 }}>
-                      Matches: {m.matches.length}
-                    </div>
-                    {/* Render a single StudyInstanceUID link (first available) */}
-                    {(() => {
-                      const firstUID = m.matches.find(
-                        (x: any) => x && x.StudyInstanceUID,
-                      )?.StudyInstanceUID;
-                      return firstUID ? (
-                        <div style={{ marginTop: 6 }}>
-                          <a
-                            href={buildSlimStudyURL(firstUID)}
-                            target="_blank"
-                            rel="noreferrer"
-                            style={{ wordBreak: "break-all" }}
+                    {/* existing per-series UI (unchanged) */}
+                    {seriesList.length > 0 ? (
+                      <div style={{ marginTop: 8 }}>
+                        {seriesList.map((s, si) => (
+                          <div
+                            key={si}
+                            style={{
+                              marginTop: 8,
+                              paddingTop: 6,
+                              borderTop: "1px dashed #eee",
+                            }}
                           >
-                            StudyInstanceUID: {firstUID}
-                          </a>
-                        </div>
-                      ) : null;
-                    })()}
+                            <div style={{ fontSize: 12, color: "#333" }}>
+                              SeriesInstanceUID: {s.SeriesInstanceUID}
+                            </div>
+                            <div
+                              style={{
+                                fontSize: 12,
+                                color: "#666",
+                                marginTop: 4,
+                              }}
+                            >
+                              Modality: {s.Modality ?? "(none)"}
+                            </div>
+
+                            <div
+                              style={{
+                                marginTop: 6,
+                                display: "flex",
+                                gap: 8,
+                                flexWrap: "wrap",
+                              }}
+                            >
+                              {s.series_aws_url && (
+                                <a
+                                  href={s.series_aws_url}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                >
+                                  <button>Open WSI</button>
+                                </a>
+                              )}
+
+                              {s.StudyInstanceUID && s.SeriesInstanceUID && (
+                                <a
+                                  href={buildSlimSeriesURL(
+                                    s.StudyInstanceUID,
+                                    s.SeriesInstanceUID,
+                                  )}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                >
+                                  <button>Open in Slim Viewer (Series)</button>
+                                </a>
+                              )}
+
+                              {!s.series_aws_url &&
+                                !(
+                                  s.StudyInstanceUID && s.SeriesInstanceUID
+                                ) && (
+                                  <div style={{ color: "#666" }}>
+                                    No viewer URL available
+                                  </div>
+                                )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div style={{ marginTop: 6, color: "#666" }}>
+                        No series links found for this case.
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
             );
           })}
-        </div>
-      </div>
-
-      <div style={{ marginTop: 12 }}>
-        <h3>Studies for resolved patient</h3>
-        <div
-          style={{
-            maxHeight: 420,
-            overflow: "auto",
-            background: "#fafafa",
-            padding: 8,
-            borderRadius: 6,
-          }}
-        >
-          {!resolvedPatient && <div>No patient resolved yet.</div>}
-          {resolvedPatient && studiesForPatient === null && (
-            <div>Loading studies...</div>
-          )}
-          {resolvedPatient &&
-            Array.isArray(studiesForPatient) &&
-            studiesForPatient.length === 0 && (
-              <div>No studies found for {resolvedPatient}</div>
-            )}
-          {resolvedPatient &&
-            Array.isArray(studiesForPatient) &&
-            studiesForPatient.map((study: any) => (
-              <div
-                key={study.StudyInstanceUID}
-                style={{
-                  background: "#fff",
-                  padding: 10,
-                  borderRadius: 6,
-                  marginBottom: 8,
-                  border: "1px solid #ddd",
-                }}
-              >
-                <div style={{ fontWeight: 600, wordBreak: "break-all" }}>
-                  Study: {study.StudyInstanceUID}
-                </div>
-                <div style={{ fontSize: 13, color: "#444", marginTop: 6 }}>
-                  StudyDate: {study.StudyDate || "(none)"} — SeriesCount:{" "}
-                  {study.SeriesCount}
-                </div>
-                <div style={{ marginTop: 8 }}>
-                  <button
-                    onClick={() =>
-                      window.open(
-                        buildSlimStudyURL(study.StudyInstanceUID),
-                        "_blank",
-                      )
-                    }
-                  >
-                    Open in Slim Viewer (Study)
-                  </button>
-                </div>
-              </div>
-            ))}
         </div>
       </div>
 
