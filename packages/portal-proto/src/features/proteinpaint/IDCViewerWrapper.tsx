@@ -340,170 +340,186 @@ const IDCViewerWrapper: FC = () => {
           {mappings.length === 0 ? (
             <div>No mapping results yet.</div>
           ) : (
-            <table
-              style={{
-                width: "100%",
-                borderCollapse: "collapse",
-                fontSize: 12,
-                background: "#fafafa",
-                borderRadius: 6,
-                tableLayout: "fixed",
-              }}
-            >
-              <colgroup>
-                <col style={{ width: "15%" }} />
-                <col style={{ width: "35%" }} />
-                <col style={{ width: "35%" }} />
-                <col style={{ width: "15%" }} />
-              </colgroup>
-              <thead>
-                <tr
-                  style={{ textAlign: "left", borderBottom: "1px solid #ddd" }}
-                >
-                  <th style={{ padding: "6px 8px" }}>GDC caseId</th>
-                  <th style={{ padding: "6px 8px" }}>StudyInstanceUUID</th>
-                  <th style={{ padding: "6px 8px" }}>SeriesUUIS</th>
-                  <th style={{ padding: "6px 8px" }}>IDC Vewer link</th>
-                </tr>
-              </thead>
-              <tbody>
-                {mappings.map((m, idx) => {
-                  const caseId =
-                    m.gdcCase.submitter_id ??
-                    m.gdcCase.case_id ??
-                    m.gdcCase.case_uuid ??
-                    "(no id)";
-                  // Build unique series list from matches
-                  const seriesMap = new Map<string, any>();
-                  if (Array.isArray(m.matches)) {
-                    for (const row of m.matches) {
-                      const sid = row?.SeriesInstanceUID;
-                      if (!sid) continue;
-                      const existing = seriesMap.get(sid);
-                      if (!existing) {
-                        seriesMap.set(sid, {
-                          StudyInstanceUID: row?.StudyInstanceUID ?? null,
-                          SeriesInstanceUID: sid,
-                        });
-                      } else if (
-                        !existing.StudyInstanceUID &&
-                        row?.StudyInstanceUID
-                      ) {
-                        existing.StudyInstanceUID = row.StudyInstanceUID;
+            <>
+              <style>
+                {`
+                  .idc-mapping-table tbody tr:hover {
+                    background: #fff9e6 !important;
+                  }
+                `}
+              </style>
+              <table
+                className="idc-mapping-table"
+                style={{
+                  width: "100%",
+                  borderCollapse: "collapse",
+                  fontSize: 12,
+                  background: "#fafafa",
+                  borderRadius: 6,
+                  tableLayout: "fixed",
+                }}
+              >
+                <colgroup>
+                  <col style={{ width: "15%" }} />
+                  <col style={{ width: "35%" }} />
+                  <col style={{ width: "35%" }} />
+                  <col style={{ width: "15%" }} />
+                </colgroup>
+                <thead>
+                  <tr
+                    style={{
+                      textAlign: "left",
+                      borderBottom: "1px solid #ddd",
+                    }}
+                  >
+                    <th style={{ padding: "6px 8px" }}>GDC caseId</th>
+                    <th style={{ padding: "6px 8px" }}>StudyInstanceUUID</th>
+                    <th style={{ padding: "6px 8px" }}>SeriesInstanceUUID</th>
+                    <th style={{ padding: "6px 8px" }}>IDC Vewer link</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {mappings.map((m, idx) => {
+                    const caseId =
+                      m.gdcCase.submitter_id ??
+                      m.gdcCase.case_id ??
+                      m.gdcCase.case_uuid ??
+                      "(no id)";
+                    // Build unique series list from matches
+                    const seriesMap = new Map<string, any>();
+                    if (Array.isArray(m.matches)) {
+                      for (const row of m.matches) {
+                        const sid = row?.SeriesInstanceUID;
+                        if (!sid) continue;
+                        const existing = seriesMap.get(sid);
+                        if (!existing) {
+                          seriesMap.set(sid, {
+                            StudyInstanceUID: row?.StudyInstanceUID ?? null,
+                            SeriesInstanceUID: sid,
+                          });
+                        } else if (
+                          !existing.StudyInstanceUID &&
+                          row?.StudyInstanceUID
+                        ) {
+                          existing.StudyInstanceUID = row.StudyInstanceUID;
+                        }
                       }
                     }
-                  }
-                  const seriesList = Array.from(seriesMap.values());
-                  // Determine a study-level UID for study link
-                  let studyUIDForLink: string | null = null;
-                  if (seriesList.length > 0 && seriesList[0].StudyInstanceUID) {
-                    studyUIDForLink = seriesList[0].StudyInstanceUID;
-                  } else if (Array.isArray(m.matches)) {
-                    const found = m.matches.find(
-                      (r: any) => !!r.StudyInstanceUID,
-                    );
-                    studyUIDForLink = found?.StudyInstanceUID ?? null;
-                  }
-                  const studyUrl = studyUIDForLink
-                    ? buildSlimStudyURL(studyUIDForLink)
-                    : null;
-
-                  const isExpanded = expandedCases.has(caseId);
-                  const rows: React.ReactNode[] = [];
-
-                  // Subtle zebra for study rows
-                  const isEvenStudy = idx % 2 === 0;
-                  const studyBg = isEvenStudy ? "#f5f6f7" : "#eef0f2";
-
-                  // Study row (click to expand/collapse series rows)
-                  rows.push(
-                    <tr
-                      key={`${idx}-study`}
-                      style={{
-                        borderTop: "1px solid #eee",
-                        cursor: "pointer",
-                        background: studyBg,
-                      }}
-                      onClick={() => toggleExpanded(caseId)}
-                    >
-                      <td style={{ padding: "6px 8px" }}>{caseId}</td>
-                      <td
-                        style={{ padding: "6px 8px", wordBreak: "break-all" }}
-                      >
-                        {studyUIDForLink ?? "(/)"}
-                      </td>
-                      <td style={{ padding: "6px 8px" }}>/</td>
-                      <td style={{ padding: "6px 8px" }}>
-                        {studyUrl ? (
-                          <a
-                            href={studyUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            Open study
-                          </a>
-                        ) : (
-                          <span style={{ color: "#666" }}>(no link)</span>
-                        )}
-                      </td>
-                    </tr>,
-                  );
-
-                  // Per-series rows (render only when expanded)
-                  if (isExpanded) {
-                    seriesList.forEach((s, si) => {
-                      const link =
-                        s.StudyInstanceUID && s.SeriesInstanceUID
-                          ? buildSlimSeriesURL(
-                              s.StudyInstanceUID,
-                              s.SeriesInstanceUID,
-                            )
-                          : null;
-                      // Slightly different zebra for series rows
-                      const seriesBg = si % 2 === 0 ? "#fbfbfd" : "#f2f2f2";
-                      rows.push(
-                        <tr
-                          key={`${idx}-${si}`}
-                          style={{
-                            background: seriesBg,
-                          }}
-                        >
-                          <td style={{ padding: "6px 8px" }}>{caseId}</td>
-                          <td
-                            style={{
-                              padding: "6px 8px",
-                              wordBreak: "break-all",
-                            }}
-                          >
-                            {s.StudyInstanceUID ?? "(/)"}
-                          </td>
-                          <td
-                            style={{
-                              padding: "6px 8px",
-                              wordBreak: "break-all",
-                            }}
-                          >
-                            {s.SeriesInstanceUID ?? "(/)"}
-                          </td>
-                          <td style={{ padding: "6px 8px" }}>
-                            {link ? (
-                              <a href={link} target="_blank" rel="noreferrer">
-                                Open series
-                              </a>
-                            ) : (
-                              <span style={{ color: "#666" }}>(no link)</span>
-                            )}
-                          </td>
-                        </tr>,
+                    const seriesList = Array.from(seriesMap.values());
+                    // Determine a study-level UID for study link
+                    let studyUIDForLink: string | null = null;
+                    if (
+                      seriesList.length > 0 &&
+                      seriesList[0].StudyInstanceUID
+                    ) {
+                      studyUIDForLink = seriesList[0].StudyInstanceUID;
+                    } else if (Array.isArray(m.matches)) {
+                      const found = m.matches.find(
+                        (r: any) => !!r.StudyInstanceUID,
                       );
-                    });
-                  }
+                      studyUIDForLink = found?.StudyInstanceUID ?? null;
+                    }
+                    const studyUrl = studyUIDForLink
+                      ? buildSlimStudyURL(studyUIDForLink)
+                      : null;
 
-                  return rows;
-                })}
-              </tbody>
-            </table>
+                    const isExpanded = expandedCases.has(caseId);
+                    const rows: React.ReactNode[] = [];
+
+                    // Subtle zebra for study rows
+                    const isEvenStudy = idx % 2 === 0;
+                    const studyBg = isEvenStudy ? "#f5f6f7" : "#eef0f2";
+
+                    // Study row (click to expand/collapse series rows)
+                    rows.push(
+                      <tr
+                        key={`${idx}-study`}
+                        style={{
+                          borderTop: "1px solid #eee",
+                          cursor: "pointer",
+                          background: studyBg,
+                        }}
+                        onClick={() => toggleExpanded(caseId)}
+                      >
+                        <td style={{ padding: "6px 8px" }}>{caseId}</td>
+                        <td
+                          style={{ padding: "6px 8px", wordBreak: "break-all" }}
+                        >
+                          {studyUIDForLink ?? "(/)"}
+                        </td>
+                        <td style={{ padding: "6px 8px" }}>/</td>
+                        <td style={{ padding: "6px 8px" }}>
+                          {studyUrl ? (
+                            <a
+                              href={studyUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              Open study
+                            </a>
+                          ) : (
+                            <span style={{ color: "#666" }}>(no link)</span>
+                          )}
+                        </td>
+                      </tr>,
+                    );
+
+                    // Per-series rows (render only when expanded)
+                    if (isExpanded) {
+                      seriesList.forEach((s, si) => {
+                        const link =
+                          s.StudyInstanceUID && s.SeriesInstanceUID
+                            ? buildSlimSeriesURL(
+                                s.StudyInstanceUID,
+                                s.SeriesInstanceUID,
+                              )
+                            : null;
+                        // Slightly different zebra for series rows
+                        const seriesBg = si % 2 === 0 ? "#fbfbfd" : "#f2f2f2";
+                        rows.push(
+                          <tr
+                            key={`${idx}-${si}`}
+                            style={{
+                              background: seriesBg,
+                            }}
+                          >
+                            <td style={{ padding: "6px 8px" }}>{caseId}</td>
+                            <td
+                              style={{
+                                padding: "6px 8px",
+                                wordBreak: "break-all",
+                              }}
+                            >
+                              {s.StudyInstanceUID ?? "(/)"}
+                            </td>
+                            <td
+                              style={{
+                                padding: "6px 8px",
+                                wordBreak: "break-all",
+                              }}
+                            >
+                              {s.SeriesInstanceUID ?? "(/)"}
+                            </td>
+                            <td style={{ padding: "6px 8px" }}>
+                              {link ? (
+                                <a href={link} target="_blank" rel="noreferrer">
+                                  Open series
+                                </a>
+                              ) : (
+                                <span style={{ color: "#666" }}>(no link)</span>
+                              )}
+                            </td>
+                          </tr>,
+                        );
+                      });
+                    }
+
+                    return rows;
+                  })}
+                </tbody>
+              </table>
+            </>
           )}
         </div>
       </div>
