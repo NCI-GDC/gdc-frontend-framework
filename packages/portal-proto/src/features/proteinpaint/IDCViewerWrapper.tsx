@@ -69,6 +69,16 @@ const IDCViewerWrapper: FC = () => {
   const [gdcCount, setGdcCount] = useState<number | null>(null);
   const [idcCount, setIdcCount] = useState<number | null>(null);
   const divRef = useRef<HTMLDivElement | null>(null);
+  // Track which cases are expanded to show their series rows
+  const [expandedCases, setExpandedCases] = useState<Set<string>>(new Set());
+  const toggleExpanded = useCallback((caseId: string) => {
+    setExpandedCases((prev) => {
+      const next = new Set(prev);
+      if (next.has(caseId)) next.delete(caseId);
+      else next.add(caseId);
+      return next;
+    });
+  }, []);
 
   const addLog = (s: string) => setLogs((l) => [...l, s]);
 
@@ -325,184 +335,164 @@ const IDCViewerWrapper: FC = () => {
       </div>
 
       <div style={{ marginTop: 12 }}>
-        <h3>Mapping preview</h3>
-        <div
-          style={{
-            maxHeight: 360,
-            overflow: "auto",
-            background: "#fafafa",
-            padding: 8,
-            borderRadius: 6,
-          }}
-        >
-          {mappings.length === 0 && <div>No mapping results yet.</div>}
-          {mappings.map((m, idx) => {
-            const caseId =
-              m.gdcCase.submitter_id ??
-              m.gdcCase.case_id ??
-              m.gdcCase.case_uuid ??
-              "(no id)";
-            // Build unique series list from matches
-            const seriesMap = new Map<string, any>();
-            if (Array.isArray(m.matches)) {
-              for (const row of m.matches) {
-                const sid = row?.SeriesInstanceUID;
-                if (!sid) continue;
-                const existing = seriesMap.get(sid);
-                if (!existing) {
-                  seriesMap.set(sid, {
-                    StudyInstanceUID: row?.StudyInstanceUID ?? null,
-                    SeriesInstanceUID: sid,
-                    series_aws_url: row?.series_aws_url ?? null,
-                    Modality: row?.Modality ?? row?.modality ?? null,
-                  });
-                } else {
-                  if (!existing.Modality && (row?.Modality || row?.modality)) {
-                    existing.Modality = row?.Modality ?? row?.modality;
+        <h3>Mapping table</h3>
+        <div style={{ maxHeight: 460, overflow: "auto" }}>
+          {mappings.length === 0 ? (
+            <div>No mapping results yet.</div>
+          ) : (
+            <table
+              style={{
+                width: "100%",
+                borderCollapse: "collapse",
+                fontSize: 12,
+                background: "#fafafa",
+                borderRadius: 6,
+                tableLayout: "fixed",
+              }}
+            >
+              <colgroup>
+                <col style={{ width: "15%" }} />
+                <col style={{ width: "35%" }} />
+                <col style={{ width: "35%" }} />
+                <col style={{ width: "15%" }} />
+              </colgroup>
+              <thead>
+                <tr
+                  style={{ textAlign: "left", borderBottom: "1px solid #ddd" }}
+                >
+                  <th style={{ padding: "6px 8px" }}>GDC caseId</th>
+                  <th style={{ padding: "6px 8px" }}>StudyInstanceUUID</th>
+                  <th style={{ padding: "6px 8px" }}>SeriesUUIS</th>
+                  <th style={{ padding: "6px 8px" }}>IDC Vewer link</th>
+                </tr>
+              </thead>
+              <tbody>
+                {mappings.map((m, idx) => {
+                  const caseId =
+                    m.gdcCase.submitter_id ??
+                    m.gdcCase.case_id ??
+                    m.gdcCase.case_uuid ??
+                    "(no id)";
+                  // Build unique series list from matches
+                  const seriesMap = new Map<string, any>();
+                  if (Array.isArray(m.matches)) {
+                    for (const row of m.matches) {
+                      const sid = row?.SeriesInstanceUID;
+                      if (!sid) continue;
+                      const existing = seriesMap.get(sid);
+                      if (!existing) {
+                        seriesMap.set(sid, {
+                          StudyInstanceUID: row?.StudyInstanceUID ?? null,
+                          SeriesInstanceUID: sid,
+                        });
+                      } else if (
+                        !existing.StudyInstanceUID &&
+                        row?.StudyInstanceUID
+                      ) {
+                        existing.StudyInstanceUID = row.StudyInstanceUID;
+                      }
+                    }
                   }
-                  if (!existing.series_aws_url && row?.series_aws_url) {
-                    existing.series_aws_url = row.series_aws_url;
+                  const seriesList = Array.from(seriesMap.values());
+                  // Determine a study-level UID for study link
+                  let studyUIDForLink: string | null = null;
+                  if (seriesList.length > 0 && seriesList[0].StudyInstanceUID) {
+                    studyUIDForLink = seriesList[0].StudyInstanceUID;
+                  } else if (Array.isArray(m.matches)) {
+                    const found = m.matches.find(
+                      (r: any) => !!r.StudyInstanceUID,
+                    );
+                    studyUIDForLink = found?.StudyInstanceUID ?? null;
                   }
-                  if (!existing.StudyInstanceUID && row?.StudyInstanceUID) {
-                    existing.StudyInstanceUID = row.StudyInstanceUID;
-                  }
-                }
-              }
-            }
-            const seriesList = Array.from(seriesMap.values());
+                  const studyUrl = studyUIDForLink
+                    ? buildSlimStudyURL(studyUIDForLink)
+                    : null;
 
-            // Compute match count and a study-level StudyInstanceUID to link to Slim Viewer
-            const matchCount = Array.isArray(m.matches) ? m.matches.length : 0;
-            let studyUIDForLink: string | null = null;
-            if (seriesList.length > 0 && seriesList[0].StudyInstanceUID) {
-              studyUIDForLink = seriesList[0].StudyInstanceUID;
-            } else if (Array.isArray(m.matches)) {
-              const found = m.matches.find((r: any) => !!r.StudyInstanceUID);
-              studyUIDForLink = found?.StudyInstanceUID ?? null;
-            }
-            const studyUrl = studyUIDForLink
-              ? buildSlimStudyURL(studyUIDForLink)
-              : null;
+                  const isExpanded = expandedCases.has(caseId);
+                  const rows: React.ReactNode[] = [];
 
-            return (
-              <div
-                key={idx}
-                style={{
-                  marginBottom: 10,
-                  paddingBottom: 8,
-                  borderBottom: "1px solid #eee",
-                }}
-              >
-                <div style={{ fontWeight: 600 }}>{caseId}</div>
+                  // Study row (click to expand/collapse series rows)
+                  rows.push(
+                    <tr
+                      key={`${idx}-study`}
+                      style={{ borderTop: "1px solid #eee", cursor: "pointer" }}
+                      onClick={() => toggleExpanded(caseId)}
+                    >
+                      <td style={{ padding: "6px 8px" }}>{caseId}</td>
+                      <td
+                        style={{ padding: "6px 8px", wordBreak: "break-all" }}
+                      >
+                        {studyUIDForLink ?? "(none)"}
+                      </td>
+                      <td style={{ padding: "6px 8px" }}>none</td>
+                      <td style={{ padding: "6px 8px" }}>
+                        {studyUrl ? (
+                          <a
+                            href={studyUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            Open study
+                          </a>
+                        ) : (
+                          <span style={{ color: "#666" }}>(no link)</span>
+                        )}
+                      </td>
+                    </tr>,
+                  );
 
-                {/* Render compact match info + single study-level Slim Viewer link (if available) */}
-                {matchCount > 0 && (
-                  <div style={{ marginTop: 6, marginBottom: 4 }}>
-                    <div style={{ fontSize: 13 }}>Matches: {matchCount}</div>
-                    {studyUrl ? (
-                      <div style={{ marginTop: 8 }}>
-                        <a href={studyUrl} target="_blank" rel="noreferrer">
-                          <button>Open Study in Slim Viewer</button>
-                        </a>
-                        <div
-                          style={{
-                            fontSize: 12,
-                            color: "#666",
-                            marginTop: 6,
-                            wordBreak: "break-all",
-                          }}
+                  // Per-series rows (render only when expanded)
+                  if (isExpanded) {
+                    seriesList.forEach((s, si) => {
+                      const link =
+                        s.StudyInstanceUID && s.SeriesInstanceUID
+                          ? buildSlimSeriesURL(
+                              s.StudyInstanceUID,
+                              s.SeriesInstanceUID,
+                            )
+                          : null;
+                      rows.push(
+                        <tr
+                          key={`${idx}-${si}`}
+                          style={{ borderTop: "1px solid #eee" }}
                         >
-                          StudyInstanceUID: {studyUIDForLink}
-                        </div>
-                      </div>
-                    ) : (
-                      <div style={{ marginTop: 6, color: "#666" }}>
-                        No StudyInstanceUID available for Slim Viewer
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {m.matches.length > 0 && (
-                  <div style={{ marginTop: 6, marginBottom: 4 }}>
-                    {/* existing per-series UI (unchanged) */}
-                    {seriesList.length > 0 ? (
-                      <div style={{ marginTop: 8 }}>
-                        {seriesList.map((s, si) => (
-                          <div
-                            key={si}
+                          <td style={{ padding: "6px 8px" }}>{caseId}</td>
+                          <td
                             style={{
-                              marginTop: 8,
-                              paddingTop: 6,
-                              borderTop: "1px dashed #eee",
+                              padding: "6px 8px",
+                              wordBreak: "break-all",
                             }}
                           >
-                            <div style={{ fontSize: 12, color: "#333" }}>
-                              SeriesInstanceUID: {s.SeriesInstanceUID}
-                            </div>
-                            <div
-                              style={{
-                                fontSize: 12,
-                                color: "#666",
-                                marginTop: 4,
-                              }}
-                            >
-                              Modality: {s.Modality ?? "(none)"}
-                            </div>
+                            {s.StudyInstanceUID ?? "(none)"}
+                          </td>
+                          <td
+                            style={{
+                              padding: "6px 8px",
+                              wordBreak: "break-all",
+                            }}
+                          >
+                            {s.SeriesInstanceUID ?? "(none)"}
+                          </td>
+                          <td style={{ padding: "6px 8px" }}>
+                            {link ? (
+                              <a href={link} target="_blank" rel="noreferrer">
+                                Open series
+                              </a>
+                            ) : (
+                              <span style={{ color: "#666" }}>(no link)</span>
+                            )}
+                          </td>
+                        </tr>,
+                      );
+                    });
+                  }
 
-                            <div
-                              style={{
-                                marginTop: 6,
-                                display: "flex",
-                                gap: 8,
-                                flexWrap: "wrap",
-                              }}
-                            >
-                              {s.series_aws_url && (
-                                <a
-                                  href={s.series_aws_url}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                >
-                                  <button>Open WSI</button>
-                                </a>
-                              )}
-
-                              {s.StudyInstanceUID && s.SeriesInstanceUID && (
-                                <a
-                                  href={buildSlimSeriesURL(
-                                    s.StudyInstanceUID,
-                                    s.SeriesInstanceUID,
-                                  )}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                >
-                                  <button>Open in Slim Viewer (Series)</button>
-                                </a>
-                              )}
-
-                              {!s.series_aws_url &&
-                                !(
-                                  s.StudyInstanceUID && s.SeriesInstanceUID
-                                ) && (
-                                  <div style={{ color: "#666" }}>
-                                    No viewer URL available
-                                  </div>
-                                )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div style={{ marginTop: 6, color: "#666" }}>
-                        No series links found for this case.
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+                  return rows;
+                })}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
 
