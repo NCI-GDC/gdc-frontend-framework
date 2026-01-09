@@ -411,20 +411,28 @@ const IDCViewerWrapper: FC = () => {
                   const isExpanded = expandedCases.has(caseId);
                   const rows: React.ReactNode[] = [];
 
+                  // Subtle zebra for study rows
+                  const isEvenStudy = idx % 2 === 0;
+                  const studyBg = isEvenStudy ? "#f5f6f7" : "#eef0f2";
+
                   // Study row (click to expand/collapse series rows)
                   rows.push(
                     <tr
                       key={`${idx}-study`}
-                      style={{ borderTop: "1px solid #eee", cursor: "pointer" }}
+                      style={{
+                        borderTop: "1px solid #eee",
+                        cursor: "pointer",
+                        background: studyBg,
+                      }}
                       onClick={() => toggleExpanded(caseId)}
                     >
                       <td style={{ padding: "6px 8px" }}>{caseId}</td>
                       <td
                         style={{ padding: "6px 8px", wordBreak: "break-all" }}
                       >
-                        {studyUIDForLink ?? "(none)"}
+                        {studyUIDForLink ?? "(/)"}
                       </td>
-                      <td style={{ padding: "6px 8px" }}>none</td>
+                      <td style={{ padding: "6px 8px" }}>/</td>
                       <td style={{ padding: "6px 8px" }}>
                         {studyUrl ? (
                           <a
@@ -452,10 +460,14 @@ const IDCViewerWrapper: FC = () => {
                               s.SeriesInstanceUID,
                             )
                           : null;
+                      // Slightly different zebra for series rows
+                      const seriesBg = si % 2 === 0 ? "#fbfbfd" : "#f2f2f2";
                       rows.push(
                         <tr
                           key={`${idx}-${si}`}
-                          style={{ borderTop: "1px solid #eee" }}
+                          style={{
+                            background: seriesBg,
+                          }}
                         >
                           <td style={{ padding: "6px 8px" }}>{caseId}</td>
                           <td
@@ -464,7 +476,7 @@ const IDCViewerWrapper: FC = () => {
                               wordBreak: "break-all",
                             }}
                           >
-                            {s.StudyInstanceUID ?? "(none)"}
+                            {s.StudyInstanceUID ?? "(/)"}
                           </td>
                           <td
                             style={{
@@ -472,7 +484,7 @@ const IDCViewerWrapper: FC = () => {
                               wordBreak: "break-all",
                             }}
                           >
-                            {s.SeriesInstanceUID ?? "(none)"}
+                            {s.SeriesInstanceUID ?? "(/)"}
                           </td>
                           <td style={{ padding: "6px 8px" }}>
                             {link ? (
