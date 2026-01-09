@@ -11,6 +11,9 @@ import { PROTEINPAINT_API } from "@gff/core";
 const SLIM_VIEWER_BASE =
   "https://viewer.imaging.datacommons.cancer.gov/slim/studies/";
 
+const CT_VIEWER_BASE =
+  "https://viewer.imaging.datacommons.cancer.gov/v3/viewer/";
+
 // Reusable columns list for IDC parquet reads
 const IDC_PARQUET_COLUMNS = [
   "collection_id",
@@ -92,6 +95,16 @@ const IDCViewerWrapper: FC = () => {
     SLIM_VIEWER_BASE +
     encodeURIComponent(studyInstanceUID) +
     "/series/" +
+    encodeURIComponent(seriesInstanceUID);
+
+  const buildCTViewerURL = (
+    studyInstanceUID: string,
+    seriesInstanceUID: string,
+  ) =>
+    CT_VIEWER_BASE +
+    "?StudyInstanceUIDs=" +
+    encodeURIComponent(studyInstanceUID) +
+    "&SeriesInstanceUIDs=" +
     encodeURIComponent(seriesInstanceUID);
 
   const runMapping = useCallback(async () => {
@@ -360,10 +373,11 @@ const IDCViewerWrapper: FC = () => {
                 }}
               >
                 <colgroup>
-                  <col style={{ width: "15%" }} />
+                  <col style={{ width: "10%" }} />
                   <col style={{ width: "35%" }} />
                   <col style={{ width: "35%" }} />
-                  <col style={{ width: "15%" }} />
+                  <col style={{ width: "10%" }} />
+                  <col style={{ width: "10%" }} />
                 </colgroup>
                 <thead>
                   <tr
@@ -375,7 +389,8 @@ const IDCViewerWrapper: FC = () => {
                     <th style={{ padding: "6px 8px" }}>GDC caseId</th>
                     <th style={{ padding: "6px 8px" }}>StudyInstanceUUID</th>
                     <th style={{ padding: "6px 8px" }}>SeriesInstanceUUID</th>
-                    <th style={{ padding: "6px 8px" }}>IDC Vewer link</th>
+                    <th style={{ padding: "6px 8px" }}>WSI link</th>
+                    <th style={{ padding: "6px 8px" }}>Radiology Link</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -391,21 +406,32 @@ const IDCViewerWrapper: FC = () => {
                       for (const row of m.matches) {
                         const sid = row?.SeriesInstanceUID;
                         if (!sid) continue;
-                        const existing = seriesMap.get(sid);
+                        let existing = seriesMap.get(sid);
                         if (!existing) {
-                          seriesMap.set(sid, {
+                          existing = {
                             StudyInstanceUID: row?.StudyInstanceUID ?? null,
                             SeriesInstanceUID: sid,
-                          });
+                            Modality: row?.Modality ?? null,
+                          };
+                          seriesMap.set(sid, existing);
                         } else if (
                           !existing.StudyInstanceUID &&
                           row?.StudyInstanceUID
                         ) {
                           existing.StudyInstanceUID = row.StudyInstanceUID;
                         }
+                        // Ensure Modality is populated on the existing object
+                        if (!existing.Modality && row?.Modality) {
+                          existing.Modality = row.Modality;
+                        }
                       }
                     }
                     const seriesList = Array.from(seriesMap.values());
+                    // Determine whether the study has any CT series and/or any non-CT series
+                    const anyCT = seriesList.some((s) => s.Modality === "CT");
+                    const anyNonCT = seriesList.some(
+                      (s) => !!s.Modality && s.Modality !== "CT",
+                    );
                     // Determine a study-level UID for study link
                     let studyUIDForLink: string | null = null;
                     if (
@@ -419,9 +445,19 @@ const IDCViewerWrapper: FC = () => {
                       );
                       studyUIDForLink = found?.StudyInstanceUID ?? null;
                     }
-                    const studyUrl = studyUIDForLink
-                      ? buildSlimStudyURL(studyUIDForLink)
-                      : null;
+                    // Study-level links:
+                    // - If the study has any non-CT series, provide the SLIM study link in the IDC Viewer column.
+                    // - If the study has any CT series, provide the CT viewer study link in the Radiology column.
+                    const studyIdcLink =
+                      studyUIDForLink && anyNonCT
+                        ? buildSlimStudyURL(studyUIDForLink)
+                        : null;
+                    const studyRadiologyLink =
+                      studyUIDForLink && anyCT
+                        ? CT_VIEWER_BASE +
+                          "?StudyInstanceUIDs=" +
+                          encodeURIComponent(studyUIDForLink)
+                        : null;
 
                     const isExpanded = expandedCases.has(caseId);
                     const rows: React.ReactNode[] = [];
@@ -447,11 +483,15 @@ const IDCViewerWrapper: FC = () => {
                         >
                           {studyUIDForLink ?? "(/)"}
                         </td>
-                        <td style={{ padding: "6px 8px" }}>/</td>
+                        <td style={{ padding: "6px 8px", textAlign: "center" }}>
+                          <span style={{ fontSize: 14 }}>
+                            {isExpanded ? "↑" : "↓"}
+                          </span>
+                        </td>
                         <td style={{ padding: "6px 8px" }}>
-                          {studyUrl ? (
+                          {studyIdcLink ? (
                             <a
-                              href={studyUrl}
+                              href={studyIdcLink}
                               target="_blank"
                               rel="noreferrer"
                               onClick={(e) => e.stopPropagation()}
@@ -459,7 +499,21 @@ const IDCViewerWrapper: FC = () => {
                               Open study
                             </a>
                           ) : (
-                            <span style={{ color: "#666" }}>(no link)</span>
+                            <span style={{ color: "#666" }}>(n/a)</span>
+                          )}
+                        </td>
+                        <td style={{ padding: "6px 8px" }}>
+                          {studyRadiologyLink ? (
+                            <a
+                              href={studyRadiologyLink}
+                              target="_blank"
+                              rel="noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              Open study
+                            </a>
+                          ) : (
+                            <span style={{ color: "#666" }}>(n/a)</span>
                           )}
                         </td>
                       </tr>,
@@ -468,13 +522,21 @@ const IDCViewerWrapper: FC = () => {
                     // Per-series rows (render only when expanded)
                     if (isExpanded) {
                       seriesList.forEach((s, si) => {
-                        const link =
-                          s.StudyInstanceUID && s.SeriesInstanceUID
-                            ? buildSlimSeriesURL(
-                                s.StudyInstanceUID,
-                                s.SeriesInstanceUID,
-                              )
-                            : null;
+                        let idcLink: string | null = null;
+                        let radiologyLink: string | null = null;
+                        if (s.StudyInstanceUID && s.SeriesInstanceUID) {
+                          if (s.Modality === "CT") {
+                            radiologyLink = buildCTViewerURL(
+                              s.StudyInstanceUID,
+                              s.SeriesInstanceUID,
+                            );
+                          } else {
+                            idcLink = buildSlimSeriesURL(
+                              s.StudyInstanceUID,
+                              s.SeriesInstanceUID,
+                            );
+                          }
+                        }
                         // Slightly different zebra for series rows
                         const seriesBg = si % 2 === 0 ? "#fbfbfd" : "#f2f2f2";
                         rows.push(
@@ -502,12 +564,29 @@ const IDCViewerWrapper: FC = () => {
                               {s.SeriesInstanceUID ?? "(/)"}
                             </td>
                             <td style={{ padding: "6px 8px" }}>
-                              {link ? (
-                                <a href={link} target="_blank" rel="noreferrer">
+                              {idcLink ? (
+                                <a
+                                  href={idcLink}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                >
                                   Open series
                                 </a>
                               ) : (
-                                <span style={{ color: "#666" }}>(no link)</span>
+                                <span style={{ color: "#666" }}>(n/a)</span>
+                              )}
+                            </td>
+                            <td style={{ padding: "6px 8px" }}>
+                              {radiologyLink ? (
+                                <a
+                                  href={radiologyLink}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                >
+                                  Open series
+                                </a>
+                              ) : (
+                                <span style={{ color: "#666" }}>(n/a)</span>
                               )}
                             </td>
                           </tr>,
