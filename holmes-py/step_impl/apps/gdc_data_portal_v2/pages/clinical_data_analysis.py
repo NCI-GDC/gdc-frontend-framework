@@ -124,7 +124,7 @@ class ClinicalDataAnalysisPage(BasePage):
         self.click(ClinicalDataAnalysisLocators.GROUP_TABLE_PLUS_BUTTON("Demographic"))
         self.click(ClinicalDataAnalysisLocators.GROUP_TABLE_PLUS_BUTTON("Diagnosis"))
         self.click(ClinicalDataAnalysisLocators.GROUP_TABLE_PLUS_BUTTON("Treatment"))
-        self.click(ClinicalDataAnalysisLocators.GROUP_TABLE_PLUS_BUTTON("Exposures"))
+        self.click(ClinicalDataAnalysisLocators.GROUP_TABLE_PLUS_BUTTON("Exposure"))
         if self.is_visible(ClinicalDataAnalysisLocators.GROUP_TABLE_PLUS_BUTTON("Other Clinical Attribute")):
             self.click(ClinicalDataAnalysisLocators.GROUP_TABLE_PLUS_BUTTON("Other Clinical Attribute"))
 
