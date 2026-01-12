@@ -388,7 +388,7 @@ const IDCViewerWrapper: FC = () => {
                   >
                     <th style={{ padding: "6px 8px" }}>GDC caseId</th>
                     <th style={{ padding: "6px 8px" }}>StudyInstanceUUID</th>
-                    <th style={{ padding: "6px 8px" }}>SeriesInstanceUUID</th>
+                    <th style={{ padding: "6px 8px" }}>Series Count</th>
                     <th style={{ padding: "6px 8px" }}>WSI link</th>
                     <th style={{ padding: "6px 8px" }}>Radiology Link</th>
                   </tr>
@@ -400,76 +400,58 @@ const IDCViewerWrapper: FC = () => {
                       m.gdcCase.case_id ??
                       m.gdcCase.case_uuid ??
                       "(no id)";
-                    // Build unique series list from matches
-                    const seriesMap = new Map<string, any>();
+
+                    // --- REPLACED: build studiesMap (group by StudyInstanceUID) ---
+                    const studiesMap = new Map<
+                      string,
+                      {
+                        StudyInstanceUID: string | null;
+                        series: {
+                          SeriesInstanceUID?: string | null;
+                          Modality?: string | null;
+                        }[];
+                        anyCT: boolean;
+                        anyNonCT: boolean;
+                      }
+                    >();
+
                     if (Array.isArray(m.matches)) {
                       for (const row of m.matches) {
-                        const sid = row?.SeriesInstanceUID;
-                        if (!sid) continue;
-                        let existing = seriesMap.get(sid);
+                        const studyId = row?.StudyInstanceUID ?? null;
+                        const key = studyId ?? "__NO_STUDY__";
+                        let existing = studiesMap.get(key);
                         if (!existing) {
                           existing = {
-                            StudyInstanceUID: row?.StudyInstanceUID ?? null,
-                            SeriesInstanceUID: sid,
-                            Modality: row?.Modality ?? null,
+                            StudyInstanceUID: studyId,
+                            series: [],
+                            anyCT: false,
+                            anyNonCT: false,
                           };
-                          seriesMap.set(sid, existing);
-                        } else if (
-                          !existing.StudyInstanceUID &&
-                          row?.StudyInstanceUID
-                        ) {
-                          existing.StudyInstanceUID = row.StudyInstanceUID;
+                          studiesMap.set(key, existing);
                         }
-                        // Ensure Modality is populated on the existing object
-                        if (!existing.Modality && row?.Modality) {
-                          existing.Modality = row.Modality;
-                        }
+                        // collect series info
+                        existing.series.push({
+                          SeriesInstanceUID: row?.SeriesInstanceUID ?? null,
+                          Modality: row?.Modality ?? null,
+                        });
+                        // modality flags
+                        if (row?.Modality === "CT") existing.anyCT = true;
+                        else if (row?.Modality) existing.anyNonCT = true;
                       }
                     }
-                    const seriesList = Array.from(seriesMap.values());
-                    // Determine whether the study has any CT series and/or any non-CT series
-                    const anyCT = seriesList.some((s) => s.Modality === "CT");
-                    const anyNonCT = seriesList.some(
-                      (s) => !!s.Modality && s.Modality !== "CT",
-                    );
-                    // Determine a study-level UID for study link
-                    let studyUIDForLink: string | null = null;
-                    if (
-                      seriesList.length > 0 &&
-                      seriesList[0].StudyInstanceUID
-                    ) {
-                      studyUIDForLink = seriesList[0].StudyInstanceUID;
-                    } else if (Array.isArray(m.matches)) {
-                      const found = m.matches.find(
-                        (r: any) => !!r.StudyInstanceUID,
-                      );
-                      studyUIDForLink = found?.StudyInstanceUID ?? null;
-                    }
-                    // Study-level links:
-                    // - If the study has any non-CT series, provide the SLIM study link in the IDC Viewer column.
-                    // - If the study has any CT series, provide the CT viewer study link in the Radiology column.
-                    const studyIdcLink =
-                      studyUIDForLink && anyNonCT
-                        ? buildSlimStudyURL(studyUIDForLink)
-                        : null;
-                    const studyRadiologyLink =
-                      studyUIDForLink && anyCT
-                        ? CT_VIEWER_BASE +
-                          "?StudyInstanceUIDs=" +
-                          encodeURIComponent(studyUIDForLink)
-                        : null;
 
+                    const studiesList = Array.from(studiesMap.values());
                     const isExpanded = expandedCases.has(caseId);
                     const rows: React.ReactNode[] = [];
 
-                    // Subtle zebra for study rows
+                    // Subtle zebra for case rows
                     const isEvenStudy = idx % 2 === 0;
                     const studyBg = isEvenStudy ? "#f5f6f7" : "#eef0f2";
 
-                    // Study row (click to expand/collapse series rows)
+                    // Top-level GDC case row (no links)
                     rows.push(
                       <tr
-                        key={`${idx}-study`}
+                        key={`${idx}-case`}
                         style={{
                           borderTop: "1px solid #eee",
                           cursor: "pointer",
@@ -481,67 +463,48 @@ const IDCViewerWrapper: FC = () => {
                         <td
                           style={{ padding: "6px 8px", wordBreak: "break-all" }}
                         >
-                          {studyUIDForLink ?? "(/)"}
+                          {/* show how many studies are available for this case */}
+                          {studiesList.length > 0
+                            ? `${studiesList.length} study(s)`
+                            : "(/)"}
                         </td>
                         <td style={{ padding: "6px 8px", textAlign: "center" }}>
                           <span style={{ fontSize: 14 }}>
-                            {isExpanded ? "↑" : "↓"}
+                            {/* show ↓ when expanded, ↑ when collapsed */}
+                            {isExpanded ? "↓" : "↑"}
                           </span>
                         </td>
+                        {/* No links on the GDC case row */}
                         <td style={{ padding: "6px 8px" }}>
-                          {studyIdcLink ? (
-                            <a
-                              href={studyIdcLink}
-                              target="_blank"
-                              rel="noreferrer"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              Open study
-                            </a>
-                          ) : (
-                            <span style={{ color: "#666" }}>(n/a)</span>
-                          )}
+                          <span style={{ color: "#666" }}>(n/a)</span>
                         </td>
                         <td style={{ padding: "6px 8px" }}>
-                          {studyRadiologyLink ? (
-                            <a
-                              href={studyRadiologyLink}
-                              target="_blank"
-                              rel="noreferrer"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              Open study
-                            </a>
-                          ) : (
-                            <span style={{ color: "#666" }}>(n/a)</span>
-                          )}
+                          <span style={{ color: "#666" }}>(n/a)</span>
                         </td>
                       </tr>,
                     );
 
-                    // Per-series rows (render only when expanded)
+                    // When expanded, render one row per StudyInstanceUID
                     if (isExpanded) {
-                      seriesList.forEach((s, si) => {
-                        let idcLink: string | null = null;
-                        let radiologyLink: string | null = null;
-                        if (s.StudyInstanceUID && s.SeriesInstanceUID) {
-                          if (s.Modality === "CT") {
-                            radiologyLink = buildCTViewerURL(
-                              s.StudyInstanceUID,
-                              s.SeriesInstanceUID,
-                            );
-                          } else {
-                            idcLink = buildSlimSeriesURL(
-                              s.StudyInstanceUID,
-                              s.SeriesInstanceUID,
-                            );
-                          }
-                        }
-                        // Slightly different zebra for series rows
+                      studiesList.forEach((study, si) => {
+                        const studyUID = study.StudyInstanceUID;
+                        const studyIdcLink =
+                          studyUID && study.anyNonCT
+                            ? buildSlimStudyURL(studyUID)
+                            : null;
+                        const studyRadiologyLink =
+                          studyUID && study.anyCT
+                            ? CT_VIEWER_BASE +
+                              "?StudyInstanceUIDs=" +
+                              encodeURIComponent(studyUID)
+                            : null;
+
+                        const seriesCount = study.series.length;
                         const seriesBg = si % 2 === 0 ? "#fbfbfd" : "#f2f2f2";
+
                         rows.push(
                           <tr
-                            key={`${idx}-${si}`}
+                            key={`${idx}-study-${si}`}
                             style={{
                               background: seriesBg,
                             }}
@@ -553,37 +516,43 @@ const IDCViewerWrapper: FC = () => {
                                 wordBreak: "break-all",
                               }}
                             >
-                              {s.StudyInstanceUID ?? "(/)"}
+                              {studyUID ?? "(/)"}
                             </td>
                             <td
                               style={{
                                 padding: "6px 8px",
-                                wordBreak: "break-all",
+                                textAlign: "center",
+                                color: "#444",
                               }}
                             >
-                              {s.SeriesInstanceUID ?? "(/)"}
+                              {/* show number of series in this study */}
+                              {seriesCount > 0
+                                ? `${seriesCount} series`
+                                : "(/)"}
                             </td>
                             <td style={{ padding: "6px 8px" }}>
-                              {idcLink ? (
+                              {studyIdcLink ? (
                                 <a
-                                  href={idcLink}
+                                  href={studyIdcLink}
                                   target="_blank"
                                   rel="noreferrer"
+                                  onClick={(e) => e.stopPropagation()}
                                 >
-                                  Open series
+                                  Open study
                                 </a>
                               ) : (
                                 <span style={{ color: "#666" }}>(n/a)</span>
                               )}
                             </td>
                             <td style={{ padding: "6px 8px" }}>
-                              {radiologyLink ? (
+                              {studyRadiologyLink ? (
                                 <a
-                                  href={radiologyLink}
+                                  href={studyRadiologyLink}
                                   target="_blank"
                                   rel="noreferrer"
+                                  onClick={(e) => e.stopPropagation()}
                                 >
-                                  Open series
+                                  Open study
                                 </a>
                               ) : (
                                 <span style={{ color: "#666" }}>(n/a)</span>
