@@ -10,7 +10,7 @@ import {
   HUMAN_BODY_MAPPINGS,
   useCoreSelector,
   selectHasUnsavedCohorts,
-  UNSAVED_COHORT_NAME,
+  selectUnsavedCohortName,
 } from "@gff/core";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 import FunctionButton from "@/components/FunctionButton";
@@ -49,6 +49,10 @@ const ExploreCohortModal: React.FC<ExploreCohortModalProps> = ({
     selectHasUnsavedCohorts(state),
   );
 
+  const unsavedCohortName = useCoreSelector((state) =>
+    selectUnsavedCohortName(state),
+  );
+
   return (
     <Modal
       opened={opened}
@@ -59,7 +63,7 @@ const ExploreCohortModal: React.FC<ExploreCohortModalProps> = ({
         Explore this <b>{site}</b> cohort in the Analysis Center?{" "}
         {hasUnsavedCohorts && (
           <>
-            This will replace the <b>{UNSAVED_COHORT_NAME}</b> cohort.{" "}
+            This will replace the <b>{unsavedCohortName}</b> cohort.{" "}
           </>
         )}
       </p>
