@@ -88,25 +88,6 @@ const IDCViewerWrapper: FC = () => {
   const buildSlimStudyURL = (studyInstanceUID: string) =>
     SLIM_VIEWER_BASE + encodeURIComponent(studyInstanceUID);
 
-  const buildSlimSeriesURL = (
-    studyInstanceUID: string,
-    seriesInstanceUID: string,
-  ) =>
-    SLIM_VIEWER_BASE +
-    encodeURIComponent(studyInstanceUID) +
-    "/series/" +
-    encodeURIComponent(seriesInstanceUID);
-
-  const buildCTViewerURL = (
-    studyInstanceUID: string,
-    seriesInstanceUID: string,
-  ) =>
-    CT_VIEWER_BASE +
-    "?StudyInstanceUIDs=" +
-    encodeURIComponent(studyInstanceUID) +
-    "&SeriesInstanceUIDs=" +
-    encodeURIComponent(seriesInstanceUID);
-
   const runMapping = useCallback(async () => {
     // Move the function declaration to the function body root (avoid inner declaration)
     async function fetchGdcCases(limit = 5) {
@@ -262,7 +243,6 @@ const IDCViewerWrapper: FC = () => {
         });
         const parsed = await readParquetIndex(hyparquet, idc_index_file);
         idc_data = parsed.idc_data;
-        collection_ids = parsed.collection_ids;
       }
 
       setIdcCount(idc_data.length);
