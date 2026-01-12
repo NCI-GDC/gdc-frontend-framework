@@ -69,6 +69,7 @@ const IDCViewerWrapper: FC = () => {
   const [progress, setProgress] = useState<string>("Idle");
   const [logs, setLogs] = useState<string[]>([]);
   const [mappings, setMappings] = useState<any[]>([]);
+  // replaced: per-page GDC count vs total
   const [gdcCount, setGdcCount] = useState<number | null>(null);
   const [idcCount, setIdcCount] = useState<number | null>(null);
   const divRef = useRef<HTMLDivElement | null>(null);
@@ -88,222 +89,268 @@ const IDCViewerWrapper: FC = () => {
   const buildSlimStudyURL = (studyInstanceUID: string) =>
     SLIM_VIEWER_BASE + encodeURIComponent(studyInstanceUID);
 
-  const runMapping = useCallback(async () => {
-    // Move the function declaration to the function body root (avoid inner declaration)
-    async function fetchGdcCases(limit = 500, from = 0) {
-      try {
-        const base = "https://api.gdc.cancer.gov/cases";
-        const urlParams = new URLSearchParams(window.location.search);
-        const primarySite = urlParams.get("primary_site");
+  // --- Pagination constants & state ---
+  const PAGE_SIZE = 500; // per requirement
+  const TOTAL_GDC_CASES = 50270; // hardcoded total
+  const TOTAL_PAGES = Math.ceil(TOTAL_GDC_CASES / PAGE_SIZE); // 101
+  const [currentPage, setCurrentPage] = useState<number>(0);
 
-        // Build filter object: op: "and" with optional primary_site constraint
-        const filterObj: any = { op: "and", content: [] };
-        if (primarySite) {
-          filterObj.content.push({
-            op: "=",
-            content: { field: "cases.primary_site", value: primarySite },
-          });
-          addLog(`Filtering GDC cases by primary_site=${primarySite}`);
-        }
+  // Cache parsed IDC data in component state so we don't re-download/parse repeatedly
+  const [cachedIdcData, setCachedIdcData] = useState<any[] | null>(null);
+  const [cachedCollectionIds, setCachedCollectionIds] = useState<
+    string[] | null
+  >(null);
 
-        const filtersEncoded = encodeURIComponent(JSON.stringify(filterObj));
-        const url =
-          base +
-          "?" +
-          "size=" +
-          encodeURIComponent(String(limit)) +
-          "&" +
-          "from=" +
-          from +
-          "&" +
-          "filters=" +
-          filtersEncoded +
-          "&pretty=true" +
-          "&expand=samples.portions.slides" +
-          "&fields=submitter_id,disease_type,primary_site";
+  // Helper: fetch GDC cases (supports limit & from)
+  async function fetchGdcCases(limit = 500, from = 0) {
+    try {
+      const base = "https://api.gdc.cancer.gov/cases";
+      const urlParams = new URLSearchParams(window.location.search);
+      const primarySite = urlParams.get("primary_site");
 
-        addLog(`GDC GET URL: ${url}`);
-        const resp = await fetch(url, {
-          method: "GET",
-          headers: { Accept: "application/json" },
+      // Build filter object: op: "and" with optional primary_site constraint
+      const filterObj: any = { op: "and", content: [] };
+      if (primarySite) {
+        filterObj.content.push({
+          op: "=",
+          content: { field: "cases.primary_site", value: primarySite },
         });
-        if (!resp.ok) throw new Error(`GDC API error ${resp.status}`);
-        const json = await resp.json();
-        const hits = json?.data?.hits || [];
-
-        // optional local filtering to ensure slides exist
-        const filteredHits = hits.filter(
-          (hit: any) =>
-            hit.samples &&
-            hit.samples.some(
-              (s: any) =>
-                s.portions &&
-                s.portions.some((p: any) => p.slides && p.slides.length > 0),
-            ),
-        );
-
-        addLog(
-          `Fetched ${hits.length} hits; ${filteredHits.length} have slides`,
-        );
-
-        return filteredHits
-          .map((h: any) => h.submitter_id)
-          .filter((s: any) => typeof s === "string");
-      } catch (e) {
-        addLog(`Failed to fetch GDC cases: ${String(e)}`);
-        return [];
+        addLog(`Filtering GDC cases by primary_site=${primarySite}`);
       }
+
+      const filtersEncoded = encodeURIComponent(JSON.stringify(filterObj));
+      const url =
+        base +
+        "?" +
+        "size=" +
+        encodeURIComponent(String(limit)) +
+        "&" +
+        "from=" +
+        encodeURIComponent(String(from)) +
+        "&" +
+        "filters=" +
+        filtersEncoded +
+        "&pretty=true" +
+        "&expand=samples.portions.slides" +
+        "&fields=submitter_id,disease_type,primary_site";
+
+      addLog(`GDC GET URL: ${url}`);
+      const resp = await fetch(url, {
+        method: "GET",
+        headers: { Accept: "application/json" },
+      });
+      if (!resp.ok) throw new Error(`GDC API error ${resp.status}`);
+      const json = await resp.json();
+      const hits = json?.data?.hits || [];
+
+      // optional local filtering to ensure slides exist
+      const filteredHits = hits.filter(
+        (hit: any) =>
+          hit.samples &&
+          hit.samples.some(
+            (s: any) =>
+              s.portions &&
+              s.portions.some((p: any) => p.slides && p.slides.length > 0),
+          ),
+      );
+
+      addLog(
+        `Fetched ${hits.length} hits; ${filteredHits.length} have slides (from=${from})`,
+      );
+
+      return filteredHits
+        .map((h: any) => h.submitter_id)
+        .filter((s: any) => typeof s === "string");
+    } catch (e) {
+      addLog(`Failed to fetch GDC cases: ${String(e)}`);
+      return [];
+    }
+  }
+
+  // Helper: ensure IDC metadata is loaded and cached in component state (only does work once)
+  const loadIdcDataIfNeeded = useCallback(async () => {
+    if (cachedIdcData) {
+      addLog("Using cached IDC metadata (already loaded)");
+      return {
+        idc_data: cachedIdcData,
+        collection_ids: cachedCollectionIds ?? [],
+      };
     }
 
     try {
-      const fetchedSubmitterIds = await fetchGdcCases(500);
-      const cases = fetchedSubmitterIds.slice(0, 500);
-      const gdcCases = cases.map((c) => ({ submitter_id: c, case_id: c }));
-      setGdcCount(gdcCases.length);
-      addLog(`Retrieved ${gdcCases.length} GDC submitter_id(s) from GDC API`);
-
       setProgress("Loading IDC parquet index (cached or /parquet)...");
       addLog("Preparing to load cached metadata or fetch /parquet");
 
-      // Attempt to load parsed parquet JSON from Cache Storage first
-      let idc_data: any[] = [];
-      let collection_ids: string[] = [];
+      const cache = await caches.open("idc-download");
+      const cacheRequest = new Request("idc_data.json");
+      const cachedResponse = await cache.match(cacheRequest);
 
-      try {
-        const cache = await caches.open("idc-download");
-        const cacheRequest = new Request("idc_data.json");
-        const cachedResponse = await cache.match(cacheRequest);
-
-        if (cachedResponse) {
-          addLog("Loaded IDC metadata from cache");
-          const cachedBlob = await cachedResponse.blob();
-          const cachedJSON = await new Promise<string>((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(String(reader.result));
-            reader.onerror = reject;
-            reader.readAsText(cachedBlob);
-          });
-          const parsed = JSON.parse(cachedJSON);
-          collection_ids = parsed.collection_ids;
-          idc_data = parsed.idc_data;
-        } else {
-          addLog("Cache miss — fetching parquet via proxy /parquet");
-          const hyparquet = (await import("hyparquet")) as any;
-
-          const idc_index_url = `${PROTEINPAINT_API.replace(
-            /\/$/,
-            "",
-          )}/parquet`;
-          addLog(`Downloading parquet from ${idc_index_url}...`);
-          const idc_index_file = await hyparquet.asyncBufferFromUrl({
-            url: idc_index_url,
-          });
-
-          // report buffer size when available
-          try {
-            let sizeDesc = "unknown";
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const f: any = idc_index_file;
-            if (typeof f?.byteLength === "number")
-              sizeDesc = `${f.byteLength} bytes`;
-            else if (typeof f?.length === "number")
-              sizeDesc = `${f.length} bytes`;
-            else if (typeof f?.size === "number") sizeDesc = `${f.size} bytes`;
-            addLog(
-              `Downloaded parquet buffer from ${idc_index_url} — success${
-                sizeDesc !== "unknown" ? `, size: ${sizeDesc}` : ""
-              }`,
-            );
-          } catch {
-            addLog(
-              `Downloaded parquet buffer from ${idc_index_url} — success (size unavailable)`,
-            );
-          }
-
-          // Extracted: read idc_data + collection_ids and cache
-          const parsed = await readParquetIndex(hyparquet, idc_index_file);
-          idc_data = parsed.idc_data;
-          collection_ids = parsed.collection_ids;
-          await cacheIdcMetadata(
-            cache,
-            cacheRequest,
-            collection_ids,
-            idc_data,
-            addLog,
-          );
-        }
-      } catch (cacheErr) {
-        addLog(
-          `Cache handling failed: ${String(
-            cacheErr,
-          )} — falling back to direct fetch`,
-        );
-        // Fallback: attempt direct fetch/parse once
+      if (cachedResponse) {
+        addLog("Loaded IDC metadata from cache");
+        const cachedBlob = await cachedResponse.blob();
+        const cachedJSON = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result));
+          reader.onerror = reject;
+          reader.readAsText(cachedBlob);
+        });
+        const parsed = JSON.parse(cachedJSON);
+        setCachedCollectionIds(parsed.collection_ids || []);
+        setCachedIdcData(parsed.idc_data || []);
+        setProgress("Ready");
+        return {
+          idc_data: parsed.idc_data || [],
+          collection_ids: parsed.collection_ids || [],
+        };
+      } else {
+        addLog("Cache miss — fetching parquet via proxy /parquet");
         const hyparquet = (await import("hyparquet")) as any;
-        const idc_index_url = `${PROTEINPAINT_API}/parquet`;
+
+        const idc_index_url = `${PROTEINPAINT_API.replace(/\/$/, "")}/parquet`;
+        addLog(`Downloading parquet from ${idc_index_url}...`);
         const idc_index_file = await hyparquet.asyncBufferFromUrl({
           url: idc_index_url,
         });
-        const parsed = await readParquetIndex(hyparquet, idc_index_file);
-        idc_data = parsed.idc_data;
-      }
 
-      setIdcCount(idc_data.length);
-      addLog(`Parsed ${idc_data.length} IDC rows from parquet`);
-
-      setProgress("Mapping GDC cases → IDC rows...");
-      const results: any[] = [];
-      for (const gc of gdcCases) {
-        const submitter = gc.submitter_id ?? gc.case_id ?? null;
-        const found: any[] = [];
-
-        if (submitter) {
-          // match by PatientID
-          found.push(...idc_data.filter((r: any) => r.PatientID === submitter));
-        }
-
-        if (gc.case_id) {
-          // match columns that may store case ids
-          found.push(
-            ...idc_data.filter(
-              (r: any) =>
-                r.gdc_case_id === gc.case_id || r.case_id === gc.case_id,
-            ),
+        // report buffer size when available
+        try {
+          let sizeDesc = "unknown";
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const f: any = idc_index_file;
+          if (typeof f?.byteLength === "number")
+            sizeDesc = `${f.byteLength} bytes`;
+          else if (typeof f?.length === "number")
+            sizeDesc = `${f.length} bytes`;
+          else if (typeof f?.size === "number") sizeDesc = `${f.size} bytes`;
+          addLog(
+            `Downloaded parquet buffer from ${idc_index_url} — success${
+              sizeDesc !== "unknown" ? `, size: ${sizeDesc}` : ""
+            }`,
+          );
+        } catch {
+          addLog(
+            `Downloaded parquet buffer from ${idc_index_url} — success (size unavailable)`,
           );
         }
 
-        // unique
-        const uniq = Array.from(new Set(found));
-        results.push({ gdcCase: gc, matches: uniq });
+        const parsed = await readParquetIndex(hyparquet, idc_index_file);
+        setCachedIdcData(parsed.idc_data);
+        setCachedCollectionIds(parsed.collection_ids);
+        try {
+          const jsonString = JSON.stringify({
+            collection_ids: parsed.collection_ids,
+            idc_data: parsed.idc_data,
+          });
+          const jsonBlob = new Blob([jsonString], { type: "application/json" });
+          await cache.put(cacheRequest, new Response(jsonBlob));
+          addLog("Downloaded IDC metadata and cached it");
+        } catch (cacheErr) {
+          addLog(`Failed to cache IDC metadata: ${String(cacheErr)}`);
+        }
+        setProgress("Ready");
+        return parsed;
       }
-
-      const matchedCount = results.filter((r) => r.matches.length > 0).length;
-      addLog(`Mapping complete: ${matchedCount} GDC cases with >=1 IDC match`);
-
-      // Filter mappings: only keep GDC cases that have at least one match with a viewer link (series_aws_url)
-      const resultsWithViewer = results.filter(
-        (r) =>
-          Array.isArray(r.matches) &&
-          r.matches.length > 0 &&
-          r.matches.some((m: any) => !!m.series_aws_url),
-      );
+    } catch (cacheErr) {
       addLog(
-        `Filtered to ${resultsWithViewer.length} GDC case(s) with at least one IDC match that has a viewer link`,
+        `Cache handling failed: ${String(
+          cacheErr,
+        )} — falling back to direct fetch`,
       );
-
-      setMappings(resultsWithViewer);
-
-      setProgress("Ready");
-    } catch (err: any) {
-      addLog(`Error: ${err?.message ?? String(err)}`);
-      setProgress("Error");
+      const hyparquet = (await import("hyparquet")) as any;
+      const idc_index_url = `${PROTEINPAINT_API}/parquet`;
+      const idc_index_file = await hyparquet.asyncBufferFromUrl({
+        url: idc_index_url,
+      });
+      const parsed = await readParquetIndex(hyparquet, idc_index_file);
+      setCachedIdcData(parsed.idc_data);
+      setCachedCollectionIds(parsed.collection_ids);
+      return parsed;
     }
-  }, []);
+  }, [cachedIdcData, cachedCollectionIds]);
 
-  // Auto-run mapping on mount
+  // Load a single page of GDC cases (pageIndex starts at 0) and map against IDC data
+  const loadPage = useCallback(
+    async (pageIndex: number) => {
+      try {
+        setCurrentPage(pageIndex);
+        setProgress(`Loading page ${pageIndex}...`);
+        addLog(`Loading GDC page ${pageIndex}`);
+
+        const from = pageIndex * PAGE_SIZE;
+        const submitterIds = await fetchGdcCases(PAGE_SIZE, from);
+        const cases = submitterIds.slice(0, PAGE_SIZE);
+        const gdcCases = cases.map((c) => ({ submitter_id: c, case_id: c }));
+
+        // Hardcoded total per requirement
+        setGdcCount(TOTAL_GDC_CASES);
+
+        addLog(
+          `Retrieved ${gdcCases.length} GDC submitter_id(s) from GDC API (page ${pageIndex})`,
+        );
+
+        // Ensure IDC metadata is loaded (only on first call this will do work)
+        const parsed = await loadIdcDataIfNeeded();
+        const idc_data = parsed.idc_data || [];
+
+        setIdcCount(idc_data.length);
+        addLog(`Using ${idc_data.length} IDC rows for mapping`);
+
+        setProgress("Mapping GDC cases → IDC rows...");
+        const results: any[] = [];
+        for (const gc of gdcCases) {
+          const submitter = gc.submitter_id ?? gc.case_id ?? null;
+          const found: any[] = [];
+
+          if (submitter) {
+            // match by PatientID
+            found.push(
+              ...idc_data.filter((r: any) => r.PatientID === submitter),
+            );
+          }
+
+          if (gc.case_id) {
+            // match columns that may store case ids
+            found.push(
+              ...idc_data.filter(
+                (r: any) =>
+                  r.gdc_case_id === gc.case_id || r.case_id === gc.case_id,
+              ),
+            );
+          }
+
+          // unique
+          const uniq = Array.from(new Set(found));
+          results.push({ gdcCase: gc, matches: uniq });
+        }
+
+        const resultsWithViewer = results.filter(
+          (r) =>
+            Array.isArray(r.matches) &&
+            r.matches.length > 0 &&
+            r.matches.some((m: any) => !!m.series_aws_url),
+        );
+
+        addLog(
+          `Page ${pageIndex} mapping complete: ${resultsWithViewer.length} GDC case(s) with >=1 IDC match that has a viewer link`,
+        );
+
+        setMappings(resultsWithViewer);
+        setProgress("Ready");
+      } catch (err: any) {
+        addLog(
+          `Error loading page ${pageIndex}: ${err?.message ?? String(err)}`,
+        );
+        setProgress("Error");
+      }
+    },
+    [loadIdcDataIfNeeded],
+  );
+
+  // Auto-load only the initial page (page 0) on mount
   useEffect(() => {
-    runMapping();
-  }, [runMapping]);
+    loadPage(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const root = divRef.current;
@@ -332,6 +379,33 @@ const IDCViewerWrapper: FC = () => {
 
       <div style={{ marginTop: 12 }}>
         <h3>Mapping table</h3>
+
+        {/* Pagination buttons above the table */}
+        <div style={{ marginBottom: 10 }}>
+          <div style={{ fontSize: 12, marginBottom: 6 }}>
+            Pages (0..{TOTAL_PAGES - 1}), page size: {PAGE_SIZE}
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+            {Array.from({ length: TOTAL_PAGES }, (_, i) => i).map((i) => (
+              <button
+                key={i}
+                onClick={() => loadPage(i)}
+                style={{
+                  padding: "6px 8px",
+                  borderRadius: 4,
+                  border:
+                    i === currentPage ? "2px solid #0078d4" : "1px solid #ccc",
+                  background: i === currentPage ? "#e6f0fb" : "#fff",
+                  cursor: "pointer",
+                }}
+                aria-pressed={i === currentPage}
+              >
+                {i}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div style={{ maxHeight: 460, overflow: "auto" }}>
           {mappings.length === 0 ? (
             <div>No mapping results yet.</div>
