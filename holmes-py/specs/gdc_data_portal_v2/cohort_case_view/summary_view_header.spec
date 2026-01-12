@@ -136,7 +136,6 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
     |-------------------------------------|
     |cases.submitter_id                   |
     |follow_ups.evidence_of_recurrence_type|
-    |follow_ups.immunosuppressive_treatment_type|
     |follow_ups.progression_or_recurrence_type|
     |molecular_tests.gene_symbol          |
     |molecular_tests.submitter_id         |
@@ -155,7 +154,6 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
     |pathology_details.zone_of_origin_prostate|
     |exposures.age_at_last_exposure       |
     |exposures.parent_with_radiation_exposure|
-    |exposures.years_smoked               |
     |family_histories.relationship_age_at_diagnosis|
     |family_histories.relationship_primary_diagnosis|
     |family_histories.relative_with_cancer_history|

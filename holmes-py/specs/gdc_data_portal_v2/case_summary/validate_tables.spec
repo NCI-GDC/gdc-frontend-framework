@@ -124,7 +124,6 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download, regressio
     |exposures.cigarettes_per_day           |
     |exposures.exposure_type                |
     |Tobacco                                |
-    |exposures.respirable_crystalline_silica_exposure |
     |exposures.tobacco_smoking_status       |
     |Current Reformed Smoker for > 15 yrs   |
     |diagnosis_id                           |
@@ -288,7 +287,6 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download, regressio
     |-------------------------------------------------|
     |follow_ups.cause_of_response                     |
     |follow_ups.barretts_esophagus_goblet_cells_present|
-    |follow_ups.hysterectomy_margins_involved         |
     |follow_ups.recist_targeted_regions_number        |
     |Lactate Dehydrogenase                            |
     |molecular_tests.molecular_analysis_method        |
@@ -571,7 +569,6 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download, regressio
     |analytes.experimental_protocol_type    |
     |analytes.spectrophotometer_method      |
     |mirVana (Allprep DNA) RNA              |
-    |analytes.analyte_type_id               |
     |slide_id                               |
     |88217dc9-06a0-4839-8269-85ce0798ef89   |
     |slides.percent_inflam_infiltration     |
