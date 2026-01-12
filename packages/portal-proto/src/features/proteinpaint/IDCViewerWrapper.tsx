@@ -48,23 +48,6 @@ async function readParquetIndex(
 }
 
 // Helper: cache parsed IDC metadata
-async function cacheIdcMetadata(
-  cache: Cache,
-  cacheRequest: Request,
-  collection_ids: string[],
-  idc_data: any[],
-  addLog: (s: string) => void,
-) {
-  try {
-    const jsonString = JSON.stringify({ collection_ids, idc_data });
-    const jsonBlob = new Blob([jsonString], { type: "application/json" });
-    await cache.put(cacheRequest, new Response(jsonBlob));
-    addLog("Downloaded IDC metadata and cached it");
-  } catch (cacheErr) {
-    addLog(`Failed to cache IDC metadata: ${String(cacheErr)}`);
-  }
-}
-
 const IDCViewerWrapper: FC = () => {
   const [progress, setProgress] = useState<string>("Idle");
   const [logs, setLogs] = useState<string[]>([]);
@@ -90,7 +73,7 @@ const IDCViewerWrapper: FC = () => {
     SLIM_VIEWER_BASE + encodeURIComponent(studyInstanceUID);
 
   // --- Pagination constants & state ---
-  const PAGE_SIZE = 500; // per requirement
+  const PAGE_SIZE = 100; // per requirement
   const TOTAL_GDC_CASES = 50270; // hardcoded total
   const TOTAL_PAGES = Math.ceil(TOTAL_GDC_CASES / PAGE_SIZE); // 101
   const [currentPage, setCurrentPage] = useState<number>(0);
@@ -278,8 +261,10 @@ const IDCViewerWrapper: FC = () => {
 
         const from = pageIndex * PAGE_SIZE;
         const submitterIds = await fetchGdcCases(PAGE_SIZE, from);
-        const cases = submitterIds.slice(0, PAGE_SIZE);
-        const gdcCases = cases.map((c) => ({ submitter_id: c, case_id: c }));
+        const gdcCases = submitterIds.map((c) => ({
+          submitter_id: c,
+          case_id: c,
+        }));
 
         // Hardcoded total per requirement
         setGdcCount(TOTAL_GDC_CASES);
@@ -361,6 +346,80 @@ const IDCViewerWrapper: FC = () => {
     };
   }, []);
 
+  // Compute displayed page buttons (compact, with ellipses)
+  // Configuration: number of numeric buttons to show
+  const VISIBLE_BUTTONS = 10; // configurable
+  // Desired position (1-based) to try keeping the selected page on (example: 5)
+  const DESIRED_POSITION = 5;
+
+  // small helper: inclusive range
+  const range = (a: number, b: number) => {
+    const r: number[] = [];
+    for (let i = a; i <= b; i++) r.push(i);
+    return r;
+  };
+
+  // Build displayed numeric pages (labels are 1-based). Also decide on leading/trailing ellipses.
+  const {
+    displayedPages,
+    showLeadingEllipsis,
+    showTrailingEllipsis,
+  }: {
+    displayedPages: number[];
+    showLeadingEllipsis: boolean;
+    showTrailingEllipsis: boolean;
+  } = (() => {
+    const total = TOTAL_PAGES;
+    const visible = Math.max(3, Math.min(VISIBLE_BUTTONS, total)); // at least 3 when possible
+    const currentLabel = currentPage + 1;
+
+    if (total <= visible) {
+      return {
+        displayedPages: range(1, total),
+        showLeadingEllipsis: false,
+        showTrailingEllipsis: false,
+      };
+    }
+
+    // If near start: display first (visible-1) numeric buttons and last one
+    const offset = DESIRED_POSITION - 1; // desired zero-based offset
+    if (currentLabel - offset <= 1) {
+      const end = visible - 1; // reserve last page as the final numeric button
+      const middle = range(1, end);
+      const needsTrailingEllipsis = middle[middle.length - 1] < total - 1;
+      return {
+        displayedPages: [...middle, total],
+        showLeadingEllipsis: false,
+        showTrailingEllipsis: needsTrailingEllipsis,
+      };
+    }
+
+    // If near end: display first, then last (visible-1) numeric buttons
+    if (currentLabel + (visible - offset - 1) >= total) {
+      const start = total - (visible - 1) + 1; // compute start so we have (visible-1) final numbers
+      const middle = range(Math.max(2, start), total);
+      const needsLeadingEllipsis = middle[0] > 2;
+      return {
+        displayedPages: [1, ...middle],
+        showLeadingEllipsis: needsLeadingEllipsis,
+        showTrailingEllipsis: false,
+      };
+    }
+
+    // Middle case: reserve first & last, fill middle with (visible - 2) items centered around currentLabel
+    const middleCount = visible - 2;
+    const middleStart = currentLabel - Math.floor(middleCount / 2);
+    const middleEnd = middleStart + middleCount - 1;
+    const middle = range(middleStart, middleEnd);
+    const needsLeading = middle[0] > 2;
+    const needsTrailing = middle[middle.length - 1] < total - 1;
+    return {
+      displayedPages: [1, ...middle, total],
+      showLeadingEllipsis: needsLeading,
+      showTrailingEllipsis: needsTrailing,
+    };
+  })();
+
   return (
     <div
       ref={divRef}
@@ -385,24 +444,71 @@ const IDCViewerWrapper: FC = () => {
           <div style={{ fontSize: 12, marginBottom: 6 }}>
             Pages (0..{TOTAL_PAGES - 1}), page size: {PAGE_SIZE}
           </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-            {Array.from({ length: TOTAL_PAGES }, (_, i) => i).map((i) => (
-              <button
-                key={i}
-                onClick={() => loadPage(i)}
-                style={{
-                  padding: "6px 8px",
-                  borderRadius: 4,
-                  border:
-                    i === currentPage ? "2px solid #0078d4" : "1px solid #ccc",
-                  background: i === currentPage ? "#e6f0fb" : "#fff",
-                  cursor: "pointer",
-                }}
-                aria-pressed={i === currentPage}
-              >
-                {i}
-              </button>
-            ))}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: 6,
+            }}
+          >
+            {/* Render displayed numeric buttons with optional ellipses */}
+            {displayedPages.map((label, idx) => {
+              // render leading ellipsis between first and the next item if required
+              const items: React.ReactNode[] = [];
+
+              if (idx === 1 && showLeadingEllipsis && displayedPages[0] !== 1) {
+                // after the first button, insert leading ellipsis (only once)
+                items.push(
+                  <span
+                    key={`lead-ell-${label}`}
+                    style={{ padding: "6px 6px" }}
+                  >
+                    ...
+                  </span>,
+                );
+              }
+
+              // render numeric button
+              const pageIndex = label - 1; // convert to zero-based index
+              items.push(
+                <button
+                  key={`page-${label}`}
+                  onClick={() => loadPage(pageIndex)}
+                  style={{
+                    padding: "6px 8px",
+                    borderRadius: 4,
+                    border:
+                      pageIndex === currentPage
+                        ? "2px solid #0078d4"
+                        : "1px solid #ccc",
+                    background: pageIndex === currentPage ? "#e6f0fb" : "#fff",
+                    cursor: "pointer",
+                  }}
+                  aria-pressed={pageIndex === currentPage}
+                >
+                  {label}
+                </button>,
+              );
+
+              // render trailing ellipsis before the last button when necessary
+              if (
+                idx === displayedPages.length - 2 &&
+                showTrailingEllipsis &&
+                displayedPages[displayedPages.length - 1] !== TOTAL_PAGES
+              ) {
+                items.push(
+                  <span
+                    key={`trail-ell-${label}`}
+                    style={{ padding: "6px 6px" }}
+                  >
+                    ...
+                  </span>,
+                );
+              }
+
+              return items;
+            })}
           </div>
         </div>
 
