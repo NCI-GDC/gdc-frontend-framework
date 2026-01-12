@@ -73,7 +73,7 @@ const IDCViewerWrapper: FC = () => {
     SLIM_VIEWER_BASE + encodeURIComponent(studyInstanceUID);
 
   // --- Pagination constants & state ---
-  const PAGE_SIZE = 100; // per requirement
+  const PAGE_SIZE = 500; // per requirement (500 cases per page)
   const TOTAL_GDC_CASES = 50270; // hardcoded total
   const TOTAL_PAGES = Math.ceil(TOTAL_GDC_CASES / PAGE_SIZE); // 101
   const [currentPage, setCurrentPage] = useState<number>(0);
@@ -370,9 +370,10 @@ const IDCViewerWrapper: FC = () => {
     showTrailingEllipsis: boolean;
   } = (() => {
     const total = TOTAL_PAGES;
-    const visible = Math.max(3, Math.min(VISIBLE_BUTTONS, total)); // at least 3 when possible
+    const visible = Math.max(3, Math.min(VISIBLE_BUTTONS, total)); // at least 3
     const currentLabel = currentPage + 1;
 
+    // If total pages are small, just list them all
     if (total <= visible) {
       return {
         displayedPages: range(1, total),
@@ -381,42 +382,48 @@ const IDCViewerWrapper: FC = () => {
       };
     }
 
-    // If near start: display first (visible-1) numeric buttons and last one
-    const offset = DESIRED_POSITION - 1; // desired zero-based offset
-    if (currentLabel - offset <= 1) {
-      const end = visible - 1; // reserve last page as the final numeric button
-      const middle = range(1, end);
-      const needsTrailingEllipsis = middle[middle.length - 1] < total - 1;
+    const m = visible - 2; // middle count (we'll keep first and last as anchors)
+    // if we're near the start, show 1 .. (v-1) and last
+    if (currentLabel <= DESIRED_POSITION) {
+      const middle = range(2, 1 + m); // 2 .. v-1
       return {
-        displayedPages: [...middle, total],
+        displayedPages: [1, ...middle, total],
         showLeadingEllipsis: false,
-        showTrailingEllipsis: needsTrailingEllipsis,
+        showTrailingEllipsis: middle[middle.length - 1] < total - 1,
       };
     }
 
-    // If near end: display first, then last (visible-1) numeric buttons
-    if (currentLabel + (visible - offset - 1) >= total) {
-      const start = total - (visible - 1) + 1; // compute start so we have (visible-1) final numbers
-      const middle = range(Math.max(2, start), total);
-      const needsLeadingEllipsis = middle[0] > 2;
+    // if we're near the end, show first and the final (v-1) numbers
+    if (currentLabel >= total - (visible - DESIRED_POSITION)) {
+      const start = total - m;
+      const middle = range(Math.max(2, start), total - 1);
       return {
-        displayedPages: [1, ...middle],
-        showLeadingEllipsis: needsLeadingEllipsis,
+        displayedPages: [1, ...middle, total],
+        showLeadingEllipsis: middle[0] > 2,
         showTrailingEllipsis: false,
       };
     }
 
-    // Middle case: reserve first & last, fill middle with (visible - 2) items centered around currentLabel
-    const middleCount = visible - 2;
-    const middleStart = currentLabel - Math.floor(middleCount / 2);
-    const middleEnd = middleStart + middleCount - 1;
+    // Middle case: try to position currentLabel at DESIRED_POSITION (1-based)
+    const idxInMiddle = DESIRED_POSITION - 2; // zero-based index inside middle
+    let middleStart = currentLabel - idxInMiddle;
+    let middleEnd = middleStart + m - 1;
+
+    // clamp to allowable range [2, total-1]
+    if (middleStart < 2) {
+      middleStart = 2;
+      middleEnd = middleStart + m - 1;
+    }
+    if (middleEnd > total - 1) {
+      middleEnd = total - 1;
+      middleStart = middleEnd - m + 1;
+    }
+
     const middle = range(middleStart, middleEnd);
-    const needsLeading = middle[0] > 2;
-    const needsTrailing = middle[middle.length - 1] < total - 1;
     return {
       displayedPages: [1, ...middle, total],
-      showLeadingEllipsis: needsLeading,
-      showTrailingEllipsis: needsTrailing,
+      showLeadingEllipsis: middle[0] > 2,
+      showTrailingEllipsis: middle[middle.length - 1] < total - 1,
     };
   })();
 
@@ -452,26 +459,22 @@ const IDCViewerWrapper: FC = () => {
               gap: 6,
             }}
           >
-            {/* Render displayed numeric buttons with optional ellipses */}
-            {displayedPages.map((label, idx) => {
-              // render leading ellipsis between first and the next item if required
-              const items: React.ReactNode[] = [];
+            {/* Render displayed numeric buttons with explicit ellipses between groups */}
+            {displayedPages.map((label, i) => {
+              const parts: React.ReactNode[] = [];
 
-              if (idx === 1 && showLeadingEllipsis && displayedPages[0] !== 1) {
-                // after the first button, insert leading ellipsis (only once)
-                items.push(
-                  <span
-                    key={`lead-ell-${label}`}
-                    style={{ padding: "6px 6px" }}
-                  >
+              // Insert leading ellipsis between first and the next group when needed
+              if (i === 1 && showLeadingEllipsis) {
+                parts.push(
+                  <span key="lead-ell" style={{ padding: "6px 6px" }}>
                     ...
                   </span>,
                 );
               }
 
-              // render numeric button
-              const pageIndex = label - 1; // convert to zero-based index
-              items.push(
+              // numeric button
+              const pageIndex = label - 1;
+              parts.push(
                 <button
                   key={`page-${label}`}
                   onClick={() => loadPage(pageIndex)}
@@ -491,23 +494,16 @@ const IDCViewerWrapper: FC = () => {
                 </button>,
               );
 
-              // render trailing ellipsis before the last button when necessary
-              if (
-                idx === displayedPages.length - 2 &&
-                showTrailingEllipsis &&
-                displayedPages[displayedPages.length - 1] !== TOTAL_PAGES
-              ) {
-                items.push(
-                  <span
-                    key={`trail-ell-${label}`}
-                    style={{ padding: "6px 6px" }}
-                  >
+              // Insert trailing ellipsis between middle and last when needed
+              if (i === displayedPages.length - 2 && showTrailingEllipsis) {
+                parts.push(
+                  <span key="trail-ell" style={{ padding: "6px 6px" }}>
                     ...
                   </span>,
                 );
               }
 
-              return items;
+              return parts;
             })}
           </div>
         </div>
