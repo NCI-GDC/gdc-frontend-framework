@@ -90,7 +90,7 @@ const IDCViewerWrapper: FC = () => {
 
   const runMapping = useCallback(async () => {
     // Move the function declaration to the function body root (avoid inner declaration)
-    async function fetchGdcCases(limit = 5) {
+    async function fetchGdcCases(limit = 500, from = 0) {
       try {
         const base = "https://api.gdc.cancer.gov/cases";
         const urlParams = new URLSearchParams(window.location.search);
@@ -112,6 +112,9 @@ const IDCViewerWrapper: FC = () => {
           "?" +
           "size=" +
           encodeURIComponent(String(limit)) +
+          "&" +
+          "from=" +
+          from +
           "&" +
           "filters=" +
           filtersEncoded +
@@ -153,8 +156,8 @@ const IDCViewerWrapper: FC = () => {
     }
 
     try {
-      const fetchedSubmitterIds = await fetchGdcCases(450);
-      const cases = fetchedSubmitterIds.slice(0, 450);
+      const fetchedSubmitterIds = await fetchGdcCases(500);
+      const cases = fetchedSubmitterIds.slice(0, 500);
       const gdcCases = cases.map((c) => ({ submitter_id: c, case_id: c }));
       setGdcCount(gdcCases.length);
       addLog(`Retrieved ${gdcCases.length} GDC submitter_id(s) from GDC API`);
