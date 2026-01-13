@@ -814,6 +814,9 @@ export const selectCohortCountsByName = (
 export const selectHasUnsavedCohorts = (state: CoreState): boolean =>
   cohortSelectors.selectAll(state).filter((c) => !c.saved).length >= 1;
 
+export const selectUnsavedCohortName = (state: CoreState): string | undefined =>
+  cohortSelectors.selectAll(state).find((c) => !c.saved)?.name;
+
 /**
  * --------------------------------------------------------------------------
  *  Cohort Hooks
