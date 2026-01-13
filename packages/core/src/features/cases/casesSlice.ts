@@ -94,7 +94,9 @@ export const fetchAllCases = createAsyncThunk<
       from,
       sortBy,
     });
+    console.log("filters", filters);
     const case_ids = casesResponse.data.hits.map((d) => d.id);
+    console.log("case_ids", case_ids);
     const parsedCasesResponse: Record<string, any> =
       casesResponse.data.hits.reduce(
         (acc, hit) => ({

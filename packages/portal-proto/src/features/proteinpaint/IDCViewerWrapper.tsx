@@ -1,6 +1,12 @@
 // File: `packages/portal-proto/src/features/proteinpaint/IDCViewerWrapper.tsx`
 import React, { FC, useCallback, useEffect, useRef, useState } from "react";
-import { PROTEINPAINT_API } from "@gff/core";
+import {
+  PROTEINPAINT_API,
+  fetchGdcCases as fetchGdcCasesApi,
+  useCurrentCohortFilters,
+  filterSetToOperation,
+  convertFilterToGqlFilter, // added: convert Operation -> GqlOperation
+} from "@gff/core";
 
 /**
  * Cleaned IDCViewerWrapper:
@@ -84,47 +90,34 @@ const IDCViewerWrapper: FC = () => {
     string[] | null
   >(null);
 
+  // use current cohort filters (hook)
+  const currentCohortFilterSet = useCurrentCohortFilters();
+  // convert FilterSet -> Operation (internal representation)
+  const cohortGqlFilters = currentCohortFilterSet
+    ? filterSetToOperation(currentCohortFilterSet)
+    : undefined;
+
   // Helper: fetch GDC cases (supports limit & from)
   async function fetchGdcCases(limit = 500, from = 0) {
     try {
-      const base = "https://api.gdc.cancer.gov/cases";
-      const urlParams = new URLSearchParams(window.location.search);
-      const primarySite = urlParams.get("primary_site");
+      // Convert Operation -> GqlOperation expected by fetchGdcCasesApi
+      const caseFiltersArg = cohortGqlFilters
+        ? convertFilterToGqlFilter(cohortGqlFilters)
+        : undefined;
 
-      // Build filter object: op: "and" with optional primary_site constraint
-      const filterObj: any = { op: "and", content: [] };
-      if (primarySite) {
-        filterObj.content.push({
-          op: "=",
-          content: { field: "cases.primary_site", value: primarySite },
-        });
-        addLog(`Filtering GDC cases by primary_site=${primarySite}`);
-      }
-
-      const filtersEncoded = encodeURIComponent(JSON.stringify(filterObj));
-      const url =
-        base +
-        "?" +
-        "size=" +
-        encodeURIComponent(String(limit)) +
-        "&" +
-        "from=" +
-        encodeURIComponent(String(from)) +
-        "&" +
-        "filters=" +
-        filtersEncoded +
-        "&pretty=true" +
-        "&expand=samples.portions.slides" +
-        "&fields=submitter_id,disease_type,primary_site";
-
-      addLog(`GDC GET URL: ${url}`);
-      const resp = await fetch(url, {
-        method: "GET",
-        headers: { Accept: "application/json" },
+      addLog(
+        `Fetching GDC cases with cohort filters (GQL op): ${JSON.stringify(
+          caseFiltersArg || {},
+        )}`,
+      );
+      const casesResp = await fetchGdcCasesApi({
+        fields: ["submitter_id", "disease_type", "primary_site"],
+        size: limit,
+        from,
+        case_filters: caseFiltersArg, // pass converted GqlOperation
+        expand: ["samples.portions.slides"],
       });
-      if (!resp.ok) throw new Error(`GDC API error ${resp.status}`);
-      const json = await resp.json();
-      const hits = json?.data?.hits || [];
+      const hits = casesResp?.data?.hits || [];
 
       // optional local filtering to ensure slides exist
       const filteredHits = hits.filter(
