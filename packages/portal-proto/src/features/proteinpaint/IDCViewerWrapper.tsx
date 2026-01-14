@@ -80,8 +80,10 @@ const IDCViewerWrapper: FC = () => {
 
   // --- Pagination constants & state ---
   const PAGE_SIZE = 500; // per requirement (500 cases per page)
-  const TOTAL_GDC_CASES = 50270; // hardcoded total
-  const TOTAL_PAGES = Math.ceil(TOTAL_GDC_CASES / PAGE_SIZE); // 101
+  // total pages is computed from the live gdcCount (fetched from API pagination)
+  const totalPages = gdcCount
+    ? Math.max(1, Math.ceil(gdcCount / PAGE_SIZE))
+    : 1;
   const [currentPage, setCurrentPage] = useState<number>(0);
 
   // Cache parsed IDC data in component state so we don't re-download/parse repeatedly
@@ -96,6 +98,8 @@ const IDCViewerWrapper: FC = () => {
   const cohortGqlFilters = currentCohortFilterSet
     ? filterSetToOperation(currentCohortFilterSet)
     : undefined;
+
+  // TODO use useCurrentCohortCounts
 
   // Helper: fetch GDC cases (supports limit & from)
   async function fetchGdcCases(limit = 500, from = 0) {
@@ -117,6 +121,13 @@ const IDCViewerWrapper: FC = () => {
         case_filters: caseFiltersArg, // pass converted GqlOperation
         expand: ["samples.portions.slides"],
       });
+
+      // Update total count from response pagination when available
+      const totalFromResp = casesResp?.data?.pagination?.total;
+      if (typeof totalFromResp === "number") {
+        setGdcCount(totalFromResp);
+      }
+
       const hits = casesResp?.data?.hits || [];
 
       // optional local filtering to ensure slides exist
@@ -259,8 +270,7 @@ const IDCViewerWrapper: FC = () => {
           case_id: c,
         }));
 
-        // Hardcoded total per requirement
-        setGdcCount(TOTAL_GDC_CASES);
+        // gdcCount will be set from the API pagination inside fetchGdcCases
 
         addLog(
           `Retrieved ${gdcCases.length} GDC submitter_id(s) from GDC API (page ${pageIndex})`,
@@ -362,7 +372,7 @@ const IDCViewerWrapper: FC = () => {
     showLeadingEllipsis: boolean;
     showTrailingEllipsis: boolean;
   } = (() => {
-    const total = TOTAL_PAGES;
+    const total = totalPages;
     const visible = Math.max(3, Math.min(VISIBLE_BUTTONS, total)); // at least 3
     const currentLabel = currentPage + 1;
 
@@ -442,7 +452,7 @@ const IDCViewerWrapper: FC = () => {
         {/* Pagination buttons above the table */}
         <div style={{ marginBottom: 10 }}>
           <div style={{ fontSize: 12, marginBottom: 6 }}>
-            Pages (0..{TOTAL_PAGES - 1}), page size: {PAGE_SIZE}
+            Pages (0..{totalPages - 1}), page size: {PAGE_SIZE}
           </div>
           <div
             style={{
