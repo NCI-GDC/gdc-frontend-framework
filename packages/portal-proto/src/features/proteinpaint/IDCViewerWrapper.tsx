@@ -6,6 +6,7 @@ import {
   useCurrentCohortFilters,
   filterSetToOperation,
   convertFilterToGqlFilter, // added: convert Operation -> GqlOperation
+  useCurrentCohortCounts, // added hook to get cohort case count
 } from "@gff/core";
 
 /**
@@ -58,8 +59,9 @@ const IDCViewerWrapper: FC = () => {
   const [progress, setProgress] = useState<string>("Idle");
   const [logs, setLogs] = useState<string[]>([]);
   const [mappings, setMappings] = useState<any[]>([]);
-  // replaced: per-page GDC count vs total
-  const [gdcCount, setGdcCount] = useState<number | null>(null);
+  // derive GDC total from current cohort counts hook instead of local state
+  const cohortCounts = useCurrentCohortCounts();
+  const gdcCount = cohortCounts?.data?.caseCount ?? null;
   const [idcCount, setIdcCount] = useState<number | null>(null);
   const divRef = useRef<HTMLDivElement | null>(null);
   // Track which cases are expanded to show their series rows
@@ -82,8 +84,8 @@ const IDCViewerWrapper: FC = () => {
   const PAGE_SIZE = 500; // per requirement (500 cases per page)
   // total pages is computed from the live gdcCount (fetched from API pagination)
   const totalPages = gdcCount
-    ? Math.max(1, Math.ceil(gdcCount / PAGE_SIZE))
-    : 1;
+    ? Math.max(0, Math.ceil(gdcCount / PAGE_SIZE))
+    : 0;
   const [currentPage, setCurrentPage] = useState<number>(0);
 
   // Cache parsed IDC data in component state so we don't re-download/parse repeatedly
@@ -98,8 +100,6 @@ const IDCViewerWrapper: FC = () => {
   const cohortGqlFilters = currentCohortFilterSet
     ? filterSetToOperation(currentCohortFilterSet)
     : undefined;
-
-  // TODO use useCurrentCohortCounts
 
   // Helper: fetch GDC cases (supports limit & from)
   async function fetchGdcCases(limit = 500, from = 0) {
@@ -121,12 +121,6 @@ const IDCViewerWrapper: FC = () => {
         case_filters: caseFiltersArg, // pass converted GqlOperation
         expand: ["samples.portions.slides"],
       });
-
-      // Update total count from response pagination when available
-      const totalFromResp = casesResp?.data?.pagination?.total;
-      if (typeof totalFromResp === "number") {
-        setGdcCount(totalFromResp);
-      }
 
       const hits = casesResp?.data?.hits || [];
 
