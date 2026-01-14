@@ -507,7 +507,7 @@ const IDCViewerWrapper: FC = () => {
 
         <div style={{ maxHeight: 460, overflow: "auto" }}>
           {mappings.length === 0 ? (
-            <div>No mapping results yet.</div>
+            <div>Loading GDC - IDC mappings</div>
           ) : (
             <>
               <style>
