@@ -94,9 +94,7 @@ export const fetchAllCases = createAsyncThunk<
       from,
       sortBy,
     });
-    console.log("filters", filters);
     const case_ids = casesResponse.data.hits.map((d) => d.id);
-    console.log("case_ids", case_ids);
     const parsedCasesResponse: Record<string, any> =
       casesResponse.data.hits.reduce(
         (acc, hit) => ({
@@ -172,8 +170,8 @@ const slice = createSlice({
           case_id: datum.submitter_id,
           case_uuid: datum.case_id,
           submitter_id: datum.submitter_id,
-          project_id: datum.project.project_id,
-          program: datum.project.program.name,
+          project_id: datum.project?.project_id,
+          program: datum.project?.program?.name,
           primary_site: datum.primary_site,
           disease_type: datum.disease_type,
           primary_diagnosis: datum.diagnoses?.[0]?.primary_diagnosis,
@@ -183,7 +181,7 @@ const slice = createSlice({
           sex_at_birth: datum.demographic?.sex_at_birth,
           race: datum.demographic?.race,
           ethnicity: datum.demographic?.ethnicity,
-          filesCount: datum.summary.file_count,
+          filesCount: datum.summary?.file_count,
           data_categories: datum.summary?.data_categories,
           experimental_strategies: datum.summary?.experimental_strategies,
           annotations: datum.annotations,
