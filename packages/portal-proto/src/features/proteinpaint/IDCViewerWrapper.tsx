@@ -485,6 +485,9 @@ const IDCViewerWrapper: FC = () => {
                       "(no id)";
 
                     // --- REPLACED: build studiesMap (group by StudyInstanceUID) ---
+                    // Use precise flags:
+                    //  - hasRadiology: modalities CT, MRI, PET
+                    //  - hasWSI: modality SM (whole-slide images)
                     const studiesMap = new Map<
                       string,
                       {
@@ -493,8 +496,8 @@ const IDCViewerWrapper: FC = () => {
                           SeriesInstanceUID?: string | null;
                           Modality?: string | null;
                         }[];
-                        anyCT: boolean;
-                        anyNonCT: boolean;
+                        hasRadiology: boolean;
+                        hasWSI: boolean;
                         StudyDate?: string | null;
                         StudyDescription?: string | null;
                       }
@@ -509,8 +512,8 @@ const IDCViewerWrapper: FC = () => {
                           existing = {
                             StudyInstanceUID: studyId,
                             series: [],
-                            anyCT: false,
-                            anyNonCT: false,
+                            hasRadiology: false,
+                            hasWSI: false,
                             StudyDate: row?.StudyDate ?? null,
                             StudyDescription: row?.StudyDescription ?? null,
                           };
@@ -526,9 +529,23 @@ const IDCViewerWrapper: FC = () => {
                           existing.StudyDate = row.StudyDate;
                         if (!existing.StudyDescription && row?.StudyDescription)
                           existing.StudyDescription = row.StudyDescription;
-                        // modality flags
-                        if (row?.Modality === "CT") existing.anyCT = true;
-                        else if (row?.Modality) existing.anyNonCT = true;
+                        // precise modality classification
+                        const mod = (row?.Modality ?? "")
+                          .toString()
+                          .trim()
+                          .toUpperCase();
+                        if (mod === "SM") {
+                          existing.hasWSI = true;
+                        } else if (
+                          mod === "CT" ||
+                          mod === "MRI" ||
+                          mod === "PET"
+                        ) {
+                          existing.hasRadiology = true;
+                        } else if (mod) {
+                          // unknown/non-empty modality — treat as non-WSI; assume radiology-capable
+                          existing.hasRadiology = true;
+                        }
                       }
                     }
 
@@ -594,17 +611,17 @@ const IDCViewerWrapper: FC = () => {
                       studiesList.forEach((study, si) => {
                         const studyUID = study.StudyInstanceUID;
                         const studyIdcLink =
-                          studyUID && study.anyNonCT
+                          studyUID && study.hasWSI
                             ? buildSlimStudyURL(studyUID)
                             : null;
                         const studyRadiologyLink =
-                          studyUID && study.anyCT
+                          studyUID && study.hasRadiology
                             ? CT_VIEWER_BASE +
                               "?StudyInstanceUIDs=" +
                               encodeURIComponent(studyUID)
                             : null;
 
-                        const seriesCount = study.series.length;
+                        // const seriesCount = study.series.length;
                         const seriesBg = si % 2 === 0 ? "#fbfbfd" : "#f2f2f2";
 
                         rows.push(
