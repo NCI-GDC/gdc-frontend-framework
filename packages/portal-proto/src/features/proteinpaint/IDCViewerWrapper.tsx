@@ -81,12 +81,10 @@ const IDCViewerWrapper: FC = () => {
     SLIM_VIEWER_BASE + encodeURIComponent(studyInstanceUID);
 
   // --- Pagination constants & state ---
-  const PAGE_SIZE = 500; // per requirement (500 cases per page)
-  // total pages is computed from the live gdcCount (fetched from API pagination)
-  const totalPages = gdcCount
-    ? Math.max(0, Math.ceil(gdcCount / PAGE_SIZE))
-    : 0;
-  const [currentPage, setCurrentPage] = useState<number>(0);
+  const PAGE_SIZE = 100; // page size (pagination disabled — showing first page only)
+  // Pagination disabled: always show first page only
+  // const totalPages = 1;
+  // const [currentPage, setCurrentPage] = useState<number>(0);
 
   // Cache parsed IDC data in component state so we don't re-download/parse repeatedly
   const [cachedIdcData, setCachedIdcData] = useState<any[] | null>(null);
@@ -253,7 +251,7 @@ const IDCViewerWrapper: FC = () => {
   const loadPage = useCallback(
     async (pageIndex: number) => {
       try {
-        setCurrentPage(pageIndex);
+        // setCurrentPage(pageIndex);
         setProgress(`Loading page ${pageIndex}...`);
         addLog(`Loading GDC page ${pageIndex}`);
 
@@ -343,86 +341,10 @@ const IDCViewerWrapper: FC = () => {
     };
   }, []);
 
-  // Compute displayed page buttons (compact, with ellipses)
-  // Configuration: number of numeric buttons to show
-  const VISIBLE_BUTTONS = 10; // configurable
-  // Desired position (1-based) to try keeping the selected page on (example: 5)
-  const DESIRED_POSITION = 5;
-
-  // small helper: inclusive range
-  const range = (a: number, b: number) => {
-    const r: number[] = [];
-    for (let i = a; i <= b; i++) r.push(i);
-    return r;
-  };
-
-  // Build displayed numeric pages (labels are 1-based). Also decide on leading/trailing ellipses.
-  const {
-    displayedPages,
-    showLeadingEllipsis,
-    showTrailingEllipsis,
-  }: {
-    displayedPages: number[];
-    showLeadingEllipsis: boolean;
-    showTrailingEllipsis: boolean;
-  } = (() => {
-    const total = totalPages;
-    const visible = Math.max(3, Math.min(VISIBLE_BUTTONS, total)); // at least 3
-    const currentLabel = currentPage + 1;
-
-    // If total pages are small, just list them all
-    if (total <= visible) {
-      return {
-        displayedPages: range(1, total),
-        showLeadingEllipsis: false,
-        showTrailingEllipsis: false,
-      };
-    }
-
-    const m = visible - 2; // middle count (we'll keep first and last as anchors)
-    // if we're near the start, show 1 .. (v-1) and last
-    if (currentLabel <= DESIRED_POSITION) {
-      const middle = range(2, 1 + m); // 2 .. v-1
-      return {
-        displayedPages: [1, ...middle, total],
-        showLeadingEllipsis: false,
-        showTrailingEllipsis: middle[middle.length - 1] < total - 1,
-      };
-    }
-
-    // if we're near the end, show first and the final (v-1) numbers
-    if (currentLabel >= total - (visible - DESIRED_POSITION)) {
-      const start = total - m;
-      const middle = range(Math.max(2, start), total - 1);
-      return {
-        displayedPages: [1, ...middle, total],
-        showLeadingEllipsis: middle[0] > 2,
-        showTrailingEllipsis: false,
-      };
-    }
-
-    // Middle case: try to position currentLabel at DESIRED_POSITION (1-based)
-    const idxInMiddle = DESIRED_POSITION - 2; // zero-based index inside middle
-    let middleStart = currentLabel - idxInMiddle;
-    let middleEnd = middleStart + m - 1;
-
-    // clamp to allowable range [2, total-1]
-    if (middleStart < 2) {
-      middleStart = 2;
-      middleEnd = middleStart + m - 1;
-    }
-    if (middleEnd > total - 1) {
-      middleEnd = total - 1;
-      middleStart = middleEnd - m + 1;
-    }
-
-    const middle = range(middleStart, middleEnd);
-    return {
-      displayedPages: [1, ...middle, total],
-      showLeadingEllipsis: middle[0] > 2,
-      showTrailingEllipsis: middle[middle.length - 1] < total - 1,
-    };
-  })();
+  /* PAGINATION LOGIC COMMENTED OUT (display only first page)
+     The previous logic computed visible page buttons, ranges and ellipses.
+     It's intentionally commented out so the component always shows page 0.
+  */
 
   return (
     <div
@@ -443,7 +365,8 @@ const IDCViewerWrapper: FC = () => {
       <div style={{ marginTop: 12 }}>
         <h3>Mapping table</h3>
 
-        {/* Pagination buttons above the table */}
+        {/* Pagination buttons above the table — DISABLED */}
+        {/*
         <div style={{ marginBottom: 10 }}>
           <div style={{ fontSize: 12, marginBottom: 6 }}>
             Pages (0..{totalPages - 1}), page size: {PAGE_SIZE}
@@ -456,7 +379,6 @@ const IDCViewerWrapper: FC = () => {
               gap: 6,
             }}
           >
-            {/* Render displayed numeric buttons with explicit ellipses between groups */}
             {displayedPages.map((label, i) => {
               const parts: React.ReactNode[] = [];
 
@@ -504,6 +426,7 @@ const IDCViewerWrapper: FC = () => {
             })}
           </div>
         </div>
+        */}
 
         <div style={{ maxHeight: 460, overflow: "auto" }}>
           {mappings.length === 0 ? (
@@ -517,6 +440,7 @@ const IDCViewerWrapper: FC = () => {
                   }
                 `}
               </style>
+
               <table
                 className="idc-mapping-table"
                 style={{
