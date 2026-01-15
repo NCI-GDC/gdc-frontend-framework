@@ -453,11 +453,13 @@ const IDCViewerWrapper: FC = () => {
                 }}
               >
                 <colgroup>
-                  <col style={{ width: "10%" }} />
-                  <col style={{ width: "35%" }} />
-                  <col style={{ width: "35%" }} />
-                  <col style={{ width: "10%" }} />
-                  <col style={{ width: "10%" }} />
+                  <col style={{ width: "10%" }} /> {/* GDC caseId */}
+                  <col style={{ width: "30%" }} />{" "}
+                  {/* StudyInstanceUID / count + arrow */}
+                  <col style={{ width: "15%" }} /> {/* StudyDate */}
+                  <col style={{ width: "25%" }} /> {/* StudyDescription */}
+                  <col style={{ width: "10%" }} /> {/* WSI link */}
+                  <col style={{ width: "10%" }} /> {/* Radiology Link */}
                 </colgroup>
                 <thead>
                   <tr
@@ -468,7 +470,8 @@ const IDCViewerWrapper: FC = () => {
                   >
                     <th style={{ padding: "6px 8px" }}>GDC caseId</th>
                     <th style={{ padding: "6px 8px" }}>StudyInstanceUUID</th>
-                    <th style={{ padding: "6px 8px" }}>Series Count</th>
+                    <th style={{ padding: "6px 8px" }}>StudyDate</th>
+                    <th style={{ padding: "6px 8px" }}>StudyDescription</th>
                     <th style={{ padding: "6px 8px" }}>WSI link</th>
                     <th style={{ padding: "6px 8px" }}>Radiology Link</th>
                   </tr>
@@ -492,6 +495,8 @@ const IDCViewerWrapper: FC = () => {
                         }[];
                         anyCT: boolean;
                         anyNonCT: boolean;
+                        StudyDate?: string | null;
+                        StudyDescription?: string | null;
                       }
                     >();
 
@@ -506,6 +511,8 @@ const IDCViewerWrapper: FC = () => {
                             series: [],
                             anyCT: false,
                             anyNonCT: false,
+                            StudyDate: row?.StudyDate ?? null,
+                            StudyDescription: row?.StudyDescription ?? null,
                           };
                           studiesMap.set(key, existing);
                         }
@@ -514,6 +521,11 @@ const IDCViewerWrapper: FC = () => {
                           SeriesInstanceUID: row?.SeriesInstanceUID ?? null,
                           Modality: row?.Modality ?? null,
                         });
+                        // prefer first-seen non-null StudyDate / StudyDescription
+                        if (!existing.StudyDate && row?.StudyDate)
+                          existing.StudyDate = row.StudyDate;
+                        if (!existing.StudyDescription && row?.StudyDescription)
+                          existing.StudyDescription = row.StudyDescription;
                         // modality flags
                         if (row?.Modality === "CT") existing.anyCT = true;
                         else if (row?.Modality) existing.anyNonCT = true;
@@ -541,18 +553,31 @@ const IDCViewerWrapper: FC = () => {
                       >
                         <td style={{ padding: "6px 8px" }}>{caseId}</td>
                         <td
-                          style={{ padding: "6px 8px", wordBreak: "break-all" }}
+                          style={{
+                            padding: "6px 8px",
+                            wordBreak: "break-all",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 8,
+                          }}
                         >
                           {/* show how many studies are available for this case */}
-                          {studiesList.length > 0
-                            ? `${studiesList.length} study(s)`
-                            : "(/)"}
-                        </td>
-                        <td style={{ padding: "6px 8px", textAlign: "center" }}>
+                          <span>
+                            {studiesList.length > 0
+                              ? `${studiesList.length} study(s)`
+                              : "(/)"}
+                          </span>
+                          {/* inline expand/collapse indicator */}
                           <span style={{ fontSize: 14 }}>
-                            {/* show ↓ when expanded, ↑ when collapsed */}
                             {isExpanded ? "↓" : "↑"}
                           </span>
+                        </td>
+                        {/* For non-expanded top-level rows don't show study info (leave empty) */}
+                        <td style={{ padding: "6px 8px" }}>
+                          {!isExpanded ? "" : <span>(n/a)</span>}
+                        </td>
+                        <td style={{ padding: "6px 8px" }}>
+                          {!isExpanded ? "" : <span>(n/a)</span>}
                         </td>
                         {/* No links on the GDC case row */}
                         <td style={{ padding: "6px 8px" }}>
@@ -598,17 +623,17 @@ const IDCViewerWrapper: FC = () => {
                             >
                               {studyUID ?? "(/)"}
                             </td>
+                            {/* Study-level date & description */}
+                            <td style={{ padding: "6px 8px" }}>
+                              {study.StudyDate ?? "(/)"}
+                            </td>
                             <td
                               style={{
                                 padding: "6px 8px",
-                                textAlign: "center",
-                                color: "#444",
+                                wordBreak: "break-all",
                               }}
                             >
-                              {/* show number of series in this study */}
-                              {seriesCount > 0
-                                ? `${seriesCount} series`
-                                : "(/)"}
+                              {study.StudyDescription ?? "(/)"}
                             </td>
                             <td style={{ padding: "6px 8px" }}>
                               {studyIdcLink ? (
