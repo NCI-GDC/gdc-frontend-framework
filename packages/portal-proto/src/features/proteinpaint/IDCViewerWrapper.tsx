@@ -81,10 +81,7 @@ const IDCViewerWrapper: FC = () => {
     SLIM_VIEWER_BASE + encodeURIComponent(studyInstanceUID);
 
   // --- Pagination constants & state ---
-  const PAGE_SIZE = 100; // page size (pagination disabled — showing first page only)
-  // Pagination disabled: always show first page only
-  // const totalPages = 1;
-  // const [currentPage, setCurrentPage] = useState<number>(0);
+  const PAGE_SIZE = 100; // page size (used for fetching pages)
 
   // Cache parsed IDC data in component state so we don't re-download/parse repeatedly
   const [cachedIdcData, setCachedIdcData] = useState<any[] | null>(null);
@@ -341,11 +338,6 @@ const IDCViewerWrapper: FC = () => {
     };
   }, []);
 
-  /* PAGINATION LOGIC COMMENTED OUT (display only first page)
-     The previous logic computed visible page buttons, ranges and ellipses.
-     It's intentionally commented out so the component always shows page 0.
-  */
-
   return (
     <div
       ref={divRef}
@@ -365,68 +357,7 @@ const IDCViewerWrapper: FC = () => {
       <div style={{ marginTop: 12 }}>
         <h3>Mapping table</h3>
 
-        {/* Pagination buttons above the table — DISABLED */}
-        {/*
-        <div style={{ marginBottom: 10 }}>
-          <div style={{ fontSize: 12, marginBottom: 6 }}>
-            Pages (0..{totalPages - 1}), page size: {PAGE_SIZE}
-          </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              flexWrap: "wrap",
-              gap: 6,
-            }}
-          >
-            {displayedPages.map((label, i) => {
-              const parts: React.ReactNode[] = [];
-
-              // Insert leading ellipsis between first and the next group when needed
-              if (i === 1 && showLeadingEllipsis) {
-                parts.push(
-                  <span key="lead-ell" style={{ padding: "6px 6px" }}>
-                    ...
-                  </span>,
-                );
-              }
-
-              // numeric button
-              const pageIndex = label - 1;
-              parts.push(
-                <button
-                  key={`page-${label}`}
-                  onClick={() => loadPage(pageIndex)}
-                  style={{
-                    padding: "6px 8px",
-                    borderRadius: 4,
-                    border:
-                      pageIndex === currentPage
-                        ? "2px solid #0078d4"
-                        : "1px solid #ccc",
-                    background: pageIndex === currentPage ? "#e6f0fb" : "#fff",
-                    cursor: "pointer",
-                  }}
-                  aria-pressed={pageIndex === currentPage}
-                >
-                  {label}
-                </button>,
-              );
-
-              // Insert trailing ellipsis between middle and last when needed
-              if (i === displayedPages.length - 2 && showTrailingEllipsis) {
-                parts.push(
-                  <span key="trail-ell" style={{ padding: "6px 6px" }}>
-                    ...
-                  </span>,
-                );
-              }
-
-              return parts;
-            })}
-          </div>
-        </div>
-        */}
+        {/* pagination UI removed */}
 
         <div style={{ maxHeight: 460, overflow: "auto" }}>
           {mappings.length === 0 ? (
