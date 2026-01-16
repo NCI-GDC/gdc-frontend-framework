@@ -81,7 +81,7 @@ const IDCViewerWrapper: FC = () => {
     SLIM_VIEWER_BASE + encodeURIComponent(studyInstanceUID);
 
   // --- Pagination constants & state ---
-  const PAGE_SIZE = 100; // page size (used for fetching pages)
+  const PAGE_SIZE = 400; // page size (used for fetching pages)
 
   // Cache parsed IDC data in component state so we don't re-download/parse repeatedly
   const [cachedIdcData, setCachedIdcData] = useState<any[] | null>(null);
@@ -345,20 +345,8 @@ const IDCViewerWrapper: FC = () => {
       style={{ padding: 12 }}
     >
       <h2>IDCViewer — GDC ↔ IDC mapping</h2>
-      <div style={{ fontSize: 13, marginBottom: 8 }}>
-        <strong>Progress:</strong> {progress}
-      </div>
-
-      <div style={{ fontSize: 13, marginBottom: 8 }}>
-        <strong>Counts:</strong> GDC cases: {gdcCount ?? "n/a"} — IDC rows:{" "}
-        {idcCount ?? "n/a"} {" — "}
-      </div>
 
       <div style={{ marginTop: 12 }}>
-        <h3>Mapping table</h3>
-
-        {/* pagination UI removed */}
-
         <div style={{ maxHeight: 460, overflow: "auto" }}>
           {mappings.length === 0 ? (
             <div>Loading GDC - IDC mappings</div>
