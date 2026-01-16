@@ -344,7 +344,7 @@ const IDCViewerWrapper: FC = () => {
       className="idc-viewer-wrapper-root"
       style={{ padding: 12 }}
     >
-      <h2>IDCViewer — GDC ↔ IDC mapping</h2>
+      <h2>IDCViewer — GDC ↔ IDC mappings</h2>
 
       <div style={{ marginTop: 12 }}>
         <div style={{ maxHeight: 460, overflow: "auto" }}>
