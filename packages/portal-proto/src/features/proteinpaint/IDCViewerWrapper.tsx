@@ -352,10 +352,31 @@ const IDCViewerWrapper: FC = () => {
             <div>Loading GDC - IDC mappings</div>
           ) : (
             <>
+              {/* replace existing small style block with sticky header styles */}
               <style>
                 {`
+                  .idc-mapping-table {
+                    border-collapse: collapse;
+                  }
+                  /* keep existing hover behavior */
                   .idc-mapping-table tbody tr:hover {
                     background: #fff9e6 !important;
+                  }
+
+                  /* sticky header */
+                  .idc-mapping-table thead th {
+                    position: sticky;
+                    top: 0;
+                    background: #fafafa; /* match table background for visual continuity */
+                    z-index: 4;
+                    padding: 6px 8px;
+                    text-align: left;
+                    border-bottom: 1px solid #ddd;
+                  }
+
+                  /* ensure header content doesn't overlap when sticky */
+                  .idc-mapping-table thead tr {
+                    /* keep header row height consistent */
                   }
                 `}
               </style>
@@ -388,7 +409,9 @@ const IDCViewerWrapper: FC = () => {
                     }}
                   >
                     <th style={{ padding: "6px 8px" }}>GDC caseId</th>
-                    <th style={{ padding: "6px 8px" }}>StudyInstanceUUID</th>
+                    <th style={{ padding: "6px 8px" }}>
+                      IDC StudyInstanceUUID
+                    </th>
                     <th style={{ padding: "6px 8px" }}>StudyDate</th>
                     <th style={{ padding: "6px 8px" }}>StudyDescription</th>
                     <th style={{ padding: "6px 8px" }}>WSI link</th>
@@ -510,17 +533,17 @@ const IDCViewerWrapper: FC = () => {
                         </td>
                         {/* For non-expanded top-level rows don't show study info (leave empty) */}
                         <td style={{ padding: "6px 8px" }}>
-                          {!isExpanded ? "" : <span>(n/a)</span>}
+                          {!isExpanded ? "" : <span>-</span>}
                         </td>
                         <td style={{ padding: "6px 8px" }}>
-                          {!isExpanded ? "" : <span>(n/a)</span>}
+                          {!isExpanded ? "" : <span>-</span>}
                         </td>
                         {/* No links on the GDC case row */}
                         <td style={{ padding: "6px 8px" }}>
-                          <span style={{ color: "#666" }}>(n/a)</span>
+                          <span style={{ color: "#666" }}>-</span>
                         </td>
                         <td style={{ padding: "6px 8px" }}>
-                          <span style={{ color: "#666" }}>(n/a)</span>
+                          <span style={{ color: "#666" }}>-</span>
                         </td>
                       </tr>,
                     );
@@ -582,7 +605,7 @@ const IDCViewerWrapper: FC = () => {
                                   Open study
                                 </a>
                               ) : (
-                                <span style={{ color: "#666" }}>(n/a)</span>
+                                <span style={{ color: "#666" }}>-</span>
                               )}
                             </td>
                             <td style={{ padding: "6px 8px" }}>
@@ -596,7 +619,7 @@ const IDCViewerWrapper: FC = () => {
                                   Open study
                                 </a>
                               ) : (
-                                <span style={{ color: "#666" }}>(n/a)</span>
+                                <span style={{ color: "#666" }}>-</span>
                               )}
                             </td>
                           </tr>,
