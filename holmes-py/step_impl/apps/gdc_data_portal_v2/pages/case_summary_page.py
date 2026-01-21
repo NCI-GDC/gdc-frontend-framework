@@ -66,14 +66,17 @@ class CaseSummaryPage(BasePage):
 
     def click_clinical_table_download_button(self, download_type):
         """Clicks download TSV or JSON in Clinical table"""
-        download_button = CaseSummaryLocators.BUTTON_CLINICAL_TABLE_DOWNLOAD
-        self.click(download_button)
+        if not self.is_dropdown_option_text_present(download_type):
+            download_button = CaseSummaryLocators.BUTTON_CLINICAL_TABLE_DOWNLOAD
+            self.click(download_button)
         self.click_text_option_from_dropdown_menu(download_type)
+
 
     def click_biospecimen_table_download_button(self, download_type):
         """Clicks download TSV or JSON in Biospecimen table"""
-        download_button = CaseSummaryLocators.BUTTON_BIOSPECIMEN_TABLE_DOWNLOAD
-        self.click(download_button)
+        if not self.is_dropdown_option_text_present(download_type):
+            download_button = CaseSummaryLocators.BUTTON_BIOSPECIMEN_TABLE_DOWNLOAD
+            self.click(download_button)
         self.click_text_option_from_dropdown_menu(download_type)
 
     def search_in_files_table(self, text_to_send):
