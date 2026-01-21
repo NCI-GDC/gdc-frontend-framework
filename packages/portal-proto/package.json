@@ -31,7 +31,7 @@
     "@mantine/notifications": "8.3.9",
     "@react-spring/web": "^9.5.5",
     "@reduxjs/toolkit": "~2.5.0",
-    "@sjcrh/proteinpaint-client": "2.170.1",
+    "@sjcrh/proteinpaint-client": "2.170.2",
     "@tanstack/react-table": "^8.9.3",
     "dayjs": "^1.11.13",
     "filesize": "^8.0.7",
