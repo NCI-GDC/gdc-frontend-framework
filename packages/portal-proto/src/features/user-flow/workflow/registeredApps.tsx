@@ -257,11 +257,11 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
         aria-hidden="true"
       />
     ),
-    tags: ["variantAnalysis", "cnv", "ssm"],
-    hasDemo: true,
+    tags: ["IDCViewer"],
+    hasDemo: false,
     description: "Visualize IDC Image Viewer.",
     id: "IDCViewerApp",
-    countsField: "1000",
+    countsField: "caseCount",
     optimizeRules: ["available data = wsi or radiology images"],
     noDataTooltip:
       "Current cohort does not have image data available for visualization.",
