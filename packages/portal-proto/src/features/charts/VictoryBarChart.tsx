@@ -86,6 +86,7 @@ interface VictoryBarChartProps {
   readonly data: any;
   readonly title?: string;
   readonly color: string;
+  readonly includeDomainPadding?: boolean;
   readonly yLabel?: string;
   readonly xLabel?: string;
   readonly chartLabel?: string;
@@ -108,6 +109,7 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
   data,
   title,
   color,
+  includeDomainPadding,
   yLabel,
   xLabel,
   chartLabel,
@@ -127,7 +129,7 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
       title={title}
       width={width}
       height={height}
-      domainPadding={60}
+      domainPadding={{ x: 60, y: includeDomainPadding ? 60 : 0 }}
       padding={padding}
       containerComponent={
         <VictoryContainer
