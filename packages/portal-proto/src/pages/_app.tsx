@@ -301,6 +301,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
             >
               <AppContext.Provider
                 value={{
+                  appName: "GDC",
                   Link: Link as LinkComponentType,
                   Image: Image as ImageComponentType,
                   path: router.pathname,
