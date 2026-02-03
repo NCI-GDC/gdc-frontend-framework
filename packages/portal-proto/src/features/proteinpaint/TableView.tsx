@@ -48,16 +48,19 @@ const TableView: React.FC<Props> = ({
         }}
       >
         <colgroup>
-          <col style={{ width: "10%" }} />
-          <col style={{ width: "30%" }} />
-          <col style={{ width: "15%" }} />
-          <col style={{ width: "25%" }} />
-          <col style={{ width: "10%" }} />
-          <col style={{ width: "10%" }} />
+          {/* updated: now 7 columns (added Program after GDC caseId) */}
+          <col style={{ width: "10%" }} /> {/* GDC caseId */}
+          <col style={{ width: "15%" }} /> {/* Program */}
+          <col style={{ width: "25%" }} /> {/* IDC StudyInstanceUUID */}
+          <col style={{ width: "12%" }} /> {/* StudyDate */}
+          <col style={{ width: "23%" }} /> {/* StudyDescription */}
+          <col style={{ width: "7%" }} /> {/* WSI link */}
+          <col style={{ width: "8%" }} /> {/* Radiology Link */}
         </colgroup>
         <thead>
           <tr style={{ textAlign: "left", borderBottom: "1px solid #ddd" }}>
             <th style={{ padding: "6px 8px" }}>GDC caseId</th>
+            <th style={{ padding: "6px 8px" }}>Program</th>
             <th style={{ padding: "6px 8px" }}>IDC StudyInstanceUUID</th>
             <th style={{ padding: "6px 8px" }}>StudyDate</th>
             <th style={{ padding: "6px 8px" }}>StudyDescription</th>
@@ -68,7 +71,8 @@ const TableView: React.FC<Props> = ({
         <tbody>
           {mappings.length === 0 ? (
             <tr>
-              <td colSpan={6} style={{ padding: 12 }}>
+              {/* updated colSpan to match 7 columns */}
+              <td colSpan={7} style={{ padding: 12 }}>
                 Loading GDC - IDC mappings
               </td>
             </tr>

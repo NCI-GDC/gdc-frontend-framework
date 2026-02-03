@@ -116,7 +116,7 @@ const IDCViewerWrapper: FC = () => {
         size: limit,
         from,
         case_filters: caseFiltersArg, // pass converted GqlOperation
-        expand: ["samples.portions.slides"],
+        expand: ["samples.portions.slides", "project.program"],
       });
 
       const hits = casesResp?.data?.hits || [];
@@ -136,9 +136,7 @@ const IDCViewerWrapper: FC = () => {
         `Fetched ${hits.length} hits; ${filteredHits.length} have slides (from=${from})`,
       );
 
-      return filteredHits
-        .map((h: any) => h.submitter_id)
-        .filter((s: any) => typeof s === "string");
+      return filteredHits;
     } catch (e) {
       addLog(`Failed to fetch GDC cases: ${String(e)}`);
       return [];
@@ -255,16 +253,12 @@ const IDCViewerWrapper: FC = () => {
         addLog(`Loading GDC page ${pageIndex}`);
 
         const from = pageIndex * PAGE_SIZE;
-        const submitterIds = await fetchGdcCases(PAGE_SIZE, from);
-        const gdcCases = submitterIds.map((c) => ({
-          submitter_id: c,
-          case_id: c,
-        }));
 
-        // gdcCount will be set from the API pagination inside fetchGdcCases
+        // <-- changed: fetch full GDC case objects (with project.program) instead of only submitter_id strings
+        const gdcCases = await fetchGdcCases(PAGE_SIZE, from);
 
         addLog(
-          `Retrieved ${gdcCases.length} GDC submitter_id(s) from GDC API (page ${pageIndex})`,
+          `Retrieved ${gdcCases.length} GDC case(s) from GDC API (page ${pageIndex})`,
         );
 
         // Ensure IDC metadata is loaded (only on first call this will do work)
@@ -277,6 +271,7 @@ const IDCViewerWrapper: FC = () => {
         setProgress("Mapping GDC cases → IDC rows...");
         const results: any[] = [];
         for (const gc of gdcCases) {
+          // gc is now the full GDC case object (retain project.program)
           const submitter = gc.submitter_id ?? gc.case_id ?? null;
           const found: any[] = [];
 

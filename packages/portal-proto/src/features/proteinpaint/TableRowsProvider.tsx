@@ -32,6 +32,9 @@ export default function TableRowsProvider({
     m.gdcCase.case_uuid ??
     "(no id)";
 
+  // new: program name from expanded GDC case (safe optional chain)
+  const programName = m.gdcCase?.project?.program?.name ?? "(no program)";
+
   const studiesMap = new Map<
     string,
     {
@@ -97,6 +100,13 @@ export default function TableRowsProvider({
       onClick={() => toggleExpanded(caseId)}
     >
       <td style={{ padding: "6px 8px" }}>{caseId}</td>
+
+      {/* new Program column (render even when collapsed) */}
+      <td style={{ padding: "6px 8px", wordBreak: "break-all" }}>
+        <span style={{ color: "#333" }}>{programName}</span>
+      </td>
+
+      {/* move studies count / expand indicator into IDC StudyInstanceUUID column (now 3rd column) */}
       <td
         style={{
           padding: "6px 8px",
@@ -111,6 +121,7 @@ export default function TableRowsProvider({
         </span>
         <span style={{ fontSize: 14 }}>{isExpanded ? "↓" : "↑"}</span>
       </td>
+
       <td style={{ padding: "6px 8px" }}>
         {!isExpanded ? "" : <span>-</span>}
       </td>
@@ -141,7 +152,11 @@ export default function TableRowsProvider({
 
       rows.push(
         <tr key={`${idx}-study-${si}`} style={{ background: seriesBg }}>
+          {/* expanded row: include Program as 2nd column */}
           <td style={{ padding: "6px 8px" }}>{caseId}</td>
+          <td style={{ padding: "6px 8px", wordBreak: "break-all" }}>
+            <span style={{ color: "#333" }}>{programName}</span>
+          </td>
           <td style={{ padding: "6px 8px", wordBreak: "break-all" }}>
             {studyUID ?? "(/)"}
           </td>
@@ -149,6 +164,7 @@ export default function TableRowsProvider({
           <td style={{ padding: "6px 8px", wordBreak: "break-all" }}>
             {study.StudyDescription ?? "(/)"}
           </td>
+
           <td style={{ padding: "6px 8px" }}>
             {studyIdcLink ? (
               <a
