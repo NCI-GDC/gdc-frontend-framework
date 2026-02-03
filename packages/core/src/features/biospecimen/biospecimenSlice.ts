@@ -45,7 +45,6 @@ query Biospecimen(
                         submitter_id
                         sample_id
                         tissue_type
-                        tumor_code_id
                         shortest_dimension
                         intermediate_dimension
                         longest_dimension
