@@ -70,7 +70,6 @@ describe("<Biospecimen />", () => {
         time_between_clamping_and_freezing: null,
         time_between_excision_and_freezing: null,
         tissue_type: "Not Reported",
-        tumor_code_id: null,
         tumor_descriptor: "Not Applicable",
         specimen_type: "Peripheral Blood NOS",
       },
