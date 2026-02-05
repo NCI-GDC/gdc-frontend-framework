@@ -9,6 +9,7 @@ tags: gdc-data-portal-v2, regression, header, navigation
 
 ## Navigate to Home Page
 * On GDC Data Portal V2 app
+* Is text "GDC Apps" present on the page
 
 ## Validate Navigation Links - different tab
 * These links on the "Header" should take the user to correct page in a new tab
