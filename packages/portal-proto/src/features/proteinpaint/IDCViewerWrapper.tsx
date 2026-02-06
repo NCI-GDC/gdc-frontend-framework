@@ -8,8 +8,11 @@ import {
   convertFilterToGqlFilter, // added: convert Operation -> GqlOperation
   useCurrentCohortCounts, // added hook to get cohort case count
 } from "@gff/core";
-// import the new split components
-import TableView from "./TableView";
+// replaced TableView with VerticalTable + helpers
+import VerticalTable from "@/components/Table/VerticalTable";
+import { ColumnDef } from "@tanstack/react-table";
+import TotalItems from "@/components/Table/TotalItem";
+import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
 
 /**
  * Cleaned IDCViewerWrapper:
@@ -76,6 +79,23 @@ const IDCViewerWrapper: FC = () => {
       return next;
     });
   }, []);
+  // derived object for VerticalTable controlled `expanded` prop
+  const expandedState = React.useMemo(() => {
+    const o: Record<string, boolean> = {};
+    expandedCases.forEach((id) => {
+      o[id] = true;
+    });
+    return o;
+  }, [expandedCases]);
+  // helper to toggle when VerticalTable calls setExpanded(row, columnId)
+  const setTableExpanded = useCallback(
+    (row: any /* tanstack Row */) => {
+      // row.id is computed by getRowId (we will use caseId)
+      if (!row?.id) return;
+      toggleExpanded(row.id);
+    },
+    [toggleExpanded],
+  );
 
   const addLog = (s: string) => setLogs((l) => [...l, s]);
 
@@ -345,13 +365,277 @@ const IDCViewerWrapper: FC = () => {
 
       <div style={{ marginTop: 12 }}>
         <div style={{ maxHeight: 460, overflow: "auto" }}>
-          {/* Render the table view (table header + body). TableView handles empty state and uses idcImageSlice for rows */}
-          <TableView
-            mappings={mappings}
-            expandedCases={expandedCases}
-            toggleExpanded={toggleExpanded}
-            buildSlimStudyURL={buildSlimStudyURL}
-          />
+          {/* VerticalTable-based view (replaces TableView */}
+          {/*
+            Build the table columns and data from `mappings`.
+            We preserve expand/collapse by:
+              - using getRowId -> caseId
+              - passing `expanded` as object derived from expandedCases
+              - passing setExpanded which toggles the Set via toggleExpanded
+          */}
+          {(() => {
+            // prepare table data
+            const tableData = (mappings || []).map((m) => {
+              const caseId =
+                m.gdcCase?.submitter_id ??
+                m.gdcCase?.case_id ??
+                m.gdcCase?.case_uuid ??
+                "(no id)";
+              const programName =
+                m.gdcCase?.project?.program?.name ?? "(no program)";
+
+              // group rows by StudyInstanceUID
+              const studiesMap = new Map();
+              (m.matches || []).forEach((r: any) => {
+                const studyId = r?.StudyInstanceUID ?? "__NO_STUDY__";
+                if (!studiesMap.has(studyId)) {
+                  studiesMap.set(studyId, {
+                    StudyInstanceUID: r?.StudyInstanceUID ?? null,
+                    StudyDate: r?.StudyDate ?? null,
+                    StudyDescription: r?.StudyDescription ?? null,
+                    series: [],
+                    hasWSI: false,
+                    hasRadiology: false,
+                  });
+                }
+                const st = studiesMap.get(studyId);
+                st.series.push(r);
+                const mod = (r?.Modality ?? "").toString().trim().toUpperCase();
+                if (mod === "SM") st.hasWSI = true;
+                else if (["CT", "MRI", "PET"].includes(mod))
+                  st.hasRadiology = true;
+                else if (mod) st.hasRadiology = true;
+                if (!st.StudyDate && r?.StudyDate) st.StudyDate = r.StudyDate;
+                if (!st.StudyDescription && r?.StudyDescription)
+                  st.StudyDescription = r.StudyDescription;
+              });
+
+              const studiesList = Array.from(studiesMap.values());
+
+              // derive quick-first-links for compact cells
+              const firstStudyWithWSI = studiesList.find((s) => s.hasWSI);
+              const firstStudyWithRadio = studiesList.find(
+                (s) => s.hasRadiology,
+              );
+              const firstWsiLink = firstStudyWithWSI?.StudyInstanceUID
+                ? buildSlimStudyURL(firstStudyWithWSI.StudyInstanceUID)
+                : null;
+              const firstRadioLink = firstStudyWithRadio?.StudyInstanceUID
+                ? CT_VIEWER_BASE +
+                  "?StudyInstanceUIDs=" +
+                  encodeURIComponent(firstStudyWithRadio.StudyInstanceUID)
+                : null;
+
+              return {
+                caseId,
+                programName,
+                studiesList,
+                studiesCount: studiesList.length,
+                firstStudyDate: studiesList[0]?.StudyDate ?? null,
+                firstStudyDescription: studiesList[0]?.StudyDescription ?? null,
+                firstWsiLink,
+                firstRadioLink,
+                // keep original for deep references if needed
+                _originalMapping: m,
+              };
+            });
+
+            // columns
+            const columns: ColumnDef<any>[] = [
+              {
+                id: "caseId",
+                accessorFn: (row) => row.caseId,
+                header: "GDC caseId",
+                cell: (info) => info.getValue(),
+              },
+              {
+                id: "program",
+                accessorFn: (row) => row.programName,
+                header: "Program",
+                cell: (info) => info.getValue(),
+              },
+              {
+                id: "matches",
+                accessorFn: (row) =>
+                  row.studiesList.map((s) => s.StudyInstanceUID ?? "(/)"),
+                header: "IDC StudyInstanceUUID",
+                cell: (info) => {
+                  const arr = info.getValue() as string[];
+                  // Render the compact expand/collapse indicator (reuse ExpandRowComponent)
+                  return (
+                    <ExpandRowComponent
+                      isRowExpanded={info.row.getIsExpanded()}
+                      value={arr}
+                      isColumnExpanded={true}
+                      title="study"
+                    />
+                  );
+                },
+              },
+              {
+                id: "studyDate",
+                accessorFn: (row) => row.firstStudyDate,
+                header: "StudyDate",
+                cell: (info) => info.getValue() ?? "(/)",
+              },
+              {
+                id: "studyDescription",
+                accessorFn: (row) => row.firstStudyDescription,
+                header: "StudyDescription",
+                cell: (info) => info.getValue() ?? "(/)",
+              },
+              {
+                id: "wsi",
+                accessorFn: (row) => row.firstWsiLink,
+                header: "WSI link",
+                cell: (info) =>
+                  info.getValue() ? (
+                    <a
+                      href={info.getValue().toString()}
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      Open study
+                    </a>
+                  ) : (
+                    <span style={{ color: "#666" }}>-</span>
+                  ),
+              },
+              {
+                id: "radiology",
+                accessorFn: (row) => row.firstRadioLink,
+                header: "Radiology Link",
+                cell: (info) =>
+                  info.getValue() ? (
+                    <a
+                      href={info.getValue().toString()}
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      Open study
+                    </a>
+                  ) : (
+                    <span style={{ color: "#666" }}>-</span>
+                  ),
+              },
+            ];
+
+            // renderSubComponent: show detailed studies list for expanded row
+            const renderSubComponent = ({ row }: any) => {
+              const studies = row.original.studiesList as any[];
+              if (!studies || studies.length === 0) return null;
+              return (
+                <div style={{ padding: 8, background: "#fff" }}>
+                  <table
+                    style={{
+                      width: "100%",
+                      fontSize: 13,
+                      borderCollapse: "collapse",
+                    }}
+                  >
+                    <thead>
+                      <tr
+                        style={{
+                          textAlign: "left",
+                          borderBottom: "1px solid #ddd",
+                        }}
+                      >
+                        <th style={{ padding: 6 }}>StudyInstanceUID</th>
+                        <th style={{ padding: 6 }}>StudyDate</th>
+                        <th style={{ padding: 6 }}>StudyDescription</th>
+                        <th style={{ padding: 6 }}>WSI</th>
+                        <th style={{ padding: 6 }}>Radiology</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {studies.map((s, i) => {
+                        const wsiLink =
+                          s.hasWSI && s.StudyInstanceUID
+                            ? buildSlimStudyURL(s.StudyInstanceUID)
+                            : null;
+                        const radioLink =
+                          s.hasRadiology && s.StudyInstanceUID
+                            ? CT_VIEWER_BASE +
+                              "?StudyInstanceUIDs=" +
+                              encodeURIComponent(s.StudyInstanceUID)
+                            : null;
+                        return (
+                          <tr
+                            key={i}
+                            style={{
+                              background: i % 2 === 0 ? "#fbfbfd" : "#f2f2f2",
+                            }}
+                          >
+                            <td style={{ padding: 6, wordBreak: "break-all" }}>
+                              {s.StudyInstanceUID ?? "(/)"}
+                            </td>
+                            <td style={{ padding: 6 }}>
+                              {s.StudyDate ?? "(/)"}
+                            </td>
+                            <td style={{ padding: 6, wordBreak: "break-all" }}>
+                              {s.StudyDescription ?? "(/)"}
+                            </td>
+                            <td style={{ padding: 6 }}>
+                              {wsiLink ? (
+                                <a
+                                  href={wsiLink}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  Open study
+                                </a>
+                              ) : (
+                                <span style={{ color: "#666" }}>-</span>
+                              )}
+                            </td>
+                            <td style={{ padding: 6 }}>
+                              {radioLink ? (
+                                <a
+                                  href={radioLink}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  Open study
+                                </a>
+                              ) : (
+                                <span style={{ color: "#666" }}>-</span>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              );
+            };
+
+            return (
+              <VerticalTable
+                columns={columns}
+                data={tableData}
+                tableTitle={undefined}
+                tableTotalDetail={
+                  <TotalItems total={idcCount} itemName="study" />
+                }
+                // expansion control
+                getRowCanExpand={(row: any) =>
+                  Array.isArray(row.original?.studiesList) &&
+                  row.original.studiesList.length > 0
+                }
+                expandableColumnIds={["matches"]}
+                expanded={expandedState}
+                setExpanded={(row: any) => setTableExpanded(row)}
+                // ensure row ids come from caseId
+                getRowId={(row: any) => row.caseId}
+                renderSubComponent={renderSubComponent}
+              />
+            );
+          })()}
         </div>
       </div>
 
