@@ -98,12 +98,13 @@ const IDCViewerWrapper: FC = () => {
   );
 
   const addLog = (s: string) => setLogs((l) => [...l, s]);
-
   const buildSlimStudyURL = (studyInstanceUID: string) =>
     SLIM_VIEWER_BASE + encodeURIComponent(studyInstanceUID);
 
   // --- Pagination constants & state ---
-  const PAGE_SIZE = 400; // page size (used for fetching pages)
+  const DEFAULT_PAGE_SIZE = 500; // default page size per requirement
+  const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
+  const [currentPage, setCurrentPage] = useState<number>(0); // zero-based
 
   // Cache parsed IDC data in component state so we don't re-download/parse repeatedly
   const [cachedIdcData, setCachedIdcData] = useState<any[] | null>(null);
@@ -156,6 +157,7 @@ const IDCViewerWrapper: FC = () => {
         `Fetched ${hits.length} hits; ${filteredHits.length} have slides (from=${from})`,
       );
 
+      // return filtered full case objects (we need project.program in mapping)
       return filteredHits;
     } catch (e) {
       addLog(`Failed to fetch GDC cases: ${String(e)}`);
@@ -266,16 +268,16 @@ const IDCViewerWrapper: FC = () => {
 
   // Load a single page of GDC cases (pageIndex starts at 0) and map against IDC data
   const loadPage = useCallback(
-    async (pageIndex: number) => {
+    async (pageIndex: number, pageSizeArg?: number) => {
       try {
-        // setCurrentPage(pageIndex);
+        const ps = pageSizeArg ?? pageSize;
+        setCurrentPage(pageIndex);
         setProgress(`Loading page ${pageIndex}...`);
         addLog(`Loading GDC page ${pageIndex}`);
 
-        const from = pageIndex * PAGE_SIZE;
-
-        // <-- changed: fetch full GDC case objects (with project.program) instead of only submitter_id strings
-        const gdcCases = await fetchGdcCases(PAGE_SIZE, from);
+        const from = pageIndex * ps;
+        // fetch full GDC case objects (with project.program)
+        const gdcCases = await fetchGdcCases(ps, from);
 
         addLog(
           `Retrieved ${gdcCases.length} GDC case(s) from GDC API (page ${pageIndex})`,
@@ -337,12 +339,12 @@ const IDCViewerWrapper: FC = () => {
         setProgress("Error");
       }
     },
-    [loadIdcDataIfNeeded],
+    [loadIdcDataIfNeeded, pageSize],
   );
 
   // Auto-load only the initial page (page 0) on mount
   useEffect(() => {
-    loadPage(0);
+    loadPage(0, pageSize);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -354,6 +356,39 @@ const IDCViewerWrapper: FC = () => {
       if (root) root.innerHTML = "";
     };
   }, []);
+
+  // Handler passed to TablePagination via VerticalTable
+  const handleTableChange = useCallback(
+    (obj: { newPageNumber?: number; newPageSize?: string | number }) => {
+      if (obj.newPageSize !== undefined) {
+        const newSize =
+          typeof obj.newPageSize === "string"
+            ? parseInt(obj.newPageSize)
+            : obj.newPageSize;
+        setPageSize(newSize);
+        // reload first page when page size changes
+        loadPage(0, newSize);
+        return;
+      }
+      if (obj.newPageNumber !== undefined) {
+        const pageIndex = Math.max(0, obj.newPageNumber - 1);
+        loadPage(pageIndex, pageSize);
+      }
+    },
+    [loadPage, pageSize],
+  );
+
+  // Build pagination object for VerticalTable / TablePagination
+  const totalPages = gdcCount ? Math.max(0, Math.ceil(gdcCount / pageSize)) : 0;
+  const pagination = {
+    size: pageSize,
+    page: currentPage + 1, // TablePagination expects 1-based page
+    pages: totalPages,
+    from: currentPage * pageSize + 1,
+    total: gdcCount ?? undefined,
+    label: undefined,
+    customPluralLabel: undefined,
+  };
 
   return (
     <div
@@ -633,6 +668,9 @@ const IDCViewerWrapper: FC = () => {
                 // ensure row ids come from caseId
                 getRowId={(row: any) => row.caseId}
                 renderSubComponent={renderSubComponent}
+                // pagination integration (uses TablePagination internally)
+                pagination={pagination}
+                handleChange={handleTableChange}
               />
             );
           })()}
