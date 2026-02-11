@@ -576,6 +576,11 @@ class BasePage:
         is_button_disabled = self.is_disabled(locator)
         return is_button_disabled
 
+    def is_dropdown_option_text_present(self, dropdown_text_option):
+        locator = GenericLocators.TEXT_DROPDOWN_MENU_OPTION(dropdown_text_option)
+        is_button_text_present = self.is_visible(locator)
+        return is_button_text_present
+
     def is_button_area_expanded(self, button_name):
         """Returns if the data-testid button is expanded"""
         button_name = self.normalize_button_identifier(button_name)

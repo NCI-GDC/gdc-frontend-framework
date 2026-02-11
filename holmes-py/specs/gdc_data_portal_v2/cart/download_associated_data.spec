@@ -36,7 +36,6 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |required_info                        |
     |-------------------------------------|
     |follow_ups.barretts_esophagus_goblet_cells_present     |
-    |follow_ups.dlco_ref_predictive_percent|
     |follow_ups.recist_targeted_regions_sum|
     |molecular_tests.biospecimen_volume   |
     |molecular_tests.test_analyte_type    |
@@ -232,7 +231,6 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |1305158400                           |
     |samples.biospecimen_anatomic_site    |
     |samples.initial_weight               |
-    |samples.oct_embedded                 |
     |samples.preservation_method          |
     |samples.time_between_clamping_and_freezing|
     |samples.tumor_code_id                |

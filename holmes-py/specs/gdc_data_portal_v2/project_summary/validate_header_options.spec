@@ -122,7 +122,6 @@ tags: gdc-data-portal-v2, regression, project-summary, clinical-biospecimen-down
     |follow_up_id                           |
     |0eb870af-e683-48ea-a3fb-b6bfcd99356d   |
     |follow_ups.progression_or_recurrence_anatomic_site|
-    |follow_ups.undescended_testis_corrected_laterality|
     |molecular_tests.blood_test_normal_range_upper|
     |molecular_tests.test_result            |
     |diagnoses.submitter_id                 |
