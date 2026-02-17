@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, JSX } from "react";
 import Highlight from "../Highlight";
 import { BioTreeProps, NodeProps, overrideMessage } from "./types";
 import { UnstyledButton } from "@mantine/core";

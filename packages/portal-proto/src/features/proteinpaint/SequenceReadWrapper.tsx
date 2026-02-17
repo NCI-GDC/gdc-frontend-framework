@@ -29,8 +29,8 @@ export const SequenceReadWrapper: FC<PpProps> = (props: PpProps) => {
   const [rootDisplay, setRootDisplay] = useState("none");
 
   // to track reusable instance for mds3 skewer track
-  const ppRef = useRef<PpApi>();
-  const prevArg = useRef<any>();
+  const ppRef = useRef<PpApi>(null);
+  const prevArg = useRef<any>(null);
 
   useDeepCompareEffect(
     () => {
@@ -71,8 +71,8 @@ export const SequenceReadWrapper: FC<PpProps> = (props: PpProps) => {
     [filter0, userDetails],
   );
 
-  const alertRef = useRef();
-  const divRef = useRef();
+  const alertRef = useRef(null);
+  const divRef = useRef(null);
   return (
     <div>
       <div

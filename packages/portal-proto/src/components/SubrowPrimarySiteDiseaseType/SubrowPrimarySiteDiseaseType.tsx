@@ -1,4 +1,4 @@
-import React from "react";
+import React, { JSX } from "react";
 import { CircleIcon } from "@/utils/icons";
 import { animated, useSpring } from "@react-spring/web";
 import { Row } from "@tanstack/react-table";

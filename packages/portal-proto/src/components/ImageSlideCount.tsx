@@ -1,5 +1,5 @@
 import { Badge, Button, Tooltip } from "@mantine/core";
-import { forwardRef } from "react";
+import React, { JSX, forwardRef } from "react";
 import MicroscopeIcon from "public/user-flow/icons/Microscope.svg";
 
 interface ImageSlideCountProps {

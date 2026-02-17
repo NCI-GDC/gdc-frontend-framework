@@ -1,3 +1,4 @@
+import React, { JSX } from "react";
 import { homepageButtonClass } from "./index";
 import Link, { LinkProps } from "next/link";
 

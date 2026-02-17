@@ -1,5 +1,5 @@
 import { Badge, Loader, Tooltip } from "@mantine/core";
-import React from "react";
+import React, { JSX } from "react";
 
 /**
  * A Button component that displays a count in a badge,

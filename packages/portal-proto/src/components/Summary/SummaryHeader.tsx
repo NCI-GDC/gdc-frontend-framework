@@ -1,8 +1,8 @@
+import React, { JSX, ReactNode, useEffect, useState } from "react";
 import { SummaryHeaderTitle } from "@/components/tailwindComponents";
 import { XL_BREAKPOINT } from "@/utils/index";
 import { Divider } from "@mantine/core";
 import { useViewportSize } from "@mantine/hooks";
-import { ReactNode, useEffect, useState } from "react";
 import { IconType } from "react-icons";
 
 export interface SummaryHeaderProps {

@@ -138,7 +138,7 @@ export const ProteinPaintWrapper: FC<PpProps> = (props: PpProps) => {
     ],
   );
 
-  const divRef = useRef();
+  const divRef = useRef(null);
   const demoText = props.hardcodeCnvOnly
     ? "Demo showing MYC CNV segments from all GDC cases"
     : "Demo showing MYC mutations from all GDC cases.";

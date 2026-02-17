@@ -1,3 +1,4 @@
+import React, { JSX } from "react";
 import { useCoreSelector, selectCurrentMessage } from "@gff/core";
 import { Text } from "@mantine/core";
 import { BaseModal } from "./BaseModal";

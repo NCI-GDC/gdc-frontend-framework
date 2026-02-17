@@ -1,3 +1,4 @@
+import React, { JSX } from "react";
 import { StickyOffIcon, StickyOnIcon } from "@/utils/icons";
 import { Tooltip, ActionIcon } from "@mantine/core";
 

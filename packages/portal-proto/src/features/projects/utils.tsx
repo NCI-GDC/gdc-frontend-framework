@@ -1,3 +1,4 @@
+import React, { JSX } from "react";
 import Link from "next/link";
 import { ProjectViewProps } from "./ProjectView";
 import { CollapsibleList } from "@/components/CollapsibleList";

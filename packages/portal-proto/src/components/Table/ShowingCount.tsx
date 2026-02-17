@@ -1,3 +1,4 @@
+import React, { JSX } from "react";
 import { DataStatus } from "@gff/core";
 
 function ShowingCount({

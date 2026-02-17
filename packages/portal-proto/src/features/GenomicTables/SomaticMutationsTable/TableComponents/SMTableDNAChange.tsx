@@ -1,8 +1,8 @@
+import React, { JSX, Dispatch, SetStateAction } from "react";
 import { truncateAfterMarker } from "../utils";
 import { Tooltip } from "@mantine/core";
 import Link from "next/link";
 import { PopupIconButton } from "@/components/PopupIconButton/PopupIconButton";
-import { Dispatch, SetStateAction } from "react";
 import { entityMetadataType } from "src/utils/contexts";
 
 const SMTableDNAChange = ({

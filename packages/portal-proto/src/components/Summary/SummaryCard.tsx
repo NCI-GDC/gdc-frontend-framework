@@ -1,4 +1,4 @@
-import React from "react";
+import React, { JSX } from "react";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import { HorizontalTable, HorizontalTableProps } from "../HorizontalTable";
 

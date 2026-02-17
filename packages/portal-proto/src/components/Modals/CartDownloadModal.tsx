@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { JSX, useState } from "react";
 import { Button, Text, Badge } from "@mantine/core";
 import { hideModal, useCoreDispatch, UserInfo, CartFile } from "@gff/core";
 import { LoginButton } from "@/components/LoginButton";

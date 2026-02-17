@@ -22,7 +22,7 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
   const [currentPage, setCurrentPage] = useState(0);
   const [tableData, setTableData] = useState([]);
   const [sortBy, setSortBy] = useState<SortBy[]>();
-  const tableWrapperRef = useRef<HTMLDivElement>();
+  const tableWrapperRef = useRef<HTMLDivElement>(null);
   const [scrollHeight, setScrollHeight] = useState(0);
 
   useEffect(() => {
@@ -172,7 +172,7 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
     [set?.setType, setDetailPanelColumnHelper],
   );
 
-  const scrollRef = useRef<HTMLDivElement>();
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const fetchMoreOnBottomReached = () => {
     if (scrollRef) {

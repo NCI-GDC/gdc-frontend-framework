@@ -1,9 +1,9 @@
+import React, { JSX, useMemo, useState } from "react";
 import GenericLink from "@/components/GenericLink";
 import { HandleChangeInput } from "@/components/Table/types";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { GdcFile } from "@gff/core";
 import { createColumnHelper } from "@tanstack/react-table";
-import { useMemo, useState } from "react";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import VerticalTable from "@/components/Table/VerticalTable";
 import TotalItems from "@/components/Table/TotalItem";

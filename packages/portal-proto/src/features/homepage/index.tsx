@@ -1,3 +1,4 @@
+import React, { JSX } from "react";
 import HorizontalSummaryTotalsPanel from "@/features/homepage/HorizontalSummaryTotalsPanel";
 import { Bodyplot } from "@/features/homepage/Bodyplot";
 import HPCard from "./HPCard";

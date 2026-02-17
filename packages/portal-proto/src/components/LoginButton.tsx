@@ -1,3 +1,4 @@
+import React, { JSX } from "react";
 import openAuthWindow from "@/features/layout/auth/openAuthWindow";
 import { LoginIcon } from "@/utils/icons";
 import {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, JSX } from "react";
 import { useRouter } from "next/router";
 import { useDeepCompareEffect } from "use-deep-compare";
 import dynamic from "next/dynamic";

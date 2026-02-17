@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { JSX, useState, useCallback } from "react";
 import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
 import {
   FacetDefinition,

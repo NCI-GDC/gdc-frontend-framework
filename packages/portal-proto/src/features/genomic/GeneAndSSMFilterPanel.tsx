@@ -1,4 +1,4 @@
-import React from "react";
+import React, { JSX } from "react";
 import { useCoreSelector, Modals, selectCurrentModal } from "@gff/core";
 import FilterFacets from "@/features/genomic/filters.json";
 import {

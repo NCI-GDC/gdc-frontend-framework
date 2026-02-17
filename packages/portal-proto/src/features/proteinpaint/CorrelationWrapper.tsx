@@ -39,8 +39,8 @@ export const CorrelationWrapper: FC<PpProps> = (props: PpProps) => {
     ? cloneDeep(demoFilter)
     : buildCohortGqlOperator(currentCohort);
   const userDetails = useFetchUserDetailsQuery();
-  const prevData = useRef<any>();
-  const toolApp = useRef<any>();
+  const prevData = useRef<any>(null);
+  const toolApp = useRef<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const showLoadingOverlay = () => setIsLoading(true);
   const hideLoadingOverlay = () => setIsLoading(false);
@@ -126,7 +126,7 @@ export const CorrelationWrapper: FC<PpProps> = (props: PpProps) => {
     [filter0, userDetails?.data],
   );
 
-  const divRef = useRef();
+  const divRef = useRef(null);
   return (
     <div className="relative">
       {isDemoMode && (

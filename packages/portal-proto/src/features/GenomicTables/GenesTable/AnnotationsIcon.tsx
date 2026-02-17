@@ -1,3 +1,5 @@
+import React, { JSX } from "react";
+
 const AnnotationsIcon = ({ label }: { label: string }): JSX.Element => {
   return (
     <svg

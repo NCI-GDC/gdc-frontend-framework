@@ -1,4 +1,4 @@
-import React from "react";
+import React, { JSX } from "react";
 import { GdcFile, hideModal, useCoreDispatch } from "@gff/core";
 import { Text, Textarea } from "@mantine/core";
 import { BaseModal } from "../BaseModal";

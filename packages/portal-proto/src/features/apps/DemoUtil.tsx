@@ -1,3 +1,4 @@
+import React, { JSX } from "react";
 import { SettingsIcon } from "@/utils/icons";
 import { Grid } from "@mantine/core";
 

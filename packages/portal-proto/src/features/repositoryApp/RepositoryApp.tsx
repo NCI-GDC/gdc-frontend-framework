@@ -1,3 +1,4 @@
+import React, { JSX, useEffect, useState } from "react";
 import {
   buildCohortGqlOperator,
   CART_LIMIT,
@@ -13,7 +14,6 @@ import {
   useGetAllFilesMutation,
   useGetFilesQuery,
 } from "@gff/core";
-import { useEffect, useState } from "react";
 import { AppStore, useAppSelector } from "./appApi";
 import {
   addToCart,

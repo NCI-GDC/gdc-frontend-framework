@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { JSX, useMemo } from "react";
 import { AnchorLink } from "@/components/AnchorLink";
 import { CollapsibleTextArea } from "@/components/CollapsibleTextArea";
 import { SummaryCard } from "@/components/Summary/SummaryCard";

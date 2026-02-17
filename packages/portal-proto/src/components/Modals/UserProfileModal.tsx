@@ -1,3 +1,4 @@
+import React, { JSX } from "react";
 import { CheckIcon } from "@/utils/icons";
 import { useFetchUserDetailsQuery } from "@gff/core";
 import { Text } from "@mantine/core";

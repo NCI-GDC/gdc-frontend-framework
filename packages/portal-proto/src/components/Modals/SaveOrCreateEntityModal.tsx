@@ -1,3 +1,4 @@
+import React, { JSX } from "react";
 import { upperFirst } from "lodash";
 import { Box, Button, Group, Modal, TextInput, Loader } from "@mantine/core";
 import { useForm } from "@mantine/form";

@@ -1,4 +1,4 @@
-import { ReactNode, forwardRef } from "react";
+import React, { ReactNode, forwardRef, JSX } from "react";
 import { Image } from "@/components/Image";
 import { Button } from "@mantine/core";
 

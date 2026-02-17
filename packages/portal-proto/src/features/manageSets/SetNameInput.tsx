@@ -24,7 +24,7 @@ const SetNameInput: React.FC<SetNameInputProps> = ({
 }: SetNameInputProps) => {
   const [editing, setEditing] = useState(false);
   const [value, setValue] = useState(setName);
-  const inputRef = useRef<HTMLInputElement>();
+  const inputRef = useRef<HTMLInputElement>(null);
   const dispatch = useCoreDispatch();
   const sets = useCoreSelector((state) => selectSetsByType(state, setType));
   const otherSets = Object.fromEntries(

@@ -1,4 +1,4 @@
-import React, { useState, ComponentType } from "react";
+import React, { JSX, useState, ComponentType } from "react";
 import type { Diagnoses, FollowUps } from "@gff/core";
 import { Tabs, Tooltip } from "@mantine/core";
 

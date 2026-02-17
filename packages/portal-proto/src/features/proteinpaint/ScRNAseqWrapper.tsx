@@ -43,7 +43,7 @@ export const ScRNAseqWrapper: FC<PpProps> = (props: PpProps) => {
     ? cloneDeep(demoFilter)
     : buildCohortGqlOperator(currentCohort);
   // to track reusable instance for mds3 skewer track
-  const ppRef = useRef<PpApi>();
+  const ppRef = useRef<PpApi>(null);
   const prevArg = useRef<any>({});
   const userDetails = useFetchUserDetailsQuery();
   const [isLoading, setIsLoading] = useState(false);
@@ -94,7 +94,7 @@ export const ScRNAseqWrapper: FC<PpProps> = (props: PpProps) => {
     [filter0, userDetails],
   );
 
-  const divRef = useRef();
+  const divRef = useRef(null);
   return (
     <div>
       {isDemoMode && (

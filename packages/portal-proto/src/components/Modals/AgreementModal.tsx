@@ -1,6 +1,6 @@
+import React, { JSX, SetStateAction, useEffect, useState } from "react";
 import { GdcFile, hideModal, useCoreDispatch } from "@gff/core";
 import { Button, Text } from "@mantine/core";
-import { SetStateAction, useEffect, useState } from "react";
 import { DownloadButton } from "../DownloadButtons";
 import { BaseModal } from "./BaseModal";
 import DownloadAccessAgreement from "./DownloadAccessAgreement";

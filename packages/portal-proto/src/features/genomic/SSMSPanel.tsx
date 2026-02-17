@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { JSX, useCallback, useEffect } from "react";
 import { useDeepCompareMemo } from "use-deep-compare";
 import dynamic from "next/dynamic";
 import { LoadingOverlay } from "@mantine/core";

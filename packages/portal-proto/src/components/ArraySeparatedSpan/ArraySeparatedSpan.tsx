@@ -1,3 +1,5 @@
+import React, { JSX } from "react";
+
 // Takes an array of strings, sorts it out in ascending and creates a comma separated spans.
 export const ArraySeparatedSpan = ({
   data,

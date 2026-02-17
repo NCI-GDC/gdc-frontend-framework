@@ -83,7 +83,7 @@ const FilterPanel = ({
 }: FilterPanelProps) => {
   const [opened, setOpened] = useState(false);
   const [filtersExpanded, setFiltersExpanded] = useState(true);
-  const ref = useRef<HTMLDivElement>();
+  const ref = useRef<HTMLDivElement>(null);
   const { xPosition } = useContext(TableXPositionContext);
 
   const facetFields = facetDefinitions.map((x) => x.field);

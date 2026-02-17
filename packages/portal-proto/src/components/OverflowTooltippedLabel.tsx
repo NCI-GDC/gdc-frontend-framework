@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import React, { JSX, ReactNode, useState } from "react";
 import { Tooltip } from "@mantine/core";
 
 type OverflowTooltippedLabelProps = {

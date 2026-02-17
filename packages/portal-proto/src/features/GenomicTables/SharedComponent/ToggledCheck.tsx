@@ -1,5 +1,5 @@
+import React, { JSX } from "react";
 import { Checkbox, CheckboxProps, Tooltip } from "@mantine/core";
-import React from "react";
 
 interface ToggleProps {
   isActive: boolean;

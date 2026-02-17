@@ -55,8 +55,8 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
   const [qqPlotRef, boundingRectQQ] = useResizeObserver();
 
   const { dispatch } = useContext(DashboardDownloadContext);
-  const boxDownloadChartRef = useRef<HTMLElement>();
-  const qqDownloadChartRef = useRef<HTMLElement>();
+  const boxDownloadChartRef = useRef<HTMLElement>(null);
+  const qqDownloadChartRef = useRef<HTMLElement>(null);
   const fieldName = clinicalNestedField ?? clinicalField;
   const date = getFormattedTimestamp();
   const boxPlotDownloadName = `${fieldName}-box-plot-${date}`;

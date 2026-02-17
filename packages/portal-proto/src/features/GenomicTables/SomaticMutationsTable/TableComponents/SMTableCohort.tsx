@@ -1,3 +1,4 @@
+import React, { JSX } from "react";
 import CohortInactiveIcon from "public/user-flow/icons/CohortSym_inactive.svg";
 import CohortActiveIcon from "public/user-flow/icons/cohort-dna.svg";
 import { SsmToggledHandler } from "../types";

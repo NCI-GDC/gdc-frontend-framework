@@ -18,7 +18,7 @@ interface PpProps {
 
 export const CohortLevelMafWrapper: FC<PpProps> = (props: PpProps) => {
   // to track reusable instance for mds3 skewer track
-  const ppRef = useRef<PpApi>();
+  const ppRef = useRef<PpApi>(null);
   const prevArg = useRef<any>({});
   const currentCohort = useCoreSelector(selectCurrentCohortFilters);
   const filter0 = buildCohortGqlOperator(currentCohort);
@@ -56,7 +56,7 @@ export const CohortLevelMafWrapper: FC<PpProps> = (props: PpProps) => {
     [filter0, userDetails],
   );
 
-  const divRef = useRef();
+  const divRef = useRef(null);
   return (
     <div>
       <div

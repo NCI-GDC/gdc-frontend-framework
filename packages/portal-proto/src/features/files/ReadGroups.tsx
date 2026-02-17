@@ -1,5 +1,5 @@
+import React, { JSX, useMemo } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
-import { useMemo } from "react";
 import VerticalTable from "@/components/Table/VerticalTable";
 import TotalItems from "@/components/Table/TotalItem";
 import { HeaderTitle } from "@/components/tailwindComponents";

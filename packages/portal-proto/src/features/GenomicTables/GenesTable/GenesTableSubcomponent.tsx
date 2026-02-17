@@ -1,3 +1,4 @@
+import React, { JSX } from "react";
 import { useGetGeneTableSubrowQuery } from "@gff/core";
 import { Row } from "@tanstack/react-table";
 import { Gene } from "./types";

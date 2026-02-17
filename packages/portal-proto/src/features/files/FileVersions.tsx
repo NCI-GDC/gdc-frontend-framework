@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import React, { JSX, useMemo } from "react";
 import { useGetHistoryQuery } from "@gff/core";
 import saveAs from "file-saver";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";

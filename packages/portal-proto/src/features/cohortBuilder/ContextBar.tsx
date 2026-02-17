@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { JSX, useState } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
 import { CollapsibleContainer } from "@/components/CollapsibleContainer";
 import { Loader, Tabs } from "@mantine/core";

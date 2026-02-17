@@ -1,4 +1,4 @@
-import React from "react";
+import React, { JSX } from "react";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { useSsmsSummaryQuery } from "@gff/core";

@@ -1,3 +1,4 @@
+import React, { JSX } from "react";
 import { Tooltip } from "@mantine/core";
 import tw from "tailwind-styled-components";
 
