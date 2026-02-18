@@ -386,8 +386,8 @@ const IDCViewerWrapper: FC = () => {
     pages: totalPages,
     from: currentPage * pageSize + 1,
     total: gdcCount ?? undefined,
-    label: undefined,
-    customPluralLabel: undefined,
+    label: "study",
+    customPluralLabel: "study",
   };
 
   return (
@@ -510,13 +510,13 @@ const IDCViewerWrapper: FC = () => {
               {
                 id: "studyDate",
                 accessorFn: (row) => row.firstStudyDate,
-                header: "StudyDate",
+                header: "IDC StudyDate",
                 cell: (info) => info.getValue() ?? "(/)",
               },
               {
                 id: "studyDescription",
                 accessorFn: (row) => row.firstStudyDescription,
-                header: "StudyDescription",
+                header: "IDC StudyDescription",
                 cell: (info) => info.getValue() ?? "(/)",
               },
               {
@@ -655,7 +655,11 @@ const IDCViewerWrapper: FC = () => {
                 data={tableData}
                 tableTitle={undefined}
                 tableTotalDetail={
-                  <TotalItems total={idcCount} itemName="study" />
+                  <TotalItems
+                    total={idcCount}
+                    itemName="study"
+                    pluralName="study"
+                  />
                 }
                 // expansion control
                 getRowCanExpand={(row: any) =>
