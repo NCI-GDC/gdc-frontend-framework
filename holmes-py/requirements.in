@@ -1,7 +1,7 @@
 pre-commit
 getgauge==0.4.11
 playwright==1.53.0
-protobuf==4.25.8
+protobuf==5.29.6
 grpcio==1.71.0
 pillow==10.3.0
 pyautogui==0.9.54
