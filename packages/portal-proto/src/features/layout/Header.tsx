@@ -164,8 +164,8 @@ export const Header: React.FC<HeaderProps> = ({
 
   const currentCart = useCoreSelector((state) => selectCart(state));
   const modal = useCoreSelector((state) => selectCurrentModal(state));
-  const { isSuccess: totalSuccess } = useTotalCounts(); // request total counts and facet dictionary
-  const { isSuccess: dictSuccess } = useFacetDictionary();
+  const { isSuccess: totalSuccess } = useTotalCounts(undefined); // request total counts and facet dictionary
+  const { isSuccess: dictSuccess } = useFacetDictionary(undefined);
   const [cookie] = useCookies(["NCI-Warning"]);
 
   useEffect(() => {

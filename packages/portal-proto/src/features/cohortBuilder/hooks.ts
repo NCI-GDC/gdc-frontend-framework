@@ -129,7 +129,7 @@ export const useCustomFacets = () => {
   const [customFacetDefinitions, setCustomFacetDefinitions] = useState<
     ReadonlyArray<FacetDefinition>
   >([]);
-  const { isSuccess } = useFacetDictionary();
+  const { isSuccess } = useFacetDictionary(undefined);
   const facets = useCoreSelector((state) =>
     selectFacetDefinitionsByName(state, customConfig.facets),
   );
@@ -150,7 +150,7 @@ export const useAvailableCustomFacets = (
 ) => {
   // get the current list of cohort filters
   const { data: dictionaryData, isSuccess: isDictionaryReady } =
-    useFacetDictionary();
+    useFacetDictionary(undefined);
 
   const { facetType = "cases" } = queryOptions;
 

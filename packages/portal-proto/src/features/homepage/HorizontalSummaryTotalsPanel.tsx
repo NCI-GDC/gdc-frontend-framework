@@ -15,7 +15,7 @@ const HorizontalSummaryTotalsPanel = ({
   countsInfo: TotalCounts;
 }): JSX.Element => {
   const { data: versionInfo, isSuccess: isVersionInfoSuccess } =
-    useVersionInfoDetails();
+    useVersionInfoDetails(undefined);
   const IconFormatted = ({
     Icon,
     label,

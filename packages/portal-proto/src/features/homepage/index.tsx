@@ -15,7 +15,7 @@ font-medium font-heading rounded mt-4 px-4 py-3 w-fit inline-block cursor-pointe
 `;
 
 const Homepage = (): JSX.Element => {
-  const { data: countsInfo } = useTotalCounts();
+  const { data: countsInfo } = useTotalCounts(undefined);
   return (
     <div className="flex flex-col bg-base-max">
       <div className="flex flex-col xl:flex-row xl:py-10 bg-hero-pattern bg-cover pt-8">

@@ -22,8 +22,6 @@ import { coreStoreListenerMiddleware } from "./listeners";
 import { survivalApiSliceMiddleware } from "./features/survival/survivalApiSlice";
 import { graphqlAPISliceMiddleware } from "./features/gdcapi/gdcgraphql";
 import { endpointSliceMiddleware } from "./features/gdcapi";
-import { projectApiSliceMiddleware } from "./features/projects/projectsSlice";
-import { filesApiSliceMiddleware } from "./features/files/filesSlice";
 import { historyApiSliceMiddleware } from "./features/history/historySlice";
 import { quickSearchApiMiddleware } from "./features/quickSearch/quickSearch";
 import { userAuthApiMiddleware } from "./features/users/usersSlice";
@@ -92,12 +90,10 @@ export const coreStore = configureStore({
     })
       .concat(
         allFilesApiSliceMiddleware,
-        filesApiSliceMiddleware,
         cohortApiSliceMiddleware,
         survivalApiSliceMiddleware,
         graphqlAPISliceMiddleware,
         endpointSliceMiddleware,
-        projectApiSliceMiddleware,
         userAuthApiMiddleware,
         historyApiSliceMiddleware,
         bannerNotificationApiSliceMiddleware,

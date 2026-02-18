@@ -41,12 +41,12 @@ export interface CoreDataSelector<T> {
   (state: CoreState): CoreDataSelectorResponse<T>;
 }
 
-export interface FetchDataActionCreator<P, A> {
-  (...params: P[]): A;
+export interface FetchDataActionCreator<P, C, A> {
+  (params: P, config?: C): A;
 }
 
-export interface UserCoreDataHook<P, T> {
-  (...params: P[]): UseCoreDataResponse<T>;
+export interface UseCoreDataHook<P, C, T> {
+  (params: P, config?: C): UseCoreDataResponse<T>;
 }
 
 /**
@@ -55,22 +55,22 @@ export interface UserCoreDataHook<P, T> {
  * NOTE: if component using this defines a key prop ensure the key id persist between renders
  */
 export const usePrevious = <T>(value: T): T | undefined => {
-  const ref = useRef<T>();
+  const ref = useRef<T>(undefined);
   useEffect(() => {
     ref.current = value;
   });
   return ref.current;
 };
 
-export const createUseCoreDataHook = <P, A, T>(
-  fetchDataActionCreator: FetchDataActionCreator<P, A>,
+export const createUseCoreDataHook = <P, C, A, T>(
+  fetchDataActionCreator: FetchDataActionCreator<P, C, A>,
   dataSelector: CoreDataSelector<T>,
-): UserCoreDataHook<P, T> => {
-  return (...params: P[]): UseCoreDataResponse<T> => {
+): UseCoreDataHook<P, C, T> => {
+  return (params: P, config?: C): UseCoreDataResponse<T> => {
     const coreDispatch = useCoreDispatch();
     const { data, pagination, status, error } = useCoreSelector(dataSelector);
-    const action = fetchDataActionCreator(...params);
-    const prevParams = usePrevious<P[]>(params);
+    const action = fetchDataActionCreator(params, config);
+    const prevParams = usePrevious(params);
 
     useEffect(() => {
       if (status === "uninitialized" || !isEqual(prevParams, params)) {
@@ -97,17 +97,17 @@ export interface CoreDataValueSelector<T> {
   (state: CoreState): T;
 }
 
-export const createUseFiltersCoreDataHook = <P, A, T, F>(
-  fetchDataActionCreator: FetchDataActionCreator<P, A>,
+export const createUseFiltersCoreDataHook = <P, C, A, T, F>(
+  fetchDataActionCreator: FetchDataActionCreator<P, C, A>,
   dataSelector: CoreDataSelector<T>,
   secondarySelector: CoreDataValueSelector<F>,
-): UserCoreDataHook<P, T> => {
-  return (...params: P[]): UseCoreDataResponse<T> => {
+): UseCoreDataHook<P, C, T> => {
+  return (params: P, config?: C): UseCoreDataResponse<T> => {
     const coreDispatch = useCoreDispatch();
     const { data, status, error } = useCoreSelector(dataSelector);
-    const action = fetchDataActionCreator(...params);
+    const action = fetchDataActionCreator(params, config);
     const secondary = useCoreSelector(secondarySelector);
-    const prevParams = usePrevious<P[]>(params);
+    const prevParams = usePrevious<P | undefined>(params);
     const prevSecondary = usePrevious<F>(secondary);
 
     useEffect(() => {
