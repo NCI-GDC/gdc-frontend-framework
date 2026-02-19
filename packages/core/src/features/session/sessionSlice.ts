@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CoreState } from "../../reducers";
+import { CoreState } from "src/store";
 
 export interface SessionState {
   readonly sessionId: string;

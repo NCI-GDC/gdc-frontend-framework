@@ -15,7 +15,7 @@ import {
 } from "redux-persist";
 import type { Action, Reducer } from "redux";
 import Cookies from "js-cookie";
-import { reducers } from "./reducers";
+import { reducers, RootState } from "./reducers";
 import { allFilesApiSliceMiddleware } from "./features/files/allFilesMutation";
 import { cohortApiSliceMiddleware } from "./features/api/cohortApiSlice";
 import { coreStoreListenerMiddleware } from "./listeners";
@@ -67,7 +67,7 @@ const persistConfig = {
 };
 
 export const coreStore = configureStore({
-  reducer: persistReducer(persistConfig, reducers),
+  reducer: persistReducer<RootState>(persistConfig, reducers),
   devTools: {
     name: "@gff/core",
   },
@@ -104,6 +104,7 @@ export const coreStore = configureStore({
 });
 
 setupListeners(coreStore.dispatch);
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
+
 export type CoreDispatch = typeof coreStore.dispatch;
+export type CoreStore = typeof coreStore;
+export type CoreState = ReturnType<CoreStore["getState"]>;

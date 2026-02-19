@@ -2,10 +2,9 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { fetchGdcAnnotations, fetchGdcCases } from "../gdcapi";
 import { Pagination, SortBy } from "../gdcapi/types";
 import { AnnotationDefaults, CaseDefaults } from "../gdcapi/types";
-import { CoreDispatch } from "../../store";
+import { CoreDispatch, CoreState } from "src/store";
 import { groupBy } from "lodash";
 import { GqlOperation } from "../gdcapi/filters";
-import { CoreState } from "src/reducers";
 import {
   CoreDataSelectorResponse,
   createUseCoreDataHook,

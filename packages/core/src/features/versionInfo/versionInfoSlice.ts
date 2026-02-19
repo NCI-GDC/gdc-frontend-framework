@@ -6,7 +6,7 @@ import {
   createUseCoreDataHook,
   DataStatus,
 } from "../../dataAccess";
-import { CoreState } from "../../reducers";
+import { CoreState } from "src/store";
 
 export interface VersionInfoResponse {
   commit: string;

@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CoreDispatch } from "../../store";
-import { CoreState } from "../../reducers";
+import { CoreDispatch, CoreState } from "src/store";
 import { fetchGdcCases, fetchGdcFiles } from "../gdcapi";
 import { GdcApiResponse } from "../gdcapi/types";
 import { isBucketsAggregation } from "../gdcapi/utils";
