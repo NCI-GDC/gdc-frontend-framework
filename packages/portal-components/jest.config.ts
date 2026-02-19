@@ -22,6 +22,13 @@ const config: JestConfigWithTsJest = {
   modulePaths: ["<rootDir>"],
   modulePathIgnorePatterns: ["dist", "node_modules"],
   testTimeout: 50000,
+  reporters: [
+    "default",
+    [
+      "jest-slow-test-reporter",
+      { numTests: 10, warnOnSlowerThan: 500, color: true },
+    ],
+  ],
 };
 
 export default config;

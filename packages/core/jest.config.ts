@@ -7,4 +7,12 @@ module.exports = {
   modulePaths: ["<rootDir>"],
   modulePathIgnorePatterns: ["<rootDir>/node_modules/"],
   testTimeout: 50000,
+  setupFilesAfterEnv: ["<rootDir>/setupTests.ts"],
+  reporters: [
+    "default",
+    [
+      "jest-slow-test-reporter",
+      { numTests: 10, warnOnSlowerThan: 500, color: true },
+    ],
+  ],
 };
