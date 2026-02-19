@@ -8,7 +8,7 @@ import {
   selectCurrentCohort as selectCurrentCohortFromStore,
   selectAvailableCohorts as selectCohortsFromStore,
   useDeleteCohortMutation,
-  removeCohort,
+  removeCohortFromStore,
   useLazyGetCohortByIdQuery,
   discardCohortChanges,
   buildGqlOperationToFilterSet,
@@ -33,6 +33,7 @@ import {
   updateCohortName,
   CohortModel,
   addNewUnsavedCohort,
+  deleteCohortUserAction,
 } from "@gff/core";
 import { useCohortFacetFilters } from "../utils";
 import { exportCohort, removeQueryParamsFromRouter } from "./cohortUtils";
@@ -74,7 +75,7 @@ export const useDeleteCohort = () => {
 
   const [deleteCohortFromBE] = useDeleteCohortMutation();
   const deleteCohort = useDeepCompareCallback(() => {
-    coreDispatch(removeCohort({}));
+    coreDispatch(deleteCohortUserAction({}));
     // fetch case counts is now handled in listener
   }, [coreDispatch]);
 
@@ -261,7 +262,7 @@ const useUpdateCohortState = () => {
           coreDispatch(fetchCohortCaseCounts(payload.id)); // fetch counts for new cohort
 
           coreDispatch(
-            removeCohort({
+            removeCohortFromStore({
               id: cohortId,
             }),
           );
@@ -471,7 +472,7 @@ export const useReplaceCohort = () => {
 
           // Remove outdated cohorts
           outdatedCohortsIds.forEach((id) => {
-            coreDispatch(removeCohort({ id }));
+            coreDispatch(removeCohortFromStore({ id }));
           });
         })
         .catch((e) => {

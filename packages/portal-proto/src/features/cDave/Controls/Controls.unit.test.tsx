@@ -39,7 +39,7 @@ describe("<Controls />", () => {
     );
 
     expect(queryByRole("button", { name: "Demographic" })).toBeInTheDocument();
-    expect(queryByRole("button", { name: "Exposures" })).toBeInTheDocument();
+    expect(queryByRole("button", { name: "Exposure" })).toBeInTheDocument();
     expect(queryByRole("button", { name: "Treatment" })).toBeInTheDocument();
     expect(queryByRole("button", { name: "Diagnosis" })).toBeInTheDocument();
     expect(

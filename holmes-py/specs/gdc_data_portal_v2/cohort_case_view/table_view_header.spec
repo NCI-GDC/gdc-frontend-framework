@@ -113,7 +113,6 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
     |follow_ups.days_to_follow_up           |
     |follow_ups.evidence_of_recurrence_type |
     |follow_ups.submitter_id                |
-    |follow_ups.pregnancy_outcome           |
     |molecular_tests.laboratory_test        |
     |f7253ebc-424c-4506-a5f4-727c819d50fd   |
     |d185b62d-3811-43c1-8b50-0823e06646fa   |
@@ -128,7 +127,6 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
     |demographic.occupation_duration_years  |
     |family_histories.relationship_primary_diagnosis|
     |family_histories.relatives_with_cancer_history_count|
-    |demographic.weeks_gestation_at_birth   |
     |diagnoses.child_pugh_classification    |
     |diagnoses.first_symptom_longest_duration|
     |treatments.prescribed_dose_units       |

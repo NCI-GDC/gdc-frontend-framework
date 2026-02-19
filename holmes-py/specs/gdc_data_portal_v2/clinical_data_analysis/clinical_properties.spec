@@ -103,7 +103,7 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
 * Check clinical properties
    |property                  |group    |
    |--------------------------|---------|
-   |Alcohol History           |Exposures|
+   |Alcohol History           |Exposure |
    |Alcohol Intensity         |         |
    |Tobacco Smoking Status    |         |
    |Alcohol Days Per Week     |         |

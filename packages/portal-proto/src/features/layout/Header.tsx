@@ -70,6 +70,7 @@ const externalAppLinks: HeaderLinkItem[] = [
         alt=""
       />
     ),
+    isExternal: true,
   },
   {
     customDataTestID: "button-header-api",
@@ -83,6 +84,7 @@ const externalAppLinks: HeaderLinkItem[] = [
       />
     ),
     text: "API",
+    isExternal: true,
   },
   {
     customDataTestID: "button-header-data-transfer-tool",
@@ -96,6 +98,7 @@ const externalAppLinks: HeaderLinkItem[] = [
       />
     ),
     text: "Data Transfer Tool",
+    isExternal: true,
   },
   {
     customDataTestID: "button-header-documentation",
@@ -109,6 +112,7 @@ const externalAppLinks: HeaderLinkItem[] = [
       />
     ),
     text: "Documentation",
+    isExternal: true,
   },
   {
     customDataTestID: "button-header-data-submission-portal",
@@ -122,6 +126,7 @@ const externalAppLinks: HeaderLinkItem[] = [
       />
     ),
     text: "Data Submission Portal",
+    isExternal: true,
   },
   {
     customDataTestID: "button-header-publications",
@@ -135,6 +140,7 @@ const externalAppLinks: HeaderLinkItem[] = [
       />
     ),
     text: "Publications",
+    isExternal: true,
   },
 ];
 

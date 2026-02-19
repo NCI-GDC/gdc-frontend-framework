@@ -94,18 +94,25 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
           : [];
       } else {
         return isMutationSuccess && !isMutationFetching
-          ? ssmsDetailData?.hits?.map((ssm) => ({
-              ssm_id: ssm.ssm_id,
-              consequence: `${ssm?.consequence?.[0].transcript?.gene?.symbol} ${
-                ssm?.consequence?.[0].transcript?.aa_change
-                  ? ssm?.consequence?.[0].transcript?.aa_change
-                  : ""
-              } ${humanify({
-                term: ssm?.consequence?.[0]?.transcript.consequence_type
-                  ?.replace("_variant", "")
-                  .replace("_", " "),
-              })}`,
-            }))
+          ? ssmsDetailData?.hits?.map((ssm) => {
+              const canonicalConsequence = ssm?.consequence.filter(
+                (consequence) => consequence?.transcript?.is_canonical,
+              )?.[0];
+              return {
+                ssm_id: ssm.ssm_id,
+                consequence: canonicalConsequence?.transcript
+                  ? `${canonicalConsequence.transcript?.gene?.symbol} ${
+                      canonicalConsequence.transcript?.aa_change
+                        ? canonicalConsequence.transcript?.aa_change
+                        : ""
+                    } ${humanify({
+                      term: canonicalConsequence?.transcript.consequence_type
+                        ?.replace("_variant", "")
+                        .replace("_", " "),
+                    })}`
+                  : "--",
+              };
+            })
           : [];
       }
     }

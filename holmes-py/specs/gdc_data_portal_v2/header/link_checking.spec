@@ -9,6 +9,7 @@ tags: gdc-data-portal-v2, regression, header, navigation
 
 ## Navigate to Home Page
 * On GDC Data Portal V2 app
+* Is text "GDC Apps" present on the page
 
 ## Validate Navigation Links - different tab
 * These links on the "Header" should take the user to correct page in a new tab
@@ -18,7 +19,7 @@ tags: gdc-data-portal-v2, regression, header, navigation
   |Obtaining Access to Controlled Data        |In order to obtain access to controlled data available in the  |
 
 ## Validate Apps Links
-* These Apps links should take the user to correct page in the same tab
+* These Apps links should take the user to correct page in new tab
   |button_text                                |text_on_expected_page                                          |
   |-------------------------------------------|---------------------------------------------------------------|
   |Website                                    |The GDC supports several cancer genome programs at the NCI     |

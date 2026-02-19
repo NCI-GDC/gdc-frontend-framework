@@ -4,6 +4,7 @@ import { MantineThemeOverride } from "@mantine/core";
 import { ImageComponentType, LinkComponentType } from "./types";
 
 interface AppContextType {
+  readonly appName?: string;
   readonly path?: string;
   readonly theme?: MantineThemeOverride;
   readonly Image: ImageComponentType;
@@ -11,6 +12,7 @@ interface AppContextType {
 }
 
 export const AppContext = createContext<AppContextType>({
+  appName: undefined,
   path: undefined,
   theme: undefined,
   // eslint-disable-next-line

@@ -10,7 +10,7 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
 ## Create Cohort for Test
 * On GDC Data Portal V2 app
 * Navigate to "Cohort" from "Header" "section"
-* Create and save a cohort named "CC_Compare_1" with these filters
+* Create and save a cohort named "cdave_show_properties_with_data" with these filters
   |tab_name               |facet_name           |selection                      |
   |-----------------------|---------------------|-------------------------------|
   |Exposure               |Alcohol History      |unknown                        |

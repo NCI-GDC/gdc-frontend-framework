@@ -26,8 +26,11 @@ class HeaderSection(BasePage):
     def __init__(self, driver: Page, url):
         self.driver = driver  # driver is PW page
 
-    def navigate_with_apps_menu(self, apps_link:str):
+    def click_apps_menu(self):
        self.click(HeaderSectionLocators.BUTTON_APPS_MENU)
+
+    def navigate_with_apps_menu(self, apps_link:str):
+       self.click_apps_menu()
        self.click_header_button(apps_link)
 
     def navigate_to_main_pages(self, button_name: str):

@@ -9,7 +9,7 @@ import {
   selectCurrentCohortFiltersByName,
   updateCohortFilter,
   removeCohortFilter,
-  removeCohort,
+  removeCohortFromStore,
   availableCohortsReducer,
   addNewUnsavedCohort,
   divideCurrentCohortFilterSetFilterByPrefix,
@@ -717,7 +717,7 @@ describe("add, update, and remove cohort", () => {
           },
         },
       },
-      removeCohort({}),
+      removeCohortFromStore({}),
     );
     expect(availableCohorts).toEqual({
       currentCohort: "000-000-000-1",

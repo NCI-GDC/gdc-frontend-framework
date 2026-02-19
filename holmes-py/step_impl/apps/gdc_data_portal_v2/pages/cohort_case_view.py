@@ -66,13 +66,17 @@ class CohortCaseViewPage(BasePage):
         self.click(locator)
 
     def click_biospecimen_summary_view(self, dropdown_option):
-        locator = CohortCaseViewLocators.BUTTON_BIOSPECIMEN_SUMMARY_VIEW
-        self.click(locator)
+        # If the option text is not already present, click the dropdown menu button
+        if not self.is_dropdown_option_text_present(dropdown_option):
+            locator = CohortCaseViewLocators.BUTTON_BIOSPECIMEN_SUMMARY_VIEW
+            self.click(locator)
         self.click_text_option_from_dropdown_menu(dropdown_option)
 
     def click_clinical_summary_view(self, dropdown_option):
-        locator = CohortCaseViewLocators.BUTTON_CLINICAL_SUMMARY_VIEW
-        self.click(locator)
+        # If the option text is not already present, click the dropdown menu button
+        if not self.is_dropdown_option_text_present(dropdown_option):
+            locator = CohortCaseViewLocators.BUTTON_CLINICAL_SUMMARY_VIEW
+            self.click(locator)
         self.click_text_option_from_dropdown_menu(dropdown_option)
 
     def click_table_view_button(self, button_name):

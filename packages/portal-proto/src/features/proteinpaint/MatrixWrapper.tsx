@@ -219,15 +219,9 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
           // in case of race condition
           return prevData.current != data;
         },
-      })
-        .then?.((_app) => {
-          toolApp.current = _app;
-        })
-        .catch((e) => {
-          // the app should either work or display an error in a red banner within the tool container div,
-          // this uncaught-by-app error is unlikely to happen except for bundling issues that are not detected at build time
-          console.error(e);
-        });
+      }).then?.((_app) => {
+        toolApp.current = _app;
+      });
 
       return () => {
         if (!toolApp.current) return;

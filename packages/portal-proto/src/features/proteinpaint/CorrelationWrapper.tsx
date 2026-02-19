@@ -40,8 +40,8 @@ export const CorrelationWrapper: FC<PpProps> = (props: PpProps) => {
     : buildCohortGqlOperator(currentCohort);
   const userDetails = useFetchUserDetailsQuery();
   const prevData = useRef<any>();
+  const toolApp = useRef<any>();
   const [isLoading, setIsLoading] = useState(false);
-
   const showLoadingOverlay = () => setIsLoading(true);
   const hideLoadingOverlay = () => setIsLoading(false);
   const matrixCallbacks: RxComponentCallbacks = {
@@ -111,10 +111,19 @@ export const CorrelationWrapper: FC<PpProps> = (props: PpProps) => {
           // in case of race condition
           return prevData.current != data;
         },
+      }).then?.((_app) => {
+        toolApp.current = _app;
       });
+
+      return () => {
+        if (!toolApp.current || window.location.href.includes("Correlation"))
+          return;
+        // cancel unnecessary network requests when this tool app is hidden
+        toolApp.current.triggerAbort();
+      };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [filter0, userDetails],
+    [filter0, userDetails?.data],
   );
 
   const divRef = useRef();
@@ -129,6 +138,7 @@ export const CorrelationWrapper: FC<PpProps> = (props: PpProps) => {
       <div
         ref={divRef}
         className="sjpp-wrapper-root-div"
+        style={{ minHeight: "440px" }}
         //userDetails={userDetails}
       />
 

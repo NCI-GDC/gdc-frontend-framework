@@ -55,6 +55,7 @@ export interface Cohort {
   readonly unsavedCohortId?: string; // the id before cohort is saved, used for apps where the cohort can be saved while the user is operating the app
   readonly deprecatedFields?: string[];
   readonly nonexistentFields?: string[];
+  readonly removed?: true;
 }
 
 const cohortsAdapter = createEntityAdapter<Cohort, CohortId>({
@@ -142,7 +143,7 @@ const checkForUnsavedCohorts = (
   const selector = cohortsAdapter.getSelectors();
   const unsavedCohorts = selector
     .selectAll(state)
-    .filter((cohort) => !cohort.saved);
+    .filter((cohort) => !cohort.removed && !cohort.saved);
   if (unsavedCohorts.length > 0) {
     if (replace) {
       cohortsAdapter.removeMany(
@@ -185,7 +186,8 @@ interface CopyCohortParams {
  * - clearCohortFilters(): removes all the filters by setting them to the default all GDC state
  * - setCurrentCohortId(id:string): set the id of the current cohort, used to switch between cohorts
  * - clearCaseSet(): resets the caseSet member to all GDC
- * - removeCohort(): removes the current cohort
+ * - removeCohortFromStore(): remove cohort from the store
+ * - deleteCohortUserAction(): user deletes cohort
  * - addNewCohortGroups(): adds groups of filters to the current cohort
  * - removeCohortGroup(): removes a group of filters from the current cohort
  * @category Cohort
@@ -255,24 +257,38 @@ const slice = createSlice({
         changes: { name: action.payload },
       });
     },
-    removeCohort: (
+    removeCohortFromStore: (
       state,
       action: PayloadAction<{
         id?: string;
       }>,
     ) => {
+      // Action for when we need to remove cohort from store. Used for replacing a cohort
+      // or saving an unsaved cohort or for clean up if a cohort has become outdated.
+
       cohortsAdapter.removeOne(
         state,
-        action?.payload?.id || getCurrentCohort(state),
+        action?.payload.id ?? getCurrentCohort(state),
       );
 
       const selector = cohortsAdapter.getSelectors();
-      if (
-        selector.selectAll(state).length > 0 &&
-        action?.payload.id === undefined
-      ) {
-        state.currentCohort = selector.selectAll(state)[0].id;
+      const availableCohorts = selector
+        .selectAll(state)
+        .filter((cohort) => !cohort.removed);
+      // Set new active cohort if we deleted it
+      if (availableCohorts.length > 0 && action?.payload.id === undefined) {
+        state.currentCohort = availableCohorts[0].id;
       }
+    },
+    deleteCohortUserAction: (state, action: PayloadAction<{ id?: string }>) => {
+      // Action for when the user deletes a cohort. Apps can be actively using cohorts when they are deleted, so keep
+      // their information in the store for reference until the page is reloaded
+      cohortsAdapter.updateOne(state, {
+        id: action.payload.id ?? getCurrentCohort(state),
+        changes: {
+          removed: true,
+        },
+      });
     },
     updateCohortFilter: (state, action: PayloadAction<UpdateFilterParams>) => {
       const filters = {
@@ -440,7 +456,8 @@ export const availableCohortsReducer = slice.reducer;
 export const {
   addNewDefaultUnsavedCohort,
   addNewUnsavedCohort,
-  removeCohort,
+  removeCohortFromStore,
+  deleteCohortUserAction,
   updateCohortName,
   addNewSavedCohort,
   setCurrentCohortId,
@@ -479,7 +496,7 @@ export const cohortSelectors = cohortsAdapter.getSelectors(
  */
 
 export const selectAvailableCohorts = (state: CoreState): Cohort[] =>
-  cohortSelectors.selectAll(state);
+  cohortSelectors.selectAll(state).filter((cohort) => !cohort.removed);
 
 /**
  * Returns the current cohort id
@@ -757,7 +774,7 @@ export const selectMultipleCohortsByIdOrName = (
 ) =>
   cohorts
     .map((cohort) => selectCohortByIdOrName(state, cohort.id, cohort.name))
-    .filter((cohort) => cohort !== undefined);
+    .filter((cohort) => cohort !== undefined && !cohort?.removed);
 
 /**
  * Returns an array of all the cohorts
@@ -765,8 +782,8 @@ export const selectMultipleCohortsByIdOrName = (
  * @category Cohort
  * @category Selectors
  */
-export const selectAllCohorts = (state: CoreState): Record<CohortId, Cohort> =>
-  cohortSelectors.selectEntities(state);
+export const selectAllCohorts = (state: CoreState): Cohort[] =>
+  cohortSelectors.selectAll(state);
 
 export const selectCohortCountsResults = (
   state: CoreState,
