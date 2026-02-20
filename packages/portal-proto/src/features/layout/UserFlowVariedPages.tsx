@@ -66,7 +66,6 @@ export const UserFlowVariedPages = ({
             {ContextBar ? ContextBar : null}
           </aside>
           <main
-            data-tour="full_page_content"
             className="flex flex-grow flex-col overflow-x-clip overflow-y-clip"
             id="main"
           >
