@@ -2,7 +2,6 @@ export interface SampleNode {
   sample_id: string | null;
   submitter_id: string | null;
   tissue_type: string | null;
-  tumor_code_id: string | null;
   shortest_dimension: string | null;
   intermediate_dimension: string | null;
   longest_dimension: string | null;

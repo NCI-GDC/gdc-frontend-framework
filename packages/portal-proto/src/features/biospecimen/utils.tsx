@@ -202,7 +202,6 @@ const getOrder = (type) => {
     "tumor_descriptor",
     "specimen_type",
     "preservation_method",
-    "tumor_code_id",
     "shortest_dimension",
     "intermediate_dimension",
     "longest_dimension",
