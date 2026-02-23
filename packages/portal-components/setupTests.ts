@@ -8,3 +8,4 @@ class ResizeObserver {
 }
 
 window.ResizeObserver = ResizeObserver;
+global.fetch = jest.fn();
