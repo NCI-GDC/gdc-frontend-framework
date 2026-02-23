@@ -48,7 +48,7 @@ const IDC_PARQUET_COLUMNS = [
 async function readParquetIndex(
   hyparquet: any,
   idc_index_file: any,
-): Promise<{ idc_data: any[]; case_ids: string[] }> {
+): Promise<{ idc_data: ReadonlyArray<any>; case_ids: readonly string[] }> {
   const idc_data = await hyparquet.parquetReadObjects({
     file: idc_index_file,
     columns: IDC_PARQUET_COLUMNS,
@@ -59,9 +59,9 @@ async function readParquetIndex(
   idc_data.forEach((o: any) => {
     if (o.case_id) caseIdSet.add(o.case_id);
   });
-  const case_ids = Array.from(caseIdSet);
+  const case_ids = Array.from(caseIdSet) as readonly string[];
 
-  return { idc_data, case_ids };
+  return { idc_data: idc_data as ReadonlyArray<any>, case_ids };
 }
 
 // Helper: cache parsed IDC metadata
@@ -105,8 +105,12 @@ const IDCViewerWrapper: FC = () => {
   const buildSlimStudyURL = (studyInstanceUID: string) =>
     SLIM_VIEWER_BASE + encodeURIComponent(studyInstanceUID);
 
-  const [cachedIdcData, setCachedIdcData] = useState<any[] | null>(null);
-  const [cachedCaseIds, setCachedCaseIds] = useState<string[] | null>(null);
+  const [cachedIdcData, setCachedIdcData] = useState<ReadonlyArray<any> | null>(
+    null,
+  );
+  const [cachedCaseIds, setCachedCaseIds] = useState<readonly string[] | null>(
+    null,
+  );
 
   // use current cohort filters (hook)
   const currentCohortFilterSet = useCurrentCohortFilters();
@@ -123,14 +127,14 @@ const IDCViewerWrapper: FC = () => {
         : undefined;
 
       // Load all GDC case_ids from the new parquet file (via cached IDC data)
-      const { case_ids } = await loadIdcDataIfNeeded();
+      const { case_ids } = await loadIdcDataIfNeeded(); // case_ids is readonly string[]
 
       // Pass GDC case ids directly to filters
       const id_filters: GqlOperation = {
         op: "in",
         content: {
           field: "case_id",
-          value: case_ids, // string[]
+          value: case_ids, // readonly string[] is acceptable
         },
       };
 
@@ -315,7 +319,7 @@ const IDCViewerWrapper: FC = () => {
           gdcCase?.case_id ??
           gdcCase?.case_uuid ??
           null;
-        const matches = idc_data.filter(
+        const matches = (idc_data as ReadonlyArray<any>).filter(
           (row: any) =>
             row.PatientID &&
             submitterId &&
@@ -515,7 +519,7 @@ const IDCViewerWrapper: FC = () => {
     size,
     page,
     pages,
-    from: from + 1,
+    from: from,
     total,
     label: "study",
     customPluralLabel: "study",
