@@ -37,7 +37,8 @@ export const UserFlowVariedPages = ({
 
   useGetBannerNotificationsQuery();
   const banners = useCoreSelector((state) => selectBanners(state));
-  const { isFetching: isFetchingDataVersion } = useVersionInfoDetails();
+  const { isFetching: isFetchingDataVersion } =
+    useVersionInfoDetails(undefined);
 
   const { ref: headerRef, height: headerHeight } = useElementSize();
 
