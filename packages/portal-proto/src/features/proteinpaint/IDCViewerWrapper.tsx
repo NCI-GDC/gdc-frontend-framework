@@ -6,7 +6,8 @@ import {
   useCurrentCohortFilters,
   filterSetToOperation,
   convertFilterToGqlFilter, // added: convert Operation -> GqlOperation
-  useCurrentCohortCounts, // added hook to get cohort case count
+  useCurrentCohortCounts,
+  GqlOperation, // added hook to get cohort case count
 } from "@gff/core";
 // replaced TableView with VerticalTable + helpers
 import VerticalTable from "@/components/Table/VerticalTable";
@@ -26,37 +27,32 @@ const SLIM_VIEWER_BASE =
 const CT_VIEWER_BASE =
   "https://viewer.imaging.datacommons.cancer.gov/v3/viewer/";
 
-// Reusable columns list for IDC parquet reads
+// Reusable columns list for IDC parquet reads (updated for new format)
 const IDC_PARQUET_COLUMNS = [
-  "collection_id",
-  "PatientID",
+  "case_id",
+  "submitter_id",
   "StudyInstanceUID",
-  "SeriesInstanceUID",
-  "series_aws_url",
-  "Modality",
-  "StudyDate",
-  "StudyDescription",
+  "modality",
 ];
 
-// Helper: read idc_data + collection_ids from a parquet file buffer
+// Helper: read idc_data from a parquet file buffer (updated for new format)
 async function readParquetIndex(
   hyparquet: any,
   idc_index_file: any,
-): Promise<{ idc_data: any[]; collection_ids: string[] }> {
+): Promise<{ idc_data: any[]; case_ids: string[] }> {
   const idc_data = await hyparquet.parquetReadObjects({
     file: idc_index_file,
     columns: IDC_PARQUET_COLUMNS,
   });
 
-  const collectionQuery = await hyparquet.parquetReadObjects({
-    file: idc_index_file,
-    columns: ["collection_id"],
+  // Extract unique case_ids from the parquet data
+  const caseIdSet = new Set<string>();
+  idc_data.forEach((o: any) => {
+    if (o.case_id) caseIdSet.add(o.case_id);
   });
-  const colSet = new Set<string>();
-  collectionQuery.forEach((o: any) => colSet.add(o.collection_id));
-  const collection_ids = Array.from(colSet);
+  const case_ids = Array.from(caseIdSet);
 
-  return { idc_data, collection_ids };
+  return { idc_data, case_ids };
 }
 
 // Helper: cache parsed IDC metadata
@@ -108,9 +104,7 @@ const IDCViewerWrapper: FC = () => {
 
   // Cache parsed IDC data in component state so we don't re-download/parse repeatedly
   const [cachedIdcData, setCachedIdcData] = useState<any[] | null>(null);
-  const [cachedCollectionIds, setCachedCollectionIds] = useState<
-    string[] | null
-  >(null);
+  const [cachedCaseIds, setCachedCaseIds] = useState<string[] | null>(null);
 
   // use current cohort filters (hook)
   const currentCohortFilterSet = useCurrentCohortFilters();
@@ -127,6 +121,22 @@ const IDCViewerWrapper: FC = () => {
         ? convertFilterToGqlFilter(cohortGqlFilters)
         : undefined;
 
+      // Load all GDC case_ids from the new parquet file (via cached IDC data)
+      const { case_ids } = await loadIdcDataIfNeeded();
+
+      // Paginate case_ids for the current page
+      const paged_case_ids = case_ids.slice(from, from + limit);
+
+      const id_filters: GqlOperation = {
+        op: "in",
+        content: {
+          field: "case_id",
+          value: paged_case_ids, // string[]
+        },
+      };
+
+      const extendedFilters = mergeWithAndFilters(caseFiltersArg, id_filters);
+
       addLog(
         `Fetching GDC cases with cohort filters (GQL op): ${JSON.stringify(
           caseFiltersArg || {},
@@ -135,8 +145,8 @@ const IDCViewerWrapper: FC = () => {
       const casesResp = await fetchGdcCasesApi({
         fields: ["submitter_id", "disease_type", "primary_site"],
         size: limit,
-        from,
-        case_filters: caseFiltersArg, // pass converted GqlOperation
+        from: 0, // always start from 0 since we already paginated case_ids
+        case_filters: extendedFilters, // pass converted GqlOperation
         expand: ["samples.portions.slides", "project.program"],
       });
 
@@ -171,7 +181,7 @@ const IDCViewerWrapper: FC = () => {
       addLog("Using cached IDC metadata (already loaded)");
       return {
         idc_data: cachedIdcData,
-        collection_ids: cachedCollectionIds ?? [],
+        case_ids: cachedCaseIds ?? [],
       };
     }
 
@@ -193,12 +203,12 @@ const IDCViewerWrapper: FC = () => {
           reader.readAsText(cachedBlob);
         });
         const parsed = JSON.parse(cachedJSON);
-        setCachedCollectionIds(parsed.collection_ids || []);
+        setCachedCaseIds(parsed.case_ids || []);
         setCachedIdcData(parsed.idc_data || []);
         setProgress("Ready");
         return {
           idc_data: parsed.idc_data || [],
-          collection_ids: parsed.collection_ids || [],
+          case_ids: parsed.case_ids || [],
         };
       } else {
         addLog("Cache miss — fetching parquet via proxy /parquet");
@@ -233,10 +243,10 @@ const IDCViewerWrapper: FC = () => {
 
         const parsed = await readParquetIndex(hyparquet, idc_index_file);
         setCachedIdcData(parsed.idc_data);
-        setCachedCollectionIds(parsed.collection_ids);
+        setCachedCaseIds(parsed.case_ids);
         try {
           const jsonString = JSON.stringify({
-            collection_ids: parsed.collection_ids,
+            case_ids: parsed.case_ids,
             idc_data: parsed.idc_data,
           });
           const jsonBlob = new Blob([jsonString], { type: "application/json" });
@@ -261,10 +271,10 @@ const IDCViewerWrapper: FC = () => {
       });
       const parsed = await readParquetIndex(hyparquet, idc_index_file);
       setCachedIdcData(parsed.idc_data);
-      setCachedCollectionIds(parsed.collection_ids);
+      setCachedCaseIds(parsed.case_ids);
       return parsed;
     }
-  }, [cachedIdcData, cachedCollectionIds]);
+  }, [cachedIdcData, cachedCaseIds]);
 
   // Load a single page of GDC cases (pageIndex starts at 0) and map against IDC data
   const loadPage = useCallback(
@@ -703,5 +713,22 @@ const IDCViewerWrapper: FC = () => {
     </div>
   );
 };
+
+// Utility to merge two GqlOperation filters with "and"
+function mergeWithAndFilters(
+  filterA: GqlOperation,
+  filterB: GqlOperation,
+): GqlOperation {
+  if (filterA.op === "and" && filterB.op === "and") {
+    return { op: "and", content: [...filterA.content, ...filterB.content] };
+  }
+  if (filterA.op === "and") {
+    return { op: "and", content: [...filterA.content, filterB] };
+  }
+  if (filterB.op === "and") {
+    return { op: "and", content: [filterA, ...filterB.content] };
+  }
+  return { op: "and", content: [filterA, filterB] };
+}
 
 export default IDCViewerWrapper;
