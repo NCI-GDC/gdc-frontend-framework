@@ -12,7 +12,6 @@ import {
 // replaced TableView with VerticalTable + helpers
 import VerticalTable from "@/components/Table/VerticalTable";
 import { ColumnDef } from "@tanstack/react-table";
-import TotalItems from "@/components/Table/TotalItem";
 import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
 
 /**
@@ -27,12 +26,14 @@ const SLIM_VIEWER_BASE =
 const CT_VIEWER_BASE =
   "https://viewer.imaging.datacommons.cancer.gov/v3/viewer/";
 
-// Reusable columns list for IDC parquet reads (updated for new format)
+// Reusable columns list for IDC parquet reads (reverted for new format)
 const IDC_PARQUET_COLUMNS = [
   "case_id",
-  "submitter_id",
+  "PatientID",
   "StudyInstanceUID",
-  "modality",
+  "Modality",
+  "StudyDate",
+  "StudyDescription",
 ];
 
 // Helper: read idc_data from a parquet file buffer (updated for new format)
@@ -60,7 +61,6 @@ const IDCViewerWrapper: FC = () => {
   const [progress, setProgress] = useState<string>("Idle");
   const [logs, setLogs] = useState<string[]>([]);
   const [mappings, setMappings] = useState<any[]>([]);
-  // derive GDC total from current cohort counts hook instead of local state
   const cohortCounts = useCurrentCohortCounts();
   const gdcCount = cohortCounts?.data?.caseCount ?? null;
   const [idcCount, setIdcCount] = useState<number | null>(null);
@@ -97,12 +97,6 @@ const IDCViewerWrapper: FC = () => {
   const buildSlimStudyURL = (studyInstanceUID: string) =>
     SLIM_VIEWER_BASE + encodeURIComponent(studyInstanceUID);
 
-  // --- Pagination constants & state ---
-  const DEFAULT_PAGE_SIZE = 500; // default page size per requirement
-  const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
-  const [currentPage, setCurrentPage] = useState<number>(0); // zero-based
-
-  // Cache parsed IDC data in component state so we don't re-download/parse repeatedly
   const [cachedIdcData, setCachedIdcData] = useState<any[] | null>(null);
   const [cachedCaseIds, setCachedCaseIds] = useState<string[] | null>(null);
 
@@ -113,10 +107,9 @@ const IDCViewerWrapper: FC = () => {
     ? filterSetToOperation(currentCohortFilterSet)
     : undefined;
 
-  // Helper: fetch GDC cases (supports limit & from)
-  async function fetchGdcCases(limit = 500, from = 0) {
+  // Helper: fetch GDC cases for a page (pageIndex, pageSize)
+  async function fetchGdcCases(pageSize: number, pageIndex: number) {
     try {
-      // Convert Operation -> GqlOperation expected by fetchGdcCasesApi
       const caseFiltersArg = cohortGqlFilters
         ? convertFilterToGqlFilter(cohortGqlFilters)
         : undefined;
@@ -124,14 +117,12 @@ const IDCViewerWrapper: FC = () => {
       // Load all GDC case_ids from the new parquet file (via cached IDC data)
       const { case_ids } = await loadIdcDataIfNeeded();
 
-      // Paginate case_ids for the current page
-      const paged_case_ids = case_ids.slice(from, from + limit);
-
+      // Pass GDC case ids directly to filters
       const id_filters: GqlOperation = {
         op: "in",
         content: {
           field: "case_id",
-          value: paged_case_ids, // string[]
+          value: case_ids, // string[]
         },
       };
 
@@ -144,7 +135,7 @@ const IDCViewerWrapper: FC = () => {
       );
       const casesResp = await fetchGdcCasesApi({
         fields: ["submitter_id", "disease_type", "primary_site"],
-        size: limit,
+        size: pageSize,
         from: 0, // always start from 0 since we already paginated case_ids
         case_filters: extendedFilters, // pass converted GqlOperation
         expand: ["samples.portions.slides", "project.program"],
@@ -152,23 +143,12 @@ const IDCViewerWrapper: FC = () => {
 
       const hits = casesResp?.data?.hits || [];
 
-      // optional local filtering to ensure slides exist
-      const filteredHits = hits.filter(
-        (hit: any) =>
-          hit.samples &&
-          hit.samples.some(
-            (s: any) =>
-              s.portions &&
-              s.portions.some((p: any) => p.slides && p.slides.length > 0),
-          ),
-      );
-
       addLog(
-        `Fetched ${hits.length} hits; ${filteredHits.length} have slides (from=${from})`,
+        `Fetched ${hits.length} hits (pageIndex=${pageIndex}, pageSize=${pageSize})`,
       );
 
       // return filtered full case objects (we need project.program in mapping)
-      return filteredHits;
+      return hits;
     } catch (e) {
       addLog(`Failed to fetch GDC cases: ${String(e)}`);
       return [];
@@ -276,71 +256,46 @@ const IDCViewerWrapper: FC = () => {
     }
   }, [cachedIdcData, cachedCaseIds]);
 
-  // Load a single page of GDC cases (pageIndex starts at 0) and map against IDC data
+  // Load a single page of GDC cases (pageIndex starts at 0)
   const loadPage = useCallback(
     async (pageIndex: number, pageSizeArg?: number) => {
       try {
-        const ps = pageSizeArg ?? pageSize;
-        setCurrentPage(pageIndex);
         setProgress(`Loading page ${pageIndex}...`);
         addLog(`Loading GDC page ${pageIndex}`);
 
-        const from = pageIndex * ps;
-        // fetch full GDC case objects (with project.program)
-        const gdcCases = await fetchGdcCases(ps, from);
+        const ps = pageSizeArg ?? 10;
+
+        // fetch GDC case objects
+        const gdcCases = await fetchGdcCases(ps, pageIndex);
 
         addLog(
           `Retrieved ${gdcCases.length} GDC case(s) from GDC API (page ${pageIndex})`,
         );
 
-        // Ensure IDC metadata is loaded (only on first call this will do work)
-        const parsed = await loadIdcDataIfNeeded();
-        const idc_data = parsed.idc_data || [];
+        // Load IDC data for mapping
+        const { idc_data } = await loadIdcDataIfNeeded();
 
-        setIdcCount(idc_data.length);
-        addLog(`Using ${idc_data.length} IDC rows for mapping`);
+        // Mapping logic: for each GDC case, find all IDC rows where PatientID matches submitter_id
+        const mappings = gdcCases.map((gdcCase: any) => {
+          const submitterId =
+            gdcCase?.submitter_id ??
+            gdcCase?.case_id ??
+            gdcCase?.case_uuid ??
+            null;
+          // Find all IDC rows with matching PatientID
+          const matches = idc_data.filter(
+            (row: any) =>
+              row.PatientID &&
+              submitterId &&
+              row.PatientID.toString() === submitterId.toString(),
+          );
+          return {
+            gdcCase,
+            matches,
+          };
+        });
 
-        setProgress("Mapping GDC cases → IDC rows...");
-        const results: any[] = [];
-        for (const gc of gdcCases) {
-          // gc is now the full GDC case object (retain project.program)
-          const submitter = gc.submitter_id ?? gc.case_id ?? null;
-          const found: any[] = [];
-
-          if (submitter) {
-            // match by PatientID
-            found.push(
-              ...idc_data.filter((r: any) => r.PatientID === submitter),
-            );
-          }
-
-          if (gc.case_id) {
-            // match columns that may store case ids
-            found.push(
-              ...idc_data.filter(
-                (r: any) =>
-                  r.gdc_case_id === gc.case_id || r.case_id === gc.case_id,
-              ),
-            );
-          }
-
-          // unique
-          const uniq = Array.from(new Set(found));
-          results.push({ gdcCase: gc, matches: uniq });
-        }
-
-        const resultsWithViewer = results.filter(
-          (r) =>
-            Array.isArray(r.matches) &&
-            r.matches.length > 0 &&
-            r.matches.some((m: any) => !!m.series_aws_url),
-        );
-
-        addLog(
-          `Page ${pageIndex} mapping complete: ${resultsWithViewer.length} GDC case(s) with >=1 IDC match that has a viewer link`,
-        );
-
-        setMappings(resultsWithViewer);
+        setMappings(mappings);
         setProgress("Ready");
       } catch (err: any) {
         addLog(
@@ -349,12 +304,12 @@ const IDCViewerWrapper: FC = () => {
         setProgress("Error");
       }
     },
-    [loadIdcDataIfNeeded, pageSize],
+    [loadIdcDataIfNeeded],
   );
 
   // Auto-load only the initial page (page 0) on mount
   useEffect(() => {
-    loadPage(0, pageSize);
+    loadPage(0, 10);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -375,20 +330,22 @@ const IDCViewerWrapper: FC = () => {
           typeof obj.newPageSize === "string"
             ? parseInt(obj.newPageSize)
             : obj.newPageSize;
-        setPageSize(newSize);
         // reload first page when page size changes
         loadPage(0, newSize);
         return;
       }
       if (obj.newPageNumber !== undefined) {
         const pageIndex = Math.max(0, obj.newPageNumber - 1);
-        loadPage(pageIndex, pageSize);
+        // Use current page size from pagination (default to 10)
+        loadPage(pageIndex);
       }
     },
-    [loadPage, pageSize],
+    [loadPage],
   );
 
-  // Build pagination object for VerticalTable / TablePagination
+  // Build pagination object for VerticalTable / TablePagination (reuse CasesView logic)
+  const [pageSize, setPageSize] = useState(10);
+  const [currentPage, setCurrentPage] = useState(0);
   const totalPages = gdcCount ? Math.max(0, Math.ceil(gdcCount / pageSize)) : 0;
   const pagination = {
     size: pageSize,
@@ -406,8 +363,6 @@ const IDCViewerWrapper: FC = () => {
       className="idc-viewer-wrapper-root"
       style={{ padding: 12 }}
     >
-      <h2>IDCViewer — GDC ↔ IDC mappings</h2>
-
       <div style={{ marginTop: 12 }}>
         <div style={{ maxHeight: 460, overflow: "auto" }}>
           {/* VerticalTable-based view (replaces TableView */}
@@ -436,23 +391,18 @@ const IDCViewerWrapper: FC = () => {
                 if (!studiesMap.has(studyId)) {
                   studiesMap.set(studyId, {
                     StudyInstanceUID: r?.StudyInstanceUID ?? null,
-                    StudyDate: r?.StudyDate ?? null,
-                    StudyDescription: r?.StudyDescription ?? null,
                     series: [],
                     hasWSI: false,
                     hasRadiology: false,
+                    StudyDate: r?.StudyDate ?? null,
+                    StudyDescription: r?.StudyDescription ?? null,
                   });
                 }
                 const st = studiesMap.get(studyId);
                 st.series.push(r);
                 const mod = (r?.Modality ?? "").toString().trim().toUpperCase();
-                if (mod === "SM") st.hasWSI = true;
-                else if (["CT", "MRI", "PET"].includes(mod))
-                  st.hasRadiology = true;
-                else if (mod) st.hasRadiology = true;
-                if (!st.StudyDate && r?.StudyDate) st.StudyDate = r.StudyDate;
-                if (!st.StudyDescription && r?.StudyDescription)
-                  st.StudyDescription = r.StudyDescription;
+                if (mod === "WSI") st.hasWSI = true;
+                if (mod === "CT") st.hasRadiology = true;
               });
 
               const studiesList = Array.from(studiesMap.values());
@@ -476,11 +426,8 @@ const IDCViewerWrapper: FC = () => {
                 programName,
                 studiesList,
                 studiesCount: studiesList.length,
-                firstStudyDate: studiesList[0]?.StudyDate ?? null,
-                firstStudyDescription: studiesList[0]?.StudyDescription ?? null,
                 firstWsiLink,
                 firstRadioLink,
-                // keep original for deep references if needed
                 _originalMapping: m,
               };
             });
@@ -516,18 +463,6 @@ const IDCViewerWrapper: FC = () => {
                     />
                   );
                 },
-              },
-              {
-                id: "studyDate",
-                accessorFn: (row) => row.firstStudyDate,
-                header: "IDC StudyDate",
-                cell: (info) => info.getValue() ?? "(/)",
-              },
-              {
-                id: "studyDescription",
-                accessorFn: (row) => row.firstStudyDescription,
-                header: "IDC StudyDescription",
-                cell: (info) => info.getValue() ?? "(/)",
               },
               {
                 id: "wsi",
@@ -616,11 +551,9 @@ const IDCViewerWrapper: FC = () => {
                             <td style={{ padding: 6, wordBreak: "break-all" }}>
                               {s.StudyInstanceUID ?? "(/)"}
                             </td>
+                            <td style={{ padding: 6 }}>{s.StudyDate ?? "-"}</td>
                             <td style={{ padding: 6 }}>
-                              {s.StudyDate ?? "(/)"}
-                            </td>
-                            <td style={{ padding: 6, wordBreak: "break-all" }}>
-                              {s.StudyDescription ?? "(/)"}
+                              {s.StudyDescription ?? "-"}
                             </td>
                             <td style={{ padding: 6 }}>
                               {wsiLink ? (
@@ -664,13 +597,6 @@ const IDCViewerWrapper: FC = () => {
                 columns={columns}
                 data={tableData}
                 tableTitle={undefined}
-                tableTotalDetail={
-                  <TotalItems
-                    total={idcCount}
-                    itemName="study"
-                    pluralName="study"
-                  />
-                }
                 // expansion control
                 getRowCanExpand={(row: any) =>
                   Array.isArray(row.original?.studiesList) &&
