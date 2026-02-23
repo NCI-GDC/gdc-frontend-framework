@@ -60,6 +60,7 @@
     "@mocks-server/main": "^4.1.0",
     "@next/eslint-plugin-next": "^12.1.5",
     "@svgr/webpack": "^8.0.1",
+    "@swc/core": "1.9.2",
     "@types/file-saver": "^2.0.5",
     "@types/isomorphic-fetch": "^0.0.35",
     "@types/jest": "^29.5.14",
