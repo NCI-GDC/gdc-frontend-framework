@@ -1,5 +1,12 @@
 // File: `packages/portal-proto/src/features/proteinpaint/IDCViewerWrapper.tsx`
-import React, { FC, useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  FC,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+} from "react";
 import {
   PROTEINPAINT_API,
   fetchGdcCases as fetchGdcCasesApi,
@@ -13,6 +20,7 @@ import {
 import VerticalTable from "@/components/Table/VerticalTable";
 import { ColumnDef } from "@tanstack/react-table";
 import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
+import useStandardPagination from "@/hooks/useStandardPagination";
 
 /**
  * Cleaned IDCViewerWrapper:
@@ -256,60 +264,80 @@ const IDCViewerWrapper: FC = () => {
     }
   }, [cachedIdcData, cachedCaseIds]);
 
-  // Load a single page of GDC cases (pageIndex starts at 0)
-  const loadPage = useCallback(
-    async (pageIndex: number, pageSizeArg?: number) => {
-      try {
-        setProgress(`Loading page ${pageIndex}...`);
-        addLog(`Loading GDC page ${pageIndex}`);
+  // --- NEW: fetch all matching GDC cases in chunks and build mappings once ---
+  const fetchAllGdcCasesAndMap = useCallback(async () => {
+    try {
+      setProgress("Loading all matching GDC cases...");
+      addLog("Preparing to fetch all matching GDC cases");
 
-        const ps = pageSizeArg ?? 10;
+      const caseFiltersArg = cohortGqlFilters
+        ? convertFilterToGqlFilter(cohortGqlFilters)
+        : undefined;
 
-        // fetch GDC case objects
-        const gdcCases = await fetchGdcCases(ps, pageIndex);
+      // ensure IDC data is loaded to get case_ids
+      const { idc_data, case_ids } = await loadIdcDataIfNeeded();
 
-        addLog(
-          `Retrieved ${gdcCases.length} GDC case(s) from GDC API (page ${pageIndex})`,
+      const id_filters: GqlOperation = {
+        op: "in",
+        content: {
+          field: "case_id",
+          value: case_ids,
+        },
+      };
+
+      const extendedFilters = caseFiltersArg
+        ? mergeWithAndFilters(caseFiltersArg, id_filters)
+        : id_filters;
+
+      addLog(
+        `Fetching all GDC cases with cohort filters (GQL op): ${JSON.stringify(
+          caseFiltersArg || {},
+        )} and ${String(case_ids.length)} IDC case_ids`,
+      );
+
+      // Fetch all matching GDC cases in a single request (request size = number of case_ids)
+      const resp = await fetchGdcCasesApi({
+        fields: ["submitter_id", "disease_type", "primary_site", "project"],
+        size: case_ids.length,
+        from: 0,
+        case_filters: extendedFilters,
+        expand: ["samples.portions.slides", "project.program"],
+      });
+      const allHits: any[] = resp?.data?.hits || [];
+      addLog(`Fetched ${allHits.length} hits`);
+
+      addLog(`Total GDC cases fetched: ${allHits.length}`);
+
+      // build mappings from allHits and idc_data
+      const mappings = allHits.map((gdcCase: any) => {
+        const submitterId =
+          gdcCase?.submitter_id ??
+          gdcCase?.case_id ??
+          gdcCase?.case_uuid ??
+          null;
+        const matches = idc_data.filter(
+          (row: any) =>
+            row.PatientID &&
+            submitterId &&
+            row.PatientID.toString() === submitterId.toString(),
         );
+        return {
+          gdcCase,
+          matches,
+        };
+      });
 
-        // Load IDC data for mapping
-        const { idc_data } = await loadIdcDataIfNeeded();
+      setMappings(mappings);
+      setProgress("Ready");
+    } catch (err: any) {
+      addLog(`Failed to fetch GDC cases: ${err?.message ?? String(err)}`);
+      setProgress("Error");
+    }
+  }, [cohortGqlFilters, loadIdcDataIfNeeded]);
 
-        // Mapping logic: for each GDC case, find all IDC rows where PatientID matches submitter_id
-        const mappings = gdcCases.map((gdcCase: any) => {
-          const submitterId =
-            gdcCase?.submitter_id ??
-            gdcCase?.case_id ??
-            gdcCase?.case_uuid ??
-            null;
-          // Find all IDC rows with matching PatientID
-          const matches = idc_data.filter(
-            (row: any) =>
-              row.PatientID &&
-              submitterId &&
-              row.PatientID.toString() === submitterId.toString(),
-          );
-          return {
-            gdcCase,
-            matches,
-          };
-        });
-
-        setMappings(mappings);
-        setProgress("Ready");
-      } catch (err: any) {
-        addLog(
-          `Error loading page ${pageIndex}: ${err?.message ?? String(err)}`,
-        );
-        setProgress("Error");
-      }
-    },
-    [loadIdcDataIfNeeded],
-  );
-
-  // Auto-load only the initial page (page 0) on mount
+  // Auto-load all cases+mapping once on mount
   useEffect(() => {
-    loadPage(0, 10);
+    fetchAllGdcCasesAndMap();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -322,7 +350,149 @@ const IDCViewerWrapper: FC = () => {
     };
   }, []);
 
-  // Handler passed to TablePagination via VerticalTable
+  // derive tableData from mappings (convert mapping -> table row objects)
+  const tableData = useMemo(() => {
+    return (mappings || []).map((m) => {
+      const caseId =
+        m.gdcCase?.submitter_id ??
+        m.gdcCase?.case_id ??
+        m.gdcCase?.case_uuid ??
+        "(no id)";
+      const programName = m.gdcCase?.project?.program?.name ?? "(no program)";
+
+      // group rows by StudyInstanceUID
+      const studiesMap = new Map();
+      (m.matches || []).forEach((r: any) => {
+        const studyId = r?.StudyInstanceUID ?? "__NO_STUDY__";
+        if (!studiesMap.has(studyId)) {
+          studiesMap.set(studyId, {
+            StudyInstanceUID: r?.StudyInstanceUID ?? null,
+            series: [],
+            hasWSI: false,
+            hasRadiology: false,
+            StudyDate: r?.StudyDate ?? null,
+            StudyDescription: r?.StudyDescription ?? null,
+          });
+        }
+        const st = studiesMap.get(studyId);
+        st.series.push(r);
+        const mod = (r?.Modality ?? "").toString().trim().toUpperCase();
+        if (mod === "WSI") st.hasWSI = true;
+        if (mod === "CT") st.hasRadiology = true;
+      });
+
+      const studiesList = Array.from(studiesMap.values());
+
+      // derive quick-first-links for compact cells
+      const firstStudyWithWSI = studiesList.find((s) => s.hasWSI);
+      const firstStudyWithRadio = studiesList.find((s) => s.hasRadiology);
+      const firstWsiLink = firstStudyWithWSI?.StudyInstanceUID
+        ? buildSlimStudyURL(firstStudyWithWSI.StudyInstanceUID)
+        : null;
+      const firstRadioLink = firstStudyWithRadio?.StudyInstanceUID
+        ? CT_VIEWER_BASE +
+          "?StudyInstanceUIDs=" +
+          encodeURIComponent(firstStudyWithRadio.StudyInstanceUID)
+        : null;
+
+      return {
+        caseId,
+        programName,
+        studiesList,
+        studiesCount: studiesList.length,
+        firstWsiLink,
+        firstRadioLink,
+        _originalMapping: m,
+      };
+    });
+  }, [mappings]);
+
+  // prepare columns (kept same as before) so hook can use column meta for sorting if needed
+  const columns: ColumnDef<any>[] = useMemo(
+    () => [
+      {
+        id: "caseId",
+        accessorFn: (row) => row.caseId,
+        header: "GDC caseId",
+        cell: (info) => info.getValue(),
+      },
+      {
+        id: "program",
+        accessorFn: (row) => row.programName,
+        header: "Program",
+        cell: (info) => info.getValue(),
+      },
+      {
+        id: "matches",
+        accessorFn: (row) =>
+          row.studiesList.map((s) => s.StudyInstanceUID ?? "(/)"),
+        header: "IDC StudyInstanceUUID",
+        cell: (info) => {
+          const arr = info.getValue() as string[];
+          // Render the compact expand/collapse indicator (reuse ExpandRowComponent)
+          return (
+            <ExpandRowComponent
+              isRowExpanded={info.row.getIsExpanded()}
+              value={arr}
+              isColumnExpanded={true}
+              title="study"
+            />
+          );
+        },
+      },
+      {
+        id: "wsi",
+        accessorFn: (row) => row.firstWsiLink,
+        header: "WSI link",
+        cell: (info) =>
+          info.getValue() ? (
+            <a
+              href={info.getValue().toString()}
+              target="_blank"
+              rel="noreferrer"
+              onClick={(e) => e.stopPropagation()}
+            >
+              Open study
+            </a>
+          ) : (
+            <span style={{ color: "#666" }}>-</span>
+          ),
+      },
+      {
+        id: "radiology",
+        accessorFn: (row) => row.firstRadioLink,
+        header: "Radiology Link",
+        cell: (info) =>
+          info.getValue() ? (
+            <a
+              href={info.getValue().toString()}
+              target="_blank"
+              rel="noreferrer"
+              onClick={(e) => e.stopPropagation()}
+            >
+              Open study
+            </a>
+          ) : (
+            <span style={{ color: "#666" }}>-</span>
+          ),
+      },
+    ],
+    [],
+  );
+
+  // Use client-side pagination hook (reads page size from VerticalTable via handleChange)
+  const {
+    handlePageChange,
+    handlePageSizeChange,
+    page,
+    pages,
+    size,
+    from,
+    total,
+    displayedData,
+  } = useStandardPagination(tableData, columns);
+
+  // map VerticalTable handleChange to hook handlers
   const handleTableChange = useCallback(
     (obj: { newPageNumber?: number; newPageSize?: string | number }) => {
       if (obj.newPageSize !== undefined) {
@@ -330,29 +500,23 @@ const IDCViewerWrapper: FC = () => {
           typeof obj.newPageSize === "string"
             ? parseInt(obj.newPageSize)
             : obj.newPageSize;
-        // reload first page when page size changes
-        loadPage(0, newSize);
+        handlePageSizeChange(String(newSize));
         return;
       }
       if (obj.newPageNumber !== undefined) {
-        const pageIndex = Math.max(0, obj.newPageNumber - 1);
-        // Use current page size from pagination (default to 10)
-        loadPage(pageIndex);
+        handlePageChange(obj.newPageNumber);
       }
     },
-    [loadPage],
+    [handlePageChange, handlePageSizeChange],
   );
 
-  // Build pagination object for VerticalTable / TablePagination (reuse CasesView logic)
-  const [pageSize, setPageSize] = useState(10);
-  const [currentPage, setCurrentPage] = useState(0);
-  const totalPages = gdcCount ? Math.max(0, Math.ceil(gdcCount / pageSize)) : 0;
+  // Build pagination object for VerticalTable / TablePagination using hook values
   const pagination = {
-    size: pageSize,
-    page: currentPage + 1, // TablePagination expects 1-based page
-    pages: totalPages,
-    from: currentPage * pageSize + 1,
-    total: gdcCount ?? undefined,
+    size,
+    page,
+    pages,
+    from: from + 1,
+    total,
     label: "study",
     customPluralLabel: "study",
   };
@@ -366,142 +530,7 @@ const IDCViewerWrapper: FC = () => {
       <div style={{ marginTop: 12 }}>
         <div style={{ maxHeight: 460, overflow: "auto" }}>
           {/* VerticalTable-based view (replaces TableView */}
-          {/*
-            Build the table columns and data from `mappings`.
-            We preserve expand/collapse by:
-              - using getRowId -> caseId
-              - passing `expanded` as object derived from expandedCases
-              - passing setExpanded which toggles the Set via toggleExpanded
-          */}
           {(() => {
-            // prepare table data
-            const tableData = (mappings || []).map((m) => {
-              const caseId =
-                m.gdcCase?.submitter_id ??
-                m.gdcCase?.case_id ??
-                m.gdcCase?.case_uuid ??
-                "(no id)";
-              const programName =
-                m.gdcCase?.project?.program?.name ?? "(no program)";
-
-              // group rows by StudyInstanceUID
-              const studiesMap = new Map();
-              (m.matches || []).forEach((r: any) => {
-                const studyId = r?.StudyInstanceUID ?? "__NO_STUDY__";
-                if (!studiesMap.has(studyId)) {
-                  studiesMap.set(studyId, {
-                    StudyInstanceUID: r?.StudyInstanceUID ?? null,
-                    series: [],
-                    hasWSI: false,
-                    hasRadiology: false,
-                    StudyDate: r?.StudyDate ?? null,
-                    StudyDescription: r?.StudyDescription ?? null,
-                  });
-                }
-                const st = studiesMap.get(studyId);
-                st.series.push(r);
-                const mod = (r?.Modality ?? "").toString().trim().toUpperCase();
-                if (mod === "WSI") st.hasWSI = true;
-                if (mod === "CT") st.hasRadiology = true;
-              });
-
-              const studiesList = Array.from(studiesMap.values());
-
-              // derive quick-first-links for compact cells
-              const firstStudyWithWSI = studiesList.find((s) => s.hasWSI);
-              const firstStudyWithRadio = studiesList.find(
-                (s) => s.hasRadiology,
-              );
-              const firstWsiLink = firstStudyWithWSI?.StudyInstanceUID
-                ? buildSlimStudyURL(firstStudyWithWSI.StudyInstanceUID)
-                : null;
-              const firstRadioLink = firstStudyWithRadio?.StudyInstanceUID
-                ? CT_VIEWER_BASE +
-                  "?StudyInstanceUIDs=" +
-                  encodeURIComponent(firstStudyWithRadio.StudyInstanceUID)
-                : null;
-
-              return {
-                caseId,
-                programName,
-                studiesList,
-                studiesCount: studiesList.length,
-                firstWsiLink,
-                firstRadioLink,
-                _originalMapping: m,
-              };
-            });
-
-            // columns
-            const columns: ColumnDef<any>[] = [
-              {
-                id: "caseId",
-                accessorFn: (row) => row.caseId,
-                header: "GDC caseId",
-                cell: (info) => info.getValue(),
-              },
-              {
-                id: "program",
-                accessorFn: (row) => row.programName,
-                header: "Program",
-                cell: (info) => info.getValue(),
-              },
-              {
-                id: "matches",
-                accessorFn: (row) =>
-                  row.studiesList.map((s) => s.StudyInstanceUID ?? "(/)"),
-                header: "IDC StudyInstanceUUID",
-                cell: (info) => {
-                  const arr = info.getValue() as string[];
-                  // Render the compact expand/collapse indicator (reuse ExpandRowComponent)
-                  return (
-                    <ExpandRowComponent
-                      isRowExpanded={info.row.getIsExpanded()}
-                      value={arr}
-                      isColumnExpanded={true}
-                      title="study"
-                    />
-                  );
-                },
-              },
-              {
-                id: "wsi",
-                accessorFn: (row) => row.firstWsiLink,
-                header: "WSI link",
-                cell: (info) =>
-                  info.getValue() ? (
-                    <a
-                      href={info.getValue().toString()}
-                      target="_blank"
-                      rel="noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      Open study
-                    </a>
-                  ) : (
-                    <span style={{ color: "#666" }}>-</span>
-                  ),
-              },
-              {
-                id: "radiology",
-                accessorFn: (row) => row.firstRadioLink,
-                header: "Radiology Link",
-                cell: (info) =>
-                  info.getValue() ? (
-                    <a
-                      href={info.getValue().toString()}
-                      target="_blank"
-                      rel="noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      Open study
-                    </a>
-                  ) : (
-                    <span style={{ color: "#666" }}>-</span>
-                  ),
-              },
-            ];
-
             // renderSubComponent: show detailed studies list for expanded row
             const renderSubComponent = ({ row }: any) => {
               const studies = row.original.studiesList as any[];
@@ -595,7 +624,7 @@ const IDCViewerWrapper: FC = () => {
             return (
               <VerticalTable
                 columns={columns}
-                data={tableData}
+                data={displayedData}
                 tableTitle={undefined}
                 // expansion control
                 getRowCanExpand={(row: any) =>
