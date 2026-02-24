@@ -1,11 +1,11 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {
+  createAsyncThunk,
+  createSlice,
+  createSelector,
+} from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
 import { GDC_API } from "../../constants";
-import {
-  CoreDataSelectorResponse,
-  createUseCoreDataHook,
-  DataStatus,
-} from "../../dataAccess";
+import { createUseCoreDataHook, DataStatus } from "../../dataAccess";
 import { CoreState } from "../../reducers";
 
 export interface VersionInfoResponse {
@@ -73,14 +73,12 @@ const slice = createSlice({
 
 export const versionInfoReducer = slice.reducer;
 
-export const selectVersionInfo = (
-  state: CoreState,
-): CoreDataSelectorResponse<VersionInfoResponse> => {
-  return {
-    data: state.versionInfo.data,
-    status: state.versionInfo.status,
-  };
-};
+const selectVersion = (state: CoreState) => state.versionInfo;
+
+export const selectVersionInfo = createSelector([selectVersion], (version) => ({
+  data: version.data,
+  status: version.status,
+}));
 
 export const useVersionInfoDetails = createUseCoreDataHook(
   fetchVersionInfo,

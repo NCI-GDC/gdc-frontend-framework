@@ -7,6 +7,7 @@ import {
   createAsyncThunk,
   ThunkAction,
   UnknownAction,
+  createSelector,
 } from "@reduxjs/toolkit";
 import { CoreState } from "../../reducers";
 import { buildCohortGqlOperator, FilterSet } from "./filters";
@@ -488,15 +489,25 @@ export const cohortSelectors = cohortsAdapter.getSelectors(
 );
 
 /**
- * Returns all the cohorts in the state
+ * Returns an array of all the cohorts
+ * @param state - the CoreState
+ * @category Cohort
+ * @category Selectors
+ */
+export const selectAllCohorts = (state: CoreState): Cohort[] =>
+  cohortSelectors.selectAll(state);
+
+/**
+ * Returns all the available cohorts in the state
  * @param state - the CoreState
  *
  * @category Cohort
  * @category Selectors
  */
-
-export const selectAvailableCohorts = (state: CoreState): Cohort[] =>
-  cohortSelectors.selectAll(state).filter((cohort) => !cohort.removed);
+export const selectAvailableCohorts = createSelector(
+  [selectAllCohorts],
+  (cohorts) => cohorts.filter((cohort) => !cohort.removed),
+);
 
 /**
  * Returns the current cohort id
@@ -611,6 +622,9 @@ export const selectCohortNameById = (
   return cohort?.name;
 };
 
+const selectCohortById = (state: CoreState, cohortId: string): Cohort =>
+  cohortSelectors.selectById(state, cohortId);
+
 /**
  * Returns the cohort's filters given an id
  * This includes the `isLoggedIn` state to ensure fresh data is fetched
@@ -621,16 +635,14 @@ export const selectCohortNameById = (
  * @category Selectors
  *
  */
-export const selectCohortFilterSetById = (
-  state: CoreState,
-  cohortId: string,
-): FilterSet | undefined => {
-  const isLoggedIn = state.cohort.availableCohorts.isLoggedIn;
-  const cohort = cohortSelectors.selectById(state, cohortId);
-  if (cohort === undefined)
-    return { mode: "and", root: {}, isLoggedIn: isLoggedIn };
-  return { ...cohort.filters, isLoggedIn: isLoggedIn };
-};
+export const selectCohortFilterSetById = createSelector(
+  [selectCohortIsLoggedIn, selectCohortById],
+  (isLoggedIn, cohort) => {
+    if (cohort === undefined)
+      return { mode: "and", root: {}, isLoggedIn: isLoggedIn };
+    return { ...cohort.filters, isLoggedIn: isLoggedIn };
+  },
+);
 
 /**
  * Returns the currentCohortFilters as a GqlOperation
@@ -657,16 +669,15 @@ export const selectCurrentCohortGqlFilters = (
  * @category Cohort
  * @category Selectors
  */
-export const selectCurrentCohortFilters = (state: CoreState): FilterSet => {
-  const isLoggedIn = state.cohort.availableCohorts.isLoggedIn;
-  const cohort = cohortSelectors.selectById(
-    state,
-    getCurrentCohortFromCoreState(state),
-  );
-  if (cohort === undefined)
-    return { mode: "and", root: {}, isLoggedIn: isLoggedIn };
-  return { ...cohort.filters, isLoggedIn: isLoggedIn };
-};
+
+export const selectCurrentCohortFilters = createSelector(
+  [selectCohortIsLoggedIn, selectCurrentCohort],
+  (isLoggedIn, cohort) => {
+    if (cohort === undefined)
+      return { mode: "and", root: {}, isLoggedIn: isLoggedIn };
+    return { ...cohort.filters, isLoggedIn: isLoggedIn };
+  },
+);
 
 /**
  * Select a filter by its name from the current cohort. If the filter is not found
@@ -699,21 +710,17 @@ export const selectCurrentCohortCaseCount = (
   cohortSelectors.selectById(state, getCurrentCohortFromCoreState(state))
     ?.counts.caseCount;
 
-export const selectCurrentCohortFiltersByNames = (
-  state: CoreState,
-  names: ReadonlyArray<string>,
-): Record<string, Operation> => {
-  const cohort = cohortSelectors.selectById(
-    state,
-    getCurrentCohortFromCoreState(state),
-  );
-
-  // TODO replace with memoized selector
-  return names.reduce((obj, name) => {
-    if (cohort?.filters?.root[name]) obj[name] = cohort?.filters?.root[name];
-    return obj;
-  }, {} as Record<string, Operation>);
-};
+export const selectCurrentCohortFiltersByNames = createSelector(
+  [
+    selectCurrentCohort,
+    (_state: CoreState, names: ReadonlyArray<string>) => names,
+  ],
+  (cohort, names) =>
+    names.reduce((obj, name) => {
+      if (cohort?.filters?.root[name]) obj[name] = cohort?.filters?.root[name];
+      return obj;
+    }, {} as Record<string, Operation>),
+);
 
 /**
  * Returns the current caseSetId filter representing the cohort
@@ -776,32 +783,26 @@ export const selectMultipleCohortsByIdOrName = (
     .map((cohort) => selectCohortByIdOrName(state, cohort.id, cohort.name))
     .filter((cohort) => cohort !== undefined && !cohort?.removed);
 
-/**
- * Returns an array of all the cohorts
- * @param state - the CoreState
- * @category Cohort
- * @category Selectors
- */
-export const selectAllCohorts = (state: CoreState): Cohort[] =>
-  cohortSelectors.selectAll(state);
-
-export const selectCohortCountsResults = (
-  state: CoreState,
-  cohortId: CohortId = getCurrentCohortFromCoreState(state),
-): CoreDataSelectorResponse<CountsData> => {
-  return {
-    data: cohortSelectors.selectById(state, cohortId)?.counts ?? NullCountsData,
-    status:
-      cohortSelectors.selectById(state, cohortId)?.counts?.status ??
-      NullCountsData.status,
-  };
-};
-
 export const selectCohortCounts = (
   state: CoreState,
   cohortId: CohortId = getCurrentCohortFromCoreState(state),
 ): CountsDataAndStatus =>
   cohortSelectors.selectById(state, cohortId)?.counts ?? NullCountsData;
+
+export const selectCohortCountsStatus = (
+  state: CoreState,
+  cohortId: CohortId = getCurrentCohortFromCoreState(state),
+) =>
+  cohortSelectors.selectById(state, cohortId)?.counts?.status ??
+  NullCountsData.status;
+
+export const selectCohortCountsResults = createSelector(
+  [selectCohortCounts, selectCohortCountsStatus],
+  (counts, status) => ({
+    data: counts,
+    status,
+  }),
+);
 
 export const selectCohortCountsByName = (
   state: CoreState,

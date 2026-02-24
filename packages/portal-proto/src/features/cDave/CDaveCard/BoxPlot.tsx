@@ -11,6 +11,7 @@ import {
   Box as VictoryBox,
   BoxProps,
   VictoryContainer,
+  LabelProps,
 } from "victory";
 import tailwindConfig from "tailwind.config";
 
@@ -43,6 +44,8 @@ const CustomQ3 = (props: BoxProps) => {
     </>
   );
 };
+
+const EmptyLabel = (props: LabelProps) => <></>;
 
 interface BoxPlotTooltipProps {
   readonly visible: boolean;
@@ -167,11 +170,11 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
           median: { strokeWidth: 1.5 },
         }}
         boxWidth={40}
-        minLabelComponent={<></>}
-        maxLabelComponent={<></>}
-        q1LabelComponent={<></>}
-        q3LabelComponent={<></>}
-        medianLabelComponent={<></>}
+        minLabelComponent={<EmptyLabel />}
+        maxLabelComponent={<EmptyLabel />}
+        q1LabelComponent={<EmptyLabel />}
+        q3LabelComponent={<EmptyLabel />}
+        medianLabelComponent={<EmptyLabel />}
         q1Component={<CustomQ1 />}
         q3Component={<CustomQ3 />}
         data={[

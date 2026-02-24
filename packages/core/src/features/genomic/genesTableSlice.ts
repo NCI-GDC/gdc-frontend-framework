@@ -1,9 +1,9 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
-  CoreDataSelectorResponse,
-  createUseFiltersCoreDataHook,
-  DataStatus,
-} from "../../dataAccess";
+  createAsyncThunk,
+  createSelector,
+  createSlice,
+} from "@reduxjs/toolkit";
+import { createUseFiltersCoreDataHook, DataStatus } from "../../dataAccess";
 import { castDraft } from "immer";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
@@ -514,15 +514,16 @@ export const genesTableReducer = slice.reducer;
 export const selectGenesTableState = (state: CoreState): GDCGenesTable =>
   state.genomic.genesTable.genes;
 
-export const selectGenesTableData = (
-  state: CoreState,
-): CoreDataSelectorResponse<GenesTableState> => {
-  return {
-    data: state.genomic.genesTable,
-    status: state.genomic.genesTable.status,
-    error: state.genomic.genesTable.error,
-  };
-};
+const selectGenesTableResponse = (state: CoreState) => state.genomic;
+
+export const selectGenesTableData = createSelector(
+  [selectGenesTableResponse],
+  (response) => ({
+    data: response.genesTable,
+    status: response.genesTable.status,
+    error: response.genesTable.error,
+  }),
+);
 
 export const useGenesTable = createUseFiltersCoreDataHook(
   fetchGenesTable,

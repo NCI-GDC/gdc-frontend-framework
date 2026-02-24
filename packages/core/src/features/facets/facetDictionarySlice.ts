@@ -1,11 +1,14 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {
+  createAsyncThunk,
+  createSelector,
+  createSlice,
+} from "@reduxjs/toolkit";
 import { GraphQLFetchError } from "../gdcapi/gdcgraphql";
 import { FacetDefinition } from "./types";
 import { CoreDispatch } from "../../store";
 import { CoreState } from "../../reducers";
 import {
   CoreDataSelector,
-  CoreDataSelectorResponse,
   DataStatus,
   FetchDataActionCreator,
   UseCoreDataResponse,
@@ -92,15 +95,16 @@ const facetDictionary = createSlice({
 
 export const facetDictionaryReducer = facetDictionary.reducer;
 
-export const selectFacetDefinition = (
-  state: CoreState,
-): CoreDataSelectorResponse<Record<string, FacetDefinition>> => {
-  return {
-    data: state.facetsGQL.dictionary.entries,
-    status: state.facetsGQL.dictionary.status,
-    error: state.facetsGQL.dictionary.error,
-  };
-};
+const selectFacetDictionary = (state: CoreState) => state.facetsGQL.dictionary;
+
+export const selectFacetDefinition = createSelector(
+  [selectFacetDictionary],
+  (dictionary) => ({
+    data: dictionary.entries,
+    status: dictionary.status,
+    error: dictionary.error,
+  }),
+);
 
 export const selectFacetDefinitionByName = (
   state: CoreState,
@@ -109,16 +113,20 @@ export const selectFacetDefinitionByName = (
   return state.facetsGQL.dictionary.entries?.[field];
 };
 
-export const selectFacetDefinitionsByName = (
-  state: CoreState,
-  fields: ReadonlyArray<string>,
-): ReadonlyArray<FacetDefinition> => {
-  return fields.flatMap((field) => {
-    if (field in state.facetsGQL.dictionary.entries)
-      return [state.facetsGQL.dictionary.entries[field]];
-    else return [];
-  });
-};
+const selectFacetDictionaryEntries = (state: CoreState) =>
+  state.facetsGQL.dictionary.entries;
+
+export const selectFacetDefinitionsByName = createSelector(
+  [
+    selectFacetDictionaryEntries,
+    (_state: CoreState, fields: ReadonlyArray<string>) => fields,
+  ],
+  (entries, fields) =>
+    fields.flatMap((field) => {
+      if (field in entries) return [entries[field]];
+      else return [];
+    }),
+);
 
 const createUseDictionaryHook = <P, C, A, T>(
   fetchDataActionCreator: FetchDataActionCreator<P, C, A>,
