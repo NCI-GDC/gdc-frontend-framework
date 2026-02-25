@@ -120,6 +120,7 @@ describe("ClinicalSurvivalPlot", () => {
                   },
                 },
               ],
+              isLoggedIn: true,
             },
             {
               op: "=",
@@ -144,6 +145,7 @@ describe("ClinicalSurvivalPlot", () => {
                   },
                 },
               ],
+              isLoggedIn: true,
             },
             {
               op: "=",
