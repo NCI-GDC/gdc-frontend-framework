@@ -15,10 +15,11 @@ import {
   convertFilterToGqlFilter, // added: convert Operation -> GqlOperation
   useCurrentCohortCounts,
   GqlOperation, // added hook to get cohort case count
+  SortBy, // keep SortBy type import
 } from "@gff/core";
 // replaced TableView with VerticalTable + helpers
 import VerticalTable from "@/components/Table/VerticalTable";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, SortingState } from "@tanstack/react-table"; // <-- added SortingState
 import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
 import useStandardPagination from "@/hooks/useStandardPagination";
 
@@ -130,12 +131,31 @@ const IDCViewerWrapper: FC = () => {
     null,
   );
 
+  // --- NEW: sorting state (tanstack) — user interactions will update this ---
+  const [sorting, setSorting] = useState<SortingState>([
+    { id: "caseId", desc: false },
+  ]);
+
   // use current cohort filters (hook)
   const currentCohortFilterSet = useCurrentCohortFilters();
-  // convert FilterSet -> Operation (internal representation)
-  const cohortGqlFilters = currentCohortFilterSet
-    ? filterSetToOperation(currentCohortFilterSet)
-    : undefined;
+
+  // Convert FilterSet -> Operation, but derive it from a stable JSON key so the
+  // effect below doesn't retrigger due to changing object identities from the hook.
+  const cohortFiltersKey = useMemo(
+    () => JSON.stringify(currentCohortFilterSet ?? null),
+    [currentCohortFilterSet],
+  );
+  const cohortGqlFilters = useMemo(
+    () =>
+      cohortFiltersKey && cohortFiltersKey !== "null"
+        ? filterSetToOperation(currentCohortFilterSet as any)
+        : undefined,
+    // rely on the stable JSON key so this only changes when filter contents change
+    [cohortFiltersKey, currentCohortFilterSet],
+  );
+
+  // guard against concurrent/overlapping fetches
+  const fetchInProgressRef = useRef(false);
 
   // Helper: ensure IDC metadata is loaded and cached in component state (only does work once)
   const loadIdcDataIfNeeded = useCallback(async () => {
@@ -235,8 +255,28 @@ const IDCViewerWrapper: FC = () => {
     }
   }, [cachedIdcData, cachedCaseIds]);
 
-  // --- NEW: fetch all matching GDC cases in chunks and build mappings once ---
+  // Map sorting (table) -> API SortBy
+  const mapSortingToSortBy = useCallback((): ReadonlyArray<SortBy> => {
+    const COLUMN_ID_TO_FIELD: Record<string, string> = {
+      caseId: "submitter_id",
+      program: "project.program.name",
+      // add other mappings if you enable more sortable columns
+    };
+    if (!sorting || sorting.length === 0) return [];
+    return sorting.map((s) => {
+      const field = COLUMN_ID_TO_FIELD[String(s.id)] ?? String(s.id);
+      return { field, direction: s.desc ? "desc" : "asc" } as SortBy;
+    });
+  }, [sorting]);
+
+  // --- UPDATED: fetch all matching GDC cases in chunks and build mappings once ---
   const fetchAllGdcCasesAndMap = useCallback(async () => {
+    // prevent re-entrant calls
+    if (fetchInProgressRef.current) {
+      addLog("Fetch already in progress — skipping duplicate call");
+      return;
+    }
+    fetchInProgressRef.current = true;
     try {
       addLog("Preparing to fetch all matching GDC cases");
 
@@ -265,6 +305,9 @@ const IDCViewerWrapper: FC = () => {
         )} and ${String(case_ids.length)} IDC case_ids`,
       );
 
+      // derive SortBy from table sorting state
+      const sortByForApi = mapSortingToSortBy();
+
       // Fetch all matching GDC cases in a single request (request size = number of case_ids)
       const resp = await fetchGdcCasesApi({
         fields: ["submitter_id", "disease_type", "primary_site", "project"],
@@ -272,6 +315,7 @@ const IDCViewerWrapper: FC = () => {
         from: 0,
         case_filters: extendedFilters,
         expand: ["samples.portions.slides", "project.program"],
+        sortBy: sortByForApi.length > 0 ? sortByForApi : undefined,
       });
       const allHits = resp?.data?.hits || [];
       addLog(`Fetched ${allHits.length} hits`);
@@ -300,14 +344,19 @@ const IDCViewerWrapper: FC = () => {
       setMappings(mappings);
     } catch (err: any) {
       addLog(`Failed to fetch GDC cases: ${err?.message ?? String(err)}`);
+    } finally {
+      fetchInProgressRef.current = false;
     }
-  }, [cohortGqlFilters, loadIdcDataIfNeeded]);
+  }, [cohortGqlFilters, loadIdcDataIfNeeded, mapSortingToSortBy]); // <-- depends on sorting via mapSortingToSortBy
 
-  // Auto-load all cases+mapping once on mount
+  // Auto-load all cases+mapping once on mount and whenever sorting or cohort filters change.
+  // Use a stable string key for cohort filters to avoid effect retriggers caused by
+  // changing object identities from the cohort hook.
   useEffect(() => {
     fetchAllGdcCasesAndMap();
+    // intentionally only depend on sorting and the stable cohortFiltersKey
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [sorting, cohortFiltersKey]);
 
   useEffect(() => {
     const root = divRef.current;
@@ -387,12 +436,14 @@ const IDCViewerWrapper: FC = () => {
         accessorFn: (row) => row.caseId,
         header: "GDC caseId",
         cell: (info) => info.getValue(),
+        enableSorting: true, // <-- enable sorting for caseId (maps to submitter_id)
       },
       {
         id: "program",
         accessorFn: (row) => row.programName,
         header: "Program",
         cell: (info) => info.getValue(),
+        enableSorting: true, // <-- enable sorting for program (maps to project.program.name)
       },
       {
         id: "matches",
@@ -499,6 +550,7 @@ const IDCViewerWrapper: FC = () => {
       className="idc-viewer-wrapper-root"
       style={{ padding: 12 }}
     >
+      {/* Removed manual sort controls — sorting is now handled by the table */}
       <div style={{ marginTop: 12 }}>
         <div style={{ maxHeight: 460, overflow: "auto" }}>
           {/* VerticalTable-based view (replaces TableView */}
@@ -612,6 +664,10 @@ const IDCViewerWrapper: FC = () => {
                 // pagination integration (uses TablePagination internally)
                 pagination={pagination}
                 handleChange={handleTableChange}
+                // --- NEW: wire table sorting to manual mode + external sorting state ---
+                columnSorting="manual"
+                sorting={sorting}
+                setSorting={setSorting}
               />
             );
           })()}
