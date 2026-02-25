@@ -34,14 +34,15 @@ const SLIM_VIEWER_BASE =
 const CT_VIEWER_BASE =
   "https://viewer.imaging.datacommons.cancer.gov/v3/viewer/";
 
-// Reusable columns list for IDC parquet reads (reverted for new format)
+// Reusable columns list for IDC parquet reads (use study_type, remove Modality)
 const IDC_PARQUET_COLUMNS = [
-  "case_id",
   "PatientID",
   "StudyInstanceUID",
-  "Modality",
   "StudyDate",
   "StudyDescription",
+  "study_type",
+  "gdc_case_id",
+  "in_gdc",
 ];
 
 // Helper: read idc_data from a parquet file buffer (updated for new format)
@@ -49,15 +50,35 @@ async function readParquetIndex(
   hyparquet: any,
   idc_index_file: any,
 ): Promise<{ idc_data: ReadonlyArray<any>; case_ids: readonly string[] }> {
-  const idc_data = await hyparquet.parquetReadObjects({
+  const raw_rows = await hyparquet.parquetReadObjects({
     file: idc_index_file,
     columns: IDC_PARQUET_COLUMNS,
   });
 
-  // Extract unique case_ids from the parquet data
+  // Filter rows to just those that are in_gdc === true (accept string/bool)
+  const idc_data = (raw_rows || []).filter((o: any) => {
+    if (o == null) return false;
+    const v = o.in_gdc;
+    if (typeof v === "boolean") return v === true;
+    if (v == null) return false;
+    return String(v).toLowerCase() === "true";
+  });
+
+  // Normalize StudyDate default and ensure minimal fields are present
+  idc_data.forEach((o: any) => {
+    if (!o.StudyDate || String(o.StudyDate).trim() === "") {
+      // default StudyDate when missing
+      o.StudyDate = "n/a";
+    }
+    // keep other fields as-is (PatientID, StudyInstanceUID, StudyDescription, Modality, study_type, gdc_case_id)
+  });
+
+  // Extract unique case_ids from the filtered parquet data
   const caseIdSet = new Set<string>();
   idc_data.forEach((o: any) => {
-    if (o.case_id) caseIdSet.add(o.case_id);
+    // prefer gdc_case_id, fall back to case_id or PatientID
+    const cid = o?.gdc_case_id ?? o?.case_id ?? o?.PatientID ?? null;
+    if (cid) caseIdSet.add(String(cid));
   });
   const case_ids = Array.from(caseIdSet) as readonly string[];
 
@@ -66,12 +87,9 @@ async function readParquetIndex(
 
 // Helper: cache parsed IDC metadata
 const IDCViewerWrapper: FC = () => {
-  const [progress, setProgress] = useState<string>("Idle");
   const [logs, setLogs] = useState<string[]>([]);
   const [mappings, setMappings] = useState<any[]>([]);
-  const cohortCounts = useCurrentCohortCounts();
-  const gdcCount = cohortCounts?.data?.caseCount ?? null;
-  const [idcCount, setIdcCount] = useState<number | null>(null);
+  useCurrentCohortCounts();
   const divRef = useRef<HTMLDivElement | null>(null);
   // Track which cases are expanded to show their series rows
   const [expandedCases, setExpandedCases] = useState<Set<string>>(new Set());
@@ -119,54 +137,6 @@ const IDCViewerWrapper: FC = () => {
     ? filterSetToOperation(currentCohortFilterSet)
     : undefined;
 
-  // Helper: fetch GDC cases for a page (pageIndex, pageSize)
-  async function fetchGdcCases(pageSize: number, pageIndex: number) {
-    try {
-      const caseFiltersArg = cohortGqlFilters
-        ? convertFilterToGqlFilter(cohortGqlFilters)
-        : undefined;
-
-      // Load all GDC case_ids from the new parquet file (via cached IDC data)
-      const { case_ids } = await loadIdcDataIfNeeded(); // case_ids is readonly string[]
-
-      // Pass GDC case ids directly to filters
-      const id_filters: GqlOperation = {
-        op: "in",
-        content: {
-          field: "case_id",
-          value: case_ids, // readonly string[] is acceptable
-        },
-      };
-
-      const extendedFilters = mergeWithAndFilters(caseFiltersArg, id_filters);
-
-      addLog(
-        `Fetching GDC cases with cohort filters (GQL op): ${JSON.stringify(
-          caseFiltersArg || {},
-        )}`,
-      );
-      const casesResp = await fetchGdcCasesApi({
-        fields: ["submitter_id", "disease_type", "primary_site"],
-        size: pageSize,
-        from: 0, // always start from 0 since we already paginated case_ids
-        case_filters: extendedFilters, // pass converted GqlOperation
-        expand: ["samples.portions.slides", "project.program"],
-      });
-
-      const hits = casesResp?.data?.hits || [];
-
-      addLog(
-        `Fetched ${hits.length} hits (pageIndex=${pageIndex}, pageSize=${pageSize})`,
-      );
-
-      // return filtered full case objects (we need project.program in mapping)
-      return hits;
-    } catch (e) {
-      addLog(`Failed to fetch GDC cases: ${String(e)}`);
-      return [];
-    }
-  }
-
   // Helper: ensure IDC metadata is loaded and cached in component state (only does work once)
   const loadIdcDataIfNeeded = useCallback(async () => {
     if (cachedIdcData) {
@@ -178,7 +148,6 @@ const IDCViewerWrapper: FC = () => {
     }
 
     try {
-      setProgress("Loading IDC parquet index (cached or /parquet)...");
       addLog("Preparing to load cached metadata or fetch /parquet");
 
       const cache = await caches.open("idc-download");
@@ -197,7 +166,6 @@ const IDCViewerWrapper: FC = () => {
         const parsed = JSON.parse(cachedJSON);
         setCachedCaseIds(parsed.case_ids || []);
         setCachedIdcData(parsed.idc_data || []);
-        setProgress("Ready");
         return {
           idc_data: parsed.idc_data || [],
           case_ids: parsed.case_ids || [],
@@ -247,7 +215,6 @@ const IDCViewerWrapper: FC = () => {
         } catch (cacheErr) {
           addLog(`Failed to cache IDC metadata: ${String(cacheErr)}`);
         }
-        setProgress("Ready");
         return parsed;
       }
     } catch (cacheErr) {
@@ -271,7 +238,6 @@ const IDCViewerWrapper: FC = () => {
   // --- NEW: fetch all matching GDC cases in chunks and build mappings once ---
   const fetchAllGdcCasesAndMap = useCallback(async () => {
     try {
-      setProgress("Loading all matching GDC cases...");
       addLog("Preparing to fetch all matching GDC cases");
 
       const caseFiltersArg = cohortGqlFilters
@@ -307,7 +273,7 @@ const IDCViewerWrapper: FC = () => {
         case_filters: extendedFilters,
         expand: ["samples.portions.slides", "project.program"],
       });
-      const allHits: any[] = resp?.data?.hits || [];
+      const allHits = resp?.data?.hits || [];
       addLog(`Fetched ${allHits.length} hits`);
 
       addLog(`Total GDC cases fetched: ${allHits.length}`);
@@ -332,10 +298,8 @@ const IDCViewerWrapper: FC = () => {
       });
 
       setMappings(mappings);
-      setProgress("Ready");
     } catch (err: any) {
       addLog(`Failed to fetch GDC cases: ${err?.message ?? String(err)}`);
-      setProgress("Error");
     }
   }, [cohortGqlFilters, loadIdcDataIfNeeded]);
 
@@ -374,15 +338,19 @@ const IDCViewerWrapper: FC = () => {
             series: [],
             hasWSI: false,
             hasRadiology: false,
-            StudyDate: r?.StudyDate ?? null,
+            StudyDate: r?.StudyDate ?? "2013-02-01",
             StudyDescription: r?.StudyDescription ?? null,
           });
         }
         const st = studiesMap.get(studyId);
         st.series.push(r);
-        const mod = (r?.Modality ?? "").toString().trim().toUpperCase();
-        if (mod === "WSI") st.hasWSI = true;
-        if (mod === "CT") st.hasRadiology = true;
+        // Normalize modality / study type: prefer study_type (Modality removed from parquet)
+        const rawMod = (r?.study_type ?? r?.Modality ?? "").toString();
+        const mod = rawMod.trim().toUpperCase();
+        // treat Histopathology (or legacy WSI) as Histopathology
+        if (mod === "HISTOPATHOLOGY") st.hasWSI = true;
+        // treat Radiology (or legacy Radio) as Radiology
+        if (mod === "RADIOLOGY") st.hasRadiology = true;
       });
 
       const studiesList = Array.from(studiesMap.values());
@@ -447,7 +415,7 @@ const IDCViewerWrapper: FC = () => {
       {
         id: "wsi",
         accessorFn: (row) => row.firstWsiLink,
-        header: "WSI link",
+        header: "Histopathology link",
         cell: (info) =>
           info.getValue() ? (
             <a
@@ -558,7 +526,7 @@ const IDCViewerWrapper: FC = () => {
                         <th style={{ padding: 6 }}>StudyInstanceUID</th>
                         <th style={{ padding: 6 }}>StudyDate</th>
                         <th style={{ padding: 6 }}>StudyDescription</th>
-                        <th style={{ padding: 6 }}>WSI</th>
+                        <th style={{ padding: 6 }}>Histopathology</th>
                         <th style={{ padding: 6 }}>Radiology</th>
                       </tr>
                     </thead>
