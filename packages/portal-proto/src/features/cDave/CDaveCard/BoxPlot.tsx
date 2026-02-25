@@ -45,7 +45,7 @@ const CustomQ3 = (props: BoxProps) => {
   );
 };
 
-const EmptyLabel = (props: LabelProps) => <></>;
+const EmptyLabel = (_props: LabelProps) => <></>;
 
 interface BoxPlotTooltipProps {
   readonly visible: boolean;
