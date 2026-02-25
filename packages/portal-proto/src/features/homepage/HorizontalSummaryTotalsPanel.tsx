@@ -1,5 +1,5 @@
 import { SummaryStatsItem } from "@/features/homepage/SummaryStatsItem";
-import { TotalCounts, useVersionInfoDetails } from "@gff/core";
+import { TotalCounts, useGetVersionInfoQuery } from "@gff/core";
 import { AnchorLink } from "@/components/AnchorLink";
 import ProjectsIcon from "public/user-flow/icons/summary/projects.svg";
 import PrimarySitesIcon from "public/user-flow/icons/summary/primary-sites.svg";
@@ -14,7 +14,7 @@ const HorizontalSummaryTotalsPanel = ({
   countsInfo: TotalCounts;
 }): JSX.Element => {
   const { data: versionInfo, isSuccess: isVersionInfoSuccess } =
-    useVersionInfoDetails();
+    useGetVersionInfoQuery();
   const IconFormatted = ({
     Icon,
     label,
