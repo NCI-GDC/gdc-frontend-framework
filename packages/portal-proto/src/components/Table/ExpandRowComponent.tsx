@@ -15,6 +15,8 @@ const ExpandRowComponent = ({
   <>
     {value.length === 0 ? (
       "--"
+    ) : value?.length === 1 ? (
+      value
     ) : (
       <div className="flex items-center text-primary cursor-pointer gap-2">
         {isRowExpanded && isColumnExpanded ? (
