@@ -11,6 +11,8 @@ const connectSrc = [
   "https://www.google-analytics.com",
   "https://dap.digitalgov.gov",
   "https://metrics.cancer.gov",
+  // allow direct fetches from Google Cloud Storage (S3-like) for parquet files
+  "https://storage.googleapis.com",
   // Uncomment to use mock server for testing
   //"https://localhost:3100",
 ];

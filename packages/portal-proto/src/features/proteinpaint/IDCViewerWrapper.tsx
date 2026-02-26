@@ -7,8 +7,9 @@ import React, {
   useState,
   useMemo,
 } from "react";
+import { compressors } from "hyparquet-compressors";
+import { parquetReadObjects } from "hyparquet";
 import {
-  PROTEINPAINT_API,
   fetchGdcCases as fetchGdcCasesApi,
   useCurrentCohortFilters,
   filterSetToOperation,
@@ -26,7 +27,6 @@ import useStandardPagination from "@/hooks/useStandardPagination";
 /**
  * Cleaned IDCViewerWrapper:
  *  - Automatically runs mapping on mount (no button click required)
- *  - Caches parsed parquet results in Cache Storage (`idc_data.json`)
  */
 
 const SLIM_VIEWER_BASE =
@@ -43,41 +43,35 @@ const IDC_PARQUET_COLUMNS = [
   "StudyDescription",
   "study_type",
   "gdc_case_id",
-  "in_gdc",
 ];
 
-// Helper: read idc_data from a parquet file buffer (updated for new format)
+// NEW: direct GCS parquet URL (explicit release artifact; fetch whole file)
+const IDC_PARQUET_URL =
+  "https://storage.googleapis.com/idc-index-data-artifacts/current/release_artifacts/gdc_idc_mapping.parquet";
+
+// Helper: read idc_data from a parquet file buffer (dynamic imports, use compressors if available)
 async function readParquetIndex(
-  hyparquet: any,
   idc_index_file: any,
 ): Promise<{ idc_data: ReadonlyArray<any>; case_ids: readonly string[] }> {
-  const raw_rows = await hyparquet.parquetReadObjects({
+  const raw_rows = await parquetReadObjects({
     file: idc_index_file,
     columns: IDC_PARQUET_COLUMNS,
+    compressors: compressors,
   });
 
   // Filter rows to just those that are in_gdc === true (accept string/bool)
-  const idc_data = (raw_rows || []).filter((o: any) => {
-    if (o == null) return false;
-    const v = o.in_gdc;
-    if (typeof v === "boolean") return v === true;
-    if (v == null) return false;
-    return String(v).toLowerCase() === "true";
-  });
+  const idc_data = raw_rows || [];
 
   // Normalize StudyDate default and ensure minimal fields are present
   idc_data.forEach((o: any) => {
     if (!o.StudyDate || String(o.StudyDate).trim() === "") {
-      // default StudyDate when missing
       o.StudyDate = "n/a";
     }
-    // keep other fields as-is (PatientID, StudyInstanceUID, StudyDescription, Modality, study_type, gdc_case_id)
   });
 
   // Extract unique case_ids from the filtered parquet data
   const caseIdSet = new Set<string>();
   idc_data.forEach((o: any) => {
-    // prefer gdc_case_id, fall back to case_id or PatientID
     const cid = o?.gdc_case_id ?? o?.case_id ?? o?.PatientID ?? null;
     if (cid) caseIdSet.add(String(cid));
   });
@@ -86,7 +80,6 @@ async function readParquetIndex(
   return { idc_data: idc_data as ReadonlyArray<any>, case_ids };
 }
 
-// Helper: cache parsed IDC metadata
 const IDCViewerWrapper: FC = () => {
   const [logs, setLogs] = useState<string[]>([]);
   const [mappings, setMappings] = useState<any[]>([]);
@@ -124,13 +117,6 @@ const IDCViewerWrapper: FC = () => {
   const buildSlimStudyURL = (studyInstanceUID: string) =>
     SLIM_VIEWER_BASE + encodeURIComponent(studyInstanceUID);
 
-  const [cachedIdcData, setCachedIdcData] = useState<ReadonlyArray<any> | null>(
-    null,
-  );
-  const [cachedCaseIds, setCachedCaseIds] = useState<readonly string[] | null>(
-    null,
-  );
-
   // --- NEW: sorting state (tanstack) — user interactions will update this ---
   const [sorting, setSorting] = useState<SortingState>([
     { id: "caseId", desc: false },
@@ -157,103 +143,44 @@ const IDCViewerWrapper: FC = () => {
   // guard against concurrent/overlapping fetches
   const fetchInProgressRef = useRef(false);
 
-  // Helper: ensure IDC metadata is loaded and cached in component state (only does work once)
-  const loadIdcDataIfNeeded = useCallback(async () => {
-    if (cachedIdcData) {
-      addLog("Using cached IDC metadata (already loaded)");
-      return {
-        idc_data: cachedIdcData,
-        case_ids: cachedCaseIds ?? [],
-      };
-    }
-
+  // Helper: ensure IDC metadata is loaded (no cache, always download & parse)
+  const loadIdcData = useCallback(async () => {
     try {
-      addLog("Preparing to load cached metadata or fetch /parquet");
-
-      const cache = await caches.open("idc-download");
-      const cacheRequest = new Request("idc_data.json");
-      const cachedResponse = await cache.match(cacheRequest);
-
-      if (cachedResponse) {
-        addLog("Loaded IDC metadata from cache");
-        const cachedBlob = await cachedResponse.blob();
-        const cachedJSON = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(String(reader.result));
-          reader.onerror = reject;
-          reader.readAsText(cachedBlob);
-        });
-        const parsed = JSON.parse(cachedJSON);
-        setCachedCaseIds(parsed.case_ids || []);
-        setCachedIdcData(parsed.idc_data || []);
-        return {
-          idc_data: parsed.idc_data || [],
-          case_ids: parsed.case_ids || [],
-        };
-      } else {
-        addLog("Cache miss — fetching parquet via proxy /parquet");
-        const hyparquet = (await import("hyparquet")) as any;
-
-        const idc_index_url = `${PROTEINPAINT_API.replace(/\/$/, "")}/parquet`;
-        addLog(`Downloading parquet from ${idc_index_url}...`);
-        const idc_index_file = await hyparquet.asyncBufferFromUrl({
-          url: idc_index_url,
-        });
-
-        // report buffer size when available
-        try {
-          let sizeDesc = "unknown";
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const f: any = idc_index_file;
-          if (typeof f?.byteLength === "number")
-            sizeDesc = `${f.byteLength} bytes`;
-          else if (typeof f?.length === "number")
-            sizeDesc = `${f.length} bytes`;
-          else if (typeof f?.size === "number") sizeDesc = `${f.size} bytes`;
-          addLog(
-            `Downloaded parquet buffer from ${idc_index_url} — success${
-              sizeDesc !== "unknown" ? `, size: ${sizeDesc}` : ""
-            }`,
-          );
-        } catch {
-          addLog(
-            `Downloaded parquet buffer from ${idc_index_url} — success (size unavailable)`,
-          );
-        }
-
-        const parsed = await readParquetIndex(hyparquet, idc_index_file);
-        setCachedIdcData(parsed.idc_data);
-        setCachedCaseIds(parsed.case_ids);
-        try {
-          const jsonString = JSON.stringify({
-            case_ids: parsed.case_ids,
-            idc_data: parsed.idc_data,
-          });
-          const jsonBlob = new Blob([jsonString], { type: "application/json" });
-          await cache.put(cacheRequest, new Response(jsonBlob));
-          addLog("Downloaded IDC metadata and cached it");
-        } catch (cacheErr) {
-          addLog(`Failed to cache IDC metadata: ${String(cacheErr)}`);
-        }
-        return parsed;
+      addLog("Fetching IDC parquet from direct GCS URL");
+      addLog(`Downloading parquet from ${IDC_PARQUET_URL}...`);
+      const resp = await fetch(IDC_PARQUET_URL);
+      if (!resp.ok) {
+        throw new Error(
+          `Failed to fetch parquet: ${resp.status} ${resp.statusText}`,
+        );
       }
-    } catch (cacheErr) {
+      const arrayBuffer = await resp.arrayBuffer();
+
+      try {
+        addLog(
+          `Downloaded parquet buffer — size: ${
+            typeof (arrayBuffer as any)?.byteLength === "number"
+              ? `${(arrayBuffer as any).byteLength} bytes`
+              : "unknown"
+          }`,
+        );
+      } catch {
+        addLog("Downloaded parquet buffer (size unavailable)");
+      }
+
+      const parsed = await readParquetIndex(arrayBuffer);
+
       addLog(
-        `Cache handling failed: ${String(
-          cacheErr,
-        )} — falling back to direct fetch`,
+        `Downloaded and parsed IDC parquet, cases: ${parsed.case_ids.length}`,
       );
-      const hyparquet = (await import("hyparquet")) as any;
-      const idc_index_url = `${PROTEINPAINT_API}/parquet`;
-      const idc_index_file = await hyparquet.asyncBufferFromUrl({
-        url: idc_index_url,
-      });
-      const parsed = await readParquetIndex(hyparquet, idc_index_file);
-      setCachedIdcData(parsed.idc_data);
-      setCachedCaseIds(parsed.case_ids);
       return parsed;
+    } catch (err: any) {
+      addLog(
+        `Failed to download/parse IDC parquet: ${err?.message ?? String(err)}`,
+      );
+      throw err;
     }
-  }, [cachedIdcData, cachedCaseIds]);
+  }, []);
 
   // Map sorting (table) -> API SortBy
   const mapSortingToSortBy = useCallback((): ReadonlyArray<SortBy> => {
@@ -285,7 +212,7 @@ const IDCViewerWrapper: FC = () => {
         : undefined;
 
       // ensure IDC data is loaded to get case_ids
-      const { idc_data, case_ids } = await loadIdcDataIfNeeded();
+      const { idc_data, case_ids } = await loadIdcData();
 
       const id_filters: GqlOperation = {
         op: "in",
@@ -347,7 +274,7 @@ const IDCViewerWrapper: FC = () => {
     } finally {
       fetchInProgressRef.current = false;
     }
-  }, [cohortGqlFilters, loadIdcDataIfNeeded, mapSortingToSortBy]); // <-- depends on sorting via mapSortingToSortBy
+  }, [cohortGqlFilters, loadIdcData, mapSortingToSortBy]); // <-- depends on sorting via mapSortingToSortBy
 
   // Auto-load all cases+mapping once on mount and whenever sorting or cohort filters change.
   // Use a stable string key for cohort filters to avoid effect retriggers caused by
@@ -397,9 +324,9 @@ const IDCViewerWrapper: FC = () => {
         const rawMod = (r?.study_type ?? r?.Modality ?? "").toString();
         const mod = rawMod.trim().toUpperCase();
         // treat Histopathology (or legacy WSI) as Histopathology
-        if (mod === "HISTOPATHOLOGY") st.hasWSI = true;
+        if (mod === "M") st.hasWSI = true;
         // treat Radiology (or legacy Radio) as Radiology
-        if (mod === "RADIOLOGY") st.hasRadiology = true;
+        if (mod === "R") st.hasRadiology = true;
       });
 
       const studiesList = Array.from(studiesMap.values());
