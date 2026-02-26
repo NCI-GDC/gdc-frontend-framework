@@ -348,11 +348,17 @@ const IDCViewerWrapper: FC = () => {
           encodeURIComponent(firstStudyWithRadio.StudyInstanceUID)
         : null;
 
+      // compute counts for non-expanded row display
+      const wsiCount = studiesList.filter((s) => s.hasWSI).length;
+      const radiologyCount = studiesList.filter((s) => s.hasRadiology).length;
+
       return {
         caseId,
         programName,
         studiesList,
         studiesCount: studiesList.length,
+        wsiCount,
+        radiologyCount,
         firstWsiLink,
         firstRadioLink,
         _originalMapping: m,
@@ -397,39 +403,37 @@ const IDCViewerWrapper: FC = () => {
       },
       {
         id: "wsi",
-        accessorFn: (row) => row.firstWsiLink,
+        accessorFn: (row) => row.wsiCount,
         header: "Histopathology link",
-        cell: (info) =>
-          info.getValue() ? (
-            <a
-              href={info.getValue().toString()}
-              target="_blank"
-              rel="noreferrer"
-              onClick={(e) => e.stopPropagation()}
-            >
-              Open study
-            </a>
-          ) : (
-            <span style={{ color: "#666" }}>-</span>
-          ),
+        cell: (info) => {
+          const count = Number(info.getValue() ?? 0);
+          if (count > 0) {
+            const label = count === 1 ? "study" : "studies";
+            return (
+              <span>
+                {count} {label}
+              </span>
+            );
+          }
+          return <span style={{ color: "#666" }}>-</span>;
+        },
       },
       {
         id: "radiology",
-        accessorFn: (row) => row.firstRadioLink,
+        accessorFn: (row) => row.radiologyCount,
         header: "Radiology Link",
-        cell: (info) =>
-          info.getValue() ? (
-            <a
-              href={info.getValue().toString()}
-              target="_blank"
-              rel="noreferrer"
-              onClick={(e) => e.stopPropagation()}
-            >
-              Open study
-            </a>
-          ) : (
-            <span style={{ color: "#666" }}>-</span>
-          ),
+        cell: (info) => {
+          const count = Number(info.getValue() ?? 0);
+          if (count > 0) {
+            const label = count === 1 ? "study" : "studies";
+            return (
+              <span>
+                {count} {label}
+              </span>
+            );
+          }
+          return <span style={{ color: "#666" }}>-</span>;
+        },
       },
     ],
     [],
