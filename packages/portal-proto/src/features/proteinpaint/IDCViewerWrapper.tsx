@@ -23,6 +23,7 @@ import VerticalTable from "@/components/Table/VerticalTable";
 import { ColumnDef, SortingState } from "@tanstack/react-table"; // <-- added SortingState
 import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
 import useStandardPagination from "@/hooks/useStandardPagination";
+import { LoadingOverlay } from "@mantine/core"; // <-- added LoadingOverlay
 
 /**
  * Cleaned IDCViewerWrapper:
@@ -103,6 +104,8 @@ const IDCViewerWrapper: FC = () => {
     });
     return o;
   }, [expandedCases]);
+  // NEW: global loading state for parquet download/parsing + GDC fetch
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   // helper to toggle when VerticalTable calls setExpanded(row, columnId)
   const setTableExpanded = useCallback(
     (row: any /* tanstack Row */) => {
@@ -204,6 +207,7 @@ const IDCViewerWrapper: FC = () => {
       return;
     }
     fetchInProgressRef.current = true;
+    setIsLoading(true); // <-- show overlay when starting overall fetch+parse
     try {
       addLog("Preparing to fetch all matching GDC cases");
 
@@ -273,6 +277,7 @@ const IDCViewerWrapper: FC = () => {
       addLog(`Failed to fetch GDC cases: ${err?.message ?? String(err)}`);
     } finally {
       fetchInProgressRef.current = false;
+      setIsLoading(false); // <-- hide overlay when finished (success or error)
     }
   }, [cohortGqlFilters, loadIdcData, mapSortingToSortBy]); // <-- depends on sorting via mapSortingToSortBy
 
@@ -480,124 +485,135 @@ const IDCViewerWrapper: FC = () => {
       {/* Removed manual sort controls — sorting is now handled by the table */}
       <div style={{ marginTop: 12 }}>
         <div style={{ maxHeight: 460, overflow: "auto" }}>
-          {/* VerticalTable-based view (replaces TableView */}
-          {(() => {
-            // renderSubComponent: show detailed studies list for expanded row
-            const renderSubComponent = ({ row }: any) => {
-              const studies = row.original.studiesList as any[];
-              if (!studies || studies.length === 0) return null;
-              return (
-                <div style={{ padding: 8, background: "#fff" }}>
-                  <table
-                    style={{
-                      width: "100%",
-                      fontSize: 13,
-                      borderCollapse: "collapse",
-                    }}
-                  >
-                    <thead>
-                      <tr
+          {/* Container to allow overlay to cover the table area */}
+          <div style={{ position: "relative", minHeight: 120 }}>
+            <LoadingOverlay visible={isLoading} zIndex={50} />
+            {/* Render table only when not loading so overlay is shown instead */}
+            {!isLoading &&
+              // VerticalTable-based view (replaces TableView)
+              (() => {
+                // renderSubComponent: show detailed studies list for expanded row
+                const renderSubComponent = ({ row }: any) => {
+                  const studies = row.original.studiesList as any[];
+                  if (!studies || studies.length === 0) return null;
+                  return (
+                    <div style={{ padding: 8, background: "#fff" }}>
+                      <table
                         style={{
-                          textAlign: "left",
-                          borderBottom: "1px solid #ddd",
+                          width: "100%",
+                          fontSize: 13,
+                          borderCollapse: "collapse",
                         }}
                       >
-                        <th style={{ padding: 6 }}>StudyInstanceUID</th>
-                        <th style={{ padding: 6 }}>StudyDate</th>
-                        <th style={{ padding: 6 }}>StudyDescription</th>
-                        <th style={{ padding: 6 }}>Histopathology</th>
-                        <th style={{ padding: 6 }}>Radiology</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {studies.map((s, i) => {
-                        const wsiLink =
-                          s.hasWSI && s.StudyInstanceUID
-                            ? buildSlimStudyURL(s.StudyInstanceUID)
-                            : null;
-                        const radioLink =
-                          s.hasRadiology && s.StudyInstanceUID
-                            ? CT_VIEWER_BASE +
-                              "?StudyInstanceUIDs=" +
-                              encodeURIComponent(s.StudyInstanceUID)
-                            : null;
-                        return (
+                        <thead>
                           <tr
-                            key={i}
                             style={{
-                              background: i % 2 === 0 ? "#fbfbfd" : "#f2f2f2",
+                              textAlign: "left",
+                              borderBottom: "1px solid #ddd",
                             }}
                           >
-                            <td style={{ padding: 6, wordBreak: "break-all" }}>
-                              {s.StudyInstanceUID ?? "(/)"}
-                            </td>
-                            <td style={{ padding: 6 }}>{s.StudyDate ?? "-"}</td>
-                            <td style={{ padding: 6 }}>
-                              {s.StudyDescription ?? "-"}
-                            </td>
-                            <td style={{ padding: 6 }}>
-                              {wsiLink ? (
-                                <a
-                                  href={wsiLink}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  Open study
-                                </a>
-                              ) : (
-                                <span style={{ color: "#666" }}>-</span>
-                              )}
-                            </td>
-                            <td style={{ padding: 6 }}>
-                              {radioLink ? (
-                                <a
-                                  href={radioLink}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  Open study
-                                </a>
-                              ) : (
-                                <span style={{ color: "#666" }}>-</span>
-                              )}
-                            </td>
+                            <th style={{ padding: 6 }}>StudyInstanceUID</th>
+                            <th style={{ padding: 6 }}>StudyDate</th>
+                            <th style={{ padding: 6 }}>StudyDescription</th>
+                            <th style={{ padding: 6 }}>Histopathology</th>
+                            <th style={{ padding: 6 }}>Radiology</th>
                           </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              );
-            };
+                        </thead>
+                        <tbody>
+                          {studies.map((s, i) => {
+                            const wsiLink =
+                              s.hasWSI && s.StudyInstanceUID
+                                ? buildSlimStudyURL(s.StudyInstanceUID)
+                                : null;
+                            const radioLink =
+                              s.hasRadiology && s.StudyInstanceUID
+                                ? CT_VIEWER_BASE +
+                                  "?StudyInstanceUIDs=" +
+                                  encodeURIComponent(s.StudyInstanceUID)
+                                : null;
+                            return (
+                              <tr
+                                key={i}
+                                style={{
+                                  background:
+                                    i % 2 === 0 ? "#fbfbfd" : "#f2f2f2",
+                                }}
+                              >
+                                <td
+                                  style={{ padding: 6, wordBreak: "break-all" }}
+                                >
+                                  {s.StudyInstanceUID ?? "(/)"}
+                                </td>
+                                <td style={{ padding: 6 }}>
+                                  {s.StudyDate ?? "-"}
+                                </td>
+                                <td style={{ padding: 6 }}>
+                                  {s.StudyDescription ?? "-"}
+                                </td>
+                                <td style={{ padding: 6 }}>
+                                  {wsiLink ? (
+                                    <a
+                                      href={wsiLink}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
+                                      Open study
+                                    </a>
+                                  ) : (
+                                    <span style={{ color: "#666" }}>-</span>
+                                  )}
+                                </td>
+                                <td style={{ padding: 6 }}>
+                                  {radioLink ? (
+                                    <a
+                                      href={radioLink}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
+                                      Open study
+                                    </a>
+                                  ) : (
+                                    <span style={{ color: "#666" }}>-</span>
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  );
+                };
 
-            return (
-              <VerticalTable
-                columns={columns}
-                data={displayedData}
-                tableTitle={undefined}
-                // expansion control
-                getRowCanExpand={(row: any) =>
-                  Array.isArray(row.original?.studiesList) &&
-                  row.original.studiesList.length > 0
-                }
-                expandableColumnIds={["matches"]}
-                expanded={expandedState}
-                setExpanded={(row: any) => setTableExpanded(row)}
-                // ensure row ids come from caseId
-                getRowId={(row: any) => row.caseId}
-                renderSubComponent={renderSubComponent}
-                // pagination integration (uses TablePagination internally)
-                pagination={pagination}
-                handleChange={handleTableChange}
-                // --- NEW: wire table sorting to manual mode + external sorting state ---
-                columnSorting="manual"
-                sorting={sorting}
-                setSorting={setSorting}
-              />
-            );
-          })()}
+                return (
+                  <VerticalTable
+                    columns={columns}
+                    data={displayedData}
+                    tableTitle={undefined}
+                    // expansion control
+                    getRowCanExpand={(row: any) =>
+                      Array.isArray(row.original?.studiesList) &&
+                      row.original.studiesList.length > 0
+                    }
+                    expandableColumnIds={["matches"]}
+                    expanded={expandedState}
+                    setExpanded={(row: any) => setTableExpanded(row)}
+                    // ensure row ids come from caseId
+                    getRowId={(row: any) => row.caseId}
+                    renderSubComponent={renderSubComponent}
+                    // pagination integration (uses TablePagination internally)
+                    pagination={pagination}
+                    handleChange={handleTableChange}
+                    // --- NEW: wire table sorting to manual mode + external sorting state ---
+                    columnSorting="manual"
+                    sorting={sorting}
+                    setSorting={setSorting}
+                  />
+                );
+              })()}
+          </div>
         </div>
       </div>
 
