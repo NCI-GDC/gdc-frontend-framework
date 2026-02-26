@@ -387,19 +387,48 @@ const IDCViewerWrapper: FC = () => {
         id: "matches",
         accessorFn: (row) =>
           row.studiesList.map((s) => s.StudyInstanceUID ?? "(/)"),
-        header: "IDC StudyInstanceUUID",
+        header: "IDC Studies",
         cell: (info) => {
-          const arr = info.getValue() as string[];
-          // Render the compact expand/collapse indicator (reuse ExpandRowComponent)
+          // Show only total number of studies and make it clickable to toggle expansion
+          const arr = info.getValue() as string[] | undefined;
+          const count = Array.isArray(arr) ? arr.length : 0;
+          const label = count === 1 ? "study" : "studies";
+
+          if (count === 0) {
+            return <span style={{ color: "#666" }}>-</span>;
+          }
+
           return (
-            <ExpandRowComponent
-              isRowExpanded={info.row.getIsExpanded()}
-              value={arr}
-              isColumnExpanded={true}
-              title="study"
-            />
+            <span
+              style={{
+                cursor: "pointer",
+                color: "#0056b3",
+                userSelect: "none",
+                textDecoration: "underline",
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                // toggle expansion for this row (works for any count, including 1)
+                setTableExpanded(info.row);
+              }}
+              title={`Toggle ${count} ${label}`}
+            >
+              {count} {label}
+            </span>
           );
+
+          // TODO try to reuse
+
+          // return (
+          //   <ExpandRowComponent
+          //     isRowExpanded={info.row.getIsExpanded()}
+          //     value={arr}
+          //     isColumnExpanded={true}
+          //     title="study"
+          //   />
+          // );
         },
+        enableSorting: false,
       },
       {
         id: "wsi",
@@ -417,6 +446,7 @@ const IDCViewerWrapper: FC = () => {
           }
           return <span style={{ color: "#666" }}>-</span>;
         },
+        enableSorting: false,
       },
       {
         id: "radiology",
@@ -434,9 +464,11 @@ const IDCViewerWrapper: FC = () => {
           }
           return <span style={{ color: "#666" }}>-</span>;
         },
+        enableSorting: false,
       },
     ],
-    [],
+    // include setTableExpanded so renderer closure has correct reference
+    [setTableExpanded],
   );
 
   // Use client-side pagination hook (reads page size from VerticalTable via handleChange)
@@ -597,10 +629,7 @@ const IDCViewerWrapper: FC = () => {
                     data={displayedData}
                     tableTitle={undefined}
                     // expansion control
-                    getRowCanExpand={(row: any) =>
-                      Array.isArray(row.original?.studiesList) &&
-                      row.original.studiesList.length > 0
-                    }
+                    getRowCanExpand={(row: any) => true}
                     expandableColumnIds={["matches"]}
                     expanded={expandedState}
                     setExpanded={(row: any) => setTableExpanded(row)}
