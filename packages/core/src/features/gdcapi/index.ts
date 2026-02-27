@@ -100,8 +100,6 @@ export const fetchGdcEntities = async <T extends Record<string, any>>(
 ): Promise<GdcApiResponse<T>> => {
   const chunkSize = request?.size ?? DEFAULT_CHUNK_SIZE;
 
-  console.log("GDC_APP_API_AUTH", GDC_APP_API_AUTH);
-
   const res = await fetch(`${GDC_APP_API_AUTH}/${endpoint}`, {
     method: "POST",
     headers: {
