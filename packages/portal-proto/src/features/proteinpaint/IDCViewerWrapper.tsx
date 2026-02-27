@@ -387,85 +387,87 @@ const IDCViewerWrapper: FC = () => {
         id: "matches",
         accessorFn: (row) =>
           row.studiesList.map((s) => s.StudyInstanceUID ?? "(/)"),
-        header: "IDC Studies",
+        header: "IDC Studies (Click to expand)",
         cell: (info) => {
           // Show only total number of studies and make it clickable to toggle expansion
           const arr = info.getValue() as string[] | undefined;
           const count = Array.isArray(arr) ? arr.length : 0;
-          const label = count === 1 ? "study" : "studies";
+
+          // derive detailed counts from the original row (WSI / Radiology)
+          const studies = (info.row?.original?.studiesList as any[]) ?? [];
+          const wsiCount = studies.filter((s) => s?.hasWSI).length;
+          const radiologyCount = studies.filter((s) => s?.hasRadiology).length;
+
+          // formatted label with correct singular/plural forms
+          const idcNoun = count === 1 ? "IDC study" : "IDC studies";
+          const wsiLabel = `${wsiCount} WSI`;
+          const radioLabel = `${radiologyCount} Radiology`;
+          const titleLabel = `${idcNoun} (${wsiLabel} + ${radioLabel})`;
 
           if (count === 0) {
             return <span style={{ color: "#666" }}>-</span>;
           }
 
           return (
-            <span
-              style={{
-                cursor: "pointer",
-                color: "#0056b3",
-                userSelect: "none",
-                textDecoration: "underline",
-              }}
+            <div
               onClick={(e) => {
                 e.stopPropagation();
                 // toggle expansion for this row (works for any count, including 1)
                 setTableExpanded(info.row);
               }}
-              title={`Toggle ${count} ${label}`}
+              title={`${count} ${titleLabel}`}
+              role="button"
+              style={{ display: "inline-block" }}
             >
-              {count} {label}
-            </span>
+              <ExpandRowComponent
+                isRowExpanded={info.row.getIsExpanded()}
+                value={arr ?? []}
+                isColumnExpanded={true}
+                handleOneElementValue={false}
+                title={titleLabel}
+              />
+            </div>
           );
-
-          // TODO try to reuse
-
-          // return (
-          //   <ExpandRowComponent
-          //     isRowExpanded={info.row.getIsExpanded()}
-          //     value={arr}
-          //     isColumnExpanded={true}
-          //     title="study"
-          //   />
-          // );
         },
         enableSorting: false,
       },
-      {
-        id: "wsi",
-        accessorFn: (row) => row.wsiCount,
-        header: "Histopathology link",
-        cell: (info) => {
-          const count = Number(info.getValue() ?? 0);
-          if (count > 0) {
-            const label = count === 1 ? "study" : "studies";
-            return (
-              <span>
-                {count} {label}
-              </span>
-            );
-          }
-          return <span style={{ color: "#666" }}>-</span>;
-        },
-        enableSorting: false,
-      },
-      {
-        id: "radiology",
-        accessorFn: (row) => row.radiologyCount,
-        header: "Radiology Link",
-        cell: (info) => {
-          const count = Number(info.getValue() ?? 0);
-          if (count > 0) {
-            const label = count === 1 ? "study" : "studies";
-            return (
-              <span>
-                {count} {label}
-              </span>
-            );
-          }
-          return <span style={{ color: "#666" }}>-</span>;
-        },
-        enableSorting: false,
-      },
+      // TODO keep this commentented out for now
+      // {
+      //   id: "wsi",
+      //   accessorFn: (row) => row.wsiCount,
+      //   header: "IDC WSI links",
+      //   cell: (info) => {
+      //     const count = Number(info.getValue() ?? 0);
+      //     if (count > 0) {
+      //       const label = count === 1 ? "study" : "studies";
+      //       return (
+      //         <span>
+      //           {count} {label}
+      //         </span>
+      //       );
+      //     }
+      //     return <span style={{ color: "#666" }}>-</span>;
+      //   },
+      //   enableSorting: false,
+      // },
+      // {
+      //   id: "radiology",
+      //   accessorFn: (row) => row.radiologyCount,
+      //   header: "IDC Radiology links",
+      //   cell: (info) => {
+      //     const count = Number(info.getValue() ?? 0);
+      //     if (count > 0) {
+      //       const label = count === 1 ? "study" : "studies";
+      //       return (
+      //         <span>
+      //           {count} {label}
+      //         </span>
+      //       );
+      //     }
+      //     return <span style={{ color: "#666" }}>-</span>;
+      //   },
+      //   enableSorting: false,
+      // },
     ],
     // include setTableExpanded so renderer closure has correct reference
     [setTableExpanded],
@@ -548,11 +550,11 @@ const IDCViewerWrapper: FC = () => {
                               borderBottom: "1px solid #ddd",
                             }}
                           >
-                            <th style={{ padding: 6 }}>StudyInstanceUID</th>
+                            <th style={{ padding: 6 }}>IDC StudyInstanceUID</th>
                             <th style={{ padding: 6 }}>StudyDate</th>
                             <th style={{ padding: 6 }}>StudyDescription</th>
-                            <th style={{ padding: 6 }}>Histopathology</th>
-                            <th style={{ padding: 6 }}>Radiology</th>
+                            <th style={{ padding: 6 }}>IDC WSI viewer</th>
+                            <th style={{ padding: 6 }}>IDC Radiology viewer</th>
                           </tr>
                         </thead>
                         <tbody>

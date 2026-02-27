@@ -1,49 +1,55 @@
-import React, { JSX } from "react";
+import React from "react";
 import { CollapseCircleIcon, ExpandCircleIcon } from "@/utils/icons";
 
 const ExpandRowComponent = ({
   isRowExpanded,
-  value,
+  value = [],
   isColumnExpanded = true,
   title,
+  handleOneElementValue = true,
 }: {
   isRowExpanded: boolean;
-  value: string[];
+  value?: string[];
   isColumnExpanded?: boolean;
   title: string;
-}): JSX.Element => (
-  <>
-    {value.length === 0 ? (
-      "--"
-    ) : value?.length === 1 ? (
-      value
-    ) : (
-      <div className="flex items-center text-primary cursor-pointer gap-2">
-        {isRowExpanded && isColumnExpanded ? (
-          <CollapseCircleIcon
-            size="1.25em"
-            className="text-accent"
-            data-testid="up-icon"
-            aria-hidden="true"
-          />
-        ) : (
-          <ExpandCircleIcon
-            size="1.25em"
-            className="text-accent"
-            data-testid="down-icon"
-            aria-hidden="true"
-          />
-        )}
-        <span
-          className={`whitespace-nowrap ${
-            isRowExpanded && isColumnExpanded && "font-bold"
-          }`}
-        >
-          {value.length.toLocaleString().padStart(6)} {title}
-        </span>
-      </div>
-    )}
-  </>
-);
+  // when true (default) a single-element value will render the element itself (value[0])
+  // when false a single-element value will render as a count like other multi-element values
+  handleOneElementValue?: boolean;
+}): React.ReactNode => {
+  if (!value || value.length === 0) {
+    return "--";
+  }
+
+  if (value.length === 1 && handleOneElementValue) {
+    return value[0];
+  }
+
+  return (
+    <div className="flex items-center text-primary cursor-pointer gap-2">
+      {isRowExpanded && isColumnExpanded ? (
+        <CollapseCircleIcon
+          size="1.25em"
+          className="text-accent"
+          data-testid="up-icon"
+          aria-hidden="true"
+        />
+      ) : (
+        <ExpandCircleIcon
+          size="1.25em"
+          className="text-accent"
+          data-testid="down-icon"
+          aria-hidden="true"
+        />
+      )}
+      <span
+        className={`whitespace-nowrap ${
+          isRowExpanded && isColumnExpanded && "font-bold"
+        }`}
+      >
+        {value.length.toLocaleString().padStart(6)} {title}
+      </span>
+    </div>
+  );
+};
 
 export default ExpandRowComponent;
