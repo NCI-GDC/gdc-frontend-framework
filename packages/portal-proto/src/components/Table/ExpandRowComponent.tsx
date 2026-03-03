@@ -3,20 +3,18 @@ import { CollapseCircleIcon, ExpandCircleIcon } from "@/utils/icons";
 
 const ExpandRowComponent = ({
   isRowExpanded,
-  value = [],
+  value,
   isColumnExpanded = true,
   title,
   handleOneElementValue = true,
 }: {
   isRowExpanded: boolean;
-  value?: string[];
+  value: string[];
   isColumnExpanded?: boolean;
   title: string;
-  // when true (default) a single-element value will render the element itself (value[0])
-  // when false a single-element value will render as a count like other multi-element values
-  handleOneElementValue?: boolean;
+  handleOneElementValue: boolean;
 }): React.ReactNode => {
-  if (!value || value.length === 0) {
+  if (value.length === 0) {
     return "--";
   }
 
