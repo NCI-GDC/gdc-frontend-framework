@@ -412,11 +412,25 @@ const IDCViewerWrapper: FC = () => {
             <div
               onClick={(e) => {
                 e.stopPropagation();
-                // toggle expansion for this row (works for any count, including 1)
                 setTableExpanded(info.row);
+              }}
+              onKeyDown={(e: React.KeyboardEvent) => {
+                // Activate on Enter or Space keys
+                if (
+                  e.key === "Enter" ||
+                  e.key === " " ||
+                  e.key === "Spacebar"
+                ) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setTableExpanded(info.row);
+                }
               }}
               title={`${count} ${titleLabel}`}
               role="button"
+              tabIndex={0}
+              aria-expanded={Boolean(info.row.getIsExpanded())}
+              aria-label={`${count} ${titleLabel}. Press Enter or Space to expand.`}
               style={{ display: "inline-block" }}
             >
               <ExpandRowComponent
@@ -631,7 +645,7 @@ const IDCViewerWrapper: FC = () => {
                     data={displayedData}
                     tableTitle={undefined}
                     // expansion control
-                    getRowCanExpand={(row: any) => true}
+                    getRowCanExpand={(_: any) => true}
                     expandableColumnIds={["matches"]}
                     expanded={expandedState}
                     setExpanded={(row: any) => setTableExpanded(row)}
