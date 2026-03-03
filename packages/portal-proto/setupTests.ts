@@ -75,11 +75,7 @@ jest.mock("url-join", () => ({
   urlJoin: jest.fn(),
 }));
 
-jest.mock("next/config", () => () => ({
-  publicRuntimeConfig: {
-    basePath: "/v2",
-  },
-}));
+// process.env.NEXT_PUBLIC_BASEPATH = "";
 
 jest.mock("dom-to-svg", () => ({
   elementToSVG: jest.fn(),

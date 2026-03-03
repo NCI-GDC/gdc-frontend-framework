@@ -1,7 +1,6 @@
 import React, { PropsWithChildren, useContext, useEffect } from "react";
 import { get } from "lodash";
 import { ActionIcon, Divider, Group, Tooltip } from "@mantine/core";
-import { QueryExpressionsExpandedContext } from "./QueryExpressionSection";
 import FilterBadge from "@/common/FilterBadge";
 import {
   CloseIcon,
@@ -28,6 +27,7 @@ import {
   QueryExpressionHooks,
   Union,
 } from "./types";
+import { QueryExpressionsExpandedContext } from "./QueryExpressionsExpandedContext";
 
 const QueryRepresentationText: React.FC<PropsWithChildren> = ({ children }) => (
   <div className="flex truncate ... px-2 py-1 bg-base-max h-full">

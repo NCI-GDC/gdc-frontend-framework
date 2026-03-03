@@ -5,7 +5,7 @@
     "@gff/portal-components": "^2.18.0",
     "@mantine/core": "8.3.9",
     "@mantine/notifications": "8.3.9",
-    "next": "^15.5.9"
+    "next": "^16.1.6"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.0.0",

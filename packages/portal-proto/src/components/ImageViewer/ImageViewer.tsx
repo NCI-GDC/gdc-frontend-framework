@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState, JSX } from "react";
-import getConfig from "next/config";
 import OpenSeadragon from "openseadragon";
 import { useImageDetailsQuery } from "@gff/core";
 import { Button, LoadingOverlay } from "@mantine/core";
@@ -11,9 +10,7 @@ export interface ImageViewerProp extends HorizontalTableProps {
   imageId: string;
 }
 
-const {
-  publicRuntimeConfig: { basePath },
-} = getConfig();
+const basePath = process.env.NEXT_PUBLIC_BASEPATH;
 
 const InitOpenseadragon = (
   basePath: string,

@@ -3,9 +3,9 @@ import { ActionIcon, Badge } from "@mantine/core";
 import OverflowTooltippedLabel from "@/common/OverflowTooltippedLabel";
 import { Cohort } from "@/cohort/types";
 import { Operation } from "@/cohort/QueryExpression/types";
-import { QueryExpressionsExpandedContext } from "@/cohort/QueryExpression/QueryExpressionSection";
 import { CloseIcon } from "src/commonIcons";
 import FormattedFilterLabel from "./FormattedFilterLabel";
+import { QueryExpressionsExpandedContext } from "@/cohort/QueryExpression/QueryExpressionsExpandedContext";
 
 const RemoveButton = ({ label }: { label: string }) => (
   <ActionIcon

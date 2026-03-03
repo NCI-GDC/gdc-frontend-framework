@@ -85,7 +85,7 @@ const CohortComparisonApp: React.FC = () => {
     if (primaryCohort?.removed || comparisonCohort?.removed) {
       setSelectionScreenOpen(true);
     }
-  }, [primaryCohort, comparisonCohort]);
+  }, [primaryCohort, comparisonCohort, setSelectionScreenOpen]);
 
   useDeepCompareEffect(() => {
     setPrimaryCohort(currentCohort);

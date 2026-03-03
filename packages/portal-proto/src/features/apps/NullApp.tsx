@@ -10,6 +10,7 @@ const NullApp: React.FC = () => {
         src="/user-flow/icons/apps/construction.svg"
         height={320}
         width={320}
+        alt="under construction"
       />
     </div>
   );
