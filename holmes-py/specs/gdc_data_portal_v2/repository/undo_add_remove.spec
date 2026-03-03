@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Undo Adding and Removing Files
 Test-Case       : PEAR-462, PEAR-468
 
-tags: gdc-data-portal-v2, repository, regression
+tags: gdc-data-portal-v2, repository, regression, gitlab
 
 ## Navigate to Repository Page
 * On GDC Data Portal V2 app

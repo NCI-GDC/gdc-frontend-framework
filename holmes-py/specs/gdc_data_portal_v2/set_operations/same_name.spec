@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Selecting different sets and cohorts with the same name
 Test-Case       : PEAR-1231, PEAR-1230
 
-tags: gdc-data-portal-v2, set-operations, regression
+tags: gdc-data-portal-v2, set-operations, regression, gitlab
 
 ## Navigate to Manage Sets
 * On GDC Data Portal V2 app

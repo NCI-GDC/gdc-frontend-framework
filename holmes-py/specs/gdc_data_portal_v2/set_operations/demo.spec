@@ -5,7 +5,7 @@ Owner		    : GDC QA
 Description	    : Set Operations - Demo Mode
 Test-Case       : PEAR-1229
 
-tags: gdc-data-portal-v2, set-operations, regression
+tags: gdc-data-portal-v2, set-operations, regression, gitlab
 
 ## Navigate to Set Operations
 * Navigate to "Analysis" from "Header" "section"

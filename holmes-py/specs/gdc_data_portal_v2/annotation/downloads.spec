@@ -5,7 +5,7 @@ Owner		            : GDC QA
 Description		      : JSON and TSV Downloads
 Test-Case           : PEAR-2423
 
-tags: gdc-data-portal-v2, regression, annotations
+tags: gdc-data-portal-v2, regression, gitlab, annotations
 
 ## Navigate to Browse Annotations
 * On GDC Data Portal V2 app

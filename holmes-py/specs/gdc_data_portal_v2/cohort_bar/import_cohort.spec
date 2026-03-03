@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Test Cohort Bar - impoting a cohort
 Test-case       : PEAR-499
 
-tags: gdc-data-portal-v2, regression, cohort-bar
+tags: gdc-data-portal-v2, regression, gitlab, cohort-bar
 
 ## Collect Data Portal Statistics
 * On GDC Data Portal V2 app

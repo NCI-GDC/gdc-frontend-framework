@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		    : Validate All Buttons in Project Summary Header
 Test-Case           : PEAR-2202
 
-tags: gdc-data-portal-v2, regression, project-summary, clinical-biospecimen-download
+tags: gdc-data-portal-v2, regression, gitlab, project-summary, clinical-biospecimen-download
 
 ## Navigate to Projects Page
 * On GDC Data Portal V2 app

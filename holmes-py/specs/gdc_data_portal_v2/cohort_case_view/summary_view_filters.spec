@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Summary View Filters
 Test-Case       : PEAR-2207
 
-tags: gdc-data-portal-v2, regression, cohort-bar, case-view
+tags: gdc-data-portal-v2, regression, gitlab, cohort-bar, case-view
 
 ## Navigate to Summary View
 * On GDC Data Portal V2 app

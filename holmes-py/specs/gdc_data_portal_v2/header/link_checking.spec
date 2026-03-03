@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Test Header - Links
 Test-case       : PEAR-2518
 
-tags: gdc-data-portal-v2, regression, header, navigation
+tags: gdc-data-portal-v2, regression, gitlab, header, navigation
 
 ## Navigate to Home Page
 * On GDC Data Portal V2 app

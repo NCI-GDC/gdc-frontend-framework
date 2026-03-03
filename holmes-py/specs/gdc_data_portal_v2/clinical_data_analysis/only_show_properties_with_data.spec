@@ -5,7 +5,7 @@ Owner		      : GDC QA
 Description		: Validate behavior of the Only Show Properties With Data button
 Test-Case     : PEAR-2529
 
-tags: gdc-data-portal-v2, clinical-data-analysis, regression
+tags: gdc-data-portal-v2, clinical-data-analysis, regression, gitlab
 
 ## Create Cohort for Test
 * On GDC Data Portal V2 app

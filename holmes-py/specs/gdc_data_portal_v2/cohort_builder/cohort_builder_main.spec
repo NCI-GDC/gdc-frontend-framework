@@ -5,17 +5,13 @@ Owner		        : GDC QA
 Description		  : Test Cohort Builder - card functions
 Test-case       : PEAR-792
 
-tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
+tags: gdc-data-portal-v2, cohort-builder, filter-card, regression, gitlab
 
 ## Navigate to Cohort Builder
-
-tags: regression, smoke, cohort-builder
-
 * On GDC Data Portal V2 app
 * Navigate to "Cohort" from "Header" "section"
 
 ## Cohort Builder - General Card Functions
-tags: cohort-selections
 * Expand or contract a facet from "General Diagnosis" tab on the Cohort Builder page
   |facet_name               |selection                    |
   |-------------------------|-----------------------------|

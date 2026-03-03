@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Cohort Comparison - Main Page
 Test-case       : PEAR-817
 
-tags: gdc-data-portal-v2, regression, cohort-comparison
+tags: gdc-data-portal-v2, regression, gitlab, cohort-comparison
 
 ## Navigate to Cohort Builder
 * On GDC Data Portal V2 app

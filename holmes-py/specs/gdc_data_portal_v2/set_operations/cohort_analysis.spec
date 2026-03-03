@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Set Operations - Cohort Main Page
 Test-Case       : PEAR-1230
 
-tags: gdc-data-portal-v2, set-operations, regression
+tags: gdc-data-portal-v2, set-operations, regression, gitlab
 
 ## Navigate to Cohort Builder
 * On GDC Data Portal V2 app

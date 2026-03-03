@@ -5,7 +5,7 @@ Owner		    : GDC QA
 Description		: Mutation Set - Create, Edit, Download, Delete
 Test-Case       : PEAR-1619
 
-tags: gdc-data-portal-v2, manage-sets, regression
+tags: gdc-data-portal-v2, manage-sets, regression, gitlab
 
 ## Navigate to Manage Sets
 * On GDC Data Portal V2 app

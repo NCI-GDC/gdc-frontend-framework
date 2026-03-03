@@ -5,7 +5,7 @@ Owner		    : GDC QA
 Description		: Test header navigation
 Test-Case       : N/A
 
-tags: gdc-data-portal-v2, regression, navigation, header
+tags: gdc-data-portal-v2, regression, gitlab, navigation, header
 
 ## Open the data portal
 * On GDC Data Portal V2 app

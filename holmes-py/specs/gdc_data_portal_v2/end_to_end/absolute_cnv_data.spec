@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		    : CNV Index Points to ABSOLUTE
 Test-case           :
 
-tags: gdc-data-portal-v2, end-to-end, regression
+tags: gdc-data-portal-v2, end-to-end, regression, gitlab
 
 ## Navigate to Repository
 * On GDC Data Portal V2 app

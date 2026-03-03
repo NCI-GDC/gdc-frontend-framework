@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		    : Validate Various Tables
 Test-Case           : PEAR-2202
 
-tags: gdc-data-portal-v2, regression, project-summary
+tags: gdc-data-portal-v2, regression, gitlab, project-summary
 
 ## Navigate to Projects Page
 * On GDC Data Portal V2 app

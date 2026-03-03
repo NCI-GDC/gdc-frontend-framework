@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Summary View Header
 Test-Case       : PEAR-2207, PEAR-1048
 
-tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecimen-download
+tags: gdc-data-portal-v2, regression, gitlab, cohort-bar, case-view, clinical-biospecimen-download
 
 ## Navigate to Summary View
 * On GDC Data Portal V2 app

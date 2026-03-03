@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Cohort Bar Unique Cohort Name and Replacement
 Test-case       : PEAR-1460
 
-tags: gdc-data-portal-v2, regression, cohort-bar
+tags: gdc-data-portal-v2, regression, gitlab, cohort-bar
 
 ## Navigate to Cohort Builder
 * On GDC Data Portal V2 app

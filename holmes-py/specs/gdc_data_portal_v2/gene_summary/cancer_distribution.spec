@@ -5,7 +5,7 @@ Owner		    : GDC QA
 Description		: Validate Cancer Distribution Area
 Test-Case       : PEAR-2286
 
-tags: gdc-data-portal-v2, regression, gene-summary
+tags: gdc-data-portal-v2, regression, gitlab, gene-summary
 
 ## Navigate to Gene Summary Page: RBM15
 * On GDC Data Portal V2 app

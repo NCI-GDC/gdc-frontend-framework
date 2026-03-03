@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		    : Validate Tables in Annotation Summary Page
 Test-Case           : PEAR-2419
 
-tags: gdc-data-portal-v2, regression, annotations
+tags: gdc-data-portal-v2, regression, gitlab, annotations
 
 ## Navigate to Summary Page: 00e91bc8-2882-41b1-93de-938f71259e91
 * On GDC Data Portal V2 app

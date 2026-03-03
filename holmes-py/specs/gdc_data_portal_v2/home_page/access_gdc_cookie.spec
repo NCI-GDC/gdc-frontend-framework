@@ -5,7 +5,7 @@ Owner		    : GDC QA
 Description	    : Check Cookie - Home Page
 Test-case       : QA-2074
 
-tags: gdc-data-portal-v2, regression, home-page, cookie
+tags: gdc-data-portal-v2, regression, gitlab, home-page, cookie
 
 ## Navigate to Home Page
 * On GDC Data Portal V2 app

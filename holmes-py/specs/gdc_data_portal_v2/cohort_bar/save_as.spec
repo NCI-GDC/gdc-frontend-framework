@@ -5,7 +5,7 @@ Owner		          : GDC QA
 Description		    : Cohort Bar - Save As Feature
 Test-case         : PEAR-1747
 
-tags: gdc-data-portal-v2, regression, cohort-bar
+tags: gdc-data-portal-v2, regression, gitlab, cohort-bar
 
 ## Navigate to Cohort Builder
 * On GDC Data Portal V2 app

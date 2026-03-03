@@ -5,7 +5,7 @@ Owner		    : GDC QA
 Description		: Validate Consequences Table and Downloads
 Test-Case       : PEAR-2367
 
-tags: gdc-data-portal-v2, regression, mutation-summary
+tags: gdc-data-portal-v2, regression, gitlab, mutation-summary
 
 ## Navigate to Mutation Summary Page: chr3:g.179218303G>A
 * On GDC Data Portal V2 app

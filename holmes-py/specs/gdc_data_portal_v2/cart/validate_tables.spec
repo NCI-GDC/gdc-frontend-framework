@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Validate Authorization Level, Count by Projects, and Cart Item Tables
 Test-Case       : PEAR-2244
 
-tags: gdc-data-portal-v2, regression, cart
+tags: gdc-data-portal-v2, regression, gitlab, cart
 
 ## Add Files to Cart
 * On GDC Data Portal V2 app

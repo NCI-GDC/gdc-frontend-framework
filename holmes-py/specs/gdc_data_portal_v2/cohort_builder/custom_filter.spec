@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Test Cohort Builder - test custom filter tab and modal
 Test-case       : PEAR-795
 
-tags: gdc-data-portal-v2, cohort-builder, regression
+tags: gdc-data-portal-v2, cohort-builder, regression, gitlab
 
 ## Navigate to Cohort Builder
 

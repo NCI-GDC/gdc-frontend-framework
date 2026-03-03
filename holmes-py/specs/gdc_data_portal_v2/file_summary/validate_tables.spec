@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		    : Validate Various Tables
 Test-Case           : PEAR-474, PEAR-476, PEAR-463
 
-tags: gdc-data-portal-v2, regression, file-summary
+tags: gdc-data-portal-v2, regression, gitlab, file-summary
 
 ## Navigate to Summary Page: 0b439a6e-9f34-4d45-8a1a-b76c8e0ca8f3
 * On GDC Data Portal V2 app

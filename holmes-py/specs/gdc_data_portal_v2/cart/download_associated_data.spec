@@ -5,7 +5,7 @@ Owner		    : GDC QA
 Description		: Download Associated Data Dropdown Options
 Test-Case       : PEAR-2246
 
-tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
+tags: gdc-data-portal-v2, regression, gitlab, cart, clinical-biospecimen-download
 
 ## Add Files to Cart
 * On GDC Data Portal V2 app

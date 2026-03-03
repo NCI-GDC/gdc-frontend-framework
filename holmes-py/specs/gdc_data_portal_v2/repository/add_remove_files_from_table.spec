@@ -5,7 +5,7 @@ Owner		       : GDC QA
 Description		 : Repository Add and Remove Individual Files From the Table
 Test-Case      : PEAR-466, PEAR-471
 
-tags: gdc-data-portal-v2, repository, regression, smoke
+tags: gdc-data-portal-v2, repository, regression, gitlab
 
 ## Navigate to Repository Page
 * On GDC Data Portal V2 app

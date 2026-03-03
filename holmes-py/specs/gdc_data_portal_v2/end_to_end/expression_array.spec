@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		    : Test New Experimental Strategy Expression Array
 Test-case           :
 
-tags: gdc-data-portal-v2, end-to-end, regression
+tags: gdc-data-portal-v2, end-to-end, regression, gitlab
 
 ## Navigate to Summary Page: dc60add8-9c21-4d98-bd3d-93ccf5ded9b9
 * On GDC Data Portal V2 app

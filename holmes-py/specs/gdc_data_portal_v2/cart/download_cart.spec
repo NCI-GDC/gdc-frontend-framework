@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Manifest and Download Cart
 Test-Case       : PEAR-2246
 
-tags: gdc-data-portal-v2, regression, cart
+tags: gdc-data-portal-v2, regression, gitlab, cart
 
 
 ## Remove Any Files From Cart

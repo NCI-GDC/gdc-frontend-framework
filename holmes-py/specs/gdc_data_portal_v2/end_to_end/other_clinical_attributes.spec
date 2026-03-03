@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		    : Other Clinical Attributes
 Test-case           :
 
-tags: gdc-data-portal-v2, end-to-end, regression
+tags: gdc-data-portal-v2, end-to-end, regression, gitlab
 
 ## Navigate to Cohort Builder
 * On GDC Data Portal V2 app

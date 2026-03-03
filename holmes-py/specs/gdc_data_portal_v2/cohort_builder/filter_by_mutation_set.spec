@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		  : Create mutation  set using filter card. Filter cohort by Mutation Sets.
 Test-case       : PEAR-792
 
-tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
+tags: gdc-data-portal-v2, cohort-builder, filter-card, regression, gitlab
 
 ## Navigate to Manage Sets
 * On GDC Data Portal V2 app

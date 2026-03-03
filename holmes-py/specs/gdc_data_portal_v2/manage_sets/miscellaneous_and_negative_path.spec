@@ -5,7 +5,7 @@ Owner		    : GDC QA
 Description		: Negative Scenarios, Text, and Links Validation
 Test-Case       : PEAR-1620
 
-tags: gdc-data-portal-v2, manage-sets, regression
+tags: gdc-data-portal-v2, manage-sets, regression, gitlab
 
 ## Navigate to Manage Sets
 * On GDC Data Portal V2 app

@@ -4,7 +4,7 @@ Version			  : 1.2
 Owner		      : GDC QA
 Description		: JSON, TSV, Manifest, Metadata, Sample Sheet Downloads
 
-tags: gdc-data-portal-v2, repository, json-tsv-file-download, download, regression
+tags: gdc-data-portal-v2, repository, json-tsv-file-download, download, regression, gitlab
 
 ## Navigate to Cohort Builder and Select Filters
 * On GDC Data Portal V2 app

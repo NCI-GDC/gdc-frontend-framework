@@ -5,7 +5,7 @@ Owner		       : GDC QA
 Description		 : Test Repository Add All Files and Remove All Files buttons
 Test-Case      : PEAR-461, PEAR-473
 
-tags: gdc-data-portal-v2, repository, regression
+tags: gdc-data-portal-v2, repository, regression, gitlab
 
 ## Navigate to Repository Page
 * On GDC Data Portal V2 app

@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		    : Validate BAM Metrics Table
 Test-Case           : PEAR-474
 
-tags: gdc-data-portal-v2, regression, file-summary
+tags: gdc-data-portal-v2, regression, gitlab, file-summary
 
 ## Navigate to Summary Page: 93a3d4d5-a8ec-4a8b-8297-ee76c03ed3d7
 * On GDC Data Portal V2 app

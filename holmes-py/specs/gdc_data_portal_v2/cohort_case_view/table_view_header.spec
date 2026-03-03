@@ -5,7 +5,7 @@ Owner		        : GDC QA
 Description		    : Validate Cohort Header
 Test-Case           : PEAR-1052
 
-tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecimen-download
+tags: gdc-data-portal-v2, regression, gitlab, cohort-bar, case-view, clinical-biospecimen-download
 
 ## Navigate to Table View
 * On GDC Data Portal V2 app

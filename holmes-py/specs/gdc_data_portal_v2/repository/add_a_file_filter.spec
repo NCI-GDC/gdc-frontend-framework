@@ -4,12 +4,9 @@ Version			: 1.0
 Owner		    : GDC QA
 Description		: Test Repository Filters
 
-tags: gdc-data-portal-v2, repository, repository_filters, smoke-test
+tags: gdc-data-portal-v2, repository, repository_filters, smoke-test, regression, gitlab
 
 ## Repository Filters
-
-tags: regression, smoke
-
 * On GDC Data Portal V2 app
 * Navigate to "Downloads" from "Header" "section"
 
