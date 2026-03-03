@@ -372,7 +372,7 @@ const IDCViewerWrapper: FC = () => {
       {
         id: "caseId",
         accessorFn: (row) => row.caseId,
-        header: "GDC caseId",
+        header: "GDC Case ID",
         cell: (info) => info.getValue(),
         enableSorting: true, // <-- enable sorting for caseId (maps to submitter_id)
       },

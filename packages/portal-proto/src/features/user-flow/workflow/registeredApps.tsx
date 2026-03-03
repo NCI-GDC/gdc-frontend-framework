@@ -248,6 +248,7 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
   },
   {
     name: "IDC Image Viewer",
+
     icon: (
       <IDCViewerIcon
         className="m-auto"
@@ -259,12 +260,11 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
     ),
     tags: ["IDCViewer"],
     hasDemo: false,
-    description: "Visualize IDC Image Viewer.",
+    description:
+      "View histology and radiology images using the Imaging Data Commons (IDC) Image Viewer for cohort cases.",
     id: "IDCViewerApp",
     countsField: "caseCount",
-    optimizeRules: ["available data = wsi or radiology images"],
-    noDataTooltip:
-      "Current cohort does not have image data available for visualization.",
+    hideCounts: true,
   },
   {
     name: "Gene Expression Clustering",
