@@ -439,7 +439,6 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download, regressio
     |Tumor Descriptor                       |
     |Specimen Type                          |
     |Preservation Method                    |
-    |Tumor Code ID                          |
     |Shortest Dimension                     |
     |Intermediate Dimension                 |
     |Longest Dimension                      |
