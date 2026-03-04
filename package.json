@@ -43,6 +43,7 @@
   "homepage": "https://github.com/NCI-GDC/gdc-frontend-framework#readme",
   "dependencies": {
     "@reactour/tour": "^2.9.0",
+    "@sjcrh/proteinpaint-client": "^2.170.22",
     "dom-to-svg": "^0.12.2",
     "echarts": "^5.5.1",
     "file-saver": "^2.0.5",
