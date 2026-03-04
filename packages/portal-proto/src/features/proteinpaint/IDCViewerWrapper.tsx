@@ -13,17 +13,16 @@ import {
   fetchGdcCases as fetchGdcCasesApi,
   useCurrentCohortFilters,
   filterSetToOperation,
-  convertFilterToGqlFilter, // added: convert Operation -> GqlOperation
+  convertFilterToGqlFilter,
   useCurrentCohortCounts,
-  GqlOperation, // added hook to get cohort case count
-  SortBy, // keep SortBy type import
+  GqlOperation,
+  SortBy,
 } from "@gff/core";
-// replaced TableView with VerticalTable + helpers
 import VerticalTable from "@/components/Table/VerticalTable";
-import { ColumnDef, SortingState } from "@tanstack/react-table"; // <-- added SortingState
+import { ColumnDef, SortingState } from "@tanstack/react-table";
 import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
 import useStandardPagination from "@/hooks/useStandardPagination";
-import { LoadingOverlay } from "@mantine/core"; // <-- added LoadingOverlay
+import { LoadingOverlay } from "@mantine/core";
 
 /**
  * Cleaned IDCViewerWrapper:
@@ -36,7 +35,10 @@ const SLIM_VIEWER_BASE =
 const CT_VIEWER_BASE =
   "https://viewer.imaging.datacommons.cancer.gov/v3/viewer/";
 
-// Reusable columns list for IDC parquet reads (use study_type, remove Modality)
+const IDC_PARQUET_URL =
+  "https://storage.googleapis.com/idc-index-data-artifacts/current/release_artifacts/gdc_idc_mapping.parquet";
+
+// Columns list for IDC parquet reads
 const IDC_PARQUET_COLUMNS = [
   "PatientID",
   "StudyInstanceUID",
@@ -46,11 +48,7 @@ const IDC_PARQUET_COLUMNS = [
   "gdc_case_id",
 ];
 
-// NEW: direct GCS parquet URL (explicit release artifact; fetch whole file)
-const IDC_PARQUET_URL =
-  "https://storage.googleapis.com/idc-index-data-artifacts/current/release_artifacts/gdc_idc_mapping.parquet";
-
-// Helper: read idc_data from a parquet file buffer (dynamic imports, use compressors if available)
+// Helper: read idc_data from a parquet file
 async function readParquetIndex(
   idc_index_file: any,
 ): Promise<{ idc_data: ReadonlyArray<any>; case_ids: readonly string[] }> {
@@ -60,32 +58,24 @@ async function readParquetIndex(
     compressors: compressors,
   });
 
-  // Filter rows to just those that are in_gdc === true (accept string/bool)
   const idc_data = raw_rows || [];
 
-  // Normalize StudyDate default and ensure minimal fields are present
+  // Extract unique gdc case ids from the parquet data
+  const gdcCaseIdSet = new Set<string>();
   idc_data.forEach((o: any) => {
-    if (!o.StudyDate || String(o.StudyDate).trim() === "") {
-      o.StudyDate = "n/a";
-    }
+    const cid = o?.gdc_case_id;
+    if (cid) gdcCaseIdSet.add(String(cid));
   });
+  const gdcCaseIds = Array.from(gdcCaseIdSet) as readonly string[];
 
-  // Extract unique case_ids from the filtered parquet data
-  const caseIdSet = new Set<string>();
-  idc_data.forEach((o: any) => {
-    const cid = o?.gdc_case_id ?? o?.case_id ?? o?.PatientID ?? null;
-    if (cid) caseIdSet.add(String(cid));
-  });
-  const case_ids = Array.from(caseIdSet) as readonly string[];
-
-  return { idc_data: idc_data as ReadonlyArray<any>, case_ids };
+  return { idc_data: idc_data as ReadonlyArray<any>, case_ids: gdcCaseIds };
 }
 
 const IDCViewerWrapper: FC = () => {
   const [logs, setLogs] = useState<string[]>([]);
   const [mappings, setMappings] = useState<any[]>([]);
-  useCurrentCohortCounts();
-  const divRef = useRef<HTMLDivElement | null>(null);
+
+  const idcViewerRootDivRef = useRef<HTMLDivElement | null>(null);
   // Track which cases are expanded to show their series rows
   const [expandedCases, setExpandedCases] = useState<Set<string>>(new Set());
   const toggleExpanded = useCallback((caseId: string) => {
@@ -120,7 +110,6 @@ const IDCViewerWrapper: FC = () => {
   const buildSlimStudyURL = (studyInstanceUID: string) =>
     SLIM_VIEWER_BASE + encodeURIComponent(studyInstanceUID);
 
-  // --- NEW: sorting state (tanstack) — user interactions will update this ---
   const [sorting, setSorting] = useState<SortingState>([
     { id: "caseId", desc: false },
   ]);
@@ -190,7 +179,6 @@ const IDCViewerWrapper: FC = () => {
     const COLUMN_ID_TO_FIELD: Record<string, string> = {
       caseId: "submitter_id",
       program: "project.program.name",
-      // add other mappings if you enable more sortable columns
     };
     if (!sorting || sorting.length === 0) return [];
     return sorting.map((s) => {
@@ -199,7 +187,7 @@ const IDCViewerWrapper: FC = () => {
     });
   }, [sorting]);
 
-  // --- UPDATED: fetch all matching GDC cases in chunks and build mappings once ---
+  // fetch all matching GDC cases in chunks and build mappings once ---
   const fetchAllGdcCasesAndMap = useCallback(async () => {
     // prevent re-entrant calls
     if (fetchInProgressRef.current) {
@@ -207,7 +195,7 @@ const IDCViewerWrapper: FC = () => {
       return;
     }
     fetchInProgressRef.current = true;
-    setIsLoading(true); // <-- show overlay when starting overall fetch+parse
+    setIsLoading(true);
     try {
       addLog("Preparing to fetch all matching GDC cases");
 
@@ -291,7 +279,7 @@ const IDCViewerWrapper: FC = () => {
   }, [sorting, cohortFiltersKey]);
 
   useEffect(() => {
-    const root = divRef.current;
+    const root = idcViewerRootDivRef.current;
     if (!root) return;
     root.style.background = "#fff";
     return () => {
@@ -530,7 +518,7 @@ const IDCViewerWrapper: FC = () => {
 
   return (
     <div
-      ref={divRef}
+      ref={idcViewerRootDivRef}
       className="idc-viewer-wrapper-root"
       style={{ padding: 12 }}
     >
