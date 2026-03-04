@@ -3,6 +3,12 @@
 # run from the gdc-frontend-framework project root folder
 # ./packages/portal-proto/src/features/proteinpaint/dev.sh
 # assumes that the proteinpaint folder is a sibling dir of gff
+
+source ~/.bash_profile
+
+nvm install 20.11.0
+nvm use 20.11.0
+
 if [[ "$1" == "unlink" ]]; then
 	# to test the published client package before submitting a PR with an updated pp-client version
 	npm unlink ../proteinpaint/client
@@ -22,7 +28,7 @@ else
 	# other way around
 fi
 
-# sometimes the nextjs bundle cache are stale after npm link
+# sometimes the nextjs bundle cache is stale after npm link
 rm -rf packages/portal-proto/.next
 
 # run the following tab in a separate tab
