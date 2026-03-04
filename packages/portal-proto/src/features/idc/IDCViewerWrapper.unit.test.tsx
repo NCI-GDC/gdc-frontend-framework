@@ -1,4 +1,5 @@
 // Use non-hoisted, virtual mocks so Jest doesn't try to resolve/hoist or parse ESM-only modules
+
 jest.doMock(
   "hyparquet-compressors",
   () => ({
@@ -45,9 +46,10 @@ jest.doMock(
 import { render } from "@testing-library/react";
 import IDCViewerWrapper from "./IDCViewerWrapper";
 import { MantineProvider } from "@mantine/core";
+import React from "react";
 
-test("IDCViewerWrapper render test", () => {
-  const { unmount } = render(
+it("Render IDC table columns", async () => {
+  const { unmount, findByText } = render(
     <MantineProvider
       theme={{
         colors: {
@@ -59,5 +61,12 @@ test("IDCViewerWrapper render test", () => {
       <IDCViewerWrapper />
     </MantineProvider>,
   );
+
+  const gdcCaseIDEl = await findByText("GDC Case ID");
+  expect(gdcCaseIDEl).toBeInTheDocument();
+
+  const programEl = await findByText("Program");
+  expect(programEl).toBeInTheDocument();
+
   unmount();
 });
