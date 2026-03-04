@@ -14,7 +14,6 @@ import {
   useCurrentCohortFilters,
   filterSetToOperation,
   convertFilterToGqlFilter,
-  useCurrentCohortCounts,
   GqlOperation,
   SortBy,
 } from "@gff/core";
@@ -243,11 +242,7 @@ const IDCViewerWrapper: FC = () => {
 
       // build mappings from allHits and idc_data
       const mappings = allHits.map((gdcCase: any) => {
-        const submitterId =
-          gdcCase?.submitter_id ??
-          gdcCase?.case_id ??
-          gdcCase?.case_uuid ??
-          null;
+        const submitterId = gdcCase?.submitter_id;
         const matches = (idc_data as ReadonlyArray<any>).filter(
           (row: any) =>
             row.PatientID &&
@@ -290,11 +285,7 @@ const IDCViewerWrapper: FC = () => {
   // derive tableData from mappings (convert mapping -> table row objects)
   const tableData = useMemo(() => {
     return (mappings || []).map((m) => {
-      const caseId =
-        m.gdcCase?.submitter_id ??
-        m.gdcCase?.case_id ??
-        m.gdcCase?.case_uuid ??
-        "(no id)";
+      const caseId = m.gdcCase?.submitter_id ?? "(no case id)";
       const programName = m.gdcCase?.project?.program?.name ?? "(no program)";
 
       // group rows by StudyInstanceUID
@@ -307,7 +298,7 @@ const IDCViewerWrapper: FC = () => {
             series: [],
             hasWSI: false,
             hasRadiology: false,
-            StudyDate: r?.StudyDate ?? "2013-02-01",
+            StudyDate: r?.StudyDate ?? "n/a",
             StudyDescription: r?.StudyDescription ?? null,
           });
         }
@@ -354,7 +345,6 @@ const IDCViewerWrapper: FC = () => {
     });
   }, [mappings]);
 
-  // prepare columns (kept same as before) so hook can use column meta for sorting if needed
   const columns: ColumnDef<any>[] = useMemo(
     () => [
       {
@@ -471,7 +461,6 @@ const IDCViewerWrapper: FC = () => {
       //   enableSorting: false,
       // },
     ],
-    // include setTableExpanded so renderer closure has correct reference
     [setTableExpanded],
   );
 
