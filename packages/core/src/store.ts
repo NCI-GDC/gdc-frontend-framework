@@ -27,6 +27,7 @@ import { quickSearchApiMiddleware } from "./features/quickSearch/quickSearch";
 import { userAuthApiMiddleware } from "./features/users/usersSlice";
 import { bannerNotificationApiSliceMiddleware } from "./features/bannerNotification/bannerNotificationSlice";
 import { imageDetailsApiMiddleware } from "./features/imageDetails/imageDetailsSlice";
+import { versionInfoMiddleware } from "./features/versionInfo/versionInfoSlice";
 import storage from "./storage-persist";
 
 /**
@@ -99,6 +100,7 @@ export const coreStore = configureStore({
         bannerNotificationApiSliceMiddleware,
         quickSearchApiMiddleware,
         imageDetailsApiMiddleware,
+        versionInfoMiddleware,
       )
       .prepend(coreStoreListenerMiddleware.middleware), // needs to be prepended
 });

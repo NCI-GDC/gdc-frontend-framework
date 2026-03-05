@@ -1,9 +1,10 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
+import { render } from "test-utils";
 import { Footer } from "./Footer";
 
 jest.mock("@gff/core", () => ({
   ...jest.requireActual("@gff/core"),
-  useVersionInfoDetails: jest.fn().mockReturnValue({
+  useGetVersionInfoQuery: jest.fn().mockReturnValue({
     data: {
       data_release: "Data Release 34.0 - July 27, 2022",
       commit: "13c988d4f15e06bcdd0b0af290086a30test0001",
