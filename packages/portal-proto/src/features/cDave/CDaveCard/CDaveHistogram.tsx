@@ -51,7 +51,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
   hideYTicks = false,
 }: HistogramProps) => {
   const [displayPercent, setDisplayPercent] = useState(false);
-  const downloadChartRef = useRef<HTMLElement>();
+  const downloadChartRef = useRef<HTMLElement>(null);
   const { startDownload, finishDownload, isDownloading } = useContext(
     DownloadProgressContext,
   );

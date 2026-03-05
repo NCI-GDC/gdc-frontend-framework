@@ -1,3 +1,4 @@
+import React, { JSX, useState } from "react";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import { HorizontalTable } from "@/components/HorizontalTable";
 import { formatDataForHorizontalTable } from "@/features/files/utils";
@@ -11,7 +12,6 @@ import {
   useCoreDispatch,
 } from "@gff/core";
 import { Divider, Loader, Tabs, Text } from "@mantine/core";
-import { useState } from "react";
 import { humanify, ageDisplay } from "src/utils";
 import { FamilyHistoryOrExposure } from "./FamilyHistoryOrExposure";
 import download from "@/utils/download";

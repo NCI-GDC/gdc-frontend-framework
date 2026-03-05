@@ -1,6 +1,6 @@
+import React, { JSX, ReactNode } from "react";
 import { hideModal, useCoreDispatch } from "@gff/core";
 import { Button, Modal } from "@mantine/core";
-import { ReactNode } from "react";
 import { theme } from "tailwind.config";
 
 interface ButtonOptions {

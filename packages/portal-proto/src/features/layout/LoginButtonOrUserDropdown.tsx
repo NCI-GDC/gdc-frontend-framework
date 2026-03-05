@@ -27,7 +27,7 @@ const LoginButtonOrUserDropdown = () => {
   const dispatch = useCoreDispatch();
   const { data: userInfo } = useFetchUserDetailsQuery();
   const prevUserStatus = usePrevious(userInfo?.status);
-  const userDropdownRef = useRef<HTMLButtonElement>();
+  const userDropdownRef = useRef<HTMLButtonElement>(null);
   const [fetchToken] = useLazyFetchTokenQuery({ refetchOnFocus: false });
   const cohortIsLoggedIn = useCoreSelector((state) =>
     selectCohortIsLoggedIn(state),

@@ -1,7 +1,7 @@
 import VerticalTable from "@/components/Table/VerticalTable";
 import { createColumnHelper, SortingState } from "@tanstack/react-table";
 import { upperFirst } from "lodash";
-import { useMemo, useState } from "react";
+import React, { JSX, useMemo, useState } from "react";
 import { SelectedEntities } from "./types";
 import { useCaseSetCountsQuery } from "@gff/core";
 

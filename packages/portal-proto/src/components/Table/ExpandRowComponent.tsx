@@ -1,3 +1,4 @@
+import React, { JSX } from "react";
 import { CollapseCircleIcon, ExpandCircleIcon } from "@/utils/icons";
 
 const ExpandRowComponent = ({

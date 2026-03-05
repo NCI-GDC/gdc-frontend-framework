@@ -1,3 +1,4 @@
+import React, { JSX } from "react";
 import { SummaryStatsItem } from "@/features/homepage/SummaryStatsItem";
 import { TotalCounts, useGetVersionInfoQuery } from "@gff/core";
 import { AnchorLink } from "@/components/AnchorLink";

@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import React, { JSX, Dispatch, SetStateAction } from "react";
 import GenericLink from "@/components/GenericLink";
 import { TableActionButtons } from "@/components/TableActionButtons";
 import { AccessType, CartFile, GdcCartFile, GdcFile } from "@gff/core";

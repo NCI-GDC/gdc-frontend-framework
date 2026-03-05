@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { JSX, useEffect, useState } from "react";
 import { useCoreSelector, selectCurrentCohortId, usePrevious } from "@gff/core";
 import { useClearAllProjectFilters } from "./hooks";
 import ProjectFacetPanel from "./ProjectFacetPanel";

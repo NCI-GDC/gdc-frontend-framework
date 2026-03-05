@@ -1,4 +1,4 @@
-import { ReactNode, useRef } from "react";
+import React, { JSX, ReactNode, useRef } from "react";
 import { Button, Menu, MenuProps, Tooltip } from "@mantine/core";
 import { focusStyles } from "src/utils";
 import { DropdownIcon } from "@/utils/icons";
@@ -96,7 +96,7 @@ export const DropdownWithIcon = ({
   buttonAriaLabel = undefined,
   closeOnItemClick = true,
 }: DropdownWithIconProps): JSX.Element => {
-  const targetRef = useRef<HTMLButtonElement>();
+  const targetRef = useRef<HTMLButtonElement>(null);
 
   return (
     <Menu

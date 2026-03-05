@@ -4,7 +4,7 @@ import {
   createColumnHelper,
   SortingState,
 } from "@tanstack/react-table";
-import { useState, useId } from "react";
+import React, { JSX, useState, useId } from "react";
 import { useDeepCompareMemo } from "use-deep-compare";
 import CountButtonWrapperForSetsAndCases from "./CountButtonWrapperForSetsAndCases";
 import { Checkbox, Tooltip } from "@mantine/core";

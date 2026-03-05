@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { JSX, useState } from "react";
 import { Button, Tooltip } from "@mantine/core";
 import { CountsIcon } from "@/components/tailwindComponents";
 import { SaveCohortModal } from "@gff/portal-components";

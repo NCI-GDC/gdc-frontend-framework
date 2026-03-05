@@ -1,3 +1,4 @@
+import React, { JSX } from "react";
 import { Loader } from "@mantine/core";
 import { SetOperationsChartInputProps } from "./types";
 import {

@@ -1,9 +1,9 @@
+import React, { JSX, Dispatch, SetStateAction, useMemo } from "react";
 import GenericLink from "@/components/GenericLink";
 import { fileInCart } from "@/utils/index";
 import { GdcFile, GdcCartFile, CartFile, AccessType } from "@gff/core";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import fileSize from "filesize";
-import { Dispatch, SetStateAction, useMemo } from "react";
 import { mapGdcFileToCartFile } from "./utils";
 import { TableActionButtons } from "@/components/TableActionButtons";
 import VerticalTable from "@/components/Table/VerticalTable";

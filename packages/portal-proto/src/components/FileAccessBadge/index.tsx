@@ -1,3 +1,4 @@
+import React, { JSX } from "react";
 import { AccessType } from "@gff/core";
 import { Badge } from "@mantine/core";
 

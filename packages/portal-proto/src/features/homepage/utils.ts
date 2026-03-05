@@ -1,3 +1,4 @@
+import { JSX } from "react";
 import { LinkProps } from "next/link";
 
 export const homepageButtonAltStyles = `

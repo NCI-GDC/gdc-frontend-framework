@@ -1,3 +1,4 @@
+import React, { JSX } from "react";
 import { addToCart, removeFromCart } from "@/features/cart/updateCart";
 import { CartIcon } from "@/utils/icons";
 import {

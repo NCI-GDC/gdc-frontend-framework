@@ -1,3 +1,4 @@
+import React, { JSX } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Badge, Text } from "@mantine/core";
 import type { Diagnoses } from "@gff/core";

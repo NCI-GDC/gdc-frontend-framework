@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { JSX, useState, useCallback } from "react";
 import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
 import {
   FacetDefinition,
@@ -45,7 +45,7 @@ const useRepositoryEnumData = (field: string) =>
 export const FileFacetPanel = (): JSX.Element => {
   const facetsConfig = useAppSelector(selectRepositoryConfigFacets);
 
-  const { isSuccess: isDictionaryReady } = useFacetDictionary();
+  const { isSuccess: isDictionaryReady } = useFacetDictionary(undefined);
   const facets = useCoreSelector((state) =>
     selectFacetDefinitionsByName(state, facetsConfig),
   );

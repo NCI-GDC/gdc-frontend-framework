@@ -43,7 +43,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   } = useGetSurvivalPlotQuery({
     filters,
   });
-  useFacetDictionary();
+  useFacetDictionary(undefined);
 
   useEffect(() => {
     if (lastDashboardRender) {

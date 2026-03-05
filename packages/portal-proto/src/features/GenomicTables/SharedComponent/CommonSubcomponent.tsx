@@ -1,3 +1,4 @@
+import React, { JSX } from "react";
 import { Loader } from "@mantine/core";
 import { TableSubrowData } from "@gff/core";
 import ListAffectedCases from "./ListAffectedCases";

@@ -1,4 +1,4 @@
-import React, { forwardRef, useState } from "react";
+import React, { forwardRef, useState, JSX } from "react";
 
 export interface CollapsableTableItemsProps {
   readonly expandBtnText: string;

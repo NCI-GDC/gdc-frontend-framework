@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, JSX } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
 import { useRouter } from "next/router";
 import { Loader, Highlight, Select, SelectProps } from "@mantine/core";

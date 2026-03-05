@@ -1,4 +1,5 @@
 // Credits to https://github.com/NCI-GDC/portal-ui/blob/develop/src/packages/%40ncigdc/modern_components/BiospecimenCard/utils.js for useful utilities functions
+import React, { JSX } from "react";
 import {
   formatDataForHorizontalTable,
   mapGdcFileToCartFile,

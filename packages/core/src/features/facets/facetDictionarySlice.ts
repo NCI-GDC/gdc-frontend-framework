@@ -9,7 +9,7 @@ import {
   DataStatus,
   FetchDataActionCreator,
   UseCoreDataResponse,
-  UserCoreDataHook,
+  UseCoreDataHook,
 } from "../../dataAccess";
 import { processDictionaryEntries } from "./facetDictionaryApi";
 import { useCoreDispatch, useCoreSelector } from "../../hooks";
@@ -120,14 +120,14 @@ export const selectFacetDefinitionsByName = (
   });
 };
 
-const createUseDictionaryHook = <P, A, T>(
-  fetchDataActionCreator: FetchDataActionCreator<P, A>,
+const createUseDictionaryHook = <P, C, A, T>(
+  fetchDataActionCreator: FetchDataActionCreator<P, C, A>,
   dataSelector: CoreDataSelector<T>,
-): UserCoreDataHook<P, T> => {
-  return (...params: P[]): UseCoreDataResponse<T> => {
+): UseCoreDataHook<P, C, T> => {
+  return (params: P, config?: C): UseCoreDataResponse<T> => {
     const coreDispatch = useCoreDispatch();
     const { data, pagination, status, error } = useCoreSelector(dataSelector);
-    const action = fetchDataActionCreator(...params);
+    const action = fetchDataActionCreator(params, config);
 
     useEffect(() => {
       if (status === "uninitialized") {

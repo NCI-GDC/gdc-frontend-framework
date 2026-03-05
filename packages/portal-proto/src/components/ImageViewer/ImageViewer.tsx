@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, JSX } from "react";
 import getConfig from "next/config";
 import OpenSeadragon from "openseadragon";
 import { useImageDetailsQuery } from "@gff/core";

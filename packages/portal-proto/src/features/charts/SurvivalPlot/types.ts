@@ -1,5 +1,5 @@
 import { Survival } from "@gff/core";
-import { Dispatch, MutableRefObject, SetStateAction } from "react";
+import { JSX, Dispatch, RefObject, SetStateAction } from "react";
 import { entityMetadataType } from "src/utils/contexts";
 
 export enum SurvivalPlotTypes {
@@ -18,7 +18,7 @@ export type UseSurvivalType = (
   height: number,
   setTooltip?: (x?: any) => any,
   setEntityMetadata?: Dispatch<SetStateAction<entityMetadataType>>,
-) => MutableRefObject<any>;
+) => RefObject<any>;
 
 export interface SurvivalPlotProps {
   readonly data: Survival;

@@ -292,15 +292,15 @@ export const useClearLocalFilterWhenCohortChanges = (): void => {
   }, [prevId, cohortId, appDispatch]);
 };
 
-export const createUseAppDataHook = <P, A, T>(
-  fetchDataActionCreator: FetchDataActionCreator<P, A>,
+export const createUseAppDataHook = <P, C, A, T>(
+  fetchDataActionCreator: FetchDataActionCreator<P, C, A>,
   dataSelector: AppDataSelector<T>,
-): UseAppDataHook<P, T> => {
-  return (...params: P[]): UseAppDataResponse<T> => {
+): UseAppDataHook<P, C, T> => {
+  return (params: P, config?: C): UseAppDataResponse<T> => {
     const appDispatch = useAppDispatch();
     const { data, status, error } = useAppSelector(dataSelector);
-    const action = fetchDataActionCreator(...params);
-    const prevParams = usePrevious<P[]>(params);
+    const action = fetchDataActionCreator(params, config);
+    const prevParams = usePrevious<P>(params);
 
     useEffect(() => {
       if (status === "uninitialized" || !isEqual(prevParams, params)) {

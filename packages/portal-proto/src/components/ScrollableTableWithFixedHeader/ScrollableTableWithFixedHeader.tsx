@@ -1,6 +1,6 @@
 /* Courtesy of https://github.com/mantinedev/ui.mantine.dev/blob/master/components/TableScrollArea/TableScrollArea.tsx */
+import React, { ReactNode, useEffect, useRef, useState, JSX } from "react";
 import { Table, ScrollArea } from "@mantine/core";
-import { ReactNode, useEffect, useRef, useState } from "react";
 import classes from "./ScrollableTableWithFixedHeader.module.css";
 
 interface ScrollableTableWithFixedHeaderProps {

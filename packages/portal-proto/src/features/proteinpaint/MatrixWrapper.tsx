@@ -59,8 +59,8 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
     ? cloneDeep(demoFilter)
     : buildCohortGqlOperator(currentCohort);
   const userDetails = useFetchUserDetailsQuery();
-  const prevData = useRef<any>();
-  const toolApp = useRef<any>();
+  const prevData = useRef<any>(null);
+  const toolApp = useRef<any>(null);
   const coreDispatch = useCoreDispatch();
   const [showSaveCohortModal, setShowSaveCohortModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -236,7 +236,7 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
     [filter0, userDetails, geneDetailData],
   );
 
-  const divRef = useRef();
+  const divRef = useRef(null);
 
   const updateFilters = (field: string, operation: Operation) => {
     dispatch(hideModal());

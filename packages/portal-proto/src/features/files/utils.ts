@@ -1,3 +1,4 @@
+import { JSX } from "react";
 import { CartFile, GdcFile, caseFileType } from "@gff/core";
 import { get, omit, pick } from "lodash";
 import { HorizontalTableProps } from "../../components/HorizontalTable";

@@ -1,3 +1,4 @@
+import React, { JSX, useMemo, useState } from "react";
 import FunctionButton from "@/components/FunctionButton";
 import { SaveCohortModal } from "@gff/portal-components";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
@@ -12,7 +13,6 @@ import {
   graphqlAPI,
 } from "@gff/core";
 import { Modal, Radio, Text, Loader } from "@mantine/core";
-import { useMemo, useState } from "react";
 import { MAX_CASE_IDS } from "./utils";
 import { createColumnHelper } from "@tanstack/react-table";
 import { HandleChangeInput } from "@/components/Table/types";

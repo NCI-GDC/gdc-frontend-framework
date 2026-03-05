@@ -1,3 +1,4 @@
+import React, { JSX } from "react";
 import { Box, Modal, Text, Group, Button } from "@mantine/core";
 
 export const GenericCohortModal = ({

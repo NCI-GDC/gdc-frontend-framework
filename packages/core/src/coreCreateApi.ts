@@ -14,7 +14,7 @@ const coreCreateApi: CreateApi<keyof ApiModules<any, any, any, any>> =
       hooks: {
         useSelector: useCoreSelector as any,
         useStore: useCoreStore as any,
-        useDispatch: useCoreDispatch,
+        useDispatch: useCoreDispatch as any,
       },
     }),
   );

@@ -1,3 +1,5 @@
+import React, { JSX } from "react";
+
 export const SummaryErrorHeader = ({
   label,
 }: {

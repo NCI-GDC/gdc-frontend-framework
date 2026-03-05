@@ -1,4 +1,11 @@
-import { useCallback, useRef, useEffect, useState, useMemo } from "react";
+import React, {
+  JSX,
+  useCallback,
+  useRef,
+  useEffect,
+  useState,
+  useMemo,
+} from "react";
 import Router from "next/router";
 import { createHumanBody, colorCodes } from "@nci-gdc/sapien";
 import { useMouse, useViewportSize, useScrollIntoView } from "@mantine/hooks";

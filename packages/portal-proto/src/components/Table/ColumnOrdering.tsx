@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import React, { JSX, Dispatch, SetStateAction, useState } from "react";
 import {
   Switch,
   ActionIcon,

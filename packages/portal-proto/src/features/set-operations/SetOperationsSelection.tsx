@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import React, { JSX, useContext, useEffect, useState } from "react";
 import {
   SelectedEntities,
   SetOperationEntityType,

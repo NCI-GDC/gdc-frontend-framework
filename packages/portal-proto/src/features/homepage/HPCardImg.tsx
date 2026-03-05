@@ -1,3 +1,4 @@
+import React, { JSX } from "react";
 import Link, { LinkProps } from "next/link";
 import { Image } from "@/components/Image";
 import { homepageButtonClass } from ".";

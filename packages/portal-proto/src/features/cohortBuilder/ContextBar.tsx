@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { JSX, useState } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
 import { CollapsibleContainer } from "@/components/CollapsibleContainer";
 import { Loader, Tabs } from "@mantine/core";
@@ -456,7 +456,6 @@ const ContextBar = ({
               root: "border-0",
               panel: "h-max",
             }}
-            data-tour="cohort_summary"
             defaultValue="summary"
             keepMounted={false}
             value={activeTab}
@@ -465,7 +464,6 @@ const ContextBar = ({
             <Tabs.List justify={width < 1024 ? "flex-start" : "flex-end"}>
               <Tabs.Tab
                 data-testid="button-summary-view"
-                data-tour="cohort_summary_charts"
                 value="summary"
                 leftSection={<SummaryChartIcon aria-hidden="true" />}
               >
@@ -474,7 +472,6 @@ const ContextBar = ({
 
               <Tabs.Tab
                 data-testid="button-table-view"
-                data-tour="cohort_summary_table"
                 value="table"
                 leftSection={<TableIcon aria-hidden="true" />}
               >

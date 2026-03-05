@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react";
+import React, { JSX, PropsWithChildren } from "react";
 import RSSelect, { Theme, Props, GroupTypeBase } from "react-select";
 
 const theme = (theme: Theme): Theme => {

@@ -1,3 +1,4 @@
+import React, { JSX } from "react";
 import { humanify } from "src/utils";
 
 const SMTableConsequences = ({

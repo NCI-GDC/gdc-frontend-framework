@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import React, { JSX, useCallback } from "react";
 import { CutIcon } from "@/utils/icons";
 import {
   useCoreDispatch,

@@ -104,8 +104,8 @@ export interface UseAppDataResponse<T> {
   readonly isError: boolean;
 }
 
-export interface UseAppDataHook<P, T> {
-  (...params: P[]): UseAppDataResponse<T>;
+export interface UseAppDataHook<P, C, T> {
+  (params: P, config?: C): UseAppDataResponse<T>;
 }
 
 export interface CreateGDCAppStore {
@@ -127,7 +127,7 @@ export interface AppStoreReturn {
   useAppSelector: TypedUseSelectorHook<any>; // TODO replace any
   useAppDispatch: () => any; // TODO replace any
   AppStore: Store<any>;
-  AppContext: Context<ReactReduxContextValue<any, UnknownAction>>;
+  AppContext: Context<ReactReduxContextValue<UnknownAction, any> | null>;
   useAppStore: () => Store<any, UnknownAction>;
 }
 
@@ -150,7 +150,10 @@ export const createAppStore = (options: CreateGDCAppStore): AppStoreReturn => {
   });
   type AppState = ReturnType<typeof reducers>;
   const context = React.createContext(
-    undefined as unknown as ReactReduxContextValue<AppState, UnknownAction>,
+    undefined as unknown as ReactReduxContextValue<
+      AppState,
+      UnknownAction
+    > | null,
   );
 
   type AppDispatch = typeof store.dispatch;

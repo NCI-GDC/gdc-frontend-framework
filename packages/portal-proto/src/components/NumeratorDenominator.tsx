@@ -1,3 +1,5 @@
+import React, { JSX } from "react";
+
 const NumeratorDenominator = ({
   numerator,
   denominator,

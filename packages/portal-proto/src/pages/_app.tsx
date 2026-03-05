@@ -32,8 +32,6 @@ import React, { useEffect, useState } from "react";
 // ReactModal needs the app element set for a11y reasons.
 // It hides the main application from screen readers while modals are open.
 import ReactModal from "react-modal";
-// import the React tab styles once
-import "react-tabs/style/react-tabs.css";
 import {
   entityMetadataType,
   SummaryModalContext,

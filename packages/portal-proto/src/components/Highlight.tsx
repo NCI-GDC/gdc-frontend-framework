@@ -1,6 +1,6 @@
 // credit to https://github.com/NCI-GDC/portal-ui/blob/develop/src/packages/%40ncigdc/uikit/Highlight.js
 // This is only used in BioTree
-import React from "react";
+import React, { JSX } from "react";
 
 export const internalHighlight = (
   query: string,

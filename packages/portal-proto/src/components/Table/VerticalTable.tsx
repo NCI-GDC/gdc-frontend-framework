@@ -8,7 +8,8 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { TableProps } from "./types";
-import {
+import React, {
+  JSX,
   Fragment,
   ReactNode,
   useEffect,
@@ -112,7 +113,7 @@ function VerticalTable<TData>({
   const [clickedColumnId, setClickedColumnId] = useState<string>(null);
 
   const liveRegionRef = useRef(null);
-  const ref = useRef<HTMLDivElement>();
+  const ref = useRef<HTMLDivElement>(null);
   const { xPosition, setXPosition } = useContext(TableXPositionContext);
 
   useEffect(() => {

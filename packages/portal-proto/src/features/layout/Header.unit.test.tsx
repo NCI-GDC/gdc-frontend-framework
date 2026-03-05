@@ -1,7 +1,6 @@
 import { headerElements } from "../user-flow/workflow/navigation-utils";
 import { Header } from "./Header";
 import * as router from "next/router";
-import * as tour from "@reactour/tour";
 import { render } from "test-utils";
 import { useFetchUserDetailsQuery } from "@gff/core";
 
@@ -33,17 +32,6 @@ jest.mock("@gff/core", () => ({
 describe("<Header />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(tour, "useTour").mockReturnValue({
-      setIsOpen: jest.fn(),
-      steps: [{ selector: "div", content: "string" }],
-      isOpen: false,
-      setSteps: jest.fn(),
-      setDisabledActions: jest.fn(),
-      setCurrentStep: jest.fn(),
-      currentStep: 1,
-      disabledActions: false,
-    });
-
     jest.spyOn(router, "useRouter").mockImplementation(
       () =>
         ({
