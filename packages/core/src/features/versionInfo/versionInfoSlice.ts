@@ -1,12 +1,5 @@
-import {
-  createAsyncThunk,
-  createSlice,
-  createSelector,
-} from "@reduxjs/toolkit";
-import Cookies from "js-cookie";
 import { GDC_API } from "../../constants";
-import { createUseCoreDataHook, DataStatus } from "../../dataAccess";
-import { CoreState } from "../../reducers";
+import { coreCreateApi } from "src/coreCreateApi";
 
 export interface VersionInfoResponse {
   commit: string;
@@ -25,62 +18,25 @@ export async function fetchStatus(): Promise<Response> {
   });
 }
 
-export const fetchVersionInfo = createAsyncThunk<VersionInfoResponse>(
-  "versionInfo/fetchVersionInfo",
-  async () => {
-    const response = await fetchStatus();
-    if (response.ok) {
-      return response.json();
-    }
-    throw Error(await response.text());
-  },
-);
-
-export interface versionInfoSliceInitialStateInterface {
-  data?: VersionInfoResponse;
-  status: DataStatus;
-}
-
-const versionInfoInitialState: versionInfoSliceInitialStateInterface = {
-  status: "uninitialized",
+export const fetchVersionInfo = async () => {
+  const response = await fetchStatus();
+  if (response.ok) {
+    return { data: response.json() };
+  }
+  const error = await response.text();
+  return { error };
 };
 
-export type VersionInfo = Omit<versionInfoSliceInitialStateInterface, "status">;
-
-const slice = createSlice({
-  name: "versionInfo",
-  initialState: versionInfoInitialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchVersionInfo.fulfilled, (state, action) => {
-        const response = action.payload;
-        state.data = { ...response };
-        Cookies.set("gdc_api_version", response.data_release);
-        state.status = "fulfilled";
-        return state;
-      })
-      .addCase(fetchVersionInfo.pending, (state) => {
-        state.status = "pending";
-        return state;
-      })
-      .addCase(fetchVersionInfo.rejected, (state) => {
-        state.status = "rejected";
-        return state;
-      });
-  },
+const versionInfoApi = coreCreateApi({
+  reducerPath: "versionInfo",
+  baseQuery: fetchVersionInfo,
+  endpoints: (builder) => ({
+    getVersionInfo: builder.query<VersionInfoResponse, void>({
+      query: () => {},
+    }),
+  }),
 });
 
-export const versionInfoReducer = slice.reducer;
-
-const selectVersion = (state: CoreState) => state.versionInfo;
-
-export const selectVersionInfo = createSelector([selectVersion], (version) => ({
-  data: version.data,
-  status: version.status,
-}));
-
-export const useVersionInfoDetails = createUseCoreDataHook(
-  fetchVersionInfo,
-  selectVersionInfo,
-);
+export const { useGetVersionInfoQuery } = versionInfoApi;
+export const versionInfoReducer = versionInfoApi.reducer;
+export const versionInfoMiddleware = versionInfoApi.middleware;

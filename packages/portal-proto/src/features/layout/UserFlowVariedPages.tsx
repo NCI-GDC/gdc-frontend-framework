@@ -7,7 +7,7 @@ import {
   selectCurrentModal,
   Modals,
   hideModal,
-  useVersionInfoDetails,
+  useGetVersionInfoQuery,
 } from "@gff/core";
 import Banner from "@/components/Banner";
 import { Modal, LoadingOverlay } from "@mantine/core";
@@ -37,8 +37,7 @@ export const UserFlowVariedPages = ({
 
   useGetBannerNotificationsQuery();
   const banners = useCoreSelector((state) => selectBanners(state));
-  const { isFetching: isFetchingDataVersion } =
-    useVersionInfoDetails(undefined);
+  const { isFetching: isFetchingDataVersion } = useGetVersionInfoQuery();
 
   const { ref: headerRef, height: headerHeight } = useElementSize();
 
