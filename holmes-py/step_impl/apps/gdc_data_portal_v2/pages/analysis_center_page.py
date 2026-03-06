@@ -67,8 +67,8 @@ class AnalysisCenterPage(BasePage):
 
     def get_analysis_tool_cases_count(self, tool_name):
         """Returns case count on given analysis tool"""
-        # self.wait_for_loading_spinners_to_detach()
-        # self.wait_for_loading_spinners_to_detach()
+        self.wait_for_loading_spinners_to_detach()
+        self.wait_for_loading_spinners_to_detach()
         locator = AnalysisCenterLocators.TEXT_CASES_COUNT_ON_TOOL_CARD(tool_name)
         # If we get " " or " Cases" on return, that means the analysis card is still loading information. We wait until
         # it fully loads or 10 seconds elapses before returning text.
