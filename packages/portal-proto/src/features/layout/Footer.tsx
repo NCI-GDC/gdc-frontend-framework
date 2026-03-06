@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useVersionInfoDetails, PUBLIC_APP_INFO } from "@gff/core";
+import { useGetVersionInfoQuery, PUBLIC_APP_INFO } from "@gff/core";
 import { Footer as CommonFooter } from "@gff/portal-components";
 
 const footerLinkColData = [
@@ -99,7 +99,7 @@ const footerLinkCloud = [
 export const Footer: React.FC = () => {
   return (
     <CommonFooter
-      useVersionInfoDetailsHook={useVersionInfoDetails}
+      useVersionInfoDetailsHook={useGetVersionInfoQuery}
       linkColData={footerLinkColData}
       linkCloud={footerLinkCloud}
       appInfo={PUBLIC_APP_INFO}
