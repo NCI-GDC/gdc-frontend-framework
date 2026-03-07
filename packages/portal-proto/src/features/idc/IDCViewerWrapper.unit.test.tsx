@@ -70,3 +70,23 @@ it("Render IDC table columns", async () => {
 
   unmount();
 });
+
+it("shows no-idc message when no idc images for selected cohort", async () => {
+  const { unmount, findByText } = render(
+    <MantineProvider
+      theme={{
+        colors: {
+          primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+          base: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+        },
+      }}
+    >
+      <IDCViewerWrapper />
+    </MantineProvider>,
+  );
+
+  const msg = await findByText("No idc images for selected cohort.");
+  expect(msg).toBeInTheDocument();
+
+  unmount();
+});

@@ -315,18 +315,6 @@ const IDCViewerWrapper: FC = () => {
 
       const studiesList = Array.from(studiesMap.values());
 
-      // derive quick-first-links for compact cells
-      const firstStudyWithWSI = studiesList.find((s) => s.hasWSI);
-      const firstStudyWithRadio = studiesList.find((s) => s.hasRadiology);
-      const firstWsiLink = firstStudyWithWSI?.StudyInstanceUID
-        ? buildSlimStudyURL(firstStudyWithWSI.StudyInstanceUID)
-        : null;
-      const firstRadioLink = firstStudyWithRadio?.StudyInstanceUID
-        ? CT_VIEWER_BASE +
-          "?StudyInstanceUIDs=" +
-          encodeURIComponent(firstStudyWithRadio.StudyInstanceUID)
-        : null;
-
       // compute counts for non-expanded row display
       const wsiCount = studiesList.filter((s) => s.hasWSI).length;
       const radiologyCount = studiesList.filter((s) => s.hasRadiology).length;
@@ -338,9 +326,6 @@ const IDCViewerWrapper: FC = () => {
         studiesCount: studiesList.length,
         wsiCount,
         radiologyCount,
-        firstWsiLink,
-        firstRadioLink,
-        _originalMapping: m,
       };
     });
   }, [mappings]);
@@ -517,128 +502,145 @@ const IDCViewerWrapper: FC = () => {
           {/* Container to allow overlay to cover the table area */}
           <div style={{ position: "relative", minHeight: 120 }}>
             <LoadingOverlay visible={isLoading} zIndex={50} />
-            {/* Render table only when not loading so overlay is shown instead */}
+            {/* Render table only when not loading so overlay is shown instead.
+                If there is no tableData, show a friendly message instead of the table. */}
             {!isLoading &&
-              // VerticalTable-based view (replaces TableView)
-              (() => {
-                // renderSubComponent: show detailed studies list for expanded row
-                const renderSubComponent = ({ row }: any) => {
-                  const studies = row.original.studiesList as any[];
-                  if (!studies || studies.length === 0) return null;
-                  return (
-                    <div style={{ padding: 8, background: "#fff" }}>
-                      <table
-                        style={{
-                          width: "100%",
-                          fontSize: 13,
-                          borderCollapse: "collapse",
-                        }}
-                      >
-                        <thead>
-                          <tr
-                            style={{
-                              textAlign: "left",
-                              borderBottom: "1px solid #ddd",
-                            }}
-                          >
-                            <th style={{ padding: 6 }}>IDC StudyInstanceUID</th>
-                            <th style={{ padding: 6 }}>StudyDate</th>
-                            <th style={{ padding: 6 }}>StudyDescription</th>
-                            <th style={{ padding: 6 }}>IDC WSI viewer</th>
-                            <th style={{ padding: 6 }}>IDC Radiology viewer</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {studies.map((s, i) => {
-                            const wsiLink =
-                              s.hasWSI && s.StudyInstanceUID
-                                ? buildSlimStudyURL(s.StudyInstanceUID)
-                                : null;
-                            const radioLink =
-                              s.hasRadiology && s.StudyInstanceUID
-                                ? CT_VIEWER_BASE +
-                                  "?StudyInstanceUIDs=" +
-                                  encodeURIComponent(s.StudyInstanceUID)
-                                : null;
-                            return (
-                              <tr
-                                key={i}
-                                style={{
-                                  background:
-                                    i % 2 === 0 ? "#fbfbfd" : "#f2f2f2",
-                                }}
-                              >
-                                <td
-                                  style={{ padding: 6, wordBreak: "break-all" }}
+              (tableData.length === 0 ? (
+                <div
+                  data-testid="no-idc-message"
+                  style={{ padding: 16, color: "#666", fontSize: 14 }}
+                >
+                  No idc images for selected cohort.
+                </div>
+              ) : (
+                // VerticalTable-based view (replaces TableView)
+                (() => {
+                  // renderSubComponent: show detailed studies list for expanded row
+                  const renderSubComponent = ({ row }: any) => {
+                    const studies = row.original.studiesList as any[];
+                    if (!studies || studies.length === 0) return null;
+                    return (
+                      <div style={{ padding: 8, background: "#fff" }}>
+                        <table
+                          style={{
+                            width: "100%",
+                            fontSize: 13,
+                            borderCollapse: "collapse",
+                          }}
+                        >
+                          <thead>
+                            <tr
+                              style={{
+                                textAlign: "left",
+                                borderBottom: "1px solid #ddd",
+                              }}
+                            >
+                              <th style={{ padding: 6 }}>
+                                IDC StudyInstanceUID
+                              </th>
+                              <th style={{ padding: 6 }}>StudyDate</th>
+                              <th style={{ padding: 6 }}>StudyDescription</th>
+                              <th style={{ padding: 6 }}>IDC WSI viewer</th>
+                              <th style={{ padding: 6 }}>
+                                IDC Radiology viewer
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {studies.map((s, i) => {
+                              const wsiLink =
+                                s.hasWSI && s.StudyInstanceUID
+                                  ? buildSlimStudyURL(s.StudyInstanceUID)
+                                  : null;
+                              const radioLink =
+                                s.hasRadiology && s.StudyInstanceUID
+                                  ? CT_VIEWER_BASE +
+                                    "?StudyInstanceUIDs=" +
+                                    encodeURIComponent(s.StudyInstanceUID)
+                                  : null;
+                              return (
+                                <tr
+                                  key={i}
+                                  style={{
+                                    background:
+                                      i % 2 === 0 ? "#fbfbfd" : "#f2f2f2",
+                                  }}
                                 >
-                                  {s.StudyInstanceUID ?? "(/)"}
-                                </td>
-                                <td style={{ padding: 6 }}>
-                                  {s.StudyDate ?? "-"}
-                                </td>
-                                <td style={{ padding: 6 }}>
-                                  {s.StudyDescription ?? "-"}
-                                </td>
-                                <td style={{ padding: 6 }}>
-                                  {wsiLink ? (
-                                    <a
-                                      href={wsiLink}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                      onClick={(e) => e.stopPropagation()}
-                                    >
-                                      Open study
-                                    </a>
-                                  ) : (
-                                    <span style={{ color: "#666" }}>-</span>
-                                  )}
-                                </td>
-                                <td style={{ padding: 6 }}>
-                                  {radioLink ? (
-                                    <a
-                                      href={radioLink}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                      onClick={(e) => e.stopPropagation()}
-                                    >
-                                      Open study
-                                    </a>
-                                  ) : (
-                                    <span style={{ color: "#666" }}>-</span>
-                                  )}
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
-                  );
-                };
+                                  <td
+                                    style={{
+                                      padding: 6,
+                                      wordBreak: "break-all",
+                                    }}
+                                  >
+                                    {s.StudyInstanceUID ?? "(/)"}
+                                  </td>
+                                  <td style={{ padding: 6 }}>
+                                    {s.StudyDate ?? "-"}
+                                  </td>
+                                  <td style={{ padding: 6 }}>
+                                    {s.StudyDescription ?? "-"}
+                                  </td>
+                                  <td style={{ padding: 6 }}>
+                                    {wsiLink ? (
+                                      <a
+                                        href={wsiLink}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        onClick={(e) => e.stopPropagation()}
+                                      >
+                                        Open study
+                                      </a>
+                                    ) : (
+                                      <span style={{ color: "#666" }}>-</span>
+                                    )}
+                                  </td>
+                                  <td style={{ padding: 6 }}>
+                                    {radioLink ? (
+                                      <a
+                                        href={radioLink}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        onClick={(e) => e.stopPropagation()}
+                                      >
+                                        Open study
+                                      </a>
+                                    ) : (
+                                      <span style={{ color: "#666" }}>-</span>
+                                    )}
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    );
+                  };
 
-                return (
-                  <VerticalTable
-                    columns={columns}
-                    data={displayedData}
-                    tableTitle={undefined}
-                    // expansion control
-                    getRowCanExpand={(_: any) => true}
-                    expandableColumnIds={["matches"]}
-                    expanded={expandedState}
-                    setExpanded={(row: any) => setTableExpanded(row)}
-                    // ensure row ids come from caseId
-                    getRowId={(row: any) => row.caseId}
-                    renderSubComponent={renderSubComponent}
-                    // pagination integration (uses TablePagination internally)
-                    pagination={pagination}
-                    handleChange={handleTableChange}
-                    // --- NEW: wire table sorting to manual mode + external sorting state ---
-                    columnSorting="manual"
-                    sorting={sorting}
-                    setSorting={setSorting}
-                  />
-                );
-              })()}
+                  return (
+                    <VerticalTable
+                      columns={columns}
+                      data={displayedData}
+                      tableTitle={undefined}
+                      // expansion control
+                      getRowCanExpand={(_: any) => true}
+                      expandableColumnIds={["matches"]}
+                      expanded={expandedState}
+                      setExpanded={(row: any) => setTableExpanded(row)}
+                      // ensure row ids come from caseId
+                      getRowId={(row: any) => row.caseId}
+                      renderSubComponent={renderSubComponent}
+                      // pagination integration (uses TablePagination internally)
+                      pagination={pagination}
+                      handleChange={handleTableChange}
+                      // --- NEW: wire table sorting to manual mode + external sorting state ---
+                      columnSorting="manual"
+                      sorting={sorting}
+                      setSorting={setSorting}
+                    />
+                  );
+                })()
+              ))}
           </div>
         </div>
       </div>
