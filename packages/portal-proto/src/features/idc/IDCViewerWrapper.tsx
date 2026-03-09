@@ -72,6 +72,8 @@ async function readParquetIndex(
 
 const IDCViewerWrapper: FC = () => {
   const [mappings, setMappings] = useState<any[]>([]);
+  // track non-transient load/render errors
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const idcViewerRootDivRef = useRef<HTMLDivElement | null>(null);
   // Track which cases are expanded to show their series rows
@@ -165,6 +167,7 @@ const IDCViewerWrapper: FC = () => {
     }
     fetchInProgressRef.current = true;
     setIsLoading(true);
+    setLoadError(null); // clear previous error when starting a new fetch
     try {
       const caseFiltersArg = cohortGqlFilters
         ? convertFilterToGqlFilter(cohortGqlFilters)
@@ -216,7 +219,10 @@ const IDCViewerWrapper: FC = () => {
 
       setMappings(mappings);
     } catch (err: any) {
-      // silent on error
+      // surface a user-friendly error message in the UI
+      setLoadError(
+        "There was an error rendering IDC table, please try again later.",
+      );
     } finally {
       fetchInProgressRef.current = false;
       setIsLoading(false);
@@ -415,7 +421,15 @@ const IDCViewerWrapper: FC = () => {
           <div style={{ position: "relative", minHeight: 120 }}>
             <LoadingOverlay visible={isLoading} zIndex={50} />
             {!isLoading &&
-              (tableData.length === 0 ? (
+              (loadError ? (
+                <div
+                  data-testid="idc-error-message"
+                  style={{ padding: 16, color: "#900", fontSize: 14 }}
+                >
+                  There was an error rendering IDC table, please try again
+                  later.
+                </div>
+              ) : tableData.length === 0 ? (
                 <div
                   data-testid="no-idc-message"
                   style={{ padding: 16, color: "#666", fontSize: 14 }}
@@ -550,8 +564,6 @@ const IDCViewerWrapper: FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Debug log removed */}
     </div>
   );
 };
