@@ -3,19 +3,19 @@ import React, {
   FC,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
-  useMemo,
 } from "react";
 import { compressors } from "hyparquet-compressors";
 import { parquetReadObjects } from "hyparquet";
 import {
-  fetchGdcCases as fetchGdcCasesApi,
-  useCurrentCohortFilters,
-  filterSetToOperation,
   convertFilterToGqlFilter,
+  fetchGdcCases as fetchGdcCasesApi,
+  filterSetToOperation,
   GqlOperation,
   SortBy,
+  useCurrentCohortFilters,
 } from "@gff/core";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { ColumnDef, SortingState } from "@tanstack/react-table";
@@ -71,7 +71,6 @@ async function readParquetIndex(
 }
 
 const IDCViewerWrapper: FC = () => {
-  const [logs, setLogs] = useState<string[]>([]);
   const [mappings, setMappings] = useState<any[]>([]);
 
   const idcViewerRootDivRef = useRef<HTMLDivElement | null>(null);
@@ -105,7 +104,6 @@ const IDCViewerWrapper: FC = () => {
     [toggleExpanded],
   );
 
-  const addLog = (s: string) => setLogs((l) => [...l, s]);
   const buildSlimStudyURL = (studyInstanceUID: string) =>
     SLIM_VIEWER_BASE + encodeURIComponent(studyInstanceUID);
 
@@ -136,41 +134,14 @@ const IDCViewerWrapper: FC = () => {
 
   // Helper: ensure IDC metadata is loaded (no cache, always download & parse)
   const loadIdcData = useCallback(async () => {
-    try {
-      addLog("Fetching IDC parquet from direct GCS URL");
-      addLog(`Downloading parquet from ${IDC_PARQUET_URL}...`);
-      const resp = await fetch(IDC_PARQUET_URL);
-      if (!resp.ok) {
-        throw new Error(
-          `Failed to fetch parquet: ${resp.status} ${resp.statusText}`,
-        );
-      }
-      const arrayBuffer = await resp.arrayBuffer();
-
-      try {
-        addLog(
-          `Downloaded parquet buffer — size: ${
-            typeof (arrayBuffer as any)?.byteLength === "number"
-              ? `${(arrayBuffer as any).byteLength} bytes`
-              : "unknown"
-          }`,
-        );
-      } catch {
-        addLog("Downloaded parquet buffer (size unavailable)");
-      }
-
-      const parsed = await readParquetIndex(arrayBuffer);
-
-      addLog(
-        `Downloaded and parsed IDC parquet, cases: ${parsed.case_ids.length}`,
+    const resp = await fetch(IDC_PARQUET_URL);
+    if (!resp.ok) {
+      throw new Error(
+        `Failed to fetch parquet: ${resp.status} ${resp.statusText}`,
       );
-      return parsed;
-    } catch (err: any) {
-      addLog(
-        `Failed to download/parse IDC parquet: ${err?.message ?? String(err)}`,
-      );
-      throw err;
     }
+    const arrayBuffer = await resp.arrayBuffer();
+    return await readParquetIndex(arrayBuffer);
   }, []);
 
   // Map sorting (table) -> API SortBy
@@ -190,14 +161,11 @@ const IDCViewerWrapper: FC = () => {
   const fetchAllGdcCasesAndMap = useCallback(async () => {
     // prevent re-entrant calls
     if (fetchInProgressRef.current) {
-      addLog("Fetch already in progress — skipping duplicate call");
       return;
     }
     fetchInProgressRef.current = true;
     setIsLoading(true);
     try {
-      addLog("Preparing to fetch all matching GDC cases");
-
       const caseFiltersArg = cohortGqlFilters
         ? convertFilterToGqlFilter(cohortGqlFilters)
         : undefined;
@@ -217,13 +185,6 @@ const IDCViewerWrapper: FC = () => {
         ? mergeWithAndFilters(caseFiltersArg, id_filters)
         : id_filters;
 
-      addLog(
-        `Fetching all GDC cases with cohort filters (GQL op): ${JSON.stringify(
-          caseFiltersArg || {},
-        )} and ${String(case_ids.length)} IDC case_ids`,
-      );
-
-      // derive SortBy from table sorting state
       const sortByForApi = mapSortingToSortBy();
 
       // Fetch all matching GDC cases in a single request (request size = number of case_ids)
@@ -235,10 +196,8 @@ const IDCViewerWrapper: FC = () => {
         expand: ["samples.portions.slides", "project.program"],
         sortBy: sortByForApi.length > 0 ? sortByForApi : undefined,
       });
-      const allHits = resp?.data?.hits || [];
-      addLog(`Fetched ${allHits.length} hits`);
 
-      addLog(`Total GDC cases fetched: ${allHits.length}`);
+      const allHits = resp?.data?.hits || [];
 
       // build mappings from allHits and idc_data
       const mappings = allHits.map((gdcCase: any) => {
@@ -257,16 +216,13 @@ const IDCViewerWrapper: FC = () => {
 
       setMappings(mappings);
     } catch (err: any) {
-      addLog(`Failed to fetch GDC cases: ${err?.message ?? String(err)}`);
+      // silent on error
     } finally {
       fetchInProgressRef.current = false;
-      setIsLoading(false); // <-- hide overlay when finished (success or error)
+      setIsLoading(false);
     }
-  }, [cohortGqlFilters, loadIdcData, mapSortingToSortBy]); // <-- depends on sorting via mapSortingToSortBy
+  }, [cohortGqlFilters, loadIdcData, mapSortingToSortBy]);
 
-  // Auto-load all cases+mapping once on mount and whenever sorting or cohort filters change.
-  // Use a stable string key for cohort filters to avoid effect retriggers caused by
-  // changing object identities from the cohort hook.
   useEffect(() => {
     fetchAllGdcCasesAndMap();
     // intentionally only depend on sorting and the stable cohortFiltersKey
@@ -285,13 +241,13 @@ const IDCViewerWrapper: FC = () => {
   // derive tableData from mappings (convert mapping -> table row objects)
   const tableData = useMemo(() => {
     return (mappings || []).map((m) => {
-      const caseId = m.gdcCase?.submitter_id ?? "(no case id)";
-      const programName = m.gdcCase?.project?.program?.name ?? "(no program)";
+      const caseId = m.gdcCase?.submitter_id ?? "n/a";
+      const programName = m.gdcCase?.project?.program?.name ?? "n/a";
 
       // group rows by StudyInstanceUID
       const studiesMap = new Map();
       (m.matches || []).forEach((r: any) => {
-        const studyId = r?.StudyInstanceUID ?? "__NO_STUDY__";
+        const studyId = r?.StudyInstanceUID ?? "n/a";
         if (!studiesMap.has(studyId)) {
           studiesMap.set(studyId, {
             StudyInstanceUID: r?.StudyInstanceUID ?? null,
@@ -304,12 +260,9 @@ const IDCViewerWrapper: FC = () => {
         }
         const st = studiesMap.get(studyId);
         st.series.push(r);
-        // Normalize modality / study type: prefer study_type (Modality removed from parquet)
         const rawMod = (r?.study_type ?? r?.Modality ?? "").toString();
         const mod = rawMod.trim().toUpperCase();
-        // treat Histopathology (or legacy WSI) as Histopathology
         if (mod === "M") st.hasWSI = true;
-        // treat Radiology (or legacy Radio) as Radiology
         if (mod === "R") st.hasRadiology = true;
       });
 
@@ -344,7 +297,7 @@ const IDCViewerWrapper: FC = () => {
         accessorFn: (row) => row.programName,
         header: "Program",
         cell: (info) => info.getValue(),
-        enableSorting: true, // <-- enable sorting for program (maps to project.program.name)
+        enableSorting: true,
       },
       {
         id: "matches",
@@ -356,12 +309,10 @@ const IDCViewerWrapper: FC = () => {
           const arr = info.getValue() as string[] | undefined;
           const count = Array.isArray(arr) ? arr.length : 0;
 
-          // derive detailed counts from the original row (WSI / Radiology)
           const studies = (info.row?.original?.studiesList as any[]) ?? [];
           const wsiCount = studies.filter((s) => s?.hasWSI).length;
           const radiologyCount = studies.filter((s) => s?.hasRadiology).length;
 
-          // formatted label with correct singular/plural forms
           const idcNoun = count === 1 ? "IDC study" : "IDC studies";
           const wsiLabel = `${wsiCount} WSI`;
           const radioLabel = `${radiologyCount} Radiology`;
@@ -408,43 +359,6 @@ const IDCViewerWrapper: FC = () => {
         },
         enableSorting: false,
       },
-      // TODO keep this commentented out for now
-      // {
-      //   id: "wsi",
-      //   accessorFn: (row) => row.wsiCount,
-      //   header: "IDC WSI links",
-      //   cell: (info) => {
-      //     const count = Number(info.getValue() ?? 0);
-      //     if (count > 0) {
-      //       const label = count === 1 ? "study" : "studies";
-      //       return (
-      //         <span>
-      //           {count} {label}
-      //         </span>
-      //       );
-      //     }
-      //     return <span style={{ color: "#666" }}>-</span>;
-      //   },
-      //   enableSorting: false,
-      // },
-      // {
-      //   id: "radiology",
-      //   accessorFn: (row) => row.radiologyCount,
-      //   header: "IDC Radiology links",
-      //   cell: (info) => {
-      //     const count = Number(info.getValue() ?? 0);
-      //     if (count > 0) {
-      //       const label = count === 1 ? "study" : "studies";
-      //       return (
-      //         <span>
-      //           {count} {label}
-      //         </span>
-      //       );
-      //     }
-      //     return <span style={{ color: "#666" }}>-</span>;
-      //   },
-      //   enableSorting: false,
-      // },
     ],
     [setTableExpanded],
   );
@@ -496,14 +410,10 @@ const IDCViewerWrapper: FC = () => {
       className="idc-viewer-wrapper-root"
       style={{ padding: 12 }}
     >
-      {/* Removed manual sort controls — sorting is now handled by the table */}
       <div style={{ marginTop: 12 }}>
         <div style={{ maxHeight: 460, overflow: "auto" }}>
-          {/* Container to allow overlay to cover the table area */}
           <div style={{ position: "relative", minHeight: 120 }}>
             <LoadingOverlay visible={isLoading} zIndex={50} />
-            {/* Render table only when not loading so overlay is shown instead.
-                If there is no tableData, show a friendly message instead of the table. */}
             {!isLoading &&
               (tableData.length === 0 ? (
                 <div
@@ -513,7 +423,7 @@ const IDCViewerWrapper: FC = () => {
                   No idc images for selected cohort.
                 </div>
               ) : (
-                // VerticalTable-based view (replaces TableView)
+                // VerticalTable-based view
                 (() => {
                   // renderSubComponent: show detailed studies list for expanded row
                   const renderSubComponent = ({ row }: any) => {
@@ -622,18 +532,14 @@ const IDCViewerWrapper: FC = () => {
                       columns={columns}
                       data={displayedData}
                       tableTitle={undefined}
-                      // expansion control
                       getRowCanExpand={(_: any) => true}
                       expandableColumnIds={["matches"]}
                       expanded={expandedState}
                       setExpanded={(row: any) => setTableExpanded(row)}
-                      // ensure row ids come from caseId
                       getRowId={(row: any) => row.caseId}
                       renderSubComponent={renderSubComponent}
-                      // pagination integration (uses TablePagination internally)
                       pagination={pagination}
                       handleChange={handleTableChange}
-                      // --- NEW: wire table sorting to manual mode + external sorting state ---
                       columnSorting="manual"
                       sorting={sorting}
                       setSorting={setSorting}
@@ -645,25 +551,7 @@ const IDCViewerWrapper: FC = () => {
         </div>
       </div>
 
-      <div style={{ marginTop: 12 }}>
-        <h3>Debug log</h3>
-        <div
-          style={{
-            maxHeight: 220,
-            overflow: "auto",
-            background: "#111",
-            color: "#fff",
-            padding: 8,
-            borderRadius: 6,
-          }}
-        >
-          {logs.map((l, i) => (
-            <div key={i} style={{ fontSize: 12, marginBottom: 4 }}>
-              {l}
-            </div>
-          ))}
-        </div>
-      </div>
+      {/* Debug log removed */}
     </div>
   );
 };
