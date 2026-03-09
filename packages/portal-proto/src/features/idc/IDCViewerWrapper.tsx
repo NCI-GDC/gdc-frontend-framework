@@ -266,7 +266,7 @@ const IDCViewerWrapper: FC = () => {
         }
         const st = studiesMap.get(studyId);
         st.series.push(r);
-        const rawMod = (r?.study_type ?? r?.Modality ?? "").toString();
+        const rawMod = (r?.study_type ?? "").toString();
         const mod = rawMod.trim().toUpperCase();
         if (mod === "M") st.hasWSI = true;
         if (mod === "R") st.hasRadiology = true;
