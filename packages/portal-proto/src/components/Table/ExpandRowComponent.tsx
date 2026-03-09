@@ -12,7 +12,7 @@ const ExpandRowComponent = ({
   value: string[];
   isColumnExpanded?: boolean;
   title: string;
-  handleOneElementValue: boolean;
+  handleOneElementValue?: boolean;
 }): React.ReactNode => {
   if (value.length === 0) {
     return "--";
