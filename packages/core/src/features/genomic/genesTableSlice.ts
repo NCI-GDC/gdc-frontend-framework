@@ -5,8 +5,7 @@ import {
   DataStatus,
 } from "../../dataAccess";
 import { castDraft } from "immer";
-import { CoreDispatch } from "../../store";
-import { CoreState } from "../../reducers";
+import { CoreDispatch, CoreState } from "src/store";
 import { fetchSmsAggregations } from "./smsAggregationsApi";
 import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 import { GenomicTableProps } from "./types";

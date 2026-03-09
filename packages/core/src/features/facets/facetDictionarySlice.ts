@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { GraphQLFetchError } from "../gdcapi/gdcgraphql";
 import { FacetDefinition } from "./types";
-import { CoreDispatch } from "../../store";
-import { CoreState } from "../../reducers";
+import { CoreDispatch, CoreState } from "src/store";
 import {
   CoreDataSelector,
   CoreDataSelectorResponse,

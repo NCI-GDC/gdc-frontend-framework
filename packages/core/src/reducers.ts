@@ -141,4 +141,4 @@ export const reducers = combineReducers({
  * The redux store of the Portal V2 core.
  */
 
-export type CoreState = ReturnType<typeof reducers>;
+export type RootState = ReturnType<typeof reducers>;

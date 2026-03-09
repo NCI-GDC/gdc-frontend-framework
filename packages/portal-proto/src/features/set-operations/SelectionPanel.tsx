@@ -10,6 +10,7 @@ import {
   useGeneSetCountsQuery,
   useSsmSetCountsQuery,
   selectAvailableCohorts,
+  Cohort,
 } from "@gff/core";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import FunctionButton from "@/components/FunctionButton";
@@ -125,7 +126,7 @@ const useCasesSets = () => {
     caseSets: {},
     caseCounts: {},
   });
-  const cohorts = useCoreSelector(
+  const cohorts: Cohort[] = useCoreSelector(
     (state) => selectAvailableCohorts(state),
     shallowEqual,
   );

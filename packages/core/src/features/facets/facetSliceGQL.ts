@@ -2,8 +2,7 @@ import { combineReducers } from "redux";
 import { rangeFacetsReducer } from "./continuousAggregationSlice";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
-import { CoreDispatch } from "../../store";
-import { CoreState } from "../../reducers";
+import { CoreDispatch, CoreState } from "src/store";
 import { buildCohortGqlOperator, joinFilters, FilterSet } from "../cohort";
 import {
   buildGraphGLBucketsQuery,

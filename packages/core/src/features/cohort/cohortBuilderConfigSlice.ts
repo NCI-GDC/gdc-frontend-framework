@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import CohortBuilderDefaultConfig from "./data/cohort_builder.json";
-import { CoreState } from "../../reducers";
+import { CoreState } from "src/store";
 
 export interface CohortBuilderCategoryConfig {
   readonly label: string;

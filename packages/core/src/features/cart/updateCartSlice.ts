@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { castDraft } from "immer";
-import { CoreState } from "../../reducers";
+import { CoreState } from "src/store";
 import { GdcFile } from "../files/filesSlice";
 
 export type CartFile = Pick<
