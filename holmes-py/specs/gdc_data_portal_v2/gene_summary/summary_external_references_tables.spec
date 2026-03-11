@@ -59,7 +59,7 @@ tags: gdc-data-portal-v2, regression, gene-summary
     |row  |column |url_expected_on_new_tab                                              |
     |-----|-------|---------------------------------------------------------------------|
     |1    |2      |https://www.ncbi.nlm.nih.gov/gene/5728                               |
-    |2    |2      |https://www.uniprot.org/uniprotkb/P60484/entry                       |
+    |2    |2      |https://www.uniprot.org/uniprotkb/P60484                             |
     |3    |2      |https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:9588|
     |4    |2      |https://omim.org/entry/601728                                        |
     |6    |2      |https://civicdb.org/features/41/summary                              |

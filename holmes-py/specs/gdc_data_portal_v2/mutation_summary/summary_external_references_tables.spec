@@ -49,5 +49,5 @@ tags: gdc-data-portal-v2, regression, mutation-summary
     |row  |column |url_expected_on_new_tab                                              |
     |-----|-------|---------------------------------------------------------------------|
     |1    |2      |https://www.ncbi.nlm.nih.gov/snp/rs113488022                         |
-    |2    |2      |https://cancer.sanger.ac.uk/cosmic/login                             |
+    |2    |2      |https://cancer.sanger.ac.uk/cosmic/                                  |
     |3    |2      |https://civicdb.org/variants/12                                      |
