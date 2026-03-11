@@ -1,5 +1,10 @@
 import type { Middleware, Reducer } from "@reduxjs/toolkit";
-import { createSlice, PayloadAction, isAnyOf } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  PayloadAction,
+  isAnyOf,
+  createSelector,
+} from "@reduxjs/toolkit";
 import { CoreState } from "src/store";
 import { GDC_APP_API_AUTH } from "../../constants";
 import { coreCreateApi } from "src/coreCreateApi";
@@ -94,12 +99,15 @@ const slice = createSlice({
 export const bannerReducer = slice.reducer;
 export const { dismissNotification } = slice.actions;
 
-export const selectBanners = (state: CoreState): BannerNotification[] =>
-  state.bannerNotification.filter(
+const selectAllBanners = (state: CoreState) => state.bannerNotification;
+
+export const selectBanners = createSelector([selectAllBanners], (banners) =>
+  banners.filter(
     (banner: Pick<BannerNotification, "dismissed" | "end_date">) =>
       !banner.dismissed &&
       (banner.end_date === null || new Date(banner.end_date) >= new Date()),
-  );
+  ),
+);
 
 export const {
   useGetBannerNotificationsQuery,

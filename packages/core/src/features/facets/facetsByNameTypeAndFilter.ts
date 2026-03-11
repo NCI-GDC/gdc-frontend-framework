@@ -1,4 +1,8 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {
+  createAsyncThunk,
+  createSlice,
+  createSelector,
+} from "@reduxjs/toolkit";
 import { CoreDispatch, CoreState } from "src/store";
 import { fetchGdcCases, fetchGdcFiles } from "../gdcapi";
 import { GdcApiResponse } from "../gdcapi/types";
@@ -109,14 +113,15 @@ export const selectCasesFacetsByNameFilter = (
   };
 };
 
-export const selectFilesFacetsByNameFilter = (
-  state: CoreState,
-): CoreDataSelectorResponse<Record<string, Record<string, number>>> => {
-  return {
-    data: state.facetsByNameTypeFilter.entries["files"],
-    status: state.facetsByNameTypeFilter.status["files"],
-  };
-};
+const selectFacets = (state: CoreState) => state.facetsByNameTypeFilter;
+
+export const selectFilesFacetsByNameFilter = createSelector(
+  [selectFacets],
+  (facets) => ({
+    data: facets.entries["files"],
+    status: facets.status["files"],
+  }),
+);
 
 export const useFilesFacetsByNameFilter = createUseCoreDataHook(
   fetchFacetByNameTypeAndFilter,
