@@ -1,5 +1,4 @@
-import { coreStore } from "./store";
-import { CoreState } from "./reducers";
+import { coreStore, CoreState } from "./store";
 
 export const getInitialCoreState = (): CoreState => coreStore.getState();
 

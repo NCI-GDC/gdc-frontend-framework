@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
 import RepositoryDefaultConfig from "./config/filters.json";
 import { AppState } from "./appApi";
 
@@ -35,9 +35,7 @@ export const getDefaultFacets = (): string[] => RepositoryDefaultConfig.facets;
 export const selectCustomFacets = (state: AppState) =>
   state.facets.customFacets;
 
-export const selectRepositoryConfigFacets = (
-  state: AppState,
-): ReadonlyArray<string> => [
-  ...state.facets.customFacets,
-  ...RepositoryDefaultConfig.facets,
-];
+export const selectRepositoryConfigFacets = createSelector(
+  [selectCustomFacets, getDefaultFacets],
+  (customFacets, defaultFacets) => [...customFacets, ...defaultFacets],
+);

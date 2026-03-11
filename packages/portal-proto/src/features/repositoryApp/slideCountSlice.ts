@@ -1,9 +1,12 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {
+  createAsyncThunk,
+  createSelector,
+  createSlice,
+} from "@reduxjs/toolkit";
 import {
   GraphQLApiResponse,
   graphqlAPI,
   DataStatus,
-  AppDataSelectorResponse,
   FilterSet,
   buildCohortGqlOperator,
   Bucket,
@@ -105,14 +108,17 @@ const slice = createSlice({
 
 export const imageCountsReducer = slice.reducer;
 
-export const selectCasesWithImagesCount = (
-  state: AppState,
-): AppDataSelectorResponse<ImageCount> => ({
-  data: {
-    slidesCount: state.images.slidesCount,
-  },
-  status: state.images.status,
-});
+const selectImages = (state: AppState) => state.images;
+
+export const selectCasesWithImagesCount = createSelector(
+  [selectImages],
+  (images) => ({
+    data: {
+      slidesCount: images.slidesCount,
+    },
+    status: images.status,
+  }),
+);
 
 export const useImageCounts = createUseAppDataHook(
   fetchImageCounts,

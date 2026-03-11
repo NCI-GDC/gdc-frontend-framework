@@ -10,6 +10,7 @@ import {
   useGeneSetCountsQuery,
   useSsmSetCountsQuery,
   selectAvailableCohorts,
+  Cohort,
 } from "@gff/core";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import FunctionButton from "@/components/FunctionButton";
@@ -83,8 +84,8 @@ const SelectCell: React.FC<SelectCellProps> = ({
         selectedEntityType !== undefined && selectedEntityType !== entityType
           ? "Please choose only one entity type"
           : count === 0
-          ? "Set is either empty or deprecated"
-          : undefined
+            ? "Set is either empty or deprecated"
+            : undefined
       }
       disabled={
         count > 0 &&
@@ -125,7 +126,7 @@ const useCasesSets = () => {
     caseSets: {},
     caseCounts: {},
   });
-  const cohorts = useCoreSelector(
+  const cohorts: Cohort[] = useCoreSelector(
     (state) => selectAvailableCohorts(state),
     shallowEqual,
   );

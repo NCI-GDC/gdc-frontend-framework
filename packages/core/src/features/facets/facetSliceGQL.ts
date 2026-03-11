@@ -1,9 +1,12 @@
 import { combineReducers } from "redux";
 import { rangeFacetsReducer } from "./continuousAggregationSlice";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {
+  createAsyncThunk,
+  createSlice,
+  createSelector,
+} from "@reduxjs/toolkit";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
-import { CoreDispatch } from "../../store";
-import { CoreState } from "../../reducers";
+import { CoreDispatch, CoreState } from "src/store";
 import { buildCohortGqlOperator, joinFilters, FilterSet } from "../cohort";
 import {
   buildGraphGLBucketsQuery,
@@ -174,13 +177,17 @@ export const selectFacetByDocTypeAndField = (
   field: string,
 ): FacetBuckets => state.facetsGQL.facetsGQL[docType][field];
 
-// TODO: Memoize this selector
-export const selectMultipleFacetsByDocTypeAndField = (
-  state: CoreState,
-  docType: GQLDocType,
-  fields: ReadonlyArray<string>,
-): ReadonlyArray<FacetBuckets> =>
-  fields.map((field) => state.facetsGQL.facetsGQL[docType][field]);
+const selectFacets = (state: CoreState) => state.facetsGQL.facetsGQL;
+
+export const selectMultipleFacetsByDocTypeAndField = createSelector(
+  [
+    selectFacets,
+    (_state: CoreState, docType: GQLDocType) => docType,
+    (_state: CoreState, _docType: GQLDocType, fields: ReadonlyArray<string>) =>
+      fields,
+  ],
+  (facets, docType, fields) => fields.map((field) => facets[docType][field]),
+);
 
 export const selectCaseFacetByField = (
   state: CoreState,

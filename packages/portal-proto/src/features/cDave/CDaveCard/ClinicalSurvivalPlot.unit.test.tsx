@@ -31,7 +31,7 @@ describe("ClinicalSurvivalPlot", () => {
         ({
           pathname: "",
           query: {},
-        } as any),
+        }) as any,
     );
     survivalQuerySpy = jest
       .mocked(useGetSurvivalPlotQuery)
@@ -88,6 +88,7 @@ describe("ClinicalSurvivalPlot", () => {
           operands: ["FM-AD"],
         },
       },
+      isLoggedIn: true,
     }));
 
     const survivalQuerySpy = jest
@@ -119,6 +120,7 @@ describe("ClinicalSurvivalPlot", () => {
                   },
                 },
               ],
+              isLoggedIn: true,
             },
             {
               op: "=",
@@ -143,6 +145,7 @@ describe("ClinicalSurvivalPlot", () => {
                   },
                 },
               ],
+              isLoggedIn: true,
             },
             {
               op: "=",
@@ -163,7 +166,7 @@ describe("ClinicalSurvivalPlot", () => {
         ({
           pathname: "",
           query: { demoMode: "true" },
-        } as any),
+        }) as any,
     );
 
     render(

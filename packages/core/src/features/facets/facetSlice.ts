@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CoreDispatch } from "../../store";
-import { CoreState } from "../../reducers";
+import { CoreDispatch, CoreState } from "src/store";
 import { FacetBuckets } from "./types";
 import { fetchGdcCases } from "../gdcapi";
 import { GdcApiResponse } from "../gdcapi/types";

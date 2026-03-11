@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CoreState } from "src/reducers";
+import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { CoreState } from "src/store";
 
 const initialState: Record<string, boolean> = {};
 
@@ -22,8 +22,12 @@ const cohortWarningSlice = createSlice({
   },
 });
 
-export const selectAllCohortsWithWarnings = (state: CoreState): string[] =>
-  Object.keys(state.cohort.cohortWarnings);
+const selectCohortWarnings = (state: CoreState) => state.cohort.cohortWarnings;
+
+export const selectAllCohortsWithWarnings = createSelector(
+  [selectCohortWarnings],
+  (warnings) => Object.keys(warnings),
+);
 
 export const selectDisplayCohortWarning = (
   state: CoreState,
