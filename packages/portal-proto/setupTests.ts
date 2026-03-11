@@ -76,6 +76,10 @@ jest.mock("@datadog/browser-rum", () => ({
   datadogRum: { startView: jest.fn() },
 }));
 
+jest.mock("nanoid", () => ({
+  nanoid: () => "mock-nanoid",
+}));
+
 const mockRouter = {
   pathname: "/",
   query: {},
@@ -107,6 +111,11 @@ jest.mock("@mantine/hooks", () => {
     },
   };
 });
+
+jest.mock("@reduxjs/toolkit", () => ({
+  ...jest.requireActual("@reduxjs/toolkit"),
+  nanoid: () => "mock-nanoid",
+}));
 
 beforeEach(() => {
   const { _resetMantineCounter } = jest.requireMock("@mantine/hooks");
