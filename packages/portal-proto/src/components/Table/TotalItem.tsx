@@ -28,7 +28,7 @@ const TotalItems: React.FC<TotalItemsProps> = ({
   pluralName,
 }) => {
   const formattedTotal = total?.toLocaleString() ?? "...";
-  const itemText = total === 1 ? itemName : pluralName ?? `${itemName}s`;
+  const itemText = total === 1 ? itemName : (pluralName ?? `${itemName}s`);
 
   return (
     <>

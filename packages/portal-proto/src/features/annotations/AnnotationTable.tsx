@@ -28,24 +28,23 @@ import { useAppSelector } from "./appApi";
 import { selectFilters } from "./annotationBrowserFilterSlice";
 import TotalItems from "@/components/Table/TotalItem";
 
-type AnnotationTableData =
-  | Pick<
-      AnnotationDefaults,
-      | "annotation_id"
-      | "case_id"
-      | "case_submitter_id"
-      | "entity_type"
-      | "entity_id"
-      | "entity_submitter_id"
-      | "category"
-      | "classification"
-      | "created_datetime"
-      | "status"
-      | "notes"
-    > & {
-      readonly program_name: string;
-      readonly project_id: string;
-    };
+type AnnotationTableData = Pick<
+  AnnotationDefaults,
+  | "annotation_id"
+  | "case_id"
+  | "case_submitter_id"
+  | "entity_type"
+  | "entity_id"
+  | "entity_submitter_id"
+  | "category"
+  | "classification"
+  | "created_datetime"
+  | "status"
+  | "notes"
+> & {
+  readonly program_name: string;
+  readonly project_id: string;
+};
 
 const annotationsTableColumnHelper = createColumnHelper<AnnotationTableData>();
 

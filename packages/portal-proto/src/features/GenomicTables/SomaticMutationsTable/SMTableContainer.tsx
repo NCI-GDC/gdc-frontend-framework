@@ -401,8 +401,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   const handleTSVDownload = caseFilter
     ? handleTSVCaseDownload
     : geneSymbol
-    ? handleTSVGeneDownload
-    : handleTSVDownloadSSM;
+      ? handleTSVGeneDownload
+      : handleTSVDownloadSSM;
 
   return (
     <>

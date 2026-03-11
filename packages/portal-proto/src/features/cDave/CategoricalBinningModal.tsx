@@ -518,10 +518,10 @@ const GroupInput = ({
         value === ""
           ? "Required field"
           : Object.keys(groupValues).includes(value)
-          ? "The group name cannot be the same as the name of a value"
-          : otherGroups.includes(value.trim())
-          ? `"${value}" already exists`
-          : null,
+            ? "The group name cannot be the same as the name of a value"
+            : otherGroups.includes(value.trim())
+              ? `"${value}" already exists`
+              : null,
     },
   });
 

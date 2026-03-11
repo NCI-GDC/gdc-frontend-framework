@@ -46,8 +46,8 @@ ${(p: FunctionButtonProps) =>
     ? (p.$variant === "filled"
         ? "hover:bg-primary-darker"
         : p.$variant === "header" || p.$variant === "header-subtle"
-        ? "hover:bg-primary-darkest"
-        : "hover:bg-primary") + " hover:text-base-max"
+          ? "hover:bg-primary-darkest"
+          : "hover:bg-primary") + " hover:text-base-max"
     : ""}
 
 ${(p: FunctionButtonProps) =>
@@ -86,8 +86,8 @@ const FunctionButton = forwardRef<HTMLButtonElement, FunctionButtonProps>(
     const tooltipLabel = tooltip
       ? tooltip
       : isDownload && isActive
-      ? ADDITIONAL_DOWNLOAD_MESSAGE
-      : undefined;
+        ? ADDITIONAL_DOWNLOAD_MESSAGE
+        : undefined;
 
     const getLeftSection = () => {
       if (leftSection !== undefined) {

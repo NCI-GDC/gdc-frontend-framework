@@ -58,8 +58,7 @@ export interface GDCSsmsConsequenceTable {
   readonly consequenceTotal: number;
 }
 
-export interface SsmsConsequenceTableRequestParameters
-  extends TablePageOffsetProps {
+export interface SsmsConsequenceTableRequestParameters extends TablePageOffsetProps {
   readonly mutationId?: string;
 }
 

@@ -148,27 +148,27 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
       set?.setType === undefined
         ? []
         : set.setType === "genes"
-        ? [
-            setDetailPanelColumnHelper.accessor("gene_id", {
-              id: "gene_id",
-              header: "Gene ID",
-            }),
-            setDetailPanelColumnHelper.accessor("symbol", {
-              id: "symbol",
-              header: "Symbol",
-            }),
-          ]
-        : [
-            setDetailPanelColumnHelper.accessor("ssm_id", {
-              id: "ssm_id",
-              header: "Mutation ID",
-            }),
-            setDetailPanelColumnHelper.accessor("consequence", {
-              id: "consequence",
-              header: "Consequence",
-              enableSorting: false,
-            }),
-          ],
+          ? [
+              setDetailPanelColumnHelper.accessor("gene_id", {
+                id: "gene_id",
+                header: "Gene ID",
+              }),
+              setDetailPanelColumnHelper.accessor("symbol", {
+                id: "symbol",
+                header: "Symbol",
+              }),
+            ]
+          : [
+              setDetailPanelColumnHelper.accessor("ssm_id", {
+                id: "ssm_id",
+                header: "Mutation ID",
+              }),
+              setDetailPanelColumnHelper.accessor("consequence", {
+                id: "consequence",
+                header: "Consequence",
+                enableSorting: false,
+              }),
+            ],
     [set?.setType, setDetailPanelColumnHelper],
   );
 

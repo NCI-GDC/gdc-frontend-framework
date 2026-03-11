@@ -48,16 +48,19 @@ function useStandardPagination<TData>(
 
   const recursivelyExtractSortingFns = useCallback(
     (columns: ColumnDef<TData, any>[]) => {
-      return columns.reduce((output, column) => {
-        if (column.meta?.sortingFn) {
-          output[column.id] = column.meta.sortingFn;
-        }
-        if ("columns" in column) {
-          const nestedFns = recursivelyExtractSortingFns(column.columns);
-          Object.assign(output, nestedFns);
-        }
-        return output;
-      }, {} as Record<string, (a: TData, b: TData) => number>);
+      return columns.reduce(
+        (output, column) => {
+          if (column.meta?.sortingFn) {
+            output[column.id] = column.meta.sortingFn;
+          }
+          if ("columns" in column) {
+            const nestedFns = recursivelyExtractSortingFns(column.columns);
+            Object.assign(output, nestedFns);
+          }
+          return output;
+        },
+        {} as Record<string, (a: TData, b: TData) => number>,
+      );
     },
     [],
   );

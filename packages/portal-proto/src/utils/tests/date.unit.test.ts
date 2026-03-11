@@ -22,7 +22,7 @@ describe("getFormattedTimestamp", () => {
         () =>
           ({
             resolvedOptions: () => ({ timeZone: "America/Chicago" }),
-          } as any),
+          }) as any,
       );
 
       const resultWithoutTime = getFormattedTimestamp();
@@ -65,7 +65,7 @@ describe("getFormattedTimestamp", () => {
       () =>
         ({
           resolvedOptions: () => ({ timeZone: "America/Chicago" }),
-        } as any),
+        }) as any,
     );
 
     const resultWithoutTime = getFormattedTimestamp();
@@ -91,7 +91,7 @@ describe("getFormattedTimestamp", () => {
 
     // Test with UTC
     mockIntl.mockImplementation(
-      () => ({ resolvedOptions: () => ({ timeZone: "UTC" }) } as any),
+      () => ({ resolvedOptions: () => ({ timeZone: "UTC" }) }) as any,
     );
     const utcDate = new Date("2024-01-01T00:00:00Z");
     const utcResult = getFormattedTimestamp({
@@ -102,7 +102,7 @@ describe("getFormattedTimestamp", () => {
 
     // Test with a different time zone (e.g., Tokyo)
     mockIntl.mockImplementation(
-      () => ({ resolvedOptions: () => ({ timeZone: "Asia/Tokyo" }) } as any),
+      () => ({ resolvedOptions: () => ({ timeZone: "Asia/Tokyo" }) }) as any,
     );
     const tokyoResult = getFormattedTimestamp({
       date: utcDate,

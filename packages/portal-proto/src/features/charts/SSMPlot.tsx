@@ -53,8 +53,8 @@ const SSMPlot: React.FC<SSMPlotProps> = ({
         {typeof error === "string"
           ? error
           : "text" in error
-          ? error?.text
-          : "error"}
+            ? error?.text
+            : "error"}
       </div>
     );
   }

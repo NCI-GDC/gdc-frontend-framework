@@ -158,8 +158,8 @@ const EnumFacet: React.FC<EnumFacetCardProps> = ({
           remainingValues > 16
             ? 96
             : remainingValues > 0
-            ? Math.min(96, remainingValues * 5 + 40)
-            : 24;
+              ? Math.min(96, remainingValues * 5 + 40)
+              : 24;
         /* h-96 is max height for the content of ExactValueFacet, EnumFacet, UploadFacet */
         return `flex-none h-${cardHeight} overflow-y-scroll `;
       } else {
@@ -192,12 +192,15 @@ const EnumFacet: React.FC<EnumFacetCardProps> = ({
       // it is possible that the selected enums are not in the data as their counts are 0
       // therefore we need to add them to the data
       const selectedEnumNotInData = selectedEnums
-        ? selectedEnums.reduce((acc, curr) => {
-            if (!tempFilteredData.find((x) => x[0] === curr)) {
-              acc.push([curr, 0]); // count will be 0
-            }
-            return acc;
-          }, [] as Array<[string, number]>)
+        ? selectedEnums.reduce(
+            (acc, curr) => {
+              if (!tempFilteredData.find((x) => x[0] === curr)) {
+                acc.push([curr, 0]); // count will be 0
+              }
+              return acc;
+            },
+            [] as Array<[string, number]>,
+          )
         : [];
 
       const enumData = [...tempFilteredData, ...selectedEnumNotInData];
@@ -222,10 +225,10 @@ const EnumFacet: React.FC<EnumFacetCardProps> = ({
           numberOfBarsToDisplay == 1
             ? 150
             : numberOfBarsToDisplay == 2
-            ? 220
-            : numberOfBarsToDisplay == 3
-            ? 240
-            : numberOfBarsToDisplay * 65 + 10,
+              ? 220
+              : numberOfBarsToDisplay == 3
+                ? 240
+                : numberOfBarsToDisplay * 65 + 10,
         cardStyle: cardStyle,
       }));
     } else {

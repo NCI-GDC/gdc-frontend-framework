@@ -29,20 +29,23 @@ export const buildRangeLabelsAndValues = (
   rangeData?: Record<string, string | number>,
   showZero = true,
 ) => {
-  return Object.keys(bucketRanges).reduce((b, x) => {
-    if (!showZero && rangeData && rangeData[x] == 0) return b;
+  return Object.keys(bucketRanges).reduce(
+    (b, x) => {
+      if (!showZero && rangeData && rangeData[x] == 0) return b;
 
-    b[x] = {
-      ...bucketRanges[x],
-      key: x,
-      value: rangeData?.[x],
-      valueLabel: rangeData?.[x]
-        ? `${rangeData[x]?.toLocaleString()} (${(
-            ((rangeData[x] as number) / totalCount) *
-            100
-          ).toFixed(2)}%)`
-        : undefined,
-    };
-    return b;
-  }, {} as Record<string, RangeBucketElement>);
+      b[x] = {
+        ...bucketRanges[x],
+        key: x,
+        value: rangeData?.[x],
+        valueLabel: rangeData?.[x]
+          ? `${rangeData[x]?.toLocaleString()} (${(
+              ((rangeData[x] as number) / totalCount) *
+              100
+            ).toFixed(2)}%)`
+          : undefined,
+      };
+      return b;
+    },
+    {} as Record<string, RangeBucketElement>,
+  );
 };

@@ -202,8 +202,8 @@ export const ageDisplay = (
     !yearsOnly && remainingDays > 0
       ? `${remainingDays} ${remainingDays === 1 ? "day" : "days"}`
       : years === 0 && remainingDays === 0
-      ? "0 days"
-      : "";
+        ? "0 days"
+        : "";
 
   const ageString = [formattedYears, formattedDays].filter(Boolean).join(" ");
 
@@ -222,10 +222,10 @@ export const processFilters = (
   !filter_A && !filter_B
     ? undefined
     : filter_A && !filter_B
-    ? filter_A
-    : !filter_A && filter_B
-    ? filter_B
-    : joinFilters(filter_B, filter_A);
+      ? filter_A
+      : !filter_A && filter_B
+        ? filter_B
+        : joinFilters(filter_B, filter_A);
 
 /**
  * convert hooks 3 boolean status to DataStatus
@@ -242,10 +242,10 @@ export const statusBooleansToDataStatus = (
   return isFetching
     ? "pending"
     : isSuccess
-    ? "fulfilled"
-    : isError
-    ? "rejected"
-    : "uninitialized";
+      ? "fulfilled"
+      : isError
+        ? "rejected"
+        : "uninitialized";
 };
 
 export const focusStyles =
