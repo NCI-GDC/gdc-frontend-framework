@@ -5,7 +5,7 @@ import {
   isAnyOf,
   createSelector,
 } from "@reduxjs/toolkit";
-import { CoreState } from "../../reducers";
+import { CoreState } from "src/store";
 import { GDC_APP_API_AUTH } from "../../constants";
 import { coreCreateApi } from "src/coreCreateApi";
 

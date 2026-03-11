@@ -9,11 +9,10 @@ import {
   UnknownAction,
   createSelector,
 } from "@reduxjs/toolkit";
-import { CoreState } from "../../reducers";
 import { buildCohortGqlOperator, FilterSet } from "./filters";
 import { GqlOperation, Operation } from "../gdcapi/filters";
 import { CoreDataSelectorResponse, DataStatus } from "../../dataAccess";
-import { CoreDispatch } from "../../store";
+import { CoreDispatch, CoreState } from "src/store";
 import { useCoreSelector } from "../../hooks";
 import { defaultCohortNameGenerator } from "./utils";
 import { CountsData, CountsDataAndStatus, NullCountsData } from "./type";

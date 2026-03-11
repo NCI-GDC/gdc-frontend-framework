@@ -1,5 +1,5 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CoreState } from "src/reducers";
+import { CoreState } from "src/store";
 
 const initialState: Record<string, boolean> = {};
 

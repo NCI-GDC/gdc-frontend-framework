@@ -5,8 +5,7 @@ import {
 } from "@reduxjs/toolkit";
 import type { TypedStartListening } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
-import { CoreDispatch } from "./store";
-import { CoreState } from "./reducers";
+import { CoreDispatch, CoreState } from "./store";
 import {
   updateCohortFilter,
   removeCohortFilter,

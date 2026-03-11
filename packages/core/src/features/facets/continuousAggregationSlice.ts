@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CoreDispatch } from "../../store";
-import { CoreState } from "../../reducers";
+import { CoreDispatch, CoreState } from "src/store";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { selectCurrentCohortGqlFilters } from "../cohort";
 import { convertFacetNameToGQL } from "./facetApiGQL";

@@ -6,8 +6,7 @@ import {
   createSelector,
 } from "@reduxjs/toolkit";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
-import { CoreDispatch } from "../../store";
-import { CoreState } from "../../reducers";
+import { CoreDispatch, CoreState } from "src/store";
 import { buildCohortGqlOperator, joinFilters, FilterSet } from "../cohort";
 import {
   buildGraphGLBucketsQuery,

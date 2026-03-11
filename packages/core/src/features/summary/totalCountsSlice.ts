@@ -4,8 +4,7 @@ import {
   createSlice,
 } from "@reduxjs/toolkit";
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
-import { CoreDispatch } from "../../store";
-import { CoreState } from "../../reducers";
+import { CoreDispatch, CoreState } from "src/store";
 import { createUseCoreDataHook, DataStatus } from "../../dataAccess";
 
 const CountsGraphQLQuery = `

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { produce } from "immer";
-import { CoreState } from "../../reducers";
+import { CoreState } from "src/store";
 
 export type SetTypes = "cases" | "genes" | "ssms";
 

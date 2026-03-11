@@ -4,7 +4,7 @@
 
 import { useEffect, useRef } from "react";
 import { useCoreDispatch, useCoreSelector } from "./hooks";
-import { CoreState } from "./reducers";
+import { CoreState } from "./store";
 import { isEqual } from "lodash";
 import { Pagination } from "./features/gdcapi/types";
 

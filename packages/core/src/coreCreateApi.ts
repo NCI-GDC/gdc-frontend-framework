@@ -12,9 +12,9 @@ const coreCreateApi: CreateApi<keyof ApiModules<any, any, any, any>> =
     coreModule(),
     reactHooksModule({
       hooks: {
-        useSelector: useCoreSelector as any,
-        useStore: useCoreStore as any,
-        useDispatch: useCoreDispatch as any,
+        useSelector: useCoreSelector,
+        useStore: useCoreStore,
+        useDispatch: useCoreDispatch,
       },
     }),
   );

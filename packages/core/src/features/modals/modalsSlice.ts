@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CoreState } from "../../reducers";
+import { CoreState } from "src/store";
 
 export enum Modals {
   "FirstTimeModal" = "FirstTimeModal",
