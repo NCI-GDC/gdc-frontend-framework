@@ -21,7 +21,7 @@ describe("<AdditionalCohortSelection />", () => {
   it("Correctly excludes current cohort from list", () => {
     jest
       .mocked(selectCurrentCohort)
-      .mockImplementation(() => ({ id: "3", name: "Lung" } as any));
+      .mockImplementation(() => ({ id: "3", name: "Lung" }) as any);
 
     const { getByLabelText } = render(
       <AdditionalCohortSelection
@@ -40,7 +40,7 @@ describe("<AdditionalCohortSelection />", () => {
   it("Correctly selects cohort when multiple of the same name", async () => {
     jest
       .mocked(selectCurrentCohort)
-      .mockImplementation(() => ({ id: "2", name: "Brain" } as any));
+      .mockImplementation(() => ({ id: "2", name: "Brain" }) as any);
 
     const { getAllByLabelText } = render(
       <AdditionalCohortSelection
@@ -58,7 +58,7 @@ describe("<AdditionalCohortSelection />", () => {
   it("Disables 0 count cohort input", () => {
     jest
       .mocked(selectCurrentCohort)
-      .mockImplementation(() => ({ id: "3", name: "Lung" } as any));
+      .mockImplementation(() => ({ id: "3", name: "Lung" }) as any);
 
     const { getByLabelText } = render(
       <AdditionalCohortSelection

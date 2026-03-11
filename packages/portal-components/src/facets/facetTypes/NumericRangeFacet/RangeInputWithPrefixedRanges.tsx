@@ -210,10 +210,10 @@ const RangeInputWithPrefixedRanges: React.FC<
                 (numberOfBarsToDisplay == 1
                   ? 110
                   : numberOfBarsToDisplay == 2
-                  ? 220
-                  : numberOfBarsToDisplay == 3
-                  ? 240
-                  : numberOfBarsToDisplay * 65 + 10) -
+                    ? 220
+                    : numberOfBarsToDisplay == 3
+                      ? 240
+                      : numberOfBarsToDisplay * 65 + 10) -
                 (isGroupExpanded ? 15 : 0)
               }
             />

@@ -36,7 +36,7 @@ describe("<Header />", () => {
       () =>
         ({
           pathname: "",
-        } as any),
+        }) as any,
     );
   });
 

@@ -104,8 +104,8 @@ const CountButtonWrapperForSet: React.FC<CountButtonWrapperForSetProps> = ({
           entityType !== "cohort"
             ? "Save as new set"
             : disabled
-            ? "No cases available"
-            : `Create a new unsaved cohort`
+              ? "No cases available"
+              : `Create a new unsaved cohort`
         }
         ariaLabel={
           entityType !== "cohort"
@@ -113,12 +113,12 @@ const CountButtonWrapperForSet: React.FC<CountButtonWrapperForSetProps> = ({
                 count > 1 ? "s" : ""
               }`
             : disabled
-            ? "No cases available"
-            : `Create a new unsaved cohort of ${
-                count > 1
-                  ? "these " + count.toLocaleString() + " cases"
-                  : "this case"
-              }`
+              ? "No cases available"
+              : `Create a new unsaved cohort of ${
+                  count > 1
+                    ? "these " + count.toLocaleString() + " cases"
+                    : "this case"
+                }`
         }
         disabled={disabled}
         handleOnClick={() => setShowSaveModal(true)}

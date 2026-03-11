@@ -185,8 +185,8 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                         noFilters
                           ? "No values to expand/collapse"
                           : allQueryExpressionsCollapsed
-                          ? "Expand all values"
-                          : "Collapse all values"
+                            ? "Expand all values"
+                            : "Collapse all values"
                       }
                     >
                       <button
@@ -232,8 +232,8 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                             MAX_HEIGHT_QE_SECTION)
                           ? "All rows are already displayed"
                           : filtersSectionCollapsed
-                          ? "Display all rows"
-                          : "Display fewer rows"
+                            ? "Display all rows"
+                            : "Display fewer rows"
                       }
                     >
                       <button
