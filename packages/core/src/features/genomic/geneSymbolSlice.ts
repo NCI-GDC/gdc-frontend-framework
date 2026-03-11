@@ -4,8 +4,7 @@ import {
   GraphQLApiResponse,
   graphqlAPISlice,
 } from "../gdcapi/gdcgraphql";
-import { CoreDispatch } from "../../store";
-import { CoreState } from "../../reducers";
+import { CoreDispatch, CoreState } from "src/store";
 import { CoreDataSelectorResponse, DataStatus } from "../../dataAccess";
 import { castDraft } from "immer";
 import { useCoreDispatch, useCoreSelector } from "../../hooks";

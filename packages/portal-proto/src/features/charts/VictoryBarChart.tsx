@@ -176,7 +176,7 @@ const VictoryBarChart: React.FC<VictoryBarChartProps> = ({
         }}
         tickLabelComponent={
           hideXTicks ? (
-            <></>
+            <BarChartLabel />
           ) : (
             <BarChartLabel data={data} truncateLabels={truncateLabels} />
           )

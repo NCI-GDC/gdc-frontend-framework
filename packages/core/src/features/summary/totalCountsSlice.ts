@@ -1,12 +1,11 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
-import { CoreDispatch } from "../../store";
-import { CoreState } from "../../reducers";
 import {
-  CoreDataSelectorResponse,
-  createUseCoreDataHook,
-  DataStatus,
-} from "../../dataAccess";
+  createAsyncThunk,
+  createSelector,
+  createSlice,
+} from "@reduxjs/toolkit";
+import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
+import { CoreDispatch, CoreState } from "src/store";
+import { createUseCoreDataHook, DataStatus } from "../../dataAccess";
 
 const CountsGraphQLQuery = `
   query totalCountsQuery($filters: FiltersArgument) {
@@ -138,15 +137,16 @@ const slice = createSlice({
 
 export const totalCountsReducer = slice.reducer;
 
-export const selectTotalCountsData = (
-  state: CoreState,
-): CoreDataSelectorResponse<TotalCounts> => {
-  return {
-    data: state.summary.counts,
-    status: state.summary.status,
-    error: state.summary.error,
-  };
-};
+export const selectSummary = (state: CoreState) => state.summary;
+
+export const selectTotalCountsData = createSelector(
+  [selectSummary],
+  (summary) => ({
+    data: summary.counts,
+    status: summary.status,
+    error: summary.error,
+  }),
+);
 
 export const selectTotalCounts = (state: CoreState): TotalCounts =>
   state.summary.counts;

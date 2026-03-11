@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { isEqual } from "lodash";
 import { Operation, FilterSet, isOperandsType, Includes } from "@gff/core";
 import { AppState } from "./appApi";
@@ -101,11 +101,14 @@ export const selectFiltersAppliedCount = (state: AppState): number => {
     : appliedFilterCount + 1;
 };
 
-export const selectGeneAndSSMFiltersByNames = (
-  state: AppState,
-  names: ReadonlyArray<string>,
-): Record<string, Operation> =>
-  names.reduce((obj, name) => {
-    obj[name] = state.filters.root?.[name];
-    return obj;
-  }, {});
+export const selectGeneAndSSMFiltersByNames = createSelector(
+  [
+    selectGeneAndSSMFilters,
+    (_state: AppState, names: ReadonlyArray<string>) => names,
+  ],
+  (filters, names) =>
+    names.reduce((obj, name) => {
+      obj[name] = filters.root?.[name];
+      return obj;
+    }, {}),
+);
