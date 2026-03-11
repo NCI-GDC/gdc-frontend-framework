@@ -25,7 +25,7 @@
       "@/layout/*": ["src/layout/*"],
       "@/modals/*": ["src/modals/*"]
     },
-
+    "types": ["jest", "@testing-library/jest-dom"],
     "skipLibCheck": true
   }
 }

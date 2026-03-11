@@ -13,6 +13,7 @@ import { imageCountsReducer } from "@/features/repositoryApp/slideCountSlice";
 import { repositoryRangeFacetsReducer } from "@/features/repositoryApp/repositoryRangeFacet";
 import RepositoryDefaultConfig from "./config/filters.json";
 import { repositoryExpandedReducer } from "./repositoryFilterExpandedSlice";
+import { persistStore } from "redux-persist";
 
 const REPOSITORY_APP_NAME = "DownloadApp";
 
@@ -94,3 +95,5 @@ export type AppDispatch = typeof AppStore.dispatch;
 export interface AppDataSelector<T> {
   (state: AppState): AppDataSelectorResponse<T>;
 }
+
+export const persistor = persistStore(AppStore);

@@ -20,7 +20,7 @@ const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <CoreProvider>
-      <MantineProvider theme={theme}>
+      <MantineProvider theme={theme} env="test">
         <URLContext.Provider value={{ prevPath: "", currentPath: "" }}>
           <SummaryModalContext.Provider
             value={{

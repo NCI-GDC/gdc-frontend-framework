@@ -1,9 +1,9 @@
-import { AppStore, AppState } from "./appApi";
-
-export const getInitialAppState = (): AppState => AppStore.getState();
+import { reducers } from "./appApi";
 
 test("initial state", () => {
-  expect(getInitialAppState()).toEqual({
+  const state = reducers(undefined, { type: "TEST_INIT" });
+
+  expect(state).toEqual({
     projectApp: {
       filters: {
         mode: "and",

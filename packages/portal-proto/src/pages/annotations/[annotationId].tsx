@@ -7,7 +7,7 @@ import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
 import { UserFlowVariedPages } from "@/features/layout/UserFlowVariedPages";
 import AnnotationSummary from "@/features/annotations/AnnotationSummary";
 
-const AnnotationsPage: NextPage = () => {
+const AnnotationsSummaryPage: NextPage = () => {
   const router = useRouter();
   const { annotationId } = router.query;
   const [ready, setReady] = useState(false);
@@ -32,4 +32,4 @@ const AnnotationsPage: NextPage = () => {
   );
 };
 
-export default AnnotationsPage;
+export default AnnotationsSummaryPage;

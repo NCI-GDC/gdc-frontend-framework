@@ -2,8 +2,8 @@ import React, { Component, ReactNode } from "react";
 import { NextRouter, withRouter } from "next/router";
 import { Modal } from "@mantine/core";
 import { persistor as corePersistor } from "@gff/core";
-import { persistor as repositoryPersistor } from "@/features/repositoryApp/RepositoryApp";
-import { persistor as projectsPersistor } from "@/features/projectsCenter/ProjectsCenter";
+import { persistor as repositoryPersistor } from "@/features/repositoryApp/appApi";
+import { persistor as projectsPersistor } from "@/features/projectsCenter/appApi";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 // Done this way because There is currently no way to write an error boundary as a function component.

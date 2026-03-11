@@ -14,7 +14,7 @@ import {
   useGetAllFilesMutation,
   useGetFilesQuery,
 } from "@gff/core";
-import { AppStore, useAppSelector } from "./appApi";
+import { AppStore, persistor, useAppSelector } from "./appApi";
 import {
   addToCart,
   removeFromCart,
@@ -33,7 +33,6 @@ import {
 import { useImageCounts } from "@/features/repositoryApp/slideCountSlice";
 import { Tooltip } from "@mantine/core";
 import FilesTables from "../repositoryApp/FilesTable";
-import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 import { useRouter } from "next/router";
 import { TableXPositionContext } from "@/components/Table/VerticalTable";
@@ -41,8 +40,6 @@ import { getFormattedTimestamp } from "@/utils/date";
 import { focusStyles } from "@/utils/index";
 import { CartIcon } from "@/utils/icons";
 import { MANIFEST_DOWNLOAD_MESSAGE } from "@/utils/constants";
-
-export const persistor = persistStore(AppStore);
 
 const useCohortCentricFiles = () => {
   const repositoryFilters = useAppSelector((state) =>

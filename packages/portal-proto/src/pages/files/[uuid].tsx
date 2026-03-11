@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { NextPage } from "next";
-import { useRouter } from "next/dist/client/router";
 import { datadogRum } from "@datadog/browser-rum";
 import { UserFlowVariedPages } from "../../features/layout/UserFlowVariedPages";
 import { FileSummary } from "../../features/files/FileSummary";
 import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
+import { useRouter } from "next/router";
 
 const FilePage: NextPage = () => {
   const router = useRouter();

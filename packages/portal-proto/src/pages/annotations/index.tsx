@@ -20,7 +20,7 @@ const AnnotationsPage: NextPage = () => {
       <Head>
         <title>Annotation browser</title>
       </Head>
-      <GdcApp></GdcApp>
+      <GdcApp />
     </UserFlowVariedPages>
   );
 };
