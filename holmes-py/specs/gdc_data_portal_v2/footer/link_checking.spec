@@ -16,25 +16,26 @@ tags: gdc-data-portal-v2, regression, footer, navigation
 
 ## Validate Navigation Links - different tab
 * These links on the "Footer" should take the user to correct page in a new tab
-  |button_text                                |text_on_expected_page                                          |
+  |button_text                                |url_expected_on_new_tab                                        |
   |-------------------------------------------|---------------------------------------------------------------|
-  |Data Portal                                |A repository and computational platform for cancer researchers |
-  |Website                                    |The NCI's Genomic Data Commons                                 |
-  |API                                        |The GDC Application Programming Interface (API)                |
-  |Data Transfer Tool                         |The GDC Data Transfer Tool (DTT) provides an optimized         |
-  |Documentation                              |can find detailed information on GDC processes and tools       |
-  |Data Submission Portal                     |The GDC Data Submission Portal is a web-based system           |
-  |Publications                               |To request a publication page that meets the above criteria    |
-  |Support                                    |please contact the GDC Help Desk                               |
-  |Listserv                                   |This screen allows you to subscribe or unsubscribe to the      |
-  |Accessibility                              |Section 508 requires that all individuals with disabilities    |
-  |Disclaimer                                 |NCI urges users to consult with a qualified physician          |
-  |FOIA                                       |provides individuals with a right to access to records         |
-  |HHS Vulnerability Disclosure               |If you make a good faith effort to comply with this policy     |
-  |U.S. Department of Health and Human Services|200 Independence Avenue, S.W.                                 |
-  |National Institutes of Health              |9000 Rockville Pike Bethesda, Maryland 20892                   |
-  |National Cancer Institute                  |National Cancer Institute                                      |
-  |USA.gov                                    |USA.gov helps you locate a                                     |
+  |Data Portal                                |https://portal.gdc.cancer.gov/                                 |
+  |Website                                    |https://gdc.cancer.gov/                                        |
+  |API                                        |https://gdc.cancer.gov/developers/gdc-application-programming-interface-api|
+  |Data Transfer Tool                         |https://gdc.cancer.gov/access-data/gdc-data-transfer-tool      |
+  |Documentation                              |https://docs.gdc.cancer.gov/                                   |
+  |Data Submission Portal                     |https://portal.gdc.cancer.gov/submission/                      |
+  |Publications                               |https://gdc.cancer.gov/about-data/publications                 |
+  |Site Home                                  |https://portal.gdc.cancer.gov/                                 |
+  |Support                                    |https://gdc.cancer.gov/support                                 |
+  |Listserv                                   |https://list.nih.gov/cgi-bin/wa.exe?SUBED1=gdc-users-l&A=1     |
+  |Accessibility                              |https://www.cancer.gov/policies/accessibility                  |
+  |Disclaimer                                 |https://www.cancer.gov/policies/disclaimer                     |
+  |FOIA                                       |https://www.nih.gov/institutes-nih/nih-office-director/office-communications-public-liaison/freedom-information-act-office|
+  |HHS Vulnerability Disclosure               |https://www.hhs.gov/vulnerability-disclosure-policy/           |
+  |U.S. Department of Health and Human Services|https://www.hhs.gov/                                          |
+  |National Institutes of Health              |https://www.nih.gov/                                           |
+  |National Cancer Institute                  |https://www.cancer.gov/                                        |
+  |USA.gov                                    |https://www.usa.gov/                                           |
 
 ## Validate Navigation Links - same tab
 * These links should take the user to correct page in the same tab

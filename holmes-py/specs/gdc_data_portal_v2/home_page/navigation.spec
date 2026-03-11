@@ -12,11 +12,11 @@ tags: gdc-data-portal-v2, regression, home-page, navigation
 
 ## Validate Navigation Buttons - different tab
 * These links on the "Home Page" should take the user to correct page in a new tab
-  |button_text                                |text_on_expected_page                                  |
+  |button_text                                |url_expected_on_new_tab                                |
   |-------------------------------------------|-------------------------------------------------------|
-  |Learn More About Our Harmonization Process |GDC for processing genomic data                        |
-  |Contact Us                                 |For assistance with GDC query                          |
-  |Data Release                               |A complete list of files for DR27.0                    |
+  |Learn More About Our Harmonization Process |https://gdc.cancer.gov/about-data/gdc-data-processing  |
+  |Contact Us                                 |https://gdc.cancer.gov/support                         |
+  |Data Release                               |https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes/|
 
 ## Validate Navigation Buttons - same tab
 * These links should take the user to correct page in the same tab
