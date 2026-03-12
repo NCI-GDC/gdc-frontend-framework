@@ -60,7 +60,6 @@ tags: gdc-data-portal-v2, regression, gene-summary, new_tab
     |-----|-------|---------------------------------------------------------------------|
     |1    |2      |https://www.ncbi.nlm.nih.gov/gene/5728                               |
     |2    |2      |http*://www.uniprot.org/uniprot**/P60484                             |
-    |3    |2      |https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:9588|
     |4    |2      |https://omim.org/entry/601728                                        |
     |6    |2      |https://civicdb.org/features/41/summary                              |
     |7    |2      |https://www.genecards.org/cgi-bin/carddisp.pl?gene=PTEN              |
