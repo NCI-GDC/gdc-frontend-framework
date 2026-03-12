@@ -1002,7 +1002,6 @@ class BasePage:
         :param url_to_check: The url to validate is on the new tab.
         """
         try:
-            print(new_tab.url)
             url_to_check = url_to_check + "**"
             new_tab.wait_for_url(url_to_check,timeout=90000)
         except:
