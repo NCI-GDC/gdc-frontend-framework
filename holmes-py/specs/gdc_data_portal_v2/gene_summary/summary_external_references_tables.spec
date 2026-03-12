@@ -5,7 +5,7 @@ Owner		    : GDC QA
 Description		: Validate Summary Table and External Reference Table
 Test-Case       : PEAR-2286
 
-tags: gdc-data-portal-v2, regression, gene-summary, new_tab
+tags: gdc-data-portal-v2, regression, gene-summary
 
 ## Navigate to Gene Summary Page: PTEN
 * On GDC Data Portal V2 app
