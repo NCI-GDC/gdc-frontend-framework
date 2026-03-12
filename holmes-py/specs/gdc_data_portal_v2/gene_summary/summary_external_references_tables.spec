@@ -5,7 +5,7 @@ Owner		    : GDC QA
 Description		: Validate Summary Table and External Reference Table
 Test-Case       : PEAR-2286
 
-tags: gdc-data-portal-v2, regression, gene-summary
+tags: gdc-data-portal-v2, regression, gene-summary, new_tab
 
 ## Navigate to Gene Summary Page: PTEN
 * On GDC Data Portal V2 app
@@ -59,7 +59,7 @@ tags: gdc-data-portal-v2, regression, gene-summary
     |row  |column |url_expected_on_new_tab                                              |
     |-----|-------|---------------------------------------------------------------------|
     |1    |2      |https://www.ncbi.nlm.nih.gov/gene/5728                               |
-    |2    |2      |https://www.uniprot.org/uniprotkb/P60484                             |
+    |2    |2      |http*://www.uniprot.org/uniprotkb/P60484                             |
     |3    |2      |https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:9588|
     |4    |2      |https://omim.org/entry/601728                                        |
     |6    |2      |https://civicdb.org/features/41/summary                              |

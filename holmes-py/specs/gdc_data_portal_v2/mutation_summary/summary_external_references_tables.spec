@@ -5,7 +5,7 @@ Owner		    : GDC QA
 Description		: Validate Summary Table and External Reference Table
 Test-Case       : PEAR-2367
 
-tags: gdc-data-portal-v2, regression, mutation-summary
+tags: gdc-data-portal-v2, regression, mutation-summary, new_tab
 
 ## Navigate to Mutation Summary Page: chr7:g.140753336A>T
 * On GDC Data Portal V2 app
@@ -49,5 +49,5 @@ tags: gdc-data-portal-v2, regression, mutation-summary
     |row  |column |url_expected_on_new_tab                                              |
     |-----|-------|---------------------------------------------------------------------|
     |1    |2      |https://www.ncbi.nlm.nih.gov/snp/rs113488022                         |
-    |2    |2      |https://cancer.sanger.ac.uk/cosmic/                                  |
+    |2    |2      |http*://cancer.sanger.ac.uk/cosmic/                                  |
     |3    |2      |https://civicdb.org/variants/12                                      |
