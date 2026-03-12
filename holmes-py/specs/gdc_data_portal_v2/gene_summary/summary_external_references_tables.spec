@@ -58,8 +58,8 @@ tags: gdc-data-portal-v2, regression, gene-summary, new_tab
 * In table "External References Gene Summary" these selections should take the user to correct page in a new tab
     |row  |column |url_expected_on_new_tab                                              |
     |-----|-------|---------------------------------------------------------------------|
-    |1    |2      |https://www.ncbi.nlm.nih.gov/gene/5728                               |
+    |1    |2      |http*://www.ncbi.nlm.nih.gov/gene/5728                               |
     |2    |2      |http*://www.uniprot.org/uniprot**/P60484                             |
-    |4    |2      |https://omim.org/entry/601728                                        |
-    |6    |2      |https://civicdb.org/features/41/summary                              |
-    |7    |2      |https://www.genecards.org/cgi-bin/carddisp.pl?gene=PTEN              |
+    |4    |2      |http*://omim.org/entry/601728                                        |
+    |6    |2      |http*://civicdb.org/features/41/summary                              |
+    |7    |2      |http*://www.genecards.org/cgi-bin/carddisp.pl?gene=PTEN              |
