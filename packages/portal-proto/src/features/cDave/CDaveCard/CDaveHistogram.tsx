@@ -15,6 +15,7 @@ import { DisplayData } from "../types";
 import { useDeepCompareMemo } from "use-deep-compare";
 import { DownloadIcon } from "@/utils/icons";
 import { ADDITIONAL_DOWNLOAD_MESSAGE } from "@/utils/constants";
+import { useDisclosure } from "@mantine/hooks";
 
 const formatBarChartData = (
   data: DisplayData,
@@ -50,6 +51,8 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
   noData,
   hideYTicks = false,
 }: HistogramProps) => {
+  const [opened, { open, close }] = useDisclosure(false);
+
   const [displayPercent, setDisplayPercent] = useState(false);
   const downloadChartRef = useRef<HTMLElement>(null);
   const { startDownload, finishDownload, isDownloading } = useContext(
@@ -115,7 +118,12 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                 />
               </Group>
             </Radio.Group>
-            <Menu closeOnItemClick={false}>
+            <Menu
+              closeOnItemClick={false}
+              opened={opened}
+              onOpen={open}
+              onClose={close}
+            >
               <Menu.Target>
                 <Tooltip
                   label="Download image or data"
@@ -128,6 +136,7 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                     variant="outline"
                     className="bg-base-max border-primary"
                     aria-label="Download image or data"
+                    aria-expanded={opened}
                   >
                     <DownloadIcon className="text-primary" aria-hidden />
                   </ActionIcon>

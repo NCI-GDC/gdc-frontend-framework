@@ -2,10 +2,11 @@ import Link from "next/link";
 import {
   AnnotationDefaults,
   CartFile,
+  CoreDispatch,
   Union,
   useCoreDispatch,
 } from "@gff/core";
-import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
+import { ColumnDef, createColumnHelper, Row } from "@tanstack/react-table";
 import { Dispatch, SetStateAction, useMemo } from "react";
 import { Button, Checkbox, Menu, Tooltip } from "@mantine/core";
 import { allFilesInCart } from "@/utils/index";
@@ -21,6 +22,7 @@ import {
   TrashIcon,
   AddToQueueIcon,
 } from "@/utils/icons";
+import { useDisclosure } from "@mantine/hooks";
 
 export type casesTableDataType = {
   case_uuid: string;
@@ -52,6 +54,110 @@ export type casesTableDataType = {
 };
 
 const casesDataColumnHelper = createColumnHelper<casesTableDataType>();
+
+const CartCell = ({
+  row,
+  currentCart,
+  dispatch,
+}: {
+  row: Row<casesTableDataType>;
+  currentCart: CartFile[];
+  dispatch: CoreDispatch;
+}) => {
+  const [opened, { open, close }] = useDisclosure(false);
+
+  const isAllFilesInCart = row.original.files
+    ? allFilesInCart(currentCart, row.original.files)
+    : false;
+  const numberOfFilesToRemove = row.original.files
+    ?.map((file) =>
+      currentCart.filter((data_file) => data_file.file_id === file.file_id),
+    )
+    .filter((item) => item.length > 0).length;
+  const isDisabled = row.original.files_count === 0;
+  const isPlural = row.original.files_count > 1;
+
+  return (
+    <Menu
+      position="bottom-start"
+      zIndex={300}
+      opened={opened}
+      onOpen={open}
+      onClose={close}
+    >
+      <Menu.Target>
+        <Tooltip label="No files to add to Cart" disabled={!isDisabled}>
+          <Button
+            data-testid="button-add-remove-cases-table"
+            aria-label={`${isAllFilesInCart ? "remove" : "add"} all files ${
+              isAllFilesInCart ? "from" : "to"
+            } the cart`}
+            aria-expanded={opened}
+            leftSection={
+              <div className="mr-2">
+                <CartIcon
+                  className={
+                    isAllFilesInCart && "text-primary-contrast-darkest"
+                  }
+                  aria-hidden="true"
+                />
+              </div>
+            }
+            rightSection={
+              <div className="border-l">
+                <DropdownIcon
+                  className={
+                    isAllFilesInCart && "text-primary-contrast-darkest"
+                  }
+                  size={18}
+                  aria-hidden="true"
+                />
+              </div>
+            }
+            variant="outline"
+            classNames={{
+              root: "w-12 pr-0 bg-base-max text-primary disabled:border disabled:bg-base-lightest disabled:opacity-50 disabled:border-primary",
+              section: "m-0",
+            }}
+            size="compact-xs"
+            className={`${isAllFilesInCart && "bg-primary-darkest"}`}
+            disabled={isDisabled}
+          />
+        </Tooltip>
+      </Menu.Target>
+      <Menu.Dropdown>
+        {numberOfFilesToRemove < row.original.files_count && (
+          <Menu.Item
+            data-testid="button-add-files-to-cart-cases-table"
+            leftSection={<AddToQueueIcon />}
+            onClick={() => {
+              addToCart(row.original.files, currentCart, dispatch);
+            }}
+          >
+            Add {row.original.files_count - numberOfFilesToRemove} Case{" "}
+            {isPlural ? "files" : "file"} to the Cart
+          </Menu.Item>
+        )}
+
+        {numberOfFilesToRemove > 0 && (
+          <Menu.Item
+            data-testid="button-remove-files-from-cart-cases-table"
+            leftSection={<TrashIcon />}
+            onClick={() => {
+              removeFromCart(row.original.files, currentCart, dispatch);
+            }}
+          >
+            Remove{" "}
+            {numberOfFilesToRemove === 0
+              ? row.original.files_count
+              : numberOfFilesToRemove}{" "}
+            Case {isPlural ? "files" : "file"} from the Cart
+          </Menu.Item>
+        )}
+      </Menu.Dropdown>
+    </Menu>
+  );
+};
 
 export const useGenerateCasesTableColumns = ({
   currentCart,
@@ -102,93 +208,9 @@ export const useGenerateCasesTableColumns = ({
       casesDataColumnHelper.display({
         id: "cart",
         header: "Cart",
-        cell: ({ row }) => {
-          const isAllFilesInCart = row.original.files
-            ? allFilesInCart(currentCart, row.original.files)
-            : false;
-          const numberOfFilesToRemove = row.original.files
-            ?.map((file) =>
-              currentCart.filter(
-                (data_file) => data_file.file_id === file.file_id,
-              ),
-            )
-            .filter((item) => item.length > 0).length;
-          const isDisabled = row.original.files_count === 0;
-          const isPlural = row.original.files_count > 1;
-          return (
-            <Menu position="bottom-start" zIndex={300}>
-              <Menu.Target>
-                <Tooltip label="No files to add to Cart" disabled={!isDisabled}>
-                  <Button
-                    data-testid="button-add-remove-cases-table"
-                    aria-label={`${
-                      isAllFilesInCart ? "remove" : "add"
-                    } all files ${isAllFilesInCart ? "from" : "to"} the cart`}
-                    leftSection={
-                      <div className="mr-2">
-                        <CartIcon
-                          className={
-                            isAllFilesInCart && "text-primary-contrast-darkest"
-                          }
-                          aria-hidden="true"
-                        />
-                      </div>
-                    }
-                    rightSection={
-                      <div className="border-l">
-                        <DropdownIcon
-                          className={
-                            isAllFilesInCart && "text-primary-contrast-darkest"
-                          }
-                          size={18}
-                          aria-hidden="true"
-                        />
-                      </div>
-                    }
-                    variant="outline"
-                    classNames={{
-                      root: "w-12 pr-0 bg-base-max text-primary disabled:border disabled:bg-base-lightest disabled:opacity-50 disabled:border-primary",
-                      section: "m-0",
-                    }}
-                    size="compact-xs"
-                    className={`${isAllFilesInCart && "bg-primary-darkest"}`}
-                    disabled={isDisabled}
-                  />
-                </Tooltip>
-              </Menu.Target>
-              <Menu.Dropdown>
-                {numberOfFilesToRemove < row.original.files_count && (
-                  <Menu.Item
-                    data-testid="button-add-files-to-cart-cases-table"
-                    leftSection={<AddToQueueIcon />}
-                    onClick={() => {
-                      addToCart(row.original.files, currentCart, dispatch);
-                    }}
-                  >
-                    Add {row.original.files_count - numberOfFilesToRemove} Case{" "}
-                    {isPlural ? "files" : "file"} to the Cart
-                  </Menu.Item>
-                )}
-
-                {numberOfFilesToRemove > 0 && (
-                  <Menu.Item
-                    data-testid="button-remove-files-from-cart-cases-table"
-                    leftSection={<TrashIcon />}
-                    onClick={() => {
-                      removeFromCart(row.original.files, currentCart, dispatch);
-                    }}
-                  >
-                    Remove{" "}
-                    {numberOfFilesToRemove === 0
-                      ? row.original.files_count
-                      : numberOfFilesToRemove}{" "}
-                    Case {isPlural ? "files" : "file"} from the Cart
-                  </Menu.Item>
-                )}
-              </Menu.Dropdown>
-            </Menu>
-          );
-        },
+        cell: ({ row }) => (
+          <CartCell row={row} currentCart={currentCart} dispatch={dispatch} />
+        ),
       }),
       casesDataColumnHelper.display({
         id: "slides",

@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import { Button, Menu } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import saveAs from "file-saver";
 import urlJoin from "url-join";
 import {
@@ -32,6 +33,7 @@ const LoginButtonOrUserDropdown = () => {
   const cohortIsLoggedIn = useCoreSelector((state) =>
     selectCohortIsLoggedIn(state),
   );
+  const [opened, { open, close }] = useDisclosure(false);
 
   useEffect(() => {
     // User's session has expired
@@ -99,6 +101,9 @@ const LoginButtonOrUserDropdown = () => {
             item: "text-base-darker hover:bg-accent-lightest hover:text-accent-contrast-lightest",
           }}
           zIndex={400}
+          opened={opened}
+          onOpen={open}
+          onClose={close}
         >
           <Menu.Target data-testid="button-header-username">
             <Button
@@ -107,6 +112,7 @@ const LoginButtonOrUserDropdown = () => {
               className="text-primary-darkest font-header text-sm font-medium font-heading"
               classNames={{ section: "ml-0" }}
               ref={userDropdownRef}
+              aria-expanded={opened}
             >
               {userInfo?.data?.username}
             </Button>

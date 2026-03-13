@@ -3,6 +3,7 @@ import { Button, Menu, MenuProps, Tooltip } from "@mantine/core";
 import { focusStyles } from "src/utils";
 import { DropdownIcon } from "@/utils/icons";
 import { ADDITIONAL_DOWNLOAD_MESSAGE } from "@/utils/constants";
+import { useDisclosure } from "@mantine/hooks";
 
 interface DropdownWithIconProps {
   /**
@@ -96,10 +97,15 @@ export const DropdownWithIcon = ({
   buttonAriaLabel = undefined,
   closeOnItemClick = true,
 }: DropdownWithIconProps): JSX.Element => {
+  const [opened, { open, close }] = useDisclosure(false);
+
   const targetRef = useRef<HTMLButtonElement>(null);
 
   return (
     <Menu
+      opened={opened}
+      onOpen={open}
+      onClose={close}
       width={!disableTargetWidth && "target"}
       {...(customPosition && { position: customPosition })}
       zIndex={9000} //dropdown should be on top of everything when open
@@ -119,6 +125,7 @@ export const DropdownWithIcon = ({
             }}
             ref={targetRef}
             aria-label={buttonAriaLabel}
+            aria-expanded={opened}
             data-testid={customTargetButtonDataTestId ?? "menu-elem"}
           >
             {TargetButtonChildren}

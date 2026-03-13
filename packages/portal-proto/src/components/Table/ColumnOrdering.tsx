@@ -102,6 +102,7 @@ function ColumnOrdering<TData>({
             className={`${
               showColumnMenu && "border-2 border-primary"
             } hover:bg-primary hover:text-base-max`}
+            aria-expanded={showColumnMenu}
           >
             {!showColumnMenu ? (
               <ListIcon size="1.5rem" aria-hidden="true" />

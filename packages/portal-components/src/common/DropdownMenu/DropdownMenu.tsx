@@ -8,6 +8,7 @@ import {
 } from "@mantine/core";
 import { DropdownIcon } from "src/commonIcons";
 import { AppContext } from "src/context";
+import { useDisclosure } from "@mantine/hooks";
 
 interface DropdownWithIconProps {
   /**
@@ -94,12 +95,16 @@ const DropdownMenu: React.FC<DropdownWithIconProps> = ({
   tooltip = undefined,
   buttonAriaLabel = undefined,
 }) => {
+  const [opened, { open, close }] = useDisclosure(false);
   const targetRef = useRef<HTMLButtonElement>(null);
   const { theme } = useContext(AppContext);
 
   return (
     <MantineProvider theme={theme}>
       <Menu
+        opened={opened}
+        onOpen={open}
+        onClose={close}
         width={!disableTargetWidth ? "target" : undefined}
         {...(customPosition && { position: customPosition })}
         data-testid={customDataTestId ?? "menu-elem"}
@@ -116,6 +121,7 @@ const DropdownMenu: React.FC<DropdownWithIconProps> = ({
             }}
             ref={targetRef}
             aria-label={buttonAriaLabel}
+            aria-expanded={opened}
           >
             <div>
               {tooltip?.length && !targetButtonDisabled ? (
