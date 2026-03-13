@@ -587,6 +587,10 @@ class BasePage:
         locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(button_name)
         return self.get_attribute(locator,"aria-expanded")
 
+    def is_locator_expanded(self, full_locator):
+        """Takes in a full locator string, and returns if it's expanded"""
+        return self.get_attribute(full_locator,"aria-expanded")
+
     def is_cart_count_correct(self, correct_file_count):
         """Returns if cart count is correct"""
         locator = GenericLocators.CART_IDENT

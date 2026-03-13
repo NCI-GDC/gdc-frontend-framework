@@ -201,7 +201,9 @@ def download_file_at_file_table(file: str, source: str):
         "Browse Annotations": APP.browse_annotations.click_annotation_download_button,
         "Cart Items": APP.shared.click_button_data_testid_normalize,
         "Cart Header": APP.shared.click_button_with_displayed_text_name,
-        "Cart Header Dropdown": APP.shared.click_text_option_from_dropdown_menu,
+        "Cart Header Biospecimen": APP.cart_page.click_biospecimen_dropdown_option,
+        "Cart Header Clinical": APP.cart_page.click_clinical_dropdown_option,
+        "Cart Header Download Cart": APP.cart_page.click_download_cart_dropdown_option,
         "Case Summary Annotations Table": APP.case_summary_page.click_annotations_table_download_json_or_tsv_button,
         "Case Summary Biospecimen Table": APP.case_summary_page.click_biospecimen_table_download_button,
         "Case Summary Clinical Table": APP.case_summary_page.click_clinical_table_download_button,
@@ -237,13 +239,31 @@ def download_file_at_file_table(file: str, source: str):
         "Set Operations": APP.set_operations_page.click_download_tsv_button_set_operations,
         "Set Operations Union Row": APP.set_operations_page.click_union_row_download_tsv_button_set_operations,
     }
+
+    max_retries = 3
+    attempt = 1
     driver = WebDriver.page
-    with driver.expect_download(timeout=90000) as download_info:
-        # Allows using sources without passing in contents of <file> as a parameter
-        if file.lower() == "file":
-            sources.get(source)()
-        else:
-            sources.get(source)(file)
+
+    while attempt <= max_retries:
+        try:
+            with driver.expect_download(timeout=90000) as download_info:
+                # Allows using sources without passing in contents of <file> as a parameter
+                if file.lower() == "file":
+                    sources.get(source)()
+                else:
+                    sources.get(source)(file)
+            print("Download successful")
+            print(f"Source {source}, file {file}")
+            break
+
+        except Exception as e:
+            print(f"Download Attempt {attempt} failed: {e}")
+            print(f"Source {source}, file {file}")
+            if attempt == max_retries:
+                raise
+
+            attempt += 1
+
     download = download_info.value
     file_path = f"{Utility.parent_dir()}/downloads/{dt.timestamp(dt.now())}_{download.suggested_filename}"
     download.save_as(file_path)
