@@ -20,6 +20,7 @@ import {
 import VerticalTable from "@/components/Table/VerticalTable";
 import { ColumnDef, SortingState } from "@tanstack/react-table";
 import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
+import { AnchorLink } from "@/components/AnchorLink";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { LoadingOverlay } from "@mantine/core";
 
@@ -506,28 +507,20 @@ const IDCViewerWrapper: FC = () => {
                                   </td>
                                   <td style={{ padding: 6 }}>
                                     {wsiLink ? (
-                                      <a
+                                      <AnchorLink
                                         href={wsiLink}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        onClick={(e) => e.stopPropagation()}
-                                      >
-                                        Open study
-                                      </a>
+                                        title="Open study"
+                                      />
                                     ) : (
                                       <span style={{ color: "#666" }}>-</span>
                                     )}
                                   </td>
                                   <td style={{ padding: 6 }}>
                                     {radioLink ? (
-                                      <a
+                                      <AnchorLink
                                         href={radioLink}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        onClick={(e) => e.stopPropagation()}
-                                      >
-                                        Open study
-                                      </a>
+                                        title="Open study"
+                                      />
                                     ) : (
                                       <span style={{ color: "#666" }}>-</span>
                                     )}
