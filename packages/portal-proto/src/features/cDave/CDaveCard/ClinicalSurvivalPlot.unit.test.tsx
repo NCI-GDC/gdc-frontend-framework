@@ -88,6 +88,7 @@ describe("ClinicalSurvivalPlot", () => {
           operands: ["FM-AD"],
         },
       },
+      isLoggedIn: true,
     }));
 
     const survivalQuerySpy = jest
@@ -119,6 +120,7 @@ describe("ClinicalSurvivalPlot", () => {
                   },
                 },
               ],
+              isLoggedIn: true,
             },
             {
               op: "=",
@@ -143,6 +145,7 @@ describe("ClinicalSurvivalPlot", () => {
                   },
                 },
               ],
+              isLoggedIn: true,
             },
             {
               op: "=",

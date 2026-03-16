@@ -13,24 +13,24 @@ tags: gdc-data-portal-v2, regression, header, navigation
 
 ## Validate Navigation Links - different tab
 * These links on the "Header" should take the user to correct page in a new tab
-  |button_text                                |text_on_expected_page                                          |
+  |button_text                                |url_expected_on_new_tab                                        |
   |-------------------------------------------|---------------------------------------------------------------|
-  |Video Guides                               |In this GDC 2.0 Video Tutorial, obtain an overview of          |
-  |Obtaining Access to Controlled Data        |In order to obtain access to controlled data available in the  |
+  |Video Guides                               |https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Video_Tutorials/|
+  |Obtaining Access to Controlled Data        |https://gdc.cancer.gov/access-data/obtaining-access-controlled-data|
 
 ## Validate Apps Links
 * These Apps links should take the user to correct page in new tab
-  |button_text                                |text_on_expected_page                                          |
+  |button_text                                |url_expected_on_new_tab                                        |
   |-------------------------------------------|---------------------------------------------------------------|
-  |Website                                    |The GDC supports several cancer genome programs at the NCI     |
-  |API                                        |The GDC Application Programming Interface (API)                |
-  |Data Transfer Tool                         |The GDC Data Transfer Tool (DTT) provides                      |
-  |Documentation                              |A place where researchers, data submitters and developers can  |
-  |Data Submission Portal                     |The GDC Data Submission Portal is a web-based system           |
-  |Publications                               |The GDC provides access to information and supplementary files from publications|
+  |Website                                    |https://gdc.cancer.gov/?utm_source=dataportal&utm_medium=apps  |
+  |API                                        |https://gdc.cancer.gov/developers/gdc-application-programming-interface-api?utm_source=dataportal&utm_medium=apps   |
+  |Data Transfer Tool                         |https://gdc.cancer.gov/access-data/gdc-data-transfer-tool?utm_source=dataportal&utm_medium=apps|
+  |Documentation                              |https://docs.gdc.cancer.gov/?utm_source=dataportal&utm_medium=apps|
+  |Data Submission Portal                     |https://portal.gdc.cancer.gov/submission/login?next=%2Fsubmission%2Fundefined|
+  |Publications                               |https://gdc.cancer.gov/about-data/publications?utm_source=dataportal&utm_medium=apps|
 * Navigate to "Manage Sets" from "Header" "section"
 * These Apps links should take the user to correct page in the same tab
-  |button_text                                |text_on_expected_page                                          |
+  |button_text                                |url_expected_on_new_tab                                        |
   |-------------------------------------------|---------------------------------------------------------------|
   |Data Portal                                |A repository and computational platform for cancer             |
 

@@ -1284,7 +1284,12 @@ def name_cohort(cohort_name: str):
 def click_nav_item_check_text_in_new_tab(page_name: str, table):
     """
     Performs an action to open a new tab.
-    Then, checks for expected text on the new tab to indicate it opened correctly.
+    Then, checks url in new tab to assert it opened correctly.
+
+    :param page_name: What area of the data portal is the button located. See list of options
+    located in function 'perform_action_handle_new_tab'.
+    :param v[0]: Name of button to click.
+    :param v[1]: Expected URL in new tab.
     """
 
     # Banners can interfere with this test. Dismiss any banner before beginning.
@@ -1292,12 +1297,11 @@ def click_nav_item_check_text_in_new_tab(page_name: str, table):
         APP.shared.click_button_with_displayed_text_name("Dismiss")
     for k, v in enumerate(table):
         new_tab = APP.shared.perform_action_handle_new_tab(page_name, v[0])
-        is_text_visible = APP.shared.is_text_visible_on_new_tab(new_tab, v[1])
+        is_url_correct = APP.shared.is_url_correct_on_new_tab(new_tab, v[1])
         new_tab.close()
-        time.sleep(0.4)
         assert (
-            is_text_visible
-        ), f"After click on '{v[0]}', the expected text '{v[1]}' in NOT present"
+            is_url_correct
+        ), f"After click on '{v[0]}', the expected url '{v[1]}' in NOT present"
 
 
 @step(
@@ -1306,22 +1310,22 @@ def click_nav_item_check_text_in_new_tab(page_name: str, table):
 def click_table_by_row_column_check_text_in_new_tab(table_name: str, table):
     """
     click_table_by_row_column_check_text_in_new_tab clicks in a table to open a new tab,
-    and validates the text present in the new tab.
+    and checks url in new tab to assert it opened correctly.
 
     :param table_name: Specifies what table to click on.
     :param v[0]: Row number to click.
     :param v[1]: Column number to click.
-    :param v[2]: Text to check.
+    :param v[2]: Expected URL in new tab.
     """
     # Banners can interfere with this test. Dismiss any banner before beginning.
     if APP.shared.is_text_present("Dismiss"):
         APP.shared.click_button_with_displayed_text_name("Dismiss")
     for k, v in enumerate(table):
         new_tab = APP.shared.click_in_table_handle_new_tab(table_name, v[0], v[1])
-        is_text_visible = APP.shared.is_text_visible_on_new_tab(new_tab, v[2])
+        is_url_correct = APP.shared.is_url_correct_on_new_tab(new_tab, v[2])
         assert (
-            is_text_visible
-        ), f"After click in table '{table_name}', row: '{v[0]}' and column: '{v[1]}' the expected text '{v[2]}' in NOT present"
+            is_url_correct
+        ), f"After click in table '{table_name}', row: '{v[0]}' and column: '{v[1]}' the expected url '{v[2]}' in NOT present"
         new_tab.close()
         time.sleep(0.4)
 

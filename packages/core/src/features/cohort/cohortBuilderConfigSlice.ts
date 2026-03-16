@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
 import CohortBuilderDefaultConfig from "./data/cohort_builder.json";
 import { CoreState } from "src/store";
 
@@ -65,31 +65,36 @@ export const {
   resetCohortBuilderToDefault,
 } = slice.actions;
 
-export const selectCohortBuilderConfig = (
-  state: CoreState,
-): Record<CohortBuilderCategory, CohortBuilderCategoryConfig> => ({
-  ...CohortBuilderDefaultConfig.config,
-  custom: {
-    ...CohortBuilderDefaultConfig.config.custom,
-    facets: state.cohort.builderConfig.customFacets,
-  },
-});
+const selectBuilderCustomFacets = (state: CoreState) =>
+  state.cohort.builderConfig.customFacets;
+
+export const selectCohortBuilderConfig = createSelector(
+  [selectBuilderCustomFacets],
+  (customFacets) => ({
+    ...CohortBuilderDefaultConfig.config,
+    custom: {
+      ...CohortBuilderDefaultConfig.config.custom,
+      facets: customFacets,
+    },
+  }),
+);
 
 /**
  * returns an array of all the filters used in the current configuration.
  * @param state - current core state/store
  */
-export const selectCohortBuilderConfigFilters = (
-  state: CoreState,
-): string[] => [
-  ...Object.values(CohortBuilderDefaultConfig.config).reduce(
-    (filters: string[], category) => {
-      return [...filters, ...category.facets];
-    },
-    [] as string[],
-  ),
-  ...state.cohort.builderConfig.customFacets,
-];
+export const selectCohortBuilderConfigFilters = createSelector(
+  [selectBuilderCustomFacets],
+  (customFacets) => [
+    ...Object.values(CohortBuilderDefaultConfig.config).reduce(
+      (filters: string[], category) => {
+        return [...filters, ...category.facets];
+      },
+      [] as string[],
+    ),
+    ...customFacets,
+  ],
+);
 
 export const selectCohortBuilderConfigCategory = (
   state: CoreState,
