@@ -994,19 +994,16 @@ class BasePage:
         WebDriver.set_tab_viewport_size(new_tab)
         return new_tab
 
-    def is_text_visible_on_new_tab(self, new_tab, text_to_check):
+    def is_url_correct_on_new_tab(self, new_tab, url_to_check):
         """
-        is_text_visible_on_new_tab checks for text on a given tab page.
+        is_url_correct_on_new_tab checks for url on given tab page.
 
         :param new_tab: The tab page to be checked.
-        :param text_to_check: The <p> text to be searched for.
+        :param url_to_check: The url to validate is on the new tab.
         """
-        # Some sites check to see if you are a human before the page loads. This mouse event is an action
-        # that triggers the rest of the page loading.
-        new_tab.mouse.up()
-        expected_text_locator = GenericLocators.TEXT_IN_PARAGRAPH(text_to_check)
         try:
-            new_tab.locator(expected_text_locator).wait_for(state="visible",timeout=75000)
+            url_to_check = url_to_check + "**"
+            new_tab.wait_for_url(url_to_check,timeout=90000)
         except:
             return False
         return True

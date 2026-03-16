@@ -46,8 +46,8 @@ tags: gdc-data-portal-v2, regression, mutation-summary
     |12                                     |3    |2      |
 
 * In table "External References Mutation Summary" these selections should take the user to correct page in a new tab
-    |row  |column |expected_text                                                        |
+    |row  |column |url_expected_on_new_tab                                              |
     |-----|-------|---------------------------------------------------------------------|
-    |1    |2      |All alleles are reported in the Forward orientation.                 |
-    |2    |2      |In order to access COSMIC data                                       |
-    |3    |2      |1                                                                    |
+    |1    |2      |https://www.ncbi.nlm.nih.gov/snp/rs113488022                         |
+    |2    |2      |http*://cancer.sanger.ac.uk/cosmic/                                  |
+    |3    |2      |https://civicdb.org/variants/12                                      |
