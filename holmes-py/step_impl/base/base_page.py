@@ -216,9 +216,9 @@ class BasePage:
     def is_visible(self, locator):
         return self.driver.locator(locator).is_visible()
 
-    def is_disabled(self, locator):
+    def is_disabled(self, locator, timeout=30000):
         """Returns if the locator has the attribute 'disabled'"""
-        return self.driver.locator(locator).is_disabled()
+        return self.driver.locator(locator).is_disabled(timeout=timeout)
 
     def is_enabled(self, locator):
         """Returns if the locator is enabled"""

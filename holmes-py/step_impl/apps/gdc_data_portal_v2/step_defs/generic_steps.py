@@ -97,7 +97,7 @@ def save_cohort_if_needed():
 
     """
     APP.shared.wait_for_loading_spinners_to_detach()
-    if APP.cohort_bar.is_disabled('[data-testid="addButton"]'):
+    if APP.shared.is_disabled('[data-testid="addButton"]', 60000):
         APP.cohort_bar.click_cohort_bar_button("save")
         APP.cohort_bar.click_text_option_from_dropdown_menu("Save")
         # Name the cohort something random so if we need to execute this step
