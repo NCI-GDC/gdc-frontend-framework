@@ -218,7 +218,7 @@ class CohortBuilderPage(BasePage):
             time.sleep(1)
             loading_locator = CohortBuilderPageLocators.FACET_GROUP_CUSTOM_FILTER_TEXT_IDENT(facet_card, "...")
             retry_counter = retry_counter+1
-            if retry_counter >= 10:
+            if retry_counter >= 60:
                 break
         locator = CohortBuilderPageLocators.FACET_GROUP_CUSTOM_FILTER_TEXT_IDENT(facet_card, text)
         return self.is_visible(locator)
