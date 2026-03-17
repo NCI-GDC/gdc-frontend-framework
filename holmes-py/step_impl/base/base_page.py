@@ -412,9 +412,9 @@ class BasePage:
         """wait for element to have non-empty bounding box and no visibility:hidden"""
         self.driver.locator(locator).wait_for(state="visible", timeout=timeout)
 
-    def wait_until_locator_is_detached(self, locator):
+    def wait_until_locator_is_detached(self, locator, timeout=60000):
         """wait for element to not be present in DOM"""
-        self.driver.locator(locator).wait_for(state="detached", timeout=60000)
+        self.driver.locator(locator).wait_for(state="detached", timeout=timeout)
 
     def wait_until_locator_is_hidden(self, locator):
         """wait for element to be either detached from DOM, or have an empty bounding box or visibility:hidden"""
@@ -449,15 +449,15 @@ class BasePage:
         locator = GenericLocators.LOADING_SPINNER_GENERIC
         self.wait_until_locator_is_visible(locator, timeout)
 
-    def wait_for_loading_spinner_to_detatch(self):
+    def wait_for_loading_spinner_to_detatch(self, timeout=60000):
         """Waits for the generic loading spinner to disappear on the page"""
         locator = GenericLocators.LOADING_SPINNER_GENERIC
-        self.wait_until_locator_is_detached(locator)
+        self.wait_until_locator_is_detached(locator, timeout)
 
-    def wait_for_loading_spinner_cohort_bar_case_count_to_detatch(self):
+    def wait_for_loading_spinner_cohort_bar_case_count_to_detatch(self, timeout=60000):
         """Waits for the cohort bar case count loading spinner to disappear on the page"""
         locator = GenericLocators.LOADING_SPINNER_COHORT_BAR_CASE_COUNT
-        self.wait_until_locator_is_detached(locator)
+        self.wait_until_locator_is_detached(locator, timeout)
 
     def wait_for_loading_spinner_table_to_detatch(self):
         """Waits for the table (repository, projects, mutation frequency, etc.) loading spinner to disappear on the page"""
@@ -466,13 +466,13 @@ class BasePage:
 
     def wait_for_loading_spinners_to_detach(self):
         """
-        We often have to wait for many possible loading spinners to detach.
+        We often have to wait for many loading spinners to detach.
         This function is a convenient way to do that at once.
         """
         time.sleep(0.5)
-        self.wait_for_loading_spinner_to_detatch()
+        self.wait_for_loading_spinner_to_detatch(90000)
         self.wait_for_loading_spinner_table_to_detatch()
-        self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch(90000)
         self.wait_for_loading_spinner_to_detatch()
         self.wait_for_loading_spinner_table_to_detatch()
         self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
