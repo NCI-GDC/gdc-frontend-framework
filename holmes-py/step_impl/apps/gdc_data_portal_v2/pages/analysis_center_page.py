@@ -76,7 +76,7 @@ class AnalysisCenterPage(BasePage):
         while ((self.get_text(locator) == " ") or (self.get_text(locator) == "") or (self.get_text(locator) == " Cases")):
             time.sleep(1)
             retry_counter = retry_counter + 1
-            if retry_counter >= 10:
+            if retry_counter >= 60:
                 break
         cases_count = self.get_text(locator)
         # Remove the "Cases" part of the string. We do not need that for comparison.
