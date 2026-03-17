@@ -118,8 +118,7 @@ def collect_case_counts_on_filters(cohort_name: str, table):
     for k, v in enumerate(table):
         # Clicks tab in cohort builder
         APP.cohort_builder_page.click_button(v[0])
-        time.sleep(1)
-        APP.shared.wait_for_loading_spinner_to_detatch()
+        APP.shared.wait_for_loading_spinners_to_detach()
 
         # Expands list of filters to select if possible
         if APP.cohort_builder_page.is_show_more_or_show_less_button_visible_within_filter_card(

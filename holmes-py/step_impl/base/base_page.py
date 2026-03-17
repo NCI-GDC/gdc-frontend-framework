@@ -194,8 +194,8 @@ class BasePage:
         """Hover over given locator"""
         self.driver.locator(locator).hover(force=force)
 
-    def get_text(self, locator):
-        return self.driver.locator(locator).text_content()
+    def get_text(self, locator, timeout=30000):
+        return self.driver.locator(locator).text_content(timeout=timeout)
 
     def get_inner_text(self, locator):
         """Returns only what a user can see on the page"""

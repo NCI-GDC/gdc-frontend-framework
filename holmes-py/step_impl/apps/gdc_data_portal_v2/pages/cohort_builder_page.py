@@ -128,7 +128,7 @@ class CohortBuilderPage(BasePage):
         locator = CohortBuilderPageLocators.FACET_GROUP_FILTER_TEXT_CASE_COUNT(
             facet_group_name, filter_name
         )
-        return self.get_text(locator)
+        return self.get_text(locator, 60000)
 
     # Checks the text in the search bar result area
     def validate_search_bar_result(self, search_bar_text_to_check):
