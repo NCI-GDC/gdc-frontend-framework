@@ -224,6 +224,9 @@ class BasePage:
         """Returns if the locator is enabled"""
         return self.driver.locator(locator).is_enabled()
 
+    def reload_page(self):
+        self.driver.reload()
+
     def send_keys(self, locator, text):
         return self.driver.locator(locator).fill(text)
 

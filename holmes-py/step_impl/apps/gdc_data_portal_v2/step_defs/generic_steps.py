@@ -97,6 +97,14 @@ def save_cohort_if_needed():
 
     """
     APP.shared.wait_for_loading_spinners_to_detach()
+    # This step has been flaky. This is not part of a test, it is for setup of the next test in queue.
+    # So, we will refresh the page to avoid failures.
+    try:
+        APP.shared.is_disabled('[data-testid="addButton"]', 60000)
+    except:
+        APP.shared.reload_page()
+        time.sleep(10)
+        APP.shared.wait_for_loading_spinners_to_detach()
     if APP.shared.is_disabled('[data-testid="addButton"]', 60000):
         APP.cohort_bar.click_cohort_bar_button("save")
         APP.cohort_bar.click_text_option_from_dropdown_menu("Save")
