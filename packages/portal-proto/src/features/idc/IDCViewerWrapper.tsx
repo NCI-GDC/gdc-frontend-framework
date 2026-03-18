@@ -7,6 +7,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { Row } from "@tanstack/react-table";
 import { compressors } from "hyparquet-compressors";
 import { parquetReadObjects } from "hyparquet";
 import {
@@ -98,7 +99,7 @@ const IDCViewerWrapper: FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   // helper to toggle when VerticalTable calls setExpanded(row, columnId)
   const setTableExpanded = useCallback(
-    (row: any /* tanstack Row */) => {
+    (row: Row<string>) => {
       // row.id is computed by getRowId (we will use caseId)
       if (!row?.id) return;
       toggleExpanded(row.id);
