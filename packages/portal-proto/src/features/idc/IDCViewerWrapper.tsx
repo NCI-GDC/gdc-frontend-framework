@@ -49,10 +49,27 @@ const IDC_PARQUET_COLUMNS = [
   "gdc_case_id",
 ];
 
+// Type for a single row read from the IDC parquet index. Fields are optional
+// because parquet rows may have missing/null values; keep a flexible index
+// signature to allow extra fields without breaking type checks.
+// TODO try to simplify the type
+interface IDCParquetData {
+  PatientID?: string | null;
+  StudyInstanceUID?: string | null;
+  StudyDate?: string | null;
+  StudyDescription?: string | null;
+  study_type?: string | null;
+  gdc_case_id?: string | null;
+  [key: string]: any;
+}
+
 // Helper: read idc_data from a parquet file
 async function readParquetIndex(
   idc_index_file: any,
-): Promise<{ idc_data: ReadonlyArray<any>; case_ids: readonly string[] }> {
+): Promise<{
+  idc_data: ReadonlyArray<IDCParquetData>;
+  case_ids: readonly string[];
+}> {
   const raw_rows = await parquetReadObjects({
     file: idc_index_file,
     columns: IDC_PARQUET_COLUMNS,
@@ -69,7 +86,10 @@ async function readParquetIndex(
   });
   const gdcCaseIds = Array.from(gdcCaseIdSet) as readonly string[];
 
-  return { idc_data: idc_data as ReadonlyArray<any>, case_ids: gdcCaseIds };
+  return {
+    idc_data: idc_data as ReadonlyArray<IDCParquetData>,
+    case_ids: gdcCaseIds,
+  };
 }
 
 const IDCViewerWrapper: FC = () => {
@@ -206,8 +226,8 @@ const IDCViewerWrapper: FC = () => {
       // build mappings from allHits and idc_data
       const mappings = allHits.map((gdcCase: any) => {
         const submitterId = gdcCase?.submitter_id;
-        const matches = (idc_data as ReadonlyArray<any>).filter(
-          (row: any) =>
+        const matches = (idc_data as ReadonlyArray<IDCParquetData>).filter(
+          (row: IDCParquetData) =>
             row.PatientID &&
             submitterId &&
             row.PatientID.toString() === submitterId.toString(),
