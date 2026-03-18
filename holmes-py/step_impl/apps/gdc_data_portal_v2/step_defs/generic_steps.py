@@ -252,6 +252,7 @@ def download_file_at_file_table(file: str, source: str):
     attempt = 1
     driver = WebDriver.page
 
+    # Retry the download up to 3 times
     while attempt <= max_retries:
         try:
             with driver.expect_download(timeout=90000) as download_info:
@@ -260,13 +261,9 @@ def download_file_at_file_table(file: str, source: str):
                     sources.get(source)()
                 else:
                     sources.get(source)(file)
-            print("Download successful")
-            print(f"Source {source}, file {file}")
             break
 
-        except Exception as e:
-            print(f"Download Attempt {attempt} failed: {e}")
-            print(f"Source {source}, file {file}")
+        except:
             if attempt == max_retries:
                 raise
 

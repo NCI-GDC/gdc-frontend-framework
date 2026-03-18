@@ -23,6 +23,9 @@ class CartPage(BasePage):
         button_locator = CartPageLocators.BUTTON_CART_PAGE(button_id)
         self.click(button_locator)
 
+    # These 3 functions are not DRY focused, but that trade off means they can be
+    # retired in our download handling function. They were among the most flaky
+    # tests in holmes-py, and now they pass every time.
     def click_biospecimen_dropdown_option(self, dropdown_option):
         # If the option text is not already present, click the dropdown menu button
         dropdown_button_locator = CartPageLocators.BUTTON_BIOSPECIMEN_CART
