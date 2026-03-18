@@ -76,7 +76,6 @@ const IDCViewerWrapper: FC = () => {
   // track non-transient load/render errors
   const [loadError, setLoadError] = useState<string | null>(null);
 
-  const idcViewerRootDivRef = useRef<HTMLDivElement | null>(null);
   // Track which cases are expanded to show their series rows
   const [expandedCases, setExpandedCases] = useState<Set<string>>(new Set());
   const toggleExpanded = useCallback((caseId: string) => {
@@ -236,15 +235,6 @@ const IDCViewerWrapper: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sorting, cohortFiltersKey]);
 
-  useEffect(() => {
-    const root = idcViewerRootDivRef.current;
-    if (!root) return;
-    root.style.background = "#fff";
-    return () => {
-      if (root) root.innerHTML = "";
-    };
-  }, []);
-
   // derive tableData from mappings (convert mapping -> table row objects)
   const tableData = useMemo(() => {
     return (mappings || []).map((m) => {
@@ -326,7 +316,7 @@ const IDCViewerWrapper: FC = () => {
           const titleLabel = `${idcNoun} (${wsiLabel} + ${radioLabel})`;
 
           if (count === 0) {
-            return <span style={{ color: "#666" }}>-</span>;
+            return <span className="text-gdc-grey">-</span>;
           }
 
           return (
@@ -352,7 +342,7 @@ const IDCViewerWrapper: FC = () => {
               tabIndex={0}
               aria-expanded={Boolean(info.row.getIsExpanded())}
               aria-label={`${count} ${titleLabel}. Press Enter or Space to expand.`}
-              style={{ display: "inline-block" }}
+              className="inline-block"
             >
               <ExpandRowComponent
                 isRowExpanded={info.row.getIsExpanded()}
@@ -412,11 +402,7 @@ const IDCViewerWrapper: FC = () => {
   };
 
   return (
-    <div
-      ref={idcViewerRootDivRef}
-      className="idc-viewer-wrapper-root"
-      style={{ padding: 12 }}
-    >
+    <div className="idc-viewer-wrapper-root p-3 bg-base-max">
       <div style={{ marginTop: 12 }}>
         <div style={{ maxHeight: 460, overflow: "auto" }}>
           <div style={{ position: "relative", minHeight: 120 }}>
@@ -425,7 +411,7 @@ const IDCViewerWrapper: FC = () => {
               (loadError ? (
                 <div
                   data-testid="idc-error-message"
-                  style={{ padding: 16, color: "#900", fontSize: 14 }}
+                  className="p-4 text-utility-error text-sm"
                 >
                   There was an error rendering IDC table, please try again
                   later.
@@ -433,7 +419,7 @@ const IDCViewerWrapper: FC = () => {
               ) : tableData.length === 0 ? (
                 <div
                   data-testid="no-idc-message"
-                  style={{ padding: 16, color: "#666", fontSize: 14 }}
+                  className="p-4 text-gdc-grey-dark text-sm"
                 >
                   No idc images for selected cohort.
                 </div>
@@ -445,7 +431,7 @@ const IDCViewerWrapper: FC = () => {
                     const studies = row.original.studiesList as any[];
                     if (!studies || studies.length === 0) return null;
                     return (
-                      <div style={{ padding: 8, background: "#fff" }}>
+                      <div className="p-2 bg-base-max">
                         <table
                           style={{
                             width: "100%",
@@ -454,12 +440,7 @@ const IDCViewerWrapper: FC = () => {
                           }}
                         >
                           <thead>
-                            <tr
-                              style={{
-                                textAlign: "left",
-                                borderBottom: "1px solid #ddd",
-                              }}
-                            >
+                            <tr className="text-left border-b border-gdc-grey-lighter">
                               <th style={{ padding: 6 }}>
                                 IDC StudyInstanceUID
                               </th>
@@ -486,10 +467,11 @@ const IDCViewerWrapper: FC = () => {
                               return (
                                 <tr
                                   key={i}
-                                  style={{
-                                    background:
-                                      i % 2 === 0 ? "#fbfbfd" : "#f2f2f2",
-                                  }}
+                                  className={
+                                    i % 2 === 0
+                                      ? "bg-base-lightest"
+                                      : "bg-gdc-grey-lightest"
+                                  }
                                 >
                                   <td
                                     style={{
@@ -512,7 +494,7 @@ const IDCViewerWrapper: FC = () => {
                                         title="Open study"
                                       />
                                     ) : (
-                                      <span style={{ color: "#666" }}>-</span>
+                                      <span className="text-gdc-grey">-</span>
                                     )}
                                   </td>
                                   <td style={{ padding: 6 }}>
@@ -522,7 +504,7 @@ const IDCViewerWrapper: FC = () => {
                                         title="Open study"
                                       />
                                     ) : (
-                                      <span style={{ color: "#666" }}>-</span>
+                                      <span className="text-gdc-grey">-</span>
                                     )}
                                   </td>
                                 </tr>
