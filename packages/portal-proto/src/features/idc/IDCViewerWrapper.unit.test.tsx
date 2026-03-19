@@ -74,7 +74,7 @@ it("Render IDC table columns", async () => {
     },
   ];
 
-  const { unmount, findByText } = render(
+  const { findByText } = render(
     <MantineProvider
       theme={{
         colors: {
@@ -92,14 +92,12 @@ it("Render IDC table columns", async () => {
 
   const programEl = await findByText("Program");
   expect(programEl).toBeInTheDocument();
-
-  unmount();
 });
 
 it("shows no-idc message when no idc images for selected cohort", async () => {
   // leave parquetRows and gdcHits empty (handled by beforeEach)
 
-  const { unmount, findByText } = render(
+  const { findByText } = render(
     <MantineProvider
       theme={{
         colors: {
@@ -114,6 +112,4 @@ it("shows no-idc message when no idc images for selected cohort", async () => {
 
   const msg = await findByText("No idc images for selected cohort.");
   expect(msg).toBeInTheDocument();
-
-  unmount();
 });
