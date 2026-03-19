@@ -32,10 +32,9 @@ tags: gdc-data-portal-v2, regression, cart
 
 ## Download Manifest
 * Navigate to "Cart" from "Header" "section"
-* Select "Download Cart" on the Cart page
-* Download "Manifest" from "Cart Header"
-* Read from "Manifest from Cart Header"
-* Verify that "Manifest from Cart Header" has expected information
+* Download "Manifest" from "Cart Header Download Cart"
+* Read from "Manifest from Cart Header Download Cart"
+* Verify that "Manifest from Cart Header Download Cart" has expected information
     |required_info                          |
     |---------------------------------------|
     |id                                     |
@@ -56,8 +55,7 @@ tags: gdc-data-portal-v2, regression, cart
     |released                               |
 
 ## Mixed Access Cart Download
-* Select "Download Cart" on the Cart page
-* Select "Cart" from dropdown menu
+* Select download cart on the Cart page
 * Is text "You are attempting to download files that you are not authorized to access." present on the page
 * Is text "4 files that you are authorized to download." present on the page
 * Is text "6 files that you are not authorized to download." present on the page
@@ -93,10 +91,9 @@ Messages can pile up here. Wait for everything to go away before continuing the 
 * Pause "5" seconds
 * Remove "Unauthorized Files" from cart on the Cart page
 * Is temporary modal with text "Removed 6 files from the cart." present on the page and "Keep Modal"
-* Select "Download Cart" on the Cart page
-* Download "Cart" from "Cart Header Dropdown"
-* Read file content from compressed "Cart from Cart Header Dropdown"
-* Verify that "Cart from Cart Header Dropdown" has expected information
+* Download "Cart" from "Cart Header Download Cart"
+* Read file content from compressed "Cart from Cart Header Download Cart"
+* Verify that "Cart from Cart Header Download Cart" has expected information
     |required_info                          |
     |---------------------------------------|
     |fe3e912a-a0bf-49e7-97a3-0df8cc21d751   |
@@ -110,7 +107,7 @@ Messages can pile up here. Wait for everything to go away before continuing the 
     |114077167                              |
     |f5e221dd-f1b2-435e-9ab6-300d2abd39c1   |
     |6a1d5c68-a949-4708-9b58-ac91ace26789   |
-* Verify that "Cart from Cart Header Dropdown" does not contain specified information
+* Verify that "Cart from Cart Header Download Cart" does not contain specified information
     |required_info                          |
     |---------------------------------------|
     |ce9cc0e6-78e5-448d-b395-006ea93c7be2   |
@@ -134,8 +131,7 @@ Messages can pile up here. Wait for everything to go away before continuing the 
   |ca4d1994-5f01-4202-a6b6-ce897c2f4358 |
   |19e8c827-9d47-494b-9487-0286af531ed4 |
 * Navigate to "Cart" from "Header" "section"
-* Select "Download Cart" on the Cart page
-* Select "Cart" from dropdown menu
+* Select download cart on the Cart page
 * Is text "0 files that you are authorized to download." present on the page
 * Is text "5 files that you are not authorized to download." present on the page
 * Verify the button with displayed text "Download 0 Authorized Files" is disabled
@@ -152,8 +148,7 @@ Messages can pile up here. Wait for everything to go away before continuing the 
   |4ded7d54-5c43-4b03-aecd-14fc4499a567 |
   |cf5450df-6e51-4baf-9c59-811e9d81f43a |
 * Navigate to "Cart" from "Header" "section"
-* Select "Download Cart" on the Cart page
-* Select "Cart" from dropdown menu
+* Select download cart on the Cart page
 * Is text "Access Alert" present on the page
 * Is text "Your cart contains more than 5 GBs of data." present on the page
 * Is text "Please select the \"Download > Manifest\" option and use the Data Transfer Tool to download the files in your cart." present on the page
