@@ -6,19 +6,19 @@ const ExpandRowComponent = ({
   value,
   isColumnExpanded = true,
   title,
-  handleOneElementValue = true,
+  renderSingleValueInline = true,
 }: {
   isRowExpanded: boolean;
   value: string[];
   isColumnExpanded?: boolean;
   title: string;
-  handleOneElementValue?: boolean;
+  renderSingleValueInline?: boolean;
 }): React.ReactNode => {
   if (value.length === 0) {
     return "--";
   }
 
-  if (value.length === 1 && handleOneElementValue) {
+  if (value.length === 1 && renderSingleValueInline) {
     return value[0];
   }
 

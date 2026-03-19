@@ -64,9 +64,7 @@ interface IDCParquetData {
 }
 
 // Helper: read idc_data from a parquet file
-async function readParquetIndex(
-  idc_index_file: any,
-): Promise<{
+async function readParquetIndex(idc_index_file: any): Promise<{
   idc_data: ReadonlyArray<IDCParquetData>;
   case_ids: readonly string[];
 }> {
@@ -369,7 +367,7 @@ const IDCViewerWrapper: FC = () => {
                 isRowExpanded={info.row.getIsExpanded()}
                 value={arr ?? []}
                 isColumnExpanded={true}
-                handleOneElementValue={false}
+                renderSingleValueInline={false}
                 title={titleLabel}
               />
             </div>
