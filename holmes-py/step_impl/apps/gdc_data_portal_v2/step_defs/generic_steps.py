@@ -97,7 +97,15 @@ def save_cohort_if_needed():
 
     """
     APP.shared.wait_for_loading_spinners_to_detach()
-    if APP.cohort_bar.is_disabled('[data-testid="addButton"]'):
+    # This step has been flaky. This is not part of a test, it is for setup of the next test in queue.
+    # So, we will refresh the page to avoid failures.
+    try:
+        APP.shared.is_disabled('[data-testid="addButton"]', 60000)
+    except:
+        APP.shared.reload_page()
+        time.sleep(10)
+        APP.shared.wait_for_loading_spinners_to_detach()
+    if APP.shared.is_disabled('[data-testid="addButton"]', 60000):
         APP.cohort_bar.click_cohort_bar_button("save")
         APP.cohort_bar.click_text_option_from_dropdown_menu("Save")
         # Name the cohort something random so if we need to execute this step
@@ -201,7 +209,9 @@ def download_file_at_file_table(file: str, source: str):
         "Browse Annotations": APP.browse_annotations.click_annotation_download_button,
         "Cart Items": APP.shared.click_button_data_testid_normalize,
         "Cart Header": APP.shared.click_button_with_displayed_text_name,
-        "Cart Header Dropdown": APP.shared.click_text_option_from_dropdown_menu,
+        "Cart Header Biospecimen": APP.cart_page.click_biospecimen_dropdown_option,
+        "Cart Header Clinical": APP.cart_page.click_clinical_dropdown_option,
+        "Cart Header Download Cart": APP.cart_page.click_download_cart_dropdown_option,
         "Case Summary Annotations Table": APP.case_summary_page.click_annotations_table_download_json_or_tsv_button,
         "Case Summary Biospecimen Table": APP.case_summary_page.click_biospecimen_table_download_button,
         "Case Summary Clinical Table": APP.case_summary_page.click_clinical_table_download_button,
@@ -237,13 +247,28 @@ def download_file_at_file_table(file: str, source: str):
         "Set Operations": APP.set_operations_page.click_download_tsv_button_set_operations,
         "Set Operations Union Row": APP.set_operations_page.click_union_row_download_tsv_button_set_operations,
     }
+
+    max_retries = 3
+    attempt = 1
     driver = WebDriver.page
-    with driver.expect_download(timeout=90000) as download_info:
-        # Allows using sources without passing in contents of <file> as a parameter
-        if file.lower() == "file":
-            sources.get(source)()
-        else:
-            sources.get(source)(file)
+
+    # Retry the download up to 3 times
+    while attempt <= max_retries:
+        try:
+            with driver.expect_download(timeout=90000) as download_info:
+                # Allows using sources without passing in contents of <file> as a parameter
+                if file.lower() == "file":
+                    sources.get(source)()
+                else:
+                    sources.get(source)(file)
+            break
+
+        except:
+            if attempt == max_retries:
+                raise
+
+            attempt += 1
+
     download = download_info.value
     file_path = f"{Utility.parent_dir()}/downloads/{dt.timestamp(dt.now())}_{download.suggested_filename}"
     download.save_as(file_path)

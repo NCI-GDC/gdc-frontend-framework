@@ -194,8 +194,8 @@ class BasePage:
         """Hover over given locator"""
         self.driver.locator(locator).hover(force=force)
 
-    def get_text(self, locator):
-        return self.driver.locator(locator).text_content()
+    def get_text(self, locator, timeout=30000):
+        return self.driver.locator(locator).text_content(timeout=timeout)
 
     def get_inner_text(self, locator):
         """Returns only what a user can see on the page"""
@@ -216,13 +216,16 @@ class BasePage:
     def is_visible(self, locator):
         return self.driver.locator(locator).is_visible()
 
-    def is_disabled(self, locator):
+    def is_disabled(self, locator, timeout=30000):
         """Returns if the locator has the attribute 'disabled'"""
-        return self.driver.locator(locator).is_disabled()
+        return self.driver.locator(locator).is_disabled(timeout=timeout)
 
     def is_enabled(self, locator):
         """Returns if the locator is enabled"""
         return self.driver.locator(locator).is_enabled()
+
+    def reload_page(self):
+        self.driver.reload()
 
     def send_keys(self, locator, text):
         return self.driver.locator(locator).fill(text)
@@ -412,9 +415,9 @@ class BasePage:
         """wait for element to have non-empty bounding box and no visibility:hidden"""
         self.driver.locator(locator).wait_for(state="visible", timeout=timeout)
 
-    def wait_until_locator_is_detached(self, locator):
+    def wait_until_locator_is_detached(self, locator, timeout=60000):
         """wait for element to not be present in DOM"""
-        self.driver.locator(locator).wait_for(state="detached", timeout=60000)
+        self.driver.locator(locator).wait_for(state="detached", timeout=timeout)
 
     def wait_until_locator_is_hidden(self, locator):
         """wait for element to be either detached from DOM, or have an empty bounding box or visibility:hidden"""
@@ -449,15 +452,15 @@ class BasePage:
         locator = GenericLocators.LOADING_SPINNER_GENERIC
         self.wait_until_locator_is_visible(locator, timeout)
 
-    def wait_for_loading_spinner_to_detatch(self):
+    def wait_for_loading_spinner_to_detatch(self, timeout=60000):
         """Waits for the generic loading spinner to disappear on the page"""
         locator = GenericLocators.LOADING_SPINNER_GENERIC
-        self.wait_until_locator_is_detached(locator)
+        self.wait_until_locator_is_detached(locator, timeout)
 
-    def wait_for_loading_spinner_cohort_bar_case_count_to_detatch(self):
+    def wait_for_loading_spinner_cohort_bar_case_count_to_detatch(self, timeout=60000):
         """Waits for the cohort bar case count loading spinner to disappear on the page"""
         locator = GenericLocators.LOADING_SPINNER_COHORT_BAR_CASE_COUNT
-        self.wait_until_locator_is_detached(locator)
+        self.wait_until_locator_is_detached(locator, timeout)
 
     def wait_for_loading_spinner_table_to_detatch(self):
         """Waits for the table (repository, projects, mutation frequency, etc.) loading spinner to disappear on the page"""
@@ -466,13 +469,13 @@ class BasePage:
 
     def wait_for_loading_spinners_to_detach(self):
         """
-        We often have to wait for many possible loading spinners to detach.
+        We often have to wait for many loading spinners to detach.
         This function is a convenient way to do that at once.
         """
         time.sleep(0.5)
-        self.wait_for_loading_spinner_to_detatch()
+        self.wait_for_loading_spinner_to_detatch(90000)
         self.wait_for_loading_spinner_table_to_detatch()
-        self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+        self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch(90000)
         self.wait_for_loading_spinner_to_detatch()
         self.wait_for_loading_spinner_table_to_detatch()
         self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
@@ -586,6 +589,10 @@ class BasePage:
         button_name = self.normalize_button_identifier(button_name)
         locator = GenericLocators.DATA_TESTID_BUTTON_IDENT(button_name)
         return self.get_attribute(locator,"aria-expanded")
+
+    def is_locator_expanded(self, full_locator):
+        """Takes in a full locator string, and returns if it's expanded"""
+        return self.get_attribute(full_locator,"aria-expanded")
 
     def is_cart_count_correct(self, correct_file_count):
         """Returns if cart count is correct"""

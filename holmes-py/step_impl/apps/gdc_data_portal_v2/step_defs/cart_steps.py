@@ -15,3 +15,11 @@ def remove_all_files_from_cart_page(all_files_or_authorized_files:str):
 @step("Select <button_id> on the Cart page")
 def click_cart_page_button(button_id:str):
     APP.cart_page.click_button_cart_page(button_id)
+
+@step("Select download cart on the Cart page")
+def click_download_cart_button():
+    """
+    Clicks the 'Download Cart' dropdown, then selects 'Cart' in scenarios where
+    we expect another screen to appear and not an immediate download.
+    """
+    APP.cart_page.click_download_cart_dropdown_option("Cart")
