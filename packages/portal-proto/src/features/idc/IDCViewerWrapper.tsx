@@ -24,13 +24,11 @@ import { AnchorLink } from "@/components/AnchorLink";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { LoadingOverlay } from "@mantine/core";
 
-/**
- * Cleaned IDCViewerWrapper:
- *  - Automatically runs mapping on mount (no button click required)
- */
-
 const SLIM_VIEWER_BASE =
   "https://viewer.imaging.datacommons.cancer.gov/slim/studies/";
+
+const buildSlimStudyURL = (studyInstanceUID: string) =>
+  SLIM_VIEWER_BASE + encodeURIComponent(studyInstanceUID);
 
 const CT_VIEWER_BASE =
   "https://viewer.imaging.datacommons.cancer.gov/v3/viewer/";
@@ -123,9 +121,6 @@ const IDCViewerWrapper: FC = () => {
     },
     [toggleExpanded],
   );
-
-  const buildSlimStudyURL = (studyInstanceUID: string) =>
-    SLIM_VIEWER_BASE + encodeURIComponent(studyInstanceUID);
 
   const [sorting, setSorting] = useState<SortingState>([
     { id: "caseId", desc: false },
