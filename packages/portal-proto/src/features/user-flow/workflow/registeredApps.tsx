@@ -248,7 +248,6 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
   },
   {
     name: "IDC Image Viewer",
-
     icon: (
       <IDCViewerIcon
         className="m-auto"

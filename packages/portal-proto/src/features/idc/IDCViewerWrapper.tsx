@@ -1,4 +1,3 @@
-// File: `packages/portal-proto/src/features/proteinpaint/IDCViewerWrapper.tsx`
 import React, {
   FC,
   useCallback,
