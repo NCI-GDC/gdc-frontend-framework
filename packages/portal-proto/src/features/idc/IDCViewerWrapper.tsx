@@ -425,7 +425,7 @@ const IDCViewerWrapper: FC = () => {
     from: from,
     total,
     label: "study",
-    customPluralLabel: "study",
+    customPluralLabel: "studies",
   };
 
   return (
