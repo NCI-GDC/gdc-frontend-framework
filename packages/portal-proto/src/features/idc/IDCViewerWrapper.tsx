@@ -24,7 +24,6 @@ import {
 } from "@gff/core";
 import VerticalTable from "@/components/Table/VerticalTable";
 import IDCStudyRowComponent from "./IDCStudyRowComponent";
-// ...existing code...
 import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { LoadingOverlay } from "@mantine/core";
