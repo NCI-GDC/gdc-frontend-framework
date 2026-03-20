@@ -18,20 +18,11 @@ import {
   useCurrentCohortFilters,
 } from "@gff/core";
 import VerticalTable from "@/components/Table/VerticalTable";
+import IDCStudyRowComponent from "./IDCStudyRowComponent";
 import { ColumnDef, SortingState } from "@tanstack/react-table";
 import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
-import { AnchorLink } from "@/components/AnchorLink";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { LoadingOverlay } from "@mantine/core";
-
-const SLIM_VIEWER_BASE =
-  "https://viewer.imaging.datacommons.cancer.gov/slim/studies/";
-
-const buildSlimStudyURL = (studyInstanceUID: string) =>
-  SLIM_VIEWER_BASE + encodeURIComponent(studyInstanceUID);
-
-const CT_VIEWER_BASE =
-  "https://viewer.imaging.datacommons.cancer.gov/v3/viewer/";
 
 const IDC_PARQUET_URL =
   "https://storage.googleapis.com/idc-index-data-artifacts/current/release_artifacts/gdc_idc_mapping.parquet";
@@ -440,93 +431,10 @@ const IDCViewerWrapper: FC = () => {
                 // VerticalTable-based view
                 (() => {
                   // renderSubComponent: show detailed studies list for expanded row
+
                   const renderSubComponent = ({ row }: any) => {
                     const studies = row.original.studiesList as any[];
-                    if (!studies || studies.length === 0) return null;
-                    return (
-                      <div className="p-2 bg-base-max">
-                        <table
-                          style={{
-                            width: "100%",
-                            fontSize: 13,
-                            borderCollapse: "collapse",
-                          }}
-                        >
-                          <thead>
-                            <tr className="text-left border-b border-gdc-grey-lighter">
-                              <th style={{ padding: 6 }}>
-                                IDC StudyInstanceUID
-                              </th>
-                              <th style={{ padding: 6 }}>StudyDate</th>
-                              <th style={{ padding: 6 }}>StudyDescription</th>
-                              <th style={{ padding: 6 }}>IDC WSI viewer</th>
-                              <th style={{ padding: 6 }}>
-                                IDC Radiology viewer
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {studies.map((s, i) => {
-                              const wsiLink =
-                                s.hasWSI && s.StudyInstanceUID
-                                  ? buildSlimStudyURL(s.StudyInstanceUID)
-                                  : null;
-                              const radioLink =
-                                s.hasRadiology && s.StudyInstanceUID
-                                  ? CT_VIEWER_BASE +
-                                    "?StudyInstanceUIDs=" +
-                                    encodeURIComponent(s.StudyInstanceUID)
-                                  : null;
-                              return (
-                                <tr
-                                  key={i}
-                                  className={
-                                    i % 2 === 0
-                                      ? "bg-base-lightest"
-                                      : "bg-gdc-grey-lightest"
-                                  }
-                                >
-                                  <td
-                                    style={{
-                                      padding: 6,
-                                      wordBreak: "break-all",
-                                    }}
-                                  >
-                                    {s.StudyInstanceUID ?? "(/)"}
-                                  </td>
-                                  <td style={{ padding: 6 }}>
-                                    {s.StudyDate ?? "-"}
-                                  </td>
-                                  <td style={{ padding: 6 }}>
-                                    {s.StudyDescription ?? "-"}
-                                  </td>
-                                  <td style={{ padding: 6 }}>
-                                    {wsiLink ? (
-                                      <AnchorLink
-                                        href={wsiLink}
-                                        title="Open study"
-                                      />
-                                    ) : (
-                                      <span className="text-gdc-grey">-</span>
-                                    )}
-                                  </td>
-                                  <td style={{ padding: 6 }}>
-                                    {radioLink ? (
-                                      <AnchorLink
-                                        href={radioLink}
-                                        title="Open study"
-                                      />
-                                    ) : (
-                                      <span className="text-gdc-grey">-</span>
-                                    )}
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                          </tbody>
-                        </table>
-                      </div>
-                    );
+                    return <IDCStudyRowComponent studies={studies} />;
                   };
 
                   return (
