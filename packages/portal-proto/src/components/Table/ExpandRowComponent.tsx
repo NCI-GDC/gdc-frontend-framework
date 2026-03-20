@@ -19,7 +19,7 @@ const ExpandRowComponent = ({
   }
 
   if (value.length === 1 && renderSingleValueInline) {
-    return value[0];
+    return value;
   }
 
   return (
