@@ -6,7 +6,12 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Row } from "@tanstack/react-table";
+import {
+  Row,
+  createColumnHelper,
+  ColumnDef,
+  SortingState,
+} from "@tanstack/react-table";
 import { compressors } from "hyparquet-compressors";
 import { parquetReadObjects } from "hyparquet";
 import {
@@ -19,7 +24,7 @@ import {
 } from "@gff/core";
 import VerticalTable from "@/components/Table/VerticalTable";
 import IDCStudyRowComponent from "./IDCStudyRowComponent";
-import { ColumnDef, SortingState } from "@tanstack/react-table";
+// ...existing code...
 import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import { LoadingOverlay } from "@mantine/core";
@@ -37,19 +42,34 @@ const IDC_PARQUET_COLUMNS = [
   "gdc_case_id",
 ];
 
-// Type for a single row read from the IDC parquet index. Fields are optional
-// because parquet rows may have missing/null values; keep a flexible index
-// signature to allow extra fields without breaking type checks.
-// TODO try to simplify the type
-interface IDCParquetData {
-  PatientID?: string | null;
-  StudyInstanceUID?: string | null;
-  StudyDate?: string | null;
-  StudyDescription?: string | null;
-  study_type?: string | null;
-  gdc_case_id?: string | null;
-  [key: string]: any;
-}
+// Types for table row/study used by the column helper
+type IDCStudy = {
+  StudyInstanceUID: string;
+  series: any[];
+  hasWSI: boolean;
+  hasRadiology: boolean;
+  StudyDate?: string;
+  StudyDescription: string;
+};
+
+type IDCViewerRow = {
+  caseId: string;
+  programName: string;
+  studiesList: IDCStudy[];
+  studiesCount: number;
+  wsiCount: number;
+  radiologyCount: number;
+};
+
+// Type for a single row read from the IDC parquet index.
+type IDCParquetData = {
+  PatientID: string;
+  StudyInstanceUID: string;
+  StudyDate: string;
+  StudyDescription: string;
+  study_type: string;
+  gdc_case_id: string;
+};
 
 // Helper: read idc_data from a parquet file
 async function readParquetIndex(idc_index_file: any): Promise<{
@@ -73,7 +93,7 @@ async function readParquetIndex(idc_index_file: any): Promise<{
   const gdcCaseIds = Array.from(gdcCaseIdSet) as readonly string[];
 
   return {
-    idc_data: idc_data as ReadonlyArray<IDCParquetData>,
+    idc_data: idc_data as Array<IDCParquetData>,
     case_ids: gdcCaseIds,
   };
 }
@@ -105,7 +125,7 @@ const IDCViewerWrapper: FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   // helper to toggle when VerticalTable calls setExpanded(row, columnId)
   const setTableExpanded = useCallback(
-    (row: Row<string>) => {
+    (row: Row<IDCViewerRow>) => {
       // row.id is computed by getRowId (we will use caseId)
       if (!row?.id) return;
       toggleExpanded(row.id);
@@ -240,7 +260,7 @@ const IDCViewerWrapper: FC = () => {
   }, [sorting, cohortFiltersKey]);
 
   // derive tableData from mappings (convert mapping -> table row objects)
-  const tableData = useMemo(() => {
+  const tableData = useMemo<IDCViewerRow[]>(() => {
     return (mappings || []).map((m) => {
       const caseId = m.gdcCase?.submitter_id ?? "n/a";
       const programName = m.gdcCase?.project?.program?.name ?? "n/a";
@@ -261,7 +281,7 @@ const IDCViewerWrapper: FC = () => {
         }
         const st = studiesMap.get(studyId);
         st.series.push(r);
-        const rawMod = (r?.study_type ?? "").toString();
+        const rawMod = r.study_type.toString();
         const mod = rawMod.trim().toUpperCase();
         if (mod === "M") st.hasWSI = true;
         if (mod === "R") st.hasRadiology = true;
@@ -284,35 +304,39 @@ const IDCViewerWrapper: FC = () => {
     });
   }, [mappings]);
 
-  const columns: ColumnDef<any>[] = useMemo(
+  const idcTableColumnHelper = createColumnHelper<IDCViewerRow>();
+
+  const columns = useMemo<ColumnDef<IDCViewerRow>[]>(
     () => [
-      {
+      idcTableColumnHelper.accessor("caseId", {
         id: "caseId",
-        accessorFn: (row) => row.caseId,
         header: "GDC Case ID",
-        cell: (info) => info.getValue(),
-        enableSorting: true, // <-- enable sorting for caseId (maps to submitter_id)
-      },
-      {
+        cell: ({ getValue }) => getValue(),
+        enableSorting: true, // maps to submitter_id
+      }),
+      idcTableColumnHelper.accessor("programName", {
         id: "program",
-        accessorFn: (row) => row.programName,
         header: "Program",
-        cell: (info) => info.getValue(),
+        cell: ({ getValue }) => getValue(),
         enableSorting: true,
-      },
-      {
+      }),
+      idcTableColumnHelper.accessor("studiesList", {
         id: "matches",
-        accessorFn: (row) =>
-          row.studiesList.map((s) => s.StudyInstanceUID ?? "(/)"),
         header: "IDC Studies (Click to expand)",
         cell: (info) => {
           // Show only total number of studies and make it clickable to toggle expansion
-          const arr = info.getValue() as string[] | undefined;
-          const count = Array.isArray(arr) ? arr.length : 0;
+          const studies = info.getValue() as IDCStudy[] | undefined;
+          const arr = Array.isArray(studies)
+            ? studies.map((s) => s.StudyInstanceUID ?? "(/)")
+            : [];
+          const count = arr.length;
 
-          const studies = (info.row?.original?.studiesList as any[]) ?? [];
-          const wsiCount = studies.filter((s) => s?.hasWSI).length;
-          const radiologyCount = studies.filter((s) => s?.hasRadiology).length;
+          const studiesOrig =
+            (info.row?.original?.studiesList as IDCStudy[]) ?? [];
+          const wsiCount = studiesOrig.filter((s) => s?.hasWSI).length;
+          const radiologyCount = studiesOrig.filter(
+            (s) => s?.hasRadiology,
+          ).length;
 
           const idcNoun = count === 1 ? "IDC study" : "IDC studies";
           const wsiLabel = `${wsiCount} WSI`;
@@ -359,9 +383,9 @@ const IDCViewerWrapper: FC = () => {
           );
         },
         enableSorting: false,
-      },
+      }),
     ],
-    [setTableExpanded],
+    [setTableExpanded, idcTableColumnHelper],
   );
 
   // Use client-side pagination hook (reads page size from VerticalTable via handleChange)
