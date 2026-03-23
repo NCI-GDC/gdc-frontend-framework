@@ -86,7 +86,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
     >
       <div
         data-tour="cohort_management_bar"
-        className="flex flex-row items-center justify-start gap-6 px-4 h-18 shadow-lg bg-primary"
+        className="flex flex-row items-center justify-start gap-6 px-4 h-24 shadow-lg bg-primary"
       >
         {currentCohort !== undefined && (
           <>

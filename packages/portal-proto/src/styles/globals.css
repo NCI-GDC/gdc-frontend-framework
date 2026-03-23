@@ -40,6 +40,28 @@
   min-width: 0 !important;
 }
 
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
+
+@theme inline {
+  --default-ring-width: 3px;
+  --default-ring-color: var(--color-nci-blue);
+}
+
 input[type="search"] {
   font-family:
     Noto Sans,

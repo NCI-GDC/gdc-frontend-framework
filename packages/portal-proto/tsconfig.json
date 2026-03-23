@@ -36,7 +36,7 @@
     "**/*.tsx",
     "src/components/ItemTypes.js",
     ".next/types/**/*.ts",
-    "src/theme/colors.js"
+    "src/styles/colors.js"
   ],
   "exclude": ["node_modules"]
 }

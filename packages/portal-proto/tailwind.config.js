@@ -23,7 +23,7 @@ const {
   gdcOrange,
   gdcYellow,
   defaultThemeColors,
-} = require("./src/theme/colors");
+} = require("./src/styles/colors");
 const basePath = process.env.NEXT_PUBLIC_BASEPATH;
 
 module.exports = {

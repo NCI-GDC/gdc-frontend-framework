@@ -1,4 +1,4 @@
-import { defaultThemeColors, nciBlue, nciGray } from "@/theme/colors";
+import { defaultThemeColors, nciBlue, nciGray } from "src/styles/colors";
 import "../styles/globals.css";
 import "../styles/survivalplot.css";
 import "@/features/genomic/registerApp";

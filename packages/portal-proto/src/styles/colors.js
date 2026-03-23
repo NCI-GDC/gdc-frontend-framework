@@ -5,7 +5,6 @@
  * It is imported by:
  *   - tailwind.config.js  (build-time, via require())
  *   - _app.tsx             (runtime, via import)
- *   - globals.css          (via CSS variables)
  *
  */
 
