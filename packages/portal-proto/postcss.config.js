@@ -1,6 +1,6 @@
 module.exports = {
   plugins: {
     "postcss-preset-mantine": {},
-    tailwindcss: {},
+    "@tailwindcss/postcss": {},
   },
 };

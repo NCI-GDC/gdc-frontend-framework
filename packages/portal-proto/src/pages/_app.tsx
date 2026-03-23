@@ -19,7 +19,7 @@ import {
   Button,
   Switch,
 } from "@mantine/core";
-import "@mantine/core/styles.css";
+import "@mantine/core/styles.layer.css";
 import "@mantine/dates/styles.css";
 import { useLocalStorage } from "@mantine/hooks";
 import "@nci-gdc/sapien/dist/bodyplot.css";
@@ -123,8 +123,6 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
         "#ffffff",
       ],
       // Add default color from tailwind config to Mantine theme
-      // note that now getting colors from the tailwindcss-themer which assumes that plugin is last in the
-      // plugins declaration.
       // TODO: refactor how the configuration get loaded
 
       ...Object.fromEntries(

@@ -1,7 +1,6 @@
 //@ts-check
 
 // eslint-disable-next-line  @typescript-eslint/no-var-requires
-const plugin = require("tailwindcss/plugin");
 const {
   nciGray,
   nciBlue,
@@ -25,9 +24,6 @@ const {
   gdcViolet,
   gdcOrange,
   gdcYellow,
-  defaultThemeColors,
-  invertPrimaryThemeColors,
-  pastelThemeColors,
 } = require("./src/theme/colors");
 const basePath = process.env.NEXT_PUBLIC_BASEPATH;
 
@@ -38,28 +34,6 @@ module.exports = {
     "./src/components/**/*.{js,ts,jsx,tsx}",
     "./src/features/**/*.{js,ts,jsx,tsx}",
     "../../node_modules/@gff/portal-components/dist/index.js",
-  ],
-  safelist: [
-    "bg-gdc-survival-0",
-    "bg-gdc-survival-1",
-    "bg-gdc-survival-2",
-    "bg-gdc-survival-3",
-    "bg-gdc-survival-4",
-    "bg-gdc-survival-5",
-    "bg-gdc-survival-6",
-    "bg-gdc-survival-7",
-    "bg-gdc-survival-8",
-    "bg-gdc-survival-9",
-    "text-gdc-survival-0",
-    "text-gdc-survival-1",
-    "text-gdc-survival-2",
-    "text-gdc-survival-3",
-    "text-gdc-survival-4",
-    "text-gdc-survival-5",
-    "text-gdc-survival-6",
-    "text-gdc-survival-7",
-    "text-gdc-survival-8",
-    "text-gdc-survival-9",
   ],
   theme: {
     extend: {
@@ -245,64 +219,4 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    require("@tailwindcss/forms")({
-      strategy: "class",
-    }),
-    require("@tailwindcss/typography"),
-
-    plugin(function ({ addVariant }) {
-      // add mantine.dev variants
-      addVariant("data-checked", "&[data-checked]");
-      addVariant("data-active", "&[data-active]");
-      addVariant("data-selected", "&[data-selected]");
-      addVariant("data-hovered", "&[data-hovered]");
-      addVariant("data-disabled", "&[data-disabled]");
-      addVariant("data-in-range", "&[data-in-range]");
-      addVariant("data-first-in-range", "&[data-first-in-range]");
-      addVariant("data-last-in-range", "&[data-last-in-range]");
-    }),
-    plugin(function ({ addUtilities }) {
-      const newUtilities = {
-        ".nextImageFillFix": {
-          width: "auto !important",
-          right: "auto !important",
-          "min-width": "0 !important",
-        },
-      };
-      addUtilities(newUtilities);
-    }),
-    /**
-     * Color theme follows USWGS Color Tokens https://designsystem.digital.gov/design-tokens/color/theme-tokens/
-     * with an addition of content and contrast colors
-     * Note: the contrast color is defined to be a 508 compliant contrast
-     * so while primary-darker is a darker version of primary
-     * primary-contrast-darker is lighter but is named to match the primary color shade
-     * the content variant allows finder control over the theme but at the risk of creating 508 contrast errors
-     * Any component using content should be checked.
-     */
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    require("tailwindcss-themer")({
-      defaultTheme: {
-        extend: {
-          colors: defaultThemeColors,
-        },
-      },
-      themes: [
-        {
-          name: "invert-primary",
-          extend: {
-            colors: invertPrimaryThemeColors,
-          },
-        },
-        {
-          name: "pastel",
-          extend: {
-            colors: pastelThemeColors,
-          },
-        },
-      ],
-    }),
-  ],
 };
