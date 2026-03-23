@@ -26,7 +26,10 @@ jest.mock(
 jest.mock(
   "@gff/core",
   () => ({
-    fetchGdcCases: async () => ({ data: { hits: gdcHits } }),
+    useLazyGetCasesQuery: () => [
+      async () => ({ data: { hits: gdcHits, pagination: {} } }),
+      {},
+    ],
     useCurrentCohortFilters: () => undefined,
     useCurrentCohortCounts: () => undefined,
     filterSetToOperation: (_fs: any) => undefined,
