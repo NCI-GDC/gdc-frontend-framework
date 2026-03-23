@@ -25,7 +25,8 @@ import {
 import VerticalTable from "@/components/Table/VerticalTable";
 import IDCStudyRowComponent from "./IDCStudyRowComponent";
 import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
-import useStandardPagination from "@/hooks/useStandardPagination";
+// server-side pagination: we will manage page size / active page and
+// pass size/from to the cases API (similar to AnnotationTable)
 import { LoadingOverlay } from "@mantine/core";
 
 const IDC_PARQUET_URL =
@@ -157,6 +158,13 @@ const IDCViewerWrapper: FC = () => {
   // guard against concurrent/overlapping fetches
   const fetchInProgressRef = useRef(false);
 
+  // server-side pagination state (defaults similar to AnnotationTable)
+  const [pageSize, setPageSize] = useState(20);
+  const [activePage, setActivePage] = useState(1);
+
+  // store API pagination metadata returned from triggerGetCases
+  const [apiPagination, setApiPagination] = useState<any>({});
+
   // RTK Query lazy hook to fetch cases when we have the IDC case_ids available
   const [triggerGetCases] = useLazyGetCasesQuery();
 
@@ -216,12 +224,13 @@ const IDCViewerWrapper: FC = () => {
 
       const sortByForApi = mapSortingToSortBy();
 
-      // Fetch all matching GDC cases via RTK Query lazy trigger (request shape matches endpointSlice)
+      // Fetch matching GDC cases for the current page via RTK Query lazy trigger
+      // size/from are controlled by pageSize/activePage so we perform server-side pagination
       const resp = await triggerGetCases({
         request: {
           fields: ["submitter_id", "disease_type", "primary_site", "project"],
-          size: case_ids.length,
-          from: 0,
+          size: pageSize,
+          from: (activePage - 1) * pageSize,
           case_filters: extendedFilters,
           expand: ["samples.portions.slides", "project.program"],
           sortBy: sortByForApi.length > 0 ? sortByForApi : undefined,
@@ -230,6 +239,8 @@ const IDCViewerWrapper: FC = () => {
       });
 
       const allHits = resp?.data?.hits || [];
+      // capture API pagination metadata so we can render pagination controls
+      setApiPagination(resp?.data?.pagination || {});
 
       // build mappings from allHits and idc_data
       const mappings = allHits.map((gdcCase: any) => {
@@ -256,13 +267,26 @@ const IDCViewerWrapper: FC = () => {
       fetchInProgressRef.current = false;
       setIsLoading(false);
     }
-  }, [cohortGqlFilters, loadIdcData, mapSortingToSortBy, triggerGetCases]);
+  }, [
+    cohortGqlFilters,
+    loadIdcData,
+    mapSortingToSortBy,
+    triggerGetCases,
+    pageSize,
+    activePage,
+  ]);
 
   useEffect(() => {
     fetchAllGdcCasesAndMap();
-    // intentionally only depend on sorting and the stable cohortFiltersKey
+    // intentionally only depend on sorting, cohortFiltersKey, and pagination
+    // so that changing page/size triggers a refetch
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sorting, cohortFiltersKey]);
+  }, [sorting, cohortFiltersKey, pageSize, activePage]);
+
+  // when cohort filters change, reset to first page (parity with AnnotationTable)
+  useEffect(() => {
+    setActivePage(1);
+  }, [cohortFiltersKey]);
 
   // derive tableData from mappings (convert mapping -> table row objects)
   const tableData = useMemo<IDCViewerRow[]>(() => {
@@ -393,19 +417,7 @@ const IDCViewerWrapper: FC = () => {
     [setTableExpanded, idcTableColumnHelper],
   );
 
-  // Use client-side pagination hook (reads page size from VerticalTable via handleChange)
-  const {
-    handlePageChange,
-    handlePageSizeChange,
-    page,
-    pages,
-    size,
-    from,
-    total,
-    displayedData,
-  } = useStandardPagination(tableData, columns);
-
-  // map VerticalTable handleChange to hook handlers
+  // map VerticalTable handleChange to server-side pagination handlers
   const handleTableChange = useCallback(
     (obj: { newPageNumber?: number; newPageSize?: string | number }) => {
       if (obj.newPageSize !== undefined) {
@@ -413,23 +425,25 @@ const IDCViewerWrapper: FC = () => {
           typeof obj.newPageSize === "string"
             ? parseInt(obj.newPageSize)
             : obj.newPageSize;
-        handlePageSizeChange(String(newSize));
+        // read page size from handleTableChange and reset to first page
+        setPageSize(Number(newSize));
+        setActivePage(1);
         return;
       }
       if (obj.newPageNumber !== undefined) {
-        handlePageChange(obj.newPageNumber);
+        setActivePage(obj.newPageNumber);
       }
     },
-    [handlePageChange, handlePageSizeChange],
+    [],
   );
 
-  // Build pagination object for VerticalTable / TablePagination using hook values
+  // Build pagination object for VerticalTable / TablePagination using API metadata
   const pagination = {
-    size,
-    page,
-    pages,
-    from: from,
-    total,
+    size: apiPagination?.size ?? pageSize,
+    page: apiPagination?.page ?? activePage,
+    pages: apiPagination?.pages ?? undefined,
+    from: apiPagination?.from ?? (activePage - 1) * pageSize,
+    total: apiPagination?.total ?? undefined,
     label: "study",
     customPluralLabel: "studies",
   };
@@ -469,7 +483,7 @@ const IDCViewerWrapper: FC = () => {
                   return (
                     <VerticalTable
                       columns={columns}
-                      data={displayedData}
+                      data={tableData}
                       tableTitle={undefined}
                       getRowCanExpand={(_: any) => true}
                       expandableColumnIds={["matches"]}
