@@ -49,7 +49,7 @@ export const AgreementModal = ({
         <Button
           data-testid="button-cancel"
           onClick={() => dispatch(hideModal())}
-          className="!bg-primary hover:!bg-primary-darker"
+          className="bg-primary! hover:bg-primary-darker!"
         >
           Cancel
         </Button>

@@ -276,7 +276,7 @@ export const Bodyplot = (): JSX.Element => {
         <div
           className={`${
             bodyplotTooltipContent ? "opacity-100" : "opacity-0"
-          }  overflow-visible transition-opacity duration-500 z-[1800] shadow-lg absolute`}
+          }  overflow-visible transition-opacity duration-500 z-1800 shadow-lg absolute`}
           style={{
             left: (keyboardTooltipPosition.x ?? x) - extents[0] - 20,
             top: (keyboardTooltipPosition.y ?? y) - extents[1] / 2,

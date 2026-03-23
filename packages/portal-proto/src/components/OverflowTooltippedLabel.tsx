@@ -10,7 +10,7 @@ type OverflowTooltippedLabelProps = {
 const OverflowTooltippedLabel = ({
   children,
   label,
-  className = "flex-grow font-heading text-sm pt-0.5",
+  className = "grow font-heading text-sm pt-0.5",
 }: OverflowTooltippedLabelProps): JSX.Element => {
   const [showTooltip, setShowTooltip] = useState(false);
 

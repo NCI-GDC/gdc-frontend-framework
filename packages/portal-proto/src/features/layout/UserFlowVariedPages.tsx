@@ -44,7 +44,7 @@ export const UserFlowVariedPages = ({
   return (
     <div className="flex flex-col min-h-screen min-w-full bg-base-max">
       <header
-        className="flex-none bg-base-max sticky top-0 z-[300] shadow-lg"
+        className="flex-none bg-base-max sticky top-0 z-300 shadow-lg"
         ref={headerRef}
         id="global-header"
       >
@@ -56,9 +56,7 @@ export const UserFlowVariedPages = ({
       <ClearStoreErrorBoundary>
         <>
           <aside
-            className={`${
-              isContextBarSticky ? `sticky z-[299] shadow-lg` : ""
-            }`}
+            className={`${isContextBarSticky ? `sticky z-299 shadow-lg` : ""}`}
             style={{
               top: `${isContextBarSticky && `${Math.round(headerHeight)}px`}`, // switching this to tailwind does not work
             }}
@@ -67,7 +65,7 @@ export const UserFlowVariedPages = ({
             {ContextBar ? ContextBar : null}
           </aside>
           <main
-            className="flex flex-grow flex-col overflow-x-clip overflow-y-clip"
+            className="flex grow flex-col overflow-x-clip overflow-y-clip"
             id="main"
           >
             {isFetchingDataVersion ? (

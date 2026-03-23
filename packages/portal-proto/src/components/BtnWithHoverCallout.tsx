@@ -45,11 +45,11 @@ const BtnWithHoverCalloutLeftArrow = tw.button`
   hover:before:h-0
   hover:before:absolute
   hover:before:left-2
-  hover:before:border-t-[10px]
+  hover:before:border-t-10
   hover:before:border-t-transparent
-  hover:before:border-b-[10px]
+  hover:before:border-b-10
   hover:before:border-b-transparent
-  hover:before:border-r-[10px]
+  hover:before:border-r-10
   hover:before:border-r-primary-lightest
   ${(p: { $focus?: boolean }) =>
     p.$focus &&
@@ -59,11 +59,11 @@ const BtnWithHoverCalloutLeftArrow = tw.button`
     before:h-0
     before:absolute
     before:left-2
-    before:border-t-[10px]
+    before:border-t-10
     before:border-t-transparent
-    before:border-b-[10px]
+    before:border-b-10
     before:border-b-transparent
-    before:border-r-[10px]
+    before:border-r-10
     before:border-r-primary-lightest
   `}
 `;

@@ -52,7 +52,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   });
 
   return (
-    <Grid gutter={24} overflow="hidden" className="flex-grow">
+    <Grid gutter={24} overflow="hidden" className="grow">
       <Grid.Col span={{ base: 12, lg: 6 }}>
         <div
           data-testid="overall-survival-plot"

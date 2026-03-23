@@ -99,7 +99,7 @@ export const BaseModal: React.FC<Props> = ({
                       dispatch(hideModal());
                     }
                   }}
-                  className="!bg-primary hover:!bg-primary-darker"
+                  className="bg-primary! hover:bg-primary-darker!"
                 >
                   {title}
                 </Button>

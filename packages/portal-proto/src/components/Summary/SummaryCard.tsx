@@ -16,7 +16,7 @@ export const SummaryCard = React.forwardRef<HTMLTableElement, SummaryCardProps>(
     ref,
   ): JSX.Element => {
     return (
-      <div className="flex flex-col gap-2 flex-grow">
+      <div className="flex flex-col gap-2 grow">
         {title !== "" ? (
           <HeaderTitle>{title}</HeaderTitle>
         ) : (

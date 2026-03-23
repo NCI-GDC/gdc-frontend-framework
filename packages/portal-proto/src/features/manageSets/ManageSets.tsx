@@ -109,7 +109,7 @@ const ManageSets: React.FC = () => {
       </h1>
       <hr />
       {noSets ? (
-        <Grid justify="center" className="flex-grow">
+        <Grid justify="center" className="grow">
           <Grid.Col span={8} className="my-20 flex flex-col items-center">
             <div className="h-40 w-40 rounded-[50%] bg-emptyIconLighterColor flex justify-center items-center">
               <FileAddIcon

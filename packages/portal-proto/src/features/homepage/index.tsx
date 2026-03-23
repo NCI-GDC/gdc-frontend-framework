@@ -127,7 +127,7 @@ const Homepage = (): JSX.Element => {
           }}
         />
         <div className="xl:flex xl:justify-center">
-          <div className="bg-base-max px-4 py-6 lg:flex lg:items-center lg:gap-9 xl:max-w-screen-lg xl:rounded-2xl">
+          <div className="bg-base-max px-4 py-6 lg:flex lg:items-center lg:gap-9 xl:max-w-(--breakpoint-lg) xl:rounded-2xl">
             <ul className="grid grid-cols-3 gap-5 lg:gap-4 lg:flex lg:w-2/3">
               {[
                 {

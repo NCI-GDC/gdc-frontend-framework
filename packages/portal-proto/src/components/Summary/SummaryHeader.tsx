@@ -104,7 +104,7 @@ export const SummaryHeader = ({
       style={!isModal ? { top: topOffset } : undefined}
     >
       <div data-testid="text-summary-bar" className="flex gap-4">
-        <div className="rounded-full w-9 h-9 bg-accent-cool-content-lighter text-primary flex-shrink-0">
+        <div className="rounded-full w-9 h-9 bg-accent-cool-content-lighter text-primary shrink-0">
           <Icon aria-hidden focusable="false" className="w-full h-full p-1" />
         </div>
         <div

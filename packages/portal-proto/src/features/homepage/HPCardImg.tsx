@@ -25,7 +25,7 @@ const HPCardImg = ({
   imgProps,
 }: HPCardImgProps): JSX.Element => {
   return (
-    <div className="xl:max-w-screen-lg m-auto flex flex-col lg:flex-row gap-5 px-4">
+    <div className="xl:max-w-(--breakpoint-lg) m-auto flex flex-col lg:flex-row gap-5 px-4">
       <div className="block lg:hidden self-center">
         <Image
           alt={imgProps.alt}
