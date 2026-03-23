@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import { AnchorLink } from "@/components/AnchorLink";
+import type { IDCStudy, IDCViewerRenderSubProps } from "./types";
 
 const SLIM_VIEWER_BASE =
   "https://viewer.imaging.datacommons.cancer.gov/slim/studies/";
@@ -10,12 +11,15 @@ const buildSlimStudyURL = (studyInstanceUID: string) =>
 const CT_VIEWER_BASE =
   "https://viewer.imaging.datacommons.cancer.gov/v3/viewer/";
 
-interface IDCStudyRowComponentProps {
-  studies: any[];
+// Accept the `row` object passed by VerticalTable's renderSubComponent
+interface IDCStudyRowsComponentProps {
+  row: IDCViewerRenderSubProps["row"];
 }
 
-const IDCStudyRowComponent: FC<IDCStudyRowComponentProps> = ({ studies }) => {
+const IDCStudyRowsComponent: FC<IDCStudyRowsComponentProps> = ({ row }) => {
+  const studies: IDCStudy[] = (row.original?.studiesList as IDCStudy[]) ?? [];
   if (!studies || studies.length === 0) return null;
+
   return (
     <div className="p-2 bg-base-max">
       <table
@@ -86,4 +90,4 @@ const IDCStudyRowComponent: FC<IDCStudyRowComponentProps> = ({ studies }) => {
   );
 };
 
-export default IDCStudyRowComponent;
+export default IDCStudyRowsComponent;

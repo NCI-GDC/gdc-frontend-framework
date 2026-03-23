@@ -23,9 +23,10 @@ import {
   useCurrentCohortFilters,
 } from "@gff/core";
 import VerticalTable from "@/components/Table/VerticalTable";
-import IDCStudyRowComponent from "./IDCStudyRowComponent";
 import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
 import { LoadingOverlay } from "@mantine/core";
+import IDCStudyRowsComponent from "@/features/idc/IDCStudyRowsComponent";
+import { IDCStudy, IDCViewerRow } from "@/features/idc/types";
 
 const IDC_PARQUET_URL =
   "https://storage.googleapis.com/idc-index-data-artifacts/current/release_artifacts/gdc_idc_mapping.parquet";
@@ -39,25 +40,6 @@ const IDC_PARQUET_COLUMNS = [
   "study_type",
   "gdc_case_id",
 ];
-
-// Types for table row/study used by the column helper
-type IDCStudy = {
-  StudyInstanceUID: string;
-  series: any[];
-  hasWSI: boolean;
-  hasRadiology: boolean;
-  StudyDate?: string;
-  StudyDescription: string;
-};
-
-type IDCViewerRow = {
-  caseId: string;
-  programName: string;
-  studiesList: IDCStudy[];
-  studiesCount: number;
-  wsiCount: number;
-  radiologyCount: number;
-};
 
 // Type for a single row read from the IDC parquet index.
 type IDCParquetData = {
@@ -474,11 +456,6 @@ const IDCViewerWrapper: FC = () => {
                 (() => {
                   // renderSubComponent: show detailed studies list for expanded row
 
-                  const renderSubComponent = ({ row }: any) => {
-                    const studies = row.original.studiesList as any[];
-                    return <IDCStudyRowComponent studies={studies} />;
-                  };
-
                   return (
                     <VerticalTable
                       columns={columns}
@@ -487,9 +464,11 @@ const IDCViewerWrapper: FC = () => {
                       getRowCanExpand={(_: any) => true}
                       expandableColumnIds={["matches"]}
                       expanded={expandedState}
-                      setExpanded={(row: any) => setTableExpanded(row)}
-                      getRowId={(row: any) => row.caseId}
-                      renderSubComponent={renderSubComponent}
+                      setExpanded={(row) => setTableExpanded(row)}
+                      getRowId={(row) => row.caseId}
+                      renderSubComponent={({ row }) => (
+                        <IDCStudyRowsComponent row={row} />
+                      )}
                       pagination={pagination}
                       handleChange={handleTableChange}
                       columnSorting="manual"
