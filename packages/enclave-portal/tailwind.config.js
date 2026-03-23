@@ -1,7 +1,7 @@
 //@ts-check
 
 // eslint-disable-next-line  @typescript-eslint/no-var-requires
-const plugin = require("tailwindcss/plugin");
+// const plugin = require("tailwindcss/plugin");
 
 // define NCI colors so all at 10 color pallets
 // note addition of vivid, white, black to "pad" the
@@ -647,73 +647,73 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    require("@tailwindcss/forms")({
-      strategy: "class",
-    }),
-    require("@tailwindcss/typography"),
+  // plugins: [
+  //   // eslint-disable-next-line @typescript-eslint/no-var-requires
+  //   require("@tailwindcss/forms")({
+  //     strategy: "class",
+  //   }),
+  //   require("@tailwindcss/typography"),
 
-    plugin(function ({ addVariant }) {
-      // add mantine.dev variants
-      addVariant("data-checked", "&[data-checked]");
-      addVariant("data-active", "&[data-active]");
-      addVariant("data-selected", "&[data-selected]");
-      addVariant("data-hovered", "&[data-hovered]");
-      addVariant("data-disabled", "&[data-disabled]");
-      addVariant("data-in-range", "&[data-in-range]");
-      addVariant("data-first-in-range", "&[data-first-in-range]");
-      addVariant("data-last-in-range", "&[data-last-in-range]");
-    }),
-    plugin(function ({ addUtilities }) {
-      const newUtilities = {
-        ".nextImageFillFix": {
-          width: "auto !important",
-          right: "auto !important",
-          "min-width": "0 !important",
-        },
-      };
-      addUtilities(newUtilities);
-    }),
-    /**
-     * Color theme follows USWGS Color Tokens https://designsystem.digital.gov/design-tokens/color/theme-tokens/
-     * with an addition of content and contrast colors
-     * Note: the contrast color is defined to be a 508 compliant contrast
-     * so while primary-darker is a darker version of primary
-     * primary-contrast-darker is lighter but is named to match the primary color shade
-     * the content variant allows finder control over the theme but at the risk of creating 508 contrast errors
-     * Any component using content should be checked.
-     */
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    require("tailwindcss-themer")({
-      defaultTheme: {
-        extend: {
-          colors: {
-            base: nciGray,
-            "base-content": nciGrayContent,
-            "base-contrast": nciGrayContrast,
-            primary: nciBlue,
-            "primary-content": nciBlueContent,
-            "primary-contrast": nciBlueContrast,
-            secondary: V2Secondary,
-            "secondary-content": nciGrayContent,
-            "secondary-contrast": V2SecondaryContrast,
-            accent: V2Accent,
-            "accent-content": nciGrayContent,
-            "accent-contrast": V2AccentContrast,
-            "accent-warm": nciYellow,
-            "accent-warm-content": nciGrayContent,
-            "accent-warm-contrast": nciYellowContrast,
-            "accent-cool": V2AccentCool,
-            "accent-cool-content": v2AccentCoolContent,
-            "accent-cool-contrast": nciCyanContrast,
-            chart: nciTeal,
-            "chart-contrast": nciTealContrast,
-            utility: utility,
-            "utility-contrast": utilityContrast,
-          },
-        },
-      },
-    }),
-  ],
+  //   plugin(function ({ addVariant }) {
+  //     // add mantine.dev variants
+  //     addVariant("data-checked", "&[data-checked]");
+  //     addVariant("data-active", "&[data-active]");
+  //     addVariant("data-selected", "&[data-selected]");
+  //     addVariant("data-hovered", "&[data-hovered]");
+  //     addVariant("data-disabled", "&[data-disabled]");
+  //     addVariant("data-in-range", "&[data-in-range]");
+  //     addVariant("data-first-in-range", "&[data-first-in-range]");
+  //     addVariant("data-last-in-range", "&[data-last-in-range]");
+  //   }),
+  //   plugin(function ({ addUtilities }) {
+  //     const newUtilities = {
+  //       ".nextImageFillFix": {
+  //         width: "auto !important",
+  //         right: "auto !important",
+  //         "min-width": "0 !important",
+  //       },
+  //     };
+  //     addUtilities(newUtilities);
+  //   }),
+  //   /**
+  //    * Color theme follows USWGS Color Tokens https://designsystem.digital.gov/design-tokens/color/theme-tokens/
+  //    * with an addition of content and contrast colors
+  //    * Note: the contrast color is defined to be a 508 compliant contrast
+  //    * so while primary-darker is a darker version of primary
+  //    * primary-contrast-darker is lighter but is named to match the primary color shade
+  //    * the content variant allows finder control over the theme but at the risk of creating 508 contrast errors
+  //    * Any component using content should be checked.
+  //    */
+  //   // eslint-disable-next-line @typescript-eslint/no-var-requires
+  //   require("tailwindcss-themer")({
+  //     defaultTheme: {
+  //       extend: {
+  //         colors: {
+  //           base: nciGray,
+  //           "base-content": nciGrayContent,
+  //           "base-contrast": nciGrayContrast,
+  //           primary: nciBlue,
+  //           "primary-content": nciBlueContent,
+  //           "primary-contrast": nciBlueContrast,
+  //           secondary: V2Secondary,
+  //           "secondary-content": nciGrayContent,
+  //           "secondary-contrast": V2SecondaryContrast,
+  //           accent: V2Accent,
+  //           "accent-content": nciGrayContent,
+  //           "accent-contrast": V2AccentContrast,
+  //           "accent-warm": nciYellow,
+  //           "accent-warm-content": nciGrayContent,
+  //           "accent-warm-contrast": nciYellowContrast,
+  //           "accent-cool": V2AccentCool,
+  //           "accent-cool-content": v2AccentCoolContent,
+  //           "accent-cool-contrast": nciCyanContrast,
+  //           chart: nciTeal,
+  //           "chart-contrast": nciTealContrast,
+  //           utility: utility,
+  //           "utility-contrast": utilityContrast,
+  //         },
+  //       },
+  //     },
+  //   }),
+  // ],
 };
