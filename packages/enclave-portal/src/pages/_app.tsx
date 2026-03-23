@@ -13,11 +13,9 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import tailwindConfig from "tailwind.config";
 import "../styles/globals.css";
+import { defaultThemeColors, nciBlue, nciGray } from "src/styles/colors";
 
-const defaultTailwindColorTheme =
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme.extend.colors;
+const defaultTailwindColorTheme = defaultThemeColors;
 
 const EnclavePortalApp: React.FC<AppProps> = ({
   Component,
@@ -26,12 +24,8 @@ const EnclavePortalApp: React.FC<AppProps> = ({
   const theme = createTheme({
     fontFamily: "Montserrat, Noto Sans, sans-serif",
     colors: {
-      blue: Object.values(
-        tailwindConfig.theme.extend.colors["nci-blue"],
-      ) as any,
-      gray: Object.values(
-        tailwindConfig.theme.extend.colors["nci-gray"],
-      ) as any,
+      blue: Object.values(nciBlue) as any,
+      gray: Object.values(nciGray) as any,
       ...Object.fromEntries(
         Object.entries(defaultTailwindColorTheme).map(([key, values]) => [
           key,
