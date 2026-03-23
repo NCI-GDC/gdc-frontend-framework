@@ -11,7 +11,7 @@ export type FunctionButtonVariants =
   | "header-subtle"
   | "icon";
 
-interface FunctionButtonProps extends ButtonProps {
+export interface FunctionButtonProps extends ButtonProps {
   disabled?: boolean;
   $variant?: FunctionButtonVariants;
   ref?: any;

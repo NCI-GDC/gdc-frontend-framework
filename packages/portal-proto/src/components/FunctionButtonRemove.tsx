@@ -1,7 +1,7 @@
 import tw from "tailwind-styled-components";
-import FunctionButton from "./FunctionButton";
+import FunctionButton, { FunctionButtonProps } from "./FunctionButton";
 
-interface StyledButtonProps {
+interface StyledButtonProps extends FunctionButtonProps {
   loading?: boolean;
 }
 
