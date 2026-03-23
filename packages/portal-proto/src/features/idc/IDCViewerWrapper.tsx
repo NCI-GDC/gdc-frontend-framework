@@ -16,7 +16,7 @@ import { compressors } from "hyparquet-compressors";
 import { parquetReadObjects } from "hyparquet";
 import {
   convertFilterToGqlFilter,
-  fetchGdcCases as fetchGdcCasesApi,
+  useLazyGetCasesQuery,
   filterSetToOperation,
   GqlOperation,
   SortBy,
@@ -157,6 +157,9 @@ const IDCViewerWrapper: FC = () => {
   // guard against concurrent/overlapping fetches
   const fetchInProgressRef = useRef(false);
 
+  // RTK Query lazy hook to fetch cases when we have the IDC case_ids available
+  const [triggerGetCases] = useLazyGetCasesQuery();
+
   // Helper: ensure IDC metadata is loaded (no cache, always download & parse)
   const loadIdcData = useCallback(async () => {
     const resp = await fetch(IDC_PARQUET_URL);
@@ -213,14 +216,17 @@ const IDCViewerWrapper: FC = () => {
 
       const sortByForApi = mapSortingToSortBy();
 
-      // Fetch all matching GDC cases in a single request (request size = number of case_ids)
-      const resp = await fetchGdcCasesApi({
-        fields: ["submitter_id", "disease_type", "primary_site", "project"],
-        size: case_ids.length,
-        from: 0,
-        case_filters: extendedFilters,
-        expand: ["samples.portions.slides", "project.program"],
-        sortBy: sortByForApi.length > 0 ? sortByForApi : undefined,
+      // Fetch all matching GDC cases via RTK Query lazy trigger (request shape matches endpointSlice)
+      const resp = await triggerGetCases({
+        request: {
+          fields: ["submitter_id", "disease_type", "primary_site", "project"],
+          size: case_ids.length,
+          from: 0,
+          case_filters: extendedFilters,
+          expand: ["samples.portions.slides", "project.program"],
+          sortBy: sortByForApi.length > 0 ? sortByForApi : undefined,
+        },
+        fetchAll: false,
       });
 
       const allHits = resp?.data?.hits || [];
@@ -250,7 +256,7 @@ const IDCViewerWrapper: FC = () => {
       fetchInProgressRef.current = false;
       setIsLoading(false);
     }
-  }, [cohortGqlFilters, loadIdcData, mapSortingToSortBy]);
+  }, [cohortGqlFilters, loadIdcData, mapSortingToSortBy, triggerGetCases]);
 
   useEffect(() => {
     fetchAllGdcCasesAndMap();
