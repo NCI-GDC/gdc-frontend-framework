@@ -25,8 +25,6 @@ import {
 import VerticalTable from "@/components/Table/VerticalTable";
 import IDCStudyRowComponent from "./IDCStudyRowComponent";
 import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
-// server-side pagination: we will manage page size / active page and
-// pass size/from to the cases API (similar to AnnotationTable)
 import { LoadingOverlay } from "@mantine/core";
 
 const IDC_PARQUET_URL =
@@ -121,7 +119,8 @@ const IDCViewerWrapper: FC = () => {
     });
     return o;
   }, [expandedCases]);
-  // NEW: global loading state for parquet download/parsing + GDC fetch
+
+  // Global loading state for parquet download/parsing + GDC fetch
   const [isLoading, setIsLoading] = useState<boolean>(false);
   // helper to toggle when VerticalTable calls setExpanded(row, columnId)
   const setTableExpanded = useCallback(
@@ -158,7 +157,7 @@ const IDCViewerWrapper: FC = () => {
   // guard against concurrent/overlapping fetches
   const fetchInProgressRef = useRef(false);
 
-  // server-side pagination state (defaults similar to AnnotationTable)
+  // server-side pagination state
   const [pageSize, setPageSize] = useState(20);
   const [activePage, setActivePage] = useState(1);
 
