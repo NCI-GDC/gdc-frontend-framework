@@ -1,4 +1,4 @@
-import tailwindConfig from "../../tailwind.config";
+import { defaultThemeColors, nciBlue, nciGray } from "@/theme/colors";
 import "../styles/globals.css";
 import "../styles/survivalplot.css";
 import "@/features/genomic/registerApp";
@@ -101,22 +101,15 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
     entity_id: null,
   });
 
-  const defaultTailwindColorTheme =
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    tailwindConfig.plugins.slice(-1)[0].__options.defaultTheme.extend.colors;
+  const defaultTailwindColorTheme = defaultThemeColors;
 
   const theme = createTheme({
     // use V2 font in MantineProvider
     fontFamily: "Montserrat, Noto Sans, sans-serif",
     // Override default blue color until styles are determined
     colors: {
-      blue: Object.values(
-        tailwindConfig.theme.extend.colors["nci-blue"],
-      ) as any,
-      gray: Object.values(
-        tailwindConfig.theme.extend.colors["nci-gray"],
-      ) as any,
+      blue: Object.values(nciBlue) as any,
+      gray: Object.values(nciGray) as any,
       white: [
         "#ffffff",
         "#ffffff",

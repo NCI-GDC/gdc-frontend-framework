@@ -14,7 +14,7 @@ import {
   useGetAllFilesMutation,
   useGetFilesQuery,
 } from "@gff/core";
-import { AppStore, persistor, useAppSelector } from "./appApi";
+import { persistor, useAppSelector } from "./appApi";
 import {
   addToCart,
   removeFromCart,
