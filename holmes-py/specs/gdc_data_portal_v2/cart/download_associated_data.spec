@@ -29,10 +29,9 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
 ## Clinical TSV
 * Navigate to "Cart" from "Header" "section"
 * Pause "3" seconds
-* Select "Clinical"
-* Download "TSV" from "Cart Header Dropdown"
-* Read file content from compressed "TSV from Cart Header Dropdown"
-* Verify that "TSV from Cart Header Dropdown" has expected information
+* Download "TSV" from "Cart Header Clinical"
+* Read file content from compressed "TSV from Cart Header Clinical"
+* Verify that "TSV from Cart Header Clinical" has expected information
     |required_info                        |
     |-------------------------------------|
     |follow_ups.barretts_esophagus_goblet_cells_present     |
@@ -97,7 +96,7 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |Pancreas                               |
     |Diagnosis                              |
 
-* Verify that "TSV from Cart Header Dropdown" does not contain specified information
+* Verify that "TSV from Cart Header Clinical" does not contain specified information
     |required_info                          |
     |---------------------------------------|
     |FM-AD                                  |
@@ -137,10 +136,9 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |exposures.weight                       |
 
 ## Clinical JSON
-* Select "Clinical"
-* Download "JSON" from "Cart Header Dropdown"
-* Read from "JSON from Cart Header Dropdown"
-* Verify that "JSON from Cart Header Dropdown" has expected information
+* Download "JSON" from "Cart Header Clinical"
+* Read from "JSON from Cart Header Clinical"
+* Verify that "JSON from Cart Header Clinical" has expected information
     |required_info                        |
     |-------------------------------------|
     |Current Reformed Smoker, Duration Not Specified |
@@ -188,7 +186,7 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |case_id	                          |
     |submitter_id	                      |
 
-* Verify that "JSON from Cart Header Dropdown" does not contain specified information
+* Verify that "JSON from Cart Header Clinical" does not contain specified information
     |required_info                        |
     |-------------------------------------|
     |FM-AD                                |
@@ -196,10 +194,9 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |APOLLO                               |
 
 ## Biospecimen TSV
-* Select "Biospecimen"
-* Download "TSV" from "Cart Header Dropdown"
-* Read file content from compressed "TSV from Cart Header Dropdown"
-* Verify that "TSV from Cart Header Dropdown" has expected information
+* Download "TSV" from "Cart Header Biospecimen"
+* Read file content from compressed "TSV from Cart Header Biospecimen"
+* Verify that "TSV from Cart Header Biospecimen" has expected information
     |required_info                        |
     |-------------------------------------|
     |portion_id                           |
@@ -251,7 +248,7 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |TCGA-BG-A0M0-01Z-00-DX1              |
     |98.0                                 |
     |BOTTOM                               |
-* Verify that "TSV from Cart Header Dropdown" does not contain specified information
+* Verify that "TSV from Cart Header Biospecimen" does not contain specified information
     |required_info                        |
     |-------------------------------------|
     |FM-AD                                |
@@ -259,10 +256,9 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |APOLLO                               |
 
 ## Biospecimen JSON
-* Select "Biospecimen"
-* Download "JSON" from "Cart Header Dropdown"
-* Read from "JSON from Cart Header Dropdown"
-* Verify that "JSON from Cart Header Dropdown" has expected information
+* Download "JSON" from "Cart Header Biospecimen"
+* Read from "JSON from Cart Header Biospecimen"
+* Verify that "JSON from Cart Header Biospecimen" has expected information
     |required_info                        |
     |-------------------------------------|
     |1ae8657f-477f-4e1a-aef2-dd1c1ab5f26a |
@@ -303,7 +299,7 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |5341a8a5-acac-5a24-a963-d27dbecc5db2 |
     |3df88b48-da53-4014-9507-de070223d1dd |
     |91e73c21-abd7-4c20-ac1e-81f4dabc7511 |
-* Verify that "JSON from Cart Header Dropdown" does not contain specified information
+* Verify that "JSON from Cart Header Biospecimen" does not contain specified information
     |required_info                        |
     |-------------------------------------|
     |FM-AD                                |

@@ -118,8 +118,7 @@ def collect_case_counts_on_filters(cohort_name: str, table):
     for k, v in enumerate(table):
         # Clicks tab in cohort builder
         APP.cohort_builder_page.click_button(v[0])
-        time.sleep(1)
-        APP.shared.wait_for_loading_spinner_to_detatch()
+        APP.shared.wait_for_loading_spinners_to_detach()
 
         # Expands list of filters to select if possible
         if APP.cohort_builder_page.is_show_more_or_show_less_button_visible_within_filter_card(
@@ -182,10 +181,7 @@ def validate_custom_filter_text_on_facet_card(are_or_are_not:str, tab_name: str,
     :param v[1]: Custom filter text to check on the facet card
     """
     APP.cohort_builder_page.click_button(tab_name)
-    APP.shared.wait_for_loading_spinner_table_to_detatch()
-    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
-    APP.shared.wait_for_loading_spinner_to_detatch()
-    APP.shared.wait_for_loading_spinner_table_to_detatch()
+    APP.shared.wait_for_loading_spinners_to_detach()
     for k, v in enumerate(table):
         is_custom_filter_visible = APP.cohort_builder_page.is_facet_card_custom_filter_text_present(v[0], v[1])
         if are_or_are_not.lower() == "are":

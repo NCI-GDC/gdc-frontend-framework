@@ -14,17 +14,17 @@ def start_app():
 def click_apps_link_new_tab(table):
     """
     Clicks open the Apps Menu in upper-right corner of header, and clicks on specified link in menu.
-    Then, checks for expected text on the new tab to indicate it opened correctly.
+    Then, checks url in new tab to assert it opened correctly.
     """
     for k, v in enumerate(table):
         APP.header_section.click_apps_menu()
         new_tab = APP.shared.perform_action_handle_new_tab("Header", v[0])
-        is_text_visible = APP.shared.is_text_visible_on_new_tab(new_tab, v[1])
+        is_url_correct = APP.shared.is_url_correct_on_new_tab(new_tab, v[1])
         new_tab.close()
         time.sleep(0.4)
         assert (
-            is_text_visible
-        ), f"After click on '{v[0]}', the expected text '{v[1]}' in NOT present"
+            is_url_correct
+        ), f"After click on '{v[0]}', the expected URL '{v[1]}' in NOT present"
 
 @step("These Apps links should take the user to correct page in the same tab <table>")
 def click_apps_link_same_tab(table):

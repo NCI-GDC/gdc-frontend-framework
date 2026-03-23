@@ -230,10 +230,7 @@ def select_cohort_from_dropdown(cohort_name: str):
     time.sleep(0.5)
     APP.cohort_bar.select_cohort_from_dropdown(cohort_name)
     time.sleep(3)
-    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
-    APP.shared.wait_for_loading_spinner_to_detatch()
-    APP.shared.wait_for_loading_spinner_table_to_detatch()
-    APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
+    APP.shared.wait_for_loading_spinners_to_detach()
 
 
 @step("Set as current cohort")
