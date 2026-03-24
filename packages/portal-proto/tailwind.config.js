@@ -1,4 +1,5 @@
 //@ts-check
+/* eslint-disable @typescript-eslint/no-var-requires */
 const {
   nciGray,
   nciBlue,
