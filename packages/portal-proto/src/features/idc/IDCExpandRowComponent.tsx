@@ -4,6 +4,7 @@ import { CollapseCircleIcon, ExpandCircleIcon } from "@/utils/icons";
 const IDCExpandRowComponent = ({
   isRowExpanded = false,
   value = [],
+  title,
 }: {
   isRowExpanded: boolean;
   value: string[];
@@ -29,7 +30,7 @@ const IDCExpandRowComponent = ({
         />
       )}
       <span className={`whitespace-nowrap ${isRowExpanded && "font-bold"}`}>
-        {value.length.toLocaleString().padStart(6)}
+        {value.length.toLocaleString().padStart(6)} {title}
       </span>
     </div>
   );
