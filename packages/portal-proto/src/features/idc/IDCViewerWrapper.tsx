@@ -23,7 +23,7 @@ import {
   useCurrentCohortFilters,
 } from "@gff/core";
 import VerticalTable from "@/components/Table/VerticalTable";
-import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
+import IDCExpandRowComponent from "./IDCExpandRowComponent";
 import { LoadingOverlay } from "@mantine/core";
 import IDCStudyRowsComponent from "@/features/idc/IDCStudyRowsComponent";
 import { IDCStudy, IDCViewerRow } from "@/features/idc/types";
@@ -382,11 +382,9 @@ const IDCViewerWrapper: FC = () => {
               aria-label={`${count} ${titleLabel}. Press Enter or Space to expand.`}
               className="inline-block"
             >
-              <ExpandRowComponent
+              <IDCExpandRowComponent
                 isRowExpanded={info.row.getIsExpanded()}
                 value={arr ?? []}
-                isColumnExpanded={true}
-                renderSingleValueInline={false}
                 title={titleLabel}
               />
             </div>
