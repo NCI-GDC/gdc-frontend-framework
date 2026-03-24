@@ -2434,12 +2434,12 @@ exports[`matches snapshot for CDave app 1`] = `
               </span>
             </button>
             <button
-              aria-controls="mantine-mock-82-dropdown"
+              aria-controls="mantine-mock-34-dropdown"
               aria-expanded="false"
               aria-haspopup="menu"
               class="flex items-center gap-1 p-1 rounded-md hover:bg-primary-lightest"
               data-testid="button-header-gdc-apps"
-              id="mantine-mock-82-target"
+              id="mantine-mock-34-target"
             >
               <svg
                 aria-hidden="true"
@@ -2643,7 +2643,7 @@ exports[`matches snapshot for CDave app 1`] = `
                     class="focus:border-2 focus:border-primary text-sm m_8fb7ebe7 mantine-Input-input mantine-Select-input"
                     data-testid="textbox-quick-search-bar"
                     data-variant="default"
-                    id="mantine-mock-87"
+                    id="mantine-mock-39"
                     placeholder="e.g. BRAF, Breast, TCGA-BLCA, TCGA-A5-A0G2"
                     value=""
                   />
@@ -2705,8 +2705,8 @@ exports[`matches snapshot for CDave app 1`] = `
             class="m_60c222c7 m_1f958f16 mantine-Modal-inner"
           >
             <section
-              aria-describedby="mantine-mock-95-body"
-              aria-labelledby="mantine-mock-95-title"
+              aria-describedby="mantine-mock-82-body"
+              aria-labelledby="mantine-mock-82-title"
               aria-modal="true"
               class="m_fd1ab0aa m_54c44539 mantine-Modal-content m_1b7284a3 mantine-Paper-root"
               data-modal-content="true"
@@ -2719,7 +2719,7 @@ exports[`matches snapshot for CDave app 1`] = `
               >
                 <h2
                   class="m_615af6c9 mantine-Modal-title"
-                  id="mantine-mock-95-title"
+                  id="mantine-mock-82-title"
                 >
                   <p
                     class="mantine-focus-auto font-medium font-heading m_b6d8b162 mantine-Text-root"
@@ -2732,7 +2732,7 @@ exports[`matches snapshot for CDave app 1`] = `
               </header>
               <div
                 class="m_5df29311 mantine-Modal-body"
-                id="mantine-mock-95-body"
+                id="mantine-mock-82-body"
               >
                 <div
                   class="border-y border-y-base-darker py-4 space-y-4 font-content"
@@ -2927,7 +2927,7 @@ data-[variant="darkFunction"]:disabled:text-opacity-60 rounded-none rounded-l-md
                             class="text-heading font-medium text-primary-darkest rounded-l-none h-[50px] border-primary border-l-2 m_8fb7ebe7 mantine-Input-input mantine-Select-input"
                             data-testid="switchButton"
                             data-variant="default"
-                            id="mantine-mock-98"
+                            id="mantine-mock-84"
                             value="Unsaved_Cohort"
                           />
                           <div
@@ -3035,7 +3035,7 @@ data-[variant="darkFunction"]:disabled:text-opacity-60 rounded-none rounded-l-md
                         @media (max-width: 35.99375em) {.mantine-visible-from-xs {display: none !important;}}@media (min-width: 36em) {.mantine-hidden-from-xs {display: none !important;}}@media (max-width: 47.99375em) {.mantine-visible-from-sm {display: none !important;}}@media (min-width: 48em) {.mantine-hidden-from-sm {display: none !important;}}@media (max-width: 61.99375em) {.mantine-visible-from-md {display: none !important;}}@media (min-width: 62em) {.mantine-hidden-from-md {display: none !important;}}@media (max-width: 74.99375em) {.mantine-visible-from-lg {display: none !important;}}@media (min-width: 75em) {.mantine-hidden-from-lg {display: none !important;}}@media (max-width: 87.99375em) {.mantine-visible-from-xl {display: none !important;}}@media (min-width: 88em) {.mantine-hidden-from-xl {display: none !important;}}
                       </style>
                       <button
-                        aria-controls="mantine-mock-104-dropdown"
+                        aria-controls="mantine-mock-90-dropdown"
                         aria-expanded="false"
                         aria-haspopup="menu"
                         aria-label="Save cohort"
@@ -3058,7 +3058,7 @@ data-[variant="darkFunction"]:disabled:text-opacity-60 !h-full !w-full m_77c9d27
                         data-variant="action"
                         data-with-left-section="true"
                         data-with-right-section="true"
-                        id="mantine-mock-104-target"
+                        id="mantine-mock-90-target"
                         type="button"
                       >
                         <span
@@ -3773,7 +3773,7 @@ data-[variant="darkFunction"]:disabled:text-opacity-60 m_77c9d27d mantine-Button
                   data-orientation="horizontal"
                   data-testid="filters-facets-summary-view"
                   data-variant="pills"
-                  id="mantine-mock-128"
+                  id="mantine-mock-114"
                   style="--tabs-radius: var(--mantine-radius-default); --tabs-color: var(--mantine-color-blue-filled);"
                 >
                   <div
@@ -3785,14 +3785,14 @@ data-[variant="darkFunction"]:disabled:text-opacity-60 m_77c9d27d mantine-Button
                     style="--tabs-justify: flex-end;"
                   >
                     <button
-                      aria-controls="mantine-mock-128-panel-summary"
+                      aria-controls="mantine-mock-114-panel-summary"
                       aria-selected="true"
                       class="mantine-focus-auto m_c3381914 flex flex-row items-center bg-base-max text-primary border font-medium border-solid border-primary hover:bg-secondary-darker hover:text-secondary-content-lightest rounded-md first:border-r-0 last:border-l-0 first:rounded-r-none last:rounded-l-none hover:border-secondary data-active:bg-secondary data-active:text-secondary-content-max m_4ec4dce6 mantine-Tabs-tab m_87cf2631 mantine-UnstyledButton-root"
                       data-active="true"
                       data-orientation="horizontal"
                       data-testid="button-summary-view"
                       data-variant="pills"
-                      id="mantine-mock-128-tab-summary"
+                      id="mantine-mock-114-tab-summary"
                       role="tab"
                       tabindex="0"
                       type="button"
@@ -3827,13 +3827,13 @@ data-[variant="darkFunction"]:disabled:text-opacity-60 m_77c9d27d mantine-Button
                       </span>
                     </button>
                     <button
-                      aria-controls="mantine-mock-128-panel-table"
+                      aria-controls="mantine-mock-114-panel-table"
                       aria-selected="false"
                       class="mantine-focus-auto m_c3381914 flex flex-row items-center bg-base-max text-primary border font-medium border-solid border-primary hover:bg-secondary-darker hover:text-secondary-content-lightest rounded-md first:border-r-0 last:border-l-0 first:rounded-r-none last:rounded-l-none hover:border-secondary data-active:bg-secondary data-active:text-secondary-content-max m_4ec4dce6 mantine-Tabs-tab m_87cf2631 mantine-UnstyledButton-root"
                       data-orientation="horizontal"
                       data-testid="button-table-view"
                       data-variant="pills"
-                      id="mantine-mock-128-tab-table"
+                      id="mantine-mock-114-tab-table"
                       role="tab"
                       tabindex="-1"
                       type="button"
@@ -3869,17 +3869,17 @@ data-[variant="darkFunction"]:disabled:text-opacity-60 m_77c9d27d mantine-Button
                     </button>
                   </div>
                   <div
-                    aria-labelledby="mantine-mock-128-tab-summary"
+                    aria-labelledby="mantine-mock-114-tab-summary"
                     class="h-max m_b0c91715 mantine-Tabs-panel"
                     data-orientation="horizontal"
-                    id="mantine-mock-128-panel-summary"
+                    id="mantine-mock-114-panel-summary"
                     role="tabpanel"
                   />
                   <div
-                    aria-labelledby="mantine-mock-128-tab-table"
+                    aria-labelledby="mantine-mock-114-tab-table"
                     class="h-max m_b0c91715 mantine-Tabs-panel"
                     data-orientation="horizontal"
-                    id="mantine-mock-128-panel-table"
+                    id="mantine-mock-114-panel-table"
                     role="tabpanel"
                     style="display: none;"
                   />
