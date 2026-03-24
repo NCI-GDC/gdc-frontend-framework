@@ -1,21 +1,20 @@
-import Document, { DocumentContext, DocumentInitialProps } from "next/document";
 import { ColorSchemeScript } from "@mantine/core";
+import { Html, Head, Main, NextScript } from "next/document";
 
-class GdcDocument extends Document {
-  static async getInitialProps(
-    ctx: DocumentContext,
-  ): Promise<DocumentInitialProps> {
-    const initialProps = await Document.getInitialProps(ctx);
-    return {
-      ...initialProps,
-      styles: (
-        <>
-          {initialProps.styles}
-          <ColorSchemeScript defaultColorScheme="auto" />
-        </>
-      ),
-    };
-  }
+export default function GdcDocument() {
+  return (
+    <Html>
+      <Head>
+        <ColorSchemeScript defaultColorScheme="auto" />
+        <script
+          src="https://assets.adobedtm.com/6a4249cd0a2c/785de09de161/launch-70d67a6a40a8.min.js"
+          async
+        />
+      </Head>
+      <body>
+        <Main />
+        <NextScript />
+      </body>
+    </Html>
+  );
 }
-
-export default GdcDocument;

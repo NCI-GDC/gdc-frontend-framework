@@ -15,6 +15,6 @@ border
 border-solid
 font-heading
 disabled:opacity-60
-disabled:border-opacity-60
-disabled:text-opacity-60
+disabled:border-secondary/60
+disabled:text-secondary-contrast/60
 `;

@@ -28,12 +28,8 @@ const basePath = process.env.NEXT_PUBLIC_BASEPATH;
 
 module.exports = {
   important: "#__next",
-  content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx}",
-    "./src/components/**/*.{js,ts,jsx,tsx}",
-    "./src/features/**/*.{js,ts,jsx,tsx}",
-    "../../node_modules/@gff/portal-components/dist/index.js",
-  ],
+  // this seems to be still needed inside content as it's using relative path
+  content: ["../../node_modules/@gff/portal-components/dist/index.js"],
   theme: {
     extend: {
       screens: {
@@ -176,10 +172,6 @@ module.exports = {
       },
       transitionProperty: {
         height: "height",
-      },
-      variants: {
-        textColor: ["responsive", "hover", "focus", "group-hover"],
-        extend: {},
       },
       fontSize: {
         "2xs": ".85rem",

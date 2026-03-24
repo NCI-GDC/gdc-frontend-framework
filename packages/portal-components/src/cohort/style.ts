@@ -42,5 +42,5 @@ data-[variant="darkFunction"]:border
 data-[variant="darkFunction"]:border-solid
 data-[variant="darkFunction"]:font-heading
 data-[variant="darkFunction"]:disabled:opacity-60
-data-[variant="darkFunction"]:disabled:border-opacity-60
-data-[variant="darkFunction"]:disabled:text-opacity-60`;
+data-[variant="darkFunction"]:disabled:border-secondary/60
+data-[variant="darkFunction"]:disabled:text-secondary-contrast/60`;

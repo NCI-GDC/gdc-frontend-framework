@@ -4,7 +4,7 @@
  * This file is the single source of truth for all colors.
  * It is imported by:
  *   - tailwind.config.js  (build-time, via require())
- *   - _app.tsx             (runtime, via import)
+ *   - _app.tsx             (runtime, via import pass to mantine)
  *
  */
 

@@ -11,7 +11,6 @@ import type { AppProps } from "next/app";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import tailwindConfig from "tailwind.config";
 import "../styles/globals.css";
 import { defaultThemeColors, nciBlue, nciGray } from "src/styles/colors";
 
@@ -84,8 +83,8 @@ const EnclavePortalApp: React.FC<AppProps> = ({
           arrowSize: 10,
           classNames: {
             tooltip:
-              "bg-base-min bg-opacity-90 text-base-max shadow-lg font-content font-medium text-sm",
-            arrow: "bg-base-min bg-opacity-90",
+              "bg-base-min/90 text-base-max shadow-lg font-content font-medium text-sm",
+            arrow: "bg-base-min/90",
           },
           events: {
             focused: true,

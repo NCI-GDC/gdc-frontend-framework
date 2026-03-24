@@ -27,10 +27,7 @@ export interface FunctionButtonProps extends ButtonProps {
 }
 
 const StyledButton = tw(Button)<FunctionButtonProps>`
- ${(p: FunctionButtonProps) =>
-   p.disabled
-     ? "opacity-60 border-opacity-60 text-opacity-60 aria-disabled"
-     : null}
+ ${(p: FunctionButtonProps) => (p.disabled ? "opacity-60 aria-disabled" : null)}
 ${(p: FunctionButtonProps) =>
   p.$variant !== "icon" ? "flex flex-row items-center px-3 md:px-4" : undefined}
 ${(p: FunctionButtonProps) =>

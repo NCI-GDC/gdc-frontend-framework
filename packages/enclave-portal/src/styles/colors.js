@@ -4,9 +4,11 @@
  * This file is the single source of truth for all colors.
  * It is imported by:
  *   - tailwind.config.js  (build-time, via require())
- *   - _app.tsx             (runtime, via import)
+ *   - _app.tsx             (runtime, via import pass to mantine)
  *
  */
+
+// this is a new file for now (if we were to keep this portal - we need to extract this to a shared file to be used by both portal and enclave)
 
 const nciGray = {
   max: "#FFFFFF",

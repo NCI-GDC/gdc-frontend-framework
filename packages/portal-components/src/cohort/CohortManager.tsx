@@ -90,7 +90,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({
       >
         {currentCohort !== undefined && (
           <>
-            <div className="border-opacity-0">
+            <div className="border-transparent">
               <div className="flex flex-wrap gap-2 lg:gap-4">
                 <div className="flex justify-center items-center">
                   <Tooltip label="Discard Changes" position="bottom" withArrow>
