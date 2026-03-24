@@ -10,7 +10,7 @@ debugpy==1.8.17
     # via getgauge
 distlib==0.4.0
     # via virtualenv
-filelock==3.20.1
+filelock==3.20.3
     # via virtualenv
 getgauge==0.4.11
     # via -r requirements.in

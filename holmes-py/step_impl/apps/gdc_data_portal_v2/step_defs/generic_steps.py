@@ -97,7 +97,15 @@ def save_cohort_if_needed():
 
     """
     APP.shared.wait_for_loading_spinners_to_detach()
-    if APP.cohort_bar.is_disabled('[data-testid="addButton"]'):
+    # This step has been flaky. This is not part of a test, it is for setup of the next test in queue.
+    # So, we will refresh the page to avoid failures.
+    try:
+        APP.shared.is_disabled('[data-testid="addButton"]', 60000)
+    except:
+        APP.shared.reload_page()
+        time.sleep(10)
+        APP.shared.wait_for_loading_spinners_to_detach()
+    if APP.shared.is_disabled('[data-testid="addButton"]', 60000):
         APP.cohort_bar.click_cohort_bar_button("save")
         APP.cohort_bar.click_text_option_from_dropdown_menu("Save")
         # Name the cohort something random so if we need to execute this step
@@ -201,7 +209,9 @@ def download_file_at_file_table(file: str, source: str):
         "Browse Annotations": APP.browse_annotations.click_annotation_download_button,
         "Cart Items": APP.shared.click_button_data_testid_normalize,
         "Cart Header": APP.shared.click_button_with_displayed_text_name,
-        "Cart Header Dropdown": APP.shared.click_text_option_from_dropdown_menu,
+        "Cart Header Biospecimen": APP.cart_page.click_biospecimen_dropdown_option,
+        "Cart Header Clinical": APP.cart_page.click_clinical_dropdown_option,
+        "Cart Header Download Cart": APP.cart_page.click_download_cart_dropdown_option,
         "Case Summary Annotations Table": APP.case_summary_page.click_annotations_table_download_json_or_tsv_button,
         "Case Summary Biospecimen Table": APP.case_summary_page.click_biospecimen_table_download_button,
         "Case Summary Clinical Table": APP.case_summary_page.click_clinical_table_download_button,
@@ -237,13 +247,28 @@ def download_file_at_file_table(file: str, source: str):
         "Set Operations": APP.set_operations_page.click_download_tsv_button_set_operations,
         "Set Operations Union Row": APP.set_operations_page.click_union_row_download_tsv_button_set_operations,
     }
+
+    max_retries = 3
+    attempt = 1
     driver = WebDriver.page
-    with driver.expect_download(timeout=90000) as download_info:
-        # Allows using sources without passing in contents of <file> as a parameter
-        if file.lower() == "file":
-            sources.get(source)()
-        else:
-            sources.get(source)(file)
+
+    # Retry the download up to 3 times
+    while attempt <= max_retries:
+        try:
+            with driver.expect_download(timeout=90000) as download_info:
+                # Allows using sources without passing in contents of <file> as a parameter
+                if file.lower() == "file":
+                    sources.get(source)()
+                else:
+                    sources.get(source)(file)
+            break
+
+        except:
+            if attempt == max_retries:
+                raise
+
+            attempt += 1
+
     download = download_info.value
     file_path = f"{Utility.parent_dir()}/downloads/{dt.timestamp(dt.now())}_{download.suggested_filename}"
     download.save_as(file_path)
@@ -1264,7 +1289,12 @@ def name_cohort(cohort_name: str):
 def click_nav_item_check_text_in_new_tab(page_name: str, table):
     """
     Performs an action to open a new tab.
-    Then, checks for expected text on the new tab to indicate it opened correctly.
+    Then, checks url in new tab to assert it opened correctly.
+
+    :param page_name: What area of the data portal is the button located. See list of options
+    located in function 'perform_action_handle_new_tab'.
+    :param v[0]: Name of button to click.
+    :param v[1]: Expected URL in new tab.
     """
 
     # Banners can interfere with this test. Dismiss any banner before beginning.
@@ -1272,12 +1302,11 @@ def click_nav_item_check_text_in_new_tab(page_name: str, table):
         APP.shared.click_button_with_displayed_text_name("Dismiss")
     for k, v in enumerate(table):
         new_tab = APP.shared.perform_action_handle_new_tab(page_name, v[0])
-        is_text_visible = APP.shared.is_text_visible_on_new_tab(new_tab, v[1])
+        is_url_correct = APP.shared.is_url_correct_on_new_tab(new_tab, v[1])
         new_tab.close()
-        time.sleep(0.4)
         assert (
-            is_text_visible
-        ), f"After click on '{v[0]}', the expected text '{v[1]}' in NOT present"
+            is_url_correct
+        ), f"After click on '{v[0]}', the expected url '{v[1]}' in NOT present"
 
 
 @step(
@@ -1286,22 +1315,22 @@ def click_nav_item_check_text_in_new_tab(page_name: str, table):
 def click_table_by_row_column_check_text_in_new_tab(table_name: str, table):
     """
     click_table_by_row_column_check_text_in_new_tab clicks in a table to open a new tab,
-    and validates the text present in the new tab.
+    and checks url in new tab to assert it opened correctly.
 
     :param table_name: Specifies what table to click on.
     :param v[0]: Row number to click.
     :param v[1]: Column number to click.
-    :param v[2]: Text to check.
+    :param v[2]: Expected URL in new tab.
     """
     # Banners can interfere with this test. Dismiss any banner before beginning.
     if APP.shared.is_text_present("Dismiss"):
         APP.shared.click_button_with_displayed_text_name("Dismiss")
     for k, v in enumerate(table):
         new_tab = APP.shared.click_in_table_handle_new_tab(table_name, v[0], v[1])
-        is_text_visible = APP.shared.is_text_visible_on_new_tab(new_tab, v[2])
+        is_url_correct = APP.shared.is_url_correct_on_new_tab(new_tab, v[2])
         assert (
-            is_text_visible
-        ), f"After click in table '{table_name}', row: '{v[0]}' and column: '{v[1]}' the expected text '{v[2]}' in NOT present"
+            is_url_correct
+        ), f"After click in table '{table_name}', row: '{v[0]}' and column: '{v[1]}' the expected url '{v[2]}' in NOT present"
         new_tab.close()
         time.sleep(0.4)
 

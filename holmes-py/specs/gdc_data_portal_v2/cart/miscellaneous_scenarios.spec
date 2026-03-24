@@ -22,10 +22,10 @@ tags: gdc-data-portal-v2, regression, cart
 * Is text "Download Files in your Cart directly from the Web Browser." present on the page
 * Is text "Download  GDC Reference Files for use in your genomic data analysis." present on the page
 * These links on the "Cart" should take the user to correct page in a new tab
-  |button_text                                |text_on_expected_page                                    |
+  |button_text                                |url_expected_on_new_tab                                  |
   |-------------------------------------------|---------------------------------------------------------|
-  |GDC Data Transfer Tool                     |The GDC Data Transfer Tool (DTT) provides an optimized   |
-  |GDC Reference Files                        |Reference files used by the GDC data harmonization       |
+  |GDC Data Transfer Tool                     |https://gdc.cancer.gov/access-data/gdc-data-transfer-tool|
+  |GDC Reference Files                        |https://gdc.cancer.gov/about-data/gdc-data-processing/gdc-reference-files|
 
 ## No Files in Cart Message
 * Remove "All Files" from cart on the Cart page
