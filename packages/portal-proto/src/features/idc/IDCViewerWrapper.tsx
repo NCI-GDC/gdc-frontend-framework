@@ -1,11 +1,4 @@
-import React, {
-  FC,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import {
   Row,
   createColumnHelper,
@@ -16,12 +9,13 @@ import { compressors } from "hyparquet-compressors";
 import { parquetReadObjects } from "hyparquet";
 import {
   convertFilterToGqlFilter,
-  useLazyGetCasesQuery,
+  useGetCasesQuery,
   filterSetToOperation,
   GqlOperation,
   SortBy,
   useCurrentCohortFilters,
 } from "@gff/core";
+import { useDeepCompareMemo, useDeepCompareEffect } from "use-deep-compare";
 import VerticalTable from "@/components/Table/VerticalTable";
 import IDCExpandRowComponent from "./IDCExpandRowComponent";
 import { LoadingOverlay } from "@mantine/core";
@@ -103,7 +97,7 @@ const IDCViewerWrapper: FC = () => {
   }, [expandedCases]);
 
   // Global loading state for parquet download/parsing + GDC fetch
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [parquetLoading, setParquetLoading] = useState<boolean>(false);
   // helper to toggle when VerticalTable calls setExpanded(row, columnId)
   const setTableExpanded = useCallback(
     (row: Row<IDCViewerRow>) => {
@@ -136,9 +130,6 @@ const IDCViewerWrapper: FC = () => {
     [cohortFiltersKey, currentCohortFilterSet],
   );
 
-  // guard against concurrent/overlapping fetches
-  const fetchInProgressRef = useRef(false);
-
   // server-side pagination state
   const [pageSize, setPageSize] = useState(20);
   const [activePage, setActivePage] = useState(1);
@@ -146,19 +137,47 @@ const IDCViewerWrapper: FC = () => {
   // store API pagination metadata returned from triggerGetCases
   const [apiPagination, setApiPagination] = useState<any>({});
 
-  // RTK Query lazy hook to fetch cases when we have the IDC case_ids available
-  const [triggerGetCases] = useLazyGetCasesQuery();
+  // RTK Query hook to fetch cases when we have the IDC case_ids available
+  // We'll call this with skip until parquet data is loaded.
 
-  // Helper: ensure IDC metadata is loaded (no cache, always download & parse)
-  const loadIdcData = useCallback(async () => {
-    const resp = await fetch(IDC_PARQUET_URL);
-    if (!resp.ok) {
-      throw new Error(
-        `Failed to fetch parquet: ${resp.status} ${resp.statusText}`,
-      );
-    }
-    const arrayBuffer = await resp.arrayBuffer();
-    return await readParquetIndex(arrayBuffer);
+  // Parquet data loaded once on mount
+  const [idcData, setIdcData] = useState<
+    | {
+        idc_data: ReadonlyArray<IDCParquetData>;
+        case_ids: readonly string[];
+      }
+    | undefined
+  >(undefined);
+
+  useEffect(() => {
+    let mounted = true;
+    const loadIdc = async () => {
+      setParquetLoading(true);
+      setLoadError(null);
+      try {
+        const resp = await fetch(IDC_PARQUET_URL);
+        if (!resp.ok) {
+          throw new Error(
+            `Failed to fetch parquet: ${resp.status} ${resp.statusText}`,
+          );
+        }
+        const arrayBuffer = await resp.arrayBuffer();
+        const parsed = await readParquetIndex(arrayBuffer);
+        if (mounted) setIdcData(parsed);
+      } catch (err) {
+        setLoadError(
+          "There was an error rendering IDC table, please try again later.",
+        );
+      } finally {
+        if (mounted) setParquetLoading(false);
+      }
+    };
+
+    loadIdc();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   // Map sorting (table) -> API SortBy
@@ -174,95 +193,89 @@ const IDCViewerWrapper: FC = () => {
     });
   }, [sorting]);
 
-  // fetch all matching GDC cases in chunks and build mappings once ---
-  const fetchAllGdcCasesAndMap = useCallback(async () => {
-    // prevent re-entrant calls
-    if (fetchInProgressRef.current) {
-      return;
-    }
-    fetchInProgressRef.current = true;
-    setIsLoading(true);
-    setLoadError(null); // clear previous error when starting a new fetch
-    try {
-      const caseFiltersArg = cohortGqlFilters
-        ? convertFilterToGqlFilter(cohortGqlFilters)
-        : undefined;
+  // Build extended filters that include the IDC case_ids. Use deep-compare to
+  // avoid unnecessary effect triggers when objects change identity but not
+  // content.
+  const extendedFilters = useDeepCompareMemo(() => {
+    if (!idcData) return undefined;
 
-      // ensure IDC data is loaded to get case_ids
-      const { idc_data, case_ids } = await loadIdcData();
+    const id_filters: GqlOperation = {
+      op: "in",
+      content: {
+        field: "case_id",
+        value: idcData.case_ids,
+      },
+    };
 
-      const id_filters: GqlOperation = {
-        op: "in",
-        content: {
-          field: "case_id",
-          value: case_ids,
-        },
-      };
+    const caseFiltersArg = cohortGqlFilters
+      ? convertFilterToGqlFilter(cohortGqlFilters)
+      : undefined;
 
-      const extendedFilters = caseFiltersArg
-        ? mergeWithAndFilters(caseFiltersArg, id_filters)
-        : id_filters;
+    return caseFiltersArg
+      ? mergeWithAndFilters(caseFiltersArg, id_filters)
+      : id_filters;
+  }, [idcData, cohortGqlFilters]);
 
-      const sortByForApi = mapSortingToSortBy();
+  const sortByForApi = mapSortingToSortBy();
 
-      // Fetch matching GDC cases for the current page via RTK Query lazy trigger
-      // size/from are controlled by pageSize/activePage so we perform server-side pagination
-      const resp = await triggerGetCases({
-        request: {
-          fields: ["submitter_id", "disease_type", "primary_site", "project"],
-          size: pageSize,
-          from: (activePage - 1) * pageSize,
-          case_filters: extendedFilters,
-          expand: ["samples.portions.slides", "project.program"],
-          sortBy: sortByForApi.length > 0 ? sortByForApi : undefined,
-        },
-        fetchAll: false,
-      });
+  // Use the standard query hook; skip the query until parquet is loaded.
+  const {
+    data: casesResponse,
+    isLoading: casesLoading,
+    isError: casesError,
+  } = useGetCasesQuery(
+    {
+      request: {
+        fields: ["submitter_id", "disease_type", "primary_site", "project"],
+        size: pageSize,
+        from: (activePage - 1) * pageSize,
+        case_filters: extendedFilters,
+        expand: ["samples.portions.slides", "project.program"],
+        sortBy: sortByForApi.length > 0 ? sortByForApi : undefined,
+      },
+      fetchAll: false,
+    },
+    { skip: idcData === undefined || extendedFilters === undefined },
+  );
 
-      const allHits = resp?.data?.hits || [];
-      // capture API pagination metadata so we can render pagination controls
-      setApiPagination(resp?.data?.pagination || {});
+  // combined loading state for UI
+  const isLoading = parquetLoading || casesLoading;
 
-      // build mappings from allHits and idc_data
-      const mappings = allHits.map((gdcCase: any) => {
-        const submitterId = gdcCase?.submitter_id;
-        const matches = (idc_data as ReadonlyArray<IDCParquetData>).filter(
-          (row: IDCParquetData) =>
-            row.PatientID &&
-            submitterId &&
-            row.PatientID.toString() === submitterId.toString(),
-        );
-        return {
-          gdcCase,
-          matches,
-        };
-      });
-
-      setMappings(mappings);
-    } catch (err: any) {
-      // surface a user-friendly error message in the UI
+  // surface API errors to the shared loadError state so the UI can render
+  useEffect(() => {
+    if (casesError) {
       setLoadError(
         "There was an error rendering IDC table, please try again later.",
       );
-    } finally {
-      fetchInProgressRef.current = false;
-      setIsLoading(false);
     }
-  }, [
-    cohortGqlFilters,
-    loadIdcData,
-    mapSortingToSortBy,
-    triggerGetCases,
-    pageSize,
-    activePage,
-  ]);
+  }, [casesError]);
 
-  useEffect(() => {
-    fetchAllGdcCasesAndMap();
-    // intentionally only depend on sorting, cohortFiltersKey, and pagination
-    // so that changing page/size triggers a refetch
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sorting, cohortFiltersKey, pageSize, activePage]);
+  // When either the cases data or parquet idc data changes, rebuild mappings.
+  useDeepCompareEffect(() => {
+    const allHits = casesResponse?.hits || [];
+
+    // capture API pagination metadata so we can render pagination controls
+    setApiPagination(casesResponse?.pagination || {});
+
+    // build mappings from allHits and idc_data
+    const mappings = allHits.map((gdcCase: any) => {
+      const submitterId = gdcCase?.submitter_id;
+      const matches = (
+        idcData?.idc_data as ReadonlyArray<IDCParquetData>
+      ).filter(
+        (row: IDCParquetData) =>
+          row.PatientID &&
+          submitterId &&
+          row.PatientID.toString() === submitterId.toString(),
+      );
+      return {
+        gdcCase,
+        matches,
+      };
+    });
+
+    setMappings(mappings);
+  }, [casesResponse, idcData]);
 
   // when cohort filters change, reset to first page (parity with AnnotationTable)
   useEffect(() => {
