@@ -116,23 +116,12 @@ const IDCViewerWrapper: FC = () => {
     { id: "caseId", desc: false },
   ]);
 
-  // use current cohort filters (hook)
   const currentCohortFilterSet = useCurrentCohortFilters();
-
-  // Convert FilterSet -> Operation, but derive it from a stable JSON key so the
-  // effect below doesn't retrigger due to changing object identities from the hook.
-  const cohortFiltersKey = useMemo(
-    () => JSON.stringify(currentCohortFilterSet ?? null),
-    [currentCohortFilterSet],
-  );
-  const cohortGqlFilters = useMemo(
-    () =>
-      cohortFiltersKey && cohortFiltersKey !== "null"
-        ? filterSetToOperation(currentCohortFilterSet as any)
-        : undefined,
-    // rely on the stable JSON key so this only changes when filter contents change
-    [cohortFiltersKey, currentCohortFilterSet],
-  );
+  const cohortGqlFilters = useDeepCompareMemo(() => {
+    return currentCohortFilterSet
+      ? filterSetToOperation(currentCohortFilterSet)
+      : undefined;
+  }, [currentCohortFilterSet]);
 
   // Parquet data loaded once on mount
   const [idcData, setIdcData] = useState<
@@ -261,10 +250,10 @@ const IDCViewerWrapper: FC = () => {
     setMappings(mappings);
   }, [casesResponse, idcData]);
 
-  // when cohort filters change, reset to first page
-  useEffect(() => {
+  // when cohort filters change (deep-compare), reset to first page
+  useDeepCompareEffect(() => {
     setActivePage(1);
-  }, [cohortFiltersKey]);
+  }, [currentCohortFilterSet]);
 
   // derive tableData from mappings (convert mapping -> table row objects)
   const tableData = useMemo<IDCViewerRow[]>(() => {
