@@ -326,12 +326,12 @@ exports[`matches snapshot 1`] = `
               </span>
             </button>
             <button
-              aria-controls="mantine-mock-19-dropdown"
+              aria-controls="mantine-test-id-18-dropdown"
               aria-expanded="false"
               aria-haspopup="menu"
               class="flex items-center gap-1 p-1 rounded-md hover:bg-primary-lightest"
               data-testid="button-header-gdc-apps"
-              id="mantine-mock-19-target"
+              id="mantine-test-id-18-target"
             >
               <svg
                 aria-hidden="true"
@@ -535,7 +535,7 @@ exports[`matches snapshot 1`] = `
                     class="focus:border-2 focus:border-primary text-sm m_8fb7ebe7 mantine-Input-input mantine-Select-input"
                     data-testid="textbox-quick-search-bar"
                     data-variant="default"
-                    id="mantine-mock-24"
+                    id="mantine-test-id-23"
                     placeholder="e.g. BRAF, Breast, TCGA-BLCA, TCGA-A5-A0G2"
                     value=""
                   />
@@ -597,8 +597,8 @@ exports[`matches snapshot 1`] = `
             class="m_60c222c7 m_1f958f16 mantine-Modal-inner"
           >
             <section
-              aria-describedby="mantine-mock-37-body"
-              aria-labelledby="mantine-mock-37-title"
+              aria-describedby="mantine-test-id-36-body"
+              aria-labelledby="mantine-test-id-36-title"
               aria-modal="true"
               class="m_fd1ab0aa m_54c44539 mantine-Modal-content m_1b7284a3 mantine-Paper-root"
               data-modal-content="true"
@@ -611,7 +611,7 @@ exports[`matches snapshot 1`] = `
               >
                 <h2
                   class="m_615af6c9 mantine-Modal-title"
-                  id="mantine-mock-37-title"
+                  id="mantine-test-id-36-title"
                 >
                   <p
                     class="mantine-focus-auto font-medium font-heading m_b6d8b162 mantine-Text-root"
@@ -624,7 +624,7 @@ exports[`matches snapshot 1`] = `
               </header>
               <div
                 class="m_5df29311 mantine-Modal-body"
-                id="mantine-mock-37-body"
+                id="mantine-test-id-36-body"
               >
                 <div
                   class="border-y border-y-base-darker py-4 space-y-4 font-content"

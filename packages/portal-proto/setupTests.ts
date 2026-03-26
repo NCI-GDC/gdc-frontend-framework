@@ -7,7 +7,17 @@ const { getComputedStyle } = window;
 window.getComputedStyle = (elt) => getComputedStyle(elt);
 window.HTMLElement.prototype.scrollIntoView = () => {};
 
-jest.spyOn(React, "useId").mockImplementation(() => "react-test-id");
+let reactIdCounter = 0;
+let mantineIdCounter = 0;
+
+beforeEach(() => {
+  reactIdCounter = 0;
+  mantineIdCounter = 0;
+});
+
+jest
+  .spyOn(React, "useId")
+  .mockImplementation(() => `react-test-id-${reactIdCounter++}`);
 
 jest.mock("redux-persist/lib/storage", () => ({
   __esModule: true,
@@ -100,27 +110,15 @@ jest.mock("next/router", () => ({
   },
 }));
 
-jest.mock("@mantine/hooks", () => {
-  const actual = jest.requireActual("@mantine/hooks");
-  let count = 0;
-  return {
-    ...actual,
-    useId: (id?: string) => id || `mantine-mock-${++count}`,
-    _resetMantineCounter: () => {
-      count = 0;
-    },
-  };
-});
+jest.mock("@mantine/hooks", () => ({
+  ...jest.requireActual("@mantine/hooks"),
+  useId: (id?: string) => id || `mantine-test-id-${mantineIdCounter++}`,
+}));
 
 jest.mock("@reduxjs/toolkit", () => ({
   ...jest.requireActual("@reduxjs/toolkit"),
   nanoid: () => "mock-nanoid",
 }));
-
-beforeEach(() => {
-  const { _resetMantineCounter } = jest.requireMock("@mantine/hooks");
-  _resetMantineCounter();
-});
 
 // Mock fetch
 global.fetch = jest.fn() as any;
