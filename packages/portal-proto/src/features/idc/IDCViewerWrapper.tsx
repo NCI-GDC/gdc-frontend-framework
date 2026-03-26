@@ -249,7 +249,7 @@ const IDCViewerWrapper: FC = () => {
     const mappings = allHits.map((gdcCase: any) => {
       const submitterId = gdcCase?.submitter_id;
       const matches = (
-        idcData?.idc_data as ReadonlyArray<IDCParquetData>
+        (idcData?.idc_data ?? []) as ReadonlyArray<IDCParquetData>
       ).filter(
         (row: IDCParquetData) =>
           row.PatientID &&
