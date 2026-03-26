@@ -73,12 +73,16 @@ async function readParquetIndex(idc_index_file: any): Promise<{
 }
 
 const IDCViewerWrapper: FC = () => {
+  // Global loading state for parquet download/parsing + GDC fetch
+  const [parquetLoading, setParquetLoading] = useState<boolean>(false);
   const [mappings, setMappings] = useState<any[]>([]);
-  // track non-transient load/render errors
   const [loadError, setLoadError] = useState<string | null>(null);
-
-  // Track which cases are expanded to show their series rows
   const [expandedCases, setExpandedCases] = useState<Set<string>>(new Set());
+  // server-side pagination state
+  const [pageSize, setPageSize] = useState(20);
+  const [activePage, setActivePage] = useState(1);
+  // store API pagination metadata returned from triggerGetCases
+  const [apiPagination, setApiPagination] = useState<any>({});
 
   const toggleExpanded = useCallback((caseId: string) => {
     setExpandedCases((prev) => {
@@ -98,8 +102,6 @@ const IDCViewerWrapper: FC = () => {
     return expandedMap;
   }, [expandedCases]);
 
-  // Global loading state for parquet download/parsing + GDC fetch
-  const [parquetLoading, setParquetLoading] = useState<boolean>(false);
   // helper to toggle when VerticalTable calls setExpanded(row, columnId)
   const setTableExpanded = useCallback(
     (row: Row<IDCViewerRow>) => {
@@ -131,13 +133,6 @@ const IDCViewerWrapper: FC = () => {
     // rely on the stable JSON key so this only changes when filter contents change
     [cohortFiltersKey, currentCohortFilterSet],
   );
-
-  // server-side pagination state
-  const [pageSize, setPageSize] = useState(20);
-  const [activePage, setActivePage] = useState(1);
-
-  // store API pagination metadata returned from triggerGetCases
-  const [apiPagination, setApiPagination] = useState<any>({});
 
   // Parquet data loaded once on mount
   const [idcData, setIdcData] = useState<
