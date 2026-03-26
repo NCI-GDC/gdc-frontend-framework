@@ -79,6 +79,7 @@ const IDCViewerWrapper: FC = () => {
 
   // Track which cases are expanded to show their series rows
   const [expandedCases, setExpandedCases] = useState<Set<string>>(new Set());
+
   const toggleExpanded = useCallback((caseId: string) => {
     setExpandedCases((prev) => {
       const next = new Set(prev);
@@ -87,13 +88,14 @@ const IDCViewerWrapper: FC = () => {
       return next;
     });
   }, []);
+
   // derived object for VerticalTable controlled `expanded` prop
   const expandedState = React.useMemo(() => {
-    const o: Record<string, boolean> = {};
+    const expandedMap: Record<string, boolean> = {};
     expandedCases.forEach((id) => {
-      o[id] = true;
+      expandedMap[id] = true;
     });
-    return o;
+    return expandedMap;
   }, [expandedCases]);
 
   // Global loading state for parquet download/parsing + GDC fetch
@@ -190,9 +192,7 @@ const IDCViewerWrapper: FC = () => {
     });
   }, [sorting]);
 
-  // Build extended filters that include the IDC case_ids. Use deep-compare to
-  // avoid unnecessary effect triggers when objects change identity but not
-  // content.
+  // Build extended filters that include the IDC case_ids.
   const extendedFilters = useDeepCompareMemo(() => {
     if (!idcData) return undefined;
 
@@ -411,7 +411,6 @@ const IDCViewerWrapper: FC = () => {
           typeof obj.newPageSize === "string"
             ? parseInt(obj.newPageSize)
             : obj.newPageSize;
-        // read page size from handleTableChange and reset to first page
         setPageSize(Number(newSize));
         setActivePage(1);
         return;
@@ -457,31 +456,24 @@ const IDCViewerWrapper: FC = () => {
                   No idc images for selected cohort.
                 </div>
               ) : (
-                // VerticalTable-based view
-                (() => {
-                  // renderSubComponent: show detailed studies list for expanded row
-
-                  return (
-                    <VerticalTable
-                      columns={columns}
-                      data={tableData}
-                      tableTitle={undefined}
-                      getRowCanExpand={(_: any) => true}
-                      expandableColumnIds={["matches"]}
-                      expanded={expandedState}
-                      setExpanded={(row) => setTableExpanded(row)}
-                      getRowId={(row) => row.caseId}
-                      renderSubComponent={({ row }) => (
-                        <IDCStudyRowsComponent row={row} />
-                      )}
-                      pagination={pagination}
-                      handleChange={handleTableChange}
-                      columnSorting="manual"
-                      sorting={sorting}
-                      setSorting={setSorting}
-                    />
-                  );
-                })()
+                <VerticalTable
+                  columns={columns}
+                  data={tableData}
+                  tableTitle={undefined}
+                  getRowCanExpand={(_: any) => true}
+                  expandableColumnIds={["matches"]}
+                  expanded={expandedState}
+                  setExpanded={(row) => setTableExpanded(row)}
+                  getRowId={(row) => row.caseId}
+                  renderSubComponent={({ row }) => (
+                    <IDCStudyRowsComponent row={row} />
+                  )}
+                  pagination={pagination}
+                  handleChange={handleTableChange}
+                  columnSorting="manual"
+                  sorting={sorting}
+                  setSorting={setSorting}
+                />
               ))}
           </div>
         </div>
