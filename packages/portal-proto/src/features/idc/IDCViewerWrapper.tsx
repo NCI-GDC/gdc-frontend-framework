@@ -143,6 +143,19 @@ const IDCViewerWrapper: FC = () => {
     | undefined
   >(undefined);
 
+  // Map sorting (table) -> API SortBy
+  const mapSortingToSortBy = useCallback((): ReadonlyArray<SortBy> => {
+    const COLUMN_ID_TO_FIELD: Record<string, string> = {
+      caseId: "submitter_id",
+      program: "project.program.name",
+    };
+    if (!sorting || sorting.length === 0) return [];
+    return sorting.map((s) => {
+      const field = COLUMN_ID_TO_FIELD[String(s.id)] ?? String(s.id);
+      return { field, direction: s.desc ? "desc" : "asc" } as SortBy;
+    });
+  }, [sorting]);
+
   useEffect(() => {
     let mounted = true;
     const loadIdc = async () => {
@@ -174,20 +187,6 @@ const IDCViewerWrapper: FC = () => {
     };
   }, []);
 
-  // Map sorting (table) -> API SortBy
-  const mapSortingToSortBy = useCallback((): ReadonlyArray<SortBy> => {
-    const COLUMN_ID_TO_FIELD: Record<string, string> = {
-      caseId: "submitter_id",
-      program: "project.program.name",
-    };
-    if (!sorting || sorting.length === 0) return [];
-    return sorting.map((s) => {
-      const field = COLUMN_ID_TO_FIELD[String(s.id)] ?? String(s.id);
-      return { field, direction: s.desc ? "desc" : "asc" } as SortBy;
-    });
-  }, [sorting]);
-
-  // Build extended filters that include the IDC case_ids.
   const extendedFilters = useDeepCompareMemo(() => {
     if (!idcData) return undefined;
 
@@ -266,7 +265,7 @@ const IDCViewerWrapper: FC = () => {
     setMappings(mappings);
   }, [casesResponse, idcData]);
 
-  // when cohort filters change, reset to first page (parity with AnnotationTable)
+  // when cohort filters change, reset to first page
   useEffect(() => {
     setActivePage(1);
   }, [cohortFiltersKey]);
@@ -324,7 +323,7 @@ const IDCViewerWrapper: FC = () => {
         id: "caseId",
         header: "GDC Case ID",
         cell: ({ getValue }) => getValue(),
-        enableSorting: true, // maps to submitter_id
+        enableSorting: true,
       }),
       idcTableColumnHelper.accessor("programName", {
         id: "program",
