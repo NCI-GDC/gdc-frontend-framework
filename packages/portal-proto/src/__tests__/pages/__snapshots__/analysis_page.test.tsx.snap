@@ -1363,6 +1363,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                   class="flex gap-1 pb-4 relative lg:absolute lg:pb-0"
                 >
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-files-cases-summary"
@@ -1443,6 +1444,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-custom-filters-cases-summary"
@@ -1516,6 +1518,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-biospecimen-cases-summary"
@@ -1588,6 +1591,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-clinical-cases-summary"
@@ -3471,6 +3475,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                   class="flex gap-1 pb-4 relative lg:absolute lg:pb-0"
                 >
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-files-cases-summary"
@@ -3551,6 +3556,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-custom-filters-cases-summary"
@@ -3624,6 +3630,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-biospecimen-cases-summary"
@@ -3696,6 +3703,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-clinical-cases-summary"
@@ -5579,6 +5587,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                   class="flex gap-1 pb-4 relative lg:absolute lg:pb-0"
                 >
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-files-cases-summary"
@@ -5659,6 +5668,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-custom-filters-cases-summary"
@@ -5732,6 +5742,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-biospecimen-cases-summary"
@@ -5804,6 +5815,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-clinical-cases-summary"
@@ -7687,6 +7699,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                   class="flex gap-1 pb-4 relative lg:absolute lg:pb-0"
                 >
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-files-cases-summary"
@@ -7767,6 +7780,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-custom-filters-cases-summary"
@@ -7840,6 +7854,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-biospecimen-cases-summary"
@@ -7912,6 +7927,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-clinical-cases-summary"
@@ -9795,6 +9811,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                   class="flex gap-1 pb-4 relative lg:absolute lg:pb-0"
                 >
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-files-cases-summary"
@@ -9875,6 +9892,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-custom-filters-cases-summary"
@@ -9948,6 +9966,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-biospecimen-cases-summary"
@@ -10020,6 +10039,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-clinical-cases-summary"
@@ -11903,6 +11923,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                   class="flex gap-1 pb-4 relative lg:absolute lg:pb-0"
                 >
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-files-cases-summary"
@@ -11983,6 +12004,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-custom-filters-cases-summary"
@@ -12056,6 +12078,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-biospecimen-cases-summary"
@@ -12128,6 +12151,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-clinical-cases-summary"
@@ -14011,6 +14035,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                   class="flex gap-1 pb-4 relative lg:absolute lg:pb-0"
                 >
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-files-cases-summary"
@@ -14091,6 +14116,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-custom-filters-cases-summary"
@@ -14164,6 +14190,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-biospecimen-cases-summary"
@@ -14236,6 +14263,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-clinical-cases-summary"
@@ -16119,6 +16147,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                   class="flex gap-1 pb-4 relative lg:absolute lg:pb-0"
                 >
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-files-cases-summary"
@@ -16199,6 +16228,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-custom-filters-cases-summary"
@@ -16272,6 +16302,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-biospecimen-cases-summary"
@@ -16344,6 +16375,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-clinical-cases-summary"
@@ -18227,6 +18259,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                   class="flex gap-1 pb-4 relative lg:absolute lg:pb-0"
                 >
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-files-cases-summary"
@@ -18307,6 +18340,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-custom-filters-cases-summary"
@@ -18380,6 +18414,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-biospecimen-cases-summary"
@@ -18452,6 +18487,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-clinical-cases-summary"
@@ -20335,6 +20371,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                   class="flex gap-1 pb-4 relative lg:absolute lg:pb-0"
                 >
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-files-cases-summary"
@@ -20415,6 +20452,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-custom-filters-cases-summary"
@@ -20488,6 +20526,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-biospecimen-cases-summary"
@@ -20560,6 +20599,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-clinical-cases-summary"
@@ -22443,6 +22483,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                   class="flex gap-1 pb-4 relative lg:absolute lg:pb-0"
                 >
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-files-cases-summary"
@@ -22523,6 +22564,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-custom-filters-cases-summary"
@@ -22596,6 +22638,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-biospecimen-cases-summary"
@@ -22668,6 +22711,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-clinical-cases-summary"
@@ -24551,6 +24595,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                   class="flex gap-1 pb-4 relative lg:absolute lg:pb-0"
                 >
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-files-cases-summary"
@@ -24631,6 +24676,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-custom-filters-cases-summary"
@@ -24704,6 +24750,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-biospecimen-cases-summary"
@@ -24776,6 +24823,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-clinical-cases-summary"
@@ -26659,6 +26707,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                   class="flex gap-1 pb-4 relative lg:absolute lg:pb-0"
                 >
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-files-cases-summary"
@@ -26739,6 +26788,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-custom-filters-cases-summary"
@@ -26812,6 +26862,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-biospecimen-cases-summary"
@@ -26884,6 +26935,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-clinical-cases-summary"
@@ -28767,6 +28819,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                   class="flex gap-1 pb-4 relative lg:absolute lg:pb-0"
                 >
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-files-cases-summary"
@@ -28847,6 +28900,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-custom-filters-cases-summary"
@@ -28920,6 +28974,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-biospecimen-cases-summary"
@@ -28992,6 +29047,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-clinical-cases-summary"
@@ -30875,6 +30931,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                   class="flex gap-1 pb-4 relative lg:absolute lg:pb-0"
                 >
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-files-cases-summary"
@@ -30955,6 +31012,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-custom-filters-cases-summary"
@@ -31028,6 +31086,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-biospecimen-cases-summary"
@@ -31100,6 +31159,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-clinical-cases-summary"
@@ -32983,6 +33043,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                   class="flex gap-1 pb-4 relative lg:absolute lg:pb-0"
                 >
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-files-cases-summary"
@@ -33063,6 +33124,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-custom-filters-cases-summary"
@@ -33136,6 +33198,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-biospecimen-cases-summary"
@@ -33208,6 +33271,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </span>
                   </button>
                   <button
+                    aria-expanded="false"
                     class="mantine-focus-auto undefined flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
                     data-disabled="true"
                     data-testid="button-clinical-cases-summary"
