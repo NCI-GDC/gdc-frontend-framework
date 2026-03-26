@@ -29,6 +29,7 @@ import {
 } from "@/utils/icons";
 import { getFormattedTimestamp } from "@/utils/date";
 import { ADDITIONAL_DOWNLOAD_MESSAGE } from "@/utils/constants";
+import { useDisclosure } from "@mantine/hooks";
 
 const buttonStyle =
   "bg-base-max text-primary border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary";
@@ -103,6 +104,20 @@ const CartHeader: React.FC<CartHeaderProps> = ({
 }: CartHeaderProps) => {
   const dispatch = useCoreDispatch();
   const { data: userDetails } = useFetchUserDetailsQuery();
+
+  const [cartMenuOpened, { open: openCartMenu, close: closeCartMenu }] =
+    useDisclosure(false);
+  const [
+    biospecimenMenuOpened,
+    { open: openBiospecimenMenu, close: closeBiospecimenMenu },
+  ] = useDisclosure(false);
+  const [
+    clinicalMenuOpened,
+    { open: openClinicalMenu, close: closeClinicalMenu },
+  ] = useDisclosure(false);
+  const [removeMenuOpened, { open: openRemoveMenu, close: closeRemoveMenu }] =
+    useDisclosure(false);
+
   const [cartDownloadActive, setCartDownloadActive] = useState(false);
   const [manifestDownloadActive, setManifestDownloadActive] = useState(false);
   const [clinicalTSVDownloadActive, setClinicalTSVDownloadActive] =
@@ -135,7 +150,13 @@ const CartHeader: React.FC<CartHeaderProps> = ({
         data-testid="cart-header"
       >
         <div className="flex flex-wrap gap-2">
-          <Menu width="target" closeOnItemClick={false}>
+          <Menu
+            opened={cartMenuOpened}
+            onOpen={openCartMenu}
+            onClose={closeCartMenu}
+            width="target"
+            closeOnItemClick={false}
+          >
             <Menu.Target>
               <Button
                 data-testid="button-download-cart"
@@ -154,6 +175,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                     <ArrowDropDownIcon size="1.5em" aria-hidden="true" />
                   </div>
                 }
+                aria-expanded={cartMenuOpened}
               >
                 Download Cart
               </Button>
@@ -215,7 +237,12 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             </Menu.Dropdown>
           </Menu>
           {/* Biospecimen */}
-          <Menu width="target">
+          <Menu
+            opened={biospecimenMenuOpened}
+            onOpen={openBiospecimenMenu}
+            onClose={closeBiospecimenMenu}
+            width="target"
+          >
             <Menu.Target>
               <Button
                 data-testid="button-download-biospecimen"
@@ -234,6 +261,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                     <ArrowDropDownIcon size="1.5em" aria-hidden="true" />
                   </div>
                 }
+                aria-expanded={biospecimenMenuOpened}
               >
                 Biospecimen
               </Button>
@@ -298,7 +326,12 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             </Menu.Dropdown>
           </Menu>
           {/* Clinical */}
-          <Menu width="target">
+          <Menu
+            opened={clinicalMenuOpened}
+            onOpen={openClinicalMenu}
+            onClose={closeClinicalMenu}
+            width="target"
+          >
             <Menu.Target>
               <Button
                 data-testid="button-download-clinical"
@@ -317,6 +350,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                     <ArrowDropDownIcon size="1.5em" aria-hidden="true" />
                   </div>
                 }
+                aria-expanded={clinicalMenuOpened}
               >
                 Clinical
               </Button>
@@ -508,7 +542,11 @@ const CartHeader: React.FC<CartHeaderProps> = ({
             }}
           />
           {/* Remove From Cart */}
-          <Menu>
+          <Menu
+            opened={removeMenuOpened}
+            onOpen={openRemoveMenu}
+            onClose={closeRemoveMenu}
+          >
             <Menu.Target>
               <Button
                 data-testid="button-remove-from-cart"
@@ -527,6 +565,7 @@ const CartHeader: React.FC<CartHeaderProps> = ({
                 classNames={{
                   root: `bg-nci-red-darker text-base-max hover:bg-removeButtonHover ${focusStyles}`,
                 }}
+                aria-expanded={removeMenuOpened}
               >
                 Remove From Cart
               </Button>
