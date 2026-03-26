@@ -137,9 +137,6 @@ const IDCViewerWrapper: FC = () => {
   // store API pagination metadata returned from triggerGetCases
   const [apiPagination, setApiPagination] = useState<any>({});
 
-  // RTK Query hook to fetch cases when we have the IDC case_ids available
-  // We'll call this with skip until parquet data is loaded.
-
   // Parquet data loaded once on mount
   const [idcData, setIdcData] = useState<
     | {
@@ -221,25 +218,22 @@ const IDCViewerWrapper: FC = () => {
   // Use the standard query hook; skip the query until parquet is loaded.
   const {
     data: casesResponse,
-    isLoading: casesLoading,
+    isFetching: casesLoading,
     isError: casesError,
-  } = useGetCasesQuery(
-    {
-      request: {
-        fields: ["submitter_id", "disease_type", "primary_site", "project"],
-        size: pageSize,
-        from: (activePage - 1) * pageSize,
-        case_filters: extendedFilters,
-        expand: ["samples.portions.slides", "project.program"],
-        sortBy: sortByForApi.length > 0 ? sortByForApi : undefined,
-      },
-      fetchAll: false,
+  } = useGetCasesQuery({
+    request: {
+      fields: ["submitter_id", "disease_type", "primary_site", "project"],
+      size: pageSize,
+      from: (activePage - 1) * pageSize,
+      case_filters: extendedFilters,
+      expand: ["samples.portions.slides", "project.program"],
+      sortBy: sortByForApi.length > 0 ? sortByForApi : undefined,
     },
-    { skip: idcData === undefined || extendedFilters === undefined },
-  );
+    fetchAll: false,
+  });
 
-  // combined loading state for UI
-  const isLoading = parquetLoading || casesLoading;
+  // combined visibility for the LoadingOverlay: parquet load or remote fetch
+  const overlayVisible = parquetLoading || casesLoading;
 
   // surface API errors to the shared loadError state so the UI can render
   useEffect(() => {
@@ -445,8 +439,8 @@ const IDCViewerWrapper: FC = () => {
       <div style={{ marginTop: 12 }}>
         <div style={{ maxHeight: 460, overflow: "auto" }}>
           <div style={{ position: "relative", minHeight: 120 }}>
-            <LoadingOverlay visible={isLoading} zIndex={50} />
-            {!isLoading &&
+            <LoadingOverlay visible={overlayVisible} zIndex={50} />
+            {!overlayVisible &&
               (loadError ? (
                 <div
                   data-testid="idc-error-message"
