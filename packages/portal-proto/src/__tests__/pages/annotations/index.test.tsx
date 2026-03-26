@@ -1,4 +1,3 @@
-// annotations.test.tsx
 import AnnotationsPage from "src/pages/annotations";
 import { render } from "test-utils";
 
