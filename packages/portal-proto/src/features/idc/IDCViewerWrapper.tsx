@@ -76,7 +76,7 @@ const IDCViewerWrapper: FC = () => {
   // Global loading state for parquet download/parsing + GDC fetch
   const [parquetLoading, setParquetLoading] = useState<boolean>(false);
   const [mappings, setMappings] = useState<any[]>([]);
-  const [loadError, setLoadError] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<boolean>(false);
   const [expandedCases, setExpandedCases] = useState<Set<string>>(new Set());
   // server-side pagination state
   const [pageSize, setPageSize] = useState(20);
@@ -160,7 +160,7 @@ const IDCViewerWrapper: FC = () => {
     let mounted = true;
     const loadIdc = async () => {
       setParquetLoading(true);
-      setLoadError(null);
+      setLoadError(false);
       try {
         const resp = await fetch(IDC_PARQUET_URL);
         if (!resp.ok) {
@@ -172,9 +172,7 @@ const IDCViewerWrapper: FC = () => {
         const parsed = await readParquetIndex(arrayBuffer);
         if (mounted) setIdcData(parsed);
       } catch (err) {
-        setLoadError(
-          "There was an error rendering IDC table, please try again later.",
-        );
+        setLoadError(true);
       } finally {
         if (mounted) setParquetLoading(false);
       }
@@ -232,9 +230,7 @@ const IDCViewerWrapper: FC = () => {
   // surface API errors to the shared loadError state so the UI can render
   useEffect(() => {
     if (casesError) {
-      setLoadError(
-        "There was an error rendering IDC table, please try again later.",
-      );
+      setLoadError(true);
     }
   }, [casesError]);
 
