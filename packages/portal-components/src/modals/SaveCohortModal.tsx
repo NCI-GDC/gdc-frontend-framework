@@ -219,8 +219,8 @@ const SaveCohortModal: React.FC<SaveCohortModalProps> = ({
           showReplaceCohort
             ? "Replace Existing Cohort"
             : saveAs
-            ? "Save Cohort As"
-            : "Save Cohort"
+              ? "Save Cohort As"
+              : "Save Cohort"
         }
         size="md"
         classNames={{

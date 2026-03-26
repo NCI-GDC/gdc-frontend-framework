@@ -84,8 +84,8 @@ const SelectCell: React.FC<SelectCellProps> = ({
         selectedEntityType !== undefined && selectedEntityType !== entityType
           ? "Please choose only one entity type"
           : count === 0
-          ? "Set is either empty or deprecated"
-          : undefined
+            ? "Set is either empty or deprecated"
+            : undefined
       }
       disabled={
         count > 0 &&

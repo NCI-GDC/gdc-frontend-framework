@@ -188,7 +188,7 @@ const CNVPlot: React.FC<CNVPlotProps> = ({
   const errorMessage =
     typeof error === "string"
       ? error
-      : (error as GraphQLFetchError)?.text ?? "An error occurred";
+      : ((error as GraphQLFetchError)?.text ?? "An error occurred");
 
   if (isError) {
     return <div>Failed to fetch chart: {errorMessage}</div>;

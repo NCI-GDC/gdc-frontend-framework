@@ -96,9 +96,9 @@ export class ValueExtractorHandler implements OperationHandler<OperandValue> {
 /**
  * Extract the operand values, if operands themselves have values,  otherwise undefined.
  */
-export class EnumValueExtractorHandler
-  implements OperationHandler<EnumOperandValue | undefined>
-{
+export class EnumValueExtractorHandler implements OperationHandler<
+  EnumOperandValue | undefined
+> {
   handleEquals: (_: Equals) => undefined = (_: Equals) => undefined;
   handleNotEquals: (_: NotEquals) => undefined = (_: NotEquals) => undefined;
   handleExcludes: (_: Excludes) => ReadonlyArray<string | number> = (

@@ -23,8 +23,8 @@ describe("<Cart />", () => {
 
   it("Displays empty state", () => {
     jest.mocked(useCoreSelector).mockImplementation(() => []);
-    jest.mocked(useCartSummaryQuery).mockImplementation(() => ({} as any));
-    jest.mocked(useFetchUserDetailsQuery).mockImplementation(() => ({} as any));
+    jest.mocked(useCartSummaryQuery).mockImplementation(() => ({}) as any);
+    jest.mocked(useFetchUserDetailsQuery).mockImplementation(() => ({}) as any);
 
     const { getByText } = render(<Cart />);
     expect(getByText("Your cart is empty.")).toBeInTheDocument();
@@ -51,10 +51,10 @@ describe("<Cart />", () => {
             total_file_size: 400,
             byProject: [],
           },
-        } as any),
+        }) as any,
     );
-    jest.mocked(useFetchUserDetailsQuery).mockImplementation(() => ({} as any));
-    jest.mocked(useGetFilesQuery).mockImplementation(() => ({} as any));
+    jest.mocked(useFetchUserDetailsQuery).mockImplementation(() => ({}) as any);
+    jest.mocked(useGetFilesQuery).mockImplementation(() => ({}) as any);
 
     const { getByTestId } = render(<Cart />);
     expect(getByTestId("cart-header").textContent).toContain("1 File");

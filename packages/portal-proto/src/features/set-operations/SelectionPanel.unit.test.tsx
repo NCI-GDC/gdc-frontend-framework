@@ -15,12 +15,12 @@ jest.mock("@gff/core", () => ({
   ),
   useGeneSetCountsQuery: jest
     .fn()
-    .mockImplementation(() => ({ isSuccess: true, data: { 123: 10 } } as any)),
+    .mockImplementation(() => ({ isSuccess: true, data: { 123: 10 } }) as any),
   useSsmSetCountsQuery: jest
     .fn()
     .mockImplementation(
       () =>
-        ({ isSuccess: true, data: { 1: 100, 2: 200, 3: 100, 4: 100 } } as any),
+        ({ isSuccess: true, data: { 1: 100, 2: 200, 3: 100, 4: 100 } }) as any,
     ),
   useFetchUserDetailsQuery: jest.fn(),
   useGetFilesQuery: jest.fn(),

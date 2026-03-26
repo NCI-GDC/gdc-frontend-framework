@@ -19,7 +19,7 @@ jest.spyOn(router, "useRouter").mockImplementation(
     ({
       pathname: "",
       query: {},
-    } as any),
+    }) as any,
 );
 
 describe("CDaveCard", () => {
@@ -29,7 +29,7 @@ describe("CDaveCard", () => {
         ({
           field: "demographic.sex_at_birth",
           type: "keyword",
-        } as any),
+        }) as any,
     );
     const data = {
       buckets: [
@@ -62,7 +62,7 @@ describe("CDaveCard", () => {
         ({
           field: "demographic.sex_at_birth",
           type: "keyword",
-        } as any),
+        }) as any,
     );
     const data = {
       buckets: [{ doc_count: 1000, key: "_missing" }],
@@ -88,7 +88,7 @@ describe("CDaveCard", () => {
         ({
           field: "demographic.sex_at_birth",
           type: "keyword",
-        } as any),
+        }) as any,
     );
     const data = {
       buckets: [
@@ -121,7 +121,7 @@ describe("CDaveCard", () => {
         ({
           field: "demographic.sex_at_birth",
           type: "keyword",
-        } as any),
+        }) as any,
     );
     const data = {
       buckets: [
@@ -151,7 +151,7 @@ describe("CDaveCard", () => {
         ({
           field: "exposures.cigarettes_per_day",
           type: "long",
-        } as any),
+        }) as any,
     );
     jest.spyOn(facetHooks, "useRangeFacet").mockReturnValue({
       data: { "0.0-12.0": 10, "12.0-24.0": 90 },
@@ -192,7 +192,7 @@ describe("CDaveCard", () => {
         ({
           field: "exposures.cigarettes_per_day",
           type: "long",
-        } as any),
+        }) as any,
     );
     jest.spyOn(facetHooks, "useRangeFacet").mockReturnValue({
       data: { "-28.0-166.8000001": 38 },
@@ -224,7 +224,7 @@ describe("CDaveCard", () => {
         ({
           field: "diagnoses.treatments.days_to_treatment_start",
           type: "long",
-        } as any),
+        }) as any,
     );
     jest.spyOn(facetHooks, "useRangeFacet").mockReturnValue({
       data: { "7201.0-12255.8": 10, "12255.8-17310.6": 90 },
@@ -240,7 +240,7 @@ describe("CDaveCard", () => {
         ({
           pathname: "",
           query: { featureFlag: "yearToggle" },
-        } as any),
+        }) as any,
     );
 
     const { getByRole, getByLabelText } = render(
@@ -271,7 +271,7 @@ describe("CDaveCard", () => {
         ({
           field: "diagnoses.treatments.days_to_treatment_start",
           type: "long",
-        } as any),
+        }) as any,
     );
     jest
       .spyOn(facetHooks, "useRangeFacet")
@@ -307,7 +307,7 @@ describe("CDaveCard", () => {
         ({
           field: "exposures.cigarettes_per_day",
           type: "long",
-        } as any),
+        }) as any,
     );
     jest.spyOn(facetHooks, "useRangeFacet").mockReturnValue({
       data: { "0.0-12.0": 20, "12.0-24.0": 90 },

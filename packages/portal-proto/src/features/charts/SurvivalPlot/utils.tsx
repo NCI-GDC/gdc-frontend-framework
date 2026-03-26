@@ -136,26 +136,26 @@ export const buildManyLegend = (
               ),
             }
           : r.donors.length < MINIMUM_CASES
-          ? {
-              key: `${names[i]}-not-enough-data`,
-              value: (
-                <span
-                  className={`text-gdc-survival-${i} font-content`}
-                >{`Not enough survival data for ${names[i]}`}</span>
-              ),
-            }
-          : {
-              key: names[i],
-              value: (
-                <span className={`text-gdc-survival-${i} font-content`}>
-                  S<sub>{i + 1}</sub>
-                  {` (N = ${r.donors.length.toLocaleString()})`}
-                  {plotType === SurvivalPlotTypes.categorical && (
-                    <span>{` - ${names[i]}`}</span>
-                  )}
-                </span>
-              ),
-            };
+            ? {
+                key: `${names[i]}-not-enough-data`,
+                value: (
+                  <span
+                    className={`text-gdc-survival-${i} font-content`}
+                  >{`Not enough survival data for ${names[i]}`}</span>
+                ),
+              }
+            : {
+                key: names[i],
+                value: (
+                  <span className={`text-gdc-survival-${i} font-content`}>
+                    S<sub>{i + 1}</sub>
+                    {` (N = ${r.donors.length.toLocaleString()})`}
+                    {plotType === SurvivalPlotTypes.categorical && (
+                      <span>{` - ${names[i]}`}</span>
+                    )}
+                  </span>
+                ),
+              };
       })
     : [
         {

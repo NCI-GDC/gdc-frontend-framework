@@ -308,8 +308,8 @@ export const useGeneAndSSMPanelData = (
       comparativeSurvival !== undefined
         ? memoizedFilters
         : localFilters
-        ? [localFilters]
-        : [],
+          ? [localFilters]
+          : [],
   });
 
   return {

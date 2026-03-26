@@ -84,10 +84,13 @@ const slice = createSlice({
               ([field, aggregation]) => {
                 if (isBucketsAggregation(aggregation)) {
                   state.entries[action.meta.arg.filterType][field] =
-                    aggregation.buckets.reduce((facetBuckets, apiBucket) => {
-                      facetBuckets[apiBucket.key] = apiBucket.doc_count;
-                      return facetBuckets;
-                    }, {} as Record<string, number>);
+                    aggregation.buckets.reduce(
+                      (facetBuckets, apiBucket) => {
+                        facetBuckets[apiBucket.key] = apiBucket.doc_count;
+                        return facetBuckets;
+                      },
+                      {} as Record<string, number>,
+                    );
                 }
               },
             );

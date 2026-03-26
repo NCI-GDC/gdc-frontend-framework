@@ -201,10 +201,13 @@ const buildRanges = (
     .map((_x, i) => {
       return rangeFunction(i, units, minimum, queryInYears);
     })
-    .reduce((r, x) => {
-      r[x.key] = x;
-      return r;
-    }, {} as Record<string, RangeBucketElement>);
+    .reduce(
+      (r, x) => {
+        r[x.key] = x;
+        return r;
+      },
+      {} as Record<string, RangeBucketElement>,
+    );
 };
 /**
  * Builds a Dictionary like object contain the range and label for each "bucket" in the range

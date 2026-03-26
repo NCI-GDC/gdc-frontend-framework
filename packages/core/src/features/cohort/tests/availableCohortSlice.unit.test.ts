@@ -28,10 +28,13 @@ const state = getInitialCoreState();
 const INITIAL_IDS = (MOCK_COHORTS as unknown as ReadonlyArray<Cohort>).map(
   (x) => x.id,
 );
-const INITIAL_ENTITIES = MOCK_COHORTS.reduce((dict, x) => {
-  dict[x.id] = x as Cohort;
-  return dict;
-}, {} as Record<string, Cohort>);
+const INITIAL_ENTITIES = MOCK_COHORTS.reduce(
+  (dict, x) => {
+    dict[x.id] = x as Cohort;
+    return dict;
+  },
+  {} as Record<string, Cohort>,
+);
 
 const INITIAL_STATE = {
   ids: INITIAL_IDS,

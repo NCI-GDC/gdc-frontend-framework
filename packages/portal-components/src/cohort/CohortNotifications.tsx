@@ -31,8 +31,7 @@ export const SavedCohortNotification: React.FC<CohortNotificationProps> = ({
   );
 };
 
-export interface CohortWithSetOptionNotificationProps
-  extends CohortNotificationProps {
+export interface CohortWithSetOptionNotificationProps extends CohortNotificationProps {
   readonly cohortId: string;
   readonly useSetActiveCohort: () => (cohortId: string) => void;
 }

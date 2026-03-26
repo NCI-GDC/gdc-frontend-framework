@@ -42,7 +42,7 @@ jest.mock("next/router", () => ({
         query: {
           tab: "general",
         },
-      } as any),
+      }) as any,
   ),
 }));
 

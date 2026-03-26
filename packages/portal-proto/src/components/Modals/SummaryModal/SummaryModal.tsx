@@ -43,31 +43,31 @@ export const SummaryModal = ({
           title: "Project",
         }
       : entity_type === "case"
-      ? {
-          SummaryPage: <CaseSummary case_id={entity_id} isModal={true} />,
-          title: "Case",
-        }
-      : entity_type === "file"
-      ? {
-          SummaryPage: <FileSummary file_id={entity_id} isModal={true} />,
-          title: "File",
-        }
-      : entity_type === "ssms"
-      ? {
-          SummaryPage: <SSMSSummary ssm_id={entity_id} isModal={true} />,
-          title: "Mutation",
-        }
-      : {
-          SummaryPage: (
-            <GeneSummary
-              gene_id={entity_id}
-              isModal={true}
-              contextSensitive={contextSensitive}
-              contextFilters={contextFilters}
-            />
-          ),
-          title: "Gene",
-        };
+        ? {
+            SummaryPage: <CaseSummary case_id={entity_id} isModal={true} />,
+            title: "Case",
+          }
+        : entity_type === "file"
+          ? {
+              SummaryPage: <FileSummary file_id={entity_id} isModal={true} />,
+              title: "File",
+            }
+          : entity_type === "ssms"
+            ? {
+                SummaryPage: <SSMSSummary ssm_id={entity_id} isModal={true} />,
+                title: "Mutation",
+              }
+            : {
+                SummaryPage: (
+                  <GeneSummary
+                    gene_id={entity_id}
+                    isModal={true}
+                    contextSensitive={contextSensitive}
+                    contextFilters={contextFilters}
+                  />
+                ),
+                title: "Gene",
+              };
 
   return (
     <Modal

@@ -293,8 +293,8 @@ export const createHumanBody: TCreateHumanBody = ({
             <div style="color: #bb0e3d">${d.key}</div>
             <div style="font-size: 12px; color: rgb(20, 20, 20)">
               ${d[caseCountKey].toLocaleString()} cases, (${
-              d[fileCountKey].toLocaleString() || 100
-            } files)
+                d[fileCountKey].toLocaleString() || 100
+              } files)
             </div>
           `,
           )
@@ -398,8 +398,8 @@ export const createHumanBody: TCreateHumanBody = ({
                 <div style="color: #bb0e3d">${d[primarySiteKey]}</div>
                 <div style="font-size: 12px; color: rgb(20, 20, 20)">
                   ${d[caseCountKey].toLocaleString()} cases (${
-                  d[fileCountKey].toLocaleString() || 100
-                } files)
+                    d[fileCountKey].toLocaleString() || 100
+                  } files)
                 </div>
               `,
               )

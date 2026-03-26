@@ -69,8 +69,8 @@
     "@types/react": "^19.2.3",
     "@types/react-dom": "^19.2.3",
     "@types/react-table": "^7.7.12",
-    "@typescript-eslint/eslint-plugin": "^6.7.5",
-    "@typescript-eslint/parser": "^6.7.5",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
     "eslint": "^8.51.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-jsx-a11y": "^6.4.1",
@@ -84,7 +84,7 @@
     "jest-slow-test-reporter": "^1.0.0",
     "lerna": "^6.6.1",
     "lint-staged": "^12.3.7",
-    "prettier": "^2.3.2",
+    "prettier": "^3.8.1",
     "ts-jest": "^29.2.5",
     "typedoc": "^0.25.4",
     "typedoc-plugin-missing-exports": "^2.1.0"
@@ -95,7 +95,7 @@
     "@napi-rs/magic-string": "0.3.4"
   },
   "engines": {
-    "npm": ">=10.2.4",
-    "node": ">=20.11.0"
+    "node": "^24.14.0",
+    "npm": "^11.11.0"
   }
 }

@@ -31,7 +31,7 @@ describe("ClinicalSurvivalPlot", () => {
         ({
           pathname: "",
           query: {},
-        } as any),
+        }) as any,
     );
     survivalQuerySpy = jest
       .mocked(useGetSurvivalPlotQuery)
@@ -166,7 +166,7 @@ describe("ClinicalSurvivalPlot", () => {
         ({
           pathname: "",
           query: { demoMode: "true" },
-        } as any),
+        }) as any,
     );
 
     render(

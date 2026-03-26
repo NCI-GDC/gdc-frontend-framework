@@ -45,8 +45,8 @@ const SetOperationsSelection = (): JSX.Element => {
       overwriteSelectedEntities
         ? [{ id: cohort1Id as string }, { id: cohort2Id as string }]
         : selectedEntityType === "cohort"
-        ? selectedEntities
-        : [],
+          ? selectedEntities
+          : [],
     ),
   );
 

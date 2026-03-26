@@ -33,8 +33,8 @@ const SMTableSurvival = ({
   const tooltip = disabled
     ? `Not enough data`
     : isActive
-    ? `Remove ${survival.name} from plot`
-    : `Plot ${survival.name}`;
+      ? `Remove ${survival.name} from plot`
+      : `Plot ${survival.name}`;
 
   return (
     <ToggledCheck

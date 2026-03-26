@@ -123,11 +123,11 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
             customBinnedData.interval,
           )
         : customBinnedData?.length > 0
-        ? customBinnedData.map((d) => ({
-            to: d.to,
-            from: d.from,
-          }))
-        : createBuckets(initialData.min, initialData.max),
+          ? customBinnedData.map((d) => ({
+              to: d.to,
+              from: d.from,
+            }))
+          : createBuckets(initialData.min, initialData.max),
     [customBinnedData, initialData],
   );
 

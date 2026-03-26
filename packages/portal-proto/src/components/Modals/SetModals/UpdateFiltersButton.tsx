@@ -41,7 +41,7 @@ const UpdateCohortButton: React.FC<UpdateCohortButtonProps> = ({
         operator: "includes",
         operands: [
           ...(existingOperation && isIncludes(existingOperation)
-            ? existingOperation?.operands ?? []
+            ? (existingOperation?.operands ?? [])
             : []),
           `set_id:${response.data}`,
         ],
@@ -77,7 +77,7 @@ const UpdateCohortButton: React.FC<UpdateCohortButtonProps> = ({
             operator: "includes",
             operands: [
               ...(existingOperation && isIncludes(existingOperation)
-                ? existingOperation?.operands ?? []
+                ? (existingOperation?.operands ?? [])
                 : []),
               ...ids,
             ],

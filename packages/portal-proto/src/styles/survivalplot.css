@@ -37,7 +37,9 @@
 }
 .survival-plot .serie .point[status="deceased"] {
   opacity: 0;
-  transition: r 0.3s, opacity 0.3s;
+  transition:
+    r 0.3s,
+    opacity 0.3s;
   r: 5;
 }
 .survival-plot .serie .point[status="deceased"]:hover,

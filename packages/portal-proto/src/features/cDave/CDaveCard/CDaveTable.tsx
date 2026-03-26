@@ -149,12 +149,12 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                         key === MISSING_KEY
                           ? `Plot cannot be generated for this value`
                           : !enoughCasesForSurvival
-                          ? "Not enough data"
-                          : survivalSelected
-                          ? `Remove ${displayName} from plot`
-                          : selectedSurvivalPlots.length === 5
-                          ? `A maximum of 5 plots can be displayed at a time`
-                          : `Plot ${displayName}`
+                            ? "Not enough data"
+                            : survivalSelected
+                              ? `Remove ${displayName} from plot`
+                              : selectedSurvivalPlots.length === 5
+                                ? `A maximum of 5 plots can be displayed at a time`
+                                : `Plot ${displayName}`
                       }
                       withArrow
                     >
@@ -165,10 +165,10 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
                             survivalDisabled
                               ? "bg-base-light text-base-contrast-light bg-opacity-80 text-opacity-60"
                               : survivalSelected
-                              ? `bg-gdc-survival-${selectedSurvivalPlots.indexOf(
-                                  key,
-                                )} text-white` // TODO: confirm 508 contrast compliance
-                              : "bg-base-lightest text-base-contrast-lightest"
+                                ? `bg-gdc-survival-${selectedSurvivalPlots.indexOf(
+                                    key,
+                                  )} text-white` // TODO: confirm 508 contrast compliance
+                                : "bg-base-lightest text-base-contrast-lightest"
                           } ml-2`}
                           disabled={survivalDisabled}
                           aria-label={`Toggle survival plot for ${displayName}`}

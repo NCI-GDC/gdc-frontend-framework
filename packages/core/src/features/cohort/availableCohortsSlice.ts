@@ -715,10 +715,14 @@ export const selectCurrentCohortFiltersByNames = createSelector(
     (_state: CoreState, names: ReadonlyArray<string>) => names,
   ],
   (cohort, names) =>
-    names.reduce((obj, name) => {
-      if (cohort?.filters?.root[name]) obj[name] = cohort?.filters?.root[name];
-      return obj;
-    }, {} as Record<string, Operation>),
+    names.reduce(
+      (obj, name) => {
+        if (cohort?.filters?.root[name])
+          obj[name] = cohort?.filters?.root[name];
+        return obj;
+      },
+      {} as Record<string, Operation>,
+    ),
 );
 
 /**

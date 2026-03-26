@@ -50,8 +50,8 @@ const GenesTableCohort = ({
         isDemoMode
           ? "Feature not available in demo mode"
           : toggledGenes.includes(geneID)
-          ? `Remove ${symbol} from cohort filters`
-          : `Add ${symbol} to cohort filters`
+            ? `Remove ${symbol} from cohort filters`
+            : `Add ${symbol} to cohort filters`
       }
       disabled={isDemoMode}
     />

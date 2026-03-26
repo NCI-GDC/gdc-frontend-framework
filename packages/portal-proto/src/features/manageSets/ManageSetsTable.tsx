@@ -41,8 +41,8 @@ const CountBadge: React.FC<CountBadgeProps> = ({
           active
             ? undefined
             : disabled
-            ? "bg-nci-gray-lightest opacity-50 cursor-not-allowed"
-            : "bg-white"
+              ? "bg-nci-gray-lightest opacity-50 cursor-not-allowed"
+              : "bg-white"
         }`}
         color={disabled ? "gray" : "primary"}
         leftSection={

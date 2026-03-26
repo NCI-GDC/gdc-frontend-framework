@@ -16,7 +16,7 @@ jest.spyOn(router, "useRouter").mockImplementation(
     ({
       pathname: "",
       query: {},
-    } as any),
+    }) as any,
 );
 
 describe("<QuickSearch />", () => {

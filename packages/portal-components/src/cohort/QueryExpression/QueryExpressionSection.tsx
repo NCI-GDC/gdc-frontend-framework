@@ -24,6 +24,7 @@ import {
 } from "../style";
 import { QueryExpressionHooks } from "./types";
 import WarningBanner from "@/common/WarningBanner";
+import { QueryExpressionsExpandedContext } from "./QueryExpressionsExpandedContext";
 
 const MAX_HEIGHT_QE_SECTION = 120;
 
@@ -93,13 +94,6 @@ interface QueryExpressionSectionProps {
   readonly hooks: QueryExpressionHooks;
   readonly warningText: ReactNode;
 }
-
-export const QueryExpressionsExpandedContext = React.createContext<
-  [
-    Record<string, boolean>,
-    ((action: CollapsedStateReducerAction) => void) | undefined,
-  ]
->([{}, undefined]);
 
 const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
   filters,
@@ -191,8 +185,8 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                         noFilters
                           ? "No values to expand/collapse"
                           : allQueryExpressionsCollapsed
-                          ? "Expand all values"
-                          : "Collapse all values"
+                            ? "Expand all values"
+                            : "Collapse all values"
                       }
                     >
                       <button
@@ -238,8 +232,8 @@ const QueryExpressionSection: React.FC<QueryExpressionSectionProps> = ({
                             MAX_HEIGHT_QE_SECTION)
                           ? "All rows are already displayed"
                           : filtersSectionCollapsed
-                          ? "Display all rows"
-                          : "Display fewer rows"
+                            ? "Display all rows"
+                            : "Display fewer rows"
                       }
                     >
                       <button
