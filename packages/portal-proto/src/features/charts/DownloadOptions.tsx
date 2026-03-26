@@ -2,6 +2,7 @@ import { ActionIcon, Menu, Tooltip } from "@mantine/core";
 import Plotly from "plotly.js";
 import { JSONArray } from "@/features/types";
 import { DownloadIcon } from "@/utils/icons";
+import { useDisclosure } from "@mantine/hooks";
 
 interface ChartDownloadProps {
   readonly chartDivId: string;
@@ -14,6 +15,8 @@ const DownloadOptions: React.FC<ChartDownloadProps> = ({
   chartName,
   jsonData,
 }: ChartDownloadProps) => {
+  const [opened, { open, close }] = useDisclosure(false);
+
   const downloadImage = (filetype: "svg" | "png") => {
     Plotly.downloadImage(chartDivId, {
       format: filetype,
@@ -24,12 +27,19 @@ const DownloadOptions: React.FC<ChartDownloadProps> = ({
   };
 
   return (
-    <Menu width="auto" closeOnItemClick={false}>
+    <Menu
+      width="auto"
+      closeOnItemClick={false}
+      opened={opened}
+      onOpen={open}
+      onClose={close}
+    >
       <Menu.Target>
         <Tooltip label="Download image or data">
           <ActionIcon
             data-testid="button-download-image-or-data"
             variant="outline"
+            aria-expanded={opened}
           >
             <DownloadIcon size="1rem" aria-hidden="true" />
           </ActionIcon>

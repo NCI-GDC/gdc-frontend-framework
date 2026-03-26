@@ -273,6 +273,7 @@ export const Biospecimen = ({
                   className="flex-none text-primary hover:enabled:bg-primary-darker hover:enabled:text-base-lightest font-medium"
                   disabled={searchText.length > 0}
                   variant="outline"
+                  aria-expanded={isAllExpanded}
                 >
                   {isAllExpanded ? "Collapse All" : "Expand All"}
                 </Button>

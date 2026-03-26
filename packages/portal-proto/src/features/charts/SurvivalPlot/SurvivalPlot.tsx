@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import { Box, Menu, Tooltip, Loader, ActionIcon } from "@mantine/core";
 import isNumber from "lodash/isNumber";
-import { useMouse } from "@mantine/hooks";
+import { useDisclosure, useMouse } from "@mantine/hooks";
 import saveAs from "file-saver";
 import { SummaryModalContext } from "src/utils/contexts";
 import {
@@ -43,6 +43,8 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
   noDataMessage = "",
   isLoading,
 }: SurvivalPlotProps) => {
+  const [opened, { open, close }] = useDisclosure(false);
+
   // handle the current range of the xAxis: set to "undefined" to reset
   const [xDomain, setXDomain] = useState(undefined);
   const [survivalPlotLineTooltipContent, setSurvivalPlotLineTooltipContent] =
@@ -223,6 +225,9 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
             offset={1}
             transitionProps={{ duration: 0 }}
             closeOnItemClick={false}
+            opened={opened}
+            onOpen={open}
+            onClose={close}
           >
             <Menu.Target>
               <Tooltip label="Download Survival Plot data or image">
@@ -230,6 +235,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
                   data-testid="button-survival-plot-download"
                   aria-label="Download Survival Plot data or image"
                   variant="outline"
+                  aria-expanded={opened}
                 >
                   <DownloadIcon size="1rem" aria-hidden="true" />
                 </ActionIcon>

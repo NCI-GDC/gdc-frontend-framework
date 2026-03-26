@@ -3,7 +3,7 @@ import { useDeepCompareMemo } from "use-deep-compare";
 import saveAs from "file-saver";
 import tw from "tailwind-styled-components";
 import { Menu, Tooltip, ActionIcon, Button } from "@mantine/core";
-import { useResizeObserver } from "@mantine/hooks";
+import { useDisclosure, useResizeObserver } from "@mantine/hooks";
 import {
   useGetCaseSsmsQuery,
   joinFilters,
@@ -49,6 +49,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
   hasCustomBins,
   dataDimension,
 }: BoxQQPlotProps) => {
+  const [opened, { open, close }] = useDisclosure(false);
   // Field examples: diagnoses.age_at_diagnosis, diagnoses.treatments.days_to_treatment_start
   const [clinicalType, clinicalField, clinicalNestedField] = field.split(".");
   const [boxPlotRef, boundingRectBox] = useResizeObserver();
@@ -218,13 +219,18 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
   return (
     <>
       <div className="flex justify-end">
-        <Menu closeOnItemClick={false}>
+        <Menu
+          closeOnItemClick={false}
+          opened={opened}
+          onOpen={open}
+          onClose={close}
+        >
           <Menu.Target>
             <Tooltip
               label="Download image or data"
               withArrow
               withinPortal
-              position={"left"}
+              position="left"
             >
               <ActionIcon
                 data-testid="button-qq-box-download"
@@ -232,6 +238,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
                 className="bg-base-max border-primary disabled:border-base-contrast-lightest disabled:bg-base-light"
                 aria-label="Download image or data"
                 disabled={isLoading}
+                aria-expanded={opened}
               >
                 <DownloadIcon
                   className={

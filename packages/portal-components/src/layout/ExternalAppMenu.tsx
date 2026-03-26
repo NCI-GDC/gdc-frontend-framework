@@ -7,6 +7,7 @@ import { Menu, MenuItem } from "@mantine/core";
 import HeaderLink from "./Header/HeaderLink";
 import { HeaderLinkItem } from "./Header/types";
 import { AppContext } from "src/context";
+import { useDisclosure } from "@mantine/hooks";
 
 const appMenuClass = "hover:bg-primary-lightest p-0 m-0";
 
@@ -18,9 +19,12 @@ const ExternalAppMenu: React.FC<ExternalAppMenuProps> = ({
   externalAppLinks,
 }: ExternalAppMenuProps) => {
   const { appName } = useContext(AppContext);
-
+  const [opened, { open, close }] = useDisclosure(false);
   return (
     <Menu
+      opened={opened}
+      onOpen={open}
+      onClose={close}
       width="450"
       position="bottom-end"
       zIndex={400}
@@ -33,6 +37,7 @@ const ExternalAppMenu: React.FC<ExternalAppMenuProps> = ({
         <button
           data-testid="button-header-gdc-apps"
           className="flex items-center gap-1 p-1 rounded-md hover:bg-primary-lightest"
+          aria-expanded={opened}
         >
           <AppsIcon
             size="24px"
