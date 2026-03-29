@@ -4,6 +4,7 @@ import {
   createColumnHelper,
   ColumnDef,
   SortingState,
+  ExpandedState,
 } from "@tanstack/react-table";
 import { compressors } from "hyparquet-compressors";
 import { parquetReadObjects } from "hyparquet";
@@ -77,40 +78,26 @@ const IDCViewerWrapper: FC = () => {
   const [parquetLoading, setParquetLoading] = useState<boolean>(false);
   const [mappings, setMappings] = useState<any[]>([]);
   const [loadError, setLoadError] = useState<boolean>(false);
-  const [expandedCases, setExpandedCases] = useState<Set<string>>(new Set());
+  const [expanded, setExpanded] = useState<ExpandedState>({});
   // server-side pagination state
   const [pageSize, setPageSize] = useState(20);
   const [activePage, setActivePage] = useState(1);
   // store API pagination metadata returned from triggerGetCases
   const [apiPagination, setApiPagination] = useState<any>({});
 
-  const toggleExpanded = useCallback((caseId: string) => {
-    setExpandedCases((prev) => {
-      const next = new Set(prev);
-      if (next.has(caseId)) next.delete(caseId);
-      else next.add(caseId);
-      return next;
+  // helper to toggle when VerticalTable calls setExpanded(row, columnId)
+  const setTableExpanded = useCallback((row: Row<IDCViewerRow>) => {
+    // row.id is computed by getRowId (we will use caseId)
+    if (!row?.id) return;
+    setExpanded((prev) => {
+      // ExpandedState can be `true` or a Record<string, boolean>. Normalize to an object.
+      const prevMap: Record<string, boolean> =
+        prev && typeof prev === "object"
+          ? (prev as Record<string, boolean>)
+          : {};
+      return { ...prevMap, [row.id]: !prevMap[row.id] };
     });
   }, []);
-
-  // derived object for VerticalTable controlled `expanded` prop
-  const expandedState = React.useMemo(() => {
-    const expandedMap: Record<string, boolean> = {};
-    expandedCases.forEach((id) => {
-      expandedMap[id] = true;
-    });
-    return expandedMap;
-  }, [expandedCases]);
-
-  // helper to toggle when VerticalTable calls setExpanded(row, columnId)
-  const setTableExpanded = useCallback(
-    (row: Row<IDCViewerRow>) => {
-      // row.id is computed by getRowId (we will use caseId)
-      if (!row?.id) return;
-      toggleExpanded(row.id);
-    },
-    [toggleExpanded],
-  );
 
   const [sorting, setSorting] = useState<SortingState>([
     { id: "caseId", desc: false },
@@ -441,7 +428,7 @@ const IDCViewerWrapper: FC = () => {
                   tableTitle={undefined}
                   getRowCanExpand={(_: any) => true}
                   expandableColumnIds={["matches"]}
-                  expanded={expandedState}
+                  expanded={expanded}
                   setExpanded={(row) => setTableExpanded(row)}
                   getRowId={(row) => row.caseId}
                   renderSubComponent={({ row }) => (
