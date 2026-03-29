@@ -15,6 +15,7 @@ import {
   GqlOperation,
   SortBy,
   useCurrentCohortFilters,
+  Pagination,
 } from "@gff/core";
 import { useDeepCompareMemo, useDeepCompareEffect } from "use-deep-compare";
 import VerticalTable from "@/components/Table/VerticalTable";
@@ -22,6 +23,7 @@ import IDCExpandRowComponent from "./IDCExpandRowComponent";
 import { LoadingOverlay } from "@mantine/core";
 import IDCStudyRowsComponent from "@/features/idc/IDCStudyRowsComponent";
 import { IDCStudy, IDCViewerRow } from "@/features/idc/types";
+import { PaginationOptions } from "@/components/Table/types";
 
 const IDC_PARQUET_URL =
   "https://storage.googleapis.com/idc-index-data-artifacts/current/release_artifacts/gdc_idc_mapping.parquet";
@@ -82,8 +84,6 @@ const IDCViewerWrapper: FC = () => {
   // server-side pagination state
   const [pageSize, setPageSize] = useState(20);
   const [activePage, setActivePage] = useState(1);
-  // store API pagination metadata returned from triggerGetCases
-  const [apiPagination, setApiPagination] = useState<any>({});
 
   // helper to toggle when VerticalTable calls setExpanded(row, columnId)
   const setTableExpanded = useCallback((row: Row<IDCViewerRow>) => {
@@ -213,9 +213,6 @@ const IDCViewerWrapper: FC = () => {
   // When either the cases data or parquet idc data changes, rebuild mappings.
   useDeepCompareEffect(() => {
     const allHits = casesResponse?.hits || [];
-
-    // capture API pagination metadata so we can render pagination controls
-    setApiPagination(casesResponse?.pagination || {});
 
     // build mappings from allHits and idc_data
     const mappings = allHits.map((gdcCase: any) => {
@@ -388,8 +385,9 @@ const IDCViewerWrapper: FC = () => {
     [],
   );
 
-  // Build pagination object for VerticalTable / TablePagination using API metadata
-  const pagination = {
+  const apiPagination: Pagination = casesResponse?.pagination;
+
+  const pagination: PaginationOptions = {
     size: apiPagination?.size ?? pageSize,
     page: apiPagination?.page ?? activePage,
     pages: apiPagination?.pages ?? undefined,
