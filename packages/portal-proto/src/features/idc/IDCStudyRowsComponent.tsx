@@ -52,7 +52,7 @@ const IDCStudyRowsComponent: FC<IDCStudyRowsComponentProps> = ({ row }) => {
                 : null;
             return (
               <tr
-                key={i}
+                key={s.StudyInstanceUID || i}
                 className={
                   i % 2 === 0 ? "bg-base-lightest" : "bg-gdc-grey-lightest"
                 }
