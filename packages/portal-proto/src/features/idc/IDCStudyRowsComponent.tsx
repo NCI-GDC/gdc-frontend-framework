@@ -19,7 +19,6 @@ interface IDCStudyRowsComponentProps {
 const IDCStudyRowsComponent: FC<IDCStudyRowsComponentProps> = ({ row }) => {
   const studies: IDCStudy[] = (row.original?.studiesList as IDCStudy[]) ?? [];
   if (!studies || studies.length === 0) return null;
-
   return (
     <div className="p-2 bg-base-max">
       <table
@@ -53,9 +52,7 @@ const IDCStudyRowsComponent: FC<IDCStudyRowsComponentProps> = ({ row }) => {
             return (
               <tr
                 key={s.StudyInstanceUID || i}
-                className={
-                  i % 2 === 0 ? "bg-base-lightest" : "bg-gdc-grey-lightest"
-                }
+                className={i % 2 === 0 ? "bg-base-max" : "bg-gdc-grey-lightest"}
               >
                 <td
                   style={{
