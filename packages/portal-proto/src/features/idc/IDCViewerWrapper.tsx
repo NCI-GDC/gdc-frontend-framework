@@ -225,7 +225,7 @@ const IDCViewerWrapper: FC = () => {
     return map;
   }, [idcData?.idc_data]);
 
-  // Build mappings via instant lookup into the map above
+  // Build mappings via lookup
   const mappings = useDeepCompareMemo(() => {
     const allHits = casesResponse?.hits || [];
     return allHits.map((gdcCase: any) => {
