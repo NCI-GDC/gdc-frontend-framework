@@ -348,11 +348,7 @@ const IDCViewerWrapper: FC = () => {
                 }
               }}
               title={`${count} ${titleLabel}`}
-              role="button"
-              tabIndex={0}
-              aria-expanded={Boolean(info.row.getIsExpanded())}
-              aria-label={`${count} ${titleLabel}. Press Enter or Space to expand.`}
-              className="inline-block"
+              role="none"
             >
               <IDCExpandRowComponent
                 isRowExpanded={info.row.getIsExpanded()}
