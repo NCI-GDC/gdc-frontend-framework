@@ -78,7 +78,7 @@ async function readParquetIndex(idc_index_file: any): Promise<{
 const IDCViewerWrapper: FC = () => {
   // Global loading state for parquet download/parsing + GDC fetch
   const [parquetLoading, setParquetLoading] = useState<boolean>(false);
-  const [mappings, setMappings] = useState<any[]>([]);
+  // mappings is now derived via useDeepCompareMemo (no local state)
   const [loadError, setLoadError] = useState<boolean>(false);
   const [expanded, setExpanded] = useState<ExpandedState>({});
   // server-side pagination state
@@ -210,29 +210,31 @@ const IDCViewerWrapper: FC = () => {
     }
   }, [casesError]);
 
-  // When either the cases data or parquet idc data changes, rebuild mappings.
-  useDeepCompareEffect(() => {
-    const allHits = casesResponse?.hits || [];
+  // Build a fast lookup map: PatientID -> IDCParquetData[]
+  const idcDataByPatientId = useDeepCompareMemo(() => {
+    const map: Record<string, IDCParquetData[]> = {};
+    if (!idcData?.idc_data) return map;
 
-    // build mappings from allHits and idc_data
-    const mappings = allHits.map((gdcCase: any) => {
-      const submitterId = gdcCase?.submitter_id;
-      const matches = (
-        (idcData?.idc_data ?? []) as ReadonlyArray<IDCParquetData>
-      ).filter(
-        (row: IDCParquetData) =>
-          row.PatientID &&
-          submitterId &&
-          row.PatientID.toString() === submitterId.toString(),
-      );
-      return {
-        gdcCase,
-        matches,
-      };
+    idcData.idc_data.forEach((row) => {
+      const pid = row?.PatientID?.toString();
+      if (!pid) return;
+      if (!map[pid]) map[pid] = [];
+      map[pid].push(row);
     });
 
-    setMappings(mappings);
-  }, [casesResponse, idcData]);
+    return map;
+  }, [idcData?.idc_data]);
+
+  // Build mappings via instant lookup into the map above
+  const mappings = useDeepCompareMemo(() => {
+    const allHits = casesResponse?.hits || [];
+    return allHits.map((gdcCase: any) => {
+      const submitterId = gdcCase?.submitter_id?.toString();
+      // IDC PatientId and GDC submitter_id represent the same value, so we can use submitter_id to lookup for IDC data
+      const matches = submitterId ? idcDataByPatientId[submitterId] || [] : [];
+      return { gdcCase, matches };
+    });
+  }, [casesResponse?.hits, idcDataByPatientId]);
 
   // when cohort filters change (deep-compare), reset to first page
   useDeepCompareEffect(() => {
