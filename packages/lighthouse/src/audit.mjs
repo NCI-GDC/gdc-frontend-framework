@@ -101,6 +101,7 @@ const PATHS = {
   mutationFrequency: "/analysis_page?app=MutationFrequencyApp",
   oncoMatrix: "/analysis_page?app=OncoMatrix",
   proteinPaint: "/analysis_page?app=ProteinPaintApp&demoMode=true",
+  idcViewer: "/analysis_page?app=IDCViewerApp",
   sequenceRead: "/analysis_page?app=SequenceReadApp",
   setOperations: "/analysis_page?app=SetOperations&demoMode=true",
   manageSets: "/manage_sets",

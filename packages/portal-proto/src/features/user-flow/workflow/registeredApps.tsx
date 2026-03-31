@@ -18,6 +18,7 @@ import GeneExpressionIcon from "public/user-flow/icons/apps/GeneExpression.svg";
 import ScRNASeqIcon from "public/user-flow/icons/apps/scRNASeq.svg";
 import CopyNumberSegmentIcon from "public/user-flow/icons/apps/CopyNumberSegment.svg";
 import CorrelationPlotIcon from "public/user-flow/icons/apps/CorrelationPlot.svg";
+import IDCViewerIcon from "public/user-flow/icons/apps/IDCViewer.svg";
 import { useLazyScRNAseqCaseCountQuery } from "../../proteinpaint/scRNAseqCaseCount";
 import { useLazyCnvSegmentCaseCountQuery } from "../../proteinpaint/CnvSegmentCaseCount";
 import { CountHookRegistry } from "@gff/core";
@@ -244,6 +245,25 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
     optimizeRules: ["available data = ssm or cnv"],
     noDataTooltip:
       "Current cohort does not have scRNAseq data available for visualization.",
+  },
+  {
+    name: "IDC Image Viewer",
+    icon: (
+      <IDCViewerIcon
+        className="m-auto"
+        height={48}
+        width={80}
+        style={{ margin: "0" }}
+        aria-hidden="true"
+      />
+    ),
+    tags: ["IDCViewer"],
+    hasDemo: false,
+    description:
+      "View histology and radiology images using the Imaging Data Commons (IDC) Image Viewer for cohort cases.",
+    id: "IDCViewerApp",
+    countsField: "caseCount",
+    hideCounts: true,
   },
   {
     name: "Gene Expression Clustering",
