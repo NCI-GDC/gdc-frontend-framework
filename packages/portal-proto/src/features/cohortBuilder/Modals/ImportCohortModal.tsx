@@ -56,6 +56,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
       />
 
       <DarkFunctionButton
+        data-testid="button-submit"
         disabled={disabled}
         onClick={() => {
           if (!response.isLoading) {
