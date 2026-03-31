@@ -33,14 +33,6 @@ module.exports = {
   content: ["../../node_modules/@gff/portal-components/dist/index.js"],
   theme: {
     extend: {
-      screens: {
-        "Custom-Repo-Width": "1420px",
-        sm: "640px",
-        md: "768px",
-        lg: "1024px",
-        xl: "1280px",
-        "2xl": "1536px",
-      },
       colors: {
         /* These colors come from the NCI color palette. The palette defines
          * six primary and five secondary colors. The extended palette defines

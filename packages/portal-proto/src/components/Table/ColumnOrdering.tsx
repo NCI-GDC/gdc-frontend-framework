@@ -101,7 +101,7 @@ function ColumnOrdering<TData>({
             data-testid="button-column-selector-box"
             className={`${
               showColumnMenu && "border-2 border-primary"
-            } hover:bg-primary hover:text-base-max`}
+            } hover:bg-primary hover:text-base-max bg-base-max`}
             aria-expanded={showColumnMenu}
           >
             {!showColumnMenu ? (

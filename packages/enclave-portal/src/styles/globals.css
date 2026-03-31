@@ -12,6 +12,14 @@
 @import "@fontsource/noto-sans/700.css" layer(base);
 @import "@fontsource/noto-sans/700-italic.css" layer(base);
 
+@theme {
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+}
+
 @import "tailwindcss";
 
 @config '../../tailwind.config.js';

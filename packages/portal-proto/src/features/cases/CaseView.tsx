@@ -18,12 +18,7 @@ import {
   formatDataForHorizontalTable,
   mapGdcFileToCartFile,
 } from "../files/utils";
-import {
-  allFilesInCart,
-  focusStyles,
-  humanify,
-  LG_BREAKPOINT,
-} from "src/utils";
+import { allFilesInCart, focusStyles, humanify } from "src/utils";
 import CategoryTableSummary from "@/components/Summary/CategoryTableSummary";
 import { ClinicalSummary } from "./ClinicalSummary/ClinicalSummary";
 import { ImageSlideCount } from "@/components/ImageSlideCount";
@@ -40,6 +35,7 @@ import AnnotationsTable from "./AnnotationsTable";
 import { useScrollToHash } from "@gff/portal-components";
 import { useSynchronizedRowHeights } from "@/components/HorizontalTable/useSynchronizedRowHeights";
 import { CartIcon, EditIcon, FileIcon } from "@/utils/icons";
+import { LG_BREAKPOINT } from "src/styles/breakpoints";
 
 export interface CaseViewProps {
   readonly data: CaseDefaults;

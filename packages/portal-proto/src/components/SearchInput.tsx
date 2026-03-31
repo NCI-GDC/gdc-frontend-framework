@@ -271,7 +271,7 @@ export const SearchInput: React.FC = () => {
         onFocus={() => setDropdownOpen(searchTerm.length > 0)}
         onKeyDown={menuKeybordNav}
         classNames={{
-          root: "w-100",
+          root: "w-full",
           input: "focus:border-2 focus:border-primary text-sm",
         }}
         size="sm"

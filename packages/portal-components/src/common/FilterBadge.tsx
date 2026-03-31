@@ -81,7 +81,7 @@ const FilterBadge: React.FC<FilterBadgeProps> = ({
     >
       <OverflowTooltippedLabel
         label={value}
-        className="flex-grow text-md font-content-noto"
+        className="flex grow text-md font-content-noto"
       >
         <FormattedFilterLabel
           field={field}

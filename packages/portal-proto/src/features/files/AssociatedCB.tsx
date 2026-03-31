@@ -172,7 +172,6 @@ const AssociatedCB = ({
       }
       tableTitle={<HeaderTitle>Associated Cases/Biospecimens</HeaderTitle>}
       handleChange={handleChange}
-      baseZIndex={300}
     />
   );
 };

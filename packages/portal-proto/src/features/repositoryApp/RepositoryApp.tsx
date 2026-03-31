@@ -158,7 +158,7 @@ export const RepositoryApp = (): JSX.Element => {
               className="overflow-hidden h-full w-full"
               data-testid="table-repository"
             >
-              <div className="flex flex-wrap Custom-Repo-Width:justify-end gap-2 mt-8 mb-4">
+              <div className="flex flex-wrap custom-repo-width:justify-end gap-2 mt-8 mb-4">
                 <DownloadButton
                   data-testid="button-sample-sheet-files-table"
                   buttonLabel="Sample Sheet"
@@ -283,7 +283,7 @@ export const RepositoryApp = (): JSX.Element => {
                   })}.txt`}
                 />
                 <Tooltip
-                  label={"No images available to be viewed"}
+                  label="No images available to be viewed"
                   disabled={!viewImageDisabled}
                 >
                   <span>

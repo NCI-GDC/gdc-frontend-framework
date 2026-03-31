@@ -377,7 +377,7 @@ const FromTo: React.FC<FromToProps> = ({
           upperUnitRange={upperUnitRange}
         />
       ) : null}
-      <div className="flex items-stretch w-100 pt-1">
+      <div className="flex items-stretch w-full pt-1">
         <button className={applyButtonClasses} onClick={handleApply}>
           Apply
         </button>

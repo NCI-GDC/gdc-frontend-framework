@@ -126,7 +126,7 @@ export const GeneFrequencyChart: React.FC<GeneFrequencyChartProps> = ({
           jsonData={jsonData}
         />
       ) : null}
-      <div className="w-100 h-100 relative mt-10">
+      <div className="w-full h-full relative mt-10">
         <LoadingOverlay
           data-testid="loading-spinner"
           visible={isFetching || isLoading || isPending || isChartRendering}

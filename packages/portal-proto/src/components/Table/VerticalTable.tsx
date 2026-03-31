@@ -66,7 +66,6 @@ export const TableXPositionContext = createContext<{
  * @param expanded  - The expanded.
  * @param setExpanded - A function that sets the expanded.
  * @param getRowId  - A function that returns the row id.
- * @param baseZIndex  - The base z index.
  * @param customDataTestID - optional locator for test automation
  * @param customBreakpoint - custom breakpoint for header responsive behavior
  * @category Table
@@ -100,7 +99,6 @@ function VerticalTable<TData>({
   expanded,
   setExpanded,
   getRowId = getDefaultRowId,
-  baseZIndex = 0,
   customDataTestID,
   customAriaLabel,
   customBreakpoint,
@@ -225,7 +223,6 @@ function VerticalTable<TData>({
           table={table}
           columnOrder={columnOrder}
           setColumnOrder={setColumnOrder}
-          baseZIndex={baseZIndex}
           customBreakpoint={customBreakpoint}
         />
       )}
@@ -322,7 +319,7 @@ function VerticalTable<TData>({
                                   isColumnSorted === "desc"
                                     ? "text-primary"
                                     : ""
-                                } relative top-[-2px]`}
+                                } relative -top-0.5`}
                               />
                             </div>
                           )}

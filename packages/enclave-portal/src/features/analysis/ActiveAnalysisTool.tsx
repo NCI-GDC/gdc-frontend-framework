@@ -31,7 +31,7 @@ const ActiveAnalysisTool: React.FC<AnalysisToolInfo> = ({
   return (
     <Suspense
       fallback={
-        <div className="flex flex-row items-center justify-center w-100 h-96">
+        <div className="flex flex-row items-center justify-center w-96 h-96">
           <Loader size={100} />
         </div>
       }
