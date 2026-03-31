@@ -28,10 +28,8 @@ def start_app():
 @before_suite
 def navigate_to_app():
     APP.navigate()
-    # Need to ensure warning modal appears first time before moving on
-    time.sleep(2)
+    APP.modal.wait_for_warning_message()
     APP.modal.accept_warning()
-    time.sleep(1)
 
 
 @before_suite

@@ -458,6 +458,11 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download, regressio
     |Not Applicable                         |
     |105 days                               |
 
+* Verify the table "Selection Information Biospecimen" is not displaying this information
+    |text_to_validate                       |
+    |---------------------------------------|
+    |Tumor Code ID                          |
+
 ## Biospecimen Table - Portions
 * Enter "1d4435fe-3a24-426d-9b49-d800551fc4a0" in the text box "Biospecimen Search Bar"
 * Verify the table "Selection Information Biospecimen" is displaying this information
@@ -532,6 +537,11 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download, regressio
     |TCGA-GV-A3QI-01A-11W                   |
     |873bc630-7061-4dee-9973-4a4f1b979eaf   |
     |Repli-G (Qiagen) DNA                   |
+* Verify the table "Selection Information Biospecimen" is not displaying this information
+    |text_to_validate                       |
+    |---------------------------------------|
+    |Analyte Type ID                        |
+
 
 ## Biospecimen Table - Aliquot
 * Enter "59c24b21-b1e8-4752-bd0a-b48dd802643b" in the text box "Biospecimen Search Bar"
@@ -547,6 +557,10 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download, regressio
     |59c24b21-b1e8-4752-bd0a-b48dd802643b   |
     |23                                     |
     |0.07                                   |
+* Verify the table "Selection Information Biospecimen" is not displaying this information
+    |text_to_validate                       |
+    |---------------------------------------|
+    |Analyte Type ID                        |
 
 ## Biospecimen Table - TSV Download
 * Download "TSV" from "Case Summary Biospecimen Table"

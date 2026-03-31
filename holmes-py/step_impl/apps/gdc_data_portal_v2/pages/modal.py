@@ -7,8 +7,9 @@ import time
 
 class ModalLocators:
     TEXT_IN_TEMPORARY_MODAL_MESSAGE = lambda expected_text: f'div[role="alert"]:has-text("{expected_text}")'
-    ACCEPT_BUTTON = 'button[data-testid="button-intro-warning-accept"]'
+    ACCEPT_BUTTON = '[data-testid="button-intro-warning-accept"]'
     BUTTON_DOWNLOAD = '[data-testid="button-download"]'
+    BUTTON_SUBMIT = '[data-testid="button-submit"]'
 
     TAB_LIST = lambda tab_name: f'[data-testid="modal-tab-list"] >> text="{tab_name}"'
     TEXT_SET_COUNT = lambda set_name: f'[data-testid="text-{set_name}-set-count"]'
@@ -54,6 +55,13 @@ class Modal(BasePage):
     def click_download_button(self):
         locator = ModalLocators.BUTTON_DOWNLOAD
         self.click(locator)
+
+    def click_submit_button_in_modal(self):
+        locator = ModalLocators.BUTTON_SUBMIT
+        self.click(locator)
+
+    def wait_for_warning_message(self):
+        self.wait_until_locator_is_visible(ModalLocators.ACCEPT_BUTTON)
 
     def wait_for_text_in_temporary_message(self, text, action="remove modal"):
         """
