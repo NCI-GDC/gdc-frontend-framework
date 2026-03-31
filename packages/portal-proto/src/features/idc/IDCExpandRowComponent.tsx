@@ -13,7 +13,7 @@ const IDCExpandRowComponent = ({
   if (value.length === 0) return "--";
 
   return (
-    <div className="flex items-center text-primary cursor-pointer gap-2">
+    <div className="flex items-center text-primary gap-2">
       {isRowExpanded ? (
         <CollapseCircleIcon
           size="1.25em"

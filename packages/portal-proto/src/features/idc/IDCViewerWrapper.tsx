@@ -330,32 +330,22 @@ const IDCViewerWrapper: FC = () => {
           }
 
           return (
-            <div
+            <button
               onClick={(e) => {
                 e.stopPropagation();
                 setTableExpanded(info.row);
               }}
-              onKeyDown={(e: React.KeyboardEvent) => {
-                // Activate on Enter or Space keys
-                if (
-                  e.key === "Enter" ||
-                  e.key === " " ||
-                  e.key === "Spacebar"
-                ) {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setTableExpanded(info.row);
-                }
-              }}
               title={`${count} ${titleLabel}`}
-              role="none"
+              aria-expanded={info.row.getIsExpanded()}
+              aria-label={`${count} ${titleLabel}. Press Enter or Space to expand.`}
+              className="inline-block"
             >
               <IDCExpandRowComponent
                 isRowExpanded={info.row.getIsExpanded()}
                 value={arr ?? []}
                 title={titleLabel}
               />
-            </div>
+            </button>
           );
         },
         enableSorting: false,
