@@ -260,7 +260,7 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
     tags: ["IDCViewer"],
     hasDemo: false,
     description:
-      "View histology and radiology images using the Imaging Data Commons (IDC) Image Viewer for cohort cases.",
+      "View histopathology and radiology images using the Imaging Data Commons (IDC) Image Viewer for cohort cases.",
     id: "IDCViewerApp",
     countsField: "caseCount",
     hideCounts: true,

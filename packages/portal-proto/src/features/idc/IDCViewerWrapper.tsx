@@ -321,7 +321,7 @@ const IDCViewerWrapper: FC = () => {
           ).length;
 
           const idcNoun = count === 1 ? "IDC study" : "IDC studies";
-          const wsiLabel = `${wsiCount} WSI`;
+          const wsiLabel = `${wsiCount} Histopathology`;
           const radioLabel = `${radiologyCount} Radiology`;
           const titleLabel = `${idcNoun} (${wsiLabel} + ${radioLabel})`;
 
