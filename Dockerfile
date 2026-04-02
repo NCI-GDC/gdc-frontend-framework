@@ -1,4 +1,4 @@
-ARG BASE_CONTAINER_VERSION=4.3.0
+ARG BASE_CONTAINER_VERSION=4.4.0
 ARG BASE_CONTAINER_REGISTRY=docker.osdc.io/ncigdc
 
 
@@ -39,15 +39,19 @@ WORKDIR /app
 ENV NODE_ENV=production \
   PORT=3000
 
+COPY --from=builder --chown=app:app /app/lerna.json ./lerna.json
+COPY --from=builder --chown=app:app /app/nx.json ./nx.json
+COPY --from=builder --chown=app:app /app/package.json ./package.json
+COPY --from=builder --chown=app:app /app/node_modules ./node_modules
 COPY --from=builder --chown=app:app /app/packages/portal-proto/public ./packages/portal-proto/public
 COPY --from=builder --chown=app:app /app/packages/portal-proto/package.json ./packages/portal-proto/package.json
 COPY --from=builder --chown=app:app /app/packages/portal-proto/.next ./packages/portal-proto/.next
 COPY --from=builder --chown=app:app /app/packages/portal-proto/node_modules ./packages/portal-proto/node_modules
 COPY --from=builder --chown=app:app /app/packages/portal-proto/next.config.js ./packages/portal-proto/next.config.js
 
-RUN mkdir -p ./.next \
-  && chown app:app ./.next
-VOLUME ./.next
+RUN mkdir -p ./packages/portal-proto/.next \
+  && chown app:app ./packages/portal-proto/.next
+VOLUME ./packages/portal-proto/.next
 USER app:app
 
 EXPOSE 3000
