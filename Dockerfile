@@ -1,11 +1,9 @@
 ARG BASE_CONTAINER_VERSION=4.3.0
 ARG BASE_CONTAINER_REGISTRY=docker.osdc.io/ncigdc
 
-FROM ${BASE_CONTAINER_REGISTRY}/nodejs24:${BASE_CONTAINER_VERSION} as dep
-WORKDIR /app
 
 #==================================================================
-
+# Build all packages
 # ==================================================================
 FROM ${BASE_CONTAINER_REGISTRY}/nodejs24:${BASE_CONTAINER_VERSION} AS builder
 ARG NPM_REGISTRY="https://registry.npmjs.org/"
@@ -15,21 +13,18 @@ ENV NEXT_PUBLIC_BUILD_SHORT_SHA=$BUILD_SHORT_SHA
 
 WORKDIR /app
 ENV npm_config_registry=$NPM_REGISTRY
-RUN npm install --location=global lerna@6.6.1
-COPY ./package.json ./package-lock.json lerna.json ./
+
+COPY ./package.json ./package-lock.json ./lerna.json ./nx.json ./
 COPY ./packages/core/package.json ./packages/core/
 COPY ./packages/sapien/package.json ./packages/sapien/
 COPY ./packages/portal-proto/package.json ./packages/portal-proto/
 RUN npm ci --include=dev
 COPY ./packages ./packages
 
-RUN lerna run --scope @gff/core compile
-RUN lerna run --scope @gff/core build
-RUN lerna run --scope @nci-gdc/sapien compile
-RUN lerna run --scope @nci-gdc/sapien build
-RUN lerna run --scope @gff/portal-components compile
-RUN lerna run --scope @gff/portal-components build
-RUN lerna run --scope portal-proto build
+RUN npx lerna run build --ignore enclave-portal
+
+# ==================================================================
+# Run portal-proto app
 # ==================================================================
 
 FROM ${BASE_CONTAINER_REGISTRY}/nodejs24:${BASE_CONTAINER_VERSION} AS runner
@@ -42,20 +37,17 @@ LABEL org.opencontainers.image.title=${NAME} \
 
 WORKDIR /app
 ENV NODE_ENV=production \
-    PORT=3000
+  PORT=3000
 
-COPY --from=builder --chown=app:app /app/lerna.json ./lerna.json
-COPY --from=builder --chown=app:app /app/package.json ./package.json
-COPY --from=builder --chown=app:app /app/node_modules ./node_modules
 COPY --from=builder --chown=app:app /app/packages/portal-proto/public ./packages/portal-proto/public
 COPY --from=builder --chown=app:app /app/packages/portal-proto/package.json ./packages/portal-proto/package.json
 COPY --from=builder --chown=app:app /app/packages/portal-proto/.next ./packages/portal-proto/.next
 COPY --from=builder --chown=app:app /app/packages/portal-proto/node_modules ./packages/portal-proto/node_modules
 COPY --from=builder --chown=app:app /app/packages/portal-proto/next.config.js ./packages/portal-proto/next.config.js
 
-RUN mkdir -p ./packages/portal-proto/.next \
-  && chown app:app ./packages/portal-proto/.next
-VOLUME  ./packages/portal-proto/.next
+RUN mkdir -p ./.next \
+  && chown app:app ./.next
+VOLUME ./.next
 USER app:app
 
 EXPOSE 3000

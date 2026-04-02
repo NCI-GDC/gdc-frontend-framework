@@ -3,3 +3,4 @@ dist
 holmes-py
 .gitlab-ci.yml
 docs
+/.nx/workspace-data
