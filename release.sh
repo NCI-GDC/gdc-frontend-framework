@@ -42,7 +42,7 @@ echo "Starting release process for version $VERSION"
 
 # Read Node major version from package.json engines.node
 # e.g. "^24.14.0" -> "24"
-NODE_MAJOR=$(node -p "require('./package.json').engines.node.replace(/[^0-9].*/g, '')")
+NODE_MAJOR=$(node -p "require('./package.json').engines.node.match(/\d+/)[0]")
 
 # switch to correct node
 nvm install "$NODE_MAJOR"
