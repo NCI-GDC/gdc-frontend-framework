@@ -75,17 +75,9 @@ Build and test core and portal:
     - dnf install gcc-c++ make -y
     - npm ci
   script:
-    - cd ${CI_PROJECT_DIR}/packages/core
-    - npm run build:clean
-    - cd ${CI_PROJECT_DIR}/packages/portal-components
-    - npm run build:clean
-    - cd ${CI_PROJECT_DIR}/packages/sapien
-    - npm run build:clean
-    - cd ${CI_PROJECT_DIR}/packages/enclave-portal
-    - npm run compile
-    - cd ${CI_PROJECT_DIR}/packages/portal-proto
-    - npm run compile
-    - cd ${CI_PROJECT_DIR}
+    - npx lerna run clean
+    - npx lerna run build --ignore portal-proto --ignore enclave-portal
+    - npx lerna run compile
     - npm run test:all
   <<: *default_rules
 
