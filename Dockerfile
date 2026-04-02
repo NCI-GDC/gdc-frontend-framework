@@ -3,7 +3,7 @@ ARG BASE_CONTAINER_REGISTRY=docker.osdc.io/ncigdc
 
 
 #==================================================================
-# Build all packages
+# Build all packages required for portal-proto
 # ==================================================================
 FROM ${BASE_CONTAINER_REGISTRY}/nodejs24:${BASE_CONTAINER_VERSION} AS builder
 ARG NPM_REGISTRY="https://registry.npmjs.org/"
