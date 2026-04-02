@@ -33,7 +33,7 @@ const IDCStudyRowsComponent: FC<IDCStudyRowsComponentProps> = ({ row }) => {
             <th style={{ padding: 6 }}>IDC StudyInstanceUID</th>
             <th style={{ padding: 6 }}>StudyDate</th>
             <th style={{ padding: 6 }}>StudyDescription</th>
-            <th style={{ padding: 6 }}>IDC WSI viewer</th>
+            <th style={{ padding: 6 }}>IDC Histopathology Viewer</th>
             <th style={{ padding: 6 }}>IDC Radiology viewer</th>
           </tr>
         </thead>
