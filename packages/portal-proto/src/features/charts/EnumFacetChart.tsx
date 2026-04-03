@@ -182,11 +182,11 @@ const EnumBarChartVictoryLabel: React.FC<EnumBarChartVictoryLabelProps> = ({
   text,
 }: EnumBarChartVictoryLabelProps) => {
   return (
-    <foreignObject x={0} y={y - 28} width="100%" height="25">
+    <foreignObject x={0} y={y - 26} width="100%" height={22}>
       <div
         style={{
           paddingTop: 2,
-          paddingLeft: x + 12,
+          paddingLeft: x + 8,
           paddingRight: 45,
           width: "100%",
           height: "100%",
@@ -195,7 +195,7 @@ const EnumBarChartVictoryLabel: React.FC<EnumBarChartVictoryLabelProps> = ({
           overflow: "hidden",
           whiteSpace: "nowrap",
           fontSize: 22,
-          lineHeight: "28px",
+          lineHeight: "16px",
           fontFamily: "Noto Sans, sans-serif",
         }}
       >
@@ -204,7 +204,6 @@ const EnumBarChartVictoryLabel: React.FC<EnumBarChartVictoryLabelProps> = ({
     </foreignObject>
   );
 };
-
 interface EnumBarChartData {
   x: string;
   y: number;
