@@ -21,8 +21,8 @@ import { useDeepCompareMemo, useDeepCompareEffect } from "use-deep-compare";
 import VerticalTable from "@/components/Table/VerticalTable";
 import IDCExpandRowComponent from "./IDCExpandRowComponent";
 import { LoadingOverlay } from "@mantine/core";
-import IDCStudyRowsComponent from "@/features/idc/IDCStudyRowsComponent";
-import { IDCStudy, IDCViewerRow } from "@/features/idc/types";
+import IDCStudyRowsComponent from "@/features/proteinpaint/idc/IDCStudyRowsComponent";
+import { IDCStudy, IDCViewerRow } from "@/features/proteinpaint/idc/types";
 import { PaginationOptions } from "@/components/Table/types";
 
 const IDC_PARQUET_URL =
