@@ -67,6 +67,7 @@ const UpdateCohortButton: React.FC<UpdateCohortButtonProps> = ({
 
   return (
     <DarkFunctionButton
+      data-testid="button-submit"
       disabled={disabled}
       onClick={() => {
         if (ids.length > 1) {

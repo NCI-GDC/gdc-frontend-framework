@@ -1,0 +1,15 @@
+{
+  "targetDefaults": {
+    "compile": {
+      "dependsOn": ["^compile", "^build"],
+      "cache": true
+    },
+    "build:clean": {
+      "dependsOn": ["^build:clean"]
+    },
+    "build": {
+      "dependsOn": ["compile", "^build"],
+      "cache": true
+    }
+  }
+}

@@ -13,7 +13,7 @@
 # - Run from monorepo root directory
 #
 # WHAT IT DOES:
-# - Switches to Node.js 20
+# - Switches to the Node.js version from package.json engines
 # - Updates all package.json files to new version
 # - Updates cross-package dependencies to same version
 # - Regenerates package-lock.json
@@ -40,16 +40,20 @@ fi
 
 echo "Starting release process for version $VERSION"
 
-# switch to Node 20
-nvm install 20
-nvm use 20
-echo "Using Node.js $(node --version)"
+# Read Node major version from package.json engines.node
+# e.g. "^24.14.0" -> "24"
+NODE_MAJOR=$(node -p "require('./package.json').engines.node.match(/\d+/)[0]")
+
+# switch to correct node
+nvm install "$NODE_MAJOR"
+nvm use "$NODE_MAJOR"
+echo "Node $(node --version) / npm $(npm --version)"
 
 # Update the root package.json version
 npm version "$VERSION" --no-git-tag-version
 
 # Update all packages in the monorepo
-npx lerna version "$VERSION" --no-push --no-git-tag-version
+npx lerna version "$VERSION" --no-push --no-git-tag-version --yes
 
 # regenerate lockfile
 npm install --package-lock-only

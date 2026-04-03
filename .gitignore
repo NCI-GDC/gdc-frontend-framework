@@ -6,3 +6,4 @@ venv
 .env.local
 .DS_Store
 docs/
+.nx
