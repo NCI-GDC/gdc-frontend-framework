@@ -38,5 +38,14 @@
     ".next/types/**/*.ts",
     "src/styles/colors.js"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.unit.test.ts",
+    "**/*.unit.test.tsx",
+    "**/__tests__/**",
+    "test-utils.tsx",
+    "setupTests.ts"
+  ]
 }

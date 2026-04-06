@@ -115,7 +115,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   toggledSsms = undefined,
   isDemoMode = false,
   isModal = false,
-  inModal = false,
   tableTitle = undefined,
   searchTermsForGene,
   clearSearchTermsForGene,
