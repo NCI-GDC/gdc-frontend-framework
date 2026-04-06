@@ -5,11 +5,11 @@
     "@gff/portal-components": "^2.19.0",
     "@mantine/core": "8.3.9",
     "@mantine/notifications": "8.3.9",
-    "next": "^16.1.6"
+    "@tailwindcss/postcss": "^4.2.2",
+    "next": "^16.1.6",
+    "tailwindcss": "^3.4.19"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.2.2",
-    "tailwindcss": "^4.2.2",
     "tailwindcss-themer": "^2.0.2",
     "typescript": "^5.8.2"
   },
