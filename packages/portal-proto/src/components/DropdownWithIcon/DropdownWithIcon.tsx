@@ -3,7 +3,7 @@ import { Button, Menu, MenuProps, Tooltip } from "@mantine/core";
 import { focusStyles } from "src/utils";
 import { DropdownIcon } from "@/utils/icons";
 import { ADDITIONAL_DOWNLOAD_MESSAGE } from "@/utils/constants";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 
 interface DropdownWithIconProps {
   /**
@@ -97,6 +97,7 @@ export const DropdownWithIcon = ({
   buttonAriaLabel = undefined,
   closeOnItemClick = true,
 }: DropdownWithIconProps): JSX.Element => {
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const [opened, { open, close }] = useDisclosure(false);
 
   const targetRef = useRef<HTMLButtonElement>(null);
@@ -117,7 +118,7 @@ export const DropdownWithIcon = ({
             variant="outline"
             color="primary"
             className={`flex items-center bg-base-max border-primary data-disabled:opacity-50 data-disabled:bg-base-max data-disabled:text-primary ${focusStyles}`}
-            {...(LeftSection && { leftSection: LeftSection })}
+            {...(LeftSection && !isMobile && { leftSection: LeftSection })}
             rightSection={RightSection}
             disabled={targetButtonDisabled}
             classNames={{
