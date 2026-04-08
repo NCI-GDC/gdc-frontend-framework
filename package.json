@@ -47,7 +47,7 @@
     "echarts": "^5.5.1",
     "file-saver": "^2.0.5",
     "isomorphic-fetch": "^3.0.0",
-    "lodash": "^4.17.23",
+    "lodash": "^4.18.1",
     "react": "^19.2.3",
     "react-cookie": "^7.2.2",
     "react-dom": "^19.2.3",
@@ -93,7 +93,8 @@
   "overrides": {
     "glob": "^11.0.0",
     "globby": "^11.0.4",
-    "@napi-rs/magic-string": "0.3.4"
+    "@napi-rs/magic-string": "0.3.4",
+    "lodash": "^4.18.1"
   },
   "engines": {
     "node": "^24.14.0",

@@ -45,7 +45,8 @@
     "react-modal": "^3.14.3",
     "react-plotly.js": "^2.6.0",
     "react-transition-group": "^4.4.2",
-    "tailwind-styled-components": "2.1.8"
+    "tailwind-styled-components": "2.1.8",
+    "uuid": "^8.3.2"
   },
   "license": "Apache-2",
   "devDependencies": {
