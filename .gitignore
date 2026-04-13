@@ -7,3 +7,4 @@ venv
 .DS_Store
 docs/
 .nx
+packages/*/next-env.d.ts
