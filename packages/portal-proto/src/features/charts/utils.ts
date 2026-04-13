@@ -1,4 +1,4 @@
-import { MutableRefObject } from "react";
+import { RefObject } from "react";
 
 const EXTRA_PADDING = 100;
 
@@ -36,7 +36,7 @@ const isFontRule = (rule: CSSRule): rule is CSSFontFaceRule => {
  * @returns Blob containing the new SVG content
  */
 const createSVG = async (
-  ref: MutableRefObject<HTMLElement>,
+  ref: RefObject<HTMLElement>,
   sizeFromSvg = true,
 ): Promise<Blob> => {
   const svgElement = document.createElementNS(
@@ -52,19 +52,28 @@ const createSVG = async (
 
   const styleTag = document.createElement("style");
   const styles = [];
-  // Copy styles from page into SVG
+
   for (const sheet of document.styleSheets) {
+    // Skip cross-origin stylesheets to prevent SecurityError
+    if (sheet.href && new URL(sheet.href).origin !== window.location.origin) {
+      continue;
+    }
+
     try {
       for (const rule of sheet.cssRules) {
         // For fonts we need to retrieve the font file, encode it to a data url and then embed back in svg
         if (isFontRule(rule)) {
-          const fontUrl = rule.style
+          const rawFontUrl = rule.style
             .getPropertyValue("src")
             .split("(")[1]
             .split(")")[0]
             .replace(/"|'/g, "");
-          if (fontUrl.includes("latin")) {
-            const fontFile = await fetch(fontUrl);
+
+          if (rawFontUrl.includes("latin")) {
+            const baseUrl = sheet.href ? sheet.href : window.location.href;
+            const absoluteFontUrl = new URL(rawFontUrl, baseUrl).href;
+            const fontFile = await fetch(absoluteFontUrl);
+
             const blob = await fontFile.blob();
             const base64 = await blobToBase64(blob);
             styles.push(
@@ -76,7 +85,7 @@ const createSVG = async (
         }
       }
     } catch (e) {
-      console.warn(e, sheet.href);
+      console.warn("Could not process stylesheet:", sheet.href, e);
     }
   }
   styleTag.innerHTML = styles.join("\n");
@@ -117,7 +126,7 @@ const createSVG = async (
  * @param filename - name of file to save to, extension should be included e.g. chart1.svg
  */
 export const handleDownloadSVG = async (
-  ref: MutableRefObject<HTMLElement>,
+  ref: RefObject<HTMLElement>,
   filename: string,
   sizeFromSvg = true,
 ): Promise<void> => {
@@ -135,7 +144,7 @@ export const handleDownloadSVG = async (
  * @param sizeFromSvg - whether to calculate the size based on just the chart SVG or the whole element
  */
 export const handleDownloadPNG = async (
-  ref: MutableRefObject<HTMLElement>,
+  ref: RefObject<HTMLElement>,
   filename: string,
   sizeFromSvg = true,
 ): Promise<void> => {
