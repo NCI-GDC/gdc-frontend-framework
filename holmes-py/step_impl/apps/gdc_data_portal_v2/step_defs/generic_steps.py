@@ -28,9 +28,8 @@ def start_app():
 @before_suite
 def navigate_to_app():
     APP.navigate()
-
+    APP.modal.wait_for_warning_message()
     APP.modal.accept_warning()
-    time.sleep(2)
 
 
 @before_suite
