@@ -94,6 +94,9 @@
     "typedoc": "^0.25.4",
     "typedoc-plugin-missing-exports": "^2.1.0"
   },
+  "optionalDependencies": {
+    "lightningcss-linux-x64-gnu": "*"
+  },
   "overrides": {
     "glob": "^11.0.0",
     "globby": "^11.0.4",
