@@ -28,7 +28,7 @@ const HPCard = ({
           {head}
           {subhead && <span className="block font-medium">{subhead}</span>}
         </h2>
-        <p className="py-1 font-content text-2xl md:text-xl lg:text-[1rem] text-secondary-contrast-lighter">
+        <p className="py-1 font-content text-2xl md:text-xl lg:text-[1rem]/7 text-secondary-contrast-lighter">
           {body}
         </p>
         {typeof href === "string" ? (

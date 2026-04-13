@@ -39,7 +39,7 @@ const HPCardImg = ({
         <h2 className="font-heading font-bold text-4xl md:text-3xl xl:text-2xl pb-5 text-summarybar-text tracking-tight">
           {head}
         </h2>
-        <div className="py-1 space-y-6 max-w-4xl pb-4 text-2xl md:text-xl lg:text-[1rem] text-secondary-contrast-lighter xl:text-[1rem]">
+        <div className="py-1 space-y-6 max-w-4xl pb-4 text-2xl md:text-xl lg:text-[1rem]/7 text-secondary-contrast-lighter">
           {body}
         </div>
         <Link href={href} className={homepageButtonClass}>

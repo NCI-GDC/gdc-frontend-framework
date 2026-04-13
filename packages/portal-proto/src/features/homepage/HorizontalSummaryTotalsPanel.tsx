@@ -37,7 +37,7 @@ const HorizontalSummaryTotalsPanel = ({
           customDataTestID="text-homepage-release-notes"
           title={isVersionInfoSuccess ? versionInfo.data_release : "..."}
           href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes/"
-          customStyle="text-lg md:text-[1rem] text-primary"
+          customStyle="text-lg md:/7 text-primary"
         />
       </div>
       <div

@@ -28,7 +28,7 @@ const Homepage = (): JSX.Element => {
             <h2 className="mt-6 items-center font-heading font-bold text-2xl md:text-xl xl:text-md text-summarybar-text">
               Harmonized Cancer Datasets
             </h2>
-            <p className="text-2xl md:text-xl w-full tracking-normal items-center xl:text-[1rem] xl:w-[80%] xl:tracking-wide text-primary-content-darkest font-content">
+            <p className="text-2xl md:text-xl w-full tracking-normal items-center xl:text-[1rem]/7 xl:w-[80%] xl:tracking-wide text-primary-content-darkest font-content">
               A repository and computational platform for cancer researchers who
               need to understand cancer, its clinical progression, and response
               to therapy.
@@ -166,7 +166,7 @@ const Homepage = (): JSX.Element => {
               ))}
             </ul>
             <div className="mt-8 lg:mt-0">
-              <p className="font-content text-secondary-contrast-lighter text-2xl md:text-xl lg:text-[1rem]">
+              <p className="font-content text-secondary-contrast-lighter text-2xl md:text-xl lg:text-[1rem]/7">
                 Analyze your custom cohorts by applying the GDC&apos;s
                 collection of tools for visualizing clinical features, genomic
                 alterations, and other cancer drivers.

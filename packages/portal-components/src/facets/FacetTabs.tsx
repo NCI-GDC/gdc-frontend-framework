@@ -207,6 +207,19 @@ type FacetTabProps = {
   readonly Chart?: React.FC<EnumChartProps>;
 };
 
+/**
+ * Component for rendering a tabbed facet selection view
+ * @param activeTab - which tab is currently active
+ * @param setActiveTab - function to set the active tab
+ * @param hooks - Hooks for retrieving data, modifying cohort, etc for the various facet types
+ * @param facetDefinitions - Description of facets and their properties
+ * @param tabsConfig - Configuration for tab sections, which fields they contain and any additional fields needed to query data for that tab
+ * @param customFacetHooks - Hooks for custom facet selection
+ * @param getFacetLabel - Callback for determining the data label
+ * @param cardScrollMargin - Scroll margin for cards, used for positioning cards on the page when scrolled to
+ * @param Chart - Component for rendering a Chart view of the data
+ */
+
 export const FacetTabs: React.FC<FacetTabProps> = ({
   activeTab,
   setActiveTab,

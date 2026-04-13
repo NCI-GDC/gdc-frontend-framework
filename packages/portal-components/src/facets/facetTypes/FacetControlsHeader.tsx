@@ -109,7 +109,7 @@ const FacetControlsHeader = ({
           <div
             className={
               variant === "default"
-                ? "text-primary-contrast-darker font-heading font-semibold text-sm xl:text-[1rem] break-words py-2"
+                ? "text-primary-contrast-darker font-heading font-semibold text-sm xl:text-[1rem]/7 break-words py-2"
                 : "text-primary-darkest font-heading font-semibold text-[1.25em] break-words py-2"
             }
           >
