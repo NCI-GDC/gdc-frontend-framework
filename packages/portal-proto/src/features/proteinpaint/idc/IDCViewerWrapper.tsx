@@ -30,8 +30,10 @@ import { PaginationOptions } from "@/components/Table/types";
 import TotalItems from "@/components/Table/TotalItem";
 import { buildCasesTableSearchFilters } from "@/features/cases/CasesView/utils";
 
-const IDC_PARQUET_URL =
-  "https://storage.googleapis.com/idc-index-data-artifacts/current/release_artifacts/gdc_idc_mapping.parquet";
+const IDC_BUCKET_URL =
+  "https://storage.googleapis.com/idc-index-data-artifacts/";
+const IDC_PARQUET_KEY_SUFFIX = "/release_artifacts/gdc_idc_mapping.parquet";
+const IDC_PARQUET_CURRENT_URL = `${IDC_BUCKET_URL}current${IDC_PARQUET_KEY_SUFFIX}`;
 
 // Columns list for IDC parquet reads
 const IDC_PARQUET_COLUMNS = [
@@ -80,6 +82,48 @@ async function readParquetIndex(idc_index_file: any): Promise<{
     idc_data: idc_data as Array<IDCParquetData>,
     case_ids: gdcCaseIds,
   };
+}
+
+// Fetch + parse a parquet URL; throws on any failure.
+async function loadParquetFromUrl(url: string) {
+  const resp = await fetch(url);
+  if (!resp.ok) {
+    throw new Error(
+      `Failed to fetch parquet: ${resp.status} ${resp.statusText}`,
+    );
+  }
+  const arrayBuffer = await resp.arrayBuffer();
+  return readParquetIndex(arrayBuffer);
+}
+
+// Compare dotted numeric versions (e.g. "23.6.0"). Returns sign of a - b.
+function compareVersions(a: string, b: string): number {
+  const pa = a.split(".").map((p) => Number(p) || 0);
+  const pb = b.split(".").map((p) => Number(p) || 0);
+  const len = Math.max(pa.length, pb.length);
+  for (let i = 0; i < len; i++) {
+    const diff = (pa[i] ?? 0) - (pb[i] ?? 0);
+    if (diff !== 0) return diff;
+  }
+  return 0;
+}
+
+// Fetch bucket XML listing and return versioned parquet URLs, newest first.
+async function fetchVersionedParquetUrls(): Promise<string[]> {
+  console.log(`Fetching versioned parquet URLs from bucket: ${IDC_BUCKET_URL}`);
+  const resp = await fetch(IDC_BUCKET_URL);
+  console.log(`Fetching versioned parquet URLs from bucket: ${resp}`);
+  if (!resp.ok) return [];
+  const text = await resp.text();
+  const doc = new DOMParser().parseFromString(text, "application/xml");
+  const versions = Array.from(doc.getElementsByTagName("Key"))
+    .map((el) => el.textContent || "")
+    .filter((k) => k.endsWith(IDC_PARQUET_KEY_SUFFIX))
+    .map((k) => k.slice(0, -IDC_PARQUET_KEY_SUFFIX.length))
+    .filter((v) => v !== "current" && /^\d+(\.\d+)*$/.test(v));
+
+  versions.sort((a, b) => compareVersions(b, a));
+  return versions.map((v) => `${IDC_BUCKET_URL}${v}${IDC_PARQUET_KEY_SUFFIX}`);
 }
 
 const IDCViewerWrapper: FC = () => {
@@ -141,21 +185,39 @@ const IDCViewerWrapper: FC = () => {
     const loadIdc = async () => {
       setParquetLoading(true);
       setLoadError(false);
+
+      let parsed: Awaited<ReturnType<typeof readParquetIndex>> | undefined;
+
       try {
-        const resp = await fetch(IDC_PARQUET_URL);
-        if (!resp.ok) {
-          throw new Error(
-            `Failed to fetch parquet: ${resp.status} ${resp.statusText}`,
-          );
-        }
-        const arrayBuffer = await resp.arrayBuffer();
-        const parsed = await readParquetIndex(arrayBuffer);
-        if (mounted) setIdcData(parsed);
-      } catch (err) {
-        setLoadError(true);
-      } finally {
-        if (mounted) setParquetLoading(false);
+        parsed = await loadParquetFromUrl(IDC_PARQUET_CURRENT_URL);
+      } catch {
+        // current version is broken — fall back to listing previous versions
       }
+
+      if (!parsed) {
+        try {
+          const fallbackUrls = await fetchVersionedParquetUrls();
+          for (const url of fallbackUrls) {
+            try {
+              parsed = await loadParquetFromUrl(url);
+              break;
+            } catch {
+              // try the next older version
+            }
+          }
+        } catch {
+          console.log(`Failed to fetch fallback parquet URLs from bucket`);
+          // bucket listing unavailable — no fallback possible
+        }
+      }
+
+      if (!mounted) return;
+      if (parsed) {
+        setIdcData(parsed);
+      } else {
+        setLoadError(true);
+      }
+      setParquetLoading(false);
     };
 
     loadIdc();
