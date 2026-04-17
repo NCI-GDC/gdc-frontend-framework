@@ -2,6 +2,7 @@ import type { Row } from "@tanstack/react-table";
 
 export type IDCStudy = {
   StudyInstanceUID: string;
+  collectionId: string;
   series: any[];
   hasWSI: boolean;
   hasRadiology: boolean;
@@ -12,6 +13,7 @@ export type IDCStudy = {
 export type IDCViewerRow = {
   caseId: string;
   programName: string;
+  project: string;
   studiesList: IDCStudy[];
   studiesCount: number;
   wsiCount: number;
