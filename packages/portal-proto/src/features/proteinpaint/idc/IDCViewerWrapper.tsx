@@ -15,6 +15,7 @@ import {
   GqlOperation,
   SortBy,
   useCurrentCohortFilters,
+  useCurrentCohortCounts,
   Pagination,
 } from "@gff/core";
 import { useDeepCompareMemo, useDeepCompareEffect } from "use-deep-compare";
@@ -24,12 +25,14 @@ import { LoadingOverlay } from "@mantine/core";
 import IDCStudyRowsComponent from "@/features/proteinpaint/idc/IDCStudyRowsComponent";
 import { IDCStudy, IDCViewerRow } from "@/features/proteinpaint/idc/types";
 import { PaginationOptions } from "@/components/Table/types";
+import TotalItems from "@/components/Table/TotalItem";
 
 const IDC_PARQUET_URL =
   "https://storage.googleapis.com/idc-index-data-artifacts/current/release_artifacts/gdc_idc_mapping.parquet";
 
 // Columns list for IDC parquet reads
 const IDC_PARQUET_COLUMNS = [
+  "collection_id",
   "PatientID",
   "StudyInstanceUID",
   "StudyDate",
@@ -41,6 +44,7 @@ const IDC_PARQUET_COLUMNS = [
 // Type for a single row read from the IDC parquet index.
 type IDCParquetData = {
   PatientID: string;
+  collection_id: string;
   StudyInstanceUID: string;
   StudyDate: string;
   StudyDescription: string;
@@ -102,8 +106,11 @@ const IDCViewerWrapper: FC = () => {
   const [sorting, setSorting] = useState<SortingState>([
     { id: "caseId", desc: false },
   ]);
+  // search term for submitter_id / GDC Case ID
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   const currentCohortFilterSet = useCurrentCohortFilters();
+  const cohortCounts = useCurrentCohortCounts();
   const cohortGqlFilters = useDeepCompareMemo(() => {
     return currentCohortFilterSet
       ? filterSetToOperation(currentCohortFilterSet)
@@ -124,6 +131,7 @@ const IDCViewerWrapper: FC = () => {
     const COLUMN_ID_TO_FIELD: Record<string, string> = {
       caseId: "submitter_id",
       program: "project.program.name",
+      project: "project.project_id",
     };
     if (!sorting || sorting.length === 0) return [];
     return sorting.map((s) => {
@@ -176,10 +184,30 @@ const IDCViewerWrapper: FC = () => {
       ? convertFilterToGqlFilter(cohortGqlFilters)
       : undefined;
 
-    return caseFiltersArg
-      ? mergeWithAndFilters(caseFiltersArg, id_filters)
-      : id_filters;
-  }, [idcData, cohortGqlFilters]);
+    const searchFilter: GqlOperation | undefined =
+      searchTerm.length > 0
+        ? {
+            op: "in",
+            content: {
+              // search on submitter_id (GDC Case ID)
+              field: "submitter_id",
+              value: [searchTerm],
+            },
+          }
+        : undefined;
+
+    // merge cohort filters, idc id_filters and searchFilter with AND semantics
+    let filter: GqlOperation | undefined = undefined;
+    if (caseFiltersArg) filter = caseFiltersArg;
+    if (id_filters)
+      filter = filter ? mergeWithAndFilters(filter, id_filters) : id_filters;
+    if (searchFilter)
+      filter = filter
+        ? mergeWithAndFilters(filter, searchFilter)
+        : searchFilter;
+
+    return filter;
+  }, [idcData, cohortGqlFilters, searchTerm]);
 
   const sortByForApi = mapSortingToSortBy();
 
@@ -190,11 +218,17 @@ const IDCViewerWrapper: FC = () => {
     isError: casesError,
   } = useGetCasesQuery({
     request: {
-      fields: ["submitter_id", "disease_type", "primary_site", "project"],
+      fields: [
+        "submitter_id",
+        "disease_type",
+        "primary_site",
+        "project.project_id",
+        "project",
+      ],
       size: pageSize,
       from: (activePage - 1) * pageSize,
       case_filters: extendedFilters,
-      expand: ["samples.portions.slides", "project.program"],
+      expand: ["samples.portions.slides", "project", "project.program"],
       sortBy: sortByForApi.length > 0 ? sortByForApi : undefined,
     },
     fetchAll: false,
@@ -248,12 +282,13 @@ const IDCViewerWrapper: FC = () => {
       const programName = m.gdcCase?.project?.program?.name ?? "n/a";
 
       // group rows by StudyInstanceUID
-      const studiesMap = new Map();
-      (m.matches || []).forEach((r: any) => {
+      const studiesMap = new Map<string, IDCStudy>();
+      (m.matches || []).forEach((r: IDCParquetData) => {
         const studyId = r?.StudyInstanceUID ?? "n/a";
         if (!studiesMap.has(studyId)) {
           studiesMap.set(studyId, {
             StudyInstanceUID: r?.StudyInstanceUID ?? null,
+            collectionId: r?.collection_id ?? null,
             series: [],
             hasWSI: false,
             hasRadiology: false,
@@ -278,6 +313,7 @@ const IDCViewerWrapper: FC = () => {
       return {
         caseId,
         programName,
+        project: m.gdcCase.project.project_id,
         studiesList,
         studiesCount: studiesList.length,
         wsiCount,
@@ -299,6 +335,12 @@ const IDCViewerWrapper: FC = () => {
       idcTableColumnHelper.accessor("programName", {
         id: "program",
         header: "Program",
+        cell: ({ getValue }) => getValue(),
+        enableSorting: true,
+      }),
+      idcTableColumnHelper.accessor("project", {
+        id: "project",
+        header: "Project",
         cell: ({ getValue }) => getValue(),
         enableSorting: true,
       }),
@@ -354,9 +396,13 @@ const IDCViewerWrapper: FC = () => {
     [setTableExpanded, idcTableColumnHelper],
   );
 
-  // map VerticalTable handleChange to server-side pagination handlers
+  // map VerticalTable handleChange to server-side pagination + search handlers
   const handleTableChange = useCallback(
-    (obj: { newPageNumber?: number; newPageSize?: string | number }) => {
+    (obj: {
+      newPageNumber?: number;
+      newPageSize?: string | number;
+      newSearch?: string;
+    }) => {
       if (obj.newPageSize !== undefined) {
         const newSize =
           typeof obj.newPageSize === "string"
@@ -368,6 +414,10 @@ const IDCViewerWrapper: FC = () => {
       }
       if (obj.newPageNumber !== undefined) {
         setActivePage(obj.newPageNumber);
+      }
+      if (obj.newSearch !== undefined) {
+        setActivePage(1);
+        setSearchTerm(obj.newSearch ?? "");
       }
     },
     [],
@@ -391,7 +441,7 @@ const IDCViewerWrapper: FC = () => {
         <div style={{ maxHeight: 460, overflow: "auto" }}>
           <div style={{ position: "relative", minHeight: 120 }}>
             <LoadingOverlay visible={overlayVisible} zIndex={50} />
-            {!overlayVisible &&
+            {!parquetLoading &&
               (loadError ? (
                 <div
                   data-testid="idc-error-message"
@@ -400,7 +450,7 @@ const IDCViewerWrapper: FC = () => {
                   There was an error rendering IDC table, please try again
                   later.
                 </div>
-              ) : tableData.length === 0 ? (
+              ) : tableData.length === 0 && !casesLoading && !searchTerm ? (
                 <div
                   data-testid="no-idc-message"
                   className="p-4 text-gdc-grey-dark text-sm"
@@ -411,7 +461,13 @@ const IDCViewerWrapper: FC = () => {
                 <VerticalTable
                   columns={columns}
                   data={tableData}
-                  tableTitle={undefined}
+                  tableTitle="IDC Image Viewer"
+                  tableTotalDetail={
+                    <TotalItems
+                      total={cohortCounts?.data?.caseCount}
+                      itemName="case"
+                    />
+                  }
                   getRowCanExpand={(_: any) => true}
                   expandableColumnIds={["matches"]}
                   expanded={expanded}
@@ -425,6 +481,10 @@ const IDCViewerWrapper: FC = () => {
                   columnSorting="manual"
                   sorting={sorting}
                   setSorting={setSorting}
+                  search={{
+                    enabled: true,
+                    tooltip: "e.g. 04OV017",
+                  }}
                 />
               ))}
           </div>
