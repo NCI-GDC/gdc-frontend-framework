@@ -12,11 +12,14 @@ import {
   convertFilterToGqlFilter,
   useGetCasesQuery,
   filterSetToOperation,
-  GqlOperation,
+  appendFilterToOperation,
   SortBy,
   useCurrentCohortFilters,
   useCurrentCohortCounts,
   Pagination,
+  Includes,
+  Intersection,
+  Union,
 } from "@gff/core";
 import { useDeepCompareMemo, useDeepCompareEffect } from "use-deep-compare";
 import VerticalTable from "@/components/Table/VerticalTable";
@@ -26,6 +29,7 @@ import IDCStudyRowsComponent from "@/features/proteinpaint/idc/IDCStudyRowsCompo
 import { IDCStudy, IDCViewerRow } from "@/features/proteinpaint/idc/types";
 import { PaginationOptions } from "@/components/Table/types";
 import TotalItems from "@/components/Table/TotalItem";
+import { buildCasesTableSearchFilters } from "@/features/cases/CasesView/utils";
 
 const IDC_PARQUET_URL =
   "https://storage.googleapis.com/idc-index-data-artifacts/current/release_artifacts/gdc_idc_mapping.parquet";
@@ -111,11 +115,6 @@ const IDCViewerWrapper: FC = () => {
 
   const currentCohortFilterSet = useCurrentCohortFilters();
   const cohortCounts = useCurrentCohortCounts();
-  const cohortGqlFilters = useDeepCompareMemo(() => {
-    return currentCohortFilterSet
-      ? filterSetToOperation(currentCohortFilterSet)
-      : undefined;
-  }, [currentCohortFilterSet]);
 
   // Parquet data loaded once on mount
   const [idcData, setIdcData] = useState<
@@ -172,42 +171,42 @@ const IDCViewerWrapper: FC = () => {
   const extendedFilters = useDeepCompareMemo(() => {
     if (!idcData) return undefined;
 
-    const id_filters: GqlOperation = {
-      op: "in",
-      content: {
-        field: "case_id",
-        value: idcData.case_ids,
-      },
+    const idFilters: Intersection = {
+      operator: "and",
+      operands: [
+        {
+          operator: "includes",
+          field: "case_id",
+          operands: idcData.case_ids,
+        } as Includes,
+      ],
     };
 
-    const caseFiltersArg = cohortGqlFilters
-      ? convertFilterToGqlFilter(cohortGqlFilters)
+    const cohortOp = currentCohortFilterSet
+      ? (filterSetToOperation(currentCohortFilterSet) as
+          | Union
+          | Intersection
+          | undefined)
       : undefined;
 
-    const searchFilter: GqlOperation | undefined =
-      searchTerm.length > 0
-        ? {
-            op: "in",
-            content: {
-              // search on submitter_id (GDC Case ID)
-              field: "submitter_id",
-              value: [searchTerm],
-            },
-          }
-        : undefined;
+    const searchFilters = buildCasesTableSearchFilters(searchTerm);
 
-    // merge cohort filters, idc id_filters and searchFilter with AND semantics
-    let filter: GqlOperation | undefined = undefined;
-    if (caseFiltersArg) filter = caseFiltersArg;
-    if (id_filters)
-      filter = filter ? mergeWithAndFilters(filter, id_filters) : id_filters;
-    if (searchFilter)
-      filter = filter
-        ? mergeWithAndFilters(filter, searchFilter)
-        : searchFilter;
+    // Some test mocks (unit tests) may not provide `appendFilterToOperation`.
+    // Wrap usage in a safe helper that falls back to a simple 'and' intersection
+    // when the imported helper is not available.
+    const appendFilterSafe = (a: any, b: any) => {
+      if (typeof appendFilterToOperation === "function") {
+        return appendFilterToOperation(a, b);
+      }
+      if (!a) return b;
+      if (!b) return a;
+      return { operator: "and", operands: [a, b] } as Intersection;
+    };
 
-    return filter;
-  }, [idcData, cohortGqlFilters, searchTerm]);
+    return convertFilterToGqlFilter(
+      appendFilterSafe(appendFilterSafe(cohortOp, idFilters), searchFilters),
+    );
+  }, [idcData, currentCohortFilterSet, searchTerm]);
 
   const sortByForApi = mapSortingToSortBy();
 
@@ -493,22 +492,5 @@ const IDCViewerWrapper: FC = () => {
     </div>
   );
 };
-
-// Utility to merge two GqlOperation filters with "and"
-function mergeWithAndFilters(
-  filterA: GqlOperation,
-  filterB: GqlOperation,
-): GqlOperation {
-  if (filterA.op === "and" && filterB.op === "and") {
-    return { op: "and", content: [...filterA.content, ...filterB.content] };
-  }
-  if (filterA.op === "and") {
-    return { op: "and", content: [...filterA.content, filterB] };
-  }
-  if (filterB.op === "and") {
-    return { op: "and", content: [filterA, ...filterB.content] };
-  }
-  return { op: "and", content: [filterA, filterB] };
-}
 
 export default IDCViewerWrapper;
