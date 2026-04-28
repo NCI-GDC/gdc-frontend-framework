@@ -48,11 +48,7 @@ jest.mock(
     useCurrentCohortCounts: () => undefined,
     filterSetToOperation: (_fs: any) => undefined,
     convertFilterToGqlFilter: (op: any) => op,
-    appendFilterToOperation: (a: any, b: any) => {
-      if (!a) return b;
-      if (!b) return a;
-      return { operator: "and", operands: [a, b] };
-    },
+    appendFilterToOperation: () => undefined,
     GqlOperation: undefined,
     SortBy: undefined,
   }),
