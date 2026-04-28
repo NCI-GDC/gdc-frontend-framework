@@ -191,20 +191,11 @@ const IDCViewerWrapper: FC = () => {
 
     const searchFilters = buildCasesTableSearchFilters(searchTerm);
 
-    // Some test mocks (unit tests) may not provide `appendFilterToOperation`.
-    // Wrap usage in a safe helper that falls back to a simple 'and' intersection
-    // when the imported helper is not available.
-    const appendFilterSafe = (a: any, b: any) => {
-      if (typeof appendFilterToOperation === "function") {
-        return appendFilterToOperation(a, b);
-      }
-      if (!a) return b;
-      if (!b) return a;
-      return { operator: "and", operands: [a, b] } as Intersection;
-    };
-
     return convertFilterToGqlFilter(
-      appendFilterSafe(appendFilterSafe(cohortOp, idFilters), searchFilters),
+      appendFilterToOperation(
+        appendFilterToOperation(cohortOp, idFilters),
+        searchFilters,
+      ),
     );
   }, [idcData, currentCohortFilterSet, searchTerm]);
 
