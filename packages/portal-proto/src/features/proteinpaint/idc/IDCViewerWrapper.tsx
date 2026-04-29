@@ -97,19 +97,21 @@ const IDCViewerWrapper: FC = () => {
       setParquetLoading(true);
       setLoadError(false);
 
-      let parsed: Awaited<ReturnType<typeof loadParquetFromUrl>> | undefined;
+      let parquetData:
+        | Awaited<ReturnType<typeof loadParquetFromUrl>>
+        | undefined;
 
       try {
-        parsed = await loadParquetFromUrl(IDC_PARQUET_CURRENT_URL);
+        parquetData = await loadParquetFromUrl(IDC_PARQUET_CURRENT_URL);
       } catch {
         // current version is broken — fall back to listing previous versions
       }
 
-      if (!parsed) {
+      if (!parquetData) {
         try {
           const fallbackUrl = await fetchLatestVersionedParquetUrl();
           if (fallbackUrl) {
-            parsed = await loadParquetFromUrl(fallbackUrl);
+            parquetData = await loadParquetFromUrl(fallbackUrl);
           }
         } catch {
           // bucket listing or fallback parquet unavailable
@@ -117,8 +119,8 @@ const IDCViewerWrapper: FC = () => {
       }
 
       if (!mounted) return;
-      if (parsed) {
-        setIdcData(parsed);
+      if (parquetData) {
+        setIdcData(parquetData);
       } else {
         setLoadError(true);
       }
