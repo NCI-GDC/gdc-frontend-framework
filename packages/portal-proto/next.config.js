@@ -12,7 +12,6 @@ const connectSrc = [
   "https://dap.digitalgov.gov",
   "https://metrics.cancer.gov",
   "https://storage.googleapis.com/idc-index-data-artifacts/",
-  "https://storage.googleapis.com/idc-index-data-artifacts/current/release_artifacts/gdc_idc_mapping.parquet",
   // Uncomment to use mock server for testing
   //"https://localhost:3100",
 ];

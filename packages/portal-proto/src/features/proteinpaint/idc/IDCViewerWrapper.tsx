@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import {
   Row,
   createColumnHelper,
@@ -6,8 +6,6 @@ import {
   SortingState,
   ExpandedState,
 } from "@tanstack/react-table";
-import { compressors } from "hyparquet-compressors";
-import { parquetReadObjects } from "hyparquet";
 import {
   convertFilterToGqlFilter,
   useGetCasesQuery,
@@ -25,106 +23,19 @@ import VerticalTable from "@/components/Table/VerticalTable";
 import IDCExpandRowComponent from "./IDCExpandRowComponent";
 import { LoadingOverlay } from "@mantine/core";
 import IDCStudyRowsComponent from "@/features/proteinpaint/idc/IDCStudyRowsComponent";
-import { IDCStudy, IDCViewerRow } from "@/features/proteinpaint/idc/types";
+import {
+  IDCParquetData,
+  IDCStudy,
+  IDCViewerRow,
+} from "@/features/proteinpaint/idc/types";
+import {
+  IDC_PARQUET_CURRENT_URL,
+  fetchLatestVersionedParquetUrl,
+  loadParquetFromUrl,
+} from "@/features/proteinpaint/idc/utils";
 import { PaginationOptions } from "@/components/Table/types";
 import TotalItems from "@/components/Table/TotalItem";
 import { buildCasesTableSearchFilters } from "@/features/cases/CasesView/utils";
-
-const IDC_BUCKET_URL =
-  "https://storage.googleapis.com/idc-index-data-artifacts/";
-const IDC_PARQUET_KEY_SUFFIX = "/release_artifacts/gdc_idc_mapping.parquet";
-const IDC_PARQUET_CURRENT_URL = `${IDC_BUCKET_URL}current${IDC_PARQUET_KEY_SUFFIX}`;
-
-// Columns list for IDC parquet reads
-const IDC_PARQUET_COLUMNS = [
-  "collection_id",
-  "PatientID",
-  "StudyInstanceUID",
-  "StudyDate",
-  "StudyDescription",
-  "study_type",
-  "gdc_case_id",
-];
-
-// Type for a single row read from the IDC parquet index.
-type IDCParquetData = {
-  PatientID: string;
-  collection_id: string;
-  StudyInstanceUID: string;
-  StudyDate: string;
-  StudyDescription: string;
-  study_type: string;
-  gdc_case_id: string;
-};
-
-// Helper: read idc_data from a parquet file
-async function readParquetIndex(idc_index_file: any): Promise<{
-  idc_data: ReadonlyArray<IDCParquetData>;
-  case_ids: readonly string[];
-}> {
-  const raw_rows = await parquetReadObjects({
-    file: idc_index_file,
-    columns: IDC_PARQUET_COLUMNS,
-    compressors: compressors,
-  });
-
-  const idc_data = raw_rows || [];
-
-  // Extract unique gdc case ids from the parquet data
-  const gdcCaseIdSet = new Set<string>();
-  idc_data.forEach((o: any) => {
-    const cid = o?.gdc_case_id;
-    if (cid) gdcCaseIdSet.add(String(cid));
-  });
-  const gdcCaseIds = Array.from(gdcCaseIdSet) as readonly string[];
-
-  return {
-    idc_data: idc_data as Array<IDCParquetData>,
-    case_ids: gdcCaseIds,
-  };
-}
-
-// Fetch + parse a parquet URL; throws on any failure.
-async function loadParquetFromUrl(url: string) {
-  const resp = await fetch(url);
-  if (!resp.ok) {
-    throw new Error(
-      `Failed to fetch parquet: ${resp.status} ${resp.statusText}`,
-    );
-  }
-  const arrayBuffer = await resp.arrayBuffer();
-  return readParquetIndex(arrayBuffer);
-}
-
-// Compare dotted numeric versions (e.g. "23.6.0"). Returns sign of a - b.
-function compareVersions(a: string, b: string): number {
-  const pa = a.split(".").map((p) => Number(p) || 0);
-  const pb = b.split(".").map((p) => Number(p) || 0);
-  const len = Math.max(pa.length, pb.length);
-  for (let i = 0; i < len; i++) {
-    const diff = (pa[i] ?? 0) - (pb[i] ?? 0);
-    if (diff !== 0) return diff;
-  }
-  return 0;
-}
-
-// Fetch bucket XML listing and return versioned parquet URLs, newest first.
-async function fetchVersionedParquetUrls(): Promise<string[]> {
-  console.log(`Fetching versioned parquet URLs from bucket: ${IDC_BUCKET_URL}`);
-  const resp = await fetch(IDC_BUCKET_URL);
-  console.log(`Fetching versioned parquet URLs from bucket: ${resp}`);
-  if (!resp.ok) return [];
-  const text = await resp.text();
-  const doc = new DOMParser().parseFromString(text, "application/xml");
-  const versions = Array.from(doc.getElementsByTagName("Key"))
-    .map((el) => el.textContent || "")
-    .filter((k) => k.endsWith(IDC_PARQUET_KEY_SUFFIX))
-    .map((k) => k.slice(0, -IDC_PARQUET_KEY_SUFFIX.length))
-    .filter((v) => v !== "current" && /^\d+(\.\d+)*$/.test(v));
-
-  versions.sort((a, b) => compareVersions(b, a));
-  return versions.map((v) => `${IDC_BUCKET_URL}${v}${IDC_PARQUET_KEY_SUFFIX}`);
-}
 
 const IDCViewerWrapper: FC = () => {
   // Global loading state for parquet download/parsing + GDC fetch
@@ -186,7 +97,7 @@ const IDCViewerWrapper: FC = () => {
       setParquetLoading(true);
       setLoadError(false);
 
-      let parsed: Awaited<ReturnType<typeof readParquetIndex>> | undefined;
+      let parsed: Awaited<ReturnType<typeof loadParquetFromUrl>> | undefined;
 
       try {
         parsed = await loadParquetFromUrl(IDC_PARQUET_CURRENT_URL);
@@ -196,18 +107,12 @@ const IDCViewerWrapper: FC = () => {
 
       if (!parsed) {
         try {
-          const fallbackUrls = await fetchVersionedParquetUrls();
-          for (const url of fallbackUrls) {
-            try {
-              parsed = await loadParquetFromUrl(url);
-              break;
-            } catch {
-              // try the next older version
-            }
+          const fallbackUrl = await fetchLatestVersionedParquetUrl();
+          if (fallbackUrl) {
+            parsed = await loadParquetFromUrl(fallbackUrl);
           }
         } catch {
-          console.log(`Failed to fetch fallback parquet URLs from bucket`);
-          // bucket listing unavailable — no fallback possible
+          // bucket listing or fallback parquet unavailable
         }
       }
 
