@@ -19,7 +19,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 * Navigate to "Cohort" from "Header" "section"
 * Select "Upload" from the Cohort Bar
 * Upload "organoid" "tsv" from "Cohort Bar" in "Cohort Bar Import" through "Browse"
-* Select "Submit"
+* Submit modal information
 * Name the cohort "organoid" in the Cohort Bar section
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                                 |Keep or Remove Modal|
@@ -33,7 +33,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 ## Import Cohort from Data Portal V1 file
 * Select "Upload" from the Cohort Bar
 * Upload "data portal v1 tcga chol" "tsv" from "Cohort Bar" in "Cohort Bar Import" through "Browse"
-* Select "Submit"
+* Submit modal information
 * Name the cohort "data portal v1" in the Cohort Bar section
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                                        |Keep or Remove Modal|
@@ -43,7 +43,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
 ## Import Cohort with all Case Identifiers
 * Select "Upload" from the Cohort Bar
 * Upload "Cases List" "txt" from "Cohort Bar" in "Cohort Bar Import" through "Browse"
-* Select "Submit"
+* Submit modal information
 * Name the cohort "cases list" in the Cohort Bar section
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                                    |Keep or Remove Modal|

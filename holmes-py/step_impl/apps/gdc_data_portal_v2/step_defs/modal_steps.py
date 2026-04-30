@@ -11,6 +11,10 @@ def start_app():
     global APP
     APP = GDCDataPortalV2App(WebDriver.page)
 
+@step("Submit modal information")
+def click_submit_in_modal():
+    APP.modal.click_submit_button_in_modal()
+
 @step("Is temporary modal with text <expected_text> present on the page and <action>")
 def is_modal_text_present_on_the_page(expected_text: str, action: str):
     """Waits for modal with specified text and optionally removes modal"""

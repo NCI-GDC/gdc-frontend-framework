@@ -30,11 +30,12 @@ const IDCStudyRowsComponent: FC<IDCStudyRowsComponentProps> = ({ row }) => {
       >
         <thead>
           <tr className="text-left border-b border-gdc-grey-lighter">
-            <th style={{ padding: 6 }}>IDC StudyInstanceUID</th>
-            <th style={{ padding: 6 }}>StudyDate</th>
-            <th style={{ padding: 6 }}>StudyDescription</th>
+            <th style={{ padding: 6 }}>IDC Study Instance UID</th>
+            <th style={{ padding: 6 }}>Collection</th>
+            <th style={{ padding: 6 }}>Study Date</th>
+            <th style={{ padding: 6 }}>Study Description</th>
             <th style={{ padding: 6 }}>IDC Histopathology Viewer</th>
-            <th style={{ padding: 6 }}>IDC Radiology viewer</th>
+            <th style={{ padding: 6 }}>IDC Radiology Viewer</th>
           </tr>
         </thead>
         <tbody>
@@ -62,6 +63,7 @@ const IDCStudyRowsComponent: FC<IDCStudyRowsComponentProps> = ({ row }) => {
                 >
                   {s.StudyInstanceUID ?? "(/)"}
                 </td>
+                <td style={{ padding: 6 }}>{s.collectionId ?? "-"}</td>
                 <td style={{ padding: 6 }}>{s.StudyDate ?? "-"}</td>
                 <td style={{ padding: 6 }}>{s.StudyDescription ?? "-"}</td>
                 <td style={{ padding: 6 }}>
