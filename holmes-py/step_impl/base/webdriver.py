@@ -60,19 +60,15 @@ class WebDriver:
             screen_size = Utility.get_screen_size()
             if screen_size:
                 screen_width = screen_size["width"]
-                screen_height = screen_size["height"]
-                if ((screen_width >= 2000) and (screen_height >= 1300)):
-                    # This is the maximum size of a test automation window
+                # 1300 pixels on height is the minimum size for all tests to pass. The tests behave as expected
+                # on screens with a height smaller than 1300 pixels as the window can be scrolled vertically.
+                if (screen_width >= 2000):
+                    # 2000 pixels is the maximum width size of a test automation window
                     # to ensure consistent test results.
                     WebDriver.page.set_viewport_size({"width": 2000, "height": 1300})
-                elif ((screen_width >= 2000) and (screen_height <= 1300)):
-                    WebDriver.page.set_viewport_size({"width": 2000, "height": screen_height})
-                elif ((screen_width <= 2000) and (screen_height >= 1300)):
-                    WebDriver.page.set_viewport_size({"width": screen_width, "height": 1300})
                 else:
-                    # If both width and height of the user's screen is smaller than the max, we
-                    # set the automation window to the user's screen.
-                    WebDriver.page.set_viewport_size({"width": screen_width, "height": screen_height})
+                    # If width is smaller than 2000 pixels, set it to screen size.
+                    WebDriver.page.set_viewport_size({"width": screen_width, "height": 1300})
             else:
                 WebDriver.context.add_init_script(
                     """

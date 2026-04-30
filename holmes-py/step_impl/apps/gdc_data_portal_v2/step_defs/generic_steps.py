@@ -1009,7 +1009,7 @@ def click_create_or_save_in_cohort_modal():
 
 
 @step("Select or deselect these options from the table column selector <table>")
-def click_create_or_save_in_cohort_modal(table):
+def click_option_from_cohort_selector(table):
     """
     Clicks table column selector button.
     In the column selector pop-up modal that appears, it clicks the specified switch.
@@ -1020,14 +1020,14 @@ def click_create_or_save_in_cohort_modal(table):
     APP.shared.click_column_selector_button()
 
 @step("In table <table_name> select or deselect these options from the table column selector <table>")
-def click_create_or_save_in_cohort_modal(table_name:str, table):
+def click_option_from_cohort_selector_in_specific_table(table_name:str, table):
     """
     In specified table, clicks table column selector button.
     In the column selector pop-up modal that appears, it clicks the specified switch.
     """
     APP.shared.click_column_selector_button_in_specified_table(table_name)
     for k, v in enumerate(table):
-        APP.shared.click_switch_for_column_selector(v[0])
+        APP.shared.click_switch_for_column_selector_in_specified_table(v[0],table_name)
     APP.shared.click_column_selector_button_in_specified_table(table_name)
 
 @step("In table <table_name> restore default column selector options")

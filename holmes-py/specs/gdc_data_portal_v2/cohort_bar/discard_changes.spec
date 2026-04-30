@@ -101,6 +101,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
   |-----------------|-------------------------------------------|--------------------|
   |Save             |Cohort has been saved                      |Remove Modal        |
+* Wait for loading spinners to disappear
 * "Save" should be "disabled" in the Cohort Bar
 * Make the following selections from "General" tab on the Cohort Builder page
   |facet_name         |selection            |

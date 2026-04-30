@@ -202,7 +202,7 @@ Note: This is to resolve flaky test
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                                  |Keep or Remove Modal|
   |-----------------|-----------------------------------------------------------|--------------------|
-  |Save             |chr1:g.6197725delT Affected Cases in Cohort has been saved |Remove Modal        |
+  |Save             |chr1:g.6197725delT Affected Cases in Cohort has been saved |Keep Modal          |
 * Switch cohort to "chr1:g.6197725delT Affected Cases in Cohort" from the Cohort Bar dropdown list
 * "chr1:g.6197725delT Affected Cases in Cohort" should be the active cohort
 * Collect Cohort Bar Case Count for comparison
@@ -233,7 +233,7 @@ Note: This is to resolve flaky test
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
   |-----------------|-------------------------------------------|--------------------|
-  |Replace          |Cohort has been saved                      |Remove Modal        |
+  |Replace          |Cohort has been saved                      |Keep Modal          |
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "First Row Affected Cases in Cohort" are "Equal"
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"
@@ -251,7 +251,7 @@ Note: This is to resolve flaky test
 * Collect button labels in table for comparison
   |button_label                         |row  |column |
   |-------------------------------------|-----|-------|
-  |First Row SSM Affected Cases in Cohort|1    |6      |
+  |First Row SSM Affected Cases in Cohort|1    |6     |
 * Select value from table by row and column
   |row   |column|
   |------|------|
@@ -261,7 +261,7 @@ Note: This is to resolve flaky test
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
   |-----------------|-------------------------------------------|--------------------|
-  |Replace          |Cohort has been saved                      |Remove Modal        |
+  |Replace          |Cohort has been saved                      |Keep Modal          |
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "First Row SSM Affected Cases in Cohort" are "Equal"
 * Verify "Cohort Bar Case Count" and "Home Page Cases Count" are "Not Equal"

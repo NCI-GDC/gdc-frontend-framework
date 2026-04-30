@@ -793,19 +793,34 @@ class BasePage:
     def click_column_selector_button(self):
         """Clicks table column selector button"""
         locator = GenericLocators.BUTTON_COLUMN_SELECTOR
+        self.scroll_into_view_if_needed(locator)
         self.click(locator)
 
     def click_column_selector_button_in_specified_table(self, table_name):
         """In specified table, clicks table column selector button"""
         table_name = self.normalize_button_identifier(table_name)
         locator = GenericLocators.BUTTON_COLUMN_SELECTOR_IN_TABLE(table_name)
+        self.scroll_into_view_if_needed(locator)
         self.click(locator)
 
     def click_switch_for_column_selector(self, switch_name):
         """In the column selector pop-up modal, clicks specified switch"""
         switch_name = self.normalize_identifier_underscore(switch_name)
-        locator = GenericLocators.SWITCH_COLUMN_SELECTOR(switch_name)
-        self.click(locator)
+        switch_locator = GenericLocators.SWITCH_COLUMN_SELECTOR(switch_name)
+        table_locator = GenericLocators.BUTTON_COLUMN_SELECTOR
+        self.scroll_into_view_if_needed(table_locator)
+        self.click(switch_locator)
+
+    def click_switch_for_column_selector_in_specified_table(self, switch_name, table_name):
+        """In a specified table, in the column selector pop-up modal, clicks specified switch"""
+        switch_name = self.normalize_identifier_underscore(switch_name)
+        table_name = self.normalize_button_identifier(table_name)
+        switch_locator = GenericLocators.SWITCH_COLUMN_SELECTOR(switch_name)
+        table_locator = GenericLocators.BUTTON_COLUMN_SELECTOR_IN_TABLE(table_name)
+        self.scroll_into_view_if_needed(switch_locator)
+        self.scroll_into_view_if_needed(table_locator)
+        self.click(switch_locator)
+
 
     def click_reset_column_select_options(self):
         locator = GenericLocators.BUTTON_RESET_COLUMN_SELECTIONS
