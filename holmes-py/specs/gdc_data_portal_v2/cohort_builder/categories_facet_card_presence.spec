@@ -1,9 +1,9 @@
-# Cohort Builder - Verifying presence of all categories and facet cards
+# Cohort Builder - Verifying presence and filter type of all facet cards
 Date Created    : 02/16/2023
-Version			    : 1.0
+Version			    : 2.0
 Owner		        : GDC QA
-Description		  : Test Cohort Builder - category and facet presence
-Test-case       : PEAR-796
+Description		  : Test Cohort Builder - category/facet card presence, and facet card filter type
+Test-case       : PEAR-796, PEAR-2673
 
 tags: gdc-data-portal-v2, cohort-builder, facet-cards, regression
 
@@ -14,16 +14,16 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards, regression
 
 ## Cohort Builder - Validate presence of all categories and facet cards
 
-* Validate presence of facet cards on the "General" tab on the Cohort Builder page
-  |facet_name                 |
-  |---------------------------|
-  |Program                    |
-  |Project                    |
-  |Primary Site               |
-  |Tissue or Organ of Origin  |
-  |Disease Type               |
-  |Primary Diagnosis          |
-  |Case ID                    |
+* Validate presence of facet cards and their filter types on the "General" tab on the Cohort Builder page
+  |facet_name                 |expected_filter_type|
+  |---------------------------|--------------------|
+  |Program                    |enum                |
+  |Project                    |enum                |
+  |Primary Site               |enum                |
+  |Tissue or Organ of Origin  |enum                |
+  |Disease Type               |enum                |
+  |Primary Diagnosis          |enum                |
+  |Case ID                    |upload              |
 
 * Validate presence of facet cards on the "Demographic" tab on the Cohort Builder page
   |facet_name                 |

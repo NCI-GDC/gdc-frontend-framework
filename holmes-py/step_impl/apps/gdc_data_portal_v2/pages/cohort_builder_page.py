@@ -39,6 +39,12 @@ class CohortBuilderPageLocators:
     FACET_GROUP_CUSTOM_FILTER_TEXT_IDENT = (
         lambda group_name, filter_text: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> text="{filter_text}"'
     )
+    FACET_GROUP_ENUM_IDENT = (
+        lambda group_name: f'[data-testid="title-cohort-builder-facet-groups"] >> div:text-is("{group_name}") >> .. >> .. >> .. >> .. >> [type="checkbox"] >> nth=0'
+    )
+    FACET_GROUP_UPLOAD_IDENT = (
+        lambda group_name: f'[data-testid="title-cohort-builder-facet-groups"] >> div:text-is("{group_name}") >> .. >> .. >> .. >> [data-testid="button-{group_name}"]'
+    )
 
     FILTER_TAB_LIST = (
         'main[data-tour="full_page_content"] >> div[role="tablist"] > button'
@@ -148,6 +154,17 @@ class CohortBuilderPage(BasePage):
             or self.is_visible(data_testid_locator)
         )
         return result
+
+
+    def validate_filter_card_type(self, facet_card_name, expected_filter_type):
+        expected_filter_type = expected_filter_type.lower()
+        if expected_filter_type == "enum":
+                enum_locator = CohortBuilderPageLocators.FACET_GROUP_ENUM_IDENT(facet_card_name)
+                return self.is_visible(enum_locator)
+        elif expected_filter_type == "upload":
+                upload_locator = CohortBuilderPageLocators.FACET_GROUP_UPLOAD_IDENT(facet_card_name)
+                return self.is_visible(upload_locator)
+
 
     # Click on the search bar result text to travel to the facet
     def click_on_search_bar_result(self, search_bar_text_to_click):
