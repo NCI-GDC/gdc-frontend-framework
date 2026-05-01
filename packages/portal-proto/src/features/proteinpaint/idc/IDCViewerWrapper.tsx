@@ -114,8 +114,7 @@ const IDCViewerWrapper: FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
 
   const currentCohortFilterSet = useCurrentCohortFilters();
-  const cohortCounts = useCurrentCohortCounts();
-
+  useCurrentCohortCounts();
   // Parquet data loaded once on mount
   const [idcData, setIdcData] = useState<
     | {
