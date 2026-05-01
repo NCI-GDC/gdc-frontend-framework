@@ -421,8 +421,8 @@ const IDCViewerWrapper: FC = () => {
     pages: apiPagination?.pages ?? undefined,
     from: apiPagination?.from ?? (activePage - 1) * pageSize,
     total: apiPagination?.total ?? undefined,
-    label: "study",
-    customPluralLabel: "studies",
+    label: "case",
+    customPluralLabel: "cases",
   };
 
   return (
@@ -453,10 +453,7 @@ const IDCViewerWrapper: FC = () => {
                   data={tableData}
                   tableTitle="IDC Image Viewer"
                   tableTotalDetail={
-                    <TotalItems
-                      total={cohortCounts?.data?.caseCount}
-                      itemName="case"
-                    />
+                    <TotalItems total={pagination?.total} itemName="case" />
                   }
                   getRowCanExpand={(_: any) => true}
                   expandableColumnIds={["matches"]}
@@ -473,7 +470,8 @@ const IDCViewerWrapper: FC = () => {
                   setSorting={setSorting}
                   search={{
                     enabled: true,
-                    tooltip: "e.g. 04OV017",
+                    tooltip:
+                      "e.g. TCGA-GM-A2DA, c07b122e-ac50-4db2-add2-5617a5d0e976",
                   }}
                 />
               ))}
