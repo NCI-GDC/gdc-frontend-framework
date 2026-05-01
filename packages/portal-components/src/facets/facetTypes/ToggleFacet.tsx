@@ -50,7 +50,10 @@ const ToggleFacet: React.FC<FacetCardProps<ToggleFacetHooks>> = ({
   };
 
   return (
-    <div className="flex flex-col mx-0 bg-base-max relative border-base-lighter border-1 rounded-b-md transition text-sm">
+    <div
+      data-testid={`facet-card-${facetName}`}
+      className="flex flex-col mx-0 bg-base-max relative border-base-lighter border-1 rounded-b-md transition text-sm"
+    >
       <FacetControlsHeader
         field={field}
         description={description}

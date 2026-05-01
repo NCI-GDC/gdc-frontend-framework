@@ -112,6 +112,7 @@ const ExactValueFacet: React.FC<ExactValueProps> = ({
 
   return (
     <div
+      data-testid={`facet-card-${facetName}`}
       className={`flex flex-col mx-0 bg-base-max relative border-base-lighter border-1 rounded-b-md text-xs transition`}
     >
       <FacetControlsHeader
