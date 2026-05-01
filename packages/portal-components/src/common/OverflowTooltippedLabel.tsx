@@ -24,8 +24,8 @@ const OverflowTooltippedLabel: React.FC<OverflowTooltippedLabelProps> = ({
       arrowOffset={20}
       classNames={{
         tooltip:
-          "bg-base-min bg-opacity-90 text-base-max shadow-lg font-content-noto font-medium text-sm",
-        arrow: "bg-base-min bg-opacity-90",
+          "bg-base-min/90 text-base-max shadow-lg font-content-noto font-medium text-sm",
+        arrow: "bg-base-min/90",
       }}
     >
       <span

@@ -15,10 +15,10 @@ import AnnotationsTable from "./AnnotationsTable";
 import ProjectsIcon from "public/user-flow/icons/summary/projects.svg";
 import { useScrollToHash } from "@gff/portal-components";
 import { useViewportSize } from "@mantine/hooks";
-import { LG_BREAKPOINT } from "src/utils";
 import SummaryHeaderControls from "./SummaryHeaderControls";
 import { useSynchronizedRowHeights } from "@/components/HorizontalTable/useSynchronizedRowHeights";
 import { EditIcon, FileIcon, PersonIcon } from "@/utils/icons";
+import { LG_BREAKPOINT } from "src/styles/breakpoints";
 
 export interface ProjectViewProps extends ProjectDefaults {
   readonly annotation: GdcApiData<AnnotationDefaults>;

@@ -1,0 +1,1036 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`matches snapshot 1`] = `
+<div>
+  <style
+    data-mantine-styles="true"
+  >
+    
+
+
+
+
+  </style>
+  <style
+    data-mantine-styles="classes"
+  >
+    @media (max-width: 35.99375em) {.mantine-visible-from-xs {display: none !important;}}@media (min-width: 36em) {.mantine-hidden-from-xs {display: none !important;}}@media (max-width: 47.99375em) {.mantine-visible-from-sm {display: none !important;}}@media (min-width: 48em) {.mantine-hidden-from-sm {display: none !important;}}@media (max-width: 61.99375em) {.mantine-visible-from-md {display: none !important;}}@media (min-width: 62em) {.mantine-hidden-from-md {display: none !important;}}@media (max-width: 74.99375em) {.mantine-visible-from-lg {display: none !important;}}@media (min-width: 75em) {.mantine-hidden-from-lg {display: none !important;}}@media (max-width: 87.99375em) {.mantine-visible-from-xl {display: none !important;}}@media (min-width: 88em) {.mantine-hidden-from-xl {display: none !important;}}
+  </style>
+  <div
+    class="flex flex-col min-h-screen min-w-full bg-base-max"
+  >
+    <header
+      class="flex-none bg-base-max sticky top-0 z-300 shadow-lg"
+      id="global-header"
+    >
+      <div
+        class="m_6e45937b mantine-LoadingOverlay-root"
+        data-testid="loading-spinner"
+        style="--lo-z-index: 400;"
+      >
+        <span
+          class="m_b34414df m_e8eb006c mantine-LoadingOverlay-loader m_5ae2e3c mantine-Loader-root"
+        />
+        <div
+          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-dark-hidden"
+          style="--overlay-bg: rgba(255, 255, 255, 0.75); --overlay-z-index: 200;"
+        />
+        <div
+          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-light-hidden"
+          style="--overlay-bg: rgba(59, 59, 59, 0.75); --overlay-z-index: 200;"
+        />
+      </div>
+      <style
+        data-mantine-styles="true"
+      >
+        
+
+
+
+
+      </style>
+      <style
+        data-mantine-styles="classes"
+      >
+        @media (max-width: 35.99375em) {.mantine-visible-from-xs {display: none !important;}}@media (min-width: 36em) {.mantine-hidden-from-xs {display: none !important;}}@media (max-width: 47.99375em) {.mantine-visible-from-sm {display: none !important;}}@media (min-width: 48em) {.mantine-hidden-from-sm {display: none !important;}}@media (max-width: 61.99375em) {.mantine-visible-from-md {display: none !important;}}@media (min-width: 62em) {.mantine-hidden-from-md {display: none !important;}}@media (max-width: 74.99375em) {.mantine-visible-from-lg {display: none !important;}}@media (min-width: 75em) {.mantine-hidden-from-lg {display: none !important;}}@media (max-width: 87.99375em) {.mantine-visible-from-xl {display: none !important;}}@media (min-width: 88em) {.mantine-hidden-from-xl {display: none !important;}}
+      </style>
+      <div
+        class="px-4 py-3 border-b border-gdc-grey-lightest flex flex-col"
+      >
+        <a
+          class="absolute left-[-1000px] focus:left-0 z-10 -mt-4"
+          href="#main"
+        >
+          Skip Navigation
+        </a>
+        <div
+          class="flex flex-row justify-between"
+        >
+          <div
+            class="flex-none w-64 h-nci-logo relative"
+          >
+            <a
+              class="block w-full h-full mt-2"
+              data-testid="NIHLogoButton"
+              href="/analysis_page?app="
+            >
+              <svgr-url
+                aria-label="NIH GDC Data Portal Home"
+                data-testid="button-header-home"
+                layout="fill"
+                role="img"
+                style="object-fit: contain;"
+              />
+            </a>
+          </div>
+          <div
+            class="flex xl:hidden justify-center align-center gap-4 "
+          >
+            <button
+              class="mantine-focus-auto mantine-active p-1 font-medium text-primary-darkest hover:bg-primary-lightest m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
+              data-size="compact-sm"
+              data-testid="button-header-login"
+              data-variant="subtle"
+              data-with-left-section="true"
+              style="--button-height: var(--button-height-compact-sm); --button-padding-x: var(--button-padding-x-compact-sm); --button-fz: var(--mantine-font-size-sm); --button-bg: transparent; --button-hover: var(--mantine-color-blue-light-hover); --button-color: var(--mantine-color-blue-light-color); --button-bd: calc(0.0625rem * var(--mantine-scale)) solid transparent;"
+              type="button"
+            >
+              <span
+                class="m_80f1301b mantine-Button-inner"
+              >
+                <span
+                  class="m_a74036a mantine-Button-section"
+                  data-position="left"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="m-0"
+                    color="#0f4163"
+                    fill="currentColor"
+                    height="24px"
+                    stroke="currentColor"
+                    stroke-width="0"
+                    style="color: rgb(15, 65, 99);"
+                    viewBox="0 0 24 24"
+                    width="24px"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M0 0h24v24H0z"
+                      fill="none"
+                    />
+                    <path
+                      d="M11 7L9.6 8.4l2.6 2.6H2v2h10.2l-2.6 2.6L11 17l5-5-5-5zm9 12h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-8v2h8v14z"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="m_811560b9 mantine-Button-label"
+                >
+                  Login
+                </span>
+              </span>
+            </button>
+            <button
+              aria-label="Open navigation"
+              class="mantine-focus-auto pt-0 pt-0 m_fea6bf1a mantine-Burger-root m_87cf2631 mantine-UnstyledButton-root"
+              type="button"
+            >
+              <div
+                class="bg-nci-blue-darkest m_d4fb9cad mantine-Burger-burger"
+                data-reduce-motion="true"
+              />
+            </button>
+          </div>
+          <div
+            aria-label=""
+            class="hidden xl:flex justify-end md:flex-wrap lg:flex-nowrap md:mb-3 lg:mb-0 md:gap-0 lg:gap-3 items-center text-primary-darkest font-heading text-sm font-medium"
+            role="navigation"
+          >
+            <a
+              class="flex items-center rounded-md gap-1 text-sm my-1 px-1 py-1 hover:bg-primary-lightest text-primary-darkest"
+              data-testid="button-header-video-guides"
+              href="https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/Video_Tutorials/"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <svg
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="10"
+                />
+                <polygon
+                  points="10 8 16 12 10 16 10 8"
+                />
+              </svg>
+              Video Guides
+            </a>
+            <button
+              class="flex items-center rounded-md gap-1 text-sm my-1 px-1 py-1 hover:bg-primary-lightest text-primary-darkest false"
+              data-testid="button-header-send-feedback"
+              type="button"
+            >
+              <svg
+                fill="currentColor"
+                height="24"
+                stroke="currentColor"
+                stroke-width="0"
+                viewBox="0 0 16 16"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M4.5 1L4 1.5V3.02746C4.16417 3.00932 4.331 3 4.5 3C4.669 3 4.83583 3.00932 5 3.02746V2H14V7H12.2929L11 8.29289V7H8.97254C8.99068 7.16417 9 7.331 9 7.5C9 7.669 8.99068 7.83583 8.97254 8H10V9.5L10.8536 9.85355L12.7071 8H14.5L15 7.5V1.5L14.5 1H4.5Z"
+                />
+                <path
+                  clip-rule="evenodd"
+                  d="M6.41705 10.4288C7.37039 9.80348 8 8.72527 8 7.5C8 5.567 6.433 4 4.5 4C2.567 4 1 5.567 1 7.5C1 8.72527 1.62961 9.80348 2.58295 10.4288C2.11364 10.6498 1.68557 10.9505 1.31802 11.318C0.900156 11.7359 0.568688 12.232 0.342542 12.7779C0.180451 13.1692 0.0747425 13.5807 0.0278638 14C0.00933826 14.1657 0 14.3326 0 14.5V15H1L0.999398 14.5C0.999398 14.4784 0.999599 14.4567 1 14.4351C1.00811 13.9975 1.09823 13.5651 1.26587 13.1604C1.44179 12.7357 1.69964 12.3498 2.0247 12.0247C2.34976 11.6996 2.73566 11.4418 3.16038 11.2659C3.57088 11.0958 4.00986 11.0056 4.45387 10.9997C4.46922 10.9999 4.4846 11 4.5 11C4.5154 11 4.53078 10.9999 4.54613 10.9997C4.99014 11.0056 5.42912 11.0958 5.83962 11.2659C6.26433 11.4418 6.65024 11.6996 6.9753 12.0247C7.30036 12.3498 7.55821 12.7357 7.73413 13.1604C7.90177 13.5651 7.99189 13.9975 8 14.4351C8.0004 14.4567 8.0006 14.4784 8.0006 14.5L8 15H9V14.5C9 14.3326 8.99066 14.1657 8.97214 14C8.92526 13.5807 8.81955 13.1692 8.65746 12.7779C8.43131 12.232 8.09984 11.7359 7.68198 11.318C7.31443 10.9505 6.88636 10.6498 6.41705 10.4288ZM4.5 10C3.11929 10 2 8.88071 2 7.5C2 6.11929 3.11929 5 4.5 5C5.88071 5 7 6.11929 7 7.5C7 8.88071 5.88071 10 4.5 10Z"
+                  fill-rule="evenodd"
+                />
+              </svg>
+              Send Feedback
+            </button>
+            <a
+              class="flex items-center rounded-md gap-1 text-sm my-1 px-1 py-1 hover:bg-primary-lightest text-primary-darkest"
+              data-testid="button-header-browse-annotations"
+              href="/annotations"
+            >
+              <svg
+                aria-hidden="true"
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                stroke-width="1.5"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              Browse Annotations
+            </a>
+            <a
+              class="flex items-center rounded-md gap-1 text-sm my-1 px-1 py-1 hover:bg-primary-lightest text-primary-darkest"
+              data-testid="button-header-manage-sets"
+              href="/manage_sets"
+            >
+              <svg
+                fill="currentColor"
+                height="24"
+                stroke="currentColor"
+                stroke-width="0"
+                style="transform: rotate(90deg);"
+                viewBox="0 0 512 512"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M64 144h226.75a48 48 0 0090.5 0H448a16 16 0 000-32h-66.75a48 48 0 00-90.5 0H64a16 16 0 000 32zm384 224h-66.75a48 48 0 00-90.5 0H64a16 16 0 000 32h226.75a48 48 0 0090.5 0H448a16 16 0 000-32zm0-128H221.25a48 48 0 00-90.5 0H64a16 16 0 000 32h66.75a48 48 0 0090.5 0H448a16 16 0 000-32z"
+                />
+              </svg>
+              Manage Sets
+            </a>
+            <a
+              class="flex items-center rounded-md gap-1 text-sm my-1 px-1 py-1 hover:bg-primary-lightest text-primary-darkest"
+              data-testid="button-header-cart"
+              href="/cart"
+            >
+              <svg
+                fill="currentColor"
+                height="24"
+                stroke="currentColor"
+                stroke-width="0"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M0 0h24v24H0z"
+                  fill="none"
+                />
+                <path
+                  d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1.003 1.003 0 0020 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"
+                />
+              </svg>
+              Cart
+              <div
+                class="px-1 ml-1 bg-accent-vivid m_347db0ec mantine-Badge-root"
+                data-variant="filled"
+                style="--badge-radius: var(--mantine-radius-xs); --badge-bg: var(--mantine-color-blue-filled); --badge-color: var(--mantine-color-white); --badge-bd: calc(0.0625rem * var(--mantine-scale)) solid transparent;"
+              >
+                <span
+                  class="m_5add502a mantine-Badge-label"
+                >
+                  0
+                </span>
+              </div>
+            </a>
+            <button
+              class="mantine-focus-auto mantine-active p-1 font-medium text-primary-darkest hover:bg-primary-lightest m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
+              data-size="compact-sm"
+              data-testid="button-header-login"
+              data-variant="subtle"
+              data-with-left-section="true"
+              style="--button-height: var(--button-height-compact-sm); --button-padding-x: var(--button-padding-x-compact-sm); --button-fz: var(--mantine-font-size-sm); --button-bg: transparent; --button-hover: var(--mantine-color-blue-light-hover); --button-color: var(--mantine-color-blue-light-color); --button-bd: calc(0.0625rem * var(--mantine-scale)) solid transparent;"
+              type="button"
+            >
+              <span
+                class="m_80f1301b mantine-Button-inner"
+              >
+                <span
+                  class="m_a74036a mantine-Button-section"
+                  data-position="left"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="m-0"
+                    color="#0f4163"
+                    fill="currentColor"
+                    height="24px"
+                    stroke="currentColor"
+                    stroke-width="0"
+                    style="color: rgb(15, 65, 99);"
+                    viewBox="0 0 24 24"
+                    width="24px"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M0 0h24v24H0z"
+                      fill="none"
+                    />
+                    <path
+                      d="M11 7L9.6 8.4l2.6 2.6H2v2h10.2l-2.6 2.6L11 17l5-5-5-5zm9 12h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-8v2h8v14z"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="m_811560b9 mantine-Button-label"
+                >
+                  Login
+                </span>
+              </span>
+            </button>
+            <button
+              aria-controls="mantine-mock-19-dropdown"
+              aria-expanded="false"
+              aria-haspopup="menu"
+              class="flex items-center gap-1 p-1 rounded-md hover:bg-primary-lightest"
+              data-testid="button-header-gdc-apps"
+              id="mantine-mock-19-target"
+            >
+              <svg
+                aria-hidden="true"
+                class="text-primary-darkest"
+                fill="currentColor"
+                height="24px"
+                stroke="currentColor"
+                stroke-width="0"
+                viewBox="0 0 24 24"
+                width="24px"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M0 0h24v24H0V0z"
+                  fill="none"
+                />
+                <path
+                  d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"
+                />
+              </svg>
+              <p
+                class="font-heading"
+              >
+                Apps
+              </p>
+              <svg
+                aria-hidden="true"
+                class="-ml-1"
+                fill="currentColor"
+                height="24px"
+                stroke="currentColor"
+                stroke-width="0"
+                viewBox="0 0 24 24"
+                width="24px"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M0 0h24v24H0z"
+                  fill="none"
+                />
+                <path
+                  d="M7 10l5 5 5-5z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div
+          class="flex flex-col gap-2 xl:flex-row xl:justify-between"
+        >
+          <div
+            aria-label=""
+            class="flex flex-row flex-wrap items-center divide-x divide-gray-300 mx-auto xl:m-0"
+            role="navigation"
+          >
+            <div
+              class="pr-2"
+            >
+              <span
+                class=""
+              >
+                <a
+                  class="flex items-center gap-1 font-heading text-sm font-medium text-base-darker p-1 mr-2 hover:rounded-md hover:bg-primary-lightest"
+                  data-testid="button-header-analysis"
+                  href="/analysis_page?app="
+                >
+                  <svgr-url
+                    aria-hidden=""
+                    height="24"
+                    viewbox="0 0 500 500"
+                    width="24"
+                  />
+                  Analysis Center
+                </a>
+              </span>
+            </div>
+            <div
+              class="pl-4"
+            >
+              <span
+                class=""
+              >
+                <a
+                  class="flex items-center gap-1 font-heading text-sm font-medium text-base-darker p-1 mr-2 hover:rounded-md hover:bg-primary-lightest"
+                  data-testid="button-header-projects"
+                  href="/analysis_page?app=Projects"
+                >
+                  <svgr-url
+                    aria-hidden=""
+                    height="24"
+                    viewbox="0 -15 100 100"
+                    width="24"
+                  />
+                  Projects
+                </a>
+              </span>
+            </div>
+            <div
+              class="pl-4"
+            >
+              <span
+                class=""
+              >
+                <a
+                  class="flex items-center gap-1 font-heading text-sm font-medium text-base-darker p-1 mr-2 hover:rounded-md hover:bg-primary-lightest"
+                  data-testid="button-header-cohort"
+                  href="/analysis_page?app=CohortBuilder&tab=general"
+                >
+                  <svgr-url
+                    aria-hidden=""
+                    height="24"
+                    viewbox="0 0 50 50"
+                    width="24"
+                  />
+                  Cohort Builder
+                </a>
+              </span>
+            </div>
+            <div
+              class="pl-4"
+            >
+              <span
+                class=""
+              >
+                <a
+                  class="flex items-center gap-1 font-heading text-sm font-medium text-base-darker p-1 mr-2 hover:rounded-md hover:bg-primary-lightest"
+                  data-testid="button-header-downloads"
+                  href="/analysis_page?app=Downloads"
+                >
+                  <svgr-url
+                    aria-hidden=""
+                    height="24"
+                    viewbox="0 0 50 50"
+                    width="24"
+                  />
+                  Repository
+                </a>
+              </span>
+            </div>
+          </div>
+          <div
+            class="xl:w-1/2 2xl:w-2/5 flex gap-4 items-center"
+          >
+            <a
+              class="text-primary font-bold flex-shrink cursor-pointer text-right"
+              data-testid="button-header-obtaining-access-to-controlled-data"
+              href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data"
+              rel="noreferrer"
+              target="_blank"
+            >
+              Obtaining Access to Controlled Data
+            </a>
+            <div
+              class="flex-shrink-0 m_3eebeb36 mantine-Divider-root"
+              data-orientation="vertical"
+              role="separator"
+            />
+            <div
+              class="flex-1 flex-shrink-0"
+            >
+              <div
+                class="m_46b77525 mantine-InputWrapper-root mantine-Select-root"
+                data-size="sm"
+              >
+                <div
+                  class="m_6c018570 mantine-Input-wrapper mantine-Select-wrapper"
+                  data-size="sm"
+                  data-variant="default"
+                  data-with-left-section="true"
+                  data-with-right-section="true"
+                  style="--input-height: var(--input-height-sm); --input-fz: var(--mantine-font-size-sm); --input-right-section-pointer-events: all;"
+                >
+                  <div
+                    class="m_82577fc2 mantine-Input-section mantine-Select-section"
+                    data-position="left"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      fill="currentColor"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-width="0"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M0 0h24v24H0z"
+                        fill="none"
+                      />
+                      <path
+                        d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+                      />
+                    </svg>
+                  </div>
+                  <input
+                    aria-haspopup="listbox"
+                    aria-invalid="false"
+                    aria-label="Quick Search Input"
+                    autocomplete="off"
+                    class="focus:border-2 focus:border-primary text-sm m_8fb7ebe7 mantine-Input-input mantine-Select-input"
+                    data-testid="textbox-quick-search-bar"
+                    data-variant="default"
+                    id="mantine-mock-24"
+                    placeholder="e.g. BRAF, Breast, TCGA-BLCA, TCGA-A5-A0G2"
+                    value=""
+                  />
+                  <div
+                    class="m_82577fc2 mantine-Input-section mantine-Select-section"
+                    data-position="right"
+                  />
+                </div>
+              </div>
+              <input
+                type="hidden"
+                value=""
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div
+          class="m_9df02822 mantine-Modal-root"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
+        />
+      </div>
+      <div>
+        <div
+          class="m_9df02822 mantine-Modal-root"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+        />
+      </div>
+      <div>
+        <div
+          class="m_9df02822 mantine-Modal-root"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+        />
+      </div>
+      <div>
+        <div
+          class="m_9df02822 mantine-Modal-root"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+        />
+      </div>
+      <div>
+        <div
+          class="m_9df02822 mantine-Modal-root"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+        />
+      </div>
+      <div>
+        <div
+          class="m_9df02822 mantine-Modal-root"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+        >
+          <div
+            class="mantine-Modal-overlay m_9814e45f mantine-Overlay-root"
+            data-fixed="true"
+            style="--overlay-z-index: 400;"
+          />
+          <div
+            class="m_60c222c7 m_1f958f16 mantine-Modal-inner"
+          >
+            <section
+              aria-describedby="mantine-mock-37-body"
+              aria-labelledby="mantine-mock-37-title"
+              aria-modal="true"
+              class="m_fd1ab0aa m_54c44539 mantine-Modal-content m_1b7284a3 mantine-Paper-root"
+              data-modal-content="true"
+              role="dialog"
+              tabindex="-1"
+            >
+              <header
+                class="m_b5489c3c m_d0e2b9cd mantine-Modal-header"
+                style="margin-bottom: 5px;"
+              >
+                <h2
+                  class="m_615af6c9 mantine-Modal-title"
+                  id="mantine-mock-37-title"
+                >
+                  <p
+                    class="mantine-focus-auto font-medium font-heading m_b6d8b162 mantine-Text-root"
+                    data-size="lg"
+                    style="--text-fz: var(--mantine-font-size-lg); --text-lh: var(--mantine-line-height-lg);"
+                  >
+                    Warning
+                  </p>
+                </h2>
+              </header>
+              <div
+                class="m_5df29311 mantine-Modal-body"
+                id="mantine-mock-37-body"
+              >
+                <div
+                  class="border-y border-y-base-darker py-4 space-y-4 font-content"
+                >
+                  <p>
+                    You are accessing a U.S. Government web site which may contain information that must be protected under the U. S. Privacy Act or other sensitive information and is intended for Government authorized use only.
+                  </p>
+                  <p>
+                    Unauthorized attempts to upload information, change information, or use of this web site may result in disciplinary action, civil, and/or criminal penalties. Unauthorized users of this web site should have no expectation of privacy regarding any communications or data processed by this web site.
+                  </p>
+                  <p>
+                    Anyone accessing this web site expressly consents to monitoring of their actions and all communication or data transiting or stored on or related to this web site and is advised that if such monitoring reveals possible evidence of criminal activity, NIH may provide that evidence to law enforcement officials.
+                  </p>
+                  <p>
+                    Please be advised that some features may not work with higher privacy settings, such as disabling cookies.
+                  </p>
+                  <p>
+                    <b>
+                      WARNING
+                    </b>
+                    : Data in the GDC is considered provisional as the GDC applies state-of-the art analysis pipelines which evolve over time. Please read the
+                     
+                    <a
+                      class="text-utility-link underline"
+                      href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes"
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      GDC Data Release Notes
+                    </a>
+                     
+                    prior to accessing this web site as the Release Notes provide details about data updates, known issues and workarounds.
+                  </p>
+                  <p>
+                    Contact
+                     
+                    <a
+                      class="text-utility-link underline"
+                      href="https://gdc.cancer.gov/support#gdc-help-desk"
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      GDC Support
+                    </a>
+                     
+                    for more information.
+                  </p>
+                </div>
+                <div
+                  class="flex justify-end mt-2.5 gap-2"
+                >
+                  <button
+                    class="mantine-focus-auto mantine-active bg-primary! hover:bg-primary-darker! m_77c9d27d mantine-Button-root m_87cf2631 mantine-UnstyledButton-root"
+                    data-testid="button-intro-warning-accept"
+                    style="--button-color: var(--mantine-color-white);"
+                    type="button"
+                  >
+                    <span
+                      class="m_80f1301b mantine-Button-inner"
+                    >
+                      <span
+                        class="m_811560b9 mantine-Button-label"
+                      >
+                        Accept
+                      </span>
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div
+          class="m_9df02822 mantine-Modal-root"
+          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 300; --mb-padding: 0rem;"
+        />
+      </div>
+    </header>
+    <aside
+      class=""
+      id="context-bar"
+    />
+    <main
+      class="flex grow flex-col overflow-x-clip overflow-y-clip"
+      id="main"
+    >
+      <div
+        class="m_6e45937b mantine-LoadingOverlay-root"
+        data-testid="loading-spinner"
+        style="--lo-z-index: 400;"
+      >
+        <span
+          class="m_b34414df m_e8eb006c mantine-LoadingOverlay-loader m_5ae2e3c mantine-Loader-root"
+        />
+        <div
+          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-dark-hidden"
+          style="--overlay-bg: rgba(255, 255, 255, 0.75); --overlay-z-index: 200;"
+        />
+        <div
+          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-light-hidden"
+          style="--overlay-bg: rgba(59, 59, 59, 0.75); --overlay-z-index: 200;"
+        />
+      </div>
+    </main>
+    <div>
+      <div
+        class="m_9df02822 mantine-Modal-root"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+      />
+    </div>
+    <div>
+      <div
+        class="m_9df02822 mantine-Modal-root"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+      />
+    </div>
+    <style
+      data-mantine-styles="true"
+    >
+      
+
+
+
+
+    </style>
+    <style
+      data-mantine-styles="classes"
+    >
+      @media (max-width: 35.99375em) {.mantine-visible-from-xs {display: none !important;}}@media (min-width: 36em) {.mantine-hidden-from-xs {display: none !important;}}@media (max-width: 47.99375em) {.mantine-visible-from-sm {display: none !important;}}@media (min-width: 48em) {.mantine-hidden-from-sm {display: none !important;}}@media (max-width: 61.99375em) {.mantine-visible-from-md {display: none !important;}}@media (min-width: 62em) {.mantine-hidden-from-md {display: none !important;}}@media (max-width: 74.99375em) {.mantine-visible-from-lg {display: none !important;}}@media (min-width: 75em) {.mantine-hidden-from-lg {display: none !important;}}@media (max-width: 87.99375em) {.mantine-visible-from-xl {display: none !important;}}@media (min-width: 88em) {.mantine-hidden-from-xl {display: none !important;}}
+    </style>
+    <footer
+      class="flex flex-col bg-primary-darkest justify-center text-center px-4 py-10 text-accent-contrast-darkest text-sm"
+    >
+      <div
+        class="grid grid-cols-footer-small lg:grid-cols-footer-large lg:gap-6 mx-auto text-left w-full max-w-screen-lg gap-y-7 pb-5 border-b border-[#5D7A8D]"
+      >
+        <div>
+          <div
+            class="font-bold text-2xl lg:text-xl xl:text-lg"
+          >
+            National Cancer Institute
+          </div>
+          <div
+            class="font-bold text-[1rem] lg:text-sm"
+          >
+            at the National Institutes of Health
+          </div>
+          <ul
+            class="py-4 text-lg lg:text-sm space-y-1 font-content"
+          >
+            <li>
+              UI v
+               @ 
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h2
+            class="text-2xl font-medium lg:text-lg uppercase"
+          >
+            Applications
+          </h2>
+          <ul
+            class="py-3 text-lg font-bold lg:text-xs space-y-2"
+          >
+            <li
+              class="font-content"
+            >
+              <a
+                href="/"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Data Portal
+              </a>
+            </li>
+            <li
+              class="font-content"
+            >
+              <a
+                href="https://gdc.cancer.gov/"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Website
+              </a>
+            </li>
+            <li
+              class="font-content"
+            >
+              <a
+                href="https://gdc.cancer.gov/developers/gdc-application-programming-interface-api"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                API
+              </a>
+            </li>
+            <li
+              class="font-content"
+            >
+              <a
+                href="https://gdc.cancer.gov/access-data/gdc-data-transfer-tool"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Data Transfer Tool
+              </a>
+            </li>
+            <li
+              class="font-content"
+            >
+              <a
+                href="https://docs.gdc.cancer.gov/"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Documentation
+              </a>
+            </li>
+            <li
+              class="font-content"
+            >
+              <a
+                href="https://portal.gdc.cancer.gov/submission"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Data Submission Portal
+              </a>
+            </li>
+            <li
+              class="font-content"
+            >
+              <a
+                href="https://gdc.cancer.gov/about-data/publications"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Publications
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h2
+            class="text-2xl font-medium lg:text-lg uppercase"
+          >
+            More Information
+          </h2>
+          <ul
+            class="py-3 text-lg font-bold lg:text-xs space-y-2"
+          >
+            <li
+              class="font-content"
+            >
+              <a
+                href="/"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Site Home
+              </a>
+            </li>
+            <li
+              class="font-content"
+            >
+              <a
+                href="https://gdc.cancer.gov/support"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Support
+              </a>
+            </li>
+            <li
+              class="font-content"
+            >
+              <a
+                href="https://list.nih.gov/cgi-bin/wa.exe?SUBED1=gdc-users-l&A=1"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Listserv
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h2
+            class="text-2xl font-medium lg:text-lg uppercase"
+          >
+            Policies
+          </h2>
+          <ul
+            class="py-3 text-lg font-bold lg:text-xs space-y-2"
+          >
+            <li
+              class="font-content"
+            >
+              <a
+                href="https://www.cancer.gov/policies/accessibility"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Accessibility
+              </a>
+            </li>
+            <li
+              class="font-content"
+            >
+              <a
+                href="https://www.cancer.gov/policies/disclaimer"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Disclaimer
+              </a>
+            </li>
+            <li
+              class="font-content"
+            >
+              <a
+                href="https://www.cancer.gov/policies/foia"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                FOIA
+              </a>
+            </li>
+            <li
+              class="font-content"
+            >
+              <a
+                href="https://www.hhs.gov/vulnerability-disclosure-policy/"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                HHS Vulnerability Disclosure
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <ul
+        class="text-lg lg:text-sm py-8 font-content divide-x divide-solid"
+      >
+        <li
+          class="inline-block px-1 leading-none font-bold"
+        >
+          <a
+            href="https://www.hhs.gov/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            U.S. Department of Health and Human Services 
+          </a>
+        </li>
+        <li
+          class="inline-block px-1 leading-none font-bold"
+        >
+          <a
+            href="https://www.nih.gov/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            National Institutes of Health 
+          </a>
+        </li>
+        <li
+          class="inline-block px-1 leading-none font-bold"
+        >
+          <a
+            href="https://www.cancer.gov/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            National Cancer Institute 
+          </a>
+        </li>
+        <li
+          class="inline-block px-1 leading-none font-bold"
+        >
+          <a
+            href="https://www.usa.gov/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            USA.gov
+          </a>
+        </li>
+      </ul>
+      <div
+        class="text-lg font-medium lg:text-[1rem] xl:text-sm leading-none font-content"
+      >
+        NIH... Turning Discovery Into Health
+         
+        <span
+          class="text-lg xl:text-[1rem]"
+        >
+          ®
+        </span>
+      </div>
+    </footer>
+  </div>
+</div>
+`;

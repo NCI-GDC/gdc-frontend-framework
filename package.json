@@ -61,6 +61,9 @@
     "@next/eslint-plugin-next": "^12.1.5",
     "@svgr/webpack": "^8.0.1",
     "@swc/core": "^1.15.21",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/file-saver": "^2.0.5",
     "@types/isomorphic-fetch": "^0.0.35",
     "@types/jest": "^29.5.14",
@@ -80,15 +83,19 @@
     "eslint-plugin-tsdoc": "^0.2.17",
     "husky": "^9.1.7",
     "jest": "^29.7.0",
+    "jest-canvas-mock": "^2.5.2",
     "jest-environment-jsdom": "^29.7.0",
     "jest-slow-test-reporter": "^1.0.0",
     "lerna": "^9.0.7",
     "lint-staged": "^12.3.7",
     "nx": "^22.6.4",
     "prettier": "^3.8.1",
-    "ts-jest": "^29.2.5",
+    "ts-jest": "^29.4.6",
     "typedoc": "^0.25.4",
     "typedoc-plugin-missing-exports": "^2.1.0"
+  },
+  "optionalDependencies": {
+    "lightningcss-linux-x64-gnu": "*"
   },
   "overrides": {
     "glob": "^11.0.0",

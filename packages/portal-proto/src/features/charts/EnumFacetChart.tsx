@@ -110,7 +110,7 @@ export const EnumFacetChart: React.FC<FacetChartProps> = ({
           )}
         </>
       ) : (
-        <div className="flex flex-row items-center justify-center w-100">
+        <div className="flex flex-row items-center justify-center w-full">
           <Loader color="chart" size={60} />
         </div>
       )}
@@ -182,11 +182,11 @@ const EnumBarChartVictoryLabel: React.FC<EnumBarChartVictoryLabelProps> = ({
   text,
 }: EnumBarChartVictoryLabelProps) => {
   return (
-    <foreignObject x={0} y={y - 26} width={"100%"} height="25">
+    <foreignObject x={0} y={y - 26} width="100%" height={22}>
       <div
         style={{
           paddingTop: 2,
-          paddingLeft: x + 12,
+          paddingLeft: x + 8,
           paddingRight: 45,
           width: "100%",
           height: "100%",
@@ -194,7 +194,8 @@ const EnumBarChartVictoryLabel: React.FC<EnumBarChartVictoryLabelProps> = ({
           textOverflow: "ellipsis",
           overflow: "hidden",
           whiteSpace: "nowrap",
-          fontSize: 23,
+          fontSize: 22,
+          lineHeight: "16px",
           fontFamily: "Noto Sans, sans-serif",
         }}
       >
@@ -203,7 +204,6 @@ const EnumBarChartVictoryLabel: React.FC<EnumBarChartVictoryLabelProps> = ({
     </foreignObject>
   );
 };
-
 interface EnumBarChartData {
   x: string;
   y: number;

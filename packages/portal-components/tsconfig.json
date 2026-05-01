@@ -1,6 +1,11 @@
 {
   "include": ["src/**/*"],
-  "exclude": ["node_modules"],
+  "exclude": [
+    "node_modules",
+    "src/**/*.test.tsx",
+    "src/**/*.test.ts",
+    "src/**/*.unit.test.tsx"
+  ],
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist/dts",
@@ -25,7 +30,6 @@
       "@/layout/*": ["src/layout/*"],
       "@/modals/*": ["src/modals/*"]
     },
-
     "skipLibCheck": true
   }
 }

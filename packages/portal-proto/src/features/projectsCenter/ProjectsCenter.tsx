@@ -4,11 +4,8 @@ import { useClearAllProjectFilters } from "./hooks";
 import ProjectFacetPanel from "./ProjectFacetPanel";
 import ProjectsTable from "./ProjectsTable";
 import { PersistGate } from "redux-persist/integration/react";
-import { persistStore } from "redux-persist";
-import { AppStore } from "./appApi";
 import { TableXPositionContext } from "@/components/Table/VerticalTable";
-
-export const persistor = persistStore(AppStore);
+import { persistor } from "./appApi";
 
 export const ProjectsCenter = (): JSX.Element => {
   const clearAllFilters = useClearAllProjectFilters();

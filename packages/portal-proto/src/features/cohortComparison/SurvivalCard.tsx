@@ -190,7 +190,7 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
       ) : (
         <>
           {isError ? (
-            <Alert>Something`&apos;s gone wrong</Alert>
+            <Alert>Something&apos;s gone wrong</Alert>
           ) : (
             <div className="relative">
               <LoadingOverlay
@@ -207,7 +207,7 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
               />
             </div>
           )}
-          <div className="font-heading mt-[1.5rem]">
+          <div className="font-heading mt-6">
             <table className="bg-base-max w-full text-left text-base-contrast-max border-base-light border-1">
               <thead>
                 <tr className="bg-base-lightest border-b-base-light border-b-2">

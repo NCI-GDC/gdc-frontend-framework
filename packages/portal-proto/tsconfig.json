@@ -19,7 +19,8 @@
       "@/components/*": ["src/components/*"],
       "@/features/*": ["src/features/*"],
       "@/utils/*": ["src/utils/*"],
-      "@/hooks/*": ["src/hooks/*"]
+      "@/hooks/*": ["src/hooks/*"],
+      "@/theme/*": ["src/theme/*"]
     },
     "incremental": true,
     "strictNullChecks": false,
@@ -35,7 +36,17 @@
     "**/*.tsx",
     "src/components/ItemTypes.js",
     ".next/types/**/*.ts",
+    "src/styles/colors.js",
     "global.d.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.unit.test.ts",
+    "**/*.unit.test.tsx",
+    "**/__tests__/**",
+    "test-utils.tsx",
+    "setupTests.ts"
+  ]
 }

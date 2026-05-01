@@ -27,7 +27,7 @@ const SetOperationsChartsForGeneSSMS = ({
   return (
     <>
       {selectedEntities.length === 0 || isLoading ? (
-        <div className="flex flex-row items-center justify-center w-100 h-96">
+        <div className="flex flex-row items-center justify-center w-full h-96">
           <Loader size={100} />
         </div>
       ) : selectedEntities.length === 2 ? (

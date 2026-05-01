@@ -14,7 +14,7 @@ import {
   useGetAllFilesMutation,
   useGetFilesQuery,
 } from "@gff/core";
-import { AppStore, useAppSelector } from "./appApi";
+import { persistor, useAppSelector } from "./appApi";
 import {
   addToCart,
   removeFromCart,
@@ -33,7 +33,6 @@ import {
 import { useImageCounts } from "@/features/repositoryApp/slideCountSlice";
 import { Tooltip } from "@mantine/core";
 import FilesTables from "../repositoryApp/FilesTable";
-import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 import { useRouter } from "next/router";
 import { TableXPositionContext } from "@/components/Table/VerticalTable";
@@ -41,8 +40,6 @@ import { getFormattedTimestamp } from "@/utils/date";
 import { focusStyles } from "@/utils/index";
 import { CartIcon } from "@/utils/icons";
 import { MANIFEST_DOWNLOAD_MESSAGE } from "@/utils/constants";
-
-export const persistor = persistStore(AppStore);
 
 const useCohortCentricFiles = () => {
   const repositoryFilters = useAppSelector((state) =>
@@ -161,7 +158,7 @@ export const RepositoryApp = (): JSX.Element => {
               className="overflow-hidden h-full w-full"
               data-testid="table-repository"
             >
-              <div className="flex flex-wrap Custom-Repo-Width:justify-end gap-2 mt-8 mb-4">
+              <div className="flex flex-wrap custom-repo-width:justify-end gap-2 mt-8 mb-4">
                 <DownloadButton
                   data-testid="button-sample-sheet-files-table"
                   buttonLabel="Sample Sheet"
@@ -286,7 +283,7 @@ export const RepositoryApp = (): JSX.Element => {
                   })}.txt`}
                 />
                 <Tooltip
-                  label={"No images available to be viewed"}
+                  label="No images available to be viewed"
                   disabled={!viewImageDisabled}
                 >
                   <span>

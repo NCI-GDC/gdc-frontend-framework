@@ -64,7 +64,7 @@ const ToggledCheck: React.FC<ToggleProps> = ({
               ? "bg-base-lighter hover:bg-primary-lighter"
               : "hover:bg-primary checked:bg-primary-darkest"
           }`,
-          icon: "peer-hover:!text-white !opacity-100 !transform-none",
+          icon: "peer-hover:text-white! opacity-100! transform-none!",
         }}
       />
     </Tooltip>

@@ -115,9 +115,7 @@ const FilterPanel = ({
   return (
     <div
       className={`${
-        filtersExpanded
-          ? "flex flex-col gap-y-4 min-w-[14rem] w-3/12 max-w-[23rem]"
-          : ""
+        filtersExpanded ? "flex flex-col gap-y-4 min-w-56 w-3/12 max-w-92" : ""
       }`}
     >
       <Tooltip

@@ -22,7 +22,7 @@ import {
 import ModalButtonContainer from "@/components/StyledComponents/ModalButtonContainer";
 import FunctionButton from "@/components/FunctionButton";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
-import tailwindConfig from "tailwind.config";
+import { MD_BREAKPOINT } from "src/styles/breakpoints";
 
 const createCohort = (site: string) => {
   const key = site.replace(/-/g, " ");
@@ -213,18 +213,13 @@ export const Bodyplot = (): JSX.Element => {
     setBodyplotTooltipContent(undefined);
   }, []);
 
-  const mediumWidth = parseInt(
-    tailwindConfig.theme.extend.screens.md.replace(/\D/g, ""),
-    10,
-  );
-
   const { width } = useViewportSize();
   useMemo(() => {
     if (bodyplotRef?.current) {
       createHumanBody({
         title: "Cases by Major Primary Site",
         selector: bodyplotRef.current,
-        width: width >= mediumWidth ? 500 : 400,
+        width: width >= MD_BREAKPOINT ? 500 : 400,
         height: 500,
         data: processedData ?? [],
         labelSize: "12px",
@@ -251,7 +246,6 @@ export const Bodyplot = (): JSX.Element => {
     }
   }, [
     width,
-    mediumWidth,
     mouseOutHandler,
     processedData,
     root,
@@ -276,7 +270,7 @@ export const Bodyplot = (): JSX.Element => {
         <div
           className={`${
             bodyplotTooltipContent ? "opacity-100" : "opacity-0"
-          }  overflow-visible transition-opacity duration-500 z-[1800] shadow-lg absolute`}
+          }  overflow-visible transition-opacity duration-500 z-1800 shadow-lg absolute`}
           style={{
             left: (keyboardTooltipPosition.x ?? x) - extents[0] - 20,
             top: (keyboardTooltipPosition.y ?? y) - extents[1] / 2,

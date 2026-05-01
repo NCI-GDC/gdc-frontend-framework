@@ -154,7 +154,7 @@ export const FacetChart: React.FC<FacetProps> = ({
           divId={chartDivId}
         />
       ) : (
-        <div className="flex flex-row items-center justify-center w-100">
+        <div className="flex flex-row items-center justify-center w-full">
           <Loader color="primary" size={height ? height : 24} />
         </div>
       )}

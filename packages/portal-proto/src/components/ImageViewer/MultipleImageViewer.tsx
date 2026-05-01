@@ -256,7 +256,7 @@ export const MultipleImageViewer = ({
 
               <div className="flex">
                 {Object.keys(totalData).length > 0 && activeImage && (
-                  <div className="flex-1/2 w-[31em]">
+                  <div className="w-[31em]">
                     <Tabs
                       data-testid="cases-slides-image-viewer"
                       orientation="vertical"

@@ -66,7 +66,7 @@ const Controls: React.FC<ControlsProps> = ({
     <div
       className={`${
         controlsExpanded
-          ? "min-w-[14rem] w-3/12 max-w-[23rem] flex-shrink-0 flex flex-col min-h-[560px] max-h-screen"
+          ? "min-w-56 w-3/12 max-w-92 shrink-0 flex flex-col min-h-[560px] max-h-screen"
           : ""
       }`}
     >

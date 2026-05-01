@@ -1,28 +1,21 @@
 import "@testing-library/jest-dom";
 import { loadEnvConfig } from "@next/env";
-import "@testing-library/jest-dom/extend-expect";
 import { configure } from "@testing-library/react";
+import React from "react";
 
 const { getComputedStyle } = window;
 window.getComputedStyle = (elt) => getComputedStyle(elt);
 window.HTMLElement.prototype.scrollIntoView = () => {};
 
-const createNoopStorage = () => {
-  return {
-    getItem(_key) {
-      return Promise.resolve(null);
-    },
-    setItem(_key, value) {
-      return Promise.resolve(value);
-    },
-    removeItem(_key) {
-      return Promise.resolve();
-    },
-  };
-};
+jest.spyOn(React, "useId").mockImplementation(() => "react-test-id");
 
 jest.mock("redux-persist/lib/storage", () => ({
-  default: createNoopStorage(),
+  __esModule: true,
+  default: {
+    getItem: jest.fn(() => Promise.resolve(null)),
+    setItem: jest.fn(() => Promise.resolve()),
+    removeItem: jest.fn(() => Promise.resolve()),
+  },
 }));
 
 Object.defineProperty(window, "localStorage", {
@@ -65,9 +58,9 @@ class ResizeObserver {
   disconnect() {}
 }
 
-window.ResizeObserver = ResizeObserver;
+window.ResizeObserver = ResizeObserver as any;
 
-window.URL.createObjectURL = (input: any) => "";
+window.URL.createObjectURL = () => "";
 
 loadEnvConfig(__dirname, true, { info: () => null, error: console.error });
 
@@ -75,16 +68,61 @@ jest.mock("url-join", () => ({
   urlJoin: jest.fn(),
 }));
 
-// process.env.NEXT_PUBLIC_BASEPATH = "";
-
 jest.mock("dom-to-svg", () => ({
   elementToSVG: jest.fn(),
 }));
 
-jest.mock("url-join", () => ({
-  urlJoin: jest.fn(),
+jest.mock("@datadog/browser-rum", () => ({
+  datadogRum: { startView: jest.fn() },
 }));
 
-global.fetch = jest.fn();
+jest.mock("nanoid", () => ({
+  nanoid: () => "mock-nanoid",
+}));
+
+const mockRouter = {
+  pathname: "/",
+  query: {},
+  push: jest.fn(() => Promise.resolve(true)),
+  replace: jest.fn(() => Promise.resolve(true)),
+  prefetch: jest.fn(() => Promise.resolve()),
+  reload: jest.fn(),
+  asPath: "",
+};
+
+jest.mock("next/router", () => ({
+  useRouter: jest.fn(() => mockRouter),
+
+  withRouter: (Component: any) => {
+    return function MockedWithRouter(props: any) {
+      return React.createElement(Component, { ...props, router: mockRouter });
+    };
+  },
+}));
+
+jest.mock("@mantine/hooks", () => {
+  const actual = jest.requireActual("@mantine/hooks");
+  let count = 0;
+  return {
+    ...actual,
+    useId: (id?: string) => id || `mantine-mock-${++count}`,
+    _resetMantineCounter: () => {
+      count = 0;
+    },
+  };
+});
+
+jest.mock("@reduxjs/toolkit", () => ({
+  ...jest.requireActual("@reduxjs/toolkit"),
+  nanoid: () => "mock-nanoid",
+}));
+
+beforeEach(() => {
+  const { _resetMantineCounter } = jest.requireMock("@mantine/hooks");
+  _resetMantineCounter();
+});
+
+// Mock fetch
+global.fetch = jest.fn() as any;
 
 configure({ defaultHidden: true });

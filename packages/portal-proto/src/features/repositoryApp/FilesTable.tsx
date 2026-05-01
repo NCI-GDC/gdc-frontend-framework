@@ -38,9 +38,10 @@ import {
 import { HandleChangeInput } from "@/components/Table/types";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { downloadTSV } from "@/components/Table/utils";
-import { REPO_BREAKPOINT, statusBooleansToDataStatus } from "src/utils";
+import { statusBooleansToDataStatus } from "src/utils";
 import { useDeepCompareEffect } from "use-deep-compare";
 import { PersonIcon, SaveIcon } from "@/utils/icons";
+import { REPO_BREAKPOINT } from "src/styles/breakpoints";
 
 export type FilesTableDataType = {
   file: GdcFile;

@@ -216,14 +216,11 @@ export const useGenerateCasesTableColumns = ({
         id: "slides",
         header: "Slides",
         cell: ({ row }) => (
-          // This needs both passHref and legacyBehavior: https://nextjs.org/docs/pages/api-reference/components/link#if-the-child-is-a-functional-component
           <Link
             href={{
               pathname: "/image-viewer/MultipleImageViewerPage",
               query: { caseId: row.original.case_uuid },
             }}
-            passHref
-            legacyBehavior
           >
             <ImageSlideCount slideCount={row.original.slide_count} />
           </Link>

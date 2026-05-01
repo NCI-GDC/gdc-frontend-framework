@@ -8,10 +8,9 @@ import {
 } from "@gff/core";
 import { replace, sortBy } from "lodash";
 import { DocumentWithWebkit } from "@/features/types";
-import tailwindConfig from "tailwind.config";
 
 export const toggleFullScreen = async (
-  ref: React.MutableRefObject<any>,
+  ref: React.RefObject<any>,
 ): Promise<void> => {
   // Webkit vendor prefix for Safari support: https://developer.mozilla.org/en-US/docs/Web/API/Element/requestFullScreen#browser_compatibility
   if (
@@ -250,12 +249,6 @@ export const statusBooleansToDataStatus = (
 
 export const focusStyles =
   "focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor";
-
-export const LG_BREAKPOINT = parseInt(tailwindConfig.theme.extend.screens.lg);
-export const XL_BREAKPOINT = parseInt(tailwindConfig.theme.extend.screens.xl);
-export const REPO_BREAKPOINT = parseInt(
-  tailwindConfig.theme.extend.screens["Custom-Repo-Width"],
-);
 
 export const calculateStickyHeaderHeight = (): number => {
   const globalHeader = document.querySelector("#global-header");

@@ -81,7 +81,7 @@ const CategoricalData: React.FC<CategoricalDataProps> = ({
 
   return (
     <>
-      <div className="flex-grow">
+      <div className="grow">
         {chartType === "histogram" ? (
           <CDaveHistogram
             field={field}

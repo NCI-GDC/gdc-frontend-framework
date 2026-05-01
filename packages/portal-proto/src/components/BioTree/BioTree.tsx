@@ -13,29 +13,31 @@ const Node = ({
   selectEntity,
   query,
 }: NodeProps): JSX.Element => {
+  const isSelected =
+    selectedEntity?.[`${type.s}_id`] === entity[`${type.s}_id`];
+
   return (
     <li className="ml-6">
       {entity[`${type.s}_id`] && entity.submitter_id && (
         <div className="flex">
           <span
-            className={`w-full flex justify-between text-xs cursor-pointer hover:underline hover:font-bold ml-3 mt-1 py-1 px-6 border border-base-lighter ${
-              selectedEntity?.[`${type.s}_id`] === entity[`${type.s}_id`]
+            className={`w-full flex justify-between items-center text-xs cursor-pointer hover:underline hover:font-bold ml-3 mt-1 py-1 px-6 border border-base-lighter ${
+              isSelected
                 ? "bg-accent-vivid text-base-max font-bold"
                 : "bg-nci-violet-lightest"
-            }
-         `}
-            onClick={() => {
-              selectEntity(entity, type);
-            }}
-            onKeyDown={() => {
-              selectEntity(entity, type);
-            }}
+            }`}
+            onClick={() => selectEntity(entity, type)}
+            onKeyDown={() => selectEntity(entity, type)}
             role="button"
             tabIndex={0}
           >
-            <Highlight search={query} text={entity.submitter_id} />
-            {selectedEntity?.[`${type.s}_id`] === entity[`${type.s}_id`] && (
-              <ArrowRight color="white" size={16} />
+            <div className="truncate pr-2">
+              <Highlight search={query} text={entity.submitter_id} />
+            </div>
+            {isSelected && (
+              <div className="shrink-0 flex items-center justify-center">
+                <ArrowRight color="white" size={16} />
+              </div>
             )}
           </span>
         </div>

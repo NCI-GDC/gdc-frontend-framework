@@ -26,7 +26,7 @@ const RadioButtonGroup: React.FC<RadioSquareButtonGroupProps> = ({
   const { current: fieldId } = useRef(nanoid());
 
   return (
-    <div className="flex flex-col items-center mt-4 space-y-4 flex-shrink">
+    <div className="flex flex-col items-center mt-4 space-y-4 shrink">
       <div className="flex items-center justify-center mb-3">
         <form>
           <div

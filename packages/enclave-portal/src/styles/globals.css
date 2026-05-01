@@ -1,17 +1,43 @@
 /* montserrat Regular, Regular Italic, Medium, Medium Italic, Bold, Bold Italic */
-@import "@fontsource/montserrat/400.css";
-@import "@fontsource/montserrat/400-italic.css";
-@import "@fontsource/montserrat/500.css";
-@import "@fontsource/montserrat/500-italic.css";
-@import "@fontsource/montserrat/700.css";
-@import "@fontsource/montserrat/700-italic.css";
+@import "@fontsource/montserrat/400.css" layer(base);
+@import "@fontsource/montserrat/400-italic.css" layer(base);
+@import "@fontsource/montserrat/500.css" layer(base);
+@import "@fontsource/montserrat/500-italic.css" layer(base);
+@import "@fontsource/montserrat/700.css" layer(base);
+@import "@fontsource/montserrat/700-italic.css" layer(base);
 
 /* noto-sans Regular, Regular Italic, Bold, Bold Italic */
-@import "@fontsource/noto-sans/400.css";
-@import "@fontsource/noto-sans/400-italic.css";
-@import "@fontsource/noto-sans/700.css";
-@import "@fontsource/noto-sans/700-italic.css";
+@import "@fontsource/noto-sans/400.css" layer(base);
+@import "@fontsource/noto-sans/400-italic.css" layer(base);
+@import "@fontsource/noto-sans/700.css" layer(base);
+@import "@fontsource/noto-sans/700-italic.css" layer(base);
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@theme {
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+}
+
+@import "tailwindcss";
+
+@config '../../tailwind.config.js';
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}

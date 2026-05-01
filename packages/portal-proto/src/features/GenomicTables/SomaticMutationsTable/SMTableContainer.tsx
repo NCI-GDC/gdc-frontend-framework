@@ -115,7 +115,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   toggledSsms = undefined,
   isDemoMode = false,
   isModal = false,
-  inModal = false,
   tableTitle = undefined,
   searchTermsForGene,
   clearSearchTermsForGene,
@@ -575,7 +574,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             expanded={expanded}
             setExpanded={handleExpand}
             getRowId={getRowId}
-            baseZIndex={inModal ? 300 : 0}
           />
         </>
       )}

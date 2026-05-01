@@ -19,14 +19,15 @@ export const ImageSlideCount = forwardRef<
         size="compact-xs"
         disabled={slideCount === 0}
         variant="outline"
-        className="border-base-lighter bg-base-max text-primary disabled:border disabled:bg-base-lightest disabled:opacity-50 disabled:border-primary"
+        className="border-base-lighter bg-base-max text-primary disabled:border disabled:bg-base-lightest disabled:opacity-50 disabled:border-primary whitespace-nowrap"
         classNames={{
-          section: "ml-0",
+          section: "ml-0 shrink-0",
+          inner: "flex-nowrap",
         }}
         rightSection={
           <Badge
             variant="filled"
-            className={`px-1 bg-accent-vivid h-4 ${
+            className={`px-1 bg-accent-vivid h-4 shrink-0 ${
               slideCount === 0 ? "cursor-not-allowed" : "cursor-pointer"
             }`}
             radius="xs"

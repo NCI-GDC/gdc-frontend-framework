@@ -5,14 +5,11 @@
     "@gff/portal-components": "^2.19.0",
     "@mantine/core": "8.3.9",
     "@mantine/notifications": "8.3.9",
-    "next": "^16.1.6"
+    "@tailwindcss/postcss": "^4.2.2",
+    "next": "^16.1.6",
+    "tailwindcss": "^4.2.2"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.0.0",
-    "@testing-library/react": "^16.0.1",
-    "@testing-library/user-event": "^14.0.0",
-    "tailwindcss": "^3.4.14",
-    "tailwindcss-themer": "^2.0.2",
     "typescript": "^5.8.2"
   },
   "scripts": {

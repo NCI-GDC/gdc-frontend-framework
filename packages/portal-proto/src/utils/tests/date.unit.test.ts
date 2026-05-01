@@ -13,9 +13,7 @@ describe("getFormattedTimestamp", () => {
   ) => {
     test(description, () => {
       const mockDate = new Date(dateString);
-      jest
-        .spyOn(global, "Date")
-        .mockImplementation(() => mockDate as unknown as string);
+      jest.spyOn(global, "Date").mockImplementation(() => mockDate);
 
       const mockIntl = jest.spyOn(Intl, "DateTimeFormat");
       mockIntl.mockImplementation(
@@ -56,9 +54,7 @@ describe("getFormattedTimestamp", () => {
 
   test("verifies format pattern", () => {
     const mockDate = new Date("2024-01-01T12:00:00-06:00");
-    jest
-      .spyOn(global, "Date")
-      .mockImplementation(() => mockDate as unknown as string);
+    jest.spyOn(global, "Date").mockImplementation(() => mockDate);
 
     const mockIntl = jest.spyOn(Intl, "DateTimeFormat");
     mockIntl.mockImplementation(

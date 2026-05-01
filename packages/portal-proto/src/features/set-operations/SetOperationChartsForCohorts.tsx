@@ -103,7 +103,7 @@ const SetOperationChartsForCohorts = ({
   ]);
 
   return cohorts?.length === 0 || loading ? (
-    <div className="flex items-center justify-center w-100 h-96">
+    <div className="flex items-center justify-center w-full h-96">
       <Loader size={100} />
     </div>
   ) : isCohortComparisonDemo || cohorts?.length === 2 ? (
