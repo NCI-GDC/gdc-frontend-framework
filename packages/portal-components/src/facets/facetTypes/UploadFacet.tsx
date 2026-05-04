@@ -45,6 +45,7 @@ const UploadFacet: React.FC<UploadFacetCardProps> = ({
 
   return (
     <div
+      data-testid={`facet-card-${facetName}`}
       className={`flex flex-col mx-0 bg-base-max border-base-lighter border-1 rounded-b-md text-xs transition ${
         cardSelected ? "animate-border-highlight " : undefined
       }`}
