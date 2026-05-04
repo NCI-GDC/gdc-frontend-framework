@@ -24,6 +24,14 @@ jest.mock(
 );
 
 jest.mock(
+  "@/features/cases/CasesView/utils",
+  () => ({
+    buildCasesTableSearchFilters: (_term?: string) => undefined,
+  }),
+  { virtual: true },
+);
+
+jest.mock(
   "@gff/core",
   () => ({
     useGetCasesQuery: (arg?: any, options?: { skip?: boolean }) => {
@@ -40,6 +48,7 @@ jest.mock(
     useCurrentCohortCounts: () => undefined,
     filterSetToOperation: (_fs: any) => undefined,
     convertFilterToGqlFilter: (op: any) => op,
+    appendFilterToOperation: () => undefined,
     GqlOperation: undefined,
     SortBy: undefined,
   }),
