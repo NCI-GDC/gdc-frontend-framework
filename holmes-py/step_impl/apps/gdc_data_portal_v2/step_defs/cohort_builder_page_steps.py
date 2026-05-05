@@ -172,7 +172,8 @@ def validate_filter_cards_presence(tab_name: str, table):
 def validate_facet_cards_presence_and_filter_type(tab_name: str, table):
     """
     validate_facet_cards_presence_and_filter_type On the given cohort builder tab, it takes a table of expected
-    facet cards to be present and their expected filter card type and validates their existence.
+    facet cards to be present and their expected filter card type and validates their existence. Reference
+    PEAR-2673 to identify the different filter types.
 
     :param tab_name: Tab to select on cohort builder
     :param v[0]: The facet card name to check

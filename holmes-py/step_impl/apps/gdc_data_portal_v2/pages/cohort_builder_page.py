@@ -168,6 +168,8 @@ class CohortBuilderPage(BasePage):
 
     def validate_filter_card_type(self, facet_card_name, expected_filter_type):
         expected_filter_type = expected_filter_type.lower()
+        # Range cards have similarities and differences. If we are going to check any type of
+        # range card, it is more efficient to set all the variables now.
         if "range" in expected_filter_type:
             range_input_locator_1 = CohortBuilderPageLocators.FACET_GROUP_RANGE_INPUT_IDENT_1(facet_card_name)
             range_input_locator_2 = CohortBuilderPageLocators.FACET_GROUP_RANGE_INPUT_IDENT_2(facet_card_name)
@@ -179,6 +181,7 @@ class CohortBuilderPage(BasePage):
             range_input_with_prefixed_ranges_locator_visible = self.is_visible(range_input_with_prefixed_ranges_locator)
             range_input_with_prefixed_ranges_days_and_years_locator_visible = self.is_visible(range_input_with_prefixed_ranges_days_and_years_locator)
 
+            # Different types of range cards expect certain identifiers to be visible or not present
             if expected_filter_type == "range input":
                 return (range_input_locator_1_visible and range_input_locator_2_visible and (not range_input_with_prefixed_ranges_locator_visible) and (not range_input_with_prefixed_ranges_days_and_years_locator_visible))
             elif expected_filter_type == "range input with prefixed ranges":
