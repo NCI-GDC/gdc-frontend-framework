@@ -1,5 +1,6 @@
 import { compressors } from "hyparquet-compressors";
 import { parquetReadObjects } from "hyparquet";
+import semver from "semver";
 import { IDCParquetData } from "@/features/proteinpaint/idc/types";
 
 export const IDC_BUCKET_URL =
@@ -60,14 +61,9 @@ export async function loadParquetFromUrl(url: string) {
 
 // Compare dotted numeric versions (e.g. "23.6.0"). Returns sign of a - b.
 export function compareVersions(a: string, b: string): number {
-  const pa = a.split(".").map((p) => Number(p) || 0);
-  const pb = b.split(".").map((p) => Number(p) || 0);
-  const len = Math.max(pa.length, pb.length);
-  for (let i = 0; i < len; i++) {
-    const diff = (pa[i] ?? 0) - (pb[i] ?? 0);
-    if (diff !== 0) return diff;
-  }
-  return 0;
+  const sa = semver.coerce(a) ?? "0.0.0";
+  const sb = semver.coerce(b) ?? "0.0.0";
+  return semver.compare(sa, sb);
 }
 
 // Fetch bucket XML listing and return the versioned parquet URL with the highest version.
