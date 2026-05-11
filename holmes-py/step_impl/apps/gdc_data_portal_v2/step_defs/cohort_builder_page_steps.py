@@ -168,6 +168,30 @@ def validate_filter_cards_presence(tab_name: str, table):
         ), f"In tab '{tab_name}', the facet card '{v[0]}' is NOT visible"
         time.sleep(0.1)
 
+@step("Validate presence of facet cards and their filter types on the <tab_name> tab on the Cohort Builder page <table>")
+def validate_facet_cards_presence_and_filter_type(tab_name: str, table):
+    """
+    validate_facet_cards_presence_and_filter_type On the given cohort builder tab, it takes a table of expected
+    facet cards to be present and their expected filter card type and validates their existence. Reference
+    PEAR-2673 to identify the different filter types.
+
+    :param tab_name: Tab to select on cohort builder
+    :param v[0]: The facet card name to check
+    :param v[1]: The expected filter type
+    """
+    APP.cohort_builder_page.click_button(tab_name)
+    APP.shared.wait_for_loading_spinners_to_detach()
+    for k, v in enumerate(table):
+        is_facet_visible = APP.cohort_builder_page.check_facet_card_presence(v[0])
+        assert (
+            is_facet_visible
+        ), f"In tab '{tab_name}', the facet card '{v[0]}' is NOT visible"
+        time.sleep(0.1)
+        is_filter_card_type_correct = APP.cohort_builder_page.validate_filter_card_type(v[0], v[1])
+        assert (
+            is_filter_card_type_correct
+        ), f"In tab '{tab_name}', the facet card '{v[0]}'s type is NOT '{v[1]}' when it should be"
+
 @step("Validate expected custom filters <are_or_are_not> present in facet cards on the <tab_name> tab on the Cohort Builder page <table>")
 def validate_custom_filter_text_on_facet_card(are_or_are_not:str, tab_name: str, table):
     """

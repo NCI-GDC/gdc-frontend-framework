@@ -39,7 +39,24 @@ class CohortBuilderPageLocators:
     FACET_GROUP_CUSTOM_FILTER_TEXT_IDENT = (
         lambda group_name, filter_text: f'[data-testid="title-cohort-builder-facet-groups"] >> div:has-text("{group_name}") >> text="{filter_text}"'
     )
-
+    FACET_GROUP_ENUM_IDENT = (
+        lambda group_name: f'[data-testid="title-cohort-builder-facet-groups"] >> [data-testid="facet-card-{group_name}"] >> input[type="checkbox"] >> nth=0'
+    )
+    FACET_GROUP_UPLOAD_IDENT = (
+        lambda group_name: f'[data-testid="title-cohort-builder-facet-groups"] >> [data-testid="facet-card-{group_name}"] >> [data-testid="button-{group_name}"]'
+    )
+    FACET_GROUP_RANGE_INPUT_IDENT_1 = (
+        lambda group_name: f'[data-testid="title-cohort-builder-facet-groups"] >> [data-testid="facet-card-{group_name}"] >> [data-testid="textbox-input-from-value"]'
+    )
+    FACET_GROUP_RANGE_INPUT_IDENT_2 = (
+        lambda group_name: f'[data-testid="title-cohort-builder-facet-groups"] >> [data-testid="facet-card-{group_name}"] >> button >> text="Apply"'
+    )
+    FACET_GROUP_RANGE_INPUT_WITH_PREFIXED_RANGES_IDENT = (
+        lambda group_name: f'[data-testid="title-cohort-builder-facet-groups"] >> [data-testid="facet-card-{group_name}"] >> fieldset >> nth=1 >> [type="radio"] >> nth=0'
+    )
+    FACET_GROUP_RANGE_INPUT_WITH_PREFIXED_RANGES_DAYS_AND_YEARS_IDENT = (
+        lambda group_name: f'[data-testid="title-cohort-builder-facet-groups"] >> [data-testid="facet-card-{group_name}"] >> label >> text="Days"'
+    )
     FILTER_TAB_LIST = (
         'main[data-tour="full_page_content"] >> div[role="tablist"] > button'
     )
@@ -148,6 +165,36 @@ class CohortBuilderPage(BasePage):
             or self.is_visible(data_testid_locator)
         )
         return result
+
+    def validate_filter_card_type(self, facet_card_name, expected_filter_type):
+        expected_filter_type = expected_filter_type.lower()
+        # Range cards have similarities and differences. If we are going to check any type of
+        # range card, it is more efficient to set all the variables now.
+        if "range" in expected_filter_type:
+            range_input_locator_1 = CohortBuilderPageLocators.FACET_GROUP_RANGE_INPUT_IDENT_1(facet_card_name)
+            range_input_locator_2 = CohortBuilderPageLocators.FACET_GROUP_RANGE_INPUT_IDENT_2(facet_card_name)
+            range_input_with_prefixed_ranges_locator = CohortBuilderPageLocators.FACET_GROUP_RANGE_INPUT_WITH_PREFIXED_RANGES_IDENT(facet_card_name)
+            range_input_with_prefixed_ranges_days_and_years_locator = CohortBuilderPageLocators.FACET_GROUP_RANGE_INPUT_WITH_PREFIXED_RANGES_DAYS_AND_YEARS_IDENT(facet_card_name)
+
+            range_input_locator_1_visible = self.is_visible(range_input_locator_1)
+            range_input_locator_2_visible = self.is_visible(range_input_locator_2)
+            range_input_with_prefixed_ranges_locator_visible = self.is_visible(range_input_with_prefixed_ranges_locator)
+            range_input_with_prefixed_ranges_days_and_years_locator_visible = self.is_visible(range_input_with_prefixed_ranges_days_and_years_locator)
+
+            # Different types of range cards expect certain identifiers to be visible or not present
+            if expected_filter_type == "range input":
+                return (range_input_locator_1_visible and range_input_locator_2_visible and (not range_input_with_prefixed_ranges_locator_visible) and (not range_input_with_prefixed_ranges_days_and_years_locator_visible))
+            elif expected_filter_type == "range input with prefixed ranges":
+                return (range_input_locator_1_visible and range_input_locator_2_visible and range_input_with_prefixed_ranges_locator_visible and (not range_input_with_prefixed_ranges_days_and_years_locator_visible))
+            elif expected_filter_type == "range input with prefixed ranges days and years":
+                return (range_input_locator_1_visible and range_input_locator_2_visible and range_input_with_prefixed_ranges_locator_visible and range_input_with_prefixed_ranges_days_and_years_locator_visible)
+        else:
+            if expected_filter_type == "enum":
+                enum_locator = CohortBuilderPageLocators.FACET_GROUP_ENUM_IDENT(facet_card_name)
+                return self.is_visible(enum_locator)
+            elif expected_filter_type == "upload":
+                upload_locator = CohortBuilderPageLocators.FACET_GROUP_UPLOAD_IDENT(facet_card_name)
+                return self.is_visible(upload_locator)
 
     # Click on the search bar result text to travel to the facet
     def click_on_search_bar_result(self, search_bar_text_to_click):
