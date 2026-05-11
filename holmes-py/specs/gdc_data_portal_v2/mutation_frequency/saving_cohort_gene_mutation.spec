@@ -50,7 +50,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
   |-----------------|-------------------------------------------|--------------------|
-  |Save             |Cohort has been saved                      |Remove Modal        |
+  |Save             |Cohort has been saved                      |Keep Modal          |
 * "Gene Cohort" should be the active cohort
 * Validate the cohort query filter area has these filters
   |facet_name         |selections           |position in filter area  |
@@ -61,7 +61,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Switch to "Mutations" tab in the Mutation Frequency app
 * Wait for table loading spinner
 * Select "Add" from the Cohort Bar
-* Is modal with text "Unsaved_Cohort has been created" present on the page and "Remove Modal"
+* Is modal with text "Unsaved_Cohort has been created" present on the page and "Keep Modal"
 * "Unsaved_Cohort" should be the active cohort
 * Search the table for "chr3:g.179218294G>A"
 * Wait for table body text to appear
@@ -79,7 +79,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
   |-----------------|-------------------------------------------|--------------------|
-  |Save             |Cohort has been saved                      |Remove Modal        |
+  |Save             |Cohort has been saved                      |Keep Modal          |
 * "Mutation Cohort" should be the active cohort
 * Validate the cohort query filter area has these filters
   |facet_name         |selections                           |position in filter area  |
@@ -88,7 +88,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 
 ## Add Mutation and Gene to Cohort and Save
 * Select "Add" from the Cohort Bar
-* Is modal with text "Unsaved_Cohort has been created" present on the page and "Remove Modal"
+* Is modal with text "Unsaved_Cohort has been created" present on the page and "Keep Modal"
 * "Unsaved_Cohort" should be the active cohort
 * Search the table for "chr7:g.140753336A>T"
 * Wait for table body text to appear
@@ -118,7 +118,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Perform action and validate modal text
   |Action to Perform|Text to validate in modal                  |Keep or Remove Modal|
   |-----------------|-------------------------------------------|--------------------|
-  |Save             |Cohort has been saved                      |Remove Modal        |
+  |Save             |Cohort has been saved                      |Keep Modal          |
 * "Mutation and Gene Cohort" should be the active cohort
 * Validate the cohort query filter area has these filters
   |facet_name         |selections                           |position in filter area  |

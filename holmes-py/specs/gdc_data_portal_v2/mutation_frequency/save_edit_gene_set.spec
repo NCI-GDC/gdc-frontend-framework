@@ -32,7 +32,7 @@ tags: gdc-data-portal-v2, regression, mutation-frequency
 * Select "Save as new gene set" from dropdown menu
 * Enter "MF - Save/Edit Gene Set" in the text box "Set Name"
 * Select button "Save"
-* Is temporary modal with text "Set has been saved." present on the page and "Remove Modal"
+* Is temporary modal with text "Set has been saved." present on the page and "Keep Modal"
 
 ## Add to Existing Set - Rejection
 * Select value from table "Genes" by row and column
@@ -61,7 +61,7 @@ tags: gdc-data-portal-v2, regression, mutation-frequency
 * Change number of entries shown in the table "Select Set" to "100"
 * Select the radio button "MF - Save/Edit Gene Set"
 * Select button "Save"
-* Is temporary modal with text "Set has been modified." present on the page and "Remove Modal"
+* Is temporary modal with text "Set has been modified." present on the page and "Keep Modal"
 
 ## Remove from Existing Set - Partial
 * Select value from table "Genes" by row and column
@@ -80,7 +80,7 @@ tags: gdc-data-portal-v2, regression, mutation-frequency
 * Select the radio button "MF - Save/Edit Gene Set"
 * Verify the set "MF - Save/Edit Gene Set" displays a count of "6" in Modal
 * Select button "Save"
-* Is temporary modal with text "Set has been modified." present on the page and "Remove Modal"
+* Is temporary modal with text "Set has been modified." present on the page and "Keep Modal"
 
 ## Remove from Existing Set - All
  * Select value from table "Genes" by row and column
@@ -99,7 +99,7 @@ tags: gdc-data-portal-v2, regression, mutation-frequency
 * Select the radio button "MF - Save/Edit Gene Set"
 * Verify the set "MF - Save/Edit Gene Set" displays a count of "3" in Modal
 * Select button "Save"
-* Is temporary modal with text "Set has been modified." present on the page and "Remove Modal"
+* Is temporary modal with text "Set has been modified." present on the page and "Keep Modal"
 
 * Select "Save/Edit Gene Set"
 * Select "Remove from existing gene set" from dropdown menu
