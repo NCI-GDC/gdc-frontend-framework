@@ -128,6 +128,6 @@ it("shows no-idc message when no idc images for selected cohort", async () => {
     </MantineProvider>,
   );
 
-  const msg = await findByText("No idc images for selected cohort.");
+  const msg = await findByText("No IDC images for selected cohort.");
   expect(msg).toBeInTheDocument();
 });
