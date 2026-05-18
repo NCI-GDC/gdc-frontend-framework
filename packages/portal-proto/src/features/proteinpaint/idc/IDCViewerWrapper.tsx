@@ -442,7 +442,7 @@ const IDCViewerWrapper: FC = () => {
                   data-testid="no-idc-message"
                   className="p-4 text-gdc-grey-dark text-sm"
                 >
-                  No idc images for selected cohort.
+                  No IDC images for selected cohort.
                 </div>
               ) : (
                 <VerticalTable
