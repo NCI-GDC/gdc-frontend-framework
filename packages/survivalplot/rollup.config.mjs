@@ -11,7 +11,7 @@ const config = [
     output: [
       {
         file: "dist/index.js",
-        format: "es",
+        format: "cjs",
       },
       {
         file: "dist/index.min.js",
