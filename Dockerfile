@@ -17,6 +17,7 @@ ENV npm_config_registry=$NPM_REGISTRY
 COPY ./package.json ./package-lock.json ./lerna.json ./nx.json ./
 COPY ./packages/core/package.json ./packages/core/
 COPY ./packages/sapien/package.json ./packages/sapien/
+COPY ./packages/survivalplot/package.json ./packages/survivalplot/
 COPY ./packages/portal-proto/package.json ./packages/portal-proto/
 RUN npm ci --include=dev
 COPY ./packages ./packages
