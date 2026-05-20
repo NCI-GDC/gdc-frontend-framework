@@ -147,3 +147,6 @@ dmypy.json
 
 # drivers directory
 drivers/
+
+# auth file
+auth.json

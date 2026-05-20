@@ -1,9 +1,9 @@
 import time
 import re
 
+from os import path, getenv
 from typing import List
 from step_impl.base.webdriver import WebDriver
-
 
 class GenericLocators:
     TEXT_IDENT = lambda text: f"text={text} >> nth=0"
@@ -1029,3 +1029,25 @@ class BasePage:
         except:
             return False
         return True
+
+
+    def login_data_portal(self, AUTH_FILE_PATH):
+        "Determines if we need to login. If so, orchestrates the login"
+        "and dissemination of auth to all instances of automation"
+
+        print(
+            "\033[1mIn only 1 window, please login to the data submission portal. The test will continue in 40 seconds.\033[0m"
+        )
+        print(
+            "\033[1mAfter logging in, do not click or modify anything in the window\033[0m"
+        )
+
+        time.sleep(40)
+        # We save the context of only the window that was logged in
+        if self.is_visible('[data-testid="button-header-username"] >> nth=1'):
+            time.sleep(1)
+            WebDriver.context.storage_state(path=AUTH_FILE_PATH)
+        else:
+            # The other non-authenticated windows MUST close after the authenticated's context is saved.
+            # That way a valid auth.json file is available to apply to their contexts.
+            time.sleep(5)
