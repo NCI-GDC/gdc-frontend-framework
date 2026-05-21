@@ -221,14 +221,16 @@ export function renderPlot(params) {
       .attr("d", line)
       .attr("stroke", setColor);
 
-    setGroup
-      .append("line")
-      .attr("class", "line")
-      .attr("stroke", setColor)
-      .attr("x1", 0)
-      .attr("y1", y(sampledDataPoints[0].survivalEstimate))
-      .attr("x2", x(sampledDataPoints[0].time))
-      .attr("y2", y(sampledDataPoints[0].survivalEstimate));
+    if (sampledDataPoints.length > 0) {
+      setGroup
+        .append("line")
+        .attr("class", "line")
+        .attr("stroke", setColor)
+        .attr("x1", 0)
+        .attr("y1", y(sampledDataPoints[0].survivalEstimate))
+        .attr("x2", x(sampledDataPoints[0].time))
+        .attr("y2", y(sampledDataPoints[0].survivalEstimate));
+    }
 
     // Draw the confidence interval
     shouldShowConfidenceIntervals &&

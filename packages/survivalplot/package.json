@@ -7,7 +7,9 @@
   "unpkg": "dist/index.umd.js",
   "scripts": {
     "clean": "rimraf dist",
-    "build": "rollup --config rollup.config.mjs"
+    "build": "rollup --config rollup.config.mjs",
+    "build:watch": "npm run build -- --watch",
+    "dev": "npm run build:watch"
   },
   "dependencies": {
     "d3": "^7.4.3",
