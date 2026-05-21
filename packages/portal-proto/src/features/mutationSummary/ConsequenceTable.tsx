@@ -14,11 +14,7 @@ import {
 import Link from "next/link";
 import { HeaderTooltip } from "@/components/Table/HeaderTooltip";
 import { AnchorLink } from "@/components/AnchorLink";
-import {
-  externalLinks,
-  humanify,
-  statusBooleansToDataStatus,
-} from "@/utils/index";
+import { humanify, statusBooleansToDataStatus } from "@/utils/index";
 import {
   SMTableConsequences,
   SMTableImpacts,
@@ -29,6 +25,7 @@ import { downloadTSV } from "@/components/Table/utils";
 import ImpactHeaderWithTooltip from "../GenomicTables/SharedComponent/ImpactHeaderWithTooltip";
 import TotalItems from "@/components/Table/TotalItem";
 import { StrandMinusIcon, StrandPlusIcon } from "@/utils/icons";
+import { externalLinks } from "@/utils/externalLinks";
 
 const consequenceTableColumnHelper = createColumnHelper<ConsequenceTableData>();
 

@@ -6,7 +6,7 @@ import { Loader } from "@mantine/core";
 import { pick } from "lodash";
 import { HorizontalTableProps } from "@/components/HorizontalTable";
 import { formatDataForHorizontalTable } from "../files/utils";
-import { externalLinks, humanify } from "src/utils";
+import { humanify } from "src/utils";
 import { CollapsibleList } from "@/components/CollapsibleList";
 import { AnchorLink } from "@/components/AnchorLink";
 import SSMPlot from "../charts/SSMPlot";
@@ -15,6 +15,8 @@ import { HeaderTitle } from "@/components/tailwindComponents";
 import SSMSCancerDistributionTable from "../CancerDistributionTable/SSMSCancerDistributionTable";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import MutationsIcon from "public/user-flow/icons/summary/gene-mutation.svg";
+import { externalLinks } from "@/utils/externalLinks";
+import { buildSsmExternalReferences } from "./utils";
 
 export const SSMSSummary = ({
   ssm_id,
@@ -115,54 +117,37 @@ export const SSMSSummary = ({
   };
 
   const formatDataForExternalReferences = () => {
-    const {
-      cosmic_id,
-      civic,
-      transcript: { annotation: { dbsnp } = {} },
-    } = summaryData;
+    const entries = buildSsmExternalReferences(summaryData);
 
-    const arr = [];
-    arr.push([
-      "dbsnp",
-      dbsnp && /rs(\d+)$/g.test(dbsnp) ? (
-        <AnchorLink href={externalLinks.dbsnp(dbsnp)} title={dbsnp} />
-      ) : (
-        "--"
-      ),
-    ]);
-    arr.push([
-      "cosmic",
-      cosmic_id ? (
-        <CollapsibleList
-          data={cosmic_id.map((id) => (
-            <AnchorLink
-              href={externalLinks[id.substring(0, 4).toLowerCase()](
-                id.match(/(\d+)$/g),
-              )}
-              title={id}
-              key={id}
+    const externalReferencesObj = Object.fromEntries(
+      entries.map(({ label, ids, buildHref, linkTitle }) => [
+        label,
+        ids && (Array.isArray(ids) ? ids.length > 0 : ids) ? (
+          Array.isArray(ids) ? (
+            <CollapsibleList
+              data={ids.map((id) => (
+                <AnchorLink
+                  href={buildHref(id)}
+                  title={linkTitle ?? id}
+                  key={id}
+                />
+              ))}
             />
-          ))}
-        />
-      ) : (
-        "--"
-      ),
-    ]);
-    arr.push([
-      "civic",
-      civic ? (
-        <AnchorLink href={externalLinks.civicMutaton(civic)} title={civic} />
-      ) : (
-        "--"
-      ),
-    ]);
-    const headersConfig = arr.map(([key]) => ({
+          ) : (
+            <AnchorLink href={buildHref(ids)} title={linkTitle ?? ids} />
+          )
+        ) : (
+          "--"
+        ),
+      ]),
+    );
+
+    const headersConfig = Object.keys(externalReferencesObj).map((key) => ({
       field: key,
-      name: humanify({ term: key }),
+      name: key,
     }));
 
-    const externalLinksObj = { ...Object.fromEntries(arr) };
-    return formatDataForHorizontalTable(externalLinksObj, headersConfig);
+    return formatDataForHorizontalTable(externalReferencesObj, headersConfig);
   };
 
   return (

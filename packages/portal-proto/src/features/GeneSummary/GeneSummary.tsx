@@ -11,7 +11,7 @@ import {
   useCoreSelector,
   selectCurrentCohortFilters,
 } from "@gff/core";
-import { externalLinkNames, externalLinks, humanify } from "src/utils";
+import { humanify } from "src/utils";
 import CNVPlot from "../charts/CNVPlot";
 import SSMPlot from "../charts/SSMPlot";
 import { formatDataForHorizontalTable } from "../files/utils";
@@ -25,6 +25,7 @@ import SMTableContainer from "../GenomicTables/SomaticMutationsTable/SMTableCont
 import GeneCancerDistributionTable from "../CancerDistributionTable/GeneCancerDistributionTable";
 import GenesIcon from "public/user-flow/icons/summary/genes.svg";
 import { StrandMinusIcon, StrandPlusIcon } from "@/utils/icons";
+import { buildGeneExternalReferences } from "./utils";
 
 interface GeneViewProps {
   data: GeneSummaryData;
@@ -48,7 +49,6 @@ export const GeneSummary = ({
   const { data, isFetching } = useGeneSummaryQuery({
     gene_id,
   });
-
   return (
     <>
       {isFetching ? (
@@ -158,64 +158,37 @@ const GeneView = ({
   };
 
   const formatDataForExternalReferences = () => {
-    const {
-      external_db_ids: { entrez_gene, uniprotkb_swissprot, hgnc, omim_gene },
-      gene_id,
-      civic,
-      symbol,
-    } = data;
+    const entries = buildGeneExternalReferences(data);
 
-    const externalLinksObj = {
-      entrez_gene,
-      uniprotkb_swissprot,
-      hgnc,
-      omim_gene,
-      ensembl: gene_id,
-      civic,
-      genecards: symbol,
-    };
-
-    let externalReferenceLinksobj = {};
-
-    Object.keys(externalLinksObj).forEach((link) => {
-      const modified = {
-        [`${externalLinkNames[link] || link.replace(/_/, " ")}`]:
-          externalLinksObj[link]?.length > 0 ? (
-            <>
-              {Array.isArray(externalLinksObj[link]) ? (
-                <CollapsibleList
-                  data={externalLinksObj[link]?.map((item) => (
-                    <AnchorLink
-                      href={externalLinks[link](item)}
-                      title={item}
-                      key={item}
-                    />
-                  ))}
-                />
-              ) : (
+    const externalReferencesObj = Object.fromEntries(
+      entries.map(({ label, ids, buildHref, linkTitle }) => [
+        label,
+        ids && (Array.isArray(ids) ? ids.length > 0 : ids) ? (
+          Array.isArray(ids) ? (
+            <CollapsibleList
+              data={ids.map((id) => (
                 <AnchorLink
-                  href={externalLinks[link](externalLinksObj[link])}
-                  title={externalLinksObj[link]}
+                  href={buildHref(id)}
+                  title={linkTitle ?? id}
+                  key={id}
                 />
-              )}
-            </>
+              ))}
+            />
           ) : (
-            "--"
-          ),
-      };
+            <AnchorLink href={buildHref(ids)} title={linkTitle ?? ids} />
+          )
+        ) : (
+          "--"
+        ),
+      ]),
+    );
 
-      externalReferenceLinksobj = { ...externalReferenceLinksobj, ...modified };
-    });
-
-    const headersConfig = Object.keys(externalReferenceLinksobj).map((key) => ({
+    const headersConfig = Object.keys(externalReferencesObj).map((key) => ({
       field: key,
-      name: humanify({ term: key }),
+      name: key,
     }));
 
-    return formatDataForHorizontalTable(
-      externalReferenceLinksobj,
-      headersConfig,
-    );
+    return formatDataForHorizontalTable(externalReferencesObj, headersConfig);
   };
 
   return (

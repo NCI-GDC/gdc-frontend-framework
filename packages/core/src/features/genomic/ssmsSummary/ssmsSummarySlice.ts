@@ -5,7 +5,7 @@ import {
   SSMSDefaults,
 } from "src/features/gdcapi/types";
 
-interface SummaryData {
+export interface SSMSSummaryData {
   uuid: string;
   dna_change: string;
   type: string;
@@ -29,7 +29,7 @@ interface SummaryData {
 
 export const ssmsSummarySlice = endpointSlice.injectEndpoints({
   endpoints: (builder) => ({
-    ssmsSummary: builder.query<SummaryData, GdcApiRequest>({
+    ssmsSummary: builder.query<SSMSSummaryData, GdcApiRequest>({
       query: (request) => ({
         request,
         endpoint: "ssms",

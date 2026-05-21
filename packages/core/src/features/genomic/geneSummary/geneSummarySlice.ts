@@ -29,16 +29,6 @@ query GeneSummary($filters: FiltersArgument) {
           }
         }
       }
-      ssms{
-        aggregations(filters: $filters) {
-          clinical_annotations__civic__gene_id{
-            buckets {
-              doc_count
-              key
-            }
-          }
-        }
-      }
     }
   }
 }
@@ -72,16 +62,6 @@ interface GeneSummaryResponse {
           }>;
         };
       };
-      ssms: {
-        aggregations: {
-          clinical_annotations__civic__gene_id: {
-            buckets: Array<{
-              doc_count: number;
-              key: string;
-            }>;
-          };
-        };
-      };
     };
   };
 }
@@ -97,7 +77,6 @@ export interface GeneSummaryData {
   gene_strand: number;
   description: string;
   is_cancer_gene_census: boolean;
-  civic?: string;
   gene_id: string;
   external_db_ids: {
     entrez_gene: string[];
@@ -158,13 +137,7 @@ const geneSummarySlice = graphqlAPISlice.injectEndpoints({
           },
         }))[0];
 
-        const civic = response.data.viewer.explore.ssms?.aggregations
-          ?.clinical_annotations__civic__gene_id?.buckets[0]?.key
-          ? response.data.viewer.explore.ssms?.aggregations
-              ?.clinical_annotations__civic__gene_id?.buckets[0]?.key
-          : undefined;
-
-        return { ...summary, civic };
+        return summary;
       },
     }),
   }),
