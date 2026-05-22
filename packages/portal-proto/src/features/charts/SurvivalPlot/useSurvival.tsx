@@ -1,5 +1,5 @@
 import { useLayoutEffect } from "react";
-import { renderPlot } from "@oncojs/survivalplot";
+import { renderPlot } from "@nci-gdc/survivalplot";
 import { useResizeObserver } from "@mantine/hooks";
 import { MINIMUM_CASES, UseSurvivalType } from "./types";
 import { DAYS_IN_YEAR } from "@gff/core";

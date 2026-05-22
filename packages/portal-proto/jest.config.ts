@@ -42,6 +42,7 @@ const config: JestConfigWithTsJest = {
     "^redux-persist/lib/storage/createWebStorage$":
       "<rootDir>/__mocks__/createWebStorageMock.js",
     "^react-markdown$": "<rootDir>/__mocks__/react-markdown.tsx",
+    "^d3$": "<rootDir>/../../node_modules/d3/dist/d3.min.js",
   },
   modulePaths: ["<rootDir>"],
   setupFiles: ["jest-canvas-mock"],
