@@ -1036,7 +1036,7 @@ class BasePage:
         "and dissemination of auth to all instances of automation"
 
         print(
-            "\033[1mIn only 1 window, please login to the data submission portal. The test will continue in 40 seconds.\033[0m"
+            "\033[1mIn only 1 test window, please click 'Login'. Then, in the modal that appears, complete the login. The test will continue in 40 seconds.\033[0m"
         )
         print(
             "\033[1mAfter logging in, do not click or modify anything in the window\033[0m"
