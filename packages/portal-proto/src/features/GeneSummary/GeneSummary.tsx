@@ -192,8 +192,14 @@ const GeneView = ({
       : currentCohortFilters;
   }, [contextSensitive, isDemo, currentCohortFilters]);
 
-  const summaryData = useMemo(() => buildGeneSummary(data), [data]);
-  const entries = useMemo(() => buildGeneExternalReferences(data), [data]);
+  const summaryData = useMemo(
+    () => (data ? buildGeneSummary(data) : null),
+    [data],
+  );
+  const entries = useMemo(
+    () => (data ? buildGeneExternalReferences(data) : []),
+    [data],
+  );
 
   return (
     <div>
