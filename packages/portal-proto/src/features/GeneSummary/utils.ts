@@ -51,3 +51,54 @@ export const buildGeneExternalReferences = (
     },
   ];
 };
+
+export type GeneSummaryTableData = {
+  symbol: string;
+  name: string;
+  synonyms: string[];
+  type: string;
+  location: string;
+  strand: number | null | undefined;
+  description: string | null | undefined;
+  isCancerGeneCensus: boolean;
+};
+
+export const buildGeneSummary = (
+  data: Pick<
+    GeneSummaryData,
+    | "symbol"
+    | "name"
+    | "synonyms"
+    | "biotype"
+    | "gene_chromosome"
+    | "gene_start"
+    | "gene_end"
+    | "gene_strand"
+    | "description"
+    | "is_cancer_gene_census"
+  >,
+): GeneSummaryTableData => {
+  const {
+    symbol,
+    name,
+    synonyms,
+    biotype,
+    gene_chromosome,
+    gene_start,
+    gene_end,
+    gene_strand,
+    description,
+    is_cancer_gene_census,
+  } = data;
+
+  return {
+    symbol,
+    name,
+    synonyms,
+    type: biotype,
+    location: `chr${gene_chromosome}:${gene_start}-${gene_end} (GRCh38)`,
+    strand: gene_strand ?? null,
+    description: description ?? null,
+    isCancerGeneCensus: is_cancer_gene_census,
+  };
+};

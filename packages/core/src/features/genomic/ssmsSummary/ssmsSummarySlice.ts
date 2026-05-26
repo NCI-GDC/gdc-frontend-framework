@@ -13,16 +13,16 @@ export interface SSMSSummaryData {
   cosmic_id: Array<string>;
   allele_in_the_reference_assembly: string;
   civic?: string;
-  transcript: {
+  transcript?: {
     is_canonical: boolean;
     transcript_id: string;
-    annotation: {
-      polyphen_impact: string;
-      polyphen_score: number;
-      sift_impact: string;
-      sift_score: number;
-      vep_impact: string;
-      dbsnp: string;
+    annotation?: {
+      polyphen_impact?: string;
+      polyphen_score?: number;
+      sift_impact?: string;
+      sift_score?: number;
+      vep_impact?: string;
+      dbsnp?: string;
     };
   };
 }
