@@ -245,6 +245,7 @@ def download_file_at_file_table(file: str, source: str):
         "Repository": APP.repository_page.click_button,
         "Set Operations": APP.set_operations_page.click_download_tsv_button_set_operations,
         "Set Operations Union Row": APP.set_operations_page.click_union_row_download_tsv_button_set_operations,
+        "Username Authentication Token": APP.header_section.click_download_token,
     }
 
     max_retries = 3

@@ -10,6 +10,8 @@ class HeaderSectionLocators:
     BUTTON_USERNAME = "[data-testid='button-header-username'] >> nth=1"
     BUTTON_APPS_MENU = "[data-testid='button-header-gdc-apps']"
 
+    TEXT_DOWNLOAD_TOKEN = '[data-testid="dropdown-menu-options"] >> text="Download Token"'
+
     # These are all locators that only appear when the respective page has fully loaded
     ANALYSIS_CENTER_WAIT_FOR_ELEMENT = "[data-testid='Clinical Data Analysis-tool']"
     PROJECTS_WAIT_FOR_ELEMENT = "[data-testid='button-json-projects-table']"
@@ -28,6 +30,14 @@ class HeaderSection(BasePage):
 
     def click_apps_menu(self):
        self.click(HeaderSectionLocators.BUTTON_APPS_MENU)
+
+    def click_download_token(self):
+        self.click(HeaderSectionLocators.TEXT_DOWNLOAD_TOKEN)
+
+    def open_username_dropdown_menu(self):
+        time.sleep(0.5)
+        self.click(HeaderSectionLocators.BUTTON_USERNAME)
+        self.wait_for_selector(HeaderSectionLocators.TEXT_DOWNLOAD_TOKEN)
 
     def navigate_with_apps_menu(self, apps_link:str):
        self.click_apps_menu()
