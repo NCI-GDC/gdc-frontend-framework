@@ -227,7 +227,16 @@ export function renderPlot(params) {
         .attr("class", "line")
         .attr("stroke", setColor)
         .attr("x1", 0)
-        .attr("y1", y(sampledDataPoints[0].survivalEstimate))
+        .attr("y1", 1)
+        .attr("x2", x(sampledDataPoints[0].time))
+        .attr("y2", 1);
+
+      setGroup
+        .append("line")
+        .attr("class", "line")
+        .attr("stroke", setColor)
+        .attr("x1", x(sampledDataPoints[0].time))
+        .attr("y1", 1)
         .attr("x2", x(sampledDataPoints[0].time))
         .attr("y2", y(sampledDataPoints[0].survivalEstimate));
     }
