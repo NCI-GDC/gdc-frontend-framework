@@ -14,5 +14,5 @@ tags: gdc-data-portal-v2, file-summary, controlled-access
 ## Download Bam Slice
 * Select "BAM Slicing"
 * Enter "unmapped" in the text box "Genome Coordinates"
-
+* Pause "2" seconds
 * Download "File" from "Bam Slicing"

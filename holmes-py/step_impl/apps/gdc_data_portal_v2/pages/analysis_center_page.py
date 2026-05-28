@@ -145,7 +145,7 @@ class AnalysisCenterPage(BasePage):
                     AnalysisCenterLocators.MUTATION_FREQUENCY_WAIT_FOR_ELEMENT, 15000
                 )
             except:
-                self.driver.reload()
+                self.reload_page()
                 time.sleep(10)
                 self.wait_for_selector(
                     AnalysisCenterLocators.MUTATION_FREQUENCY_WAIT_FOR_ELEMENT, 30000
