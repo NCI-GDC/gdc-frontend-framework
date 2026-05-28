@@ -160,8 +160,10 @@ If a test does fail, rerun them individually before reporting results.
 
 ### How to Execute Each Type of Test Suite
 The tests should be ran by tag. We have open-access and controlled-access tests that are not compatible to be ran together.
-The controlled-access tests require you to manually login when prompted. The other tests do not have to be interacted with
-once execution begins. Any of the commands below can also be ran in parallel or with de-bug mode. See above for commands.
+Any of the commands below can also be ran in parallel or with de-bug mode.
+
+The controlled-access tests require you to manually login to the data portal when prompted in the terminal. You will be prompted at the beginning of the test run. You only need to login to one window when running controlled access tests regardless if running in parallel. For further details on controlled-access mechanism,
+see the step login_to_data_portal_if_necessary() inside file generic_steps.py
 
 #### Regression Test
 ````
@@ -198,11 +200,10 @@ Here's how to build/run this repo inside a Docker container.
  docker build -t holmes .
 ```
 
-2. Run the tests in the Docker container (in this example, tests would be run against qa yellow):
+2. Run the tests in the Docker container (example of running open access regression test):
 
 ```bash
-Copy code
-docker run --rm --env browser="headless firefox" .
+docker run {docker_container_name} --env browser="headless chrome" gauge run -p -n=6 ./holmes-py/specs/gdc_data_portal_v2/  --tags "regression"
 ```
 
 NOTE: The IS_DOCKER variable is used to indicate that tests are running within the Docker container, and is set to True within the Dockerfile
