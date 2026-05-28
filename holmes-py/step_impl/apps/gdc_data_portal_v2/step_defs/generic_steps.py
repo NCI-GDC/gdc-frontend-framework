@@ -13,6 +13,7 @@ from ..app import GDCDataPortalV2App
 from ....base.webdriver import WebDriver
 from ....base.utility import Utility
 
+AUTH_FILE_PATH = f"{Utility.parent_dir()}/step_impl/base/auth.json"
 
 @step("Pause <sleep_time> seconds")
 def pause_10_seconds(sleep_time):
@@ -57,16 +58,25 @@ def setup_test_run():
     time.sleep(2)
 
 @before_spec("<controlled-access>")
-def before_spec_hook():
+def login_to_data_portal_if_necessary():
     """
-    Before each spec is ran, automation will check if the file contains the tag "controlled-access".
-    If it does, automation will check the data portal to see if the user is logged in. If not, automation
-    will click the login button and we will manually login to the data portal.
+    When a test command includes the tag "controlled-access" this step will run.
 
-    Gauge does not allow for this kind of tag checking in before_suite, so this is my workaround. To do
-    it before spec in an 'if' statement.
+    Before each spec is ran, automation will check if the user is logged into the data portal.
+    If they are not, text will print into the terminal instructing you to manually login to the data portal.
+    If running with parallel threads, you only need to login to one window. The authenticated context will be
+    saved and distributed to other parallel test runners. That way at the start of a test run you only need to login once.
+
+    Note: Gauge does not allow for this kind of tag checking in before_suite, so this is my workaround. To do
+    it before each spec in an 'if' statement.
     """
-    APP.header_section.login_to_data_portal_if_possible()
+    if APP.shared.is_visible('[data-testid="button-header-login"] >> nth=1'):
+        APP.navigate()
+        APP.shared.wait_for_loading_spinners_to_detach()
+        APP.shared.login_data_portal(AUTH_FILE_PATH)
+        WebDriver.set_authenticated_context()
+        time.sleep(2)
+        APP.shared.wait_for_loading_spinners_to_detach()
 
 
 @after_spec
@@ -122,7 +132,7 @@ def save_cohort_if_needed():
 def navigate_to_app():
     APP.navigate()
     APP.modal.accept_warning()
-
+    APP.shared.wait_for_loading_spinners_to_detach()
 
 @step("Go to <page_name> page")
 def go_to_page(page_name):
@@ -205,6 +215,7 @@ def close_the_modal():
 @step("Download <file> from <source>")
 def download_file_at_file_table(file: str, source: str):
     sources = {
+        "Bam Slicing": APP.modal.click_download_bam_slice_button,
         "Browse Annotations": APP.browse_annotations.click_annotation_download_button,
         "Cart Items": APP.shared.click_button_data_testid_normalize,
         "Cart Header": APP.shared.click_button_with_displayed_text_name,
