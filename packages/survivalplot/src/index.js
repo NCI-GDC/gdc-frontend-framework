@@ -211,7 +211,10 @@ export function renderPlot(params) {
     var granularityFactor = (outerWidth * maxDonorDensity) / domainDistance;
     var groupingFunction = (x) => Math.round(x.time * granularityFactor);
     var groupedDonors = groupBy(donorsInRange, groupingFunction);
-    var sampledDataPoints = [...Object.values(groupedDonors).map((x) => x[0])];
+    var sampledDataPoints = [
+      { time: 0, survivalEstimate: 1 },
+      ...Object.values(groupedDonors).map((x) => x[0]),
+    ];
 
     // Draw the data as an svg path
     setGroup
@@ -220,26 +223,6 @@ export function renderPlot(params) {
       .attr("class", "line")
       .attr("d", line)
       .attr("stroke", setColor);
-
-    if (sampledDataPoints.length > 0) {
-      setGroup
-        .append("line")
-        .attr("class", "line")
-        .attr("stroke", setColor)
-        .attr("x1", 0)
-        .attr("y1", 1)
-        .attr("x2", x(sampledDataPoints[0].time))
-        .attr("y2", 1);
-
-      setGroup
-        .append("line")
-        .attr("class", "line")
-        .attr("stroke", setColor)
-        .attr("x1", x(sampledDataPoints[0].time))
-        .attr("y1", 1)
-        .attr("x2", x(sampledDataPoints[0].time))
-        .attr("y2", y(sampledDataPoints[0].survivalEstimate));
-    }
 
     // Draw the confidence interval
     shouldShowConfidenceIntervals &&
@@ -278,15 +261,21 @@ export function renderPlot(params) {
     markers
       .on("mouseover", function (event, d) {
         var donorGroup = groupedDonors[groupingFunction(d)];
-        onMouseEnterDonors(event, donorGroup);
+        if (donorGroup) {
+          onMouseEnterDonors(event, donorGroup);
+        }
       })
       .on("mouseout", function (event, d) {
         var donorGroup = groupedDonors[groupingFunction(d)];
-        onMouseLeaveDonors(event, donorGroup);
+        if (donorGroup) {
+          onMouseLeaveDonors(event, donorGroup);
+        }
       })
       .on("click", function (event, d) {
         var donorGroup = groupedDonors[groupingFunction(d)];
-        onClickDonors(event, donorGroup);
+        if (donorGroup) {
+          onClickDonors(event, donorGroup);
+        }
       });
 
     if (getSetSymbol) {
