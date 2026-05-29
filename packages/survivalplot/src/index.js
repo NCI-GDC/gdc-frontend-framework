@@ -212,7 +212,7 @@ export function renderPlot(params) {
     var groupingFunction = (x) => Math.round(x.time * granularityFactor);
     var groupedDonors = groupBy(donorsInRange, groupingFunction);
     var sampledDataPoints = [
-      { time: 0, survivalEstimate: 1 },
+      { time: 0, survivalEstimate: 1, axisPoint: true },
       ...Object.values(groupedDonors).map((x) => x[0]),
     ];
 
@@ -256,7 +256,9 @@ export function renderPlot(params) {
       .attr("y2", function (d) {
         return y(d.survivalEstimate) + (d.status === "deceased" ? 10 : -5);
       })
-      .attr("stroke", setColor);
+      .attr("stroke", function (d) {
+        return d?.axisPoint ? "none" : setColor;
+      });
 
     markers
       .on("mouseover", function (event, d) {
