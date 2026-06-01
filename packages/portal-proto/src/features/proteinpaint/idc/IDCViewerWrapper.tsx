@@ -29,9 +29,8 @@ import {
   IDCViewerRow,
 } from "@/features/proteinpaint/idc/types";
 import {
-  IDC_PARQUET_CURRENT_URL,
-  fetchLatestVersionedParquetUrl,
-  loadParquetFromUrl,
+  IDC_CURRENT_VERSION_LABEL,
+  loadIDCParquetWithFallback,
 } from "@/features/proteinpaint/idc/utils";
 import { PaginationOptions } from "@/components/Table/types";
 import TotalItems from "@/components/Table/TotalItem";
@@ -76,6 +75,14 @@ const IDCViewerWrapper: FC = () => {
       }
     | undefined
   >(undefined);
+  // Version of the IDC mapping artifact that was actually loaded ("current"
+  // when the latest published file is used, otherwise an archived version).
+  const [idcVersion, setIdcVersion] = useState<string | undefined>(undefined);
+  // Data version embedded in the parquet footer metadata
+  // (idc_index_data_version), e.g. "24.2.1-0-g119c0c7".
+  const [idcDataVersion, setIdcDataVersion] = useState<string | undefined>(
+    undefined,
+  );
 
   // Map sorting (table) -> API SortBy
   const mapSortingToSortBy = useCallback((): ReadonlyArray<SortBy> => {
@@ -97,30 +104,24 @@ const IDCViewerWrapper: FC = () => {
       setParquetLoading(true);
       setLoadError(false);
 
-      let parquetData:
-        | Awaited<ReturnType<typeof loadParquetFromUrl>>
-        | undefined;
-
-      try {
-        parquetData = await loadParquetFromUrl(IDC_PARQUET_CURRENT_URL);
-      } catch {
-        // current version is broken — fall back to listing previous versions
-      }
-
-      if (!parquetData) {
-        try {
-          const fallbackUrl = await fetchLatestVersionedParquetUrl();
-          if (fallbackUrl) {
-            parquetData = await loadParquetFromUrl(fallbackUrl);
-          }
-        } catch {
-          // bucket listing or fallback parquet unavailable
-        }
-      }
+      // Try the "current" artifact first, then traverse archived versions
+      // (newest -> oldest) until a valid, accessible, readable file is found.
+      const parquetData = await loadIDCParquetWithFallback();
 
       if (!mounted) return;
       if (parquetData) {
-        setIdcData(parquetData);
+        setIdcData({
+          idc_data: parquetData.idc_data,
+          case_ids: parquetData.case_ids,
+        });
+        setIdcVersion(parquetData.version);
+        setIdcDataVersion(parquetData.dataVersion);
+        // eslint-disable-next-line no-console
+        console.info(
+          `[IDC] Loaded IDC mapping version "${parquetData.version}" (data version "${
+            parquetData.dataVersion ?? "unknown"
+          }") from ${parquetData.url}`,
+        );
       } else {
         setLoadError(true);
       }
@@ -443,6 +444,17 @@ const IDCViewerWrapper: FC = () => {
               ))}
           </div>
         </div>
+        {!parquetLoading && !loadError && idcVersion && (
+          <div
+            data-testid="idc-version-info"
+            className="mt-2 text-right text-xs text-gdc-grey-dark"
+          >
+            {idcVersion === IDC_CURRENT_VERSION_LABEL
+              ? "IDC URL version: current"
+              : `IDC URL version: ${idcVersion} (fallback — current version unavailable)`}
+            {idcDataVersion && ` - IDC file version: ${idcDataVersion}`}
+          </div>
+        )}
       </div>
     </div>
   );
