@@ -120,12 +120,6 @@ const IDCViewerWrapper: FC = () => {
         });
         setIdcUrlVersion(parquetData.urlVersion);
         setIdcMetadataVersion(parquetData.metadataVersion);
-        // eslint-disable-next-line no-console
-        console.info(
-          `[IDC] Loaded IDC mapping version "${parquetData.urlVersion}" (data version "${
-            parquetData.metadataVersion ?? "unknown"
-          }") from ${parquetData.url}`,
-        );
       } else {
         setLoadError(true);
       }

@@ -30,10 +30,6 @@ const IDC_PARQUET_COLUMNS = [
   "gdc_case_id",
 ];
 
-// Columns that MUST be present for a parquet file to be considered a valid,
-// readable IDC mapping file (used to verify the file format is as expected).
-const IDC_REQUIRED_COLUMNS = ["PatientID", "StudyInstanceUID", "gdc_case_id"];
-
 // Result of a successful (validated) IDC parquet load.
 export interface IDCParquetLoadResult {
   idc_data: ReadonlyArray<IDCParquetData>;
@@ -63,7 +59,7 @@ export function isValidIDCParquetData(rows: unknown): rows is IDCParquetData[] {
   if (rows.length === 0) return false;
   const sample = rows[0];
   if (!sample || typeof sample !== "object") return false;
-  return IDC_REQUIRED_COLUMNS.every((col) => col in (sample as object));
+  return IDC_PARQUET_COLUMNS.every((col) => col in (sample as object));
 }
 
 // Read the IDC index data version from the parquet footer key/value metadata.

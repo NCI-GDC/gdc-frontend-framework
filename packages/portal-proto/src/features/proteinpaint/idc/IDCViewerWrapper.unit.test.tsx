@@ -77,6 +77,7 @@ it("Render IDC table columns", async () => {
   // provide one parquet row and one matching GDC case
   parquetRows = [
     {
+      collection_id: "COLLECTION",
       PatientID: "CASE123",
       StudyInstanceUID: "STUDY1",
       StudyDate: "2020-01-01",
@@ -118,6 +119,7 @@ it("shows no-idc message when no idc images for selected cohort", async () => {
   // component renders the empty-state message instead of the error state.
   parquetRows = [
     {
+      collection_id: "COLLECTION",
       PatientID: "CASE123",
       StudyInstanceUID: "STUDY1",
       StudyDate: "2020-01-01",
