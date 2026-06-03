@@ -1,7 +1,10 @@
 import { compressors } from "hyparquet-compressors";
 import { parquetReadObjects, parquetMetadata } from "hyparquet";
 import semver from "semver";
-import { IDCParquetData } from "@/features/proteinpaint/idc/types";
+import {
+  IDCParquetData,
+  IDCParquetIndexResult,
+} from "@/features/proteinpaint/idc/types";
 
 export const IDC_BUCKET_URL =
   "https://storage.googleapis.com/idc-index-data-artifacts/";
@@ -37,13 +40,13 @@ export interface IDCParquetLoadResult {
   case_ids: readonly string[];
   // Version label of the artifact that was successfully loaded, e.g.
   // "current" or "23.6.0".
-  version: string;
+  urlVersion: string;
   // The fully-qualified URL the data was loaded from.
   url: string;
   // Version embedded in the parquet footer key/value metadata
   // (idc_index_data_version), e.g. "24.2.1-0-g119c0c7". Undefined when the
   // metadata key is absent.
-  dataVersion?: string;
+  metadataVersion?: string;
 }
 
 // A versioned parquet artifact entry parsed from the bucket listing.
@@ -53,11 +56,11 @@ export interface IDCVersionedEntry {
 }
 
 // Verify the parsed parquet rows are in the expected format (readable).
-// An empty array is considered valid (the file was readable but contained no
-// rows); a non-empty array must expose the required IDC columns on its rows.
+// An empty array is considered invalid; a non-empty array must expose the
+// required IDC columns on its rows.
 export function isValidIDCParquetData(rows: unknown): rows is IDCParquetData[] {
   if (!Array.isArray(rows)) return false;
-  if (rows.length === 0) return true;
+  if (rows.length === 0) return false;
   const sample = rows[0];
   if (!sample || typeof sample !== "object") return false;
   return IDC_REQUIRED_COLUMNS.every((col) => col in (sample as object));
@@ -80,11 +83,9 @@ export function readIDCDataVersion(
 }
 
 // Helper: read idc_data from a parquet file
-export async function readParquetIndex(idc_index_file: any): Promise<{
-  idc_data: ReadonlyArray<IDCParquetData>;
-  case_ids: readonly string[];
-  dataVersion?: string;
-}> {
+export async function readParquetIndex(
+  idc_index_file: any,
+): Promise<IDCParquetIndexResult> {
   const raw_rows = await parquetReadObjects({
     file: idc_index_file,
     columns: IDC_PARQUET_COLUMNS,
@@ -123,7 +124,9 @@ export async function readParquetIndex(idc_index_file: any): Promise<{
 
 // Fetch + parse a parquet URL; throws on any failure (network, CORS, HTTP
 // error, or unreadable/invalid file format).
-export async function loadParquetFromUrl(url: string) {
+export async function loadParquetFromUrl(
+  url: string,
+): Promise<IDCParquetIndexResult> {
   // A CORS failure or network error rejects fetch with a TypeError, which
   // propagates to the caller and is treated as "not accessible".
   const resp = await fetch(url);
@@ -187,9 +190,8 @@ async function tryLoadValidatedParquet(
 ): Promise<IDCParquetLoadResult | undefined> {
   try {
     const data = await loadParquetFromUrl(url);
-    return { ...data, version, url };
+    return { ...data, urlVersion: version, url };
   } catch (err) {
-    // eslint-disable-next-line no-console
     console.warn(
       `[IDC] Parquet artifact "${version}" is unavailable, inaccessible, or invalid and will be skipped:`,
       err instanceof Error ? err.message : err,

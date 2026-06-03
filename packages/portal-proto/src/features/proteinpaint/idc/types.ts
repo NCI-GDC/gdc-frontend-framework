@@ -37,3 +37,10 @@ export type IDCParquetData = {
   study_type: string;
   gdc_case_id: string;
 };
+
+// Result of reading an IDC parquet index file.
+export interface IDCParquetIndexResult {
+  idc_data: ReadonlyArray<IDCParquetData>;
+  case_ids: readonly string[];
+  dataVersion?: string;
+}

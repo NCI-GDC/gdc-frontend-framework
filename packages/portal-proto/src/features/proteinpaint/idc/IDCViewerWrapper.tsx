@@ -118,12 +118,12 @@ const IDCViewerWrapper: FC = () => {
           idc_data: parquetData.idc_data,
           case_ids: parquetData.case_ids,
         });
-        setIdcUrlVersion(parquetData.version);
-        setIdcMetadataVersion(parquetData.dataVersion);
+        setIdcUrlVersion(parquetData.urlVersion);
+        setIdcMetadataVersion(parquetData.metadataVersion);
         // eslint-disable-next-line no-console
         console.info(
-          `[IDC] Loaded IDC mapping version "${parquetData.version}" (data version "${
-            parquetData.dataVersion ?? "unknown"
+          `[IDC] Loaded IDC mapping version "${parquetData.urlVersion}" (data version "${
+            parquetData.metadataVersion ?? "unknown"
           }") from ${parquetData.url}`,
         );
       } else {
