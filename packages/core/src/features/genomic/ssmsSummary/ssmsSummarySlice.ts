@@ -5,7 +5,7 @@ import {
   SSMSDefaults,
 } from "src/features/gdcapi/types";
 
-interface SummaryData {
+export interface SSMSSummaryData {
   uuid: string;
   dna_change: string;
   type: string;
@@ -13,23 +13,23 @@ interface SummaryData {
   cosmic_id: Array<string>;
   allele_in_the_reference_assembly: string;
   civic?: string;
-  transcript: {
+  transcript?: {
     is_canonical: boolean;
     transcript_id: string;
-    annotation: {
-      polyphen_impact: string;
-      polyphen_score: number;
-      sift_impact: string;
-      sift_score: number;
-      vep_impact: string;
-      dbsnp: string;
+    annotation?: {
+      polyphen_impact?: string;
+      polyphen_score?: number;
+      sift_impact?: string;
+      sift_score?: number;
+      vep_impact?: string;
+      dbsnp?: string;
     };
   };
 }
 
 export const ssmsSummarySlice = endpointSlice.injectEndpoints({
   endpoints: (builder) => ({
-    ssmsSummary: builder.query<SummaryData, GdcApiRequest>({
+    ssmsSummary: builder.query<SSMSSummaryData, GdcApiRequest>({
       query: (request) => ({
         request,
         endpoint: "ssms",
