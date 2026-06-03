@@ -75,14 +75,16 @@ const IDCViewerWrapper: FC = () => {
       }
     | undefined
   >(undefined);
-  // Version of the IDC mapping artifact that was actually loaded ("current"
+  // Version of the IDC parquet file that was actually loaded ("current"
   // when the latest published file is used, otherwise an archived version).
-  const [idcVersion, setIdcVersion] = useState<string | undefined>(undefined);
-  // Data version embedded in the parquet footer metadata
-  // (idc_index_data_version), e.g. "24.2.1-0-g119c0c7".
-  const [idcDataVersion, setIdcDataVersion] = useState<string | undefined>(
+  const [idcUrlVersion, setIdcUrlVersion] = useState<string | undefined>(
     undefined,
   );
+  // Data version embedded in the parquet footer metadata
+  // (idc_index_data_version), e.g. "24.2.1-0-g119c0c7".
+  const [idcMetadataVersion, setIdcMetadataVersion] = useState<
+    string | undefined
+  >(undefined);
 
   // Map sorting (table) -> API SortBy
   const mapSortingToSortBy = useCallback((): ReadonlyArray<SortBy> => {
@@ -114,8 +116,8 @@ const IDCViewerWrapper: FC = () => {
           idc_data: parquetData.idc_data,
           case_ids: parquetData.case_ids,
         });
-        setIdcVersion(parquetData.version);
-        setIdcDataVersion(parquetData.dataVersion);
+        setIdcUrlVersion(parquetData.version);
+        setIdcMetadataVersion(parquetData.dataVersion);
         // eslint-disable-next-line no-console
         console.info(
           `[IDC] Loaded IDC mapping version "${parquetData.version}" (data version "${
@@ -444,15 +446,15 @@ const IDCViewerWrapper: FC = () => {
               ))}
           </div>
         </div>
-        {!parquetLoading && !loadError && idcVersion && (
+        {!parquetLoading && !loadError && idcUrlVersion && (
           <div
             data-testid="idc-version-info"
             className="mt-2 text-right text-xs text-gdc-grey-dark"
           >
-            {idcVersion === IDC_CURRENT_VERSION_LABEL
+            {idcUrlVersion === IDC_CURRENT_VERSION_LABEL
               ? "IDC URL version: current"
-              : `IDC URL version: ${idcVersion} (fallback — current version unavailable)`}
-            {idcDataVersion && ` - IDC file version: ${idcDataVersion}`}
+              : `IDC URL version: ${idcUrlVersion} (fallback — current version unavailable)`}
+            {idcMetadataVersion && ` - IDC file version: ${idcMetadataVersion}`}
           </div>
         )}
       </div>
