@@ -75,8 +75,10 @@ const IDCViewerWrapper: FC = () => {
       }
     | undefined
   >(undefined);
-  // Version of the IDC parquet file that was actually loaded ("current"
-  // when the latest published file is used, otherwise an archived version).
+  // Version label from the bucket XML listing used to load the IDC parquet
+  // file. The default value is "current"; if that artifact is unavailable,
+  // an archived version from https://storage.googleapis.com/idc-index-data-artifacts/
+  // is selected instead.
   const [idcUrlVersion, setIdcUrlVersion] = useState<string | undefined>(
     undefined,
   );
