@@ -10,7 +10,7 @@ export const IDC_BUCKET_URL =
   "https://storage.googleapis.com/idc-index-data-artifacts/";
 export const IDC_PARQUET_KEY_SUFFIX =
   "/release_artifacts/gdc_idc_mapping.parquet";
-export const IDC_PARQUET_CURRENT_URL = `${IDC_BUCKET_URL}current1${IDC_PARQUET_KEY_SUFFIX}`;
+export const IDC_PARQUET_CURRENT_URL = `${IDC_BUCKET_URL}current${IDC_PARQUET_KEY_SUFFIX}`;
 
 // Label used to identify the "current" (latest published) parquet artifact.
 export const IDC_CURRENT_VERSION_LABEL = "current";
