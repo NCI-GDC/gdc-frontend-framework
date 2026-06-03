@@ -4,7 +4,6 @@ import {
   useGetSurvivalPlotQuery,
   FilterSet,
   GqlIntersection,
-  GqlOperation,
   useCreateCaseSetFromFiltersMutation,
 } from "@gff/core";
 import SurvivalPlot from "../charts/SurvivalPlot/SurvivalPlot";
@@ -14,49 +13,11 @@ import { SurvivalPlotTypes } from "../charts/SurvivalPlot/types";
 import { useDeepCompareEffect } from "use-deep-compare";
 import { emptySurvivalPlot } from "../genomic/types";
 
-const survivalDataCompletenessFilters: GqlOperation[] = [
-  {
-    op: "or",
-    content: [
-      {
-        op: "and",
-        content: [
-          {
-            op: ">",
-            content: {
-              field: "demographic.days_to_death",
-              value: 0,
-            },
-          },
-        ],
-      },
-      {
-        op: "and",
-        content: [
-          {
-            op: ">",
-            content: {
-              field: "diagnoses.days_to_last_follow_up",
-              value: 0,
-            },
-          },
-        ],
-      },
-    ],
-  },
-  {
-    op: "not",
-    content: { field: "demographic.vital_status" },
-  },
-];
-
 export const makeSurvivalCaseFilters = (
-  primaryCohortSetId: string,
-  comparisonCohortSetId: string,
+  survivalDataCases: string[],
 ): GqlIntersection => ({
   op: "and",
   content: [
-    ...survivalDataCompletenessFilters,
     {
       op: "and",
       content: [
@@ -64,14 +25,7 @@ export const makeSurvivalCaseFilters = (
           op: "in",
           content: {
             field: "cases.case_id",
-            value: [`set_id:${primaryCohortSetId}`],
-          },
-        },
-        {
-          op: "excludeifany",
-          content: {
-            field: "cases.case_id",
-            value: `set_id:${comparisonCohortSetId}`,
+            value: survivalDataCases,
           },
         },
       ],
@@ -120,9 +74,32 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
   );
   const [createSet] = useCreateCaseSetFromFiltersMutation();
 
+  const { data, isUninitialized, isFetching, isError } =
+    useGetSurvivalPlotQuery({
+      filters: [filters.cohort1, filters.cohort2],
+    });
+
+  useDeepCompareEffect(() => {
+    setSurvivalPlotSelectable(data?.survivalData.length !== 0);
+  }, [data, setSurvivalPlotSelectable]);
+
+  const cohort1Count = data?.survivalData[0]
+    ? data.survivalData[0].donors?.length
+    : 0;
+  const cohort2Count = data?.survivalData[1]
+    ? data.survivalData[1].donors?.length
+    : 0;
+
+  const cohort1Cases = (data?.survivalData[0]?.donors || []).map(
+    (donor) => donor.id,
+  );
+  const cohort2Cases = (data?.survivalData[1]?.donors || []).map(
+    (donor) => donor.id,
+  );
+
   const generatePrimaryFilters = async () => {
     return await createSet({
-      filters: makeSurvivalCaseFilters(caseSetIds[0], caseSetIds[1]),
+      filters: makeSurvivalCaseFilters(cohort1Cases),
       intent: "portal",
       set_type: "frozen",
     })
@@ -143,7 +120,7 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
 
   const generateComparisonFilters = async () => {
     return await createSet({
-      filters: makeSurvivalCaseFilters(caseSetIds[1], caseSetIds[0]),
+      filters: makeSurvivalCaseFilters(cohort2Cases),
       intent: "portal",
       set_type: "frozen",
     })
@@ -161,23 +138,6 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
         } as FilterSet;
       });
   };
-
-  const { data, isUninitialized, isFetching, isError } =
-    useGetSurvivalPlotQuery({
-      filters: [filters.cohort1, filters.cohort2],
-    });
-
-  useDeepCompareEffect(() => {
-    setSurvivalPlotSelectable(data?.survivalData.length !== 0);
-  }, [data, setSurvivalPlotSelectable]);
-
-  const cohort1Count = data?.survivalData[0]
-    ? data.survivalData[0].donors?.length
-    : 0;
-  const cohort2Count = data?.survivalData[1]
-    ? data.survivalData[1].donors?.length
-    : 0;
-
   const isLoading = isSetsloading || isFetching || isUninitialized;
 
   return (
