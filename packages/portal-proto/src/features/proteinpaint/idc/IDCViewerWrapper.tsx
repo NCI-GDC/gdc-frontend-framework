@@ -450,7 +450,8 @@ const IDCViewerWrapper: FC = () => {
             {idcUrlVersion === IDC_CURRENT_VERSION_LABEL
               ? "IDC URL version: current"
               : `IDC URL version: ${idcUrlVersion} (fallback — current version unavailable)`}
-            {idcMetadataVersion && ` - IDC file version: ${idcMetadataVersion}`}
+            {idcMetadataVersion &&
+              ` - IDC metadata file version: ${idcMetadataVersion}`}
           </div>
         )}
       </div>

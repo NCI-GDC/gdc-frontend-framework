@@ -186,7 +186,12 @@ async function tryLoadValidatedParquet(
 ): Promise<IDCParquetLoadResult | undefined> {
   try {
     const data = await loadParquetFromUrl(url);
-    return { ...data, urlVersion: version, url };
+    return {
+      ...data,
+      metadataVersion: data.dataVersion,
+      urlVersion: version,
+      url,
+    };
   } catch (err) {
     console.warn(
       `[IDC] Parquet artifact "${version}" is unavailable, inaccessible, or invalid and will be skipped:`,
