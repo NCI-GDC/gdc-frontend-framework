@@ -25,7 +25,6 @@ export async function fetchAuth({
     credentials: "same-origin",
     method: "GET",
     headers: {
-      "Access-Control-Allow-Origin": "true",
       "Content-Type": "application/json",
     },
   });

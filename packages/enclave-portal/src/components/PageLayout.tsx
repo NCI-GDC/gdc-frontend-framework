@@ -12,7 +12,10 @@ const PageLayout: React.FC<PageLayoutProps> = ({
       <Header />
       {children}
       <Footer
-        useVersionInfoDetailsHook={() => ({ data: {}, isSuccess: true })}
+        useVersionInfoDetailsHook={() => ({
+          data: { tag: "", data_release: "" },
+          isSuccess: true,
+        })}
         linkColData={[]}
         linkCloud={[]}
         appInfo={{}}
