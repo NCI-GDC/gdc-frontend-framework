@@ -2931,7 +2931,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 rounded-none r
                             class="text-heading font-medium text-primary-darkest rounded-l-none h-[50px] border-primary border-l-2 m_8fb7ebe7 mantine-Input-input mantine-Select-input"
                             data-testid="switchButton"
                             data-variant="default"
-                            id="mantine-mock-84"
+                            id="mantine-mock-50"
                             value="Unsaved_Cohort"
                           />
                           <div
@@ -3039,7 +3039,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 rounded-none r
                         @media (max-width: 35.99375em) {.mantine-visible-from-xs {display: none !important;}}@media (min-width: 36em) {.mantine-hidden-from-xs {display: none !important;}}@media (max-width: 47.99375em) {.mantine-visible-from-sm {display: none !important;}}@media (min-width: 48em) {.mantine-hidden-from-sm {display: none !important;}}@media (max-width: 61.99375em) {.mantine-visible-from-md {display: none !important;}}@media (min-width: 62em) {.mantine-hidden-from-md {display: none !important;}}@media (max-width: 74.99375em) {.mantine-visible-from-lg {display: none !important;}}@media (min-width: 75em) {.mantine-hidden-from-lg {display: none !important;}}@media (max-width: 87.99375em) {.mantine-visible-from-xl {display: none !important;}}@media (min-width: 88em) {.mantine-hidden-from-xl {display: none !important;}}
                       </style>
                       <button
-                        aria-controls="mantine-mock-90-dropdown"
+                        aria-controls="mantine-mock-89-dropdown"
                         aria-expanded="false"
                         aria-haspopup="menu"
                         aria-label="Save cohort"
@@ -3062,7 +3062,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 !h-full !w-ful
                         data-variant="action"
                         data-with-left-section="true"
                         data-with-right-section="true"
-                        id="mantine-mock-90-target"
+                        id="mantine-mock-89-target"
                         type="button"
                       >
                         <span
@@ -3781,7 +3781,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                   data-orientation="horizontal"
                   data-testid="filters-facets-summary-view"
                   data-variant="pills"
-                  id="mantine-mock-114"
+                  id="mantine-mock-78"
                   style="--tabs-radius: var(--mantine-radius-default); --tabs-color: var(--mantine-color-blue-filled);"
                 >
                   <div
@@ -3793,14 +3793,14 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     style="--tabs-justify: flex-end;"
                   >
                     <button
-                      aria-controls="mantine-mock-114-panel-summary"
+                      aria-controls="mantine-mock-78-panel-summary"
                       aria-selected="true"
                       class="mantine-focus-auto m_c3381914 flex flex-row items-center bg-base-max text-primary border font-medium border-solid border-primary hover:bg-secondary-darker hover:text-secondary-content-lightest rounded-md first:border-r-0 last:border-l-0 first:rounded-r-none last:rounded-l-none hover:border-secondary data-active:bg-secondary data-active:text-secondary-content-max m_4ec4dce6 mantine-Tabs-tab m_87cf2631 mantine-UnstyledButton-root"
                       data-active="true"
                       data-orientation="horizontal"
                       data-testid="button-summary-view"
                       data-variant="pills"
-                      id="mantine-mock-114-tab-summary"
+                      id="mantine-mock-78-tab-summary"
                       role="tab"
                       tabindex="0"
                       type="button"
@@ -3835,13 +3835,13 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                       </span>
                     </button>
                     <button
-                      aria-controls="mantine-mock-114-panel-table"
+                      aria-controls="mantine-mock-78-panel-table"
                       aria-selected="false"
                       class="mantine-focus-auto m_c3381914 flex flex-row items-center bg-base-max text-primary border font-medium border-solid border-primary hover:bg-secondary-darker hover:text-secondary-content-lightest rounded-md first:border-r-0 last:border-l-0 first:rounded-r-none last:rounded-l-none hover:border-secondary data-active:bg-secondary data-active:text-secondary-content-max m_4ec4dce6 mantine-Tabs-tab m_87cf2631 mantine-UnstyledButton-root"
                       data-orientation="horizontal"
                       data-testid="button-table-view"
                       data-variant="pills"
-                      id="mantine-mock-114-tab-table"
+                      id="mantine-mock-78-tab-table"
                       role="tab"
                       tabindex="-1"
                       type="button"
@@ -3877,17 +3877,17 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
                     </button>
                   </div>
                   <div
-                    aria-labelledby="mantine-mock-114-tab-summary"
+                    aria-labelledby="mantine-mock-78-tab-summary"
                     class="h-max m_b0c91715 mantine-Tabs-panel"
                     data-orientation="horizontal"
-                    id="mantine-mock-114-panel-summary"
+                    id="mantine-mock-78-panel-summary"
                     role="tabpanel"
                   />
                   <div
-                    aria-labelledby="mantine-mock-114-tab-table"
+                    aria-labelledby="mantine-mock-78-tab-table"
                     class="h-max m_b0c91715 mantine-Tabs-panel"
                     data-orientation="horizontal"
-                    id="mantine-mock-114-panel-table"
+                    id="mantine-mock-78-panel-table"
                     role="tabpanel"
                     style="display: none;"
                   />

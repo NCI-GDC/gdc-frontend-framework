@@ -22,7 +22,7 @@
     "resolveJsonModule": true,
     "target": "esnext",
     "lib": ["dom", "esnext"],
-    "types": ["node"],
+    "types": ["node", "jest"],
     "baseUrl": ".",
     "paths": {
       "@/core/*": ["src/core/*"]

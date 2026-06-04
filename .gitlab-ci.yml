@@ -77,7 +77,6 @@ Build and test core and portal:
     - npm ci
   script:
     - npx lerna run clean
-    - npx lerna run build --ignore portal-proto --ignore enclave-portal
     - npx lerna run compile
     - npm run test:all
   <<: *default_rules
