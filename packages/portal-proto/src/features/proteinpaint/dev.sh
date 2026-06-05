@@ -11,7 +11,7 @@ if [[ "$1" == "unlink" ]]; then
 	npm uninstall @sjcrh/proteinpaint-client --save --workspace=packages/portal-proto
 	npm install @sjcrh/proteinpaint-client --save --save-exact --workspace=packages/portal-proto
 else
-	# to test the local PP client code - 
+	# to test the local PP client code -
 	# !!! NOTE: turbopack used to find the @sjrch/proteintpaint under node_mmodules, but has stopeed working !!!
 	# a temporary fix is to do the following:
 	# 1. run `npm pack` from the proteinpaint/client dir
