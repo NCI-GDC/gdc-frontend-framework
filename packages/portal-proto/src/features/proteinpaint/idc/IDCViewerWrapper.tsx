@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import {
   Row,
   createColumnHelper,
@@ -6,8 +6,6 @@ import {
   SortingState,
   ExpandedState,
 } from "@tanstack/react-table";
-import { compressors } from "hyparquet-compressors";
-import { parquetReadObjects } from "hyparquet";
 import {
   convertFilterToGqlFilter,
   useGetCasesQuery,
@@ -25,62 +23,18 @@ import VerticalTable from "@/components/Table/VerticalTable";
 import IDCExpandRowComponent from "./IDCExpandRowComponent";
 import { LoadingOverlay } from "@mantine/core";
 import IDCStudyRowsComponent from "@/features/proteinpaint/idc/IDCStudyRowsComponent";
-import { IDCStudy, IDCViewerRow } from "@/features/proteinpaint/idc/types";
+import {
+  IDCParquetData,
+  IDCStudy,
+  IDCViewerRow,
+} from "@/features/proteinpaint/idc/types";
+import {
+  IDC_CURRENT_VERSION_LABEL,
+  loadIDCParquetWithFallback,
+} from "@/features/proteinpaint/idc/utils";
 import { PaginationOptions } from "@/components/Table/types";
 import TotalItems from "@/components/Table/TotalItem";
 import { buildCasesTableSearchFilters } from "@/features/cases/CasesView/utils";
-
-const IDC_PARQUET_URL =
-  "https://storage.googleapis.com/idc-index-data-artifacts/current/release_artifacts/gdc_idc_mapping.parquet";
-
-// Columns list for IDC parquet reads
-const IDC_PARQUET_COLUMNS = [
-  "collection_id",
-  "PatientID",
-  "StudyInstanceUID",
-  "StudyDate",
-  "StudyDescription",
-  "study_type",
-  "gdc_case_id",
-];
-
-// Type for a single row read from the IDC parquet index.
-type IDCParquetData = {
-  PatientID: string;
-  collection_id: string;
-  StudyInstanceUID: string;
-  StudyDate: string;
-  StudyDescription: string;
-  study_type: string;
-  gdc_case_id: string;
-};
-
-// Helper: read idc_data from a parquet file
-async function readParquetIndex(idc_index_file: any): Promise<{
-  idc_data: ReadonlyArray<IDCParquetData>;
-  case_ids: readonly string[];
-}> {
-  const raw_rows = await parquetReadObjects({
-    file: idc_index_file,
-    columns: IDC_PARQUET_COLUMNS,
-    compressors: compressors,
-  });
-
-  const idc_data = raw_rows || [];
-
-  // Extract unique gdc case ids from the parquet data
-  const gdcCaseIdSet = new Set<string>();
-  idc_data.forEach((o: any) => {
-    const cid = o?.gdc_case_id;
-    if (cid) gdcCaseIdSet.add(String(cid));
-  });
-  const gdcCaseIds = Array.from(gdcCaseIdSet) as readonly string[];
-
-  return {
-    idc_data: idc_data as Array<IDCParquetData>,
-    case_ids: gdcCaseIds,
-  };
-}
 
 const IDCViewerWrapper: FC = () => {
   // Global loading state for parquet download/parsing + GDC fetch
@@ -121,6 +75,18 @@ const IDCViewerWrapper: FC = () => {
       }
     | undefined
   >(undefined);
+  // Version label from the bucket XML listing used to load the IDC parquet
+  // file. The default value is "current"; if that artifact is unavailable,
+  // an archived version from https://storage.googleapis.com/idc-index-data-artifacts/
+  // is selected instead.
+  const [idcUrlVersion, setIdcUrlVersion] = useState<string | undefined>(
+    undefined,
+  );
+  // Data version embedded in the parquet footer metadata
+  // (idc_index_data_version), e.g. "24.2.1-0-g119c0c7".
+  const [idcMetadataVersion, setIdcMetadataVersion] = useState<
+    string | undefined
+  >(undefined);
 
   // Map sorting (table) -> API SortBy
   const mapSortingToSortBy = useCallback((): ReadonlyArray<SortBy> => {
@@ -141,21 +107,23 @@ const IDCViewerWrapper: FC = () => {
     const loadIdc = async () => {
       setParquetLoading(true);
       setLoadError(false);
-      try {
-        const resp = await fetch(IDC_PARQUET_URL);
-        if (!resp.ok) {
-          throw new Error(
-            `Failed to fetch parquet: ${resp.status} ${resp.statusText}`,
-          );
-        }
-        const arrayBuffer = await resp.arrayBuffer();
-        const parsed = await readParquetIndex(arrayBuffer);
-        if (mounted) setIdcData(parsed);
-      } catch (err) {
+
+      // Try the "current" artifact first, then traverse archived versions
+      // (newest -> oldest) until a valid, accessible, readable file is found.
+      const parquetData = await loadIDCParquetWithFallback();
+
+      if (!mounted) return;
+      if (parquetData) {
+        setIdcData({
+          idc_data: parquetData.idc_data,
+          case_ids: parquetData.case_ids,
+        });
+        setIdcUrlVersion(parquetData.urlVersion);
+        setIdcMetadataVersion(parquetData.metadataVersion);
+      } else {
         setLoadError(true);
-      } finally {
-        if (mounted) setParquetLoading(false);
       }
+      setParquetLoading(false);
     };
 
     loadIdc();
@@ -474,6 +442,18 @@ const IDCViewerWrapper: FC = () => {
               ))}
           </div>
         </div>
+        {!parquetLoading && !loadError && idcUrlVersion && (
+          <div
+            data-testid="idc-version-info"
+            className="mt-2 text-right text-xs text-gdc-grey-dark"
+          >
+            {idcUrlVersion === IDC_CURRENT_VERSION_LABEL
+              ? "IDC URL version: current"
+              : `IDC URL version: ${idcUrlVersion} (fallback — current version unavailable)`}
+            {idcMetadataVersion &&
+              ` - IDC metadata file version: ${idcMetadataVersion}`}
+          </div>
+        )}
       </div>
     </div>
   );

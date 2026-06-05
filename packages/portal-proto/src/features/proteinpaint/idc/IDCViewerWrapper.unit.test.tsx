@@ -1,6 +1,7 @@
+import "@testing-library/jest-dom";
 import { render } from "@testing-library/react";
 import { MantineProvider } from "@mantine/core";
-import React from "react";
+import * as React from "react";
 
 // mutable containers adjusted per-test
 let parquetRows: any[] = [];
@@ -76,6 +77,7 @@ it("Render IDC table columns", async () => {
   // provide one parquet row and one matching GDC case
   parquetRows = [
     {
+      collection_id: "COLLECTION",
       PatientID: "CASE123",
       StudyInstanceUID: "STUDY1",
       StudyDate: "2020-01-01",
@@ -113,7 +115,19 @@ it("Render IDC table columns", async () => {
 });
 
 it("shows no-idc message when no idc images for selected cohort", async () => {
-  // leave parquetRows and gdcHits empty (handled by beforeEach)
+  // provide a valid IDC parquet row, but no matching GDC hits so the
+  // component renders the empty-state message instead of the error state.
+  parquetRows = [
+    {
+      collection_id: "COLLECTION",
+      PatientID: "CASE123",
+      StudyInstanceUID: "STUDY1",
+      StudyDate: "2020-01-01",
+      StudyDescription: "Test study",
+      study_type: "M",
+      gdc_case_id: "CASE123",
+    },
+  ];
 
   const { findByText } = render(
     <MantineProvider

@@ -26,3 +26,21 @@ export type IDCViewerRenderSubProps = {
   row: Row<IDCViewerRow>;
   clickedColumnId?: string | null;
 };
+
+// Type for a single row read from the IDC parquet index.
+export type IDCParquetData = {
+  PatientID: string;
+  collection_id: string;
+  StudyInstanceUID: string;
+  StudyDate: string;
+  StudyDescription: string;
+  study_type: string;
+  gdc_case_id: string;
+};
+
+// Result of reading an IDC parquet index file.
+export interface IDCParquetIndexResult {
+  idc_data: ReadonlyArray<IDCParquetData>;
+  case_ids: readonly string[];
+  dataVersion?: string;
+}
