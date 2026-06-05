@@ -30,7 +30,7 @@
     "@mantine/hooks": "8.3.9",
     "@mantine/notifications": "8.3.9",
     "@react-spring/web": "^10.0.3",
-    "@sjcrh/proteinpaint-client": "2.190.2",
+    "@sjcrh/proteinpaint-client": "2.191.2",
     "@tailwindcss/postcss": "^4.2.2",
     "@tanstack/react-table": "^8.9.3",
     "dayjs": "^1.11.13",
