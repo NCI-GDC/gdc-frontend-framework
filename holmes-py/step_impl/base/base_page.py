@@ -1036,13 +1036,13 @@ class BasePage:
         "and dissemination of auth to all instances of automation"
 
         print(
-            "\033[1mIn only 1 test window, please click 'Login'. Then, in the modal that appears, complete the login. The test will continue in 40 seconds.\033[0m"
+            "\033[1mIn only 1 test window, please click 'Login'. Then, in the modal that appears, complete the login. The test will continue in 45 seconds.\033[0m"
         )
         print(
             "\033[1mAfter logging in, do not click or modify anything in the window\033[0m"
         )
 
-        time.sleep(40)
+        time.sleep(45)
         # We save the context of only the window that was logged in
         if self.is_visible('[data-testid="button-header-username"] >> nth=1'):
             time.sleep(1)
@@ -1050,4 +1050,4 @@ class BasePage:
         else:
             # The other non-authenticated windows MUST close after the authenticated's context is saved.
             # That way a valid auth.json file is available to apply to their contexts.
-            time.sleep(5)
+            time.sleep(10)

@@ -37,3 +37,7 @@ def click_apps_link_same_tab(table):
 @step("Select link <header_button> from the header section")
 def click_header_link(header_button:str):
     APP.shared.click_header_button(header_button)
+
+@step("Open username menu from the header section")
+def open_username_dropdown_menu():
+    APP.header_section.open_username_dropdown_menu()
