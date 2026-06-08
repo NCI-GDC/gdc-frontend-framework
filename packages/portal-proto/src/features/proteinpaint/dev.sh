@@ -1,17 +1,26 @@
 #!/bin/bash
 
-# run from the gdc-frontend-framework project root folder
+# This script is meant for local development of GFF with a proteinpaint repo.
+# Run from the gdc-frontend-framework project root folder
 # ./packages/portal-proto/src/features/proteinpaint/dev.sh
 # assumes that the proteinpaint folder is a sibling dir of gff
+
 if [[ "$1" == "unlink" ]]; then
 	# to test the published client package before submitting a PR with an updated pp-client version
 	npm unlink ../proteinpaint/client
 	npm uninstall @sjcrh/proteinpaint-client --save --workspace=packages/portal-proto
 	npm install @sjcrh/proteinpaint-client --save --save-exact --workspace=packages/portal-proto
-
 else
-	# to test the local PP client code
-	npm link ../proteinpaint/client
+	# to test the local PP client code -
+	# !!! NOTE: turbopack used to find the @sjrch/proteintpaint under node_mmodules, but has stopeed working !!!
+	# a temporary fix is to do the following:
+	# 1. run `npm pack` from the proteinpaint/client dir
+	# 2. edit portal-proto/package.json to use the generated tarball, eg
+	#    `"@sjcrh/proteinpaint": "/Users/<name>/dev/proteinpaint/client/sjcrh-proteinpaint-client-<XXXX>.tgz"`
+	# 3. edit portal-proto/next.config.json to have `allowedDevOrigins: ['localhost.gdc.cancer.gov']`,
+	# 4. then run this script from the GFF dir with `./packages/portal-proto/src/features/proteinpaint/dev.sh`
+	# 5. then run the usual `npm run ssl-proxy` from the pp dir
+	npm unlink ../proteinpaint/client # change back to `npm link` when fixed
 	# An issue with npm link and workspaces: the non-linked @sjcrh/proteinpaint-client package
 	# may be moved to portal-proto/node_modules, creating 2 separate modules of the same package,
 	# must ensure only the linked module is used for bundling so delete
