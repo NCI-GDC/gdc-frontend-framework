@@ -112,7 +112,7 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
   usePopulateFacetData(customFacetDefinitions, queryOptions);
 
   return (
-    <div className="flex flex-col w-full h-full bg-base-max pr-6 relative">
+    <div className="flex h-full bg-base-max pr-6 relative">
       <LoadingOverlay data-testid="loading-spinner" visible={!isSuccess} />
       <Modal
         data-testid="modal-cohort-builder-add-custom-filter"
