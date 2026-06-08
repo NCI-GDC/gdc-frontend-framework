@@ -8,7 +8,8 @@ import {
   ComparativeSurvival,
 } from "@/features/genomic/types";
 import {
-  useGeneAndSSMPanelData,
+  useGenomicFilters,
+  useGenomicSurvivalPlot,
   useSelectFilterContent,
 } from "@/features/genomic/hooks";
 import { useScrollIntoView } from "@mantine/hooks";
@@ -46,15 +47,14 @@ export const SSMSPanel = ({
   searchTermsForGene,
   clearSearchTermsForGene,
 }: SSMSPanelProps): JSX.Element => {
+  const { cohortFilters, genomicFilters } = useGenomicFilters();
+  console.log({ comparativeSurvival });
   const {
-    isDemoMode,
-    cohortFilters,
-    genomicFilters,
-    overwritingDemoFilter,
     survivalPlotData,
     survivalPlotFetching,
     survivalPlotReady,
-  } = useGeneAndSSMPanelData(comparativeSurvival, false);
+    survivalPlotIsUninit,
+  } = useGenomicSurvivalPlot(comparativeSurvival, false, !topGeneSSMSSuccess);
 
   /**
    * Get the mutations in cohort
@@ -95,7 +95,9 @@ export const SSMSPanel = ({
         <LoadingOverlay
           data-testid="loading-spinner"
           visible={
-            survivalPlotFetching || (!survivalPlotReady && !topGeneSSMSSuccess)
+            survivalPlotIsUninit ||
+            survivalPlotFetching ||
+            (!survivalPlotReady && !topGeneSSMSSuccess)
           }
           zIndex={0}
         />
@@ -121,10 +123,9 @@ export const SSMSPanel = ({
           selectedSurvivalPlot={comparativeSurvival}
           handleSurvivalPlotToggled={handleSurvivalPlotToggled}
           genomicFilters={genomicFilters}
-          cohortFilters={isDemoMode ? overwritingDemoFilter : cohortFilters}
+          cohortFilters={cohortFilters}
           handleSsmToggled={handleSsmToggled}
           toggledSsms={toggledMutations}
-          isDemoMode={isDemoMode}
           isModal={true}
           searchTermsForGene={searchTermsForGene}
           clearSearchTermsForGene={clearSearchTermsForGene}

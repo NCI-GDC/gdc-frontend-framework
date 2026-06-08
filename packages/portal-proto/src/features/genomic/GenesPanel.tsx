@@ -9,7 +9,8 @@ import {
 } from "@/features/genomic/types";
 import {
   useSelectFilterContent,
-  useGeneAndSSMPanelData,
+  useGenomicSurvivalPlot,
+  useGenomicFilters,
 } from "@/features/genomic/hooks";
 import dynamic from "next/dynamic";
 import { GenesTableContainer } from "../GenomicTables/GenesTable/GenesTableContainer";
@@ -45,15 +46,14 @@ export const GenesPanel = ({
   handleGeneAndSSmToggled,
   handleMutationCountClick,
 }: GenesPanelProps): JSX.Element => {
+  const { cohortFilters, genomicFilters } = useGenomicFilters();
+  console.log({ comparativeSurvival });
   const {
-    isDemoMode,
-    cohortFilters,
-    genomicFilters,
-    overwritingDemoFilter,
     survivalPlotData,
     survivalPlotFetching,
     survivalPlotReady,
-  } = useGeneAndSSMPanelData(comparativeSurvival, true);
+    survivalPlotIsUninit,
+  } = useGenomicSurvivalPlot(comparativeSurvival, true, !topGeneSSMSSuccess);
 
   const currentGenes = useSelectFilterContent("genes.gene_id");
   const toggledGenes = useDeepCompareMemo(() => currentGenes, [currentGenes]);
@@ -75,7 +75,7 @@ export const GenesPanel = ({
           <GeneFrequencyChart
             marginBottom={95}
             genomicFilters={genomicFilters}
-            cohortFilters={isDemoMode ? overwritingDemoFilter : cohortFilters}
+            cohortFilters={cohortFilters}
           />
         </div>
         <div className="w-full xl:w-1/2 relative border border-base-lighter p-4">
@@ -83,6 +83,7 @@ export const GenesPanel = ({
             zIndex={0}
             data-testid="loading-spinner"
             visible={
+              survivalPlotIsUninit ||
               survivalPlotFetching ||
               (!survivalPlotReady && !topGeneSSMSSuccess)
             }
@@ -110,8 +111,7 @@ export const GenesPanel = ({
         handleGeneToggled={handleGeneToggled}
         toggledGenes={toggledGenes}
         genomicFilters={genomicFilters}
-        cohortFilters={isDemoMode ? overwritingDemoFilter : cohortFilters}
-        isDemoMode={isDemoMode}
+        cohortFilters={cohortFilters}
         handleMutationCountClick={handleMutationCountClick}
       />
     </div>
