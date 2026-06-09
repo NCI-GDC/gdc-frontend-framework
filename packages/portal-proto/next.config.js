@@ -76,6 +76,7 @@ module.exports = {
   },
   output: "standalone",
   basePath,
+  allowedDevOrigins: ["localhost.gdc.cancer.gov"],
   experimental: {
     esmExternals: true,
   },
