@@ -25,6 +25,7 @@ interface TableHeaderProps<TData> {
   table: Table<TData>;
   columnOrder: string[];
   setColumnOrder: (order: string[]) => void;
+  baseZIndex?: number;
   customBreakpoint?: number;
 }
 
@@ -49,12 +50,15 @@ const TooltipWrapper: React.FC<{
   children: React.ReactNode;
   tooltip: string;
   searchFocused: boolean;
-}> = ({ children, tooltip, searchFocused }) => (
+  baseZIndex: number;
+}> = ({ children, tooltip, searchFocused, baseZIndex }) => (
   <Popover
     opened={searchFocused}
     position="bottom-start"
     offset={0}
     width="target"
+    withinPortal={false}
+    zIndex={baseZIndex + 1} // needs to be higher z-index when in a modal
   >
     <Popover.Target>{children}</Popover.Target>
     <Popover.Dropdown className="p-2 bg-white border rounded-t-none shadow-md border-base-lighter text-nci-gray text-sm overflow-wrap break-all rounded-b font-content">
@@ -72,11 +76,13 @@ const SearchInput: React.FC<{
   onBlur: () => void;
   placeholder?: string;
   tooltip?: string;
+  baseZIndex?: number;
 }> = ({
   searchTerm,
   placeholder,
   tooltip,
   searchFocused,
+  baseZIndex,
   onClear,
   onChange,
   onFocus,
@@ -85,7 +91,11 @@ const SearchInput: React.FC<{
   const TooltipContainer = tooltip ? TooltipWrapper : React.Fragment;
 
   return (
-    <TooltipContainer tooltip={tooltip} searchFocused={searchFocused}>
+    <TooltipContainer
+      tooltip={tooltip}
+      searchFocused={searchFocused}
+      baseZIndex={baseZIndex}
+    >
       <TextInput
         leftSection={<SearchIcon size={24} aria-hidden="true" />}
         data-testid="textbox-table-search-bar"
@@ -124,6 +134,7 @@ function TableHeader<TData>({
   table,
   columnOrder,
   setColumnOrder,
+  baseZIndex,
   customBreakpoint,
 }: TableHeaderProps<TData>) {
   const [searchTerm, setSearchTerm] = useState(search?.defaultSearchTerm ?? "");
@@ -164,6 +175,7 @@ function TableHeader<TData>({
           placeholder={search?.placeholder}
           tooltip={search?.tooltip}
           searchFocused={searchFocused}
+          baseZIndex={baseZIndex}
           onClear={handleClearClick}
           onChange={handleInputChange}
           onFocus={() => setSearchFocused(true)}
