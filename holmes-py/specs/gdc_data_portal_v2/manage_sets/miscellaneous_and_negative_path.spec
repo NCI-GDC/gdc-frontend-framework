@@ -57,4 +57,4 @@ tags: gdc-data-portal-v2, manage-sets, regression
 
 ## Validate Mutation Frequency Link
 * Select the link "Mutation Frequency"
-* Is text "Distribution of Most Frequently Mutated Genes" present on the page
+* Is text "Distribution of Most Frequently Mutated Genes (SSM)" present on the page

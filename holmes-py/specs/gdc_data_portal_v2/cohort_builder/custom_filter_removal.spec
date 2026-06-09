@@ -46,6 +46,16 @@ tags: gdc-data-portal-v2, cohort-builder, regression
   |exposures.smokeless_tobacco_quit_age         |
   |exposures.tobacco_use_per_day                |
   |exposures.weight                             |
+  |analyte.ribosomal_rna_28s_16s_ratio          |
+  |demographic.gender                           |
+  |family_history.relationship_gender           |
+  |other_clinical_attribute.undescended_testis_corrected_age|
+  |pathology_details.epithelioid_cell_percent   |
+  |pathology_details.extrascleral_extension     |
+  |pathology_details.size_extraocular_nodule    |
+  |pathology_details.spindle_cell_percent       |
+  |sample.tumor_code_id                         |
+  |treatment.therapeutic_level_achieved         |
 
 ## Close Modal
 * Close the modal

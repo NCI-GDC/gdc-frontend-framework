@@ -134,6 +134,9 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |exposures.smokeless_tobacco_quit_age   |
     |exposures.tobacco_use_per_day          |
     |exposures.weight                       |
+    |gender                                 |
+    |relationship_gender                    |
+    |tumor_code_id                          |
 
 ## Clinical JSON
 * Download "JSON" from "Cart Header Clinical"
@@ -230,7 +233,6 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |samples.initial_weight               |
     |samples.preservation_method          |
     |samples.time_between_clamping_and_freezing|
-    |samples.tumor_code_id                |
     |5fc14815-00f9-4cb5-b158-a294f0fd48f2 |
     |7A76BDC7-62D9-4A8D-AAEF-CECF9F819D58 |
     |Expanded Next Generation Cancer Model|
@@ -254,6 +256,7 @@ tags: gdc-data-portal-v2, regression, cart, clinical-biospecimen-download
     |FM-AD                                |
     |TCGA-LUAD                            |
     |APOLLO                               |
+    |tumor_code_id                        |
 
 ## Biospecimen JSON
 * Download "JSON" from "Cart Header Biospecimen"
