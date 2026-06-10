@@ -6,7 +6,7 @@
     "@mantine/core": "8.3.9",
     "@mantine/notifications": "8.3.9",
     "@tailwindcss/postcss": "^4.2.2",
-    "next": "^16.1.6",
+    "next": "^16.2.9",
     "tailwindcss": "^4.2.2"
   },
   "devDependencies": {

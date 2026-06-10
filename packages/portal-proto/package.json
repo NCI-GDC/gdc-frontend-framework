@@ -41,7 +41,7 @@
     "hyparquet": "^1.25.1",
     "hyparquet-compressors": "^1.1.1",
     "minisearch": "^3.0.4",
-    "next": "^16.1.6",
+    "next": "^16.2.9",
     "openseadragon": "^3.0.0",
     "plotly.js": "2.35.0",
     "react-icons": "^4.12.0",
