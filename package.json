@@ -45,7 +45,6 @@
   "homepage": "https://github.com/NCI-GDC/gdc-frontend-framework#readme",
   "dependencies": {
     "@emotion/react": "^11.14.0",
-    "dom-to-svg": "^0.12.2",
     "echarts": "^5.5.1",
     "file-saver": "^2.0.5",
     "isomorphic-fetch": "^3.0.0",
