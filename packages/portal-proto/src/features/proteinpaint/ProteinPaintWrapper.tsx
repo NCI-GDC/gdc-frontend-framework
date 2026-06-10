@@ -174,6 +174,7 @@ interface Mds3Arg {
     | boolean
     | {
         hardcodeCnvOnly?: boolean;
+        snvIndelOnly?: true;
       };
   geneSymbol?: string;
   tracks?: Track[];
@@ -226,7 +227,7 @@ function getLollipopTrack(
       ssm_id: props.ssm_id,
     };
   } else {
-    arg.geneSearch4GDCmds3 = true;
+    arg.geneSearch4GDCmds3 = { snvIndelOnly: true };
   }
 
   return arg;
