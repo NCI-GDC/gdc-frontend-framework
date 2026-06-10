@@ -24,7 +24,7 @@ import {
   GeneSSMSEntry,
   TopSsm,
 } from "@gff/core";
-import { useDeepCompareEffect, useDeepCompareCallback } from "use-deep-compare";
+import { useDeepCompareEffect } from "use-deep-compare";
 import isEqual from "lodash/isEqual";
 import { extractValue } from "@/features/facets/hooks";
 import { useAppDispatch, useAppSelector } from "@/features/genomic/appApi";
@@ -43,7 +43,6 @@ import {
   selectAllFiltersCollapsed,
 } from "./geneAndSSMFilterExpandedSlice";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
-import { overwritingDemoFilterMutationFrequency } from "@/features/genomic/GenesAndMutationFrequencyAnalysisTool";
 import { buildGeneHaveAndHaveNotFilters } from "@/features/genomic/utils";
 import { AppModeState, ComparativeSurvival } from "./types";
 import { humanify } from "@/utils/index";
@@ -272,8 +271,6 @@ export const useGenomicSurvivalPlot = (
     ],
   );
 
-  console.log({ comparativeSurvival });
-
   const {
     data: survivalPlotData,
     isSuccess: survivalPlotReady,
@@ -296,15 +293,19 @@ export const useGenomicSurvivalPlot = (
 
 /**
  * Hook to set the comparative survival to the top result of the table when the filters, search on the mutation table
- * or app changes
+ * due to a user selecting a mutation on the genes table or app changes
  * @param appMode - current app
  * @param comparativeSurvival - value for what is plotted against the current cohort on survival plot
  * @param setComparativeSurvival - function to set comparative survival
  * @param searchTermsForGene - search filter for the mutation table
- * @returns the
- * */
-export const useComparativeSurvival = ({
+ * @param topGeneSSMSSuccess - whether the request for the top gene/ssms has succeeded
+ * @param topGeneSSMS - the top gene/ssms data
+ * @param topSMSSuccess - whether the request for the top ssm has succeeded
+ * @param topSSM - the top ssm when a user has searched from the genes table
+ **/
+export const useAutomaticComparativeSurvival = ({
   appMode,
+  setComparativeSurvival,
   searchTermsForGene,
   topGeneSSMSSuccess,
   topGeneSSMS,
@@ -312,43 +313,18 @@ export const useComparativeSurvival = ({
   topSSM,
 }: {
   appMode: AppModeState;
+  setComparativeSurvival: (comparativeSurvival: ComparativeSurvival) => void;
   searchTermsForGene: { geneId: string; geneSymbol: string };
   topGeneSSMSSuccess: boolean;
   topGeneSSMS: GeneSSMSEntry;
   topSSMSuccess: boolean;
   topSSM: TopSsm;
 }) => {
-  const [comparativeSurvival, setComparativeSurvival] =
-    useState<ComparativeSurvival>(undefined);
+  const ssmSearch = searchTermsForGene?.geneSymbol;
 
-  /**
-   * Update survival plot in response to user actions. There are two "states"
-   * for the survival plot: If comparativeSurvival is undefined it will show the
-   * plot for the currentCohort plus whatever local filters are selected for the "top"
-   * gene or mutation.
-   * If comparativeSurvival is set, then it will show two separate plots.
-   * @param symbol - symbol (Gene or SSMS) to compare
-   * @param name - used as the label for the symbol in the Survival Plot
-   * @param field - which gene or ssms field the symbol applied to
-   */
-  const handleSurvivalPlotToggled = useDeepCompareCallback(
-    (symbol: string, name: string, field: string) => {
-      if (comparativeSurvival && comparativeSurvival?.symbol === symbol) {
-        setComparativeSurvival(undefined);
-      } else {
-        setComparativeSurvival({
-          symbol: symbol,
-          name: name,
-          field: field,
-        });
-      }
-    },
-    [comparativeSurvival],
-  );
-
-  // Plot top if new top
+  // Set new comparative survival if top changed due to cohort or tab change
   useDeepCompareEffect(() => {
-    if (!comparativeSurvival && topGeneSSMSSuccess) {
+    if (topGeneSSMSSuccess && !ssmSearch) {
       const { genes, ssms } = topGeneSSMS;
       const { name, symbol } = appMode === "genes" ? genes : ssms;
 
@@ -371,16 +347,16 @@ export const useComparativeSurvival = ({
       });
     }
   }, [
-    comparativeSurvival,
     topGeneSSMS,
     topGeneSSMSSuccess,
     appMode,
     setComparativeSurvival,
+    ssmSearch,
   ]);
 
-  // Set top when we've searched on SSM
+  // Set comparative survival when we've selected a mutation from the genes table
   useDeepCompareEffect(() => {
-    if (topSSMSuccess) {
+    if (ssmSearch && topSSMSuccess) {
       const { ssm_id, consequence_type, aa_change = "" } = topSSM;
       const description = consequence_type
         ? `${searchTermsForGene?.geneSymbol ?? ""} ${aa_change} ${humanify({
@@ -394,13 +370,13 @@ export const useComparativeSurvival = ({
         field: "gene.ssm.ssm_id",
       });
     }
-  }, [topSSM, setComparativeSurvival, topSSMSuccess, searchTermsForGene]);
-
-  return {
-    comparativeSurvival,
+  }, [
+    topSSM,
     setComparativeSurvival,
-    handleSurvivalPlotToggled,
-  };
+    topSSMSuccess,
+    searchTermsForGene,
+    ssmSearch,
+  ]);
 };
 
 const overwritingDemoFilter: FilterSet = {
@@ -427,7 +403,7 @@ export const useMutationFrequencyFilters = () => {
 
   const cohortFilters = useDeepCompareMemo(
     () => (isDemoMode ? overwritingDemoFilter : currentCohortFilters),
-    [overwritingDemoFilter, isDemoMode, currentCohortFilters],
+    [isDemoMode, currentCohortFilters],
   );
 
   return {

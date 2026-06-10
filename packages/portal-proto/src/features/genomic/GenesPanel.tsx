@@ -14,7 +14,6 @@ import {
 } from "@/features/genomic/hooks";
 import dynamic from "next/dynamic";
 import { GenesTableContainer } from "../GenomicTables/GenesTable/GenesTableContainer";
-import useTraceUpdate from "@/hooks/useTraceUpdate";
 
 const SurvivalPlot = dynamic(
   () => import("../charts/SurvivalPlot/SurvivalPlot"),
@@ -46,13 +45,7 @@ export const GenesPanel = ({
   handleMutationCountClick,
 }: GenesPanelProps): JSX.Element => {
   const { cohortFilters, genomicFilters } = useMutationFrequencyFilters();
-  useTraceUpdate({
-    comparativeSurvival,
-    handleSurvivalPlotToggled,
-    handleGeneAndSSmToggled,
-    handleMutationCountClick,
-  });
-  console.log({ comparativeSurvival });
+
   const { survivalPlotData, survivalPlotReady, survivalPlotFetching } =
     useGenomicSurvivalPlot(comparativeSurvival, true);
 

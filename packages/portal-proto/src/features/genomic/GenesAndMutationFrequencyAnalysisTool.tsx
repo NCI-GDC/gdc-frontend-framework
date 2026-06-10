@@ -1,8 +1,7 @@
 import React, { useCallback, useState } from "react";
-import { useDeepCompareEffect } from "use-deep-compare";
+import { useDeepCompareEffect, useDeepCompareCallback } from "use-deep-compare";
 import { Tabs } from "@mantine/core";
 import {
-  FilterSet,
   useCoreSelector,
   useCoreDispatch,
   removeCohortFilter,
@@ -22,8 +21,11 @@ import { DemoText } from "@/components/tailwindComponents";
 import { GenesPanel } from "@/features/genomic/GenesPanel";
 import { SSMSPanel } from "@/features/genomic/SSMSPanel";
 import { TableXPositionContext } from "@/components/Table/VerticalTable";
-import { AppModeState } from "./types";
-import { useComparativeSurvival, useMutationFrequencyFilters } from "./hooks";
+import { ComparativeSurvival, AppModeState } from "./types";
+import {
+  useAutomaticComparativeSurvival,
+  useMutationFrequencyFilters,
+} from "./hooks";
 import { appendSearchTermFilters } from "@/features/GenomicTables/utils";
 
 const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
@@ -36,19 +38,48 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     geneId: undefined,
     geneSymbol: undefined,
   });
+  const [comparativeSurvival, setComparativeSurvival] =
+    useState<ComparativeSurvival>(undefined);
+
+  /**
+   * Update survival plot in response to user actions. There are two "states"
+   * for the survival plot: If comparativeSurvival is undefined it will show the
+   * plot for the currentCohort plus whatever local filters are selected for the "top"
+   * gene or mutation.
+   * If comparativeSurvival is set, then it will show two separate plots.
+   * @param symbol - symbol (Gene or SSMS) to compare
+   * @param name - used as the label for the symbol in the Survival Plot
+   * @param field - which gene or ssms field the symbol applied to
+   */
+  const handleSurvivalPlotToggled = useDeepCompareCallback(
+    (symbol: string, name: string, field: string) => {
+      if (comparativeSurvival && comparativeSurvival?.symbol === symbol) {
+        setComparativeSurvival(undefined);
+      } else {
+        setComparativeSurvival({
+          symbol: symbol,
+          name: name,
+          field: field,
+        });
+      }
+    },
+    [comparativeSurvival],
+  );
 
   const { cohortFilters, genomicFilters } = useMutationFrequencyFilters();
 
+  // Default top gene/ssms
   const { data: topGeneSSMS, isSuccess: topGeneSSMSSuccess } = useTopGeneQuery({
     cohortFilters,
     genomicFilters,
-  }); // get the default top gene/ssms to show by default
+  });
 
   const { geneId = "", geneSymbol = "" } = searchTermsForGeneId;
 
   const searchFilters = buildSSMSTableSearchFilters(geneId);
   const tableFilters = appendSearchTermFilters(genomicFilters, searchFilters);
 
+  // Top value when a mutation is selected from the genes table
   const { data: topSSM, isSuccess: topSSMSuccess } = useGetTopSsmQuery(
     {
       searchTerm: geneId,
@@ -60,17 +91,14 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     { skip: !geneSymbol },
   );
 
-  const {
-    comparativeSurvival,
-    setComparativeSurvival,
-    handleSurvivalPlotToggled,
-  } = useComparativeSurvival({
+  useAutomaticComparativeSurvival({
     appMode,
+    setComparativeSurvival,
     searchTermsForGene: searchTermsForGeneId,
     topGeneSSMSSuccess,
     topGeneSSMS,
-    topSSM,
     topSSMSuccess,
+    topSSM,
   });
 
   const cohortId = useCoreSelector((state) => selectCurrentCohortId(state));
@@ -131,7 +159,11 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
         setSearchTermsForGeneId({ geneId: undefined, geneSymbol: undefined });
       }
     },
-    [searchTermsForGeneId.geneId, searchTermsForGeneId.geneSymbol],
+    [
+      setComparativeSurvival,
+      searchTermsForGeneId.geneId,
+      searchTermsForGeneId.geneSymbol,
+    ],
   );
 
   const handleMutationCountClick = useCallback(
