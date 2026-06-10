@@ -305,6 +305,7 @@ export const useGenomicSurvivalPlot = (
  **/
 export const useAutomaticComparativeSurvival = ({
   appMode,
+  comparativeSurvival,
   setComparativeSurvival,
   searchTermsForGene,
   topGeneSSMSSuccess,
@@ -313,6 +314,7 @@ export const useAutomaticComparativeSurvival = ({
   topSSM,
 }: {
   appMode: AppModeState;
+  comparativeSurvival: ComparativeSurvival;
   setComparativeSurvival: (comparativeSurvival: ComparativeSurvival) => void;
   searchTermsForGene: { geneId: string; geneSymbol: string };
   topGeneSSMSSuccess: boolean;
@@ -322,9 +324,9 @@ export const useAutomaticComparativeSurvival = ({
 }) => {
   const ssmSearch = searchTermsForGene?.geneSymbol;
 
-  // Set new comparative survival if top changed due to cohort or tab change
+  // Set new comparative survival if top changed due to filters or tab change
   useDeepCompareEffect(() => {
-    if (topGeneSSMSSuccess && !ssmSearch) {
+    if (!comparativeSurvival?.setManually && topGeneSSMSSuccess && !ssmSearch) {
       const { genes, ssms } = topGeneSSMS;
       const { name, symbol } = appMode === "genes" ? genes : ssms;
 
@@ -347,6 +349,7 @@ export const useAutomaticComparativeSurvival = ({
       });
     }
   }, [
+    comparativeSurvival,
     topGeneSSMS,
     topGeneSSMSSuccess,
     appMode,

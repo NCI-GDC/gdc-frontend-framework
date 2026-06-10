@@ -69,6 +69,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
           symbol: symbol,
           name: name,
           field: field,
+          setManually: true,
         });
       }
     },
@@ -102,6 +103,7 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
 
   useAutomaticComparativeSurvival({
     appMode,
+    comparativeSurvival,
     setComparativeSurvival,
     searchTermsForGene: searchTermsForGeneId,
     topGeneSSMSSuccess,
