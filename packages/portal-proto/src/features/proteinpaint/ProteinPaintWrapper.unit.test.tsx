@@ -72,7 +72,7 @@ test("SSM lolliplot arguments", () => {
     attributes: [{ from: "sample_id", to: "cases.case_id", convert: true }],
     callback: runpparg.allow2selectSamples?.callback,
   });
-  expect(runpparg.geneSearch4GDCmds3).toEqual(true);
+  expect(runpparg.geneSearch4GDCmds3).toEqual({ snvIndelOnly: true });
   isDemoMode = true;
   rerender(
     <MantineProvider
