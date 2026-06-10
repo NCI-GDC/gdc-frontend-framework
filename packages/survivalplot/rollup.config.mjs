@@ -32,7 +32,7 @@ const config = [
         name: "surivalplot",
       },
     ],
-    external: ["d3"],
+    external: ["d3", "lodash"],
   },
 ];
 

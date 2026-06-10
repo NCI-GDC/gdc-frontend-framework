@@ -4,6 +4,7 @@
   "scripts": {
     "clean": "rimraf .next",
     "dev": "next",
+    "dev-https": "next dev --experimental-https --experimental-https-key ../../.certs/localhost-key.pem --experimental-https-cert ../../.certs/localhost.pem",
     "build": "next build",
     "build:clean": "npm run clean && npm run build",
     "start": "next start",
@@ -24,6 +25,8 @@
     "@fontsource/noto-sans": "^4.5.11",
     "@gff/core": "^2.19.0",
     "@gff/portal-components": "^2.19.0",
+    "@nci-gdc/sapien": "^2.19.0",
+    "@nci-gdc/survivalplot": "^2.19.0",
     "@mantine/core": "8.3.9",
     "@mantine/dates": "8.3.9",
     "@mantine/form": "8.3.9",

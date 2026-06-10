@@ -80,6 +80,7 @@ module.exports = {
   experimental: {
     esmExternals: true,
   },
+  allowedDevOrigins: ["localhost.gdc.cancer.gov"],
   env: {
     // passed via command line, `PROTEINPAINT_API=... npm run dev`
     PROTEINPAINT_API:
