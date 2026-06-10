@@ -133,54 +133,48 @@ to run it:
 
 ### Running Auth in Localhost (Login and other Auth related actions)
 
-1. [Open Chrome (web browser)](https://alfilatov.com/posts/run-chrome-without-cors/) which disables web security to suppress the CORS warning.
-   Or, if using Safari for feature testing with a logged-in user, click Develop -> Disable Cross-Origin Restrictions.
-2. Configure your machine to map `localhost.gdc.cancer.gov` (or a similar subdomain) to resolve to `127.0.0.1`.
+1. Configure your machine to map `localhost.gdc.cancer.gov` to resolve to `127.0.0.1`.
 
-   In Mac or Linux, edit the file `/etc/hosts` (You need to give sudo access to edit this file), add the following line:
-
-   ```
-       127.0.0.1   localhost localhost.gdc.cancer.gov
-   ```
-
-3. Since the `sessionid` cookie can only be send through `HTTPS`, you need to [add https to your localhost](https://dev.to/defite/adding-https-to-your-localhost-15hg).
+   In Mac or Linux, edit `/etc/hosts` (requires sudo):
 
 ```
-local-ssl-proxy --source 3010 --target 3000 --cert localhost.pem --key localhost-key.pem
+   127.0.0.1   localhost localhost.gdc.cancer.gov
 ```
 
-4. After these steps, you can access the app on `https://localhost.gdc.cancer.gov:3010`.
-5. Even after all these steps you will see `SecurityError: Blocked a frame with origin "https://localhost.gdc.cancer.gov:3010" from accessing a cross-origin frame` error. But you can close the error and refresh the page. This warning will be suppressed in production.
-6. Now you can Login and use features that are available with Authentication.
-7. For developing 3rd party tools with its own server API endpoint or URL:
-
-- Create a ssl-proxy.json file, using the template below with example proxy names and port numbers:
-
-```json
-{
-  "GFF v2 proxy": {
-    "source": 3010,
-    "target": 3001,
-    "key": "localhost-key.pem",
-    "cert": "localhost.pem",
-    "hostname": "localhost"
-  },
-  "MyTool proxy": {
-    "source": 3011,
-    "target": 3000,
-    "key": "localhost-key.pem",
-    "cert": "localhost.pem",
-    "hostname": "localhost"
-  }
-}
-```
-
-- run the following
+2. Install `mkcert` and generate a locally trusted certificate (one-time setup - assuming MacOS device):
 
 ```bash
-mkcert localhost
-local-ssl-proxy --config path/to/ssl-proxy.json --cert localhost.pem --key localhost-key.pem
+   brew install mkcert
+   mkcert -install
 ```
+
+Then from the **repo root**:
+
+```bash
+   mkdir -p .certs
+   mkcert -key-file .certs/localhost-key.pem -cert-file .certs/localhost.pem localhost.gdc.cancer.gov
+```
+
+3. Start the dev server from the repo root:
+
+```bash
+   npm run dev:gdc:https
+```
+
+4. Open Chrome (or any browser that you use) with web security disabled to suppress CORS warnings:
+
+```bash
+   open -n -a /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome \
+     --args --user-data-dir="/tmp/chrome_dev_test" \
+     --disable-web-security \
+     https://localhost.gdc.cancer.gov:3000
+```
+
+5. You can now access the app at `https://localhost.gdc.cancer.gov:3000` and use login and all authentication features.
+
+6. Once you login through NIH website, it will redirect you to `https://portal.gdc.cancer.gov/?login=true` and the tab won't close. You will have to manually close it and go to the `https://localhost.gdc.cancer.gov:3000` tab you came from. You might or might not have to refresh the page for session cookie to be picked up by the tab to show that you are logged in. This is a new known behavior.
+
+> **Note:** The `.certs/` folder is gitignored. Each developer needs to run the `mkcert` steps once on their machine.
 
 ### Mock server
 
@@ -223,3 +217,4 @@ This project is a monorepo managed by [lerna](https://lerna.js.org). It is compo
   the package will be renamed to `packages/portal`.
 - `packages/sapien`: is the package that contains the Bodyplot UI used on the GDC Portal V2 home page.
 - `packages/lighthouse`: is the package that contains the Lighthouse UI used on the GDC Portal V2 home page for testing performance.
+- `packages/survivalplot`: is the package that contains the survival plot UI used on the GDC Portal V2 apps.

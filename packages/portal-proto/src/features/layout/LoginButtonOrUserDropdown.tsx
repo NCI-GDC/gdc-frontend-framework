@@ -48,7 +48,7 @@ const LoginButtonOrUserDropdown = () => {
         dispatch(setIsLoggedIn(true));
       }
     } else {
-      if (cohortIsLoggedIn !== false || cohortIsLoggedIn !== undefined) {
+      if (cohortIsLoggedIn !== false && cohortIsLoggedIn !== undefined) {
         dispatch(setIsLoggedIn(false));
       }
     }

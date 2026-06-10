@@ -131,8 +131,8 @@ def save_cohort_if_needed():
 @step("On GDC Data Portal V2 app")
 def navigate_to_app():
     APP.navigate()
-    APP.modal.accept_warning()
     APP.shared.wait_for_loading_spinners_to_detach()
+    APP.modal.accept_warning()
 
 @step("Go to <page_name> page")
 def go_to_page(page_name):
@@ -256,6 +256,7 @@ def download_file_at_file_table(file: str, source: str):
         "Repository": APP.repository_page.click_button,
         "Set Operations": APP.set_operations_page.click_download_tsv_button_set_operations,
         "Set Operations Union Row": APP.set_operations_page.click_union_row_download_tsv_button_set_operations,
+        "Username Authentication Token": APP.header_section.click_download_token,
     }
 
     max_retries = 3

@@ -66,10 +66,16 @@ class Modal(BasePage):
         self.click(locator)
 
     def wait_for_warning_message(self):
+        # This function should only be used when we are absolutely certain the initial warning message will appear.
+        # It is currently used in the function named 'navigate_to_app'. That function is designated 'before_suite' which runs one time as part of the setup for a test runner.
         try:
-            self.wait_until_locator_is_visible(ModalLocators.ACCEPT_BUTTON, 10000)
+            self.wait_until_locator_is_visible(ModalLocators.ACCEPT_BUTTON, 25000)
         except:
-            pass
+            # Sometimes the page does not load initially, so we reload and try again
+            self.reload_page()
+            time.sleep(10)
+            self.wait_for_loading_spinners_to_detach()
+            self.wait_until_locator_is_visible(ModalLocators.ACCEPT_BUTTON, 30000)
 
     def wait_for_text_in_temporary_message(self, text, action="remove modal"):
         """

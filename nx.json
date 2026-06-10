@@ -1,7 +1,7 @@
 {
   "targetDefaults": {
     "compile": {
-      "dependsOn": ["^compile", "^build"],
+      "dependsOn": ["^build"],
       "cache": true
     },
     "build:clean": {
@@ -9,7 +9,19 @@
     },
     "build": {
       "dependsOn": ["compile", "^build"],
-      "cache": true
+      "cache": true,
+      "outputs": ["{projectRoot}/dist", "{projectRoot}/.next"]
+    },
+    "dev": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "continuous": true
+    },
+    "dev-https": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "continuous": true
     }
-  }
+  },
+  "analytics": false
 }

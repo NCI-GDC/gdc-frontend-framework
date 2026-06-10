@@ -127,7 +127,7 @@ export const useCustomFacets = () => {
   );
 
   const [customFacetDefinitions, setCustomFacetDefinitions] = useState<
-    ReadonlyArray<FacetDefinition>
+    FacetCardDefinition[]
   >([]);
   const { isSuccess } = useFacetDictionary(undefined);
   const facets = useCoreSelector((state) =>

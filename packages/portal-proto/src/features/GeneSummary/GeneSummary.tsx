@@ -4,27 +4,118 @@ import { CollapsibleTextArea } from "@/components/CollapsibleTextArea";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
-import {
-  useGeneSummaryQuery,
-  GeneSummaryData,
-  FilterSet,
-  useCoreSelector,
-  selectCurrentCohortFilters,
-} from "@gff/core";
-import { externalLinkNames, externalLinks, humanify } from "src/utils";
+import { useGeneSummaryQuery, GeneSummaryData, FilterSet } from "@gff/core";
+import { humanify } from "src/utils";
 import CNVPlot from "../charts/CNVPlot";
 import SSMPlot from "../charts/SSMPlot";
 import { formatDataForHorizontalTable } from "../files/utils";
 import { LoadingOverlay } from "@mantine/core";
 import { WarningBanner } from "@gff/portal-components";
 import { HeaderTitle } from "@/components/tailwindComponents";
-import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { CollapsibleList } from "@/components/CollapsibleList";
 import SMTableContainer from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
 import GeneCancerDistributionTable from "../CancerDistributionTable/GeneCancerDistributionTable";
 import GenesIcon from "public/user-flow/icons/summary/genes.svg";
 import { StrandMinusIcon, StrandPlusIcon } from "@/utils/icons";
+import {
+  buildGeneExternalReferences,
+  buildGeneSummary,
+  GeneSummaryTableData,
+} from "./utils";
+import { ExternalReferenceEntry } from "@/utils/externalLinks";
 import { useMutationFrequencyFilters } from "../genomic/hooks";
+
+const formatDataForSummary = (summaryData: GeneSummaryTableData) => {
+  const {
+    symbol,
+    name,
+    synonyms,
+    type,
+    location,
+    strand,
+    description,
+    isCancerGeneCensus,
+  } = summaryData;
+
+  const summaryObj = {
+    symbol,
+    name,
+    synonyms: synonyms?.length ? (
+      <ul>
+        {synonyms.map((s) => (
+          <li className="list-none" key={s}>
+            {s}
+          </li>
+        ))}
+      </ul>
+    ) : (
+      "--"
+    ),
+    type,
+    location,
+    strand: strand ? (
+      strand === 1 ? (
+        <StrandPlusIcon />
+      ) : (
+        <StrandMinusIcon />
+      )
+    ) : (
+      "--"
+    ),
+    description: description ? (
+      <CollapsibleTextArea text={description} />
+    ) : (
+      "--"
+    ),
+    annotation: isCancerGeneCensus ? (
+      <AnchorLink
+        href="https://cancer.sanger.ac.uk/census"
+        title="Cancer Gene Census"
+      />
+    ) : (
+      "--"
+    ),
+  };
+
+  const headersConfig = Object.keys(summaryObj).map((key) => ({
+    field: key,
+    name: humanify({ term: key }),
+  }));
+
+  return formatDataForHorizontalTable(summaryObj, headersConfig);
+};
+
+const formatDataForExternalReferences = (entries: ExternalReferenceEntry[]) => {
+  const externalReferencesObj = Object.fromEntries(
+    entries.map(({ label, ids, buildHref, linkTitle }) => [
+      label,
+      ids && (Array.isArray(ids) ? ids.length > 0 : ids) ? (
+        Array.isArray(ids) ? (
+          <CollapsibleList
+            data={ids.map((id) => (
+              <AnchorLink
+                href={buildHref(id)}
+                title={linkTitle ?? id}
+                key={id}
+              />
+            ))}
+          />
+        ) : (
+          <AnchorLink href={buildHref(ids)} title={linkTitle ?? ids} />
+        )
+      ) : (
+        "--"
+      ),
+    ]),
+  );
+
+  const headersConfig = Object.keys(externalReferencesObj).map((key) => ({
+    field: key,
+    name: key,
+  }));
+
+  return formatDataForHorizontalTable(externalReferencesObj, headersConfig);
+};
 
 interface GeneViewProps {
   data: GeneSummaryData;
@@ -48,7 +139,6 @@ export const GeneSummary = ({
   const { data, isFetching } = useGeneSummaryQuery({
     gene_id,
   });
-
   return (
     <>
       {isFetching ? (
@@ -81,135 +171,24 @@ const GeneView = ({
     () => (contextSensitive ? contextFilters : undefined),
     [contextFilters, contextSensitive],
   );
-  let cohortFilters: FilterSet = undefined;
+
   const { cohortFilters: mutationFrequencyCohortFilters } =
     useMutationFrequencyFilters();
 
-  if (contextSensitive) {
+  const cohortFilters = useMemo(() => {
+    if (!contextSensitive) return undefined;
     // if it's for mutation frequency demo use different filter (TCGA-LGG) than the current cohort filter
-    cohortFilters = mutationFrequencyCohortFilters;
-  }
+    return mutationFrequencyCohortFilters;
+  }, [contextSensitive, mutationFrequencyCohortFilters]);
 
-  const formatDataForSummary = () => {
-    const {
-      symbol,
-      name,
-      synonyms,
-      biotype: type,
-      gene_chromosome,
-      gene_start,
-      gene_end,
-      gene_strand,
-      description,
-      is_cancer_gene_census,
-    } = data;
-
-    const location = `chr${gene_chromosome}:${gene_start}-${gene_end} (GRCh38)`;
-    const Strand =
-      gene_strand && gene_strand === 1 ? (
-        <StrandPlusIcon />
-      ) : (
-        <StrandMinusIcon />
-      );
-    const annotation = is_cancer_gene_census ? (
-      <AnchorLink
-        href="https://cancer.sanger.ac.uk/census"
-        title="Cancer Gene Census"
-      />
-    ) : (
-      "--"
-    );
-    const synonymsList = synonyms?.length && (
-      <ul>
-        {synonyms?.map((s) => (
-          <li className="list-none" key={s}>
-            {s}
-          </li>
-        ))}
-      </ul>
-    );
-
-    const desc = <CollapsibleTextArea text={description} />;
-
-    const summaryObj = {
-      symbol,
-      name,
-      synonyms: synonymsList,
-      type,
-      location,
-      Strand,
-      description: desc,
-      annotation,
-    };
-
-    const headersConfig = Object.keys(summaryObj).map((key) => ({
-      field: key,
-      name: humanify({ term: key }),
-    }));
-
-    return formatDataForHorizontalTable(summaryObj, headersConfig);
-  };
-
-  const formatDataForExternalReferences = () => {
-    const {
-      external_db_ids: { entrez_gene, uniprotkb_swissprot, hgnc, omim_gene },
-      gene_id,
-      civic,
-      symbol,
-    } = data;
-
-    const externalLinksObj = {
-      entrez_gene,
-      uniprotkb_swissprot,
-      hgnc,
-      omim_gene,
-      ensembl: gene_id,
-      civic,
-      genecards: symbol,
-    };
-
-    let externalReferenceLinksobj = {};
-
-    Object.keys(externalLinksObj).forEach((link) => {
-      const modified = {
-        [`${externalLinkNames[link] || link.replace(/_/, " ")}`]:
-          externalLinksObj[link]?.length > 0 ? (
-            <>
-              {Array.isArray(externalLinksObj[link]) ? (
-                <CollapsibleList
-                  data={externalLinksObj[link]?.map((item) => (
-                    <AnchorLink
-                      href={externalLinks[link](item)}
-                      title={item}
-                      key={item}
-                    />
-                  ))}
-                />
-              ) : (
-                <AnchorLink
-                  href={externalLinks[link](externalLinksObj[link])}
-                  title={externalLinksObj[link]}
-                />
-              )}
-            </>
-          ) : (
-            "--"
-          ),
-      };
-
-      externalReferenceLinksobj = { ...externalReferenceLinksobj, ...modified };
-    });
-
-    const headersConfig = Object.keys(externalReferenceLinksobj).map((key) => ({
-      field: key,
-      name: humanify({ term: key }),
-    }));
-
-    return formatDataForHorizontalTable(
-      externalReferenceLinksobj,
-      headersConfig,
-    );
-  };
+  const summaryData = useMemo(
+    () => (data ? buildGeneSummary(data) : null),
+    [data],
+  );
+  const entries = useMemo(
+    () => (data ? buildGeneExternalReferences(data) : []),
+    [data],
+  );
 
   return (
     <div>
@@ -236,13 +215,13 @@ const GeneView = ({
               <div className="flex-1">
                 <SummaryCard
                   customDataTestID="table-summary-gene-summary"
-                  tableData={formatDataForSummary()}
+                  tableData={formatDataForSummary(summaryData)}
                 />
               </div>
               <div className="flex-1">
                 <SummaryCard
                   customDataTestID="table-external-references-gene-summary"
-                  tableData={formatDataForExternalReferences()}
+                  tableData={formatDataForExternalReferences(entries)}
                   title="External References"
                 />
               </div>

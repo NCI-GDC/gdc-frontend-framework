@@ -1,12 +1,11 @@
-import React, { JSX } from "react";
+import React, { JSX, useMemo } from "react";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { useSsmsSummaryQuery } from "@gff/core";
 import { Loader } from "@mantine/core";
-import { pick } from "lodash";
 import { HorizontalTableProps } from "@/components/HorizontalTable";
 import { formatDataForHorizontalTable } from "../files/utils";
-import { externalLinks, humanify } from "src/utils";
+import { humanify } from "src/utils";
 import { CollapsibleList } from "@/components/CollapsibleList";
 import { AnchorLink } from "@/components/AnchorLink";
 import SSMPlot from "../charts/SSMPlot";
@@ -15,6 +14,106 @@ import { HeaderTitle } from "@/components/tailwindComponents";
 import SSMSCancerDistributionTable from "../CancerDistributionTable/SSMSCancerDistributionTable";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
 import MutationsIcon from "public/user-flow/icons/summary/gene-mutation.svg";
+import { externalLinks, ExternalReferenceEntry } from "@/utils/externalLinks";
+import {
+  buildSsmExternalReferences,
+  buildSsmSummary,
+  SsmSummaryTableData,
+} from "./utils";
+
+const formatDataForSummary = (
+  ssmSummary: SsmSummaryTableData,
+): HorizontalTableProps["tableData"] => {
+  const {
+    uuid,
+    dna_change,
+    type,
+    reference_genome_assembly,
+    allele_in_the_reference_assembly,
+    transcript_id,
+    vep_impact,
+    sift_impact,
+    sift_score,
+    polyphen_impact,
+    polyphen_score,
+  } = ssmSummary;
+
+  const summaryObj = {
+    uuid,
+    dna_change,
+    type,
+    reference_genome_assembly,
+    allele_in_the_reference_assembly,
+    functional_impact: transcript_id ? (
+      <div className="flex flex-col py-2 gap-0.5">
+        <AnchorLink
+          href={externalLinks.transcript(transcript_id)}
+          title={transcript_id}
+          iconText="C"
+          toolTipLabel="Canonical"
+        />
+        {vep_impact && <span>VEP: {vep_impact}</span>}
+        {(sift_impact || sift_score !== null) && (
+          <div>
+            {sift_impact && <span>SIFT: {sift_impact}</span>}
+            {sift_score !== null && <span>&#44; score: {sift_score}</span>}
+          </div>
+        )}
+        {(polyphen_impact || polyphen_score !== null) && (
+          <div>
+            {polyphen_impact && <span>PolyPhen: {polyphen_impact}</span>}
+            {polyphen_score !== null && (
+              <span>&#44; score: {polyphen_score}</span>
+            )}
+          </div>
+        )}
+      </div>
+    ) : (
+      "No canonical transcript"
+    ),
+  };
+
+  const headersConfig = Object.keys(summaryObj).map((key) => ({
+    field: key,
+    name: humanify({ term: key }),
+  }));
+
+  return formatDataForHorizontalTable(summaryObj, headersConfig);
+};
+
+const formatDataForExternalReferences = (
+  entries: ExternalReferenceEntry[],
+): HorizontalTableProps["tableData"] => {
+  const externalReferencesObj = Object.fromEntries(
+    entries.map(({ label, ids, buildHref, linkTitle }) => [
+      label,
+      ids && (Array.isArray(ids) ? ids.length > 0 : ids) ? (
+        Array.isArray(ids) ? (
+          <CollapsibleList
+            data={ids.map((id) => (
+              <AnchorLink
+                href={buildHref(id)}
+                title={linkTitle ?? id}
+                key={id}
+              />
+            ))}
+          />
+        ) : (
+          <AnchorLink href={buildHref(ids)} title={linkTitle ?? ids} />
+        )
+      ) : (
+        "--"
+      ),
+    ]),
+  );
+
+  const headersConfig = Object.keys(externalReferencesObj).map((key) => ({
+    field: key,
+    name: key,
+  }));
+
+  return formatDataForHorizontalTable(externalReferencesObj, headersConfig);
+};
 
 export const SSMSSummary = ({
   ssm_id,
@@ -44,126 +143,15 @@ export const SSMSSummary = ({
     size: 1,
   });
 
-  const formatDataForSummary = (): HorizontalTableProps["tableData"] => {
-    const obj = pick(summaryData, [
-      "uuid",
-      "dna_change",
-      "type",
-      "reference_genome_assembly",
-      "allele_in_the_reference_assembly",
-    ]);
+  const ssmSummary = useMemo(
+    () => (summaryData ? buildSsmSummary(summaryData) : null),
+    [summaryData],
+  );
 
-    const {
-      transcript: {
-        transcript_id,
-        annotation: {
-          vep_impact,
-          sift_impact,
-          sift_score,
-          polyphen_impact,
-          polyphen_score,
-        } = {},
-      },
-    } = summaryData;
-
-    const functionalImpact = {
-      functional_impact: (
-        <>
-          {transcript_id ? (
-            <div className="flex flex-col py-2 gap-0.5">
-              <AnchorLink
-                href={externalLinks.transcript(transcript_id)}
-                title={transcript_id}
-                iconText="C"
-                toolTipLabel="Canonical"
-              />
-
-              {vep_impact && <span>VEP: {vep_impact}</span>}
-
-              {(sift_impact || sift_score !== undefined) && (
-                <div>
-                  {sift_impact && <span>SIFT: {sift_impact}</span>}
-                  {sift_score !== undefined && (
-                    <span>&#44; score: {sift_score}</span>
-                  )}
-                </div>
-              )}
-
-              {(polyphen_impact || polyphen_score !== undefined) && (
-                <div>
-                  {polyphen_impact && <span>PolyPhen: {polyphen_impact}</span>}
-                  {polyphen_score !== undefined && (
-                    <span>&#44; score: {polyphen_score}</span>
-                  )}
-                </div>
-              )}
-            </div>
-          ) : (
-            "No canonical transcript"
-          )}
-        </>
-      ),
-    };
-    const summaryObj = { ...obj, ...functionalImpact };
-
-    const headersConfig = Object.keys(summaryObj).map((key) => ({
-      field: key,
-      name: humanify({ term: key }),
-    }));
-
-    return formatDataForHorizontalTable(summaryObj, headersConfig);
-  };
-
-  const formatDataForExternalReferences = () => {
-    const {
-      cosmic_id,
-      civic,
-      transcript: { annotation: { dbsnp } = {} },
-    } = summaryData;
-
-    const arr = [];
-    arr.push([
-      "dbsnp",
-      dbsnp && /rs(\d+)$/g.test(dbsnp) ? (
-        <AnchorLink href={externalLinks.dbsnp(dbsnp)} title={dbsnp} />
-      ) : (
-        "--"
-      ),
-    ]);
-    arr.push([
-      "cosmic",
-      cosmic_id ? (
-        <CollapsibleList
-          data={cosmic_id.map((id) => (
-            <AnchorLink
-              href={externalLinks[id.substring(0, 4).toLowerCase()](
-                id.match(/(\d+)$/g),
-              )}
-              title={id}
-              key={id}
-            />
-          ))}
-        />
-      ) : (
-        "--"
-      ),
-    ]);
-    arr.push([
-      "civic",
-      civic ? (
-        <AnchorLink href={externalLinks.civicMutaton(civic)} title={civic} />
-      ) : (
-        "--"
-      ),
-    ]);
-    const headersConfig = arr.map(([key]) => ({
-      field: key,
-      name: humanify({ term: key }),
-    }));
-
-    const externalLinksObj = { ...Object.fromEntries(arr) };
-    return formatDataForHorizontalTable(externalLinksObj, headersConfig);
-  };
+  const entries = useMemo(
+    () => (summaryData ? buildSsmExternalReferences(summaryData) : []),
+    [summaryData],
+  );
 
   return (
     <div>
@@ -183,13 +171,13 @@ export const SSMSSummary = ({
               <div className="flex-1">
                 <SummaryCard
                   customDataTestID="table-summary-mutation-summary"
-                  tableData={formatDataForSummary()}
+                  tableData={formatDataForSummary(ssmSummary)}
                 />
               </div>
               <div className="flex-1">
                 <SummaryCard
                   customDataTestID="table-external-references-mutation-summary"
-                  tableData={formatDataForExternalReferences()}
+                  tableData={formatDataForExternalReferences(entries)}
                   title="External References"
                 />
               </div>

@@ -27,7 +27,6 @@ const CohortBuilder: React.FC = () => {
               searchTerm: string,
             ) => enumData.filter((e) => e[0].startsWith(searchTerm)),
             useGetFacetFilters: (field: string) => activeFilters[field],
-            useGetRangeFacetData: () => () => undefined,
           }}
           usedFacets={[]}
           facetDefinitions={facetDefintions}

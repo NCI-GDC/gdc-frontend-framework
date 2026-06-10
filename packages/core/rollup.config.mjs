@@ -1,30 +1,16 @@
-import babel from "@rollup/plugin-babel";
+import pkg from "./package.json" with { type: "json" };
 import json from "@rollup/plugin-json";
 import dts from "rollup-plugin-dts";
+import alias from "@rollup/plugin-alias";
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
 import { swc } from "rollup-plugin-swc3";
 import swcPreserveDirectives from "rollup-swc-preserve-directives";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
 
-const globals = {
-  react: "React",
-  "react-redux": "reactRedux",
-  "@reduxjs/toolkit": "toolkit",
-  "@reduxjs/toolkit/query": "query",
-  "@reduxjs/toolkit/query/react": "react",
-  "@reduxjs/toolkit/dist/query/react": "react",
-  redux: "redux",
-  "redux-persist": "reduxPersist",
-  "redux-persist/lib/storage/createWebStorage": "createWebStorage",
-  uuid: "uuid",
-  lodash: "lodash",
-  immer: "immer",
-  "redux-persist/integration/react": "integration",
-  "react-cookie": "reactCookie",
-  "js-cookie": "jsCookie",
-  queue: "queue",
-  "blueimp-md5": "blueimp-md5",
-  "use-deep-compare": "use-deep-compare",
-};
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const external = [...Object.keys(pkg.dependencies ?? {})];
 
 const config = [
   {
@@ -33,30 +19,15 @@ const config = [
       {
         file: "dist/index.js",
         format: "cjs",
-        globals,
         sourcemap: true,
       },
       {
         file: "dist/index.esm.js",
         format: "esm",
-        name: "gffCore",
-        globals,
         sourcemap: true,
       },
     ],
-    external: [
-      "lodash",
-      "uuid",
-      "immer",
-      "isomorphic-fetch",
-      "redux",
-      "redux-toolkit",
-      "react-cookie",
-      "js-cookie",
-      "blueimp-md5",
-      "queue",
-      "use-deep-compare",
-    ],
+    external,
     plugins: [
       peerDepsExternal(),
       json(),
@@ -68,17 +39,26 @@ const config = [
         jsc: {},
       }),
       swcPreserveDirectives(),
-      babel({
-        presets: ["@babel/preset-react"],
-        plugins: ["@emotion"],
-        babelHelpers: "runtime",
-      }),
     ],
   },
   {
     input: "./dist/dts/index.d.ts",
     output: [{ file: "dist/index.d.ts", format: "es" }],
-    plugins: [dts()],
+    plugins: [
+      alias({
+        entries: [
+          {
+            find: /^src\/(.*)/,
+            replacement: resolve(__dirname, "dist/dts/$1"),
+          },
+          {
+            find: /^@\/core\/(.*)/,
+            replacement: resolve(__dirname, "dist/dts/core/$1"),
+          },
+        ],
+      }),
+      dts(),
+    ],
   },
 ];
 

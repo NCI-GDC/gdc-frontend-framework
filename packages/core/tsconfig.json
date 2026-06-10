@@ -1,6 +1,11 @@
 {
   "include": ["src/**/*", "../portal-proto/src/constants.ts"],
-  "exclude": ["node_modules", "src/**/*.spec.ts*"],
+  "exclude": [
+    "node_modules",
+    "src/**/*.spec.ts*",
+    "src/**/*.test.ts*",
+    "src/**/*.test.tsx*"
+  ],
   "compilerOptions": {
     "outDir": "dist/dts",
     "jsx": "react",
@@ -17,6 +22,7 @@
     "resolveJsonModule": true,
     "target": "esnext",
     "lib": ["dom", "esnext"],
+    "types": ["node", "jest"],
     "baseUrl": ".",
     "paths": {
       "@/core/*": ["src/core/*"]
