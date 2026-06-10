@@ -34,7 +34,6 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const appDispatch = useAppDispatch();
   const [comparativeSurvival, setComparativeSurvival] =
     useState<ComparativeSurvival>(undefined);
-
   const [appMode, setAppMode] = useState<AppModeState>("genes");
   const [searchTermsForGeneId, setSearchTermsForGeneId] = useState({
     geneId: undefined,
