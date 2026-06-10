@@ -76,7 +76,7 @@ query TopGeneQuery (
 }
 `;
 
-interface GeneSSMSEntry {
+export interface GeneSSMSEntry {
   genes: {
     readonly name: string;
     readonly symbol: string;

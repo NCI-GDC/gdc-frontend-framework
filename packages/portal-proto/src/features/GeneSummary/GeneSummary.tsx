@@ -19,12 +19,12 @@ import { LoadingOverlay } from "@mantine/core";
 import { WarningBanner } from "@gff/portal-components";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
-import { overwritingDemoFilterMutationFrequency } from "../genomic/GenesAndMutationFrequencyAnalysisTool";
 import { CollapsibleList } from "@/components/CollapsibleList";
 import SMTableContainer from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
 import GeneCancerDistributionTable from "../CancerDistributionTable/GeneCancerDistributionTable";
 import GenesIcon from "public/user-flow/icons/summary/genes.svg";
 import { StrandMinusIcon, StrandPlusIcon } from "@/utils/icons";
+import { useMutationFrequencyFilters } from "../genomic/hooks";
 
 interface GeneViewProps {
   data: GeneSummaryData;
@@ -75,11 +75,6 @@ const GeneView = ({
   contextFilters = undefined,
   contextSensitive = false,
 }: GeneViewProps) => {
-  const isDemo = useIsDemoApp();
-  const currentCohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilters(state),
-  );
-
   // Since genomic filter lies in different store, it cannot be accessed using selectors.
   // Hence, passing it via a callback as contextFilters
   const genomicFilters = useMemo(
@@ -87,14 +82,12 @@ const GeneView = ({
     [contextFilters, contextSensitive],
   );
   let cohortFilters: FilterSet = undefined;
+  const { cohortFilters: mutationFrequencyCohortFilters } =
+    useMutationFrequencyFilters();
 
   if (contextSensitive) {
     // if it's for mutation frequency demo use different filter (TCGA-LGG) than the current cohort filter
-    if (isDemo) {
-      cohortFilters = overwritingDemoFilterMutationFrequency;
-    } else {
-      cohortFilters = currentCohortFilters;
-    }
+    cohortFilters = mutationFrequencyCohortFilters;
   }
 
   const formatDataForSummary = () => {

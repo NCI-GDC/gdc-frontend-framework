@@ -10,10 +10,11 @@ import {
 import {
   useSelectFilterContent,
   useGenomicSurvivalPlot,
-  useGenomicFilters,
+  useMutationFrequencyFilters,
 } from "@/features/genomic/hooks";
 import dynamic from "next/dynamic";
 import { GenesTableContainer } from "../GenomicTables/GenesTable/GenesTableContainer";
+import useTraceUpdate from "@/hooks/useTraceUpdate";
 
 const SurvivalPlot = dynamic(
   () => import("../charts/SurvivalPlot/SurvivalPlot"),
@@ -23,7 +24,6 @@ const SurvivalPlot = dynamic(
 );
 
 interface GenesPanelProps {
-  topGeneSSMSSuccess: boolean;
   comparativeSurvival: ComparativeSurvival;
   handleSurvivalPlotToggled: (
     symbol: string,
@@ -40,20 +40,21 @@ interface GenesPanelProps {
 }
 
 export const GenesPanel = ({
-  topGeneSSMSSuccess,
   comparativeSurvival,
   handleSurvivalPlotToggled,
   handleGeneAndSSmToggled,
   handleMutationCountClick,
 }: GenesPanelProps): JSX.Element => {
-  const { cohortFilters, genomicFilters } = useGenomicFilters();
+  const { cohortFilters, genomicFilters } = useMutationFrequencyFilters();
+  useTraceUpdate({
+    comparativeSurvival,
+    handleSurvivalPlotToggled,
+    handleGeneAndSSmToggled,
+    handleMutationCountClick,
+  });
   console.log({ comparativeSurvival });
-  const {
-    survivalPlotData,
-    survivalPlotFetching,
-    survivalPlotReady,
-    survivalPlotIsUninit,
-  } = useGenomicSurvivalPlot(comparativeSurvival, true, !topGeneSSMSSuccess);
+  const { survivalPlotData, survivalPlotReady, survivalPlotFetching } =
+    useGenomicSurvivalPlot(comparativeSurvival, true);
 
   const currentGenes = useSelectFilterContent("genes.gene_id");
   const toggledGenes = useDeepCompareMemo(() => currentGenes, [currentGenes]);
@@ -82,11 +83,7 @@ export const GenesPanel = ({
           <LoadingOverlay
             zIndex={0}
             data-testid="loading-spinner"
-            visible={
-              survivalPlotIsUninit ||
-              survivalPlotFetching ||
-              (!survivalPlotReady && !topGeneSSMSSuccess)
-            }
+            visible={survivalPlotFetching}
           />
           <SurvivalPlot
             plotType={SurvivalPlotTypes.gene}

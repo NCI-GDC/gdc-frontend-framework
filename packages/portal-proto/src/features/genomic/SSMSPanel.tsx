@@ -8,7 +8,7 @@ import {
   ComparativeSurvival,
 } from "@/features/genomic/types";
 import {
-  useGenomicFilters,
+  useMutationFrequencyFilters,
   useGenomicSurvivalPlot,
   useSelectFilterContent,
 } from "@/features/genomic/hooks";
@@ -22,7 +22,6 @@ const SurvivalPlot = dynamic(
 );
 
 interface SSMSPanelProps {
-  topGeneSSMSSuccess: boolean;
   comparativeSurvival: ComparativeSurvival;
   handleSurvivalPlotToggled: (
     symbol: string,
@@ -40,21 +39,16 @@ interface SSMSPanelProps {
 }
 
 export const SSMSPanel = ({
-  topGeneSSMSSuccess,
   comparativeSurvival,
   handleSurvivalPlotToggled,
   handleGeneAndSSmToggled,
   searchTermsForGene,
   clearSearchTermsForGene,
 }: SSMSPanelProps): JSX.Element => {
-  const { cohortFilters, genomicFilters } = useGenomicFilters();
+  const { cohortFilters, genomicFilters } = useMutationFrequencyFilters();
   console.log({ comparativeSurvival });
-  const {
-    survivalPlotData,
-    survivalPlotFetching,
-    survivalPlotReady,
-    survivalPlotIsUninit,
-  } = useGenomicSurvivalPlot(comparativeSurvival, false, !topGeneSSMSSuccess);
+  const { survivalPlotData, survivalPlotReady, survivalPlotFetching } =
+    useGenomicSurvivalPlot(comparativeSurvival, false);
 
   /**
    * Get the mutations in cohort
@@ -94,11 +88,7 @@ export const SSMSPanel = ({
       <div className="bg-base-max relative mb-4 border border-base-lighter p-4">
         <LoadingOverlay
           data-testid="loading-spinner"
-          visible={
-            survivalPlotIsUninit ||
-            survivalPlotFetching ||
-            (!survivalPlotReady && !topGeneSSMSSuccess)
-          }
+          visible={survivalPlotFetching}
           zIndex={0}
         />
         <SurvivalPlot
