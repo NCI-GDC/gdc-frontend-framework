@@ -238,8 +238,8 @@ export const useSelectFilterContent = (field: string): Array<string> => {
 
 export interface GeneAndSSMPanelData {
   survivalPlotData: Survival;
-  survivalPlotReady: boolean;
   survivalPlotFetching: boolean;
+  survivalPlotReady: boolean;
 }
 
 /*
@@ -273,8 +273,8 @@ export const useGenomicSurvivalPlot = (
 
   const {
     data: survivalPlotData,
-    isSuccess: survivalPlotReady,
     isFetching: survivalPlotFetching,
+    isSuccess: survivalPlotReady,
     isUninitialized: survivalPlotUninit,
   } = useGetSurvivalPlotQuery(
     {

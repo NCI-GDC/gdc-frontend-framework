@@ -32,14 +32,24 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
   const isDemoMode = useIsDemoApp();
   const coreDispatch = useCoreDispatch();
   const appDispatch = useAppDispatch();
+  const [comparativeSurvival, setComparativeSurvival] =
+    useState<ComparativeSurvival>(undefined);
 
   const [appMode, setAppMode] = useState<AppModeState>("genes");
   const [searchTermsForGeneId, setSearchTermsForGeneId] = useState({
     geneId: undefined,
     geneSymbol: undefined,
   });
-  const [comparativeSurvival, setComparativeSurvival] =
-    useState<ComparativeSurvival>(undefined);
+
+  const cohortId = useCoreSelector((state) => selectCurrentCohortId(state));
+  const prevId = usePrevious(cohortId);
+
+  // clear local filters when cohort changes or tabs change
+  useDeepCompareEffect(() => {
+    if (cohortId !== prevId) {
+      appDispatch(clearGeneAndSSMFilters());
+    }
+  }, [cohortId, prevId, appDispatch]);
 
   /**
    * Update survival plot in response to user actions. There are two "states"
@@ -101,16 +111,6 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
     topSSM,
   });
 
-  const cohortId = useCoreSelector((state) => selectCurrentCohortId(state));
-  const prevId = usePrevious(cohortId);
-
-  // clear local filters when cohort changes or tabs change
-  useDeepCompareEffect(() => {
-    if (cohortId !== prevId) {
-      appDispatch(clearGeneAndSSMFilters());
-    }
-  }, [cohortId, prevId, appDispatch]);
-
   const handleGeneAndSSmToggled = useCallback(
     (
       cohortStatus: string[],
@@ -153,17 +153,13 @@ const GenesAndMutationFrequencyAnalysisTool: React.FC = () => {
    */
   const handleTabChanged = useCallback(
     (tabKey: string) => {
-      setComparativeSurvival(undefined);
       setAppMode(tabKey as AppModeState);
+      setComparativeSurvival(undefined);
       if (searchTermsForGeneId.geneId || searchTermsForGeneId.geneSymbol) {
         setSearchTermsForGeneId({ geneId: undefined, geneSymbol: undefined });
       }
     },
-    [
-      setComparativeSurvival,
-      searchTermsForGeneId.geneId,
-      searchTermsForGeneId.geneSymbol,
-    ],
+    [searchTermsForGeneId.geneId, searchTermsForGeneId.geneSymbol],
   );
 
   const handleMutationCountClick = useCallback(

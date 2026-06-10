@@ -46,7 +46,6 @@ export const SSMSPanel = ({
   clearSearchTermsForGene,
 }: SSMSPanelProps): JSX.Element => {
   const { cohortFilters, genomicFilters } = useMutationFrequencyFilters();
-  console.log({ comparativeSurvival });
   const { survivalPlotData, survivalPlotReady, survivalPlotFetching } =
     useGenomicSurvivalPlot(comparativeSurvival, false);
 
