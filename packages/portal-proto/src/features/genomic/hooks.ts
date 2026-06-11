@@ -359,7 +359,7 @@ export const useAutomaticComparativeSurvival = ({
 
   // Set comparative survival when we've selected a mutation from the genes table
   useDeepCompareEffect(() => {
-    if (ssmSearch && topSSMSuccess) {
+    if (topSSMSuccess && ssmSearch) {
       const { ssm_id, consequence_type, aa_change = "" } = topSSM;
       const description = consequence_type
         ? `${searchTermsForGene?.geneSymbol ?? ""} ${aa_change} ${humanify({
@@ -376,9 +376,9 @@ export const useAutomaticComparativeSurvival = ({
   }, [
     topSSM,
     setComparativeSurvival,
-    topSSMSuccess,
     searchTermsForGene,
     ssmSearch,
+    topSSMSuccess,
   ]);
 };
 
