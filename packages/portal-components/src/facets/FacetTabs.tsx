@@ -30,15 +30,17 @@ const StyledFacetTabs = (props: TabsProps) => {
         root: "flex flex-row bg-base-max w-full",
         list: "flex flex-col bg-primary-lightest w-60 md:w-72 lg:w-80 py-4 shrink-0",
         tab: `
-          flex flex-row items-center px-4 py-2 text-md font-medium transition-all
+          flex flex-row items-center ml-4 px-4 py-2 text-md font-medium transition-all
           text-primary-content-darkest cursor-pointer my-1
-          hover:bg-accent-vivid hover:text-primary-contrast-min hover:pl-6
+          hover:bg-accent-vivid hover:text-primary-contrast-min
 
           data-active:bg-base-max data-active:text-primary-content-darkest
           data-active:border-l-4 data-active:border-primary-darkest
-          data-active:font-bold data-active:pl-6
+          data-active:font-bold
 
           disabled:opacity-50 disabled:cursor-not-allowed
+
+          rounded-l-sm
         `,
         panel: "bg-base-max w-full grow",
         tabLabel: "text-left",
@@ -112,7 +114,7 @@ const CustomFacetGroup: React.FC<CustomFacetGroupProps> = ({
   usePopulateFacetData(customFacetDefinitions, queryOptions);
 
   return (
-    <div className="flex flex-col w-full h-full bg-base-max pr-6 relative">
+    <div className="flex h-full bg-base-max pr-6 relative">
       <LoadingOverlay data-testid="loading-spinner" visible={!isSuccess} />
       <Modal
         data-testid="modal-cohort-builder-add-custom-filter"
