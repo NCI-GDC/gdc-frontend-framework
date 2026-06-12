@@ -355,6 +355,9 @@ tags: gdc-data-portal-v2, case-summary, clinical-biospecimen-download, regressio
     |exposures.smokeless_tobacco_quit_age   |
     |exposures.tobacco_use_per_day          |
     |exposures.weight                       |
+    |gender                                 |
+    |relationship_gender                    |
+    |tumor_code_id                          |
 
 ## Clinical Table - Download JSON: Follow Up, Family History, Clinical
 * Download "JSON" from "Case Summary Clinical Table"

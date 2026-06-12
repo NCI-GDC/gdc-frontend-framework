@@ -1032,8 +1032,10 @@ class BasePage:
 
 
     def login_data_portal(self, AUTH_FILE_PATH):
-        "Determines if we need to login. If so, orchestrates the login"
-        "and dissemination of auth to all instances of automation"
+        """
+        Prints to terminal to tell user when it is time to login.
+        Then, it captures the context of the session that was logged in.
+        """
 
         print(
             "\033[1mIn only 1 test window, please click 'Login'. Then, in the modal that appears, complete the login. The test will continue in 45 seconds.\033[0m"

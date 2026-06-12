@@ -100,7 +100,7 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
   |------|------|
   |1     |2     |
 * Switch to "Genes" tab in the Mutation Frequency app
-* Is text "Distribution of Most Frequently Mutated Genes" present on the page
+* Is text "Distribution of Most Frequently Mutated Genes (SSM)" present on the page
 * Wait for table loading spinner
 * Search the table for "BRAF"
 * Wait for table body text to appear

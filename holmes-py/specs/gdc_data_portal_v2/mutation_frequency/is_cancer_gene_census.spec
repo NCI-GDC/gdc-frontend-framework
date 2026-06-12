@@ -198,7 +198,7 @@ tags: gdc-data-portal-v2, regression, mutation-frequency, is-cancer-census-off
 * Navigate to "Analysis" from "Header" "section"
 * Navigate to "Mutation Frequency" from "Analysis" "app"
 * Switch to "Genes" tab in the Mutation Frequency app
-* Is text "Distribution of Most Frequently Mutated Genes" present on the page
+* Is text "Distribution of Most Frequently Mutated Genes (SSM)" present on the page
 * Flip the switch on filter card "Is Cancer Gene Census"
 * Make the following selections on a filter card
   |facet_name       |selection                            |

@@ -227,6 +227,10 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
     |exposures.smokeless_tobacco_quit_age   |
     |exposures.tobacco_use_per_day          |
     |exposures.weight                       |
+    |ribosomal_rna_28s_16s_ratio            |
+    |gender                                 |
+    |relationship_gender                    |
+    |tumor_code_id                          |
 
 
 ## Clinical - JSON
