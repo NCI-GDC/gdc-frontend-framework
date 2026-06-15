@@ -240,7 +240,7 @@ Note: This is to resolve flaky test
 
 ## Genes - Replace with Affected Cases in Cohort
 * Switch to "Genes" tab in the Mutation Frequency app
-* Is text "Distribution of Most Frequently Mutated Genes" present on the page
+* Is text "Distribution of Most Frequently Mutated Genes (SSM)" present on the page
 Note: This is to resolve flaky test
 * Select value from table "Genes" by row and column
   |row   |column|

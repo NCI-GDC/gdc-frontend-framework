@@ -26,6 +26,7 @@ tags: gdc-data-portal-v2, repository, regression
   |index_files.proportion_coverage_30X                      |
   |proportion_coverage_10X                                  |
   |proportion_coverage_30X                                  |
+  |gender                                                   |
 
 ## Close Modal
 * Close the modal

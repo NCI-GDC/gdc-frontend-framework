@@ -179,7 +179,7 @@ tags: gdc-data-portal-v2, set-operations, regression
 * Navigate to "Analysis" from "Header" "section"
 * Navigate to "Set Operations" from "Analysis" "app"
 * Select the link "Mutation Frequency"
-* Is text "Distribution of Most Frequently Mutated Genes" present on the page
+* Is text "Distribution of Most Frequently Mutated Genes (SSM)" present on the page
 
 ## Verify Text on Selection Screen
 * Navigate to "Analysis" from "Header" "section"

@@ -29,7 +29,6 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
     |ba678f26-a87d-4da0-bcee-d3a6caffae53   |
     |MMRF_1152_1_BM_CD138pos_T2_TSE61_K03194|
     |analyte_quantity                       |
-    |ribosomal_rna_28s_16s_ratio            |
     |well_number                            |
     |172f1884-c9d3-529b-a885-b5a37442a7e3   |
     |de08e2be-078b-58b3-90a6-7546145af589   |
@@ -48,7 +47,6 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
     |intermediate_dimension                 |
     |samples.preservation_method            |
     |samples.time_between_clamping_and_freezing|
-    |samples.tumor_code_id                  |
     |ccff20ac-6979-4602-ae3e-bb8fb3968a61   |
     |-27                                    |
     |Primary Blood Derived Cancer - Bone Marrow|
@@ -61,6 +59,8 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
     |TARGET-AML                             |
     |MATCH                                  |
     |TCGA                                   |
+    |tumor_code_id                          |
+    |ribosomal_rna_28s_16s_ratio            |
 
 ## Biospecimen - JSON
 * In table "Cases", search the table for "MMRF_1186"
@@ -121,7 +121,6 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
     |30.79999                               |
     |pathology_details.lymphatic_invasion_present|
     |pathology_details.submitter_id         |
-    |pathology_details.size_extraocular_nodule|
     |pathology_details.zone_of_origin_prostate|
     |exposures.alcohol_drinks_per_day       |
     |demographic.occupation_duration_years  |
@@ -187,6 +186,9 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
     |exposures.smokeless_tobacco_quit_age   |
     |exposures.tobacco_use_per_day          |
     |exposures.weight                       |
+    |gender                                 |
+    |relationship_gender                    |
+    |tumor_code_id                          |
 
 ## Clinical - JSON
 * In table "Cases", search the table for "MMRF_187"
@@ -338,6 +340,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, case-view, clinical-biospecime
     |MATCH                                  |
     |TCGA                                   |
     |gender                                 |
+    |relationship_gender                    |
 
 ## Cohort Table - Validate JSON Fields
   |field_name                                       |

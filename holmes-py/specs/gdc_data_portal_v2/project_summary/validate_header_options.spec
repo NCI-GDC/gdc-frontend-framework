@@ -192,6 +192,9 @@ tags: gdc-data-portal-v2, regression, project-summary, clinical-biospecimen-down
     |exposures.smokeless_tobacco_quit_age   |
     |exposures.tobacco_use_per_day          |
     |exposures.weight                       |
+    |gender                                 |
+    |relationship_gender                    |
+    |tumor_code_id                          |
 
 ## Clinical Download - JSON
 * Download "JSON" from "Project Summary Clinical"
