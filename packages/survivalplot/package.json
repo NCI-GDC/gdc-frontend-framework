@@ -1,6 +1,6 @@
 {
   "name": "@nci-gdc/survivalplot",
-  "version": "2.19.0",
+  "version": "2.20.0",
   "browser": true,
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -15,8 +15,8 @@
     "lodash": "^4.18.1"
   },
   "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.4",
     "rimraf": "^6.0.1",
-    "rollup": "^4.27.3",
-    "@rollup/plugin-terser": "^0.4.4"
+    "rollup": "^4.27.3"
   }
 }

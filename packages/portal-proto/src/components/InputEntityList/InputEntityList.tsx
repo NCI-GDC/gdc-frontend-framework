@@ -314,6 +314,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
               events={{ hover: true, focus: true, touch: false }}
               withArrow
               withinPortal={false}
+              zIndex={302}
             >
               <ActionIcon
                 data-testid="tooltip-accepted-identifier-info"
@@ -325,7 +326,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
             </Tooltip>
           </div>
           <div className="relative">
-            <LoadingOverlay visible={state.isFetching} />
+            <LoadingOverlay visible={state.isFetching} zIndex={301} />
             <Textarea
               data-testid="textbox-enter-identifiers"
               ref={inputRef}

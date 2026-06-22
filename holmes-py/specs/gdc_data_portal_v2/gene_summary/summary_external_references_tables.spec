@@ -53,7 +53,7 @@ tags: gdc-data-portal-v2, regression, gene-summary
     |HGNC:9588                              |3    |2      |
     |601728                                 |4    |2      |
     |ENSG00000171862                        |5    |2      |
-    |41                                     |6    |2      |
+    |View in CIViC                          |6    |2      |
     |PTEN                                   |7    |2      |
 * In table "External References Gene Summary" these selections should take the user to correct page in a new tab
     |row  |column |url_expected_on_new_tab                                              |
@@ -62,3 +62,14 @@ tags: gdc-data-portal-v2, regression, gene-summary
     |2    |2      |http*://www.uniprot.org/uniprot**/P60484                             |
     |4    |2      |http*://omim.org/entry/601728                                        |
     |6    |2      |http*://civicdb.org/features/41/summary                              |
+
+## Validate CIViC Update from PEAR-2687
+* Quick search for "PBRM1" and go to its page
+* Verify the table "External References Gene Summary" body text is correct
+    |expected_text                          |row  |column |
+    |---------------------------------------|-----|-------|
+    |View in CIViC                          |6    |2      |
+* In table "External References Gene Summary" these selections should take the user to correct page in a new tab
+    |row  |column |url_expected_on_new_tab                                              |
+    |-----|-------|---------------------------------------------------------------------|
+    |6    |2      |http*://civicdb.org/features/62/summary                              |
