@@ -55,7 +55,7 @@ const CohortActions: React.FC<CohortActionsProps> = ({
         position="top"
         withArrow
         withinPortal
-        zIndex={1000}
+        zIndex={300}
       >
         <span className="h-12">
           <DropdownMenu

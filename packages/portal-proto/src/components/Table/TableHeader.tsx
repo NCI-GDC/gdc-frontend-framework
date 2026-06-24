@@ -5,7 +5,6 @@ import ColumnOrdering from "./ColumnOrdering";
 import { useViewportSize } from "@mantine/hooks";
 import { CloseIcon, SearchIcon } from "@/utils/icons";
 import { XL_BREAKPOINT } from "src/styles/breakpoints";
-import { TOOLTIP_Z_INDEX } from "src/styles/zIndex";
 import { TableProps } from "./types";
 
 type TableHeaderProps<TData> = Pick<
@@ -48,7 +47,6 @@ const TooltipWrapper: React.FC<{
     position="bottom-start"
     offset={0}
     width="target"
-    zIndex={TOOLTIP_Z_INDEX}
   >
     <Popover.Target>{children}</Popover.Target>
     <Popover.Dropdown className="p-2 bg-white border rounded-t-none shadow-md border-base-lighter text-nci-gray text-sm overflow-wrap break-all rounded-b font-content">
