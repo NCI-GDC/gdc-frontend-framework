@@ -45,6 +45,7 @@ import {
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { buildGeneHaveAndHaveNotFilters } from "@/features/genomic/utils";
 import { AppModeState, ComparativeSurvival } from "./types";
+import { overwritingDemoFilterMutationFrequency } from "./utils";
 import { humanify } from "@/utils/index";
 import { useDeepCompareMemo } from "use-deep-compare";
 import FilterFacets from "@/features/genomic/filters.json";
@@ -382,17 +383,6 @@ export const useAutomaticComparativeSurvival = ({
   ]);
 };
 
-const overwritingDemoFilter: FilterSet = {
-  mode: "and",
-  root: {
-    "cases.project.project_id": {
-      operator: "includes",
-      field: "cases.project.project_id",
-      operands: ["TCGA-LGG"],
-    },
-  },
-};
-
 export const useMutationFrequencyFilters = () => {
   const isDemoMode = useIsDemoApp();
 
@@ -405,7 +395,10 @@ export const useMutationFrequencyFilters = () => {
   );
 
   const cohortFilters = useDeepCompareMemo(
-    () => (isDemoMode ? overwritingDemoFilter : currentCohortFilters),
+    () =>
+      isDemoMode
+        ? overwritingDemoFilterMutationFrequency
+        : currentCohortFilters,
     [isDemoMode, currentCohortFilters],
   );
 

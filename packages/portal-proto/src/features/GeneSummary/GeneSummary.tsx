@@ -4,7 +4,13 @@ import { CollapsibleTextArea } from "@/components/CollapsibleTextArea";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { SummaryErrorHeader } from "@/components/Summary/SummaryErrorHeader";
-import { useGeneSummaryQuery, GeneSummaryData, FilterSet } from "@gff/core";
+import {
+  useGeneSummaryQuery,
+  GeneSummaryData,
+  FilterSet,
+  useCoreSelector,
+  selectCurrentCohortFilters,
+} from "@gff/core";
 import { humanify } from "src/utils";
 import CNVPlot from "../charts/CNVPlot";
 import SSMPlot from "../charts/SSMPlot";
@@ -12,6 +18,8 @@ import { formatDataForHorizontalTable } from "../files/utils";
 import { LoadingOverlay } from "@mantine/core";
 import { WarningBanner } from "@gff/portal-components";
 import { HeaderTitle } from "@/components/tailwindComponents";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
+import { overwritingDemoFilterMutationFrequency } from "../genomic/utils";
 import { CollapsibleList } from "@/components/CollapsibleList";
 import SMTableContainer from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
 import GeneCancerDistributionTable from "../CancerDistributionTable/GeneCancerDistributionTable";
@@ -23,7 +31,6 @@ import {
   GeneSummaryTableData,
 } from "./utils";
 import { ExternalReferenceEntry } from "@/utils/externalLinks";
-import { useMutationFrequencyFilters } from "../genomic/hooks";
 
 const formatDataForSummary = (summaryData: GeneSummaryTableData) => {
   const {
@@ -165,6 +172,11 @@ const GeneView = ({
   contextFilters = undefined,
   contextSensitive = false,
 }: GeneViewProps) => {
+  const isDemo = useIsDemoApp();
+  const currentCohortFilters = useCoreSelector((state) =>
+    selectCurrentCohortFilters(state),
+  );
+
   // Since genomic filter lies in different store, it cannot be accessed using selectors.
   // Hence, passing it via a callback as contextFilters
   const genomicFilters = useMemo(
@@ -172,14 +184,13 @@ const GeneView = ({
     [contextFilters, contextSensitive],
   );
 
-  const { cohortFilters: mutationFrequencyCohortFilters } =
-    useMutationFrequencyFilters();
-
   const cohortFilters = useMemo(() => {
     if (!contextSensitive) return undefined;
     // if it's for mutation frequency demo use different filter (TCGA-LGG) than the current cohort filter
-    return mutationFrequencyCohortFilters;
-  }, [contextSensitive, mutationFrequencyCohortFilters]);
+    return isDemo
+      ? overwritingDemoFilterMutationFrequency
+      : currentCohortFilters;
+  }, [contextSensitive, isDemo, currentCohortFilters]);
 
   const summaryData = useMemo(
     () => (data ? buildGeneSummary(data) : null),
