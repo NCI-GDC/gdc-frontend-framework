@@ -91,7 +91,7 @@ export const FamilyHistoryOrExposure = ({
                     }`}
                     data-testid="tab"
                   >
-                    <Tooltip label={data.submitter_id} withinPortal={true}>
+                    <Tooltip label={data.submitter_id}>
                       <div>{`${data.submitter_id.substring(0, 13)}...`}</div>
                     </Tooltip>
                   </Tabs.Tab>

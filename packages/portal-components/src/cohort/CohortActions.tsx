@@ -50,7 +50,13 @@ const CohortActions: React.FC<CohortActionsProps> = ({
 
   return (
     <div className="flex justify-center items-center gap-2 md:gap-4">
-      <Tooltip label="Save Cohort" position="top" withArrow>
+      <Tooltip
+        label="Save Cohort"
+        position="top"
+        withArrow
+        withinPortal
+        zIndex={1000}
+      >
         <span className="h-12">
           <DropdownMenu
             customDataTestId="saveButton"

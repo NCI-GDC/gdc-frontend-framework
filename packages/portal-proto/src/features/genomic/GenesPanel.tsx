@@ -80,7 +80,6 @@ export const GenesPanel = ({
         </div>
         <div className="w-full xl:w-1/2 relative border border-base-lighter p-4">
           <LoadingOverlay
-            zIndex={0}
             data-testid="loading-spinner"
             visible={
               survivalPlotFetching ||

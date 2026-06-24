@@ -5,29 +5,21 @@ import ColumnOrdering from "./ColumnOrdering";
 import { useViewportSize } from "@mantine/hooks";
 import { CloseIcon, SearchIcon } from "@/utils/icons";
 import { XL_BREAKPOINT } from "src/styles/breakpoints";
+import { TOOLTIP_Z_INDEX } from "src/styles/zIndex";
+import { TableProps } from "./types";
 
-interface TableHeaderProps<TData> {
-  additionalControls?: React.ReactNode;
-  tableTotalDetail?: React.ReactNode;
-  tableTitle?: React.ReactNode;
-  search?: {
-    enabled: boolean;
-    placeholder?: string;
-    defaultSearchTerm?: string;
-    tooltip?: string;
-  };
-  showControls?: boolean;
-  handleChange: (params: {
-    newSearch?: string;
-    newPageSize?: string;
-    newPageNumber?: number;
-  }) => void;
-  table: Table<TData>;
-  columnOrder: string[];
-  setColumnOrder: (order: string[]) => void;
-  baseZIndex?: number;
-  customBreakpoint?: number;
-}
+type TableHeaderProps<TData> = Pick<
+  TableProps<TData>,
+  | "additionalControls"
+  | "tableTotalDetail"
+  | "tableTitle"
+  | "search"
+  | "showControls"
+  | "handleChange"
+  | "columnOrder"
+  | "setColumnOrder"
+  | "customBreakpoint"
+> & { table: Table<TData> };
 
 const TitleWrapper: React.FC<{ title: React.ReactNode }> = ({ title }) => (
   <div className="uppercase text-lg text-left ml-0 lg:ml-auto gap-x-2">
@@ -50,15 +42,13 @@ const TooltipWrapper: React.FC<{
   children: React.ReactNode;
   tooltip: string;
   searchFocused: boolean;
-  baseZIndex: number;
-}> = ({ children, tooltip, searchFocused, baseZIndex }) => (
+}> = ({ children, tooltip, searchFocused }) => (
   <Popover
     opened={searchFocused}
     position="bottom-start"
     offset={0}
     width="target"
-    withinPortal={false}
-    zIndex={baseZIndex + 1} // needs to be higher z-index when in a modal
+    zIndex={TOOLTIP_Z_INDEX}
   >
     <Popover.Target>{children}</Popover.Target>
     <Popover.Dropdown className="p-2 bg-white border rounded-t-none shadow-md border-base-lighter text-nci-gray text-sm overflow-wrap break-all rounded-b font-content">
@@ -76,13 +66,11 @@ const SearchInput: React.FC<{
   onBlur: () => void;
   placeholder?: string;
   tooltip?: string;
-  baseZIndex?: number;
 }> = ({
   searchTerm,
   placeholder,
   tooltip,
   searchFocused,
-  baseZIndex,
   onClear,
   onChange,
   onFocus,
@@ -91,11 +79,7 @@ const SearchInput: React.FC<{
   const TooltipContainer = tooltip ? TooltipWrapper : React.Fragment;
 
   return (
-    <TooltipContainer
-      tooltip={tooltip}
-      searchFocused={searchFocused}
-      baseZIndex={baseZIndex}
-    >
+    <TooltipContainer tooltip={tooltip} searchFocused={searchFocused}>
       <TextInput
         leftSection={<SearchIcon size={24} aria-hidden="true" />}
         data-testid="textbox-table-search-bar"
@@ -134,7 +118,6 @@ function TableHeader<TData>({
   table,
   columnOrder,
   setColumnOrder,
-  baseZIndex,
   customBreakpoint,
 }: TableHeaderProps<TData>) {
   const [searchTerm, setSearchTerm] = useState(search?.defaultSearchTerm ?? "");
@@ -175,7 +158,6 @@ function TableHeader<TData>({
           placeholder={search?.placeholder}
           tooltip={search?.tooltip}
           searchFocused={searchFocused}
-          baseZIndex={baseZIndex}
           onClear={handleClearClick}
           onChange={handleInputChange}
           onFocus={() => setSearchFocused(true)}

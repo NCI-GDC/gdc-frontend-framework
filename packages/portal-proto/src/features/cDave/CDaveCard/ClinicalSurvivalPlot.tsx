@@ -121,11 +121,7 @@ const ClinicalSurvivalPlot: React.FC<ClinicalSurvivalPlotProps> = ({
     </div>
   ) : (
     <div className="relative">
-      <LoadingOverlay
-        data-testid="loading-spinner"
-        visible={isFetching}
-        zIndex={1}
-      />
+      <LoadingOverlay data-testid="loading-spinner" visible={isFetching} />
       <ExternalDownloadStateSurvivalPlot
         data={data}
         height={150}

@@ -2,6 +2,7 @@ import React, { JSX, ReactNode } from "react";
 import { hideModal, useCoreDispatch } from "@gff/core";
 import { Button, Modal } from "@mantine/core";
 import { theme } from "tailwind.config";
+import { MODAL_Z_INDEX } from "src/styles/zIndex";
 
 interface ButtonOptions {
   onClick?: () => void;
@@ -24,6 +25,7 @@ interface Props {
   onClose?: () => void;
   closeOnClickOutside?: boolean;
   closeOnEscape?: boolean;
+  zIndex?: number;
 }
 
 /**
@@ -51,13 +53,13 @@ export const BaseModal: React.FC<Props> = ({
   onClose,
   closeOnClickOutside,
   closeOnEscape,
+  zIndex = MODAL_Z_INDEX,
 }: Props) => {
   const dispatch = useCoreDispatch();
   return (
     <Modal
       opened={openModal}
       title={title}
-      zIndex={400}
       onClose={() => {
         dispatch(hideModal());
         if (onClose) {
@@ -76,6 +78,7 @@ export const BaseModal: React.FC<Props> = ({
       closeOnClickOutside={closeOnClickOutside ?? true}
       closeOnEscape={closeOnEscape ?? true}
       size={size && size}
+      zIndex={zIndex}
     >
       {children}
       {buttons && (

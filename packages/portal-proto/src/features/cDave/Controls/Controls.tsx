@@ -72,7 +72,6 @@ const Controls: React.FC<ControlsProps> = ({
     >
       <Tooltip
         withArrow
-        withinPortal
         offset={-2}
         label={controlsExpanded ? "Hide Control Panel" : "Show Control Panel"}
       >

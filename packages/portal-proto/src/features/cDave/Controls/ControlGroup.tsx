@@ -58,7 +58,6 @@ const FieldControl: React.FC<FieldControlProps> = ({
               withArrow
               w={200}
               multiline
-              zIndex={15}
             >
               <div>{displayName}</div>
             </Tooltip>
@@ -114,7 +113,7 @@ const ControlGroup: React.FC<ControlGroupProps> = ({
         )}
         tabIndex={0}
         role="button"
-        className="text-sm xl:text-[1rem] text-primary-contrast cursor-pointer bg-primary-darker font-heading font-semibold flex items-center p-2 sticky top-0 z-10"
+        className="text-sm xl:text-[1rem] text-primary-contrast cursor-pointer bg-primary-darker font-heading font-semibold flex items-center p-2 sticky top-0 z-table-header"
         aria-controls={`cdave-control-group-${name}`}
         aria-expanded={groupOpen}
       >

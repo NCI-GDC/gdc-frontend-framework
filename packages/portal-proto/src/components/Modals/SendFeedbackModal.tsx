@@ -34,7 +34,7 @@ const SendFeedbackModal = ({
             support@nci-gdc.datacommons.io
           </a>
           .
-          <Tooltip label="Copy email to clipboard" zIndex={400} withArrow>
+          <Tooltip label="Copy email to clipboard" withArrow>
             <span>
               <CopyButton value="support@nci-gdc.datacommons.io">
                 {({ copied, copy }) => (

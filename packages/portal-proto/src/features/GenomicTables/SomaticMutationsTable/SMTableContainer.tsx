@@ -574,7 +574,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             expanded={expanded}
             setExpanded={handleExpand}
             getRowId={getRowId}
-            baseZIndex={isModal ? 300 : 0}
           />
         </>
       )}

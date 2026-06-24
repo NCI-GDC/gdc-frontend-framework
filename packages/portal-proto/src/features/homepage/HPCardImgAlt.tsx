@@ -31,7 +31,7 @@ const HPCardImgAlt = ({
             <div
               className={`-bottom-1 -right-1 bg-summarybar-borderAlt ${imageWrapperStyles}`}
             />
-            <Image alt={imgAlt} src={imgSrc} className="rounded-lg z-10" fill />
+            <Image alt={imgAlt} src={imgSrc} className="rounded-lg" fill />
           </div>
           <h2 className="basis-2/3 font-heading font-bold text-4xl md:text-[2rem] self-center lg:hidden">
             {head}

@@ -100,7 +100,6 @@ const LoginButtonOrUserDropdown = () => {
             dropdown: "border-primary-darker shadow-xl",
             item: "text-base-darker hover:bg-accent-lightest hover:text-accent-contrast-lightest",
           }}
-          zIndex={400}
           opened={opened}
           onOpen={open}
           onClose={close}

@@ -3,6 +3,7 @@ import { Text } from "@mantine/core";
 import { v4 as uuidv4 } from "uuid";
 import { LoginButton } from "../LoginButton";
 import { BaseModal } from "./BaseModal";
+import { MODAL_Z_INDEX } from "src/styles/zIndex";
 
 export const NoAccessModal = ({
   openModal,
@@ -24,6 +25,7 @@ export const NoAccessModal = ({
         },
         <LoginButton fromSession key={uuidv4()} />,
       ]}
+      zIndex={MODAL_Z_INDEX + 1}
     >
       <div className="border-y border-y-base p-4">
         <Text size="sm">

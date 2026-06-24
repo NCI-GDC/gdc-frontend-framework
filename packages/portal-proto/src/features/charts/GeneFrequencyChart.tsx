@@ -130,7 +130,6 @@ export const GeneFrequencyChart: React.FC<GeneFrequencyChartProps> = ({
         <LoadingOverlay
           data-testid="loading-spinner"
           visible={isFetching || isLoading || isPending || isChartRendering}
-          zIndex={1}
         />
         <BarChart
           data={processedData}

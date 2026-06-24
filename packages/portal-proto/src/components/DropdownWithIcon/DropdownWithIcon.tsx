@@ -109,7 +109,6 @@ export const DropdownWithIcon = ({
       onClose={close}
       width={!disableTargetWidth && "target"}
       {...(customPosition && { position: customPosition })}
-      zIndex={9000} //dropdown should be on top of everything when open
       closeOnItemClick={closeOnItemClick}
     >
       <Menu.Target>

@@ -353,7 +353,6 @@ const AnnotationsTable: React.FC<AnnotationsTableProps> = ({
           enabled: true,
           tooltip: "e.g. TCGA-ZX-AA5X, c8449103-afb0-4e43-ac04-c4ef54a8cdb0",
         }}
-        baseZIndex={300}
         status={statusBooleansToDataStatus(isFetching, isSuccess, isError)}
         pagination={{
           label: "annotation",

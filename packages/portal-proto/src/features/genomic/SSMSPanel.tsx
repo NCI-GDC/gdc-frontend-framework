@@ -97,7 +97,6 @@ export const SSMSPanel = ({
           visible={
             survivalPlotFetching || (!survivalPlotReady && !topGeneSSMSSuccess)
           }
-          zIndex={0}
         />
         <SurvivalPlot
           plotType={SurvivalPlotTypes.mutation}
