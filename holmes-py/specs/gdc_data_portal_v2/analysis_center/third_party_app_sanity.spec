@@ -41,10 +41,11 @@ tags: gdc-data-portal-v2, navigation, analysis-center, smoke-test, regression
 * Navigate to "Correlation Plot Demo" from "Analysis" "app"
 * Is text "Group comparisons (log-rank test)" present on the page
 
-## Gene Expression Clustering
-* Navigate to "Analysis" from "Header" "section"
-* Navigate to "Gene Expression Clustering" from "Analysis" "app"
-* Is text "Gene Expression (Z-score)" present on the page
+// Put this back in once st.jude fixes gene expression with all cases
+// ## Gene Expression Clustering
+// * Navigate to "Analysis" from "Header" "section"
+// * Navigate to "Gene Expression Clustering" from "Analysis" "app"
+// * Is text "Gene Expression (Z-score)" present on the page
 
 ## Gene Expression Clustering Demo
 * Navigate to "Analysis" from "Header" "section"
