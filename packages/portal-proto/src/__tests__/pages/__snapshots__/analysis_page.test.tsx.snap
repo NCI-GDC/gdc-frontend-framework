@@ -20,7 +20,7 @@ exports[`matches snapshot for BamDownloadApp app 1`] = `
     class="flex flex-col min-h-screen min-w-full bg-base-max"
   >
     <header
-      class="flex-none bg-base-max sticky top-0 z-300 shadow-lg"
+      class="flex-none bg-base-max sticky top-0 shadow-lg z-header"
       id="global-header"
     >
       <div
@@ -562,36 +562,36 @@ exports[`matches snapshot for BamDownloadApp app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         >
           <div
             class="mantine-Modal-overlay m_9814e45f mantine-Overlay-root"
             data-fixed="true"
-            style="--overlay-z-index: 400;"
+            style="--overlay-z-index: 70;"
           />
           <div
             class="m_60c222c7 m_1f958f16 mantine-Modal-inner"
@@ -701,12 +701,12 @@ exports[`matches snapshot for BamDownloadApp app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 300; --mb-padding: 0rem;"
+          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 200; --mb-padding: 0rem;"
         />
       </div>
     </header>
     <aside
-      class="sticky z-299 shadow-lg"
+      class="sticky z-sticky-header shadow-lg"
       id="context-bar"
       style="top: 0px;"
     >
@@ -801,7 +801,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 rounded-none r
                       data-testid="cohort-list-dropdown"
                     >
                       <div
-                        class="border-secondary-darkest w-56 md:w-80 z-[290] m_46b77525 mantine-InputWrapper-root mantine-Select-root"
+                        class="border-secondary-darkest w-56 md:w-80 m_46b77525 mantine-InputWrapper-root mantine-Select-root"
                         data-size="sm"
                       >
                         <div
@@ -1811,13 +1811,13 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <style
@@ -2132,7 +2132,7 @@ exports[`matches snapshot for CDave app 1`] = `
     class="flex flex-col min-h-screen min-w-full bg-base-max"
   >
     <header
-      class="flex-none bg-base-max sticky top-0 z-300 shadow-lg"
+      class="flex-none bg-base-max sticky top-0 shadow-lg z-header"
       id="global-header"
     >
       <div
@@ -2674,36 +2674,36 @@ exports[`matches snapshot for CDave app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         >
           <div
             class="mantine-Modal-overlay m_9814e45f mantine-Overlay-root"
             data-fixed="true"
-            style="--overlay-z-index: 400;"
+            style="--overlay-z-index: 70;"
           />
           <div
             class="m_60c222c7 m_1f958f16 mantine-Modal-inner"
@@ -2813,12 +2813,12 @@ exports[`matches snapshot for CDave app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 300; --mb-padding: 0rem;"
+          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 200; --mb-padding: 0rem;"
         />
       </div>
     </header>
     <aside
-      class="sticky z-299 shadow-lg"
+      class="sticky z-sticky-header shadow-lg"
       id="context-bar"
       style="top: 0px;"
     >
@@ -2913,7 +2913,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 rounded-none r
                       data-testid="cohort-list-dropdown"
                     >
                       <div
-                        class="border-secondary-darkest w-56 md:w-80 z-[290] m_46b77525 mantine-InputWrapper-root mantine-Select-root"
+                        class="border-secondary-darkest w-56 md:w-80 m_46b77525 mantine-InputWrapper-root mantine-Select-root"
                         data-size="sm"
                       >
                         <div
@@ -3923,13 +3923,13 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <style
@@ -4244,7 +4244,7 @@ exports[`matches snapshot for CnvSegmentApp app 1`] = `
     class="flex flex-col min-h-screen min-w-full bg-base-max"
   >
     <header
-      class="flex-none bg-base-max sticky top-0 z-300 shadow-lg"
+      class="flex-none bg-base-max sticky top-0 shadow-lg z-header"
       id="global-header"
     >
       <div
@@ -4786,36 +4786,36 @@ exports[`matches snapshot for CnvSegmentApp app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         >
           <div
             class="mantine-Modal-overlay m_9814e45f mantine-Overlay-root"
             data-fixed="true"
-            style="--overlay-z-index: 400;"
+            style="--overlay-z-index: 70;"
           />
           <div
             class="m_60c222c7 m_1f958f16 mantine-Modal-inner"
@@ -4925,12 +4925,12 @@ exports[`matches snapshot for CnvSegmentApp app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 300; --mb-padding: 0rem;"
+          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 200; --mb-padding: 0rem;"
         />
       </div>
     </header>
     <aside
-      class="sticky z-299 shadow-lg"
+      class="sticky z-sticky-header shadow-lg"
       id="context-bar"
       style="top: 0px;"
     >
@@ -5025,7 +5025,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 rounded-none r
                       data-testid="cohort-list-dropdown"
                     >
                       <div
-                        class="border-secondary-darkest w-56 md:w-80 z-[290] m_46b77525 mantine-InputWrapper-root mantine-Select-root"
+                        class="border-secondary-darkest w-56 md:w-80 m_46b77525 mantine-InputWrapper-root mantine-Select-root"
                         data-size="sm"
                       >
                         <div
@@ -6035,13 +6035,13 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <style
@@ -6356,7 +6356,7 @@ exports[`matches snapshot for CohortBuilder app 1`] = `
     class="flex flex-col min-h-screen min-w-full bg-base-max"
   >
     <header
-      class="flex-none bg-base-max sticky top-0 z-300 shadow-lg"
+      class="flex-none bg-base-max sticky top-0 shadow-lg z-header"
       id="global-header"
     >
       <div
@@ -6898,36 +6898,36 @@ exports[`matches snapshot for CohortBuilder app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         >
           <div
             class="mantine-Modal-overlay m_9814e45f mantine-Overlay-root"
             data-fixed="true"
-            style="--overlay-z-index: 400;"
+            style="--overlay-z-index: 70;"
           />
           <div
             class="m_60c222c7 m_1f958f16 mantine-Modal-inner"
@@ -7037,12 +7037,12 @@ exports[`matches snapshot for CohortBuilder app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 300; --mb-padding: 0rem;"
+          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 200; --mb-padding: 0rem;"
         />
       </div>
     </header>
     <aside
-      class="sticky z-299 shadow-lg"
+      class="sticky z-sticky-header shadow-lg"
       id="context-bar"
       style="top: 0px;"
     >
@@ -7137,7 +7137,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 rounded-none r
                       data-testid="cohort-list-dropdown"
                     >
                       <div
-                        class="border-secondary-darkest w-56 md:w-80 z-[290] m_46b77525 mantine-InputWrapper-root mantine-Select-root"
+                        class="border-secondary-darkest w-56 md:w-80 m_46b77525 mantine-InputWrapper-root mantine-Select-root"
                         data-size="sm"
                       >
                         <div
@@ -8147,13 +8147,13 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <style
@@ -8468,7 +8468,7 @@ exports[`matches snapshot for CohortComparisonApp app 1`] = `
     class="flex flex-col min-h-screen min-w-full bg-base-max"
   >
     <header
-      class="flex-none bg-base-max sticky top-0 z-300 shadow-lg"
+      class="flex-none bg-base-max sticky top-0 shadow-lg z-header"
       id="global-header"
     >
       <div
@@ -9010,36 +9010,36 @@ exports[`matches snapshot for CohortComparisonApp app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         >
           <div
             class="mantine-Modal-overlay m_9814e45f mantine-Overlay-root"
             data-fixed="true"
-            style="--overlay-z-index: 400;"
+            style="--overlay-z-index: 70;"
           />
           <div
             class="m_60c222c7 m_1f958f16 mantine-Modal-inner"
@@ -9149,12 +9149,12 @@ exports[`matches snapshot for CohortComparisonApp app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 300; --mb-padding: 0rem;"
+          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 200; --mb-padding: 0rem;"
         />
       </div>
     </header>
     <aside
-      class="sticky z-299 shadow-lg"
+      class="sticky z-sticky-header shadow-lg"
       id="context-bar"
       style="top: 0px;"
     >
@@ -9249,7 +9249,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 rounded-none r
                       data-testid="cohort-list-dropdown"
                     >
                       <div
-                        class="border-secondary-darkest w-56 md:w-80 z-[290] m_46b77525 mantine-InputWrapper-root mantine-Select-root"
+                        class="border-secondary-darkest w-56 md:w-80 m_46b77525 mantine-InputWrapper-root mantine-Select-root"
                         data-size="sm"
                       >
                         <div
@@ -10259,13 +10259,13 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <style
@@ -10580,7 +10580,7 @@ exports[`matches snapshot for CohortLevelMAF app 1`] = `
     class="flex flex-col min-h-screen min-w-full bg-base-max"
   >
     <header
-      class="flex-none bg-base-max sticky top-0 z-300 shadow-lg"
+      class="flex-none bg-base-max sticky top-0 shadow-lg z-header"
       id="global-header"
     >
       <div
@@ -11122,36 +11122,36 @@ exports[`matches snapshot for CohortLevelMAF app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         >
           <div
             class="mantine-Modal-overlay m_9814e45f mantine-Overlay-root"
             data-fixed="true"
-            style="--overlay-z-index: 400;"
+            style="--overlay-z-index: 70;"
           />
           <div
             class="m_60c222c7 m_1f958f16 mantine-Modal-inner"
@@ -11261,12 +11261,12 @@ exports[`matches snapshot for CohortLevelMAF app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 300; --mb-padding: 0rem;"
+          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 200; --mb-padding: 0rem;"
         />
       </div>
     </header>
     <aside
-      class="sticky z-299 shadow-lg"
+      class="sticky z-sticky-header shadow-lg"
       id="context-bar"
       style="top: 0px;"
     >
@@ -11361,7 +11361,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 rounded-none r
                       data-testid="cohort-list-dropdown"
                     >
                       <div
-                        class="border-secondary-darkest w-56 md:w-80 z-[290] m_46b77525 mantine-InputWrapper-root mantine-Select-root"
+                        class="border-secondary-darkest w-56 md:w-80 m_46b77525 mantine-InputWrapper-root mantine-Select-root"
                         data-size="sm"
                       >
                         <div
@@ -12371,13 +12371,13 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <style
@@ -12692,7 +12692,7 @@ exports[`matches snapshot for Correlation app 1`] = `
     class="flex flex-col min-h-screen min-w-full bg-base-max"
   >
     <header
-      class="flex-none bg-base-max sticky top-0 z-300 shadow-lg"
+      class="flex-none bg-base-max sticky top-0 shadow-lg z-header"
       id="global-header"
     >
       <div
@@ -13234,36 +13234,36 @@ exports[`matches snapshot for Correlation app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         >
           <div
             class="mantine-Modal-overlay m_9814e45f mantine-Overlay-root"
             data-fixed="true"
-            style="--overlay-z-index: 400;"
+            style="--overlay-z-index: 70;"
           />
           <div
             class="m_60c222c7 m_1f958f16 mantine-Modal-inner"
@@ -13373,12 +13373,12 @@ exports[`matches snapshot for Correlation app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 300; --mb-padding: 0rem;"
+          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 200; --mb-padding: 0rem;"
         />
       </div>
     </header>
     <aside
-      class="sticky z-299 shadow-lg"
+      class="sticky z-sticky-header shadow-lg"
       id="context-bar"
       style="top: 0px;"
     >
@@ -13473,7 +13473,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 rounded-none r
                       data-testid="cohort-list-dropdown"
                     >
                       <div
-                        class="border-secondary-darkest w-56 md:w-80 z-[290] m_46b77525 mantine-InputWrapper-root mantine-Select-root"
+                        class="border-secondary-darkest w-56 md:w-80 m_46b77525 mantine-InputWrapper-root mantine-Select-root"
                         data-size="sm"
                       >
                         <div
@@ -14483,13 +14483,13 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <style
@@ -14804,7 +14804,7 @@ exports[`matches snapshot for Downloads app 1`] = `
     class="flex flex-col min-h-screen min-w-full bg-base-max"
   >
     <header
-      class="flex-none bg-base-max sticky top-0 z-300 shadow-lg"
+      class="flex-none bg-base-max sticky top-0 shadow-lg z-header"
       id="global-header"
     >
       <div
@@ -15346,36 +15346,36 @@ exports[`matches snapshot for Downloads app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         >
           <div
             class="mantine-Modal-overlay m_9814e45f mantine-Overlay-root"
             data-fixed="true"
-            style="--overlay-z-index: 400;"
+            style="--overlay-z-index: 70;"
           />
           <div
             class="m_60c222c7 m_1f958f16 mantine-Modal-inner"
@@ -15485,12 +15485,12 @@ exports[`matches snapshot for Downloads app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 300; --mb-padding: 0rem;"
+          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 200; --mb-padding: 0rem;"
         />
       </div>
     </header>
     <aside
-      class="sticky z-299 shadow-lg"
+      class="sticky z-sticky-header shadow-lg"
       id="context-bar"
       style="top: 0px;"
     >
@@ -15585,7 +15585,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 rounded-none r
                       data-testid="cohort-list-dropdown"
                     >
                       <div
-                        class="border-secondary-darkest w-56 md:w-80 z-[290] m_46b77525 mantine-InputWrapper-root mantine-Select-root"
+                        class="border-secondary-darkest w-56 md:w-80 m_46b77525 mantine-InputWrapper-root mantine-Select-root"
                         data-size="sm"
                       >
                         <div
@@ -16595,13 +16595,13 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <style
@@ -16916,7 +16916,7 @@ exports[`matches snapshot for GeneExpression app 1`] = `
     class="flex flex-col min-h-screen min-w-full bg-base-max"
   >
     <header
-      class="flex-none bg-base-max sticky top-0 z-300 shadow-lg"
+      class="flex-none bg-base-max sticky top-0 shadow-lg z-header"
       id="global-header"
     >
       <div
@@ -17458,36 +17458,36 @@ exports[`matches snapshot for GeneExpression app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         >
           <div
             class="mantine-Modal-overlay m_9814e45f mantine-Overlay-root"
             data-fixed="true"
-            style="--overlay-z-index: 400;"
+            style="--overlay-z-index: 70;"
           />
           <div
             class="m_60c222c7 m_1f958f16 mantine-Modal-inner"
@@ -17597,12 +17597,12 @@ exports[`matches snapshot for GeneExpression app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 300; --mb-padding: 0rem;"
+          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 200; --mb-padding: 0rem;"
         />
       </div>
     </header>
     <aside
-      class="sticky z-299 shadow-lg"
+      class="sticky z-sticky-header shadow-lg"
       id="context-bar"
       style="top: 0px;"
     >
@@ -17697,7 +17697,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 rounded-none r
                       data-testid="cohort-list-dropdown"
                     >
                       <div
-                        class="border-secondary-darkest w-56 md:w-80 z-[290] m_46b77525 mantine-InputWrapper-root mantine-Select-root"
+                        class="border-secondary-darkest w-56 md:w-80 m_46b77525 mantine-InputWrapper-root mantine-Select-root"
                         data-size="sm"
                       >
                         <div
@@ -18707,13 +18707,13 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <style
@@ -19028,7 +19028,7 @@ exports[`matches snapshot for IDCViewerApp app 1`] = `
     class="flex flex-col min-h-screen min-w-full bg-base-max"
   >
     <header
-      class="flex-none bg-base-max sticky top-0 z-300 shadow-lg"
+      class="flex-none bg-base-max sticky top-0 shadow-lg z-header"
       id="global-header"
     >
       <div
@@ -19570,36 +19570,36 @@ exports[`matches snapshot for IDCViewerApp app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         >
           <div
             class="mantine-Modal-overlay m_9814e45f mantine-Overlay-root"
             data-fixed="true"
-            style="--overlay-z-index: 400;"
+            style="--overlay-z-index: 70;"
           />
           <div
             class="m_60c222c7 m_1f958f16 mantine-Modal-inner"
@@ -19709,12 +19709,12 @@ exports[`matches snapshot for IDCViewerApp app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 300; --mb-padding: 0rem;"
+          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 200; --mb-padding: 0rem;"
         />
       </div>
     </header>
     <aside
-      class="sticky z-299 shadow-lg"
+      class="sticky z-sticky-header shadow-lg"
       id="context-bar"
       style="top: 0px;"
     >
@@ -19809,7 +19809,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 rounded-none r
                       data-testid="cohort-list-dropdown"
                     >
                       <div
-                        class="border-secondary-darkest w-56 md:w-80 z-[290] m_46b77525 mantine-InputWrapper-root mantine-Select-root"
+                        class="border-secondary-darkest w-56 md:w-80 m_46b77525 mantine-InputWrapper-root mantine-Select-root"
                         data-size="sm"
                       >
                         <div
@@ -20819,13 +20819,13 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <style
@@ -21140,7 +21140,7 @@ exports[`matches snapshot for MutationFrequencyApp app 1`] = `
     class="flex flex-col min-h-screen min-w-full bg-base-max"
   >
     <header
-      class="flex-none bg-base-max sticky top-0 z-300 shadow-lg"
+      class="flex-none bg-base-max sticky top-0 shadow-lg z-header"
       id="global-header"
     >
       <div
@@ -21682,36 +21682,36 @@ exports[`matches snapshot for MutationFrequencyApp app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         >
           <div
             class="mantine-Modal-overlay m_9814e45f mantine-Overlay-root"
             data-fixed="true"
-            style="--overlay-z-index: 400;"
+            style="--overlay-z-index: 70;"
           />
           <div
             class="m_60c222c7 m_1f958f16 mantine-Modal-inner"
@@ -21821,12 +21821,12 @@ exports[`matches snapshot for MutationFrequencyApp app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 300; --mb-padding: 0rem;"
+          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 200; --mb-padding: 0rem;"
         />
       </div>
     </header>
     <aside
-      class="sticky z-299 shadow-lg"
+      class="sticky z-sticky-header shadow-lg"
       id="context-bar"
       style="top: 0px;"
     >
@@ -21921,7 +21921,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 rounded-none r
                       data-testid="cohort-list-dropdown"
                     >
                       <div
-                        class="border-secondary-darkest w-56 md:w-80 z-[290] m_46b77525 mantine-InputWrapper-root mantine-Select-root"
+                        class="border-secondary-darkest w-56 md:w-80 m_46b77525 mantine-InputWrapper-root mantine-Select-root"
                         data-size="sm"
                       >
                         <div
@@ -22931,13 +22931,13 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <style
@@ -23252,7 +23252,7 @@ exports[`matches snapshot for OncoMatrix app 1`] = `
     class="flex flex-col min-h-screen min-w-full bg-base-max"
   >
     <header
-      class="flex-none bg-base-max sticky top-0 z-300 shadow-lg"
+      class="flex-none bg-base-max sticky top-0 shadow-lg z-header"
       id="global-header"
     >
       <div
@@ -23794,36 +23794,36 @@ exports[`matches snapshot for OncoMatrix app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         >
           <div
             class="mantine-Modal-overlay m_9814e45f mantine-Overlay-root"
             data-fixed="true"
-            style="--overlay-z-index: 400;"
+            style="--overlay-z-index: 70;"
           />
           <div
             class="m_60c222c7 m_1f958f16 mantine-Modal-inner"
@@ -23933,12 +23933,12 @@ exports[`matches snapshot for OncoMatrix app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 300; --mb-padding: 0rem;"
+          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 200; --mb-padding: 0rem;"
         />
       </div>
     </header>
     <aside
-      class="sticky z-299 shadow-lg"
+      class="sticky z-sticky-header shadow-lg"
       id="context-bar"
       style="top: 0px;"
     >
@@ -24033,7 +24033,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 rounded-none r
                       data-testid="cohort-list-dropdown"
                     >
                       <div
-                        class="border-secondary-darkest w-56 md:w-80 z-[290] m_46b77525 mantine-InputWrapper-root mantine-Select-root"
+                        class="border-secondary-darkest w-56 md:w-80 m_46b77525 mantine-InputWrapper-root mantine-Select-root"
                         data-size="sm"
                       >
                         <div
@@ -25043,13 +25043,13 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <style
@@ -25364,7 +25364,7 @@ exports[`matches snapshot for Projects app 1`] = `
     class="flex flex-col min-h-screen min-w-full bg-base-max"
   >
     <header
-      class="flex-none bg-base-max sticky top-0 z-300 shadow-lg"
+      class="flex-none bg-base-max sticky top-0 shadow-lg z-header"
       id="global-header"
     >
       <div
@@ -25906,36 +25906,36 @@ exports[`matches snapshot for Projects app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         >
           <div
             class="mantine-Modal-overlay m_9814e45f mantine-Overlay-root"
             data-fixed="true"
-            style="--overlay-z-index: 400;"
+            style="--overlay-z-index: 70;"
           />
           <div
             class="m_60c222c7 m_1f958f16 mantine-Modal-inner"
@@ -26045,12 +26045,12 @@ exports[`matches snapshot for Projects app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 300; --mb-padding: 0rem;"
+          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 200; --mb-padding: 0rem;"
         />
       </div>
     </header>
     <aside
-      class="sticky z-299 shadow-lg"
+      class="sticky z-sticky-header shadow-lg"
       id="context-bar"
       style="top: 0px;"
     >
@@ -26145,7 +26145,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 rounded-none r
                       data-testid="cohort-list-dropdown"
                     >
                       <div
-                        class="border-secondary-darkest w-56 md:w-80 z-[290] m_46b77525 mantine-InputWrapper-root mantine-Select-root"
+                        class="border-secondary-darkest w-56 md:w-80 m_46b77525 mantine-InputWrapper-root mantine-Select-root"
                         data-size="sm"
                       >
                         <div
@@ -27155,13 +27155,13 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <style
@@ -27476,7 +27476,7 @@ exports[`matches snapshot for ProteinPaintApp app 1`] = `
     class="flex flex-col min-h-screen min-w-full bg-base-max"
   >
     <header
-      class="flex-none bg-base-max sticky top-0 z-300 shadow-lg"
+      class="flex-none bg-base-max sticky top-0 shadow-lg z-header"
       id="global-header"
     >
       <div
@@ -28018,36 +28018,36 @@ exports[`matches snapshot for ProteinPaintApp app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         >
           <div
             class="mantine-Modal-overlay m_9814e45f mantine-Overlay-root"
             data-fixed="true"
-            style="--overlay-z-index: 400;"
+            style="--overlay-z-index: 70;"
           />
           <div
             class="m_60c222c7 m_1f958f16 mantine-Modal-inner"
@@ -28157,12 +28157,12 @@ exports[`matches snapshot for ProteinPaintApp app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 300; --mb-padding: 0rem;"
+          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 200; --mb-padding: 0rem;"
         />
       </div>
     </header>
     <aside
-      class="sticky z-299 shadow-lg"
+      class="sticky z-sticky-header shadow-lg"
       id="context-bar"
       style="top: 0px;"
     >
@@ -28257,7 +28257,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 rounded-none r
                       data-testid="cohort-list-dropdown"
                     >
                       <div
-                        class="border-secondary-darkest w-56 md:w-80 z-[290] m_46b77525 mantine-InputWrapper-root mantine-Select-root"
+                        class="border-secondary-darkest w-56 md:w-80 m_46b77525 mantine-InputWrapper-root mantine-Select-root"
                         data-size="sm"
                       >
                         <div
@@ -29267,13 +29267,13 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <style
@@ -29588,7 +29588,7 @@ exports[`matches snapshot for SequenceReadApp app 1`] = `
     class="flex flex-col min-h-screen min-w-full bg-base-max"
   >
     <header
-      class="flex-none bg-base-max sticky top-0 z-300 shadow-lg"
+      class="flex-none bg-base-max sticky top-0 shadow-lg z-header"
       id="global-header"
     >
       <div
@@ -30130,36 +30130,36 @@ exports[`matches snapshot for SequenceReadApp app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         >
           <div
             class="mantine-Modal-overlay m_9814e45f mantine-Overlay-root"
             data-fixed="true"
-            style="--overlay-z-index: 400;"
+            style="--overlay-z-index: 70;"
           />
           <div
             class="m_60c222c7 m_1f958f16 mantine-Modal-inner"
@@ -30269,12 +30269,12 @@ exports[`matches snapshot for SequenceReadApp app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 300; --mb-padding: 0rem;"
+          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 200; --mb-padding: 0rem;"
         />
       </div>
     </header>
     <aside
-      class="sticky z-299 shadow-lg"
+      class="sticky z-sticky-header shadow-lg"
       id="context-bar"
       style="top: 0px;"
     >
@@ -30369,7 +30369,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 rounded-none r
                       data-testid="cohort-list-dropdown"
                     >
                       <div
-                        class="border-secondary-darkest w-56 md:w-80 z-[290] m_46b77525 mantine-InputWrapper-root mantine-Select-root"
+                        class="border-secondary-darkest w-56 md:w-80 m_46b77525 mantine-InputWrapper-root mantine-Select-root"
                         data-size="sm"
                       >
                         <div
@@ -31379,13 +31379,13 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <style
@@ -31700,7 +31700,7 @@ exports[`matches snapshot for SetOperationsApp app 1`] = `
     class="flex flex-col min-h-screen min-w-full bg-base-max"
   >
     <header
-      class="flex-none bg-base-max sticky top-0 z-300 shadow-lg"
+      class="flex-none bg-base-max sticky top-0 shadow-lg z-header"
       id="global-header"
     >
       <div
@@ -32242,36 +32242,36 @@ exports[`matches snapshot for SetOperationsApp app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         >
           <div
             class="mantine-Modal-overlay m_9814e45f mantine-Overlay-root"
             data-fixed="true"
-            style="--overlay-z-index: 400;"
+            style="--overlay-z-index: 70;"
           />
           <div
             class="m_60c222c7 m_1f958f16 mantine-Modal-inner"
@@ -32381,12 +32381,12 @@ exports[`matches snapshot for SetOperationsApp app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 300; --mb-padding: 0rem;"
+          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 200; --mb-padding: 0rem;"
         />
       </div>
     </header>
     <aside
-      class="sticky z-299 shadow-lg"
+      class="sticky z-sticky-header shadow-lg"
       id="context-bar"
       style="top: 0px;"
     >
@@ -32481,7 +32481,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 rounded-none r
                       data-testid="cohort-list-dropdown"
                     >
                       <div
-                        class="border-secondary-darkest w-56 md:w-80 z-[290] m_46b77525 mantine-InputWrapper-root mantine-Select-root"
+                        class="border-secondary-darkest w-56 md:w-80 m_46b77525 mantine-InputWrapper-root mantine-Select-root"
                         data-size="sm"
                       >
                         <div
@@ -33491,13 +33491,13 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <style
@@ -33812,7 +33812,7 @@ exports[`matches snapshot for scRNAseq app 1`] = `
     class="flex flex-col min-h-screen min-w-full bg-base-max"
   >
     <header
-      class="flex-none bg-base-max sticky top-0 z-300 shadow-lg"
+      class="flex-none bg-base-max sticky top-0 shadow-lg z-header"
       id="global-header"
     >
       <div
@@ -34354,36 +34354,36 @@ exports[`matches snapshot for scRNAseq app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         >
           <div
             class="mantine-Modal-overlay m_9814e45f mantine-Overlay-root"
             data-fixed="true"
-            style="--overlay-z-index: 400;"
+            style="--overlay-z-index: 70;"
           />
           <div
             class="m_60c222c7 m_1f958f16 mantine-Modal-inner"
@@ -34493,12 +34493,12 @@ exports[`matches snapshot for scRNAseq app 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 300; --mb-padding: 0rem;"
+          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 200; --mb-padding: 0rem;"
         />
       </div>
     </header>
     <aside
-      class="sticky z-299 shadow-lg"
+      class="sticky z-sticky-header shadow-lg"
       id="context-bar"
       style="top: 0px;"
     >
@@ -34593,7 +34593,7 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 rounded-none r
                       data-testid="cohort-list-dropdown"
                     >
                       <div
-                        class="border-secondary-darkest w-56 md:w-80 z-[290] m_46b77525 mantine-InputWrapper-root mantine-Select-root"
+                        class="border-secondary-darkest w-56 md:w-80 m_46b77525 mantine-InputWrapper-root mantine-Select-root"
                         data-size="sm"
                       >
                         <div
@@ -35603,13 +35603,13 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <style
