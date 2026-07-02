@@ -1,5 +1,4 @@
-import { FacetDefinition, FacetTypes } from "./types";
-import SupplementalFacetDefinitions from "./data/facet_additional_range_data.json";
+import { FacetDefinition, FacetDefinitionResponse, FacetTypes } from "./types";
 import { some, includes } from "lodash";
 
 export const classifyFacetDatatype = (f: FacetDefinition): FacetTypes => {
@@ -55,15 +54,11 @@ export const classifyFacetDatatype = (f: FacetDefinition): FacetTypes => {
   return "enum";
 };
 
-interface IStringIndex {
-  [key: string]: any;
-}
-
-const getRangeData = (f: FacetDefinition) => {
-  if (f.field in SupplementalFacetDefinitions) {
+const getRangeData = (f: FacetDefinitionResponse) => {
+  if (f?.maximum || f?.minimum) {
     return {
-      minimum: (SupplementalFacetDefinitions as IStringIndex)[f.field].minimum,
-      maximum: (SupplementalFacetDefinitions as IStringIndex)[f.field].maximum,
+      minimum: f?.minimum,
+      maximum: f?.maximum,
     };
   } else {
     return undefined;
@@ -71,7 +66,7 @@ const getRangeData = (f: FacetDefinition) => {
 };
 
 export const processDictionaryEntries = (
-  entries: Record<string, FacetDefinition>,
+  entries: Record<string, FacetDefinitionResponse>,
 ): Record<string, FacetDefinition> => {
   return Object.keys(entries).reduce(
     (dict: Record<string, FacetDefinition>, key: string) => {
