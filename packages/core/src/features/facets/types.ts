@@ -27,6 +27,16 @@ export interface AllowableRange {
   readonly maximum: number;
 }
 
+export interface FacetDefinitionResponse {
+  readonly description: string; //description from _mapping
+  readonly field: string; // name of field minus "case", "file"
+  readonly full: string; //  full name of filter (e.g. prepended with case.)
+  readonly type: string; // type from mapping
+  readonly doc_type: GQLDocType;
+  readonly minimum: number;
+  readonly maximum: number;
+}
+
 export interface FacetDefinition {
   readonly description: string; //description from _mapping
   readonly field: string; // name of field minus "case", "file"
