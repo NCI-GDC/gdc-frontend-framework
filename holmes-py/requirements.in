@@ -9,3 +9,4 @@ pyautogui==0.9.54
 # May have to add setuptools manually to requirements.txt after running
 # 'pip-compile requirements.in'
 setuptools==78.1.1
+virtualenv==20.36.1
