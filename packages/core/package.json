@@ -20,6 +20,7 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
+    "@types/js-cookie": "^3.0.6",
     "blueimp-md5": "^2.19.0",
     "isomorphic-fetch": "^3.0.0",
     "js-cookie": "^3.0.8",
