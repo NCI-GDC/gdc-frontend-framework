@@ -19,7 +19,7 @@ import { LoadingOverlay } from "@mantine/core";
 import { WarningBanner } from "@gff/portal-components";
 import { HeaderTitle } from "@/components/tailwindComponents";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
-import { overwritingDemoFilterMutationFrequency } from "../genomic/GenesAndMutationFrequencyAnalysisTool";
+import { overwritingDemoFilterMutationFrequency } from "../genomic/utils";
 import { CollapsibleList } from "@/components/CollapsibleList";
 import SMTableContainer from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
 import GeneCancerDistributionTable from "../CancerDistributionTable/GeneCancerDistributionTable";

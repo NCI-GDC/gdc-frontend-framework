@@ -1,4 +1,4 @@
-import { GqlOperation } from "@gff/core";
+import { GqlOperation, FilterSet } from "@gff/core";
 
 export const buildGeneHaveAndHaveNotFilters = (
   currentFilters: GqlOperation,
@@ -48,4 +48,15 @@ export const buildGeneHaveAndHaveNotFilters = (
       ],
     },
   ];
+};
+
+export const overwritingDemoFilterMutationFrequency: FilterSet = {
+  mode: "and",
+  root: {
+    "cases.project.project_id": {
+      operator: "includes",
+      field: "cases.project.project_id",
+      operands: ["TCGA-LGG"],
+    },
+  },
 };

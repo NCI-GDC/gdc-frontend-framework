@@ -9,7 +9,8 @@ import {
 } from "@/features/genomic/types";
 import {
   useSelectFilterContent,
-  useGeneAndSSMPanelData,
+  useGenomicSurvivalPlot,
+  useMutationFrequencyFilters,
 } from "@/features/genomic/hooks";
 import dynamic from "next/dynamic";
 import { GenesTableContainer } from "../GenomicTables/GenesTable/GenesTableContainer";
@@ -22,7 +23,6 @@ const SurvivalPlot = dynamic(
 );
 
 interface GenesPanelProps {
-  topGeneSSMSSuccess: boolean;
   comparativeSurvival: ComparativeSurvival;
   handleSurvivalPlotToggled: (
     symbol: string,
@@ -39,21 +39,15 @@ interface GenesPanelProps {
 }
 
 export const GenesPanel = ({
-  topGeneSSMSSuccess,
   comparativeSurvival,
   handleSurvivalPlotToggled,
   handleGeneAndSSmToggled,
   handleMutationCountClick,
 }: GenesPanelProps): JSX.Element => {
-  const {
-    isDemoMode,
-    cohortFilters,
-    genomicFilters,
-    overwritingDemoFilter,
-    survivalPlotData,
-    survivalPlotFetching,
-    survivalPlotReady,
-  } = useGeneAndSSMPanelData(comparativeSurvival, true);
+  const { cohortFilters, genomicFilters } = useMutationFrequencyFilters();
+
+  const { survivalPlotData, survivalPlotReady, survivalPlotFetching } =
+    useGenomicSurvivalPlot(comparativeSurvival, true);
 
   const currentGenes = useSelectFilterContent("genes.gene_id");
   const toggledGenes = useDeepCompareMemo(() => currentGenes, [currentGenes]);
@@ -75,17 +69,14 @@ export const GenesPanel = ({
           <GeneFrequencyChart
             marginBottom={95}
             genomicFilters={genomicFilters}
-            cohortFilters={isDemoMode ? overwritingDemoFilter : cohortFilters}
+            cohortFilters={cohortFilters}
           />
         </div>
         <div className="w-full xl:w-1/2 relative border border-base-lighter p-4">
           <LoadingOverlay
             zIndex={0}
             data-testid="loading-spinner"
-            visible={
-              survivalPlotFetching ||
-              (!survivalPlotReady && !topGeneSSMSSuccess)
-            }
+            visible={survivalPlotFetching}
           />
           <SurvivalPlot
             plotType={SurvivalPlotTypes.gene}
@@ -110,8 +101,7 @@ export const GenesPanel = ({
         handleGeneToggled={handleGeneToggled}
         toggledGenes={toggledGenes}
         genomicFilters={genomicFilters}
-        cohortFilters={isDemoMode ? overwritingDemoFilter : cohortFilters}
-        isDemoMode={isDemoMode}
+        cohortFilters={cohortFilters}
         handleMutationCountClick={handleMutationCountClick}
       />
     </div>
