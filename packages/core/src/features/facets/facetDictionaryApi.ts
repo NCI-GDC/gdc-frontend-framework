@@ -54,17 +54,6 @@ export const classifyFacetDatatype = (f: FacetDefinition): FacetTypes => {
   return "enum";
 };
 
-const getRangeData = (f: FacetDefinitionResponse) => {
-  if (f?.maximum || f?.minimum) {
-    return {
-      minimum: f?.minimum,
-      maximum: f?.maximum,
-    };
-  } else {
-    return undefined;
-  }
-};
-
 export const processDictionaryEntries = (
   entries: Record<string, FacetDefinitionResponse>,
 ): Record<string, FacetDefinition> => {
@@ -73,7 +62,6 @@ export const processDictionaryEntries = (
       dict[key] = {
         ...entries[key],
         facet_type: classifyFacetDatatype(entries[key]),
-        range: getRangeData(entries[key]),
       };
       return dict;
     },
