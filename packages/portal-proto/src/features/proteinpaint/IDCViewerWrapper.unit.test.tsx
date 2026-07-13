@@ -1,25 +1,25 @@
 import { render } from "@testing-library/react";
-import { ScRNAseqWrapper } from "./ScRNAseqWrapper";
+import { IDCViewerWrapperPP } from "./IDCViewerWrapperPP";
 import { MantineProvider } from "@mantine/core";
 
 const filter = {};
-let runpparg, userDetails;
-let isDemoMode = false;
-
-const nullFunction = () => null;
+let runpparg,
+  userDetails,
+  isDemoMode = false;
 
 jest.mock("@gff/core", () => ({
   useCoreSelector: jest.fn().mockReturnValue({}),
   buildCohortGqlOperator: jest.fn(() => filter),
+  useAddCohortMutation: jest.fn(() => [() => null, { isSuccess: true }]),
   useFetchUserDetailsQuery: jest.fn(() => userDetails),
-  useCoreDispatch: jest.fn(() => nullFunction()),
-  setActiveCohort: jest.fn(() => null),
   PROTEINPAINT_API: "host:port/basepath",
 }));
 
 jest.mock("@/hooks/useIsDemoApp", () => ({
   useIsDemoApp: jest.fn(() => isDemoMode),
 }));
+
+jest.mock("@gff/portal-components");
 
 jest.mock("@sjcrh/proteinpaint-client", () => ({
   __esModule: true,
@@ -29,9 +29,8 @@ jest.mock("@sjcrh/proteinpaint-client", () => ({
   }),
 }));
 
-test("single cell RNAseq arguments", () => {
-  userDetails = { data: { username: "test" } };
-  const { unmount } = render(
+test("IDCViewerWrapperPP arguments", () => {
+  const { unmount, rerender } = render(
     <MantineProvider
       theme={{
         colors: {
@@ -40,24 +39,19 @@ test("single cell RNAseq arguments", () => {
         },
       }}
     >
-      <ScRNAseqWrapper />
+      <IDCViewerWrapperPP />
     </MantineProvider>,
   );
   expect(typeof runpparg).toBe("object");
-  expect(runpparg.holder instanceof HTMLElement).toBe(true);
   expect(typeof runpparg.host).toBe("string");
-  expect(runpparg.launchGdcScApp).toEqual(true);
-  expect(runpparg.filter0).toEqual(filter);
   expect(runpparg.noheader).toEqual(true);
   expect(runpparg.nobox).toEqual(true);
   expect(runpparg.hide_dsHandles).toEqual(true);
-
-  unmount();
-});
-
-test("single cell demo filter0", () => {
+  expect(runpparg.holder instanceof HTMLElement).toBe(true);
+  expect(runpparg.launchIdc).toEqual(true);
+  expect(runpparg.filter0).toEqual(filter);
   isDemoMode = true;
-  const { unmount } = render(
+  rerender(
     <MantineProvider
       theme={{
         colors: {
@@ -66,14 +60,11 @@ test("single cell demo filter0", () => {
         },
       }}
     >
-      <ScRNAseqWrapper />
+      <IDCViewerWrapperPP />
     </MantineProvider>,
   );
-  expect(runpparg.state?.plots?.[0]).toEqual({
-    sample: "2409",
-    chartType: "sc",
-    experimentID: "9f155433-3c2e-4b67-a452-eb32f06c93f7",
-    activeTab: 2,
-  });
+  // there should be only one runpp instance when switching to this tool,
+  // so the arg key-values should not change on rerender
+  // expect(runpparg.filter0).toEqual(demoFilter);
   unmount();
 });
