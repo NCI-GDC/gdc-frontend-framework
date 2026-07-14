@@ -15,6 +15,7 @@ import {
 } from "./entityShortNameMapping";
 import { extractEntityPath, findMatchingToken } from "./utils";
 import { CloseIcon, SearchIcon } from "@/utils/icons";
+import { HEADER_Z_INDEX } from "src/styles/zIndex";
 
 interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
   value: string;
@@ -237,6 +238,7 @@ export const QuickSearch = (): JSX.Element => {
       comboboxProps={{
         position: "bottom",
         middlewares: { flip: false, shift: false },
+        zIndex: HEADER_Z_INDEX,
       }}
       size="sm"
       rightSection={

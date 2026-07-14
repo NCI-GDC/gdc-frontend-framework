@@ -13,7 +13,7 @@ export const TypeIcon = ({
   return (
     <>
       {toolTipLabel ? (
-        <Tooltip label={toolTipLabel} withinPortal={true}>
+        <Tooltip label={toolTipLabel}>
           <span className="rounded-full aspect-square w-5 h-5 flex justify-center bg-primary text-base-max">
             {iconText}
           </span>

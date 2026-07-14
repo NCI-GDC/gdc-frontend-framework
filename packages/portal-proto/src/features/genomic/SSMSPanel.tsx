@@ -88,7 +88,6 @@ export const SSMSPanel = ({
         <LoadingOverlay
           data-testid="loading-spinner"
           visible={survivalPlotFetching}
-          zIndex={0}
         />
         <SurvivalPlot
           plotType={SurvivalPlotTypes.mutation}

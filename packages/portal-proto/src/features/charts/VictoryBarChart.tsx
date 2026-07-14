@@ -39,7 +39,6 @@ const BarChartTooltip: React.FC<BarChartTooltipProps> = ({
           }
           withArrow
           opened
-          withinPortal
         >
           <Box />
         </Tooltip>

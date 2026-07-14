@@ -40,7 +40,7 @@ const HeaderDrawer: React.FC<HeaderDrawerProps> = ({
       size="xs"
       withCloseButton={false}
     >
-      <div className="flex items-center gap-2 bg-base-max sticky top-0 z-[1000] text-primary-darker border-b border-base-lighter font-bold py-4">
+      <div className="flex items-center gap-2 bg-base-max sticky top-0 text-primary-darker border-b border-base-lighter font-bold py-4">
         <ActionIcon
           onClick={closeDrawer}
           aria-label="Close navigation panel"

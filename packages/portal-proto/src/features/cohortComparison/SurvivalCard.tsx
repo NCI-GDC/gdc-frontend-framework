@@ -155,7 +155,6 @@ const SurvivalCard: React.FC<SurvivalCardProps> = ({
             <div className="relative">
               <LoadingOverlay
                 visible={isLoading}
-                zIndex={0}
                 data-testid="loading-spinner"
               />
               <SurvivalPlot

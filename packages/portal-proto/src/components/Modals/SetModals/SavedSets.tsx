@@ -85,7 +85,6 @@ const SavedSets: React.FC<SavedSetsProps> = ({
           <Tooltip
             label="Set is either empty or deprecated"
             disabled={row.original.count !== 0}
-            zIndex={400}
             position="right"
           >
             <Checkbox

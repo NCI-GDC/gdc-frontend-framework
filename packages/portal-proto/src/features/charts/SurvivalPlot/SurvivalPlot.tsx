@@ -28,6 +28,7 @@ import {
 import { handleDownloadPNG, handleDownloadSVG } from "../utils";
 import { DAYS_IN_YEAR } from "@gff/core";
 import { DownloadIcon, ResetIcon, SurvivalChartIcon } from "@/utils/icons";
+import { TOOLTIP_Z_INDEX } from "src/styles/zIndex";
 
 const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
   data,
@@ -338,7 +339,7 @@ const ExternalDownloadStateSurvivalPlot: React.FC<SurvivalPlotProps> = ({
             top: y + 20,
             left: x < 150 ? x - 20 : x - 100,
             position: "absolute",
-            zIndex: 200,
+            zIndex: TOOLTIP_Z_INDEX,
           }}
         >
           {survivalPlotLineTooltipContent}

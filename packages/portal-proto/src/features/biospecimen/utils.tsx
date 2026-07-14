@@ -115,7 +115,7 @@ export const formatEntityInfo = (
     filtered.push([
       "Slide Image",
       <div className="flex gap-4" key={selectedSlide[0]?.file_id}>
-        <Tooltip label="View Slide Image" withinPortal={true} withArrow>
+        <Tooltip label="View Slide Image" withArrow>
           <ActionIcon
             data-testid="button-view-slide-image-biospecimen"
             variant="outline"
@@ -133,7 +133,6 @@ export const formatEntityInfo = (
 
         <Tooltip
           label={isFileInCart ? "Remove from Cart" : "Add to Cart"}
-          withinPortal={true}
           withArrow
         >
           <ActionIcon
@@ -165,7 +164,7 @@ export const formatEntityInfo = (
           </ActionIcon>
         </Tooltip>
 
-        <Tooltip label="Download" withinPortal={true} withArrow>
+        <Tooltip label="Download" withArrow>
           <div data-testid="button-download-slide-biospecimen">
             <DownloadFile
               file={mapFileData(selectedSlide)[0]}

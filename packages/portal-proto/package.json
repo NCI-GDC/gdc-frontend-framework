@@ -12,7 +12,8 @@
     "test": "jest unit",
     "test:watch": "jest unit --watch",
     "test:int": "echo No integrations tests yet",
-    "test:all": "jest"
+    "test:all": "jest",
+    "update-snapshot": "jest --updateSnapshot"
   },
   "dependencies": {
     "@axe-core/react": "^4.10.0",

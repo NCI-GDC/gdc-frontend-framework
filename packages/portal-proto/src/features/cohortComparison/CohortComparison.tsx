@@ -146,7 +146,6 @@ const CohortComparison: React.FC<CohortComparisonProps> = ({
                   cohortFacetsUninitialized ||
                   cohortFacetsLoading
                 }
-                zIndex={1} // need z-index 1
               />
               <FacetCard
                 data={
