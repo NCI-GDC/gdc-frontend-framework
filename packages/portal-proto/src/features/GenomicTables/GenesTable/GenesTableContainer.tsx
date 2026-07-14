@@ -47,6 +47,7 @@ import { ComparativeSurvival } from "@/features/genomic/types";
 import { appendSearchTermFilters } from "../utils";
 import TotalItems from "@/components/Table/TotalItem";
 import { SET_COUNT_LIMIT } from "@/components/Modals/SetModals/constants";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 
 export interface GTableContainerProps {
   readonly selectedSurvivalPlot: ComparativeSurvival;
@@ -60,7 +61,6 @@ export interface GTableContainerProps {
   genomicFilters?: FilterSet;
   cohortFilters?: FilterSet;
   toggledGenes?: ReadonlyArray<string>;
-  isDemoMode?: boolean;
 }
 
 export const GenesTableContainer: React.FC<GTableContainerProps> = ({
@@ -70,13 +70,13 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
   genomicFilters,
   cohortFilters,
   toggledGenes = [],
-  isDemoMode = false,
   handleMutationCountClick,
 }: GTableContainerProps) => {
   /* States for table */
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  const isDemoMode = useIsDemoApp();
 
   const [downloadMutatedGenesTSVActive, setDownloadMutatedGenesTSVActive] =
     useState(false);

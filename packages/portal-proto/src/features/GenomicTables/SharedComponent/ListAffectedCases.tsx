@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import { animated, useSpring } from "@react-spring/web";
-import { useMeasure } from "react-use";
+import { useElementSize } from "@mantine/hooks";
 import { TableSubrowData } from "@gff/core";
 import RatioWithSpring from "@/components/RatioWithSpring";
 import { CircleIcon } from "@/utils/icons";
@@ -29,7 +29,7 @@ const ListAffectedCases: React.FC<ListAffectedCasesProps> = ({
   subData,
   subrowTitle,
 }: ListAffectedCasesProps) => {
-  const [subRef, { width, height }] = useMeasure();
+  const { ref: subRef, width, height } = useElementSize();
 
   const fudgeFactor = width / 60;
 

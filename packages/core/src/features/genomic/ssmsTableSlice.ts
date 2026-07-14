@@ -292,10 +292,14 @@ const generateFilter = ({
 
 export const smtableslice = graphqlAPISlice.injectEndpoints({
   endpoints: (builder) => ({
-    getSsmTableData: builder.mutation<TopSsm, SsmsTableRequestParameters>({
+    getTopSsm: builder.query<TopSsm, SsmsTableRequestParameters>({
       query: (request: SsmsTableRequestParameters) => ({
         graphQLQuery: SSMSTableGraphQLQuery,
-        graphQLFilters: generateFilter(request),
+        graphQLFilters: generateFilter({
+          pageSize: 1,
+          offset: 0,
+          ...request,
+        }),
       }),
       transformResponse: (response: { data: ssmtableResponse }) => {
         const { consequence, ssm_id } = response?.data?.viewer?.explore?.ssms
@@ -354,6 +358,5 @@ export const smtableslice = graphqlAPISlice.injectEndpoints({
   }),
 });
 
-export const { useGetSssmTableDataQuery, useGetSsmTableDataMutation } =
-  smtableslice;
+export const { useGetSssmTableDataQuery, useGetTopSsmQuery } = smtableslice;
 export const ssmsTableReducer: Reducer = smtableslice.reducer as Reducer;

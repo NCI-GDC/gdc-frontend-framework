@@ -8,7 +8,8 @@ import {
   ComparativeSurvival,
 } from "@/features/genomic/types";
 import {
-  useGeneAndSSMPanelData,
+  useMutationFrequencyFilters,
+  useGenomicSurvivalPlot,
   useSelectFilterContent,
 } from "@/features/genomic/hooks";
 import { useScrollIntoView } from "@mantine/hooks";
@@ -21,7 +22,6 @@ const SurvivalPlot = dynamic(
 );
 
 interface SSMSPanelProps {
-  topGeneSSMSSuccess: boolean;
   comparativeSurvival: ComparativeSurvival;
   handleSurvivalPlotToggled: (
     symbol: string,
@@ -39,22 +39,15 @@ interface SSMSPanelProps {
 }
 
 export const SSMSPanel = ({
-  topGeneSSMSSuccess,
   comparativeSurvival,
   handleSurvivalPlotToggled,
   handleGeneAndSSmToggled,
   searchTermsForGene,
   clearSearchTermsForGene,
 }: SSMSPanelProps): JSX.Element => {
-  const {
-    isDemoMode,
-    cohortFilters,
-    genomicFilters,
-    overwritingDemoFilter,
-    survivalPlotData,
-    survivalPlotFetching,
-    survivalPlotReady,
-  } = useGeneAndSSMPanelData(comparativeSurvival, false);
+  const { cohortFilters, genomicFilters } = useMutationFrequencyFilters();
+  const { survivalPlotData, survivalPlotReady, survivalPlotFetching } =
+    useGenomicSurvivalPlot(comparativeSurvival, false);
 
   /**
    * Get the mutations in cohort
@@ -94,9 +87,7 @@ export const SSMSPanel = ({
       <div className="bg-base-max relative mb-4 border border-base-lighter p-4">
         <LoadingOverlay
           data-testid="loading-spinner"
-          visible={
-            survivalPlotFetching || (!survivalPlotReady && !topGeneSSMSSuccess)
-          }
+          visible={survivalPlotFetching}
         />
         <SurvivalPlot
           plotType={SurvivalPlotTypes.mutation}
@@ -120,10 +111,9 @@ export const SSMSPanel = ({
           selectedSurvivalPlot={comparativeSurvival}
           handleSurvivalPlotToggled={handleSurvivalPlotToggled}
           genomicFilters={genomicFilters}
-          cohortFilters={isDemoMode ? overwritingDemoFilter : cohortFilters}
+          cohortFilters={cohortFilters}
           handleSsmToggled={handleSsmToggled}
           toggledSsms={toggledMutations}
-          isDemoMode={isDemoMode}
           isModal={true}
           searchTermsForGene={searchTermsForGene}
           clearSearchTermsForGene={clearSearchTermsForGene}

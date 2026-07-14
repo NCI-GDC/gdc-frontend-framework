@@ -10,17 +10,21 @@ tags: gdc-data-portal-v2, end-to-end, regression
 ## Save a cohort with multiple types of filters
 * On GDC Data Portal V2 app
 * Navigate to "Analysis" from "Header" "section"
+* Select "Add" from the Cohort Bar
+* Is modal with text "Unsaved_Cohort has been created" present on the page and "Remove Modal"
+* "Unsaved_Cohort" should be the active cohort
 * Navigate to "Mutation Frequency" from "Analysis" "app"
 * Is text "Overall Survival Plot" present on the page
+* Search the table for "TP53"
+* Wait for table body text to appear
+  |expected_text|row  |column |
+  |-------------|-----|-------|
+  |TP53         |1    |4      |
 * Select value from table by row and column
   |row   |column|
   |------|------|
   |1     |2     |
-* Wait for cohort bar case count loading spinner
 * Navigate to "Cohort" from "Header" "section"
-* Select "Add" from the Cohort Bar
-* Is modal with text "Unsaved_Cohort has been created" present on the page and "Remove Modal"
-* "Unsaved_Cohort" should be the active cohort
 * Make the following selections from "Demographic" tab on the Cohort Builder page
   |facet_name       |selection              |
   |-----------------|-----------------------|
@@ -75,13 +79,45 @@ tags: gdc-data-portal-v2, end-to-end, regression
 * Verify the page is showing "1 - 20"
 
 ## Repository Page
-When the filters are fixed add tests for them - PEAR-1350
 * Navigate to "Downloads" from "Header" "section"
 * Pause "4" seconds
 * Wait for table loading spinner
 * Collect Cohort Bar Case Count for comparison
 * Collect "Cases" Count on the Repository page
 * Verify "Cohort Bar Case Count" and "Cases Count Repository Page" are "Equal"
+
+* Make the following selections on a filter card
+  |facet_name           |selection            |
+  |---------------------|---------------------|
+  |Experimental Strategy|WXS                  |
+* Collect "Files" Count on the Repository page
+* Collect file counts for the following filters on the Repository page
+  |facet_name           |selection            |
+  |---------------------|---------------------|
+  |Experimental Strategy|WXS                  |
+* Verify "Experimental Strategy_WXS Repository Count" and "Files Count Repository Page" are "Equal"
+
+* Make the following selections on a filter card
+  |facet_name           |selection            |
+  |---------------------|---------------------|
+  |Preservation Method  |oct                  |
+* Collect "Files" Count on the Repository page
+* Collect file counts for the following filters on the Repository page
+  |facet_name           |selection            |
+  |---------------------|---------------------|
+  |Preservation Method  |oct                  |
+* Verify "Preservation Method_oct Repository Count" and "Files Count Repository Page" are "Equal"
+
+* Make the following selections on a filter card
+  |facet_name           |selection            |
+  |---------------------|---------------------|
+  |Access               |controlled           |
+* Collect "Files" Count on the Repository page
+* Collect file counts for the following filters on the Repository page
+  |facet_name           |selection            |
+  |---------------------|---------------------|
+  |Access               |controlled           |
+* Verify "Access_controlled Repository Count" and "Files Count Repository Page" are "Equal"
 
 ## File Summary Page
 * Quick search for "0089d221-5807-47f1-a382-1e2e336df201" and go to its page
@@ -134,3 +170,46 @@ When the filters are fixed add tests for them - PEAR-1350
   |-------------------------|
   |Sex At Birth             |
   |Race                     |
+
+
+## Mutation Frequency App
+* Navigate to "Analysis" from "Header" "section"
+* Navigate to "Mutation Frequency" from "Analysis" "app"
+* Is text "Overall Survival Plot" present on the page
+* Flip the switch on filter card "Is Cancer Gene Census"
+* Wait for table loading spinner
+
+* Make the following selections on a filter card
+  |facet_name       |selection                            |
+  |-----------------|-------------------------------------|
+  |Biotype          |miRNA                                |
+* Collect case counts for the following filters for cohort "Multiple Filters Cohort"
+  |facet_name       |selection                            |
+  |-----------------|-------------------------------------|
+  |Biotype          |miRNA                                |
+* Collect table "Genes" Item Count for comparison
+* Verify "Genes Item Count" and "Biotype_miRNA_Multiple Filters Cohort Count" are "Equal"
+
+
+* Switch to "Mutations" tab in the Mutation Frequency app
+* Make the following selections on a filter card
+  |facet_name       |selection                            |
+  |-----------------|-------------------------------------|
+  |Consequence Type |non_coding_transcript_exon_variant   |
+* Collect case counts for the following filters for cohort "Multiple Filters Cohort"
+  |facet_name       |selection                            |
+  |-----------------|-------------------------------------|
+  |Consequence Type |non_coding_transcript_exon_variant   |
+* Collect table "Most Frequent Somatic Mutations" Item Count for comparison
+* Verify "Most Frequent Somatic Mutations Item Count" and "Consequence Type_non_coding_transcript_exon_variant_Multiple Filters Cohort Count" are "Equal"
+
+* Make the following selections on a filter card
+  |facet_name       |selection                            |
+  |-----------------|-------------------------------------|
+  |Type             |small deletion                       |
+* Collect case counts for the following filters for cohort "Multiple Filters Cohort"
+  |facet_name       |selection                            |
+  |-----------------|-------------------------------------|
+  |Type             |small deletion                       |
+* Collect table "Most Frequent Somatic Mutations" Item Count for comparison
+* Verify "Most Frequent Somatic Mutations Item Count" and "Type_small deletion_Multiple Filters Cohort Count" are "Equal"

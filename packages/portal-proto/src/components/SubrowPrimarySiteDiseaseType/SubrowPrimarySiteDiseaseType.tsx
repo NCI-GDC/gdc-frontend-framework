@@ -2,7 +2,7 @@ import React, { JSX } from "react";
 import { CircleIcon } from "@/utils/icons";
 import { animated, useSpring } from "@react-spring/web";
 import { Row } from "@tanstack/react-table";
-import { useMeasure } from "react-use";
+import { useElementSize } from "@mantine/hooks";
 
 function SubrowPrimarySiteDiseaseType<T>({
   row,
@@ -15,7 +15,7 @@ function SubrowPrimarySiteDiseaseType<T>({
 
   const title = columnId === "disease_type" ? "Disease Type" : "Primary Site";
 
-  const [subRef, { width, height }] = useMeasure();
+  const { ref: subRef, width, height } = useElementSize();
 
   const fudgeFactor = width / 60;
 

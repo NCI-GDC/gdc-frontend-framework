@@ -18,12 +18,11 @@ import {
   selectCurrentCohortFilters,
   buildCohortGqlOperator,
   useGetSurvivalPlotQuery,
-  useTopGeneQuery,
-  useGetSsmTableDataMutation,
   GqlOperation,
-  buildSSMSTableSearchFilters,
   showModal,
   Modals,
+  GeneSSMSEntry,
+  TopSsm,
 } from "@gff/core";
 import { useDeepCompareEffect } from "use-deep-compare";
 import isEqual from "lodash/isEqual";
@@ -44,12 +43,11 @@ import {
   selectAllFiltersCollapsed,
 } from "./geneAndSSMFilterExpandedSlice";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
-import { overwritingDemoFilterMutationFrequency } from "@/features/genomic/GenesAndMutationFrequencyAnalysisTool";
 import { buildGeneHaveAndHaveNotFilters } from "@/features/genomic/utils";
 import { AppModeState, ComparativeSurvival } from "./types";
+import { overwritingDemoFilterMutationFrequency } from "./utils";
 import { humanify } from "@/utils/index";
 import { useDeepCompareMemo } from "use-deep-compare";
-import { appendSearchTermFilters } from "@/features/GenomicTables/utils";
 import FilterFacets from "@/features/genomic/filters.json";
 
 /**
@@ -240,10 +238,6 @@ export const useSelectFilterContent = (field: string): Array<string> => {
 };
 
 export interface GeneAndSSMPanelData {
-  isDemoMode: boolean;
-  genomicFilters: FilterSet;
-  cohortFilters: FilterSet;
-  overwritingDemoFilter: FilterSet;
   survivalPlotData: Survival;
   survivalPlotFetching: boolean;
   survivalPlotReady: boolean;
@@ -252,34 +246,14 @@ export interface GeneAndSSMPanelData {
 /*
  * This hook returns the filters, and survival plot data, and it's loading status for the gene and ssm panel.
  */
-export const useGeneAndSSMPanelData = (
+export const useGenomicSurvivalPlot = (
   comparativeSurvival: ComparativeSurvival,
   isGene: boolean,
 ): GeneAndSSMPanelData => {
-  const isDemoMode = useIsDemoApp();
-  const currentCohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilters(state),
-  );
-
-  const genomicFilters: FilterSet = useAppSelector((state) =>
-    selectGeneAndSSMFilters(state),
-  );
-  const overwritingDemoFilter = useMemo(
-    () => overwritingDemoFilterMutationFrequency,
-    [],
-  );
-
-  const cohortFilters: GqlOperation = useDeepCompareMemo(
-    () =>
-      buildCohortGqlOperator(
-        isDemoMode ? overwritingDemoFilter : currentCohortFilters,
-      ),
-    [currentCohortFilters, isDemoMode, overwritingDemoFilter],
-  );
-
-  const localFilters = useDeepCompareMemo(
-    () => buildCohortGqlOperator(genomicFilters),
-    [genomicFilters],
+  const { cohortFilters, genomicFilters } = useMutationFrequencyFilters();
+  const caseFilters: GqlOperation = useDeepCompareMemo(
+    () => buildCohortGqlOperator(cohortFilters),
+    [cohortFilters],
   );
 
   const memoizedFilters = useMemo(
@@ -302,86 +276,60 @@ export const useGeneAndSSMPanelData = (
     data: survivalPlotData,
     isFetching: survivalPlotFetching,
     isSuccess: survivalPlotReady,
-  } = useGetSurvivalPlotQuery({
-    case_filters: cohortFilters,
-    filters:
-      comparativeSurvival !== undefined
-        ? memoizedFilters
-        : localFilters
-          ? [localFilters]
-          : [],
-  });
+    isUninitialized: survivalPlotUninit,
+  } = useGetSurvivalPlotQuery(
+    {
+      case_filters: caseFilters,
+      filters: memoizedFilters,
+    },
+    { skip: comparativeSurvival === undefined },
+  );
 
   return {
-    isDemoMode,
-    cohortFilters: currentCohortFilters,
-    genomicFilters,
-    overwritingDemoFilter,
     survivalPlotData,
-    survivalPlotFetching,
+    survivalPlotFetching: survivalPlotFetching || survivalPlotUninit,
     survivalPlotReady,
   };
 };
 
 /**
  * Hook to set the comparative survival to the top result of the table when the filters, search on the mutation table
- * or app changes
+ * due to a user selecting a mutation on the genes table or app changes
  * @param appMode - current app
  * @param comparativeSurvival - value for what is plotted against the current cohort on survival plot
  * @param setComparativeSurvival - function to set comparative survival
  * @param searchTermsForGene - search filter for the mutation table
- * @returns whether the request for determining the top gene/ssms has successfully completed
- */
-export const useTopGeneSsms = ({
+ * @param topGeneSSMSSuccess - whether the request for the top gene/ssms has succeeded
+ * @param topGeneSSMS - the top gene/ssms data
+ * @param topSMSSuccess - whether the request for the top ssm has succeeded
+ * @param topSSM - the top ssm when a user has searched from the genes table
+ **/
+export const useAutomaticComparativeSurvival = ({
   appMode,
   comparativeSurvival,
   setComparativeSurvival,
   searchTermsForGene,
+  topGeneSSMSSuccess,
+  topGeneSSMS,
+  topSSMSuccess,
+  topSSM,
 }: {
   appMode: AppModeState;
   comparativeSurvival: ComparativeSurvival;
   setComparativeSurvival: (comparativeSurvival: ComparativeSurvival) => void;
   searchTermsForGene: { geneId: string; geneSymbol: string };
-}): boolean => {
-  const isDemoMode = useIsDemoApp();
-
-  const cohortFilters = useCoreSelector((state) =>
-    selectCurrentCohortFilters(state),
-  );
-
-  const genomicFilters: FilterSet = useAppSelector((state) =>
-    selectGeneAndSSMFilters(state),
-  );
-
-  const overwritingDemoFilter = useMemo(
-    () => overwritingDemoFilterMutationFrequency,
-    [],
-  );
-
+  topGeneSSMSSuccess: boolean;
+  topGeneSSMS: GeneSSMSEntry;
+  topSSMSuccess: boolean;
+  topSSM: TopSsm;
+}) => {
   const ssmSearch = searchTermsForGene?.geneSymbol;
 
-  const { data: topGeneSSMS, isSuccess: topGeneSSMSSuccess } = useTopGeneQuery({
-    cohortFilters: isDemoMode ? overwritingDemoFilter : cohortFilters,
-    genomicFilters: genomicFilters,
-  }); // get the default top gene/ssms to show by default
-
-  // Plot top if new top
+  // Set new comparative survival if top changed due to filters or tab change
   useDeepCompareEffect(() => {
     if (!comparativeSurvival?.setManually && topGeneSSMSSuccess && !ssmSearch) {
       const { genes, ssms } = topGeneSSMS;
       const { name, symbol } = appMode === "genes" ? genes : ssms;
-
-      if (
-        comparativeSurvival !== undefined &&
-        comparativeSurvival.symbol === symbol
-      ) {
-        return;
-      }
-
-      if (name === undefined) {
-        setComparativeSurvival(undefined);
-        return;
-      }
 
       const { consequence_type, aa_change } = ssms;
       setComparativeSurvival({
@@ -410,38 +358,7 @@ export const useTopGeneSsms = ({
     ssmSearch,
   ]);
 
-  const [getTopSSM, { data: topSSM, isSuccess: topSSMSuccess }] =
-    useGetSsmTableDataMutation();
-
-  useDeepCompareEffect(() => {
-    const { geneId = "", geneSymbol = "" } = searchTermsForGene;
-    if (searchTermsForGene && appMode === "ssms") {
-      const searchFilters = buildSSMSTableSearchFilters(geneId);
-      const tableFilters = appendSearchTermFilters(
-        genomicFilters,
-        searchFilters,
-      );
-
-      getTopSSM({
-        pageSize: 1,
-        offset: 0,
-        searchTerm: geneId,
-        geneSymbol: geneSymbol,
-        genomicFilters: genomicFilters,
-        cohortFilters: cohortFilters,
-        tableFilters,
-      });
-    }
-  }, [
-    genomicFilters,
-    cohortFilters,
-    searchTermsForGene,
-    getTopSSM,
-    appMode,
-    setComparativeSurvival,
-  ]);
-
-  // Set top when we've searched on SSM
+  // Set comparative survival when we've selected a mutation from the genes table
   useDeepCompareEffect(() => {
     if (topSSMSuccess && ssmSearch) {
       const { ssm_id, consequence_type, aa_change = "" } = topSSM;
@@ -458,15 +375,37 @@ export const useTopGeneSsms = ({
       });
     }
   }, [
-    topGeneSSMSSuccess,
     topSSM,
     setComparativeSurvival,
     searchTermsForGene,
     ssmSearch,
     topSSMSuccess,
   ]);
+};
 
-  return ssmSearch ? topSSMSuccess : topGeneSSMSSuccess;
+export const useMutationFrequencyFilters = () => {
+  const isDemoMode = useIsDemoApp();
+
+  const currentCohortFilters = useCoreSelector((state) =>
+    selectCurrentCohortFilters(state),
+  );
+
+  const genomicFilters: FilterSet = useAppSelector((state) =>
+    selectGeneAndSSMFilters(state),
+  );
+
+  const cohortFilters = useDeepCompareMemo(
+    () =>
+      isDemoMode
+        ? overwritingDemoFilterMutationFrequency
+        : currentCohortFilters,
+    [isDemoMode, currentCohortFilters],
+  );
+
+  return {
+    cohortFilters,
+    genomicFilters,
+  };
 };
 
 export const useOpenUploadModal = () => {
