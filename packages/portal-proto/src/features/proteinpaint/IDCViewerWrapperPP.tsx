@@ -36,7 +36,6 @@ export const IDCViewerWrapperPP: FC<PpProps> = (props: PpProps) => {
     () => {
       const rootElem = divRef.current as HTMLElement;
       const data = getIdcUi(props, filter0);
-      console.log(data);
       if (!data) return;
       // compare the argument to runpp to avoid unnecessary render
       if ((data || prevArg.current) && isEqual(prevArg.current, data)) return;
@@ -93,7 +92,6 @@ interface PpApi {
 }
 
 function getIdcUi(props: PpProps, filter0: any) {
-  console.log(props.basepath || basepath);
   const arg: IdcUiArg = {
     // host in gdc is just a relative url path,
     // using the same domain as the GDC portal where PP is embedded
