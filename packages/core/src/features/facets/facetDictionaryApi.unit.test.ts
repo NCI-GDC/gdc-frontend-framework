@@ -29,6 +29,8 @@ const TestFacetDictionary = {
     field: "demographic.age_at_index",
     full: "cases.demographic.age_at_index",
     type: "long",
+    minimum: 0,
+    maximum: 89,
   },
   "cases.demographic.age_is_obfuscated": {
     description:
@@ -82,10 +84,8 @@ describe("test facet dictionary api functions", () => {
         full: "cases.demographic.age_at_index",
         type: "long",
         facet_type: "age_in_years",
-        range: {
-          minimum: 0,
-          maximum: 89,
-        },
+        minimum: 0,
+        maximum: 89,
       },
       "cases.demographic.age_is_obfuscated": {
         description:

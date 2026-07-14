@@ -167,8 +167,8 @@ const createFacetCards = ({
               }
               description={facet.description}
               rangeDatatype={facet.facet_type}
-              minimum={facet?.range?.minimum}
-              maximum={facet?.range?.maximum}
+              minimum={facet?.minimum}
+              maximum={facet?.maximum}
               hideIfEmpty={hideIfEmpty}
               hooks={{
                 ...(hooks as RangeFacetHooks),
