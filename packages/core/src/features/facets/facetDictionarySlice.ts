@@ -4,7 +4,7 @@ import {
   createSlice,
 } from "@reduxjs/toolkit";
 import { GraphQLFetchError } from "../gdcapi/gdcgraphql";
-import { FacetDefinition, FacetDefinitionResponse } from "./types";
+import { FacetDefinition } from "./types";
 import { CoreDispatch, CoreState } from "src/store";
 import {
   CoreDataSelector,
@@ -30,11 +30,11 @@ const buildGraphMappingFetchError = async (
 };
 
 export const fetchFacetDictionary = createAsyncThunk<
-  Record<string, FacetDefinitionResponse>,
+  Record<string, FacetDefinition>,
   void,
   { dispatch: CoreDispatch; state: CoreState }
 >("facet/fetchFacetDictionary", async () => {
-  const res = await fetch(`${GDC_APP_API_AUTH}/cases/_mapping`, {
+  const res = await fetch(`${GDC_APP_API_AUTH}/gql/_mapping`, {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
@@ -42,23 +42,7 @@ export const fetchFacetDictionary = createAsyncThunk<
     method: "GET",
   });
 
-  const fileRes = await fetch(`${GDC_APP_API_AUTH}/files/_mapping`, {
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    method: "GET",
-  });
-
-  if (res.ok && fileRes.ok) {
-    const caseData = await res.json();
-    const fileData = await fileRes.json();
-
-    return {
-      ...caseData["_mapping"],
-      ...fileData["_mapping"],
-    };
-  }
+  if (res.ok) return res.json();
 
   throw await buildGraphMappingFetchError(res);
 });
