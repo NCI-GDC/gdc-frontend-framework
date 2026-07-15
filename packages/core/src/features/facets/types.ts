@@ -22,14 +22,9 @@ export type GQLDocType =
   | "annotations";
 export type GQLIndexType = "explore" | "repository";
 
-export interface FacetDefinitionResponse {
-  readonly description: string; //description from _mapping
-  readonly field: string; // name of field minus "case", "file"
-  readonly full: string; //  full name of filter (e.g. prepended with case.)
-  readonly type: string; // type from mapping
-  readonly doc_type: GQLDocType;
-  readonly minimum?: number;
-  readonly maximum?: number;
+export interface AllowableRange {
+  readonly minimum: number;
+  readonly maximum: number;
 }
 
 export interface FacetDefinition {
@@ -39,8 +34,7 @@ export interface FacetDefinition {
   readonly type: string; // type from mapping
   readonly doc_type: GQLDocType;
   readonly facet_type?: string; // classified type based on type + name: e.g. age, year, enumeration, etc
-  readonly minimum?: number;
-  readonly maximum?: number;
+  readonly range?: AllowableRange; // range of value types
   readonly hasData?: boolean;
   readonly title?: string;
 }
