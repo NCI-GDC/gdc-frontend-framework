@@ -69,7 +69,7 @@ test("Correlation plot arguments", () => {
   unmount();
 });
 
-test("OncoMatrix demo filter0", () => {
+test("Correlation demo filter0", () => {
   isDemoMode = true;
   const { unmount } = render(
     <MantineProvider

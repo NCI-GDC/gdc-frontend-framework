@@ -1,8 +1,8 @@
 import React, { FC } from "react";
-import IDCViewerWrapper from "../proteinpaint/idc/IDCViewerWrapper";
+import { IDCViewerWrapperPP } from "../proteinpaint/IDCViewerWrapperPP";
 
 const IDCViewerApp: FC = () => {
-  return <IDCViewerWrapper />;
+  return <IDCViewerWrapperPP />;
 };
 
 export default IDCViewerApp;
