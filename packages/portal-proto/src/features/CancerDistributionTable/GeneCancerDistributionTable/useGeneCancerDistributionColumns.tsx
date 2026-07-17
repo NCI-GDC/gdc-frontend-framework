@@ -5,7 +5,7 @@ import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
 import { HeaderTooltip } from "@/components/Table/HeaderTooltip";
 import CohortCreationButton from "@/components/CohortCreationButton";
 import NumeratorDenominator from "@/components/NumeratorDenominator";
-import { FilterSet, joinFilters } from "@gff/core";
+import { FilterSet, joinFilters, FIELD_CONSTANTS } from "@gff/core";
 import { CancerDistributionGeneType } from "../types";
 
 const createSSMAffectedFilters = (
@@ -22,8 +22,8 @@ const createSSMAffectedFilters = (
         operator: "includes",
         operands: [project],
       },
-      "genes.gene_id": {
-        field: "genes.gene_id",
+      [FIELD_CONSTANTS.GENE_ID]: {
+        field: FIELD_CONSTANTS.GENE_ID,
         operator: "includes",
         operands: [gene_id],
       },
@@ -56,8 +56,8 @@ const createCNVFiltersForGene = ({
         operator: "includes",
         operands: [project],
       },
-      "genes.gene_id": {
-        field: "genes.gene_id",
+      [FIELD_CONSTANTS.GENE_ID]: {
+        field: FIELD_CONSTANTS.GENE_ID,
         operator: "=",
         operand: gene_id,
       },

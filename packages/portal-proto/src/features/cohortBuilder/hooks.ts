@@ -28,6 +28,7 @@ import {
   FacetDefinitionType,
   addCohortWarning,
   selectAllCohortsWithWarnings,
+  FIELD_CONSTANTS,
 } from "@gff/core";
 import { FacetCardDefinition } from "@gff/portal-components";
 import { useEnumFacets } from "@/features/facets/hooks";
@@ -307,11 +308,11 @@ export const useOpenUploadModal = () => {
   const coreDispatch = useCoreDispatch();
 
   const openUploadModal = (field: string) => {
-    if (field === "cases.upload.case_id") {
+    if (field === "cases.case_id") {
       coreDispatch(showModal({ modal: Modals.GlobalCaseSetModal }));
-    } else if (field === "genes.upload.gene_id") {
+    } else if (field === FIELD_CONSTANTS.GENE_ID) {
       coreDispatch(showModal({ modal: Modals.GlobalGeneSetModal }));
-    } else if (field === "ssms.upload.ssm_id") {
+    } else if (field === FIELD_CONSTANTS.SSM_ID) {
       coreDispatch(showModal({ modal: Modals.GlobalMutationSetModal }));
     }
   };
@@ -319,7 +320,7 @@ export const useOpenUploadModal = () => {
   return openUploadModal;
 };
 
-export const useUploadFilterItems = (uploadField: string) => {
+export const useUploadFilterItems = (field: string) => {
   const filters = useCohortFacetFilters();
   const noData = Object.keys(filters?.root || {}).length === 0;
 
@@ -330,9 +331,8 @@ export const useUploadFilterItems = (uploadField: string) => {
       filters.root as Record<string, Includes>,
     );
 
-    const field = uploadField.split(".upload").join("");
     return includeFilters.find((f) => f.field === field)?.operands || [];
-  }, [filters, uploadField, noData]);
+  }, [filters, field, noData]);
 
   return { noData, items };
 };

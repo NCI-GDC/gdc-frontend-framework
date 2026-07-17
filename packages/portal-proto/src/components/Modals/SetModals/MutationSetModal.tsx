@@ -6,6 +6,7 @@ import {
   hideModal,
   useCreateSsmsSetFromValuesMutation,
   useSsmSetCountsQuery,
+  FIELD_CONSTANTS,
 } from "@gff/core";
 import InputEntityList from "@/components/InputEntityList/InputEntityList";
 import SavedSets from "./SavedSets";
@@ -77,7 +78,7 @@ const MutationSetModal: React.FC<SavedSetModalProps> = ({
             </p>
           }
           selectSetInstructions={selectSetInstructions}
-          facetField="ssms.ssm_id"
+          facetField={FIELD_CONSTANTS.SSM_ID}
           countHook={useSsmSetCountsQuery}
           updateFilters={updateFilters}
           existingFiltersHook={existingFiltersHook}

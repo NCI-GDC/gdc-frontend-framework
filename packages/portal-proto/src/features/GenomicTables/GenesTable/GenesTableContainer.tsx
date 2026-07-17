@@ -18,6 +18,7 @@ import {
   filterSetToOperation,
   convertFilterToGqlFilter,
   CnvChange,
+  FIELD_CONSTANTS,
 } from "@gff/core";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useDeepCompareCallback, useDeepCompareMemo } from "use-deep-compare";
@@ -127,8 +128,8 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
               operator: "=",
               operand: cnvType,
             },
-            "genes.gene_id": {
-              field: "genes.gene_id",
+            [FIELD_CONSTANTS.GENE_ID]: {
+              field: FIELD_CONSTANTS.GENE_ID,
               operator: "=",
               operand: geneId,
             },
@@ -143,8 +144,8 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
               field: "ssms.ssm_id",
               operator: "exists",
             },
-            "genes.gene_id": {
-              field: "genes.gene_id",
+            [FIELD_CONSTANTS.GENE_ID]: {
+              field: FIELD_CONSTANTS.GENE_ID,
               operator: "includes",
               operands: [geneId],
             },
@@ -244,8 +245,8 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
     selectedGenes.length > 0
       ? ({
           root: {
-            "genes.gene_id": {
-              field: "genes.gene_id",
+            [FIELD_CONSTANTS.GENE_ID]: {
+              field: FIELD_CONSTANTS.GENE_ID,
               operands: selectedGenes.slice(0, SET_COUNT_LIMIT),
               operator: "includes",
             },
@@ -366,7 +367,7 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
             singleCountHook={useGeneSetCountQuery}
             countHook={useGeneSetCountsQuery}
             appendSetHook={useAppendToGeneSetMutation}
-            field={"genes.gene_id"}
+            field={FIELD_CONSTANTS.GENE_ID}
             score="case.project.project_id"
           />
 

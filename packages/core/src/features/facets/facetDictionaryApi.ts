@@ -1,11 +1,12 @@
 import { FacetDefinition, FacetTypes } from "./types";
 import SupplementalFacetDefinitions from "./data/facet_additional_range_data.json";
 import { some, includes } from "lodash";
+import { FIELD_CONSTANTS } from "src/fieldConstants";
 
 const fieldNameOverrides: Record<string, string> = {
   "cases.project.program.name": "Program",
   "cases.project.project_id": "Project",
-  "genes.gene_id": "Mutated Gene",
+  [FIELD_CONSTANTS.GENE_ID]: "Mutated Gene",
 };
 
 const COMMON_PREPOSITIONS = [

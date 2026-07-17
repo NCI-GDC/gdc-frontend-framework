@@ -1,1 +1,5 @@
-export const GENE_AND_MUTATION_FIELDS = ["genes.gene_id", "ssms.ssm_id"];
+import { FIELD_CONSTANTS } from "@gff/core";
+export const GENE_AND_MUTATION_FIELDS = [
+  FIELD_CONSTANTS.GENE_ID,
+  FIELD_CONSTANTS.SSM_ID,
+];

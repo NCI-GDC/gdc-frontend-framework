@@ -20,10 +20,6 @@ const UploadFacet: React.FC<UploadFacetCardProps> = ({
   const openModal = hooks.useOpenUploadModal();
 
   const { noData, items } = hooks.useFilterItems(field);
-  const useClearUploadFilter = () => {
-    const clearFilter = hooks.useClearFilter();
-    return (field: string) => clearFilter(field.split(".upload").join(""));
-  };
 
   const renderBadges = (items: string[], itemField: string) => {
     return items.map((item, index) => (
@@ -35,7 +31,7 @@ const UploadFacet: React.FC<UploadFacetCardProps> = ({
         operands={items}
         operator="includes"
         hooks={{
-          useClearFilter: useClearUploadFilter,
+          useClearFilter: hooks.useClearFilter,
           useUpdateFilter: hooks.useUpdateFacetFilters,
           useFormatValue: hooks.useFormatValue,
         }}
@@ -54,11 +50,7 @@ const UploadFacet: React.FC<UploadFacetCardProps> = ({
       }}
       id={field}
     >
-      <FacetControlsHeader
-        field={field}
-        hooks={{ ...hooks, useClearFilter: useClearUploadFilter }}
-        facetName={facetName}
-      />
+      <FacetControlsHeader field={field} hooks={hooks} facetName={facetName} />
       <div className="p-4">
         <div className="flex justify-center">
           <Tooltip
@@ -83,7 +75,7 @@ const UploadFacet: React.FC<UploadFacetCardProps> = ({
         <div className="mt-2 max-h-96 overflow-y-auto">
           {noData ? null : (
             <div className="flex flex-wrap gap-1">
-              {renderBadges(items as string[], field.split(".upload").join(""))}
+              {renderBadges(items as string[], field)}
             </div>
           )}
         </div>

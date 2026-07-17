@@ -6,6 +6,7 @@ import {
   hideModal,
   useCreateGeneSetFromValuesMutation,
   useGeneSetCountsQuery,
+  FIELD_CONSTANTS,
 } from "@gff/core";
 import InputEntityList from "@/components/InputEntityList/InputEntityList";
 import SavedSets from "./SavedSets";
@@ -81,7 +82,7 @@ const GeneSetModal: React.FC<SavedSetModalProps> = ({
           selectSetInstructions={selectSetInstructions}
           countHook={useGeneSetCountsQuery}
           updateFilters={updateFilters}
-          facetField={"genes.gene_id"}
+          facetField={FIELD_CONSTANTS.GENE_ID}
           existingFiltersHook={existingFiltersHook}
         />
       </Tabs.Panel>

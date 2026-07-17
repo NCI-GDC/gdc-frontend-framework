@@ -25,7 +25,7 @@ describe("queryExpressionHooks - formatValue", () => {
   it("handles display of unnamed sets", async () => {
     const { result } = renderHook(async () => {
       const formatValue = queryExpressionHooks.useFormatValue();
-      return formatValue("set_id:ABC", "genes.gene_id");
+      return formatValue("set_id:ABC", "gene.gene_id");
     });
 
     waitFor(() => expect(result.current).toEqual("2 input genes"));
@@ -34,7 +34,7 @@ describe("queryExpressionHooks - formatValue", () => {
   it("handles display of sets", () => {
     const { result } = renderHook(async () => {
       const formatValue = queryExpressionHooks.useFormatValue();
-      const result = await formatValue("set_id:123", "genes.gene_id");
+      const result = await formatValue("set_id:123", "gene.gene_id");
       return result;
     });
     waitFor(() => expect(result.current).toEqual("my gene set"));
@@ -43,7 +43,7 @@ describe("queryExpressionHooks - formatValue", () => {
   it("displays gene", () => {
     const { result } = renderHook(async () => {
       const formatValue = queryExpressionHooks.useFormatValue();
-      const result = await formatValue("E60", "genes.gene_id");
+      const result = await formatValue("E60", "gene.gene_id");
       return result;
     });
     waitFor(() => expect(result.current).toEqual("FAT4"));

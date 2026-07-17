@@ -1,6 +1,6 @@
 [
   {
-    "field": "genes.upload.gene_id",
+    "field": "gene.gene_id",
     "name": "Mutated Gene",
     "uploadLabel": "Upload Genes",
     "facet_type": "upload",
@@ -10,7 +10,7 @@
     "toolTip": "Filter Mutation Frequency by entering/uploading specific genes or selecting gene sets"
   },
   {
-    "field": "ssms.upload.ssm_id",
+    "field": "gene.ssm.ssm_id",
     "name": "Somatic Mutation",
     "uploadLabel": "Upload Somatic Mutations",
     "facet_type": "upload",

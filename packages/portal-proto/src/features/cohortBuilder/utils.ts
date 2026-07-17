@@ -4,42 +4,43 @@ import {
   useCoreSelector,
   GQLDocType,
   FacetDefinition,
+  FIELD_CONSTANTS,
 } from "@gff/core";
 import { SummaryFacetInfo } from "./SummaryFacets";
 import { FacetCardDefinition } from "@gff/portal-components";
 
 // These new upload facets will not be returned by the mapping API call, hence they are manually defined as upload_facets
 export const upload_facets = {
-  "cases.upload.case_id": {
+  "cases.case_id": {
     description: "",
     toolTip: "Filter the current cohort by entering/uploading specific cases",
     doc_type: "cases" as GQLDocType,
     facet_type: "upload",
-    field: "cases.upload.case_id",
+    field: "cases.case_id",
     uploadLabel: "Upload Cases",
     range: undefined,
     type: "keyword",
     name: "Case ID",
   },
-  "genes.upload.gene_id": {
+  "gene.gene_id": {
     description: "",
     toolTip:
       "Filter the current cohort by entering/uploading specific genes or selecting gene sets",
     doc_type: "cases" as GQLDocType,
     facet_type: "upload",
-    field: "genes.upload.gene_id",
+    field: FIELD_CONSTANTS.GENE_ID,
     uploadLabel: "Upload Genes",
     range: undefined,
     type: "keyword",
     name: "Mutated Gene",
   },
-  "ssms.upload.ssm_id": {
+  "gene.ssm.ssm_id": {
     description: "",
     toolTip:
       "Filter the current cohort by entering/uploading specific Simple Somatic Mutations (SSMs) or selecting mutation sets",
     doc_type: "cases" as GQLDocType,
     facet_type: "upload",
-    field: "ssms.upload.ssm_id",
+    field: FIELD_CONSTANTS.SSM_ID,
     uploadLabel: "Upload Somatic Mutations",
     range: undefined,
     type: "keyword",

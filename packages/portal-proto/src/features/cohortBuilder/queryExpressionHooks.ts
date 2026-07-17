@@ -16,6 +16,7 @@ import {
   selectDisplayCohortWarning,
   Operation,
   dismissWarningBanner,
+  FIELD_CONSTANTS,
 } from "@gff/core";
 
 export const useSelectCurrentCohort = () => {
@@ -65,7 +66,7 @@ const useUpdateCohortFilter = () => {
 
 export const useFieldNameToTitle = () => {
   const fieldToTitle = useCallback((field: string, sections?: number) => {
-    return field === "genes.gene_id"
+    return field === FIELD_CONSTANTS.GENE_ID
       ? "Mutated Gene"
       : fieldNameToTitle(field, sections);
   }, []);
@@ -105,14 +106,16 @@ export const useFormatValue = () => {
               .then((data: number) => {
                 resolve(
                   `${data.toLocaleString()} input ${
-                    field === "genes.gene_id" ? "gene" : fieldNameToTitle(field)
+                    field === FIELD_CONSTANTS.GENE_ID
+                      ? "gene"
+                      : fieldNameToTitle(field)
                   }s`.toLowerCase(),
                 );
               }),
           );
         }
       } else {
-        if (field === "genes.gene_id") {
+        if (field === FIELD_CONSTANTS.GENE_ID) {
           return new Promise<string>((resolve) =>
             getGeneSymbol(value)
               .unwrap()

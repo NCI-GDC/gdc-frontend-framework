@@ -23,6 +23,7 @@ import {
   Modals,
   GeneSSMSEntry,
   TopSsm,
+  FIELD_CONSTANTS,
 } from "@gff/core";
 import { useDeepCompareEffect } from "use-deep-compare";
 import isEqual from "lodash/isEqual";
@@ -346,7 +347,7 @@ export const useAutomaticComparativeSurvival = ({
                     })
                   : ""
               }`,
-        field: appMode === "genes" ? "gene.symbol" : "gene.ssm.ssm_id",
+        field: appMode === "genes" ? "gene.symbol" : FIELD_CONSTANTS.SSM_ID,
       });
     }
   }, [
@@ -371,7 +372,7 @@ export const useAutomaticComparativeSurvival = ({
       setComparativeSurvival({
         symbol: ssm_id,
         name: description,
-        field: "gene.ssm.ssm_id",
+        field: FIELD_CONSTANTS.SSM_ID,
       });
     }
   }, [
@@ -412,9 +413,9 @@ export const useOpenUploadModal = () => {
   const coreDispatch = useCoreDispatch();
 
   const openUploadModal = (field: string) => {
-    if (field === "genes.upload.gene_id") {
+    if (field === FIELD_CONSTANTS.GENE_ID) {
       coreDispatch(showModal({ modal: Modals.LocalGeneSetModal }));
-    } else if (field === "ssms.upload.ssm_id") {
+    } else if (field === FIELD_CONSTANTS.SSM_ID) {
       coreDispatch(showModal({ modal: Modals.LocalMutationSetModal }));
     }
   };
@@ -422,8 +423,7 @@ export const useOpenUploadModal = () => {
   return openUploadModal;
 };
 
-export const useUploadFilterItems = (uploadField: string) => {
-  const field = uploadField.split(".upload").join("");
+export const useUploadFilterItems = (field: string) => {
   const items = useGenomicFilterValueByName(field);
   return { items, noData: items === undefined };
 };
