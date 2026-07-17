@@ -75,7 +75,7 @@ export const useSetupInitialCohorts = (): boolean => {
           nonexistent_fields: data?.nonexistent_fields,
         };
 
-        const nonexistent_fields = data?.nonexistent_fields.filter(
+        const nonexistent_fields = (data?.nonexistent_fields || []).filter(
           (field) => !COHORT_FIELD_EXCEPTIONS.includes(field),
         );
 
