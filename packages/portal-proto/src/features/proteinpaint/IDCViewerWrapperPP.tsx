@@ -4,7 +4,8 @@ import { runproteinpaint } from "@sjcrh/proteinpaint-client";
 import {
   useCoreSelector,
   selectCurrentCohortFilters,
-  PROTEINPAINT_API,
+  PROTEINPAINT_API, // declared in portal-proto/.env.* files
+  GDC_API, // declared in portal-proto/.env.* files
   useFetchUserDetailsQuery,
   buildCohortGqlOperator,
 } from "@gff/core";
@@ -85,6 +86,7 @@ interface IdcUiArg {
   launchIdc: true;
   genome?: string;
   filter0: any;
+  GDC_API?: string;
 }
 
 interface PpApi {
@@ -98,6 +100,7 @@ function getIdcUi(props: PpProps, filter0: any) {
     host: props.basepath || (basepath as string),
     filter0: filter0 || null,
     launchIdc: true,
+    GDC_API,
   };
   return arg;
 }
