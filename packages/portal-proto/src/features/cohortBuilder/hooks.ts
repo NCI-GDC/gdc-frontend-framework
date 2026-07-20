@@ -72,16 +72,14 @@ export const useSetupInitialCohorts = (): boolean => {
           modified_datetime: data.modified_datetime,
           saved: true,
           modified: false,
-          nonexistent_fields: data?.nonexistent_fields,
+          nonexistent_fields: (data?.nonexistent_fields || []).filter(
+            (field) => !COHORT_FIELD_EXCEPTIONS.includes(field),
+          ),
         };
-
-        const nonexistent_fields = (data?.nonexistent_fields || []).filter(
-          (field) => !COHORT_FIELD_EXCEPTIONS.includes(field),
-        );
 
         if (
           !cohortWarnings.includes(cohortData.id) &&
-          nonexistent_fields.length > 0
+          cohortData?.nonexistent_fields.length > 0
         ) {
           coreDispatch(addCohortWarning(cohortData.id));
         }
