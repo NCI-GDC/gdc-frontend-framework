@@ -17,6 +17,7 @@ import {
   filterSetToOperation,
   convertFilterToGqlFilter,
   useRemoveTopNSsmsSetFromFiltersMutation,
+  FIELD_CONSTANTS,
 } from "@gff/core";
 import { useEffect, useState, useContext, useMemo, useCallback } from "react";
 import { useDeepCompareCallback, useDeepCompareMemo } from "use-deep-compare";
@@ -192,8 +193,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       return joinFilters(genomicFilters, {
         mode: "and",
         root: {
-          "ssms.ssm_id": {
-            field: "ssms.ssm_id",
+          [FIELD_CONSTANTS.SSM_ID]: {
+            field: FIELD_CONSTANTS.SSM_ID,
             operator: "includes",
             operands: [ssmId],
           },
@@ -285,8 +286,8 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     selectedMutations.length > 0
       ? ({
           root: {
-            "ssms.ssm_id": {
-              field: "ssms.ssm_id",
+            [FIELD_CONSTANTS.SSM_ID]: {
+              field: FIELD_CONSTANTS.SSM_ID,
               operands: selectedMutations.slice(0, SET_COUNT_LIMIT),
               operator: "includes",
             },
@@ -465,7 +466,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
                 countHook={useSsmSetCountsQuery}
                 appendSetHook={useAppendToSsmSetMutation}
                 closeModal={handleAddToSetModalClose}
-                field={"ssms.ssm_id"}
+                field={FIELD_CONSTANTS.SSM_ID}
                 score="occurrence.case.project.project_id"
                 sort={TABLE_SORT}
               />

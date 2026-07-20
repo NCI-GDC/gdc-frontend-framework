@@ -11,6 +11,7 @@ const resultsCreateCaseSet = { data: "test-pp-caseSet", isSuccess: true };
 const nullFunction = () => null;
 
 jest.mock("@gff/core", () => ({
+  ...jest.requireActual("@gff/core"),
   useCoreSelector: jest.fn().mockReturnValue({}),
   buildCohortGqlOperator: jest.fn(() => filter),
   useAddCohortMutation: jest.fn(() => [() => null, { isSuccess: true }]),

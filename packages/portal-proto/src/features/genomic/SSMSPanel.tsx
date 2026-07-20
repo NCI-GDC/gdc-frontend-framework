@@ -14,6 +14,7 @@ import {
 } from "@/features/genomic/hooks";
 import { useScrollIntoView } from "@mantine/hooks";
 import { SMTableContainer } from "../GenomicTables/SomaticMutationsTable/SMTableContainer";
+import { FIELD_CONSTANTS } from "@gff/core";
 const SurvivalPlot = dynamic(
   () => import("../charts/SurvivalPlot/SurvivalPlot"),
   {
@@ -52,7 +53,7 @@ export const SSMSPanel = ({
   /**
    * Get the mutations in cohort
    */
-  const currentMutations = useSelectFilterContent("ssms.ssm_id");
+  const currentMutations = useSelectFilterContent(FIELD_CONSTANTS.SSM_ID);
   const toggledMutations = useDeepCompareMemo(
     () => currentMutations,
     [currentMutations],
@@ -61,7 +62,7 @@ export const SSMSPanel = ({
     (idAndSymbol: Record<string, any>) =>
       handleGeneAndSSmToggled(
         toggledMutations,
-        "ssms.ssm_id",
+        FIELD_CONSTANTS.SSM_ID,
         "mutationID",
         idAndSymbol,
       ),

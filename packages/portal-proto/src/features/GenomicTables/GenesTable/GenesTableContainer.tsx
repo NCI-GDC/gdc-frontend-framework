@@ -140,8 +140,8 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
         return joinFilters(genomicFilters, {
           mode: "and",
           root: {
-            "ssms.ssm_id": {
-              field: "ssms.ssm_id",
+            [FIELD_CONSTANTS.SSM_ID]: {
+              field: FIELD_CONSTANTS.SSM_ID,
               operator: "exists",
             },
             [FIELD_CONSTANTS.GENE_ID]: {

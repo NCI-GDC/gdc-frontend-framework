@@ -7,6 +7,7 @@ const fieldNameOverrides: Record<string, string> = {
   "cases.project.program.name": "Program",
   "cases.project.project_id": "Project",
   [FIELD_CONSTANTS.GENE_ID]: "Mutated Gene",
+  [FIELD_CONSTANTS.GENE_IDX_GENE_ID]: "Mutated Gene",
 };
 
 const COMMON_PREPOSITIONS = [
