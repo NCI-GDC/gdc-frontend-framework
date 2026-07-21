@@ -19,7 +19,6 @@ export default {
       "external_db_ids.omim_gene": "OMIM",
     },
     outputField: "gene_id",
-    facetField: "gene.gene_id",
   },
   cases: {
     mappedToFields: ["submitter_id", "project.project_id"],
@@ -53,7 +52,6 @@ export default {
       "samples.portions.analytes.aliquots.aliquot_id": "Aliquot UUID",
       "samples.portions.analytes.aliquots.submitter_id": "Aliquot ID",
     },
-    facetField: "cases.case_id",
     outputField: "case_id",
   },
   ssms: {
@@ -65,6 +63,5 @@ export default {
       genomic_dna_change: "DNA Change",
     },
     outputField: "ssm_id",
-    facetField: "gene.ssm.ssm_id",
   },
 };

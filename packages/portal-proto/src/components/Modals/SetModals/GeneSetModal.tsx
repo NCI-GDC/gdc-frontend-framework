@@ -6,7 +6,6 @@ import {
   hideModal,
   useCreateGeneSetFromValuesMutation,
   useGeneSetCountsQuery,
-  FIELD_CONSTANTS,
 } from "@gff/core";
 import InputEntityList from "@/components/InputEntityList/InputEntityList";
 import SavedSets from "./SavedSets";
@@ -22,6 +21,7 @@ const GeneSetModal: React.FC<SavedSetModalProps> = ({
   updateFilters,
   existingFiltersHook,
   opened,
+  facetField,
 }: SavedSetModalProps) => {
   const dispatch = useCoreDispatch();
   return (
@@ -59,6 +59,7 @@ const GeneSetModal: React.FC<SavedSetModalProps> = ({
           }}
           LeftButton={SaveSetButton}
           RightButton={UpdateCohortButton}
+          facetField={facetField}
         />
       </Tabs.Panel>
       <Tabs.Panel value="saved">
@@ -82,7 +83,7 @@ const GeneSetModal: React.FC<SavedSetModalProps> = ({
           selectSetInstructions={selectSetInstructions}
           countHook={useGeneSetCountsQuery}
           updateFilters={updateFilters}
-          facetField={FIELD_CONSTANTS.GENE_ID}
+          facetField={facetField}
           existingFiltersHook={existingFiltersHook}
         />
       </Tabs.Panel>

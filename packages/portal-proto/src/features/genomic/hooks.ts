@@ -59,6 +59,7 @@ export const useUpdateGenomicEnumFacetFilter = () => {
   const dispatch = useAppDispatch();
   // update the filter for this facet
   return (field: string, operation: Operation) => {
+    console.log({ field });
     dispatch(updateGeneAndSSMFilter({ field: field, operation: operation }));
   };
 };
@@ -413,9 +414,10 @@ export const useOpenUploadModal = () => {
   const coreDispatch = useCoreDispatch();
 
   const openUploadModal = (field: string) => {
-    if (field === FIELD_CONSTANTS.GENE_ID) {
+    console.log({ field });
+    if (field === "genes.gene_id") {
       coreDispatch(showModal({ modal: Modals.LocalGeneSetModal }));
-    } else if (field === FIELD_CONSTANTS.SSM_ID) {
+    } else if (field === "ssms.ssm_id") {
       coreDispatch(showModal({ modal: Modals.LocalMutationSetModal }));
     }
   };

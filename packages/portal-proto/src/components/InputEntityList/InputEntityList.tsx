@@ -47,6 +47,7 @@ interface InputEntityListProps {
   readonly textInputPlaceholder: string;
   readonly entityType: SetTypes;
   readonly entityLabel: string;
+  readonly facetField: string;
   readonly hooks: {
     readonly updateFilters?: (field: string, op: Operation) => void;
     readonly createSet?: typeof useCreateCaseSetFromValuesMutation;
@@ -62,6 +63,7 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
   textInputPlaceholder,
   entityType,
   entityLabel,
+  facetField,
   hooks,
   RightButton,
   LeftButton,
@@ -77,9 +79,8 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
     mappedToFields,
     matchAgainstIdentifiers,
     searchField,
-    outputField,
     fieldDisplay,
-    facetField,
+    outputField,
   } = fieldConfig[entityType];
 
   const processTokens = useCallback(

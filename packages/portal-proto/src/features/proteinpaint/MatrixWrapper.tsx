@@ -18,6 +18,7 @@ import {
   hideModal,
   Modals,
   selectCurrentModal,
+  FIELD_CONSTANTS,
 } from "@gff/core";
 import { DemoText } from "@/components/tailwindComponents";
 import { LoadingOverlay } from "@mantine/core";
@@ -267,6 +268,7 @@ export const MatrixWrapper: FC<PpProps> = (props: PpProps) => {
         selectSetInstructions="Select one or more sets below to use as an OncoMatrix gene set."
         updateFilters={updateFilters}
         existingFiltersHook={existingFiltersHook}
+        facetField={FIELD_CONSTANTS.GENE_IDX_GENE_ID}
       />
 
       <LoadingOverlay

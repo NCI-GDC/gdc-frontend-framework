@@ -10,4 +10,5 @@ export interface SavedSetModalProps extends InputModalProps {
   readonly modalTitle: string;
   readonly inputInstructions: string;
   readonly selectSetInstructions: string;
+  readonly facetField: string;
 }

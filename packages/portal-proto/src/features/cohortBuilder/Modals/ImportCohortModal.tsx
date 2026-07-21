@@ -104,6 +104,7 @@ const ImportCohortModal: React.FC<{ opened: boolean }> = ({
         }
         entityType="cases"
         entityLabel="case"
+        facetField="cases.case_id"
         RightButton={SubmitButton}
         hooks={{}}
       />

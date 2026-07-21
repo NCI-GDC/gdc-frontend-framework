@@ -1,5 +1,10 @@
 import React, { JSX } from "react";
-import { useCoreSelector, Modals, selectCurrentModal } from "@gff/core";
+import {
+  useCoreSelector,
+  Modals,
+  selectCurrentModal,
+  FIELD_CONSTANTS,
+} from "@gff/core";
 import FilterFacets from "@/features/genomic/filters.json";
 import {
   useClearGenomicFilters,
@@ -92,6 +97,7 @@ const GeneAndSSMFilterPanel = ({
         selectSetInstructions="Select one or more sets below to filter Mutation Frequency."
         updateFilters={updateFilters}
         existingFiltersHook={useGenomicFacetFilter}
+        facetField={FIELD_CONSTANTS.GENE_IDX_GENE_ID}
       />
 
       <MutationSetModal
@@ -101,6 +107,7 @@ const GeneAndSSMFilterPanel = ({
         selectSetInstructions="Select one or more sets below to filter Mutation Frequency."
         updateFilters={updateFilters}
         existingFiltersHook={useGenomicFacetFilter}
+        facetField={FIELD_CONSTANTS.SSM_IDX_SSM_ID}
       />
       <FilterPanel
         facetDefinitions={FilterFacets as FacetCardDefinition[]}

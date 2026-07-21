@@ -6,7 +6,6 @@ import {
   hideModal,
   useCreateSsmsSetFromValuesMutation,
   useSsmSetCountsQuery,
-  FIELD_CONSTANTS,
 } from "@gff/core";
 import InputEntityList from "@/components/InputEntityList/InputEntityList";
 import SavedSets from "./SavedSets";
@@ -22,6 +21,7 @@ const MutationSetModal: React.FC<SavedSetModalProps> = ({
   updateFilters,
   existingFiltersHook,
   opened,
+  facetField,
 }: SavedSetModalProps) => {
   const dispatch = useCoreDispatch();
 
@@ -40,6 +40,7 @@ const MutationSetModal: React.FC<SavedSetModalProps> = ({
           textInputPlaceholder="e.g. chr3:g.179234297A>G, 92b75ae1-8d4d-52c2-8658-9c981eef0e57"
           entityType="ssms"
           entityLabel="mutation"
+          facetField={facetField}
           identifierToolTip={
             <div>
               <p>- Mutation identifiers accepted: Mutation UUID, DNA Change</p>
@@ -78,7 +79,7 @@ const MutationSetModal: React.FC<SavedSetModalProps> = ({
             </p>
           }
           selectSetInstructions={selectSetInstructions}
-          facetField={FIELD_CONSTANTS.SSM_ID}
+          facetField={facetField}
           countHook={useSsmSetCountsQuery}
           updateFilters={updateFilters}
           existingFiltersHook={existingFiltersHook}

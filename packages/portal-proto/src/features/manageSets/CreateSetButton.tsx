@@ -6,6 +6,7 @@ import {
   useCoreDispatch,
   useCreateGeneSetFromValuesMutation,
   useCreateSsmsSetFromValuesMutation,
+  FIELD_CONSTANTS,
 } from "@gff/core";
 import { DropdownWithIcon } from "@/components/DropdownWithIcon/DropdownWithIcon";
 import UserInputModal from "@/components/Modals/UserInputModal";
@@ -39,6 +40,7 @@ const CreateGeneModal = ({ opened }: { opened: boolean }) => {
           createSet: useCreateGeneSetFromValuesMutation,
         }}
         RightButton={SubmitSaveSetButton}
+        facetField={FIELD_CONSTANTS.GENE_IDX_GENE_ID}
       />
     </UserInputModal>
   );
@@ -68,6 +70,7 @@ const CreateMutationModal = ({ opened }: { opened: boolean }) => {
           createSet: useCreateSsmsSetFromValuesMutation,
         }}
         RightButton={SubmitSaveSetButton}
+        facetField={FIELD_CONSTANTS.SSM_IDX_SSM_ID}
       />
     </UserInputModal>
   );

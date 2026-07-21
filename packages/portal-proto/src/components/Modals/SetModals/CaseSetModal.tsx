@@ -39,6 +39,7 @@ const CaseSetModal: React.FC<InputModalProps> = ({
         }
         entityType="cases"
         entityLabel="case"
+        facetField="cases.case_id"
         hooks={{
           createSet: useCreateCaseSetFromValuesMutation,
           updateFilters: updateFilters,

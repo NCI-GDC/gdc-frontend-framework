@@ -8,6 +8,7 @@ import {
   Operation,
   updateActiveCohortFilter,
   useCoreDispatch,
+  FIELD_CONSTANTS,
 } from "@gff/core";
 import { CohortManager as CommonCohortManager } from "@gff/portal-components";
 import CaseSetModal from "@/components/Modals/SetModals/CaseSetModal";
@@ -54,6 +55,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({ isFetchingCohorts }) => {
         selectSetInstructions="Select one or more sets below to filter your cohort."
         updateFilters={updateCohortFilters}
         existingFiltersHook={useCohortFacetFilters}
+        facetField={FIELD_CONSTANTS.GENE_ID}
       />
 
       <MutationSetModal
@@ -63,6 +65,7 @@ const CohortManager: React.FC<CohortManagerProps> = ({ isFetchingCohorts }) => {
         selectSetInstructions="Select one or more sets below to filter your cohort."
         updateFilters={updateCohortFilters}
         existingFiltersHook={useCohortFacetFilters}
+        facetField={FIELD_CONSTANTS.SSM_ID}
       />
     </>
   );
