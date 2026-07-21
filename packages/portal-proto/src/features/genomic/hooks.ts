@@ -59,7 +59,6 @@ export const useUpdateGenomicEnumFacetFilter = () => {
   const dispatch = useAppDispatch();
   // update the filter for this facet
   return (field: string, operation: Operation) => {
-    console.log({ field });
     dispatch(updateGeneAndSSMFilter({ field: field, operation: operation }));
   };
 };
@@ -348,7 +347,7 @@ export const useAutomaticComparativeSurvival = ({
                     })
                   : ""
               }`,
-        field: appMode === "genes" ? "gene.symbol" : FIELD_CONSTANTS.SSM_ID,
+        field: appMode === "genes" ? "gene.symbol" : "gene.ssm.ssm_id",
       });
     }
   }, [
@@ -373,7 +372,7 @@ export const useAutomaticComparativeSurvival = ({
       setComparativeSurvival({
         symbol: ssm_id,
         name: description,
-        field: FIELD_CONSTANTS.SSM_ID,
+        field: "gene.ssm.ssm_id",
       });
     }
   }, [
@@ -414,10 +413,9 @@ export const useOpenUploadModal = () => {
   const coreDispatch = useCoreDispatch();
 
   const openUploadModal = (field: string) => {
-    console.log({ field });
-    if (field === "genes.gene_id") {
+    if (field === FIELD_CONSTANTS.GENE_IDX_GENE_ID) {
       coreDispatch(showModal({ modal: Modals.LocalGeneSetModal }));
-    } else if (field === "ssms.ssm_id") {
+    } else if (field === FIELD_CONSTANTS.SSM_IDX_SSM_ID) {
       coreDispatch(showModal({ modal: Modals.LocalMutationSetModal }));
     }
   };

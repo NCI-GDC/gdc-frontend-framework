@@ -286,7 +286,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
       ? ({
           root: {
             "ssms.ssm_id": {
-              field: "ssms.ssms_id",
+              field: "ssms.ssm_id",
               operands: selectedMutations.slice(0, SET_COUNT_LIMIT),
               operator: "includes",
             },
