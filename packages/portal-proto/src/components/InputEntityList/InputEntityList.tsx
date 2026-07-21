@@ -79,8 +79,8 @@ const InputEntityList: React.FC<InputEntityListProps> = ({
     mappedToFields,
     matchAgainstIdentifiers,
     searchField,
-    fieldDisplay,
     outputField,
+    fieldDisplay,
   } = fieldConfig[entityType];
 
   const processTokens = useCallback(

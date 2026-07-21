@@ -7,7 +7,6 @@ import {
   Cohort,
   selectCohortByIdOrName,
   selectCurrentCohort,
-  FIELD_CONSTANTS,
 } from "@gff/core";
 import { SelectionScreenContext } from "@gff/portal-components";
 import CohortComparison from "../cohortComparison/CohortComparison";
@@ -26,8 +25,8 @@ export const cohortComparisonDemo1: {
         field: "cases.project.project_id",
         operands: ["TCGA-LGG"],
       },
-      [FIELD_CONSTANTS.GENE_ID]: {
-        field: FIELD_CONSTANTS.GENE_ID,
+      "genes.gene_id": {
+        field: "genes.gene_id",
         operator: "includes",
         operands: ["ENSG00000138413", "ENSG00000182054"],
       },
@@ -50,8 +49,8 @@ export const cohortComparisonDemo2: {
         field: "cases.project.project_id",
         operands: ["TCGA-LGG"],
       },
-      [FIELD_CONSTANTS.GENE_ID]: {
-        field: FIELD_CONSTANTS.GENE_ID,
+      "genes.gene_id": {
+        field: "genes.gene_id",
         operator: "excludeifany",
         operands: ["ENSG00000138413", "ENSG00000182054"],
       },

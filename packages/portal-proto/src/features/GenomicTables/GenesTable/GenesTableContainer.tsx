@@ -18,7 +18,6 @@ import {
   filterSetToOperation,
   convertFilterToGqlFilter,
   CnvChange,
-  FIELD_CONSTANTS,
 } from "@gff/core";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useDeepCompareCallback, useDeepCompareMemo } from "use-deep-compare";
@@ -128,8 +127,8 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
               operator: "=",
               operand: cnvType,
             },
-            [FIELD_CONSTANTS.GENE_ID]: {
-              field: FIELD_CONSTANTS.GENE_ID,
+            "genes.gene_id": {
+              field: "genes.gene_id",
               operator: "=",
               operand: geneId,
             },
@@ -140,12 +139,12 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
         return joinFilters(genomicFilters, {
           mode: "and",
           root: {
-            [FIELD_CONSTANTS.SSM_ID]: {
-              field: FIELD_CONSTANTS.SSM_ID,
+            "ssms.ssm_id": {
+              field: "ssms.ssm_id",
               operator: "exists",
             },
-            [FIELD_CONSTANTS.GENE_ID]: {
-              field: FIELD_CONSTANTS.GENE_ID,
+            "genes.gene_id": {
+              field: "genes.gene_id",
               operator: "includes",
               operands: [geneId],
             },
@@ -245,8 +244,8 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
     selectedGenes.length > 0
       ? ({
           root: {
-            [FIELD_CONSTANTS.GENE_ID]: {
-              field: FIELD_CONSTANTS.GENE_ID,
+            "genes.gene_id": {
+              field: "genes.gene_id",
               operands: selectedGenes.slice(0, SET_COUNT_LIMIT),
               operator: "includes",
             },
@@ -367,7 +366,7 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
             singleCountHook={useGeneSetCountQuery}
             countHook={useGeneSetCountsQuery}
             appendSetHook={useAppendToGeneSetMutation}
-            field={FIELD_CONSTANTS.GENE_ID}
+            field={"genes.gene_id"}
             score="case.project.project_id"
           />
 

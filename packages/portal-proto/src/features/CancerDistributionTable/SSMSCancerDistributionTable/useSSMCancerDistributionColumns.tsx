@@ -5,7 +5,7 @@ import ExpandRowComponent from "@/components/Table/ExpandRowComponent";
 import { HeaderTooltip } from "@/components/Table/HeaderTooltip";
 import CohortCreationButton from "@/components/CohortCreationButton";
 import NumeratorDenominator from "@/components/NumeratorDenominator";
-import { FIELD_CONSTANTS, FilterSet } from "@gff/core";
+import { FilterSet } from "@gff/core";
 import { CancerDistributionSSMType } from "../types";
 
 const createSSMAffectedFilters = (
@@ -21,8 +21,8 @@ const createSSMAffectedFilters = (
           operator: "includes",
           operands: [project],
         },
-        [FIELD_CONSTANTS.SSM_ID]: {
-          field: FIELD_CONSTANTS.SSM_ID,
+        "ssms.ssm_id": {
+          field: "ssms.ssm_id",
           operator: "includes",
           operands: [ssm_id],
         },
