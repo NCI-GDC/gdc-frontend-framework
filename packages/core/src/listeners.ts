@@ -173,17 +173,19 @@ startCoreListening({
   },
 });
 
-/* Remove fields that aren't in the facet dictionary from user's saved custom facets */
+/**
+ * Remove fields that aren't in the facet dictionary from user's saved custom facets
+ */
 startCoreListening({
   matcher: isAnyOf(fetchFacetDictionary.fulfilled),
   effect: async (action, listenerApi) => {
     if (isPayloadActionWithObject(action)) {
       const validFields = Object.keys(action.payload);
       const customFacets = selectBuilderCustomFacets(listenerApi.getState());
-      const invalidFacet = customFacets.filter(
+      const invalidFacets = customFacets.filter(
         (customFacet) => !validFields.includes(customFacet),
       );
-      invalidFacet.forEach((invalidFacet) =>
+      invalidFacets.forEach((invalidFacet) =>
         listenerApi.dispatch(
           removeFilterFromCohortBuilder({ facetName: invalidFacet }),
         ),
