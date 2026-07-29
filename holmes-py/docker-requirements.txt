@@ -67,5 +67,5 @@ setuptools==78.1.1
     # Added this to fix a SNYK security flag
 typing-extensions==4.15.0
     # via pyee
-virtualenv==20.35.4
+virtualenv==20.36.1
     # via pre-commit

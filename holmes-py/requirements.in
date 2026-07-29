@@ -1,10 +1,11 @@
 pre-commit
 filelock==3.20.3
 getgauge==0.4.11
-playwright==1.53.0
+playwright==1.59.0
 protobuf==5.29.6
 grpcio==1.71.0
 pyautogui==0.9.54
 # May have to add setuptools manually to requirements.txt after running
 # 'pip-compile requirements.in'
 setuptools==78.1.1
+virtualenv==20.36.1
