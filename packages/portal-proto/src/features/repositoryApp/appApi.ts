@@ -1,5 +1,5 @@
 import { combineReducers } from "@reduxjs/toolkit";
-import { persistReducer, createMigrate } from "redux-persist";
+import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { repositoryConfigReducer } from "./repositoryConfigSlice";
 import { repositoryFiltersReducer } from "./repositoryFiltersSlice";
@@ -33,7 +33,7 @@ const persistConfig = {
 // the app's filters and other store/cache values
 
 export const { id, AppStore, AppContext, useAppSelector, useAppDispatch } =
-  createAppStore({
+  createAppStore<AppState>({
     reducers: persistReducer(persistConfig, downloadAppReducers),
     name: REPOSITORY_APP_NAME,
     version: "0.0.1",

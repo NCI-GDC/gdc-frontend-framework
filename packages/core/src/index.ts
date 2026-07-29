@@ -19,6 +19,7 @@ export * from "./features/facets/facetDictionarySlice";
 export * from "./features/facets/usefulFacetsSlice";
 export * from "./features/gdcapps/gdcAppsSlice";
 export * from "./features/gdcapps/GdcApp";
+export * from "./features/gdcapps/createAppStore";
 export * from "./features/files/filesSlice";
 export * from "./features/files/filesHooks";
 export * from "./features/files";
