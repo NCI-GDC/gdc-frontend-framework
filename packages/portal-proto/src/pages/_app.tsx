@@ -34,7 +34,7 @@ import type {
   LinkComponentType,
 } from "@gff/portal-components";
 import { useSetActiveCohort } from "@/features/cohortBuilder/CohortManager/cohortActionHooks";
-import theme from "src/styles/mantineTheme";
+import theme, { cssVariablesResolver } from "src/styles/mantineTheme";
 
 if (process.env.NODE_ENV !== "test") ReactModal.setAppElement("#__next");
 
@@ -93,7 +93,10 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
 
   return (
     <CoreProvider>
-      <MantineProvider theme={theme}>
+      <MantineProvider
+        theme={theme}
+        cssVariablesResolver={cssVariablesResolver}
+      >
         <div
           className={`${
             localStorageTheme !== "default" ? localStorageTheme : ""
