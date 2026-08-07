@@ -68,10 +68,6 @@ jest.mock("url-join", () => ({
   urlJoin: jest.fn(),
 }));
 
-jest.mock("dom-to-svg", () => ({
-  elementToSVG: jest.fn(),
-}));
-
 jest.mock("@datadog/browser-rum", () => ({
   datadogRum: { startView: jest.fn() },
 }));

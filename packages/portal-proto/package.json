@@ -68,7 +68,7 @@
     "@types/react-select": "^4.0.17",
     "@types/semver": "^7.7.1",
     "minimist": ">=1.2.6",
-    "postcss": "^8.5.8",
+    "postcss": "^8.5.18",
     "postcss-preset-mantine": "^1.15.0",
     "postcss-simple-vars": "^7.0.1",
     "rimraf": "^6.0.1",
