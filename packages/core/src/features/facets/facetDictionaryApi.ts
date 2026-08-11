@@ -70,9 +70,6 @@ export const fieldNameToTitle = (fieldName: string, sections = 1): string => {
 export const classifyFacetDatatype = (f: FacetDefinition): FacetTypes => {
   const fieldName = f.field;
   // NOTE: put exceptional cases first
-  if (fieldName.includes("range")) {
-    console.log({ fieldName, type: f.type });
-  }
   if (fieldName.includes("alcohol_days_per_week")) return "range";
   if (fieldName.includes("is_cancer_gene_census")) return "toggle";
   if (fieldName.includes("age_at_last_exposure")) return "age_in_years";
