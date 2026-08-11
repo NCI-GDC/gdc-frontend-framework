@@ -1,5 +1,11 @@
-import { Button, createTheme, Modal, Switch } from "@mantine/core";
-import { defaultThemeColors, nciBlue, nciGray } from "./colors";
+import {
+  Button,
+  createTheme,
+  Modal,
+  Switch,
+  CSSVariablesResolver,
+} from "@mantine/core";
+import { defaultThemeColors, nciBlue, nciGray, utility } from "./colors";
 
 import {
   TOOLTIP_Z_INDEX,
@@ -9,6 +15,14 @@ import {
   LOADING_OVERLAY_Z_INDEX,
   POPOVER_Z_INDEX,
 } from "./zIndex";
+
+export const cssVariablesResolver: CSSVariablesResolver = (_theme) => ({
+  variables: {
+    "--mantine-color-error": utility.error,
+  },
+  dark: {},
+  light: {},
+});
 
 const theme = createTheme({
   // use V2 font in MantineProvider

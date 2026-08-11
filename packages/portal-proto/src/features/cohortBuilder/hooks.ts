@@ -28,6 +28,7 @@ import {
   FacetDefinitionType,
   addCohortWarning,
   selectAllCohortsWithWarnings,
+  COHORT_FIELD_EXCEPTIONS,
 } from "@gff/core";
 import { FacetCardDefinition } from "@gff/portal-components";
 import { useEnumFacets } from "@/features/facets/hooks";
@@ -71,12 +72,14 @@ export const useSetupInitialCohorts = (): boolean => {
           modified_datetime: data.modified_datetime,
           saved: true,
           modified: false,
-          nonexistent_fields: data?.nonexistent_fields,
+          nonexistent_fields: (data?.nonexistent_fields || []).filter(
+            (field) => !COHORT_FIELD_EXCEPTIONS.includes(field),
+          ),
         };
 
         if (
           !cohortWarnings.includes(cohortData.id) &&
-          cohortData?.nonexistent_fields
+          cohortData?.nonexistent_fields.length > 0
         ) {
           coreDispatch(addCohortWarning(cohortData.id));
         }
