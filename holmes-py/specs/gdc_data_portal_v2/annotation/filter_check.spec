@@ -68,7 +68,7 @@ tags: gdc-data-portal-v2, regression, annotations
 * In table "Annotations", search the table for "e0e55988-3539-4648-be0f-45975dc0708c"
 * Verify the table "Annotations" has a total of "0" items
 
-* In table "Annotations", search the table for "ae450927-0b69-4d34-9b03-ad65ae7da446"
+* In table "Annotations", search the table for "8bcdaef3-834f-490e-8bfb-334955c0467c"
 * Verify the table "Annotations" has a total of "1" items
 
 * In table "Annotations", search the table for "a3677fb4-86d2-499a-ad3a-c570aa0bc969"
