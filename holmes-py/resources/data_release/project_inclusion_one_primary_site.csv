@@ -1,3 +1,4 @@
 Data Release,Project ID,dbGaP,Project Name,Disease Type,Primary Site,Program,All Experimental Strategies
 45,ALCHEMIST-ALCH,phs001140,Adjuvant Lung Cancer Enrichment Marker Identification and Sequencing Trial,Not Reported,Not Reported,ALCHEMIST,"miRNA-Seq,RNA-Seq,Tissue Slide,WGS,WXS"
 45,CCG-CUPP,phs001801,Center for Cancer Genomics (CCG) Cancers of Unknown Primary Project (CUPP),12 Disease Types,Unknown,CCG,"Methylation Array,miRNA-Seq,RNA-Seq,Tissue Slide,WGS,WXS"
+46,APOLLO-BRCA-1,phs003636,Proteogenomic analysis of tumors from young women with breast cancer,Ductal and Lobular Neoplasms,Breast,APOLLO,RNA-Seq

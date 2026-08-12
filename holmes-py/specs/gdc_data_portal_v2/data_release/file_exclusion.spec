@@ -2,7 +2,7 @@
 Date Created        : 08/04/2024
 Version			    : 1.0
 Owner		        : GDC QA
-Description		    : File Exclusion in Data Release
+Description		    : When a File is Excluded by Versioning in a Data Release
 Test-Case           : PEAR-1928
 
 tags: gdc-data-portal-v2, data-release
