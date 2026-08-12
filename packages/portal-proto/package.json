@@ -34,7 +34,7 @@
     "@nci-gdc/sapien": "^2.20.0",
     "@nci-gdc/survivalplot": "^2.20.0",
     "@react-spring/web": "^10.0.3",
-    "@sjcrh/proteinpaint-client": "2.199.0",
+    "@sjcrh/proteinpaint-client": "2.202.0",
     "@tailwindcss/postcss": "^4.2.2",
     "@tanstack/react-table": "^8.9.3",
     "dayjs": "^1.11.13",
