@@ -36,12 +36,13 @@ import { useEnumFacets } from "@/features/facets/hooks";
 import { STOP_WORDS, TOKENIZE_STRING } from "./dictionary";
 import { useCohortFacetFilters } from "./utils";
 import { FacetQueryOptions } from "../facets/types";
+import { isDevEnvironment } from "src/pages/_app";
 
 export const useSetupInitialCohorts = (): boolean => {
   const [fetched, setFetched] = useState(false);
   // If the user doesn't have a context id, then we should skip the call to cohorts because it will return an error
   const contextId = Cookies.get("gdc_context_id");
-  const skipped = contextId === undefined;
+  const skipped = contextId === undefined && !isDevEnvironment();
   const {
     data: cohortsListData,
     isSuccess,
