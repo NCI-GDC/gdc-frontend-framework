@@ -77,6 +77,7 @@ export const classifyFacetDatatype = (f: FacetDefinition): FacetTypes => {
   if (fieldName.includes("figo")) return "enum";
   if (fieldName.includes("age_is_")) return "enum";
   if (fieldName.includes("age_range")) return "enum";
+  if (fieldName.includes("birth_range")) return "enum";
 
   if (fieldName.includes("datetime")) return "datetime";
   if (fieldName.includes("percent_range")) return "enum";
