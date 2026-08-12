@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
 import { flatten } from "lodash";
 import MiniSearch from "minisearch";
+import Cookies from "js-cookie";
 import {
   useCoreDispatch,
   useCoreSelector,
@@ -38,11 +39,14 @@ import { FacetQueryOptions } from "../facets/types";
 
 export const useSetupInitialCohorts = (): boolean => {
   const [fetched, setFetched] = useState(false);
+  // If the user doesn't have a context id, then we should skip the call to cohorts because it will return an error
+  const contextId = Cookies.get("gdc_context_id");
+  const skipped = contextId === undefined;
   const {
     data: cohortsListData,
     isSuccess,
     isError,
-  } = useGetCohortsByContextIdQuery(null, { skip: fetched });
+  } = useGetCohortsByContextIdQuery(null, { skip: fetched || skipped });
 
   const coreDispatch = useCoreDispatch();
   const cohorts: Cohort[] = useCoreSelector((state) => selectAllCohorts(state));
@@ -110,7 +114,7 @@ export const useSetupInitialCohorts = (): boolean => {
     cohortWarnings,
   ]);
 
-  return fetched;
+  return fetched || skipped;
 };
 
 export const usePopulateFacetData = (
