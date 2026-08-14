@@ -23,5 +23,8 @@ def click_mutation_frequency_button(button_name: str):
 
 @step("Search mutations for Gene symbol <gene_symbol>")
 def click_search_for_mutations_in_gene_table(gene_symbol: str):
+    """
+    Clicks the cell under column "# Mutations" on the gene table from the given gene symbol
+    """
     APP.mutation_frequency_page.click_mutations_filter_table_button(gene_symbol)
     APP.shared.wait_for_loading_spinners_to_detach()

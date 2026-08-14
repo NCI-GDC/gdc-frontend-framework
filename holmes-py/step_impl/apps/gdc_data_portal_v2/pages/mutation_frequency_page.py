@@ -34,6 +34,9 @@ class MutationFrequencyPage(BasePage):
         self.wait_for_loading_spinners_to_detach()
 
     def click_mutations_filter_table_button(self, gene_symbol):
+        """
+        Clicks the cell under column "# Mutations" on the gene table from the given gene symbol
+        """
         mutations_search_locator = MutationFrequencyLocators.BUTTON_MUTATIONS_FILTER_TABLE(gene_symbol)
         self.click(mutations_search_locator)
 
