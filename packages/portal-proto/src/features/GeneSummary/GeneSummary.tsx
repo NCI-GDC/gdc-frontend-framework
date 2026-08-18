@@ -10,8 +10,8 @@ import {
   FilterSet,
   useCoreSelector,
   selectCurrentCohortFilters,
+  fieldNameToTitle,
 } from "@gff/core";
-import { humanify } from "src/utils";
 import CNVPlot from "../charts/CNVPlot";
 import SSMPlot from "../charts/SSMPlot";
 import { formatDataForHorizontalTable } from "../files/utils";
@@ -86,7 +86,7 @@ const formatDataForSummary = (summaryData: GeneSummaryTableData) => {
 
   const headersConfig = Object.keys(summaryObj).map((key) => ({
     field: key,
-    name: humanify({ term: key }),
+    name: fieldNameToTitle(key),
   }));
 
   return formatDataForHorizontalTable(summaryObj, headersConfig);

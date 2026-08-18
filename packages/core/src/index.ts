@@ -6,6 +6,7 @@ export * from "./ts-utils";
 export * from "./constants";
 export * from "./deprecatedFields";
 export * from "./fieldConstants";
+export * from "./utils";
 export * from "./features/gdcapi";
 export * from "./features/gdcapi/filters";
 export * from "./features/gdcapi/gdcgraphql";

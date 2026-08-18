@@ -7,6 +7,7 @@ import {
   Demographic,
   FilterSet,
   CaseDefaults,
+  fieldNameToTitle,
 } from "@gff/core";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
@@ -18,7 +19,7 @@ import {
   formatDataForHorizontalTable,
   mapGdcFileToCartFile,
 } from "../files/utils";
-import { allFilesInCart, focusStyles, humanify } from "src/utils";
+import { allFilesInCart, focusStyles } from "src/utils";
 import CategoryTableSummary from "@/components/Summary/CategoryTableSummary";
 import { ClinicalSummary } from "./ClinicalSummary/ClinicalSummary";
 import { ImageSlideCount } from "@/components/ImageSlideCount";
@@ -187,7 +188,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
     }
     const headersConfig = Object.keys(caseSummaryObject).map((key) => ({
       field: key,
-      name: humanify({ term: key }),
+      name: fieldNameToTitle(key),
     }));
 
     return formatDataForHorizontalTable(caseSummaryObject, headersConfig);

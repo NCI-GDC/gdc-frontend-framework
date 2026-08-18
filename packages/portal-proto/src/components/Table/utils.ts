@@ -1,4 +1,4 @@
-import { humanify } from "@/utils/index";
+import { fieldNameToTitle } from "@gff/core";
 import {
   ColumnDef,
   ColumnOrderState,
@@ -58,7 +58,7 @@ export function downloadTSV<TData>({
         .map((column) =>
           typeof column?.header === "string"
             ? column.header
-            : humanify({ term: column.id }),
+            : fieldNameToTitle(column.id),
         )
         .join("\t");
 

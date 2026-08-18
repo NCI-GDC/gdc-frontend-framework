@@ -2,14 +2,11 @@ import React, { JSX } from "react";
 import Link from "next/link";
 import { ProjectViewProps } from "./ProjectView";
 import { CollapsibleList } from "@/components/CollapsibleList";
-import {
-  calculatePercentageAsNumber,
-  humanify,
-  sortByPropertyAsc,
-} from "@/utils/index";
+import { calculatePercentageAsNumber, sortByPropertyAsc } from "@/utils/index";
 import { formatDataForHorizontalTable } from "../files/utils";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { PercentageLabel } from "@/components/PercentageLabel";
+import { fieldNameToTitle } from "@gff/core";
 
 interface TableSummaryReturnType {
   readonly headerName: string;
@@ -76,7 +73,7 @@ export const formatDataForSummary = (
 
   const headersConfig = Object.keys(projectSummaryObj).map((key) => ({
     field: key,
-    name: humanify({ term: key }),
+    name: fieldNameToTitle(key),
   }));
 
   return formatDataForHorizontalTable(projectSummaryObj, headersConfig);

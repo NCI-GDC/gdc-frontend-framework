@@ -1,8 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
 import { ActionIcon, Drawer, ScrollArea } from "@mantine/core";
-import { SortBy, useGetGenesQuery, useGetSsmsQuery } from "@gff/core";
-import { humanify } from "src/utils";
+import {
+  fieldNameToTitle,
+  SortBy,
+  useGetGenesQuery,
+  useGetSsmsQuery,
+} from "@gff/core";
 import { SetData } from "./types";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { createColumnHelper, SortingState } from "@tanstack/react-table";
@@ -105,11 +109,11 @@ const SetDetailPanel: React.FC<SetDetailPanelProps> = ({
                       canonicalConsequence.transcript?.aa_change
                         ? canonicalConsequence.transcript?.aa_change
                         : ""
-                    } ${humanify({
-                      term: canonicalConsequence?.transcript.consequence_type
+                    } ${fieldNameToTitle(
+                      canonicalConsequence?.transcript.consequence_type
                         ?.replace("_variant", "")
                         .replace("_", " "),
-                    })}`
+                    )}`
                   : "--",
               };
             })
