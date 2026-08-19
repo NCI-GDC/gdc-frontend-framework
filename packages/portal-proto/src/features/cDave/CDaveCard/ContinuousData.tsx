@@ -134,7 +134,7 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
   const { data, isFetching, isSuccess } = useRangeFacet(
     field,
     ranges,
-    { docType: "cases", indexType: "explore" },
+    { docType: "cases", indexType: "repository" },
     cohortFilters,
   );
   const { data: statsData } = useGetContinuousDataStatsQuery({
