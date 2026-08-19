@@ -19,8 +19,8 @@ if [[ "$1" == "unlink" ]]; then
 	PROTEINPAINT_API=https://localhost.gdc.cancer.gov:3011 PORT=3001 npm run dev
 else
 	# to test the local PP client code:
-	# 1. build the client in watch mode from the sjpp/proteinpaint repo:
-	#    cd ../proteinpaint/client && npm run dev
+	# 1. build the client in watch mode from the sjpp repo which has proteinpaint as a submodule:
+	#    cd ../../sjpp && npm run dev
 	# 2. PP_CLIENT_DIST (below) tells Turbopack to bundle the local client dist
 	#    directly (see next.config.js `turbopack.resolveAlias`), so no npm link or
 	#    manual `cp -r dist ...` into node_modules is needed. A browser refresh after

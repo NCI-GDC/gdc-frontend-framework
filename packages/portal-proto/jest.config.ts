@@ -1,4 +1,7 @@
 import type { JestConfigWithTsJest } from "ts-jest/dist/types";
+// Optional local proteinpaint client resolution for tests (empty when the
+// published package is installed, e.g. CI). See ppLocalDev.mjs for details.
+import { jestModuleNameMapper } from "./src/features/proteinpaint/ppLocalDev.mjs";
 
 const config: JestConfigWithTsJest = {
   preset: "ts-jest",
@@ -32,6 +35,7 @@ const config: JestConfigWithTsJest = {
   },
   testEnvironment: "jsdom",
   moduleNameMapper: {
+    ...jestModuleNameMapper(__dirname),
     "^@/app(.*)$": "<rootDir>/src/app/$1",
     "^@/components(.*)$": "<rootDir>/src/components/$1",
     "^@/features/(.*)$": "<rootDir>/src/features/$1",

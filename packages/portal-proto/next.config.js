@@ -4,7 +4,9 @@
  * means that the application will be available at "https://<host>/v2"
  */
 // Optional Turbopack overrides for local proteinpaint client development.
-const ppTurbopackDev = require("./src/features/proteinpaint/ppTurbopackDev");
+const {
+  turbopackConfig: ppTurbopackConfig,
+} = require("./src/features/proteinpaint/ppLocalDev.mjs");
 
 const basePath = process.env.NEXT_PUBLIC_BASEPATH;
 const connectSrc = [
@@ -66,7 +68,7 @@ const cspHeader = `
  */
 module.exports = {
   turbopack: {
-    ...ppTurbopackDev(__dirname),
+    ...ppTurbopackConfig(__dirname),
     rules: {
       "*.svg": {
         loaders: ["@svgr/webpack"],
