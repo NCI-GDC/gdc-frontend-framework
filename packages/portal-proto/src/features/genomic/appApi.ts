@@ -18,7 +18,7 @@ export const reducers = combineReducers({
 });
 
 export const { id, AppStore, AppContext, useAppSelector, useAppDispatch } =
-  createAppStore({
+  createAppStore<AppState>({
     reducers: persistReducer(persistConfig, reducers),
     name: "MutationFrequency",
     version: "0.0.1",

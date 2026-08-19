@@ -23,6 +23,11 @@ import {
   deleteCohortUserAction,
 } from "./features/cohort/availableCohortsSlice";
 import { cohortApiSlice } from "./features/api/cohortApiSlice";
+import { fetchFacetDictionary } from "./features/facets/facetDictionarySlice";
+import {
+  removeFilterFromCohortBuilder,
+  selectBuilderCustomFacets,
+} from "./features/cohort/cohortBuilderConfigSlice";
 
 const isPayloadActionWithObject = (
   action: unknown,
@@ -164,6 +169,27 @@ startCoreListening({
       if (contextId) {
         Cookies.set("gdc_context_id", contextId);
       }
+    }
+  },
+});
+
+/**
+ * Remove fields that aren't in the facet dictionary from user's saved custom facets
+ */
+startCoreListening({
+  matcher: isAnyOf(fetchFacetDictionary.fulfilled),
+  effect: async (action, listenerApi) => {
+    if (isPayloadActionWithObject(action)) {
+      const validFields = Object.keys(action.payload);
+      const customFacets = selectBuilderCustomFacets(listenerApi.getState());
+      const invalidFacets = customFacets.filter(
+        (customFacet) => !validFields.includes(customFacet),
+      );
+      invalidFacets.forEach((invalidFacet) =>
+        listenerApi.dispatch(
+          removeFilterFromCohortBuilder({ facetName: invalidFacet }),
+        ),
+      );
     }
   },
 });

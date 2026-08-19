@@ -118,7 +118,7 @@ tags: gdc-data-portal-v2, regression, project-summary
     |Save             |CPTAC-3 Primary Site Pancreas has been saved                       |Remove Modal        |
 
 ## Annotations Table
-* Change number of entries shown in the table "Annotations Project Summary" to "20"
+* Change number of entries shown in the table "Annotations Project Summary" to "100"
 * In table "Annotations Project Summary", search the table for "C3N-00852"
 * Verify the table "Annotations Project Summary" is displaying this information
     |text_to_validate           |
@@ -136,6 +136,7 @@ tags: gdc-data-portal-v2, regression, project-summary
     |Case ID                                |
     |Created Datetime                       |
     |Notes                                  |
+* Pause "2" seconds
 * Verify the table "Annotations Project Summary" is displaying this information
     |text_to_validate                       |
     |---------------------------------------|
@@ -182,6 +183,7 @@ tags: gdc-data-portal-v2, regression, project-summary
     |e002d33a-86c4-4e19-acde-d542096f5fdb   |
     |C3L-03467                              |
 * Download "JSON" from "Project Summary Annotations"
+* Pause "2" seconds
 * Read from "JSON from Project Summary Annotations"
 * Verify that "JSON from Project Summary Annotations" has expected information
     |required_info                          |

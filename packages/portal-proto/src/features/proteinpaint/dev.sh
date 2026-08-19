@@ -15,7 +15,7 @@ else
 	# !!! NOTE: turbopack used to find the @sjrch/proteintpaint under node_mmodules, but has stopped working !!!
 	# a temporary fix is to do the following:
 	# 1. run `npm run dev` from the sjpp or proteinpaint repo/directory
-	# 2. on client rebundling, run `cp -r dist ~/dev/gdc-frontend-framework/node_modules/"@sjcrh"/proteinpaint-client/`
+	# 2. on rebundling from the client dir, run `cp -r dist ~/dev/gdc-frontend-framework/node_modules/"@sjcrh"/proteinpaint-client/`
 	#
 	npm unlink ../proteinpaint/client # change back to `npm link` when fixed
 	# An issue with npm link and workspaces: the non-linked @sjcrh/proteinpaint-client package

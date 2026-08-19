@@ -92,7 +92,12 @@ def setup_next_spec_run():
     Finally, we wait to see the the text confirming there are no active cohort filters present.
     """
     APP.analysis_center_page.visit()
-    APP.header_section.wait_for_page_to_load("analysis")
+    try:
+        APP.header_section.wait_for_page_to_load("analysis")
+    except:
+        APP.shared.reload_page()
+        time.sleep(10)
+        APP.shared.wait_for_loading_spinners_to_detach()
     APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
     if not APP.shared.is_no_active_cohort_filter_text_present():
         APP.shared.clear_active_cohort_filters()

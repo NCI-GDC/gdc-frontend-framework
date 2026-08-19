@@ -12,7 +12,8 @@ jest.mock("@gff/core", () => ({
   buildCohortGqlOperator: jest.fn(() => filter),
   useAddCohortMutation: jest.fn(() => [() => null, { isSuccess: true }]),
   useFetchUserDetailsQuery: jest.fn(() => userDetails),
-  PROTEINPAINT_API: "host:port/basepath",
+  PROTEINPAINT_API: "protocol://host:port/basepath",
+  GDC_API: "protocol://host/basepath",
 }));
 
 jest.mock("@/hooks/useIsDemoApp", () => ({
@@ -50,6 +51,7 @@ test("IDCViewerWrapperPP arguments", () => {
   expect(runpparg.holder instanceof HTMLElement).toBe(true);
   expect(runpparg.launchIdc).toEqual(true);
   expect(runpparg.filter0).toEqual(filter);
+  expect(typeof runpparg.GDC_API).toEqual("string");
   isDemoMode = true;
   rerender(
     <MantineProvider

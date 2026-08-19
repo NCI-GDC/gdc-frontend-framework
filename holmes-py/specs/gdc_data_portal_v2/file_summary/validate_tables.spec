@@ -198,8 +198,8 @@ tags: gdc-data-portal-v2, regression, file-summary
   |4469                                   |
 
 
-## Navigate to Summary Page: d847b5f7-cc33-4008-bd21-91ca1b06c3f1
-* Quick search for "d847b5f7-cc33-4008-bd21-91ca1b06c3f1" and go to its page
+## Navigate to Summary Page: fd2edfce-2e57-4fa1-b13c-eb856c549e98
+* Quick search for "fd2edfce-2e57-4fa1-b13c-eb856c549e98" and go to its page
 ## File Versions Table
 * Verify the table "File Versions File Summary" is displaying this information
     |text_to_validate                       |
@@ -207,7 +207,7 @@ tags: gdc-data-portal-v2, regression, file-summary
     |File UUID                              |
     |Release Date	                        |
     |Release Number                         |
-    |d847b5f7-cc33-4008-bd21-91ca1b06c3f1   |
+    |fd2edfce-2e57-4fa1-b13c-eb856c549e98   |
     |2024-03-29                             |
     |40.0                                   |
     |Current Version                        |
@@ -222,7 +222,7 @@ tags: gdc-data-portal-v2, regression, file-summary
     |File UUID                              |
     |Release Date                           |
     |Release Number                         |
-    |d847b5f7-cc33-4008-bd21-91ca1b06c3f1 Current Version|
+    |fd2edfce-2e57-4fa1-b13c-eb856c549e98 Current Version|
     |2024-03-29                             |
     |40.0                                   |
     |19f606e9-704c-4ef0-b5ea-aec7dd83dd97   |
@@ -243,11 +243,11 @@ tags: gdc-data-portal-v2, regression, file-summary
     |superseded                             |
     |2022-09-28                             |
     |35.0                                   |
-    |d847b5f7-cc33-4008-bd21-91ca1b06c3f1   |
+    |fd2edfce-2e57-4fa1-b13c-eb856c549e98   |
     |6                                      |
     |released                               |
     |2024-03-29                             |
-    |40.0                                   |
+    |46.0                                   |
 
 ## File Versions Table - Validate JSON File Fields
   |field_name                               |

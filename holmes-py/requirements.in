@@ -4,7 +4,6 @@ getgauge==0.4.11
 playwright==1.59.0
 protobuf==5.29.6
 grpcio==1.71.0
-pillow==12.2.0
 pyautogui==0.9.54
 # May have to add setuptools manually to requirements.txt after running
 # 'pip-compile requirements.in'
