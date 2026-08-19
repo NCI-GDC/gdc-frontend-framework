@@ -16,6 +16,20 @@ const commonAncestor = (a, b) => {
   return out.join(path.sep) || path.sep;
 };
 
+// Absolute path to the client's built entry (dist/app.js) from PP_CLIENT_DIST.
+// The env var contract is lenient: `base` may point at the client repo root,
+// the dist directory, or app.js itself. Prefer whichever candidate exists;
+// otherwise infer from the directory name so it also works before a first build.
+const clientAppJs = (base) => {
+  const abs = path.resolve(base);
+  if (abs.endsWith(`${path.sep}app.js`)) return abs;
+  const asDistDir = path.join(abs, "app.js"); // base is .../client/dist
+  const asRepoRoot = path.join(abs, "dist", "app.js"); // base is .../client
+  if (existsSync(asRepoRoot)) return asRepoRoot;
+  if (existsSync(asDistDir)) return asDistDir;
+  return path.basename(abs) === "dist" ? asDistDir : asRepoRoot;
+};
+
 /**
  * Turbopack config fragment for local proteinpaint development (next.config.js).
  *
@@ -41,13 +55,12 @@ export function turbopackConfig(projectDir) {
   const dist = process.env.PP_CLIENT_DIST;
   if (!dist) return {};
 
-  const clientDir = path.resolve(dist);
-  const appJs = path.join(clientDir, "dist/app.js");
+  const appJs = clientAppJs(dist);
   let rel = path.relative(projectDir, appJs);
   if (!rel.startsWith(".")) rel = "./" + rel;
 
   return {
-    root: commonAncestor(projectDir, clientDir),
+    root: commonAncestor(projectDir, appJs),
     resolveAlias: { [CLIENT_PKG]: rel },
   };
 }
@@ -74,7 +87,7 @@ export function jestModuleNameMapper(projectDir) {
   } catch {
     const dist = process.env.PP_CLIENT_DIST;
     const candidates = [
-      dist && path.join(path.resolve(dist), "dist/app.js"),
+      dist && clientAppJs(dist),
       path.resolve(projectDir, "../../..", "proteinpaint/client/dist/app.js"),
     ];
     const found = candidates.find((p) => p && existsSync(p));

@@ -6,7 +6,11 @@
 # assumes that the proteinpaint folder is a sibling dir of gff
 
 if [[ "$1" == "unlink" ]]; then
-	# to test the published client package before submitting a PR with an updated pp-client version
+	# to test the published client package before submitting a PR with an updated pp-client version.
+	# Clear any PP_CLIENT_DIST inherited from the shell so next.config.js/jest.config.ts do NOT
+	# apply the local client override — unlink mode must resolve the published package.
+	unset PP_CLIENT_DIST
+
 	npm uninstall @sjcrh/proteinpaint-client --save --workspace=packages/portal-proto
 	npm install @sjcrh/proteinpaint-client --save --save-exact --workspace=packages/portal-proto
 
@@ -25,6 +29,7 @@ else
 	#    directly (see next.config.js `turbopack.resolveAlias`), so no npm link or
 	#    manual `cp -r dist ...` into node_modules is needed. A browser refresh after
 	#    a client rebuild is usually enough to pick up changes.
+	# PP_CLIENT_DIST may point at the client repo root, its dist dir, or app.js itself.
 	# Resolve to an absolute path (via a subshell) so it is unaffected by the cwd
 	# that `lerna run dev` uses for the next process.
 	if ! PP_CLIENT_DIST="$(cd ../proteinpaint/client && pwd -P)"; then
