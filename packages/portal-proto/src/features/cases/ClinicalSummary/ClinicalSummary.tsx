@@ -8,11 +8,12 @@ import {
   Diagnoses,
   Exposures,
   FamilyHistories,
+  fieldNameToTitle,
   FollowUps,
   useCoreDispatch,
 } from "@gff/core";
 import { Divider, Loader, Tabs, Text } from "@mantine/core";
-import { humanify, ageDisplay } from "src/utils";
+import { ageDisplay } from "src/utils";
 import { FamilyHistoryOrExposure } from "./FamilyHistoryOrExposure";
 import download from "@/utils/download";
 import { TabbedTables } from "./TabbedTables";
@@ -71,7 +72,7 @@ export const ClinicalSummary = ({
 
     const headersConfig = Object.keys(demographicData).map((key) => ({
       field: key,
-      name: humanify({ term: key }),
+      name: fieldNameToTitle(key),
     }));
 
     return formatDataForHorizontalTable(demographicData, headersConfig);

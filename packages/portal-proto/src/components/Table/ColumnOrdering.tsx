@@ -9,7 +9,7 @@ import {
 } from "@mantine/core";
 import { Column, ColumnOrderState, Table } from "@tanstack/react-table";
 import { isEqual } from "lodash";
-import { humanify } from "@/utils/index";
+import { fieldNameToTitle } from "@gff/core";
 import { NO_COLUMN_ORDERING_IDS } from "./utils";
 import {
   DndContext,
@@ -180,7 +180,7 @@ function List<TData>({
       {columns
         .filter((column) => {
           if (!NO_COLUMN_ORDERING_IDS.includes(column.id)) {
-            return humanify({ term: column.id })
+            return fieldNameToTitle(column.id)
               .toLowerCase()
               .includes(searchValue.toLowerCase());
           } else {
@@ -236,7 +236,7 @@ function DraggableColumnItem<TData>({
           label={
             typeof column?.columnDef?.header === "string"
               ? column.columnDef.header
-              : humanify({ term: column.id })
+              : fieldNameToTitle(column.id)
           }
           classNames={{
             root: "w-full",

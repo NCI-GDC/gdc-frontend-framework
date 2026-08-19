@@ -1,11 +1,11 @@
 import React, { JSX } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Badge, Text } from "@mantine/core";
-import type { Diagnoses } from "@gff/core";
+import { fieldNameToTitle, type Diagnoses } from "@gff/core";
 import { HorizontalTable } from "@/components/HorizontalTable";
 import VerticalTable from "@/components/Table/VerticalTable";
 import { formatDataForHorizontalTable } from "@/features/files/utils";
-import { ageDisplay, humanify } from "src/utils";
+import { ageDisplay } from "src/utils";
 
 const DiagnosesTables = ({ data }: { data: Diagnoses }): JSX.Element => {
   const formatDataForDiagnoses = (data: Diagnoses) => {
@@ -51,7 +51,7 @@ const DiagnosesTables = ({ data }: { data: Diagnoses }): JSX.Element => {
 
     const headersConfig = Object.keys(tableData).map((key) => ({
       field: key,
-      name: humanify({ term: key }),
+      name: fieldNameToTitle(key),
     }));
     return formatDataForHorizontalTable(tableData, headersConfig);
   };

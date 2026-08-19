@@ -1,6 +1,5 @@
 // This table can be found at /analysis_page?app=MutationFrequencyApp Mutations tab
-import { humanify } from "@/utils/index";
-import { SSMSData, FilterSet } from "@gff/core";
+import { SSMSData, FilterSet, fieldNameToTitle } from "@gff/core";
 import { SomaticMutation, SsmToggledHandler } from "./types";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Dispatch, SetStateAction, useId } from "react";
@@ -365,9 +364,9 @@ export const getMutation = (
       checked: true,
     },
     survival: {
-      label: `${symbol} ${aa_change ? aa_change : ""} ${humanify({
-        term: consequence_type?.replace("_variant", "").replace("_", " "),
-      })}`,
+      label: `${symbol} ${aa_change ? aa_change : ""} ${fieldNameToTitle(
+        consequence_type?.replace("_variant", "").replace("_", " "),
+      )}`,
       name: genomic_dna_change,
       symbol: ssm_id,
       checked: ssm_id == selectedSurvivalPlot?.symbol,

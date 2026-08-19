@@ -1,9 +1,8 @@
 import React, { JSX, useState } from "react";
 import { HorizontalTable } from "@/components/HorizontalTable";
 import { formatDataForHorizontalTable } from "@/features/files/utils";
-import { Exposures, FamilyHistories } from "@gff/core";
+import { Exposures, FamilyHistories, fieldNameToTitle } from "@gff/core";
 import { Tabs, Tooltip } from "@mantine/core";
-import { humanify } from "src/utils";
 
 export const FamilyHistoryOrExposure = ({
   dataInfo,
@@ -63,7 +62,7 @@ export const FamilyHistoryOrExposure = ({
     }
     const headersConfig = Object.keys(tableData).map((key) => ({
       field: key,
-      name: humanify({ term: key }),
+      name: fieldNameToTitle(key),
     }));
     return formatDataForHorizontalTable(tableData, headersConfig);
   };

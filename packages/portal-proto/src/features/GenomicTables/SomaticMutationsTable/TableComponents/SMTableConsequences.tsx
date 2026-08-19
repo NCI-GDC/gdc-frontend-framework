@@ -1,5 +1,5 @@
+import { fieldNameToTitle } from "@gff/core";
 import React, { JSX } from "react";
-import { humanify } from "src/utils";
 
 const SMTableConsequences = ({
   consequences,
@@ -9,9 +9,9 @@ const SMTableConsequences = ({
   <span className="font-content text-left">
     {!consequences
       ? "--"
-      : humanify({
-          term: consequences?.replace("_variant", "").replace("_", " "),
-        })}
+      : fieldNameToTitle(
+          consequences?.replace("_variant", "").replace("_", " "),
+        )}
   </span>
 );
 

@@ -23,6 +23,7 @@ import {
   Modals,
   GeneSSMSEntry,
   TopSsm,
+  fieldNameToTitle,
 } from "@gff/core";
 import { useDeepCompareEffect } from "use-deep-compare";
 import isEqual from "lodash/isEqual";
@@ -46,7 +47,6 @@ import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { buildGeneHaveAndHaveNotFilters } from "@/features/genomic/utils";
 import { AppModeState, ComparativeSurvival } from "./types";
 import { overwritingDemoFilterMutationFrequency } from "./utils";
-import { humanify } from "@/utils/index";
 import { useDeepCompareMemo } from "use-deep-compare";
 import FilterFacets from "@/features/genomic/filters.json";
 
@@ -339,11 +339,11 @@ export const useAutomaticComparativeSurvival = ({
             ? name
             : `${name} ${aa_change ?? ""} ${
                 consequence_type
-                  ? humanify({
-                      term: consequence_type
+                  ? fieldNameToTitle(
+                      consequence_type
                         .replace("_variant", "")
                         .replace("_", " "),
-                    })
+                    )
                   : ""
               }`,
         field: appMode === "genes" ? "gene.symbol" : "gene.ssm.ssm_id",
@@ -363,9 +363,9 @@ export const useAutomaticComparativeSurvival = ({
     if (topSSMSuccess && ssmSearch) {
       const { ssm_id, consequence_type, aa_change = "" } = topSSM;
       const description = consequence_type
-        ? `${searchTermsForGene?.geneSymbol ?? ""} ${aa_change} ${humanify({
-            term: consequence_type.replace("_variant", "").replace("_", " "),
-          })}`
+        ? `${searchTermsForGene?.geneSymbol ?? ""} ${aa_change} ${fieldNameToTitle(
+            consequence_type.replace("_variant", "").replace("_", " "),
+          )}`
         : "";
 
       setComparativeSurvival({

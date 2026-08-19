@@ -1,5 +1,5 @@
 import React, { JSX, useEffect, useMemo, useState } from "react";
-import { useSsmsConsequenceTableQuery } from "@gff/core";
+import { fieldNameToTitle, useSsmsConsequenceTableQuery } from "@gff/core";
 import { ConsequenceTableData } from "@/features/mutationSummary/types";
 import useStandardPagination from "@/hooks/useStandardPagination";
 import FunctionButton from "@/components/FunctionButton";
@@ -14,7 +14,7 @@ import {
 import Link from "next/link";
 import { HeaderTooltip } from "@/components/Table/HeaderTooltip";
 import { AnchorLink } from "@/components/AnchorLink";
-import { humanify, statusBooleansToDataStatus } from "@/utils/index";
+import { statusBooleansToDataStatus } from "@/utils/index";
 import {
   SMTableConsequences,
   SMTableImpacts,
@@ -243,11 +243,11 @@ export const ConsequenceTable = ({
           consequences: {
             composer: (consequenceData) =>
               consequenceData.consequences
-                ? humanify({
-                    term: consequenceData.consequences
+                ? fieldNameToTitle(
+                    consequenceData.consequences
                       .replace("_variant", "")
                       .replace("_", " "),
-                  })
+                  )
                 : "",
           },
           impact: {
