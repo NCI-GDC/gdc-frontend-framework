@@ -1,6 +1,7 @@
 const fieldNameOverrides: Record<string, string> = {
   "cases.project.program.name": "Program",
   "cases.project.project_id": "Project",
+  "project.project_id": "Project",
   "genes.gene_id": "Mutated Gene",
 };
 
