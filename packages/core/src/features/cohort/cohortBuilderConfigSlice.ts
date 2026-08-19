@@ -65,7 +65,7 @@ export const {
   resetCohortBuilderToDefault,
 } = slice.actions;
 
-const selectBuilderCustomFacets = (state: CoreState) =>
+export const selectBuilderCustomFacets = (state: CoreState) =>
   state.cohort.builderConfig.customFacets;
 
 export const selectCohortBuilderConfig = createSelector(
