@@ -97,6 +97,7 @@ def validate_default_analysis_cards_are_present(table):
 
 @step("Validate the <card_name> analysis card's table contains these values <table>")
 def validate_table_value_on_analysis_card_is_present(card_name, table):
+    APP.shared.wait_for_loading_spinners_to_detach()
     for k, v in enumerate(table):
         is_table_value_on_analysis_card_present = (
             APP.clinical_data_analysis.is_table_value_on_analysis_card_present(

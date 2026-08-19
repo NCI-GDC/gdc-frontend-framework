@@ -100,8 +100,14 @@ class GenericLocators:
     TABLE_AREA_TO_CLICK = (
         lambda row, column: f"tr:nth-child({row}) > td:nth-child({column}) > * > * >> nth=0"
     )
+    TABLE_AREA_SAVE_FILTERED_COHORT_BUTTON = (
+        lambda row, column: f"tr:nth-child({row}) > td:nth-child({column}) >> [data-testid='button-save-filtered-cohort'] >> nth=0"
+    )
     TABLE_AREA_TO_CLICK_IN_SPECIFIED_TABLE = (
         lambda table_name, row, column: f"[data-testid='table-{table_name}'] >> tr:nth-child({row}) > td:nth-child({column}) > * > * >> nth=0"
+    )
+    TABLE_AREA_SAVE_FILTERED_COHORT_BUTTON_IN_SPECIFIED_TABLE = (
+        lambda table_name, row, column: f"[data-testid='table-{table_name}'] >> tr:nth-child({row}) > td:nth-child({column}) >> [data-testid='button-save-filtered-cohort'] >> nth=0"
     )
     TABLE_CHECKBOX_TO_CLICK_IN_SPECIFIED_TABLE = (
         lambda table_name, row, column: f"[data-testid='table-{table_name}'] >> tr:nth-child({row}) > td:nth-child({column}) >> [type='checkbox']"
@@ -895,8 +901,16 @@ class BasePage:
         Row and Column indexing begins at '1'
         """
         table_locator_to_select = GenericLocators.TABLE_AREA_TO_CLICK(row, column)
+        table_save_cohort_button = GenericLocators.TABLE_AREA_SAVE_FILTERED_COHORT_BUTTON(row, column)
+        self.scroll_into_view_if_needed(table_locator_to_select)
         self.hover(table_locator_to_select)
-        self.click(table_locator_to_select, True)
+        # I have seen odd behavior when clicking a cell that is intended to select a button (specifically, create filtered cohort button)
+        # automation will click one row lower than expected. It happened randomly, and I was not able to determine root cause. I found
+        # checking for that button and clicking it specifically instead of the center area of the cell reduced the occurrence of that wrong behavior.
+        if self.is_visible(table_save_cohort_button):
+            self.click(table_save_cohort_button, True)
+        else:
+            self.click(table_locator_to_select, True)
 
     def select_specified_table_by_row_column(self, table_name, row, column):
         """
@@ -904,19 +918,30 @@ class BasePage:
         Row and Column indexing begins at '1'
         """
         table_name = self.normalize_button_identifier(table_name)
+        table_save_cohort_button = GenericLocators.TABLE_AREA_SAVE_FILTERED_COHORT_BUTTON_IN_SPECIFIED_TABLE(table_name,row, column)
         table_checkbox_to_click = GenericLocators.TABLE_CHECKBOX_TO_CLICK_IN_SPECIFIED_TABLE(table_name, row, column)
         table_locator_to_select = GenericLocators.TABLE_AREA_TO_CLICK_IN_SPECIFIED_TABLE(table_name, row, column)
+        # I have seen odd behavior when clicking a cell that is intended to select a button (specifically, create filtered cohort button)
+        # automation will click one row lower than expected. It happened randomly, and I was not able to determine root cause. I found
+        # checking for that button and clicking it specifically instead of the center area of the cell reduced the occurrence of that wrong behavior.
+        if self.is_visible(table_save_cohort_button):
+            self.scroll_into_view_if_needed(table_save_cohort_button)
+            self.hover(table_save_cohort_button)
+            self.click(table_save_cohort_button, True)
         # Try to click potential checkbox first.
-        if self.is_visible(table_checkbox_to_click):
+        elif self.is_visible(table_checkbox_to_click):
+            self.scroll_into_view_if_needed(table_checkbox_to_click)
             self.hover(table_checkbox_to_click)
             self.click(table_checkbox_to_click, True)
         # Try to click drilled down locator.
         elif self.is_visible(table_locator_to_select):
+            self.scroll_into_view_if_needed(table_locator_to_select)
             self.hover(table_locator_to_select)
             self.click(table_locator_to_select, True)
         # If that is not available, click a higher level locator.
         else:
             table_locator_to_select = GenericLocators.TABLE_AREA_TO_SELECT_IN_SPECIFIED_TABLE(table_name, row, column)
+            self.scroll_into_view_if_needed(table_locator_to_select)
             self.hover(table_locator_to_select)
             self.click(table_locator_to_select, True)
 
