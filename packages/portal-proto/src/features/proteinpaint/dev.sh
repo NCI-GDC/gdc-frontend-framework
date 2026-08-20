@@ -7,9 +7,9 @@
 
 if [[ "$1" == "unlink" ]]; then
 	# to test the published client package before submitting a PR with an updated pp-client version.
-	# Clear any PP_CLIENT_DIST inherited from the shell so next.config.js/jest.config.ts do NOT
-	# apply the local client override — unlink mode must resolve the published package.
-	unset PP_CLIENT_DIST
+	# Clear any local-dev vars inherited from the shell so next.config.js does NOT apply the
+	# local client override — unlink mode must resolve the published package.
+	unset PP_CLIENT_DIST NEXT_CONFIG_OVERRIDES
 
 	npm uninstall @sjcrh/proteinpaint-client --save --workspace=packages/portal-proto
 	npm install @sjcrh/proteinpaint-client --save --save-exact --workspace=packages/portal-proto
@@ -25,10 +25,11 @@ else
 	# to test the local PP client code:
 	# 1. build the client in watch mode from the sjpp repo which has proteinpaint as a submodule:
 	#    cd ../../sjpp && npm run dev
-	# 2. PP_CLIENT_DIST (below) tells Turbopack to bundle the local client dist
-	#    directly (see next.config.js `turbopack.resolveAlias`), so no npm link or
-	#    manual `cp -r dist ...` into node_modules is needed. A browser refresh after
-	#    a client rebuild is usually enough to pick up changes.
+	# 2. ppNextConfig.mjs (run below) prints a NEXT_CONFIG_OVERRIDES JSON object that
+	#    next.config.js spreads: `turbopack` points Turbopack at the local client dist,
+	#    and `env`/`connectSrc` supply PROTEINPAINT_API and allow its host in the CSP
+	#    (see next.config.js). No npm link or manual `cp -r dist ...` into node_modules is
+	#    needed. A browser refresh after a client rebuild is usually enough to pick up changes.
 	# PP_CLIENT_DIST may point at the client repo root, its dist dir, or app.js itself.
 	# Resolve to an absolute path (via a subshell) so it is unaffected by the cwd
 	# that `lerna run dev` uses for the next process.
@@ -41,8 +42,11 @@ else
 	# sometimes the nextjs bundle cache is stale after switching the client source
 	rm -rf packages/portal-proto/.next
 
+	SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd -P)"
+
 	# run the following in a separate tab
 	# local-ssl-proxy --config ssl-proxy.json --cert localhost.pem --key localhost-key.pem
 	# then from the gff dir
-	PROTEINPAINT_API=https://localhost.gdc.cancer.gov:3011 PORT=3001 npm run dev
+	PROTEINPAINT_API=https://localhost.gdc.cancer.gov:3011 NEXT_CONFIG_OVERRIDES="$("$SCRIPT_DIR/ppNextConfig.mjs")" \
+		PORT=3001 npm run dev
 fi

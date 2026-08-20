@@ -3,10 +3,21 @@
  * the intended deployment path. For example, the basePath of "/v2"
  * means that the application will be available at "https://<host>/v2"
  */
-// Optional Turbopack overrides for local proteinpaint client development.
-const {
-  turbopackConfig: ppTurbopackConfig,
-} = require("./src/features/proteinpaint/ppLocalDev.mjs");
+// Optional config overrides supplied at runtime as a JSON object via
+// NEXT_CONFIG_OVERRIDES. Its `turbopack`, `connectSrc`, and `env` properties are
+// spread into the corresponding entries below (overrides take precedence). This
+// env var is unset in normal `next dev`, `next build`, `next start`, and the
+// Docker image, so the Data Portal build depends on no external config code.
+// Local tooling can inject overrides — e.g. src/features/proteinpaint/dev.sh runs
+// ppNextConfig.mjs to point Turbopack at a local proteinpaint client build.
+let overrides = {};
+if (process.env.NEXT_CONFIG_OVERRIDES) {
+  try {
+    overrides = JSON.parse(process.env.NEXT_CONFIG_OVERRIDES);
+  } catch (e) {
+    throw new Error(`Invalid NEXT_CONFIG_OVERRIDES JSON: ${e.message}`);
+  }
+}
 
 const basePath = process.env.NEXT_PUBLIC_BASEPATH;
 const connectSrc = [
@@ -19,20 +30,8 @@ const connectSrc = [
   "https://storage.googleapis.com/idc-index-data-artifacts/",
   // Uncomment to use mock server for testing
   //"https://localhost:3100",
+  ...(overrides.connectSrc || []),
 ];
-
-if (process.env.NODE_ENV == "development") {
-  // in SJ dev environment, this would point to a local PP server instance
-  const PROTEINPAINT_API =
-    process.env.PROTEINPAINT_API ||
-    process.env.NEXT_PUBLIC_PROTEINPAINT_API ||
-    "";
-  const PROTEINPAINT_HOST =
-    PROTEINPAINT_API.split("://")[1]?.split("/")[0] || "";
-
-  if (PROTEINPAINT_HOST && !connectSrc.includes(`https://${PROTEINPAINT_HOST}`))
-    connectSrc.push(`https://${PROTEINPAINT_HOST}`);
-}
 
 // Fallback if Docker is not run: This calls git directly
 const buildHash = () => {
@@ -61,20 +60,19 @@ const cspHeader = `
     frame-ancestors 'none';
     upgrade-insecure-requests;
 `;
-
 // @ts-check
 /**
  * @type {import('next').NextConfig}
  */
 module.exports = {
   turbopack: {
-    ...ppTurbopackConfig(__dirname),
     rules: {
       "*.svg": {
         loaders: ["@svgr/webpack"],
         as: "*.js",
       },
     },
+    ...(overrides.turbopack || {}),
   },
   i18n: {
     locales: ["en"],
@@ -88,9 +86,8 @@ module.exports = {
   },
   allowedDevOrigins: ["localhost.gdc.cancer.gov"],
   env: {
-    // passed via command line, `PROTEINPAINT_API=... npm run dev`
-    PROTEINPAINT_API:
-      process.env.PROTEINPAINT_API || process.env.NEXT_PUBLIC_PROTEINPAINT_API,
+    // e.g. PROTEINPAINT_API, supplied via NEXT_CONFIG_OVERRIDES.env (see proteinpaint/dev.sh and ppNextConfig.mjs)
+    ...overrides.env,
     NEXT_PUBLIC_APP_VERSION: process.env.npm_package_version,
     // NEXT_PUBLIC_BUILD_SHORT_SHA is passed from gitlab to docker when docker is not run it tries to get it directly from git
     NEXT_PUBLIC_APP_HASH:
