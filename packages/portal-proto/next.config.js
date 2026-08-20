@@ -1,8 +1,3 @@
-/**
- * This basePath defines root of the application. This must match
- * the intended deployment path. For example, the basePath of "/v2"
- * means that the application will be available at "https://<host>/v2"
- */
 // Optional config overrides supplied at runtime as a JSON object via
 // NEXT_CONFIG_OVERRIDES. Its `turbopack`, `connectSrc`, and `env` properties are
 // spread into the corresponding entries below (overrides take precedence). This
@@ -19,6 +14,11 @@ if (process.env.NEXT_CONFIG_OVERRIDES) {
   }
 }
 
+/**
+ * This basePath defines root of the application. This must match
+ * the intended deployment path. For example, the basePath of "/v2"
+ * means that the application will be available at "https://<host>/v2"
+ */
 const basePath = process.env.NEXT_PUBLIC_BASEPATH;
 const connectSrc = [
   "https://portal.gdc.cancer.gov",
