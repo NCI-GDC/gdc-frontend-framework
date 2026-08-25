@@ -1,5 +1,4 @@
 import userEvent from "@testing-library/user-event";
-import * as facetHooks from "../../facets/hooks";
 import * as router from "next/router";
 import { render } from "test-utils";
 import CDaveCard from "./CDaveCard";
