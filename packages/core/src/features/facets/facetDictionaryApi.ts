@@ -126,6 +126,8 @@ export const processDictionaryEntries = (
       dict[key] = {
         ...entries[key],
         facet_type: classifyFacetDatatype(entries[key]),
+        maximum: entries[key]?.constraints?.maximum,
+        minimum: entries[key]?.constraints?.maximum,
       };
       return dict;
     },
