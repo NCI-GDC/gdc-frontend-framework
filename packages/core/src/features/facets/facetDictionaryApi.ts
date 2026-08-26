@@ -61,7 +61,9 @@ export const processDictionaryEntries = (
     (dict: Record<string, FacetDefinition>, key: string) => {
       const entry = { ...entries[key] };
       const constraints = entry?.constraints;
-      delete entry["constraints"];
+      if (constraints) {
+        delete entry["constraints"];
+      }
 
       let processedFacet: FacetDefinition = {
         ...entry,
