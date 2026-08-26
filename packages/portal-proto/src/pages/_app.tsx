@@ -47,6 +47,8 @@ if (typeof window !== "undefined" && process.env.NODE_ENV !== "production") {
   axe(React, ReactDOM, 1000);
 }
 
+export const isDevEnvironment = () => process.env.NODE_ENV !== "production";
+
 if (process.env.NEXT_PUBLIC_DD_ENABLED) {
   datadogRum.init({
     applicationId: "3faf9c0a-311f-4935-a596-3347666ef35d",
