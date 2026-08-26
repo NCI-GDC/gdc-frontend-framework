@@ -28,7 +28,7 @@ export interface FacetDefinitionResponse {
   readonly full: string; //  full name of filter (e.g. prepended with case.)
   readonly type: string; // type from mapping
   readonly doc_type: GQLDocType;
-  readonly constraints: {
+  readonly constraints?: {
     readonly minimum?: number;
     readonly maximum?: number;
   };

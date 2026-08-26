@@ -59,12 +59,24 @@ export const processDictionaryEntries = (
 ): Record<string, FacetDefinition> => {
   return Object.keys(entries).reduce(
     (dict: Record<string, FacetDefinition>, key: string) => {
-      dict[key] = {
-        ...entries[key],
+      const entry = { ...entries[key] };
+      const constraints = entry?.constraints;
+      delete entry["constraints"];
+
+      let processedFacet: FacetDefinition = {
+        ...entry,
         facet_type: classifyFacetDatatype(entries[key]),
-        maximum: entries[key]?.constraints?.maximum,
-        minimum: entries[key]?.constraints?.maximum,
       };
+
+      if (constraints?.maximum !== undefined) {
+        processedFacet = { ...processedFacet, maximum: constraints.maximum };
+      }
+
+      if (constraints?.minimum !== undefined) {
+        processedFacet = { ...processedFacet, minimum: constraints.minimum };
+      }
+
+      dict[key] = processedFacet;
       return dict;
     },
     {} as Record<string, FacetDefinition>,
