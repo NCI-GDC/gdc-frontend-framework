@@ -7,6 +7,7 @@ import {
   Demographic,
   FilterSet,
   CaseDefaults,
+  fieldNameToTitle,
 } from "@gff/core";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
@@ -18,7 +19,7 @@ import {
   formatDataForHorizontalTable,
   mapGdcFileToCartFile,
 } from "../files/utils";
-import { allFilesInCart, focusStyles, humanify } from "src/utils";
+import { allFilesInCart, focusStyles } from "src/utils";
 import CategoryTableSummary from "@/components/Summary/CategoryTableSummary";
 import { ClinicalSummary } from "./ClinicalSummary/ClinicalSummary";
 import { ImageSlideCount } from "@/components/ImageSlideCount";
@@ -132,12 +133,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
     if (!!slideCount && imageFiles.length > 0) {
       const images = (
         <div className="flex items-center gap-2">
-          <Tooltip
-            label="View Slide Image"
-            withinPortal={true}
-            withArrow
-            offset={-2}
-          >
+          <Tooltip label="View Slide Image" withArrow offset={-2}>
             <div className="pt-0.5">
               {/* This needs both passHref and legacyBehavior: https://nextjs.org/docs/pages/api-reference/components/link#if-the-child-is-a-functional-component */}
               <Link
@@ -152,7 +148,6 @@ export const CaseView: React.FC<CaseViewProps> = ({
 
           <Tooltip
             label={!isAllImagesFilesInCart ? "Add to Cart" : "Remove from Cart"}
-            withinPortal={true}
             withArrow
           >
             <ActionIcon
@@ -193,7 +188,7 @@ export const CaseView: React.FC<CaseViewProps> = ({
     }
     const headersConfig = Object.keys(caseSummaryObject).map((key) => ({
       field: key,
-      name: humanify({ term: key }),
+      name: fieldNameToTitle(key),
     }));
 
     return formatDataForHorizontalTable(caseSummaryObject, headersConfig);

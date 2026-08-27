@@ -46,7 +46,7 @@ test("single cell RNAseq arguments", () => {
   expect(typeof runpparg).toBe("object");
   expect(runpparg.holder instanceof HTMLElement).toBe(true);
   expect(typeof runpparg.host).toBe("string");
-  expect(runpparg.launchGdcScRNAseq).toEqual(true);
+  expect(runpparg.launchGdcScApp).toEqual(true);
   expect(runpparg.filter0).toEqual(filter);
   expect(runpparg.noheader).toEqual(true);
   expect(runpparg.nobox).toEqual(true);
@@ -55,7 +55,7 @@ test("single cell RNAseq arguments", () => {
   unmount();
 });
 
-test("OncoMatrix demo filter0", () => {
+test("single cell demo filter0", () => {
   isDemoMode = true;
   const { unmount } = render(
     <MantineProvider
@@ -71,7 +71,7 @@ test("OncoMatrix demo filter0", () => {
   );
   expect(runpparg.state?.plots?.[0]).toEqual({
     sample: "2409",
-    chartType: "singleCellPlot",
+    chartType: "sc",
     experimentID: "9f155433-3c2e-4b67-a452-eb32f06c93f7",
     activeTab: 2,
   });

@@ -69,7 +69,7 @@ tags: gdc-data-portal-v2, repository, data-release, acl-validation
   |Access               |controlled                                 |
 * Verify "Experimental Strategy_Genotyping Array_ALC_Validation Count" and "Access_controlled_ALC_Validation Count" are "Equal"
 
-## Create No MATCH Cohort
+## Create No MATCH or PECGS Cohort
 * Navigate to "Cohort" from "Header" "section"
 * Create and save a cohort named "No_MATCH" with these filters
   |tab_name               |facet_name           |selection                      |
@@ -100,7 +100,7 @@ tags: gdc-data-portal-v2, repository, data-release, acl-validation
   |General                |Program              |VAREPOP                        |
   |General                |Program              |WCDT                           |
 
-## No MATCH Cohort - Biospecimen Supplement, Clinical Supplement, Gene Expression Quantification
+## No MATCH or PECGS Cohort - Biospecimen Supplement, Clinical Supplement, Gene Expression Quantification
 * Navigate to "Downloads" from "Header" "section"
 * Verify filters have correct access level
   |facet_name           |selection                          |access_level |
@@ -109,7 +109,7 @@ tags: gdc-data-portal-v2, repository, data-release, acl-validation
   |Data Type            |Clinical Supplement                |open         |
   |Data Type            |Gene Expression Quantification     |open         |
 
-## No MATCH Cohort - Masked Somatic Mutation (Aliquot Ensemble + Tumor-Only)
+## No MATCH or PECGS Cohort - Masked Somatic Mutation (Aliquot Ensemble + Tumor-Only)
 * Perform the following actions on a filter card
   |filter_name      |action               |
   |-----------------|---------------------|
@@ -152,3 +152,16 @@ tags: gdc-data-portal-v2, repository, data-release, acl-validation
   |Available Data         |Access               |controlled                     |
 * Collect Cohort Bar Case Count for comparison
 * Verify "Cohort Bar Case Count" and "Access_controlled_Only_MATCH Count" are "Equal"
+
+## Only PECGS Cohort
+* Navigate to "Cohort" from "Header" "section"
+* Create and save a cohort named "Only_PECGS" with these filters
+  |tab_name               |facet_name           |selection                      |
+  |-----------------------|---------------------|-------------------------------|
+  |General                |Program              |PECGS                          |
+* Navigate to "Downloads" from "Header" "section"
+* Verify filters have correct access level
+  |facet_name           |selection                          |access_level |
+  |---------------------|-----------------------------------|-------------|
+  |Data Type            |Clinical Supplement                |controlled   |
+  |Data Type            |Gene Expression Quantification     |open         |

@@ -12,11 +12,12 @@ import {
   BiospecimenEntityType,
   FileDefaults,
   mapFileData,
+  fieldNameToTitle,
 } from "@gff/core";
 import { addToCart, removeFromCart } from "@/features/cart/updateCart";
 import { get } from "lodash";
 import { entityTypes } from "@/components/BioTree/types";
-import { humanify, fileInCart, ageDisplay } from "src/utils";
+import { fileInCart, ageDisplay } from "src/utils";
 import { DownloadFile } from "@/components/DownloadButtons";
 import { CartIcon, MicroscopeIcon } from "@/utils/icons";
 
@@ -115,7 +116,7 @@ export const formatEntityInfo = (
     filtered.push([
       "Slide Image",
       <div className="flex gap-4" key={selectedSlide[0]?.file_id}>
-        <Tooltip label="View Slide Image" withinPortal={true} withArrow>
+        <Tooltip label="View Slide Image" withArrow>
           <ActionIcon
             data-testid="button-view-slide-image-biospecimen"
             variant="outline"
@@ -133,7 +134,6 @@ export const formatEntityInfo = (
 
         <Tooltip
           label={isFileInCart ? "Remove from Cart" : "Add to Cart"}
-          withinPortal={true}
           withArrow
         >
           <ActionIcon
@@ -165,7 +165,7 @@ export const formatEntityInfo = (
           </ActionIcon>
         </Tooltip>
 
-        <Tooltip label="Download" withinPortal={true} withArrow>
+        <Tooltip label="Download" withArrow>
           <div data-testid="button-download-slide-biospecimen">
             <DownloadFile
               file={mapFileData(selectedSlide)[0]}
@@ -180,7 +180,7 @@ export const formatEntityInfo = (
   const headersConfig = filtered.map(([key]) => {
     const tempHeaderConfig: { field: string; name: string; modifier?: any } = {
       field: key,
-      name: humanify({ term: key }),
+      name: fieldNameToTitle(key),
     };
     //Format day fields
     if (["days_to_sample_procurement", "days_to_collection"].includes(key)) {

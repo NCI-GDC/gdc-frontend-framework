@@ -128,7 +128,6 @@ const CDaveHistogram: React.FC<HistogramProps> = ({
                 <Tooltip
                   label="Download image or data"
                   withArrow
-                  withinPortal
                   position="left"
                 >
                   <ActionIcon

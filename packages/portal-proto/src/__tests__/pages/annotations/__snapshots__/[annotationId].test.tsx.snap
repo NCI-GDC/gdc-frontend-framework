@@ -20,7 +20,7 @@ exports[`matches snapshot 1`] = `
     class="flex flex-col min-h-screen min-w-full bg-base-max"
   >
     <header
-      class="flex-none bg-base-max sticky top-0 z-300 shadow-lg"
+      class="flex-none bg-base-max sticky top-0 shadow-lg z-header"
       id="global-header"
     >
       <div
@@ -562,36 +562,36 @@ exports[`matches snapshot 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-y-offset: 5dvh; --mb-z-index: 71;"
         />
       </div>
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 400;"
+          style="--modal-size: 60%; --modal-y-offset: 5dvh; --mb-z-index: 70;"
         >
           <div
             class="mantine-Modal-overlay m_9814e45f mantine-Overlay-root"
             data-fixed="true"
-            style="--overlay-z-index: 400;"
+            style="--overlay-z-index: 70;"
           />
           <div
             class="m_60c222c7 m_1f958f16 mantine-Modal-inner"
@@ -701,7 +701,7 @@ exports[`matches snapshot 1`] = `
       <div>
         <div
           class="m_9df02822 mantine-Modal-root"
-          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 300; --mb-padding: 0rem;"
+          style="--modal-size: calc(100vw - 100px); --modal-y-offset: 5dvh; --mb-z-index: 200; --mb-padding: 0rem;"
         />
       </div>
     </header>
@@ -734,13 +734,13 @@ exports[`matches snapshot 1`] = `
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <div>
       <div
         class="m_9df02822 mantine-Modal-root"
-        style="--modal-y-offset: 5dvh; --mb-z-index: 500;"
+        style="--modal-y-offset: 5dvh; --mb-z-index: 200;"
       />
     </div>
     <style

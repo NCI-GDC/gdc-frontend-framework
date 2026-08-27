@@ -1,5 +1,28 @@
-import { Button, createTheme, Modal, Switch } from "@mantine/core";
-import { defaultThemeColors, nciBlue, nciGray } from "./colors";
+import {
+  Button,
+  createTheme,
+  Modal,
+  Switch,
+  CSSVariablesResolver,
+} from "@mantine/core";
+import { defaultThemeColors, nciBlue, nciGray, utility } from "./colors";
+
+import {
+  TOOLTIP_Z_INDEX,
+  MENU_Z_INDEX,
+  DRAWER_Z_INDEX,
+  MODAL_Z_INDEX,
+  LOADING_OVERLAY_Z_INDEX,
+  POPOVER_Z_INDEX,
+} from "./zIndex";
+
+export const cssVariablesResolver: CSSVariablesResolver = (_theme) => ({
+  variables: {
+    "--mantine-color-error": utility.error,
+  },
+  dark: {},
+  light: {},
+});
 
 const theme = createTheme({
   // use V2 font in MantineProvider
@@ -63,8 +86,9 @@ const theme = createTheme({
         events: {
           focused: true,
         },
-        withinPortal: true,
+        withinPortal: false,
         position: "bottom",
+        zIndex: TOOLTIP_Z_INDEX,
       },
     },
     Portal: {
@@ -74,7 +98,7 @@ const theme = createTheme({
     },
     Menu: {
       defaultProps: {
-        zIndex: 1,
+        zIndex: MENU_Z_INDEX,
         classNames: {
           item: "text-base-min disabled:opacity-50 hover:bg-accent-lightest hover:text-accent-contrast-lightest",
         },
@@ -90,7 +114,7 @@ const theme = createTheme({
     },
     Modal: Modal.extend({
       defaultProps: {
-        zIndex: 400,
+        zIndex: MODAL_Z_INDEX,
         radius: "md",
         closeButtonProps: { "aria-label": "Close Modal" },
         styles: {
@@ -123,7 +147,7 @@ const theme = createTheme({
     Drawer: {
       defaultProps: {
         target: "#__next",
-        zIndex: 1000,
+        zIndex: DRAWER_Z_INDEX,
       },
     },
     Button: Button.extend({
@@ -156,6 +180,17 @@ const theme = createTheme({
         withThumbIndicator: false,
       },
     }),
+    LoadingOverlay: {
+      defaultProps: {
+        zIndex: LOADING_OVERLAY_Z_INDEX,
+      },
+    },
+    Popover: {
+      defaultProps: {
+        withinPortal: false,
+        zIndex: POPOVER_Z_INDEX,
+      },
+    },
   },
 });
 

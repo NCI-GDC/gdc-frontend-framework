@@ -47,7 +47,6 @@ export const TabbedTables = ({
                 >
                   <Tooltip
                     label={data?.submitter_id ?? "No follow-up ID available"}
-                    withinPortal={true}
                   >
                     <div>
                       {data?.submitter_id

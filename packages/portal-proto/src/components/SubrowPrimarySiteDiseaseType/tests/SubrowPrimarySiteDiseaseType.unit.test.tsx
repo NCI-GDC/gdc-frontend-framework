@@ -3,16 +3,6 @@ import SubrowPrimarySiteDiseaseType from "../SubrowPrimarySiteDiseaseType";
 import { Row } from "@tanstack/react-table";
 import { render } from "test-utils";
 
-jest.mock("react-use", () => ({
-  useMeasure: jest.fn(() => [
-    jest.fn(),
-    {
-      height: 100,
-      width: 100,
-    },
-  ]),
-}));
-
 jest.mock("@react-spring/web", () => ({
   useSpring: jest.fn().mockReturnValue({}),
   animated: {

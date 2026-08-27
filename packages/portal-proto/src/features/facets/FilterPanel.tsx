@@ -120,7 +120,6 @@ const FilterPanel = ({
     >
       <Tooltip
         withArrow
-        withinPortal
         offset={-2}
         label={filtersExpanded ? "Hide Filters Panel" : "Show Filters Panel"}
       >

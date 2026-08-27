@@ -93,7 +93,6 @@ export interface PaginationOptions {
  * @property expanded - optional state variable to denote expand state of a row
  * @property setExpanded - optional handle for onExpandedChange
  * @property getRowId - optional function is used to derive a unique ID for any given row
- * @property baseZIndex - optional used to properly set z-index of table elements (e.g. tooltips)
  * @property customDataTestID - optional locator for test automation
  * @property customBreakpoint - custom breakpoint for header responsive behavior
  * @category Table
@@ -254,10 +253,6 @@ export interface TableProps<TData> {
    * optional function is used to derive a unique ID for any given row
    */
   getRowId?: (originalRow: TData, index: number, parent?: Row<TData>) => string;
-  /**
-   * optional used to properly set z-index of table elements (e.g. tooltips)
-   */
-  baseZIndex?: number;
   customDataTestID?: string;
   customAriaLabel?: string;
   customBreakpoint?: number;

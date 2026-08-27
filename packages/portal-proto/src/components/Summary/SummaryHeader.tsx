@@ -87,8 +87,8 @@ export const SummaryHeader = ({
       "bg-primary-vivid py-4 px-4 w-full flex flex-col shadow-lg gap-4 transition-transform duration-500 ease-in-out";
 
     const positionClasses = isModal
-      ? "sticky top-0 rounded-t-sm z-320"
-      : "sticky z-10";
+      ? "sticky top-0 rounded-t-sm z-sticky-header"
+      : "sticky z-sticky-header";
 
     const transformClasses =
       !isModal && isSmallScreenSize && isScrollingDown

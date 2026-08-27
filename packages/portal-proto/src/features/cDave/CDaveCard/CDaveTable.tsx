@@ -64,9 +64,9 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
         data-testid="table-card"
         className="border-separate border-spacing-0 w-full text-left text-base-contrast-min mb-2 table-auto"
       >
-        <thead className="bg-base-max font-heading text-sm text-base-contrast-max z-10">
+        <thead className="bg-base-max font-heading text-sm text-base-contrast-max z-table-header">
           <tr>
-            <th className="bg-base-max sticky top-0 border-b-4 border-max z-10 border-t-1 pl-2">
+            <th className="bg-base-max sticky top-0 border-b-4 border-max z-table-header border-t-1 pl-2">
               <Checkbox
                 color="accent"
                 size="xs"
@@ -79,22 +79,18 @@ const CDaveTable: React.FC<CDaveTableProps> = ({
               />
             </th>
             {survival && (
-              <th className="pl-2 bg-base-max sticky top-0 border-b-4 border-max border-t-1 z-10">
-                <Tooltip
-                  label="Change the survival plot display"
-                  withArrow
-                  withinPortal={true}
-                >
+              <th className="pl-2 bg-base-max sticky top-0 border-b-4 border-max border-t-1 z-table-header">
+                <Tooltip label="Change the survival plot display" withArrow>
                   <span>Survival</span>
                 </Tooltip>
               </th>
             )}
-            <th className="pl-2 bg-base-max sticky top-0 border-b-4 border-max border-t-1 z-10">
+            <th className="pl-2 bg-base-max sticky top-0 border-b-4 border-max border-t-1 z-table-header">
               {fieldName}
               {displayDataDimension && ` (${dataDimension})`}
               {hasCustomBins && " (User Defined Bins Applied)"}
             </th>
-            <th className="text-right pr-4 bg-base-max sticky top-0 border-b-4 border-t-1 border-max z-10">
+            <th className="text-right pr-4 bg-base-max sticky top-0 border-b-4 border-t-1 border-max z-table-header">
               # Cases
             </th>
           </tr>

@@ -34,7 +34,7 @@ import type {
   LinkComponentType,
 } from "@gff/portal-components";
 import { useSetActiveCohort } from "@/features/cohortBuilder/CohortManager/cohortActionHooks";
-import theme from "src/styles/mantineTheme";
+import theme, { cssVariablesResolver } from "src/styles/mantineTheme";
 
 if (process.env.NODE_ENV !== "test") ReactModal.setAppElement("#__next");
 
@@ -46,6 +46,8 @@ if (typeof window !== "undefined" && process.env.NODE_ENV !== "production") {
   const axe = require("@axe-core/react");
   axe(React, ReactDOM, 1000);
 }
+
+export const isDevEnvironment = () => process.env.NODE_ENV !== "production";
 
 if (process.env.NEXT_PUBLIC_DD_ENABLED) {
   datadogRum.init({
@@ -93,7 +95,10 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
 
   return (
     <CoreProvider>
-      <MantineProvider theme={theme}>
+      <MantineProvider
+        theme={theme}
+        cssVariablesResolver={cssVariablesResolver}
+      >
         <div
           className={`${
             localStorageTheme !== "default" ? localStorageTheme : ""

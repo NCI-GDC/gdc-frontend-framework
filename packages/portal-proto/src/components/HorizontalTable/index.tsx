@@ -90,7 +90,7 @@ export const HorizontalTable = forwardRef<
                 >
                   {obj.headerName}
                 </th>
-                <td className="w-3/5 border-1 border-base-lighter px-2 font-content-noto font-normal">
+                <td className="w-3/5 border-1 border-base-lighter px-2 font-content-noto font-normal relative">
                   <div className="flex flex-wrap gap-2">
                     {obj.values.map((value, index) =>
                       renderValue(value, obj.headerName, index),

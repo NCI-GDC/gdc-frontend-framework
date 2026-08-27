@@ -1,11 +1,10 @@
 import React, { JSX, useMemo } from "react";
 import { SummaryHeader } from "@/components/Summary/SummaryHeader";
 import { SummaryCard } from "@/components/Summary/SummaryCard";
-import { useSsmsSummaryQuery } from "@gff/core";
+import { fieldNameToTitle, useSsmsSummaryQuery } from "@gff/core";
 import { Loader } from "@mantine/core";
 import { HorizontalTableProps } from "@/components/HorizontalTable";
 import { formatDataForHorizontalTable } from "../files/utils";
-import { humanify } from "src/utils";
 import { CollapsibleList } from "@/components/CollapsibleList";
 import { AnchorLink } from "@/components/AnchorLink";
 import SSMPlot from "../charts/SSMPlot";
@@ -75,7 +74,7 @@ const formatDataForSummary = (
 
   const headersConfig = Object.keys(summaryObj).map((key) => ({
     field: key,
-    name: humanify({ term: key }),
+    name: fieldNameToTitle(key),
   }));
 
   return formatDataForHorizontalTable(summaryObj, headersConfig);

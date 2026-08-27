@@ -1,7 +1,7 @@
 import { Paper } from "@mantine/core";
 import saveAs from "file-saver";
-import { Bucket } from "@gff/core";
-import { calculatePercentageAsNumber, humanify } from "src/utils";
+import { Bucket, fieldNameToTitle } from "@gff/core";
+import { calculatePercentageAsNumber } from "src/utils";
 import BarChart from "../../charts/BarChart";
 import FunctionButton from "@/components/FunctionButton";
 import PValue from "../PValue";
@@ -24,7 +24,7 @@ export const FacetCard: React.FC<FacetCardProps> = ({
   cohorts,
 }: FacetCardProps) => {
   const divId = `cohort_comparison_bar_chart_${field}`;
-  const fieldLabel = humanify({ term: field });
+  const fieldLabel = fieldNameToTitle(field);
 
   let formattedData = useDeepCompareMemo(
     () =>

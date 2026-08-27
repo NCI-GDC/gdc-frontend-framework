@@ -5,3 +5,4 @@ Data Release,DNA Change,Mutation UUID,Type,Reference Genome Assembly,Functional 
 41,chr3:g.47912125T>A,0fa0aaf4-92d5-5e28-9921-dbb7b37f2e19,Single base substitution,GRCh38,ENST00000426837,--,--,--
 43,chr10:g.86923427C>G,617ff138-c781-597c-8713-e23edbfcb770,Single base substitution,GRCh38,ENST00000372037,--,--,--
 44,chr18:g.44951948G>A,978df4f6-ba75-5593-b067-c1ece069947d,Single base substitution,GRCh38,ENST00000677130,rs267607040,COSM1234973,351
+46,chr3:g.169381366C>T,0aadf0d7-998e-55fa-a81f-dcbb2570cc61,Single base substitution,GRCh38,ENST00000651503,rs1474588403,--,--

@@ -37,7 +37,9 @@
     "src/components/ItemTypes.js",
     ".next/types/**/*.ts",
     "src/styles/colors.js",
-    "global.d.ts"
+    "src/styles/zIndex.js",
+    "global.d.ts",
+    "src/styles/zIndex.js"
   ],
   "exclude": [
     "node_modules",

@@ -1,7 +1,5 @@
 import {
-  trimFirstFieldNameToTitle,
   processDictionaryEntries,
-  fieldNameToTitle,
   classifyFacetDatatype,
 } from "./facetDictionaryApi";
 
@@ -119,47 +117,6 @@ describe("test facet dictionary api functions", () => {
       TestFacetDictionary as Record<string, FacetDefinition>,
     );
     expect(results).toEqual(expected);
-  });
-});
-
-describe("facet label utils", () => {
-  test("should return the name of the field", () => {
-    const name = fieldNameToTitle("analysis.input_files.experimental_strategy");
-    expect(name).toEqual("Experimental Strategy");
-  });
-
-  test("should return two parts of the field", () => {
-    const name = fieldNameToTitle(
-      "analysis.input_files.experimental_strategy",
-      2,
-    );
-    expect(name).toEqual("Input Files Experimental Strategy");
-  });
-
-  test("should return a Project special case", () => {
-    const name = fieldNameToTitle("cases.project.project_id");
-    expect(name).toEqual("Project");
-  });
-
-  test("should return Analysis", () => {
-    const name = fieldNameToTitle("analysis", 2);
-    expect(name).toEqual("Analysis");
-  });
-
-  test("should create a shortened facet title", () => {
-    const results = trimFirstFieldNameToTitle(
-      "demographic.age_is_obfuscated",
-      true,
-    );
-    expect(results).toEqual("Age is Obfuscated");
-  });
-
-  test("should create a title minus cases", () => {
-    const results = trimFirstFieldNameToTitle(
-      "cases.demographic.cause_of_death",
-      true,
-    );
-    expect(results).toEqual("Demographic Cause of Death");
   });
 });
 

@@ -44,7 +44,7 @@ export const UserFlowVariedPages = ({
   return (
     <div className="flex flex-col min-h-screen min-w-full bg-base-max">
       <header
-        className="flex-none bg-base-max sticky top-0 z-300 shadow-lg"
+        className="flex-none bg-base-max sticky top-0 shadow-lg z-header"
         ref={headerRef}
         id="global-header"
       >
@@ -56,7 +56,7 @@ export const UserFlowVariedPages = ({
       <ClearStoreErrorBoundary>
         <>
           <aside
-            className={`${isContextBarSticky ? `sticky z-299 shadow-lg` : ""}`}
+            className={`${isContextBarSticky ? `sticky z-sticky-header shadow-lg` : ""}`}
             style={{
               top: `${isContextBarSticky && `${Math.round(headerHeight)}px`}`, // switching this to tailwind does not work
             }}
@@ -78,7 +78,6 @@ export const UserFlowVariedPages = ({
             opened={modal === Modals.SaveSetErrorModal}
             onClose={() => dispatch(hideModal())}
             title="Save Set Error"
-            zIndex={500}
           >
             <p className="py-2 px-4">There was a problem saving the set.</p>
             <ModalButtonContainer data-testid="modal-button-container">
@@ -92,7 +91,6 @@ export const UserFlowVariedPages = ({
             opened={modal === Modals.SaveCohortErrorModal}
             onClose={() => dispatch(hideModal())}
             title="Save Cohort Error"
-            zIndex={500}
           >
             <p className="py-2 px-4">There was a problem saving the cohort.</p>
             <ModalButtonContainer data-testid="modal-button-container">

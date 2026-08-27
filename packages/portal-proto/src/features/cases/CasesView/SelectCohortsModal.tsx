@@ -215,7 +215,6 @@ export const SelectCohortsModal = ({
           body: "flex flex-col justify-between min-h-[300px]",
         }}
         size="xl"
-        zIndex={400}
       >
         <SaveCohortModal
           onClose={() => {

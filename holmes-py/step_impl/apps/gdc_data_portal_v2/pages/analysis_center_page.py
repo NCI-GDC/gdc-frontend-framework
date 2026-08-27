@@ -36,6 +36,7 @@ class AnalysisCenterLocators:
     )
     MUTATION_FREQUENCY_WAIT_FOR_ELEMENT = "[data-testid='button-mutations-tab']"
     CLINICAL_DATA_ANALYSIS_WAIT_FOR_ELEMENT = "[data-testid='Sex At Birth-card-card']"
+    ST_JUDE_LOADING_SPINNER = "div[class='sjpp-spinner'] >> nth=0"
 
 
 class AnalysisCenterPage(BasePage):
@@ -181,6 +182,20 @@ class AnalysisCenterPage(BasePage):
                 self.wait_for_loading_spinner_to_detatch()
             except:
                 self.wait_for_loading_spinner_to_detatch()
+        if (page_to_load == "gene expression clustering" or page_to_load == "gene expression clustering demo"
+            or page_to_load == "oncomatrix" or page_to_load == "oncomatrix demo"):
+            # These pages can take a VERY long time to load
+            st_jude_loading_spinner_locator = AnalysisCenterLocators.ST_JUDE_LOADING_SPINNER
+            try:
+                self.wait_until_locator_is_visible(st_jude_loading_spinner_locator, 15000)
+                self.wait_until_locator_is_detached(st_jude_loading_spinner_locator, 240000)
+                self.wait_until_locator_is_detached(st_jude_loading_spinner_locator, 240000)
+            except:
+                self.wait_until_locator_is_detached(st_jude_loading_spinner_locator, 240000)
+                self.wait_until_locator_is_detached(st_jude_loading_spinner_locator, 240000)
+
+
+
         self.wait_for_loading_spinner_to_detatch()
         self.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
         self.wait_for_loading_spinner_table_to_detatch()

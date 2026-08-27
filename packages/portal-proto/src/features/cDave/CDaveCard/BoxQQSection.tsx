@@ -226,12 +226,7 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
           onClose={close}
         >
           <Menu.Target>
-            <Tooltip
-              label="Download image or data"
-              withArrow
-              withinPortal
-              position="left"
-            >
+            <Tooltip label="Download image or data" withArrow position="left">
               <ActionIcon
                 data-testid="button-qq-box-download"
                 variant="outline"
@@ -352,12 +347,12 @@ const BoxQQSection: React.FC<BoxQQPlotProps> = ({
           data-testid="table-card"
           className="border-separate border-spacing-0 w-full text-left text-base-contrast-min mb-2 table-auto"
         >
-          <thead className="bg-base-max font-heading text-sm text-base-contrast-max z-10">
+          <thead className="bg-base-max font-heading text-sm text-base-contrast-max z-table-header">
             <tr>
-              <th className="bg-base-max sticky top-0 border-b-4 border-max z-10 border-t-1 pl-1">
+              <th className="bg-base-max sticky top-0 border-b-4 border-max z-table-header border-t-1 pl-1">
                 Statistics
               </th>
-              <th className="bg-base-max sticky top-0 border-b-4 border-max z-10 border-t-1">
+              <th className="bg-base-max sticky top-0 border-b-4 border-max z-table-header border-t-1">
                 {dataDimension || "Quantities"}
               </th>
             </tr>

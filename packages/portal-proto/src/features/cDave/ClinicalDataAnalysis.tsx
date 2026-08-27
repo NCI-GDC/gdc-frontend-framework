@@ -78,7 +78,6 @@ const ClinicalDataAnalysis: React.FC = () => {
         loaderProps={{ size: "xl", color: "primary" }}
         visible={isFetching}
         data-testid="please_wait_spinner"
-        zIndex={0}
       />
     </div>
   ) : (

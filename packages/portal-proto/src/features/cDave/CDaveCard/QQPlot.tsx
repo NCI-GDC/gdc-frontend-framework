@@ -97,6 +97,7 @@ const QQPlot: React.FC<QQPlotProps> = ({
         text: label,
         textAlign: "center",
         left: (width + 50) / 2,
+        top: 0,
         textStyle: {
           fontWeight: "normal",
           fontSize: 16,
@@ -113,7 +114,7 @@ const QQPlot: React.FC<QQPlotProps> = ({
         },
         nameLocation: "middle",
         nameTextStyle: {
-          padding: 8,
+          padding: 16,
           fontSize: 12,
           color: "black",
           fontFamily: "Noto Sans",

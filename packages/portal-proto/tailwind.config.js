@@ -1,6 +1,11 @@
 //@ts-check
 /* eslint-disable @typescript-eslint/no-var-requires */
 const {
+  TABLE_HEADER_Z_INDEX,
+  HEADER_Z_INDEX,
+  STICKY_HEADER_Z_INDEX,
+} = require("./src/styles/zIndex");
+const {
   nciGray,
   nciBlue,
   nciRed,
@@ -201,6 +206,11 @@ module.exports = {
       },
       lineHeight: {
         0: "0px",
+      },
+      zIndex: {
+        "table-header": TABLE_HEADER_Z_INDEX,
+        header: HEADER_Z_INDEX,
+        "sticky-header": STICKY_HEADER_Z_INDEX,
       },
     },
   },

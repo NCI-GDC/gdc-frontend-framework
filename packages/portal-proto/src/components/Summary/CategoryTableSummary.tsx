@@ -29,7 +29,6 @@ function CategoryTableSummary<TData>({
             label={tooltip}
             events={{ hover: true, focus: true, touch: false }}
             withArrow
-            withinPortal={false}
           >
             <span className="flex items-center px-1.5">
               <InfoIcon

@@ -46,6 +46,7 @@ import { ComparativeSurvival } from "@/features/genomic/types";
 import TotalItems from "@/components/Table/TotalItem";
 import { SET_COUNT_LIMIT } from "@/components/Modals/SetModals/constants";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionAsSetModal";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 
 const TABLE_SORT = [
   {
@@ -71,7 +72,6 @@ export interface SMTableContainerProps {
   toggledSsms?: Array<string>;
   geneSymbol?: string;
   tableTitle?: string;
-  isDemoMode?: boolean;
   /*
    * filter about case id sent from case summary for SMT
    */
@@ -113,7 +113,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   caseFilter = undefined,
   handleSsmToggled = undefined,
   toggledSsms = undefined,
-  isDemoMode = false,
   isModal = false,
   tableTitle = undefined,
   searchTermsForGene,
@@ -133,6 +132,7 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
     setDownloadMutationsFrequencyTSVActive,
   ] = useState(false);
 
+  const isDemoMode = useIsDemoApp();
   const dispatch = useCoreDispatch();
   const { setEntityMetadata } = useContext(SummaryModalContext);
 
@@ -574,7 +574,6 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
             expanded={expanded}
             setExpanded={handleExpand}
             getRowId={getRowId}
-            baseZIndex={isModal ? 300 : 0}
           />
         </>
       )}

@@ -108,10 +108,7 @@ tags: gdc-data-portal-v2, regression, mutation-frequency, is-cancer-census-off
   |button_label                         |row  |column |
   |-------------------------------------|-----|-------|
   |TJP3 Number of Mutations             |1    |10     |
-* Select value from table by row and column
-  |row   |column|
-  |------|------|
-  |1     |10    |
+* Search mutations for Gene symbol "TJP3"
 * Collect table "Most Frequent Somatic Mutations" Item Count for comparison
 * Verify "Most Frequent Somatic Mutations Item Count" and "TJP3 Number of Mutations" are "Equal"
 

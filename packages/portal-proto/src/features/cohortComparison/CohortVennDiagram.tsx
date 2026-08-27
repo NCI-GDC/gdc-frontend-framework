@@ -82,7 +82,7 @@ const CohortVennDiagram: React.FC<CohortVennDiagramProps> = ({
 
   return (
     <div className="relative max-w-[400px] 2xl:max-w-[600px] w-full mx-auto">
-      <LoadingOverlay visible={isLoading} zIndex={1} />
+      <LoadingOverlay visible={isLoading} />
       <VennDiagram
         chartData={chartData}
         labels={LABELS}

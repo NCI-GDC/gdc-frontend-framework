@@ -9,7 +9,7 @@ import {
 } from "@mantine/core";
 import { Column, ColumnOrderState, Table } from "@tanstack/react-table";
 import { isEqual } from "lodash";
-import { humanify } from "@/utils/index";
+import { fieldNameToTitle } from "@gff/core";
 import { NO_COLUMN_ORDERING_IDS } from "./utils";
 import {
   DndContext,
@@ -88,8 +88,6 @@ function ColumnOrdering<TData>({
       middlewares={{ shift: false, flip: false }}
       onChange={setShowColumnMenu}
       offset={0}
-      zIndex={400}
-      withinPortal={true}
     >
       <Tooltip label="Customize Columns" disabled={showColumnMenu}>
         <Menu.Target>
@@ -122,11 +120,7 @@ function ColumnOrdering<TData>({
             Customize Columns
           </span>
 
-          <Tooltip
-            label="Restore defaults"
-            disabled={isBackToDefaults}
-            zIndex={400}
-          >
+          <Tooltip label="Restore defaults" disabled={isBackToDefaults}>
             <span>
               <ActionIcon
                 onClick={handleColumnOrderingReset}
@@ -186,7 +180,7 @@ function List<TData>({
       {columns
         .filter((column) => {
           if (!NO_COLUMN_ORDERING_IDS.includes(column.id)) {
-            return humanify({ term: column.id })
+            return fieldNameToTitle(column.id)
               .toLowerCase()
               .includes(searchValue.toLowerCase());
           } else {
@@ -242,7 +236,7 @@ function DraggableColumnItem<TData>({
           label={
             typeof column?.columnDef?.header === "string"
               ? column.columnDef.header
-              : humanify({ term: column.id })
+              : fieldNameToTitle(column.id)
           }
           classNames={{
             root: "w-full",

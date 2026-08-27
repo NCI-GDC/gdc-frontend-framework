@@ -155,7 +155,6 @@ const EnumBarChartTooltip: React.FC<EnumBarChartTooltipProps> = ({
           }
           withArrow
           opened
-          withinPortal
           arrowSize={10}
           style={{
             fontSize: 12,

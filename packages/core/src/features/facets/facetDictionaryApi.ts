@@ -2,71 +2,6 @@ import { FacetDefinition, FacetTypes } from "./types";
 import SupplementalFacetDefinitions from "./data/facet_additional_range_data.json";
 import { some, includes } from "lodash";
 
-const fieldNameOverrides: Record<string, string> = {
-  "cases.project.program.name": "Program",
-  "cases.project.project_id": "Project",
-  "genes.gene_id": "Mutated Gene",
-};
-
-const COMMON_PREPOSITIONS = [
-  "a",
-  "an",
-  "and",
-  "at",
-  "but",
-  "by",
-  "for",
-  "in",
-  "is",
-  "nor",
-  "of",
-  "on",
-  "or",
-  "out",
-  "so",
-  "the",
-  "to",
-  "up",
-  "yet",
-];
-
-const capitalize = (s: string): string =>
-  s.length > 0 ? s[0].toUpperCase() + s.slice(1) : "";
-
-export const trimFirstFieldNameToTitle = (
-  fieldName: string,
-  trim = false,
-): string => {
-  if (trim) {
-    const source = fieldName.slice(fieldName.indexOf(".") + 1);
-    return fieldNameToTitle(source ? source : fieldName, 0);
-  }
-  return fieldNameToTitle(fieldName);
-};
-
-/**
- * Converts a GDC filter name to a title,
- * For example files.input.experimental_strategy will get converted to Experimental Strategy
- * if sections == 2 then the output would be Input Experimental Strategy
- * @param fieldName - input filter expected to be: string.firstpart_secondpart
- * @param sections - number of "sections" string.string.string to got back from the end of the field
- */
-
-export const fieldNameToTitle = (fieldName: string, sections = 1): string => {
-  if (fieldName in fieldNameOverrides) {
-    return fieldNameOverrides[fieldName];
-  }
-  return fieldName
-    .split(".")
-    .slice(-sections)
-    .map((s) => s.split("_"))
-    .flat()
-    .map((word) =>
-      COMMON_PREPOSITIONS.includes(word) ? word : capitalize(word),
-    )
-    .join(" ");
-};
-
 export const classifyFacetDatatype = (f: FacetDefinition): FacetTypes => {
   const fieldName = f.field;
   // NOTE: put exceptional cases first
@@ -77,6 +12,7 @@ export const classifyFacetDatatype = (f: FacetDefinition): FacetTypes => {
   if (fieldName.includes("figo")) return "enum";
   if (fieldName.includes("age_is_")) return "enum";
   if (fieldName.includes("age_range")) return "enum";
+  if (fieldName.includes("birth_range")) return "enum";
 
   if (fieldName.includes("datetime")) return "datetime";
   if (fieldName.includes("percent_range")) return "enum";

@@ -1,6 +1,7 @@
 import React, { JSX } from "react";
 import { Text } from "@mantine/core";
 import { BaseModal } from "./BaseModal";
+import { MODAL_Z_INDEX } from "src/styles/zIndex";
 
 export const NoAccessToProjectModal = ({
   openModal,
@@ -21,6 +22,7 @@ export const NoAccessToProjectModal = ({
           dataTestId: "button-no-access-to-project-access-alert-close",
         },
       ]}
+      zIndex={MODAL_Z_INDEX + 1}
     >
       <div className="border-y border-y-base-darker p-4">
         <Text size="sm"> You don&apos;t have access to this file.</Text>

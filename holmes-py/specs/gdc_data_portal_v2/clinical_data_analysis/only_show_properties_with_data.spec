@@ -13,7 +13,7 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
 * Create and save a cohort named "cdave_show_properties_with_data" with these filters
   |tab_name               |facet_name           |selection                      |
   |-----------------------|---------------------|-------------------------------|
-  |Exposure               |Alcohol History      |unknown                        |
+  |Biospecimen            |Analyte Type         |cfdna                          |
 
 ## Navigate to Clinical Data Analysis
 * Navigate to "Analysis" from "Header" "section"
@@ -33,8 +33,9 @@ tags: gdc-data-portal-v2, clinical-data-analysis, regression
   |field_switch_selector    |
   |-------------------------|
   |Primary Diagnosis        |
-  |Alcohol History          |
+  |Ethnicity                |
 * Is text ID "No Properties With Data Treatment" present on the page
+* Is text ID "No Properties With Data Exposure" present on the page
 * Is text ID "No Properties With Data Other Clinical Attribute" present on the page
 
 ## Un-Select 'Only Show Properties With Data' Checkbox

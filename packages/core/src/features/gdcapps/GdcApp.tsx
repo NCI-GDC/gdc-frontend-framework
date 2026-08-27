@@ -1,25 +1,10 @@
-import React, { Context, ComponentType, useEffect } from "react";
+import React, { ComponentType, useEffect } from "react";
 import { coreStore } from "../../store";
 import { v5 as uuidv5 } from "uuid";
 import { addGdcAppMetadata, EntityType } from "./gdcAppsSlice";
 import { configureStore, UnknownAction } from "@reduxjs/toolkit";
 import { Store, Action } from "redux";
-import {
-  Provider,
-  ReactReduxContextValue,
-  TypedUseSelectorHook,
-  createSelectorHook,
-  createDispatchHook,
-  createStoreHook,
-} from "react-redux";
-import {
-  FLUSH,
-  REHYDRATE,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
-} from "redux-persist";
+import { Provider, ReactReduxContextValue } from "react-redux";
 import { registerGdcApp } from "./gdcAppRegistry";
 import { DataStatus } from "../../dataAccess";
 import { CookiesProvider } from "react-cookie";
@@ -108,69 +93,12 @@ export interface UseAppDataHook<P, C, T> {
   (params: P, config?: C): UseAppDataResponse<T>;
 }
 
-export interface CreateGDCAppStore {
-  readonly name: string;
-  readonly version: string;
-  readonly reducers: (...args: any) => any;
-}
-
 export const createAppID = (name: string, version: string): string =>
   uuidv5(`${name}::${version}`, GDC_APP_NAMESPACE);
 
 // ----------------------------------------------------------------------------------------
 // Apps with Local Storage
 //
-
-// Define the return type interface
-export interface AppStoreReturn {
-  id: string;
-  useAppSelector: TypedUseSelectorHook<any>; // TODO replace any
-  useAppDispatch: () => any; // TODO replace any
-  AppStore: Store<any>;
-  AppContext: Context<ReactReduxContextValue<UnknownAction, any> | null>;
-  useAppStore: () => Store<any, UnknownAction>;
-}
-
-export const createAppStore = (options: CreateGDCAppStore): AppStoreReturn => {
-  const { name, version, reducers } = options;
-  const nameVersion = `${name}::${version}`;
-  const id = createAppID(name, version);
-
-  const store = configureStore({
-    reducer: reducers,
-    devTools: {
-      name: `${nameVersion}::${id}`,
-    },
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware({
-        serializableCheck: {
-          ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-        },
-      }),
-  });
-  type AppState = ReturnType<typeof reducers>;
-  const context = React.createContext(
-    undefined as unknown as ReactReduxContextValue<
-      AppState,
-      UnknownAction
-    > | null,
-  );
-
-  type AppDispatch = typeof store.dispatch;
-  const useAppSelector: TypedUseSelectorHook<AppState> =
-    createSelectorHook(context);
-  const useAppDispatch: () => AppDispatch = createDispatchHook(context);
-  const useAppStore = createStoreHook(context);
-
-  return {
-    id: id,
-    AppStore: store,
-    AppContext: context,
-    useAppSelector: useAppSelector,
-    useAppDispatch: useAppDispatch,
-    useAppStore: useAppStore,
-  };
-};
 
 export interface CreateGdcAppWithOwnStoreOptions<
   A extends Action = UnknownAction,
@@ -182,7 +110,7 @@ export interface CreateGdcAppWithOwnStoreOptions<
   readonly version: string; // version of the app, should be unique
   readonly requiredEntityTypes: ReadonlyArray<EntityType>;
   readonly store: Store<S, A>; // the redux-store for this app
-  readonly context: any;
+  readonly context: React.Context<ReactReduxContextValue<S, A> | null>;
 }
 
 export const createGdcAppWithOwnStore = <

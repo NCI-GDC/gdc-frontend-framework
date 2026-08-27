@@ -12,7 +12,9 @@ class MutationFrequencyLocators:
     BUTTON_TABLE_DOWNLOAD = (
         lambda button_name: f'[data-testid="button-{button_name}-mutation-frequency"]'
     )
-
+    BUTTON_MUTATIONS_FILTER_TABLE = (
+        lambda gene_symbol: f'[aria-label="Search the mutations table for {gene_symbol}"]'
+    )
     MODAL_ADD_CUSTOM_FILTER = 'label:has-text("Type or copy-and-paste a list of")'
 
 
@@ -29,11 +31,14 @@ class MutationFrequencyPage(BasePage):
         tab_name = tab_name.lower()
         tab = MutationFrequencyLocators.BUTTON_GENE_MUTATION_TAB(tab_name)
         self.click(tab)
-        time.sleep(1)
-        self.wait_for_loading_spinner_to_detatch()
-        self.wait_for_loading_spinner_table_to_detatch()
-        self.wait_for_loading_spinner_to_detatch()
-        self.wait_for_loading_spinner_table_to_detatch()
+        self.wait_for_loading_spinners_to_detach()
+
+    def click_mutations_filter_table_button(self, gene_symbol):
+        """
+        Clicks the cell under column "# Mutations" on the gene table from the given gene symbol
+        """
+        mutations_search_locator = MutationFrequencyLocators.BUTTON_MUTATIONS_FILTER_TABLE(gene_symbol)
+        self.click(mutations_search_locator)
 
     def click_custom_filter_button(self, button_name):
         button_locator = MutationFrequencyLocators.BUTTON_CUSTOM_FILTER(button_name)

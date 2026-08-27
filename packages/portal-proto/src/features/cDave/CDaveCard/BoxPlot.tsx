@@ -63,7 +63,7 @@ const BoxPlotTooltip: React.FC<BoxPlotTooltipProps> = ({
   return visible ? (
     <g style={{ pointerEvents: "none" }}>
       <foreignObject x={x} y={y}>
-        <Tooltip label={text} withArrow opened withinPortal>
+        <Tooltip label={text} withArrow opened>
           <Box />
         </Tooltip>
       </foreignObject>

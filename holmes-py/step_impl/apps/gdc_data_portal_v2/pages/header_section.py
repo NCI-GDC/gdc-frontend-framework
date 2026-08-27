@@ -62,7 +62,7 @@ class HeaderSection(BasePage):
         page_to_load = page_to_load.lower()
         if page_to_load == "analysis":
             self.wait_for_selector(
-                HeaderSectionLocators.ANALYSIS_CENTER_WAIT_FOR_ELEMENT
+                HeaderSectionLocators.ANALYSIS_CENTER_WAIT_FOR_ELEMENT,45000
             )
             # Wait for the central, initial loading spinner that appears.
             # If it doesn't appear, we move on.

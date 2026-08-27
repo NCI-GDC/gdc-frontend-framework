@@ -78,13 +78,7 @@ const CartCell = ({
   const isPlural = row.original.files_count > 1;
 
   return (
-    <Menu
-      position="bottom-start"
-      zIndex={300}
-      opened={opened}
-      onOpen={open}
-      onClose={close}
-    >
+    <Menu position="bottom-start" opened={opened} onOpen={open} onClose={close}>
       <Menu.Target>
         <Tooltip label="No files to add to Cart" disabled={!isDisabled}>
           <Button
