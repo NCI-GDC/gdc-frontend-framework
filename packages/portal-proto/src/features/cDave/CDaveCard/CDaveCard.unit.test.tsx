@@ -1,5 +1,4 @@
 import userEvent from "@testing-library/user-event";
-import * as facetHooks from "../../facets/hooks";
 import * as router from "next/router";
 import { render } from "test-utils";
 import CDaveCard from "./CDaveCard";
@@ -153,12 +152,8 @@ describe("CDaveCard", () => {
           type: "long",
         }) as any,
     );
-    jest.spyOn(facetHooks, "useRangeFacet").mockReturnValue({
-      data: { "0.0-12.0": 10, "12.0-24.0": 90 },
-      isFetching: false,
-      isSuccess: true,
-    } as any);
     jest.mocked(useGetContinuousDataStatsQuery).mockReturnValue({
+      data: { buckets: { "0.0-12.0": 10, "12.0-24.0": 90 } },
       isFetching: false,
       isSuccess: true,
     } as any);
@@ -194,12 +189,9 @@ describe("CDaveCard", () => {
           type: "long",
         }) as any,
     );
-    jest.spyOn(facetHooks, "useRangeFacet").mockReturnValue({
-      data: { "-28.0-166.8000001": 38 },
-      isFetching: false,
-      isSuccess: true,
-    } as any);
     jest.mocked(useGetContinuousDataStatsQuery).mockReturnValue({
+      data: { buckets: { "-28.0-166.8000001": 38 } },
+
       isFetching: false,
       isSuccess: true,
     } as any);
@@ -226,12 +218,9 @@ describe("CDaveCard", () => {
           type: "long",
         }) as any,
     );
-    jest.spyOn(facetHooks, "useRangeFacet").mockReturnValue({
-      data: { "7201.0-12255.8": 10, "12255.8-17310.6": 90 },
-      isFetching: false,
-      isSuccess: true,
-    } as any);
     jest.mocked(useGetContinuousDataStatsQuery).mockReturnValue({
+      data: { buckets: { "7201.0-12255.8": 10, "12255.8-17310.6": 90 } },
+
       isFetching: false,
       isSuccess: true,
     } as any);
@@ -274,7 +263,7 @@ describe("CDaveCard", () => {
         }) as any,
     );
     jest
-      .spyOn(facetHooks, "useRangeFacet")
+      .mocked(useGetContinuousDataStatsQuery)
       .mockReturnValue({ data: {}, isFetching: false } as any);
 
     const stats = {
@@ -309,12 +298,9 @@ describe("CDaveCard", () => {
           type: "long",
         }) as any,
     );
-    jest.spyOn(facetHooks, "useRangeFacet").mockReturnValue({
-      data: { "0.0-12.0": 20, "12.0-24.0": 90 },
-      isFetching: false,
-      isSuccess: true,
-    } as any);
     jest.mocked(useGetContinuousDataStatsQuery).mockReturnValue({
+      data: { buckets: { "0.0-12.0": 20, "12.0-24.0": 90 } },
+
       isFetching: false,
       isSuccess: true,
     } as any);

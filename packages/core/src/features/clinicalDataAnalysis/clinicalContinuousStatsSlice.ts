@@ -1,5 +1,36 @@
-import { graphqlAPISlice } from "../gdcapi/gdcgraphql";
+import { GraphQLApiResponse, graphqlAPISlice } from "../gdcapi/gdcgraphql";
 import { GqlOperation, GqlRange } from "../gdcapi/filters";
+
+interface ClinicalContinuousStatsResponse {
+  viewer: {
+    explore: {
+      cases: {
+        aggregations: {
+          [field: string]: {
+            stats: {
+              Min: number;
+              Max: number;
+              Mean: number;
+              SD: number;
+            };
+            percentiles: {
+              Median: number;
+              IQR: number;
+              q1: number;
+              q3: number;
+            };
+            range: {
+              buckets: Array<{
+                doc_count: number;
+                key: string;
+              }>;
+            };
+          };
+        };
+      };
+    };
+  };
+}
 
 export interface ClinicalContinuousStatsData {
   readonly min: number;
@@ -10,6 +41,7 @@ export interface ClinicalContinuousStatsData {
   readonly median: number;
   readonly q1: number;
   readonly q3: number;
+  readonly buckets: Record<string, number>;
 }
 
 interface ClinicalContinuousStatsInputs {
@@ -29,7 +61,7 @@ const continuousDataStatsApi = graphqlAPISlice.injectEndpoints({
         viewer {
           explore {
             cases {
-              aggregations(filters: $queryFilters) {
+              aggregations(case_filters: $queryFilters) {
                 ${field} {
                   stats {
                     Min : min
@@ -60,25 +92,29 @@ const continuousDataStatsApi = graphqlAPISlice.injectEndpoints({
           rangeFilters,
         },
       }),
-      transformResponse: (response, _, arg) => {
+      transformResponse: (
+        response: GraphQLApiResponse<ClinicalContinuousStatsResponse>,
+        _,
+        arg,
+      ) => {
+        const aggregation =
+          response.data.viewer.explore.cases.aggregations[arg.field];
         return {
-          min: response.data.viewer.explore.cases.aggregations[arg.field].stats
-            .Min,
-          max: response.data.viewer.explore.cases.aggregations[arg.field].stats
-            .Max,
-          mean: response.data.viewer.explore.cases.aggregations[arg.field].stats
-            .Mean,
-          std_dev:
-            response.data.viewer.explore.cases.aggregations[arg.field].stats.SD,
-          iqr: response.data.viewer.explore.cases.aggregations[arg.field]
-            .percentiles.IQR,
-          median:
-            response.data.viewer.explore.cases.aggregations[arg.field]
-              .percentiles.Median,
-          q1: response.data.viewer.explore.cases.aggregations[arg.field]
-            .percentiles.q1,
-          q3: response.data.viewer.explore.cases.aggregations[arg.field]
-            .percentiles.q3,
+          min: aggregation.stats.Min,
+          max: aggregation.stats.Max,
+          mean: aggregation.stats.Mean,
+          std_dev: aggregation.stats.SD,
+          iqr: aggregation.percentiles.IQR,
+          median: aggregation.percentiles.Median,
+          q1: aggregation.percentiles.q1,
+          q3: aggregation.percentiles.q3,
+          buckets: aggregation.range.buckets.reduce(
+            (facetBuckets, apiBucket) => {
+              facetBuckets[apiBucket.key] = apiBucket.doc_count;
+              return facetBuckets;
+            },
+            {} as Record<string, number>,
+          ),
         };
       },
     }),

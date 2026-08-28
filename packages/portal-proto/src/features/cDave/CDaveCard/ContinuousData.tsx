@@ -5,7 +5,6 @@ import {
   Statistics,
   GqlOperation,
 } from "@gff/core";
-import { useRangeFacet } from "../../facets/hooks";
 import CDaveHistogram from "./CDaveHistogram";
 import CDaveTable from "./CDaveTable";
 import ClinicalSurvivalPlot from "./ClinicalSurvivalPlot";
@@ -131,13 +130,7 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
     [customBinnedData, initialData],
   );
 
-  const { data, isFetching, isSuccess } = useRangeFacet(
-    field,
-    ranges,
-    { docType: "cases", indexType: "repository" },
-    cohortFilters,
-  );
-  const { data: statsData } = useGetContinuousDataStatsQuery({
+  const { data, isSuccess, isFetching } = useGetContinuousDataStatsQuery({
     field: field.replaceAll(".", "__"),
     queryFilters: cohortFilters,
     rangeFilters: {
@@ -152,12 +145,14 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
 
   const displayedData = useDeepCompareMemo(
     () =>
-      processContinuousResultData(
-        isSuccess ? data : {},
-        customBinnedData,
-        field,
-        dataDimension,
-      ),
+      isSuccess
+        ? processContinuousResultData(
+            data.buckets,
+            customBinnedData,
+            field,
+            dataDimension,
+          )
+        : [],
     [isSuccess, data, customBinnedData, field, dataDimension],
   );
 
@@ -186,7 +181,7 @@ const ContinuousData: React.FC<ContinuousDataProps> = ({
         <BoxQQSection
           field={field}
           displayName={fieldName}
-          data={statsData}
+          data={data}
           dataDimension={dataDimension}
           hasCustomBins={hasCustomBins}
         />
