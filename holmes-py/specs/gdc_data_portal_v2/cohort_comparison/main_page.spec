@@ -61,7 +61,7 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
   |-----------------------|---------------------------------|
   |analysis-survival      |Visible                          |
   |Ethnicity              |Not Visible                      |
-  |Sex At Birth           |Visible                          |
+  |Sex at Birth           |Visible                          |
   |Race                   |Not Visible                      |
   |Vital Status           |Visible                          |
   |Age At Diagnosis       |Visible                          |
@@ -69,7 +69,7 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
   |analysis_card          |
   |-----------------------|
   |survival               |
-  |Sex At Birth           |
+  |Sex at Birth           |
   |Vital Status           |
   |Age At Diagnosis       |
 * Verify analysis cards are visible or not visible as expected on Cohort Comparison
@@ -77,7 +77,7 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
   |-----------------------|---------------------------------|
   |analysis-survival      |Not Visible                      |
   |Ethnicity              |Not Visible                      |
-  |Sex At Birth           |Not Visible                      |
+  |Sex at Birth           |Not Visible                      |
   |Race                   |Not Visible                      |
   |Vital Status           |Not Visible                      |
   |Age At Diagnosis       |Not Visible                      |
@@ -86,7 +86,7 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
   |-----------------------|
   |survival               |
   |Ethnicity              |
-  |Sex At Birth           |
+  |Sex at Birth           |
   |Race                   |
   |Vital Status           |
   |Age At Diagnosis       |
@@ -95,7 +95,7 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
   |-----------------------|---------------------------------|
   |analysis-survival      |Visible                          |
   |Ethnicity              |Visible                          |
-  |Sex At Birth           |Visible                          |
+  |Sex at Birth           |Visible                          |
   |Race                   |Visible                          |
   |Vital Status           |Visible                          |
   |Age At Diagnosis       |Visible                          |
@@ -109,7 +109,7 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
 * Collect case counts on save cohort buttons from an analysis card on Cohort Comparison
   |analysis_card          |Filter Row                       |Cohort Number  |Collect Case Count Name              |
   |-----------------------|---------------------------------|---------------|-------------------------------------|
-  |Sex At Birth           |female                           |1              |CC_Sex At Birth_Female_1 Count       |
+  |Sex at Birth           |female                           |1              |CC_Sex At Birth_Female_1 Count       |
   |Ethnicity              |not reported                     |1              |CC_Ethnicity_Not_Reported_1 Count    |
   |Race                   |white                            |1              |CC_Race_White_1 Count                |
   |Vital Status           |alive                            |1              |CC_Vital_Status_Alive_1 Count        |
@@ -121,7 +121,7 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
 * Collect case counts on save cohort buttons from an analysis card on Cohort Comparison
   |analysis_card          |Filter Row                       |Cohort Number  |Collect Case Count Name                  |
   |-----------------------|---------------------------------|---------------|-----------------------------------------|
-  |Sex At Birth           |male                             |2              |CC_Sex At Birth_Male_2 Count                |
+  |Sex at Birth           |male                             |2              |CC_Sex At Birth_Male_2 Count                |
   |Ethnicity              |hispanic or latino               |2              |CC_Ethnicity_Hispanic_or_Latino_2 Count  |
   |Race                   |unknown                          |2              |CC_Race_Unknown_2 Count                  |
   |Vital Status           |not reported                     |2              |CC_Vital_Status_Not_Reported_2 Count     |
@@ -137,13 +137,13 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
   |-----------------------|---------------------------------|---------------|-------------------------------------|
   |Ethnicity              |not hispanic or latino           |1              |CC_Ethnicity_not_hispanic_1 Count    |
   |Vital Status           |dead                             |2              |CC_Vital_Status_Dead_2 Count         |
-  |Sex At Birth                 |missing                          |2              |CC_Sex At Birth_Missing_2 Count            |
+  |Sex at Birth                 |missing                          |2              |CC_Sex At Birth_Missing_2 Count            |
 * Save cohorts from an analysis card on Cohort Comparison
   |analysis_card          |Filter Row                       |Cohort Number  |Cohort Name                    |
   |-----------------------|---------------------------------|---------------|-------------------------------|
   |Ethnicity              |not hispanic or latino           |1              |CC_Ethnicity_not_hispanic_1    |
   |Vital Status           |dead                             |2              |CC_Vital_Status_Dead_2         |
-  |Sex At Birth                 |missing                          |2              |CC_Sex At Birth_Missing_2            |
+  |Sex at Birth                 |missing                          |2              |CC_Sex At Birth_Missing_2            |
 Analysis-survival card loads tricky so we save this for last
 * Collect case counts on save cohort buttons from an analysis card on Cohort Comparison
   |analysis_card          |Filter Row                       |Cohort Number  |Collect Case Count Name              |

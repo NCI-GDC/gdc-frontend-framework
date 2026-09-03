@@ -23,7 +23,7 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
   |-----------------------|---------------------------------|
   |analysis-survival      |Visible                          |
   |Ethnicity              |Visible                          |
-  |Sex At Birth           |Visible                          |
+  |Sex at Birth           |Visible                          |
   |Race                   |Visible                          |
   |Vital Status           |Visible                          |
   |Age At Diagnosis       |Visible                          |
@@ -32,13 +32,13 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
 * Collect case counts on save cohort buttons from an analysis card on Cohort Comparison
   |analysis_card          |Filter Row                       |Cohort Number  |Collect Case Count Name              |
   |-----------------------|---------------------------------|---------------|-------------------------------------|
-  |Sex At Birth           |female                           |2              |CC_Demo_Sex At Birth_Female_2 Count  |
+  |Sex at Birth           |female                           |2              |CC_Demo_Sex At Birth_Female_2 Count  |
   |Vital Status           |alive                            |1              |CC_Demo_Vital_Status_Alive_1 Count   |
   |analysis-survival      |overall survival analysis        |1              |CC_Demo_Overall_Survival_1 Count     |
 * Save cohorts from an analysis card on Cohort Comparison
   |analysis_card          |Filter Row                       |Cohort Number  |Cohort Name                    |
   |-----------------------|---------------------------------|---------------|-------------------------------|
-  |Sex At Birth           |female                           |2              |CC_Demo_Sex At Birth_Female_2  |
+  |Sex at Birth           |female                           |2              |CC_Demo_Sex At Birth_Female_2  |
   |Vital Status           |alive                            |1              |CC_Demo_Vital_Status_Alive_1   |
   |analysis-survival      |overall survival analysis        |1              |CC_Demo_Overall_Survival_1     |
 
