@@ -5,13 +5,13 @@ import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import {
   useCoreSelector,
   selectCurrentCohortFilters,
-  FilterSet,
   PROTEINPAINT_API,
   useFetchUserDetailsQuery,
   useCoreDispatch,
   buildCohortGqlOperator,
   useCreateCaseSetFromValuesMutation,
-} from "@gff/core";
+} from "./coreAdapter";
+import type { FilterSet } from "./coreAdapter";
 import { isEqual, cloneDeep } from "lodash";
 import { DemoText } from "@/components/tailwindComponents";
 import { SaveCohortModal } from "@gff/portal-components";

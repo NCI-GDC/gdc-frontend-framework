@@ -5,10 +5,10 @@ import {
   useCoreSelector,
   selectCurrentCohortFilters,
   buildCohortGqlOperator,
-  FilterSet,
   PROTEINPAINT_API,
   useFetchUserDetailsQuery,
-} from "@gff/core";
+} from "./coreAdapter";
+import type { FilterSet } from "./coreAdapter";
 import { isEqual, cloneDeep } from "lodash";
 
 const basepath = PROTEINPAINT_API;

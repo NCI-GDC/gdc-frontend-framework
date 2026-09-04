@@ -1,53 +1,34 @@
 import { render } from "@testing-library/react";
-import { MatrixWrapper, demoFilter } from "./MatrixWrapper";
 import { MantineProvider } from "@mantine/core";
+import * as coreAdapter from "./coreAdapter";
+import { MatrixWrapper, demoFilter } from "./MatrixWrapper";
 
 const filter = {};
 let runpparg,
   userDetails,
   isDemoMode = false;
 
-const resultsCreateCaseSet = { data: "test-pp-caseSet", isSuccess: true };
-const nullFunction = () => null;
+// (1) The single @gff/core seam for the wrapper's OWN core imports.
+jest.mock("./coreAdapter");
 
-jest.mock("@gff/core", () => ({
-  useCoreSelector: jest.fn().mockReturnValue({}),
-  buildCohortGqlOperator: jest.fn(() => filter),
-  useAddCohortMutation: jest.fn(() => [() => null, { isSuccess: true }]),
-  useFetchUserDetailsQuery: jest.fn(() => userDetails),
-  useCoreDispatch: jest.fn(() => nullFunction()),
-  PROTEINPAINT_API: "host:port/basepath",
-  useCreateCaseSetFromValuesMutation: () => [
-    nullFunction,
-    resultsCreateCaseSet,
-  ],
-  useLazyGetCohortsByContextIdQuery: jest.fn().mockReturnValue([
-    jest.fn().mockReturnValue({ unwrap: jest.fn() }),
-    {
-      isSuccess: true,
-      isLoading: false,
-    },
-  ] as any),
-  useLazyGetCohortByIdQuery: jest.fn().mockReturnValue([jest.fn()]),
-  useCreateCaseSetFromFiltersMutation: jest.fn().mockReturnValue([jest.fn()]),
-  useGetGenesQuery: jest.fn().mockReturnValue({
-    data: {
-      hits: [],
-    },
-    isFetching: false,
-    requestId: "abc123",
-  }),
-  showModal: jest.fn(() => nullFunction()),
-  hideModal: jest.fn(() => nullFunction()),
-  Modals: jest.fn().mockReturnValue({}),
-  selectCurrentModal: jest.fn(() => nullFunction()),
+// (2) Out-of-dir code the wrapper renders that reaches @gff/core on its own.
+jest.mock("@gff/portal-components", () => ({
+  SaveCohortModal: () => null,
+}));
+jest.mock("../cohortBuilder/CohortManager/cohortActionHooks", () => ({
+  cohortActionsHooks: {},
+}));
+jest.mock("../cohortBuilder/utils", () => ({
+  INVALID_COHORT_NAMES: [],
+}));
+jest.mock("@/components/Modals/SetModals/GeneSetModal", () => ({
+  __esModule: true,
+  default: () => null,
 }));
 
 jest.mock("@/hooks/useIsDemoApp", () => ({
   useIsDemoApp: jest.fn(() => isDemoMode),
 }));
-
-jest.mock("@gff/portal-components");
 
 jest.mock("@sjcrh/proteinpaint-client", () => ({
   __esModule: true,
@@ -57,16 +38,25 @@ jest.mock("@sjcrh/proteinpaint-client", () => ({
   }),
 }));
 
+const mockedCore = jest.mocked(coreAdapter);
+mockedCore.buildCohortGqlOperator.mockImplementation(() => filter as any);
+mockedCore.useFetchUserDetailsQuery.mockImplementation(() => userDetails);
+mockedCore.useGetGenesQuery.mockReturnValue({
+  data: { hits: [] },
+  isFetching: false,
+  requestId: "abc123",
+} as any);
+
+const theme = {
+  colors: {
+    primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+    base: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+  },
+} as const;
+
 test("OncoMatrix arguments", () => {
   const { unmount, rerender } = render(
-    <MantineProvider
-      theme={{
-        colors: {
-          primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-          base: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-        },
-      }}
-    >
+    <MantineProvider theme={theme}>
       <MatrixWrapper chartType="matrix" />
     </MantineProvider>,
   );
@@ -80,14 +70,7 @@ test("OncoMatrix arguments", () => {
   expect(runpparg.filter0).toEqual(filter);
   isDemoMode = true;
   rerender(
-    <MantineProvider
-      theme={{
-        colors: {
-          primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-          base: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-        },
-      }}
-    >
+    <MantineProvider theme={theme}>
       <MatrixWrapper chartType="matrix" />
     </MantineProvider>,
   );
@@ -100,14 +83,7 @@ test("OncoMatrix arguments", () => {
 test("OncoMatrix demo filter0", () => {
   isDemoMode = true;
   const { unmount } = render(
-    <MantineProvider
-      theme={{
-        colors: {
-          primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-          base: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-        },
-      }}
-    >
+    <MantineProvider theme={theme}>
       <MatrixWrapper chartType="matrix" />
     </MantineProvider>,
   );

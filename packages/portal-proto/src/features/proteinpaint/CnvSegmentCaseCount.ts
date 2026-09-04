@@ -1,4 +1,5 @@
-import { graphqlAPISlice, buildCohortGqlOperator, FilterSet } from "@gff/core";
+import { graphqlAPISlice, buildCohortGqlOperator } from "./coreAdapter";
+import type { FilterSet } from "./coreAdapter";
 
 const graphQLQuery = `
   query scRNAseqCaseCountQuery($cohortFilters: FiltersArgument,
