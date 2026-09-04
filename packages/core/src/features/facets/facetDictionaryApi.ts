@@ -1,5 +1,4 @@
-import { FacetDefinition, FacetTypes } from "./types";
-import SupplementalFacetDefinitions from "./data/facet_additional_range_data.json";
+import { FacetDefinition, FacetDefinitionResponse, FacetTypes } from "./types";
 import { some, includes } from "lodash";
 
 export const classifyFacetDatatype = (f: FacetDefinition): FacetTypes => {
@@ -55,31 +54,31 @@ export const classifyFacetDatatype = (f: FacetDefinition): FacetTypes => {
   return "enum";
 };
 
-interface IStringIndex {
-  [key: string]: any;
-}
-
-const getRangeData = (f: FacetDefinition) => {
-  if (f.field in SupplementalFacetDefinitions) {
-    return {
-      minimum: (SupplementalFacetDefinitions as IStringIndex)[f.field].minimum,
-      maximum: (SupplementalFacetDefinitions as IStringIndex)[f.field].maximum,
-    };
-  } else {
-    return undefined;
-  }
-};
-
 export const processDictionaryEntries = (
-  entries: Record<string, FacetDefinition>,
+  entries: Record<string, FacetDefinitionResponse>,
 ): Record<string, FacetDefinition> => {
   return Object.keys(entries).reduce(
     (dict: Record<string, FacetDefinition>, key: string) => {
-      dict[key] = {
-        ...entries[key],
+      const entry = { ...entries[key] };
+      const constraints = entry?.constraints;
+      if (constraints) {
+        delete entry["constraints"];
+      }
+
+      let processedFacet: FacetDefinition = {
+        ...entry,
         facet_type: classifyFacetDatatype(entries[key]),
-        range: getRangeData(entries[key]),
       };
+
+      if (constraints?.maximum !== undefined) {
+        processedFacet = { ...processedFacet, maximum: constraints.maximum };
+      }
+
+      if (constraints?.minimum !== undefined) {
+        processedFacet = { ...processedFacet, minimum: constraints.minimum };
+      }
+
+      dict[key] = processedFacet;
       return dict;
     },
     {} as Record<string, FacetDefinition>,

@@ -2,8 +2,7 @@ import {
   processDictionaryEntries,
   classifyFacetDatatype,
 } from "./facetDictionaryApi";
-
-import { FacetDefinition } from "./types";
+import { FacetDefinitionResponse } from "./types";
 
 const TestFacetDictionary = {
   "cases.case_id": {
@@ -27,6 +26,10 @@ const TestFacetDictionary = {
     field: "demographic.age_at_index",
     full: "cases.demographic.age_at_index",
     type: "long",
+    constraints: {
+      minimum: 0,
+      maximum: 89,
+    },
   },
   "cases.demographic.age_is_obfuscated": {
     description:
@@ -80,10 +83,8 @@ describe("test facet dictionary api functions", () => {
         full: "cases.demographic.age_at_index",
         type: "long",
         facet_type: "age_in_years",
-        range: {
-          minimum: 0,
-          maximum: 89,
-        },
+        minimum: 0,
+        maximum: 89,
       },
       "cases.demographic.age_is_obfuscated": {
         description:
@@ -114,7 +115,7 @@ describe("test facet dictionary api functions", () => {
     };
 
     const results = processDictionaryEntries(
-      TestFacetDictionary as Record<string, FacetDefinition>,
+      TestFacetDictionary as Record<string, FacetDefinitionResponse>,
     );
     expect(results).toEqual(expected);
   });
