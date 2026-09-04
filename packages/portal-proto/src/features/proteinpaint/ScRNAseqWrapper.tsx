@@ -9,7 +9,7 @@ import {
   PROTEINPAINT_API,
   useFetchUserDetailsQuery,
   buildCohortGqlOperator,
-} from "@gff/core";
+} from "./coreAdapter";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { DemoText } from "@/components/tailwindComponents";
 

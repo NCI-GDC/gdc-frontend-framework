@@ -6,19 +6,17 @@ import {
   useCoreSelector,
   selectCurrentCohortFilters,
   buildCohortGqlOperator,
-  FilterSet,
   PROTEINPAINT_API,
   useFetchUserDetailsQuery,
   useCoreDispatch,
   useCreateCaseSetFromValuesMutation,
   useGetGenesQuery,
-  Operation,
-  Includes,
   showModal,
   hideModal,
   Modals,
   selectCurrentModal,
-} from "@gff/core";
+} from "./coreAdapter";
+import type { FilterSet, Operation, Includes } from "./coreAdapter";
 import { DemoText } from "@/components/tailwindComponents";
 import { LoadingOverlay } from "@mantine/core";
 import {

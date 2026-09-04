@@ -8,7 +8,7 @@ import {
   GDC_API, // declared in portal-proto/.env.* files
   useFetchUserDetailsQuery,
   buildCohortGqlOperator,
-} from "@gff/core";
+} from "./coreAdapter";
 import { isEqual, cloneDeep } from "lodash";
 
 const basepath = PROTEINPAINT_API;

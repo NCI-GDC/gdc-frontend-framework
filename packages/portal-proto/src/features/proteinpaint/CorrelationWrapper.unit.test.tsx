@@ -1,4 +1,5 @@
 import { render } from "@testing-library/react";
+import * as coreAdapter from "./coreAdapter";
 import { CorrelationWrapper, demoFilter } from "./CorrelationWrapper";
 import { MantineProvider } from "@mantine/core";
 
@@ -7,19 +8,13 @@ let runpparg,
   userDetails,
   isDemoMode = false;
 
-jest.mock("@gff/core", () => ({
-  useCoreSelector: jest.fn().mockReturnValue({}),
-  buildCohortGqlOperator: jest.fn(() => filter),
-  useAddCohortMutation: jest.fn(() => [() => null, { isSuccess: true }]),
-  useFetchUserDetailsQuery: jest.fn(() => userDetails),
-  PROTEINPAINT_API: "host:port/basepath",
-}));
+// The single @gff/core seam, replaced by its manual mock. This test names no
+// @gff/core export, so GFF changes to @gff/core cannot break it.
+jest.mock("./coreAdapter");
 
 jest.mock("@/hooks/useIsDemoApp", () => ({
   useIsDemoApp: jest.fn(() => isDemoMode),
 }));
-
-jest.mock("@gff/portal-components");
 
 jest.mock("@sjcrh/proteinpaint-client", () => ({
   __esModule: true,
@@ -29,16 +24,20 @@ jest.mock("@sjcrh/proteinpaint-client", () => ({
   }),
 }));
 
+const mockedCore = jest.mocked(coreAdapter);
+mockedCore.buildCohortGqlOperator.mockImplementation(() => filter as any);
+mockedCore.useFetchUserDetailsQuery.mockImplementation(() => userDetails);
+
+const theme = {
+  colors: {
+    primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+    base: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+  },
+} as const;
+
 test("Correlation plot arguments", () => {
   const { unmount, rerender } = render(
-    <MantineProvider
-      theme={{
-        colors: {
-          primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-          base: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-        },
-      }}
-    >
+    <MantineProvider theme={theme}>
       <CorrelationWrapper />
     </MantineProvider>,
   );
@@ -52,14 +51,7 @@ test("Correlation plot arguments", () => {
   expect(runpparg.filter0).toEqual(filter);
   isDemoMode = true;
   rerender(
-    <MantineProvider
-      theme={{
-        colors: {
-          primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-          base: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-        },
-      }}
-    >
+    <MantineProvider theme={theme}>
       <CorrelationWrapper />
     </MantineProvider>,
   );
@@ -72,14 +64,7 @@ test("Correlation plot arguments", () => {
 test("Correlation demo filter0", () => {
   isDemoMode = true;
   const { unmount } = render(
-    <MantineProvider
-      theme={{
-        colors: {
-          primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-          base: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-        },
-      }}
-    >
+    <MantineProvider theme={theme}>
       <CorrelationWrapper />
     </MantineProvider>,
   );

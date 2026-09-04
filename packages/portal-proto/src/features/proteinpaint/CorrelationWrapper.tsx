@@ -8,7 +8,7 @@ import {
   buildCohortGqlOperator,
   PROTEINPAINT_API,
   useFetchUserDetailsQuery,
-} from "@gff/core";
+} from "./coreAdapter";
 import { DemoText } from "@/components/tailwindComponents";
 import { LoadingOverlay } from "@mantine/core";
 import { RxComponentCallbacks } from "./sjpp-types";

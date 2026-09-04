@@ -1,4 +1,4 @@
-import { FilterSet } from "@gff/core";
+import type { FilterSet } from "./coreAdapter";
 
 export interface PpApi {
   update(arg: any): null;

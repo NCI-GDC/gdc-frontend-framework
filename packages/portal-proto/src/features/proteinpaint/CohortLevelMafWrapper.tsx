@@ -7,7 +7,7 @@ import {
   PROTEINPAINT_API,
   useFetchUserDetailsQuery,
   buildCohortGqlOperator,
-} from "@gff/core";
+} from "./coreAdapter";
 import { isEqual, cloneDeep } from "lodash";
 
 const basepath = PROTEINPAINT_API;

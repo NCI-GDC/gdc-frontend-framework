@@ -1,43 +1,30 @@
 import { render } from "@testing-library/react";
-import { ProteinPaintWrapper } from "./ProteinPaintWrapper";
 import { MantineProvider } from "@mantine/core";
+import * as coreAdapter from "./coreAdapter";
+import { ProteinPaintWrapper } from "./ProteinPaintWrapper";
 
 const filter = { abc: "xyz" };
 let runpparg,
   userDetails,
   isDemoMode = false;
 
-const resultsCreateCaseSet = { data: "test-pp-caseSet", isSuccess: true };
-const nullFunction = () => null;
+// (1) The single @gff/core seam for the wrapper's OWN core imports.
+jest.mock("./coreAdapter");
 
-jest.mock("@gff/core", () => ({
-  useCoreSelector: jest.fn().mockReturnValue({}),
-  buildCohortGqlOperator: jest.fn(() => filter),
-  useAddCohortMutation: jest.fn(() => [() => null, { isSuccess: true }]),
-  useFetchUserDetailsQuery: jest.fn(() => userDetails),
-  useCoreDispatch: jest.fn(() => nullFunction()),
-  setActiveCohort: jest.fn(() => null),
-  PROTEINPAINT_API: "host:port/basepath",
-  useCreateCaseSetFromValuesMutation: () => [
-    nullFunction,
-    resultsCreateCaseSet,
-  ],
-  useLazyGetCohortsByContextIdQuery: jest.fn().mockReturnValue([
-    jest.fn().mockReturnValue({ unwrap: jest.fn() }),
-    {
-      isSuccess: true,
-      isLoading: false,
-    },
-  ] as any),
-  useLazyGetCohortByIdQuery: jest.fn().mockReturnValue([jest.fn()]),
-  useCreateCaseSetFromFiltersMutation: jest.fn().mockReturnValue([jest.fn()]),
+// (2) Out-of-dir code the wrapper renders that reaches @gff/core on its own.
+jest.mock("@gff/portal-components", () => ({
+  SaveCohortModal: () => null,
+}));
+jest.mock("../cohortBuilder/CohortManager/cohortActionHooks", () => ({
+  cohortActionsHooks: {},
+}));
+jest.mock("../cohortBuilder/utils", () => ({
+  INVALID_COHORT_NAMES: [],
 }));
 
 jest.mock("@/hooks/useIsDemoApp", () => ({
   useIsDemoApp: jest.fn(() => isDemoMode),
 }));
-
-jest.mock("@gff/portal-components");
 
 jest.mock("@sjcrh/proteinpaint-client", () => ({
   __esModule: true,
@@ -47,17 +34,21 @@ jest.mock("@sjcrh/proteinpaint-client", () => ({
   }),
 }));
 
+const mockedCore = jest.mocked(coreAdapter);
+mockedCore.buildCohortGqlOperator.mockImplementation(() => filter as any);
+mockedCore.useFetchUserDetailsQuery.mockImplementation(() => userDetails);
+
+const theme = {
+  colors: {
+    primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+    base: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+  },
+} as const;
+
 test("CNV Segment arguments", () => {
   userDetails = { data: { username: "test" } };
   const { unmount, rerender } = render(
-    <MantineProvider
-      theme={{
-        colors: {
-          primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-          base: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-        },
-      }}
-    >
+    <MantineProvider theme={theme}>
       <ProteinPaintWrapper hardcodeCnvOnly={true} />
     </MantineProvider>,
   );
@@ -75,14 +66,7 @@ test("CNV Segment arguments", () => {
   expect(runpparg.geneSearch4GDCmds3).toEqual({ hardcodeCnvOnly: true });
   isDemoMode = true;
   rerender(
-    <MantineProvider
-      theme={{
-        colors: {
-          primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-          base: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-        },
-      }}
-    >
+    <MantineProvider theme={theme}>
       <ProteinPaintWrapper />
     </MantineProvider>,
   );

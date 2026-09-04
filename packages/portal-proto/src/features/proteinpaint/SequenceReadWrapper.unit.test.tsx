@@ -1,14 +1,12 @@
 import { render } from "@testing-library/react";
+import * as coreAdapter from "./coreAdapter";
 import { SequenceReadWrapper } from "./SequenceReadWrapper";
 
 let filter, runpparg, userDetails;
 
-jest.mock("@gff/core", () => ({
-  useCoreSelector: jest.fn().mockReturnValue({}),
-  buildCohortGqlOperator: jest.fn(() => filter),
-  useFetchUserDetailsQuery: jest.fn(() => userDetails),
-  PROTEINPAINT_API: "host:port/basepath",
-}));
+// The single @gff/core seam, replaced by its manual mock. This test names no
+// @gff/core export, so GFF changes to @gff/core cannot break it.
+jest.mock("./coreAdapter");
 
 jest.mock("@sjcrh/proteinpaint-client", () => ({
   __esModule: true,
@@ -17,6 +15,10 @@ jest.mock("@sjcrh/proteinpaint-client", () => ({
     return {};
   }),
 }));
+
+const mockedCore = jest.mocked(coreAdapter);
+mockedCore.buildCohortGqlOperator.mockImplementation(() => filter);
+mockedCore.useFetchUserDetailsQuery.mockImplementation(() => userDetails);
 
 test("Sequence Read arguments - logged in", () => {
   userDetails = { data: { data: { username: "test" } } };
