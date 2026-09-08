@@ -73,11 +73,7 @@ export const formatEntityInfo = (
 ): {
   readonly headerName: string;
   readonly values: readonly (
-    | string
-    | number
-    | boolean
-    | JSX.Element
-    | readonly string[]
+    string | number | boolean | JSX.Element | readonly string[]
   )[];
 }[] => {
   const ids = {

@@ -84,9 +84,4 @@ export interface AliquotsNode {
 }
 
 export type BiospecimenEntityType =
-  | SampleNode
-  | PortionNode
-  | AnalytesNode
-  | SlidesNode
-  | AliquotsNode
-  | null;
+  SampleNode | PortionNode | AnalytesNode | SlidesNode | AliquotsNode | null;

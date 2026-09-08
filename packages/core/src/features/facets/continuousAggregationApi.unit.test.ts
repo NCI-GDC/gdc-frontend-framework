@@ -170,8 +170,9 @@ describe("continuous range slice tests", () => {
           Promise.resolve({ json: () => Promise.resolve({ ok: true }) }),
         ) as jest.Mock,
       );
-    jest.spyOn(cohort, "selectCurrentCohortGqlFilters").mockImplementation(
-      (): GqlOperation => ({
+    jest
+      .spyOn(cohort, "selectCurrentCohortGqlFilters")
+      .mockImplementation((): GqlOperation => ({
         op: "and",
         content: [
           {
@@ -182,8 +183,7 @@ describe("continuous range slice tests", () => {
             },
           },
         ],
-      }),
-    );
+      }));
 
     coreStore.dispatch(
       fetchFacetContinuousAggregation({

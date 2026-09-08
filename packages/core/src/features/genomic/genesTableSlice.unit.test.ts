@@ -63,9 +63,7 @@ describe("Test creation of geneTable Filters with Search term", () => {
     };
 
     const cohortGQLFilters = filterSetToOperation(cohortFilter) as
-      | Union
-      | Intersection
-      | undefined;
+      Union | Intersection | undefined;
     const searchFilters = buildGeneTableSearchFilters("protein");
     expect(
       appendFilterToOperation(cohortGQLFilters, searchFilters as Union),
@@ -89,9 +87,7 @@ describe("Test creation of geneTable Filters with Search term", () => {
       ],
     };
     const cohortGQLFilters = filterSetToOperation(cohortFilter) as
-      | Union
-      | Intersection
-      | undefined;
+      Union | Intersection | undefined;
 
     expect(appendFilterToOperation(cohortGQLFilters, undefined)).toEqual(
       expected,

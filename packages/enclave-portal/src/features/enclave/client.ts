@@ -20,9 +20,7 @@ interface LessThanOrEqualsOperation {
 }
 
 type PortalOperation =
-  | IncludesOperation
-  | GreaterThanOrEqualsOperation
-  | LessThanOrEqualsOperation;
+  IncludesOperation | GreaterThanOrEqualsOperation | LessThanOrEqualsOperation;
 
 interface GenderOperation {
   ["gender"]: IncludesOperation;

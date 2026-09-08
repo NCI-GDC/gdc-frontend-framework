@@ -54,10 +54,7 @@ export type EnumOperandValue = ReadonlyArray<string | number>;
 export type RangeOperandValue = string | number;
 export type SetOperandValue = ReadonlyArray<Operation>;
 export type OperandValue =
-  | EnumOperandValue
-  | RangeOperandValue
-  | SetOperandValue
-  | undefined;
+  EnumOperandValue | RangeOperandValue | SetOperandValue | undefined;
 
 /**
  * Extract the operand values, if operands themselves have values,  otherwise undefined.

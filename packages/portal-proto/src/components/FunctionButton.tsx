@@ -5,11 +5,7 @@ import { DownloadIcon } from "@/utils/icons";
 import { ADDITIONAL_DOWNLOAD_MESSAGE } from "@/utils/constants";
 
 export type FunctionButtonVariants =
-  | "filled"
-  | "subtle"
-  | "header"
-  | "header-subtle"
-  | "icon";
+  "filled" | "subtle" | "header" | "header-subtle" | "icon";
 
 export interface FunctionButtonProps extends ButtonProps {
   disabled?: boolean;

@@ -33,11 +33,7 @@ export const formatDataForHorizontalTable = (
 type formatImageDetailsInfoFunc = (obj: any) => {
   readonly headerName: string;
   readonly values: readonly (
-    | string
-    | number
-    | boolean
-    | readonly string[]
-    | JSX.Element
+    string | number | boolean | readonly string[] | JSX.Element
   )[];
 }[];
 
@@ -117,11 +113,7 @@ export const formatImageDetailsInfo: formatImageDetailsInfoFunc = (
 type parseSlideDetailsInfoFunc = (file: GdcFile) => {
   readonly headerName: string;
   readonly values: readonly (
-    | string
-    | number
-    | boolean
-    | readonly string[]
-    | JSX.Element
+    string | number | boolean | readonly string[] | JSX.Element
   )[];
 }[];
 

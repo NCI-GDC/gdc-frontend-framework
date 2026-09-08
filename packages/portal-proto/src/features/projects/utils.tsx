@@ -11,11 +11,7 @@ import { fieldNameToTitle } from "@gff/core";
 interface TableSummaryReturnType {
   readonly headerName: string;
   readonly values: readonly (
-    | string
-    | number
-    | boolean
-    | JSX.Element
-    | readonly string[]
+    string | number | boolean | JSX.Element | readonly string[]
   )[];
 }
 

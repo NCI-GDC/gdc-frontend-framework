@@ -141,10 +141,7 @@ export interface GDCGenesTable {
 }
 
 export type CnvChange =
-  | "Amplification"
-  | "Gain"
-  | "Loss"
-  | "Homozygous Deletion";
+  "Amplification" | "Gain" | "Loss" | "Homozygous Deletion";
 
 export const buildGeneTableSearchFilters = (
   term?: string,
@@ -198,8 +195,7 @@ export const fetchGenesTable = createAsyncThunk<
     const genesTable_filters = buildCohortGqlOperator(genesTableFilters);
 
     const baseFilters = filterSetToOperation(genomicFilters) as
-      | UnionOrIntersection
-      | undefined;
+      UnionOrIntersection | undefined;
 
     const rawFilterContents =
       baseFilters && convertFilterToGqlFilter(baseFilters)?.content;

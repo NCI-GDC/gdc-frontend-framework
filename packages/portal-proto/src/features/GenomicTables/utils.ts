@@ -15,8 +15,7 @@ export const appendSearchTermFilters = (
   searchFilters: Union,
 ): FilterSet => {
   const baseFilters = filterSetToOperation(filters) as
-    | UnionOrIntersection
-    | undefined;
+    UnionOrIntersection | undefined;
 
   return buildGqlOperationToFilterSet(
     convertFilterToGqlFilter(

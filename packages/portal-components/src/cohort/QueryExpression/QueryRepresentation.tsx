@@ -55,10 +55,7 @@ const QueryContainer: React.FC<PropsWithChildren> = ({ children }) => (
 );
 
 type RangeOperation =
-  | LessThan
-  | LessThanOrEquals
-  | GreaterThanOrEquals
-  | GreaterThan;
+  LessThan | LessThanOrEquals | GreaterThanOrEquals | GreaterThan;
 
 type ComparisonOperation = RangeOperation | Equals | NotEquals;
 

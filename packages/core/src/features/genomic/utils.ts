@@ -14,8 +14,7 @@ export const appendFilterToOperation = (
   if (addition === undefined && filter) return filter;
   if (filter === undefined && addition) return addition;
   return { ...filter, operands: [...(filter?.operands || []), addition] } as
-    | Intersection
-    | Union;
+    Intersection | Union;
 };
 
 export const getSSMTestedCases = (geneSymbol?: string): GqlOperation => {

@@ -8,12 +8,7 @@ import { XL_BREAKPOINT } from "src/styles/breakpoints";
 export interface SummaryHeaderProps {
   Icon: IconType;
   headerTitleLeft:
-    | "File"
-    | "Case"
-    | "Project"
-    | "Gene"
-    | "Mutation"
-    | "Annotation";
+    "File" | "Case" | "Project" | "Gene" | "Mutation" | "Annotation";
   headerTitle: string | number;
   leftElement?: ReactNode;
   rightElement?: ReactNode;

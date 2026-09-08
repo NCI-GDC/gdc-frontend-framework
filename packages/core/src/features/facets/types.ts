@@ -14,12 +14,7 @@ export interface FacetBuckets {
 }
 
 export type GQLDocType =
-  | "cases"
-  | "files"
-  | "genes"
-  | "ssms"
-  | "projects"
-  | "annotations";
+  "cases" | "files" | "genes" | "ssms" | "projects" | "annotations";
 export type GQLIndexType = "explore" | "repository";
 
 export interface AllowableRange {

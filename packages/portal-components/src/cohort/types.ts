@@ -30,8 +30,7 @@ export interface CohortNotificationCommandNoParam {
 }
 
 export type CohortNotificationCommand =
-  | CohortNotificationCommandWithParam
-  | CohortNotificationCommandNoParam;
+  CohortNotificationCommandWithParam | CohortNotificationCommandNoParam;
 
 type SetCohortMessageFunc = (cmd: CohortNotificationCommand[]) => void;
 

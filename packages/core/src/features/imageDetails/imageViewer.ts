@@ -214,9 +214,7 @@ const imageViewerSlice = graphqlAPISlice.injectEndpoints({
 
         if (caseFilters) {
           const caseGQL = buildCohortGqlOperator(caseFilters) as
-            | GqlIntersection
-            | GqlUnion
-            | undefined;
+            GqlIntersection | GqlUnion | undefined;
           if (caseGQL) {
             graphQLFilters = {
               ...graphQLFilters,
