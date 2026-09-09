@@ -9,6 +9,9 @@ include:
     ref: master
     file:
       - templates/deployments/salt-service.yaml
+  - component: $CI_SERVER_FQDN/nci-gdc/components/sast/sast@3.4.0
+  - component: $CI_SERVER_FQDN/nci-gdc/components/secret-detection/secret-detection@2.3.0
+
 
 pre-commit:
   except:
