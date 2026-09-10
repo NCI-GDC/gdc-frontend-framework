@@ -1,37 +1,16 @@
 import { render } from "test-utils";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
+import { getExpectedFilter0 } from "./ppTestHelpers";
 import { MatrixWrapper, demoFilter } from "./MatrixWrapper";
 
 let runpparg;
-const resultsCreateCaseSet = { data: "test-pp-caseSet", isSuccess: true };
 
-const cohortFilters = {
-  mode: "and",
-  root: {
-    "cases.project.project_id": {
-      operator: "includes",
-      field: "cases.project.project_id",
-      operands: ["FM-AD"],
-    },
-  },
-};
-const expectedFilter0 = {
-  op: "and",
-  content: [
-    {
-      op: "in",
-      content: { field: "cases.project.project_id", value: ["FM-AD"] },
-    },
-  ],
-};
+const expectedFilter0 = getExpectedFilter0();
 
-jest.mock("@gff/core", () => ({
-  ...jest.requireActual("@gff/core"),
-  useFetchUserDetailsQuery: jest.fn(() => ({ data: { username: "test" } })),
-  useCreateCaseSetFromValuesMutation: () => [jest.fn(), resultsCreateCaseSet],
-  PROTEINPAINT_API: "host:port/basepath",
-  selectCurrentCohortFilters: jest.fn(() => cohortFilters),
-}));
+jest.mock("@gff/core", () =>
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  require("./ppTestHelpers").mockGffCore(),
+);
 
 jest.mock("@/hooks/useIsDemoApp");
 

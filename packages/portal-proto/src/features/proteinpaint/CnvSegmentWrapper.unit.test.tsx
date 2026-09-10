@@ -1,42 +1,16 @@
 import { render } from "test-utils";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
+import { getExpectedFilter0 } from "./ppTestHelpers";
 import { ProteinPaintWrapper } from "./ProteinPaintWrapper";
 
 let runpparg;
-const resultsCreateCaseSet = { data: "test-pp-caseSet", isSuccess: true };
 
-// A realistic "current cohort" as it would be held in the store. The real
-// buildCohortGqlOperator() runs on this — we do not mock that transform.
-const cohortFilters = {
-  mode: "and",
-  root: {
-    "cases.project.project_id": {
-      operator: "includes",
-      field: "cases.project.project_id",
-      operands: ["FM-AD"],
-    },
-  },
-};
-const expectedFilter0 = {
-  op: "and",
-  content: [
-    {
-      op: "in",
-      content: { field: "cases.project.project_id", value: ["FM-AD"] },
-    },
-  ],
-};
+const expectedFilter0 = getExpectedFilter0();
 
-jest.mock("@gff/core", () => ({
-  // Keep the real module so we only mock API access and store state, not logic.
-  ...jest.requireActual("@gff/core"),
-  // API interactions:
-  useFetchUserDetailsQuery: jest.fn(() => ({ data: { username: "test" } })),
-  useCreateCaseSetFromValuesMutation: () => [jest.fn(), resultsCreateCaseSet],
-  PROTEINPAINT_API: "host:port/basepath",
-  // "existing state" of the store:
-  selectCurrentCohortFilters: jest.fn(() => cohortFilters),
-}));
+jest.mock("@gff/core", () =>
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  require("./ppTestHelpers").mockGffCore(),
+);
 
 jest.mock("@/hooks/useIsDemoApp");
 

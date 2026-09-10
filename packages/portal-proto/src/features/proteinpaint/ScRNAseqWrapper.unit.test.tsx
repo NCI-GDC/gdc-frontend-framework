@@ -1,35 +1,16 @@
 import { render } from "test-utils";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
+import { getExpectedFilter0 } from "./ppTestHelpers";
 import { ScRNAseqWrapper } from "./ScRNAseqWrapper";
 
 let runpparg;
 
-const cohortFilters = {
-  mode: "and",
-  root: {
-    "cases.project.project_id": {
-      operator: "includes",
-      field: "cases.project.project_id",
-      operands: ["FM-AD"],
-    },
-  },
-};
-const expectedFilter0 = {
-  op: "and",
-  content: [
-    {
-      op: "in",
-      content: { field: "cases.project.project_id", value: ["FM-AD"] },
-    },
-  ],
-};
+const expectedFilter0 = getExpectedFilter0();
 
-jest.mock("@gff/core", () => ({
-  ...jest.requireActual("@gff/core"),
-  useFetchUserDetailsQuery: jest.fn(() => ({ data: { username: "test" } })),
-  PROTEINPAINT_API: "host:port/basepath",
-  selectCurrentCohortFilters: jest.fn(() => cohortFilters),
-}));
+jest.mock("@gff/core", () =>
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  require("./ppTestHelpers").mockGffCore(),
+);
 
 jest.mock("@/hooks/useIsDemoApp");
 
