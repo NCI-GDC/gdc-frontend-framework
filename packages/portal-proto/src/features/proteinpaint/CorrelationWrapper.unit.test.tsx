@@ -1,46 +1,48 @@
-import { render } from "@testing-library/react";
-import * as coreAdapter from "./coreAdapter";
+import { render } from "test-utils";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { CorrelationWrapper, demoFilter } from "./CorrelationWrapper";
-import { MantineProvider } from "@mantine/core";
 
-const filter = {};
-let runpparg,
-  userDetails,
-  isDemoMode = false;
+let runpparg;
 
-// The single @gff/core seam, replaced by its manual mock. This test names no
-// @gff/core export, so GFF changes to @gff/core cannot break it.
-jest.mock("./coreAdapter");
+const cohortFilters = {
+  mode: "and",
+  root: {
+    "cases.project.project_id": {
+      operator: "includes",
+      field: "cases.project.project_id",
+      operands: ["FM-AD"],
+    },
+  },
+};
+const expectedFilter0 = {
+  op: "and",
+  content: [
+    {
+      op: "in",
+      content: { field: "cases.project.project_id", value: ["FM-AD"] },
+    },
+  ],
+};
 
-jest.mock("@/hooks/useIsDemoApp", () => ({
-  useIsDemoApp: jest.fn(() => isDemoMode),
+jest.mock("@gff/core", () => ({
+  ...jest.requireActual("@gff/core"),
+  useFetchUserDetailsQuery: jest.fn(() => ({ data: { username: "test" } })),
+  PROTEINPAINT_API: "host:port/basepath",
+  selectCurrentCohortFilters: jest.fn(() => cohortFilters),
 }));
+
+jest.mock("@/hooks/useIsDemoApp");
 
 jest.mock("@sjcrh/proteinpaint-client", () => ({
   __esModule: true,
   bindProteinPaint: jest.fn(async (arg) => {
     runpparg = Object.assign({}, arg.initArgs, arg.updateArgs || {});
-    return {};
+    return { triggerAbort: jest.fn() };
   }),
 }));
 
-const mockedCore = jest.mocked(coreAdapter);
-mockedCore.buildCohortGqlOperator.mockImplementation(() => filter as any);
-mockedCore.useFetchUserDetailsQuery.mockImplementation(() => userDetails);
-
-const theme = {
-  colors: {
-    primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-    base: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-  },
-} as const;
-
 test("Correlation plot arguments", () => {
-  const { unmount, rerender } = render(
-    <MantineProvider theme={theme}>
-      <CorrelationWrapper />
-    </MantineProvider>,
-  );
+  render(<CorrelationWrapper />);
   expect(typeof runpparg).toBe("object");
   expect(typeof runpparg.host).toBe("string");
   expect(runpparg.noheader).toEqual(true);
@@ -48,26 +50,11 @@ test("Correlation plot arguments", () => {
   expect(runpparg.hide_dsHandles).toEqual(true);
   expect(runpparg.holder instanceof HTMLElement).toBe(true);
   expect(runpparg.launchGdcCorrelation).toEqual(true);
-  expect(runpparg.filter0).toEqual(filter);
-  isDemoMode = true;
-  rerender(
-    <MantineProvider theme={theme}>
-      <CorrelationWrapper />
-    </MantineProvider>,
-  );
-  // there should be only one runpp instance when switching to this tool,
-  // so the arg key-values should not change on rerender
-  expect(runpparg.filter0).toEqual(demoFilter);
-  unmount();
+  expect(runpparg.filter0).toEqual(expectedFilter0);
 });
 
-test("Correlation demo filter0", () => {
-  isDemoMode = true;
-  const { unmount } = render(
-    <MantineProvider theme={theme}>
-      <CorrelationWrapper />
-    </MantineProvider>,
-  );
-  expect(runpparg.filter0).not.toEqual(filter);
-  unmount();
+test("Correlation demo mode uses the demo filter", () => {
+  jest.mocked(useIsDemoApp).mockReturnValue(true);
+  render(<CorrelationWrapper />);
+  expect(runpparg.filter0).toEqual(demoFilter);
 });

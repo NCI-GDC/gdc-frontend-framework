@@ -1,12 +1,38 @@
-import { render } from "@testing-library/react";
-import * as coreAdapter from "./coreAdapter";
+import { render } from "test-utils";
+import { useFetchUserDetailsQuery } from "@gff/core";
 import { SequenceReadWrapper } from "./SequenceReadWrapper";
 
-let filter, runpparg, userDetails;
+let runpparg;
 
-// The single @gff/core seam, replaced by its manual mock. This test names no
-// @gff/core export, so GFF changes to @gff/core cannot break it.
-jest.mock("./coreAdapter");
+const cohortFilters = {
+  mode: "and",
+  root: {
+    "cases.project.project_id": {
+      operator: "includes",
+      field: "cases.project.project_id",
+      operands: ["FM-AD"],
+    },
+  },
+};
+const expectedFilter0 = {
+  op: "and",
+  content: [
+    {
+      op: "in",
+      content: { field: "cases.project.project_id", value: ["FM-AD"] },
+    },
+  ],
+};
+
+jest.mock("@gff/core", () => ({
+  ...jest.requireActual("@gff/core"),
+  // this wrapper reads userDetails.data.data.username to gate its UI
+  useFetchUserDetailsQuery: jest.fn(() => ({
+    data: { data: { username: "test" } },
+  })),
+  PROTEINPAINT_API: "host:port/basepath",
+  selectCurrentCohortFilters: jest.fn(() => cohortFilters),
+}));
 
 jest.mock("@sjcrh/proteinpaint-client", () => ({
   __esModule: true,
@@ -16,14 +42,8 @@ jest.mock("@sjcrh/proteinpaint-client", () => ({
   }),
 }));
 
-const mockedCore = jest.mocked(coreAdapter);
-mockedCore.buildCohortGqlOperator.mockImplementation(() => filter);
-mockedCore.useFetchUserDetailsQuery.mockImplementation(() => userDetails);
-
 test("Sequence Read arguments - logged in", () => {
-  userDetails = { data: { data: { username: "test" } } };
-  filter = { test: 1 };
-  const { unmount, container } = render(<SequenceReadWrapper />);
+  const { container } = render(<SequenceReadWrapper />);
   expect(typeof runpparg).toBe("object");
   expect(typeof runpparg.host).toBe("string");
   expect(runpparg.noheader).toEqual(true);
@@ -34,26 +54,24 @@ test("Sequence Read arguments - logged in", () => {
     hideTokenInput: true,
     stream2download: false,
   });
-  expect(runpparg.filter0).toEqual({ test: 1 });
+  expect(runpparg.filter0).toEqual(expectedFilter0);
   expect(container.querySelector(".sjpp-wrapper-alert-div")).toHaveStyle(
     `display: none`,
   );
   expect(container.querySelector(".sjpp-wrapper-root-div")).toHaveStyle(
     `display: block`,
   );
-  unmount();
 });
 
-// make this the last test so that userDetails
 test("Sequence Read arguments - not logged in", () => {
-  userDetails = { data: { data: { username: null } } };
-  filter = { test: 1 };
-  const { unmount, container } = render(<SequenceReadWrapper />);
+  jest.mocked(useFetchUserDetailsQuery).mockReturnValue({
+    data: { data: { username: null } },
+  } as any);
+  const { container } = render(<SequenceReadWrapper />);
   expect(container.querySelector(".sjpp-wrapper-alert-div")).toHaveStyle(
     `display: block`,
   );
   expect(container.querySelector(".sjpp-wrapper-root-div")).toHaveStyle(
     `display: none`,
   );
-  unmount();
 });

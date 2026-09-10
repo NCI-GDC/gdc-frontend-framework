@@ -1,13 +1,34 @@
-import { render } from "@testing-library/react";
-import * as coreAdapter from "./coreAdapter";
+import { render } from "test-utils";
 import { CohortLevelMafWrapper } from "./CohortLevelMafWrapper";
 
-let filter, runpparg, userDetails;
+let runpparg;
 
-// Replace the single @gff/core seam with its manual mock. The real @gff/core
-// barrel (and its Redux store) never loads, and this test names no @gff/core
-// export — so GFF changes to @gff/core cannot break it.
-jest.mock("./coreAdapter");
+const cohortFilters = {
+  mode: "and",
+  root: {
+    "cases.project.project_id": {
+      operator: "includes",
+      field: "cases.project.project_id",
+      operands: ["FM-AD"],
+    },
+  },
+};
+const expectedFilter0 = {
+  op: "and",
+  content: [
+    {
+      op: "in",
+      content: { field: "cases.project.project_id", value: ["FM-AD"] },
+    },
+  ],
+};
+
+jest.mock("@gff/core", () => ({
+  ...jest.requireActual("@gff/core"),
+  useFetchUserDetailsQuery: jest.fn(() => ({ data: { username: "test" } })),
+  PROTEINPAINT_API: "host:port/basepath",
+  selectCurrentCohortFilters: jest.fn(() => cohortFilters),
+}));
 
 jest.mock("@sjcrh/proteinpaint-client", () => ({
   __esModule: true,
@@ -17,15 +38,8 @@ jest.mock("@sjcrh/proteinpaint-client", () => ({
   }),
 }));
 
-const mockedCore = jest.mocked(coreAdapter);
-
 test("Cohort Level MAF UI", () => {
-  userDetails = { data: { data: { username: "test" } } };
-  filter = { test: 1 };
-  mockedCore.buildCohortGqlOperator.mockReturnValue(filter);
-  mockedCore.useFetchUserDetailsQuery.mockReturnValue(userDetails);
-
-  const { unmount } = render(<CohortLevelMafWrapper />);
+  render(<CohortLevelMafWrapper />);
   expect(typeof runpparg).toBe("object");
   expect(typeof runpparg.host).toBe("string");
   expect(runpparg.noheader).toEqual(true);
@@ -33,6 +47,5 @@ test("Cohort Level MAF UI", () => {
   expect(runpparg.hide_dsHandles).toEqual(true);
   expect(runpparg.holder instanceof HTMLElement).toBe(true);
   expect(runpparg.launchGdcMaf).toEqual(true);
-  expect(runpparg.filter0).toEqual({ test: 1 });
-  unmount();
+  expect(runpparg.filter0).toEqual(expectedFilter0);
 });
