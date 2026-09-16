@@ -237,11 +237,6 @@ export interface RangeBucketElement {
   readonly value?: number; // count of items in range
 }
 
-export interface AllowableRange {
-  readonly minimum: number;
-  readonly maximum: number;
-}
-
 export interface CohortBuilderCategoryConfig {
   readonly label: string;
   readonly facets: ReadonlyArray<string>;
@@ -267,9 +262,13 @@ export type FacetCardDefinition = {
    */
   readonly facet_type?: string;
   /**
-   * specific field for numeric range facets, specifies the min/max bounds of the values
+   * specifies the min bounds of the values
    */
-  readonly range?: AllowableRange;
+  readonly minimum?: number;
+  /**
+   * specifies the max bounds of the values
+   */
+  readonly maximum?: number;
   /**
    * human readable name, if not supplied will use facetNameFormatter
    */
