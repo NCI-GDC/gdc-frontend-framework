@@ -64,14 +64,14 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
   |Sex at Birth           |Visible                          |
   |Race                   |Not Visible                      |
   |Vital Status           |Visible                          |
-  |Age At Diagnosis       |Visible                          |
+  |Age at Diagnosis       |Visible                          |
 * Select analysis cards to enable or disable on Cohort Comparison
   |analysis_card          |
   |-----------------------|
   |survival               |
   |Sex at Birth           |
   |Vital Status           |
-  |Age At Diagnosis       |
+  |Age at Diagnosis       |
 * Verify analysis cards are visible or not visible as expected on Cohort Comparison
   |analysis_card          |should_be_visible_or_not_visible |
   |-----------------------|---------------------------------|
@@ -80,7 +80,7 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
   |Sex at Birth           |Not Visible                      |
   |Race                   |Not Visible                      |
   |Vital Status           |Not Visible                      |
-  |Age At Diagnosis       |Not Visible                      |
+  |Age at Diagnosis       |Not Visible                      |
 * Select analysis cards to enable or disable on Cohort Comparison
   |analysis_card          |
   |-----------------------|
@@ -89,7 +89,7 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
   |Sex at Birth           |
   |Race                   |
   |Vital Status           |
-  |Age At Diagnosis       |
+  |Age at Diagnosis       |
 * Verify analysis cards are visible or not visible as expected on Cohort Comparison
   |analysis_card          |should_be_visible_or_not_visible |
   |-----------------------|---------------------------------|
@@ -98,7 +98,7 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
   |Sex at Birth           |Visible                          |
   |Race                   |Visible                          |
   |Vital Status           |Visible                          |
-  |Age At Diagnosis       |Visible                          |
+  |Age at Diagnosis       |Visible                          |
 
 ## Validate Cohort Case Counts
 * Collect case count of cohorts s1 and s2 on the cohort comparison main screen

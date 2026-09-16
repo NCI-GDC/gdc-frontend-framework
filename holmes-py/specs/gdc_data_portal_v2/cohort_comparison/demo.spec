@@ -26,7 +26,7 @@ tags: gdc-data-portal-v2, regression, cohort-comparison
   |Sex at Birth           |Visible                          |
   |Race                   |Visible                          |
   |Vital Status           |Visible                          |
-  |Age At Diagnosis       |Visible                          |
+  |Age at Diagnosis       |Visible                          |
 
 ## Save Cohorts from Analysis cards
 * Collect case counts on save cohort buttons from an analysis card on Cohort Comparison
