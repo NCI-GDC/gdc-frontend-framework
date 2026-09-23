@@ -1,26 +1,20 @@
-import { render } from "@testing-library/react";
+import { render } from "test-utils";
+import { getExpectedFilter0 } from "./ppTestHelpers";
 import { IDCViewerWrapperPP } from "./IDCViewerWrapperPP";
-import { MantineProvider } from "@mantine/core";
 
-const filter = {};
-let runpparg,
-  userDetails,
-  isDemoMode = false;
+let runpparg;
 
-jest.mock("@gff/core", () => ({
-  useCoreSelector: jest.fn().mockReturnValue({}),
-  buildCohortGqlOperator: jest.fn(() => filter),
-  useAddCohortMutation: jest.fn(() => [() => null, { isSuccess: true }]),
-  useFetchUserDetailsQuery: jest.fn(() => userDetails),
-  PROTEINPAINT_API: "protocol://host:port/basepath",
-  GDC_API: "protocol://host/basepath",
-}));
+const expectedFilter0 = getExpectedFilter0();
 
-jest.mock("@/hooks/useIsDemoApp", () => ({
-  useIsDemoApp: jest.fn(() => isDemoMode),
-}));
+jest.mock("@gff/core", () =>
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  require("./ppTestHelpers").mockGffCore({
+    PROTEINPAINT_API: "protocol://host:port/basepath",
+    GDC_API: "protocol://host/basepath",
+  }),
+);
 
-jest.mock("@gff/portal-components");
+jest.mock("@/hooks/useIsDemoApp");
 
 jest.mock("@sjcrh/proteinpaint-client", () => ({
   __esModule: true,
@@ -31,18 +25,7 @@ jest.mock("@sjcrh/proteinpaint-client", () => ({
 }));
 
 test("IDCViewerWrapperPP arguments", () => {
-  const { unmount, rerender } = render(
-    <MantineProvider
-      theme={{
-        colors: {
-          primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-          base: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-        },
-      }}
-    >
-      <IDCViewerWrapperPP />
-    </MantineProvider>,
-  );
+  render(<IDCViewerWrapperPP />);
   expect(typeof runpparg).toBe("object");
   expect(typeof runpparg.host).toBe("string");
   expect(runpparg.noheader).toEqual(true);
@@ -50,23 +33,6 @@ test("IDCViewerWrapperPP arguments", () => {
   expect(runpparg.hide_dsHandles).toEqual(true);
   expect(runpparg.holder instanceof HTMLElement).toBe(true);
   expect(runpparg.launchIdc).toEqual(true);
-  expect(runpparg.filter0).toEqual(filter);
+  expect(runpparg.filter0).toEqual(expectedFilter0);
   expect(typeof runpparg.GDC_API).toEqual("string");
-  isDemoMode = true;
-  rerender(
-    <MantineProvider
-      theme={{
-        colors: {
-          primary: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-          base: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-        },
-      }}
-    >
-      <IDCViewerWrapperPP />
-    </MantineProvider>,
-  );
-  // there should be only one runpp instance when switching to this tool,
-  // so the arg key-values should not change on rerender
-  // expect(runpparg.filter0).toEqual(demoFilter);
-  unmount();
 });

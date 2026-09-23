@@ -1,14 +1,15 @@
-import { render } from "@testing-library/react";
+import { render } from "test-utils";
+import { getExpectedFilter0 } from "./ppTestHelpers";
 import { CohortLevelMafWrapper } from "./CohortLevelMafWrapper";
 
-let filter, runpparg, userDetails;
+let runpparg;
 
-jest.mock("@gff/core", () => ({
-  useCoreSelector: jest.fn().mockReturnValue({}),
-  buildCohortGqlOperator: jest.fn(() => filter),
-  useFetchUserDetailsQuery: jest.fn(() => userDetails),
-  PROTEINPAINT_API: "host:port/basepath",
-}));
+const expectedFilter0 = getExpectedFilter0();
+
+jest.mock("@gff/core", () =>
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  require("./ppTestHelpers").mockGffCore(),
+);
 
 jest.mock("@sjcrh/proteinpaint-client", () => ({
   __esModule: true,
@@ -19,9 +20,7 @@ jest.mock("@sjcrh/proteinpaint-client", () => ({
 }));
 
 test("Cohort Level MAF UI", () => {
-  userDetails = { data: { data: { username: "test" } } };
-  filter = { test: 1 };
-  const { unmount } = render(<CohortLevelMafWrapper />);
+  render(<CohortLevelMafWrapper />);
   expect(typeof runpparg).toBe("object");
   expect(typeof runpparg.host).toBe("string");
   expect(runpparg.noheader).toEqual(true);
@@ -29,6 +28,5 @@ test("Cohort Level MAF UI", () => {
   expect(runpparg.hide_dsHandles).toEqual(true);
   expect(runpparg.holder instanceof HTMLElement).toBe(true);
   expect(runpparg.launchGdcMaf).toEqual(true);
-  expect(runpparg.filter0).toEqual({ test: 1 });
-  unmount();
+  expect(runpparg.filter0).toEqual(expectedFilter0);
 });
