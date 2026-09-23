@@ -13,9 +13,6 @@ const connectSrc = [
 ];
 
 export function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-  console.error({ pathname });
-
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const isDev = process.env.NODE_ENV === "development";
   const cspHeader = `
