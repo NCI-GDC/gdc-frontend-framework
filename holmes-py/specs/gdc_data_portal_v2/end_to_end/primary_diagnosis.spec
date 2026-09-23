@@ -63,13 +63,43 @@ tags: gdc-data-portal-v2, end-to-end, regression
 * Navigate to "Clinical Data Analysis" from "Analysis" "app"
 * Wait for "Overall Survival Plot" to be present on the page
 * Validate the "Primary Diagnosis" analysis card's table contains these values
-   |value                                   |
-   |----------------------------------------|
-   |acral lentiginous melanoma, malignant   |
-   |hemangioendothelioma, malignant         |
-   |epithelial tumor, benign                |
-   |transitional cell carcinoma in situ     |
-   |mixed invasive mucinous and non-mucinous adenocarcinoma|
-   |gastrointestinal stromal tumor, malignant|
-   |teratoma, malignant, nos                |
-   |mesothelioma, malignant                 |
+  |value                                   |
+  |----------------------------------------|
+  |acral lentiginous melanoma, malignant   |
+  |hemangioendothelioma, malignant         |
+  |epithelial tumor, benign                |
+  |transitional cell carcinoma in situ     |
+  |mixed invasive mucinous and non-mucinous adenocarcinoma|
+  |gastrointestinal stromal tumor, malignant|
+  |teratoma, malignant, nos                |
+  |mesothelioma, malignant                 |
+
+
+## Repository - Validate Case Count
+* Navigate to "Downloads" from "Header" "section"
+* Collect Cohort Bar Case Count for comparison
+* Collect "Cases" Count on the Repository page
+* Verify "Cases Count Repository Page" and "Cohort Bar Case Count" are "Equal"
+
+## Cart - Download Related File
+	* Add the following files to the cart on the Repository page
+  |file_uuid_to_add                     |
+  |-------------------------------------|
+  |45d875c0-6e07-4ddf-aee3-d74d52f0e5f5 |
+  |152b9852-517a-4a4d-8bd5-d7150938d61f |
+  |82b86669-09b7-41e4-92ce-00a5c00a566c |
+  |bdbfe7e5-c080-4441-931d-bffe2a4de5be |
+* Navigate to "Cart" from "Header" "section"
+* Download "Cart" from "Cart Header Download Cart"
+* Read file content from compressed "Cart from Cart Header Download Cart"
+* Verify that "Cart from Cart Header Download Cart" has expected information
+  |required_info                        |
+  |-------------------------------------|
+  |45d875c0-6e07-4ddf-aee3-d74d52f0e5f5 |
+  |152b9852-517a-4a4d-8bd5-d7150938d61f |
+  |82b86669-09b7-41e4-92ce-00a5c00a566c |
+  |bdbfe7e5-c080-4441-931d-bffe2a4de5be |
+  |152b9852-517a-4a4d-8bd5-d7150938d61f |
+  |c38cade3-4abf-4e08-9906-dcb73983485e |
+  |17bc9704-46f6-4c53-b193-4210a9c1bbc5 |
+  |ALCH Treatment Arm                   |
