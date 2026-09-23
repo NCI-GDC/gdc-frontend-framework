@@ -15,6 +15,23 @@ const connectSrc = [
 export function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const isDev = process.env.NODE_ENV === "development";
+
+  if (process.env.NODE_ENV == "development") {
+    // in SJ dev environment, this would point to a local PP server instance
+    const PROTEINPAINT_API =
+      process.env.PROTEINPAINT_API ||
+      process.env.NEXT_PUBLIC_PROTEINPAINT_API ||
+      "";
+    const PROTEINPAINT_HOST =
+      PROTEINPAINT_API.split("://")[1]?.split("/")[0] || "";
+
+    if (
+      PROTEINPAINT_HOST &&
+      !connectSrc.includes(`https://${PROTEINPAINT_HOST}`)
+    )
+      connectSrc.push(`https://${PROTEINPAINT_HOST}`);
+  }
+
   const cspHeader = `
     default-src 'self';
     script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ""};

@@ -5,19 +5,6 @@
  */
 const basePath = process.env.NEXT_PUBLIC_BASEPATH;
 
-if (process.env.NODE_ENV == "development") {
-  // in SJ dev environment, this would point to a local PP server instance
-  const PROTEINPAINT_API =
-    process.env.PROTEINPAINT_API ||
-    process.env.NEXT_PUBLIC_PROTEINPAINT_API ||
-    "";
-  const PROTEINPAINT_HOST =
-    PROTEINPAINT_API.split("://")[1]?.split("/")[0] || "";
-
-  if (PROTEINPAINT_HOST && !connectSrc.includes(`https://${PROTEINPAINT_HOST}`))
-    connectSrc.push(`https://${PROTEINPAINT_HOST}`);
-}
-
 // Fallback if Docker is not run: This calls git directly
 const buildHash = () => {
   try {
