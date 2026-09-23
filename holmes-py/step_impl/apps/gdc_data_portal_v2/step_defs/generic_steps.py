@@ -206,6 +206,55 @@ def verify_compared_statistics_are_equal_or_not_equal(
             first_statistic_string != second_statistic_string
         ), f"The first statistic {statistic_1}'s value '{first_statistic_string}' and second statistic {statistic_2}'s value '{second_statistic_string}' does match when it should NOT"
 
+@step("Verify <statistic_1> is <greater_than_or_less_than> <statistic_2>")
+def verify_compared_statistics_are_greater_than_or_less_than(
+    statistic_1, greater_than_or_less_than, statistic_2
+):
+    """
+    verify_compared_statistics_are_greater_than_or_less_than compares two statistics to one another.
+    Asserts if first statistic is greater than or less than the second statistic based on spec file input.
+
+    :param statistic_1: The first statistic to compare. It is the name it is stored under in data_store.spec
+    :param statistic_2: The second statistic to compare. It is the name it is stored under in data_store.spec. This can also be
+    entered directly from spec file input.
+    :param greater_than_or_less_than: If statistic_1 should be greater than or less than statistic_2
+    :return: N/A
+    """
+    # Get first statistic to compare
+    first_statistic_string = data_store.spec[f"{statistic_1}"]
+
+
+    first_statistic_string = APP.shared.strip_string_for_comparison(
+        first_statistic_string
+    )
+    first_statistic_string = APP.shared.strip_string_all_alphabet_characters_for_comparison(
+        first_statistic_string
+    )
+
+    # Checks to see if data to compare has been stored
+    if statistic_2 in data_store.spec:
+        second_statistic_string = data_store.spec[f"{statistic_2}"]
+        second_statistic_string = APP.shared.strip_string_for_comparison(
+            second_statistic_string
+        )
+        second_statistic_string = APP.shared.strip_string_all_alphabet_characters_for_comparison(
+            second_statistic_string
+        )
+        print(second_statistic_string)
+    # If not, we take the statistic to compare directly from spec file input
+    else:
+        second_statistic_string = statistic_2
+
+    greater_than_or_less_than = greater_than_or_less_than.lower()
+    if greater_than_or_less_than == "greater than":
+        assert (
+            first_statistic_string > second_statistic_string
+        ), f"The first statistic '{first_statistic_string}' is NOT greater than the second statistic '{second_statistic_string}' when it should"
+    elif greater_than_or_less_than == "less than":
+        assert (
+            first_statistic_string < second_statistic_string
+        ), f"The first statistic '{first_statistic_string}' IS greater than the second statistic '{second_statistic_string}' when it should NOT"
+
 
 @step("Close the modal")
 def close_the_modal():

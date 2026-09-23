@@ -291,6 +291,11 @@ class BasePage:
         string_to_strip = re.sub(r'\D', '', string_to_strip)
         return string_to_strip
 
+    def strip_string_all_alphabet_characters_for_comparison(self, string_to_strip):
+        """Takes a string and strips all alphabet characters for comparison"""
+        string_to_strip = re.sub(r'[A-Za-z]', '', string_to_strip)
+        return string_to_strip
+
     def get_text_by_data_testid(self, text_id_to_collect):
         """Returns text from given data-testid"""
         text_id_to_collect = self.normalize_button_identifier(text_id_to_collect)
