@@ -19,7 +19,7 @@ tags: gdc-data-portal-v2, regression, mutation-summary
     |DNA Change                             |2    |
     |Type                                   |3    |
     |Reference Genome Assembly              |4    |
-    |Allele In The Reference Assembly       |5    |
+    |Allele in the Reference Assembly       |5    |
     |Functional Impact                      |6    |
 * Verify the table "Summary Mutation Summary" body text is correct
     |expected_text                          |row  |column |

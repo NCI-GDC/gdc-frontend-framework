@@ -22,19 +22,19 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
 * Validate expected custom filters "are" present in facet cards on the "General" tab on the Cohort Builder page
   |facet_name           |custom_filter_text                     |
   |---------------------|---------------------------------------|
-  |Case Id              |a757f96a-a173-45e2-a292-62ea007efd9d   |
+  |Case ID              |a757f96a-a173-45e2-a292-62ea007efd9d   |
 * Validate the cohort query filter area has these filters
   |facet_name           |selections                             |position in filter area  |
   |---------------------|---------------------------------------|-------------------------|
-  |Case Id              |a757f96a-a173-45e2-a292-62ea007efd9d   |1                        |
+  |Case ID              |a757f96a-a173-45e2-a292-62ea007efd9d   |1                        |
 * Remove these filters from the cohort query area
   |Filter to Remove             |
   |-----------------------------|
-  |Case Id                      |
+  |Case ID                      |
 * Validate expected custom filters "are not" present in facet cards on the "General" tab on the Cohort Builder page
   |facet_name           |custom_filter_text                     |
   |---------------------|---------------------------------------|
-  |Case Id              |a757f96a-a173-45e2-a292-62ea007efd9d   |
+  |Case ID              |a757f96a-a173-45e2-a292-62ea007efd9d   |
 
 ## Case ID - Multiple Identifiers
 * Clear active cohort filters
@@ -48,15 +48,15 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
 * Validate expected custom filters "are" present in facet cards on the "General" tab on the Cohort Builder page
   |facet_name           |custom_filter_text                     |
   |---------------------|---------------------------------------|
-  |Case Id              |12 input case ids                      |
+  |Case ID              |12 input case ids                      |
 * Validate the cohort query filter area has these filters
   |facet_name           |selections                             |position in filter area  |
   |---------------------|---------------------------------------|-------------------------|
-  |Case Id              |12 input case ids                      |1                        |
+  |Case ID              |12 input case ids                      |1                        |
 * Remove the following custom filters in facet cards on the "General" tab on the Cohort Builder page
   |facet_name           |custom_filter_text                     |
   |---------------------|---------------------------------------|
-  |Case Id              |12 input case ids                      |
+  |Case ID              |12 input case ids                      |
 * Validate there are no active cohort filters
 
 ## Mutated Gene - Single Identifier
@@ -124,11 +124,11 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
 * Validate the cohort query filter area has these filters
   |facet_name           |selections                             |position in filter area  |
   |---------------------|---------------------------------------|-------------------------|
-  |Ssm Id               |99eb3457-6125-5255-8322-88d0b55578ea   |1                        |
+  |SSM ID               |99eb3457-6125-5255-8322-88d0b55578ea   |1                        |
 * Remove these filters from the cohort query area
   |Filter to Remove             |
   |-----------------------------|
-  |Ssm Id                       |
+  |SSM ID                       |
 * Validate expected custom filters "are not" present in facet cards on the "Genomic Filters" tab on the Cohort Builder page
   |facet_name           |custom_filter_text                     |
   |---------------------|---------------------------------------|
@@ -151,9 +151,9 @@ tags: gdc-data-portal-v2, cohort-builder, filter-card, regression
 * Validate the cohort query filter area has these filters
   |facet_name           |selections                             |position in filter area  |
   |---------------------|---------------------------------------|-------------------------|
-  |Ssm Id               |5 input ssm ids                        |1                        |
+  |SSM ID               |5 input ssm ids                        |1                        |
 * Remove the following custom filters in facet cards on the "Genomic Filters" tab on the Cohort Builder page
   |facet_name           |custom_filter_text                     |
   |---------------------|---------------------------------------|
-  |Ssm Id               |5 input ssm ids                        |
+  |SSM ID               |5 input ssm ids                        |
 * Validate there are no active cohort filters
