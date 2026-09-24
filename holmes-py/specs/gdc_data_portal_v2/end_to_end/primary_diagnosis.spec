@@ -1,9 +1,9 @@
 # End to End - Primary Diagnosis
-Date Created    :
-Version			    : 2.0
+Date Created    : 09/22/2026
+Version			    : 1.0
 Owner		        : GDC QA
-Description		  :
-Test-case       : P
+Description		  : Ensure Primary Diagnosis filters are not capped and behave as expected
+Test-case       : PEAR-T2718
 
 tags: gdc-data-portal-v2, end-to-end, regression
 
