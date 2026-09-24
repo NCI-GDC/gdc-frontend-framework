@@ -189,6 +189,7 @@ describe("cohortConfig reducer", () => {
       "cases.diagnoses.cog_neuroblastoma_risk_group",
       "cases.diagnoses.cog_rhabdomyosarcoma_risk_group",
       "cases.diagnoses.eln_risk_classification",
+      "cases.diagnoses.enneking_msts_grade",
       "cases.diagnoses.international_prognostic_index",
       "cases.diagnoses.medulloblastoma_molecular_classification",
       "cases.diagnoses.wilms_tumor_histologic_subtype",
