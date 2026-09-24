@@ -137,6 +137,37 @@ def collect_case_counts_on_filters(cohort_name: str, table):
         data_store.spec[f"{v[1]}_{v[2]}_{cohort_name} Count"] = case_count
 
 
+@step(
+    "Collect counts on more label from the following filters on the Cohort Builder page for cohort <cohort_name> <table>"
+)
+def collect_case_counts_on_filters(cohort_name: str, table):
+    """
+    collect_case_counts_on_filters Collect case count on filters on the cohort builder page.
+    Pairs with the test 'verify_compared_statistics_are_equal_or_not_equal'.
+    :param cohort_name: Cohort Name we are collecting the information under
+    :param v[0]: Tab to select on cohort builder
+    :param v[1]: Facet Card Name
+    """
+    for k, v in enumerate(table):
+        # Clicks tab in cohort builder
+        APP.cohort_builder_page.click_button(v[0])
+        APP.shared.wait_for_loading_spinners_to_detach()
+
+        # Contracts list of filters to select if possible
+        if APP.cohort_builder_page.is_show_more_or_show_less_button_visible_within_filter_card(
+            v[1], "minus-icon"
+        ):
+            APP.cohort_builder_page.click_show_more_less_within_filter_card(
+                v[1], "minus-icon"
+            )
+
+        case_count = (
+            APP.cohort_builder_page.get_more_button_count_within_filter_card(v[1])
+        )
+        # Saves the more count count under the facet and cohort name
+        data_store.spec[f"{v[1]}_{cohort_name} more Count"] = case_count
+
+
 @step("Add a custom filter from <tab_name> tab on the Cohort Builder page <table>")
 def add_custom_filter_card(tab_name: str, table):
     APP.cohort_builder_page.click_button(tab_name)
