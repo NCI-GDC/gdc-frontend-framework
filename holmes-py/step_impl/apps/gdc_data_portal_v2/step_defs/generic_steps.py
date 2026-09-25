@@ -1329,6 +1329,7 @@ def click_nav_item_check_text_in_new_tab(page_name: str, table):
         new_tab = APP.shared.perform_action_handle_new_tab(page_name, v[0])
         is_url_correct = APP.shared.is_url_correct_on_new_tab(new_tab, v[1])
         new_tab.close()
+        time.sleep(0.8)
         assert (
             is_url_correct
         ), f"After click on '{v[0]}', the expected url '{v[1]}' in NOT present"
