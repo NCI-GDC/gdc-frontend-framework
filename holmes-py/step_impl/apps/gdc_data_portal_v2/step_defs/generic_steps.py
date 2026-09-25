@@ -137,6 +137,15 @@ def save_cohort_if_needed():
 def navigate_to_app():
     APP.navigate()
     APP.shared.wait_for_loading_spinners_to_detach()
+    # In gitlab, this test step has been a little flaky. Meaning, after navigating, the page did not load at all.
+    # In a whole regression run, this has been failing in about 1 spec file. So, we reload the page once
+    # here to try to overcome the flakiness.
+    try:
+        APP.shared.wait_until_locator_is_visible('[data-testid="button-header-analysis"]', 60000)
+    except:
+        APP.shared.reload_page()
+        time.sleep(10)
+        APP.shared.wait_for_loading_spinners_to_detach()
     APP.modal.accept_warning()
 
 @step("Go to <page_name> page")
