@@ -223,11 +223,7 @@ def verify_compared_statistics_are_greater_than_or_less_than(
     # Get first statistic to compare
     first_statistic_string = data_store.spec[f"{statistic_1}"]
 
-
     first_statistic_string = APP.shared.strip_string_for_comparison(
-        first_statistic_string
-    )
-    first_statistic_string = APP.shared.strip_string_all_alphabet_characters_for_comparison(
         first_statistic_string
     )
 
@@ -237,10 +233,6 @@ def verify_compared_statistics_are_greater_than_or_less_than(
         second_statistic_string = APP.shared.strip_string_for_comparison(
             second_statistic_string
         )
-        second_statistic_string = APP.shared.strip_string_all_alphabet_characters_for_comparison(
-            second_statistic_string
-        )
-        print(second_statistic_string)
     # If not, we take the statistic to compare directly from spec file input
     else:
         second_statistic_string = statistic_2
@@ -249,7 +241,7 @@ def verify_compared_statistics_are_greater_than_or_less_than(
     if greater_than_or_less_than == "greater than":
         assert (
             first_statistic_string > second_statistic_string
-        ), f"The first statistic '{first_statistic_string}' is NOT greater than the second statistic '{second_statistic_string}' when it should"
+        ), f"The first statistic '{first_statistic_string}' is NOT greater than the second statistic '{second_statistic_string}' when it should be"
     elif greater_than_or_less_than == "less than":
         assert (
             first_statistic_string < second_statistic_string
