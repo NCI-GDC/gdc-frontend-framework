@@ -291,7 +291,6 @@ class BasePage:
         string_to_strip = re.sub(r'\D', '', string_to_strip)
         return string_to_strip
 
-
     def get_text_by_data_testid(self, text_id_to_collect):
         """Returns text from given data-testid"""
         text_id_to_collect = self.normalize_button_identifier(text_id_to_collect)
