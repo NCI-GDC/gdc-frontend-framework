@@ -242,6 +242,13 @@ class CohortBuilderPage(BasePage):
         )
         self.click(locator)
 
+    # Returns text from "# More" button on specified facet card
+    def get_more_button_count_within_filter_card(self, facet_group_name):
+        locator = CohortBuilderPageLocators.FACET_GROUP_SHOW_MORE_LESS_IDENT(
+            facet_group_name, "plus-icon"
+        )
+        return self.get_text(locator)
+
     # Send keys in the search textbox area
     def type_in_facet_search_text_area(self, facet_group_name, textbox_id, text):
         textbox_id = self.normalize_button_identifier(textbox_id)
