@@ -1,5 +1,5 @@
 import { ActionIcon, Menu, Tooltip } from "@mantine/core";
-import Plotly from "plotly.js";
+import Plotly from "plotly.js-basic-dist-min";
 import { JSONArray } from "@/features/types";
 import { DownloadIcon } from "@/utils/icons";
 import { useDisclosure } from "@mantine/hooks";
