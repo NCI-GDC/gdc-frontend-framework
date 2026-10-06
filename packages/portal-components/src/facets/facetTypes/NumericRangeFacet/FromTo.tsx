@@ -312,13 +312,14 @@ const FromTo: React.FC<FromToProps> = ({
                     if (value === "") {
                       form.setFieldValue("fromValue", undefined);
                     } else {
-                      form.setFieldValue("fromValue", Number(value));
+                      form.setFieldValue("fromValue", value as number);
                     }
                     changedCallback();
                   }}
                   error={form?.errors?.fromValue}
                   hideControls
                   aria-label="input from value"
+                  trimLeadingZeroesOnBlur={false}
                 />
               </div>
             </div>
@@ -356,13 +357,14 @@ const FromTo: React.FC<FromToProps> = ({
                     if (value === "") {
                       form.setFieldValue("toValue", undefined);
                     } else {
-                      form.setFieldValue("toValue", Number(value));
+                      form.setFieldValue("toValue", value as number);
                     }
                     changedCallback();
                   }}
                   error={form?.errors?.toValue}
                   hideControls
                   aria-label="input to value"
+                  trimLeadingZeroesOnBlur={false}
                 />
               </div>
             </div>
