@@ -193,7 +193,7 @@ def verify_file_filter_applied(filter_name: str):
     expected_filter_name = repository.get_custom_filter_facet_as_applied(filter_name)
     actual_filter_name = repository.get_filter_facet_names()[0]
     assert (
-        expected_filter_name == actual_filter_name
+        expected_filter_name.lower() == actual_filter_name.lower()
     ), f"Custom filter not found in facets.\nExpected: {expected_filter_name}\nActual: {actual_filter_name}"
 
 

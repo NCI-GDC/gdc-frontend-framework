@@ -77,6 +77,7 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards, regression
   |Cog Rhabdomyosarcoma Risk Group|enum                                       |
   |International Prognostic Index |enum                                       |
   |Eln Risk Classification        |enum                                       |
+  |Enneking Msts Grade            |enum                                       |
   |Medulloblastoma Molecular Classification|enum                              |
   |Wilms Tumor Histologic Subtype |enum                                       |
   |Weiss Assessment Score     |enum                                           |
