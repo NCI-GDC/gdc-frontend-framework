@@ -155,6 +155,7 @@ def select_table_value_by_row_column(card_name:str, table):
 def click_button_categorical_modal(button_name):
     """Selects a button on a custom bin modal on a categorical analysis card"""
     APP.clinical_data_analysis.click_button_categorical_modal(button_name)
+    APP.shared.wait_for_loading_spinners_to_detach()
 
 
 @step(
@@ -229,9 +230,8 @@ def click_button_bin_option_continuous_modal(button_name):
 def click_save_cancel_button_continuous_modal(button_name):
     """Select save or cancel on the continuous custom bin modal"""
     APP.clinical_data_analysis.click_save_cancel_button_continuous_modal(button_name)
-    APP.shared.wait_for_loading_spinner_table_to_detatch()
-    APP.shared.wait_for_loading_spinner_to_detatch()
     time.sleep(1)
+    APP.shared.wait_for_loading_spinners_to_detach()
 
 
 @step(
