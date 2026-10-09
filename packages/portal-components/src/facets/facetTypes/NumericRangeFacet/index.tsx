@@ -55,6 +55,8 @@ const NumericRangeFacet: React.FC<NumericFacetCardProps> = ({
     }
   }, [clearValues]);
 
+  const clearFiltersCallback = () => setClearValues(true);
+
   return (
     <div
       data-testid={`facet-card-${facetName}`}
@@ -75,6 +77,7 @@ const NumericRangeFacet: React.FC<NumericFacetCardProps> = ({
         isFacetView={isFacetView}
         toggleFlip={toggleFlip}
         showFlip={rangeDatatype !== "range" && Chart !== undefined}
+        clearFiltersCallback={clearFiltersCallback}
       />
       <div
         className={showFilters ? "h-full" : "h-0 invisible"}
