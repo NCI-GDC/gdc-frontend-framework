@@ -1,6 +1,6 @@
 {
   "name": "@nci-gdc/survivalplot",
-  "version": "2.20.0",
+  "version": "2.21.0",
   "browser": true,
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
