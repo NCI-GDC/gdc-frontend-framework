@@ -1,9 +1,13 @@
+import { waitFor } from "@testing-library/react";
+
 // Shared fixtures + core-module mock for the ProteinPaint wrapper unit tests.
 //
 // Usage in a test file:
 //
 //   jest.mock("@gff/core", () => require("./ppTestHelpers").mockGffCore());
 //   const expectedFilter0 = getExpectedFilter0();
+//   ...
+//   const runpparg = await getRunppArg(jest.mocked(bindProteinPaint));
 //
 // The mock is required INSIDE the jest.mock factory (not imported at the top)
 // so the hoisted jest.mock does not depend on import order. Per-test needs are
@@ -61,4 +65,19 @@ export const mockGffCore = (overrides: Record<string, unknown> = {}) => {
     selectCurrentCohortFilters: jest.fn(() => cohortFilters),
     ...overrides,
   };
+};
+
+// Waits for the mocked proteinpaint launcher (bindProteinPaint or
+// runproteinpaint) to be called - the wrappers call it asynchronously from an
+// effect - then returns the argument of its most recent call. For
+// bindProteinPaint, initArgs and updateArgs are merged into one object.
+// Call jest.clearAllMocks() in beforeEach so calls from a previous test are
+// never mistaken for the current test's call.
+export const getRunppArg = async (launcher: jest.Mock) => {
+  await waitFor(() => expect(launcher).toHaveBeenCalled());
+  const calls = launcher.mock.calls;
+  const arg = calls[calls.length - 1][0];
+  return arg.initArgs
+    ? Object.assign({}, arg.initArgs, arg.updateArgs || {})
+    : arg;
 };

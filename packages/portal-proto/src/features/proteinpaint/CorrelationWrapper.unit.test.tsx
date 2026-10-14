@@ -1,9 +1,8 @@
 import { render } from "test-utils";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
-import { getExpectedFilter0 } from "./ppTestHelpers";
+import { bindProteinPaint } from "@sjcrh/proteinpaint-client";
+import { getExpectedFilter0, getRunppArg } from "./ppTestHelpers";
 import { CorrelationWrapper, demoFilter } from "./CorrelationWrapper";
-
-let runpparg;
 
 const expectedFilter0 = getExpectedFilter0();
 
@@ -16,14 +15,17 @@ jest.mock("@/hooks/useIsDemoApp");
 
 jest.mock("@sjcrh/proteinpaint-client", () => ({
   __esModule: true,
-  bindProteinPaint: jest.fn(async (arg) => {
-    runpparg = Object.assign({}, arg.initArgs, arg.updateArgs || {});
-    return { triggerAbort: jest.fn() };
-  }),
+  bindProteinPaint: jest.fn(async () => ({ triggerAbort: jest.fn() })),
 }));
 
-test("Correlation plot arguments", () => {
+beforeEach(() => {
+  jest.clearAllMocks();
+  jest.mocked(useIsDemoApp).mockReturnValue(false);
+});
+
+test("Correlation plot arguments", async () => {
   render(<CorrelationWrapper />);
+  const runpparg = await getRunppArg(jest.mocked(bindProteinPaint));
   expect(typeof runpparg).toBe("object");
   expect(typeof runpparg.host).toBe("string");
   expect(runpparg.noheader).toEqual(true);
@@ -34,8 +36,9 @@ test("Correlation plot arguments", () => {
   expect(runpparg.filter0).toEqual(expectedFilter0);
 });
 
-test("Correlation demo mode uses the demo filter", () => {
+test("Correlation demo mode uses the demo filter", async () => {
   jest.mocked(useIsDemoApp).mockReturnValue(true);
   render(<CorrelationWrapper />);
+  const runpparg = await getRunppArg(jest.mocked(bindProteinPaint));
   expect(runpparg.filter0).toEqual(demoFilter);
 });

@@ -1,9 +1,8 @@
 import { render } from "test-utils";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
-import { getExpectedFilter0 } from "./ppTestHelpers";
+import { runproteinpaint } from "@sjcrh/proteinpaint-client";
+import { getExpectedFilter0, getRunppArg } from "./ppTestHelpers";
 import { ScRNAseqWrapper } from "./ScRNAseqWrapper";
-
-let runpparg;
 
 const expectedFilter0 = getExpectedFilter0();
 
@@ -16,14 +15,17 @@ jest.mock("@/hooks/useIsDemoApp");
 
 jest.mock("@sjcrh/proteinpaint-client", () => ({
   __esModule: true,
-  runproteinpaint: jest.fn(async (arg) => {
-    runpparg = arg;
-    return {};
-  }),
+  runproteinpaint: jest.fn(async () => ({})),
 }));
 
-test("single cell RNAseq arguments", () => {
+beforeEach(() => {
+  jest.clearAllMocks();
+  jest.mocked(useIsDemoApp).mockReturnValue(false);
+});
+
+test("single cell RNAseq arguments", async () => {
   render(<ScRNAseqWrapper />);
+  const runpparg = await getRunppArg(jest.mocked(runproteinpaint));
   expect(typeof runpparg).toBe("object");
   expect(runpparg.holder instanceof HTMLElement).toBe(true);
   expect(typeof runpparg.host).toBe("string");
@@ -34,9 +36,10 @@ test("single cell RNAseq arguments", () => {
   expect(runpparg.hide_dsHandles).toEqual(true);
 });
 
-test("single cell demo filter0", () => {
+test("single cell demo filter0", async () => {
   jest.mocked(useIsDemoApp).mockReturnValue(true);
   render(<ScRNAseqWrapper />);
+  const runpparg = await getRunppArg(jest.mocked(runproteinpaint));
   expect(runpparg.state?.plots?.[0]).toEqual({
     sample: "2409",
     chartType: "sc",

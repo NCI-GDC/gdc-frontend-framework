@@ -1,8 +1,7 @@
 import { render } from "test-utils";
-import { getExpectedFilter0 } from "./ppTestHelpers";
+import { runproteinpaint } from "@sjcrh/proteinpaint-client";
+import { getExpectedFilter0, getRunppArg } from "./ppTestHelpers";
 import { CohortLevelMafWrapper } from "./CohortLevelMafWrapper";
-
-let runpparg;
 
 const expectedFilter0 = getExpectedFilter0();
 
@@ -13,14 +12,16 @@ jest.mock("@gff/core", () =>
 
 jest.mock("@sjcrh/proteinpaint-client", () => ({
   __esModule: true,
-  runproteinpaint: jest.fn(async (arg) => {
-    runpparg = arg;
-    return {};
-  }),
+  runproteinpaint: jest.fn(async () => ({})),
 }));
 
-test("Cohort Level MAF UI", () => {
+beforeEach(() => {
+  jest.clearAllMocks();
+});
+
+test("Cohort Level MAF UI", async () => {
   render(<CohortLevelMafWrapper />);
+  const runpparg = await getRunppArg(jest.mocked(runproteinpaint));
   expect(typeof runpparg).toBe("object");
   expect(typeof runpparg.host).toBe("string");
   expect(runpparg.noheader).toEqual(true);

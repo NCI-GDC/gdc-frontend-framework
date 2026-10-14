@@ -1,9 +1,8 @@
 import { render } from "test-utils";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
-import { getExpectedFilter0 } from "./ppTestHelpers";
+import { bindProteinPaint } from "@sjcrh/proteinpaint-client";
+import { getExpectedFilter0, getRunppArg } from "./ppTestHelpers";
 import { ProteinPaintWrapper } from "./ProteinPaintWrapper";
-
-let runpparg;
 
 const expectedFilter0 = getExpectedFilter0();
 
@@ -16,15 +15,18 @@ jest.mock("@/hooks/useIsDemoApp");
 
 jest.mock("@sjcrh/proteinpaint-client", () => ({
   __esModule: true,
-  bindProteinPaint: jest.fn(async (arg) => {
-    runpparg = Object.assign({}, arg.initArgs, arg.updateArgs || {});
-    return { triggerAbort: jest.fn() };
-  }),
+  bindProteinPaint: jest.fn(async () => ({ triggerAbort: jest.fn() })),
 }));
 
-test("CNV Segment arguments", () => {
+beforeEach(() => {
+  jest.clearAllMocks();
+  jest.mocked(useIsDemoApp).mockReturnValue(false);
+});
+
+test("CNV Segment arguments", async () => {
   // test-utils render() wraps the component in the real CoreProvider + Mantine.
   render(<ProteinPaintWrapper hardcodeCnvOnly={true} />);
+  const runpparg = await getRunppArg(jest.mocked(bindProteinPaint));
   expect(typeof runpparg).toBe("object");
   expect(typeof runpparg.host).toBe("string");
   expect(runpparg.noheader).toEqual(true);
@@ -34,13 +36,14 @@ test("CNV Segment arguments", () => {
   expect(runpparg.allow2selectSamples).toEqual({
     buttonText: "Create Cohort",
     attributes: [{ from: "sample_id", to: "cases.case_id", convert: true }],
-    callback: runpparg.allow2selectSamples?.callback,
+    callback: expect.any(Function),
   });
   expect(runpparg.geneSearch4GDCmds3).toEqual({ hardcodeCnvOnly: true });
 });
 
-test("CNV Segment demo mode ignores the cohort filter", () => {
+test("CNV Segment demo mode ignores the cohort filter", async () => {
   jest.mocked(useIsDemoApp).mockReturnValue(true);
   render(<ProteinPaintWrapper hardcodeCnvOnly={true} />);
+  const runpparg = await getRunppArg(jest.mocked(bindProteinPaint));
   expect(runpparg.filter0).toBeNull();
 });

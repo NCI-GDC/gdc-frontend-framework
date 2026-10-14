@@ -1,32 +1,34 @@
 import { render } from "test-utils";
 import { useFetchUserDetailsQuery } from "@gff/core";
-import { getExpectedFilter0 } from "./ppTestHelpers";
+import { runproteinpaint } from "@sjcrh/proteinpaint-client";
+import { getExpectedFilter0, getRunppArg } from "./ppTestHelpers";
 import { SequenceReadWrapper } from "./SequenceReadWrapper";
-
-let runpparg;
 
 const expectedFilter0 = getExpectedFilter0();
 
 jest.mock("@gff/core", () =>
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   require("./ppTestHelpers").mockGffCore({
-    // this wrapper reads userDetails.data.data.username to gate its UI
-    useFetchUserDetailsQuery: jest.fn(() => ({
-      data: { data: { username: "test" } },
-    })),
+    useFetchUserDetailsQuery: jest.fn(),
   }),
 );
 
 jest.mock("@sjcrh/proteinpaint-client", () => ({
   __esModule: true,
-  runproteinpaint: jest.fn(async (arg) => {
-    runpparg = arg;
-    return {};
-  }),
+  runproteinpaint: jest.fn(async () => ({})),
 }));
 
-test("Sequence Read arguments - logged in", () => {
+beforeEach(() => {
+  jest.clearAllMocks();
+  // this wrapper reads userDetails.data.data.username to gate its UI
+  jest.mocked(useFetchUserDetailsQuery).mockReturnValue({
+    data: { data: { username: "test" } },
+  } as any);
+});
+
+test("Sequence Read arguments - logged in", async () => {
   const { container } = render(<SequenceReadWrapper />);
+  const runpparg = await getRunppArg(jest.mocked(runproteinpaint));
   expect(typeof runpparg).toBe("object");
   expect(typeof runpparg.host).toBe("string");
   expect(runpparg.noheader).toEqual(true);

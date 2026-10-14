@@ -1,9 +1,8 @@
 import { render } from "test-utils";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
-import { getExpectedFilter0 } from "./ppTestHelpers";
+import { bindProteinPaint } from "@sjcrh/proteinpaint-client";
+import { getExpectedFilter0, getRunppArg } from "./ppTestHelpers";
 import { MatrixWrapper, demoFilter } from "./MatrixWrapper";
-
-let runpparg;
 
 const expectedFilter0 = getExpectedFilter0();
 
@@ -16,14 +15,17 @@ jest.mock("@/hooks/useIsDemoApp");
 
 jest.mock("@sjcrh/proteinpaint-client", () => ({
   __esModule: true,
-  bindProteinPaint: jest.fn(async (arg) => {
-    runpparg = Object.assign({}, arg.initArgs, arg.updateArgs || {});
-    return { triggerAbort: jest.fn() };
-  }),
+  bindProteinPaint: jest.fn(async () => ({ triggerAbort: jest.fn() })),
 }));
 
-test("OncoMatrix arguments", () => {
+beforeEach(() => {
+  jest.clearAllMocks();
+  jest.mocked(useIsDemoApp).mockReturnValue(false);
+});
+
+test("OncoMatrix arguments", async () => {
   render(<MatrixWrapper chartType="matrix" />);
+  const runpparg = await getRunppArg(jest.mocked(bindProteinPaint));
   expect(typeof runpparg).toBe("object");
   expect(typeof runpparg.host).toBe("string");
   expect(runpparg.noheader).toEqual(true);
@@ -34,8 +36,9 @@ test("OncoMatrix arguments", () => {
   expect(runpparg.filter0).toEqual(expectedFilter0);
 });
 
-test("OncoMatrix demo mode uses the demo filter", () => {
+test("OncoMatrix demo mode uses the demo filter", async () => {
   jest.mocked(useIsDemoApp).mockReturnValue(true);
   render(<MatrixWrapper chartType="matrix" />);
+  const runpparg = await getRunppArg(jest.mocked(bindProteinPaint));
   expect(runpparg.filter0).toEqual(demoFilter);
 });

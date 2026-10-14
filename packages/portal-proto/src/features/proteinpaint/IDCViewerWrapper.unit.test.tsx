@@ -1,8 +1,8 @@
 import { render } from "test-utils";
-import { getExpectedFilter0 } from "./ppTestHelpers";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
+import { runproteinpaint } from "@sjcrh/proteinpaint-client";
+import { getExpectedFilter0, getRunppArg } from "./ppTestHelpers";
 import { IDCViewerWrapperPP } from "./IDCViewerWrapperPP";
-
-let runpparg;
 
 const expectedFilter0 = getExpectedFilter0();
 
@@ -18,14 +18,17 @@ jest.mock("@/hooks/useIsDemoApp");
 
 jest.mock("@sjcrh/proteinpaint-client", () => ({
   __esModule: true,
-  runproteinpaint: jest.fn(async (arg) => {
-    runpparg = arg;
-    return {};
-  }),
+  runproteinpaint: jest.fn(async () => ({})),
 }));
 
-test("IDCViewerWrapperPP arguments", () => {
+beforeEach(() => {
+  jest.clearAllMocks();
+  jest.mocked(useIsDemoApp).mockReturnValue(false);
+});
+
+test("IDCViewerWrapperPP arguments", async () => {
   render(<IDCViewerWrapperPP />);
+  const runpparg = await getRunppArg(jest.mocked(runproteinpaint));
   expect(typeof runpparg).toBe("object");
   expect(typeof runpparg.host).toBe("string");
   expect(runpparg.noheader).toEqual(true);
