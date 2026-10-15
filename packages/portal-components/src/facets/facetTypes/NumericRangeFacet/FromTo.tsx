@@ -238,7 +238,7 @@ const FromTo: React.FC<FromToProps> = ({
       from:
         form.values.fromValue !== undefined
           ? adjustYearsToDaysIfUnitsAreYears(
-              form.values.fromValue,
+              Number(form.values.fromValue),
               units,
               queryInYears,
             )
@@ -247,7 +247,7 @@ const FromTo: React.FC<FromToProps> = ({
       to:
         form.values.toValue !== undefined
           ? adjustYearsToDaysIfUnitsAreYears(
-              form.values.toValue,
+              Number(form.values.toValue),
               units,
               queryInYears,
             )
