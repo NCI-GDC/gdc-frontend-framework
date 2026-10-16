@@ -117,4 +117,4 @@ When the filters are fixed add tests for them - PEAR-1350
 * Perform the following actions on a filter card
   |filter_name          |action               |
   |---------------------|---------------------|
-  |Experimental Strategy|clear selection      |
+  |Experimental Strategy|clear all            |

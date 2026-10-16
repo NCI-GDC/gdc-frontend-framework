@@ -56,7 +56,7 @@ tags: gdc-data-portal-v2, regression, cohort-bar, download
 * Perform the following actions from "General" tab on the Cohort Builder page
   |facet_name       |action                       |
   |-----------------|-----------------------------|
-  |Program          |clear selection              |
+  |Program          |clear all                    |
 
 
 ## Export a Custom Cohort with 0 cases
@@ -95,5 +95,5 @@ There should be no UUIDs in the '0' cases cohort
 * Perform the following actions from "Demographic" tab on the Cohort Builder page
   |facet_name       |action               |
   |-----------------|---------------------|
-  |Age at Diagnosis |clear selection      |
+  |Age at Diagnosis |clear all            |
 * Pause "1" seconds

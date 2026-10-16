@@ -75,7 +75,7 @@ tags: gdc-data-portal-v2, end-to-end, regression
 * Perform the following actions on a filter card
   |filter_name          |action               |
   |---------------------|---------------------|
-  |Experimental Strategy|clear selection      |
+  |Experimental Strategy|clear all            |
 * Verify the page is showing "1 - 20"
 
 ## Repository Page

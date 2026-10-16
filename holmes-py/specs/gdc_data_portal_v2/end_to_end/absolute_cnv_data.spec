@@ -27,7 +27,7 @@ tags: gdc-data-portal-v2, end-to-end, regression
 * Perform the following actions on a filter card
   |filter_name          |action               |
   |---------------------|---------------------|
-  |Data Type            |clear selection      |
+  |Data Type            |clear all            |
 * Make the following selections on a filter card
   |facet_name           |selection            |
   |---------------------|---------------------|
@@ -43,7 +43,7 @@ tags: gdc-data-portal-v2, end-to-end, regression
 * Perform the following actions on a filter card
   |filter_name          |action               |
   |---------------------|---------------------|
-  |Data Type            |clear selection      |
+  |Data Type            |clear all            |
 * Make the following selections on a filter card
   |facet_name           |selection            |
   |---------------------|---------------------|
@@ -59,7 +59,7 @@ tags: gdc-data-portal-v2, end-to-end, regression
 * Perform the following actions on a filter card
   |filter_name          |action               |
   |---------------------|---------------------|
-  |Data Type            |clear selection      |
+  |Data Type            |clear all            |
 * Make the following selections on a filter card
   |facet_name           |selection            |
   |---------------------|---------------------|

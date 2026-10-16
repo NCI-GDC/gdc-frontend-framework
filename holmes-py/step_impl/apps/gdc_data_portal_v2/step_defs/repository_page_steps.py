@@ -145,7 +145,7 @@ def verify_filters_access_level(table):
         ), f"The filter '{v[1]}' has value '{filter_case_count}' and access level '{v[2]}' has value '{access_case_count}' that does NOT match"
 
 
-        APP.shared.perform_action_within_filter_card(v[0], "clear selection")
+        APP.shared.perform_action_within_filter_card(v[0], "clear all")
         APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
         APP.shared.wait_for_loading_spinner_table_to_detatch()
         APP.shared.wait_for_loading_spinner_to_detatch()
