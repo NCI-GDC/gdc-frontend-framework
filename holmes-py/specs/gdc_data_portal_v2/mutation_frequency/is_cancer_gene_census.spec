@@ -155,9 +155,9 @@ tags: gdc-data-portal-v2, regression, mutation-frequency, is-cancer-census-off
 * Perform the following actions on a filter card
   |filter_name      |action               |
   |-----------------|---------------------|
-  |SIFT Impact      |clear selection      |
-  |Polyphen Impact  |clear selection      |
-  |VEP Impact       |clear selection      |
+  |SIFT Impact      |clear all            |
+  |Polyphen Impact  |clear all            |
+  |VEP Impact       |clear all            |
 
 ## Create Mutation Set
 * Search the table for "chr3:g.2670991"
