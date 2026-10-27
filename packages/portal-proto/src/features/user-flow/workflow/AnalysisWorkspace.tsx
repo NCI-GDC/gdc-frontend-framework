@@ -1,5 +1,6 @@
+"use client";
 import React from "react";
-import { useRouter } from "next/router";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   REGISTERED_APPS,
   RECOMMENDED_APPS,
@@ -25,13 +26,22 @@ const AnalysisWorkspace: React.FC<AnalysisWorkspaceProps> = ({
   app,
 }: AnalysisWorkspaceProps) => {
   const router = useRouter();
+  const path = usePathname();
+  const query = useSearchParams();
   const isDemoMode = useIsDemoApp();
 
   const skipSelectionScreen =
-    router?.query?.skipSelectionScreen === "true" || isDemoMode;
+    query.get("skipSelectionScreen") === "true" || isDemoMode;
 
   const handleAppSelected = (app: string, demoMode?: boolean) => {
-    router.push({ query: { app, ...(demoMode && { demoMode }) } });
+    const newQuery = new URLSearchParams(query.toString());
+    if (demoMode) {
+      newQuery.set("demoMode", "true");
+    }
+
+    newQuery.set("app", app);
+
+    router.push(`${path}?${newQuery.toString()}`);
   };
 
   return (

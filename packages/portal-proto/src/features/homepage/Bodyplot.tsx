@@ -6,7 +6,7 @@ import React, {
   useState,
   useMemo,
 } from "react";
-import Router from "next/router";
+import { useRouter } from "next/navigation";
 import { createHumanBody, colorCodes } from "@nci-gdc/sapien";
 import { useMouse, useViewportSize, useScrollIntoView } from "@mantine/hooks";
 import { Modal, Text } from "@mantine/core";
@@ -24,20 +24,6 @@ import FunctionButton from "@/components/FunctionButton";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import { MD_BREAKPOINT } from "src/styles/breakpoints";
 
-const createCohort = (site: string) => {
-  const key = site.replace(/-/g, " ");
-  const e = HUMAN_BODY_MAPPINGS[key];
-  Router.push({
-    pathname: "/analysis_page",
-    query: {
-      app: "",
-      operation: "createCohort",
-      filters: JSON.stringify(buildBodyplotFilter(e)),
-      name: site,
-    },
-  });
-};
-
 interface ExploreCohortModalProps {
   readonly opened: boolean;
   readonly setOpened: (opened: boolean) => void;
@@ -52,6 +38,8 @@ const ExploreCohortModal: React.FC<ExploreCohortModalProps> = ({
   setOpened,
   site,
 }: ExploreCohortModalProps) => {
+  const router = useRouter();
+
   const hasUnsavedCohorts = useCoreSelector((state) =>
     selectHasUnsavedCohorts(state),
   );
@@ -60,6 +48,17 @@ const ExploreCohortModal: React.FC<ExploreCohortModalProps> = ({
     selectUnsavedCohortName(state),
   );
 
+  const createCohort = (site: string) => {
+    const key = site.replace(/-/g, " ");
+    const e = HUMAN_BODY_MAPPINGS[key];
+    const searchParams = new URLSearchParams({
+      app: "",
+      operation: "createCohort",
+      filters: JSON.stringify(buildBodyplotFilter(e)),
+      name: site,
+    });
+    router.push(`/analysis_page?${searchParams.toString()}`);
+  };
   return (
     <Modal
       opened={opened}

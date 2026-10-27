@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import { useGetVersionInfoQuery, PUBLIC_APP_INFO } from "@gff/core";
 import { Footer as CommonFooter } from "@gff/portal-components";

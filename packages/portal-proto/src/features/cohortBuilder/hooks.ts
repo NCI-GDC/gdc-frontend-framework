@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect } from "react";
 import { useDeepCompareEffect, useDeepCompareMemo } from "use-deep-compare";
 import { flatten } from "lodash";
@@ -36,7 +37,8 @@ import { useEnumFacets } from "@/features/facets/hooks";
 import { STOP_WORDS, TOKENIZE_STRING } from "./dictionary";
 import { useCohortFacetFilters } from "./utils";
 import { FacetQueryOptions } from "../facets/types";
-import { isDevEnvironment } from "src/pages/_app";
+
+const isDevEnvironment = () => process.env.NODE_ENV !== "production";
 
 export const useSetupInitialCohorts = (): boolean => {
   const [fetched, setFetched] = useState(false);

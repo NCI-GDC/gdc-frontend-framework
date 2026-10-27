@@ -1,5 +1,5 @@
 import { render } from "test-utils";
-import * as router from "next/router";
+import { useSearchParams } from "next/navigation";
 import ClinicalSurvivalPlot from "./ClinicalSurvivalPlot";
 import { selectCurrentCohortFilters, useGetSurvivalPlotQuery } from "@gff/core";
 
@@ -11,6 +11,8 @@ jest.mock("@gff/core", () => ({
   useFetchUserDetailsQuery: jest.fn(),
   useGetFilesQuery: jest.fn(),
 }));
+
+jest.mock("next/navigation");
 
 const mockSurvivalValue = {
   data: {
@@ -26,13 +28,7 @@ let survivalQuerySpy;
 
 describe("ClinicalSurvivalPlot", () => {
   beforeEach(() => {
-    jest.spyOn(router, "useRouter").mockImplementation(
-      () =>
-        ({
-          pathname: "",
-          query: {},
-        }) as any,
-    );
+    (useSearchParams as jest.Mock).mockReturnValue(new URLSearchParams(""));
     survivalQuerySpy = jest
       .mocked(useGetSurvivalPlotQuery)
       .mockReturnValue(mockSurvivalValue);
@@ -161,12 +157,8 @@ describe("ClinicalSurvivalPlot", () => {
   });
 
   it("adds demo filters", () => {
-    jest.spyOn(router, "useRouter").mockImplementation(
-      () =>
-        ({
-          pathname: "",
-          query: { demoMode: "true" },
-        }) as any,
+    (useSearchParams as jest.Mock).mockReturnValue(
+      new URLSearchParams("demoMode=true"),
     );
 
     render(

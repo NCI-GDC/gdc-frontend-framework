@@ -1,7 +1,7 @@
 import { render } from "test-utils";
+import { useRouter } from "next/navigation";
 import { waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useRouter, NextRouter } from "next/router";
 import SearchInput from "./SearchInput";
 
 jest.mock("@/features/cohortBuilder/dictionary", () => ({
@@ -35,15 +35,10 @@ jest.mock("@/features/cohortBuilder/dictionary", () => ({
   useFacetTabLoaded: jest.fn().mockReturnValue(true),
 }));
 
-jest.mock("next/router", () => ({
-  useRouter: jest.fn().mockImplementation(
-    () =>
-      ({
-        query: {
-          tab: "general",
-        },
-      }) as any,
-  ),
+jest.mock("next/navigation", () => ({
+  useRouter: jest.fn(),
+  useSearchParams: jest.fn(),
+  usePathname: jest.fn().mockReturnValue("analysis_page"),
 }));
 
 describe("<SearchInput />", () => {
@@ -110,7 +105,7 @@ describe("<SearchInput />", () => {
 
   it("click navigates to tab", async () => {
     const routerSpy = jest.fn();
-    (useRouter as jest.Mock<NextRouter>).mockReturnValue({
+    (useRouter as jest.Mock).mockReturnValue({
       push: routerSpy,
     } as any);
 
@@ -120,10 +115,9 @@ describe("<SearchInput />", () => {
       getByRole("button", { name: "BioThing Category: General" }),
     );
 
-    expect(routerSpy.mock.lastCall[0]).toEqual({
-      query: { tab: "general", searchTerm: "bio" },
-      hash: "1",
-    });
+    expect(routerSpy.mock.lastCall[0]).toEqual(
+      "analysis_page?tab=general&searchTerm=bio#1",
+    );
   });
 
   it("clears out search", async () => {

@@ -1,6 +1,5 @@
 import { headerElements } from "../user-flow/workflow/navigation-utils";
 import { Header } from "./Header";
-import * as router from "next/router";
 import { render } from "test-utils";
 import { useFetchUserDetailsQuery } from "@gff/core";
 
@@ -29,15 +28,14 @@ jest.mock("@gff/core", () => ({
     .mockImplementation(jest.fn().mockReturnValue([jest.fn()])),
 }));
 
+jest.mock("next/navigation", () => ({
+  useRouter: jest.fn(),
+  usePathname: jest.fn(),
+}));
+
 describe("<Header />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(router, "useRouter").mockImplementation(
-      () =>
-        ({
-          pathname: "",
-        }) as any,
-    );
   });
 
   test("should show login button when the username is null initially", () => {

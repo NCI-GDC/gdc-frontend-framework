@@ -1,4 +1,4 @@
-import { useRouter } from "next/router";
+import { useSearchParams } from "next/navigation";
 
 export type useIsDemoAppType = () => boolean;
 
@@ -7,8 +7,7 @@ export type useIsDemoAppType = () => boolean;
  * @category Hooks
  */
 export const useIsDemoApp: useIsDemoAppType = (): boolean => {
-  const {
-    query: { demoMode },
-  } = useRouter();
+  const searchParams = useSearchParams();
+  const demoMode = searchParams.get("demoMode");
   return demoMode === "true";
 };

@@ -1,3 +1,4 @@
+"use client";
 import SelectionPanel from "@/features/set-operations/SelectionPanel";
 import AdditionalCohortSelection from "@/features/cohortComparison/AdditionalCohortSelection";
 import DownloadAllButton from "@/features/cDave/DownloadAllButton";

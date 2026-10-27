@@ -1,6 +1,6 @@
 import React, { useState, JSX } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { Loader, Highlight, Select, SelectProps } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { validate as uuidValidate } from "uuid";

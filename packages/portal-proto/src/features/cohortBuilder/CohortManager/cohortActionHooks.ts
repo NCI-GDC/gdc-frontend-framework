@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDeepCompareCallback } from "use-deep-compare";
-import { useRouter } from "next/router";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { omit } from "lodash";
 import {
   useCoreDispatch,
@@ -36,7 +36,7 @@ import {
   deleteCohortUserAction,
 } from "@gff/core";
 import { useCohortFacetFilters } from "../utils";
-import { exportCohort, removeQueryParamsFromRouter } from "./cohortUtils";
+import { exportCohort } from "./cohortUtils";
 
 export const useSelectAvailableCohorts = () => {
   return useCoreSelector((state) => selectCohortsFromStore(state));
@@ -497,13 +497,14 @@ export const useReplaceCohort = () => {
 const useCreateCohortExternally = (setCohortMessage) => {
   const coreDispatch = useCoreDispatch();
   const router = useRouter();
+  const path = usePathname();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
-    const {
-      operation,
-      filters: createCohortFilters,
-      name: createCohortName,
-    } = router.query;
+    const query = new URLSearchParams(searchParams);
+    const operation = query.get("operation");
+    const createCohortFilters = query.get("filters");
+    const createCohortName = query.get("name");
 
     if (operation == "createCohort") {
       const cohortFilters = JSON.parse(
@@ -519,7 +520,10 @@ const useCreateCohortExternally = (setCohortMessage) => {
 
       setCohortMessage([{ cmd: "newCohort", param1: createCohortName }]);
 
-      removeQueryParamsFromRouter(router, ["operation", "filters", "name"]);
+      query.delete("operation");
+      query.delete("filters");
+      query.delete("name");
+      router.replace(query ? `${path}?${query.toString()}` : path);
     }
     // Only run on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps

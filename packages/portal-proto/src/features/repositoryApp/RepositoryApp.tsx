@@ -1,3 +1,4 @@
+"use client";
 import React, { JSX, useEffect, useState } from "react";
 import {
   buildCohortGqlOperator,
@@ -34,7 +35,7 @@ import { useImageCounts } from "@/features/repositoryApp/slideCountSlice";
 import { Tooltip } from "@mantine/core";
 import FilesTables from "../repositoryApp/FilesTable";
 import { PersistGate } from "redux-persist/integration/react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { TableXPositionContext } from "@/components/Table/VerticalTable";
 import { getFormattedTimestamp } from "@/utils/date";
 import { focusStyles } from "@/utils/index";

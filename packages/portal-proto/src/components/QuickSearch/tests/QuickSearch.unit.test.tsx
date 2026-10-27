@@ -1,7 +1,6 @@
 import { waitFor } from "@testing-library/react";
 import { render } from "test-utils";
 import userEvent from "@testing-library/user-event";
-import * as router from "next/router";
 import { QuickSearch } from "../QuickSearch";
 import { useGetHistoryQuery, useQuickSearchQuery } from "@gff/core";
 
@@ -11,13 +10,7 @@ jest.mock("@gff/core", () => ({
   useGetHistoryQuery: jest.fn(),
 }));
 
-jest.spyOn(router, "useRouter").mockImplementation(
-  () =>
-    ({
-      pathname: "",
-      query: {},
-    }) as any,
-);
+jest.mock("next/navigation");
 
 describe("<QuickSearch />", () => {
   test("displays results", async () => {

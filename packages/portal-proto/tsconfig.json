@@ -39,7 +39,8 @@
     "src/styles/colors.js",
     "src/styles/zIndex.js",
     "global.d.ts",
-    "src/styles/zIndex.js"
+    "src/styles/zIndex.js",
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",

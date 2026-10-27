@@ -1,4 +1,5 @@
-import React, { JSX, useState } from "react";
+"use client";
+import React, { JSX, useState, useEffect } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
 import { CollapsibleContainer } from "@/components/CollapsibleContainer";
 import { Loader, Tabs } from "@mantine/core";
@@ -43,8 +44,9 @@ import {
   DownloadIcon,
 } from "@/utils/icons";
 import { getFormattedTimestamp } from "@/utils/date";
+import { useSetupInitialCohorts } from "@/features/cohortBuilder/hooks";
 
-const ContextBar = ({
+const ContextBarControlled = ({
   handleIsSticky,
   isSticky,
   isFetchingCohorts,
@@ -493,4 +495,41 @@ const ContextBar = ({
   );
 };
 
-export default ContextBar;
+export const ContextBar = () => {
+  const initialCohortsFetched = useSetupInitialCohorts();
+  const [isSticky, setIsSticky] = useState<boolean>(true);
+  const [headerHeight, setHeight] = useState(0);
+
+  useEffect(() => {
+    const globalHeader = document.getElementById("global-header");
+    const resizeObserver = new ResizeObserver(() => {
+      setHeight(globalHeader.getBoundingClientRect().height);
+    });
+
+    if (globalHeader) {
+      resizeObserver.observe(globalHeader);
+    }
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
+
+  return (
+    <aside
+      className={`${isSticky ? `sticky z-sticky-header shadow-lg` : ""}`}
+      style={{
+        top: `${isSticky && `${Math.round(headerHeight)}px`}`, // switching this to tailwind does not work
+      }}
+      id="context-bar"
+    >
+      <ContextBarControlled
+        isSticky={isSticky}
+        handleIsSticky={(isStickyParam: boolean) => setIsSticky(isStickyParam)}
+        isFetchingCohorts={!initialCohortsFetched}
+      />
+    </aside>
+  );
+};
+
+export default ContextBarControlled;

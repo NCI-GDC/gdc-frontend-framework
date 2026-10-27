@@ -6,7 +6,7 @@ import React, {
   useId,
   useRef,
 } from "react";
-import { useRouter } from "next/router";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { uniq } from "lodash";
 import tw from "tailwind-styled-components";
 import {
@@ -50,6 +50,9 @@ export const SearchInput: React.FC = () => {
   const [page, setPage] = useState(1);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const path = usePathname();
+  const query = new URLSearchParams(searchParams);
   const { ref } = useFocusWithin<HTMLDivElement>({
     onBlur: () => {
       setDropdownOpen(false);
@@ -58,7 +61,7 @@ export const SearchInput: React.FC = () => {
   });
   const { width } = useViewportSize();
   const miniSearch = useFacetSearch();
-  const currentTab = router?.query?.tab;
+  const currentTab = query.get("tab");
   const facetsLoaded = useFacetTabLoaded(currentTab as string);
   const currentCohortFilters = useCurrentCohortFilters();
 
@@ -110,10 +113,7 @@ export const SearchInput: React.FC = () => {
   );
 
   const clickResult = async (result: FullResult) => {
-    await router.push({
-      query: router.query,
-      hash: undefined,
-    });
+    router.push(`${path}?query=${query.get("query")}#undefined`);
 
     const matches = Object.values(result?.match || {});
     const enumSearchResult = matches.some((m) => m.includes("enum"));
@@ -122,14 +122,12 @@ export const SearchInput: React.FC = () => {
       ? { tab: result.categoryKey, searchTerm }
       : { tab: result.categoryKey };
 
-    router.push({
-      query: {
-        app: router?.query?.app,
-        tab: router?.query?.tab,
-        ...additionalQuery,
-      },
-      hash: result.id,
+    const newQuery = new URLSearchParams({
+      ...Object.fromEntries(query),
+      ...additionalQuery,
     });
+
+    router.push(`${path}?${newQuery.toString()}#${result.id}`);
     setDropdownOpen(false);
     setActivedescendant(undefined);
   };

@@ -1,5 +1,4 @@
 import userEvent from "@testing-library/user-event";
-import * as router from "next/router";
 import { render } from "test-utils";
 import CDaveCard from "./CDaveCard";
 import {
@@ -13,13 +12,9 @@ jest.mock("@gff/core", () => ({
   useGetContinuousDataStatsQuery: jest.fn(),
 }));
 
-jest.spyOn(router, "useRouter").mockImplementation(
-  () =>
-    ({
-      pathname: "",
-      query: {},
-    }) as any,
-);
+jest.mock("next/navigation", () => ({
+  useSearchParams: () => new URLSearchParams(""),
+}));
 
 describe("CDaveCard", () => {
   it("enum result with data", () => {
@@ -224,13 +219,6 @@ describe("CDaveCard", () => {
       isFetching: false,
       isSuccess: true,
     } as any);
-    jest.spyOn(router, "useRouter").mockImplementation(
-      () =>
-        ({
-          pathname: "",
-          query: { featureFlag: "yearToggle" },
-        }) as any,
-    );
 
     const { getByRole, getByLabelText } = render(
       <CDaveCard

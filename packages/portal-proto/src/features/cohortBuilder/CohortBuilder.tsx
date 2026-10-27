@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDeepCompareMemo } from "use-deep-compare";
 import {
   selectCohortBuilderConfig,
@@ -46,7 +46,10 @@ const CohortBuilder = () => {
   const facets = useCoreSelector((state) => selectFacetDefinition(state));
 
   const router = useRouter();
-  const routerTab = router?.query?.tab;
+  const path = usePathname();
+  const searchParams = useSearchParams();
+  const query = new URLSearchParams(searchParams);
+  const routerTab = query.get("tab");
   const prevRouterTab = usePrevious(routerTab);
   const [activeTab, setActiveTab] = useState<string | null>(
     routerTab ? (routerTab as string) : Object.keys(tabsConfig)[0],
@@ -61,8 +64,10 @@ const CohortBuilder = () => {
       setActiveTab(routerTab as string);
     } else {
       // Change initiated by user interaction
+      const newQuery = new URLSearchParams(searchParams);
+      newQuery.set("tab", activeTab);
       if (activeTab !== routerTab) {
-        router.push({ query: { ...router.query, tab: activeTab } }, undefined, {
+        router.push(`${path}?${newQuery.toString()}`, {
           scroll: false,
         });
       }

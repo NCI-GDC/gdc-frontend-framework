@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useContext, useEffect, useState } from "react";
 import {
   useCoreSelector,
   selectCart,
@@ -10,10 +11,9 @@ import {
   selectCurrentModal,
 } from "@gff/core";
 import { LoadingOverlay, Badge } from "@mantine/core";
-import { ReactNode, useContext, useEffect, useState } from "react";
 import { Image } from "@/components/Image";
 import { useCookies } from "react-cookie";
-import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
 import { QuickSearch } from "@/components/QuickSearch/QuickSearch";
 import { UserProfileModal } from "@/components/Modals/UserProfileModal";
 import { SessionExpireModal } from "@/components/Modals/SessionExpireModal";
@@ -38,10 +38,10 @@ import {
   type HeaderLinkItem,
 } from "@gff/portal-components";
 import { useDeepCompareMemo } from "use-deep-compare";
+import { headerElements } from "@/features/user-flow/workflow/navigation-utils";
 
 interface HeaderProps {
-  readonly headerElements: ReadonlyArray<ReactNode>;
-  readonly indexPath: string;
+  readonly indexPath?: string;
 }
 
 const externalAppLinks: HeaderLinkItem[] = [
@@ -155,11 +155,10 @@ const AppLogo = (
 );
 
 export const Header: React.FC<HeaderProps> = ({
-  headerElements,
-  indexPath,
+  indexPath = "/",
 }: HeaderProps) => {
   const dispatch = useCoreDispatch();
-  const router = useRouter();
+  const pathname = usePathname();
   const [openFeedbackModal, setOpenFeedbackModal] = useState(false);
 
   const currentCart = useCoreSelector((state) => selectCart(state));
@@ -219,7 +218,7 @@ export const Header: React.FC<HeaderProps> = ({
           <Badge
             variant="filled"
             className={`px-1 ml-1 ${
-              router.pathname === "/cart"
+              pathname === "/cart"
                 ? "bg-white text-secondary"
                 : "bg-accent-vivid"
             }`}
@@ -230,7 +229,7 @@ export const Header: React.FC<HeaderProps> = ({
         ),
       },
     ],
-    [currentCart, router.pathname],
+    [currentCart, pathname],
   );
 
   return (

@@ -19,7 +19,7 @@ import ModalButtonContainer from "@/components/StyledComponents/ModalButtonConta
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 
 interface UserFlowVariedPagesProps {
-  readonly headerElements: ReadonlyArray<ReactNode>;
+  readonly headerElements?: ReadonlyArray<ReactNode>;
   readonly indexPath?: string;
   readonly ContextBar?: ReactNode;
   readonly isContextBarSticky?: boolean;
