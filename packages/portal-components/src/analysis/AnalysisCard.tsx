@@ -172,6 +172,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
               <Tooltip label={entry.status.details} withArrow w={200} multiline>
                 <ActionIcon
                   variant="subtle"
+                  size={16}
                   aria-label={entry.status.details}
                   className="ml-1"
                 >
@@ -206,6 +207,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
               <Tooltip label={entry.noDataTooltip} withArrow w={200} multiline>
                 <ActionIcon
                   variant="subtle"
+                  size={16}
                   aria-label={entry.noDataTooltip}
                   className="ml-1"
                 >

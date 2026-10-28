@@ -174,7 +174,7 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
     optimizeRules: ["data format = BAM"],
     status: {
       label: "Not Available",
-      details: "This tool is currently unavailable.",
+      details: "The Sequence Reads tool is currently unavailable.",
     },
   },
   {
@@ -291,7 +291,7 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
       "Current cohort does not have gene expression data available for visualization.",
     status: {
       label: "Not Available",
-      details: "This tool is currently unavailable.",
+      details: "The Gene Expression Clustering tool is currently unavailable.",
     },
   },
   {
