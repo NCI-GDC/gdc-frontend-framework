@@ -74,11 +74,19 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
           `}
             aria-disabled={inactive}
             aria-label={entry.name}
+            tabIndex={inactive ? -1 : undefined}
+            onClick={(event) => {
+              // pointer-events-none/aria-disabled don't block keyboard
+              // (Enter) activation, so prevent navigation when inactive.
+              if (inactive) {
+                event.preventDefault();
+              }
+            }}
           >
             <PlayIcon size={16} color="white" />
           </Link>
 
-          {entry.hasDemo ? (
+          {entry.hasDemo && entry.status === undefined ? (
             <Link
               href={{
                 pathname: "/analysis_page",
@@ -160,9 +168,13 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             <span>{entry.status.label}</span>
             {entry.status.details && (
               <Tooltip label={entry.status.details} withArrow w={200} multiline>
-                <div>
-                  <InfoIcon className="inline-block ml-1" />
-                </div>
+                <button
+                  type="button"
+                  aria-label={entry.status.details}
+                  className="inline-flex items-center ml-1 p-0 bg-transparent border-0 cursor-help"
+                >
+                  <InfoIcon className="inline-block" aria-hidden="true" />
+                </button>
               </Tooltip>
             )}
           </div>
@@ -190,9 +202,13 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             )}
             {caseCounts === 0 && (
               <Tooltip label={entry?.noDataTooltip} withArrow w={200} multiline>
-                <div>
-                  <InfoIcon className="inline-block ml-1" />
-                </div>
+                <button
+                  type="button"
+                  aria-label={entry?.noDataTooltip}
+                  className="inline-flex items-center ml-1 p-0 bg-transparent border-0 cursor-help"
+                >
+                  <InfoIcon className="inline-block" aria-hidden="true" />
+                </button>
               </Tooltip>
             )}
           </div>
