@@ -28,7 +28,8 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
   const cohortCounts = useApplicationDataCounts();
   const caseCounts = cohortCounts?.data || 0;
 
-  const inactive = caseCounts === 0 || cohortCounts.isFetching;
+  const inactive =
+    entry.status !== undefined || caseCounts === 0 || cohortCounts.isFetching;
   const { ref: descRef, height: descHeight } = useElementSize();
 
   const { Link } = useContext(AppContext);
@@ -151,7 +152,21 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             <p className="p-2 font-content">{entry.description}</p>
           </div>
         </div>
-        {entry.hideCounts ? (
+        {entry.status ? (
+          <div
+            data-testid="text-case-count-tool"
+            className="flex items-center text-secondary-darkest"
+          >
+            <span>{entry.status.label}</span>
+            {entry.status.details && (
+              <Tooltip label={entry.status.details} withArrow w={200} multiline>
+                <div>
+                  <InfoIcon className="inline-block ml-1" />
+                </div>
+              </Tooltip>
+            )}
+          </div>
+        ) : entry.hideCounts ? (
           <div className="h-4" />
         ) : cohortCounts ? (
           <div
