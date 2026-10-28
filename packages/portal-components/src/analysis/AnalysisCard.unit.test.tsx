@@ -62,6 +62,11 @@ describe("<AnalysisCard />", () => {
 
     expect(screen.getByText("Not Available")).toBeInTheDocument();
     expect(screen.queryByText("100 Cases")).not.toBeInTheDocument();
+    // status has its own test id and does not reuse the case-count one
+    expect(screen.getByTestId("text-status-tool")).toBeInTheDocument();
+    expect(
+      screen.queryByTestId("text-case-count-tool"),
+    ).not.toBeInTheDocument();
 
     const launch = screen.getByRole("link", { name: "Sequence Reads" });
     expect(launch).toHaveAttribute("aria-disabled", "true");
@@ -95,9 +100,9 @@ describe("<AnalysisCard />", () => {
     };
     renderCard(entry, makeCountsHook({ data: 100 }));
 
+    // ActionIcon renders a focusable button; keyboard users can reach it
     const info = screen.getByRole("button", { name: details });
     expect(info).toBeInTheDocument();
-    // native <button> is focusable, i.e. not removed from the tab order
     expect(info).not.toHaveAttribute("tabindex", "-1");
   });
 
@@ -120,5 +125,6 @@ describe("<AnalysisCard />", () => {
     expect(
       screen.queryByTestId("text-case-count-tool"),
     ).not.toBeInTheDocument();
+    expect(screen.queryByTestId("text-status-tool")).not.toBeInTheDocument();
   });
 });

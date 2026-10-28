@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Divider } from "@mantine/core";
-import { Button, Card, Loader, Tooltip } from "@mantine/core";
+import { ActionIcon, Button, Card, Loader, Tooltip } from "@mantine/core";
 import { useElementSize } from "@mantine/hooks";
 import {
   ArrowDropDownIcon,
@@ -76,8 +76,10 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             aria-label={entry.name}
             tabIndex={inactive ? -1 : undefined}
             onClick={(event) => {
-              // pointer-events-none/aria-disabled don't block keyboard
-              // (Enter) activation, so prevent navigation when inactive.
+              // Activating a focused link with the keyboard (Enter) also fires
+              // a click event, so this one guard stops both mouse and keyboard
+              // navigation while inactive. CSS pointer-events-none only stops
+              // the mouse, and aria-disabled is advisory, so neither is enough.
               if (inactive) {
                 event.preventDefault();
               }
@@ -162,19 +164,19 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
         </div>
         {entry.status ? (
           <div
-            data-testid="text-case-count-tool"
+            data-testid="text-status-tool"
             className="flex items-center text-secondary-darkest"
           >
             <span>{entry.status.label}</span>
             {entry.status.details && (
               <Tooltip label={entry.status.details} withArrow w={200} multiline>
-                <button
-                  type="button"
+                <ActionIcon
+                  variant="subtle"
                   aria-label={entry.status.details}
-                  className="inline-flex items-center ml-1 p-0 bg-transparent border-0 cursor-help"
+                  className="ml-1"
                 >
                   <InfoIcon className="inline-block" aria-hidden="true" />
-                </button>
+                </ActionIcon>
               </Tooltip>
             )}
           </div>
@@ -202,13 +204,13 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             )}
             {caseCounts === 0 && (
               <Tooltip label={entry?.noDataTooltip} withArrow w={200} multiline>
-                <button
-                  type="button"
+                <ActionIcon
+                  variant="subtle"
                   aria-label={entry?.noDataTooltip}
-                  className="inline-flex items-center ml-1 p-0 bg-transparent border-0 cursor-help"
+                  className="ml-1"
                 >
                   <InfoIcon className="inline-block" aria-hidden="true" />
-                </button>
+                </ActionIcon>
               </Tooltip>
             )}
           </div>
