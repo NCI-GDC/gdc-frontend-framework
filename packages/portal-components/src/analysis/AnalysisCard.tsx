@@ -202,11 +202,11 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
                 0 Cases
               </span>
             )}
-            {caseCounts === 0 && (
-              <Tooltip label={entry?.noDataTooltip} withArrow w={200} multiline>
+            {caseCounts === 0 && entry?.noDataTooltip && (
+              <Tooltip label={entry.noDataTooltip} withArrow w={200} multiline>
                 <ActionIcon
                   variant="subtle"
-                  aria-label={entry?.noDataTooltip}
+                  aria-label={entry.noDataTooltip}
                   className="ml-1"
                 >
                   <InfoIcon className="inline-block" aria-hidden="true" />

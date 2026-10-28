@@ -117,6 +117,19 @@ describe("<AnalysisCard />", () => {
     ).toBeInTheDocument();
   });
 
+  it("does not render an info button at zero count when noDataTooltip is absent", () => {
+    const entry: AppRegistrationEntry = {
+      ...baseEntry,
+      noDataTooltip: undefined,
+    };
+    renderCard(entry, makeCountsHook({ data: 0 }));
+
+    expect(screen.getByText("0 Cases")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "" })).not.toBeInTheDocument();
+    // only the description-toggle button remains (named after the tool)
+    expect(screen.getAllByRole("button")).toHaveLength(1);
+  });
+
   it("renders neither a count nor a status when hideCounts is set", () => {
     const entry: AppRegistrationEntry = { ...baseEntry, hideCounts: true };
     renderCard(entry, makeCountsHook({ data: 100 }));
