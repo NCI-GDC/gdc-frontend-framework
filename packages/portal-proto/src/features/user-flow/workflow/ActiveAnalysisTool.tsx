@@ -22,14 +22,13 @@ const ActiveAnalysisTool: React.FC<AnalysisToolInfo> = ({
   const status = REGISTERED_APPS.find((app) => app.id === appId)?.status;
 
   useEffect(() => {
-    if (status) return;
     async function loadApp() {
       const AnalysisApp = await importApplication(appId);
       return <AnalysisApp />;
     }
 
     loadApp().then(setAnalysisApp);
-  }, [appId, status]);
+  }, [appId]);
 
   if (status) {
     return <DemoUtil text={status.details ?? status.label} />;
