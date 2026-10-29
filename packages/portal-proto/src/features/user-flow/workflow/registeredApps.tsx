@@ -172,10 +172,7 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
     noDataTooltip:
       "Current cohort does not have available BAMs for visualization.",
     optimizeRules: ["data format = BAM"],
-    status: {
-      label: "Not Available",
-      details: "The Sequence Reads tool is currently unavailable.",
-    },
+    unavailable: true,
   },
   {
     name: "BAM Slicing Download",
@@ -289,10 +286,7 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
     optimizeRules: ["available data = ssm or cnv"],
     noDataTooltip:
       "Current cohort does not have gene expression data available for visualization.",
-    status: {
-      label: "Not Available",
-      details: "The Gene Expression Clustering tool is currently unavailable.",
-    },
+    unavailable: true,
   },
   {
     name: "Cohort Level MAF",

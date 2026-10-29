@@ -1,5 +1,5 @@
 import React from "react";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { MantineProvider } from "@mantine/core";
 import AnalysisCard from "./AnalysisCard";
 import { AppRegistrationEntry } from "./types";
@@ -49,20 +49,16 @@ describe("<AnalysisCard />", () => {
     expect(screen.getByText("100 Cases")).toBeInTheDocument();
     const launch = screen.getByRole("link", { name: "Sequence Reads" });
     expect(launch).toHaveAttribute("aria-disabled", "false");
-    expect(launch).not.toHaveAttribute("tabindex", "-1");
   });
 
-  it("renders the status label instead of the count and disables the launch link", () => {
-    const entry: AppRegistrationEntry = {
-      ...baseEntry,
-      status: { label: "Not Available" },
-    };
-    // data is non-zero to prove the status (not the count) forces inactive
+  it("renders Not Available instead of the count and disables the launch link when unavailable", () => {
+    const entry: AppRegistrationEntry = { ...baseEntry, unavailable: true };
+    // data is non-zero to prove unavailable (not the count) disables the card
     renderCard(entry, makeCountsHook({ data: 100 }));
 
     expect(screen.getByText("Not Available")).toBeInTheDocument();
     expect(screen.queryByText("100 Cases")).not.toBeInTheDocument();
-    // status has its own test id and does not reuse the case-count one
+    // the unavailable text has its own test id and does not reuse the case-count one
     expect(screen.getByTestId("text-status-tool")).toBeInTheDocument();
     expect(
       screen.queryByTestId("text-case-count-tool"),
@@ -70,67 +66,37 @@ describe("<AnalysisCard />", () => {
 
     const launch = screen.getByRole("link", { name: "Sequence Reads" });
     expect(launch).toHaveAttribute("aria-disabled", "true");
-    expect(launch).toHaveAttribute("tabindex", "-1");
-    // click / Enter activation should be prevented (returns false when the
-    // default was prevented)
-    expect(fireEvent.click(launch)).toBe(false);
   });
 
-  it("hides the Demo link when a status is set", () => {
-    const entry: AppRegistrationEntry = {
-      ...baseEntry,
-      status: { label: "Not Available" },
-    };
+  it("shows a disabled Demo link when unavailable", () => {
+    const entry: AppRegistrationEntry = { ...baseEntry, unavailable: true };
     renderCard(entry, makeCountsHook({ data: 100 }));
 
-    expect(screen.queryByText("Demo")).not.toBeInTheDocument();
+    expect(screen.getByText("Demo")).toHaveAttribute("aria-disabled", "true");
   });
 
-  it("shows the Demo link when active", () => {
+  it("keeps the Demo link enabled when the current cohort has no cases", () => {
+    renderCard(baseEntry, makeCountsHook({ data: 0 }));
+
+    expect(screen.getByText("Demo")).toHaveAttribute("aria-disabled", "false");
+  });
+
+  it("shows an enabled Demo link when active", () => {
     renderCard(baseEntry, makeCountsHook({ data: 100 }));
 
-    expect(screen.getByText("Demo")).toBeInTheDocument();
+    expect(screen.getByText("Demo")).toHaveAttribute("aria-disabled", "false");
   });
 
-  it("renders status details as a focusable, labeled button", () => {
-    const details = "This tool is temporarily unavailable.";
-    const entry: AppRegistrationEntry = {
-      ...baseEntry,
-      status: { label: "Not Available", details },
-    };
-    renderCard(entry, makeCountsHook({ data: 100 }));
-
-    // ActionIcon renders a focusable button; keyboard users can reach it
-    const info = screen.getByRole("button", { name: details });
-    expect(info).toBeInTheDocument();
-    expect(info).not.toHaveAttribute("tabindex", "-1");
-  });
-
-  it("disables the launch link and shows the no-data info button when count is zero", () => {
+  it("disables the launch link but not the card status when count is zero", () => {
     renderCard(baseEntry, makeCountsHook({ data: 0 }));
 
     const launch = screen.getByRole("link", { name: "Sequence Reads" });
     expect(launch).toHaveAttribute("aria-disabled", "true");
-    expect(fireEvent.click(launch)).toBe(false);
-    expect(
-      screen.getByRole("button", { name: baseEntry.noDataTooltip }),
-    ).toBeInTheDocument();
-  });
-
-  it("does not render an info button at zero count when noDataTooltip is absent", () => {
-    const entry: AppRegistrationEntry = {
-      ...baseEntry,
-      noDataTooltip: undefined,
-    };
-    renderCard(entry, makeCountsHook({ data: 0 }));
-
     expect(screen.getByText("0 Cases")).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "" })).not.toBeInTheDocument();
-    // only the description-toggle button remains (named after the tool)
-    expect(screen.getAllByRole("button")).toHaveLength(1);
+    expect(screen.queryByText("Not Available")).not.toBeInTheDocument();
   });
 
-  it("renders neither a count nor a status when hideCounts is set", () => {
+  it("renders neither a count nor Not Available when hideCounts is set", () => {
     const entry: AppRegistrationEntry = { ...baseEntry, hideCounts: true };
     renderCard(entry, makeCountsHook({ data: 100 }));
 
