@@ -184,6 +184,7 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
     id: "BamDownloadApp",
     noDataTooltip: "Current cohort does not have available BAMs for download.",
     optimizeRules: ["data format = BAM"],
+    unavailable: true,
   },
   {
     name: "ProteinPaint",
