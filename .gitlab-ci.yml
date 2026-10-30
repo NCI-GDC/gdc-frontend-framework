@@ -30,7 +30,7 @@ stages:
 
 variables:
   DEPLOY_SERVICE_TAG: ${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}
-  NODEJS_BASE_CONTAINER_VERSION: 4.12.0
+  NODEJS_BASE_CONTAINER_VERSION: 4.13.0
   BASE_CONTAINER_REGISTRY: docker.osdc.io/ncigdc
   NODE_VER: v24.22.1
   npm_config_https_proxy: http://cloud-proxy:3128
