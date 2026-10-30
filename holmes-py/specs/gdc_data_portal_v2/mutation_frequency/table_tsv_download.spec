@@ -70,7 +70,7 @@ but it usually requires a wait. So I've put 5 seconds.
 * Perform the following actions on a filter card
   |filter_name          |action               |
   |---------------------|---------------------|
-  |Mutated Gene         |clear selection      |
+  |Mutated Gene         |clear all            |
 
 ## Validate Mutation Table TSV
 * Switch to "Mutations" tab in the Mutation Frequency app
@@ -121,4 +121,4 @@ but it usually requires a wait. So I've put 3 seconds.
 * Perform the following actions on a filter card
   |filter_name              |action               |
   |-------------------------|---------------------|
-  |Somatic Mutations        |clear selection      |
+  |Somatic Mutations        |clear all            |

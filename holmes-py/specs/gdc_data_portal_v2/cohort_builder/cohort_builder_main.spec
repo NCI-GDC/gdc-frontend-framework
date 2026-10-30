@@ -57,7 +57,7 @@ tags: cohort-selections
   |facet_name       |action                       |
   |-----------------|-----------------------------|
   |Morphology       |Chart view                   |
-  |Morphology       |clear selection              |
+  |Morphology       |clear all                    |
   |Morphology       |Search                       |
   |Morphology       |Selection view               |
 * Search in a filter card from "General Diagnosis" tab on the Cohort Builder page
@@ -84,7 +84,7 @@ tags: cohort-selections
 * Perform the following actions from "Available Data" tab on the Cohort Builder page
   |facet_name       |action               |
   |-----------------|---------------------|
-  |Data Format      |clear selection      |
+  |Data Format      |clear all            |
 * Clear active cohort filters
 * Make the following selections from "Disease Status and History" tab on the Cohort Builder page
   |facet_name       |selection            |
@@ -110,7 +110,7 @@ tags: cohort-selections
 * Perform the following actions from "Demographic" tab on the Cohort Builder page
   |facet_name       |action               |
   |-----------------|---------------------|
-  |Age at Diagnosis |clear selection      |
+  |Age at Diagnosis |clear all            |
 
 ## Cohort Builder - Date Card Functions
 * Clear active cohort filters

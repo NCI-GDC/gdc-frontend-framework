@@ -39,10 +39,10 @@ tags: gdc-data-portal-v2, regression, projects
 * Perform the following actions on a filter card
   |filter_name      |action               |
   |-----------------|---------------------|
-  |Primary Site     |clear selection      |
-  |Disease Type     |clear selection      |
-  |Data Category    |clear selection      |
-  |Experimental Strategy |clear selection |
+  |Primary Site     |clear all            |
+  |Disease Type     |clear all            |
+  |Data Category    |clear all            |
+  |Experimental Strategy |clear all       |
 * Make the following selections on a filter card
   |filter_name      |selection            |
   |-----------------|---------------------|
@@ -51,6 +51,6 @@ tags: gdc-data-portal-v2, regression, projects
 * Perform the following actions on a filter card
   |filter_name      |action               |
   |-----------------|---------------------|
-  |Program          |clear selection      |
+  |Program          |clear all            |
 * Verify the page is showing "1 - 20"
 * Pause "1" seconds
