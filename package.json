@@ -108,5 +108,8 @@
   "engines": {
     "node": "^24.22.1",
     "npm": "^12.2.1"
+  },
+  "allowScripts": {
+    "@swc/core@1.15.40": true
   }
 }
