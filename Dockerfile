@@ -20,6 +20,7 @@ COPY ./packages/sapien/package.json ./packages/sapien/
 COPY ./packages/portal-components/package.json ./packages/portal-components/
 COPY ./packages/survivalplot/package.json ./packages/survivalplot/
 COPY ./packages/portal-proto/package.json ./packages/portal-proto/
+RUN npm install -g npm@11.19.1
 RUN npm ci --include=dev
 COPY ./packages ./packages
 

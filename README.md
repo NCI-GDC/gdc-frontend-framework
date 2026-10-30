@@ -4,14 +4,14 @@
 
 ### Prerequisites
 
-This is a multi-workspace repo that requires npm v12.2.1. The minimum node version is set to v24.14.0.
+This is a multi-workspace repo that requires npm v11.19.1. The minimum node version is set to v24.14.0.
 
 Node can be downloaded from the official Node.js site. You may also consider using a [Node version manager](https://docs.npmjs.com/cli/v7/configuring-npm/install#using-a-node-version-manager-to-install-nodejs-and-npm).
 
-Your version of Node may not ship with npm v12.2.1. To install it, run:
+Your version of Node may not ship with npm v11.19.1. To install it, run:
 
 ```bash
-npm install npm@12.2.1
+npm install npm@11.19.1
 ```
 
 If you are using a Node version manager, you can run the following to install the correct version of Node:
