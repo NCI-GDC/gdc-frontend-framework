@@ -1,4 +1,4 @@
-ARG BASE_CONTAINER_VERSION=4.12.0
+ARG BASE_CONTAINER_VERSION=4.13.0
 ARG BASE_CONTAINER_REGISTRY=docker.osdc.io/ncigdc
 
 
@@ -20,7 +20,6 @@ COPY ./packages/sapien/package.json ./packages/sapien/
 COPY ./packages/portal-components/package.json ./packages/portal-components/
 COPY ./packages/survivalplot/package.json ./packages/survivalplot/
 COPY ./packages/portal-proto/package.json ./packages/portal-proto/
-RUN npm install -g npm@11.19.1
 RUN npm ci --include=dev
 COPY ./packages ./packages
 
