@@ -17,8 +17,6 @@ export interface AppRegistrationEntry {
   readonly optimizeRules?: ReadonlyArray<string>;
   readonly selectAdditionalCohort?: boolean;
   readonly noDataTooltip?: string;
-  /** When true, the tool is unavailable regardless of the current cohort. */
-  readonly unavailable?: boolean;
   readonly rightComponent?: React.FC;
   readonly selectionScreen?: React.FC;
 }

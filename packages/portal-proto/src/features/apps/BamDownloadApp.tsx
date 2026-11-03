@@ -1,10 +1,19 @@
 import { FC } from "react";
+import { useIsDemoApp } from "@/hooks/useIsDemoApp";
+import { SequenceReadWrapper } from "../proteinpaint/SequenceReadWrapper";
 import { DemoUtil } from "./DemoUtil";
 
-// TODO: restore the previous implementation when this tool is available again
 const BamDownloadApp: FC = () => {
+  const isDemoMode = useIsDemoApp();
+
   return (
-    <DemoUtil text="The BAM Slicing Download tool is currently unavailable." />
+    <>
+      {isDemoMode ? (
+        <DemoUtil text="Demo mode is not available for this app" />
+      ) : (
+        <SequenceReadWrapper stream2download={true} />
+      )}
+    </>
   );
 };
 

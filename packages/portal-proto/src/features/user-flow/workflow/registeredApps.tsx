@@ -172,7 +172,6 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
     noDataTooltip:
       "Current cohort does not have available BAMs for visualization.",
     optimizeRules: ["data format = BAM"],
-    unavailable: true,
   },
   {
     name: "BAM Slicing Download",
@@ -184,7 +183,6 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
     id: "BamDownloadApp",
     noDataTooltip: "Current cohort does not have available BAMs for download.",
     optimizeRules: ["data format = BAM"],
-    unavailable: true,
   },
   {
     name: "ProteinPaint",
@@ -287,7 +285,6 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
     optimizeRules: ["available data = ssm or cnv"],
     noDataTooltip:
       "Current cohort does not have gene expression data available for visualization.",
-    unavailable: true,
   },
   {
     name: "Cohort Level MAF",
