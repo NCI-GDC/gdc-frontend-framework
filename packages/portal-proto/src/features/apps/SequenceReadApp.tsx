@@ -1,20 +1,9 @@
-import { useIsDemoApp } from "@/hooks/useIsDemoApp";
 import { FC } from "react";
-import { SequenceReadWrapper } from "../proteinpaint/SequenceReadWrapper";
 import { DemoUtil } from "./DemoUtil";
 
+// TODO: restore the previous implementation when this tool is available again
 const SequenceReadApp: FC = () => {
-  const isDemoMode = useIsDemoApp();
-
-  return (
-    <>
-      {isDemoMode ? (
-        <DemoUtil text="Demo mode is not available for this app" />
-      ) : (
-        <SequenceReadWrapper />
-      )}
-    </>
-  );
+  return <DemoUtil text="The Sequence Reads tool is currently unavailable." />;
 };
 
 export default SequenceReadApp;

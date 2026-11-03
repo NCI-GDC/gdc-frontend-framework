@@ -1,8 +1,11 @@
 import { FC } from "react";
-import { MatrixWrapper } from "../proteinpaint/MatrixWrapper";
+import { DemoUtil } from "./DemoUtil";
 
+// TODO: restore the previous implementation when this tool is available again
 const GeneExpressionApp: FC = () => {
-  return <MatrixWrapper chartType="hierCluster" />;
+  return (
+    <DemoUtil text="The Gene Expression Clustering tool is currently unavailable." />
+  );
 };
 
 export default GeneExpressionApp;

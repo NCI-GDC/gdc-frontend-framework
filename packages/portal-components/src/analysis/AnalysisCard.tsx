@@ -19,6 +19,14 @@ export interface AnalysisCardProps {
   useApplicationDataCounts: DataFetchingHook<number>;
 }
 
+const InfoTooltip = ({ label }: { label?: string }) => (
+  <Tooltip label={label} withArrow w={200} multiline>
+    <div>
+      <InfoIcon className="inline-block ml-1" />
+    </div>
+  </Tooltip>
+);
+
 const AnalysisCard: React.FC<AnalysisCardProps> = ({
   entry,
   descriptionVisible,
@@ -28,7 +36,11 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
   const cohortCounts = useApplicationDataCounts();
   const caseCounts = cohortCounts?.data || 0;
 
+  // conditionally unavailable, e.g. the current cohort has no cases for this tool
   const inactive = caseCounts === 0 || cohortCounts.isFetching;
+  // unconditionally unavailable, regardless of the current cohort
+  const unavailable = entry.unavailable === true;
+  const disabled = inactive || unavailable;
   const { ref: descRef, height: descHeight } = useElementSize();
 
   const { Link } = useContext(AppContext);
@@ -38,13 +50,13 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
       data-testid={`${entry.name}-tool`}
       p={6}
       className={`bg-base-max border-secondary-darkest overflow-visible border ${
-        inactive ? "" : "border-t-6"
+        disabled ? "" : "border-t-6"
       }
      `}
       aria-label={`${entry.name} Tool`}
     >
       {/* Spacer so that the cards are the same height without setting an explicit height for the later transition */}
-      {inactive && <div className="h-1" />}
+      {disabled && <div className="h-1" />}
       <div className="flex justify-between mb-1">
         {entry.icon}
         <div className="flex flex-col">
@@ -67,11 +79,11 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             focus:border-secondary-dark
             mb-1
             w-[50px]
-            ${inactive ? "opacity-50 pointer-events-none" : ""}
+            ${disabled ? "opacity-50 pointer-events-none" : ""}
             rounded
             h-5
           `}
-            aria-disabled={inactive}
+            aria-disabled={disabled}
             aria-label={entry.name}
           >
             <PlayIcon size={16} color="white" />
@@ -107,7 +119,9 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
               border
               border-secondary
               font-semibold
+              ${unavailable ? "opacity-50 pointer-events-none" : ""}
             `}
+              aria-disabled={unavailable}
             >
               Demo
             </Link>
@@ -151,7 +165,17 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             <p className="p-2 font-content">{entry.description}</p>
           </div>
         </div>
-        {entry.hideCounts ? (
+        {unavailable ? (
+          <div
+            data-testid="text-status-tool"
+            className="flex items-center text-secondary-darkest"
+          >
+            <span>Not Available</span>
+            <InfoTooltip
+              label={`The ${entry.name} tool is currently unavailable.`}
+            />
+          </div>
+        ) : entry.hideCounts ? (
           <div className="h-4" />
         ) : cohortCounts ? (
           <div
@@ -173,13 +197,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
                 0 Cases
               </span>
             )}
-            {caseCounts === 0 && (
-              <Tooltip label={entry?.noDataTooltip} withArrow w={200} multiline>
-                <div>
-                  <InfoIcon className="inline-block ml-1" />
-                </div>
-              </Tooltip>
-            )}
+            {caseCounts === 0 && <InfoTooltip label={entry?.noDataTooltip} />}
           </div>
         ) : (
           <span>
