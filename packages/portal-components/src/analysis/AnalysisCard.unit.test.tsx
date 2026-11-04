@@ -10,11 +10,18 @@ const baseEntry: AppRegistrationEntry = {
   name: "Sequence Reads",
   tags: ["sequenceAnalysis"],
   icon: <></>,
-  hasDemo: true,
+  hasDemo: false,
   countsField: "sequenceReadCaseCount",
   description: "Visualize sequencing reads.",
   noDataTooltip:
     "Current cohort does not have available BAMs for visualization.",
+};
+
+const demoEntry: AppRegistrationEntry = {
+  ...baseEntry,
+  id: "GeneExpression",
+  name: "Gene Expression Clustering",
+  hasDemo: true,
 };
 
 const makeCountsHook =
@@ -68,24 +75,37 @@ describe("<AnalysisCard />", () => {
     expect(launch).toHaveAttribute("aria-disabled", "true");
   });
 
-  it("shows a disabled Demo link when unavailable", () => {
-    const entry: AppRegistrationEntry = { ...baseEntry, unavailable: true };
+  it("shows a disabled Demo link when a tool with a demo is unavailable", () => {
+    const entry: AppRegistrationEntry = { ...demoEntry, unavailable: true };
     renderCard(entry, makeCountsHook({ data: 100 }));
 
     expect(screen.getByText("Demo")).toHaveAttribute("aria-disabled", "true");
   });
 
-  it("keeps the Demo link enabled when the current cohort has no cases", () => {
-    renderCard(baseEntry, makeCountsHook({ data: 0 }));
+  it("keeps the Demo link enabled when a tool with a demo has no cases in the current cohort", () => {
+    renderCard(demoEntry, makeCountsHook({ data: 0 }));
 
     expect(screen.getByText("Demo")).toHaveAttribute("aria-disabled", "false");
   });
 
-  it("shows an enabled Demo link when active", () => {
-    renderCard(baseEntry, makeCountsHook({ data: 100 }));
+  it("shows an enabled Demo link when a tool with a demo is active", () => {
+    renderCard(demoEntry, makeCountsHook({ data: 100 }));
 
     expect(screen.getByText("Demo")).toHaveAttribute("aria-disabled", "false");
   });
+
+  it.each([
+    ["active", {}, 100],
+    ["unavailable", { unavailable: true }, 100],
+    ["without cases in the current cohort", {}, 0],
+  ])(
+    "does not render a Demo link for a tool without a demo when %s",
+    (_state, overrides, data) => {
+      renderCard({ ...baseEntry, ...overrides }, makeCountsHook({ data }));
+
+      expect(screen.queryByText("Demo")).not.toBeInTheDocument();
+    },
+  );
 
   it("disables the launch link but not the card status when count is zero", () => {
     renderCard(baseEntry, makeCountsHook({ data: 0 }));
