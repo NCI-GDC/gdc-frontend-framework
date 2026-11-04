@@ -36,11 +36,9 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
   const cohortCounts = useApplicationDataCounts();
   const caseCounts = cohortCounts?.data || 0;
 
-  // conditionally unavailable, e.g. the current cohort has no cases for this tool
-  const inactive = caseCounts === 0 || cohortCounts.isFetching;
-  // unconditionally unavailable, regardless of the current cohort
-  const unavailable = entry.unavailable === true;
-  const disabled = inactive || unavailable;
+  const noCasesToAnalyze = caseCounts === 0 || cohortCounts.isFetching;
+  const toolUnavailable = entry.unavailable === true;
+  const launchDisabled = noCasesToAnalyze || toolUnavailable;
   const { ref: descRef, height: descHeight } = useElementSize();
 
   const { Link } = useContext(AppContext);
@@ -50,13 +48,13 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
       data-testid={`${entry.name}-tool`}
       p={6}
       className={`bg-base-max border-secondary-darkest overflow-visible border ${
-        disabled ? "" : "border-t-6"
+        launchDisabled ? "" : "border-t-6"
       }
      `}
       aria-label={`${entry.name} Tool`}
     >
       {/* Spacer so that the cards are the same height without setting an explicit height for the later transition */}
-      {disabled && <div className="h-1" />}
+      {launchDisabled && <div className="h-1" />}
       <div className="flex justify-between mb-1">
         {entry.icon}
         <div className="flex flex-col">
@@ -79,11 +77,11 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             focus:border-secondary-dark
             mb-1
             w-[50px]
-            ${disabled ? "opacity-50 pointer-events-none" : ""}
+            ${launchDisabled ? "opacity-50 pointer-events-none" : ""}
             rounded
             h-5
           `}
-            aria-disabled={disabled}
+            aria-disabled={launchDisabled}
             aria-label={entry.name}
           >
             <PlayIcon size={16} color="white" />
@@ -119,9 +117,9 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
               border
               border-secondary
               font-semibold
-              ${unavailable ? "opacity-50 pointer-events-none" : ""}
+              ${toolUnavailable ? "opacity-50 pointer-events-none" : ""}
             `}
-              aria-disabled={unavailable}
+              aria-disabled={toolUnavailable}
             >
               Demo
             </Link>
@@ -165,7 +163,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
             <p className="p-2 font-content">{entry.description}</p>
           </div>
         </div>
-        {unavailable ? (
+        {toolUnavailable ? (
           <div
             data-testid="text-status-tool"
             className="flex items-center text-secondary-darkest"
