@@ -1,8 +1,9 @@
 import { FC } from "react";
-import { DemoUtil } from "./DemoUtil";
 
 const SequenceReadApp: FC = () => {
-  return <DemoUtil text="The Sequence Reads tool is currently unavailable." />;
+  return (
+    <div className="p-4">The Sequence Reads tool is currently unavailable.</div>
+  );
 };
 
 export default SequenceReadApp;

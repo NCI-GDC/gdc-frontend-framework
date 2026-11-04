@@ -1,9 +1,10 @@
 import { FC } from "react";
-import { DemoUtil } from "./DemoUtil";
 
 const BamDownloadApp: FC = () => {
   return (
-    <DemoUtil text="The BAM Slicing Download tool is currently unavailable." />
+    <div className="p-4">
+      The BAM Slicing Download tool is currently unavailable.
+    </div>
   );
 };
 
