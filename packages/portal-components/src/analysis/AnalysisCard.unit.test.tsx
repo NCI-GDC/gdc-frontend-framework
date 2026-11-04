@@ -121,7 +121,7 @@ describe("<AnalysisCard />", () => {
     expect(screen.queryByText("Not Available")).not.toBeInTheDocument();
   });
 
-  it("renders neither a count nor Not Available when hideCounts is set", () => {
+  it("renders no count when hideCounts is set", () => {
     const entry: AppRegistrationEntry = { ...baseEntry, hideCounts: true };
     renderCard(entry, makeCountsHook({ data: 100 }));
 
@@ -130,5 +130,18 @@ describe("<AnalysisCard />", () => {
       screen.queryByTestId("text-case-count-tool"),
     ).not.toBeInTheDocument();
     expect(screen.queryByTestId("text-status-tool")).not.toBeInTheDocument();
+  });
+
+  it("renders Not Available when hideCounts is set and the tool is unavailable", () => {
+    const entry: AppRegistrationEntry = {
+      ...baseEntry,
+      hideCounts: true,
+      unavailable: true,
+    };
+    renderCard(entry, makeCountsHook({ data: 100 }));
+
+    expect(screen.getByText("Not Available")).toBeInTheDocument();
+    expect(screen.getByTestId("text-status-tool")).toBeInTheDocument();
+    expect(screen.queryByText("100 Cases")).not.toBeInTheDocument();
   });
 });
