@@ -58,7 +58,7 @@ describe("<AnalysisCard />", () => {
     expect(launch).toHaveAttribute("aria-disabled", "false");
   });
 
-  it("renders Not Available instead of the count and disables the launch link when unavailable", () => {
+  it("renders Not Available instead of the count when unavailable", () => {
     const entry: AppRegistrationEntry = { ...baseEntry, unavailable: true };
     // data is non-zero to prove unavailable (not the count) disables the card
     renderCard(entry, makeCountsHook({ data: 100 }));
@@ -70,6 +70,11 @@ describe("<AnalysisCard />", () => {
     expect(
       screen.queryByTestId("text-case-count-tool"),
     ).not.toBeInTheDocument();
+  });
+
+  it("disables the launch link when unavailable, even if the current cohort has cases", () => {
+    const entry: AppRegistrationEntry = { ...baseEntry, unavailable: true };
+    renderCard(entry, makeCountsHook({ data: 100 }));
 
     const launch = screen.getByRole("link", { name: "Sequence Reads" });
     expect(launch).toHaveAttribute("aria-disabled", "true");
