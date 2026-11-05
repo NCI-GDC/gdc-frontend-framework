@@ -92,7 +92,7 @@ Build and upload source maps:
   before_script:
     - curl -sSL https://nexus.osdc.io/repository/misc/nodejs/node-${NODE_VER}-headers.tar.gz -o /tmp/node-headers.tgz
     - dnf install gcc-c++ make -y
-    - npm ci
+    - npm ci --include=dev
   script:
     - NEXT_PUBLIC_BUILD_SHORT_SHA=$CI_COMMIT_SHORT_SHA npx lerna run build:sm --scope=portal-proto
     - find packages/portal-proto/.next -name "*.js.map" -delete
