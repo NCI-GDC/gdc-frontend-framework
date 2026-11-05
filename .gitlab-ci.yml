@@ -116,9 +116,7 @@ Build and push image:
     - dind
   image: docker:${DOCKER_VERSION}-dind
   before_script:
-    - apk add bash unzip
-    - 'curl -sSL -o sm-artifacts.zip -H "Job-Token: $CI_JOB_TOKEN" "https://$CI_SERVER_FQDN/api/v4/projects/$CI_PROJECT_ID/jobs/artifacts/${CI_COMMIT_SHA}/download?job=Build+and+upload+source+maps"'
-    - unzip -q sm-artifacts.zip
+    - apk add bash
   script:
     - |
       docker build \
