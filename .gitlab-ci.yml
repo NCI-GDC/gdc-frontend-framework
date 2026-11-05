@@ -95,7 +95,7 @@ Build and upload source maps:
     - npm ci --include=dev
   script:
     - test -n "$DD_API_KEY" || (echo "DD_API_KEY is empty" && exit 1)
-    - curl -sfS -H "DD-API-KEY: $DD_API_KEY" https://api.datadoghq.com/api/v1/validate
+    - 'curl -sfS -H "DD-API-KEY: $DD_API_KEY" https://api.datadoghq.com/api/v1/validate'
     - NEXT_PUBLIC_BUILD_SHORT_SHA=$CI_COMMIT_SHORT_SHA npx lerna run build:sm --scope=portal-proto
     - find packages/portal-proto/.next -name "*.js.map" -delete
     - rm -rf packages/portal-proto/.next/standalone
