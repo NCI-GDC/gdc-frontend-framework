@@ -87,7 +87,6 @@ Build and test core and portal:
 Build and upload source maps:
   stage: release
   variables:
-    NODE_ENV: production
     npm_config_tarball: /tmp/node-headers.tgz
     DD_API_KEY: $DATADOG_API_KEY
   before_script:
