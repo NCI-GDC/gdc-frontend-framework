@@ -62,6 +62,8 @@ if (process.env.NEXT_PUBLIC_DD_ENABLED) {
     trackLongTasks: true,
     trackViewsManually: true,
     defaultPrivacyLevel: "mask",
+    // Keep off until traced endpoints allow the CORS `baggage` header
+    propagateTraceBaggage: false,
     version: `v${PUBLIC_APP_INFO?.version}-${PUBLIC_APP_INFO?.hash}`,
     allowedTracingUrls: [
       "https://gdc.cancer.gov",

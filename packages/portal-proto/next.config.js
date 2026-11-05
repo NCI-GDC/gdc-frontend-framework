@@ -75,6 +75,7 @@ module.exports = {
     defaultLocale: "en",
   },
   output: "standalone",
+  productionBrowserSourceMaps: true,
   basePath,
   allowedDevOrigins: ["localhost.gdc.cancer.gov"],
   experimental: {

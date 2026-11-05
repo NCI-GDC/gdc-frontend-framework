@@ -22,8 +22,7 @@ COPY ./packages/survivalplot/package.json ./packages/survivalplot/
 COPY ./packages/portal-proto/package.json ./packages/portal-proto/
 RUN npm ci --include=dev
 COPY ./packages ./packages
-
-RUN npx lerna run build --scope=portal-proto
+COPY ./packages/portal-proto/.next ./packages/portal-proto/.next
 
 # ==================================================================
 # Run portal-proto app

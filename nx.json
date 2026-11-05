@@ -12,6 +12,10 @@
       "cache": true,
       "outputs": ["{projectRoot}/dist", "{projectRoot}/.next"]
     },
+    "build:sm": {
+      "dependsOn": ["compile", "^build"],
+      "cache": false
+    },
     "dev": {
       "dependsOn": ["^build"],
       "cache": false,
