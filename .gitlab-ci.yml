@@ -99,6 +99,7 @@ Build and upload source maps:
     - NEXT_PUBLIC_BUILD_SHORT_SHA=$CI_COMMIT_SHORT_SHA npx lerna run build:sm --scope=portal-proto
     - find packages/portal-proto/.next -name "*.js.map" -delete
     - rm -rf packages/portal-proto/.next/standalone
+    - rm -rf packages/portal-proto/.next/cache
   artifacts:
     paths:
       - packages/portal-proto/.next
