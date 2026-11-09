@@ -5,7 +5,9 @@ import {
 } from "@reduxjs/toolkit";
 import type { TypedStartListening } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
+import { REHYDRATE } from "redux-persist";
 import { CoreDispatch, CoreState } from "./store";
+import { COHORT_PERSIST_KEY } from "./reducers";
 import { userAuthTagInvalidators } from "./coreCreateApi";
 import {
   updateCohortFilter,
@@ -108,7 +110,14 @@ startCoreListening({
     userAuthTagInvalidators.forEach((invalidate) =>
       listenerApi.dispatch(invalidate()),
     );
+  },
+});
 
+startCoreListening({
+  predicate: (action) =>
+    userAuthChanged.match(action) ||
+    (action.type === REHYDRATE && action.key === COHORT_PERSIST_KEY),
+  effect: (_, listenerApi) => {
     selectAvailableCohorts(listenerApi.getState()).forEach((cohort) =>
       listenerApi.dispatch(fetchCohortCaseCounts(cohort.id)),
     );
