@@ -66,8 +66,10 @@ import {
 } from "./features/imageDetails/imageDetailsSlice";
 
 // We want unsaved cohorts to be persisted through a refresh but not through a user ending their session
+export const COHORT_PERSIST_KEY = "cohort";
+
 const cohortPersistConfig = {
-  key: "cohort",
+  key: COHORT_PERSIST_KEY,
   version: 5,
   storage: sessionStorage,
 };

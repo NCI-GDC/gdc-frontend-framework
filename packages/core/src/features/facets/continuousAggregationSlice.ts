@@ -6,6 +6,7 @@ import { convertFacetNameToGQL } from "./facetApiGQL";
 import { FacetBuckets, GQLIndexType, GQLDocType } from "./types";
 import { RangeBuckets, processRangeResults } from "./continuousAggregationApi";
 import { GqlOperation, NumericFromTo } from "../gdcapi/filters";
+import { userAuthChanged } from "../users/usersSlice";
 
 export const buildContinuousAggregationRangeOnlyQuery = (
   field: string,
@@ -99,6 +100,7 @@ const rangeFacetAggregation = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(userAuthChanged, () => initialState)
       .addCase(fetchFacetContinuousAggregation.fulfilled, (state, action) => {
         const response = action.payload;
         const index = action.meta.arg.indexType ?? "explore";

@@ -155,6 +155,7 @@ export const useEnumFacets = (
     if (
       facet.length > 0 &&
       (prevFilterLength != facet.length ||
+        facet.some((entry) => entry === undefined) ||
         !isEqual(prevCohortFilters, currentCohortFilters) ||
         !isEqual(prevEnumValues, enumValues))
     ) {
