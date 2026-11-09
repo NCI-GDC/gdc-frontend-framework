@@ -6,6 +6,7 @@ import {
 import type { TypedStartListening } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
 import { CoreDispatch, CoreState } from "./store";
+import { userAuthTagInvalidators } from "./coreCreateApi";
 import {
   updateCohortFilter,
   removeCohortFilter,
@@ -23,6 +24,12 @@ import {
   deleteCohortUserAction,
 } from "./features/cohort/availableCohortsSlice";
 import { cohortApiSlice } from "./features/api/cohortApiSlice";
+import {
+  userAuthApi,
+  userAuthChanged,
+  type UserAuthResponse,
+  type UserInfo,
+} from "./features/users/usersSlice";
 import { fetchFacetDictionary } from "./features/facets/facetDictionarySlice";
 import {
   removeFilterFromCohortBuilder,
@@ -40,6 +47,15 @@ const isPayloadActionWithObject = (
     typeof action.payload === "object"
   );
 };
+
+const selectUserDetails = userAuthApi.endpoints.fetchUserDetails.select();
+
+const getUsername = (
+  response?: UserAuthResponse<UserInfo>,
+): string | null | undefined =>
+  response?.status === undefined
+    ? undefined
+    : (response.data?.username ?? null);
 
 /**
  * Defines coreListeners for adding middleware.
@@ -70,6 +86,35 @@ startCoreListening({
       listenerApi.dispatch(fetchCohortCaseCounts(currentCohortId));
   },
 });
+startCoreListening({
+  matcher: userAuthApi.endpoints.fetchUserDetails.matchFulfilled,
+  effect: (action, listenerApi) => {
+    const previous = selectUserDetails(listenerApi.getOriginalState()).data;
+    const username = getUsername(action.payload);
+
+    if (
+      previous !== undefined &&
+      username !== undefined &&
+      getUsername(previous) !== username
+    ) {
+      listenerApi.dispatch(userAuthChanged({ username }));
+    }
+  },
+});
+
+startCoreListening({
+  actionCreator: userAuthChanged,
+  effect: (_, listenerApi) => {
+    userAuthTagInvalidators.forEach((invalidate) =>
+      listenerApi.dispatch(invalidate()),
+    );
+
+    selectAvailableCohorts(listenerApi.getState()).forEach((cohort) =>
+      listenerApi.dispatch(fetchCohortCaseCounts(cohort.id)),
+    );
+  },
+});
+
 startCoreListening({
   matcher: isAnyOf(setIsLoggedIn),
   effect: async (_, listenerApi) => {
