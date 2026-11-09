@@ -17,7 +17,6 @@ import {
   projectPrimarySiteApiSliceReducer,
   projectPrimarySiteApiSliceReducerPath,
 } from "./features/projects/projectsPrimarySiteSlice";
-import { casesReducer } from "./features/cases/casesSlice";
 import { genomicReducers } from "./features/genomic/genomicSlice";
 import { bannerReducer } from "./features/bannerNotification";
 import { cartReducer } from "./features/cart";
@@ -80,7 +79,6 @@ export const reducers = combineReducers({
   facetsGQL: fileCaseGenesMutationsFacetReducers,
   facetsByNameTypeFilter: facetsByNameTypeAndFilterReducer,
   gdcApps: gdcAppReducer,
-  cases: casesReducer,
   genomic: genomicReducers,
   cart: cartReducer,
   bannerNotification: bannerReducer,

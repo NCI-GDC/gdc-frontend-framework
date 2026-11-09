@@ -3,7 +3,7 @@ import {
   useCoreSelector,
   selectCart,
   useCoreDispatch,
-  useAllCases,
+  useAllCasesQuery,
   SortBy,
   selectCurrentCohortFilters,
   GqlOperation,
@@ -103,7 +103,7 @@ export const ContextualCasesView: React.FC = () => {
     ),
   );
 
-  const { data, isFetching, isSuccess, isError, pagination } = useAllCases({
+  const { data, isFetching, isSuccess, isError } = useAllCasesQuery({
     fields: [
       "case_id",
       "submitter_id",
@@ -136,6 +136,7 @@ export const ContextualCasesView: React.FC = () => {
     from: offset * pageSize,
     sortBy: sortBy,
   });
+  const pagination = data?.pagination;
 
   useDeepCompareEffect(() => {
     setRowSelection({});
@@ -143,7 +144,7 @@ export const ContextualCasesView: React.FC = () => {
   }, [cohortFilters]);
 
   const casesData: casesTableDataType[] =
-    data?.map((datum) => ({
+    data?.cases.map((datum) => ({
       case_uuid: datum.case_uuid,
       case_id: datum.case_id,
       project: datum.project_id,
