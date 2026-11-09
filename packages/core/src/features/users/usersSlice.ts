@@ -1,3 +1,4 @@
+import { createAction } from "@reduxjs/toolkit";
 import { coreCreateApi } from "src/coreCreateApi";
 import { GDC_AUTH } from "../../constants";
 
@@ -42,7 +43,7 @@ export async function fetchAuth({
   };
 }
 
-const userAuthApi = coreCreateApi({
+export const userAuthApi = coreCreateApi({
   reducerPath: "userAuthApi",
   refetchOnFocus: true,
   refetchOnMountOrArgChange: 1800,
@@ -62,7 +63,7 @@ const userAuthApi = coreCreateApi({
     return { data: results };
   },
   endpoints: (builder) => ({
-    fetchToken: builder.query<UserAuthResponse<string>, void>({
+    fetchToken: builder.mutation<UserAuthResponse<string>, void>({
       query: () => ({ endpoint: "token/refresh" }),
     }),
     fetchUserDetails: builder.query<UserAuthResponse<UserInfo>, void>({
@@ -71,9 +72,13 @@ const userAuthApi = coreCreateApi({
   }),
 });
 
+export const userAuthChanged = createAction<{ username: string | null }>(
+  "userAuth/changed",
+);
+
 export const {
   useFetchUserDetailsQuery,
-  useLazyFetchTokenQuery,
+  useFetchTokenMutation,
   useLazyFetchUserDetailsQuery,
 } = userAuthApi;
 export const userAuthApiMiddleware = userAuthApi.middleware;

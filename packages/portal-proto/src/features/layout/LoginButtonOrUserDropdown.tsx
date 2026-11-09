@@ -9,7 +9,7 @@ import {
   Modals,
   useCoreDispatch,
   useFetchUserDetailsQuery,
-  useLazyFetchTokenQuery,
+  useFetchTokenMutation,
   setIsLoggedIn,
   selectCohortIsLoggedIn,
   useCoreSelector,
@@ -29,7 +29,7 @@ const LoginButtonOrUserDropdown = () => {
   const { data: userInfo } = useFetchUserDetailsQuery();
   const prevUserStatus = usePrevious(userInfo?.status);
   const userDropdownRef = useRef<HTMLButtonElement>(null);
-  const [fetchToken] = useLazyFetchTokenQuery({ refetchOnFocus: false });
+  const [fetchToken] = useFetchTokenMutation();
   const cohortIsLoggedIn = useCoreSelector((state) =>
     selectCohortIsLoggedIn(state),
   );
