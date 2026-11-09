@@ -1,14 +1,13 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { fetchGdcAnnotations, fetchGdcCases } from "../gdcapi";
-import { Pagination, SortBy } from "../gdcapi/types";
-import { AnnotationDefaults, CaseDefaults } from "../gdcapi/types";
-import { CoreDispatch, CoreState } from "src/store";
+import { endpointSlice } from "../gdcapi";
+import {
+  AnnotationDefaults,
+  CaseDefaults,
+  GdcApiResponse,
+  Pagination,
+  SortBy,
+} from "../gdcapi/types";
 import { groupBy } from "lodash";
 import { GqlOperation } from "../gdcapi/filters";
-import {
-  CoreDataSelectorResponse,
-  createUseCoreDataHook,
-} from "src/dataAccess";
 
 interface CaseSliceResponseData {
   case_id: string;
@@ -50,9 +49,9 @@ interface CaseResponseData extends CaseDefaults {
   annotations: AnnotationDefaults[];
 }
 
-interface CasesResponse {
+interface AllCasesData {
+  readonly cases: CaseSliceResponseData[];
   readonly pagination: Pagination;
-  readonly data: readonly CaseResponseData[];
 }
 
 /**
@@ -73,176 +72,91 @@ interface FetchAllCasesRequestProps {
   readonly sortBy?: ReadonlyArray<SortBy>;
 }
 
-export const fetchAllCases = createAsyncThunk<
-  CasesResponse,
-  FetchAllCasesRequestProps,
-  { dispatch: CoreDispatch; state: CoreState }
->(
-  "cases/fetchAllCases",
-  async ({
-    fields,
-    size,
-    filters,
-    from,
-    sortBy,
-  }: FetchAllCasesRequestProps): Promise<CasesResponse> => {
-    const casesResponse = await fetchGdcCases({
-      fields,
-      size,
-      case_filters: filters,
-      from,
-      sortBy,
-    });
-    const case_ids = casesResponse.data.hits.map((d) => d.id);
-    const parsedCasesResponse: Record<string, any> =
-      casesResponse.data.hits.reduce(
-        (acc, hit) => ({
-          ...acc,
-          [hit.case_id]: {
-            ...hit,
-            annotations: [],
-          },
-        }),
-        {},
-      );
-
-    if (casesResponse.data.hits.length > 0) {
-      const annotationsResponse = await fetchGdcAnnotations({
-        filters: {
-          op: "in",
-          content: {
-            field: "annotations.case_id",
-            value: case_ids,
-          },
-        },
-        size: 100000,
-      });
-
-      const grouped = groupBy(annotationsResponse.data.hits, "case_id");
-
-      const newObject = Object.keys(parsedCasesResponse).map((key) => {
-        let initial = parsedCasesResponse[key];
-        if (grouped[key]) {
-          initial = {
-            ...initial,
-            annotations: grouped[key],
-          };
-        }
-        return initial;
-      });
-
-      return {
-        pagination: casesResponse.data.pagination,
-        data: newObject,
-      };
-    }
-
-    return {
-      pagination: casesResponse.data.pagination,
-      data: [],
-    };
-  },
-);
-export interface CasesState {
-  readonly allCasesData: CoreDataSelectorResponse<CaseSliceResponseData[]>;
-  readonly totalSelectedCases?: number;
-  readonly requestId?: string;
-}
-
-const initialState: CasesState = {
-  allCasesData: {
-    status: "uninitialized",
-  },
-};
-
-const slice = createSlice({
-  name: "cases",
-  initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchAllCases.fulfilled, (state, action) => {
-        if (state.requestId != action.meta.requestId) return state;
-
-        const response = action.payload;
-        const map = action.payload.data.map((datum) => ({
-          case_id: datum.submitter_id,
-          case_uuid: datum.case_id,
-          submitter_id: datum.submitter_id,
-          project_id: datum.project.project_id,
-          program: datum.project.program.name,
-          primary_site: datum.primary_site,
-          disease_type: datum.disease_type,
-          primary_diagnosis: datum.diagnoses?.[0]?.primary_diagnosis,
-          age_at_diagnosis: datum.diagnoses?.[0]?.age_at_diagnosis,
-          vital_status: datum?.demographic?.vital_status,
-          days_to_death: datum?.demographic?.days_to_death,
-          sex_at_birth: datum.demographic?.sex_at_birth,
-          race: datum.demographic?.race,
-          ethnicity: datum.demographic?.ethnicity,
-          filesCount: datum.summary.file_count,
-          data_categories: datum.summary?.data_categories,
-          experimental_strategies: datum.summary?.experimental_strategies,
-          annotations: datum.annotations,
-          files: datum?.files?.map((file) => ({
-            file_id: file.file_id,
-            file_name: file.file_name,
-            file_size: file.file_size,
-            access: file.access,
-            state: file.state,
-            acl: file.acl,
-            data_type: file.data_type,
-          })),
-        }));
-        state.allCasesData = {
-          status: "fulfilled",
-        };
-        state.allCasesData.data = map;
-        state.allCasesData.pagination = response.pagination;
-        return state;
-      })
-      .addCase(fetchAllCases.pending, (state, action) => {
-        state.allCasesData = {
-          status: "pending",
-        };
-        state.requestId = action.meta.requestId;
-        return state;
-      })
-      .addCase(fetchAllCases.rejected, (state, action) => {
-        if (state.requestId != action.meta.requestId) return state;
-
-        state.allCasesData = {
-          status: "rejected",
-        };
-        if (action.error) {
-          state.allCasesData.error = action.error.message;
-        }
-
-        return state;
-      });
-  },
+const transformCase = (datum: CaseResponseData): CaseSliceResponseData => ({
+  case_id: datum.submitter_id,
+  case_uuid: datum.case_id,
+  submitter_id: datum.submitter_id,
+  project_id: datum.project.project_id,
+  program: datum.project.program.name,
+  primary_site: datum.primary_site,
+  disease_type: datum.disease_type,
+  primary_diagnosis: datum.diagnoses?.[0]?.primary_diagnosis,
+  age_at_diagnosis: datum.diagnoses?.[0]?.age_at_diagnosis,
+  vital_status: datum?.demographic?.vital_status,
+  days_to_death: datum?.demographic?.days_to_death,
+  sex_at_birth: datum.demographic?.sex_at_birth,
+  race: datum.demographic?.race,
+  ethnicity: datum.demographic?.ethnicity,
+  filesCount: datum.summary.file_count,
+  data_categories: datum.summary?.data_categories,
+  experimental_strategies: datum.summary?.experimental_strategies,
+  annotations: datum.annotations,
+  files: datum?.files?.map((file) => ({
+    file_id: file.file_id,
+    file_name: file.file_name,
+    file_size: file.file_size,
+    access: file.access,
+    state: file.state,
+    acl: file.acl,
+    data_type: file.data_type,
+  })),
 });
 
-export const casesReducer = slice.reducer;
+export const casesApiSlice = endpointSlice.injectEndpoints({
+  endpoints: (builder) => ({
+    allCases: builder.query<AllCasesData, FetchAllCasesRequestProps>({
+      queryFn: async (
+        { fields, size, filters, from, sortBy },
+        _queryApi,
+        _extraOptions,
+        fetchWithBQ,
+      ) => {
+        const casesResult = await fetchWithBQ({
+          endpoint: "cases",
+          request: { fields, size, case_filters: filters, from, sortBy },
+        });
+        if (casesResult.error) return { error: casesResult.error };
 
-export const selectAllCasesData = (
-  state: CoreState,
-): CoreDataSelectorResponse<CaseSliceResponseData[]> => {
-  return state.cases.allCasesData;
-};
+        const { hits, pagination } = (
+          casesResult.data as GdcApiResponse<CaseDefaults>
+        ).data;
+        if (hits.length === 0) return { data: { cases: [], pagination } };
 
-/**
- * A Hook to fetch all cases from the GDC API
- * @param filters - A FilterSet object
- * @param fields - An array of fields to return
- * @param size - The number of cases to return
- * @param from - The offset from which to return cases
- * @param sortBy - An array of fields to sort by
- * @returns - A CoreDataSelectorResponse object containing the data, status, and error
- * @category Cases
- * @category Hooks
- */
-export const useAllCases = createUseCoreDataHook(
-  fetchAllCases,
-  selectAllCasesData,
-);
+        const annotationsResult = await fetchWithBQ({
+          endpoint: "annotations",
+          request: {
+            filters: {
+              op: "in",
+              content: {
+                field: "annotations.case_id",
+                value: hits.map((hit) => hit.id),
+              },
+            },
+            size: 100000,
+          },
+        });
+        if (annotationsResult.error) return { error: annotationsResult.error };
+
+        const annotationsByCaseId = groupBy(
+          (annotationsResult.data as GdcApiResponse<AnnotationDefaults>).data
+            .hits,
+          "case_id",
+        );
+
+        return {
+          data: {
+            pagination,
+            cases: hits.map((hit) =>
+              transformCase({
+                ...hit,
+                annotations: annotationsByCaseId[hit.case_id] ?? [],
+              }),
+            ),
+          },
+        };
+      },
+    }),
+  }),
+});
+
+export const { useAllCasesQuery } = casesApiSlice;
