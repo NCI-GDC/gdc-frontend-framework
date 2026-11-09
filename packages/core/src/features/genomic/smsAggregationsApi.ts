@@ -1,5 +1,4 @@
 import { GqlOperation } from "../gdcapi/filters";
-import { GraphQLApiResponse, graphqlAPI } from "../gdcapi/gdcgraphql";
 
 export const SSMSAggregationsQuery = `
 query SsmsAggregations (
@@ -30,30 +29,24 @@ interface SMSAggregationsQueryProps {
   readonly caseFilters?: GqlOperation;
 }
 
-export const fetchSmsAggregations = async ({
+export const buildSsmsAggregationsFilters = ({
   ids,
   field = "consequence.transcript.gene.gene_id",
   filters,
   caseFilters,
-}: SMSAggregationsQueryProps): Promise<GraphQLApiResponse> => {
-  const graphQlFilters = {
-    caseFilters: caseFilters ? caseFilters : {},
-    ssmCountsfilters: {
-      content: [
-        ...[
-          {
-            content: {
-              field: field,
-              value: ids,
-            },
-            op: "in",
-          },
-        ],
-        ...filters,
-      ],
-      op: "and",
-    },
-  };
-
-  return await graphqlAPI(SSMSAggregationsQuery, graphQlFilters);
-};
+}: SMSAggregationsQueryProps): Record<string, unknown> => ({
+  caseFilters: caseFilters ? caseFilters : {},
+  ssmCountsfilters: {
+    content: [
+      {
+        content: {
+          field: field,
+          value: ids,
+        },
+        op: "in",
+      },
+      ...filters,
+    ],
+    op: "and",
+  },
+});
