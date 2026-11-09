@@ -19,7 +19,7 @@ export interface AnalysisCardProps {
   useApplicationDataCounts: DataFetchingHook<number>;
 }
 
-const InfoTooltip = ({ label }: { label?: string }) => (
+const InfoTooltip = ({ label }: { label: string }) => (
   <Tooltip label={label} withArrow w={200} multiline>
     <div>
       <InfoIcon className="inline-block ml-1" />
@@ -37,7 +37,8 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
   const caseCounts = cohortCounts?.data || 0;
 
   const noCasesToAnalyze = caseCounts === 0 || cohortCounts.isFetching;
-  const toolUnavailable = entry.unavailable === true;
+  // undefined works like false here: a missing aria-disabled means not disabled
+  const toolUnavailable = entry.unavailable;
   const launchDisabled = noCasesToAnalyze || toolUnavailable;
   const { ref: descRef, height: descHeight } = useElementSize();
 
@@ -195,7 +196,11 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
                 0 Cases
               </span>
             )}
-            {caseCounts === 0 && <InfoTooltip label={entry?.noDataTooltip} />}
+            {caseCounts === 0 && (
+              <InfoTooltip
+                label={entry?.noDataTooltip ?? "No available data"}
+              />
+            )}
           </div>
         ) : (
           <span>

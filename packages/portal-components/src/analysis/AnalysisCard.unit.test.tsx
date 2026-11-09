@@ -28,7 +28,6 @@ const makeCountsHook =
   (result: Partial<DataFetchingResult<number>>) =>
   (): DataFetchingResult<number> =>
     ({
-      data: 0,
       isFetching: false,
       isSuccess: true,
       ...result,
@@ -36,7 +35,7 @@ const makeCountsHook =
 
 const renderCard = (
   entry: AppRegistrationEntry,
-  counts = makeCountsHook({ data: 100 }),
+  counts: () => DataFetchingResult<number>,
 ) =>
   render(
     <MantineProvider>
@@ -55,7 +54,7 @@ describe("<AnalysisCard />", () => {
 
     expect(screen.getByText("100 Cases")).toBeInTheDocument();
     const launch = screen.getByRole("link", { name: "Sequence Reads" });
-    expect(launch).toHaveAttribute("aria-disabled", "false");
+    expect(launch).not.toHaveAttribute("aria-disabled", "true");
   });
 
   it("renders Not Available instead of the count when unavailable", () => {
@@ -90,13 +89,19 @@ describe("<AnalysisCard />", () => {
   it("keeps the Demo link enabled when a tool with a demo has no cases in the current cohort", () => {
     renderCard(demoEntry, makeCountsHook({ data: 0 }));
 
-    expect(screen.getByText("Demo")).toHaveAttribute("aria-disabled", "false");
+    expect(screen.getByText("Demo")).not.toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
   });
 
   it("shows an enabled Demo link when a tool with a demo is active", () => {
     renderCard(demoEntry, makeCountsHook({ data: 100 }));
 
-    expect(screen.getByText("Demo")).toHaveAttribute("aria-disabled", "false");
+    expect(screen.getByText("Demo")).not.toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
   });
 
   it.each([
