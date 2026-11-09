@@ -201,6 +201,7 @@ function getLollipopTrack(
   callback: SelectSamplesCallback,
 ) {
   const arg: Mds3Arg = {
+    hide_dsHandles: true,
     // host in gdc is just a relative url path,
     // using the same domain as the GDC portal where PP is embedded
     host: props.basepath || (basepath as string),
