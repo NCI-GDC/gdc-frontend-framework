@@ -167,13 +167,14 @@ export const SaveOrCreateEntityBody = ({
             Cancel
           </Button>
           <Button
-            variant="filled"
+            variant="darkFunction"
             color="secondary"
             onClick={handleActionClick}
             data-testid="button-save-name"
             leftSection={
               loading ? <Loader size={15} color="white" /> : undefined
             }
+            disabled={!form?.values?.name}
           >
             {upperFirst(action)}
           </Button>
