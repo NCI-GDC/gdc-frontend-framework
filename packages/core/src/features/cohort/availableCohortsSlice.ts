@@ -68,13 +68,13 @@ const cohortsAdapter = createEntityAdapter<Cohort, CohortId>({
 
 export interface CurrentCohortState {
   currentCohort: string | undefined;
-  isLoggedIn?: boolean | undefined;
 }
 
 const emptyInitialState = cohortsAdapter.getInitialState<CurrentCohortState>({
   currentCohort: undefined,
-  isLoggedIn: undefined, // isLoggedIn is used to trigger an api call to fetch fresh data when user logs in or out of the app
 });
+
+const EMPTY_FILTER_SET: FilterSet = { mode: "and", root: {} };
 
 interface UpdateFilterParams {
   field: string;
@@ -362,9 +362,6 @@ const slice = createSlice({
     setCurrentCohortId: (state, action: PayloadAction<string>) => {
       state.currentCohort = action.payload;
     },
-    setIsLoggedIn: (state, action: PayloadAction<boolean>) => {
-      state.isLoggedIn = action.payload;
-    },
     clearCaseSet: (state) => {
       cohortsAdapter.updateOne(state, {
         id: getCurrentCohort(state),
@@ -468,7 +465,6 @@ export const {
   setCohortList,
   copyToSavedCohort,
   discardCohortChanges,
-  setIsLoggedIn,
 } = slice.actions;
 
 /**
@@ -517,17 +513,6 @@ export const selectAvailableCohorts = createSelector(
  */
 export const selectCurrentCohortId = (state: CoreState): string | undefined =>
   state.cohort?.availableCohorts?.currentCohort;
-
-/**
- * Returns the current cohort login status
- * The case composition of a cohort can be different based on the
- * login status of the user. The login status is attached to the cohort
- * so that the portal and applications are updated are when the login state changes.
- * @param state - the CoreState
- * @hidden
- */
-export const selectCohortIsLoggedIn = (state: CoreState): boolean | undefined =>
-  state.cohort.availableCohorts.isLoggedIn;
 
 /**
  * Returns if the current cohort is modified
@@ -621,27 +606,19 @@ export const selectCohortNameById = (
   return cohort?.name;
 };
 
-const selectCohortById = (state: CoreState, cohortId: string): Cohort =>
-  cohortSelectors.selectById(state, cohortId);
-
 /**
  * Returns the cohort's filters given an id
- * This includes the `isLoggedIn` state to ensure fresh data is fetched
- * when the user logs in or out to avoid the use of cached data.
  * @param state - the CoreState
  * @param cohortId - the cohort id
  * @category Cohort
  * @category Selectors
  *
  */
-export const selectCohortFilterSetById = createSelector(
-  [selectCohortIsLoggedIn, selectCohortById],
-  (isLoggedIn, cohort) => {
-    if (cohort === undefined)
-      return { mode: "and", root: {}, isLoggedIn: isLoggedIn };
-    return { ...cohort.filters, isLoggedIn: isLoggedIn };
-  },
-);
+export const selectCohortFilterSetById = (
+  state: CoreState,
+  cohortId: string,
+): FilterSet =>
+  cohortSelectors.selectById(state, cohortId)?.filters ?? EMPTY_FILTER_SET;
 
 /**
  * Returns the currentCohortFilters as a GqlOperation
@@ -662,21 +639,13 @@ export const selectCurrentCohortGqlFilters = (
 /**
  * Public selector of the current Cohort Filters.
  * Returns the current cohort filters as a FilterSet
- * This includes the `isLoggedIn` state to ensure fresh data is fetched
- * when the user logs in or out to avoid the use of cached data.
  * @param state - the CoreState
  * @category Cohort
  * @category Selectors
  */
 
-export const selectCurrentCohortFilters = createSelector(
-  [selectCohortIsLoggedIn, selectCurrentCohort],
-  (isLoggedIn, cohort) => {
-    if (cohort === undefined)
-      return { mode: "and", root: {}, isLoggedIn: isLoggedIn };
-    return { ...cohort.filters, isLoggedIn: isLoggedIn };
-  },
-);
+export const selectCurrentCohortFilters = (state: CoreState): FilterSet =>
+  selectCurrentCohort(state)?.filters ?? EMPTY_FILTER_SET;
 
 /**
  * Select a filter by its name from the current cohort. If the filter is not found

@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useDeepCompareCallback } from "use-deep-compare";
 import { useRouter } from "next/router";
-import { omit } from "lodash";
 import {
   useCoreDispatch,
   useCoreSelector,
@@ -139,15 +138,13 @@ export const useUpdateFilters = () => {
   const [updateCohort] = useUpdateCohortMutation();
 
   const updateFilters = useDeepCompareCallback(async () => {
-    const filteredCohortFilters = omit(filters, "isLoggedIn");
-
     const updateBody = {
       id: currentCohort.id,
       name: currentCohort.name,
       type: "dynamic",
       filters:
-        Object.keys(filteredCohortFilters.root).length > 0
-          ? buildCohortGqlOperator(filteredCohortFilters)
+        Object.keys(filters.root).length > 0
+          ? buildCohortGqlOperator(filters)
           : {},
     };
 
@@ -344,14 +341,12 @@ const useCreateCohortRequest = () => {
         });
     }
 
-    const filteredCohortFilters = omit(cohortFilters, "isLoggedIn");
-
     const addBody = {
       name: newName,
       type: "dynamic",
       filters:
-        Object.keys(filteredCohortFilters.root).length > 0
-          ? buildCohortGqlOperator(filteredCohortFilters)
+        Object.keys(cohortFilters.root).length > 0
+          ? buildCohortGqlOperator(cohortFilters)
           : {},
     };
 
