@@ -21,7 +21,6 @@ import {
   selectCurrentCohortId,
   removeCohortFromStore,
   selectCurrentCohort,
-  setIsLoggedIn,
   fetchCohortCaseCounts,
   deleteCohortUserAction,
 } from "./features/cohort/availableCohortsSlice";
@@ -121,17 +120,6 @@ startCoreListening({
     selectAvailableCohorts(listenerApi.getState()).forEach((cohort) =>
       listenerApi.dispatch(fetchCohortCaseCounts(cohort.id)),
     );
-  },
-});
-
-startCoreListening({
-  matcher: isAnyOf(setIsLoggedIn),
-  effect: async (_, listenerApi) => {
-    const allCohorts = selectAvailableCohorts(listenerApi.getState());
-
-    allCohorts.forEach((cohort) => {
-      cohort.id && listenerApi.dispatch(fetchCohortCaseCounts(cohort.id));
-    });
   },
 });
 
