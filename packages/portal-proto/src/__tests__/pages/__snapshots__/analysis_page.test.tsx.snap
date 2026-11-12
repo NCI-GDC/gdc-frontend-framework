@@ -1790,22 +1790,173 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
       class="flex grow flex-col overflow-x-clip overflow-y-clip"
       id="main"
     >
-      <div
-        class="m_6e45937b mantine-LoadingOverlay-root"
-        data-testid="loading-spinner"
-        style="--lo-z-index: 400;"
+      <style
+        data-mantine-styles="true"
       >
-        <span
-          class="m_b34414df m_e8eb006c mantine-LoadingOverlay-loader m_5ae2e3c mantine-Loader-root"
-        />
+        
+
+
+
+
+      </style>
+      <style
+        data-mantine-styles="classes"
+      >
+        @media (max-width: 35.99375em) {.mantine-visible-from-xs {display: none !important;}}@media (min-width: 36em) {.mantine-hidden-from-xs {display: none !important;}}@media (max-width: 47.99375em) {.mantine-visible-from-sm {display: none !important;}}@media (min-width: 48em) {.mantine-hidden-from-sm {display: none !important;}}@media (max-width: 61.99375em) {.mantine-visible-from-md {display: none !important;}}@media (min-width: 62em) {.mantine-hidden-from-md {display: none !important;}}@media (max-width: 74.99375em) {.mantine-visible-from-lg {display: none !important;}}@media (min-width: 75em) {.mantine-hidden-from-lg {display: none !important;}}@media (max-width: 87.99375em) {.mantine-visible-from-xl {display: none !important;}}@media (min-width: 88em) {.mantine-hidden-from-xl {display: none !important;}}
+      </style>
+      <div
+        class="flex items-center bg-white border-secondary-darkest border-1 border-l-4 m-4"
+      >
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-dark-hidden"
-          style="--overlay-bg: rgba(255, 255, 255, 0.75); --overlay-z-index: 200;"
-        />
+          class="flex flex-col w-full"
+        >
+          <div
+            class="flex flex-row py-2 items-center bg-primary border-secondary-darkest border-b-1"
+            data-testid="text-cohort-filters-top-row"
+          >
+            <span
+              class="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px] truncate ... "
+            >
+              Unsaved_Cohort
+            </span>
+            <button
+              class="text-sm font-montserrat ml-2 px-1 hover:bg-primary-darkest hover:text-primary-content-lightest hover:rounded-md hidden"
+              data-testid="button-clear-all-cohort-filters"
+              disabled=""
+            >
+              Clear All
+            </button>
+            <div
+              class="display flex gap-2 ml-auto mr-3"
+            >
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse all queries"
+                class="text-primary bg-base-max disabled:opacity-50 enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest flex gap-0 items-center border-1 border-base-max rounded-md w-7 h-7"
+                color="white"
+                data-testid="button-expand-collapse-cohort-queries"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                    opacity=".87"
+                  />
+                  <path
+                    d="M17.51 3.87L15.73 2.1 5.84 12l9.9 9.9 1.77-1.77L9.38 12l8.13-8.13z"
+                  />
+                </svg>
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M6.23 20.23L8 22l10-10L8 2 6.23 3.77 14.46 12z"
+                  />
+                </svg>
+              </button>
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse filters section"
+                class="disabled:opacity-50 disabled:bg-base-max disabled:text-primary enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest border-1 border-white rounded-md w-7 h-7 flex items-center text-base-max bg-transparent"
+                color="white"
+                data-testid="button-expand-collapse-cohort-filters-section"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="30"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="30"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div>
+            <div
+              class="flex flex-wrap bg-base-max w-full overflow-x-hidden p-2"
+              data-testid="text-cohort-filters"
+              style="max-height: 0px; overflow-y: scroll;"
+            >
+              <p
+                class="font-content"
+                data-testid="text-no-active-cohort-filter"
+              >
+                No filters currently applied.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-light-hidden"
-          style="--overlay-bg: rgba(59, 59, 59, 0.75); --overlay-z-index: 200;"
-        />
+          class="w-full bg-primary px-4 py-2 flex items-center"
+        >
+          <button
+            aria-label="Close app"
+            class="bg-base-max text-primary-content-darkest px-2 hover:bg-primary-darkest hover:text-primary-content-lightest rounded-md w-auto h-9 focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor"
+          >
+            <svg
+              aria-hidden="true"
+              fill="currentColor"
+              height="20"
+              stroke="currentColor"
+              stroke-width="0"
+              viewBox="0 0 24 24"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0 0h24v24H0z"
+                fill="none"
+              />
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
+          <span
+            class="p-2 mx-2 uppercase text-white font-bold"
+          >
+            BAM Slicing Download
+          </span>
+          <div
+            class="ml-auto mr-0"
+          />
+        </div>
+        <div />
       </div>
     </main>
     <div>
@@ -6014,22 +6165,173 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
       class="flex grow flex-col overflow-x-clip overflow-y-clip"
       id="main"
     >
-      <div
-        class="m_6e45937b mantine-LoadingOverlay-root"
-        data-testid="loading-spinner"
-        style="--lo-z-index: 400;"
+      <style
+        data-mantine-styles="true"
       >
-        <span
-          class="m_b34414df m_e8eb006c mantine-LoadingOverlay-loader m_5ae2e3c mantine-Loader-root"
-        />
+        
+
+
+
+
+      </style>
+      <style
+        data-mantine-styles="classes"
+      >
+        @media (max-width: 35.99375em) {.mantine-visible-from-xs {display: none !important;}}@media (min-width: 36em) {.mantine-hidden-from-xs {display: none !important;}}@media (max-width: 47.99375em) {.mantine-visible-from-sm {display: none !important;}}@media (min-width: 48em) {.mantine-hidden-from-sm {display: none !important;}}@media (max-width: 61.99375em) {.mantine-visible-from-md {display: none !important;}}@media (min-width: 62em) {.mantine-hidden-from-md {display: none !important;}}@media (max-width: 74.99375em) {.mantine-visible-from-lg {display: none !important;}}@media (min-width: 75em) {.mantine-hidden-from-lg {display: none !important;}}@media (max-width: 87.99375em) {.mantine-visible-from-xl {display: none !important;}}@media (min-width: 88em) {.mantine-hidden-from-xl {display: none !important;}}
+      </style>
+      <div
+        class="flex items-center bg-white border-secondary-darkest border-1 border-l-4 m-4"
+      >
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-dark-hidden"
-          style="--overlay-bg: rgba(255, 255, 255, 0.75); --overlay-z-index: 200;"
-        />
+          class="flex flex-col w-full"
+        >
+          <div
+            class="flex flex-row py-2 items-center bg-primary border-secondary-darkest border-b-1"
+            data-testid="text-cohort-filters-top-row"
+          >
+            <span
+              class="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px] truncate ... "
+            >
+              Unsaved_Cohort
+            </span>
+            <button
+              class="text-sm font-montserrat ml-2 px-1 hover:bg-primary-darkest hover:text-primary-content-lightest hover:rounded-md hidden"
+              data-testid="button-clear-all-cohort-filters"
+              disabled=""
+            >
+              Clear All
+            </button>
+            <div
+              class="display flex gap-2 ml-auto mr-3"
+            >
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse all queries"
+                class="text-primary bg-base-max disabled:opacity-50 enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest flex gap-0 items-center border-1 border-base-max rounded-md w-7 h-7"
+                color="white"
+                data-testid="button-expand-collapse-cohort-queries"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                    opacity=".87"
+                  />
+                  <path
+                    d="M17.51 3.87L15.73 2.1 5.84 12l9.9 9.9 1.77-1.77L9.38 12l8.13-8.13z"
+                  />
+                </svg>
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M6.23 20.23L8 22l10-10L8 2 6.23 3.77 14.46 12z"
+                  />
+                </svg>
+              </button>
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse filters section"
+                class="disabled:opacity-50 disabled:bg-base-max disabled:text-primary enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest border-1 border-white rounded-md w-7 h-7 flex items-center text-base-max bg-transparent"
+                color="white"
+                data-testid="button-expand-collapse-cohort-filters-section"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="30"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="30"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div>
+            <div
+              class="flex flex-wrap bg-base-max w-full overflow-x-hidden p-2"
+              data-testid="text-cohort-filters"
+              style="max-height: 0px; overflow-y: scroll;"
+            >
+              <p
+                class="font-content"
+                data-testid="text-no-active-cohort-filter"
+              >
+                No filters currently applied.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-light-hidden"
-          style="--overlay-bg: rgba(59, 59, 59, 0.75); --overlay-z-index: 200;"
-        />
+          class="w-full bg-primary px-4 py-2 flex items-center"
+        >
+          <button
+            aria-label="Close app"
+            class="bg-base-max text-primary-content-darkest px-2 hover:bg-primary-darkest hover:text-primary-content-lightest rounded-md w-auto h-9 focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor"
+          >
+            <svg
+              aria-hidden="true"
+              fill="currentColor"
+              height="20"
+              stroke="currentColor"
+              stroke-width="0"
+              viewBox="0 0 24 24"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0 0h24v24H0z"
+                fill="none"
+              />
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
+          <span
+            class="p-2 mx-2 uppercase text-white font-bold"
+          >
+            Copy Number Segment
+          </span>
+          <div
+            class="ml-auto mr-0"
+          />
+        </div>
+        <div />
       </div>
     </main>
     <div>
@@ -8126,22 +8428,229 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
       class="flex grow flex-col overflow-x-clip overflow-y-clip"
       id="main"
     >
-      <div
-        class="m_6e45937b mantine-LoadingOverlay-root"
-        data-testid="loading-spinner"
-        style="--lo-z-index: 400;"
+      <style
+        data-mantine-styles="true"
       >
-        <span
-          class="m_b34414df m_e8eb006c mantine-LoadingOverlay-loader m_5ae2e3c mantine-Loader-root"
-        />
+        
+
+
+
+
+      </style>
+      <style
+        data-mantine-styles="classes"
+      >
+        @media (max-width: 35.99375em) {.mantine-visible-from-xs {display: none !important;}}@media (min-width: 36em) {.mantine-hidden-from-xs {display: none !important;}}@media (max-width: 47.99375em) {.mantine-visible-from-sm {display: none !important;}}@media (min-width: 48em) {.mantine-hidden-from-sm {display: none !important;}}@media (max-width: 61.99375em) {.mantine-visible-from-md {display: none !important;}}@media (min-width: 62em) {.mantine-hidden-from-md {display: none !important;}}@media (max-width: 74.99375em) {.mantine-visible-from-lg {display: none !important;}}@media (min-width: 75em) {.mantine-hidden-from-lg {display: none !important;}}@media (max-width: 87.99375em) {.mantine-visible-from-xl {display: none !important;}}@media (min-width: 88em) {.mantine-hidden-from-xl {display: none !important;}}
+      </style>
+      <div
+        class="flex items-center bg-white border-secondary-darkest border-1 border-l-4 m-4"
+      >
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-dark-hidden"
-          style="--overlay-bg: rgba(255, 255, 255, 0.75); --overlay-z-index: 200;"
-        />
+          class="flex flex-col w-full"
+        >
+          <div
+            class="flex flex-row py-2 items-center bg-primary border-secondary-darkest border-b-1"
+            data-testid="text-cohort-filters-top-row"
+          >
+            <span
+              class="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px] truncate ... "
+            >
+              Unsaved_Cohort
+            </span>
+            <button
+              class="text-sm font-montserrat ml-2 px-1 hover:bg-primary-darkest hover:text-primary-content-lightest hover:rounded-md hidden"
+              data-testid="button-clear-all-cohort-filters"
+              disabled=""
+            >
+              Clear All
+            </button>
+            <div
+              class="display flex gap-2 ml-auto mr-3"
+            >
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse all queries"
+                class="text-primary bg-base-max disabled:opacity-50 enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest flex gap-0 items-center border-1 border-base-max rounded-md w-7 h-7"
+                color="white"
+                data-testid="button-expand-collapse-cohort-queries"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                    opacity=".87"
+                  />
+                  <path
+                    d="M17.51 3.87L15.73 2.1 5.84 12l9.9 9.9 1.77-1.77L9.38 12l8.13-8.13z"
+                  />
+                </svg>
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M6.23 20.23L8 22l10-10L8 2 6.23 3.77 14.46 12z"
+                  />
+                </svg>
+              </button>
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse filters section"
+                class="disabled:opacity-50 disabled:bg-base-max disabled:text-primary enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest border-1 border-white rounded-md w-7 h-7 flex items-center text-base-max bg-transparent"
+                color="white"
+                data-testid="button-expand-collapse-cohort-filters-section"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="30"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="30"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div>
+            <div
+              class="flex flex-wrap bg-base-max w-full overflow-x-hidden p-2"
+              data-testid="text-cohort-filters"
+              style="max-height: 0px; overflow-y: scroll;"
+            >
+              <p
+                class="font-content"
+                data-testid="text-no-active-cohort-filter"
+              >
+                No filters currently applied.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-light-hidden"
-          style="--overlay-bg: rgba(59, 59, 59, 0.75); --overlay-z-index: 200;"
-        />
+          class="w-full bg-primary px-4 py-2 flex items-center"
+        >
+          <button
+            aria-label="Close app"
+            class="bg-base-max text-primary-content-darkest px-2 hover:bg-primary-darkest hover:text-primary-content-lightest rounded-md w-auto h-9 focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor"
+          >
+            <svg
+              aria-hidden="true"
+              fill="currentColor"
+              height="20"
+              stroke="currentColor"
+              stroke-width="0"
+              viewBox="0 0 24 24"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0 0h24v24H0z"
+                fill="none"
+              />
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
+          <span
+            class="p-2 mx-2 uppercase text-white font-bold"
+          >
+            Cohort Builder
+          </span>
+          <div
+            class="ml-auto mr-0"
+          >
+            <div
+              class="relative"
+            >
+              <div
+                class="w-[25rem] m_46b77525 mantine-InputWrapper-root mantine-TextInput-root"
+                data-size="sm"
+              >
+                <div
+                  class="m_6c018570 mantine-Input-wrapper mantine-TextInput-wrapper"
+                  data-size="sm"
+                  data-variant="default"
+                  data-with-left-section="true"
+                  style="--input-height: var(--input-height-sm); --input-fz: var(--mantine-font-size-sm);"
+                >
+                  <div
+                    class="m_82577fc2 mantine-Input-section mantine-TextInput-section"
+                    data-position="left"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      fill="currentColor"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-width="0"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M0 0h24v24H0z"
+                        fill="none"
+                      />
+                      <path
+                        d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+                      />
+                    </svg>
+                  </div>
+                  <input
+                    aria-autocomplete="list"
+                    aria-controls="react-test-id-combobox"
+                    aria-expanded="false"
+                    aria-haspopup="grid"
+                    aria-invalid="false"
+                    aria-label="App Search Input"
+                    class="focus:border-2 focus:border-primary text-sm m_8fb7ebe7 mantine-Input-input mantine-TextInput-input"
+                    data-testid="textbox-cohort-builder-search-bar"
+                    data-variant="default"
+                    id="mantine-mock-103"
+                    placeholder="Search"
+                    role="combobox"
+                    value=""
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div />
       </div>
     </main>
     <div>
@@ -10238,22 +10747,196 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
       class="flex grow flex-col overflow-x-clip overflow-y-clip"
       id="main"
     >
-      <div
-        class="m_6e45937b mantine-LoadingOverlay-root"
-        data-testid="loading-spinner"
-        style="--lo-z-index: 400;"
+      <style
+        data-mantine-styles="true"
       >
-        <span
-          class="m_b34414df m_e8eb006c mantine-LoadingOverlay-loader m_5ae2e3c mantine-Loader-root"
-        />
+        
+
+
+
+
+      </style>
+      <style
+        data-mantine-styles="classes"
+      >
+        @media (max-width: 35.99375em) {.mantine-visible-from-xs {display: none !important;}}@media (min-width: 36em) {.mantine-hidden-from-xs {display: none !important;}}@media (max-width: 47.99375em) {.mantine-visible-from-sm {display: none !important;}}@media (min-width: 48em) {.mantine-hidden-from-sm {display: none !important;}}@media (max-width: 61.99375em) {.mantine-visible-from-md {display: none !important;}}@media (min-width: 62em) {.mantine-hidden-from-md {display: none !important;}}@media (max-width: 74.99375em) {.mantine-visible-from-lg {display: none !important;}}@media (min-width: 75em) {.mantine-hidden-from-lg {display: none !important;}}@media (max-width: 87.99375em) {.mantine-visible-from-xl {display: none !important;}}@media (min-width: 88em) {.mantine-hidden-from-xl {display: none !important;}}
+      </style>
+      <div
+        class="flex items-center bg-white border-secondary-darkest border-1 border-l-4 m-4"
+      >
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-dark-hidden"
-          style="--overlay-bg: rgba(255, 255, 255, 0.75); --overlay-z-index: 200;"
-        />
+          class="flex flex-col w-full"
+        >
+          <div
+            class="flex flex-row py-2 items-center bg-primary border-secondary-darkest border-b-1"
+            data-testid="text-cohort-filters-top-row"
+          >
+            <span
+              class="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px] truncate ... "
+            >
+              Unsaved_Cohort
+            </span>
+            <button
+              class="text-sm font-montserrat ml-2 px-1 hover:bg-primary-darkest hover:text-primary-content-lightest hover:rounded-md hidden"
+              data-testid="button-clear-all-cohort-filters"
+              disabled=""
+            >
+              Clear All
+            </button>
+            <div
+              class="display flex gap-2 ml-auto mr-3"
+            >
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse all queries"
+                class="text-primary bg-base-max disabled:opacity-50 enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest flex gap-0 items-center border-1 border-base-max rounded-md w-7 h-7"
+                color="white"
+                data-testid="button-expand-collapse-cohort-queries"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                    opacity=".87"
+                  />
+                  <path
+                    d="M17.51 3.87L15.73 2.1 5.84 12l9.9 9.9 1.77-1.77L9.38 12l8.13-8.13z"
+                  />
+                </svg>
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M6.23 20.23L8 22l10-10L8 2 6.23 3.77 14.46 12z"
+                  />
+                </svg>
+              </button>
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse filters section"
+                class="disabled:opacity-50 disabled:bg-base-max disabled:text-primary enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest border-1 border-white rounded-md w-7 h-7 flex items-center text-base-max bg-transparent"
+                color="white"
+                data-testid="button-expand-collapse-cohort-filters-section"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="30"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="30"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div>
+            <div
+              class="flex flex-wrap bg-base-max w-full overflow-x-hidden p-2"
+              data-testid="text-cohort-filters"
+              style="max-height: 0px; overflow-y: scroll;"
+            >
+              <p
+                class="font-content"
+                data-testid="text-no-active-cohort-filter"
+              >
+                No filters currently applied.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-light-hidden"
-          style="--overlay-bg: rgba(59, 59, 59, 0.75); --overlay-z-index: 200;"
-        />
+          class="w-full bg-primary px-4 py-2 flex items-center"
+        >
+          <button
+            aria-label="Close app"
+            class="bg-base-max text-primary-content-darkest px-2 hover:bg-primary-darkest hover:text-primary-content-lightest rounded-md w-auto h-9 focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor"
+          >
+            <svg
+              aria-hidden="true"
+              fill="currentColor"
+              height="20"
+              stroke="currentColor"
+              stroke-width="0"
+              viewBox="0 0 24 24"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0 0h24v24H0z"
+                fill="none"
+              />
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
+          <span
+            class="p-2 mx-2 uppercase text-white "
+          >
+            Cohort Comparison
+          </span>
+          <svg
+            color="white"
+            fill="currentColor"
+            height="8"
+            role="separator"
+            stroke="currentColor"
+            stroke-width="0"
+            style="color: white;"
+            viewBox="0 0 512 512"
+            width="8"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z"
+            />
+          </svg>
+          <span
+            class="p-2 mx-2 uppercase cursor-pointer text-white font-bold"
+            role="button"
+            tabindex="0"
+          >
+            Selection
+          </span>
+          <div
+            class="ml-auto mr-0"
+          />
+        </div>
+        <div />
       </div>
     </main>
     <div>
@@ -12350,22 +13033,173 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
       class="flex grow flex-col overflow-x-clip overflow-y-clip"
       id="main"
     >
-      <div
-        class="m_6e45937b mantine-LoadingOverlay-root"
-        data-testid="loading-spinner"
-        style="--lo-z-index: 400;"
+      <style
+        data-mantine-styles="true"
       >
-        <span
-          class="m_b34414df m_e8eb006c mantine-LoadingOverlay-loader m_5ae2e3c mantine-Loader-root"
-        />
+        
+
+
+
+
+      </style>
+      <style
+        data-mantine-styles="classes"
+      >
+        @media (max-width: 35.99375em) {.mantine-visible-from-xs {display: none !important;}}@media (min-width: 36em) {.mantine-hidden-from-xs {display: none !important;}}@media (max-width: 47.99375em) {.mantine-visible-from-sm {display: none !important;}}@media (min-width: 48em) {.mantine-hidden-from-sm {display: none !important;}}@media (max-width: 61.99375em) {.mantine-visible-from-md {display: none !important;}}@media (min-width: 62em) {.mantine-hidden-from-md {display: none !important;}}@media (max-width: 74.99375em) {.mantine-visible-from-lg {display: none !important;}}@media (min-width: 75em) {.mantine-hidden-from-lg {display: none !important;}}@media (max-width: 87.99375em) {.mantine-visible-from-xl {display: none !important;}}@media (min-width: 88em) {.mantine-hidden-from-xl {display: none !important;}}
+      </style>
+      <div
+        class="flex items-center bg-white border-secondary-darkest border-1 border-l-4 m-4"
+      >
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-dark-hidden"
-          style="--overlay-bg: rgba(255, 255, 255, 0.75); --overlay-z-index: 200;"
-        />
+          class="flex flex-col w-full"
+        >
+          <div
+            class="flex flex-row py-2 items-center bg-primary border-secondary-darkest border-b-1"
+            data-testid="text-cohort-filters-top-row"
+          >
+            <span
+              class="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px] truncate ... "
+            >
+              Unsaved_Cohort
+            </span>
+            <button
+              class="text-sm font-montserrat ml-2 px-1 hover:bg-primary-darkest hover:text-primary-content-lightest hover:rounded-md hidden"
+              data-testid="button-clear-all-cohort-filters"
+              disabled=""
+            >
+              Clear All
+            </button>
+            <div
+              class="display flex gap-2 ml-auto mr-3"
+            >
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse all queries"
+                class="text-primary bg-base-max disabled:opacity-50 enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest flex gap-0 items-center border-1 border-base-max rounded-md w-7 h-7"
+                color="white"
+                data-testid="button-expand-collapse-cohort-queries"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                    opacity=".87"
+                  />
+                  <path
+                    d="M17.51 3.87L15.73 2.1 5.84 12l9.9 9.9 1.77-1.77L9.38 12l8.13-8.13z"
+                  />
+                </svg>
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M6.23 20.23L8 22l10-10L8 2 6.23 3.77 14.46 12z"
+                  />
+                </svg>
+              </button>
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse filters section"
+                class="disabled:opacity-50 disabled:bg-base-max disabled:text-primary enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest border-1 border-white rounded-md w-7 h-7 flex items-center text-base-max bg-transparent"
+                color="white"
+                data-testid="button-expand-collapse-cohort-filters-section"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="30"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="30"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div>
+            <div
+              class="flex flex-wrap bg-base-max w-full overflow-x-hidden p-2"
+              data-testid="text-cohort-filters"
+              style="max-height: 0px; overflow-y: scroll;"
+            >
+              <p
+                class="font-content"
+                data-testid="text-no-active-cohort-filter"
+              >
+                No filters currently applied.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-light-hidden"
-          style="--overlay-bg: rgba(59, 59, 59, 0.75); --overlay-z-index: 200;"
-        />
+          class="w-full bg-primary px-4 py-2 flex items-center"
+        >
+          <button
+            aria-label="Close app"
+            class="bg-base-max text-primary-content-darkest px-2 hover:bg-primary-darkest hover:text-primary-content-lightest rounded-md w-auto h-9 focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor"
+          >
+            <svg
+              aria-hidden="true"
+              fill="currentColor"
+              height="20"
+              stroke="currentColor"
+              stroke-width="0"
+              viewBox="0 0 24 24"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0 0h24v24H0z"
+                fill="none"
+              />
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
+          <span
+            class="p-2 mx-2 uppercase text-white font-bold"
+          >
+            Cohort Level MAF
+          </span>
+          <div
+            class="ml-auto mr-0"
+          />
+        </div>
+        <div />
       </div>
     </main>
     <div>
@@ -14462,22 +15296,173 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
       class="flex grow flex-col overflow-x-clip overflow-y-clip"
       id="main"
     >
-      <div
-        class="m_6e45937b mantine-LoadingOverlay-root"
-        data-testid="loading-spinner"
-        style="--lo-z-index: 400;"
+      <style
+        data-mantine-styles="true"
       >
-        <span
-          class="m_b34414df m_e8eb006c mantine-LoadingOverlay-loader m_5ae2e3c mantine-Loader-root"
-        />
+        
+
+
+
+
+      </style>
+      <style
+        data-mantine-styles="classes"
+      >
+        @media (max-width: 35.99375em) {.mantine-visible-from-xs {display: none !important;}}@media (min-width: 36em) {.mantine-hidden-from-xs {display: none !important;}}@media (max-width: 47.99375em) {.mantine-visible-from-sm {display: none !important;}}@media (min-width: 48em) {.mantine-hidden-from-sm {display: none !important;}}@media (max-width: 61.99375em) {.mantine-visible-from-md {display: none !important;}}@media (min-width: 62em) {.mantine-hidden-from-md {display: none !important;}}@media (max-width: 74.99375em) {.mantine-visible-from-lg {display: none !important;}}@media (min-width: 75em) {.mantine-hidden-from-lg {display: none !important;}}@media (max-width: 87.99375em) {.mantine-visible-from-xl {display: none !important;}}@media (min-width: 88em) {.mantine-hidden-from-xl {display: none !important;}}
+      </style>
+      <div
+        class="flex items-center bg-white border-secondary-darkest border-1 border-l-4 m-4"
+      >
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-dark-hidden"
-          style="--overlay-bg: rgba(255, 255, 255, 0.75); --overlay-z-index: 200;"
-        />
+          class="flex flex-col w-full"
+        >
+          <div
+            class="flex flex-row py-2 items-center bg-primary border-secondary-darkest border-b-1"
+            data-testid="text-cohort-filters-top-row"
+          >
+            <span
+              class="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px] truncate ... "
+            >
+              Unsaved_Cohort
+            </span>
+            <button
+              class="text-sm font-montserrat ml-2 px-1 hover:bg-primary-darkest hover:text-primary-content-lightest hover:rounded-md hidden"
+              data-testid="button-clear-all-cohort-filters"
+              disabled=""
+            >
+              Clear All
+            </button>
+            <div
+              class="display flex gap-2 ml-auto mr-3"
+            >
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse all queries"
+                class="text-primary bg-base-max disabled:opacity-50 enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest flex gap-0 items-center border-1 border-base-max rounded-md w-7 h-7"
+                color="white"
+                data-testid="button-expand-collapse-cohort-queries"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                    opacity=".87"
+                  />
+                  <path
+                    d="M17.51 3.87L15.73 2.1 5.84 12l9.9 9.9 1.77-1.77L9.38 12l8.13-8.13z"
+                  />
+                </svg>
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M6.23 20.23L8 22l10-10L8 2 6.23 3.77 14.46 12z"
+                  />
+                </svg>
+              </button>
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse filters section"
+                class="disabled:opacity-50 disabled:bg-base-max disabled:text-primary enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest border-1 border-white rounded-md w-7 h-7 flex items-center text-base-max bg-transparent"
+                color="white"
+                data-testid="button-expand-collapse-cohort-filters-section"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="30"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="30"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div>
+            <div
+              class="flex flex-wrap bg-base-max w-full overflow-x-hidden p-2"
+              data-testid="text-cohort-filters"
+              style="max-height: 0px; overflow-y: scroll;"
+            >
+              <p
+                class="font-content"
+                data-testid="text-no-active-cohort-filter"
+              >
+                No filters currently applied.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-light-hidden"
-          style="--overlay-bg: rgba(59, 59, 59, 0.75); --overlay-z-index: 200;"
-        />
+          class="w-full bg-primary px-4 py-2 flex items-center"
+        >
+          <button
+            aria-label="Close app"
+            class="bg-base-max text-primary-content-darkest px-2 hover:bg-primary-darkest hover:text-primary-content-lightest rounded-md w-auto h-9 focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor"
+          >
+            <svg
+              aria-hidden="true"
+              fill="currentColor"
+              height="20"
+              stroke="currentColor"
+              stroke-width="0"
+              viewBox="0 0 24 24"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0 0h24v24H0z"
+                fill="none"
+              />
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
+          <span
+            class="p-2 mx-2 uppercase text-white font-bold"
+          >
+            Correlation Plot
+          </span>
+          <div
+            class="ml-auto mr-0"
+          />
+        </div>
+        <div />
       </div>
     </main>
     <div>
@@ -16574,22 +17559,173 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
       class="flex grow flex-col overflow-x-clip overflow-y-clip"
       id="main"
     >
-      <div
-        class="m_6e45937b mantine-LoadingOverlay-root"
-        data-testid="loading-spinner"
-        style="--lo-z-index: 400;"
+      <style
+        data-mantine-styles="true"
       >
-        <span
-          class="m_b34414df m_e8eb006c mantine-LoadingOverlay-loader m_5ae2e3c mantine-Loader-root"
-        />
+        
+
+
+
+
+      </style>
+      <style
+        data-mantine-styles="classes"
+      >
+        @media (max-width: 35.99375em) {.mantine-visible-from-xs {display: none !important;}}@media (min-width: 36em) {.mantine-hidden-from-xs {display: none !important;}}@media (max-width: 47.99375em) {.mantine-visible-from-sm {display: none !important;}}@media (min-width: 48em) {.mantine-hidden-from-sm {display: none !important;}}@media (max-width: 61.99375em) {.mantine-visible-from-md {display: none !important;}}@media (min-width: 62em) {.mantine-hidden-from-md {display: none !important;}}@media (max-width: 74.99375em) {.mantine-visible-from-lg {display: none !important;}}@media (min-width: 75em) {.mantine-hidden-from-lg {display: none !important;}}@media (max-width: 87.99375em) {.mantine-visible-from-xl {display: none !important;}}@media (min-width: 88em) {.mantine-hidden-from-xl {display: none !important;}}
+      </style>
+      <div
+        class="flex items-center bg-white border-secondary-darkest border-1 border-l-4 m-4"
+      >
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-dark-hidden"
-          style="--overlay-bg: rgba(255, 255, 255, 0.75); --overlay-z-index: 200;"
-        />
+          class="flex flex-col w-full"
+        >
+          <div
+            class="flex flex-row py-2 items-center bg-primary border-secondary-darkest border-b-1"
+            data-testid="text-cohort-filters-top-row"
+          >
+            <span
+              class="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px] truncate ... "
+            >
+              Unsaved_Cohort
+            </span>
+            <button
+              class="text-sm font-montserrat ml-2 px-1 hover:bg-primary-darkest hover:text-primary-content-lightest hover:rounded-md hidden"
+              data-testid="button-clear-all-cohort-filters"
+              disabled=""
+            >
+              Clear All
+            </button>
+            <div
+              class="display flex gap-2 ml-auto mr-3"
+            >
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse all queries"
+                class="text-primary bg-base-max disabled:opacity-50 enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest flex gap-0 items-center border-1 border-base-max rounded-md w-7 h-7"
+                color="white"
+                data-testid="button-expand-collapse-cohort-queries"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                    opacity=".87"
+                  />
+                  <path
+                    d="M17.51 3.87L15.73 2.1 5.84 12l9.9 9.9 1.77-1.77L9.38 12l8.13-8.13z"
+                  />
+                </svg>
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M6.23 20.23L8 22l10-10L8 2 6.23 3.77 14.46 12z"
+                  />
+                </svg>
+              </button>
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse filters section"
+                class="disabled:opacity-50 disabled:bg-base-max disabled:text-primary enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest border-1 border-white rounded-md w-7 h-7 flex items-center text-base-max bg-transparent"
+                color="white"
+                data-testid="button-expand-collapse-cohort-filters-section"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="30"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="30"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div>
+            <div
+              class="flex flex-wrap bg-base-max w-full overflow-x-hidden p-2"
+              data-testid="text-cohort-filters"
+              style="max-height: 0px; overflow-y: scroll;"
+            >
+              <p
+                class="font-content"
+                data-testid="text-no-active-cohort-filter"
+              >
+                No filters currently applied.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-light-hidden"
-          style="--overlay-bg: rgba(59, 59, 59, 0.75); --overlay-z-index: 200;"
-        />
+          class="w-full bg-primary px-4 py-2 flex items-center"
+        >
+          <button
+            aria-label="Close app"
+            class="bg-base-max text-primary-content-darkest px-2 hover:bg-primary-darkest hover:text-primary-content-lightest rounded-md w-auto h-9 focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor"
+          >
+            <svg
+              aria-hidden="true"
+              fill="currentColor"
+              height="20"
+              stroke="currentColor"
+              stroke-width="0"
+              viewBox="0 0 24 24"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0 0h24v24H0z"
+                fill="none"
+              />
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
+          <span
+            class="p-2 mx-2 uppercase text-white font-bold"
+          >
+            Repository
+          </span>
+          <div
+            class="ml-auto mr-0"
+          />
+        </div>
+        <div />
       </div>
     </main>
     <div>
@@ -18686,22 +19822,173 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
       class="flex grow flex-col overflow-x-clip overflow-y-clip"
       id="main"
     >
-      <div
-        class="m_6e45937b mantine-LoadingOverlay-root"
-        data-testid="loading-spinner"
-        style="--lo-z-index: 400;"
+      <style
+        data-mantine-styles="true"
       >
-        <span
-          class="m_b34414df m_e8eb006c mantine-LoadingOverlay-loader m_5ae2e3c mantine-Loader-root"
-        />
+        
+
+
+
+
+      </style>
+      <style
+        data-mantine-styles="classes"
+      >
+        @media (max-width: 35.99375em) {.mantine-visible-from-xs {display: none !important;}}@media (min-width: 36em) {.mantine-hidden-from-xs {display: none !important;}}@media (max-width: 47.99375em) {.mantine-visible-from-sm {display: none !important;}}@media (min-width: 48em) {.mantine-hidden-from-sm {display: none !important;}}@media (max-width: 61.99375em) {.mantine-visible-from-md {display: none !important;}}@media (min-width: 62em) {.mantine-hidden-from-md {display: none !important;}}@media (max-width: 74.99375em) {.mantine-visible-from-lg {display: none !important;}}@media (min-width: 75em) {.mantine-hidden-from-lg {display: none !important;}}@media (max-width: 87.99375em) {.mantine-visible-from-xl {display: none !important;}}@media (min-width: 88em) {.mantine-hidden-from-xl {display: none !important;}}
+      </style>
+      <div
+        class="flex items-center bg-white border-secondary-darkest border-1 border-l-4 m-4"
+      >
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-dark-hidden"
-          style="--overlay-bg: rgba(255, 255, 255, 0.75); --overlay-z-index: 200;"
-        />
+          class="flex flex-col w-full"
+        >
+          <div
+            class="flex flex-row py-2 items-center bg-primary border-secondary-darkest border-b-1"
+            data-testid="text-cohort-filters-top-row"
+          >
+            <span
+              class="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px] truncate ... "
+            >
+              Unsaved_Cohort
+            </span>
+            <button
+              class="text-sm font-montserrat ml-2 px-1 hover:bg-primary-darkest hover:text-primary-content-lightest hover:rounded-md hidden"
+              data-testid="button-clear-all-cohort-filters"
+              disabled=""
+            >
+              Clear All
+            </button>
+            <div
+              class="display flex gap-2 ml-auto mr-3"
+            >
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse all queries"
+                class="text-primary bg-base-max disabled:opacity-50 enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest flex gap-0 items-center border-1 border-base-max rounded-md w-7 h-7"
+                color="white"
+                data-testid="button-expand-collapse-cohort-queries"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                    opacity=".87"
+                  />
+                  <path
+                    d="M17.51 3.87L15.73 2.1 5.84 12l9.9 9.9 1.77-1.77L9.38 12l8.13-8.13z"
+                  />
+                </svg>
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M6.23 20.23L8 22l10-10L8 2 6.23 3.77 14.46 12z"
+                  />
+                </svg>
+              </button>
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse filters section"
+                class="disabled:opacity-50 disabled:bg-base-max disabled:text-primary enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest border-1 border-white rounded-md w-7 h-7 flex items-center text-base-max bg-transparent"
+                color="white"
+                data-testid="button-expand-collapse-cohort-filters-section"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="30"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="30"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div>
+            <div
+              class="flex flex-wrap bg-base-max w-full overflow-x-hidden p-2"
+              data-testid="text-cohort-filters"
+              style="max-height: 0px; overflow-y: scroll;"
+            >
+              <p
+                class="font-content"
+                data-testid="text-no-active-cohort-filter"
+              >
+                No filters currently applied.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-light-hidden"
-          style="--overlay-bg: rgba(59, 59, 59, 0.75); --overlay-z-index: 200;"
-        />
+          class="w-full bg-primary px-4 py-2 flex items-center"
+        >
+          <button
+            aria-label="Close app"
+            class="bg-base-max text-primary-content-darkest px-2 hover:bg-primary-darkest hover:text-primary-content-lightest rounded-md w-auto h-9 focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor"
+          >
+            <svg
+              aria-hidden="true"
+              fill="currentColor"
+              height="20"
+              stroke="currentColor"
+              stroke-width="0"
+              viewBox="0 0 24 24"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0 0h24v24H0z"
+                fill="none"
+              />
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
+          <span
+            class="p-2 mx-2 uppercase text-white font-bold"
+          >
+            Gene Expression Clustering
+          </span>
+          <div
+            class="ml-auto mr-0"
+          />
+        </div>
+        <div />
       </div>
     </main>
     <div>
@@ -20798,22 +22085,173 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
       class="flex grow flex-col overflow-x-clip overflow-y-clip"
       id="main"
     >
-      <div
-        class="m_6e45937b mantine-LoadingOverlay-root"
-        data-testid="loading-spinner"
-        style="--lo-z-index: 400;"
+      <style
+        data-mantine-styles="true"
       >
-        <span
-          class="m_b34414df m_e8eb006c mantine-LoadingOverlay-loader m_5ae2e3c mantine-Loader-root"
-        />
+        
+
+
+
+
+      </style>
+      <style
+        data-mantine-styles="classes"
+      >
+        @media (max-width: 35.99375em) {.mantine-visible-from-xs {display: none !important;}}@media (min-width: 36em) {.mantine-hidden-from-xs {display: none !important;}}@media (max-width: 47.99375em) {.mantine-visible-from-sm {display: none !important;}}@media (min-width: 48em) {.mantine-hidden-from-sm {display: none !important;}}@media (max-width: 61.99375em) {.mantine-visible-from-md {display: none !important;}}@media (min-width: 62em) {.mantine-hidden-from-md {display: none !important;}}@media (max-width: 74.99375em) {.mantine-visible-from-lg {display: none !important;}}@media (min-width: 75em) {.mantine-hidden-from-lg {display: none !important;}}@media (max-width: 87.99375em) {.mantine-visible-from-xl {display: none !important;}}@media (min-width: 88em) {.mantine-hidden-from-xl {display: none !important;}}
+      </style>
+      <div
+        class="flex items-center bg-white border-secondary-darkest border-1 border-l-4 m-4"
+      >
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-dark-hidden"
-          style="--overlay-bg: rgba(255, 255, 255, 0.75); --overlay-z-index: 200;"
-        />
+          class="flex flex-col w-full"
+        >
+          <div
+            class="flex flex-row py-2 items-center bg-primary border-secondary-darkest border-b-1"
+            data-testid="text-cohort-filters-top-row"
+          >
+            <span
+              class="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px] truncate ... "
+            >
+              Unsaved_Cohort
+            </span>
+            <button
+              class="text-sm font-montserrat ml-2 px-1 hover:bg-primary-darkest hover:text-primary-content-lightest hover:rounded-md hidden"
+              data-testid="button-clear-all-cohort-filters"
+              disabled=""
+            >
+              Clear All
+            </button>
+            <div
+              class="display flex gap-2 ml-auto mr-3"
+            >
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse all queries"
+                class="text-primary bg-base-max disabled:opacity-50 enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest flex gap-0 items-center border-1 border-base-max rounded-md w-7 h-7"
+                color="white"
+                data-testid="button-expand-collapse-cohort-queries"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                    opacity=".87"
+                  />
+                  <path
+                    d="M17.51 3.87L15.73 2.1 5.84 12l9.9 9.9 1.77-1.77L9.38 12l8.13-8.13z"
+                  />
+                </svg>
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M6.23 20.23L8 22l10-10L8 2 6.23 3.77 14.46 12z"
+                  />
+                </svg>
+              </button>
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse filters section"
+                class="disabled:opacity-50 disabled:bg-base-max disabled:text-primary enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest border-1 border-white rounded-md w-7 h-7 flex items-center text-base-max bg-transparent"
+                color="white"
+                data-testid="button-expand-collapse-cohort-filters-section"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="30"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="30"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div>
+            <div
+              class="flex flex-wrap bg-base-max w-full overflow-x-hidden p-2"
+              data-testid="text-cohort-filters"
+              style="max-height: 0px; overflow-y: scroll;"
+            >
+              <p
+                class="font-content"
+                data-testid="text-no-active-cohort-filter"
+              >
+                No filters currently applied.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-light-hidden"
-          style="--overlay-bg: rgba(59, 59, 59, 0.75); --overlay-z-index: 200;"
-        />
+          class="w-full bg-primary px-4 py-2 flex items-center"
+        >
+          <button
+            aria-label="Close app"
+            class="bg-base-max text-primary-content-darkest px-2 hover:bg-primary-darkest hover:text-primary-content-lightest rounded-md w-auto h-9 focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor"
+          >
+            <svg
+              aria-hidden="true"
+              fill="currentColor"
+              height="20"
+              stroke="currentColor"
+              stroke-width="0"
+              viewBox="0 0 24 24"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0 0h24v24H0z"
+                fill="none"
+              />
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
+          <span
+            class="p-2 mx-2 uppercase text-white font-bold"
+          >
+            IDC Image Viewer
+          </span>
+          <div
+            class="ml-auto mr-0"
+          />
+        </div>
+        <div />
       </div>
     </main>
     <div>
@@ -22910,22 +24348,173 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
       class="flex grow flex-col overflow-x-clip overflow-y-clip"
       id="main"
     >
-      <div
-        class="m_6e45937b mantine-LoadingOverlay-root"
-        data-testid="loading-spinner"
-        style="--lo-z-index: 400;"
+      <style
+        data-mantine-styles="true"
       >
-        <span
-          class="m_b34414df m_e8eb006c mantine-LoadingOverlay-loader m_5ae2e3c mantine-Loader-root"
-        />
+        
+
+
+
+
+      </style>
+      <style
+        data-mantine-styles="classes"
+      >
+        @media (max-width: 35.99375em) {.mantine-visible-from-xs {display: none !important;}}@media (min-width: 36em) {.mantine-hidden-from-xs {display: none !important;}}@media (max-width: 47.99375em) {.mantine-visible-from-sm {display: none !important;}}@media (min-width: 48em) {.mantine-hidden-from-sm {display: none !important;}}@media (max-width: 61.99375em) {.mantine-visible-from-md {display: none !important;}}@media (min-width: 62em) {.mantine-hidden-from-md {display: none !important;}}@media (max-width: 74.99375em) {.mantine-visible-from-lg {display: none !important;}}@media (min-width: 75em) {.mantine-hidden-from-lg {display: none !important;}}@media (max-width: 87.99375em) {.mantine-visible-from-xl {display: none !important;}}@media (min-width: 88em) {.mantine-hidden-from-xl {display: none !important;}}
+      </style>
+      <div
+        class="flex items-center bg-white border-secondary-darkest border-1 border-l-4 m-4"
+      >
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-dark-hidden"
-          style="--overlay-bg: rgba(255, 255, 255, 0.75); --overlay-z-index: 200;"
-        />
+          class="flex flex-col w-full"
+        >
+          <div
+            class="flex flex-row py-2 items-center bg-primary border-secondary-darkest border-b-1"
+            data-testid="text-cohort-filters-top-row"
+          >
+            <span
+              class="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px] truncate ... "
+            >
+              Unsaved_Cohort
+            </span>
+            <button
+              class="text-sm font-montserrat ml-2 px-1 hover:bg-primary-darkest hover:text-primary-content-lightest hover:rounded-md hidden"
+              data-testid="button-clear-all-cohort-filters"
+              disabled=""
+            >
+              Clear All
+            </button>
+            <div
+              class="display flex gap-2 ml-auto mr-3"
+            >
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse all queries"
+                class="text-primary bg-base-max disabled:opacity-50 enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest flex gap-0 items-center border-1 border-base-max rounded-md w-7 h-7"
+                color="white"
+                data-testid="button-expand-collapse-cohort-queries"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                    opacity=".87"
+                  />
+                  <path
+                    d="M17.51 3.87L15.73 2.1 5.84 12l9.9 9.9 1.77-1.77L9.38 12l8.13-8.13z"
+                  />
+                </svg>
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M6.23 20.23L8 22l10-10L8 2 6.23 3.77 14.46 12z"
+                  />
+                </svg>
+              </button>
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse filters section"
+                class="disabled:opacity-50 disabled:bg-base-max disabled:text-primary enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest border-1 border-white rounded-md w-7 h-7 flex items-center text-base-max bg-transparent"
+                color="white"
+                data-testid="button-expand-collapse-cohort-filters-section"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="30"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="30"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div>
+            <div
+              class="flex flex-wrap bg-base-max w-full overflow-x-hidden p-2"
+              data-testid="text-cohort-filters"
+              style="max-height: 0px; overflow-y: scroll;"
+            >
+              <p
+                class="font-content"
+                data-testid="text-no-active-cohort-filter"
+              >
+                No filters currently applied.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-light-hidden"
-          style="--overlay-bg: rgba(59, 59, 59, 0.75); --overlay-z-index: 200;"
-        />
+          class="w-full bg-primary px-4 py-2 flex items-center"
+        >
+          <button
+            aria-label="Close app"
+            class="bg-base-max text-primary-content-darkest px-2 hover:bg-primary-darkest hover:text-primary-content-lightest rounded-md w-auto h-9 focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor"
+          >
+            <svg
+              aria-hidden="true"
+              fill="currentColor"
+              height="20"
+              stroke="currentColor"
+              stroke-width="0"
+              viewBox="0 0 24 24"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0 0h24v24H0z"
+                fill="none"
+              />
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
+          <span
+            class="p-2 mx-2 uppercase text-white font-bold"
+          >
+            Mutation Frequency
+          </span>
+          <div
+            class="ml-auto mr-0"
+          />
+        </div>
+        <div />
       </div>
     </main>
     <div>
@@ -25022,22 +26611,173 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
       class="flex grow flex-col overflow-x-clip overflow-y-clip"
       id="main"
     >
-      <div
-        class="m_6e45937b mantine-LoadingOverlay-root"
-        data-testid="loading-spinner"
-        style="--lo-z-index: 400;"
+      <style
+        data-mantine-styles="true"
       >
-        <span
-          class="m_b34414df m_e8eb006c mantine-LoadingOverlay-loader m_5ae2e3c mantine-Loader-root"
-        />
+        
+
+
+
+
+      </style>
+      <style
+        data-mantine-styles="classes"
+      >
+        @media (max-width: 35.99375em) {.mantine-visible-from-xs {display: none !important;}}@media (min-width: 36em) {.mantine-hidden-from-xs {display: none !important;}}@media (max-width: 47.99375em) {.mantine-visible-from-sm {display: none !important;}}@media (min-width: 48em) {.mantine-hidden-from-sm {display: none !important;}}@media (max-width: 61.99375em) {.mantine-visible-from-md {display: none !important;}}@media (min-width: 62em) {.mantine-hidden-from-md {display: none !important;}}@media (max-width: 74.99375em) {.mantine-visible-from-lg {display: none !important;}}@media (min-width: 75em) {.mantine-hidden-from-lg {display: none !important;}}@media (max-width: 87.99375em) {.mantine-visible-from-xl {display: none !important;}}@media (min-width: 88em) {.mantine-hidden-from-xl {display: none !important;}}
+      </style>
+      <div
+        class="flex items-center bg-white border-secondary-darkest border-1 border-l-4 m-4"
+      >
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-dark-hidden"
-          style="--overlay-bg: rgba(255, 255, 255, 0.75); --overlay-z-index: 200;"
-        />
+          class="flex flex-col w-full"
+        >
+          <div
+            class="flex flex-row py-2 items-center bg-primary border-secondary-darkest border-b-1"
+            data-testid="text-cohort-filters-top-row"
+          >
+            <span
+              class="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px] truncate ... "
+            >
+              Unsaved_Cohort
+            </span>
+            <button
+              class="text-sm font-montserrat ml-2 px-1 hover:bg-primary-darkest hover:text-primary-content-lightest hover:rounded-md hidden"
+              data-testid="button-clear-all-cohort-filters"
+              disabled=""
+            >
+              Clear All
+            </button>
+            <div
+              class="display flex gap-2 ml-auto mr-3"
+            >
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse all queries"
+                class="text-primary bg-base-max disabled:opacity-50 enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest flex gap-0 items-center border-1 border-base-max rounded-md w-7 h-7"
+                color="white"
+                data-testid="button-expand-collapse-cohort-queries"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                    opacity=".87"
+                  />
+                  <path
+                    d="M17.51 3.87L15.73 2.1 5.84 12l9.9 9.9 1.77-1.77L9.38 12l8.13-8.13z"
+                  />
+                </svg>
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M6.23 20.23L8 22l10-10L8 2 6.23 3.77 14.46 12z"
+                  />
+                </svg>
+              </button>
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse filters section"
+                class="disabled:opacity-50 disabled:bg-base-max disabled:text-primary enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest border-1 border-white rounded-md w-7 h-7 flex items-center text-base-max bg-transparent"
+                color="white"
+                data-testid="button-expand-collapse-cohort-filters-section"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="30"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="30"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div>
+            <div
+              class="flex flex-wrap bg-base-max w-full overflow-x-hidden p-2"
+              data-testid="text-cohort-filters"
+              style="max-height: 0px; overflow-y: scroll;"
+            >
+              <p
+                class="font-content"
+                data-testid="text-no-active-cohort-filter"
+              >
+                No filters currently applied.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-light-hidden"
-          style="--overlay-bg: rgba(59, 59, 59, 0.75); --overlay-z-index: 200;"
-        />
+          class="w-full bg-primary px-4 py-2 flex items-center"
+        >
+          <button
+            aria-label="Close app"
+            class="bg-base-max text-primary-content-darkest px-2 hover:bg-primary-darkest hover:text-primary-content-lightest rounded-md w-auto h-9 focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor"
+          >
+            <svg
+              aria-hidden="true"
+              fill="currentColor"
+              height="20"
+              stroke="currentColor"
+              stroke-width="0"
+              viewBox="0 0 24 24"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0 0h24v24H0z"
+                fill="none"
+              />
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
+          <span
+            class="p-2 mx-2 uppercase text-white font-bold"
+          >
+            OncoMatrix
+          </span>
+          <div
+            class="ml-auto mr-0"
+          />
+        </div>
+        <div />
       </div>
     </main>
     <div>
@@ -27134,22 +28874,173 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
       class="flex grow flex-col overflow-x-clip overflow-y-clip"
       id="main"
     >
-      <div
-        class="m_6e45937b mantine-LoadingOverlay-root"
-        data-testid="loading-spinner"
-        style="--lo-z-index: 400;"
+      <style
+        data-mantine-styles="true"
       >
-        <span
-          class="m_b34414df m_e8eb006c mantine-LoadingOverlay-loader m_5ae2e3c mantine-Loader-root"
-        />
+        
+
+
+
+
+      </style>
+      <style
+        data-mantine-styles="classes"
+      >
+        @media (max-width: 35.99375em) {.mantine-visible-from-xs {display: none !important;}}@media (min-width: 36em) {.mantine-hidden-from-xs {display: none !important;}}@media (max-width: 47.99375em) {.mantine-visible-from-sm {display: none !important;}}@media (min-width: 48em) {.mantine-hidden-from-sm {display: none !important;}}@media (max-width: 61.99375em) {.mantine-visible-from-md {display: none !important;}}@media (min-width: 62em) {.mantine-hidden-from-md {display: none !important;}}@media (max-width: 74.99375em) {.mantine-visible-from-lg {display: none !important;}}@media (min-width: 75em) {.mantine-hidden-from-lg {display: none !important;}}@media (max-width: 87.99375em) {.mantine-visible-from-xl {display: none !important;}}@media (min-width: 88em) {.mantine-hidden-from-xl {display: none !important;}}
+      </style>
+      <div
+        class="flex items-center bg-white border-secondary-darkest border-1 border-l-4 m-4"
+      >
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-dark-hidden"
-          style="--overlay-bg: rgba(255, 255, 255, 0.75); --overlay-z-index: 200;"
-        />
+          class="flex flex-col w-full"
+        >
+          <div
+            class="flex flex-row py-2 items-center bg-primary border-secondary-darkest border-b-1"
+            data-testid="text-cohort-filters-top-row"
+          >
+            <span
+              class="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px] truncate ... "
+            >
+              Unsaved_Cohort
+            </span>
+            <button
+              class="text-sm font-montserrat ml-2 px-1 hover:bg-primary-darkest hover:text-primary-content-lightest hover:rounded-md hidden"
+              data-testid="button-clear-all-cohort-filters"
+              disabled=""
+            >
+              Clear All
+            </button>
+            <div
+              class="display flex gap-2 ml-auto mr-3"
+            >
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse all queries"
+                class="text-primary bg-base-max disabled:opacity-50 enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest flex gap-0 items-center border-1 border-base-max rounded-md w-7 h-7"
+                color="white"
+                data-testid="button-expand-collapse-cohort-queries"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                    opacity=".87"
+                  />
+                  <path
+                    d="M17.51 3.87L15.73 2.1 5.84 12l9.9 9.9 1.77-1.77L9.38 12l8.13-8.13z"
+                  />
+                </svg>
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M6.23 20.23L8 22l10-10L8 2 6.23 3.77 14.46 12z"
+                  />
+                </svg>
+              </button>
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse filters section"
+                class="disabled:opacity-50 disabled:bg-base-max disabled:text-primary enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest border-1 border-white rounded-md w-7 h-7 flex items-center text-base-max bg-transparent"
+                color="white"
+                data-testid="button-expand-collapse-cohort-filters-section"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="30"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="30"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div>
+            <div
+              class="flex flex-wrap bg-base-max w-full overflow-x-hidden p-2"
+              data-testid="text-cohort-filters"
+              style="max-height: 0px; overflow-y: scroll;"
+            >
+              <p
+                class="font-content"
+                data-testid="text-no-active-cohort-filter"
+              >
+                No filters currently applied.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-light-hidden"
-          style="--overlay-bg: rgba(59, 59, 59, 0.75); --overlay-z-index: 200;"
-        />
+          class="w-full bg-primary px-4 py-2 flex items-center"
+        >
+          <button
+            aria-label="Close app"
+            class="bg-base-max text-primary-content-darkest px-2 hover:bg-primary-darkest hover:text-primary-content-lightest rounded-md w-auto h-9 focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor"
+          >
+            <svg
+              aria-hidden="true"
+              fill="currentColor"
+              height="20"
+              stroke="currentColor"
+              stroke-width="0"
+              viewBox="0 0 24 24"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0 0h24v24H0z"
+                fill="none"
+              />
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
+          <span
+            class="p-2 mx-2 uppercase text-white font-bold"
+          >
+            Projects
+          </span>
+          <div
+            class="ml-auto mr-0"
+          />
+        </div>
+        <div />
       </div>
     </main>
     <div>
@@ -29246,22 +31137,173 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
       class="flex grow flex-col overflow-x-clip overflow-y-clip"
       id="main"
     >
-      <div
-        class="m_6e45937b mantine-LoadingOverlay-root"
-        data-testid="loading-spinner"
-        style="--lo-z-index: 400;"
+      <style
+        data-mantine-styles="true"
       >
-        <span
-          class="m_b34414df m_e8eb006c mantine-LoadingOverlay-loader m_5ae2e3c mantine-Loader-root"
-        />
+        
+
+
+
+
+      </style>
+      <style
+        data-mantine-styles="classes"
+      >
+        @media (max-width: 35.99375em) {.mantine-visible-from-xs {display: none !important;}}@media (min-width: 36em) {.mantine-hidden-from-xs {display: none !important;}}@media (max-width: 47.99375em) {.mantine-visible-from-sm {display: none !important;}}@media (min-width: 48em) {.mantine-hidden-from-sm {display: none !important;}}@media (max-width: 61.99375em) {.mantine-visible-from-md {display: none !important;}}@media (min-width: 62em) {.mantine-hidden-from-md {display: none !important;}}@media (max-width: 74.99375em) {.mantine-visible-from-lg {display: none !important;}}@media (min-width: 75em) {.mantine-hidden-from-lg {display: none !important;}}@media (max-width: 87.99375em) {.mantine-visible-from-xl {display: none !important;}}@media (min-width: 88em) {.mantine-hidden-from-xl {display: none !important;}}
+      </style>
+      <div
+        class="flex items-center bg-white border-secondary-darkest border-1 border-l-4 m-4"
+      >
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-dark-hidden"
-          style="--overlay-bg: rgba(255, 255, 255, 0.75); --overlay-z-index: 200;"
-        />
+          class="flex flex-col w-full"
+        >
+          <div
+            class="flex flex-row py-2 items-center bg-primary border-secondary-darkest border-b-1"
+            data-testid="text-cohort-filters-top-row"
+          >
+            <span
+              class="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px] truncate ... "
+            >
+              Unsaved_Cohort
+            </span>
+            <button
+              class="text-sm font-montserrat ml-2 px-1 hover:bg-primary-darkest hover:text-primary-content-lightest hover:rounded-md hidden"
+              data-testid="button-clear-all-cohort-filters"
+              disabled=""
+            >
+              Clear All
+            </button>
+            <div
+              class="display flex gap-2 ml-auto mr-3"
+            >
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse all queries"
+                class="text-primary bg-base-max disabled:opacity-50 enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest flex gap-0 items-center border-1 border-base-max rounded-md w-7 h-7"
+                color="white"
+                data-testid="button-expand-collapse-cohort-queries"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                    opacity=".87"
+                  />
+                  <path
+                    d="M17.51 3.87L15.73 2.1 5.84 12l9.9 9.9 1.77-1.77L9.38 12l8.13-8.13z"
+                  />
+                </svg>
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M6.23 20.23L8 22l10-10L8 2 6.23 3.77 14.46 12z"
+                  />
+                </svg>
+              </button>
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse filters section"
+                class="disabled:opacity-50 disabled:bg-base-max disabled:text-primary enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest border-1 border-white rounded-md w-7 h-7 flex items-center text-base-max bg-transparent"
+                color="white"
+                data-testid="button-expand-collapse-cohort-filters-section"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="30"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="30"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div>
+            <div
+              class="flex flex-wrap bg-base-max w-full overflow-x-hidden p-2"
+              data-testid="text-cohort-filters"
+              style="max-height: 0px; overflow-y: scroll;"
+            >
+              <p
+                class="font-content"
+                data-testid="text-no-active-cohort-filter"
+              >
+                No filters currently applied.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-light-hidden"
-          style="--overlay-bg: rgba(59, 59, 59, 0.75); --overlay-z-index: 200;"
-        />
+          class="w-full bg-primary px-4 py-2 flex items-center"
+        >
+          <button
+            aria-label="Close app"
+            class="bg-base-max text-primary-content-darkest px-2 hover:bg-primary-darkest hover:text-primary-content-lightest rounded-md w-auto h-9 focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor"
+          >
+            <svg
+              aria-hidden="true"
+              fill="currentColor"
+              height="20"
+              stroke="currentColor"
+              stroke-width="0"
+              viewBox="0 0 24 24"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0 0h24v24H0z"
+                fill="none"
+              />
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
+          <span
+            class="p-2 mx-2 uppercase text-white font-bold"
+          >
+            ProteinPaint
+          </span>
+          <div
+            class="ml-auto mr-0"
+          />
+        </div>
+        <div />
       </div>
     </main>
     <div>
@@ -31358,22 +33400,173 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
       class="flex grow flex-col overflow-x-clip overflow-y-clip"
       id="main"
     >
-      <div
-        class="m_6e45937b mantine-LoadingOverlay-root"
-        data-testid="loading-spinner"
-        style="--lo-z-index: 400;"
+      <style
+        data-mantine-styles="true"
       >
-        <span
-          class="m_b34414df m_e8eb006c mantine-LoadingOverlay-loader m_5ae2e3c mantine-Loader-root"
-        />
+        
+
+
+
+
+      </style>
+      <style
+        data-mantine-styles="classes"
+      >
+        @media (max-width: 35.99375em) {.mantine-visible-from-xs {display: none !important;}}@media (min-width: 36em) {.mantine-hidden-from-xs {display: none !important;}}@media (max-width: 47.99375em) {.mantine-visible-from-sm {display: none !important;}}@media (min-width: 48em) {.mantine-hidden-from-sm {display: none !important;}}@media (max-width: 61.99375em) {.mantine-visible-from-md {display: none !important;}}@media (min-width: 62em) {.mantine-hidden-from-md {display: none !important;}}@media (max-width: 74.99375em) {.mantine-visible-from-lg {display: none !important;}}@media (min-width: 75em) {.mantine-hidden-from-lg {display: none !important;}}@media (max-width: 87.99375em) {.mantine-visible-from-xl {display: none !important;}}@media (min-width: 88em) {.mantine-hidden-from-xl {display: none !important;}}
+      </style>
+      <div
+        class="flex items-center bg-white border-secondary-darkest border-1 border-l-4 m-4"
+      >
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-dark-hidden"
-          style="--overlay-bg: rgba(255, 255, 255, 0.75); --overlay-z-index: 200;"
-        />
+          class="flex flex-col w-full"
+        >
+          <div
+            class="flex flex-row py-2 items-center bg-primary border-secondary-darkest border-b-1"
+            data-testid="text-cohort-filters-top-row"
+          >
+            <span
+              class="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px] truncate ... "
+            >
+              Unsaved_Cohort
+            </span>
+            <button
+              class="text-sm font-montserrat ml-2 px-1 hover:bg-primary-darkest hover:text-primary-content-lightest hover:rounded-md hidden"
+              data-testid="button-clear-all-cohort-filters"
+              disabled=""
+            >
+              Clear All
+            </button>
+            <div
+              class="display flex gap-2 ml-auto mr-3"
+            >
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse all queries"
+                class="text-primary bg-base-max disabled:opacity-50 enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest flex gap-0 items-center border-1 border-base-max rounded-md w-7 h-7"
+                color="white"
+                data-testid="button-expand-collapse-cohort-queries"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                    opacity=".87"
+                  />
+                  <path
+                    d="M17.51 3.87L15.73 2.1 5.84 12l9.9 9.9 1.77-1.77L9.38 12l8.13-8.13z"
+                  />
+                </svg>
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M6.23 20.23L8 22l10-10L8 2 6.23 3.77 14.46 12z"
+                  />
+                </svg>
+              </button>
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse filters section"
+                class="disabled:opacity-50 disabled:bg-base-max disabled:text-primary enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest border-1 border-white rounded-md w-7 h-7 flex items-center text-base-max bg-transparent"
+                color="white"
+                data-testid="button-expand-collapse-cohort-filters-section"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="30"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="30"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div>
+            <div
+              class="flex flex-wrap bg-base-max w-full overflow-x-hidden p-2"
+              data-testid="text-cohort-filters"
+              style="max-height: 0px; overflow-y: scroll;"
+            >
+              <p
+                class="font-content"
+                data-testid="text-no-active-cohort-filter"
+              >
+                No filters currently applied.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-light-hidden"
-          style="--overlay-bg: rgba(59, 59, 59, 0.75); --overlay-z-index: 200;"
-        />
+          class="w-full bg-primary px-4 py-2 flex items-center"
+        >
+          <button
+            aria-label="Close app"
+            class="bg-base-max text-primary-content-darkest px-2 hover:bg-primary-darkest hover:text-primary-content-lightest rounded-md w-auto h-9 focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor"
+          >
+            <svg
+              aria-hidden="true"
+              fill="currentColor"
+              height="20"
+              stroke="currentColor"
+              stroke-width="0"
+              viewBox="0 0 24 24"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0 0h24v24H0z"
+                fill="none"
+              />
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
+          <span
+            class="p-2 mx-2 uppercase text-white font-bold"
+          >
+            Sequence Reads
+          </span>
+          <div
+            class="ml-auto mr-0"
+          />
+        </div>
+        <div />
       </div>
     </main>
     <div>
@@ -33470,22 +35663,196 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
       class="flex grow flex-col overflow-x-clip overflow-y-clip"
       id="main"
     >
-      <div
-        class="m_6e45937b mantine-LoadingOverlay-root"
-        data-testid="loading-spinner"
-        style="--lo-z-index: 400;"
+      <style
+        data-mantine-styles="true"
       >
-        <span
-          class="m_b34414df m_e8eb006c mantine-LoadingOverlay-loader m_5ae2e3c mantine-Loader-root"
-        />
+        
+
+
+
+
+      </style>
+      <style
+        data-mantine-styles="classes"
+      >
+        @media (max-width: 35.99375em) {.mantine-visible-from-xs {display: none !important;}}@media (min-width: 36em) {.mantine-hidden-from-xs {display: none !important;}}@media (max-width: 47.99375em) {.mantine-visible-from-sm {display: none !important;}}@media (min-width: 48em) {.mantine-hidden-from-sm {display: none !important;}}@media (max-width: 61.99375em) {.mantine-visible-from-md {display: none !important;}}@media (min-width: 62em) {.mantine-hidden-from-md {display: none !important;}}@media (max-width: 74.99375em) {.mantine-visible-from-lg {display: none !important;}}@media (min-width: 75em) {.mantine-hidden-from-lg {display: none !important;}}@media (max-width: 87.99375em) {.mantine-visible-from-xl {display: none !important;}}@media (min-width: 88em) {.mantine-hidden-from-xl {display: none !important;}}
+      </style>
+      <div
+        class="flex items-center bg-white border-secondary-darkest border-1 border-l-4 m-4"
+      >
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-dark-hidden"
-          style="--overlay-bg: rgba(255, 255, 255, 0.75); --overlay-z-index: 200;"
-        />
+          class="flex flex-col w-full"
+        >
+          <div
+            class="flex flex-row py-2 items-center bg-primary border-secondary-darkest border-b-1"
+            data-testid="text-cohort-filters-top-row"
+          >
+            <span
+              class="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px] truncate ... "
+            >
+              Unsaved_Cohort
+            </span>
+            <button
+              class="text-sm font-montserrat ml-2 px-1 hover:bg-primary-darkest hover:text-primary-content-lightest hover:rounded-md hidden"
+              data-testid="button-clear-all-cohort-filters"
+              disabled=""
+            >
+              Clear All
+            </button>
+            <div
+              class="display flex gap-2 ml-auto mr-3"
+            >
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse all queries"
+                class="text-primary bg-base-max disabled:opacity-50 enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest flex gap-0 items-center border-1 border-base-max rounded-md w-7 h-7"
+                color="white"
+                data-testid="button-expand-collapse-cohort-queries"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                    opacity=".87"
+                  />
+                  <path
+                    d="M17.51 3.87L15.73 2.1 5.84 12l9.9 9.9 1.77-1.77L9.38 12l8.13-8.13z"
+                  />
+                </svg>
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M6.23 20.23L8 22l10-10L8 2 6.23 3.77 14.46 12z"
+                  />
+                </svg>
+              </button>
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse filters section"
+                class="disabled:opacity-50 disabled:bg-base-max disabled:text-primary enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest border-1 border-white rounded-md w-7 h-7 flex items-center text-base-max bg-transparent"
+                color="white"
+                data-testid="button-expand-collapse-cohort-filters-section"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="30"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="30"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div>
+            <div
+              class="flex flex-wrap bg-base-max w-full overflow-x-hidden p-2"
+              data-testid="text-cohort-filters"
+              style="max-height: 0px; overflow-y: scroll;"
+            >
+              <p
+                class="font-content"
+                data-testid="text-no-active-cohort-filter"
+              >
+                No filters currently applied.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-light-hidden"
-          style="--overlay-bg: rgba(59, 59, 59, 0.75); --overlay-z-index: 200;"
-        />
+          class="w-full bg-primary px-4 py-2 flex items-center"
+        >
+          <button
+            aria-label="Close app"
+            class="bg-base-max text-primary-content-darkest px-2 hover:bg-primary-darkest hover:text-primary-content-lightest rounded-md w-auto h-9 focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor"
+          >
+            <svg
+              aria-hidden="true"
+              fill="currentColor"
+              height="20"
+              stroke="currentColor"
+              stroke-width="0"
+              viewBox="0 0 24 24"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0 0h24v24H0z"
+                fill="none"
+              />
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
+          <span
+            class="p-2 mx-2 uppercase text-white "
+          >
+            Set Operations
+          </span>
+          <svg
+            color="white"
+            fill="currentColor"
+            height="8"
+            role="separator"
+            stroke="currentColor"
+            stroke-width="0"
+            style="color: white;"
+            viewBox="0 0 512 512"
+            width="8"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z"
+            />
+          </svg>
+          <span
+            class="p-2 mx-2 uppercase cursor-pointer text-white font-bold"
+            role="button"
+            tabindex="0"
+          >
+            Selection
+          </span>
+          <div
+            class="ml-auto mr-0"
+          />
+        </div>
+        <div />
       </div>
     </main>
     <div>
@@ -35582,22 +37949,173 @@ data-[variant="darkFunction"]:disabled:text-secondary-contrast/60 m_77c9d27d man
       class="flex grow flex-col overflow-x-clip overflow-y-clip"
       id="main"
     >
-      <div
-        class="m_6e45937b mantine-LoadingOverlay-root"
-        data-testid="loading-spinner"
-        style="--lo-z-index: 400;"
+      <style
+        data-mantine-styles="true"
       >
-        <span
-          class="m_b34414df m_e8eb006c mantine-LoadingOverlay-loader m_5ae2e3c mantine-Loader-root"
-        />
+        
+
+
+
+
+      </style>
+      <style
+        data-mantine-styles="classes"
+      >
+        @media (max-width: 35.99375em) {.mantine-visible-from-xs {display: none !important;}}@media (min-width: 36em) {.mantine-hidden-from-xs {display: none !important;}}@media (max-width: 47.99375em) {.mantine-visible-from-sm {display: none !important;}}@media (min-width: 48em) {.mantine-hidden-from-sm {display: none !important;}}@media (max-width: 61.99375em) {.mantine-visible-from-md {display: none !important;}}@media (min-width: 62em) {.mantine-hidden-from-md {display: none !important;}}@media (max-width: 74.99375em) {.mantine-visible-from-lg {display: none !important;}}@media (min-width: 75em) {.mantine-hidden-from-lg {display: none !important;}}@media (max-width: 87.99375em) {.mantine-visible-from-xl {display: none !important;}}@media (min-width: 88em) {.mantine-hidden-from-xl {display: none !important;}}
+      </style>
+      <div
+        class="flex items-center bg-white border-secondary-darkest border-1 border-l-4 m-4"
+      >
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-dark-hidden"
-          style="--overlay-bg: rgba(255, 255, 255, 0.75); --overlay-z-index: 200;"
-        />
+          class="flex flex-col w-full"
+        >
+          <div
+            class="flex flex-row py-2 items-center bg-primary border-secondary-darkest border-b-1"
+            data-testid="text-cohort-filters-top-row"
+          >
+            <span
+              class="font-bold text-secondary-contrast-darkest ml-3 max-w-[260px] truncate ... "
+            >
+              Unsaved_Cohort
+            </span>
+            <button
+              class="text-sm font-montserrat ml-2 px-1 hover:bg-primary-darkest hover:text-primary-content-lightest hover:rounded-md hidden"
+              data-testid="button-clear-all-cohort-filters"
+              disabled=""
+            >
+              Clear All
+            </button>
+            <div
+              class="display flex gap-2 ml-auto mr-3"
+            >
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse all queries"
+                class="text-primary bg-base-max disabled:opacity-50 enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest flex gap-0 items-center border-1 border-base-max rounded-md w-7 h-7"
+                color="white"
+                data-testid="button-expand-collapse-cohort-queries"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                    opacity=".87"
+                  />
+                  <path
+                    d="M17.51 3.87L15.73 2.1 5.84 12l9.9 9.9 1.77-1.77L9.38 12l8.13-8.13z"
+                  />
+                </svg>
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M6.23 20.23L8 22l10-10L8 2 6.23 3.77 14.46 12z"
+                  />
+                </svg>
+              </button>
+              <button
+                aria-expanded="false"
+                aria-label="Expand/collapse filters section"
+                class="disabled:opacity-50 disabled:bg-base-max disabled:text-primary enabled:hover:bg-primary-darkest enabled:hover:text-primary-content-lightest enabled:hover:border-primary-darkest border-1 border-white rounded-md w-7 h-7 flex items-center text-base-max bg-transparent"
+                color="white"
+                data-testid="button-expand-collapse-cohort-filters-section"
+                disabled=""
+              >
+                <svg
+                  aria-hidden="true"
+                  fill="currentColor"
+                  height="30"
+                  stroke="currentColor"
+                  stroke-width="0"
+                  viewBox="0 0 24 24"
+                  width="30"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0 0h24v24H0V0z"
+                    fill="none"
+                  />
+                  <path
+                    d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div>
+            <div
+              class="flex flex-wrap bg-base-max w-full overflow-x-hidden p-2"
+              data-testid="text-cohort-filters"
+              style="max-height: 0px; overflow-y: scroll;"
+            >
+              <p
+                class="font-content"
+                data-testid="text-no-active-cohort-filter"
+              >
+                No filters currently applied.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
         <div
-          class="m_df587f17 mantine-LoadingOverlay-overlay m_9814e45f mantine-Overlay-root mantine-light-hidden"
-          style="--overlay-bg: rgba(59, 59, 59, 0.75); --overlay-z-index: 200;"
-        />
+          class="w-full bg-primary px-4 py-2 flex items-center"
+        >
+          <button
+            aria-label="Close app"
+            class="bg-base-max text-primary-content-darkest px-2 hover:bg-primary-darkest hover:text-primary-content-lightest rounded-md w-auto h-9 focus-visible:outline-none focus-visible:ring-offset-2 focus:ring-offset-white rounded-md focus-visible:ring-inset focus-visible:ring-2 focus-visible:ring-focusColor"
+          >
+            <svg
+              aria-hidden="true"
+              fill="currentColor"
+              height="20"
+              stroke="currentColor"
+              stroke-width="0"
+              viewBox="0 0 24 24"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0 0h24v24H0z"
+                fill="none"
+              />
+              <path
+                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+              />
+            </svg>
+          </button>
+          <span
+            class="p-2 mx-2 uppercase text-white font-bold"
+          >
+            Single Cell RNA-seq
+          </span>
+          <div
+            class="ml-auto mr-0"
+          />
+        </div>
+        <div />
       </div>
     </main>
     <div>
