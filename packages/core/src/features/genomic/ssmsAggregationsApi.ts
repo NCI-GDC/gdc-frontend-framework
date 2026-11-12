@@ -22,7 +22,7 @@ query SsmsAggregations (
 }
 `;
 
-interface SMSAggregationsQueryProps {
+interface SsmsAggregationsQueryProps {
   readonly field?: string;
   readonly ids: ReadonlyArray<string>;
   readonly filters: ReadonlyArray<Record<string, unknown>>;
@@ -34,7 +34,7 @@ export const buildSsmsAggregationsFilters = ({
   field = "consequence.transcript.gene.gene_id",
   filters,
   caseFilters,
-}: SMSAggregationsQueryProps): Record<string, unknown> => ({
+}: SsmsAggregationsQueryProps): Record<string, unknown> => ({
   caseFilters: caseFilters ? caseFilters : {},
   ssmCountsfilters: {
     content: [

@@ -1,7 +1,7 @@
 import {
   buildSsmsAggregationsFilters,
   SSMSAggregationsQuery,
-} from "./smsAggregationsApi";
+} from "./ssmsAggregationsApi";
 import { GraphQLApiResponse, graphqlAPISlice } from "../gdcapi/gdcgraphql";
 import { GenomicTableProps } from "./types";
 import {
