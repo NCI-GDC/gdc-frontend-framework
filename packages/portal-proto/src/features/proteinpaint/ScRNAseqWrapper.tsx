@@ -127,7 +127,7 @@ interface ScRNAseqArg {
   hide_dsHandles: true;
   state?: {
     plots?: {
-      chartType: "sc";
+      chartType: "sc" | "singleCellPlot";
       sample?: string;
       experimentID?: string;
       activeTab?: number;
@@ -171,7 +171,7 @@ function getScRNAseqArg(
       : {
           plots: [
             {
-              chartType: "sc",
+              chartType: "singleCellPlot",
               sample: DEMO_sample,
               experimentID: DEMO_experimentID,
               activeTab: 2,
