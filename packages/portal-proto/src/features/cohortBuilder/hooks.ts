@@ -62,38 +62,44 @@ export const useSetupInitialCohorts = (): boolean => {
 
   useDeepCompareEffect(() => {
     if ((isSuccess || isError) && !fetched) {
-      const updatedList: Cohort[] = (cohortsListData || []).map((data) => {
-        const existingCohort = cohorts.find((c) => c.id === data.id);
-        const cohortData = {
-          id: data.id,
-          name: data.name,
-          filters: buildGqlOperationToFilterSet(data.filters),
-          caseSet: {
-            ...(existingCohort?.caseSet ?? { status: "uninitialized" }),
-          },
-          counts: {
-            ...NullCountsData,
-          },
-          modified_datetime: data.modified_datetime,
-          saved: true,
-          modified: false,
-          nonexistent_fields: (data?.nonexistent_fields || []).filter(
-            (field) => !COHORT_FIELD_EXCEPTIONS.includes(field),
-          ),
-        };
+      const updatedList: Cohort[] = (cohortsListData || [])
+        .map((data) => {
+          const existingCohort = cohorts.find((c) => c.id === data.id);
+          try {
+            const cohortData = {
+              id: data.id,
+              name: data.name,
+              filters: buildGqlOperationToFilterSet(data.filters),
+              caseSet: {
+                ...(existingCohort?.caseSet ?? { status: "uninitialized" }),
+              },
+              counts: {
+                ...NullCountsData,
+              },
+              modified_datetime: data.modified_datetime,
+              saved: true,
+              modified: false,
+              nonexistent_fields: (data?.nonexistent_fields || []).filter(
+                (field) => !COHORT_FIELD_EXCEPTIONS.includes(field),
+              ),
+            };
 
-        if (
-          !cohortWarnings.includes(cohortData.id) &&
-          cohortData?.nonexistent_fields.length > 0
-        ) {
-          coreDispatch(addCohortWarning(cohortData.id));
-        }
+            if (
+              !cohortWarnings.includes(cohortData.id) &&
+              cohortData?.nonexistent_fields.length > 0
+            ) {
+              coreDispatch(addCohortWarning(cohortData.id));
+            }
 
-        // Override with local changes to cohort if they exist
-        return existingCohort?.modified
-          ? { ...cohortData, ...existingCohort }
-          : cohortData;
-      });
+            // Override with local changes to cohort if they exist
+            return existingCohort?.modified
+              ? { ...cohortData, ...existingCohort }
+              : cohortData;
+          } catch (e) {
+            console.warn(`Misformatted cohort: ${data.name} `);
+          }
+        })
+        .filter((cohort) => cohort !== undefined);
 
       coreDispatch(setActiveCohortList(updatedList)); // will create caseSet if needed
       // A saved cohort that's not present in the API response has been deleted in another session
