@@ -50,9 +50,8 @@ COPY --from=builder --chown=app:app /app/packages/portal-proto/.next ./packages/
 COPY --from=builder --chown=app:app /app/packages/portal-proto/node_modules ./packages/portal-proto/node_modules
 COPY --from=builder --chown=app:app /app/packages/portal-proto/next.config.js ./packages/portal-proto/next.config.js
 
-RUN mkdir -p ./packages/portal-proto/.next \
+RUN mkdir -p ./packages/portal-proto/.next/cache \
   && chown app:app ./packages/portal-proto/.next
-VOLUME ./packages/portal-proto/.next
 USER app:app
 
 EXPOSE 3000
