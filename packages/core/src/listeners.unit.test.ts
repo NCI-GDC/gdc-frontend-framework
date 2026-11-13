@@ -6,6 +6,7 @@ import {
   addNewSavedCohort,
 } from "./features/cohort/availableCohortsSlice";
 import { NullCountsData } from "./features/cohort/type";
+import { userAuthChanged } from "./features/users/usersSlice";
 
 const countsResponse = {
   data: {
@@ -52,8 +53,14 @@ describe("cohort counts", () => {
     fetchSpy.mockClear();
   });
 
-  test("are refetched for every cohort after the cohort state is restored from storage", () => {
+  test("are refetched for unsaved cohorts after the cohort state is restored from storage", () => {
     coreStore.dispatch({ type: REHYDRATE, key: COHORT_PERSIST_KEY });
+
+    expect(countsRequests()).toBe(1);
+  });
+
+  test("are refetched for every cohort when the user changes", () => {
+    coreStore.dispatch(userAuthChanged({ username: "alice" }));
 
     expect(countsRequests()).toBe(2);
   });

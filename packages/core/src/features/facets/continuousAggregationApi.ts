@@ -35,6 +35,7 @@ export const processRangeResults: ProcessBucketsFunction = (
 ) => {
   Object.entries(aggregations).forEach(([field, aggregation]) => {
     const normalizedField = normalizeGQLFacetName(field);
+    if (!(normalizedField in state)) return;
     if (isRangeBucketsAggregation(aggregation)) {
       if (state[normalizedField].requestId !== requestId) {
         return;

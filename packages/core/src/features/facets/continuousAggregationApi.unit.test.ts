@@ -162,6 +162,12 @@ describe("continuous range slice tests", () => {
     expect(results).toEqual(initialState);
   });
 
+  test("ignores results for a facet that was cleared while loading", () => {
+    expect(processRangeResults("test", queryResults.aggregations, {})).toEqual(
+      {},
+    );
+  });
+
   test("fetch without overriding filters", async () => {
     const spyFetch = jest
       .spyOn(global, "fetch")

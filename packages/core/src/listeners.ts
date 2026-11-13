@@ -54,9 +54,7 @@ const selectUserDetails = userAuthApi.endpoints.fetchUserDetails.select();
 const getUsername = (
   response?: UserAuthResponse<UserInfo>,
 ): string | null | undefined =>
-  response?.status === undefined
-    ? undefined
-    : (response.data?.username ?? null);
+  response?.status === 401 ? null : response?.data?.username;
 
 /**
  * Defines coreListeners for adding middleware.
@@ -109,17 +107,22 @@ startCoreListening({
     userAuthTagInvalidators.forEach((invalidate) =>
       listenerApi.dispatch(invalidate()),
     );
+    selectAvailableCohorts(listenerApi.getState()).forEach((cohort) =>
+      listenerApi.dispatch(fetchCohortCaseCounts(cohort.id)),
+    );
   },
 });
 
 startCoreListening({
   predicate: (action) =>
-    userAuthChanged.match(action) ||
-    (action.type === REHYDRATE && action.key === COHORT_PERSIST_KEY),
+    action.type === REHYDRATE && action.key === COHORT_PERSIST_KEY,
   effect: (_, listenerApi) => {
-    selectAvailableCohorts(listenerApi.getState()).forEach((cohort) =>
-      listenerApi.dispatch(fetchCohortCaseCounts(cohort.id)),
-    );
+    // saved cohorts get fresh counts once the cohort list loads (setActiveCohortList)
+    selectAvailableCohorts(listenerApi.getState())
+      .filter((cohort) => !cohort.saved)
+      .forEach((cohort) =>
+        listenerApi.dispatch(fetchCohortCaseCounts(cohort.id)),
+      );
   },
 });
 
