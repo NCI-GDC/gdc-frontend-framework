@@ -191,8 +191,8 @@ export const useExportCohort = () => {
       .unwrap()
       .then((payload) => {
         exportCohort(payload?.hits, currentCohort.name);
-        reset();
-      });
+      })
+      .finally(reset);
   }, [currentCohort, getCases, reset]);
 
   return {

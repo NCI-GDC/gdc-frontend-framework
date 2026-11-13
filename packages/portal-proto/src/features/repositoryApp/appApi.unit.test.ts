@@ -42,6 +42,24 @@ describe("repository app store when the user changes", () => {
     expect(AppStore.getState().facetRanges).toEqual({});
   });
 
+  test("ignores a range facet error that arrives after the user changed", () => {
+    const arg = { field: "files.file_size", ranges: [] };
+    AppStore.dispatch(
+      fetchRepositoryFacetContinuousAggregation.pending("before", arg),
+    );
+    coreStore.dispatch(userAuthChanged({ username: "alice" }));
+
+    AppStore.dispatch(
+      fetchRepositoryFacetContinuousAggregation.fulfilled(
+        { data: {}, errors: { facets: "failed" } } as any,
+        "before",
+        arg,
+      ),
+    );
+
+    expect(AppStore.getState().facetRanges).toEqual({});
+  });
+
   test("keeps the image count on screen while it is refetched", () => {
     AppStore.dispatch(fetchImageCounts.pending("before", imageCountsArg));
     AppStore.dispatch(

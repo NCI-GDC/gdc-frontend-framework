@@ -131,7 +131,7 @@ export interface GDCGenesTable {
   readonly filteredCases: number;
   readonly genes: ReadonlyArray<GeneRowInfo>;
   readonly genes_total: number;
-  readonly mutationCounts?: Record<string, string>;
+  readonly mutationCounts: Record<string, string>;
 }
 
 export type CnvChange =
@@ -193,7 +193,7 @@ const transformGenesTableResponse = (
             },
             {},
           )
-        : undefined,
+        : {},
     genes: genes.hits.edges.map(
       ({ node }: Record<string, any>): GeneRowInfo => {
         const {

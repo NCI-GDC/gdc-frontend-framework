@@ -42,6 +42,11 @@ describe("coreCreateApi user auth tag", () => {
     jest.clearAllMocks();
   });
 
+  afterAll(async () => {
+    // RTK Query syncs subscriptions to the store on a 500ms timer; let it finish so Jest can exit
+    await new Promise((resolve) => setTimeout(resolve, 600));
+  });
+
   test("refetches a subscribed query when the user auth tag is invalidated", async () => {
     const { store, invalidateUserAuthTag } = setupStore();
     await store.dispatch(testApi.endpoints.untagged.initiate());

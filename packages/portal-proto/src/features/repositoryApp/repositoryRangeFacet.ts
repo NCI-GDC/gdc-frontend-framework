@@ -65,6 +65,7 @@ const repositoryRangeFacetAggregation = createSlice({
         fetchRepositoryFacetContinuousAggregation.fulfilled,
         (state, action) => {
           const response = action.payload;
+          if (!(action.meta.arg.field in state)) return;
           if (response.errors && Object.keys(response.errors).length > 0) {
             state[action.meta.arg.field].status = "rejected";
             state[action.meta.arg.field].error = response.errors.facets;

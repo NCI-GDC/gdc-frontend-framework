@@ -42,17 +42,22 @@ const userAuthTagModule = (): Module<any> => ({
   },
 });
 
+const coreHooks = {
+  useSelector: useCoreSelector,
+  useStore: useCoreStore,
+  useDispatch: useCoreDispatch,
+};
+
 const coreCreateApi: CreateApi<keyof ApiModules<any, any, any, any>> =
   buildCreateApi(
     coreModule(),
-    reactHooksModule({
-      hooks: {
-        useSelector: useCoreSelector,
-        useStore: useCoreStore,
-        useDispatch: useCoreDispatch,
-      },
-    }),
+    reactHooksModule({ hooks: coreHooks }),
     userAuthTagModule(),
   );
 
-export { coreCreateApi };
+// for the API that detects user changes, so a user change doesn't refetch it
+const coreCreateApiWithoutUserAuthTag: CreateApi<
+  keyof ApiModules<any, any, any, any>
+> = buildCreateApi(coreModule(), reactHooksModule({ hooks: coreHooks }));
+
+export { coreCreateApi, coreCreateApiWithoutUserAuthTag };

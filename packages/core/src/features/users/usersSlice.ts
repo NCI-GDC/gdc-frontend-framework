@@ -1,5 +1,6 @@
-import { createAction } from "@reduxjs/toolkit";
-import { coreCreateApi } from "src/coreCreateApi";
+import { createAction, createSlice } from "@reduxjs/toolkit";
+import { coreCreateApiWithoutUserAuthTag } from "src/coreCreateApi";
+import { CoreState } from "src/store";
 import { GDC_AUTH } from "../../constants";
 
 export interface UserInfo {
@@ -43,7 +44,7 @@ export async function fetchAuth({
   };
 }
 
-export const userAuthApi = coreCreateApi({
+export const userAuthApi = coreCreateApiWithoutUserAuthTag({
   reducerPath: "userAuthApi",
   refetchOnFocus: true,
   refetchOnMountOrArgChange: 1800,
@@ -75,6 +76,39 @@ export const userAuthApi = coreCreateApi({
 export const userAuthChanged = createAction<{ username: string | null }>(
   "userAuth/changed",
 );
+
+export const getUsername = (
+  response?: UserAuthResponse<UserInfo>,
+): string | null | undefined =>
+  response?.status === 401 ? null : response?.data?.username;
+
+export interface UserAuthState {
+  readonly lastKnownUsername?: string | null;
+}
+
+const initialState: UserAuthState = {};
+
+const userAuthSlice = createSlice({
+  name: "userAuth",
+  initialState,
+  reducers: {},
+  extraReducers: (builder) =>
+    builder
+      .addCase(userAuthApi.util.resetApiState, () => initialState)
+      .addMatcher(
+        userAuthApi.endpoints.fetchUserDetails.matchFulfilled,
+        (state, action) => {
+          const username = getUsername(action.payload);
+          if (username !== undefined) state.lastKnownUsername = username;
+        },
+      ),
+});
+
+export const userAuthReducer = userAuthSlice.reducer;
+
+export const selectLastKnownUsername = (
+  state: CoreState,
+): string | null | undefined => state.userAuth.lastKnownUsername;
 
 export const {
   useFetchUserDetailsQuery,

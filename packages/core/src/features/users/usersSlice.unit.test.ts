@@ -63,6 +63,11 @@ describe("user auth changes", () => {
   const requestsTo = (path: string) =>
     fetchSpy.mock.calls.filter(([url]) => url.endsWith(path)).length;
 
+  afterAll(() => {
+    coreStore.dispatch(userAuthApi.util.resetApiState());
+    coreStore.dispatch(graphqlAPISlice.util.resetApiState());
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
     coreStore.dispatch(userAuthApi.util.resetApiState());
@@ -102,18 +107,27 @@ describe("user auth changes", () => {
     expect(authChanges).not.toHaveBeenCalled();
   });
 
-  test("does not treat a network error as a logout", async () => {
+  test("does not dispatch when the same user is back after a network error", async () => {
     await fetchUserAs(loggedInAs("alice"));
     await fetchUserAs(networkError);
+    await fetchUserAs(loggedInAs("alice"));
 
     expect(authChanges).not.toHaveBeenCalled();
   });
 
-  test("does not treat a server error as a logout", async () => {
+  test("does not dispatch when the same user is back after a server error", async () => {
     await fetchUserAs(loggedInAs("alice"));
     await fetchUserAs(serverError);
+    await fetchUserAs(loggedInAs("alice"));
 
     expect(authChanges).not.toHaveBeenCalled();
+  });
+
+  test("dispatches for a login after an error on first load", async () => {
+    await fetchUserAs(networkError);
+    await fetchUserAs(loggedInAs("alice"));
+
+    expect(authChanges.mock.calls).toEqual([[{ username: "alice" }]]);
   });
 
   test("dispatches for the first known user after a network error", async () => {
@@ -122,6 +136,22 @@ describe("user auth changes", () => {
     await fetchUserAs(loggedInAs("alice"));
 
     expect(authChanges.mock.calls).toEqual([[{ username: "alice" }]]);
+  });
+
+  test("does not ask for the user details again after a user change", async () => {
+    userResponse = anonymous;
+    const subscription = coreStore.dispatch(
+      userAuthApi.endpoints.fetchUserDetails.initiate(),
+    );
+    await subscription;
+
+    await fetchUserAs(loggedInAs("alice"));
+    await Promise.all(
+      coreStore.dispatch(userAuthApi.util.getRunningQueriesThunk()),
+    );
+
+    expect(requestsTo("/user")).toBe(2);
+    subscription.unsubscribe();
   });
 
   test("refetches active data queries without refreshing the user token", async () => {

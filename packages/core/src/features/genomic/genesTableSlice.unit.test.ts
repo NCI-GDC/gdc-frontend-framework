@@ -90,6 +90,10 @@ describe("genes table endpoint", () => {
       ),
     );
 
+  afterAll(() => {
+    coreStore.dispatch(graphqlAPISlice.util.resetApiState());
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
     coreStore.dispatch(graphqlAPISlice.util.resetApiState());
@@ -147,7 +151,18 @@ describe("genes table endpoint", () => {
     const { data } = await fetchGenesTable();
 
     expect(data?.genes).toHaveLength(1);
-    expect(data?.mutationCounts).toBeUndefined();
+    expect(data?.mutationCounts).toEqual({});
+  });
+
+  test("still returns the genes when the mutation counts request fails", async () => {
+    respondTo.mutationCounts = () => {
+      throw new TypeError("Failed to fetch");
+    };
+
+    const { data } = await fetchGenesTable();
+
+    expect(data?.genes).toHaveLength(1);
+    expect(data?.mutationCounts).toEqual({});
   });
 });
 
