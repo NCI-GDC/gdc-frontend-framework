@@ -1,5 +1,5 @@
 import React, { JSX } from "react";
-import { SaveOrCreateEntityModal } from "./SaveOrCreateEntityModal";
+import { SaveOrCreateEntityModal } from "@gff/portal-components";
 
 /**
  * Modal that will display when the user clicks a create cohort button.

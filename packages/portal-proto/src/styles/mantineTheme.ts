@@ -6,6 +6,7 @@ import {
   CSSVariablesResolver,
 } from "@mantine/core";
 import { defaultThemeColors, nciBlue, nciGray, utility } from "./colors";
+import { actionButtonVariant, darkFunctionVariant } from "./variants";
 
 import {
   TOOLTIP_Z_INDEX,
@@ -151,6 +152,9 @@ const theme = createTheme({
       },
     },
     Button: Button.extend({
+      classNames: {
+        root: `${actionButtonVariant} ${darkFunctionVariant}`,
+      },
       vars: (_, props) => {
         const tempButtonProps: any = {
           root: {},
