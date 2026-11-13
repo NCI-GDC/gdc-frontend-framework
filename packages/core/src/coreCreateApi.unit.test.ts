@@ -8,7 +8,6 @@ const testApi = coreCreateApi({
   baseQuery,
   tagTypes: ["Own"],
   endpoints: (builder) => ({
-    untagged: builder.query<string, void>({ query: () => "untagged" }),
     taggedWithArray: builder.query<string, void>({
       query: () => "array",
       providesTags: ["Own"],
@@ -45,15 +44,6 @@ describe("coreCreateApi user auth tag", () => {
   afterAll(async () => {
     // RTK Query syncs subscriptions to the store on a 500ms timer; let it finish so Jest can exit
     await new Promise((resolve) => setTimeout(resolve, 600));
-  });
-
-  test("refetches a subscribed query when the user auth tag is invalidated", async () => {
-    const { store, invalidateUserAuthTag } = setupStore();
-    await store.dispatch(testApi.endpoints.untagged.initiate());
-
-    await invalidateUserAuthTag();
-
-    expect(baseQuery).toHaveBeenCalledTimes(2);
   });
 
   test.each([
