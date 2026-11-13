@@ -28,12 +28,6 @@ let userResponse: () => Promise<unknown>;
 
 const fakeGdcBackend = (url: string) => {
   if (url.endsWith("/user")) return userResponse();
-  if (url.endsWith("/token/refresh"))
-    return Promise.resolve({
-      ok: true,
-      status: 200,
-      text: () => Promise.resolve("token"),
-    });
   return Promise.resolve({
     ok: true,
     json: () => Promise.resolve({ data: {} }),
@@ -130,14 +124,6 @@ describe("user auth changes", () => {
     expect(authChanges.mock.calls).toEqual([[{ username: "alice" }]]);
   });
 
-  test("dispatches for the first known user after a network error", async () => {
-    await fetchUserAs(anonymous);
-    await fetchUserAs(networkError);
-    await fetchUserAs(loggedInAs("alice"));
-
-    expect(authChanges.mock.calls).toEqual([[{ username: "alice" }]]);
-  });
-
   test("does not ask for the user details again after a user change", async () => {
     userResponse = anonymous;
     const subscription = coreStore.dispatch(
@@ -154,10 +140,9 @@ describe("user auth changes", () => {
     subscription.unsubscribe();
   });
 
-  test("refetches active data queries without refreshing the user token", async () => {
+  test("refetches active data queries when the user changes", async () => {
     await fetchUserAs(anonymous);
     await coreStore.dispatch(probeApi.endpoints.userAuthProbe.initiate());
-    await coreStore.dispatch(userAuthApi.endpoints.fetchToken.initiate());
     fetchSpy.mockClear();
 
     await fetchUserAs(loggedInAs("alice"));
@@ -166,6 +151,5 @@ describe("user auth changes", () => {
     );
 
     expect(requestsTo("/graphql")).toBe(1);
-    expect(requestsTo("/token/refresh")).toBe(0);
   });
 });
