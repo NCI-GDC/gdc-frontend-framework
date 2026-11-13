@@ -17,6 +17,8 @@ import {
   REGISTER,
 } from "redux-persist";
 import { createAppID } from "./GdcApp";
+import { startCoreListening } from "../../listeners";
+import { userAuthChanged } from "../users/usersSlice";
 
 export interface CreateGDCAppStore<AppState> {
   readonly name: string;
@@ -42,6 +44,13 @@ export const createAppStore = <AppState>(
           ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
         },
       }),
+  });
+
+  startCoreListening({
+    actionCreator: userAuthChanged,
+    effect: (action) => {
+      store.dispatch(action);
+    },
   });
 
   const context = createContext(

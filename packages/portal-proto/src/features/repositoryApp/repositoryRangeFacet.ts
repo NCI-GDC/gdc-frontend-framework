@@ -7,6 +7,7 @@ import {
   NumericFromTo,
   processRangeResults,
   RangeBuckets,
+  userAuthChanged,
 } from "@gff/core";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, AppState } from "@/features/repositoryApp/appApi";
@@ -59,6 +60,7 @@ const repositoryRangeFacetAggregation = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(userAuthChanged, () => initialState)
       .addCase(
         fetchRepositoryFacetContinuousAggregation.fulfilled,
         (state, action) => {
