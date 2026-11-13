@@ -75,6 +75,9 @@ module.exports = {
     defaultLocale: "en",
   },
   output: "standalone",
+  typescript: {
+    tsconfigPath: "tsconfig.build.json",
+  },
   basePath,
   allowedDevOrigins: ["localhost.gdc.cancer.gov"],
   experimental: {

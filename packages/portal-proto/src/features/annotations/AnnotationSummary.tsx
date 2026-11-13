@@ -17,7 +17,7 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
   annotationId,
 }) => {
   const {
-    data: annotationData,
+    currentData: annotationData,
     isSuccess,
     isFetching,
   } = useGetAnnotationsQuery({
@@ -157,7 +157,7 @@ const AnnotationSummary: React.FC<AnnotationSummaryProps> = ({
     [annotation],
   );
 
-  return isFetching ? (
+  return isFetching && !annotationData ? (
     <Loader />
   ) : isSuccess && annotationData?.hits.length === 0 ? (
     <SummaryErrorHeader label="Annotation Not Found" />

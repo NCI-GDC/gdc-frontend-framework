@@ -17,7 +17,7 @@ export const ProjectSummary: React.FC<ContextualProjectViewProps> = ({
   projectId,
   isModal = false,
 }: ContextualProjectViewProps) => {
-  const { data: projectsData, isFetching: isProjectFetching } =
+  const { currentData: projectsData, isFetching: isProjectFetching } =
     useGetProjectsQuery({
       filters: {
         op: "=",
@@ -33,7 +33,7 @@ export const ProjectSummary: React.FC<ContextualProjectViewProps> = ({
         "program",
       ],
     });
-  const { data: annotationCountData, isFetching: isAnnotationFetching } =
+  const { currentData: annotationCountData, isFetching: isAnnotationFetching } =
     useGetAnnotationsQuery({
       request: {
         filters: {
@@ -83,7 +83,9 @@ export const ProjectSummary: React.FC<ContextualProjectViewProps> = ({
 
   return (
     <>
-      {isProjectFetching || isAnnotationFetching || isFileFetching ? (
+      {(isProjectFetching && !projectsData) ||
+      (isAnnotationFetching && !annotationCountData) ||
+      isFileFetching ? (
         <LoadingOverlay visible data-testid="loading-spinner" />
       ) : projectData && Object.keys(projectData).length > 0 ? (
         <ProjectView {...projectWithAnnotation} />

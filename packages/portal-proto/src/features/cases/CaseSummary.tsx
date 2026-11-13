@@ -18,7 +18,7 @@ export const CaseSummary = ({
   const [shouldScrollToBio, setShouldScrollToBio] = useState(
     bio_id !== undefined,
   );
-  const { data, isFetching } = useGetCasesQuery({
+  const { currentData: data, isFetching } = useGetCasesQuery({
     request: {
       filters: {
         content: {
@@ -31,18 +31,20 @@ export const CaseSummary = ({
     },
   });
 
-  const { data: annotationCountData, isFetching: isAnnotationCallFetching } =
-    useGetAnnotationsQuery({
-      request: {
-        filters: {
-          op: "=",
-          content: {
-            field: "annotations.case_id",
-            value: case_id,
-          },
+  const {
+    currentData: annotationCountData,
+    isFetching: isAnnotationCallFetching,
+  } = useGetAnnotationsQuery({
+    request: {
+      filters: {
+        op: "=",
+        content: {
+          field: "annotations.case_id",
+          value: case_id,
         },
       },
-    });
+    },
+  });
 
   const prevPathValue = useContext(URLContext);
   useEffect(() => {
@@ -58,7 +60,8 @@ export const CaseSummary = ({
 
   return (
     <>
-      {isFetching || isAnnotationCallFetching ? (
+      {(isFetching && !data) ||
+      (isAnnotationCallFetching && !annotationCountData) ? (
         <LoadingOverlay visible data-testid="loading-spinner" />
       ) : data && data.hits.length > 0 && annotationCountData !== undefined ? (
         <CaseView

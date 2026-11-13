@@ -175,7 +175,7 @@ export const useUpdateFilters = () => {
 
 export const useExportCohort = () => {
   const currentCohort = useCoreSelector(selectCurrentCohortFromStore);
-  const [getCases, { isFetching, isError }] = useLazyGetCasesQuery();
+  const [getCases, { isFetching, isError, reset }] = useLazyGetCasesQuery();
 
   const handleExport = useDeepCompareCallback(() => {
     getCases({
@@ -191,8 +191,9 @@ export const useExportCohort = () => {
       .unwrap()
       .then((payload) => {
         exportCohort(payload?.hits, currentCohort.name);
+        reset();
       });
-  }, [currentCohort, getCases]);
+  }, [currentCohort, getCases, reset]);
 
   return {
     handleExport,
