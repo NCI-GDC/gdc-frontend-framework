@@ -69,7 +69,7 @@ export const MultipleImageViewer = ({
     ) as FilterSet,
   );
 
-  const { data, isFetching } = useImageViewerQuery({
+  const { data, currentData, isFetching } = useImageViewerQuery({
     cases_offset,
     searchValues,
     case_id,
@@ -134,8 +134,8 @@ export const MultipleImageViewer = ({
 
   return (
     <>
-      {isFetching ? (
-        <LoadingOverlay data-testid="loading-spinner" visible={isFetching} />
+      {isFetching && !currentData ? (
+        <LoadingOverlay data-testid="loading-spinner" visible />
       ) : (
         <div className="mx-6 relative mb-16 mt-4">
           <div className="flex justify-between items-center mb-4">
@@ -374,7 +374,7 @@ export const MultipleImageViewer = ({
                 )}
 
                 <div data-testid="image-viewer" className="flex-1 ml-2">
-                  {!isFetching && activeImage && (
+                  {(!isFetching || currentData) && activeImage && (
                     <ImageViewer
                       imageId={activeImage}
                       tableData={imageDetails}

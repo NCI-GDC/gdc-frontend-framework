@@ -1,5 +1,5 @@
 import { GDC_API } from "../../constants";
-import { coreCreateApi } from "src/coreCreateApi";
+import { coreCreateApiWithoutUserAuthTag } from "src/coreCreateApi";
 
 export interface VersionInfoResponse {
   commit: string;
@@ -27,7 +27,7 @@ export const fetchVersionInfo = async () => {
   return { error };
 };
 
-const versionInfoApi = coreCreateApi({
+const versionInfoApi = coreCreateApiWithoutUserAuthTag({
   reducerPath: "versionInfo",
   baseQuery: fetchVersionInfo,
   endpoints: (builder) => ({

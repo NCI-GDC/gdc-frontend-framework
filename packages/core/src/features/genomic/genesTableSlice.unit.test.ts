@@ -145,25 +145,25 @@ describe("genes table endpoint", () => {
     expect(fetchSpy).toHaveBeenCalledTimes(1);
   });
 
-  test("still returns the genes when the mutation counts query fails", async () => {
-    respondTo.mutationCounts = () => ({ errors: { filters: "bad filter" } });
+  test.each([
+    ["returns errors", () => ({ errors: { filters: "bad filter" } })],
+    [
+      "request fails",
+      () => {
+        throw new TypeError("Failed to fetch");
+      },
+    ],
+  ])(
+    "still returns the genes when the mutation counts %s",
+    async (_, mutationCountsResponse) => {
+      respondTo.mutationCounts = mutationCountsResponse;
 
-    const { data } = await fetchGenesTable();
+      const { data } = await fetchGenesTable();
 
-    expect(data?.genes).toHaveLength(1);
-    expect(data?.mutationCounts).toEqual({});
-  });
-
-  test("still returns the genes when the mutation counts request fails", async () => {
-    respondTo.mutationCounts = () => {
-      throw new TypeError("Failed to fetch");
-    };
-
-    const { data } = await fetchGenesTable();
-
-    expect(data?.genes).toHaveLength(1);
-    expect(data?.mutationCounts).toEqual({});
-  });
+      expect(data?.genes).toHaveLength(1);
+      expect(data?.mutationCounts).toEqual({});
+    },
+  );
 });
 
 describe("Test creation of geneTable Filters with Search term", () => {

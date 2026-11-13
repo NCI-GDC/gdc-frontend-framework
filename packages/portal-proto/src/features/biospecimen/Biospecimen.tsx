@@ -59,8 +59,12 @@ export const Biospecimen = ({
   const currentCart = useCoreSelector((state) => selectCart(state));
   const dispatch = useCoreDispatch();
 
-  const { data: bioSpecimenData, isFetching: isBiospecimentDataFetching } =
-    useBiospecimenDataQuery(caseId);
+  const {
+    data: bioSpecimenData,
+    currentData,
+    isFetching,
+  } = useBiospecimenDataQuery(caseId);
+  const isBiospecimentDataFetching = isFetching && !currentData;
 
   useEffect(() => {
     setIsAllExpanded(expandedCount === totalNodeCount);

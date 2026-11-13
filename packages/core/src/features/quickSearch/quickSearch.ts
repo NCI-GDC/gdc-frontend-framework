@@ -11,9 +11,14 @@ interface QuickSearchState {
 const MAX_SEARCH_ITEMS = 5;
 
 export const fetchQuickSearch = async (searchString: string) => {
-  const response = await fetch(
-    `${GDC_APP_API_AUTH}/quick_search?query=${searchString}&size=${MAX_SEARCH_ITEMS}`,
-  );
+  let response: Response;
+  try {
+    response = await fetch(
+      `${GDC_APP_API_AUTH}/quick_search?query=${searchString}&size=${MAX_SEARCH_ITEMS}`,
+    );
+  } catch (error) {
+    return { error: error as Error };
+  }
   if (response.ok) {
     return { data: await response.json() };
   }

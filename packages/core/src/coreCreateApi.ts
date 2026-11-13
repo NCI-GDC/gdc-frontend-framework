@@ -55,7 +55,7 @@ const coreCreateApi: CreateApi<keyof ApiModules<any, any, any, any>> =
     userAuthTagModule(),
   );
 
-// for the API that detects user changes, so a user change doesn't refetch it
+// for APIs a user change shouldn't refetch: /auth/user itself and user-independent ones
 const coreCreateApiWithoutUserAuthTag: CreateApi<
   keyof ApiModules<any, any, any, any>
 > = buildCreateApi(coreModule(), reactHooksModule({ hooks: coreHooks }));
