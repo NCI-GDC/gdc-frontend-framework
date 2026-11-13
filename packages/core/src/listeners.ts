@@ -26,10 +26,10 @@ import {
 } from "./features/cohort/availableCohortsSlice";
 import { cohortApiSlice } from "./features/api/cohortApiSlice";
 import {
+  getUsername,
+  selectLastKnownUsername,
   userAuthApi,
   userAuthChanged,
-  type UserAuthResponse,
-  type UserInfo,
 } from "./features/users/usersSlice";
 import { fetchFacetDictionary } from "./features/facets/facetDictionarySlice";
 import {
@@ -50,11 +50,6 @@ const isPayloadActionWithObject = (
 };
 
 const selectUserDetails = userAuthApi.endpoints.fetchUserDetails.select();
-
-const getUsername = (
-  response?: UserAuthResponse<UserInfo>,
-): string | null | undefined =>
-  response?.status === 401 ? null : response?.data?.username;
 
 /**
  * Defines coreListeners for adding middleware.
@@ -88,13 +83,13 @@ startCoreListening({
 startCoreListening({
   matcher: userAuthApi.endpoints.fetchUserDetails.matchFulfilled,
   effect: (action, listenerApi) => {
-    const previous = selectUserDetails(listenerApi.getOriginalState()).data;
+    const originalState = listenerApi.getOriginalState();
     const username = getUsername(action.payload);
 
     if (
-      previous !== undefined &&
       username !== undefined &&
-      getUsername(previous) !== username
+      selectUserDetails(originalState).data !== undefined &&
+      selectLastKnownUsername(originalState) !== username
     ) {
       listenerApi.dispatch(userAuthChanged({ username }));
     }

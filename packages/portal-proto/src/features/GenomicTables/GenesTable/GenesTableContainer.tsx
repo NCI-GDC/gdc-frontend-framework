@@ -48,6 +48,7 @@ import { appendSearchTermFilters } from "../utils";
 import TotalItems from "@/components/Table/TotalItem";
 import { SET_COUNT_LIMIT } from "@/components/Modals/SetModals/constants";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
+import { useUserAuthChangeCount } from "@/hooks/useUserAuthChangeCount";
 
 export interface GTableContainerProps {
   readonly selectedSurvivalPlot: ComparativeSurvival;
@@ -159,13 +160,23 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
   const sets = useCoreSelector((state) => selectSetsByType(state, "genes"));
   const prevGenomicFilters = usePrevious(genomicFilters);
   const prevCohortFilters = usePrevious(cohortFilters);
+  const userAuthChangeCount = useUserAuthChangeCount();
+  const prevUserAuthChangeCount = usePrevious(userAuthChangeCount);
   useEffect(() => {
     if (
       !isEqual(prevGenomicFilters, genomicFilters) ||
-      !isEqual(prevCohortFilters, cohortFilters)
+      !isEqual(prevCohortFilters, cohortFilters) ||
+      prevUserAuthChangeCount !== userAuthChangeCount
     )
       setPage(1);
-  }, [cohortFilters, genomicFilters, prevCohortFilters, prevGenomicFilters]);
+  }, [
+    cohortFilters,
+    genomicFilters,
+    prevCohortFilters,
+    prevGenomicFilters,
+    userAuthChangeCount,
+    prevUserAuthChangeCount,
+  ]);
 
   const formattedTableData = useDeepCompareMemo(() => {
     if (!data) return [];
