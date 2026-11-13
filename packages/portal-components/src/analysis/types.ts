@@ -17,6 +17,8 @@ export interface AppRegistrationEntry {
   readonly optimizeRules?: ReadonlyArray<string>;
   readonly selectAdditionalCohort?: boolean;
   readonly noDataTooltip?: string;
+  /** Turns the tool off: its card shows Not Available and cannot be launched. */
+  readonly unavailable?: boolean;
   readonly rightComponent?: React.FC;
   readonly selectionScreen?: React.FC;
 }
