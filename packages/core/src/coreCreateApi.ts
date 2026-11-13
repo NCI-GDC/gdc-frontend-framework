@@ -25,6 +25,7 @@ const withUserAuthTag =
     USER_AUTH_TAG,
   ];
 
+// adds the UserAuth tag to every query of every API built with coreCreateApi, so a user change refetches them
 const userAuthTagModule = (): Module<any> => ({
   name: Symbol(),
   init(api) {
