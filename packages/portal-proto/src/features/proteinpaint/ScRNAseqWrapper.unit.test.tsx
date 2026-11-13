@@ -71,7 +71,7 @@ test("single cell demo filter0", () => {
   );
   expect(runpparg.state?.plots?.[0]).toEqual({
     sample: "2409",
-    chartType: "sc",
+    chartType: "singleCellPlot",
     experimentID: "9f155433-3c2e-4b67-a452-eb32f06c93f7",
     activeTab: 2,
   });
