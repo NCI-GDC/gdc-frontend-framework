@@ -99,11 +99,8 @@ export const processBuckets: ProcessBucketsFunction = (
 ) => {
   Object.entries(aggregations).forEach(([field, aggregation]) => {
     const normalizedField = normalizeGQLFacetName(field);
+    if (!(normalizedField in state)) return;
     if (isBucketsAggregation(aggregation)) {
-      if (!(normalizedField in state)) {
-        console.log("processBuckets: field is unexpected:", normalizedField); //TODO: remove this once confirm this is no longer a problem
-      }
-
       if (state[normalizedField].requestId !== requestId) {
         return;
       }
