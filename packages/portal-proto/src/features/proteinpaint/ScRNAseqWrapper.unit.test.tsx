@@ -46,7 +46,7 @@ test("single cell RNAseq arguments", () => {
   expect(typeof runpparg).toBe("object");
   expect(runpparg.holder instanceof HTMLElement).toBe(true);
   expect(typeof runpparg.host).toBe("string");
-  expect(runpparg.launchGdcScApp).toEqual(true);
+  expect(runpparg.launchGdcScRNAseq).toEqual(true);
   expect(runpparg.filter0).toEqual(filter);
   expect(runpparg.noheader).toEqual(true);
   expect(runpparg.nobox).toEqual(true);
