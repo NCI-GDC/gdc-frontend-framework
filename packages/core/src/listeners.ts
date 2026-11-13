@@ -5,7 +5,10 @@ import {
 } from "@reduxjs/toolkit";
 import type { TypedStartListening } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
+import { REHYDRATE } from "redux-persist";
 import { CoreDispatch, CoreState } from "./store";
+import { COHORT_PERSIST_KEY } from "./reducers";
+import { userAuthTagInvalidators } from "./coreCreateApi";
 import {
   updateCohortFilter,
   removeCohortFilter,
@@ -18,11 +21,16 @@ import {
   selectCurrentCohortId,
   removeCohortFromStore,
   selectCurrentCohort,
-  setIsLoggedIn,
   fetchCohortCaseCounts,
   deleteCohortUserAction,
 } from "./features/cohort/availableCohortsSlice";
 import { cohortApiSlice } from "./features/api/cohortApiSlice";
+import {
+  getUsername,
+  selectLastKnownUsername,
+  userAuthApi,
+  userAuthChanged,
+} from "./features/users/usersSlice";
 import { fetchFacetDictionary } from "./features/facets/facetDictionarySlice";
 import {
   removeFilterFromCohortBuilder,
@@ -40,6 +48,8 @@ const isPayloadActionWithObject = (
     typeof action.payload === "object"
   );
 };
+
+const selectUserDetails = userAuthApi.endpoints.fetchUserDetails.select();
 
 /**
  * Defines coreListeners for adding middleware.
@@ -71,13 +81,43 @@ startCoreListening({
   },
 });
 startCoreListening({
-  matcher: isAnyOf(setIsLoggedIn),
-  effect: async (_, listenerApi) => {
-    const allCohorts = selectAvailableCohorts(listenerApi.getState());
+  matcher: userAuthApi.endpoints.fetchUserDetails.matchFulfilled,
+  effect: (action, listenerApi) => {
+    const originalState = listenerApi.getOriginalState();
+    const username = getUsername(action.payload);
 
-    allCohorts.forEach((cohort) => {
-      cohort.id && listenerApi.dispatch(fetchCohortCaseCounts(cohort.id));
-    });
+    if (
+      username !== undefined &&
+      selectUserDetails(originalState).data !== undefined &&
+      selectLastKnownUsername(originalState) !== username
+    ) {
+      listenerApi.dispatch(userAuthChanged({ username }));
+    }
+  },
+});
+
+startCoreListening({
+  actionCreator: userAuthChanged,
+  effect: (_, listenerApi) => {
+    userAuthTagInvalidators.forEach((invalidate) =>
+      listenerApi.dispatch(invalidate()),
+    );
+    selectAvailableCohorts(listenerApi.getState()).forEach((cohort) =>
+      listenerApi.dispatch(fetchCohortCaseCounts(cohort.id)),
+    );
+  },
+});
+
+startCoreListening({
+  predicate: (action) =>
+    action.type === REHYDRATE && action.key === COHORT_PERSIST_KEY,
+  effect: (_, listenerApi) => {
+    // saved cohorts get fresh counts once the cohort list loads (setActiveCohortList)
+    selectAvailableCohorts(listenerApi.getState())
+      .filter((cohort) => !cohort.saved)
+      .forEach((cohort) =>
+        listenerApi.dispatch(fetchCohortCaseCounts(cohort.id)),
+      );
   },
 });
 

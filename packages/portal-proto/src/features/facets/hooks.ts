@@ -36,6 +36,7 @@ import {
 } from "@gff/core";
 import isEqual from "lodash/isEqual";
 import { getFacetInfo } from "@/features/cohortBuilder/utils";
+import { useUserAuthChangeCount } from "@/hooks/useUserAuthChangeCount";
 
 /**
  * Filter selector for all the facet filters
@@ -155,6 +156,7 @@ export const useEnumFacets = (
     if (
       facet.length > 0 &&
       (prevFilterLength != facet.length ||
+        facet.some((entry) => entry === undefined) ||
         !isEqual(prevCohortFilters, currentCohortFilters) ||
         !isEqual(prevEnumValues, enumValues))
     ) {
@@ -189,6 +191,7 @@ export const useAllEnumFacets = () => {
 
   const coreDispatch = useCoreDispatch();
   const currentCohortFilters = useCurrentCohortFilters();
+  const userAuthChangeCount = useUserAuthChangeCount();
 
   useDeepCompareEffect(() => {
     Object.entries(tabsConfig).map(([, tabEntry]) => {
@@ -211,7 +214,13 @@ export const useAllEnumFacets = () => {
         );
       }
     });
-  }, [tabsConfig, facets, currentCohortFilters, coreDispatch]);
+  }, [
+    tabsConfig,
+    facets,
+    currentCohortFilters,
+    coreDispatch,
+    userAuthChangeCount,
+  ]);
 };
 
 type UpdateEnumFiltersFunc = (

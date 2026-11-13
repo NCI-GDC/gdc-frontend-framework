@@ -9,14 +9,11 @@ import {
   Modals,
   useCoreDispatch,
   useFetchUserDetailsQuery,
-  useLazyFetchTokenQuery,
-  setIsLoggedIn,
-  selectCohortIsLoggedIn,
-  useCoreSelector,
+  useFetchTokenMutation,
   usePrevious,
 } from "@gff/core";
 import { LoginButton } from "@/components/LoginButton";
-import { useDeepCompareCallback, useDeepCompareEffect } from "use-deep-compare";
+import { useDeepCompareCallback } from "use-deep-compare";
 import {
   ArrowDropDownIcon,
   DownloadIcon,
@@ -29,10 +26,7 @@ const LoginButtonOrUserDropdown = () => {
   const { data: userInfo } = useFetchUserDetailsQuery();
   const prevUserStatus = usePrevious(userInfo?.status);
   const userDropdownRef = useRef<HTMLButtonElement>(null);
-  const [fetchToken] = useLazyFetchTokenQuery({ refetchOnFocus: false });
-  const cohortIsLoggedIn = useCoreSelector((state) =>
-    selectCohortIsLoggedIn(state),
-  );
+  const [fetchToken] = useFetchTokenMutation();
   const [opened, { open, close }] = useDisclosure(false);
 
   useEffect(() => {
@@ -41,18 +35,6 @@ const LoginButtonOrUserDropdown = () => {
       dispatch(showModal({ modal: Modals.SessionExpireModal }));
     }
   }, [prevUserStatus, userInfo?.status, dispatch]);
-
-  useDeepCompareEffect(() => {
-    if (userInfo?.data?.username) {
-      if (cohortIsLoggedIn !== true) {
-        dispatch(setIsLoggedIn(true));
-      }
-    } else {
-      if (cohortIsLoggedIn !== false && cohortIsLoggedIn !== undefined) {
-        dispatch(setIsLoggedIn(false));
-      }
-    }
-  }, [cohortIsLoggedIn, userInfo?.data?.username, dispatch]);
 
   const handleUserProfileClick = useDeepCompareCallback(() => {
     dispatch(showModal({ modal: Modals.UserProfileModal }));

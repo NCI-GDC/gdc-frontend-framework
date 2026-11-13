@@ -5,7 +5,6 @@ import {
   hideModal,
   useCoreDispatch,
   useLazyFetchUserDetailsQuery,
-  useLazyGetBannerNotificationsQuery,
 } from "@gff/core";
 import { Button } from "@mantine/core";
 import { theme } from "tailwind.config";
@@ -19,7 +18,6 @@ export const LoginButton = ({
 }): JSX.Element => {
   const dispatch = useCoreDispatch();
   const [fetchUserDetails] = useLazyFetchUserDetailsQuery();
-  const [fetchNotifications] = useLazyGetBannerNotificationsQuery();
   return (
     <Button
       data-testid="button-header-login"
@@ -34,7 +32,6 @@ export const LoginButton = ({
         }
         await openAuthWindow();
         await fetchUserDetails();
-        await fetchNotifications();
       }}
       leftSection={
         fromHeader ? (

@@ -1,5 +1,5 @@
 import {
-  useGenesTable,
+  useGenesTableQuery,
   FilterSet,
   usePrevious,
   useCreateGeneSetFromFiltersMutation,
@@ -48,6 +48,7 @@ import { appendSearchTermFilters } from "../utils";
 import TotalItems from "@/components/Table/TotalItem";
 import { SET_COUNT_LIMIT } from "@/components/Modals/SetModals/constants";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
+import { useUserAuthChangeCount } from "@/hooks/useUserAuthChangeCount";
 
 export interface GTableContainerProps {
   readonly selectedSurvivalPlot: ComparativeSurvival;
@@ -99,7 +100,7 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
 
   /* GeneTable call */
   const { data, isSuccess, isFetching, isError, isUninitialized } =
-    useGenesTable({
+    useGenesTableQuery({
       pageSize: pageSize,
       offset: (page - 1) * pageSize,
       searchTerm: searchTerm.length > 0 ? searchTerm : undefined,
@@ -159,19 +160,28 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
   const sets = useCoreSelector((state) => selectSetsByType(state, "genes"));
   const prevGenomicFilters = usePrevious(genomicFilters);
   const prevCohortFilters = usePrevious(cohortFilters);
+  const userAuthChangeCount = useUserAuthChangeCount();
+  const prevUserAuthChangeCount = usePrevious(userAuthChangeCount);
   useEffect(() => {
     if (
       !isEqual(prevGenomicFilters, genomicFilters) ||
-      !isEqual(prevCohortFilters, cohortFilters)
+      !isEqual(prevCohortFilters, cohortFilters) ||
+      prevUserAuthChangeCount !== userAuthChangeCount
     )
       setPage(1);
-  }, [cohortFilters, genomicFilters, prevCohortFilters, prevGenomicFilters]);
+  }, [
+    cohortFilters,
+    genomicFilters,
+    prevCohortFilters,
+    prevGenomicFilters,
+    userAuthChangeCount,
+    prevUserAuthChangeCount,
+  ]);
 
   const formattedTableData = useDeepCompareMemo(() => {
-    if (!data?.genes) return [];
+    if (!data) return [];
 
-    const { cases, cnvCases, mutationCounts, filteredCases, genes } =
-      data.genes;
+    const { cases, cnvCases, mutationCounts, filteredCases, genes } = data;
 
     return genes.map((gene) =>
       getGene(
@@ -183,7 +193,7 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
         cnvCases,
       ),
     );
-  }, [data?.genes, selectedSurvivalPlot]);
+  }, [data, selectedSurvivalPlot]);
 
   const pagination = useMemo(() => {
     return isSuccess
@@ -191,9 +201,9 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
           count: pageSize,
           from: (page - 1) * pageSize,
           page: page,
-          pages: Math.ceil(data?.genes?.genes_total / pageSize),
+          pages: Math.ceil(data?.genes_total / pageSize),
           size: pageSize,
-          total: data?.genes?.genes_total,
+          total: data?.genes_total,
           sort: "None",
           label: "gene",
         }
@@ -206,7 +216,7 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
           total: undefined,
           label: undefined,
         };
-  }, [pageSize, page, data?.genes?.genes_total, isSuccess]);
+  }, [pageSize, page, data?.genes_total, isSuccess]);
 
   const genesTableDefaultColumns = useGenerateGenesTableColumns({
     handleSurvivalPlotToggled,
@@ -219,7 +229,7 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
     generateFilters,
     handleMutationCountClick,
     currentPage: page,
-    totalPages: Math.ceil(data?.genes?.genes_total / pageSize),
+    totalPages: Math.ceil(data?.genes_total / pageSize),
   });
 
   const getRowId = (originalRow: Gene) => {
@@ -340,7 +350,7 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
             isManualSelection={selectedGenes.length > 0}
             saveCount={
               selectedGenes.length === 0
-                ? data?.genes?.genes_total
+                ? data?.genes_total
                 : selectedGenes.length
             }
             setType="genes"
@@ -358,7 +368,7 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
             filters={setFilters}
             addToCount={
               selectedGenes.length === 0
-                ? data?.genes?.genes_total
+                ? data?.genes_total
                 : selectedGenes.length
             }
             setType="genes"
@@ -376,7 +386,7 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
             filters={setFilters}
             removeFromCount={
               selectedGenes.length === 0
-                ? data?.genes?.genes_total
+                ? data?.genes_total
                 : selectedGenes.length
             }
             setType="genes"
@@ -435,7 +445,7 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
           </div>
         }
         tableTotalDetail={
-          <TotalItems total={data?.genes?.genes_total} itemName="gene" />
+          <TotalItems total={data?.genes_total} itemName="gene" />
         }
         pagination={pagination}
         showControls={true}

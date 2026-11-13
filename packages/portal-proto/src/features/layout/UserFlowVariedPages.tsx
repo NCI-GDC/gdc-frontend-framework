@@ -37,7 +37,7 @@ export const UserFlowVariedPages = ({
 
   useGetBannerNotificationsQuery();
   const banners = useCoreSelector((state) => selectBanners(state));
-  const { isFetching: isFetchingDataVersion } = useGetVersionInfoQuery();
+  const { isLoading: isLoadingDataVersion } = useGetVersionInfoQuery();
 
   const { ref: headerRef, height: headerHeight } = useElementSize();
 
@@ -68,7 +68,7 @@ export const UserFlowVariedPages = ({
             className="flex grow flex-col overflow-x-clip overflow-y-clip"
             id="main"
           >
-            {isFetchingDataVersion ? (
+            {isLoadingDataVersion ? (
               <LoadingOverlay data-testid="loading-spinner" visible />
             ) : (
               children

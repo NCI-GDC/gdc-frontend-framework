@@ -41,14 +41,5 @@
     "global.d.ts",
     "src/styles/zIndex.js"
   ],
-  "exclude": [
-    "node_modules",
-    "**/*.test.ts",
-    "**/*.test.tsx",
-    "**/*.unit.test.ts",
-    "**/*.unit.test.tsx",
-    "**/__tests__/**",
-    "test-utils.tsx",
-    "setupTests.ts"
-  ]
+  "exclude": ["node_modules"]
 }
