@@ -88,4 +88,45 @@ describe("facets reducer", () => {
       facetsGQLReducer(cached, userAuthChanged({ username: "alice" })),
     ).toEqual(empty);
   });
+
+  test("ignores a response that was requested before the user changed", () => {
+    const empty = facetsGQLReducer(undefined, { type: "init" });
+    const arg = {
+      field: "cases.primary_site",
+      docType: "cases" as const,
+      index: "explore" as const,
+    };
+    const response = {
+      data: {
+        viewer: {
+          explore: {
+            cases: {
+              aggregations: {
+                cases__primary_site: {
+                  buckets: [{ key: "breast", doc_count: 10 }],
+                },
+              },
+            },
+          },
+        },
+      },
+      errors: {},
+    };
+
+    const pending = facetsGQLReducer(
+      empty,
+      fetchFacetByNameGQL.pending("request-1", arg),
+    );
+    const reset = facetsGQLReducer(
+      pending,
+      userAuthChanged({ username: "alice" }),
+    );
+
+    expect(
+      facetsGQLReducer(
+        reset,
+        fetchFacetByNameGQL.fulfilled(response, "request-1", arg),
+      ),
+    ).toEqual(empty);
+  });
 });

@@ -22,6 +22,8 @@ const loggedInAs = (username: string) => () =>
 
 const networkError = () => Promise.reject(new TypeError("Failed to fetch"));
 
+const serverError = () => Promise.resolve({ ok: false, status: 503 });
+
 let userResponse: () => Promise<unknown>;
 
 const fakeGdcBackend = (url: string) => {
@@ -103,6 +105,13 @@ describe("user auth changes", () => {
   test("does not treat a network error as a logout", async () => {
     await fetchUserAs(loggedInAs("alice"));
     await fetchUserAs(networkError);
+
+    expect(authChanges).not.toHaveBeenCalled();
+  });
+
+  test("does not treat a server error as a logout", async () => {
+    await fetchUserAs(loggedInAs("alice"));
+    await fetchUserAs(serverError);
 
     expect(authChanges).not.toHaveBeenCalled();
   });
