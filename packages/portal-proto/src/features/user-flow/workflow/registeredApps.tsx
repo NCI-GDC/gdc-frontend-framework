@@ -287,7 +287,6 @@ export const REGISTERED_APPS: AppRegistrationEntry[] = [
     optimizeRules: ["available data = ssm or cnv"],
     noDataTooltip:
       "Current cohort does not have gene expression data available for visualization.",
-    unavailable: true,
   },
   {
     name: "Cohort Level MAF",
