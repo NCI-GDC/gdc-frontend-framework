@@ -90,10 +90,11 @@ export const SaveOrCreateEntityBody = ({
       name: initialName,
     },
     validate: {
-      name: (value) => {
-        if (value.length === 0) {
+      name: (value: string) => {
+        const entry = value.trim();
+        if (entry.length === 0) {
           return validationMessages.emptyField;
-        } else if (disallowedNames.includes(value.trim().toLowerCase())) {
+        } else if (disallowedNames.includes(entry.toLowerCase())) {
           return validationMessages.invalidName(value);
         }
         return null;
