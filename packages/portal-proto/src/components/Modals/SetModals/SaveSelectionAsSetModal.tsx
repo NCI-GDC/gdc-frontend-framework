@@ -64,7 +64,7 @@ const SaveSelectionAsSetModal: React.FC<SaveSelectionAsSetModalProps> = ({
     },
     validate: {
       top: (value) =>
-        value === undefined ? (
+        value === "" ? (
           <ErrorMessage message="Please fill out this field." />
         ) : null,
       name: (value) =>
