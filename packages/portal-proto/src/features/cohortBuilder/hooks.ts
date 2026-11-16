@@ -96,7 +96,9 @@ export const useSetupInitialCohorts = (): boolean => {
               ? { ...cohortData, ...existingCohort }
               : cohortData;
           } catch (e) {
-            console.warn(`Misformatted cohort: ${data.name} `);
+            if (e instanceof TypeError) {
+              console.warn(`Unsupported cohort filters: ${data.name} `);
+            }
           }
         })
         .filter((cohort) => cohort !== undefined);

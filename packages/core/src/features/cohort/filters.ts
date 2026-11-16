@@ -299,12 +299,22 @@ export const filterSetToOperation = (
   return undefined;
 };
 
+const isIntersectionOrUnion = (
+  filterSet: unknown,
+): filterSet is GqlIntersection | GqlUnion => {
+  return Array.isArray((filterSet as GqlIntersection | GqlUnion)?.content);
+};
+
 export const buildGqlOperationToFilterSet = (
   fs: GqlIntersection | GqlUnion | Record<string, never>,
 ): FilterSet => {
   if (isEmpty(fs)) return { mode: "and", root: {} };
 
-  const obj = (fs as GqlIntersection | GqlUnion).content.reduce((acc, item) => {
+  if (!isIntersectionOrUnion(fs)) {
+    throw new TypeError("Unsupported filters");
+  }
+
+  const obj = fs.content.reduce((acc, item) => {
     let key;
     if (Array.isArray(item.content)) {
       // If item.content is an array, find the first object with a 'field' property
@@ -329,7 +339,7 @@ export const buildGqlOperationToFilterSet = (
   }, {});
 
   return {
-    mode: (fs as GqlIntersection | GqlUnion).op,
+    mode: fs.op,
     root: obj,
   };
 };
