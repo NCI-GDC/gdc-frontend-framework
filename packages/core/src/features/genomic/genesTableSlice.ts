@@ -176,55 +176,45 @@ const transformGenesTableResponse = (
   const { cases, cnvCases, filteredCases, genes } =
     genesTable.data.genesTableViewer.explore;
 
+  const mutationCountBuckets: { key: string; doc_count: number }[] =
+    mutationCounts && !mutationCounts.errors
+      ? mutationCounts.data.ssmsAggregationsViewer.explore.ssms.aggregations
+          .consequence__transcript__gene__gene_id.buckets
+      : [];
+  const mutationCountsByGene = Object.fromEntries(
+    mutationCountBuckets.map(({ key, doc_count }) => [
+      key,
+      doc_count.toLocaleString(),
+    ]),
+  );
+
+  const geneRows = genes.hits.edges.map(
+    ({ node }: Record<string, any>): GeneRowInfo => ({
+      id: node.id,
+      gene_id: node.gene_id,
+      symbol: node.symbol,
+      name: node.name,
+      cytoband: node.cytoband,
+      biotype: node.biotype,
+      is_cancer_gene_census: node.is_cancer_gene_census,
+      numCases: node.numCases,
+      ssm_case: node.ssm_case.hits.total,
+      cnv_case: node.cnv_case.hits.total,
+      case_cnv_gain: node.case_cnv_gain.hits.total,
+      case_cnv_loss: node.case_cnv_loss.hits.total,
+      case_cnv_amplification: node.case_cnv_amplification.hits.total,
+      case_cnv_homozygous_deletion:
+        node.case_cnv_homozygous_deletion.hits.total,
+    }),
+  );
+
   return {
     cases: cases.hits.total,
     cnvCases: cnvCases.hits.total,
     filteredCases: filteredCases.hits.total,
     genes_total: genes.hits.total,
-    mutationCounts:
-      mutationCounts && !mutationCounts.errors
-        ? mutationCounts.data.ssmsAggregationsViewer.explore.ssms.aggregations.consequence__transcript__gene__gene_id.buckets.reduce(
-            (
-              counts: Record<string, string>,
-              apiBucket: Record<string, any>,
-            ) => {
-              counts[apiBucket.key] = apiBucket.doc_count.toLocaleString();
-              return counts;
-            },
-            {},
-          )
-        : {},
-    genes: genes.hits.edges.map(
-      ({ node }: Record<string, any>): GeneRowInfo => {
-        const {
-          biotype,
-          cytoband,
-          gene_id,
-          id,
-          is_cancer_gene_census,
-          name,
-          numCases,
-          symbol,
-        } = node;
-        return {
-          biotype,
-          cytoband,
-          gene_id,
-          id,
-          is_cancer_gene_census,
-          name,
-          numCases,
-          symbol,
-          cnv_case: node.cnv_case.hits.total,
-          case_cnv_amplification: node.case_cnv_amplification.hits.total,
-          case_cnv_loss: node.case_cnv_loss.hits.total,
-          case_cnv_gain: node.case_cnv_gain.hits.total,
-          case_cnv_homozygous_deletion:
-            node.case_cnv_homozygous_deletion.hits.total,
-          ssm_case: node.ssm_case.hits.total,
-        };
-      },
-    ),
+    mutationCounts: mutationCountsByGene,
+    genes: geneRows,
   };
 };
 
