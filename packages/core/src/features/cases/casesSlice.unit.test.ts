@@ -90,6 +90,10 @@ describe("all cases endpoint", () => {
       ),
     );
 
+  afterAll(() => {
+    coreStore.dispatch(endpointSlice.util.resetApiState());
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
     coreStore.dispatch(endpointSlice.util.resetApiState());

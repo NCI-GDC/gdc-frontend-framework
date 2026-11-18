@@ -90,6 +90,10 @@ describe("genes table endpoint", () => {
       ),
     );
 
+  afterAll(() => {
+    coreStore.dispatch(graphqlAPISlice.util.resetApiState());
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
     coreStore.dispatch(graphqlAPISlice.util.resetApiState());
@@ -141,14 +145,25 @@ describe("genes table endpoint", () => {
     expect(fetchSpy).toHaveBeenCalledTimes(1);
   });
 
-  test("still returns the genes when the mutation counts query fails", async () => {
-    respondTo.mutationCounts = () => ({ errors: { filters: "bad filter" } });
+  test.each([
+    ["returns errors", () => ({ errors: { filters: "bad filter" } })],
+    [
+      "request fails",
+      () => {
+        throw new TypeError("Failed to fetch");
+      },
+    ],
+  ])(
+    "still returns the genes when the mutation counts %s",
+    async (_, mutationCountsResponse) => {
+      respondTo.mutationCounts = mutationCountsResponse;
 
-    const { data } = await fetchGenesTable();
+      const { data } = await fetchGenesTable();
 
-    expect(data?.genes).toHaveLength(1);
-    expect(data?.mutationCounts).toBeUndefined();
-  });
+      expect(data?.genes).toHaveLength(1);
+      expect(data?.mutationCounts).toEqual({});
+    },
+  );
 });
 
 describe("Test creation of geneTable Filters with Search term", () => {
