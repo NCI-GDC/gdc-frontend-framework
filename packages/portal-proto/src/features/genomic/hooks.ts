@@ -187,7 +187,7 @@ export const useGenesFacets = (
     const selectCohortFilters = (_ignore) =>
       isDemoMode ? demoFilter : cohortFilters;
     if (
-      !facet ||
+      facet.some((entry) => entry === undefined) ||
       !isEqual(prevCohortFilters, cohortFilters) ||
       !isEqual(prevGenomicFilters, genomicFilters) ||
       !isEqual(prevEnumValues, enumValues)
