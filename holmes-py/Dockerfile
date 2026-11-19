@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/playwright/python:v1.53.0-jammy
+FROM mcr.microsoft.com/playwright/python:v1.53.0-noble
 
 RUN rm -rf /var/lib/apt/lists/* \
     && apt-get update \
