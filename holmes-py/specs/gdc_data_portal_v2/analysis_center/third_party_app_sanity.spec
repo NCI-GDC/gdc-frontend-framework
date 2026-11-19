@@ -7,14 +7,25 @@ Test-Case       : PEAR-1735
 
 tags: gdc-data-portal-v2, navigation, analysis-center, smoke-test, regression
 
-## Navigate to the analysis center
+## Create Cohort for Third Party App Test
 * On GDC Data Portal V2 app
+* Navigate to "Cohort" from "Header" "section"
+We want to test if the apps can load, not if they can perform under stress.
+So, we make a smaller cohort to use instead of all possible cases.
+* Create and save a cohort named "third_party_test_cohort" with these filters
+  |tab_name               |facet_name           |selection                      |
+  |-----------------------|---------------------|-------------------------------|
+  |Demographic            |Vital Status         |dead                           |
+
+
+## Navigate to the analysis center
 * Navigate to "Analysis" from "Header" "section"
 * Wait for cohort bar case count loading spinner
 
-## Bam Slicing Download
-* Navigate to "BAM Slicing Download" from "Analysis" "app"
-* Is text "Please login to access the BAM Slicing Download tool." present on the page
+Note: Put test back when tool is re-enabled
+Bam Slicing Download
+Navigate to "BAM Slicing Download" from "Analysis" "app"
+Is text "Please login to access the BAM Slicing Download tool." present on the page
 
 ## Cohort Level MAF
 * Navigate to "Analysis" from "Header" "section"
@@ -41,11 +52,10 @@ tags: gdc-data-portal-v2, navigation, analysis-center, smoke-test, regression
 * Navigate to "Correlation Plot Demo" from "Analysis" "app"
 * Is text "Group comparisons (log-rank test)" present on the page
 
-// Put this back in once st.jude fixes gene expression with all cases
-// ## Gene Expression Clustering
-// * Navigate to "Analysis" from "Header" "section"
-// * Navigate to "Gene Expression Clustering" from "Analysis" "app"
-// * Is text "Gene Expression (Z-score)" present on the page
+## Gene Expression Clustering
+* Navigate to "Analysis" from "Header" "section"
+* Navigate to "Gene Expression Clustering" from "Analysis" "app"
+* Is text "Gene Expression (Z-score)" present on the page
 
 ## Gene Expression Clustering Demo
 * Navigate to "Analysis" from "Header" "section"
@@ -83,18 +93,19 @@ tags: gdc-data-portal-v2, navigation, analysis-center, smoke-test, regression
 * Is text " ENST00000377970" present on the page
 * Is text "Demo showing MYC mutations from all GDC cases." present on the page
 
-## Sequence Reads
-* Navigate to "Analysis" from "Header" "section"
-* Navigate to "Sequence Reads" from "Analysis" "app"
-* Is text "Please login to access the Sequence Read visualization tool." present on the page
+Note: Put test back when tool is re-enabled
+Sequence Reads
+Navigate to "Analysis" from "Header" "section"
+Navigate to "Sequence Reads" from "Analysis" "app"
+Is text "Please login to access the Sequence Read visualization tool." present on the page
 
 ## Single Cell RNA-seq
 * Navigate to "Analysis" from "Header" "section"
 * Navigate to "Single Cell RNA-seq" from "Analysis" "app"
-* Is text "Select sample and plots" present on the page
+* Is text "Select a sample below to see its data" present on the page
 
 ## Single Cell RNA-seq Demo
 * Navigate to "Analysis" from "Header" "section"
 * Navigate to "Single Cell RNA-seq Demo" from "Analysis" "app"
 * Is text "Demo showing data for Case 2409, Project BEATAML1.0-COHORT ." present on the page
-* Is text "9f155433-3c2e-4b67-a452-eb32f06c93f7" present on the page
+* Is text "Differential Expression" present on the page

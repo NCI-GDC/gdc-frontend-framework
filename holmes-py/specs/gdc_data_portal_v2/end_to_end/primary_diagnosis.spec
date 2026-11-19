@@ -19,7 +19,7 @@ tags: gdc-data-portal-v2, end-to-end, regression
 * Verify "Primary Diagnosis_empty more Count" is "greater than" "250"
 
 ## Create Cohort With Many Primary Diagnosis Small Case Filter Values
-* Create and save a cohort named "CC_Compare_1" with these filters
+* Create and save a cohort named "E2E_Primary_Diagnosis" with these filters
   |tab_name               |facet_name           |selection                            |
   |-----------------------|---------------------|-------------------------------------|
   |General                |Primary Diagnosis    |acral lentiginous melanoma, malignant|

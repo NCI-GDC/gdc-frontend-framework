@@ -10,6 +10,8 @@ tags: gdc-data-portal-v2, repository, regression
 ## Navigate to Repository Page
 * On GDC Data Portal V2 app
 * Navigate to "Downloads" from "Header" "section"
+* Select "Remove All" on the Repository page
+* Is modal with text "files from the cart." present on the page and "Remove Modal"
 * Wait for table loading spinner
 * Wait for cohort bar case count loading spinner
 * Pause "2" seconds
