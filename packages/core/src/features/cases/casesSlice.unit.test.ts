@@ -150,6 +150,37 @@ describe("all cases endpoint", () => {
     });
   });
 
+  test("groups the annotations under the case each one belongs to", async () => {
+    respondTo.cases = () =>
+      ok(
+        casesResponse([
+          { ...caseHit, id: "case-1", case_id: "case-1" },
+          { ...caseHit, id: "case-2", case_id: "case-2" },
+          { ...caseHit, id: "case-3", case_id: "case-3" },
+        ]),
+      );
+    respondTo.annotations = () =>
+      ok(
+        casesResponse([
+          { ...annotation, case_id: "case-1", annotation_id: "a1" },
+          { ...annotation, case_id: "case-2", annotation_id: "a2" },
+          { ...annotation, case_id: "case-1", annotation_id: "a3" },
+        ]),
+      );
+
+    const { data } = await fetchAllCases();
+
+    const annotationIdsByCase = data?.cases.map((c) => [
+      c.case_uuid,
+      c.annotations.map((a) => a.annotation_id),
+    ]);
+    expect(annotationIdsByCase).toEqual([
+      ["case-1", ["a1", "a3"]],
+      ["case-2", ["a2"]],
+      ["case-3", []],
+    ]);
+  });
+
   test("does not request annotations when no cases match", async () => {
     respondTo.cases = () => ok(casesResponse([]));
 
