@@ -31,9 +31,6 @@ tags: gdc-data-portal-v2, navigation, analysis-center, regression
   |Clinical Data Analysis   |Current cohort does not have cases available for visualization.            |
   |Cohort Comparison        |Current cohort does not have cases available for visualization.            |
   |Mutation Frequency       |Current cohort does not have SSM or CNV data available for visualization.  |
-  |OncoMatrix               |Current cohort does not have SSM or CNV data available for visualization.  |
-  |ProteinPaint             |Current cohort does not have SSM data available for visualization.         |
-  |Sequence Reads           |Current cohort does not have available BAMs for visualization.             |
 * Clear active cohort filters
 
 ## Validate Analysis Tools Description
@@ -43,9 +40,6 @@ tags: gdc-data-portal-v2, navigation, analysis-center, regression
   |Clinical Data Analysis   |Use clinical variables to perform basic statistical analysis of your cohort.                                                   |
   |Cohort Comparison        |Display the survival analysis of your cohorts and compare characteristics such as sex at birth, vital status and age at diagnosis.|
   |Mutation Frequency       |Visualize most frequently mutated genes and somatic mutations.                                                                 |
-  |OncoMatrix               |Visualize the top most mutated cases and genes affected by high impact mutations in your cohort.                               |
-  |ProteinPaint             |Visualize mutations in protein-coding genes by consequence type and protein domain.                                            |
-  |Sequence Reads           |Visualize sequencing reads for a given gene, position, SNP, or variant.                                                        |
   |Set Operations           |Display a Venn diagram and compare/contrast your cohorts or sets of the same type.                                             |
 
 ## Validate Core Tools Description
