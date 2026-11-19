@@ -90,10 +90,11 @@ export const SaveOrCreateEntityBody = ({
       name: initialName,
     },
     validate: {
-      name: (value) => {
-        if (value.length === 0) {
+      name: (value: string) => {
+        const entry = value.trim();
+        if (entry.length === 0) {
           return validationMessages.emptyField;
-        } else if (disallowedNames.includes(value.trim().toLowerCase())) {
+        } else if (disallowedNames.includes(entry.toLowerCase())) {
           return validationMessages.invalidName(value);
         }
         return null;
@@ -167,13 +168,14 @@ export const SaveOrCreateEntityBody = ({
             Cancel
           </Button>
           <Button
-            variant="filled"
+            variant="darkFunction"
             color="secondary"
             onClick={handleActionClick}
             data-testid="button-save-name"
             leftSection={
               loading ? <Loader size={15} color="white" /> : undefined
             }
+            disabled={!form?.values?.name}
           >
             {upperFirst(action)}
           </Button>

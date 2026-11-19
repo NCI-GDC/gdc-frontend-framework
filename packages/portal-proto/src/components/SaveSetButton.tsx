@@ -12,7 +12,7 @@ import {
   Modals,
 } from "@gff/core";
 import { showNotification } from "@mantine/notifications";
-import { SaveOrCreateEntityModal } from "@/components/Modals/SaveOrCreateEntityModal";
+import { SaveOrCreateEntityModal } from "@gff/portal-components";
 import DarkFunctionButton from "@/components/StyledComponents/DarkFunctionButton";
 import { Loader } from "@mantine/core";
 interface SaveSetButttonProps {
