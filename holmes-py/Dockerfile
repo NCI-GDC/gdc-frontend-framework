@@ -1,5 +1,7 @@
 FROM mcr.microsoft.com/playwright/python:v1.53.0-noble
 
+ENV OPENSSL_FORCE_FIPS_MODE=0
+
 RUN rm -rf /var/lib/apt/lists/* \
     && apt-get update \
     && apt-get install -y \
