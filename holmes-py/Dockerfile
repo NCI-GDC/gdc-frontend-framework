@@ -13,8 +13,6 @@ RUN rm -rf /var/lib/apt/lists/* \
         libgtk-3-0 \
         libxshmfence1 \
         libgbm1 \
-        libasound2 \
-        libatspi2.0-0 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
