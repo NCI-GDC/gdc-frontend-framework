@@ -15,17 +15,17 @@ tags: gdc-data-portal-v2, regression, annotations
 * Verify presence of filter card
   |filter_name            |
   |-----------------------|
-  |Project Id             |
+  |Project                |
   |Entity Type            |
   |Category               |
   |Classification         |
   |Created Datetime       |
 
-## Project Id and Entity Type
+## Project and Entity Type
 * Make the following selections on a filter card
   |facet_name       |selection                            |
   |-----------------|-------------------------------------|
-  |Project Id       |TCGA-OV                              |
+  |Project          |TCGA-OV                              |
   |Entity Type      |annotated_somatic_mutation           |
 * Wait for table loading spinner
 * Collect case counts for the following filters for cohort "Browse_Annotations_Filters"
@@ -39,8 +39,8 @@ tags: gdc-data-portal-v2, regression, annotations
 * Perform the following actions on a filter card
   |filter_name      |action               |
   |-----------------|---------------------|
-  |Project Id       |clear selection      |
-  |Entity Type      |clear selection      |
+  |Project          |clear all            |
+  |Entity Type      |clear all            |
 * Make the following selections on a filter card
   |facet_name       |selection                            |
   |-----------------|-------------------------------------|
@@ -57,8 +57,8 @@ tags: gdc-data-portal-v2, regression, annotations
 * Perform the following actions on a filter card
   |filter_name      |action               |
   |-----------------|---------------------|
-  |Category         |clear selection      |
-  |Classification   |clear selection      |
+  |Category         |clear all            |
+  |Classification   |clear all            |
 * Search in a filter card
   |facet_name       |label                  |text      |
   |-----------------|-----------------------|----------|

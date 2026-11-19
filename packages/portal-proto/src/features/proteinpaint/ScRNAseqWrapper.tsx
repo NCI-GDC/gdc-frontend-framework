@@ -119,7 +119,7 @@ export const ScRNAseqWrapper: FC<PpProps> = (props: PpProps) => {
 interface ScRNAseqArg {
   holder?: Element;
   host: string;
-  launchGdcScApp: true;
+  launchGdcScRNAseq: true;
   genome?: string;
   filter0: any;
   noheader: true;
@@ -127,7 +127,7 @@ interface ScRNAseqArg {
   hide_dsHandles: true;
   state?: {
     plots?: {
-      chartType: "sc";
+      chartType: "sc" | "singleCellPlot";
       sample?: string;
       experimentID?: string;
       activeTab?: number;
@@ -161,7 +161,7 @@ function getScRNAseqArg(
     // using the same domain as the GDC portal where PP is embedded
     host: props.basepath || (basepath as string),
     filter0: filter0 || null,
-    launchGdcScApp: true,
+    launchGdcScRNAseq: true,
     holder,
     noheader: true,
     nobox: true,
@@ -171,7 +171,7 @@ function getScRNAseqArg(
       : {
           plots: [
             {
-              chartType: "sc",
+              chartType: "singleCellPlot",
               sample: DEMO_sample,
               experimentID: DEMO_experimentID,
               activeTab: 2,

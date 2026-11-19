@@ -143,13 +143,13 @@ tags: gdc-data-portal-v2, end-to-end, regression
 * Collect case counts on save cohort buttons from an analysis card on Cohort Comparison
   |analysis_card          |Filter Row                       |Cohort Number  |Collect Case Count Name                                  |
   |-----------------------|---------------------------------|---------------|---------------------------------------------------------|
-  |Sex At Birth           |female                           |1              |CC_MF_TP53_Mutations_Cohort_Sex At Birth_Female_1 Count  |
-  |Sex At Birth           |female                           |2              |CC_MF_FAT_Gene_Cohort_Sex At Birth_Female_2 Count        |
+  |Sex at Birth           |female                           |1              |CC_MF_TP53_Mutations_Cohort_Sex At Birth_Female_1 Count  |
+  |Sex at Birth           |female                           |2              |CC_MF_FAT_Gene_Cohort_Sex At Birth_Female_2 Count        |
 * Save cohorts from an analysis card on Cohort Comparison
   |analysis_card          |Filter Row                       |Cohort Number  |Cohort Name                                              |
   |-----------------------|---------------------------------|---------------|---------------------------------------------------------|
-  |Sex At Birth           |female                           |1              |CC_MF_TP53_Mutations_Cohort_Sex At Birth_Female_1        |
-  |Sex At Birth           |female                           |2              |CC_MF_FAT_Gene_Cohort_Sex At Birth_Female_2              |
+  |Sex at Birth           |female                           |1              |CC_MF_TP53_Mutations_Cohort_Sex At Birth_Female_1        |
+  |Sex at Birth           |female                           |2              |CC_MF_FAT_Gene_Cohort_Sex At Birth_Female_2              |
 
 * Collect case count of cohorts s1 and s2 on the cohort comparison main screen
 * Verify "MF_TP53_Mutations_Cohort Case Count" and "Cohort Comparison s1" are "equal"

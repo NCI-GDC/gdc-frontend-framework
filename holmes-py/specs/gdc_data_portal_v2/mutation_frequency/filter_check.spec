@@ -50,8 +50,8 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Perform the following actions on a filter card
   |filter_name      |action               |
   |-----------------|---------------------|
-  |Biotype          |clear selection      |
-  |VEP Impact       |clear selection      |
+  |Biotype          |clear all            |
+  |VEP Impact       |clear all            |
 
 ## Validate Mutation Filters
 * Switch to "Mutations" tab in the Mutation Frequency app
@@ -66,6 +66,6 @@ tags: gdc-data-portal-v2, mutation-frequency, regression
 * Perform the following actions on a filter card
   |filter_name      |action               |
   |-----------------|---------------------|
-  |SIFT Impact      |clear selection      |
-  |Polyphen Impact  |clear selection      |
-  |Consequence Type |clear selection      |
+  |SIFT Impact      |clear all            |
+  |Polyphen Impact  |clear all            |
+  |Consequence Type |clear all            |

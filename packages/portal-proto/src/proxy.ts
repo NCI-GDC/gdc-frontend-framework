@@ -8,6 +8,7 @@ const connectSrc = [
   "https://dap.digitalgov.gov",
   "https://metrics.cancer.gov",
   "https://storage.googleapis.com/idc-index-data-artifacts/",
+  "https://proteinpaint.stjude.org",
   // Uncomment to use mock server for testing
   //"https://localhost:3100",
 ];

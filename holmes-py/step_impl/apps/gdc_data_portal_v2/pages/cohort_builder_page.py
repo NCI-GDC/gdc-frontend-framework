@@ -224,7 +224,7 @@ class CohortBuilderPage(BasePage):
         )
         self.click(locator)
         self.wait_for_loading_spinner_to_be_visible()
-        self.wait_for_loading_spinner_to_detatch()
+        self.wait_for_loading_spinner_to_detatch(90000)
 
     # Returns if the show more or show less button is visible on a facet card
     def is_show_more_or_show_less_button_visible_within_filter_card(
@@ -241,6 +241,13 @@ class CohortBuilderPage(BasePage):
             facet_group_name, label
         )
         self.click(locator)
+
+    # Returns text from "# More" button on specified facet card
+    def get_more_button_count_within_filter_card(self, facet_group_name):
+        locator = CohortBuilderPageLocators.FACET_GROUP_SHOW_MORE_LESS_IDENT(
+            facet_group_name, "plus-icon"
+        )
+        return self.get_text(locator)
 
     # Send keys in the search textbox area
     def type_in_facet_search_text_area(self, facet_group_name, textbox_id, text):

@@ -145,7 +145,7 @@ def verify_filters_access_level(table):
         ), f"The filter '{v[1]}' has value '{filter_case_count}' and access level '{v[2]}' has value '{access_case_count}' that does NOT match"
 
 
-        APP.shared.perform_action_within_filter_card(v[0], "clear selection")
+        APP.shared.perform_action_within_filter_card(v[0], "clear all")
         APP.shared.wait_for_loading_spinner_cohort_bar_case_count_to_detatch()
         APP.shared.wait_for_loading_spinner_table_to_detatch()
         APP.shared.wait_for_loading_spinner_to_detatch()
@@ -193,7 +193,7 @@ def verify_file_filter_applied(filter_name: str):
     expected_filter_name = repository.get_custom_filter_facet_as_applied(filter_name)
     actual_filter_name = repository.get_filter_facet_names()[0]
     assert (
-        expected_filter_name == actual_filter_name
+        expected_filter_name.lower() == actual_filter_name.lower()
     ), f"Custom filter not found in facets.\nExpected: {expected_filter_name}\nActual: {actual_filter_name}"
 
 

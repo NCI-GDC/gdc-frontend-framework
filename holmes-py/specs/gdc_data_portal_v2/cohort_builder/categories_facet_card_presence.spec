@@ -77,6 +77,7 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards, regression
   |Cog Rhabdomyosarcoma Risk Group|enum                                       |
   |International Prognostic Index |enum                                       |
   |Eln Risk Classification        |enum                                       |
+  |Enneking Msts Grade            |enum                                       |
   |Medulloblastoma Molecular Classification|enum                              |
   |Wilms Tumor Histologic Subtype |enum                                       |
   |Weiss Assessment Score     |enum                                           |
@@ -103,7 +104,7 @@ tags: gdc-data-portal-v2, cohort-builder, facet-cards, regression
 * Validate presence of facet cards and their filter types on the "Other Clinical Attributes" tab on the Cohort Builder page
   |facet_name                 |expected_filter_type                           |
   |---------------------------|-----------------------------------------------|
-  |Bmi                        |range input                                    |
+  |BMI                        |range input                                    |
   |Weight                     |range input                                    |
   |Height                     |range input                                    |
   |Risk Factors               |enum                                           |

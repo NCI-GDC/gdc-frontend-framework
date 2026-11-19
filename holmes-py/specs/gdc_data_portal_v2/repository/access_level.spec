@@ -43,7 +43,7 @@ tags: gdc-data-portal-v2, repository, data-release, acl-validation
 * Perform the following actions on a filter card
   |filter_name      |action               |
   |-----------------|---------------------|
-  |Data Type        |clear selection      |
+  |Data Type        |clear all            |
 
 * Make the following selections on a filter card
   |facet_name           |selection                            |
@@ -113,7 +113,7 @@ tags: gdc-data-portal-v2, repository, data-release, acl-validation
 * Perform the following actions on a filter card
   |filter_name      |action               |
   |-----------------|---------------------|
-  |Data Type        |clear selection      |
+  |Data Type        |clear all            |
 * Make the following selections on a filter card
   |facet_name           |selection                            |
   |---------------------|-------------------------------------|
@@ -128,7 +128,7 @@ tags: gdc-data-portal-v2, repository, data-release, acl-validation
 * Perform the following actions on a filter card
   |filter_name      |action               |
   |-----------------|---------------------|
-  |Workflow Type   |clear selection       |
+  |Workflow Type    |clear all            |
 * Make the following selections on a filter card
   |facet_name           |selection                            |
   |---------------------|-------------------------------------|

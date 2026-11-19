@@ -13,7 +13,7 @@ import {
   cnvMapping,
   hovertemplate,
 } from "./utils";
-import { PlotMouseEvent } from "plotly.js";
+import { PlotMouseEvent } from "plotly.js-basic-dist-min";
 import { useDeepCompareMemo } from "use-deep-compare";
 import OffscreenWrapper from "@/components/OffscreenWrapper";
 

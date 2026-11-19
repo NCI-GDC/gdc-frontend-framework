@@ -22,6 +22,7 @@ type FacetHeaderProps = Pick<
   readonly showFlip?: boolean;
   readonly isFacetView?: boolean;
   readonly variant?: "default" | "summary";
+  readonly clearFiltersCallback?: () => void;
 };
 
 /**
@@ -52,6 +53,7 @@ const FacetControlsHeader = ({
   toggleFlip = undefined,
   toggleSearch = undefined,
   dismissCallback = undefined,
+  clearFiltersCallback = undefined,
 }: FacetHeaderProps) => {
   const clearFilters = hooks.useClearFilter();
   const isFilterExpanded =
@@ -156,11 +158,14 @@ const FacetControlsHeader = ({
           </Tooltip>
         ) : null}
         {showClearSelection && (
-          <Tooltip label="Clear selection">
+          <Tooltip label="Clear all">
             <button
               className={facetIconButtonStyles}
-              onClick={() => clearFilters(field)}
-              aria-label="clear selection"
+              onClick={() => {
+                clearFilters(field);
+                clearFiltersCallback && clearFiltersCallback();
+              }}
+              aria-label="clear all"
             >
               <UndoIcon
                 size="1.25em"

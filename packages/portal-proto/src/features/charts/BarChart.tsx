@@ -1,8 +1,15 @@
-import { Config, Layout, PlotMouseEvent, PlotData } from "plotly.js";
-import Plot from "react-plotly.js";
+import Plotly, {
+  Config,
+  Layout,
+  PlotMouseEvent,
+  BarData,
+} from "plotly.js-basic-dist-min";
+import createPlotlyComponent from "react-plotly.js/factory";
+
+const Plot = createPlotlyComponent(Plotly);
 
 export interface BarChartData {
-  datasets: Partial<PlotData>[];
+  datasets: Partial<BarData>[];
   yAxisTitle?: string;
   tickvals?: number[];
   ticktext?: string[];
@@ -113,10 +120,12 @@ const BarChart: React.FC<BarChartProps> = ({
             tickangle: data?.datasets?.[0]?.x.length > 6 ? 35 : undefined,
           },
           yaxis: {
-            title: data.yAxisTitle,
-            titlefont: {
-              family: "Noto Sans, sans-serif",
-              size: 14,
+            title: {
+              text: data.yAxisTitle,
+              font: {
+                family: "Noto Sans, sans-serif",
+                size: 14,
+              },
             },
             tickfont: {
               size: 12,
@@ -160,10 +169,12 @@ const BarChart: React.FC<BarChartProps> = ({
             },
           },
           xaxis: {
-            title: data.yAxisTitle,
-            titlefont: {
-              family: "Noto Sans, sans-serif",
-              size: 14,
+            title: {
+              text: data.yAxisTitle,
+              font: {
+                family: "Noto Sans, sans-serif",
+                size: 14,
+              },
             },
             tickfont: {
               size: 12,
@@ -183,17 +194,7 @@ const BarChart: React.FC<BarChartProps> = ({
 
   const config: Partial<Config> = {
     displaylogo: false,
-    modeBarButtonsToRemove: [
-      "zoom2d",
-      "pan2d",
-      "select2d",
-      "lasso2d",
-      "zoomIn2d",
-      "zoomOut2d",
-      "autoScale2d",
-      "resetScale2d",
-      "toImage",
-    ],
+    displayModeBar: false,
   };
 
   return (

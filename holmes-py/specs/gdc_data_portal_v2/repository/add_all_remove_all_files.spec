@@ -29,7 +29,7 @@ tags: gdc-data-portal-v2, repository, regression
 * Perform the following actions on a filter card
   |filter_name      |action               |
   |-----------------|---------------------|
-  |Data Type        |clear selection      |
+  |Data Type        |clear all            |
 * Make the following selections on a filter card
   |facet_name             |label                |
   |-----------------------|---------------------|
@@ -53,6 +53,6 @@ A separate specification ensures the cart has 0 files
 * Perform the following actions on a filter card
   |filter_name      |action               |
   |-----------------|---------------------|
-  |Workflow Type    |clear selection      |
+  |Workflow Type    |clear all            |
 * Select "Remove All" on the Repository page
 * The cart should have "0" files

@@ -91,10 +91,10 @@ tags: gdc-data-portal-v2, navigation, analysis-center, smoke-test, regression
 ## Single Cell RNA-seq
 * Navigate to "Analysis" from "Header" "section"
 * Navigate to "Single Cell RNA-seq" from "Analysis" "app"
-* Is text "Select a sample below to see its data:" present on the page
+* Is text "Select sample and plots" present on the page
 
 ## Single Cell RNA-seq Demo
 * Navigate to "Analysis" from "Header" "section"
 * Navigate to "Single Cell RNA-seq Demo" from "Analysis" "app"
 * Is text "Demo showing data for Case 2409, Project BEATAML1.0-COHORT ." present on the page
-* Is text "Differential Expression" present on the page
+* Is text "9f155433-3c2e-4b67-a452-eb32f06c93f7" present on the page

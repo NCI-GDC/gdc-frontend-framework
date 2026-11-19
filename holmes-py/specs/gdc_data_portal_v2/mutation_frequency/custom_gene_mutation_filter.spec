@@ -58,7 +58,7 @@ but it usually requires a wait. So I've put 5 seconds.
 * Perform the following actions on a filter card
   |filter_name          |action               |
   |---------------------|---------------------|
-  |Mutated Gene         |clear selection      |
+  |Mutated Gene         |clear all            |
 
 ## Filter by Existing Gene Set
 * Select "Mutated Gene" in the Mutation Frequency app
@@ -88,7 +88,7 @@ but it usually requires a wait. So I've put 5 seconds.
 * Perform the following actions on a filter card
   |filter_name          |action               |
   |---------------------|---------------------|
-  |Mutated Gene         |clear selection      |
+  |Mutated Gene         |clear all            |
 
 ## Validate Custom Mutation Filters
 * Switch to "Mutations" tab in the Mutation Frequency app
@@ -114,7 +114,7 @@ but it usually requires a wait. So I've put 3 seconds.
 * Perform the following actions on a filter card
   |filter_name              |action               |
   |-------------------------|---------------------|
-  |Somatic Mutations        |clear selection      |
+  |Somatic Mutations        |clear all            |
 
 ## Filter by Existing Mutation Set
 * Select "Somatic Mutation" in the Mutation Frequency app
@@ -144,4 +144,4 @@ but it usually requires a wait. So I've put 3 seconds.
 * Perform the following actions on a filter card
   |filter_name          |action               |
   |---------------------|---------------------|
-  |Somatic Mutations    |clear selection      |
+  |Somatic Mutations    |clear all            |

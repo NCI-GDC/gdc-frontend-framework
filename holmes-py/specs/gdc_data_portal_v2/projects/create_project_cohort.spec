@@ -46,4 +46,4 @@ tags: gdc-data-portal-v2, regression, projects, cohort
 * Perform the following actions on a filter card
   |filter_name      |action               |
   |-----------------|---------------------|
-  |Program          |clear selection      |
+  |Program          |clear all            |

@@ -47,27 +47,27 @@ tags: gdc-data-portal-v2, regression, cohort-comparison, cohort-comparison-downl
   |-----------------------|---------------------------------|
   |analysis-survival      |Visible                          |
   |Ethnicity              |Visible                          |
-  |Sex At Birth           |Visible                          |
+  |Sex at Birth           |Visible                          |
   |Race                   |Visible                          |
   |Vital Status           |Visible                          |
-  |Age At Diagnosis       |Visible                          |
+  |Age at Diagnosis       |Visible                          |
 
-## Validate TSV Download Information - Sex At Birth Card
+## Validate TSV Download Information - Sex at Birth Card
 * Collect case counts on save cohort buttons from an analysis card on Cohort Comparison
   |analysis_card          |Filter Row                       |Cohort Number  |Collect Case Count Name              |
   |-----------------------|---------------------------------|---------------|-------------------------------------|
-  |Sex At Birth                 |female                           |1              |CC_Sex At Birth_Female_1 Count             |
-  |Sex At Birth                 |male                             |1              |CC_Sex At Birth_Male_1 Count               |
-  |Sex At Birth                 |unknown                          |1              |CC_Sex At Birth_Unknown_1 Count            |
-  |Sex At Birth                 |female                           |2              |CC_Sex At Birth_Female_2 Count             |
-  |Sex At Birth                 |male                             |2              |CC_Sex At Birth_Male_2 Count               |
-  |Sex At Birth                 |unknown                          |2              |CC_Sex At Birth_Unknown_2 Count            |
-* Download "Sex At Birth" from "Cohort Comparison"
-* Read from "Sex At Birth from Cohort Comparison"
-* Verify that "Sex At Birth from Cohort Comparison" has expected information
+  |Sex at Birth                 |female                           |1              |CC_Sex At Birth_Female_1 Count             |
+  |Sex at Birth                 |male                             |1              |CC_Sex At Birth_Male_1 Count               |
+  |Sex at Birth                 |unknown                          |1              |CC_Sex At Birth_Unknown_1 Count            |
+  |Sex at Birth                 |female                           |2              |CC_Sex At Birth_Female_2 Count             |
+  |Sex at Birth                 |male                             |2              |CC_Sex At Birth_Male_2 Count               |
+  |Sex at Birth                 |unknown                          |2              |CC_Sex At Birth_Unknown_2 Count            |
+* Download "Sex at Birth" from "Cohort Comparison"
+* Read from "Sex at Birth from Cohort Comparison"
+* Verify that "Sex at Birth from Cohort Comparison" has expected information
   |required_info                          |
   |---------------------------------------|
-  |Sex At Birth                                 |
+  |Sex at Birth                                 |
   |male                                   |
   |unknown                                |
   |missing                                |
@@ -75,7 +75,7 @@ tags: gdc-data-portal-v2, regression, cohort-comparison, cohort-comparison-downl
   |% Cases S1                             |
   |# Cases S2                             |
   |% Cases S2                             |
-* Verify that "Sex At Birth from Cohort Comparison" has expected information from collected data
+* Verify that "Sex at Birth from Cohort Comparison" has expected information from collected data
   |collected_data                         |
   |---------------------------------------|
   |CC_Sex At Birth_Female_1 Count               |
@@ -85,34 +85,34 @@ tags: gdc-data-portal-v2, regression, cohort-comparison, cohort-comparison-downl
   |CC_Sex At Birth_Male_2 Count                 |
   |CC_Sex At Birth_Unknown_2 Count              |
 
-## Validate TSV Download Information - Age At Diagnosis Card
+## Validate TSV Download Information - Age at Diagnosis Card
 * Collect case counts on save cohort buttons from an analysis card on Cohort Comparison
   |analysis_card          |Filter Row                       |Cohort Number  |Collect Case Count Name              |
   |-----------------------|---------------------------------|---------------|-------------------------------------|
-  |Age At Diagnosis       |0 to <10 years                   |1              |CC_Age_0_to_10_1 Count               |
-  |Age At Diagnosis       |10 to <20 years                  |1              |CC_Age_10_to_20_1 Count              |
-  |Age At Diagnosis       |20 to <30 years                  |1              |CC_Age_20_to_30_1 Count              |
-  |Age At Diagnosis       |30 to <40 years                  |1              |CC_Age_30_to_40_1 Count              |
-  |Age At Diagnosis       |40 to <50 years                  |1              |CC_Age_40_to_50_1 Count              |
-  |Age At Diagnosis       |50 to <60 years                  |1              |CC_Age_50_to_60_1 Count              |
-  |Age At Diagnosis       |60 to <70 years                  |1              |CC_Age_60_to_70_1 Count              |
-  |Age At Diagnosis       |70 to <80 years                  |1              |CC_Age_70_to_80_1 Count              |
-  |Age At Diagnosis       |80+ years                        |1              |CC_Age_80+_1 Count                   |
-  |Age At Diagnosis       |0 to <10 years                   |2              |CC_Age_0_to_10_2 Count               |
-  |Age At Diagnosis       |10 to <20 years                  |2              |CC_Age_10_to_20_2 Count              |
-  |Age At Diagnosis       |20 to <30 years                  |2              |CC_Age_20_to_30_2 Count              |
-  |Age At Diagnosis       |30 to <40 years                  |2              |CC_Age_30_to_40_2 Count              |
-  |Age At Diagnosis       |40 to <50 years                  |2              |CC_Age_40_to_50_2 Count              |
-  |Age At Diagnosis       |50 to <60 years                  |2              |CC_Age_50_to_60_2 Count              |
-  |Age At Diagnosis       |60 to <70 years                  |2              |CC_Age_60_to_70_2 Count              |
-  |Age At Diagnosis       |70 to <80 years                  |2              |CC_Age_70_to_80_2 Count              |
-  |Age At Diagnosis       |80+ years                        |2              |CC_Age_80+_2 Count                   |
-* Download "Age At Diagnosis" from "Cohort Comparison"
-* Read from "Age At Diagnosis from Cohort Comparison"
-* Verify that "Age At Diagnosis from Cohort Comparison" has expected information
+  |Age at Diagnosis       |0 to <10 years                   |1              |CC_Age_0_to_10_1 Count               |
+  |Age at Diagnosis       |10 to <20 years                  |1              |CC_Age_10_to_20_1 Count              |
+  |Age at Diagnosis       |20 to <30 years                  |1              |CC_Age_20_to_30_1 Count              |
+  |Age at Diagnosis       |30 to <40 years                  |1              |CC_Age_30_to_40_1 Count              |
+  |Age at Diagnosis       |40 to <50 years                  |1              |CC_Age_40_to_50_1 Count              |
+  |Age at Diagnosis       |50 to <60 years                  |1              |CC_Age_50_to_60_1 Count              |
+  |Age at Diagnosis       |60 to <70 years                  |1              |CC_Age_60_to_70_1 Count              |
+  |Age at Diagnosis       |70 to <80 years                  |1              |CC_Age_70_to_80_1 Count              |
+  |Age at Diagnosis       |80+ years                        |1              |CC_Age_80+_1 Count                   |
+  |Age at Diagnosis       |0 to <10 years                   |2              |CC_Age_0_to_10_2 Count               |
+  |Age at Diagnosis       |10 to <20 years                  |2              |CC_Age_10_to_20_2 Count              |
+  |Age at Diagnosis       |20 to <30 years                  |2              |CC_Age_20_to_30_2 Count              |
+  |Age at Diagnosis       |30 to <40 years                  |2              |CC_Age_30_to_40_2 Count              |
+  |Age at Diagnosis       |40 to <50 years                  |2              |CC_Age_40_to_50_2 Count              |
+  |Age at Diagnosis       |50 to <60 years                  |2              |CC_Age_50_to_60_2 Count              |
+  |Age at Diagnosis       |60 to <70 years                  |2              |CC_Age_60_to_70_2 Count              |
+  |Age at Diagnosis       |70 to <80 years                  |2              |CC_Age_70_to_80_2 Count              |
+  |Age at Diagnosis       |80+ years                        |2              |CC_Age_80+_2 Count                   |
+* Download "Age at Diagnosis" from "Cohort Comparison"
+* Read from "Age at Diagnosis from Cohort Comparison"
+* Verify that "Age at Diagnosis from Cohort Comparison" has expected information
   |required_info                          |
   |---------------------------------------|
-  |Age At Diagnosis                       |
+  |Age at Diagnosis                       |
   |0 to <10 years                         |
   |10 to <20 years                        |
   |20 to <30 years                        |
@@ -126,7 +126,7 @@ tags: gdc-data-portal-v2, regression, cohort-comparison, cohort-comparison-downl
   |% Cases S1                             |
   |# Cases S2                             |
   |% Cases S2                             |
-* Verify that "Age At Diagnosis from Cohort Comparison" has expected information from collected data
+* Verify that "Age at Diagnosis from Cohort Comparison" has expected information from collected data
   |collected_data                         |
   |---------------------------------------|
   |CC_Age_0_to_10_1 Count                 |

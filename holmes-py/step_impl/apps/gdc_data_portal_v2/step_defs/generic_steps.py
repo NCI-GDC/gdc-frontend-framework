@@ -137,6 +137,15 @@ def save_cohort_if_needed():
 def navigate_to_app():
     APP.navigate()
     APP.shared.wait_for_loading_spinners_to_detach()
+    # In gitlab, this test step has been a little flaky. Meaning, after navigating, the page did not load at all.
+    # In a whole regression run, this has been failing in about 1 spec file. So, we reload the page once
+    # here to try to overcome the flakiness.
+    try:
+        APP.shared.wait_until_locator_is_visible('[data-testid="button-header-analysis"]', 60000)
+    except:
+        APP.shared.reload_page()
+        time.sleep(10)
+        APP.shared.wait_for_loading_spinners_to_detach()
     APP.modal.accept_warning()
 
 @step("Go to <page_name> page")
@@ -205,6 +214,47 @@ def verify_compared_statistics_are_equal_or_not_equal(
         assert (
             first_statistic_string != second_statistic_string
         ), f"The first statistic {statistic_1}'s value '{first_statistic_string}' and second statistic {statistic_2}'s value '{second_statistic_string}' does match when it should NOT"
+
+@step("Verify <statistic_1> is <greater_than_or_less_than> <statistic_2>")
+def verify_compared_statistics_are_greater_than_or_less_than(
+    statistic_1, greater_than_or_less_than, statistic_2
+):
+    """
+    verify_compared_statistics_are_greater_than_or_less_than compares two statistics to one another.
+    Asserts if first statistic is greater than or less than the second statistic based on spec file input.
+
+    :param statistic_1: The first statistic to compare. It is the name it is stored under in data_store.spec
+    :param statistic_2: The second statistic to compare. It is the name it is stored under in data_store.spec. This can also be
+    entered directly from spec file input.
+    :param greater_than_or_less_than: If statistic_1 should be greater than or less than statistic_2
+    :return: N/A
+    """
+    # Get first statistic to compare
+    first_statistic_string = data_store.spec[f"{statistic_1}"]
+
+    first_statistic_string = APP.shared.strip_string_for_comparison(
+        first_statistic_string
+    )
+
+    # Checks to see if data to compare has been stored
+    if statistic_2 in data_store.spec:
+        second_statistic_string = data_store.spec[f"{statistic_2}"]
+        second_statistic_string = APP.shared.strip_string_for_comparison(
+            second_statistic_string
+        )
+    # If not, we take the statistic to compare directly from spec file input
+    else:
+        second_statistic_string = statistic_2
+
+    greater_than_or_less_than = greater_than_or_less_than.lower()
+    if greater_than_or_less_than == "greater than":
+        assert (
+            first_statistic_string > second_statistic_string
+        ), f"The first statistic '{first_statistic_string}' is NOT greater than the second statistic '{second_statistic_string}' when it should be"
+    elif greater_than_or_less_than == "less than":
+        assert (
+            first_statistic_string < second_statistic_string
+        ), f"The first statistic '{first_statistic_string}' IS greater than the second statistic '{second_statistic_string}' when it should NOT"
 
 
 @step("Close the modal")
@@ -1320,6 +1370,7 @@ def click_nav_item_check_text_in_new_tab(page_name: str, table):
         new_tab = APP.shared.perform_action_handle_new_tab(page_name, v[0])
         is_url_correct = APP.shared.is_url_correct_on_new_tab(new_tab, v[1])
         new_tab.close()
+        time.sleep(0.8)
         assert (
             is_url_correct
         ), f"After click on '{v[0]}', the expected url '{v[1]}' in NOT present"
