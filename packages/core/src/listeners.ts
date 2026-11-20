@@ -26,9 +26,8 @@ import {
 } from "./features/cohort/availableCohortsSlice";
 import { cohortApiSlice } from "./features/api/cohortApiSlice";
 import {
-  getUsername,
   isUserAuthChange,
-  userAuthApi,
+  selectLastKnownUsername,
   userAuthChanged,
 } from "./features/users/usersSlice";
 import { fetchFacetDictionary } from "./features/facets/facetDictionarySlice";
@@ -48,8 +47,6 @@ const isPayloadActionWithObject = (
     typeof action.payload === "object"
   );
 };
-
-const selectUserDetails = userAuthApi.endpoints.fetchUserDetails.select();
 
 /**
  * Defines coreListeners for adding middleware.
@@ -80,19 +77,16 @@ startCoreListening({
       listenerApi.dispatch(fetchCohortCaseCounts(currentCohortId));
   },
 });
-startCoreListening({
-  matcher: userAuthApi.endpoints.fetchUserDetails.matchFulfilled,
-  effect: (action, listenerApi) => {
-    const originalState = listenerApi.getOriginalState();
-    const username = getUsername(action.payload);
 
-    if (
-      username !== undefined &&
-      selectUserDetails(originalState).data !== undefined &&
-      isUserAuthChange(originalState, action.payload)
-    ) {
-      listenerApi.dispatch(userAuthChanged({ username }));
-    }
+startCoreListening({
+  predicate: (_action, currentState, previousState) =>
+    isUserAuthChange(previousState, currentState),
+  effect: (_action, listenerApi) => {
+    listenerApi.dispatch(
+      userAuthChanged({
+        username: selectLastKnownUsername(listenerApi.getState()) ?? null,
+      }),
+    );
   },
 });
 

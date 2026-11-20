@@ -92,9 +92,10 @@ export interface UserAuthState {
   readonly lastKnownUsername?: string | null;
   readonly lastKnownProjects?: UserInfo["projects"] | null;
   readonly changeCount: number;
+  readonly hasCheckedUser: boolean;
 }
 
-const initialState: UserAuthState = { changeCount: 0 };
+const initialState: UserAuthState = { changeCount: 0, hasCheckedUser: false };
 
 const userAuthSlice = createSlice({
   name: "userAuth",
@@ -109,6 +110,7 @@ const userAuthSlice = createSlice({
       .addMatcher(
         userAuthApi.endpoints.fetchUserDetails.matchFulfilled,
         (state, action) => {
+          state.hasCheckedUser = true;
           const username = getUsername(action.payload);
           if (username !== undefined) {
             state.lastKnownUsername = username;
@@ -134,11 +136,21 @@ export const selectUserAuthChangeCount = (state: CoreState): number =>
 
 // a change in project access refetches the same data as a user change
 export const isUserAuthChange = (
-  state: CoreState,
-  response: UserAuthResponse<UserInfo>,
-): boolean =>
-  selectLastKnownUsername(state) !== getUsername(response) ||
-  !isEqual(selectLastKnownProjects(state), getProjects(response));
+  previous: CoreState,
+  current: CoreState,
+): boolean => {
+  const before = previous.userAuth;
+  const after = current.userAuth;
+  // the first /auth/user answer has nothing before it to compare with, so it's never a change
+  if (!before.hasCheckedUser || !after.hasCheckedUser) return false;
+
+  const userChanged = before.lastKnownUsername !== after.lastKnownUsername;
+  const accessChanged = !isEqual(
+    before.lastKnownProjects,
+    after.lastKnownProjects,
+  );
+  return userChanged || accessChanged;
+};
 
 export const {
   useFetchUserDetailsQuery,
