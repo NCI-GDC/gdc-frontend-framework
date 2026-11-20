@@ -91,9 +91,10 @@ export const getProjects = (
 export interface UserAuthState {
   readonly lastKnownUsername?: string | null;
   readonly lastKnownProjects?: UserInfo["projects"] | null;
+  readonly changeCount: number;
 }
 
-const initialState: UserAuthState = {};
+const initialState: UserAuthState = { changeCount: 0 };
 
 const userAuthSlice = createSlice({
   name: "userAuth",
@@ -102,6 +103,9 @@ const userAuthSlice = createSlice({
   extraReducers: (builder) =>
     builder
       .addCase(userAuthApi.util.resetApiState, () => initialState)
+      .addCase(userAuthChanged, (state) => {
+        state.changeCount += 1;
+      })
       .addMatcher(
         userAuthApi.endpoints.fetchUserDetails.matchFulfilled,
         (state, action) => {
@@ -123,6 +127,10 @@ export const selectLastKnownUsername = (
 export const selectLastKnownProjects = (
   state: CoreState,
 ): UserInfo["projects"] | null | undefined => state.userAuth.lastKnownProjects;
+
+// goes up by one on every userAuthChanged, for effects that need to re-run on it
+export const selectUserAuthChangeCount = (state: CoreState): number =>
+  state.userAuth.changeCount;
 
 // a change in project access refetches the same data as a user change
 export const isUserAuthChange = (

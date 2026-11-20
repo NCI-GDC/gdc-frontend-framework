@@ -1,7 +1,11 @@
 import { coreStore } from "../../store";
 import { startCoreListening } from "../../listeners";
 import { graphqlAPISlice } from "../gdcapi/gdcgraphql";
-import { userAuthApi, userAuthChanged } from "./usersSlice";
+import {
+  selectUserAuthChangeCount,
+  userAuthApi,
+  userAuthChanged,
+} from "./usersSlice";
 
 const probeApi = graphqlAPISlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -138,6 +142,14 @@ describe("user auth changes", () => {
     await fetchUserAs(loggedInAs("alice"));
 
     expect(authChanges.mock.calls).toEqual([[{ username: "alice" }]]);
+  });
+
+  test("counts the user auth changes", async () => {
+    await fetchUserAs(loggedInAs("alice"));
+    await fetchUserAs(loggedInAs("bob"));
+    await fetchUserAs(anonymous);
+
+    expect(selectUserAuthChangeCount(coreStore.getState())).toBe(2);
   });
 
   test("does not ask for the user details again after a user change", async () => {
