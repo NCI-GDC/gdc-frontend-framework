@@ -9,7 +9,7 @@ import {
   Modals,
   useCoreDispatch,
   useFetchUserDetailsQuery,
-  useFetchTokenMutation,
+  useLazyFetchTokenQuery,
   usePrevious,
 } from "@gff/core";
 import { LoginButton } from "@/components/LoginButton";
@@ -26,7 +26,7 @@ const LoginButtonOrUserDropdown = () => {
   const { data: userInfo } = useFetchUserDetailsQuery();
   const prevUserStatus = usePrevious(userInfo?.status);
   const userDropdownRef = useRef<HTMLButtonElement>(null);
-  const [fetchToken] = useFetchTokenMutation();
+  const [fetchToken] = useLazyFetchTokenQuery({ refetchOnFocus: false });
   const [opened, { open, close }] = useDisclosure(false);
 
   useEffect(() => {
