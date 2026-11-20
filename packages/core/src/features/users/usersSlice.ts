@@ -78,12 +78,12 @@ export const userAuthChanged = createAction<{ username: string | null }>(
   "userAuth/changed",
 );
 
-export const getUsername = (
+const getUsername = (
   response?: UserAuthResponse<UserInfo>,
 ): string | null | undefined =>
   response?.status === 401 ? null : response?.data?.username;
 
-export const getProjects = (
+const getProjects = (
   response?: UserAuthResponse<UserInfo>,
 ): UserInfo["projects"] | null | undefined =>
   response?.status === 401 ? null : response?.data?.projects;
@@ -125,10 +125,6 @@ export const userAuthReducer = userAuthSlice.reducer;
 export const selectLastKnownUsername = (
   state: CoreState,
 ): string | null | undefined => state.userAuth.lastKnownUsername;
-
-export const selectLastKnownProjects = (
-  state: CoreState,
-): UserInfo["projects"] | null | undefined => state.userAuth.lastKnownProjects;
 
 // goes up by one on every userAuthChanged, for effects that need to re-run on it
 export const selectUserAuthChangeCount = (state: CoreState): number =>
