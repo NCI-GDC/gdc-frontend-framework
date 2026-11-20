@@ -13,12 +13,16 @@ const probeApi = graphqlAPISlice.injectEndpoints({
 
 const anonymous = () => Promise.resolve({ ok: false, status: 401 });
 
-const loggedInAs = (username: string) => () =>
-  Promise.resolve({
-    ok: true,
-    status: 200,
-    json: () => Promise.resolve({ username }),
-  });
+const brcaAccess = { gdc_ids: { "TCGA-BRCA": ["read"] }, phs_ids: {} };
+
+const loggedInAs =
+  (username: string, projects: object = brcaAccess) =>
+  () =>
+    Promise.resolve({
+      ok: true,
+      status: 200,
+      json: () => Promise.resolve({ username, projects }),
+    });
 
 const networkError = () => Promise.reject(new TypeError("Failed to fetch"));
 
@@ -86,6 +90,18 @@ describe("user auth changes", () => {
     await fetchUserAs(loggedInAs("bob"));
 
     expect(authChanges.mock.calls).toEqual([[{ username: "bob" }]]);
+  });
+
+  test("dispatches when the same user's project access changes", async () => {
+    await fetchUserAs(loggedInAs("alice"));
+    await fetchUserAs(
+      loggedInAs("alice", {
+        gdc_ids: { "TCGA-BRCA": ["read"], "TCGA-LUAD": ["read"] },
+        phs_ids: {},
+      }),
+    );
+
+    expect(authChanges.mock.calls).toEqual([[{ username: "alice" }]]);
   });
 
   test("does not dispatch on the first user details response", async () => {

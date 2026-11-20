@@ -1,4 +1,5 @@
 import { createAction, createSlice } from "@reduxjs/toolkit";
+import { isEqual } from "lodash";
 import { coreCreateApiWithoutUserAuthTag } from "src/coreCreateApi";
 import { CoreState } from "src/store";
 import { GDC_AUTH } from "../../constants";
@@ -82,8 +83,14 @@ export const getUsername = (
 ): string | null | undefined =>
   response?.status === 401 ? null : response?.data?.username;
 
+export const getProjects = (
+  response?: UserAuthResponse<UserInfo>,
+): UserInfo["projects"] | null | undefined =>
+  response?.status === 401 ? null : response?.data?.projects;
+
 export interface UserAuthState {
   readonly lastKnownUsername?: string | null;
+  readonly lastKnownProjects?: UserInfo["projects"] | null;
 }
 
 const initialState: UserAuthState = {};
@@ -99,7 +106,10 @@ const userAuthSlice = createSlice({
         userAuthApi.endpoints.fetchUserDetails.matchFulfilled,
         (state, action) => {
           const username = getUsername(action.payload);
-          if (username !== undefined) state.lastKnownUsername = username;
+          if (username !== undefined) {
+            state.lastKnownUsername = username;
+            state.lastKnownProjects = getProjects(action.payload);
+          }
         },
       ),
 });
@@ -109,6 +119,18 @@ export const userAuthReducer = userAuthSlice.reducer;
 export const selectLastKnownUsername = (
   state: CoreState,
 ): string | null | undefined => state.userAuth.lastKnownUsername;
+
+export const selectLastKnownProjects = (
+  state: CoreState,
+): UserInfo["projects"] | null | undefined => state.userAuth.lastKnownProjects;
+
+// a change in project access refetches the same data as a user change
+export const isUserAuthChange = (
+  state: CoreState,
+  response: UserAuthResponse<UserInfo>,
+): boolean =>
+  selectLastKnownUsername(state) !== getUsername(response) ||
+  !isEqual(selectLastKnownProjects(state), getProjects(response));
 
 export const {
   useFetchUserDetailsQuery,
