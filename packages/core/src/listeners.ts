@@ -5,7 +5,10 @@ import {
 } from "@reduxjs/toolkit";
 import type { TypedStartListening } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
+import { REHYDRATE } from "redux-persist";
 import { CoreDispatch, CoreState } from "./store";
+import { COHORT_PERSIST_KEY } from "./reducers";
+import { userAuthTagInvalidators } from "./coreCreateApi";
 import {
   updateCohortFilter,
   removeCohortFilter,
@@ -18,11 +21,15 @@ import {
   selectCurrentCohortId,
   removeCohortFromStore,
   selectCurrentCohort,
-  setIsLoggedIn,
   fetchCohortCaseCounts,
   deleteCohortUserAction,
 } from "./features/cohort/availableCohortsSlice";
 import { cohortApiSlice } from "./features/api/cohortApiSlice";
+import {
+  isUserAuthChange,
+  selectLastKnownUsername,
+  userAuthChanged,
+} from "./features/users/usersSlice";
 import { fetchFacetDictionary } from "./features/facets/facetDictionarySlice";
 import {
   removeFilterFromCohortBuilder,
@@ -70,14 +77,41 @@ startCoreListening({
       listenerApi.dispatch(fetchCohortCaseCounts(currentCohortId));
   },
 });
-startCoreListening({
-  matcher: isAnyOf(setIsLoggedIn),
-  effect: async (_, listenerApi) => {
-    const allCohorts = selectAvailableCohorts(listenerApi.getState());
 
-    allCohorts.forEach((cohort) => {
-      cohort.id && listenerApi.dispatch(fetchCohortCaseCounts(cohort.id));
-    });
+startCoreListening({
+  predicate: (_action, currentState, previousState) =>
+    isUserAuthChange(previousState, currentState),
+  effect: (_action, listenerApi) => {
+    listenerApi.dispatch(
+      userAuthChanged({
+        username: selectLastKnownUsername(listenerApi.getState()) ?? null,
+      }),
+    );
+  },
+});
+
+startCoreListening({
+  actionCreator: userAuthChanged,
+  effect: (_, listenerApi) => {
+    userAuthTagInvalidators.forEach((invalidate) =>
+      listenerApi.dispatch(invalidate()),
+    );
+    selectAvailableCohorts(listenerApi.getState()).forEach((cohort) =>
+      listenerApi.dispatch(fetchCohortCaseCounts(cohort.id)),
+    );
+  },
+});
+
+startCoreListening({
+  predicate: (action) =>
+    action.type === REHYDRATE && action.key === COHORT_PERSIST_KEY,
+  effect: (_, listenerApi) => {
+    // saved cohorts get fresh counts once the cohort list loads (setActiveCohortList)
+    selectAvailableCohorts(listenerApi.getState())
+      .filter((cohort) => !cohort.saved)
+      .forEach((cohort) =>
+        listenerApi.dispatch(fetchCohortCaseCounts(cohort.id)),
+      );
   },
 });
 

@@ -1,4 +1,8 @@
-import { buildContinuousAggregationRangeOnlyQuery } from "./continuousAggregationSlice";
+import {
+  buildContinuousAggregationRangeOnlyQuery,
+  rangeFacetsReducer,
+} from "./continuousAggregationSlice";
+import { userAuthChanged } from "../users/usersSlice";
 
 describe("continuous aggregation query tests", () => {
   test("should return default cases aggregations query with no alias", () => {
@@ -134,5 +138,20 @@ describe("continuous aggregation query tests", () => {
     const projectsAliasRepoQueryString =
       /query\s+ContinuousAggregationQuery\(\s*\$caseFilters:\s*FiltersArgument,\s*\$filters:\s*FiltersArgument,\s*\$filters2:\s*FiltersArgument\)\s*{\s*viewer\s*{\s*repository\s*{\s*projects\s*{\s*aggregations\(case_filters:\s*\$caseFilters,\s*filters:\s*\$filters\)\s*{\s*myProjects2\s*:\s*projects__myProjects\s*{\s*stats\s*{\s*Min\s*:\s*min\s*Max\s*:\s*max\s*Mean\s*:\s*avg\s*SD\s*:\s*std_deviation\s*count\s*}\s*range\(ranges:\s*\$filters2\)\s*{\s*buckets\s*{\s*doc_count\s*key\s*}\s*}\s*}\s*}\s*}\s*}\s*}\s*}/s;
     expect(projectsAliasRepoAggregations).toMatch(projectsAliasRepoQueryString);
+  });
+});
+
+describe("range facets reducer", () => {
+  test("clears cached range facets when the user changes", () => {
+    const cached = {
+      "diagnoses.age_at_diagnosis": {
+        status: "fulfilled" as const,
+        buckets: { "0.0-10.0": 5 },
+      },
+    };
+
+    expect(
+      rangeFacetsReducer(cached, userAuthChanged({ username: null })),
+    ).toEqual({});
   });
 });

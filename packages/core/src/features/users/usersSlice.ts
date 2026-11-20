@@ -1,4 +1,7 @@
-import { coreCreateApi } from "src/coreCreateApi";
+import { createAction, createSlice } from "@reduxjs/toolkit";
+import { isEqual } from "lodash";
+import { coreCreateApiWithoutUserAuthTag } from "src/coreCreateApi";
+import { CoreState } from "src/store";
 import { GDC_AUTH } from "../../constants";
 
 export interface UserInfo {
@@ -42,7 +45,7 @@ export async function fetchAuth({
   };
 }
 
-const userAuthApi = coreCreateApi({
+export const userAuthApi = coreCreateApiWithoutUserAuthTag({
   reducerPath: "userAuthApi",
   refetchOnFocus: true,
   refetchOnMountOrArgChange: 1800,
@@ -70,6 +73,80 @@ const userAuthApi = coreCreateApi({
     }),
   }),
 });
+
+export const userAuthChanged = createAction<{ username: string | null }>(
+  "userAuth/changed",
+);
+
+const getUsername = (
+  response?: UserAuthResponse<UserInfo>,
+): string | null | undefined =>
+  response?.status === 401 ? null : response?.data?.username;
+
+const getProjects = (
+  response?: UserAuthResponse<UserInfo>,
+): UserInfo["projects"] | null | undefined =>
+  response?.status === 401 ? null : response?.data?.projects;
+
+export interface UserAuthState {
+  readonly lastKnownUsername?: string | null;
+  readonly lastKnownProjects?: UserInfo["projects"] | null;
+  readonly changeCount: number;
+  readonly hasCheckedUser: boolean;
+}
+
+const initialState: UserAuthState = { changeCount: 0, hasCheckedUser: false };
+
+const userAuthSlice = createSlice({
+  name: "userAuth",
+  initialState,
+  reducers: {},
+  extraReducers: (builder) =>
+    builder
+      .addCase(userAuthApi.util.resetApiState, () => initialState)
+      .addCase(userAuthChanged, (state) => {
+        state.changeCount += 1;
+      })
+      .addMatcher(
+        userAuthApi.endpoints.fetchUserDetails.matchFulfilled,
+        (state, action) => {
+          state.hasCheckedUser = true;
+          const username = getUsername(action.payload);
+          if (username !== undefined) {
+            state.lastKnownUsername = username;
+            state.lastKnownProjects = getProjects(action.payload);
+          }
+        },
+      ),
+});
+
+export const userAuthReducer = userAuthSlice.reducer;
+
+export const selectLastKnownUsername = (
+  state: CoreState,
+): string | null | undefined => state.userAuth.lastKnownUsername;
+
+// goes up by one on every userAuthChanged, for effects that need to re-run on it
+export const selectUserAuthChangeCount = (state: CoreState): number =>
+  state.userAuth.changeCount;
+
+// a change in project access refetches the same data as a user change
+export const isUserAuthChange = (
+  previous: CoreState,
+  current: CoreState,
+): boolean => {
+  const before = previous.userAuth;
+  const after = current.userAuth;
+  // the first /auth/user answer has nothing before it to compare with, so it's never a change
+  if (!before.hasCheckedUser || !after.hasCheckedUser) return false;
+
+  const userChanged = before.lastKnownUsername !== after.lastKnownUsername;
+  const accessChanged = !isEqual(
+    before.lastKnownProjects,
+    after.lastKnownProjects,
+  );
+  return userChanged || accessChanged;
+};
 
 export const {
   useFetchUserDetailsQuery,

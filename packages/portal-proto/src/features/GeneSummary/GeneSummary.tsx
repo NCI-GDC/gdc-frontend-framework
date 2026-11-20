@@ -143,12 +143,12 @@ export const GeneSummary = ({
   contextSensitive?: boolean;
   contextFilters?: FilterSet;
 }): JSX.Element => {
-  const { data, isFetching } = useGeneSummaryQuery({
+  const { currentData: data, isFetching } = useGeneSummaryQuery({
     gene_id,
   });
   return (
     <>
-      {isFetching ? (
+      {isFetching && !data ? (
         <LoadingOverlay data-testid="loading-spinner" visible />
       ) : data ? (
         <GeneView

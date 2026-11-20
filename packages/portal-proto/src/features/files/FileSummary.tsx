@@ -12,7 +12,7 @@ export const FileSummary: React.FC<FileSummaryProps> = ({
   file_id,
   isModal,
 }: FileSummaryProps) => {
-  const { data: { files } = {}, isFetching } = useGetFilesQuery({
+  const { currentData: { files } = {}, isFetching } = useGetFilesQuery({
     filters: {
       op: "=",
       content: {
@@ -42,7 +42,7 @@ export const FileSummary: React.FC<FileSummaryProps> = ({
 
   return (
     <div>
-      {!isFetching ? (
+      {!isFetching || files ? (
         <>
           {!files?.[0] ? (
             <SummaryErrorHeader label="File Not Found" />

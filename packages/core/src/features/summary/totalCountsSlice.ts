@@ -6,6 +6,7 @@ import {
 import { graphqlAPI, GraphQLApiResponse } from "../gdcapi/gdcgraphql";
 import { CoreDispatch, CoreState } from "src/store";
 import { createUseCoreDataHook, DataStatus } from "../../dataAccess";
+import { userAuthChanged } from "../users/usersSlice";
 
 const CountsGraphQLQuery = `
   query totalCountsQuery($filters: FiltersArgument) {
@@ -98,6 +99,10 @@ const slice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(userAuthChanged, (state) => {
+        state.status = "uninitialized";
+        state.requestId = undefined;
+      })
       .addCase(fetchTotalCounts.fulfilled, (state, action) => {
         if (state.requestId != action.meta.requestId) return state;
 

@@ -1,7 +1,7 @@
 import {
   useGenesTableQuery,
   FilterSet,
-  usePrevious,
+  selectUserAuthChangeCount,
   useCreateGeneSetFromFiltersMutation,
   useCreateTopNGeneSetFromFiltersMutation,
   useCoreSelector,
@@ -19,10 +19,13 @@ import {
   convertFilterToGqlFilter,
   CnvChange,
 } from "@gff/core";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { useDeepCompareCallback, useDeepCompareMemo } from "use-deep-compare";
+import { useCallback, useContext, useMemo, useState } from "react";
+import {
+  useDeepCompareCallback,
+  useDeepCompareEffect,
+  useDeepCompareMemo,
+} from "use-deep-compare";
 import FunctionButton from "@/components/FunctionButton";
-import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionAsSetModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
@@ -157,15 +160,10 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
   /* End Create Cohort */
 
   const sets = useCoreSelector((state) => selectSetsByType(state, "genes"));
-  const prevGenomicFilters = usePrevious(genomicFilters);
-  const prevCohortFilters = usePrevious(cohortFilters);
-  useEffect(() => {
-    if (
-      !isEqual(prevGenomicFilters, genomicFilters) ||
-      !isEqual(prevCohortFilters, cohortFilters)
-    )
-      setPage(1);
-  }, [cohortFilters, genomicFilters, prevCohortFilters, prevGenomicFilters]);
+  const userAuthChangeCount = useCoreSelector(selectUserAuthChangeCount);
+  useDeepCompareEffect(() => {
+    setPage(1);
+  }, [genomicFilters, cohortFilters, userAuthChangeCount]);
 
   const formattedTableData = useDeepCompareMemo(() => {
     if (!data) return [];

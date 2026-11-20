@@ -51,6 +51,7 @@ import { sessionStorage } from "./storage-persist";
 import {
   userAuthApiReducer,
   userAuthApiReducerPath,
+  userAuthReducer,
 } from "./features/users/usersSlice";
 import {
   historyApiReducer,
@@ -66,8 +67,10 @@ import {
 } from "./features/imageDetails/imageDetailsSlice";
 
 // We want unsaved cohorts to be persisted through a refresh but not through a user ending their session
+export const COHORT_PERSIST_KEY = "cohort";
+
 const cohortPersistConfig = {
-  key: "cohort",
+  key: COHORT_PERSIST_KEY,
   version: 5,
   storage: sessionStorage,
 };
@@ -96,6 +99,7 @@ export const reducers = combineReducers({
   [graphqlAPISliceReducerPath]: graphqlAPIReducer,
   [endpointSliceReducerPath]: endpointReducer,
   [userAuthApiReducerPath]: userAuthApiReducer,
+  userAuth: userAuthReducer,
   [historyApiSliceReducerPath]: historyApiReducer,
   [bannerNotificationApiSliceReducerPath]: bannerNotificationApiReducer,
   versionInfo: versionInfoReducer,

@@ -1,4 +1,5 @@
 import { fetchTotalCounts, totalCountsReducer } from "./totalCountsSlice";
+import { userAuthChanged } from "../users/usersSlice";
 
 const initialCounts = {
   counts: {
@@ -107,5 +108,15 @@ describe("totalCounts reducer", () => {
       status: "fulfilled",
       requestId: "test",
     });
+  });
+
+  test("keeps the counts but refetches them when the user changes", () => {
+    const counts = { ...initialCounts.counts, mutationCounts: 30000 };
+    const state = totalCountsReducer(
+      { counts, status: "fulfilled", requestId: "test" },
+      userAuthChanged({ username: "alice" }),
+    );
+
+    expect(state).toEqual({ counts, status: "uninitialized" });
   });
 });
