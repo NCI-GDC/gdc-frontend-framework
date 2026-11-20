@@ -32,11 +32,11 @@ import {
   CoreState,
   selectCohortBuilderConfig,
   selectFacetDefinition,
+  selectUserAuthChangeCount,
   TotalCounts,
 } from "@gff/core";
 import isEqual from "lodash/isEqual";
 import { getFacetInfo } from "@/features/cohortBuilder/utils";
-import { useUserAuthChangeCount } from "@/hooks/useUserAuthChangeCount";
 
 /**
  * Filter selector for all the facet filters
@@ -191,7 +191,7 @@ export const useAllEnumFacets = () => {
 
   const coreDispatch = useCoreDispatch();
   const currentCohortFilters = useCurrentCohortFilters();
-  const userAuthChangeCount = useUserAuthChangeCount();
+  const userAuthChangeCount = useCoreSelector(selectUserAuthChangeCount);
 
   useDeepCompareEffect(() => {
     Object.entries(tabsConfig).map(([, tabEntry]) => {

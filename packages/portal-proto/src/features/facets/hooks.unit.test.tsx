@@ -16,10 +16,7 @@ jest.mock("@gff/core", () => ({
   useCurrentCohortFilters: jest.fn(),
   selectCohortBuilderConfig: jest.fn(),
   selectFacetDefinition: jest.fn(),
-}));
-
-jest.mock("@/hooks/useUserAuthChangeCount", () => ({
-  useUserAuthChangeCount: () => userAuthChangeCount,
+  selectUserAuthChangeCount: () => userAuthChangeCount,
 }));
 
 describe("useAllEnumFacets", () => {

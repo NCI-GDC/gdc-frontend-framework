@@ -1,6 +1,6 @@
 import {
   FilterSet,
-  usePrevious,
+  selectUserAuthChangeCount,
   useGetSssmTableDataQuery,
   useSsmSetCountQuery,
   useSsmSetCountsQuery,
@@ -19,8 +19,11 @@ import {
   useRemoveTopNSsmsSetFromFiltersMutation,
 } from "@gff/core";
 import { useEffect, useState, useContext, useMemo, useCallback } from "react";
-import { useDeepCompareCallback, useDeepCompareMemo } from "use-deep-compare";
-import isEqual from "lodash/isEqual";
+import {
+  useDeepCompareCallback,
+  useDeepCompareEffect,
+  useDeepCompareMemo,
+} from "use-deep-compare";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
 import { statusBooleansToDataStatus } from "src/utils";
@@ -47,7 +50,6 @@ import TotalItems from "@/components/Table/TotalItem";
 import { SET_COUNT_LIMIT } from "@/components/Modals/SetModals/constants";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionAsSetModal";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
-import { useUserAuthChangeCount } from "@/hooks/useUserAuthChangeCount";
 
 const TABLE_SORT = [
   {
@@ -206,25 +208,10 @@ export const SMTableContainer: React.FC<SMTableContainerProps> = ({
   /* Create Cohort end  */
 
   const sets = useCoreSelector((state) => selectSetsByType(state, "ssms"));
-  const prevGenomicFilters = usePrevious(genomicFilters);
-  const prevCohortFilters = usePrevious(cohortFilters);
-  const userAuthChangeCount = useUserAuthChangeCount();
-  const prevUserAuthChangeCount = usePrevious(userAuthChangeCount);
-  useEffect(() => {
-    if (
-      !isEqual(prevGenomicFilters, genomicFilters) ||
-      !isEqual(prevCohortFilters, cohortFilters) ||
-      prevUserAuthChangeCount !== userAuthChangeCount
-    )
-      setPage(1);
-  }, [
-    cohortFilters,
-    genomicFilters,
-    prevCohortFilters,
-    prevGenomicFilters,
-    userAuthChangeCount,
-    prevUserAuthChangeCount,
-  ]);
+  const userAuthChangeCount = useCoreSelector(selectUserAuthChangeCount);
+  useDeepCompareEffect(() => {
+    setPage(1);
+  }, [genomicFilters, cohortFilters, userAuthChangeCount]);
 
   const formattedTableData = useDeepCompareMemo(() => {
     if (!data?.ssms) return [];

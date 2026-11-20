@@ -1,7 +1,7 @@
 import {
   useGenesTableQuery,
   FilterSet,
-  usePrevious,
+  selectUserAuthChangeCount,
   useCreateGeneSetFromFiltersMutation,
   useCreateTopNGeneSetFromFiltersMutation,
   useCoreSelector,
@@ -19,10 +19,13 @@ import {
   convertFilterToGqlFilter,
   CnvChange,
 } from "@gff/core";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { useDeepCompareCallback, useDeepCompareMemo } from "use-deep-compare";
+import { useCallback, useContext, useMemo, useState } from "react";
+import {
+  useDeepCompareCallback,
+  useDeepCompareEffect,
+  useDeepCompareMemo,
+} from "use-deep-compare";
 import FunctionButton from "@/components/FunctionButton";
-import isEqual from "lodash/isEqual";
 import SaveSelectionAsSetModal from "@/components/Modals/SetModals/SaveSelectionAsSetModal";
 import AddToSetModal from "@/components/Modals/SetModals/AddToSetModal";
 import RemoveFromSetModal from "@/components/Modals/SetModals/RemoveFromSetModal";
@@ -48,7 +51,6 @@ import { appendSearchTermFilters } from "../utils";
 import TotalItems from "@/components/Table/TotalItem";
 import { SET_COUNT_LIMIT } from "@/components/Modals/SetModals/constants";
 import { useIsDemoApp } from "@/hooks/useIsDemoApp";
-import { useUserAuthChangeCount } from "@/hooks/useUserAuthChangeCount";
 
 export interface GTableContainerProps {
   readonly selectedSurvivalPlot: ComparativeSurvival;
@@ -158,25 +160,10 @@ export const GenesTableContainer: React.FC<GTableContainerProps> = ({
   /* End Create Cohort */
 
   const sets = useCoreSelector((state) => selectSetsByType(state, "genes"));
-  const prevGenomicFilters = usePrevious(genomicFilters);
-  const prevCohortFilters = usePrevious(cohortFilters);
-  const userAuthChangeCount = useUserAuthChangeCount();
-  const prevUserAuthChangeCount = usePrevious(userAuthChangeCount);
-  useEffect(() => {
-    if (
-      !isEqual(prevGenomicFilters, genomicFilters) ||
-      !isEqual(prevCohortFilters, cohortFilters) ||
-      prevUserAuthChangeCount !== userAuthChangeCount
-    )
-      setPage(1);
-  }, [
-    cohortFilters,
-    genomicFilters,
-    prevCohortFilters,
-    prevGenomicFilters,
-    userAuthChangeCount,
-    prevUserAuthChangeCount,
-  ]);
+  const userAuthChangeCount = useCoreSelector(selectUserAuthChangeCount);
+  useDeepCompareEffect(() => {
+    setPage(1);
+  }, [genomicFilters, cohortFilters, userAuthChangeCount]);
 
   const formattedTableData = useDeepCompareMemo(() => {
     if (!data) return [];
