@@ -5,3 +5,4 @@ protobuf==5.29.6
 grpcio==1.71.0
 pyautogui==0.9.54
 virtualenv==21.14.7
+filelock==4.2.1
