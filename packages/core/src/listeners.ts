@@ -27,7 +27,7 @@ import {
 import { cohortApiSlice } from "./features/api/cohortApiSlice";
 import {
   getUsername,
-  selectLastKnownUsername,
+  isUserAuthChange,
   userAuthApi,
   userAuthChanged,
 } from "./features/users/usersSlice";
@@ -89,7 +89,7 @@ startCoreListening({
     if (
       username !== undefined &&
       selectUserDetails(originalState).data !== undefined &&
-      selectLastKnownUsername(originalState) !== username
+      isUserAuthChange(originalState, action.payload)
     ) {
       listenerApi.dispatch(userAuthChanged({ username }));
     }
