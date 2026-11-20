@@ -64,7 +64,7 @@ export const userAuthApi = coreCreateApiWithoutUserAuthTag({
     return { data: results };
   },
   endpoints: (builder) => ({
-    fetchToken: builder.mutation<UserAuthResponse<string>, void>({
+    fetchToken: builder.query<UserAuthResponse<string>, void>({
       query: () => ({ endpoint: "token/refresh" }),
     }),
     fetchUserDetails: builder.query<UserAuthResponse<UserInfo>, void>({
@@ -112,7 +112,7 @@ export const selectLastKnownUsername = (
 
 export const {
   useFetchUserDetailsQuery,
-  useFetchTokenMutation,
+  useLazyFetchTokenQuery,
   useLazyFetchUserDetailsQuery,
 } = userAuthApi;
 export const userAuthApiMiddleware = userAuthApi.middleware;
