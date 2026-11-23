@@ -31,21 +31,16 @@ export interface Survival {
 export const survivalApiSlice = coreCreateApi({
   reducerPath: "survivalApi",
   baseQuery: async ({ request }) => {
-    let res: Response;
-    try {
-      res = await fetch(`${GDC_APP_API_AUTH}/analysis/survival`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          case_filters: request.case_filters,
-          filters: request.filters,
-        }),
-      });
-    } catch (error) {
-      return { error: { status: "FETCH_ERROR", data: String(error) } };
-    }
+    const res = await fetch(`${GDC_APP_API_AUTH}/analysis/survival`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        case_filters: request.case_filters,
+        filters: request.filters,
+      }),
+    });
     if (res.ok) {
       return { data: await res.json() };
     }
