@@ -34,6 +34,8 @@ export const DownloadFile: React.FC<DownloadFileProps> = ({
   const onClick = useDeepCompareCallback(async () => {
     fetchUserDetails()
       .unwrap()
+      // on a network or server error, show the login modal
+      .catch(() => undefined)
       .then((userInfo) => {
         if (setfileToDownload) {
           setfileToDownload(file);

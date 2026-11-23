@@ -51,7 +51,6 @@ import { sessionStorage } from "./storage-persist";
 import {
   userAuthApiReducer,
   userAuthApiReducerPath,
-  userAuthReducer,
 } from "./features/users/usersSlice";
 import {
   historyApiReducer,
@@ -99,7 +98,6 @@ export const reducers = combineReducers({
   [graphqlAPISliceReducerPath]: graphqlAPIReducer,
   [endpointSliceReducerPath]: endpointReducer,
   [userAuthApiReducerPath]: userAuthApiReducer,
-  userAuth: userAuthReducer,
   [historyApiSliceReducerPath]: historyApiReducer,
   [bannerNotificationApiSliceReducerPath]: bannerNotificationApiReducer,
   versionInfo: versionInfoReducer,

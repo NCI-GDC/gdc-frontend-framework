@@ -27,7 +27,7 @@ import {
 import { cohortApiSlice } from "./features/api/cohortApiSlice";
 import {
   isUserAuthChange,
-  selectLastKnownUsername,
+  selectUserAuth,
   userAuthChanged,
 } from "./features/users/usersSlice";
 import { fetchFacetDictionary } from "./features/facets/facetDictionarySlice";
@@ -80,13 +80,12 @@ startCoreListening({
 
 startCoreListening({
   predicate: (_action, currentState, previousState) =>
-    isUserAuthChange(previousState, currentState),
+    isUserAuthChange(
+      selectUserAuth(previousState),
+      selectUserAuth(currentState),
+    ),
   effect: (_action, listenerApi) => {
-    listenerApi.dispatch(
-      userAuthChanged({
-        username: selectLastKnownUsername(listenerApi.getState()) ?? null,
-      }),
-    );
+    listenerApi.dispatch(userAuthChanged());
   },
 });
 
