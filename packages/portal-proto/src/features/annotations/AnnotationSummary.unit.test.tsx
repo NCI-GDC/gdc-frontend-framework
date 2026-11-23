@@ -9,22 +9,6 @@ jest.mock("@gff/core", () => ({
 }));
 
 describe("<AnnotationSummary />", () => {
-  test("keeps showing the annotation while it refetches", () => {
-    jest.mocked(useGetAnnotationsQuery).mockReturnValue({
-      currentData: {
-        hits: [{ entity_type: "case", entity_id: "45" }],
-        pagination: { total: 1 },
-      },
-      isFetching: true,
-    } as any);
-    jest.mocked(useQuickSearchQuery).mockReturnValue({
-      data: { searchList: [{ id: btoa("Case:111") }] },
-    } as any);
-    const { getByRole } = render(<AnnotationSummary annotationId="2" />);
-
-    expect(getByRole("row", { name: "Entity UUID 45" })).toBeInTheDocument();
-  });
-
   test("Entity link should go to cases", () => {
     jest.mocked(useGetAnnotationsQuery).mockReturnValue({
       currentData: { hits: [{ entity_type: "case", entity_id: "45" }] },

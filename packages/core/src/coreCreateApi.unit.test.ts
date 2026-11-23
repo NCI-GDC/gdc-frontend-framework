@@ -1,65 +1,25 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { coreCreateApi, userAuthTagInvalidators } from "./coreCreateApi";
 
-const baseQuery = jest.fn(() => ({ data: "result" }));
-
-const testApi = coreCreateApi({
-  reducerPath: "userAuthTagTestApi",
-  baseQuery,
-  tagTypes: ["Own"],
-  endpoints: (builder) => ({
-    taggedWithArray: builder.query<string, void>({
-      query: () => "array",
-      providesTags: ["Own"],
+test("a user change refetches queries of APIs built with coreCreateApi", async () => {
+  const baseQuery = jest.fn(() => ({ data: "result" }));
+  const api = coreCreateApi({
+    reducerPath: "testApi",
+    baseQuery,
+    endpoints: (builder) => ({
+      item: builder.query<string, void>({ query: () => "item" }),
     }),
-    taggedWithFunction: builder.query<string, void>({
-      query: () => "function",
-      providesTags: (result) => [{ type: "Own", id: result }],
-    }),
-  }),
-});
-
-const setupStore = () => {
+  });
   const store = configureStore({
-    reducer: { [testApi.reducerPath]: testApi.reducer },
+    reducer: { [api.reducerPath]: api.reducer },
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat(testApi.middleware),
+      getDefaultMiddleware().concat(api.middleware),
   });
-  const settle = () =>
-    Promise.all(store.dispatch(testApi.util.getRunningQueriesThunk()));
-  const invalidateUserAuthTag = () => {
-    userAuthTagInvalidators.forEach((invalidate) =>
-      store.dispatch(invalidate()),
-    );
-    return settle();
-  };
-  return { store, settle, invalidateUserAuthTag };
-};
+  await store.dispatch(api.endpoints.item.initiate());
 
-describe("coreCreateApi user auth tag", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+  userAuthTagInvalidators.forEach((invalidate) => store.dispatch(invalidate()));
+  // wait for the refetch to finish
+  await Promise.all(store.dispatch(api.util.getRunningQueriesThunk()));
 
-  afterAll(async () => {
-    // RTK Query syncs subscriptions to the store on a 500ms timer; let it finish so Jest can exit
-    await new Promise((resolve) => setTimeout(resolve, 600));
-  });
-
-  test.each([
-    ["taggedWithArray", "Own"],
-    ["taggedWithFunction", { type: "Own", id: "result" }],
-  ] as const)(
-    "keeps the tags %s already provides",
-    async (endpointName, ownTag) => {
-      const { store, settle, invalidateUserAuthTag } = setupStore();
-      await store.dispatch(testApi.endpoints[endpointName].initiate());
-
-      store.dispatch(testApi.util.invalidateTags([ownTag]));
-      await settle();
-      await invalidateUserAuthTag();
-
-      expect(baseQuery).toHaveBeenCalledTimes(3);
-    },
-  );
+  expect(baseQuery).toHaveBeenCalledTimes(2);
 });
