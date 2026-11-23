@@ -159,25 +159,17 @@ describe("all cases endpoint", () => {
           { ...caseHit, id: "case-3", case_id: "case-3" },
         ]),
       );
-    respondTo.annotations = () =>
-      ok(
-        casesResponse([
-          { ...annotation, case_id: "case-1", annotation_id: "a1" },
-          { ...annotation, case_id: "case-2", annotation_id: "a2" },
-          { ...annotation, case_id: "case-1", annotation_id: "a3" },
-        ]),
-      );
+    const a1 = { ...annotation, case_id: "case-1", annotation_id: "a1" };
+    const a2 = { ...annotation, case_id: "case-2", annotation_id: "a2" };
+    const a3 = { ...annotation, case_id: "case-1", annotation_id: "a3" };
+    respondTo.annotations = () => ok(casesResponse([a1, a2, a3]));
 
     const { data } = await fetchAllCases();
 
-    const annotationIdsByCase = data?.cases.map((c) => [
-      c.case_uuid,
-      c.annotations.map((a) => a.annotation_id),
-    ]);
-    expect(annotationIdsByCase).toEqual([
-      ["case-1", ["a1", "a3"]],
-      ["case-2", ["a2"]],
-      ["case-3", []],
+    expect(data?.cases).toMatchObject([
+      { case_uuid: "case-1", annotations: [a1, a3] },
+      { case_uuid: "case-2", annotations: [a2] },
+      { case_uuid: "case-3", annotations: [] },
     ]);
   });
 
