@@ -171,16 +171,14 @@ export const buildGeneTableSearchFilters = (
 
 const transformGenesTableResponse = (
   genesTable: GraphQLApiResponse<any>,
-  mutationCounts?: GraphQLApiResponse<any>,
+  mutationCounts: GraphQLApiResponse<any>,
 ): GDCGenesTable => {
   const { cases, cnvCases, filteredCases, genes } =
     genesTable.data.genesTableViewer.explore;
 
   const mutationCountBuckets: { key: string; doc_count: number }[] =
-    mutationCounts && !mutationCounts.errors
-      ? mutationCounts.data.ssmsAggregationsViewer.explore.ssms.aggregations
-          .consequence__transcript__gene__gene_id.buckets
-      : [];
+    mutationCounts.data.ssmsAggregationsViewer.explore.ssms.aggregations
+      .consequence__transcript__gene__gene_id.buckets;
   const mutationCountsByGene = Object.fromEntries(
     mutationCountBuckets.map(({ key, doc_count }) => [
       key,
@@ -437,12 +435,16 @@ export const genesTableApiSlice = graphqlAPISlice.injectEndpoints({
             caseFilters: caseFilters,
           }),
         });
+        if (mutationCountsResult.error)
+          return { error: mutationCountsResult.error };
+
+        const mutationCounts =
+          mutationCountsResult.data as GraphQLApiResponse<any>;
+        if (mutationCounts.errors)
+          return { error: JSON.stringify(mutationCounts.errors) };
 
         return {
-          data: transformGenesTableResponse(
-            genesTable,
-            mutationCountsResult.data as GraphQLApiResponse<any> | undefined,
-          ),
+          data: transformGenesTableResponse(genesTable, mutationCounts),
         };
       },
     }),

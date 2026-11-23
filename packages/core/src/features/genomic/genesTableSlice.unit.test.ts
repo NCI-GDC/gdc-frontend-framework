@@ -139,31 +139,29 @@ describe("genes table endpoint", () => {
   test("fails when the genes table query returns errors", async () => {
     respondTo.genesTable = () => ({ errors: { filters: "bad filter" } });
 
-    const { isError } = await fetchGenesTable();
+    const { error } = await fetchGenesTable();
 
-    expect(isError).toBe(true);
+    expect(error).toBe(JSON.stringify({ filters: "bad filter" }));
     expect(fetchSpy).toHaveBeenCalledTimes(1);
   });
 
-  test.each([
-    ["returns errors", () => ({ errors: { filters: "bad filter" } })],
-    [
-      "request fails",
-      () => {
-        throw new TypeError("Failed to fetch");
-      },
-    ],
-  ])(
-    "still returns the genes when the mutation counts %s",
-    async (_, mutationCountsResponse) => {
-      respondTo.mutationCounts = mutationCountsResponse;
+  test("fails when the mutation counts query returns errors", async () => {
+    respondTo.mutationCounts = () => ({ errors: { filters: "bad filter" } });
 
-      const { data } = await fetchGenesTable();
+    const { error } = await fetchGenesTable();
 
-      expect(data?.genes).toHaveLength(1);
-      expect(data?.mutationCounts).toEqual({});
-    },
-  );
+    expect(error).toBe(JSON.stringify({ filters: "bad filter" }));
+  });
+
+  test("fails when the mutation counts request fails", async () => {
+    respondTo.mutationCounts = () => {
+      throw new TypeError("Failed to fetch");
+    };
+
+    const { error } = await fetchGenesTable();
+
+    expect(error).toBe("Failed to fetch");
+  });
 });
 
 describe("Test creation of geneTable Filters with Search term", () => {

@@ -103,7 +103,12 @@ export const ContextualCasesView: React.FC = () => {
     ),
   );
 
-  const { data, isFetching, isSuccess, isError } = useAllCasesQuery({
+  const {
+    currentData: data,
+    isFetching,
+    isSuccess,
+    isError,
+  } = useAllCasesQuery({
     fields: [
       "case_id",
       "submitter_id",
