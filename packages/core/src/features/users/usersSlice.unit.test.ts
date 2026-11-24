@@ -1,4 +1,4 @@
-import { isUserAuthChange, UserAuth } from "./usersSlice";
+import { isUserAuthChange, selectUserAuth, UserAuth } from "./usersSlice";
 
 const alice: UserAuth = {
   username: "alice",
@@ -36,5 +36,23 @@ describe("isUserAuthChange", () => {
       },
     };
     expect(isUserAuthChange(alice, aliceWithMoreAccess)).toBe(true);
+  });
+
+  test("is false when /auth/user lists the same permissions in a different order", () => {
+    const answerWith = (permissions: string[]) =>
+      selectUserAuth.resultFunc({
+        status: 200,
+        data: {
+          username: "alice",
+          projects: { gdc_ids: { "GDC-INTERNAL": permissions }, phs_ids: {} },
+        },
+      });
+
+    expect(
+      isUserAuthChange(
+        answerWith(["create", "release", "_member_", "read"]),
+        answerWith(["release", "_member_", "read", "create"]),
+      ),
+    ).toBe(false);
   });
 });

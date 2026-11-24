@@ -1,5 +1,5 @@
 import { createAction, createSelector } from "@reduxjs/toolkit";
-import { isEqual } from "lodash";
+import { isEqual, mapValues } from "lodash";
 import { coreCreateApiWithoutUserAuthTag } from "src/coreCreateApi";
 import { CoreState } from "src/store";
 import { GDC_AUTH } from "../../constants";
@@ -87,7 +87,15 @@ export const selectUserAuth = createSelector(
     if (response.status === 401) return { username: null, projects: null };
     return {
       username: response.data.username,
-      projects: response.data.projects,
+      // /auth/user returns each project's permissions in no fixed order
+      projects: {
+        gdc_ids: mapValues(response.data.projects.gdc_ids, (permissions) =>
+          [...permissions].sort(),
+        ),
+        phs_ids: mapValues(response.data.projects.phs_ids, (permissions) =>
+          [...permissions].sort(),
+        ),
+      },
     };
   },
 );
