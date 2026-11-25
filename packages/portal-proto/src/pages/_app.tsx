@@ -1,3 +1,8 @@
+import App, { AppContext, AppInitialProps } from "next/app";
+import type { AppProps } from "next/app";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import "../styles/globals.css";
 import "../styles/survivalplot.css";
 import "@/features/genomic/registerApp";
@@ -14,10 +19,6 @@ import {
 import { MantineProvider } from "@mantine/core";
 import { useLocalStorage } from "@mantine/hooks";
 import "@nci-gdc/sapien/dist/bodyplot.css";
-import type { AppProps } from "next/app";
-import { useRouter } from "next/router";
-import Image from "next/image";
-import Link from "next/link";
 import React, { useEffect, useState } from "react";
 // ReactModal needs the app element set for a11y reasons.
 // It hides the main application from screen readers while modals are open.
@@ -28,7 +29,10 @@ import {
   URLContext,
 } from "src/utils/contexts";
 import { Notifications } from "@mantine/notifications";
-import { AppContext, CohortNotificationProvider } from "@gff/portal-components";
+import {
+  AppContext as ComponentAppContext,
+  CohortNotificationProvider,
+} from "@gff/portal-components";
 import type {
   ImageComponentType,
   LinkComponentType,
@@ -71,7 +75,13 @@ if (process.env.NEXT_PUBLIC_DD_ENABLED) {
   });
 }
 
-const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
+type PortalAppProps = { nonce: string };
+
+const PortalApp = ({
+  Component,
+  pageProps,
+  nonce,
+}: AppProps & PortalAppProps) => {
   const router = useRouter();
   const [prevPath, setPrevPath] = useState("");
   const [currentPath, setCurrentPath] = useState("");
@@ -98,6 +108,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
       <MantineProvider
         theme={theme}
         cssVariablesResolver={cssVariablesResolver}
+        getStyleNonce={() => nonce}
       >
         <div
           className={`${
@@ -111,7 +122,7 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                 setEntityMetadata,
               }}
             >
-              <AppContext.Provider
+              <ComponentAppContext.Provider
                 value={{
                   appName: "GDC",
                   Link: Link as LinkComponentType,
@@ -126,13 +137,22 @@ const PortalApp: React.FC<AppProps> = ({ Component, pageProps }: AppProps) => {
                   <Notifications position="top-center" />
                   <Component {...pageProps} />
                 </CohortNotificationProvider>
-              </AppContext.Provider>
+              </ComponentAppContext.Provider>
             </SummaryModalContext.Provider>
           </URLContext.Provider>
         </div>
       </MantineProvider>
     </CoreProvider>
   );
+};
+
+PortalApp.getInitialProps = async (
+  context: AppContext,
+): Promise<PortalAppProps & AppInitialProps> => {
+  const ctx = await App.getInitialProps(context);
+  const nonce = context.ctx.req?.headers?.["x-nonce"] as string | undefined;
+
+  return { ...ctx, nonce };
 };
 
 export default PortalApp;
