@@ -1,6 +1,7 @@
-import { SaveOrCreateEntityBody } from "../SaveOrCreateEntityModal";
+import { SaveOrCreateEntityBody } from "./SaveOrCreateEntityModal";
 import userEvent from "@testing-library/user-event";
-import { render } from "test-utils";
+import { render } from "@testing-library/react";
+import { MantineProvider } from "@mantine/core";
 
 beforeAll(() => {
   jest.clearAllMocks();
@@ -9,13 +10,15 @@ beforeAll(() => {
 describe("<SaveOrCreateEntityBody />", () => {
   it("default action should be Save", () => {
     const { getByText } = render(
-      <SaveOrCreateEntityBody
-        entity="cohort"
-        initialName="testName"
-        onActionClick={jest.fn()}
-        onNameChange={jest.fn()}
-        onClose={jest.fn()}
-      />,
+      <MantineProvider>
+        <SaveOrCreateEntityBody
+          entity="cohort"
+          initialName="testName"
+          onActionClick={jest.fn()}
+          onNameChange={jest.fn()}
+          onClose={jest.fn()}
+        />
+      </MantineProvider>,
     );
 
     expect(getByText("Save")).toBeDefined();
@@ -23,14 +26,16 @@ describe("<SaveOrCreateEntityBody />", () => {
 
   it("action should be same name as the prop sent", () => {
     const { getByTestId } = render(
-      <SaveOrCreateEntityBody
-        entity="cohort"
-        action="test"
-        initialName="testName"
-        onActionClick={jest.fn()}
-        onNameChange={jest.fn()}
-        onClose={jest.fn()}
-      />,
+      <MantineProvider>
+        <SaveOrCreateEntityBody
+          entity="cohort"
+          action="test"
+          initialName="testName"
+          onActionClick={jest.fn()}
+          onNameChange={jest.fn()}
+          onClose={jest.fn()}
+        />
+      </MantineProvider>,
     );
 
     expect(getByTestId("textbox-name-input-field")).toHaveValue("testName");
@@ -40,14 +45,16 @@ describe("<SaveOrCreateEntityBody />", () => {
     const moreThan100CharText =
       "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's";
     const { getByTestId } = render(
-      <SaveOrCreateEntityBody
-        entity="cohort"
-        action="test"
-        initialName="lorem"
-        onActionClick={jest.fn()}
-        onNameChange={jest.fn()}
-        onClose={jest.fn()}
-      />,
+      <MantineProvider>
+        <SaveOrCreateEntityBody
+          entity="cohort"
+          action="test"
+          initialName="lorem"
+          onActionClick={jest.fn()}
+          onNameChange={jest.fn()}
+          onClose={jest.fn()}
+        />
+      </MantineProvider>,
     );
 
     const inputField = getByTestId("textbox-name-input-field");
@@ -59,14 +66,16 @@ describe("<SaveOrCreateEntityBody />", () => {
 
   it("duplicate name warning should be shown if onNameChange returns false and there is no error", () => {
     const { getByText } = render(
-      <SaveOrCreateEntityBody
-        entity="cohort"
-        action="test"
-        initialName=""
-        onActionClick={jest.fn()}
-        onNameChange={jest.fn().mockReturnValue(false)}
-        onClose={jest.fn()}
-      />,
+      <MantineProvider>
+        <SaveOrCreateEntityBody
+          entity="cohort"
+          action="test"
+          initialName=""
+          onActionClick={jest.fn()}
+          onNameChange={jest.fn().mockReturnValue(false)}
+          onClose={jest.fn()}
+        />
+      </MantineProvider>,
     );
 
     expect(
@@ -77,14 +86,16 @@ describe("<SaveOrCreateEntityBody />", () => {
   it("onActionClick should NOT be called if there is any error - empty name", async () => {
     const mockActionClick = jest.fn();
     const { getByTestId } = render(
-      <SaveOrCreateEntityBody
-        entity="cohort"
-        action="test"
-        initialName=""
-        onActionClick={mockActionClick}
-        onNameChange={jest.fn().mockReturnValue(false)}
-        onClose={jest.fn()}
-      />,
+      <MantineProvider>
+        <SaveOrCreateEntityBody
+          entity="cohort"
+          action="test"
+          initialName=""
+          onActionClick={mockActionClick}
+          onNameChange={jest.fn().mockReturnValue(false)}
+          onClose={jest.fn()}
+        />
+      </MantineProvider>,
     );
 
     await userEvent.click(getByTestId("button-save-name"));
@@ -95,14 +106,16 @@ describe("<SaveOrCreateEntityBody />", () => {
   it("onActionClick SHOULD be called if there is NO any error", async () => {
     const mockActionClick = jest.fn();
     const { getByTestId } = render(
-      <SaveOrCreateEntityBody
-        entity="cohort"
-        action="test"
-        initialName="test_cohort"
-        onActionClick={mockActionClick}
-        onNameChange={jest.fn().mockReturnValue(false)}
-        onClose={jest.fn()}
-      />,
+      <MantineProvider>
+        <SaveOrCreateEntityBody
+          entity="cohort"
+          action="test"
+          initialName="test_cohort"
+          onActionClick={mockActionClick}
+          onNameChange={jest.fn().mockReturnValue(false)}
+          onClose={jest.fn()}
+        />
+      </MantineProvider>,
     );
 
     await userEvent.click(getByTestId("button-save-name"));
@@ -113,16 +126,18 @@ describe("<SaveOrCreateEntityBody />", () => {
   it("disallowed names are not accepted - all lower cased", async () => {
     const mockActionClick = jest.fn();
     const { getByText, getByTestId } = render(
-      <SaveOrCreateEntityBody
-        entity="test"
-        action="test"
-        initialName=""
-        onClose={jest.fn()}
-        onActionClick={mockActionClick}
-        onNameChange={jest.fn()}
-        descriptionMessage=""
-        disallowedNames={["disallowed_test_name"]}
-      />,
+      <MantineProvider>
+        <SaveOrCreateEntityBody
+          entity="test"
+          action="test"
+          initialName=""
+          onClose={jest.fn()}
+          onActionClick={mockActionClick}
+          onNameChange={jest.fn()}
+          descriptionMessage=""
+          disallowedNames={["disallowed_test_name"]}
+        />
+      </MantineProvider>,
     );
 
     const inputField = getByTestId("textbox-name-input-field");
@@ -139,16 +154,18 @@ describe("<SaveOrCreateEntityBody />", () => {
   it("disallowed names are not accepted - name with whitespaces", async () => {
     const mockActionClick = jest.fn();
     const { getByText, getByTestId } = render(
-      <SaveOrCreateEntityBody
-        entity="test"
-        action="test"
-        initialName=""
-        onClose={jest.fn()}
-        onActionClick={mockActionClick}
-        onNameChange={jest.fn()}
-        descriptionMessage=""
-        disallowedNames={["disallowed_test_name"]}
-      />,
+      <MantineProvider>
+        <SaveOrCreateEntityBody
+          entity="test"
+          action="test"
+          initialName=""
+          onClose={jest.fn()}
+          onActionClick={mockActionClick}
+          onNameChange={jest.fn()}
+          descriptionMessage=""
+          disallowedNames={["disallowed_test_name"]}
+        />
+      </MantineProvider>,
     );
 
     const inputField = getByTestId("textbox-name-input-field");
@@ -165,16 +182,18 @@ describe("<SaveOrCreateEntityBody />", () => {
   it("disallowed names are not accepted - name with lower and upper case chars", async () => {
     const mockActionClick = jest.fn();
     const { getByText, getByTestId } = render(
-      <SaveOrCreateEntityBody
-        entity="test"
-        action="test"
-        initialName=""
-        onClose={jest.fn()}
-        onActionClick={mockActionClick}
-        onNameChange={jest.fn()}
-        descriptionMessage=""
-        disallowedNames={["disallowed_test_name"]}
-      />,
+      <MantineProvider>
+        <SaveOrCreateEntityBody
+          entity="test"
+          action="test"
+          initialName=""
+          onClose={jest.fn()}
+          onActionClick={mockActionClick}
+          onNameChange={jest.fn()}
+          descriptionMessage=""
+          disallowedNames={["disallowed_test_name"]}
+        />
+      </MantineProvider>,
     );
 
     const inputField = getByTestId("textbox-name-input-field");
@@ -191,16 +210,18 @@ describe("<SaveOrCreateEntityBody />", () => {
   it("disallowed names are not accepted - name with all upper case chars", async () => {
     const mockActionClick = jest.fn();
     const { getByText, getByTestId } = render(
-      <SaveOrCreateEntityBody
-        entity="test"
-        action="test"
-        initialName=""
-        onClose={jest.fn()}
-        onActionClick={mockActionClick}
-        onNameChange={jest.fn()}
-        descriptionMessage=""
-        disallowedNames={["disallowed_test_name"]}
-      />,
+      <MantineProvider>
+        <SaveOrCreateEntityBody
+          entity="test"
+          action="test"
+          initialName=""
+          onClose={jest.fn()}
+          onActionClick={mockActionClick}
+          onNameChange={jest.fn()}
+          descriptionMessage=""
+          disallowedNames={["disallowed_test_name"]}
+        />
+      </MantineProvider>,
     );
 
     const inputField = getByTestId("textbox-name-input-field");

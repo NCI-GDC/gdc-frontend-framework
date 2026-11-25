@@ -1,13 +1,11 @@
 import React, { useContext, useState } from "react";
 import { useDeepCompareEffect } from "use-deep-compare";
-import { Tooltip, MantineProvider, Button } from "@mantine/core";
-import { AppContext } from "src/context";
+import { Tooltip, Button } from "@mantine/core";
 import { UndoIcon } from "src/commonIcons";
 import GenericCohortModal from "@/modals/GenericCohortModal";
 import SaveCohortModal from "@/modals/SaveCohortModal";
 import CohortActions from "./CohortActions";
 import CohortSelector from "./CohortSelector";
-import { actionButtonVariant, darkFunctionVariant } from "./style";
 import { CohortHooks, CohortNotificationCommandNoParam } from "./types";
 import { CohortNotificationContext } from "./CohortNotificationProvider";
 import { modals } from "@mantine/modals";
@@ -44,8 +42,6 @@ const CohortManager: React.FC<CohortManagerProps> = ({
     useCreateCohortExternally = () => {},
   } = hooks;
 
-  const { theme } = useContext(AppContext);
-
   const [showDelete, setShowDelete] = useState(false);
   const [showDiscard, setShowDiscard] = useState(false);
   const [showSaveCohort, setShowSaveCohort] = useState(false);
@@ -71,191 +67,177 @@ const CohortManager: React.FC<CohortManagerProps> = ({
   ]);
 
   return (
-    <MantineProvider
-      theme={{
-        ...theme,
-        components: {
-          ...theme?.components,
-          Button: Button.extend({
-            classNames: {
-              root: `${actionButtonVariant} ${darkFunctionVariant}`,
-            },
-          }),
-        },
-      }}
+    <div
+      data-tour="cohort_management_bar"
+      className="flex flex-row items-center justify-start gap-6 px-4 h-24 shadow-lg bg-primary"
     >
-      <div
-        data-tour="cohort_management_bar"
-        className="flex flex-row items-center justify-start gap-6 px-4 h-24 shadow-lg bg-primary"
-      >
-        {currentCohort !== undefined && (
-          <>
-            <div className="border-transparent">
-              <div className="flex flex-wrap gap-2 lg:gap-4">
-                <div className="flex justify-center items-center">
-                  <Tooltip label="Discard Changes" position="bottom" withArrow>
-                    <span>
-                      <Button
-                        data-testid="discardButton"
-                        onClick={() => setShowDiscard(true)}
-                        disabled={!currentCohort.modified}
-                        aria-label="Discard cohort changes"
-                        variant="action"
-                        className="rounded-none rounded-l-md"
-                      >
-                        <UndoIcon aria-hidden="true" />
-                      </Button>
-                    </span>
-                  </Tooltip>
+      {currentCohort !== undefined && (
+        <>
+          <div className="border-transparent">
+            <div className="flex flex-wrap gap-2 lg:gap-4">
+              <div className="flex justify-center items-center">
+                <Tooltip label="Discard Changes" position="bottom" withArrow>
+                  <span>
+                    <Button
+                      data-testid="discardButton"
+                      onClick={() => setShowDiscard(true)}
+                      disabled={!currentCohort.modified}
+                      aria-label="Discard cohort changes"
+                      variant="action"
+                      className="rounded-none rounded-l-md"
+                    >
+                      <UndoIcon aria-hidden="true" />
+                    </Button>
+                  </span>
+                </Tooltip>
 
-                  <CohortSelector
-                    selectAvailableCohorts={hooks.useSelectAvailableCohorts}
-                    selectCurrentCohort={hooks.useSelectCurrentCohort}
-                    setActiveCohort={setActiveCohort}
-                  />
-                </div>
-                <CohortActions
-                  onSave={() =>
-                    currentCohort.saved
-                      ? setShowUpdateCohort(true)
-                      : setShowSaveCohort(true)
-                  }
-                  onSaveAs={() => setShowSaveAsCohort(true)}
-                  onDelete={() => setShowDelete(true)}
-                  selectCurrentCohort={hooks.useSelectCurrentCohort}
+                <CohortSelector
                   selectAvailableCohorts={hooks.useSelectAvailableCohorts}
-                  addNewDefaultUnsavedCohort={addNewDefaultUnsavedCohort}
-                  useExportCohort={useExportCohort}
-                  useImportCohort={useImportCohort}
-                  defaultCohortName={defaultCohortName}
+                  selectCurrentCohort={hooks.useSelectCurrentCohort}
+                  setActiveCohort={setActiveCohort}
                 />
               </div>
+              <CohortActions
+                onSave={() =>
+                  currentCohort.saved
+                    ? setShowUpdateCohort(true)
+                    : setShowSaveCohort(true)
+                }
+                onSaveAs={() => setShowSaveAsCohort(true)}
+                onDelete={() => setShowDelete(true)}
+                selectCurrentCohort={hooks.useSelectCurrentCohort}
+                selectAvailableCohorts={hooks.useSelectAvailableCohorts}
+                addNewDefaultUnsavedCohort={addNewDefaultUnsavedCohort}
+                useExportCohort={useExportCohort}
+                useImportCohort={useImportCohort}
+                defaultCohortName={defaultCohortName}
+              />
             </div>
-            <GenericCohortModal
-              title="Delete Cohort"
-              opened={showDelete}
-              onClose={() => setShowDelete(false)}
-              actionText="Delete"
-              mainText={
-                <>
-                  Are you sure you want to permanently delete{" "}
-                  <b>{currentCohort.name}</b>?
-                </>
-              }
-              subText={<>You cannot undo this action.</>}
-              onActionClick={() => {
-                const remainingCohorts = cohorts.filter(
-                  (cohort) => cohort.id !== currentCohort.id,
-                );
-                const nextCohortName =
-                  remainingCohorts.length > 0
-                    ? remainingCohorts[0].name
-                    : undefined;
+          </div>
+          <GenericCohortModal
+            title="Delete Cohort"
+            opened={showDelete}
+            onClose={() => setShowDelete(false)}
+            actionText="Delete"
+            mainText={
+              <>
+                Are you sure you want to permanently delete{" "}
+                <b>{currentCohort.name}</b>?
+              </>
+            }
+            subText={<>You cannot undo this action.</>}
+            onActionClick={() => {
+              const remainingCohorts = cohorts.filter(
+                (cohort) => cohort.id !== currentCohort.id,
+              );
+              const nextCohortName =
+                remainingCohorts.length > 0
+                  ? remainingCohorts[0].name
+                  : undefined;
 
-                handleDelete()
-                  .then(() => {
+              handleDelete()
+                .then(() => {
+                  setCohortMessage &&
+                    setCohortMessage([
+                      {
+                        cmd: "deleteCohort",
+                        param1: currentCohort.name,
+                        param2: nextCohortName,
+                      },
+                    ]);
+                })
+                .catch(() => {
+                  modals.openContextModal({
+                    modal: "deleteCohortError",
+                    title: "Delete Cohort Error",
+                    innerProps: {},
+                    zIndex: 400,
+                  });
+                });
+            }}
+          />
+
+          <GenericCohortModal
+            title="Discard Changes"
+            opened={showDiscard}
+            onClose={() => setShowDiscard(false)}
+            actionText="Discard"
+            mainText={
+              <>
+                Are you sure you want to permanently discard the unsaved
+                changes?
+              </>
+            }
+            subText={<>You cannot undo this action.</>}
+            onActionClick={async () => {
+              handleDiscard()
+                .then(
+                  () =>
                     setCohortMessage &&
-                      setCohortMessage([
-                        {
-                          cmd: "deleteCohort",
-                          param1: currentCohort.name,
-                          param2: nextCohortName,
-                        },
-                      ]);
-                  })
-                  .catch(() => {
-                    modals.openContextModal({
-                      modal: "deleteCohortError",
-                      title: "Delete Cohort Error",
-                      innerProps: {},
-                      zIndex: 400,
-                    });
+                    setCohortMessage([{ cmd: "discardChanges" }]),
+                )
+                .catch(() => {
+                  modals.openContextModal({
+                    modal: "discardChangesError",
+                    title: "Discard Changes Error",
+                    innerProps: {},
+                    zIndex: 400,
                   });
-              }}
-            />
+                });
+            }}
+          />
 
-            <GenericCohortModal
-              title="Discard Changes"
-              opened={showDiscard}
-              onClose={() => setShowDiscard(false)}
-              actionText="Discard"
-              mainText={
-                <>
-                  Are you sure you want to permanently discard the unsaved
-                  changes?
-                </>
-              }
-              subText={<>You cannot undo this action.</>}
-              onActionClick={async () => {
-                handleDiscard()
-                  .then(
-                    () =>
-                      setCohortMessage &&
-                      setCohortMessage([{ cmd: "discardChanges" }]),
-                  )
-                  .catch(() => {
-                    modals.openContextModal({
-                      modal: "discardChangesError",
-                      title: "Discard Changes Error",
-                      innerProps: {},
-                      zIndex: 400,
-                    });
-                  });
-              }}
-            />
+          <GenericCohortModal
+            title="Save Cohort"
+            opened={showUpdateCohort}
+            onClose={() => setShowUpdateCohort(false)}
+            actionText="Save"
+            mainText={
+              <>
+                Are you sure you want to save <b>{currentCohort.name}</b>? This
+                will overwrite your previously saved changes.
+              </>
+            }
+            subText={<>You cannot undo this action.</>}
+            onActionClick={() => {
+              setShowUpdateCohort(false);
+              handleUpdate();
+              setCohortMessage &&
+                setCohortMessage([
+                  {
+                    cmd: "savedCurrentCohort",
+                  } as CohortNotificationCommandNoParam,
+                ]);
+            }}
+          />
 
-            <GenericCohortModal
-              title="Save Cohort"
-              opened={showUpdateCohort}
-              onClose={() => setShowUpdateCohort(false)}
-              actionText="Save"
-              mainText={
-                <>
-                  Are you sure you want to save <b>{currentCohort.name}</b>?
-                  This will overwrite your previously saved changes.
-                </>
-              }
-              subText={<>You cannot undo this action.</>}
-              onActionClick={() => {
-                setShowUpdateCohort(false);
-                handleUpdate();
-                setCohortMessage &&
-                  setCohortMessage([
-                    {
-                      cmd: "savedCurrentCohort",
-                    } as CohortNotificationCommandNoParam,
-                  ]);
-              }}
-            />
+          <SaveCohortModal
+            initialName={
+              !invalidCohortNames.includes(currentCohort.name?.toLowerCase())
+                ? currentCohort.name
+                : undefined
+            }
+            opened={showSaveCohort}
+            onClose={() => setShowSaveCohort(false)}
+            cohortId={currentCohort.id}
+            filters={currentCohort.filters}
+            invalidCohortNames={invalidCohortNames}
+            hooks={hooks}
+          />
 
-            <SaveCohortModal
-              initialName={
-                !invalidCohortNames.includes(currentCohort.name?.toLowerCase())
-                  ? currentCohort.name
-                  : undefined
-              }
-              opened={showSaveCohort}
-              onClose={() => setShowSaveCohort(false)}
-              cohortId={currentCohort.id}
-              filters={currentCohort.filters}
-              invalidCohortNames={invalidCohortNames}
-              hooks={hooks}
-            />
-
-            <SaveCohortModal
-              opened={showSaveAsCohort}
-              initialName={currentCohort.name}
-              onClose={() => setShowSaveAsCohort(false)}
-              cohortId={currentCohort.id}
-              filters={currentCohort.filters}
-              saveAs
-              invalidCohortNames={invalidCohortNames}
-              hooks={hooks}
-            />
-          </>
-        )}
-      </div>
-    </MantineProvider>
+          <SaveCohortModal
+            opened={showSaveAsCohort}
+            initialName={currentCohort.name}
+            onClose={() => setShowSaveAsCohort(false)}
+            cohortId={currentCohort.id}
+            filters={currentCohort.filters}
+            saveAs
+            invalidCohortNames={invalidCohortNames}
+            hooks={hooks}
+          />
+        </>
+      )}
+    </div>
   );
 };
 
