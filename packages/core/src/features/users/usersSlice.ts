@@ -1,4 +1,7 @@
-import { coreCreateApi } from "src/coreCreateApi";
+import { createAction, createSelector } from "@reduxjs/toolkit";
+import { isEqual, mapValues } from "lodash";
+import { coreCreateApiWithoutUserAuthTag } from "src/coreCreateApi";
+import { CoreState } from "src/store";
 import { GDC_AUTH } from "../../constants";
 
 export interface UserInfo {
@@ -42,24 +45,20 @@ export async function fetchAuth({
   };
 }
 
-const userAuthApi = coreCreateApi({
+const userAuthApi = coreCreateApiWithoutUserAuthTag({
   reducerPath: "userAuthApi",
   refetchOnFocus: true,
   refetchOnMountOrArgChange: 1800,
   baseQuery: async ({ endpoint, isJSON }) => {
-    let results;
-
     try {
-      results = await fetchAuth({ endpoint, isJSON });
-    } catch (e) {
-      /*
-        Because an "error" response is valid for the auth requests we don't want to
-        put the request in an error state or it will attempt the request over and over again
-      */
-      return { data: {} };
+      const result = await fetchAuth({ endpoint, isJSON });
+      // a 401 just means not logged in and any other error status is a real failure
+      if (result.status >= 400 && result.status !== 401)
+        return { error: { status: result.status } };
+      return { data: result };
+    } catch (error) {
+      return { error: { status: "FETCH_ERROR", error: String(error) } };
     }
-
-    return { data: results };
   },
   endpoints: (builder) => ({
     fetchToken: builder.query<UserAuthResponse<string>, void>({
@@ -70,6 +69,42 @@ const userAuthApi = coreCreateApi({
     }),
   }),
 });
+
+export const userAuthChanged = createAction("userAuth/changed");
+
+export interface UserAuth {
+  readonly username: string | null;
+  readonly projects: UserInfo["projects"] | null;
+}
+
+const selectUserDetails = userAuthApi.endpoints.fetchUserDetails.select();
+
+// null until /auth/user has answered
+export const selectUserAuth = createSelector(
+  (state: CoreState) => selectUserDetails(state).data,
+  (response): UserAuth | null => {
+    if (response === undefined) return null;
+    if (response.status === 401) return { username: null, projects: null };
+    return {
+      username: response.data.username,
+      // /auth/user returns each project's permissions in no fixed order
+      projects: {
+        gdc_ids: mapValues(response.data.projects.gdc_ids, (permissions) =>
+          [...permissions].sort(),
+        ),
+        phs_ids: mapValues(response.data.projects.phs_ids, (permissions) =>
+          [...permissions].sort(),
+        ),
+      },
+    };
+  },
+);
+
+// before is null until /auth/user first answers, and that answer isn't a login or logout
+export const isUserAuthChange = (
+  before: UserAuth | null,
+  after: UserAuth | null,
+): boolean => before !== null && !isEqual(before, after);
 
 export const {
   useFetchUserDetailsQuery,

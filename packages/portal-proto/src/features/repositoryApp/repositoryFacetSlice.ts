@@ -8,6 +8,7 @@ import {
   FilterSet,
   processBuckets,
   FacetBuckets,
+  userAuthChanged,
 } from "@gff/core";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, AppState } from "@/features/repositoryApp/appApi";
@@ -60,6 +61,7 @@ export const repositoryFacetsGQLSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(userAuthChanged, () => initialState)
       .addCase(fetchRepositoryFacetsGQL.fulfilled, (state, action) => {
         const response = action.payload;
         const fields =

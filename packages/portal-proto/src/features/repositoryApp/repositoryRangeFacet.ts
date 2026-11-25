@@ -7,6 +7,7 @@ import {
   NumericFromTo,
   processRangeResults,
   RangeBuckets,
+  userAuthChanged,
 } from "@gff/core";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, AppState } from "@/features/repositoryApp/appApi";
@@ -59,10 +60,12 @@ const repositoryRangeFacetAggregation = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(userAuthChanged, () => initialState)
       .addCase(
         fetchRepositoryFacetContinuousAggregation.fulfilled,
         (state, action) => {
           const response = action.payload;
+          if (!(action.meta.arg.field in state)) return;
           if (response.errors && Object.keys(response.errors).length > 0) {
             state[action.meta.arg.field].status = "rejected";
             state[action.meta.arg.field].error = response.errors.facets;

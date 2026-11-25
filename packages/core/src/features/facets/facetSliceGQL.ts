@@ -16,6 +16,7 @@ import {
 import { FacetBuckets, GQLIndexType, GQLDocType } from "./types";
 import { FacetsState } from "./facetSlice";
 import { facetDictionaryReducer } from "./facetDictionarySlice";
+import { userAuthChanged } from "../users/usersSlice";
 import { usefulFacetsReducer } from "./usefulFacetsSlice";
 
 export interface FetchFacetByNameGQLProps {
@@ -108,6 +109,7 @@ export const facetsGQLSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(userAuthChanged, () => initialState)
       .addCase(fetchFacetByNameGQL.fulfilled, (state, action) => {
         const response = action.payload;
         const index = action.meta.arg.index;

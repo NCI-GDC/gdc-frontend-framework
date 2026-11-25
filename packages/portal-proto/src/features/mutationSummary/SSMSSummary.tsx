@@ -121,7 +121,7 @@ export const SSMSSummary = ({
   ssm_id: string;
   isModal?: boolean;
 }): JSX.Element => {
-  const { data: summaryData, isFetching } = useSsmsSummaryQuery({
+  const { currentData: summaryData, isFetching } = useSsmsSummaryQuery({
     filters: {
       content: {
         field: "ssm_id",
@@ -154,7 +154,7 @@ export const SSMSSummary = ({
 
   return (
     <div>
-      {isFetching ? (
+      {isFetching && !summaryData ? (
         <Loader />
       ) : summaryData ? (
         <>
